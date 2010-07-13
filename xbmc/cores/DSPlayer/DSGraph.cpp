@@ -623,6 +623,7 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     return;
   }
 
+  g_infoManager.SetDisplayAfterSeek(100000);
   if ( !m_pMediaSeeking )
     return;
 
@@ -638,7 +639,8 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(position);
     CGraphFilters::Get()->DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
   }
-
+  // set flag to indicate we have finished a seeking request
+  g_infoManager.m_performingSeek = false;
   g_infoManager.SetDisplayAfterSeek();
 }
 

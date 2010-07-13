@@ -24,6 +24,8 @@
 
 #pragma once
 
+
+
 #define MAX_SUPPORTED_MODE 5
 #define MPCVD_CAPTION _T("XBMC Internal Decoder")
 

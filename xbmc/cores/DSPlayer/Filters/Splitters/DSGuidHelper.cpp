@@ -401,8 +401,11 @@ MPEG2VIDEOINFO *CDSGuidHelper::CreateMPEG2VI(const CDemuxStreamVideo *stream, AV
   mp2vi->dwProfile = (avstream->codec->profile != FF_PROFILE_UNKNOWN) ? avstream->codec->profile : 0;
   mp2vi->dwLevel = (avstream->codec->level != FF_LEVEL_UNKNOWN) ? avstream->codec->level : 0;
   //mp2vi->dwFlags = 4; // where do we get flags otherwise..?
-
-  if(extra) 
+#if TEST_INTERNAL_VIDEO_DECODER
+  mp2vi->cbSequenceHeader = avstream->codec->extradata_size;
+  memcpy(&mp2vi->dwSequenceHeader[0], avstream->codec->extradata, avstream->codec->extradata_size);
+#else
+  if(extra)
   {
     extradata = (BYTE*)vih2 + sizeof(VIDEOINFOHEADER2) + 1;
 
@@ -429,6 +432,7 @@ MPEG2VIDEOINFO *CDSGuidHelper::CreateMPEG2VI(const CDemuxStreamVideo *stream, AV
       memcpy(&mp2vi->dwSequenceHeader[0], extradata, extra);
     }
   }
+#endif
 
   // Free the VIH2 that we converted
   CoTaskMemFree((PVOID)vih2);

@@ -58,6 +58,13 @@
 #define CHECK_HR_RETURN(hr,theerrmsg) if (FAILED(hr)) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return hr;}
 #endif
 
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+#endif
+#ifndef SAFE_DELETE_ARRAY
+#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
+#endif
+
 #ifdef NDEBUG
 #define CheckPointerDbg(p,ret,theerrmsg) {if((p)==NULL) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return (ret);}}
 #else

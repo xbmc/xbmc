@@ -27,22 +27,11 @@
 #include "dshowutil/dshowutil.h"
 #include <dxva2api.h>
 #include <moreuuids.h>
-#include "DXVADecoderH264.h"
-#include "DXVADecoderVC1.h"
-#include "DXVADecoderMpeg2.h"
-#include "XBMCVideoDecFilter.h"
+
 #include "VideoDecDXVAAllocator.h"
 #include "evr.h"
-#ifndef SAFE_DELETE
-#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
-#endif
-#ifndef SAFE_DELETE_ARRAY
-#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
-#endif
-/*extern "C"
-{
-	#include "ffmpegctx.h"
-}*/
+
+
 
 #define MAX_RETRY_ON_PENDING		50
 #define DO_DXVA_PENDING_LOOP(x)		nTry = 0; \
@@ -53,6 +42,29 @@
 										nTry++; \
 									}
 
+using namespace DIRECTSHOW;
+#include "XBMCVideoDecFilter.h"
+
+static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
+{ ((CDXVADecoder*)((CXBMCVideoDecFilter*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
+
+static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
+{  return ((CDXVADecoder*)((CXBMCVideoDecFilter*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
+
+static int DXVABeginFrameS(dxva_context *ctx, unsigned index)
+{ ((CDXVADecoder*)ctx->dxvadecoder)->DXVABeginFrame(ctx, index); }
+
+static int DXVAEndFrames(dxva_context *ctx, unsigned index)
+{ ((CDXVADecoder*)ctx->dxvadecoder)->DXVAEndFrame(ctx, index); }
+
+static int DXVAExecuteS(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
+{ ((CDXVADecoder*)ctx->dxvadecoder)->DXVAExecute(ctx, exec); }
+
+static int DXVAGetBufferS(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
+{ ((CDXVADecoder*)ctx->dxvadecoder)->DXVAGetBuffer(ctx, type, dxva_data, dxva_size); }
+
+static int DXVAReleaseBufferS(dxva_context *ctx, unsigned type)
+{ ((CDXVADecoder*)ctx->dxvadecoder)->DXVAReleaseBuffer(ctx, type); }
 
 
 CDXVADecoder::CDXVADecoder (CXBMCVideoDecFilter* pFilter, IAMVideoAccelerator*  pAMVideoAccelerator, DXVAMode nMode, int nPicEntryNumber)
@@ -98,6 +110,8 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, DXVAMode nMode, int nPicEn
 
 	memset (&m_DXVA1BufferInfo, 0, sizeof(m_DXVA1BufferInfo));
 	memset (&m_ExecuteParams, 0, sizeof(m_ExecuteParams));
+
+  
 	Flush();
 }
 

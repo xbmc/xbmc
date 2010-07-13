@@ -610,7 +610,7 @@ bool CDecoder::OpenDecoder()
   for(unsigned i = 0; i < m_buffer_count; i++)
     m_buffer[i].surface->AddRef();
 
-  m_context->decoder = m_decoder;
+  m_context->decoder->dxvadecoder = (void *)m_decoder;
 
   return true;
 }

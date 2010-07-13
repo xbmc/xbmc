@@ -2409,38 +2409,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp"
 							>
 						</File>

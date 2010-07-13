@@ -23,7 +23,8 @@
  */
 
 #pragma once
-#include "streams.h"
+
+#include "DShowUtil/DShowUtil.h"
 #include <d3dx9.h>
 #include <Videoacc.h>    // DXVA1
 #include <dxva.h>
@@ -31,9 +32,8 @@
 #include "../BaseFilters/BaseVideoFilter.h"
 
 #include "Subtitles/decss/DeCSSInputPin.h"
-#include "DXVADecoder.h"
-//#include "TlibavcodecExt.h"
-#include "libavcodec/directshow.h"
+
+#include "DIRECTSHOW.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -50,7 +50,7 @@ class CCpuId;
 
 typedef enum
 {
-  MODE_SOFTWARE,
+  MODE_SOFTWARE = -1,
   MODE_DXVA1,
   MODE_DXVA2
 } DXVA_MODE;
@@ -72,39 +72,12 @@ typedef struct
 class CXBMCVideoDecFilter 
   : public CBaseVideoFilter
 {
-public:
-  class IDXVADecoder
-  {
-    public:
-             IDXVADecoder() : m_references(1) {}
-    virtual ~IDXVADecoder() {};
-    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
-    virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
-    virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture) = 0;
-    virtual int  Check     (AVCodecContext* avctx) = 0;
-    virtual bool Flush() = 0;
-    /*virtual const std::string Name() = 0;*/
-    virtual CCriticalSection* Section() { return NULL; }
-    virtual long              Release();
-    virtual IDXVADecoder* Acquire();
-    protected:
-    long m_references;
-  };
-  IDXVADecoder * GetHardware()                           { return m_pHardware; };
-  void               SetHardware(IDXVADecoder* hardware) 
-  {
-    m_pHardware = hardware;
-    /*m_name += "-";
-    m_name += m_pHardware->Name();*/
-  }
 protected:
   // === FFMpeg callbacks
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
-  virtual void  OnGetBuffer(AVFrame *pic);
+  
   
   friend class CVideoDecDXVAAllocator;
-  IDXVADecoder *m_pHardware;
-
   CCpuId*                  m_pCpuId;
   CCritSec                m_csProps;
 
@@ -148,10 +121,10 @@ protected:
   Com::SmartSize                  m_pOutSize;        // Picture size on output pin
 
   // === DXVA common variables
-  VIDEO_OUTPUT_FORMATS*          m_pVideoOutputFormat;
-  int                    m_nVideoOutputCount;
-  DXVA_MODE                m_nDXVAMode;
-  CDXVADecoder*              m_pDXVADecoder;
+  VIDEO_OUTPUT_FORMATS* m_pVideoOutputFormat;
+  int                   m_nVideoOutputCount;
+  DXVA_MODE             m_nDXVAMode;
+  CDXVADecoder*	        m_pDXVADecoder;
   GUID                  m_DXVADecoderGUID;
 
   int                    m_nPCIVendor;
@@ -170,7 +143,6 @@ protected:
   HANDLE                  m_hDevice;
   DXVA2_VideoDesc              m_VideoDesc;
   //ffmpeg context for dxva2
-  struct dxva_context* m_context;
   static const unsigned        m_buffer_max = 32;
   // === Private functions
   void        Cleanup();
@@ -185,7 +157,6 @@ protected:
   void        InitSwscale();
 
   void        SetTypeSpecificFlags(IMediaSample* pMS);
-  HRESULT        SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, int nSize, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
   bool        AppendBuffer (BYTE* pDataIn, int nSize, REFERENCE_TIME rtStart, REFERENCE_TIME rtStop);
   bool        FindPicture(int nIndex, int nStartCode);
   void        ShrinkBuffer();
@@ -197,7 +168,8 @@ public:
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
-
+  
+  CodecID     m_pAVCodecID;
   AVCodec*               m_pAVCodec;
   AVCodecContext*        m_pCodecContext;
   AVFrame*               m_pFrame;
@@ -239,7 +211,7 @@ public:
   else
     return &m_DXVADecoderGUID;
   }
-  // === DXVA common functions
+  // DXVA common functions
   BOOL            IsSupportedDecoderConfig(const D3DFORMAT nD3DFormat, const DXVA2_ConfigPictureDecode& config, bool& bIsPrefered);
   BOOL            IsSupportedDecoderMode(const GUID& mode);
   void            BuildDXVAOutputFormat();
@@ -248,17 +220,19 @@ public:
   int              PictHeight();
   int              PictWidthRounded();
   int              PictHeightRounded();
-  inline bool          UseDXVA2()  { return (m_nDXVAMode == MODE_DXVA2); };
+  inline bool          UseDXVA2()  { return (m_nDXVAMode == DECODER_TYPE_DXVA_2); };
   void            FlushDXVADecoder()  { if (m_pDXVADecoder) m_pDXVADecoder->Flush(); }
-  inline AVCodecContext*    GetAVCtx()      { return m_pCodecContext; };
+
+  inline AVCodecContext*    GetAVCtx()      { return m_pCodecContext; }
   inline AVFrame*        GetFrame()      { return m_pFrame; }
-  
+
   bool            IsDXVASupported();
   inline bool          IsReorderBFrame() { return m_bReorderBFrame; };
   inline int          GetPCIVendor()  { return m_nPCIVendor; };
   inline REFERENCE_TIME    GetAvrTimePerFrame() { return m_rtAvrTimePerFrame; };
   void            UpdateAspectRatio();
   void            ReorderBFrames(REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
+  CDXVADecoder* GetDXVADecoder(){return m_pDXVADecoder;}
 
   // === DXVA1 functions
   DDPIXELFORMAT*        GetPixelFormat() { return &m_PixelFormat; }

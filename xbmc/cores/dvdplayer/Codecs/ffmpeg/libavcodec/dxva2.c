@@ -22,6 +22,21 @@
 
 #include "dxva2_internal.h"
 
+static unsigned convert_dxva2type(unsigned type)
+{
+    if (type <= DXVA2_BitStreamDateBufferType)
+		return type + 1;
+	else if (type == DXVA2_MotionVectorBuffer)
+		return 16;//DXVA_MOTION_VECTOR_BUFFER
+    else if (type == DXVA2_FilmGrainBuffer)
+		return 17;//DXVA_FILM_GRAIN_BUFFER
+	else
+	{
+		assert(0);
+		return 0;//DXVA_COMPBUFFER_TYPE_THAT_IS_NOT_USED
+	}
+}
+
 void *ff_dxva2_get_surface(const Picture *picture)
 {
     return picture->data[3];
@@ -50,10 +65,9 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
     void     *dxva_data;
     unsigned dxva_size;
     int      result;
-
-    if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder, type,
-                                              &dxva_data, &dxva_size))) {
-        av_log(avctx, AV_LOG_ERROR, "Failed to get a buffer for %d\n", type);
+    
+    if (!ctx->decoder->dxva2_decoder_get_buffer(ctx->decoder, type,
+                                              &dxva_data, &dxva_size)) {
         return -1;
     }
     if (size <= dxva_size) {
@@ -69,12 +83,13 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
         av_log(avctx, AV_LOG_ERROR, "Buffer for type %d was too small\n", type);
         result = -1;
     }
-    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder, type))) {
-        av_log(avctx, AV_LOG_ERROR, "Failed to release buffer type %d\n", type);
+	
+    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx->decoder, type)) {
         result = -1;
     }
     return result;
 }
+/*dxva2 decoder function*/
 
 int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
                               const void *pp, unsigned pp_size,
@@ -84,17 +99,16 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
                                                   DXVA2_DecodeBufferDesc *slice))
 {
     struct dxva_context *ctx = avctx->hwaccel_context;
-    unsigned               buffer_count = 0;
+	unsigned               buffer_count = 0;
     DXVA2_DecodeBufferDesc buffer[4];
     DXVA2_DecodeExecuteParams exec;
-    int      result;
-
-    if (FAILED(IDirectXVideoDecoder_BeginFrame(ctx->decoder,
-                                               ff_dxva2_get_surface(s->current_picture_ptr),
-                                               NULL))) {
-        av_log(avctx, AV_LOG_ERROR, "Failed to begin frame\n");
-        return -1;
-    }
+    int      result, surfaceindex;
+	const Picture *current_picture = s->current_picture_ptr;
+	
+    surfaceindex = ff_dxva2_get_surface_index(ctx, current_picture);
+	if (!ctx->decoder->dxva2_decoder_begin_frame(ctx->decoder ,surfaceindex)){
+		return -1;
+	}
 
     result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
                                     DXVA2_PictureParametersBufferType,
@@ -136,13 +150,13 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     exec.NumCompBuffers      = buffer_count;
     exec.pCompressedBuffers  = buffer;
     exec.pExtensionData      = NULL;
-    if (FAILED(IDirectXVideoDecoder_Execute(ctx->decoder, &exec))) {
-        av_log(avctx, AV_LOG_ERROR, "Failed to execute\n");
+	
+    if (!ctx->decoder->dxva2_decoder_execute(ctx->decoder ,&exec)) {
         result = -1;
     }
 
 end:
-    if (FAILED(IDirectXVideoDecoder_EndFrame(ctx->decoder, NULL))) {
+    if (!ctx->decoder->dxva2_decoder_end_frame(ctx->decoder ,surfaceindex)){
         av_log(avctx, AV_LOG_ERROR, "Failed to end frame\n");
         result = -1;
     }
@@ -152,3 +166,56 @@ end:
     return result;
 }
 
+static int dxva2_default_begin_frame(struct dxva_context *ctx,
+                                     unsigned index)
+{
+    //IDirectXVideoDecoder *dec;
+	//dec =  (IDirectXVideoDecoder *)ctx->decoder->dxvadecoder;
+	if (FAILED(IDirectXVideoDecoder_BeginFrame((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, index,NULL)))
+		return -1;
+	return 0;
+}
+
+static int dxva2_default_end_frame(struct dxva_context *ctx, unsigned index)
+{
+	if (FAILED(IDirectXVideoDecoder_EndFrame((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, NULL)))
+		return -1;
+	return 0;
+}
+
+static int dxva2_default_execute(struct dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
+{
+    if (FAILED(IDirectXVideoDecoder_Execute((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, &exec))) {
+        //av_log(avctx, AV_LOG_ERROR, "Failed to execute\n");
+        return -1;
+    }
+	return 0;
+}
+
+static int dxva2_default_get_buffer(struct dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
+{
+
+	if (FAILED(IDirectXVideoDecoder_GetBuffer((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, type, &dxva_data, &dxva_size))) {
+        //av_log(avctx, AV_LOG_ERROR, "Failed to get a buffer for %d\n", type);
+        return -1;
+    }
+	return 0;
+}
+
+static int dxva2_default_release_buffer(struct dxva_context *ctx, unsigned type)
+{
+	if (FAILED(IDirectXVideoDecoder_ReleaseBuffer((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, type))) {
+        //av_log(avctx, AV_LOG_ERROR, "Failed to release buffer type %d\n", type);
+        return -1;
+    }
+	return 0;
+}
+
+dxva_decoder_context idirectxvideo_decoder = {
+	.type                         = DECODER_TYPE_DXVA_2,
+	.dxva2_decoder_begin_frame    = dxva2_default_begin_frame,
+	.dxva2_decoder_end_frame      = dxva2_default_end_frame,
+    .dxva2_decoder_execute        = dxva2_default_execute,
+	.dxva2_decoder_get_buffer     = dxva2_default_get_buffer,
+	.dxva2_decoder_release_buffer = dxva2_default_release_buffer,
+};

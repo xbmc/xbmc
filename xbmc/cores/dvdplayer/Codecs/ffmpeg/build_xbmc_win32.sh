@@ -21,6 +21,7 @@ OPTIONS="
 --disable-debug \
 --enable-muxer=spdif \
 --enable-muxer=adts \
+--disable-decoder=h264_dshow \
 --enable-encoder=ac3 \
 --enable-encoder=aac"
 

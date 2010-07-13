@@ -62,9 +62,6 @@ extern "C" {
   #include "libavcodec/avcodec.h"
   #include "libavcodec/audioconvert.h"
   #include "libavutil/crc.h"
-  #ifdef HAS_DS_PLAYER
-  #include "libavcodec/ffmpegcontext.h"
-  #endif
 #endif
 }
 

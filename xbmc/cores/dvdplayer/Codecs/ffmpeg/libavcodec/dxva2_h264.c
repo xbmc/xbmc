@@ -275,10 +275,10 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     unsigned i;
 
     /* Create an annex B bitstream buffer with only slice NAL and finalize slice */
-    if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder,
-                                               DXVA2_BitStreamDateBufferType,
-                                               &dxva_data, &dxva_size)))
+    if (!ctx->decoder->dxva2_decoder_get_buffer(ctx->decoder, DXVA2_BitStreamDateBufferType,
+                                              &dxva_data, &dxva_size)) 
         return -1;
+
     current = dxva_data;
     end = dxva_data + dxva_size;
 
@@ -329,8 +329,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
 
         slice->SliceBytesInBuffer += padding;
     }
-    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder,
-                                                  DXVA2_BitStreamDateBufferType)))
+    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx->decoder, DXVA2_BitStreamDateBufferType))
         return -1;
     if (i < ctx_pic->slice_count)
         return -1;

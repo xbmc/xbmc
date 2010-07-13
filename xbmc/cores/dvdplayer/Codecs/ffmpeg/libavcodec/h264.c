@@ -856,7 +856,7 @@ int ff_h264_decode_extradata(H264Context *h)
 {
     AVCodecContext *avctx = h->s.avctx;
 
-    if(*(char *)avctx->extradata == 1){
+	if(*(char *)avctx->extradata == 1){
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata;
 
@@ -893,7 +893,7 @@ int ff_h264_decode_extradata(H264Context *h)
         // Now store right nal length size, that will be use to parse all other nals
         h->nal_length_size = ((*(((char*)(avctx->extradata))+4))&0x03)+1;
     } else 
-    if (avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
+	if (avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata;
         unsigned char *pend=p+avctx->extradata_size;

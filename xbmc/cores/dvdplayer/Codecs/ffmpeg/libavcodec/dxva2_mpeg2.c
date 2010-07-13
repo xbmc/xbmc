@@ -157,10 +157,9 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     uint8_t  *dxva_data, *current, *end;
     unsigned dxva_size;
     unsigned i;
-
-    if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder,
-                                              DXVA2_BitStreamDateBufferType,
-                                              &dxva_data, &dxva_size)))
+    
+	if (!ctx->decoder->dxva2_decoder_get_buffer(ctx->decoder, DXVA2_BitStreamDateBufferType,
+                                              &dxva_data, &dxva_size))
         return -1;
     current = dxva_data;
     end = dxva_data + dxva_size;
@@ -185,8 +184,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
         memcpy(current, &ctx_pic->bitstream[position], size);
         current += size;
     }
-    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder,
-                                                  DXVA2_BitStreamDateBufferType)))
+    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx->decoder, DXVA2_BitStreamDateBufferType))
         return -1;
     if (i < ctx_pic->slice_count)
         return -1;

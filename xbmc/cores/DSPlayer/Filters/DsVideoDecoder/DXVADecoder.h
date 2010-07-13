@@ -23,43 +23,37 @@
  */
 
 #pragma once
+
 #include "DShowUtil/DShowUtil.h"
 #include <dxva2api.h>
 #include "streams.h"
 #include <videoacc.h>
 #include "Codecs/DllAvCodec.h"
+
+
+
+namespace DIRECTSHOW {
+
+enum PCI_Vendors
+{
+	PCIV_ATI				= 0x1002,
+	PCIV_nVidia				= 0x10DE,
+	PCIV_Intel				= 0x8086,
+	PCIV_S3_Graphics		= 0x5333
+};
+
+// Bitmasks for DXVA compatibility check
+#define DXVA_UNSUPPORTED_LEVEL		1
+#define DXVA_TOO_MUCH_REF_FRAMES	2
+#define DXVA_INCOMPATIBLE_SAR		4
+
 typedef enum
 {
 	ENGINE_DXVA1,
 	ENGINE_DXVA2
 } DXVA_ENGINE;
 
-typedef enum
-{
-	H264_VLD,
-	VC1_VLD,
-	MPEG2_VLD
-} DXVAMode;
-
-typedef enum
-{
-	PICT_TOP_FIELD     = 1,
-	PICT_BOTTOM_FIELD  = 2,
-	PICT_FRAME         = 3
-} FF_FIELD_TYPE;
-
-typedef enum
-{
-	I_TYPE  = 1, ///< Intra
-	P_TYPE  = 2, ///< Predicted
-	B_TYPE  = 3, ///< Bi-dir predicted
-	S_TYPE  = 4, ///< S(GMC)-VOP MPEG4
-	SI_TYPE = 5, ///< Switching Intra
-	SP_TYPE = 6, ///< Switching Predicted
-	BI_TYPE = 7
-} FF_SLICE_TYPE;
-
-typedef struct
+/*typedef struct
 {
 	bool						bRefPicture;	// True if reference picture
 	int							bInUse;			// Slot in use
@@ -71,40 +65,44 @@ typedef struct
 	FF_SLICE_TYPE				nSliceType;
 	int							nCodecSpecific;
 	DWORD						dwDisplayCount;
-} PICTURE_STORE;
-
+} PICTURE_STORE;*/
 
 #define MAX_COM_BUFFER				6		// Max uncompressed buffer for an Execute command (DXVA1)
 #define COMP_BUFFER_COUNT			18
 #define NO_REF_FRAME			0xFFFF
 
-class CXBMCVideoDecFilter;
 
+class CXBMCVideoDecFilter;
 class CDXVADecoder
+  : public CXBMCVideoDecFilter::IDXVADecoder
 {
 public :
 	// === Public functions
 	virtual				   ~CDXVADecoder();
 	DXVAMode				GetMode()		const { return m_nMode; };
 	DXVA_ENGINE				GetEngine()		const { return m_nEngine; };
-	void					AllocExecuteParams (int nSize);
-	void					SetDirectXVideoDec (IDirectXVideoDecoder* pDirectXVideoDec)  { m_pDirectXVideoDec = pDirectXVideoDec; };
+	void					  AllocExecuteParams (int nSize);
+	void					  SetDirectXVideoDec (IDirectXVideoDecoder* pDirectXVideoDec)  { m_pDirectXVideoDec = pDirectXVideoDec; };
 
-	virtual HRESULT			DecodeFrame  (BYTE* pDataIn, UINT nSize, REFERENCE_TIME rtStart, REFERENCE_TIME rtStop) = NULL;
+	virtual HRESULT	  DecodeFrame  (BYTE* pDataIn, UINT nSize, REFERENCE_TIME rtStart, REFERENCE_TIME rtStop) = NULL;
 	virtual void			SetExtraData (BYTE* pDataIn, UINT nSize);
 	virtual void			CopyBitstream(BYTE* pDXVABuffer, BYTE* pBuffer, UINT& nSize);
 	virtual void			Flush();
-	HRESULT					ConfigureDXVA1();
+	bool ConfigureDXVA1();
 	
 	static CDXVADecoder*	CreateDecoder (CXBMCVideoDecFilter* pFilter, IAMVideoAccelerator*  pAMVideoAccelerator, const GUID* guidDecoder, int nPicEntryNumber);
 	static CDXVADecoder*	CreateDecoder (CXBMCVideoDecFilter* pFilter, IDirectXVideoDecoder* pDirectXVideoDec, const GUID* guidDecoder, int nPicEntryNumber, DXVA2_ConfigPictureDecode* pDXVA2Config);
+  /* ffmpeg callbacks*/
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
+  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  /* AVHWAccel dxvadecoder callbacks*/
 
 
 protected :
 	CDXVADecoder (CXBMCVideoDecFilter* pFilter, IAMVideoAccelerator*  pAMVideoAccelerator, DXVAMode nMode, int nPicEntryNumber);
 	CDXVADecoder (CXBMCVideoDecFilter* pFilter, IDirectXVideoDecoder* pDirectXVideoDec, DXVAMode nMode, int nPicEntryNumber, DXVA2_ConfigPictureDecode* pDXVA2Config);
 
-	CXBMCVideoDecFilter*				m_pFilter;
+	CXBMCVideoDecFilter* m_pFilter;
 	bool							m_bFlushed;
 	int								m_nMaxWaiting;
 
@@ -159,4 +157,6 @@ private :
 	void					Init(CXBMCVideoDecFilter* pFilter, DXVAMode nMode, int nPicEntryNumber);
 	void					FreePictureSlot (int nSurfaceIndex);
 	void					SetTypeSpecificFlags(PICTURE_STORE* pPicture, IMediaSample* pMS);
+};
+
 };
