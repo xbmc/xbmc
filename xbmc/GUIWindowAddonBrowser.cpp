@@ -200,7 +200,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
         if (it != m_idtojobid.end())
         {
           CJobManager::GetInstance().CancelJob(it->second);
-          UnRegisterJob(m_idtojob.find(item->GetProperty("Addon.ID"))->second);
+          UnRegisterJob(it->second);
           Update(m_vecItems->m_strPath);
         }
       }
@@ -307,7 +307,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendThreadMessage(msg);
   }
-  UnRegisterJob((CFileOperationJob*)job2);
+  UnRegisterJob(jobID);
 }
 
 void CGUIWindowAddonBrowser::UpdateButtons()
@@ -316,7 +316,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdString& path)
+unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
 {
   CGUIWindowAddonBrowser* that = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
@@ -347,32 +347,27 @@ pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdS
   list[0]->Select(true);
   CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
                                                  list,dest);
-  unsigned int id = CJobManager::GetInstance().AddJob(job,that);
-
-  return make_pair(job,id);
+  return CJobManager::GetInstance().AddJob(job,that);
 }
 
-void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
-                                         CFileOperationJob* job,
-                                         unsigned int jobid)
+void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id, unsigned int jobid)
 {
   CSingleLock lock(m_critSection);
-  m_idtojob.insert(make_pair(id,job));
   m_idtojobid.insert(make_pair(id,jobid));
-  m_jobtoid.insert(make_pair(job,id));
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
 }
 
-void CGUIWindowAddonBrowser::UnRegisterJob(CFileOperationJob* job)
+void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
 {
   CSingleLock lock(m_critSection);
-  map<CFileOperationJob*,CStdString>::iterator it = m_jobtoid.find((CFileOperationJob*)job);
-  if (it != m_jobtoid.end())
+  for (map<CStdString,unsigned int>::iterator i = m_idtojobid.begin(); i != m_idtojobid.end(); ++i)
   {
-    m_idtojob.erase(m_idtojob.find(it->second));
-    m_idtojobid.erase(m_idtojobid.find(it->second));
-    m_jobtoid.erase(it);
+    if (i->second == jobID)
+    {
+      m_idtojobid.erase(i);
+      return;
+    }
   }
 }
 
@@ -402,7 +397,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
   else
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
 
-  if (strDirectory.IsEmpty() && !m_jobtoid.empty())
+  if (strDirectory.IsEmpty() && !m_idtojobid.empty())
   {
     CFileItemPtr item(new CFileItem("addons://downloading/",true));
     item->SetLabel(g_localizeStrings.Get(24067));
@@ -416,8 +411,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
   {
     if (items[i]->m_bIsFolder)
       continue;
-    map<CStdString,CFileOperationJob*>::iterator it = m_idtojob.find(items[i]->GetProperty("Addon.ID"));
-    if (it != m_idtojob.end())
+    map<CStdString,unsigned int>::iterator it = m_idtojobid.find(items[i]->GetProperty("Addon.ID"));
+    if (it != m_idtojobid.end())
       items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(13413));
     items[i]->SetLabel2(items[i]->GetProperty("Addon.Status"));
     // to avoid the view state overriding label 2
@@ -496,8 +491,8 @@ void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force 
     CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
     if (!window)
       return;
-    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
-    window->RegisterJob(addonID, job.first, job.second);
+    unsigned int jobID = window->AddJob(addon->Path());
+    window->RegisterJob(addonID, jobID);
   }
 }
 
