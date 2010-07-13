@@ -354,12 +354,15 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
   BeginFrameInfo.dwSizeOutputData		= 0;
   BeginFrameInfo.pOutputData			= NULL;
   int					nTry = 0;
-
+  
 	for (int i=0; i<20; i++)
 	{
   DO_DXVA_PENDING_LOOP (acc->BeginFrame(&BeginFrameInfo));
     if (SUCCEEDED (hr))
+    {
+      m_dwBufferIndex = index;
       return 0;
+    }
     else
       return -1;
   }
@@ -385,16 +388,42 @@ int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
   
 
 }
+inline DWORD GetDXVA1CompressedType (DWORD dwDXVA2CompressedType)
+{
+	if (dwDXVA2CompressedType <= DXVA2_BitStreamDateBufferType)
+		return dwDXVA2CompressedType + 1;
+	else
+	{
+		switch (dwDXVA2CompressedType)
+		{
+		case DXVA2_MotionVectorBuffer :
+			return DXVA_MOTION_VECTOR_BUFFER;
+			break;
+		case DXVA2_FilmGrainBuffer :
+			return DXVA_FILM_GRAIN_BUFFER;
+			break;
+		default :
+			ASSERT (FALSE);
+			return DXVA_COMPBUFFER_TYPE_THAT_IS_NOT_USED;
+		}
+	}
+}
+int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
+{
+  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
+  HRESULT hr;
+  LONG		lStride;
+  hr = acc->GetBuffer(GetDXVA1CompressedType(type), dec->GetCurrentBufferIndex(), FALSE, (void**)&dxva_data, &lStride);
+  return 0;
+}
 
 int CDXVADecoder::DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
 {
 return 0;
 }
 
-int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
-{
-return 0;
-}
+
 
 int CDXVADecoder::DXVAReleaseBuffer(dxva_context *ctx, unsigned type)
 {

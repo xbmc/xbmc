@@ -66,8 +66,8 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
     unsigned dxva_size;
     int      result;
     
-    if (!ctx->decoder->dxva2_decoder_get_buffer(ctx, type,
-                                              &dxva_data, &dxva_size)) {
+    if (ctx->decoder->dxva2_decoder_get_buffer(ctx, type, &dxva_data, &dxva_size)<0) {
+	    
         return -1;
     }
     if (size <= dxva_size) {
@@ -84,7 +84,7 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
         result = -1;
     }
 	
-    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx, type)) {
+    if (ctx->decoder->dxva2_decoder_release_buffer(ctx, type)<0) {
         result = -1;
     }
     return result;
@@ -194,7 +194,6 @@ static int dxva2_default_get_buffer(struct dxva_context *ctx, unsigned type, voi
 {
 
 	if (FAILED(IDirectXVideoDecoder_GetBuffer((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, type, &dxva_data, &dxva_size))) {
-        //av_log(avctx, AV_LOG_ERROR, "Failed to get a buffer for %d\n", type);
         return -1;
     }
 	return 0;
