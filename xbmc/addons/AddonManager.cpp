@@ -86,6 +86,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
+    case ADDON_SCRIPT_MODULE:
       return AddonPtr(new CAddon(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
@@ -241,6 +242,7 @@ bool CAddonMgr::Init()
   assert(m_cp_context);
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmcbin/addons"));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
@@ -443,6 +445,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
+    case ADDON_SCRIPT_MODULE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:

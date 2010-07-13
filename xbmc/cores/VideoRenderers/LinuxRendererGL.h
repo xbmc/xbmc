@@ -187,6 +187,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadYUY2Texture(int index);
+  void DeleteYUY2Texture(int index);
+  bool CreateYUY2Texture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -234,6 +238,10 @@ protected:
 
     unsigned texwidth;
     unsigned texheight;
+
+    //pixels per texel
+    unsigned pixpertex_x;
+    unsigned pixpertex_y;
 
     unsigned flipindex;
   };

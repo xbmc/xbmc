@@ -7,8 +7,10 @@
   <extension point="xbmc.addon.metadata">
     <summary>Screensaver that Dims your screen</summary>
     <summary lang="hu">Képernyővédő ami elhalványítja a képernyőt</summary>
+    <summary lang="zh">淡出屏幕保护程序</summary>
     <description>The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="hu">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
+    <description lang="zh">淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。</description>
     <platform>all</platform>
   </extension>
 </addon>

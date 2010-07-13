@@ -34,6 +34,8 @@ public:
   static bool CopyPicture(YV12Image* pDst, DVDVideoPicture *pSrc);
   
   static DVDVideoPicture* ConvertToNV12Picture(DVDVideoPicture *pSrc);
+  static DVDVideoPicture* ConvertToYUY2Picture(DVDVideoPicture *pSrc);
   static bool CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
+  static bool CopyYUY2Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
 };
 

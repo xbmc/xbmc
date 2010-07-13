@@ -344,6 +344,10 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     }
   }
 
+  // we need to also request any thumbs be applied to the folder item
+  if (pItem->m_bIsFolder)
+    item.SetProperty("set_folder_thumb", pItem->m_strPath);
+
   bool modified = ShowIMDB(&item, scraper);
   if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
@@ -984,24 +988,28 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       CStdString path(item->m_strPath);
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
-      if (CUtil::IsStack(path))
-      {
-        vector<int> times;
-        if (m_database.GetStackTimes(path,times))
-          buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
-      }
 
-      if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() &&
-         !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
+      if (!item->IsPlugin() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
-        buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
-      }
+        if (CUtil::IsStack(path))
+        {
+          vector<int> times;
+          if (m_database.GetStackTimes(path,times))
+            buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
+        }
 
-      // allow a folder to be ad-hoc queued and played by the default player
-      if (item->m_bIsFolder || (item->IsPlayList() &&
-         !g_advancedSettings.m_playlistAsFolders))
-      {
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+        if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() &&
+           !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
+        {
+          buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
+        }
+
+        // allow a folder to be ad-hoc queued and played by the default player
+        if (item->m_bIsFolder || (item->IsPlayList() &&
+           !g_advancedSettings.m_playlistAsFolders))
+        {
+          buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+        }
       }
       else
       { // get players
@@ -1850,11 +1858,11 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   return foundDirectly ? 1 : 0;
 }
 
-void CGUIWindowVideoBase::OnScan(const CStdString& strPath)
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, bool scanAll)
 {
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
-    pDialog->StartScanning(strPath, false);
+    pDialog->StartScanning(strPath, scanAll);
 }
 
 CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)

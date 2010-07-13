@@ -32,14 +32,16 @@
 #include "utils/log.h"
 #include "FileSystem/File.h"
 #include "MathUtils.h"
-#include "VideoShaders/ConvolutionKernels.h"
-#include "VideoShaders/YUV2RGBShader.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
+#include "VideoShaders/WinVideoFilter.h"
 
 CWinRenderer::CWinRenderer()
 {
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
+
+  m_colorShader = NULL;
+  m_scalerShader = NULL;
 
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
@@ -94,6 +96,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
+
+  m_bConfigured = true;
 
   return true;
 }
@@ -291,10 +295,14 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  m_YUV2RGBEffect.Release();
-  m_YUV2RGBHQScalerEffect.Release();
-  m_HQKernelTexture.Release();
+  if (m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+  if (m_IntermediateStencilSurface.Get())
+    m_IntermediateStencilSurface.Release();
 
+  SAFE_RELEASE(m_colorShader)
+  SAFE_RELEASE(m_scalerShader)
+  
   m_bConfigured = false;
   m_bFilterInitialized = false;
 
@@ -304,24 +312,34 @@ void CWinRenderer::UnInit()
   m_NumYV12Buffers = 0;
 }
 
-bool CWinRenderer::LoadEffect(CD3DEffect &effect, CStdString filename)
+bool CWinRenderer::SetupIntermediateRenderTarget()
 {
-  XFILE::CFileStream file;
-  if(!file.Open(filename))
+  // Initialize a render target for intermediate rendering - same size as the video source
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGERROR, "CWinRenderer::LoadEffect - failed to open file %s", filename.c_str());
-    return false;
+    CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
+    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
+      return false;
+    }
   }
 
-  CStdString pStrEffect;
-  getline(file, pStrEffect, '\0');
-
-  if (!effect.Create(pStrEffect))
+  //Pixel shaders need a matching depth-stencil surface.
+  LPDIRECT3DSURFACE9 tmpSurface;
+  D3DSURFACE_DESC tmpDesc;
+  //Use the same depth stencil format as the backbuffer.
+  pD3DDevice->GetDepthStencilSurface(&tmpSurface);
+  tmpSurface->GetDesc(&tmpDesc);
+  tmpSurface->Release();
+  if (!m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect.c_str());
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create depth stencil. Going back to bilinear scaling.");
+    m_IntermediateTarget.Release();
     return false;
   }
-
   return true;
 }
 
@@ -335,30 +353,21 @@ void CWinRenderer::UpdateVideoFilter()
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
-  if(m_YUV2RGBHQScalerEffect.Get())
-    m_YUV2RGBHQScalerEffect.Release();
-
-  if(m_HQKernelTexture.Get())
-    m_HQKernelTexture.Release();
-
-  CStdString effectString;
+  m_bUseHQScaler = false;
 
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
   case VS_SCALINGMETHOD_LINEAR:
-    m_bUseHQScaler = false;
     break;
 
   case VS_SCALINGMETHOD_CUBIC:
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
-    effectString = "special://xbmc/system/shaders/yuv2rgb_4x4_d3d.fx";
     m_bUseHQScaler = true;
     break;
 
   case VS_SCALINGMETHOD_LANCZOS3:
-    effectString = "special://xbmc/system/shaders/yuv2rgb_6x6_d3d.fx";
     m_bUseHQScaler = true;
     break;
 
@@ -373,55 +382,64 @@ void CWinRenderer::UpdateVideoFilter()
     CLog::Log(LOGERROR, "D3D: TODO: Software scaling has not yet been implemented");
     break;
 
-  case VS_SCALINGMETHOD_AUTO:
-    effectString = "special://xbmc/system/shaders/yuv2rgb_4x4_d3d.fx";
-    m_bUseHQScaler = true;
-    break;
-
   default:
     break;
   }
 
-  if(m_bUseHQScaler)
+  // Scaler auto + SD -> Lanczos3 optim. Otherwise bilinear.
+  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth < 1280)
   {
+    m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
+    m_bUseHQScaler = true;
+  }
 
-    if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth >= 1280)
+  SAFE_RELEASE(m_scalerShader)
+
+  if (m_bUseHQScaler)
+  {
+    m_scalerShader = new CConvolutionShader();
+    if (!m_scalerShader->Create(m_scalingMethod))
     {
-      m_bUseHQScaler = false;
-      return;
-    }
-
-    CLog::Log(LOGDEBUG, __FUNCTION__": Loading shader %s", effectString.c_str());
-
-    if(!LoadEffect(m_YUV2RGBHQScalerEffect, effectString))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+      SAFE_RELEASE(m_scalerShader);
       g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
-      return;
     }
+  }
 
-    if (!m_HQKernelTexture.Create(256, 1, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_A16B16G16R16F, g_Windowing.DefaultD3DPool()))
+  // Scaler is figured out. HQ scaler requires an intermediate render target.
+
+  if(m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+  if (m_IntermediateStencilSurface.Get())
+    m_IntermediateStencilSurface.Release();
+
+  if (m_bUseHQScaler && !SetupIntermediateRenderTarget())
+  {
+    SAFE_RELEASE(m_scalerShader)
+    m_bUseHQScaler = true;
+  }
+
+  SAFE_RELEASE(m_colorShader)
+
+  if (m_bUseHQScaler)
+  {
+    m_colorShader = new CYUV2RGBShader();
+    if (!m_colorShader->Create(false))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
-      m_YUV2RGBHQScalerEffect.Release();
+      m_IntermediateTarget.Release();
+      m_IntermediateStencilSurface.Release();
+      SAFE_RELEASE(m_scalerShader)
+      SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
-      return;
     }
+  }
 
-    CConvolutionKernel kern(m_scalingMethod == VS_SCALINGMETHOD_AUTO ? VS_SCALINGMETHOD_LANCZOS3_FAST : m_scalingMethod, 256);
-
-    float *kernelVals = kern.GetFloatPixels();
-    D3DXFLOAT16 float16Vals[256*4];
-
-    for(int i = 0; i < 256*4; i++)
-      float16Vals[i] = kernelVals[i];
-
-    D3DLOCKED_RECT lr;
-    m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD);
-    memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*256*4);
-    m_HQKernelTexture.UnlockRect(0);
+  if (!m_bUseHQScaler) //fallback from HQ scalers and multipass creation above
+  {
+    m_colorShader = new CYUV2RGBShader();
+    if (!m_colorShader->Create(true))
+      SAFE_RELEASE(m_colorShader);
+    // we're in big trouble - should fallback on D3D accelerated or sw method
   }
 }
 
@@ -435,127 +453,73 @@ void CWinRenderer::Render(DWORD flags)
 
   UpdateVideoFilter();
 
-  //If the GUI is active or we don't need scaling use the bilinear filter.
-  if(!m_bUseHQScaler
+  // Optimize later? we could get by with bilinear under some circumstances
+  /*if(!m_bUseHQScaler
     || !g_graphicsContext.IsFullScreenVideo()
     || g_graphicsContext.IsCalibrating()
     || (m_destRect.Width() == m_sourceWidth && m_destRect.Height() == m_sourceHeight))
-  {
-    RenderLowMem(m_YUV2RGBEffect, flags);
-  }
-  else
-  {
-    RenderLowMem(m_YUV2RGBHQScalerEffect, flags);
-  }
-}
-
-void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
-{
-  //If no effect is loaded, use the default.
-  if (!effect.Get())
-    LoadEffect(effect, "special://xbmc/system/shaders/yuv2rgb_d3d.fx");
-
+    */
   CSingleLock lock(g_graphicsContext);
-
-  int index = m_iYV12RenderBuffer;
-  SVideoBuffer& buf = m_VideoBuffers[index];
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
 
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-
-  //See RGB renderer for comment on this
-  #define CHROMAOFFSET_HORIZ 0.25f
-
-  // Render the image
-  struct CUSTOMVERTEX {
-      FLOAT x, y, z;
-      FLOAT rhw;
-      FLOAT tu, tv;   // Texture coordinates
-      FLOAT tu2, tv2;
-      FLOAT tu3, tv3;
-  };
-
-  CUSTOMVERTEX verts[4] =
+  if (!m_bUseHQScaler)
   {
-    {
-      m_destRect.x1                                                      ,  m_destRect.y1, 0.0f, 1.0f,
-      (m_sourceRect.x1) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
-    },
-    {
-      m_destRect.x2                                                      ,  m_destRect.y1, 0.0f, 1.0f,
-      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
-    },
-    {
-      m_destRect.x2                                                      ,  m_destRect.y2, 0.0f, 1.0f,
-      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y2) / m_sourceHeight,
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
-    },
-    {
-      m_destRect.x1                                                       ,  m_destRect.y2, 0.0f, 1.0f,
-      (m_sourceRect.x1) / m_sourceWidth                                   , (m_sourceRect.y2) / m_sourceHeight,
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
-    }
-  };
-
-  for(int i = 0; i < 4; i++)
-  {
-    verts[i].x -= 0.5;
-    verts[i].y -= 0.5;
+    Stage1(flags);
   }
-
-  m_matrix.SetParameters(g_settings.m_currentVideoSettings.m_Contrast * 0.02f,
-                         g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f,
-                         m_flags);
-
-  float texSteps[] = {1.0f/(float)m_sourceWidth,        1.0f/(float)m_sourceHeight,
-                      1.0f/(float)(m_sourceWidth >> 1), 1.0f/(float)(m_sourceHeight >> 1)};
-
-  effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
-  effect.SetTechnique( "YUV2RGB_T" );
-  effect.SetTexture( "g_YTexture",  buf.planes[0].texture ) ;
-  effect.SetTexture( "g_UTexture",  buf.planes[1].texture ) ;
-  effect.SetTexture( "g_VTexture",  buf.planes[2].texture ) ;
-  effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
-  effect.SetFloatArray("g_YStep", &texSteps[0], 2);
-  effect.SetFloatArray("g_UVStep", &texSteps[2], 2);
-
-  UINT cPasses, iPass;
-  if (!effect.Begin( &cPasses, 0 ))
+  else
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect");
-    return;
+    Stage1(flags);
+    Stage2(flags);
   }
+}
 
-  for( iPass = 0; iPass < cPasses; iPass++ )
+void CWinRenderer::Stage1(DWORD flags)
+{
+  if (!m_bUseHQScaler)
   {
-    if (!effect.BeginPass( iPass ))
-    {
-      CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect pass");
-      break;
-    }
-
-    pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-    pD3DDevice->SetTexture(0, NULL);
-    pD3DDevice->SetTexture(1, NULL);
-    pD3DDevice->SetTexture(2, NULL);
-
-    effect.EndPass() ;
+      m_colorShader->Render(m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect,
+                              g_settings.m_currentVideoSettings.m_Contrast,
+                              g_settings.m_currentVideoSettings.m_Brightness,
+                              m_flags,
+                              &m_VideoBuffers[m_iYV12RenderBuffer]);
   }
+  else
+  {
+    // Switch the render target to the temporary destination
+    LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+    LPDIRECT3DSURFACE9 newRT, oldRT, oldDS, newDS;
+    m_IntermediateTarget.GetSurfaceLevel(0, &newRT);
+    m_IntermediateStencilSurface.GetSurfaceLevel(0, &newDS);
+    pD3DDevice->GetRenderTarget(0, &oldRT);
+    pD3DDevice->SetRenderTarget(0, newRT);
+    pD3DDevice->GetDepthStencilSurface(&oldDS);
+    pD3DDevice->SetDepthStencilSurface(newDS);
 
-  effect.End() ;
-  pD3DDevice->SetPixelShader( NULL );
+    CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
+
+    m_colorShader->Render(m_sourceWidth, m_sourceHeight, m_sourceRect, rtRect,
+                                g_settings.m_currentVideoSettings.m_Contrast,
+                                g_settings.m_currentVideoSettings.m_Brightness,
+                                m_flags,
+                                &m_VideoBuffers[m_iYV12RenderBuffer]);
+
+    // Restore the render target
+    pD3DDevice->SetRenderTarget(0, oldRT);
+    pD3DDevice->SetDepthStencilSurface(oldDS);
+
+    oldDS->Release();
+    oldRT->Release();
+    newDS->Release();
+    newRT->Release();
+  }
+}
+
+void CWinRenderer::Stage2(DWORD flags)
+{
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -599,14 +563,14 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     pD3DDevice->GetRenderTarget(0, &oldRT);
     pD3DDevice->SetRenderTarget(0, surface);
     pD3DDevice->BeginScene();
-    RenderLowMem(m_YUV2RGBEffect, 0);
+    Render(0);
     pD3DDevice->EndScene();
     m_destRect = saveSize;
     pD3DDevice->SetRenderTarget(0, oldRT);
     oldRT->Release();
 
     D3DLOCKED_RECT lockedRect;
-    if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
+    if (D3D_OK == surface->LockRect(&lockedRect, NULL, D3DLOCK_READONLY))
     {
       texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_A8R8G8B8, (unsigned char *)lockedRect.pBits);
       surface->UnlockRect();
@@ -717,7 +681,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   return false;
 }
 
-void CWinRenderer::SVideoBuffer::Clear()
+void SVideoBuffer::Clear()
 {
   SAFE_RELEASE(proc);
   id = 0;
@@ -728,7 +692,7 @@ void CWinRenderer::SVideoBuffer::Clear()
   }
 }
 
-void CWinRenderer::SVideoBuffer::StartRender()
+void SVideoBuffer::StartRender()
 {
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
@@ -738,92 +702,18 @@ void CWinRenderer::SVideoBuffer::StartRender()
   }
 }
 
-void CWinRenderer::SVideoBuffer::StartDecode()
+void SVideoBuffer::StartDecode()
 {
   SAFE_RELEASE(proc);
   id = 0;
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
-    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, 0) == false)
+    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
       CLog::Log(LOGERROR, "CWinRenderer::SVideoBuffer::StartDecode - failed to lock texture into memory");
     }
   }
-}
-
-
-CPixelShaderRenderer::CPixelShaderRenderer()
-    : CWinRenderer()
-{
-}
-
-bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
-{
-  if(!CWinRenderer::Configure(width, height, d_width, d_height, fps, flags))
-    return false;
-
-  m_bConfigured = true;
-  return true;
-}
-
-void CPixelShaderRenderer::Render(DWORD flags)
-{
-  CWinRenderer::Render(flags);
-}
-
-
-CYUV2RGBMatrix::CYUV2RGBMatrix()
-{
-  m_NeedRecalc = true;
-}
-
-void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags)
-{
-  if (m_contrast != contrast)
-  {
-    m_NeedRecalc = true;
-    m_contrast = contrast;
-  }
-  if (m_blacklevel != blacklevel)
-  {
-    m_NeedRecalc = true;
-    m_blacklevel = blacklevel;
-  }
-  if (m_flags != flags)
-  {
-    m_NeedRecalc = true;
-    m_flags = flags;
-  }
-}
-
-D3DXMATRIX* CYUV2RGBMatrix::Matrix()
-{
-  if (m_NeedRecalc)
-  {
-    TransformMatrix matrix;
-    CalculateYUVMatrix(matrix, m_flags, m_blacklevel, m_contrast);
-
-    m_mat._11 = matrix.m[0][0];
-    m_mat._12 = matrix.m[1][0];
-    m_mat._13 = matrix.m[2][0];
-    m_mat._14 = 0.0f;
-    m_mat._21 = matrix.m[0][1];
-    m_mat._22 = matrix.m[1][1];
-    m_mat._23 = matrix.m[2][1];
-    m_mat._24 = 0.0f;
-    m_mat._31 = matrix.m[0][2];
-    m_mat._32 = matrix.m[1][2];
-    m_mat._33 = matrix.m[2][2];
-    m_mat._44 = 0.0f;
-    m_mat._41 = matrix.m[0][3];
-    m_mat._42 = matrix.m[1][3];
-    m_mat._43 = matrix.m[2][3];
-    m_mat._44 = 1.0f;
-
-    m_NeedRecalc = false;
-  }
-  return &m_mat;
 }
 
 #endif

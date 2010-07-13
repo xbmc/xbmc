@@ -288,13 +288,13 @@ unsigned int CXBMCRenderManager::PreInit()
 #elif defined(HAS_DX)
 #ifdef HAS_DS_PLAYER
     if (rendtype == RENDERER_NORMAL)
-      m_pRenderer = new CPixelShaderRenderer();
+      m_pRenderer = new CWinRenderer();
     else
       m_pRenderer = new CDsPixelShaderRenderer(rendtype == RENDERER_DSHOW_EVR ? true : false);
 
     m_pRendererType = rendtype;
 #else
-    m_pRenderer = new CPixelShaderRenderer();
+    m_pRenderer = new CWinRenderer();
 #endif
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();

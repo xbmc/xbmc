@@ -540,20 +540,7 @@ bool CFileItem::IsPicture() const
   if( m_mimetype.Left(6).Equals("image/") )
     return true;
 
-  CStdString extension;
-  CUtil::GetExtension(m_strPath, extension);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  if (extension == ".tbn" || extension == ".dds")
-    return true;
-
-  return false;
+  return CUtil::IsPicture(m_strPath);
 }
 
 bool CFileItem::IsLyrics() const
@@ -621,13 +608,6 @@ bool CFileItem::IsXBE() const
 bool CFileItem::IsType(const char *ext) const
 {
   return CUtil::GetExtension(m_strPath).Equals(ext, false);
-}
-
-bool CFileItem::IsDefaultXBE() const
-{
-  CStdString filename = CUtil::GetFileName(m_strPath);
-  if (filename.Equals("default.xbe")) return true;
-  return false;
 }
 
 bool CFileItem::IsShortCut() const
@@ -700,6 +680,11 @@ bool CFileItem::IsStack() const
 bool CFileItem::IsPlugin() const
 {
   return CUtil::IsPlugin(m_strPath);
+}
+
+bool CFileItem::IsAddonsPath() const
+{
+  return CUtil::IsAddonsPath(m_strPath);
 }
 
 bool CFileItem::IsMultiPath() const
@@ -1449,6 +1434,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SIZE:
     FillSortFields(SSortFileItem::BySize);
     break;
+  case SORT_METHOD_BITRATE:
+    FillSortFields(SSortFileItem::ByBitrate);
+    break;      
   case SORT_METHOD_DRIVE_TYPE:
     FillSortFields(SSortFileItem::ByDriveType);
     break;

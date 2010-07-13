@@ -253,10 +253,15 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(addSortMethod__doc__,
-    "addSortMethod(handle, sortMethod) -- Adds a sorting method for the media list.\n"
+    "addSortMethod(handle, sortMethod, label2) -- Adds a sorting method for the media list.\n"
     "\n"
     "handle      : integer - handle the plugin was started with.\n"
     "sortMethod  : integer - number for sortmethod see FileItem.h.\n"
+    "label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'\n"
+    "              applies to: SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,\n"
+    "                          SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE\n"
+    "                          SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL\n"
+    "                          SORT_METHOD_LABEL_IGNORE_THE\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
@@ -266,25 +271,33 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_AddSortMethod(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static const char *keywords[] = { "handle", "sortMethod", NULL };
+    static const char *keywords[] = { "handle", "sortMethod", "label2Mask", NULL };
     int handle = -1;
     int sortMethod = -1;
+    PyObject *mask2 = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"ii",
+      (char*)"ii|O",
       (char**)keywords,
       &handle,
-      &sortMethod
+      &sortMethod,
+      &mask2
       ))
     {
       return NULL;
     };
 
+    string label2Mask;
+    if (mask2)
+      PyXBMCGetUnicodeString(label2Mask, mask2, 1);
+    if (label2Mask.empty())
+      label2Mask = "%D";
+
     // call the directory class to add the sort method.
     if (sortMethod >= SORT_METHOD_NONE && sortMethod < SORT_METHOD_MAX)
-      XFILE::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod);
+      XFILE::CPluginDirectory::AddSortMethod(handle, (SORT_METHOD)sortMethod, label2Mask);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -614,6 +627,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_STUDIO", SORT_METHOD_STUDIO);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_STUDIO_IGNORE_THE", SORT_METHOD_STUDIO_IGNORE_THE);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_UNSORTED", SORT_METHOD_UNSORTED);
+    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_BITRATE", SORT_METHOD_BITRATE);  
   }
 }
 

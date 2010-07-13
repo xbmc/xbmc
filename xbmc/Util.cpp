@@ -238,6 +238,14 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
 
+  // HTS Tvheadend client
+  else if (url.GetProtocol() == "htsp")
+    strFilename = g_localizeStrings.Get(20256);
+
+  // VDR Streamdev client
+  else if (url.GetProtocol() == "vtp")
+    strFilename = g_localizeStrings.Get(20257);
+
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
@@ -663,16 +671,25 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
+  CStdString strHomePath;
+  strHomePath = ResolveExecutablePath();
+#ifdef _WIN32
+  CStdStringW strPathW, strTargetW;
+  g_charsetConverter.utf8ToW(strTarget, strTargetW);
+  strPathW = _wgetenv(strTargetW);
+  g_charsetConverter.wToUTF8(strPathW,strPath);
+#else
   strPath = getenv(strTarget);
+#endif
+
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
+    char tmp[1024];
     //expand potential relative path to full path
-    if(GetFullPathName(strPath, 1024, szXBEFileName, 0) != 0)
+    if(GetFullPathName(strPath, 1024, tmp, 0) != 0)
     {
-      strPath = szXBEFileName;
+      strPath = tmp;
     }
 #endif
   }
@@ -702,9 +719,11 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       }
     }
 #endif
-    char *szFileName = strrchr(szXBEFileName, PATH_SEPARATOR_CHAR);
-    *szFileName = 0;
-    strPath = szXBEFileName;
+    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
+    if (last_sep != string::npos)
+      strPath = strHomePath.Left(last_sep);
+    else
+      strPath = strHomePath;
   }
 }
 
@@ -982,6 +1001,12 @@ bool CUtil::IsPlugin(const CStdString& strFile)
   return url.GetProtocol().Equals("plugin");
 }
 
+bool CUtil::IsAddonsPath(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("addons");
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -1128,6 +1153,23 @@ bool CUtil::IsLastFM(const CStdString& strFile)
 bool CUtil::IsWritable(const CStdString& strFile)
 {
   return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
+}
+
+bool CUtil::IsPicture(const CStdString& strFile)
+{
+  CStdString extension = GetExtension(strFile);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+    return true;
+
+  if (extension == ".tbn" || extension == ".dds")
+    return true;
+
+  return false;
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1398,11 +1440,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   vector<CStdString> token;
   Tokenize(strPath,token,"/\\");
-  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  if (token.size() > 0)
   {
-    CStdString strPath2;
-    GetParentPath(strPath,strPath2);
-    strLookInPaths.push_back(strPath2);
+    if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+    {
+      CStdString strPath2;
+      GetParentPath(strPath,strPath2);
+      strLookInPaths.push_back(strPath2);
+    }
   }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
@@ -3292,3 +3337,39 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
   }
   return decimal;
 }
+
+CStdString CUtil::ResolveExecutablePath()
+{
+  CStdString strExecutablePath;
+#ifdef WIN32
+  wchar_t szAppPathW[MAX_PATH] = L"";
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  CStdStringW strPathW = szAppPathW;
+  g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
+#elif defined(__APPLE__)
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  char     real_given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+  if (result == 0)
+    realpath(given_path, real_given_path);
+  strExecutablePath = real_given_path;
+#else
+  /* Get our PID and build the name of the link in /proc */
+  pid_t pid = getpid();
+  char linkname[64]; /* /proc/<pid>/exe */
+  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
+
+  /* Now read the symbolic link */
+  char buf[PATH_MAX];
+  int ret = readlink(linkname, buf, PATH_MAX);
+  buf[ret] = 0;
+
+  strExecutablePath = buf;
+#endif
+  return strExecutablePath;
+}
+
+

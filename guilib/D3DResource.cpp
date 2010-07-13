@@ -26,6 +26,8 @@
 
 #ifdef HAS_DX
 
+using namespace std;
+
 CD3DTexture::CD3DTexture()
 {
   m_width = 0;
@@ -117,7 +119,7 @@ void CD3DTexture::SaveTexture()
     delete[] m_data;
     m_data = NULL;
     D3DLOCKED_RECT lr;
-    if (LockRect( 0, &lr, NULL, 0 ))
+    if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
     {
       m_pitch = lr.Pitch;
       unsigned int memUsage = GetMemoryUsage(lr.Pitch);
@@ -154,7 +156,7 @@ void CD3DTexture::RestoreTexture()
     {
       // copy the data to the texture
       D3DLOCKED_RECT lr;
-      if (m_texture && m_data && LockRect(0, &lr, NULL, 0 ))
+      if (m_texture && m_data && LockRect(0, &lr, NULL, D3DLOCK_DISCARD ))
       {
         if (lr.Pitch == m_pitch)
           memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
@@ -215,10 +217,13 @@ CD3DEffect::~CD3DEffect()
   Release();
 }
 
-bool CD3DEffect::Create(const CStdString &effectString)
+bool CD3DEffect::Create(const CStdString &effectString, DefinesMap* defines)
 {
-  m_effectString = effectString;
   Release();
+  m_effectString = effectString;
+  m_defines.clear();
+  if (defines != NULL)
+    m_defines = *defines; //FIXME: is this a copy of all members?
   if (CreateEffect())
   {
     g_Windowing.Register(this);
@@ -301,7 +306,25 @@ bool CD3DEffect::CreateEffect()
 {
   HRESULT hr;
   LPD3DXBUFFER pError = NULL;
-  hr = D3DXCreateEffect(g_Windowing.Get3DDevice(),  m_effectString, m_effectString.length(), NULL, NULL, 0, NULL, &m_effect, &pError );
+
+  std::vector<D3DXMACRO> definemacros;
+
+  for( DefinesMap::const_iterator it = m_defines.begin(); it != m_defines.end(); ++it )
+	{
+		D3DXMACRO m;
+		m.Name = it->first.c_str();
+    if (it->second.IsEmpty())
+      m.Definition = NULL;
+    else
+		  m.Definition = it->second.c_str();
+		definemacros.push_back( m );
+	}
+
+  definemacros.push_back(D3DXMACRO());
+	definemacros.back().Name = 0;
+	definemacros.back().Definition = 0;
+
+  hr = D3DXCreateEffect(g_Windowing.Get3DDevice(),  m_effectString, m_effectString.length(), &definemacros[0], NULL, 0, NULL, &m_effect, &pError );
   if(hr == S_OK)
     return true;
   else if(pError)

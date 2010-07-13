@@ -142,7 +142,7 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
   SORT_METHOD sortMethod = GetSortMethod();
   if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE ||
       sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
-      sortMethod == SORT_METHOD_SONG_RATING)
+      sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE)
   {
     if (m_sortOrder == SORT_ORDER_ASC) return SORT_ORDER_DESC;
     if (m_sortOrder == SORT_ORDER_DESC) return SORT_ORDER_ASC;
@@ -347,6 +347,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     source.strName = label;
     source.m_strThumbnailImage = "";
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    source.m_ignore = true;
     m_sources.push_back(source);
   }
 }

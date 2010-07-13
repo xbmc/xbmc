@@ -49,7 +49,33 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
+void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, RESOLUTION sourceRes, bool preserveAspect) const
+{
+  // set scaling resolution so that we can scale our font sizes correctly
+  // as fonts aren't scaled at render time (due to aliasing) we must scale
+  // the size of the fonts before they are drawn to bitmaps
+  g_graphicsContext.SetScalingResolution(sourceRes, true);
+
+  if (preserveAspect)
+  {
+    // font always displayed in the aspect specified by the aspect parameter
+    *aspect /= g_graphicsContext.GetPixelRatio(g_graphicsContext.GetVideoResolution());
+  }
+  else
+  {
+    // font streched like the rest of the UI, aspect parameter being the original aspect
+
+    // adjust aspect ratio
+    if (sourceRes == RES_PAL_16x9 || sourceRes == RES_PAL60_16x9 || sourceRes == RES_NTSC_16x9 || sourceRes == RES_HDTV_480p_16x9)
+      *aspect *= 0.75f;
+
+    *aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
+  }
+
+  *size /= g_graphicsContext.GetGUIScaleY();
+}
+
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes, bool preserveAspect)
 {
   float originalAspect = aspect;
 
@@ -61,18 +87,8 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (sourceRes == RES_INVALID) // no source res specified, so assume the skin res
     sourceRes = m_skinResolution;
 
-
-  // set scaling resolution so that we can scale our font sizes correctly
-  // as fonts aren't scaled at render time (due to aliasing) we must scale
-  // the size of the fonts before they are drawn to bitmaps
-  g_graphicsContext.SetScalingResolution(sourceRes, true);
-
-  // adjust aspect ratio
-  if (sourceRes == RES_PAL_16x9 || sourceRes == RES_PAL60_16x9 || sourceRes == RES_NTSC_16x9 || sourceRes == RES_HDTV_480p_16x9)
-    aspect *= 0.75f;
-
-  aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
-  float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
+  float newSize = iSize;
+  RescaleFontSizeAndAspect(&newSize, &aspect, sourceRes, preserveAspect);
 
   // First try to load the font from the skin
   CStdString strPath;
@@ -126,7 +142,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, pFontFile);
+  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, iSize, pFontFile);
   m_vecFonts.push_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution
@@ -136,6 +152,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
   fontInfo.sourceRes = sourceRes;
+  fontInfo.preserveAspect = preserveAspect;
   m_vecFontInfo.push_back(fontInfo);
 
   return pNewFont;
@@ -184,17 +201,11 @@ void GUIFontManager::ReloadTTFFonts(void)
     OrigFontInfo fontInfo = m_vecFontInfo[i];
 
     float aspect = fontInfo.aspect;
-    int iSize = fontInfo.size;
+    float newSize = fontInfo.size;
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
-    g_graphicsContext.SetScalingResolution(fontInfo.sourceRes, true);
-
-    if (fontInfo.sourceRes == RES_PAL_16x9 || fontInfo.sourceRes == RES_PAL60_16x9 || fontInfo.sourceRes == RES_NTSC_16x9 || fontInfo.sourceRes == RES_HDTV_480p_16x9)
-      aspect *= 0.75f;
-
-    aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
-    float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
+    RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
 
     CStdString TTFfontName;
     TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);

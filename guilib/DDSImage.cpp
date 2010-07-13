@@ -61,14 +61,19 @@ unsigned int CDDSImage::GetHeight() const
 
 unsigned int CDDSImage::GetFormat() const
 {
-  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT1", 4) == 0)
-    return XB_FMT_DXT1;
-  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT3", 4) == 0)
-    return XB_FMT_DXT3;
-  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT5", 4) == 0)
-    return XB_FMT_DXT5;
-  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "ARGB", 4) == 0)
-    return XB_FMT_A8R8G8B8;
+  if (m_desc.pixelFormat.flags & DDPF_RGB)
+    return 0; // Not supported
+  if (m_desc.pixelFormat.flags & DDPF_FOURCC)
+  {
+    if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT1", 4) == 0)
+      return XB_FMT_DXT1;
+    if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT3", 4) == 0)
+      return XB_FMT_DXT3;
+    if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT5", 4) == 0)
+      return XB_FMT_DXT5;
+    if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "ARGB", 4) == 0)
+      return XB_FMT_A8R8G8B8;
+  }
   return 0;
 }
 

@@ -190,6 +190,10 @@
   <string id="237">Optique (-)</string>
   <string id="238">Optique (+)</string>
   <string id="239">Effacer la playlist à la fin de la lecture</string>
+  <string id="240">Mode d'affichage</string>
+  <string id="241">Plein Ecran #%d</string>
+  <string id="242">Fenêtré</string>
+  <string id="243">Taux de rafraîchissement</string>
   
   <string id="247">Scripts</string>
   <string id="248">Langue</string>
@@ -229,7 +233,7 @@
   <string id="282">%i objet(s) trouvé(s)</string>
   <string id="283">Résultats de la recherche</string>
   <string id="284">Aucun résultat</string>
-  <string id="286">Filtre du rendu post-traitement</string>
+  <string id="286"></string>
   <string id="287">Sous-titres</string>
   <string id="288">Police</string>
   <string id="289">- Taille</string>
@@ -249,11 +253,11 @@
   <string id="304">Langue</string>
   <string id="305">Activé</string>
   <string id="306">Non Entrelacée</string>
-  <string id="307">- post-traitement automatique</string>
-  <string id="308">- déblocage du filtre vertical</string>
-  <string id="309">- déblocage du filtre horizontal</string>
-  <string id="310">- Ajuster luminosité/contraste</string>
-  <string id="311">- Dering</string>
+  <string id="307"></string>
+  <string id="308"></string>
+  <string id="309"></string>
+  <string id="310"></string>
+  <string id="311"></string>
   <string id="312">(0=auto)</string>
   <string id="313">Nettoyage de la base de données</string>
   <string id="314">Préparation...</string>
@@ -456,7 +460,7 @@
   <string id="524">Choisir une playliste</string>
   <string id="525">Nouvelle playliste...</string>
   <string id="526">Ajouter à la playliste</string>
-  <string id="527">Ajout manuel à la médiath..</string>
+  <string id="527">Ajout manuel à la médiath...</string>
   <string id="528">Entrer le titre</string>
   <string id="529">Erreur : Doublon</string>
   <string id="530">Choisir le genre</string>
@@ -719,13 +723,13 @@
   <string id="1034">Sous-menu</string>
   <string id="1035">Activer les boutons du sous-menu</string>
   <string id="1036">Favoris</string>
-  <string id="1037">Plugins Vidéo</string>
-  <string id="1038">Plugins Musique</string>
-  <string id="1039">Plugins Image</string>
+  <string id="1037">Add-ons Vidéo</string>
+  <string id="1038">Add-ons Musique</string>
+  <string id="1039">Add-ons Image</string>
   <string id="1040">Chargement dossier</string>
   <string id="1041">%i objets chargés</string>
   <string id="1042">%i de %i objets chargés</string>
-  <string id="1043">Plugins programme</string>
+  <string id="1043">Add-ons programme</string>
   <string id="1044">Choisir une vignette plugin</string>
   <string id="1045">Paramètres du plugin</string>
   <string id="1046">Points d'accès</string>
@@ -1292,7 +1296,7 @@
   <string id="14038">Les paramètres réseau ont été changés</string>
   <string id="14039">Vous venez de modifier les paramètres réseau</string>
   <string id="14040">Redémarrer XBMC pour appliquer les changements ?</string>
-  <string id="14041">Post Traitement</string>
+  <string id="14041"></string>
   
   <string id="14043">- Eteindre pendant la lecture</string>
   <string id="14044">%i min</string>
@@ -1522,6 +1526,11 @@
   <string id="16316">Auto</string>
   <string id="16317">Temporel (Demi)</string>
   <string id="16318">Temporel/Spatial (Demi)</string>
+
+  <string id="16400">Post-processing Vidéo</string>
+  <string id="16401">Désactivé</string>
+  <string id="16402">Activé pour contenu SD</string>
+  <string id="16403">Toujours activé</string>
   
   <string id="17500">Afficher temps avant la mise en veille</string>
   
@@ -1710,7 +1719,7 @@
   <string id="20188"></string>
   <string id="20189">Activer le défilement auto des résumés &amp; critiques</string>
   <string id="20190">Personnaliser</string>
-  <string id="20191">Activer le mode débogue</string>
+  <string id="20191">Activer le mode debug</string>
   <string id="20192">Télécharger les infos supplémentaires lors des mises à jour</string>
   <string id="20193">Service d'informations par défaut - Album</string>  
   <string id="20194">Service d'informations par défaut - Artiste</string>
@@ -1807,8 +1816,8 @@
   <string id="20375">Catégorie non assignée</string>
   
   <string id="20377">Rafraîchir info séries TV</string>
-  <string id="20378">Rafraîchir les infos de tous les épisodes ?</string>
-  <string id="20379">Dossier sélectionné contient une seule série TV</string>
+  <string id="20378">Rafraichir les infos de tous les épisodes ?</string>
+  <string id="20379">Dossier sélectionné contient une seule Série TV</string>
   <string id="20380">Exclure le dossier sélectionné du scan</string>
   <string id="20381">Spéciales</string>
   <string id="20382">Récupérer automatiquement les vignettes saisons</string>
@@ -1878,7 +1887,7 @@
   <string id="20446">Information trouvé en local.</string>
   <string id="20447">Ignorer et rafraîchir en ligne ?</string>
   <string id="20448">Impossible de télécharger les infos</string>
-  <string id="20449">Le serveur semble inaccessible</string>
+  <string id="20449">Impossible de se connecter au serveur</string>
   <string id="20450">Voulez-vous continuer à scanner ?</string>
   <string id="20451">Pays</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -1986,6 +1995,7 @@
   <string id="21450">- Modifier</string>
   <string id="21451">Connexion Internet requise.</string>
   <string id="21452">Plus...</string>
+  <string id="21453">Racine</string>
   
   <string id="21800">Nom du fichier</string>
   <string id="21801">Répertoire du fichier</string>
@@ -2127,7 +2137,7 @@
   <string id="24002">Options Add-on</string>
   <string id="24003">Infos Add-on</string>
   
-  <string id="24005">Sources média</string>
+  <string id="24005">Sources media</string>
   <string id="24007">Infos Film</string>
   <string id="24008">Ecran de veille</string>
   <string id="24009">Script</string>
@@ -2149,7 +2159,7 @@
   <string id="24030">Cet Add-on ne peut pas être configuré</string>
   <string id="24031">Erreur de chargement des paramètres</string>
   <string id="24032">Tous les Add-ons</string>
-  <string id="24033">Récupérer Add-ons</string>
+  <string id="24033">Télécharger des Add-ons</string>
   <string id="24034">Vérifier les mises à jour</string>
   <string id="24035">Rafraîchir</string>
   <string id="24036">Changelog</string>
@@ -2157,26 +2167,27 @@
   <string id="24038">Installer</string>
   <string id="24039">Désactiver les Add-ons</string>
   <string id="24040">(Efface le paramètre actuel)</string>
+  <string id="24041">Installer depuis un fichier zip</string>
   
-  <string id="24050">Add-ons disponibles</string>
+  <string id="24050">Add-on disponibles</string>
   <string id="24051">Version :</string>
   <string id="24052">Responsabilités</string>
   <string id="24053">Licence :</string>
   <string id="24054">Changelog</string>
   <string id="24059">Voulez-vous activer cet Add-on ?</string>
   <string id="24060">Voulez-vous désactiver cet Add-on ?</string>
-  <string id="24061">Mise-à-jour disponible !</string>
+  <string id="24061">Mise-à-jour Add-on disponible !</string>
   <string id="24062">Add-ons activés</string>
   <string id="24063">Mise-à-jour auto</string>
   <string id="24064">Add-on activé</string>
-  <string id="24065">Add-on à jour</string>
+  <string id="24065">Add-ons à jour</string>
   <string id="24066">Annuler le téléchargement ?</string>
   <string id="24067">Téléchargement en cours</string>
   <string id="24068">Mise à jour disponible</string>
   <string id="24069">Mise à jour</string>
   
-  <string id="24070">L'Add-on ne peut pas utiliser</string>
-  <string id="24071">Une erreur inconnue a eu lieu</string>
+  <string id="24070">L'Add-on n'a pas pu être chargé.</string>
+  <string id="24071">Une erreur inconnue a eu lieu.</string>
   <string id="24072">Paramètres obligatoires</string>
   <string id="24073">Connection impossible</string>
   <string id="24074">Redémarrage requis</string>
@@ -2191,6 +2202,9 @@
   <string id="24093"></string>
   <string id="24094"></string>
   <string id="24095"></string>
+
+  <string id="24096">L'Add-on est indiqué non-fonctionnel dans le dépot.</string>
+  <string id="24097">Voulez-vous le désactiver sur votre système ?</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Médiathèque</string>

@@ -1215,7 +1215,7 @@ void CDVDPlayer::HandlePlaySpeed()
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
         __int64 iTime = (__int64)(m_SpeedState.lasttime + 500.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
-        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
+        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true));
       }
     }
   }
@@ -1682,9 +1682,12 @@ void CDVDPlayer::HandleMessages()
       {
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
 
-        g_infoManager.SetDisplayAfterSeek(100000);
-        if(msg.GetFlush())
-          SetCaching(CACHESTATE_INIT);
+        if(!msg.GetTrickPlay())
+        {
+          g_infoManager.SetDisplayAfterSeek(100000);
+          if(msg.GetFlush())
+            SetCaching(CACHESTATE_INIT);
+        }
 
         double start = DVD_NOPTS_VALUE;
 
@@ -1704,8 +1707,15 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGWARNING, "error while seeking");
 
         // set flag to indicate we have finished a seeking request
-        g_infoManager.m_performingSeek = false;
-        g_infoManager.SetDisplayAfterSeek();
+        if(!msg.GetTrickPlay())
+        {
+          g_infoManager.m_performingSeek = false;
+          g_infoManager.SetDisplayAfterSeek();
+        }
+
+        // dvd's will issue a HOP_CHANNEL that we need to skip
+        if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+          m_dvd.state = DVDSTATE_SEEK;
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
                                                           && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
@@ -2709,22 +2719,27 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     // clear subtitle and menu overlays
     m_overlayContainer.Clear();
 
-    // make sure players are properly flushed, should put them in stalled state
-    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
-    m_dvdPlayerAudio.m_messageQueue.Put(msg->Acquire(), 1);
-    m_dvdPlayerVideo.m_messageQueue.Put(msg->Acquire(), 1);
-    msg->Wait(&m_bStop, 0);
-    msg->Release();
+    if(m_playSpeed == DVD_PLAYSPEED_NORMAL
+    || m_playSpeed == DVD_PLAYSPEED_PAUSE)
+    {
+      // make sure players are properly flushed, should put them in stalled state
+      CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
+      m_dvdPlayerAudio.m_messageQueue.Put(msg->Acquire(), 1);
+      m_dvdPlayerVideo.m_messageQueue.Put(msg->Acquire(), 1);
+      msg->Wait(&m_bStop, 0);
+      msg->Release();
 
-    // we should now wait for init cache
-    SetCaching(CACHESTATE_INIT);
+      // we should now wait for init cache
+      SetCaching(CACHESTATE_INIT);
+      m_CurrentAudio.started    = false;
+      m_CurrentVideo.started    = false;
+      m_CurrentSubtitle.started = false;
+      m_CurrentTeletext.started = false;
+    }
+
     if(pts != DVD_NOPTS_VALUE)
       m_clock.Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
     UpdatePlayState(0);
-    m_CurrentAudio.started    = false;
-    m_CurrentVideo.started    = false;
-    m_CurrentSubtitle.started = false;
-    m_CurrentTeletext.started = false;
   }
 }
 
@@ -2774,14 +2789,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_SPU_CLUT_CHANGE:
       {
-        CLog::Log(LOGDEBUG, "DVDNAV_SPU_CLUT_CHANGE");
         m_dvdPlayerSubtitle.SendMessage(new CDVDMsgSubtitleClutChange((BYTE*)pData));
       }
       break;
     case DVDNAV_SPU_STREAM_CHANGE:
       {
-        CLog::Log(LOGDEBUG, "DVDNAV_SPU_STREAM_CHANGE");
-
         dvdnav_spu_stream_change_event_t* event = (dvdnav_spu_stream_change_event_t*)pData;
 
         int iStream = event->physical_wide;
@@ -2799,8 +2811,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_AUDIO_STREAM_CHANGE:
       {
-        CLog::Log(LOGDEBUG, "DVDNAV_AUDIO_STREAM_CHANGE");
-
         // This should be the correct way i think, however we don't have any streams right now
         // since the demuxer hasn't started so it doesn't change. not sure how to do this.
         dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)pData;
@@ -2877,7 +2887,11 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         // This event is issued whenever a non-seamless operation has been executed.
         // Applications with fifos should drop the fifos content to speed up responsiveness.
         CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
-        m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+        if(m_dvd.state == DVDSTATE_SEEK)
+          m_dvd.state = DVDSTATE_NORMAL;
+        else
+          m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+
         return NAVRESULT_ERROR;
       }
       break;

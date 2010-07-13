@@ -28,22 +28,15 @@ rm $WORKPATH/copyFiles-installer.sh
 
 rm $WORKPATH/buildDEBs/build-installer.sh
 
-# Minimise flash memory writes
-#
-cat > $WORKPATH/buildLive/Files/chroot_local-hooks/02-setFstab << EOF
-#!/bin/sh
-
-echo ""
-echo "Set fstab entries..."
-echo ""
-
-echo "tmpfs /var/log tmpfs defaults 0 0" > /etc/fstab
-echo "tmpfs /tmp tmpfs defaults 0 0" >> /etc/fstab
-echo "tmpfs /var/tmp tmpfs defaults 0 0" >> /etc/fstab
-EOF
-
 chmod +x $WORKPATH/buildLive/Files/chroot_local-hooks/02-setFstab
 
-
 # Modify menu.lst
-sed -i '/## BEGIN INSTALLER ##/,/## END INSTALLER ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+
+if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
+	  sed -i '/## BEGIN INSTALLER ##/,/## END INSTALLER ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+fi
+
+# Modify grub.cfg
+if [ -f $WORKPATH/buildLive/Files/binary_grub/grub.cfg ]; then
+	  sed -i '/## BEGIN INSTALLER ##/,/## END INSTALLER ##/d' $WORKPATH/buildLive/Files/binary_grub/grub.cfg
+fi

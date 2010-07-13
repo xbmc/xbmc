@@ -362,12 +362,17 @@ void CGUISettings::Initialize()
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
 #if defined (__APPLE__)
-  AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #else
-  AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #endif
+  AddString(g_application.IsStandAlone() ? vs : NULL, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
+
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
@@ -564,6 +569,7 @@ void CGUISettings::Initialize()
   AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
 #endif
 #ifdef HAVE_LIBCRYSTALHD
+	
   AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
 #endif
 #ifdef HAVE_LIBVDADECODER

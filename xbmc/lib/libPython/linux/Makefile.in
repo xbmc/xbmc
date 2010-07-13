@@ -1,5 +1,7 @@
 ARCH=@ARCH@
 CC=@CC@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
 

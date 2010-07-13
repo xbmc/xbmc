@@ -73,7 +73,7 @@
       
     <!-- For USA timezone is set EST, french lang only: For peoples french  stay in Florida -->
     <region name="USA">
-      <dateshort>MM/DD/YYYYY</dateshort>
+      <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>F</tempunit>

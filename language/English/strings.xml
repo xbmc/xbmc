@@ -122,7 +122,7 @@
   <string id="164">No disc</string>
   <string id="165">Disc present</string>
   <string id="166">Skin</string>
-  <string id="167">Enable FTP server</string>
+  <string id="167"></string>
   <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
@@ -193,6 +193,7 @@
   <string id="240">Display Mode</string>
   <string id="241">Full Screen #%d</string>
   <string id="242">Windowed</string>
+  <string id="243">Refresh Rate</string>
 
   <string id="247">Scripts</string>
   <string id="248">Language</string>
@@ -452,7 +453,7 @@
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
-  <string id="520">Edit XBE title</string>
+  <string id="520"></string>
   <string id="521">Compilations</string>
   <string id="522">Remove source</string>
   <string id="523">Switch media</string>
@@ -600,7 +601,7 @@
   <string id="715">- Assignment</string>
   <string id="716">Automatic (DHCP)</string>
   <string id="717">Manual (Static)</string>
-  <string id="718">Default (Dashboard)</string>
+  <string id="718"></string>
   <string id="719">- IP address</string>
   <string id="720">- Netmask</string>
   <string id="721">- Default gateway</string>
@@ -771,9 +772,9 @@
   <string id="1234">Programs &amp; pictures &amp; music</string>
   <string id="1235">Programs &amp; pictures &amp; video</string>
 
-  <string id="1245">FTP username</string>
-  <string id="1246">FTP password</string>
-  <string id="1247">Password has been set successfully</string>
+  <string id="1245"></string>
+  <string id="1246"></string>
+  <string id="1247"></string>
 
   <string id="1250">Auto-detection</string>
   <string id="1251">Auto-detect system</string>
@@ -896,18 +897,18 @@
   <string id="12009">Rebuild index...</string>
   <string id="12010">Return to music window</string>
   <string id="12011">Return to videos window</string>
-  <string id="12012">Update trainer list</string>
-  <string id="12013">Trainer</string>
-  <string id="12014">No trainers found</string>
-  <string id="12015">Trainer settings</string>
-  <string id="12016">All registered trainers are missing. Update your list</string>
+  <string id="12012"></string>
+  <string id="12013"></string>
+  <string id="12014"></string>
+  <string id="12015"></string>
+  <string id="12016"></string>
   <string id="12017">Resume from where last stopped</string>
   <string id="12018">No</string>
   <string id="12019">Yes</string>
   <string id="12020">Ask</string>
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
-  <string id="12023">Validating existing trainers...</string>
+  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -928,7 +929,7 @@
   <string id="12328">Enter unlock code</string>
   <string id="12329">or press C to cancel</string>
   <string id="12330">Enter gamepad button combo and</string>
-  <string id="12331">press Start, or Back to cancel</string>
+  <string id="12331">press OK, or Back to cancel</string>
   <string id="12332">Set lock</string>
   <string id="12333">Unlock</string>
   <string id="12334">Reset lock</string>
@@ -958,9 +959,9 @@
   <string id="12377">This will reset any previously saved values</string>
   <string id="12378">Amount of time to display each image</string>
   <string id="12379">Use pan and zoom effects</string>
-  <string id="12380">Play NTSC videos at PAL rates</string>
-  <string id="12381">Play PAL videos at NTSC rates</string>
-  <string id="12382">Play NTSC videos in PAL60</string>
+  <string id="12380"></string>
+  <string id="12381"></string>
+  <string id="12382"></string>
   <string id="12383">12 hour clock</string>
   <string id="12384">24 hour clock</string>
   <string id="12385">Day/Month</string>
@@ -983,8 +984,8 @@
   <string id="13003">- Delay</string>
   <string id="13004">- Minimum file duration</string>
   <string id="13005">Shutdown</string>
-  <string id="13006">Dashboard</string>
-  <string id="13007">Use custom dashboard path</string>
+  <string id="13006"></string>
+  <string id="13007"></string>
   <string id="13008">Shutdown function</string>
   <string id="13009">Quit</string>
   <string id="13010">Hibernate</string>
@@ -1039,27 +1040,27 @@
   <string id="13146">XBMC, changing this setting might affect your ability</string>
   <string id="13147">to continue controlling it. Do you want to proceed?</string>
 
-  <string id="13150">HDD key:</string>
-  <string id="13151">HDD temp:</string>
-  <string id="13152">DVD model:</string>
-  <string id="13153">DVD firmware:</string>
-  <string id="13154">HDD model:</string>
-  <string id="13155">HDD serial:</string>
-  <string id="13156">HDD firmware:</string>
-  <string id="13157">HDD password:</string>
-  <string id="13158">HDD lock state:</string>
+  <string id="13150"></string>
+  <string id="13151"></string>
+  <string id="13152"></string>
+  <string id="13153"></string>
+  <string id="13154"></string>
+  <string id="13155"></string>
+  <string id="13156"></string>
+  <string id="13157"></string>
+  <string id="13158"></string>
   <string id="13159">Subnet mask</string>
   <string id="13160">Gateway</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Initialize failed</string>
 
-  <string id="13163">Gamepad</string>
-  <string id="13164">Keyboard</string>
-  <string id="13165">Mouse</string>
-  <string id="13166">Head/Microphone</string>
-  <string id="13167">Memory unit</string>
-  <string id="13168">IR-Remote</string>
-  <string id="13169">Controller port</string>
+  <string id="13163"></string>
+  <string id="13164"></string>
+  <string id="13165"></string>
+  <string id="13166"></string>
+  <string id="13167"></string>
+  <string id="13168"></string>
+  <string id="13169"></string>
 
 
   <string id="13170">Never</string>
@@ -1736,6 +1737,8 @@
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
   <string id="20255">First logon, edit your profile</string>
+  <string id="20256">HTS Tvheadend client</string>
+  <string id="20257">VDR Streamdev client</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1743,14 +1746,14 @@
   <string id="20303">Do you want to skip and proceed?</string>
   <string id="20304">RSS Feed</string>
 
-  <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
+  <string id="20306"></string>
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP server:</string>
   <string id="20309">Make new folder</string>
   <string id="20310">Dim LCD on playback</string>
   <string id="20311">Unknown or onboard (protected)</string>
   <string id="20312">Dim LCD on paused</string>
-  <string id="20313">Switch LED back on if paused</string>
+  <string id="20313"></string>
   <string id="20314">Videos - Library</string>
   <string id="20315"></string>
   <string id="20316">Sort by: ID</string>
@@ -1889,6 +1892,8 @@
   <string id="20449">Unable to connect to remote server</string>
   <string id="20450">Would you like to continue scanning?</string>
   <string id="20451">Countries</string>
+  <string id="20452">episode</string>
+  <string id="20453">episodes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2167,6 +2172,7 @@
   <string id="24039">Disabled Add-ons</string>
   <string id="24040">(Clear the current setting)</string>
   <string id="24041">Install from zip file</string>
+  <string id="24042">Downloading %i%%</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>

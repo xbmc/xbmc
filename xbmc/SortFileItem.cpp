@@ -449,3 +449,10 @@ void SSortFileItem::ByProductionCode(CFileItemPtr &item)
   item->SetSortLabel(item->GetVideoInfoTag()->m_strProductionCode);
 }
 
+void SSortFileItem::ByBitrate(CFileItemPtr &item)
+{
+  if (!item) return;
+  CStdString label;
+  label.Format("%"PRId64, item->m_dwSize);
+  item->SetSortLabel(label);
+}

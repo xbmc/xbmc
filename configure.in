@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
+AC_INIT([xbmc], [9.11], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -727,11 +727,9 @@ use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  AC_CHECK_LIB([avcodec],   [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avformat],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avutil],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([postproc],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([swscale],   [main],, AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libavutil libpostproc libswscale],
+                    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
+                    AC_MSG_ERROR($missing_library))
 
   # Determine whether AVPacket and relevant functions are defined in libavformat
   # or libavcodec
@@ -739,6 +737,10 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavcodec. ==)],
   [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavformat. ==)
    AC_DEFINE([AVPACKET_IN_AVFORMAT], [1], [Whether AVPacket is in libavformat.])])
+
+  # in case the headers are in a custom directory
+  SAVE_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
   # Possible places the ffmpeg headers may be
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
@@ -772,6 +774,7 @@ if test "$use_external_ffmpeg" = "yes"; then
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
   fi
+  CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
@@ -918,6 +921,9 @@ if test "x$use_crystalhd" != "xno"; then
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
+      if test "$host_vendor" != "apple"; then
+        XB_FIND_SONAME([CRYSTALHD], [crystalhd])
+      fi
     fi
 else
   AC_MSG_NOTICE($crystalhd_disabled)

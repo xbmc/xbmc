@@ -48,6 +48,7 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -108,34 +109,32 @@ XBPyThread::~XBPyThread()
   }
 }
 
-int XBPyThread::evalFile(const char *src)
+int XBPyThread::evalFile(const CStdString &src)
 {
   m_type    = 'F';
-  m_source  = new char[strlen(src)+1];
+  m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
   Create();
   return 0;
 }
 
-int XBPyThread::evalString(const char *src)
+int XBPyThread::evalString(const CStdString &src)
 {
   m_type    = 'S';
-  m_source  = new char[strlen(src)+1];
+  m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
   Create();
   return 0;
 }
 
-int XBPyThread::setArgv(unsigned int src_argc, const char **src)
+int XBPyThread::setArgv(const std::vector<CStdString> &argv)
 {
-  if (src == NULL)
-    return 1;
-  m_argc = src_argc;
+  m_argc = argv.size();
   m_argv = new char*[m_argc];
   for(unsigned int i = 0; i < m_argc; i++)
   {
-    m_argv[i] = new char[strlen(src[i])+1];
-    strcpy(m_argv[i], src[i]);
+    m_argv[i] = new char[argv[i].GetLength()+1];
+    strcpy(m_argv[i], argv[i].c_str());
   }
   return 0;
 }
@@ -149,8 +148,6 @@ void XBPyThread::Process()
 {
   CLog::Log(LOGDEBUG,"Python thread: start processing");
 
-  char path[1024];
-  char sourcedir[1024];
   int m_Py_file_input = Py_file_input;
 
   // get the global lock
@@ -171,31 +168,30 @@ void XBPyThread::Process()
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  strcpy(sourcedir, _P(m_source));
+  CStdString scriptDir;
+  CUtil::GetDirectory(_P(m_source), scriptDir);
+  CUtil::RemoveSlashAtEnd(scriptDir);
+  CStdString path = scriptDir;
 
-  char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
-  *p = PY_PATH_SEP;
-  *++p = '\0';
+  // add on any addon modules the user has installed
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
+  for (unsigned int i = 0; i < addons.size(); ++i)
+    path += PY_PATH_SEP + _P(addons[i]->LibPath());
 
-  strcpy(path, sourcedir);
-
-#ifndef _LINUX
-  strcat(path, dll_getenv("PYTHONPATH"));
-#else
-  strcat(path, Py_GetPath());
-#endif
+  // and add on whatever our default path is
+  path += PY_PATH_SEP;
+  path += Py_GetPath();
 
   // set current directory and python's path.
   if (m_argv != NULL)
     PySys_SetArgv(m_argc, m_argv);
 
-  CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path);
+  CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path.c_str());
 
-  PySys_SetPath(path);
-  // Remove the PY_PATH_SEP at the end
-  sourcedir[strlen(sourcedir)-1] = 0;
+  PySys_SetPath((char *)path.c_str());
 
-  CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
+  CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, scriptDir.c_str());
 
   PyObject* module = PyImport_AddModule((char*)"__main__");
   PyObject* moduleDict = PyModule_GetDict(module);
@@ -214,7 +210,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  xbp_chdir(sourcedir);
+  xbp_chdir(scriptDir.c_str());
 
   if (!stopping)
   {

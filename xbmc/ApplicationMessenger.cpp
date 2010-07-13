@@ -231,10 +231,6 @@ case TMSG_POWERDOWN:
 #endif
         exit(65);
         // TODO
-        //char szXBEFileName[1024];
-
-        //CIoSupport::GetXbePath(szXBEFileName);
-        //CUtil::RunXBE(szXBEFileName);
       }
       break;
 

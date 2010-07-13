@@ -736,6 +736,9 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // now we can pop the top frame.
   DisplayQueuePop();
 
+  //CLog::Log(LOGNOTICE, "%s - VDADecoderDecode dts(%f), pts(%f)", __FUNCTION__,
+  //  pDvdVideoPicture->dts, pDvdVideoPicture->pts);
+
   return VC_PICTURE | VC_BUFFER;
 }
 
@@ -814,7 +817,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
     return;
   }
   OSType format_type = CVPixelBufferGetPixelFormatType(imageBuffer);
-  if ((format_type != kCVPixelFormatType_422YpCbCr8) || (format_type != kCVPixelFormatType_32BGRA) )
+  if ((format_type != kCVPixelFormatType_422YpCbCr8) && (format_type != kCVPixelFormatType_32BGRA) )
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy' or 'BGRA',is reporting 0x%x",
       __FUNCTION__, format_type);

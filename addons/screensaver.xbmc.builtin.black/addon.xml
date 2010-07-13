@@ -7,8 +7,10 @@
   <extension point="xbmc.addon.metadata">
     <summary>Screensaver that turns your screen Black</summary>
     <summary lang="hu">Képernyővédő ami elfeketíti a képernyőt</summary>
+    <summary lang="zh">黑屏屏幕保护程序</summary>
     <description>Black is a simple screensaver that will turn your screen black.</description>
     <description lang="hu">A Black egy egyszerű képernyővédő ami feketévé változtatja a képernyőt.</description>
+    <description lang="zh">黑屏屏保是一个简单的屏幕保护程序，它使你的显示器进入黑屏状态。</description>
     <platform>all</platform>
   </extension>
 </addon>

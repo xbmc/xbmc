@@ -91,7 +91,7 @@ void CDXTexture::LoadToGPU()
   }
 
   D3DLOCKED_RECT lr;
-  if (m_texture.LockRect( 0, &lr, NULL, 0 ))
+  if (m_texture.LockRect( 0, &lr, NULL, D3DLOCK_DISCARD ))
   {
     unsigned char *dst = (unsigned char *)lr.pBits;
     unsigned char *src = m_pixels;

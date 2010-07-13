@@ -93,6 +93,8 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
   if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+    if (pItem->IsParentFolder())
+      return false;
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
     if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)

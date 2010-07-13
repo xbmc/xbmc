@@ -89,6 +89,7 @@ public:
   // CODEC EXTRADATA
   void*        extradata; // extra data for codec to use
   unsigned int extrasize; // size of extra data
+  unsigned int codec_tag; // extra identifier hints for decoding
 
   bool operator==(const CDVDStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDVDStreamInfo& right)      { return !Equal(right, true);}

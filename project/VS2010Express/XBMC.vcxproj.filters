@@ -2304,6 +2304,9 @@
     <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp">
       <Filter>Source Files\Windowing\Render System</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
+      <Filter>cores\VideoRenderers\Shaders</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp">
       <Filter>cores\dsplayer</Filter>
     </ClCompile>
@@ -4843,6 +4846,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\RenderSystemGLES.h">
       <Filter>Source Files\Windowing\Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h">
+      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h">
       <Filter>cores\dsplayer</Filter>

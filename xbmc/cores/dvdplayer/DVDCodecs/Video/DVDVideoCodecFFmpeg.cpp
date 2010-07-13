@@ -217,8 +217,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
+  m_pCodecContext->codec_tag = hints.codec_tag;
 
-  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
+  if (pCodec->id != CODEC_ID_H264 && pCodec->id != CODEC_ID_VP8 && pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
   // if we don't do this, then some codecs seem to fail.

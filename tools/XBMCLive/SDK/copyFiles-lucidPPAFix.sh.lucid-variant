@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#
+# Temporary arrangements until Ticket #9465 is processed.
+#
+
+echo ""
+echo "Retrieving XBMC keyring deb ..."
+echo ""
+
+mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
+
+if ! ls $WORKPATH/xbmc-ppa-keyring_2009.06.03_all.deb > /dev/null 2>&1; then
+	cd $WORKPATH
+	wget https://edge.launchpad.net/~team-xbmc/+archive/ppa/+files/xbmc-ppa-keyring_2009.06.03_all.deb
+	if [ "$?" -ne "0" ]; then
+		echo "Error retrieving file, exiting..."
+		exit 1
+	fi
+fi
+
+cp $WORKPATH/xbmc-ppa-keyring_2009.06.03_all.deb $WORKPATH/buildLive/Files/chroot_local-packages
+

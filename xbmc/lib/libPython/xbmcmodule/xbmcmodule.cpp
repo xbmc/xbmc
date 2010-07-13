@@ -851,15 +851,33 @@ namespace PYXBMC
     CStdString result;
 
     if (strcmpi(id, "datelong") == 0)
+    {
       result = g_langInfo.GetDateFormat(true);
+      result.Replace("DDDD", "%A");
+      result.Replace("MMMM", "%B");
+      result.Replace("D", "%d");
+      result.Replace("YYYY", "%Y");
+    }
     else if (strcmpi(id, "dateshort") == 0)
+    {
       result = g_langInfo.GetDateFormat(false);
+      result.Replace("MM", "%m");
+      result.Replace("DD", "%d");
+      result.Replace("YYYY", "%Y");
+    }
     else if (strcmpi(id, "tempunit") == 0)
       result = g_langInfo.GetTempUnitString();
     else if (strcmpi(id, "speedunit") == 0)
       result = g_langInfo.GetSpeedUnitString();
     else if (strcmpi(id, "time") == 0)
+    {
       result = g_langInfo.GetTimeFormat();
+      result.Replace("H", "%H");
+      result.Replace("h", "%I");
+      result.Replace("mm", "%M");
+      result.Replace("ss", "%S");
+      result.Replace("xx", "%p");
+    }
     else if (strcmpi(id, "meridiem") == 0)
       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 

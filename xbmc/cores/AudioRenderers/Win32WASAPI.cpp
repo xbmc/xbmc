@@ -88,6 +88,8 @@ CWin32WASAPI::CWin32WASAPI() :
 
 bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
 {
+  CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
+
   //First check if the version of Windows we are running on even supports WASAPI.
   if (!g_sysinfo.IsVistaOrHigher())
   {
@@ -244,18 +246,14 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   EXIT_ON_FAILURE(hr, __FUNCTION__": Audio format not supported by the WASAPI device.  Channels: %i, Rate: %i, Bits/sample: %i.", iChannels, uiSamplesPerSec, uiBitsPerSample)
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
-  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
+  hr = m_pAudioClient->GetDevicePeriod(&hnsPeriodicity, NULL);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the WASAPI endpoint device period.");
 
   //The default periods of some devices are VERY low (less than 3ms).
   //For audio stability make sure we have at least an 8ms buffer.
   if(hnsPeriodicity < 80000) hnsPeriodicity = 80000;
 
-  // PAPlayer needs a larger buffer
-  if (bIsMusic)
-    hnsRequestedDuration = hnsPeriodicity * 16;
-  else
-    hnsRequestedDuration = hnsPeriodicity;
+  hnsRequestedDuration = hnsPeriodicity * 16;
 
   // now create the stream buffer
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
@@ -617,6 +615,7 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     CStdString strDevName;
     g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
+    CLog::Log(LOGDEBUG, __FUNCTION__": found endpoint device: %s", strDevName.c_str());
     vAudioSinks.push_back(AudioSink(CStdString("WASAPI: ").append(strDevName), CStdString("wasapi:").append(strDevName)));
 
     SAFE_RELEASE(pDevice)

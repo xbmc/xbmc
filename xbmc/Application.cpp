@@ -234,9 +234,6 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#if defined(HAS_SDL) && defined(_WIN32)
-#include <SDL/SDL_syswm.h>
-#endif
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
@@ -499,9 +496,8 @@ bool CApplication::Create()
 #endif
   CSpecialProtocol::LogPaths();
 
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
-  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
+  CStdString executable = CUtil::ResolveExecutablePath();
+  CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_settings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -4332,9 +4328,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (type == "2" && path.IsEmpty())
       type = "0";
     if (type == "0")
-      path = "special://profile/thumbnails/Video/Fanart";
+      path = "special://profile/Thumbnails/Video/Fanart";
     if (type == "1")
-      path = "special://profile/thumbnails/Music/Fanart";
+      path = "special://profile/Thumbnails/Music/Fanart";
     m_applicationMessenger.PictureSlideShow(path, true, type != "2");
   }
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim")
@@ -4626,7 +4622,8 @@ bool CApplication::ExecuteAction(CGUIActionDescriptor action)
   {
 #ifdef HAS_PYTHON
     // Determine the context of the action, if possible
-    g_pythonParser.evalString(action.m_action);
+    vector<CStdString> argv;
+    g_pythonParser.evalString(action.m_action, argv);
     return true;
 #else
     return false;
@@ -5176,7 +5173,7 @@ void CApplication::UpdateLibraries()
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("", false);
+      scanner->StartScanning("");
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

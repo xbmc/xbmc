@@ -52,12 +52,13 @@ public:
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
   static bool AddItems(int handle, const CFileItemList *items, int totalItems);
   static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
-  static void AddSortMethod(int handle, SORT_METHOD sortMethod);
+  static void AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask);
   static CStdString GetSetting(int handle, const CStdString &key);
   static void SetSetting(int handle, const CStdString &key, const CStdString &value);
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
+  static void SetLabel2(int handle, const CStdString& ident);  
 
 private:
   ADDON::AddonPtr m_addon;

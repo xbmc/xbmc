@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "DirectoryCache.h"
 #include "FileCache.h"
-#include "FileItem.h"
 #include "utils/log.h"
 
 #ifndef _LINUX
@@ -293,9 +292,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
         return false;
     }
 
-    CFileItem fileItem;
-    fileItem.m_strPath = strFileName;
-    if ( (flags & READ_NO_CACHE) == 0 && fileItem.IsInternetStream() && !fileItem.IsPicture())
+    if ( (flags & READ_NO_CACHE) == 0 && CUtil::IsInternetStream(strFileName, true) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     CURL url(strFileName);

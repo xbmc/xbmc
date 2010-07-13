@@ -90,9 +90,10 @@ using namespace MUSIC_INFO;
  *  %O - mpaa rating
  *  %Q - file time
  *  %U - studio
+ *  %X - Bitrate
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQU"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUX"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -243,7 +244,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (music && music->GetRating() != '0')
       value = music->GetRating();
     else if (movie && movie->m_fRating != 0.f)
-      value.Format("%2.2f", movie->m_fRating);
+      value.Format("%.1f", movie->m_fRating);
     break;
   case 'C': // programs count
     value.Format("%i", item->m_iprogramCount);
@@ -252,7 +253,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     value = item->m_strTitle;
   case 'M':
     if (movie && movie->m_iEpisode > 0)
-      value.Format("%02.2i %s", movie->m_iEpisode,g_localizeStrings.Get(20360));
+      value.Format("%i %s", movie->m_iEpisode,g_localizeStrings.Get(movie->m_iEpisode == 1 ? 20452 : 20453));
     break;
   case 'E':
     if (movie && movie->m_iEpisode > 0)
@@ -288,6 +289,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = movie ->m_strStudio;
     }
     break;
+  case 'X': // Bitrate
+    if( !item->m_bIsFolder || item->m_dwSize != 0 )
+      value.Format("%i kbps", item->m_dwSize);
+    break;           
   }
   if (!value.IsEmpty())
     return mask.m_prefix + value + mask.m_postfix;

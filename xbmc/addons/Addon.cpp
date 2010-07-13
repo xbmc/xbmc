@@ -144,6 +144,7 @@ static const TypeMapping types[] =
    {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012 },
    {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013 },
    {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014 },
+   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0 },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
    {"pvrclient",                         ADDON_PVRDLL,                  0 }};
@@ -357,6 +358,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRIPT_LYRICS:
       case ADDON_SCRIPT_WEATHER:
       case ADDON_SCRIPT_SUBTITLES:
+      case ADDON_SCRIPT_MODULE:
       case ADDON_SCRAPER_ALBUMS:
       case ADDON_SCRAPER_ARTISTS:
       case ADDON_SCRAPER_MOVIES:

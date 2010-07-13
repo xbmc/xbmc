@@ -101,6 +101,7 @@
     <remote>
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
+      <zero>Delete</zero>
     </remote>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -427,6 +428,7 @@
   </MusicInformation>
   <MovieInformation>
     <remote>
+      <info>Close</info>
       <back>Close</back>
     </remote>
   </MovieInformation>

@@ -47,9 +47,9 @@ class XBPyThread : public CThread
 public:
   XBPyThread(XBPython *pExecuter, int id);
   virtual ~XBPyThread();
-  int evalFile(const char*);
-  int evalString(const char*);
-  int setArgv(const unsigned int, const char **);
+  int evalFile(const CStdString &src);
+  int evalString(const CStdString &src);
+  int setArgv(const std::vector<CStdString> &argv);
   bool isStopping();
   void stop();
 

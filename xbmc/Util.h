@@ -98,6 +98,7 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);
+  static bool IsAddonsPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
@@ -123,6 +124,7 @@ public:
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);
+  static bool IsPicture(const CStdString& strFile);
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
 
@@ -225,6 +227,7 @@ public:
   //
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
+  static CStdString ResolveExecutablePath();
 };
 
 

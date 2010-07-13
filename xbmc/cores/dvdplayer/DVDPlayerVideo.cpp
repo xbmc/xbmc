@@ -610,11 +610,16 @@ void CDVDPlayerVideo::Process()
 
 #if 1
             int iResult = OutputPicture(&picture, pts);
-#else
+#elif 0
             // testing NV12 rendering functions
             DVDVideoPicture* pTempNV12Picture = CDVDCodecUtils::ConvertToNV12Picture(&picture);
             int iResult = OutputPicture(pTempNV12Picture, pts);
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
+#elif 0
+            // testing YUY2 rendering functions
+            DVDVideoPicture* pTempYUY2Picture = CDVDCodecUtils::ConvertToYUY2Picture(&picture);
+            int iResult = OutputPicture(pTempYUY2Picture, pts);
+            CDVDCodecUtils::FreePicture(pTempYUY2Picture);
 #endif
 
             if(m_started == false)
@@ -886,6 +891,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     AutoCrop(pSource);
     CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
   }
+  else if(pSource->format == DVDVideoPicture::FMT_YUY2)
+  {
+    AutoCrop(pSource);
+    CDVDCodecUtils::CopyYUY2Picture(pDest, pSource);
+  }
 #ifdef HAS_DX
   else if(pSource->format == DVDVideoPicture::FMT_DXVA)
     g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
@@ -944,28 +954,37 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
     }
 
+    CStdString formatstr;
+
     switch(pPicture->format)
     {
       case DVDVideoPicture::FMT_YUV420P:
         flags |= CONF_FLAGS_FORMAT_YV12;
+        formatstr = "YV12";
         break;
       case DVDVideoPicture::FMT_NV12:
         flags |= CONF_FLAGS_FORMAT_NV12;
+        formatstr = "NV12";
         break;
       case DVDVideoPicture::FMT_UYVY:
         flags |= CONF_FLAGS_FORMAT_UYVY;
+        formatstr = "UYVY";
         break;
       case DVDVideoPicture::FMT_YUY2:
         flags |= CONF_FLAGS_FORMAT_YUY2;
+        formatstr = "YUY2";
         break;
       case DVDVideoPicture::FMT_VDPAU:
         flags |= CONF_FLAGS_FORMAT_VDPAU;
+        formatstr = "VDPAU";
         break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;
+        formatstr = "DXVA";
         break;
       case DVDVideoPicture::FMT_VAAPI:
         flags |= CONF_FLAGS_FORMAT_VAAPI;
+        formatstr = "VAAPI";
         break;
     }
 
@@ -975,7 +994,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
+    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate, formatstr.c_str());
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
@@ -1061,7 +1080,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // present the current pts of this frame to user, and include the actual
   // presentation delay, to allow him to adjust for it
-  if( !m_stalled )
+  if( m_stalled )
+    m_iCurrentPts = DVD_NOPTS_VALUE;
+  else
     m_iCurrentPts = pts - max(0.0, iSleepTime);
 
   // timestamp when we think next picture should be displayed based on current duration
@@ -1069,7 +1090,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += max(0.0, iSleepTime);
   m_FlipTimeStamp += iFrameDuration;
 
-  if (iClockSleep <= 0 && m_speed)
+  if (iSleepTime <= 0 && m_speed)
     m_iLateFrames++;
   else
     m_iLateFrames = 0;
@@ -1178,7 +1199,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
-     (pPicture->format == DVDVideoPicture::FMT_NV12) )
+     (pPicture->format == DVDVideoPicture::FMT_NV12) ||
+     (pPicture->format == DVDVideoPicture::FMT_YUY2) )
   {
     RECT crop;
 
@@ -1236,13 +1258,19 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   black2 = black * pPicture->iWidth;
   detect = level * pPicture->iWidth + black2;
 
+  //YV12 and NV12 have planar Y plane
+  //YUY2 has Y packed with U and V
+  int xadvance = 1;
+  if (pPicture->format == DVDVideoPicture::FMT_YUY2)
+    xadvance = 2;
+
   // Crop top
   s      = pPicture->data[0];
   last   = black2;
   for (unsigned int y = 0; y < pPicture->iHeight/2; y++)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x++)
+    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
       total += s[x];
     s += pPicture->iLineSize[0];
 
@@ -1261,7 +1289,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   for (unsigned int y = (int)pPicture->iHeight; y > pPicture->iHeight/2; y--)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x++)
+    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
       total += s[x];
     s -= pPicture->iLineSize[0];
 
@@ -1282,7 +1310,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop left
   s    = pPicture->data[0];
   last = black2;
-  for (unsigned int x = 0; x < pPicture->iWidth/2; x++)
+  for (unsigned int x = 0; x < pPicture->iWidth/2; x += xadvance)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)
@@ -1300,7 +1328,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop right
   s    = pPicture->data[0] + (pPicture->iWidth-1);
   last = black2;
-  for (unsigned int x = (int)pPicture->iWidth-1; x > pPicture->iWidth/2; x--)
+  for (unsigned int x = (int)pPicture->iWidth-1; x > pPicture->iWidth/2; x -= xadvance)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)
