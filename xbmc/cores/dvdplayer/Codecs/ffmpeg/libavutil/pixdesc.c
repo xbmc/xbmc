@@ -779,24 +779,6 @@ const AVPixFmtDescriptor av_pix_fmt_descriptors[PIX_FMT_NB] = {
         .log2_chroma_h = 1,
         .flags = PIX_FMT_HWACCEL,
     },
-    [PIX_FMT_DIRECTSHOW_H264] = {
-        .name = "dshow_h264",
-        .log2_chroma_w = 1,
-        .log2_chroma_h = 1,
-        .flags = PIX_FMT_HWACCEL,
-    },
-    [PIX_FMT_DIRECTSHOW_VC1] = {
-        .name = "dshow_vc1",
-        .log2_chroma_w = 1,
-        .log2_chroma_h = 1,
-        .flags = PIX_FMT_HWACCEL,
-    },
-    [PIX_FMT_DIRECTSHOW_MPEG2] = {
-        .name = "dshow_mpeg2",
-        .log2_chroma_w = 1,
-        .log2_chroma_h = 1,
-        .flags = PIX_FMT_HWACCEL,
-    },
     [PIX_FMT_Y400A] = {
         .name = "y400a",
         .nb_components= 2,

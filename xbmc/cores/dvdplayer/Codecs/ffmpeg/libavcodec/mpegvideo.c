@@ -1047,7 +1047,6 @@ void MPV_frame_end(MpegEncContext *s)
         ff_xvmc_field_end(s);
     }else if(!s->avctx->hwaccel
        && !(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
-       && !(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
        && s->unrestricted_mv
        && s->current_picture.reference
        && !s->intra_only

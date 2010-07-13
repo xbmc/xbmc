@@ -24,7 +24,10 @@
 #ifndef HAS_DS_PLAYER
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
-
+// Set to 1 to test the internal splitter
+#define TEST_INTERNAL_SPLITTERS 0
+// Set to 1 to convert mpcvideodec(default filter) to the internal video decoder when loading
+#define TEST_INTERNAL_VIDEO_DECODER 0
 #include "FilterSelectionRule.h"
 #include "tinyXML\tinyxml.h"
 #include "globalfilterselectionrule.h"

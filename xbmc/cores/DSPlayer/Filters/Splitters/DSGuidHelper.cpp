@@ -2,6 +2,7 @@
 #include "windows.h"
 #include "moreuuids.h"
 #include "ffmpeg_mediaguids.h"
+#include "FilterCoreFactory/FilterCoreFactory.h"
 
 #ifndef max
 #define max(A,B)	( (A) > (B) ? (A):(B)) 

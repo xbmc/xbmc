@@ -627,15 +627,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
 
 /*Todo add better probing of codec for setting the num of threads*/
       m_dllAvCodec.avcodec_thread_init(m_pCodecContext,1);
-      if ( m_pAVCodec->capabilities & CODEC_CAP_HWACCEL_DIRECTSHOW)
-      {
-        //m_dllAvCodec.avcodec_thread_init(m_pCodecContext,1);
-      }
-      else
-      {
-        
-        //m_dllAvCodec.avcodec_thread_init(m_pCodecContext,m_pCpuId->GetProcessorNumber());
-      }
+
       
       if (m_dllAvCodec.avcodec_open(m_pCodecContext, m_pAVCodec)<0)
       {
@@ -816,9 +808,6 @@ void CXBMCVideoDecFilter::AllocExtradata(AVCodecContext* pAVCtx, const CMediaTyp
       
       size = mpeg2info->cbSequenceHeader;
       data = (const uint8_t*)mpeg2info->dwSequenceHeader;
-      pAVCtx->extradata_size  = size;
-      pAVCtx->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(size + FF_INPUT_BUFFER_PADDING_SIZE);
-      memcpy((void*)pAVCtx->extradata, data, size);
       /*std::vector<BYTE> extravect;
       for (int xx = 0 ; xx < size; xx++)
       {

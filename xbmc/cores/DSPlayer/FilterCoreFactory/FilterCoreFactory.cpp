@@ -29,10 +29,7 @@
 #include "filters/Splitters/MpegSplitter.h"
 #include "filters/XBMCFileSource.h"
 
-// Set to 1 to test the internal splitter
-#define TEST_INTERNAL_SPLITTERS 0
-// Set to 1 to convert mpcvideodec(default filter) to the internal video decoder when loading
-#define TEST_INTERNAL_VIDEO_DECODER 0
+
 
 InternalFilters internalFilters[] =
 {
@@ -216,12 +213,8 @@ CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, boo
 {
   CStdString filter = _filter;
 #if TEST_INTERNAL_SPLITTERS == 1
-  if (filter.Equals("mkvsource"))
+  if ((filter.Equals("mkvsource")||filter.Equals("avisource")|| filter.Equals("mpegsource") || filter.Equals("haali") ))
     filter = "internal_ffmpegsource";
-  else if (filter.Equals("avisource"))
-    filter = "internal_avisource";
-  else if (filter.Equals("mpegsource"))
-    filter = "internal_mpegsource";
 #endif
 #if TEST_INTERNAL_VIDEO_DECODER == 1
   if (filter.Equals("mpcvideodec") || filter.Equals("ffdvideodec"))

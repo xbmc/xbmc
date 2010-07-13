@@ -37,7 +37,6 @@
 #include "mathops.h"
 #include "rectangle.h"
 #include "vdpau_internal.h"
-#include "directshow_internal.h"
 
 #include "cabac.h"
 
@@ -856,7 +855,7 @@ int ff_h264_decode_extradata(H264Context *h)
 {
     AVCodecContext *avctx = h->s.avctx;
 
-	if(*(char *)avctx->extradata == 1){
+    if(*(char *)avctx->extradata == 1){
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata;
 
@@ -892,37 +891,6 @@ int ff_h264_decode_extradata(H264Context *h)
         }
         // Now store right nal length size, that will be use to parse all other nals
         h->nal_length_size = ((*(((char*)(avctx->extradata))+4))&0x03)+1;
-    } else 
-	if (avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
-        int i, cnt, nalsize;
-        unsigned char *p = avctx->extradata;
-        unsigned char *pend=p+avctx->extradata_size;
-
-        h->is_avc = 1;
-
-        h->nal_length_size = 2;
-        cnt = 1;
-        av_log(avctx, AV_LOG_ERROR, "CODEC_CAP_HWACCEL_DIRECTSHOW detected for extracting extradata\n", i);
-        for (i = 0; i < cnt; i++) {
-            nalsize = AV_RB16(p) + 2;
-            if(decode_nal_units(h, p, nalsize) < 0) {
-                av_log(avctx, AV_LOG_ERROR, "Decoding sps %d from avcC failed\n", i);
-                return -1;
-            }
-            p += nalsize;
-        }
-        // Decode pps from avcC
-        for (i = 0; p<pend-2; i++) {
-            nalsize = AV_RB16(p) + 2;
-            if(decode_nal_units(h, p, nalsize)  != nalsize) {
-                av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
-                /*return -1; mpc modification*/
-            }
-            p += nalsize;
-        }
-        // Now store right nal length size, that will be use to parse all other nals
-        /*TODO add a way to set the nal_lenth_size without actually adding it to avctx directly*/
-        h->nal_length_size = 4;
     } else {
         h->is_avc = 0;
         if(decode_nal_units(h, avctx->extradata, avctx->extradata_size) < 0)
@@ -948,7 +916,7 @@ av_cold int ff_h264_decode_init(AVCodecContext *avctx){
     s->quarter_sample = 1;
     if(!avctx->has_b_frames)
     s->low_delay= 1;
-	
+
     avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
 
     ff_h264_decode_init_vlc();
@@ -1681,12 +1649,9 @@ static void field_end(H264Context *h){
 
     s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_H264;
     s->current_picture_ptr->pict_type= s->pict_type;
-    
+
     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
         ff_vdpau_h264_set_reference_frames(s);
-
-    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-        ff_directshow_h264_set_reference_frames(s);
 
     if(!s->dropable) {
         ff_h264_execute_ref_pic_marking(h, h->mmco, h->mmco_index);
@@ -1703,10 +1668,6 @@ static void field_end(H264Context *h){
 
     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
         ff_vdpau_h264_picture_complete(s);
-    
-    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-	    ff_directshow_h264_picture_complete(s);
-	
 
     /*
      * FIXME: Error handling code does not seem to support interlaced
@@ -1720,10 +1681,8 @@ static void field_end(H264Context *h){
      * past end by one (callers fault) and resync_mb_y != 0
      * causes problems for the first MB line, too.
      */
-    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
-	    if (!FIELD_PICTURE)
-            ff_er_frame_end(s);
-    }
+    if (!FIELD_PICTURE)
+        ff_er_frame_end(s);
 
     MPV_frame_end(s);
 
@@ -1787,6 +1746,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     }
 
     first_mb_in_slice= get_ue_golomb(&s->gb);
+
     if(first_mb_in_slice == 0){ //FIXME better field boundary detection
         if(h0->current_slice && FIELD_PICTURE){
             field_end(h);
@@ -1889,7 +1849,6 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             av_reduce(&s->avctx->time_base.num, &s->avctx->time_base.den,
                       h->sps.num_units_in_tick, den, 1<<30);
         }
-		
         s->avctx->pix_fmt = s->avctx->get_format(s->avctx,
                                                  s->avctx->codec->pix_fmts ?
                                                  s->avctx->codec->pix_fmts :
@@ -2240,9 +2199,6 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->emu_edge_width= (s->flags&CODEC_FLAG_EMU_EDGE) ? 0 : 16;
     h->emu_edge_height= (FRAME_MBAFF || FIELD_PICTURE) ? 0 : h->emu_edge_width;
 
-	if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-	  ff_directshow_h264_fill_slice_long(s);
-	
     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
         av_log(h->s.avctx, AV_LOG_DEBUG, "slice:%d %s mb:%d %c%s%s pps:%u frame:%d poc:%d/%d ref:%d/%d qp:%d loop:%d:%d:%d weight:%d%s %s\n",
                h->slice_num,
@@ -2753,9 +2709,8 @@ static void execute_decode_slices(H264Context *h, int context_count){
 
     if (s->avctx->hwaccel)
         return;
-    if(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU || s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+    if(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
         return;
-
     if(context_count == 1) {
         decode_slice(avctx, &h);
     } else {
@@ -2801,7 +2756,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
             s->current_picture_ptr= NULL;
         ff_h264_reset_sei(h);
     }
-  
+
     for(;;){
         int consumed;
         int dst_length;
@@ -2893,8 +2848,6 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
                     return -1;
                 if(CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
                     ff_vdpau_h264_picture_start(s);
-                if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-                    ff_directshow_h264_picture_start(s);
             }
 
             s->current_picture_ptr->key_frame |=
@@ -2977,8 +2930,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
         }
 
         if(context_count == h->max_contexts) {
-            if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
-                execute_decode_slices(h, context_count);
+            execute_decode_slices(h, context_count);
             context_count = 0;
         }
 
@@ -2995,10 +2947,8 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
             goto again;
         }
     }
-	
-    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
+    if(context_count)
         execute_decode_slices(h, context_count);
-
     return buf_index;
 }
 
@@ -3020,9 +2970,7 @@ static int decode_frame(AVCodecContext *avctx,
     int buf_size = avpkt->size;
     H264Context *h = avctx->priv_data;
     MpegEncContext *s = &h->s;
-	AVFrame *pict;
-    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))	
-	    pict = data;
+    AVFrame *pict = data;
     int buf_index;
 
     s->flags= avctx->flags;
@@ -3046,13 +2994,8 @@ static int decode_frame(AVCodecContext *avctx,
             h->delayed_pic[i] = h->delayed_pic[i+1];
 
         if(out){
-		    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
-                *data_size = sizeof(AVFrame);
-                *pict= *(AVFrame*)out;
-			} else {
-			    ff_directshow_h264_setpoc(s, out->poc, out->reordered_opaque);
-			    av_log(avctx, AV_LOG_ERROR, "skipping *data_size = sizeof(AVFrame) for directshow!\n");
-			}
+            *data_size = sizeof(AVFrame);
+            *pict= *(AVFrame*)out;
         }
 
         return 0;
@@ -3077,8 +3020,7 @@ static int decode_frame(AVCodecContext *avctx,
 
         if (cur->field_poc[0]==INT_MAX || cur->field_poc[1]==INT_MAX) {
             /* Wait for second field. */
-			if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
-                *data_size = 0;
+            *data_size = 0;
 
         } else {
             cur->interlaced_frame = 0;
@@ -3197,25 +3139,21 @@ static int decode_frame(AVCodecContext *avctx,
                     h->delayed_pic[i] = h->delayed_pic[i+1];
             }
             if(!out_of_order && pics > s->avctx->has_b_frames){
-                if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
-				    *data_size = sizeof(AVFrame);
+                *data_size = sizeof(AVFrame);
 
                 if(out_idx==0 && h->delayed_pic[0] && (h->delayed_pic[0]->key_frame || h->delayed_pic[0]->mmco_reset)) {
                     h->outputed_poc = INT_MIN;
                 } else
                     h->outputed_poc = out->poc;
-                if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
-				    *pict= *(AVFrame*)out;
+                *pict= *(AVFrame*)out;
             }else{
                 av_log(avctx, AV_LOG_DEBUG, "no picture\n");
             }
         }
     }
 
-    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
-	    assert(pict->data[0] || !*data_size);
-        ff_print_debug_info(s, pict);
-	}
+    assert(pict->data[0] || !*data_size);
+    ff_print_debug_info(s, pict);
 //printf("out %d\n", (int)pict->data[0]);
 
     return get_consumed_bytes(s, buf_index, buf_size);
@@ -3472,22 +3410,5 @@ AVCodec h264_vdpau_decoder = {
     .flush= flush_dpb,
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (VDPAU acceleration)"),
     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_H264, PIX_FMT_NONE},
-};
-#endif
-
-#if CONFIG_H264_DSHOW_DECODER
-AVCodec h264_dshow_decoder = {
-    "h264_dshow",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_H264,
-    sizeof(H264Context),
-    ff_h264_decode_init,
-    NULL,
-    ff_h264_decode_end,
-    decode_frame,
-    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_DIRECTSHOW,
-    .flush= flush_dpb,
-    .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (Directshow acceleration)"),
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_DIRECTSHOW_H264, PIX_FMT_NONE},
 };
 #endif

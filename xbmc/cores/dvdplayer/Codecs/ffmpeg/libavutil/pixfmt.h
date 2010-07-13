@@ -128,11 +128,6 @@ enum PixelFormat {
     PIX_FMT_VDPAU_MPEG4,  ///< MPEG4 HW decoding with VDPAU, data[0] contains a vdpau_render_state struct which contains the bitstream of the slices as well as various fields extracted from headers
     PIX_FMT_DXVA2_VLD,    ///< HW decoding through DXVA2, Picture.data[3] contains a LPDIRECT3DSURFACE9 pointer
 
-    PIX_FMT_DIRECTSHOW_H264,///< H.264 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_H264 struct
-	PIX_FMT_DSHOW_H264_VLD,  ///< H.264 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_H264 struct
-    PIX_FMT_DIRECTSHOW_MPEG2,///< MPEG-2 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_MPEG2 struct
-    PIX_FMT_DIRECTSHOW_VC1, ///< VC-1 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_VC1 struct
-	
     PIX_FMT_RGB444BE,  ///< packed RGB 4:4:4, 16bpp, (msb)4A 4R 4G 4B(lsb), big-endian, most significant bits to 0
     PIX_FMT_RGB444LE,  ///< packed RGB 4:4:4, 16bpp, (msb)4A 4R 4G 4B(lsb), little-endian, most significant bits to 0
     PIX_FMT_BGR444BE,  ///< packed BGR 4:4:4, 16bpp, (msb)4A 4B 4G 4R(lsb), big-endian, most significant bits to 1

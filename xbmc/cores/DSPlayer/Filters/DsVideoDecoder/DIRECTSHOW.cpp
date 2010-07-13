@@ -26,7 +26,14 @@
 #include "XBMCVideoDecFilter.h"
 #include "DIRECTSHOW.h"
 #include "WindowingFactory.h"
-
+#define MAX_RETRY_ON_PENDING 50
+#define DO_DXVA_PENDING_LOOP(x)		nTry = 0; \
+									while (FAILED(hr = x) && nTry<MAX_RETRY_ON_PENDING) \
+									{ \
+										if (hr != E_PENDING) break; \
+										Sleep(1); \
+										nTry++; \
+									}
 
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDXVADecoder*)((CXBMCVideoDecFilter*)avctx->opaque)->GetDXVADecoder())->RelBuffer(avctx, pic); }
@@ -194,13 +201,14 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
-  m_context->decoder = (dxva_decoder_context*)this;
-  
+  m_context->decoder->dxvadecoder = (void*)this;
+  m_context->decoder->type = m_nEngine;
   m_context->decoder->dxva2_decoder_begin_frame = DXVABeginFrameS;
   m_context->decoder->dxva2_decoder_end_frame = DXVAEndFrameS;
   m_context->decoder->dxva2_decoder_execute = DXVAExecuteS;
   m_context->decoder->dxva2_decoder_get_buffer = DXVAGetBufferS;
   m_context->decoder->dxva2_decoder_release_buffer = DXVAReleaseBufferS;
+  
   avctx->hwaccel_context = m_context;
   return true;
 }
@@ -225,10 +233,6 @@ HRESULT hr;
 
       m_buffer[i].surface = m_context->surface[i];
     }
-
-    
-      
-
      m_context->surface_count = m_buffer_count;
   
 
@@ -340,12 +344,46 @@ void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 {
   CSingleLock lock(m_section);
+  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
+  HRESULT				hr   = E_INVALIDARG;
+  AMVABeginFrameInfo BeginFrameInfo;
+  BeginFrameInfo.dwDestSurfaceIndex	= index;
+  BeginFrameInfo.dwSizeInputData		= sizeof(index);
+  BeginFrameInfo.pInputData			= &index;
+  BeginFrameInfo.dwSizeOutputData		= 0;
+  BeginFrameInfo.pOutputData			= NULL;
+  int					nTry = 0;
+
+	for (int i=0; i<20; i++)
+	{
+  DO_DXVA_PENDING_LOOP (acc->BeginFrame(&BeginFrameInfo));
+    if (SUCCEEDED (hr))
+      return 0;
+    else
+      return -1;
+  }
 return 0;
 }
 
 int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
 {
-return 0;
+  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
+  HRESULT				hr   = E_INVALIDARG;
+  DWORD		dwDummy	= index;
+  AMVAEndFrameInfo EndFrameInfo;
+  EndFrameInfo.dwSizeMiscData	= sizeof(dwDummy);
+  EndFrameInfo.pMiscData = &dwDummy;
+
+
+  hr = acc->EndFrame(&EndFrameInfo);
+  if (SUCCEEDED (hr))
+    return 0;
+  else
+    return -1;
+  
+
 }
 
 int CDXVADecoder::DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)

@@ -86,7 +86,7 @@ public:
   int   DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec);
   int   DXVAGetBuffer(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size);
   int   DXVAReleaseBuffer(dxva_context *ctx, unsigned type);
-
+  IAMVideoAccelerator* GetIAMVideoAccelerator(){return m_pAMVideoAccelerator;}
   static bool      Supports(enum PixelFormat fmt);
 protected:
   struct SVideoBuffer

@@ -656,11 +656,6 @@ typedef struct RcOverride{
  */
 #define CODEC_CAP_EXPERIMENTAL     0x0200
 
-/**
- * Codec can export data for directshow (DXVA)
- */
-#define CODEC_CAP_HWACCEL_DIRECTSHOW 0x0400
-
 //The following defines may change, don't expect compatibility if you use them.
 #define MB_TYPE_INTRA4x4   0x0001
 #define MB_TYPE_INTRA16x16 0x0002 //FIXME H.264-specific

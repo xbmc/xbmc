@@ -66,7 +66,7 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
     unsigned dxva_size;
     int      result;
     
-    if (!ctx->decoder->dxva2_decoder_get_buffer(ctx->decoder, type,
+    if (!ctx->decoder->dxva2_decoder_get_buffer(ctx, type,
                                               &dxva_data, &dxva_size)) {
         return -1;
     }
@@ -84,7 +84,7 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
         result = -1;
     }
 	
-    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx->decoder, type)) {
+    if (!ctx->decoder->dxva2_decoder_release_buffer(ctx, type)) {
         result = -1;
     }
     return result;
@@ -106,7 +106,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
 	const Picture *current_picture = s->current_picture_ptr;
 	
     surfaceindex = ff_dxva2_get_surface_index(ctx, current_picture);
-	if (!ctx->decoder->dxva2_decoder_begin_frame(ctx->decoder ,surfaceindex)){
+	if (ctx->decoder->dxva2_decoder_begin_frame(ctx ,surfaceindex) < 0){
 		return -1;
 	}
 
@@ -151,12 +151,12 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     exec.pCompressedBuffers  = buffer;
     exec.pExtensionData      = NULL;
 	
-    if (!ctx->decoder->dxva2_decoder_execute(ctx->decoder ,&exec)) {
+    if (ctx->decoder->dxva2_decoder_execute(ctx ,&exec)<0) {
         result = -1;
     }
 
 end:
-    if (!ctx->decoder->dxva2_decoder_end_frame(ctx->decoder ,surfaceindex)){
+    if (ctx->decoder->dxva2_decoder_end_frame(ctx ,surfaceindex)<0){
         av_log(avctx, AV_LOG_ERROR, "Failed to end frame\n");
         result = -1;
     }
@@ -169,8 +169,6 @@ end:
 static int dxva2_default_begin_frame(struct dxva_context *ctx,
                                      unsigned index)
 {
-    //IDirectXVideoDecoder *dec;
-	//dec =  (IDirectXVideoDecoder *)ctx->decoder->dxvadecoder;
 	if (FAILED(IDirectXVideoDecoder_BeginFrame((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, index,NULL)))
 		return -1;
 	return 0;
