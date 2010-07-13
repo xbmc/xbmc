@@ -59,8 +59,8 @@
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="mkv">
-      <source filter="haali" />
-      <splitter filter="haali" />
+      <source filter="mkvsource" />
+      <splitter filter="mkvsplitter" />
       <video filter="mpcvideodec" />
       <!-- You can do like that to specifie a DXVA only filters.
       If you want to use the same filter for DXVA and non DXVA media, just add
