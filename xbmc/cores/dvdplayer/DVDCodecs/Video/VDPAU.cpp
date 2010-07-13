@@ -162,7 +162,7 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
       {
         if (unsupported[i] * 16 <= avctx->width && (unsupported[i] - 1) * 16 > avctx->width)
         {
-          CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported", avctx->width);
+          CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
           break;
         }
       }
