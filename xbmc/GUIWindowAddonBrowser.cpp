@@ -189,7 +189,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   if (!item->m_bIsFolder)
   {
     // cancel a downloading job
-    if (item->GetProperty("Addon.Status").Equals(g_localizeStrings.Get(13413)))
+    if (item->HasProperty("Addon.Downloading"))
     {
       if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
                                            item->GetProperty("Addon.Name"),
@@ -405,20 +405,27 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     items.Add(item);
   }
 
-  CSingleLock lock(m_critSection);
   for (int i=0;i<items.Size();++i)
-  {
-    if (items[i]->m_bIsFolder)
-      continue;
-    JobMap::iterator it = m_downloadJobs.find(items[i]->GetProperty("Addon.ID"));
-    if (it != m_downloadJobs.end())
-      items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(13413));
-    items[i]->SetLabel2(items[i]->GetProperty("Addon.Status"));
-    // to avoid the view state overriding label 2
-    items[i]->SetLabelPreformated(true);
-  }
+    SetItemLabel2(items[i]);
 
   return result;
+}
+
+void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
+{
+  if (!item || item->m_bIsFolder) return;
+  CSingleLock lock(m_critSection);
+  JobMap::iterator it = m_downloadJobs.find(item->GetProperty("Addon.ID"));
+  if (it != m_downloadJobs.end())
+  {
+    item->SetProperty("Addon.Status", g_localizeStrings.Get(13413));
+    item->SetProperty("Addon.Downloading", true);
+  }
+  else
+    item->ClearProperty("Addon.Downloading");
+  item->SetLabel2(item->GetProperty("Addon.Status"));
+  // to avoid the view state overriding label 2
+  item->SetLabelPreformated(true);
 }
 
 bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)

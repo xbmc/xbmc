@@ -65,6 +65,11 @@ public:
   static void InstallAddonsFromXBMCRepo(const std::set<CStdString> &addonIDs);
 
 protected:
+  /* \brief set label2 of an item based on the Addon.Status property
+   \param item the item to update
+   */
+  void SetItemLabel2(CFileItemPtr item);
+
   void RegisterJob(const CStdString& id, unsigned int jobid);
   void UnRegisterJob(unsigned int jobID);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
