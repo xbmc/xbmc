@@ -426,7 +426,7 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
         }
     m_layoutMap[i] = PCM_INVALID;
   } else
-    memcpy(m_layoutMap, PCMLayoutMap[m_channelLayout], sizeof(PCMLayoutMap[m_channelLayout]) / sizeof(enum PCMChannels));
+    memcpy(m_layoutMap, PCMLayoutMap[m_channelLayout], sizeof(PCMLayoutMap[m_channelLayout]));
 
   DumpMap("I", channels, channelMap);
   BuildMap();
