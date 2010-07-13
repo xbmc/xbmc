@@ -2172,6 +2172,7 @@
   <string id="24039">Disabled Add-ons</string>
   <string id="24040">(Clear the current setting)</string>
   <string id="24041">Install from zip file</string>
+  <string id="24042">Downloading %i%%</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>

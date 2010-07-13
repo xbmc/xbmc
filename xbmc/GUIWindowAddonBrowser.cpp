@@ -107,6 +107,22 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && IsActive() && message.GetNumStringParams() == 1)
+      { // update this item
+        for (int i = 0; i < m_vecItems->Size(); ++i)
+        {
+          CFileItemPtr item = m_vecItems->Get(i);
+          if (item->GetProperty("Addon.ID") == message.GetStringParam())
+          {
+            SetItemLabel2(item);
+            return true;
+          }
+        }
+      }
+    }
+    break;
    default:
      break;
   }
@@ -199,7 +215,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
         JobMap::iterator it = m_downloadJobs.find(item->GetProperty("Addon.ID"));
         if (it != m_downloadJobs.end())
         {
-          CJobManager::GetInstance().CancelJob(it->second);
+          CJobManager::GetInstance().CancelJob(it->second.jobID);
           m_downloadJobs.erase(it);
           Update(m_vecItems->m_strPath);
         }
@@ -363,7 +379,7 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   CSingleLock lock(m_critSection);
   for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
-    if (i->second == jobID)
+    if (i->second.jobID == jobID)
     {
       m_downloadJobs.erase(i);
       return;
@@ -418,7 +434,9 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   JobMap::iterator it = m_downloadJobs.find(item->GetProperty("Addon.ID"));
   if (it != m_downloadJobs.end())
   {
-    item->SetProperty("Addon.Status", g_localizeStrings.Get(13413));
+    CStdString progress;
+    progress.Format(g_localizeStrings.Get(24042).c_str(), it->second.progress);
+    item->SetProperty("Addon.Status", progress);
     item->SetProperty("Addon.Downloading", true);
   }
   else
@@ -527,4 +545,21 @@ CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)
   if (dir.Left(9).Equals("addons://"))
     return dir;
   return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+void CGUIWindowAddonBrowser::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
+{
+  CSingleLock lock(m_critSection);
+  // find this job
+  for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
+  {
+    if (i->second.jobID == jobID)
+    {
+      i->second.progress = progress;
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
+      msg.SetStringParam(i->first);
+      g_windowManager.SendThreadMessage(msg);
+      return;
+    }
+  }
 }
