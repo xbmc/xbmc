@@ -954,28 +954,37 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
     }
 
+    CStdString formatstr;
+
     switch(pPicture->format)
     {
       case DVDVideoPicture::FMT_YUV420P:
         flags |= CONF_FLAGS_FORMAT_YV12;
+        formatstr = "YV12";
         break;
       case DVDVideoPicture::FMT_NV12:
         flags |= CONF_FLAGS_FORMAT_NV12;
+        formatstr = "NV12";
         break;
       case DVDVideoPicture::FMT_UYVY:
         flags |= CONF_FLAGS_FORMAT_UYVY;
+        formatstr = "UYUV";
         break;
       case DVDVideoPicture::FMT_YUY2:
         flags |= CONF_FLAGS_FORMAT_YUY2;
+        formatstr = "YUY2";
         break;
       case DVDVideoPicture::FMT_VDPAU:
         flags |= CONF_FLAGS_FORMAT_VDPAU;
+        formatstr = "VDPAU";
         break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;
+        formatstr = "DXVA";
         break;
       case DVDVideoPicture::FMT_VAAPI:
         flags |= CONF_FLAGS_FORMAT_VAAPI;
+        formatstr = "VAAPI";
         break;
     }
 
@@ -985,7 +994,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
+    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate, formatstr.c_str());
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
