@@ -28,6 +28,7 @@
 #include "VideoInfoTag.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/log.h"
+#include "AdvancedSettings.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {
@@ -151,7 +152,8 @@ bool CFavourites::IsFavourite(CFileItem *item, int contextWindow)
 CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
 {
   CStdString execute;
-  if (item->m_bIsFolder && !(item->IsSmartPlayList() || item->IsPlayList()))
+  if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
+                            !(item->IsSmartPlayList() || item->IsPlayList())))
     execute.Format("ActivateWindow(%i,%s)", contextWindow, item->m_strPath);
   else if (item->m_strPath.Left(9).Equals("plugin://"))
     execute.Format("RunPlugin(%s)", item->m_strPath);
