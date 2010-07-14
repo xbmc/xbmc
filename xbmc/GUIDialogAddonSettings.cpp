@@ -44,6 +44,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUIInfoManager.h"
+#include "GUIDialogSelect.h"
 
 using namespace std;
 using namespace ADDON;
@@ -225,6 +226,48 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, label))
         {
           ((CGUIButtonControl*) control)->SetLabel2(value);
+        }
+        else if (strcmpi(type, "select") == 0)
+        {
+          CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          if (pDlg)
+          {
+            pDlg->SetHeading(label.c_str());
+            pDlg->Reset();
+
+            vector<CStdString> valuesVec;
+            if (setting->Attribute("values"))
+              CUtil::Tokenize(setting->Attribute("values"), valuesVec, "|");
+            else if (setting->Attribute("lvalues"))
+            { // localize
+              CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
+              for (unsigned int i = 0; i < valuesVec.size(); i++)
+              {
+                CStdString value = m_addon->GetString(atoi(valuesVec[i]));
+                if (value.IsEmpty())
+                  value = g_localizeStrings.Get(atoi(valuesVec[i]));
+                valuesVec[i] = value;
+              }
+            }
+            else if (source)
+            {
+              valuesVec = GetFileEnumValues(source, setting->Attribute("mask"));
+            }
+
+            for (unsigned int i = 0; i < valuesVec.size(); i++)
+            {
+              pDlg->Add(valuesVec[i]);
+              if (valuesVec[i].Equals(value))
+                pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
+            }
+            pDlg->DoModal();
+            int iSelected = pDlg->GetSelectedLabel();
+            if (iSelected >= 0)
+            {
+              value = valuesVec[iSelected];
+              ((CGUIButtonControl*) control)->SetLabel2(value);
+            }
+          }
         }
         else if (strcmpi(type, "audio") == 0 || strcmpi(type, "video") == 0 ||
           strcmpi(type, "image") == 0 || strcmpi(type, "executable") == 0 ||
@@ -546,7 +589,8 @@ void CGUIDialogAddonSettings::CreateControls()
         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
         strcmpi(type, "folder") == 0 || strcmpi(type, "executable") == 0 ||
         strcmpi(type, "file") == 0 || strcmpi(type, "action") == 0 ||
-        strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0)
+        strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0 ||
+        strcmpi(type, "select") == 0)
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
@@ -634,34 +678,12 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        // Create our base path, used for type "fileenum" settings
-        // replace $PROFILE with the profile path of the plugin/script
-        if (values.Find("$PROFILE") >=0)
-          values.Replace("$PROFILE", m_addon->Profile());
-        else
-          values = CUtil::AddFileToFolder(m_addon->Path(), values);
-
-        // fetch directory
-        CFileItemList items;
-        CStdString mask;
-        if (setting->Attribute("mask"))
-          mask = setting->Attribute("mask");
-        if (!mask.IsEmpty())
-          CDirectory::GetDirectory(values, items, mask);
-        else
-          CDirectory::GetDirectory(values, items);
-
-        int iItem = 0;
-        for (int i = 0; i < items.Size(); ++i)
+        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"));
+        for (unsigned int i = 0; i < items.size(); ++i)
         {
-          CFileItemPtr pItem = items[i];
-          if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
-          {
-            ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
-            if (pItem->GetLabel().Equals(m_settings[id]))
-              ((CGUISpinControlEx *)pControl)->SetValue(iItem);
-            iItem++;
-          }
+          ((CGUISpinControlEx *)pControl)->AddLabel(items[i], i);
+          if (items[i].Equals(m_settings[id]))
+            ((CGUISpinControlEx *)pControl)->SetValue(i);
         }
       }
       else if (strcmpi(type, "slider") == 0)
@@ -716,6 +738,33 @@ void CGUIDialogAddonSettings::CreateControls()
     controlId++;
   }
   EnableControls();
+}
+
+vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask) const
+{
+  // Create our base path, used for type "fileenum" settings
+  // replace $PROFILE with the profile path of the plugin/script
+  CStdString fullPath = path;
+  if (fullPath.Find("$PROFILE") >= 0)
+    fullPath.Replace("$PROFILE", m_addon->Profile());
+  else
+    fullPath = CUtil::AddFileToFolder(m_addon->Path(), path);
+
+  // fetch directory
+  CFileItemList items;
+  if (!mask.IsEmpty())
+    CDirectory::GetDirectory(fullPath, items, mask);
+  else
+    CDirectory::GetDirectory(fullPath, items);
+
+  vector<CStdString> values;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr pItem = items[i];
+    if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+      values.push_back(pItem->GetLabel());
+  }
+  return values;
 }
 
 // Go over all the settings and set their enabled condition according to the values of the enabled attribute
