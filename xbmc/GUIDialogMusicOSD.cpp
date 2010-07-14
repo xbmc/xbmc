@@ -100,11 +100,3 @@ void CGUIDialogMusicOSD::OnInitWindow()
   ResetControlStates();
   CGUIDialog::OnInitWindow();
 }
-
-bool CGUIDialogMusicOSD::OnAction(const CAction &action)
-{
-  // keyboard or controller movement should prevent autoclosing
-  if (!action.IsMouse() && m_autoClosing)
-    SetAutoClose(3000);
-  return CGUIDialog::OnAction(action);
-}
