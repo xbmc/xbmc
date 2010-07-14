@@ -614,6 +614,8 @@ void CGUIDialogAddonSettings::CreateControls()
           else
             ((CGUIButtonControl *)pControl)->SetLabel2(value);
         }
+        else
+          ((CGUIButtonControl *)pControl)->SetLabel2(setting->Attribute("default"));
       }
       else if (strcmpi(type, "bool") == 0)
       {
