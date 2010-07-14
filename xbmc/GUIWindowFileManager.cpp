@@ -482,13 +482,13 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
-    pItem->m_strPath = strParentPath;
+    pItem->m_strPath = (m_rootDir.IsSource(strDirectory)?"":strParentPath);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     m_vecItems[iList]->AddFront(pItem, 0);
   }
 
-  m_strParentPath[iList] = strParentPath;
+  m_strParentPath[iList] = (m_rootDir.IsSource(strDirectory)?"":strParentPath);
 
   if (strDirectory.IsEmpty())
   {
