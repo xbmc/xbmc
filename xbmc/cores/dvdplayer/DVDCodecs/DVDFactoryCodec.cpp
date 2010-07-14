@@ -42,7 +42,6 @@
   #include "Audio/DVDAudioCodecLibDts.h"
 #endif
 #include "Audio/DVDAudioCodecLibMad.h"
-#include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
@@ -269,7 +268,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
   case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
     {
-      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
+      pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
       if( pCodec ) return pCodec;
       break;
     }
