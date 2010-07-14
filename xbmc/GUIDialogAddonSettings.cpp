@@ -251,7 +251,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             }
             else if (source)
             {
-              valuesVec = GetFileEnumValues(source, setting->Attribute("mask"));
+              valuesVec = GetFileEnumValues(source, setting->Attribute("mask"), setting->Attribute("option"));
             }
 
             for (unsigned int i = 0; i < valuesVec.size(); i++)
@@ -678,7 +678,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISpinControlEx *)pControl)->SetText(label);
         ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
-        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"));
+        vector<CStdString> items = GetFileEnumValues(values, setting->Attribute("mask"), setting->Attribute("option"));
         for (unsigned int i = 0; i < items.size(); ++i)
         {
           ((CGUISpinControlEx *)pControl)->AddLabel(items[i], i);
@@ -740,7 +740,7 @@ void CGUIDialogAddonSettings::CreateControls()
   EnableControls();
 }
 
-vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask) const
+vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
 {
   // Create our base path, used for type "fileenum" settings
   // replace $PROFILE with the profile path of the plugin/script
@@ -750,6 +750,7 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   else
     fullPath = CUtil::AddFileToFolder(m_addon->Path(), path);
 
+  bool hideExtensions = (options.CompareNoCase("hideext") == 0);
   // fetch directory
   CFileItemList items;
   if (!mask.IsEmpty())
@@ -762,7 +763,11 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   {
     CFileItemPtr pItem = items[i];
     if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+    {
+      if (hideExtensions)
+        pItem->RemoveExtension();
       values.push_back(pItem->GetLabel());
+    }
   }
   return values;
 }
