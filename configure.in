@@ -942,11 +942,11 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($openmax_disabled)
 else
   if test "$use_openmax" = "yes"; then
-    AC_CHECK_HEADER([OpenMAX/il/OMX_Types.h],
+    AC_CHECK_HEADER([OpenMAX/IL/OMX_Types.h],
       AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the 'OpenMax' library.]),
       use_openmax=no;AC_MSG_RESULT($openmax_not_found))
     if test "$use_openmax" = "yes"; then
-      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/il"
+      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/IL"
     fi
   else
     AC_MSG_NOTICE($openmax_disabled)
