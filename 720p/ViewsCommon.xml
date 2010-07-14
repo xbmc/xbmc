@@ -245,7 +245,7 @@
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
 						<textcolor>Unfocused</textcolor>
-						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount)) + !Container.Content(Albums)</visible>
 					</control>
 					<control type="image">
 						<visible>Window.IsActive(24) + !Container.Content(TVShows) + !Container.Content(Seasons)</visible>
@@ -353,7 +353,7 @@
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
 						<textcolor>Focused</textcolor>
-						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount)) + !Container.Content(Albums)</visible>
 					</control>
 					<control type="group">
 						<visible>!Container.Content(episodes)</visible>
@@ -604,6 +604,7 @@
 						<visible>Container.Content(artists)</visible>
 					</control>
 				<control type="group">
+					<visible>!Container.Content(Artists)</visible>
 					<posx>21</posx>
 					<posy>-21</posy>
 					<control type="label">
@@ -687,7 +688,7 @@
 						<label>Length:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>Container.Content(albums) | Container.Content(artists)</visible>
+						<visible>Container.Content(artists)</visible>
 					</control>
 					<control type="label">
 						<description>Duration</description>
@@ -696,7 +697,7 @@
 						<width>180</width>
 						<label>$INFO[ListItem.Duration]</label>
 						<align>left</align>
-						<visible>![Container.Content(TVShows) | Container.Content(Seasons)]</visible>
+						<visible>![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums)]</visible>
 					</control>
 					<control type="label">
 						<description>Episodes Label</description>
@@ -759,7 +760,15 @@
 							<width>InfoListTitleWidth</width>
 							<height>317</height>
 							<info>ListItem.Property(description)</info>
-							<visible>Container.Content(albums) | Container.Content(artists)</visible>
+							<visible>Container.Content(albums)</visible>
+						</control>
+						<control type="textbox">
+							<description>Album review</description>
+							<posy>-100</posy>
+							<width>InfoListTitleWidth</width>
+							<height>403</height>
+							<info>ListItem.Property(description)</info>
+							<visible>Container.Content(artists)</visible>
 						</control>
 					</control>
 				</control>
