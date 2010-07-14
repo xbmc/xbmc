@@ -1611,7 +1611,9 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-protocol=http \
       --enable-pthreads \
       `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
-      --cc="$CC"
+      --cc="$CC" &&
+      sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
+      sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
   fi
 ], [$USE_EXTERNAL_FFMPEG])
 
