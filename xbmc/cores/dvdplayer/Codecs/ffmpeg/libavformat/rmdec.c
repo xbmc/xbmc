@@ -294,18 +294,17 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
             goto fail1;
         st->codec->width = get_be16(pb);
         st->codec->height = get_be16(pb);
-        st->codec->time_base.num= 1;
+        st->codec->time_base.num= 1 << 16;
         fps= get_be16(pb);
         st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
         get_be32(pb);
-        fps2= get_be16(pb);
-        get_be16(pb);
+        fps2= get_be32(pb);
 
         if ((ret = rm_read_extradata(pb, st->codec, codec_data_size - (url_ftell(pb) - codec_pos))) < 0)
             return ret;
 
 //        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
-        st->codec->time_base.den = fps * st->codec->time_base.num;
+        st->codec->time_base.den = fps2;
         //XXX: do we really need that?
         switch(st->codec->extradata[4]>>4){
         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
@@ -904,7 +903,9 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
     if(rm->old_format)
         return AV_NOPTS_VALUE;
 
-    url_fseek(s->pb, pos, SEEK_SET);
+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
+
     rm->remaining_len=0;
     for(;;){
         int seq=1;

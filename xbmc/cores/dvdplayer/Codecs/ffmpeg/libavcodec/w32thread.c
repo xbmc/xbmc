@@ -130,7 +130,7 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
     uint32_t threadid;
 
     s->thread_count= thread_count;
-
+av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
     if (thread_count <= 1)
         return 0;
 
@@ -147,17 +147,19 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
     for(i=0; i<thread_count; i++){
 //printf("init semaphors %d\n", i); fflush(stdout);
         c[i].avctx= s;
+av_log(NULL, AV_LOG_INFO, "[w32thread] init semaphors %d\n", i+1);
         c[i].work_sem = c[0].work_sem;
         c[i].job_sem  = c[0].job_sem;
         c[i].done_sem = c[0].done_sem;
         c[i].threadnr = i;
 
 //printf("create thread %d\n", i); fflush(stdout);
+av_log(NULL, AV_LOG_INFO, "[w32thread] create thread %d\n", i+1);
         c[i].thread = (HANDLE)_beginthreadex(NULL, 0, thread_func, &c[i], 0, &threadid );
         if( !c[i].thread ) goto fail;
     }
 //printf("init done\n"); fflush(stdout);
-
+av_log(NULL, AV_LOG_INFO, "[w32thread] init done\n");
     s->execute= avcodec_thread_execute;
     s->execute2= avcodec_thread_execute2;
 

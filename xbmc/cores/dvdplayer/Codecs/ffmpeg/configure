@@ -1221,6 +1221,7 @@ mpeg2_dxva2_hwaccel_deps="dxva2api_h"
 mpeg2_dxva2_hwaccel_select="dxva2 mpeg2video_decoder"
 mpeg2_vaapi_hwaccel_select="vaapi mpeg2video_decoder"
 mpeg4_vaapi_hwaccel_select="vaapi mpeg4_decoder"
+mpeg4_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h vdpau_mpeg4_support"
 mpeg4_vdpau_decoder_select="vdpau mpeg4_decoder"
 mpeg_xvmc_decoder_deps="X11_extensions_XvMClib_h"
 mpeg_xvmc_decoder_select="mpegvideo_decoder"
@@ -1293,11 +1294,14 @@ vdpau_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 
 # parsers
 h264_parser_select="golomb h264dsp"
+latm_parser_deps="libfaad"
 
 # external libraries
 libdirac_decoder_deps="libdirac !libschroedinger"
 libdirac_encoder_deps="libdirac"
 libfaac_encoder_deps="libfaac"
+libfaad_latm_decoder_deps="libfaad"
+libfaadbin_decoder_extralibs='$ldl'
 libgsm_decoder_deps="libgsm"
 libgsm_encoder_deps="libgsm"
 libgsm_ms_decoder_deps="libgsm"
@@ -2580,6 +2584,8 @@ check_header sys/select.h
 check_header termios.h
 check_header vdpau/vdpau.h
 check_header vdpau/vdpau_x11.h
+check_cpp_condition vdpau/vdpau.h "defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)" && enable vdpau_mpeg4_support
+
 check_header X11/extensions/XvMClib.h
 
 check_struct dxva2api.h DXVA_PictureParameters wDecodedPictureIndex
@@ -2763,7 +2769,8 @@ check_cflags -Wcast-qual
 check_cflags -Wwrite-strings
 check_cflags -Wtype-limits
 check_cflags -Wundef
-check_cflags -Wmissing-prototypes
+# some gcc compilers (mingw 4.2.1-sjlj) are b0rk so for now skip this
+# check_cflags -Wmissing-prototypes
 enabled extra_warnings && check_cflags -Winline
 
 # add some linker flags
@@ -2822,7 +2829,8 @@ elif enabled ccc; then
 elif enabled gcc; then
     check_cflags -fno-tree-vectorize
     check_cflags -Werror=implicit-function-declaration
-    check_cflags -Werror=missing-prototypes
+# some gcc compilers (mingw 4.2.1-sjlj) are b0rk so for now skip this
+#    check_cflags -Werror=missing-prototypes
 elif enabled clang; then
     check_cflags -Qunused-arguments
 elif enabled armcc; then

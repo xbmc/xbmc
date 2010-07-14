@@ -1,0 +1,25 @@
+From f5520958db09e905d436530df1c2a1f6e94dfdf5 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 22:46:49 -0400
+Subject: [PATCH 20/32] Don't assume reading more frames in av_find_stream_info will change a CODEC_ID_NONE into something better
+
+---
+ libavformat/utils.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 96637d5..1136f27 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -2018,7 +2018,7 @@ static int has_codec_parameters(AVCodecContext *enc)
+         val = 1;
+         break;
+     }
+-    return enc->codec_id != CODEC_ID_NONE && val != 0;
++    return enc->codec_id != CODEC_ID_PROBE && val != 0;
+ }
+ 
+ static int has_decode_delay_been_guessed(AVStream *st)
+-- 
+1.7.0
+

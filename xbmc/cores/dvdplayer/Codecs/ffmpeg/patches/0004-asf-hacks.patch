@@ -1,0 +1,56 @@
+From 04449083721b946f95ef240bd129e7bd3a4783c9 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 01:34:29 -0400
+Subject: [PATCH 04/32] asf hacks
+
+---
+ libavformat/asfdec.c |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/asfdec.c b/libavformat/asfdec.c
+index 149a493..4d8882f 100644
+--- a/libavformat/asfdec.c
++++ b/libavformat/asfdec.c
+@@ -1141,6 +1141,8 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
+             }
+         }
+         asf->index_read= 1;
++    } else {
++        asf->index_read= -1;
+     }
+     url_fseek(s->pb, current_pos, SEEK_SET);
+ }
+@@ -1152,9 +1154,20 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int
+     int64_t pos;
+     int index;
+ 
++    if (pts == 0) {
++      // this is a hack since av_gen_search searches the entire file in this case
++      av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", s->data_offset);
++      if (url_fseek(s->pb, s->data_offset, SEEK_SET) < 0)
++          return -1;
++      return 0;
++    }
++
+     if (s->packet_size <= 0)
+         return -1;
+ 
++    if (st->codec->codec_type != CODEC_TYPE_VIDEO)
++        return -1;
++
+     /* Try using the protocol's read_seek if available */
+     if(s->pb) {
+         int ret = av_url_read_fseek(s->pb, stream_index, pts, flags);
+@@ -1201,7 +1214,8 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int
+ 
+         /* do the seek */
+         av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", pos);
+-        url_fseek(s->pb, pos, SEEK_SET);
++        if(url_fseek(s->pb, pos, SEEK_SET)<0)
++            return -1;
+     }
+     asf_reset_header(s);
+     return 0;
+-- 
+1.7.0
+

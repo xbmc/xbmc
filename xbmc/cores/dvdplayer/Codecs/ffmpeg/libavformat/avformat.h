@@ -573,7 +573,7 @@ typedef struct AVChapter {
 } AVChapter;
 
 #if LIBAVFORMAT_VERSION_MAJOR < 53
-#define MAX_STREAMS 20
+#define MAX_STREAMS 100
 #endif
 
 /**
