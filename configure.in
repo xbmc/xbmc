@@ -1586,6 +1586,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-gpl \
       `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
       `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
+      --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
       `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
