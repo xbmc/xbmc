@@ -148,7 +148,6 @@ IF %comp%==vs2008 (
 :MAKE_BUILD_EXE
   ECHO Copying files...
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
-  md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
   Echo CVS>>exclude.txt
@@ -178,6 +177,8 @@ IF %comp%==vs2008 (
   Echo voicemasks.xml>>exclude.txt
   Echo Lircmap.xml>>exclude.txt
   Echo getdeps.bat>>exclude.txt
+  
+  md BUILD_WIN32\Xbmc
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
