@@ -571,7 +571,7 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vec
 {
   if (outlineWidth)
   {
-    outlineWidth = outlineWidth * font->GetScaleFactor() + 0.5f;
+    outlineWidth = (int32_t)(outlineWidth * font->GetScaleFactor() + 0.5f);
     if (outlineWidth < 2)
       outlineWidth = 2;
   }

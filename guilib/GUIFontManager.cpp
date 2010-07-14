@@ -87,7 +87,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (sourceRes == RES_INVALID) // no source res specified, so assume the skin res
     sourceRes = m_skinResolution;
 
-  float newSize = iSize;
+  float newSize = (float)iSize;
   RescaleFontSizeAndAspect(&newSize, &aspect, sourceRes, preserveAspect);
 
   // First try to load the font from the skin
@@ -142,7 +142,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, iSize, pFontFile);
+  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, (float)iSize, pFontFile);
   m_vecFonts.push_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution
@@ -201,7 +201,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     OrigFontInfo fontInfo = m_vecFontInfo[i];
 
     float aspect = fontInfo.aspect;
-    float newSize = fontInfo.size;
+    float newSize = (float)fontInfo.size;
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
