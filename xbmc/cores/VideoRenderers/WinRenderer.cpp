@@ -165,13 +165,8 @@ void CWinRenderer::Update(bool bPauseDrawing)
 
 void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
-  ManageTextures();
-
-  CSingleLock lock(g_graphicsContext);
-
-  ManageDisplay();
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
   if (clear)
     pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
@@ -179,6 +174,13 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   else
     pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+
+  if (!m_bConfigured) return;
+  ManageTextures();
+
+  CSingleLock lock(g_graphicsContext);
+
+  ManageDisplay();
 
   Render(flags);
 }
