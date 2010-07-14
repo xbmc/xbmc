@@ -46,11 +46,11 @@ void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, in
  * Omitting this step creates audible distortion on the sinusoidal sweep
  * test vectors in 3GPP TS 26.074.
  *
- * @param[in,out] lsf    LSFs in Hertz
+ * @param lsf            [in,out] LSFs in Hertz
  * @param min_spacing    minimum distance between two consecutive lsf values
- * @param                size size of the lsf vector
+ * @param size           size of the lsf vector
  */
-void ff_set_min_dist_lsf(float *lsf, double min_spacing, int order);
+void ff_set_min_dist_lsf(float *lsf, double min_spacing, int size);
 
 /**
  * \brief Convert LSF to LSP
@@ -82,9 +82,10 @@ void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd
 
 
 #define MAX_LP_HALF_ORDER 8
+#define MAX_LP_ORDER      (2*MAX_LP_HALF_ORDER)
 
 /**
- * Reconstructs LPC coefficients from the line spectral pair frequencies.
+ * Reconstruct LPC coefficients from the line spectral pair frequencies.
  *
  * @param lsp line spectral pairs in cosine domain
  * @param lpc linear predictive coding coefficients
@@ -105,7 +106,7 @@ void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order);
 void ff_sort_nearly_sorted_floats(float *vals, int len);
 
 /**
- * Computes the Pa / (1 + z(-1)) or Qa / (1 - z(-1)) coefficients
+ * Compute the Pa / (1 + z(-1)) or Qa / (1 - z(-1)) coefficients
  * needed for LSP to LPC conversion.
  * We only need to calculate the 6 first elements of the polynomial.
  *

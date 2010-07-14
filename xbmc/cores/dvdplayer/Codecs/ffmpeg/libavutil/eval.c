@@ -182,7 +182,7 @@ void av_free_expr(AVExpr *e)
 static int parse_primary(AVExpr **e, Parser *p)
 {
     AVExpr *d = av_mallocz(sizeof(AVExpr));
-    char *next= p->s;
+    char *next = p->s, *s0 = p->s;
     int ret, i;
 
     if (!d)
@@ -211,7 +211,7 @@ static int parse_primary(AVExpr **e, Parser *p)
 
     p->s= strchr(p->s, '(');
     if (p->s==NULL) {
-        av_log(p, AV_LOG_ERROR, "undefined constant or missing (\n");
+        av_log(p, AV_LOG_ERROR, "Undefined constant or missing '(' in '%s'\n", s0);
         p->s= next;
         av_free_expr(d);
         return AVERROR(EINVAL);
@@ -222,7 +222,7 @@ static int parse_primary(AVExpr **e, Parser *p)
         if ((ret = parse_expr(&d, p)) < 0)
             return ret;
         if (p->s[0] != ')') {
-            av_log(p, AV_LOG_ERROR, "missing )\n");
+            av_log(p, AV_LOG_ERROR, "Missing ')' in '%s'\n", s0);
             av_free_expr(d);
             return AVERROR(EINVAL);
         }
@@ -239,7 +239,7 @@ static int parse_primary(AVExpr **e, Parser *p)
         parse_expr(&d->param[1], p);
     }
     if (p->s[0] != ')') {
-        av_log(p, AV_LOG_ERROR, "missing )\n");
+        av_log(p, AV_LOG_ERROR, "Missing ')' or too many args in '%s'\n", s0);
         av_free_expr(d);
         return AVERROR(EINVAL);
     }
@@ -290,7 +290,7 @@ static int parse_primary(AVExpr **e, Parser *p)
             }
         }
 
-        av_log(p, AV_LOG_ERROR, "unknown function\n");
+        av_log(p, AV_LOG_ERROR, "Unknown function in '%s'\n", s0);
         av_free_expr(d);
         return AVERROR(EINVAL);
     }
@@ -448,6 +448,7 @@ int av_parse_expr(AVExpr **expr, const char *s,
     AVExpr *e = NULL;
     char *w = av_malloc(strlen(s) + 1);
     char *wp = w;
+    const char *s0 = s;
     int ret = 0;
 
     if (!w)
@@ -470,6 +471,11 @@ int av_parse_expr(AVExpr **expr, const char *s,
 
     if ((ret = parse_expr(&e, &p)) < 0)
         goto end;
+    if (*p.s) {
+        av_log(&p, AV_LOG_ERROR, "Invalid chars '%s' at the end of expression '%s'\n", p.s, s0);
+        ret = AVERROR(EINVAL);
+        goto end;
+    }
     if (!verify_expr(e)) {
         av_free_expr(e);
         ret = AVERROR(EINVAL);
@@ -526,6 +532,44 @@ int main(void)
 {
     int i;
     double d;
+    const char **expr, *exprs[] = {
+        "",
+        "1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)",
+        "80G/80Gi"
+        "1k",
+        "1Gi",
+        "1gi",
+        "1GiFoo",
+        "1k+1k",
+        "1Gi*3foo",
+        "foo",
+        "foo(",
+        "foo()",
+        "foo)",
+        "sin",
+        "sin(",
+        "sin()",
+        "sin)",
+        "sin 10",
+        "sin(1,2,3)",
+        "sin(1 )",
+        "1",
+        "1foo",
+        "bar + PI + E + 100f*2 + foo",
+        "13k + 12f - foo(1, 2)",
+        "1gi",
+        "1Gi",
+        NULL
+    };
+
+    for (expr = exprs; *expr; expr++) {
+        printf("Evaluating '%s'\n", *expr);
+        av_parse_and_eval_expr(&d, *expr,
+                               const_names, const_values,
+                               NULL, NULL, NULL, NULL, NULL, 0, NULL);
+        printf("'%s' -> %f\n\n", *expr, d);
+    }
+
     av_parse_and_eval_expr(&d, "1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)",
                            const_names, const_values,
                            NULL, NULL, NULL, NULL, NULL, 0, NULL);

@@ -42,6 +42,7 @@ hiegrep '/\*[-<\* ]*\*/'  'empty comment' $*
 hiegrep 'for *\( *'"$ERE_PRITYP"' '  'not gcc 2.95 compatible' $*
 hiegrep '(static|inline|const) *\1'  'duplicate word' $*
 hiegrep 'INIT_VLC_USE_STATIC' 'forbidden ancient vlc type' $*
+hiegrep '=[-+\*\&] ' 'looks like compound assignment' $*
 
 hiegrep2 '(int|unsigned|static|void)[a-zA-Z0-9 _]*(init|end)[a-zA-Z0-9 _]*\(.*[^;]$' '(av_cold|:\+[^a-zA-Z_])' 'These functions may need av_cold, please review the whole patch for similar functions needing av_cold' $*
 
@@ -70,6 +71,7 @@ hiegrep '(\( *[0-9] *(&&|\|\|)|(&&|\|\|) *[0-9] *\))' 'overriding condition' $*
 hiegrep '(:\+|,|;)( *|static|\*)*'"$ERE_PRITYP"' *\*( |\*)*(src|source|input|in[^a-z])' 'missing const?' $*
 hiegrep '(:\+|,|;)( *|static|\*)*'"$ERE_PRITYP"' *(src|source|input|in)([0-9A-Z_][0-9A-Za-z_]*){1,} *\[' 'missing const (test2)?' $*
 hiegrep ' *static *'"$ERE_FUNCS"'[^)]*\);' 'static prototype, maybe you should reorder your functions' $*
+hiegrep '@file: *[a-zA-Z0-9_]' 'doxy filetag with filename can in the future cause problems when forgotten during a rename' $*
 
 hiegrep2 '\.long_name *=' 'NULL_IF_CONFIG_SMAL' 'missing NULL_IF_CONFIG_SMAL' $*
 hiegrep2 '\.pix_fmts *= *\(' 'const' 'missing const for pix_fmts array' $*
@@ -112,7 +114,7 @@ for i in \
     ; do
     echo $i | grep '^NULL$' && continue
     egrep $i' *(\+|-|\*|/|\||&|%|)=[^=]' $* >/dev/null || echo "possibly never written:"$i >> $TMP
-    egrep '(=|\(|return).*'$i'[^=]*$'    $* >/dev/null || echo "possibly never read   :"$i >> $TMP
+    egrep '(=|\(|return).*'$i'(==|[^=])*$'    $* >/dev/null || echo "possibly never read   :"$i >> $TMP
     egrep -o $i' *((\+|-|\*|/|\||&|%|)=[^=]|\+\+|--) *(0x|)[0-9]*(;|)'   $* |\
            egrep -v $i' *= *(0x|)[0-9]{1,};'>/dev/null || echo "possibly constant     :"$i >> $TMP
 done

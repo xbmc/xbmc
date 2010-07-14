@@ -13,6 +13,7 @@ PROGS      := $(addsuffix   $(EXESUF), $(PROGS-yes))
 PROGS_G     = $(addsuffix _g$(EXESUF), $(PROGS-yes))
 OBJS        = $(addsuffix .o,          $(PROGS-yes)) cmdutils.o
 MANPAGES    = $(addprefix doc/, $(addsuffix .1, $(PROGS-yes)))
+HTMLPAGES   = $(addprefix doc/, $(addsuffix -doc.html, $(PROGS-yes)))
 TOOLS       = $(addprefix tools/, $(addsuffix $(EXESUF), cws2fws pktdumper probetest qt-faststart trasher))
 HOSTPROGS   = $(addprefix tests/, audiogen videogen rotozoom tiny_psnr)
 
@@ -20,6 +21,7 @@ BASENAMES   = ffmpeg ffplay ffprobe ffserver
 ALLPROGS    = $(addsuffix   $(EXESUF), $(BASENAMES))
 ALLPROGS_G  = $(addsuffix _g$(EXESUF), $(BASENAMES))
 ALLMANPAGES = $(addsuffix .1, $(BASENAMES))
+ALLHTMLPAGES= $(addsuffix -doc.html, $(BASENAMES))
 
 FFLIBS-$(CONFIG_AVDEVICE) += avdevice
 FFLIBS-$(CONFIG_AVFILTER) += avfilter
@@ -101,9 +103,13 @@ version.h .version:
 
 alltools: $(TOOLS)
 
-documentation: $(addprefix doc/, developer.html faq.html ffmpeg-doc.html \
-                                 ffplay-doc.html ffprobe-doc.html ffserver-doc.html \
-                                 general.html libavfilter.html $(ALLMANPAGES))
+documentation: $(addprefix doc/, developer.html faq.html general.html libavfilter.html \
+                                 $(ALLHTMLPAGES) $(ALLMANPAGES))
+
+$(HTMLPAGES) $(MANPAGES): doc/fftools-common-opts.texi
+
+doc/ffmpeg.pod doc/ffmpeg-doc.html: doc/filters.texi
+doc/ffplay.pod doc/ffplay-doc.html: doc/filters.texi
 
 doc/%.html: TAG = HTML
 doc/%.html: doc/%.texi
@@ -170,87 +176,6 @@ fulltest test: codectest lavftest seektest
 FFSERVER_REFFILE = $(SRC_PATH)/tests/ffserver.regression.ref
 SEEK_REFFILE     = $(SRC_PATH)/tests/seek.regression.ref
 
-ENCDEC = $(and $(CONFIG_$(1)_ENCODER),$(CONFIG_$(1)_DECODER))
-MUXDEM = $(and $(CONFIG_$(1)_MUXER),$(CONFIG_$(or $(2),$(1))_DEMUXER))
-
-VCODEC_TESTS =
-VCODEC_TESTS-$(call ENCDEC,ASV1)             += asv1
-VCODEC_TESTS-$(call ENCDEC,ASV2)             += asv2
-VCODEC_TESTS-$(call ENCDEC,DNXHD)            += dnxhd_1080i dnxhd_720p dnxhd_720p_rd
-VCODEC_TESTS-$(call ENCDEC,DVVIDEO)          += dv dv50
-VCODEC_TESTS-$(call ENCDEC,FFV1)             += ffv1
-VCODEC_TESTS-$(call ENCDEC,FLASHSV)          += flashsv
-VCODEC_TESTS-$(call ENCDEC,FLV)              += flv
-VCODEC_TESTS-$(call ENCDEC,H261)             += h261
-VCODEC_TESTS-$(call ENCDEC,H263)             += h263 h263p
-VCODEC_TESTS-$(call ENCDEC,HUFFYUV)          += huffyuv
-VCODEC_TESTS-$(call ENCDEC,JPEGLS)           += jpegls
-VCODEC_TESTS-$(call ENCDEC,MJPEG)            += mjpeg ljpeg
-VCODEC_TESTS-$(call ENCDEC,MPEG1VIDEO)       += mpeg mpeg1b
-VCODEC_TESTS-$(call ENCDEC,MPEG2VIDEO)       += mpeg2 mpeg2thread
-VCODEC_TESTS-$(call ENCDEC,MPEG4)            += mpeg4 mpeg4adv mpeg4nr mpeg4thread error rc
-VCODEC_TESTS-$(call ENCDEC,MSMPEG4V1)        += msmpeg4
-VCODEC_TESTS-$(call ENCDEC,MSMPEG4V2)        += msmpeg4v2
-VCODEC_TESTS-$(call ENCDEC,RAWVIDEO)         += rgb yuv
-VCODEC_TESTS-$(call ENCDEC,ROQ)              += roq
-VCODEC_TESTS-$(call ENCDEC,RV10)             += rv10
-VCODEC_TESTS-$(call ENCDEC,RV20)             += rv20
-VCODEC_TESTS-$(call ENCDEC,SNOW)             += snow snowll
-VCODEC_TESTS-$(call ENCDEC,SVQ1)             += svq1
-VCODEC_TESTS-$(call ENCDEC,WMV1)             += wmv1
-VCODEC_TESTS-$(call ENCDEC,WMV2)             += wmv2
-
-ACODEC_TESTS =
-ACODEC_TESTS-$(call ENCDEC,AC3)              += ac3
-ACODEC_TESTS-$(call ENCDEC,ADPCM_G726)       += g726
-ACODEC_TESTS-$(call ENCDEC,ADPCM_IMA_QT)     += adpcm_ima_qt
-ACODEC_TESTS-$(call ENCDEC,ADPCM_IMA_WAV)    += adpcm_ima_wav
-ACODEC_TESTS-$(call ENCDEC,ADPCM_MS)         += adpcm_ms
-ACODEC_TESTS-$(call ENCDEC,ADPCM_SWF)        += adpcm_swf
-ACODEC_TESTS-$(call ENCDEC,ADPCM_YAMAHA)     += adpcm_yam
-ACODEC_TESTS-$(call ENCDEC,ALAC)             += alac
-ACODEC_TESTS-$(call ENCDEC,FLAC)             += flac
-ACODEC_TESTS-$(call ENCDEC,MP2)              += mp2
-ACODEC_TESTS-$(call ENCDEC,PCM_S16LE)        += pcm         # fixme
-ACODEC_TESTS-$(call ENCDEC,WMAV1)            += wmav1
-ACODEC_TESTS-$(call ENCDEC,WMAV1)            += wmav2
-
-LAVF_TESTS =
-LAVF_TESTS-$(call MUXDEM,AIFF)               += aiff
-LAVF_TESTS-$(call MUXDEM,PCM_ALAW)           += alaw
-LAVF_TESTS-$(call MUXDEM,ASF)                += asf
-LAVF_TESTS-$(call MUXDEM,AU)                 += au
-LAVF_TESTS-$(call MUXDEM,AVI)                += avi
-LAVF_TESTS-$(call ENCDEC,BMP)                += bmp
-LAVF_TESTS-$(call MUXDEM,DV)                 += dv_fmt
-LAVF_TESTS-$(call MUXDEM,FFM)                += ffm
-LAVF_TESTS-$(call MUXDEM,FLV)                += flv_fmt
-LAVF_TESTS-$(call ENCDEC,GIF)                += gif
-LAVF_TESTS-$(call MUXDEM,GXF)                += gxf
-LAVF_TESTS-$(call ENCDEC,MJPEG)              += jpg
-LAVF_TESTS-$(call MUXDEM,MATROSKA)           += mkv
-LAVF_TESTS-$(call MUXDEM,MMF)                += mmf
-LAVF_TESTS-$(call MUXDEM,MOV)                += mov
-LAVF_TESTS-$(call MUXDEM,MPEG1SYSTEM,MPEGPS) += mpg
-LAVF_TESTS-$(call MUXDEM,PCM_MULAW)          += mulaw
-LAVF_TESTS-$(call MUXDEM,MXF)                += mxf
-LAVF_TESTS-$(call MUXDEM,NUT)                += nut
-LAVF_TESTS-$(call MUXDEM,OGG)                += ogg
-LAVF_TESTS-$(call ENCDEC,PBM)                += pbmpipe
-LAVF_TESTS-$(call ENCDEC,PCX)                += pcx
-LAVF_TESTS-$(call ENCDEC,PGM)                += pgm pgmpipe
-LAVF_TESTS-$(call MUXDEM,RAWVIDEO)           += pixfmt
-LAVF_TESTS-$(call ENCDEC,PPM)                += ppm ppmpipe
-LAVF_TESTS-$(call MUXDEM,RM)                 += rm
-LAVF_TESTS-$(call ENCDEC,SGI)                += sgi
-LAVF_TESTS-$(call MUXDEM,SWF)                += swf
-LAVF_TESTS-$(call ENCDEC,TARGA)              += tga
-LAVF_TESTS-$(call ENCDEC,TIFF)               += tiff
-LAVF_TESTS-$(call MUXDEM,MPEGTS)             += ts
-LAVF_TESTS-$(call MUXDEM,VOC)                += voc
-LAVF_TESTS-$(call MUXDEM,WAV)                += wav
-LAVF_TESTS-$(call MUXDEM,YUV4MPEGPIPE)       += yuv4mpeg
-
 LAVFI_TESTS =           \
     crop                \
     crop_scale          \
@@ -262,6 +187,7 @@ LAVFI_TESTS =           \
     vflip               \
     vflip_crop          \
     vflip_vflip         \
+    lavfi_pixdesc       \
 #   lavfi_pix_fmts      \
 
 ACODEC_TESTS := $(addprefix regtest-, $(ACODEC_TESTS) $(ACODEC_TESTS-yes))
@@ -275,35 +201,41 @@ codectest: $(CODEC_TESTS)
 lavftest:  $(LAVF_TESTS)
 lavfitest: $(LAVFI_TESTS)
 
-$(ACODEC_TESTS): regtest-aref
-$(VCODEC_TESTS): regtest-vref
-$(LAVF_TESTS) $(LAVFI_TESTS): regtest-ref
+AREF = tests/data/acodec.ref.wav
+VREF = tests/data/vsynth1.ref.yuv
+REFS = $(AREF) $(VREF)
+
+$(ACODEC_TESTS): $(AREF)
+$(VCODEC_TESTS): $(VREF)
+$(LAVF_TESTS) $(LAVFI_TESTS): $(REFS)
 
 REFFILE = $(SRC_PATH)/tests/ref/$(1)/$(2:regtest-%=%)
-RESFILE = tests/data/$(2:regtest-%=%).$(1).regression
+RESFILE = tests/data/regression/$(1)/$(2:regtest-%=%)
 
-define CODECTEST_CMD
-	$(SRC_PATH)/tests/codec-regression.sh $@ vsynth1 tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-	$(SRC_PATH)/tests/codec-regression.sh $@ vsynth2 tests/vsynth2 "$(TARGET_EXEC)" "$(TARGET_PATH)"
+define VCODECTEST
+	@echo "TEST VCODEC $(1:regtest-%=%)"
+	$(SRC_PATH)/tests/codec-regression.sh $(1) vsynth1 tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(SRC_PATH)/tests/codec-regression.sh $(1) vsynth2 tests/vsynth2 "$(TARGET_EXEC)" "$(TARGET_PATH)"
 endef
 
-regtest-ref: regtest-aref regtest-vref
+define ACODECTEST
+	@echo "TEST ACODEC $(1:regtest-%=%)"
+	$(SRC_PATH)/tests/codec-regression.sh $(1) acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
+endef
 
-regtest-vref: ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm
-	$(CODECTEST_CMD)
+$(VREF): ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm
+	@$(call VCODECTEST,vref)
 
-regtest-aref: ffmpeg$(EXESUF) tests/data/asynth1.sw
-	@$(SRC_PATH)/tests/codec-regression.sh $@ acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
+$(AREF): ffmpeg$(EXESUF) tests/data/asynth1.sw
+	@$(call ACODECTEST,aref)
 
 $(VCODEC_TESTS): tests/tiny_psnr$(HOSTEXESUF)
-	@echo "TEST VCODEC $(@:regtest-%=%)"
-	@$(CODECTEST_CMD)
+	@$(call VCODECTEST,$@)
 	@diff -u -w $(call REFFILE,vsynth1,$@) $(call RESFILE,vsynth1,$@)
 	@diff -u -w $(call REFFILE,vsynth2,$@) $(call RESFILE,vsynth2,$@)
 
 $(ACODEC_TESTS): tests/tiny_psnr$(HOSTEXESUF)
-	@echo "TEST ACODEC $(@:regtest-%=%)"
-	@$(SRC_PATH)/tests/codec-regression.sh $@ acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	@$(call ACODECTEST,$@)
 	@diff -u -w $(call REFFILE,acodec,$@) $(call RESFILE,acodec,$@)
 
 $(LAVF_TESTS):
@@ -327,30 +259,36 @@ ffservertest: ffserver$(EXESUF) tests/vsynth1/00.pgm tests/data/asynth1.sw
 	$(SRC_PATH)/tests/ffserver-regression.sh $(FFSERVER_REFFILE) $(SRC_PATH)/tests/ffserver.conf
 
 tests/vsynth1/00.pgm: tests/videogen$(HOSTEXESUF)
-	mkdir -p tests/vsynth1
-	$(BUILD_ROOT)/$< 'tests/vsynth1/'
+	@mkdir -p tests/vsynth1
+	$(M)$(BUILD_ROOT)/$< 'tests/vsynth1/'
 
 tests/vsynth2/00.pgm: tests/rotozoom$(HOSTEXESUF)
-	mkdir -p tests/vsynth2
-	$(BUILD_ROOT)/$< 'tests/vsynth2/' $(SRC_PATH)/tests/lena.pnm
+	@mkdir -p tests/vsynth2
+	$(M)$(BUILD_ROOT)/$< 'tests/vsynth2/' $(SRC_PATH)/tests/lena.pnm
 
 tests/data/asynth1.sw: tests/audiogen$(HOSTEXESUF)
-	mkdir -p tests/data
-	$(BUILD_ROOT)/$< $@
+	@mkdir -p tests/data
+	$(M)$(BUILD_ROOT)/$< $@
+
+tests/data/asynth1.sw tests/vsynth%/00.pgm: TAG = GEN
 
 tests/seek_test$(EXESUF): tests/seek_test.o $(FF_DEP_LIBS)
 	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 include $(SRC_PATH_BARE)/tests/fate.mak
+include $(SRC_PATH_BARE)/tests/fate2.mak
+
+FATE_TESTS += $(FATE2_TESTS)
 
 ifdef SAMPLES
 fate: $(FATE_TESTS)
-$(FATE_TESTS): ffmpeg$(EXESUF)
+fate2: $(FATE2_TESTS)
+$(FATE_TESTS): ffmpeg$(EXESUF) tests/tiny_psnr$(HOSTEXESUF)
 	@echo "TEST FATE   $(@:fate-%=%)"
-	@$(SRC_PATH)/tests/fate-run.sh $@ "$(SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)'
+	@$(SRC_PATH)/tests/fate-run.sh $@ "$(SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)'
 else
-fate $(FATE_TESTS):
+fate fate2 $(FATE_TESTS):
 	@echo "SAMPLES not specified, cannot run FATE"
 endif
 
-.PHONY: documentation *test regtest-* zlib-error alltools check config
+.PHONY: documentation *test regtest-* alltools check config

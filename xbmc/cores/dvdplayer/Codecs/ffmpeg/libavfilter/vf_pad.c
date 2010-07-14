@@ -27,7 +27,100 @@
 #include "avfilter.h"
 #include "parseutils.h"
 #include "libavutil/pixdesc.h"
-#include "libavcodec/colorspace.h"
+#include "libavutil/colorspace.h"
+
+enum { RED = 0, GREEN, BLUE, ALPHA };
+
+static int fill_line_with_color(uint8_t *line[4], int line_step[4], int w, uint8_t color[4],
+                                enum PixelFormat pix_fmt, uint8_t rgba_color[4], int *is_packed_rgba)
+{
+    uint8_t rgba_map[4] = {0};
+    int i;
+    const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[pix_fmt];
+    int hsub = pix_desc->log2_chroma_w;
+
+    *is_packed_rgba = 1;
+    switch (pix_fmt) {
+    case PIX_FMT_ARGB:  rgba_map[ALPHA] = 0; rgba_map[RED  ] = 1; rgba_map[GREEN] = 2; rgba_map[BLUE ] = 3; break;
+    case PIX_FMT_ABGR:  rgba_map[ALPHA] = 0; rgba_map[BLUE ] = 1; rgba_map[GREEN] = 2; rgba_map[RED  ] = 3; break;
+    case PIX_FMT_RGBA:
+    case PIX_FMT_RGB24: rgba_map[RED  ] = 0; rgba_map[GREEN] = 1; rgba_map[BLUE ] = 2; rgba_map[ALPHA] = 3; break;
+    case PIX_FMT_BGRA:
+    case PIX_FMT_BGR24: rgba_map[BLUE ] = 0; rgba_map[GREEN] = 1; rgba_map[RED  ] = 2; rgba_map[ALPHA] = 3; break;
+    default:
+        *is_packed_rgba = 0;
+    }
+
+    if (*is_packed_rgba) {
+        line_step[0] = (av_get_bits_per_pixel(pix_desc))>>3;
+        for (i = 0; i < 4; i++)
+            color[rgba_map[i]] = rgba_color[i];
+
+        line[0] = av_malloc(w * line_step[0]);
+        for (i = 0; i < w; i++)
+            memcpy(line[0] + i * line_step[0], color, line_step[0]);
+    } else {
+        int plane;
+
+        color[RED  ] = RGB_TO_Y_CCIR(rgba_color[0], rgba_color[1], rgba_color[2]);
+        color[GREEN] = RGB_TO_U_CCIR(rgba_color[0], rgba_color[1], rgba_color[2], 0);
+        color[BLUE ] = RGB_TO_V_CCIR(rgba_color[0], rgba_color[1], rgba_color[2], 0);
+        color[ALPHA] = rgba_color[3];
+
+        for (plane = 0; plane < 4; plane++) {
+            int line_size;
+            int hsub1 = (plane == 1 || plane == 2) ? hsub : 0;
+
+            line_step[plane] = 1;
+            line_size = (w >> hsub1) * line_step[plane];
+            line[plane] = av_malloc(line_size);
+            memset(line[plane], color[plane], line_size);
+        }
+    }
+
+    return 0;
+}
+
+static void draw_rectangle(AVFilterPicRef *outpic, uint8_t *line[4], int line_step[4],
+                           int hsub, int vsub, int x, int y, int w, int h)
+{
+    int i, plane;
+    uint8_t *p;
+
+    for (plane = 0; plane < 4 && outpic->data[plane]; plane++) {
+        int hsub1 = plane == 1 || plane == 2 ? hsub : 0;
+        int vsub1 = plane == 1 || plane == 2 ? vsub : 0;
+
+        p = outpic->data[plane] + (y >> vsub1) * outpic->linesize[plane];
+        for (i = 0; i < (h >> vsub1); i++) {
+            memcpy(p + (x >> hsub1) * line_step[plane], line[plane], (w >> hsub1) * line_step[plane]);
+            p += outpic->linesize[plane];
+        }
+    }
+}
+
+static int query_formats(AVFilterContext *ctx)
+{
+    static const enum PixelFormat pix_fmts[] = {
+        PIX_FMT_ARGB,         PIX_FMT_RGBA,
+        PIX_FMT_ABGR,         PIX_FMT_BGRA,
+        PIX_FMT_RGB24,        PIX_FMT_BGR24,
+
+        PIX_FMT_YUV444P,      PIX_FMT_YUV422P,
+        PIX_FMT_YUV420P,      PIX_FMT_YUV411P,
+        PIX_FMT_YUV410P,      PIX_FMT_YUV440P,
+        PIX_FMT_YUVJ444P,     PIX_FMT_YUVJ422P,
+        PIX_FMT_YUVJ420P,     PIX_FMT_YUVJ440P,
+        PIX_FMT_YUVA420P,
+
+        PIX_FMT_NONE
+    };
+
+    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    return 0;
+}
+
+#if CONFIG_PAD_FILTER
 
 typedef struct {
     int w, h;               ///< output dimensions, a value of 0 will result in the input size
@@ -71,56 +164,13 @@ static av_cold void uninit(AVFilterContext *ctx)
     }
 }
 
-static int query_formats(AVFilterContext *ctx)
-{
-    static const enum PixelFormat pix_fmts[] = {
-        PIX_FMT_ARGB,         PIX_FMT_RGBA,
-        PIX_FMT_ABGR,         PIX_FMT_BGRA,
-        PIX_FMT_RGB24,        PIX_FMT_BGR24,
-
-        PIX_FMT_YUV444P,      PIX_FMT_YUV422P,
-        PIX_FMT_YUV420P,      PIX_FMT_YUV411P,
-        PIX_FMT_YUV410P,      PIX_FMT_YUV440P,
-        PIX_FMT_YUVJ444P,     PIX_FMT_YUVJ422P,
-        PIX_FMT_YUVJ420P,     PIX_FMT_YUVJ440P,
-        PIX_FMT_YUVA420P,
-
-        PIX_FMT_NONE
-    };
-
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
-    return 0;
-}
-
-enum { RED = 0, GREEN, BLUE, ALPHA };
-
 static int config_input(AVFilterLink *inlink)
 {
     AVFilterContext *ctx = inlink->dst;
     PadContext *pad = ctx->priv;
     const AVPixFmtDescriptor *pix_desc = &av_pix_fmt_descriptors[inlink->format];
     uint8_t rgba_color[4];
-    uint8_t rgba_map[4] = {0};
-    int i, is_packed_rgb = 1;
-
-    switch (inlink->format) {
-    case PIX_FMT_ARGB:
-        rgba_map[ALPHA] = 0; rgba_map[RED] = 1; rgba_map[GREEN] = 2; rgba_map[BLUE] = 3;
-        break;
-    case PIX_FMT_ABGR:
-        rgba_map[ALPHA] = 0; rgba_map[BLUE] = 1; rgba_map[GREEN] = 2; rgba_map[RED] = 3;
-        break;
-    case PIX_FMT_RGBA:
-    case PIX_FMT_RGB24:
-        rgba_map[RED] = 0; rgba_map[GREEN] = 1; rgba_map[BLUE] = 2; rgba_map[ALPHA] = 3;
-        break;
-    case PIX_FMT_BGRA:
-    case PIX_FMT_BGR24:
-        rgba_map[BLUE] = 0; rgba_map[GREEN] = 1; rgba_map[RED] = 2; rgba_map[ALPHA] = 3;
-        break;
-    default:
-        is_packed_rgb = 0;
-    }
+    int is_packed_rgba;
 
     pad->hsub = pix_desc->log2_chroma_w;
     pad->vsub = pix_desc->log2_chroma_h;
@@ -139,37 +189,13 @@ static int config_input(AVFilterLink *inlink)
     pad->in_h = inlink->h & ~((1 << pad->vsub) - 1);
 
     memcpy(rgba_color, pad->color, sizeof(rgba_color));
-    if (is_packed_rgb) {
-        pad->line_step[0] = (av_get_bits_per_pixel(&av_pix_fmt_descriptors[inlink->format]))>>3;
-        for (i = 0; i < 4; i++)
-            pad->color[rgba_map[i]] = rgba_color[i];
-
-        pad->line[0] = av_malloc(pad->w * pad->line_step[0]);
-        for (i = 0; i < pad->w; i++)
-            memcpy(pad->line[0] + i * pad->line_step[0], pad->color, pad->line_step[0]);
-    } else {
-        int plane;
-
-        pad->color[0] = RGB_TO_Y_CCIR(rgba_color[0], rgba_color[1], rgba_color[2]);
-        pad->color[1] = RGB_TO_U_CCIR(rgba_color[0], rgba_color[1], rgba_color[2], 0);
-        pad->color[2] = RGB_TO_V_CCIR(rgba_color[0], rgba_color[1], rgba_color[2], 0);
-        pad->color[3] = rgba_color[3];
-
-        for (plane = 0; plane < 4; plane++) {
-            int line_size;
-            int hsub = (plane == 1 || plane == 2) ? pad->hsub : 0;
-
-            pad->line_step[plane] = 1;
-            line_size = (pad->w >> hsub) * pad->line_step[plane];
-            pad->line[plane] = av_malloc(line_size);
-            memset(pad->line[plane], pad->color[plane], line_size);
-        }
-    }
+    fill_line_with_color(pad->line, pad->line_step, pad->w, pad->color,
+                         inlink->format, rgba_color, &is_packed_rgba);
 
     av_log(ctx, AV_LOG_INFO, "w:%d h:%d x:%d y:%d color:0x%02X%02X%02X%02X[%s]\n",
            pad->w, pad->h, pad->x, pad->y,
            pad->color[0], pad->color[1], pad->color[2], pad->color[3],
-           is_packed_rgb ? "rgba" : "yuva");
+           is_packed_rgba ? "rgba" : "yuva");
 
     if (pad->x <  0 || pad->y <  0                      ||
         pad->w <= 0 || pad->h <= 0                      ||
@@ -238,24 +264,6 @@ static void end_frame(AVFilterLink *link)
     avfilter_unref_pic(link->cur_pic);
 }
 
-static void draw_rectangle(AVFilterPicRef *outpic, uint8_t *line[4], int line_step[4],
-                           int hsub, int vsub, int x, int y, int w, int h)
-{
-    int i, plane;
-    uint8_t *p;
-
-    for (plane = 0; plane < 4 && outpic->data[plane]; plane++) {
-        int hsub1 = plane == 1 || plane == 2 ? hsub : 0;
-        int vsub1 = plane == 1 || plane == 2 ? vsub : 0;
-
-        p = outpic->data[plane] + (y >> vsub1) * outpic->linesize[plane];
-        for (i = 0; i < (h >> vsub1); i++) {
-            memcpy(p + (x >> hsub1) * line_step[plane], line[plane], (w >> hsub1) * line_step[plane]);
-            p += outpic->linesize[plane];
-        }
-    }
-}
-
 static void draw_send_bar_slice(AVFilterLink *link, int y, int h, int slice_dir, int before_slice)
 {
     PadContext *pad = link->dst->priv;
@@ -306,7 +314,7 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 
 AVFilter avfilter_vf_pad = {
     .name          = "pad",
-    .description   = "Add pads to the input image.",
+    .description   = NULL_IF_CONFIG_SMALL("Pad input image to width:height[:x:y[:color]] (default x and y: 0, default color: black)."),
 
     .priv_size     = sizeof(PadContext),
     .init          = init,
@@ -327,3 +335,5 @@ AVFilter avfilter_vf_pad = {
                                     .config_props     = config_output, },
                                   { .name = NULL}},
 };
+
+#endif /* CONFIG_PAD_FILTER */

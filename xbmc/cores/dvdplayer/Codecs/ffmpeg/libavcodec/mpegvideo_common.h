@@ -580,11 +580,11 @@ static inline void chroma_4mv_motion(MpegEncContext *s,
 
     src_x = s->mb_x * 8 + mx;
     src_y = s->mb_y * 8 + my;
-    src_x = av_clip(src_x, -8, s->width/2);
-    if (src_x == s->width/2)
+    src_x = av_clip(src_x, -8, (s->width >> 1));
+    if (src_x == (s->width >> 1))
         dxy &= ~1;
-    src_y = av_clip(src_y, -8, s->height/2);
-    if (src_y == s->height/2)
+    src_y = av_clip(src_y, -8, (s->height >> 1));
+    if (src_y == (s->height >> 1))
         dxy &= ~2;
 
     offset = (src_y * (s->uvlinesize)) + src_x;
@@ -631,8 +631,8 @@ static inline void prefetch_motion(MpegEncContext *s, uint8_t **pix, int dir){
  * @param dest_cr chroma cr/v destination pointer
  * @param dir direction (0->forward, 1->backward)
  * @param ref_picture array[3] of pointers to the 3 planes of the reference picture
- * @param pic_op halfpel motion compensation function (average or put normally)
- * @param pic_op qpel motion compensation function (average or put normally)
+ * @param pix_op halfpel motion compensation function (average or put normally)
+ * @param qpix_op qpel motion compensation function (average or put normally)
  * the motion vectors are taken from s->mv and the MV type from s->mv_type
  */
 static av_always_inline void MPV_motion_internal(MpegEncContext *s,
@@ -670,19 +670,19 @@ static av_always_inline void MPV_motion_internal(MpegEncContext *s,
         }
 
         if(mb_x==0 || IS_INTRA(s->current_picture.mb_type[xy-1])){
-            *(int32_t*)mv_cache[1][0]= *(int32_t*)mv_cache[1][1];
-            *(int32_t*)mv_cache[2][0]= *(int32_t*)mv_cache[2][1];
+            AV_COPY32(mv_cache[1][0], mv_cache[1][1]);
+            AV_COPY32(mv_cache[2][0], mv_cache[2][1]);
         }else{
-            *(int32_t*)mv_cache[1][0]= *(int32_t*)s->current_picture.motion_val[0][mot_xy-1];
-            *(int32_t*)mv_cache[2][0]= *(int32_t*)s->current_picture.motion_val[0][mot_xy-1+mot_stride];
+            AV_COPY32(mv_cache[1][0], s->current_picture.motion_val[0][mot_xy-1]);
+            AV_COPY32(mv_cache[2][0], s->current_picture.motion_val[0][mot_xy-1+mot_stride]);
         }
 
         if(mb_x+1>=s->mb_width || IS_INTRA(s->current_picture.mb_type[xy+1])){
-            *(int32_t*)mv_cache[1][3]= *(int32_t*)mv_cache[1][2];
-            *(int32_t*)mv_cache[2][3]= *(int32_t*)mv_cache[2][2];
+            AV_COPY32(mv_cache[1][3], mv_cache[1][2]);
+            AV_COPY32(mv_cache[2][3], mv_cache[2][2]);
         }else{
-            *(int32_t*)mv_cache[1][3]= *(int32_t*)s->current_picture.motion_val[0][mot_xy+2];
-            *(int32_t*)mv_cache[2][3]= *(int32_t*)s->current_picture.motion_val[0][mot_xy+2+mot_stride];
+            AV_COPY32(mv_cache[1][3], s->current_picture.motion_val[0][mot_xy+2]);
+            AV_COPY32(mv_cache[2][3], s->current_picture.motion_val[0][mot_xy+2+mot_stride]);
         }
 
         mx = 0;

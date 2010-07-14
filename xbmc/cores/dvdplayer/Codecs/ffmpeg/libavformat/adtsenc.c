@@ -23,6 +23,7 @@
 #include "libavcodec/get_bits.h"
 #include "libavcodec/put_bits.h"
 #include "libavcodec/avcodec.h"
+#include "libavcodec/mpeg4audio.h"
 #include "avformat.h"
 #include "adts.h"
 
@@ -30,11 +31,17 @@ int ff_adts_decode_extradata(AVFormatContext *s, ADTSContext *adts, uint8_t *buf
 {
     GetBitContext gb;
     PutBitContext pb;
+    MPEG4AudioConfig m4ac;
+    int off;
 
     init_get_bits(&gb, buf, size * 8);
-    adts->objecttype = get_bits(&gb, 5) - 1;
-    adts->sample_rate_index = get_bits(&gb, 4);
-    adts->channel_conf = get_bits(&gb, 4);
+    off = ff_mpeg4audio_get_config(&m4ac, buf, size);
+    if (off < 0)
+        return off;
+    skip_bits_long(&gb, off);
+    adts->objecttype        = m4ac.object_type - 1;
+    adts->sample_rate_index = m4ac.sampling_index;
+    adts->channel_conf      = m4ac.chan_config;
 
     if (adts->objecttype > 3U) {
         av_log(s, AV_LOG_ERROR, "MPEG-4 AOT %d is not allowed in ADTS\n", adts->objecttype+1);
@@ -50,10 +57,6 @@ int ff_adts_decode_extradata(AVFormatContext *s, ADTSContext *adts, uint8_t *buf
     }
     if (get_bits(&gb, 1)) {
         av_log(s, AV_LOG_ERROR, "Scalable configurations are not allowed in ADTS\n");
-        return -1;
-    }
-    if (get_bits(&gb, 1)) {
-        av_log_missing_feature(s, "Signaled SBR or PS", 0);
         return -1;
     }
     if (!adts->channel_conf) {
@@ -74,7 +77,7 @@ static int adts_write_header(AVFormatContext *s)
     ADTSContext *adts = s->priv_data;
     AVCodecContext *avc = s->streams[0]->codec;
 
-    if(avc->extradata_size > 0 &&
+    if (avc->extradata_size > 0 &&
             ff_adts_decode_extradata(s, adts, avc->extradata, avc->extradata_size) < 0)
         return -1;
 
@@ -120,10 +123,10 @@ static int adts_write_packet(AVFormatContext *s, AVPacket *pkt)
 
     if (!pkt->size)
         return 0;
-    if(adts->write_adts) {
+    if (adts->write_adts) {
         ff_adts_write_frame_header(adts, buf, pkt->size, adts->pce_size);
         put_buffer(pb, buf, ADTS_HEADER_SIZE);
-        if(adts->pce_size) {
+        if (adts->pce_size) {
             put_buffer(pb, adts->pce_data, adts->pce_size);
             adts->pce_size = 0;
         }

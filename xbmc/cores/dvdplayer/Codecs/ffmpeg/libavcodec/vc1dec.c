@@ -162,17 +162,27 @@ enum Imode {
 
 static void vc1_loop_filter_iblk(MpegEncContext *s, int pq)
 {
-    int i, j;
-    if(!s->first_slice_line)
+    int j;
+    if (!s->first_slice_line) {
         s->dsp.vc1_v_loop_filter16(s->dest[0], s->linesize, pq);
-    s->dsp.vc1_v_loop_filter16(s->dest[0] + 8*s->linesize, s->linesize, pq);
-    for(i = !s->mb_x*8; i < 16; i += 8)
-        s->dsp.vc1_h_loop_filter16(s->dest[0] + i, s->linesize, pq);
-    for(j = 0; j < 2; j++){
-        if(!s->first_slice_line)
+        if (s->mb_x)
+            s->dsp.vc1_h_loop_filter16(s->dest[0] - 16*s->linesize, s->linesize, pq);
+        s->dsp.vc1_h_loop_filter16(s->dest[0] - 16*s->linesize+8, s->linesize, pq);
+        for(j = 0; j < 2; j++){
             s->dsp.vc1_v_loop_filter8(s->dest[j+1], s->uvlinesize, pq);
-        if(s->mb_x)
-            s->dsp.vc1_h_loop_filter8(s->dest[j+1], s->uvlinesize, pq);
+            if (s->mb_x)
+                s->dsp.vc1_h_loop_filter8(s->dest[j+1]-8*s->uvlinesize, s->uvlinesize, pq);
+        }
+    }
+    s->dsp.vc1_v_loop_filter16(s->dest[0] + 8*s->linesize, s->linesize, pq);
+
+    if (s->mb_y == s->mb_height-1) {
+        if (s->mb_x) {
+            s->dsp.vc1_h_loop_filter16(s->dest[0], s->linesize, pq);
+            s->dsp.vc1_h_loop_filter8(s->dest[1], s->uvlinesize, pq);
+            s->dsp.vc1_h_loop_filter8(s->dest[2], s->uvlinesize, pq);
+        }
+        s->dsp.vc1_h_loop_filter16(s->dest[0] + 8, s->linesize, pq);
     }
 }
 
@@ -1481,7 +1491,7 @@ static int vc1_decode_i_block(VC1Context *v, DCTELEM block[64], int n, int coded
 
     {
         int last = 0, skip, value;
-        const int8_t *zz_table;
+        const uint8_t *zz_table;
         int scale;
         int k;
 
@@ -1667,7 +1677,7 @@ static int vc1_decode_i_block_adv(VC1Context *v, DCTELEM block[64], int n, int c
 
     if(coded) {
         int last = 0, skip, value;
-        const int8_t *zz_table;
+        const uint8_t *zz_table;
         int k;
 
         if(v->s.ac_pred) {
@@ -1874,7 +1884,7 @@ static int vc1_decode_intra_block(VC1Context *v, DCTELEM block[64], int n, int c
 
     if(coded) {
         int last = 0, skip, value;
-        const int8_t *zz_table;
+        const uint8_t *zz_table;
         int k;
 
         zz_table = wmv1_scantable[0];
@@ -1996,7 +2006,9 @@ static int vc1_decode_p_block(VC1Context *v, DCTELEM block[64], int n, int mquan
     if(ttblk == TT_4X4) {
         subblkpat = ~(get_vlc2(gb, ff_vc1_subblkpat_vlc[v->tt_index].table, VC1_SUBBLKPAT_VLC_BITS, 1) + 1);
     }
-    if((ttblk != TT_8X8 && ttblk != TT_4X4) && (v->ttmbf || (ttmb != -1 && (ttmb & 8) && !first_block))) {
+    if((ttblk != TT_8X8 && ttblk != TT_4X4)
+        && ((v->ttmbf || (ttmb != -1 && (ttmb & 8) && !first_block))
+            || (!v->res_rtm_flag && !first_block))) {
         subblkpat = decode012(gb);
         if(subblkpat) subblkpat ^= 3; //swap decoded pattern bits
         if(ttblk == TT_8X4_TOP || ttblk == TT_8X4_BOTTOM) ttblk = TT_8X4;
@@ -2678,9 +2690,15 @@ static void vc1_decode_i_blocks(VC1Context *v)
                 return;
             }
         }
-        ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        if (!v->s.loop_filter)
+            ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        else if (s->mb_y)
+            ff_draw_horiz_band(s, (s->mb_y-1) * 16, 16);
+
         s->first_slice_line = 0;
     }
+    if (v->s.loop_filter)
+        ff_draw_horiz_band(s, (s->mb_height-1)*16, 16);
     ff_er_add_slice(s, 0, 0, s->mb_width - 1, s->mb_height - 1, (AC_END|DC_END|MV_END));
 }
 
@@ -2810,9 +2828,14 @@ static void vc1_decode_i_blocks_adv(VC1Context *v)
                 return;
             }
         }
-        ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        if (!v->s.loop_filter)
+            ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        else if (s->mb_y)
+            ff_draw_horiz_band(s, (s->mb_y-1) * 16, 16);
         s->first_slice_line = 0;
     }
+    if (v->s.loop_filter)
+        ff_draw_horiz_band(s, (s->mb_height-1)*16, 16);
     ff_er_add_slice(s, 0, 0, s->mb_width - 1, s->mb_height - 1, (AC_END|DC_END|MV_END));
 }
 
@@ -2911,9 +2934,14 @@ static void vc1_decode_b_blocks(VC1Context *v)
             }
             if(v->s.loop_filter) vc1_loop_filter_iblk(s, v->pq);
         }
-        ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        if (!v->s.loop_filter)
+            ff_draw_horiz_band(s, s->mb_y * 16, 16);
+        else if (s->mb_y)
+            ff_draw_horiz_band(s, (s->mb_y-1) * 16, 16);
         s->first_slice_line = 0;
     }
+    if (v->s.loop_filter)
+        ff_draw_horiz_band(s, (s->mb_height-1)*16, 16);
     ff_er_add_slice(s, 0, 0, s->mb_width - 1, s->mb_height - 1, (AC_END|DC_END|MV_END));
 }
 
@@ -3210,11 +3238,6 @@ static int vc1_decode_frame(AVCodecContext *avctx,
             av_free(buf2);
             return -1;
         }
-    }
-
-    if(s->pict_type != FF_I_TYPE && !v->res_rtm_flag){
-        av_free(buf2);
-        return -1;
     }
 
     // for hurry_up==5

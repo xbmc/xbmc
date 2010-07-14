@@ -21,27 +21,64 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "timer.h"
+#include "time.h"
 #include "random_seed.h"
 #include "avutil.h"
+
+static int read_random(uint32_t *dst, const char *file)
+{
+    int fd = open(file, O_RDONLY);
+    int err = -1;
+
+    if (fd == -1)
+        return -1;
+    err = read(fd, dst, sizeof(*dst));
+    close(fd);
+
+    return err;
+}
+
+static uint32_t get_generic_seed(void)
+{
+    clock_t last_t=0;
+    int bits=0;
+    uint64_t random=0;
+    unsigned i;
+    float s=0.000000000001;
+
+    for(i=0;bits<64;i++){
+        clock_t t= clock();
+        if(last_t && fabs(t-last_t)>s || t==(clock_t)-1){
+            if(i<10000 && s<(1<<24)){
+                s+=s;
+                i=t=0;
+            }else{
+                random= 2*random + (i&1);
+                bits++;
+            }
+        }
+        last_t= t;
+    }
+#ifdef AV_READ_TIME
+    random ^= AV_READ_TIME();
+#else
+    random ^= clock();
+#endif
+
+    random += random>>32;
+
+    return random;
+}
 
 uint32_t av_get_random_seed(void)
 {
     uint32_t seed;
-    int fd;
 
-    if ((fd = open("/dev/random", O_RDONLY)) == -1)
-        fd = open("/dev/urandom", O_RDONLY);
-    if (fd != -1){
-        int err = read(fd, &seed, 4);
-        close(fd);
-        if (err == 4)
-            return seed;
-    }
-#ifdef AV_READ_TIME
-    seed = AV_READ_TIME();
-#endif
-    // XXX what to do ?
-    return seed;
+    if (read_random(&seed, "/dev/urandom") == sizeof(seed))
+        return seed;
+    if (read_random(&seed, "/dev/random")  == sizeof(seed))
+        return seed;
+    return get_generic_seed();
 }
 
 #if LIBAVUTIL_VERSION_MAJOR < 51

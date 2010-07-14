@@ -43,7 +43,7 @@
 #include "avformat.h"
 #include "libavcodec/ac3.h"
 #include "libavcodec/dca.h"
-#include "libavcodec/aac_parser.h"
+#include "libavcodec/aacadtsdec.h"
 
 #define SYNCWORD1 0xF872
 #define SYNCWORD2 0x4E1F
@@ -61,13 +61,20 @@ enum IEC958DataType {
     IEC958_DTS1               = 0x0B,          ///< DTS type I   (512 samples)
     IEC958_DTS2               = 0x0C,          ///< DTS type II  (1024 samples)
     IEC958_DTS3               = 0x0D,          ///< DTS type III (2048 samples)
+    IEC958_ATRAC              = 0x0E,          ///< Atrac data
+    IEC958_ATRAC3             = 0x0F,          ///< Atrac 3 data
+    IEC958_ATRACX             = 0x10,          ///< Atrac 3 plus data
+    IEC958_DTSHD              = 0x11,          ///< DTS HD data
+    IEC958_WMAPRO             = 0x12,          ///< WMA 9 Professional data
     IEC958_MPEG2_AAC_LSF_2048 = 0x13,          ///< MPEG-2 AAC ADTS half-rate low sampling frequency
     IEC958_MPEG2_AAC_LSF_4096 = 0x13 | 0x20,   ///< MPEG-2 AAC ADTS quarter-rate low sampling frequency
+    IEC958_EAC3               = 0x15,          ///< E-AC-3 data
+    IEC958_TRUEHD             = 0x16,          ///< TrueHD data
 };
 
 typedef struct IEC958Context {
     enum IEC958DataType data_type;  ///< burst info - reference to type of payload of the data-burst
-    int pkt_size;                   ///< length code in bytes
+    int pkt_size;                   ///< length code in bits
     int pkt_offset;                 ///< data burst repetition period in bytes
     uint8_t *buffer;                ///< allocated buffer, used for swap bytes
     int buffer_size;                ///< size of allocated buffer
@@ -83,17 +90,17 @@ static void bswap_buf16(uint16_t *dst, const uint16_t *src, int w)
     int i;
 
     for (i = 0; i + 8 <= w; i += 8) {
-        dst[i + 0] = bswap_16(src[i + 0]);
-        dst[i + 1] = bswap_16(src[i + 1]);
-        dst[i + 2] = bswap_16(src[i + 2]);
-        dst[i + 3] = bswap_16(src[i + 3]);
-        dst[i + 4] = bswap_16(src[i + 4]);
-        dst[i + 5] = bswap_16(src[i + 5]);
-        dst[i + 6] = bswap_16(src[i + 6]);
-        dst[i + 7] = bswap_16(src[i + 7]);
+        dst[i + 0] = av_bswap16(src[i + 0]);
+        dst[i + 1] = av_bswap16(src[i + 1]);
+        dst[i + 2] = av_bswap16(src[i + 2]);
+        dst[i + 3] = av_bswap16(src[i + 3]);
+        dst[i + 4] = av_bswap16(src[i + 4]);
+        dst[i + 5] = av_bswap16(src[i + 5]);
+        dst[i + 6] = av_bswap16(src[i + 6]);
+        dst[i + 7] = av_bswap16(src[i + 7]);
     }
     for (; i < w; i++)
-        dst[i + 0] = bswap_16(src[i + 0]);
+        dst[i + 0] = av_bswap16(src[i + 0]);
 }
 
 static int spdif_header_ac3(AVFormatContext *s, AVPacket *pkt)
@@ -103,7 +110,6 @@ static int spdif_header_ac3(AVFormatContext *s, AVPacket *pkt)
 
     ctx->data_type  = IEC958_AC3 | (bitstream_mode << 8);
     ctx->pkt_offset = AC3_FRAME_SIZE << 2;
-    ctx->pkt_size   = FFALIGN(pkt->size, 2);
     return 0;
 }
 
@@ -143,7 +149,6 @@ static int spdif_header_dts(AVFormatContext *s, AVPacket *pkt)
         return -1;
     }
     ctx->pkt_offset = blocks << 7;
-    ctx->pkt_size   = FFALIGN(pkt->size, 2);
 
     return 0;
 }
@@ -179,7 +184,6 @@ static int spdif_header_mpeg(AVFormatContext *s, AVPacket *pkt)
         ctx->data_type  = mpeg_data_type [version & 1][layer];
         ctx->pkt_offset = mpeg_pkt_offset[version & 1][layer];
     }
-    ctx->pkt_size = FFALIGN(pkt->size, 2);
     // TODO Data type dependant info (normal/karaoke, dynamic range control)
     return 0;
 }
@@ -198,7 +202,6 @@ static int spdif_header_aac(AVFormatContext *s, AVPacket *pkt)
         return -1;
     }
 
-    ctx->pkt_size   = FFALIGN(pkt->size, 2);
     ctx->pkt_offset = hdr.samples << 2;
     switch (hdr.num_aac_frames) {
     case 1:
@@ -257,15 +260,12 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     IEC958Context *ctx = s->priv_data;
     int ret, padding;
 
+    ctx->pkt_size = FFALIGN(pkt->size, 2) << 3;
     ret = ctx->header_info(s, pkt);
     if (ret < 0)
         return -1;
-    if (ctx->pkt_size > pkt->size + 1) {
-        av_log(s, AV_LOG_ERROR, "not enough data for requested frame size\n");
-        return -1;
-    }
 
-    padding = (ctx->pkt_offset - BURST_HEADER_SIZE - ctx->pkt_size) >> 1;
+    padding = (ctx->pkt_offset - BURST_HEADER_SIZE - pkt->size) >> 1;
     if (padding < 0) {
         av_log(s, AV_LOG_ERROR, "bitrate is too high\n");
         return -1;
@@ -274,17 +274,20 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     put_le16(s->pb, SYNCWORD1);      //Pa
     put_le16(s->pb, SYNCWORD2);      //Pb
     put_le16(s->pb, ctx->data_type); //Pc
-    put_le16(s->pb, ctx->pkt_size << 3);  //Pd
+    put_le16(s->pb, ctx->pkt_size);  //Pd
 
 #if HAVE_BIGENDIAN
-    put_buffer(s->pb, pkt->data, ctx->pkt_size);
+    put_buffer(s->pb, pkt->data, pkt->size & ~1);
 #else
-    av_fast_malloc(&ctx->buffer, &ctx->buffer_size, ctx->pkt_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    av_fast_malloc(&ctx->buffer, &ctx->buffer_size, pkt->size + FF_INPUT_BUFFER_PADDING_SIZE);
     if (!ctx->buffer)
         return AVERROR(ENOMEM);
-    bswap_buf16((uint16_t *)ctx->buffer, (uint16_t *)pkt->data, ctx->pkt_size >> 1);
-    put_buffer(s->pb, ctx->buffer, ctx->pkt_size);
+    bswap_buf16((uint16_t *)ctx->buffer, (uint16_t *)pkt->data, pkt->size >> 1);
+    put_buffer(s->pb, ctx->buffer, pkt->size & ~1);
 #endif
+
+    if (pkt->size & 1)
+        put_be16(s->pb, pkt->data[pkt->size - 1]);
 
     for (; padding > 0; padding--)
         put_be16(s->pb, 0);

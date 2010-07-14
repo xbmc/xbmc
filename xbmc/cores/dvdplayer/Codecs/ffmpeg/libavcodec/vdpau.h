@@ -38,7 +38,6 @@
  * and rendering (API calls) are done as part of the VDPAU
  * presentation (vo_vdpau.c) module.
  *
- * @{
  * \defgroup  VDPAU_Decoding VDPAU Decoding
  * \ingroup Decoder
  * @{
@@ -73,9 +72,7 @@ struct vdpau_render_state {
         VdpPictureInfoH264        h264;
         VdpPictureInfoMPEG1Or2    mpeg;
         VdpPictureInfoVC1          vc1;
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
         VdpPictureInfoMPEG4Part2 mpeg4;
-#endif
     } info;
 
     /** Describe size/location of the compressed video data.

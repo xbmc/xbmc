@@ -34,24 +34,45 @@ static
 #endif
 int av_log_level = AV_LOG_INFO;
 
-static int use_ansi_color=-1;
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+#include <windows.h>
+static const uint8_t color[] = {12,12,12,14,7,7,7};
+static int16_t background, attr_orig;
+static HANDLE con;
+#define set_color(x)  SetConsoleTextAttribute(con, background | color[x])
+#define reset_color() SetConsoleTextAttribute(con, attr_orig)
+#else
+static const uint8_t color[]={0x41,0x41,0x11,0x03,9,9,9};
+#define set_color(x)  fprintf(stderr, "\033[%d;3%dm", color[x]>>4, color[x]&15)
+#define reset_color() fprintf(stderr, "\033[0m")
+#endif
+static int use_color=-1;
 
 #undef fprintf
-static void colored_fputs(int color, const char *str){
-    if(use_ansi_color<0){
-#if HAVE_ISATTY && !defined(_WIN32)
-        use_ansi_color= getenv("TERM") && !getenv("NO_COLOR") && isatty(2);
+static void colored_fputs(int level, const char *str){
+    if(use_color<0){
+#if defined(_WIN32) && !defined(__MINGW32CE__)
+        CONSOLE_SCREEN_BUFFER_INFO con_info;
+        con = GetStdHandle(STD_ERROR_HANDLE);
+        use_color = (con != INVALID_HANDLE_VALUE) && !getenv("NO_COLOR");
+        if (use_color) {
+            GetConsoleScreenBufferInfo(con, &con_info);
+            attr_orig  = con_info.wAttributes;
+            background = attr_orig & 0xF0;
+        }
+#elif HAVE_ISATTY
+        use_color= getenv("TERM") && !getenv("NO_COLOR") && isatty(2);
 #else
-        use_ansi_color= 0;
+        use_color= 0;
 #endif
     }
 
-    if(use_ansi_color){
-        fprintf(stderr, "\033[%d;3%dm", color>>4, color&15);
+    if(use_color){
+        set_color(level);
     }
     fputs(str, stderr);
-    if(use_ansi_color){
-        fprintf(stderr, "\033[0m");
+    if(use_color){
+        reset_color();
     }
 }
 
@@ -64,7 +85,6 @@ void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl)
     static int print_prefix=1;
     static int count;
     static char line[1024], prev[1024];
-    static const uint8_t color[]={0x41,0x41,0x11,0x03,9,9,9};
     AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
     if(level>av_log_level)
         return;
@@ -74,10 +94,10 @@ void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl)
         if(avc->version >= (50<<16 | 15<<8 | 3) && avc->parent_log_context_offset){
             AVClass** parent= *(AVClass***)(((uint8_t*)ptr) + avc->parent_log_context_offset);
             if(parent && *parent){
-                snprintf(line, sizeof(line), "[%s @ %p]", (*parent)->item_name(parent), parent);
+                snprintf(line, sizeof(line), "[%s @ %p] ", (*parent)->item_name(parent), parent);
             }
         }
-        snprintf(line + strlen(line), sizeof(line) - strlen(line), "[%s @ %p]", avc->item_name(ptr), ptr);
+        snprintf(line + strlen(line), sizeof(line) - strlen(line), "[%s @ %p] ", avc->item_name(ptr), ptr);
     }
 
     vsnprintf(line + strlen(line), sizeof(line) - strlen(line), fmt, vl);
@@ -91,7 +111,7 @@ void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl)
         fprintf(stderr, "    Last message repeated %d times\n", count);
         count=0;
     }
-    colored_fputs(color[av_clip(level>>3, 0, 6)], line);
+    colored_fputs(av_clip(level>>3, 0, 6), line);
     strcpy(prev, line);
 }
 

@@ -67,8 +67,15 @@
 #include "mpegaudiodata.h"
 #include "mpegaudiodectab.h"
 
-static void compute_antialias_integer(MPADecodeContext *s, GranuleDef *g);
-static void compute_antialias_float(MPADecodeContext *s, GranuleDef *g);
+#if CONFIG_FLOAT
+#    include "fft.h"
+#else
+#    include "dct32.c"
+#endif
+
+static void compute_antialias(MPADecodeContext *s, GranuleDef *g);
+static void apply_window_mp3_c(MPA_INT *synth_buf, MPA_INT *window,
+                               int *dither_state, OUT_INT *samples, int incr);
 
 /* vlc structure for decoding layer 3 huffman tables */
 static VLC huff_vlc[16];
@@ -95,6 +102,14 @@ static int32_t csa_table[8][4];
 static float csa_table_float[8][4];
 static INTFLOAT mdct_win[8][36];
 
+static int16_t division_tab3[1<<6 ];
+static int16_t division_tab5[1<<8 ];
+static int16_t division_tab9[1<<11];
+
+static int16_t * const division_tabs[4] = {
+    division_tab3, division_tab5, NULL, division_tab9
+};
+
 /* lower 2 bits: modulo 3, higher bits: shift */
 static uint16_t scale_factor_modshift[64];
 /* [i][j]:  2^(-j/3) * FRAC_ONE * 2^(i+2) / (2^(i+2) - 1) */
@@ -110,7 +125,7 @@ static const int32_t scale_factor_mult2[3][3] = {
     SCALE_GEN(4.0 / 9.0), /* 9 steps */
 };
 
-DECLARE_ALIGNED(16, MPA_INT, RENAME(ff_mpa_synth_window))[512];
+DECLARE_ALIGNED(16, MPA_INT, RENAME(ff_mpa_synth_window))[512+256];
 
 /**
  * Convert region offsets to region sizes and truncate
@@ -305,6 +320,14 @@ static av_cold int decode_init(AVCodecContext * avctx)
     int i, j, k;
 
     s->avctx = avctx;
+    s->apply_window_mp3 = apply_window_mp3_c;
+#if HAVE_MMX && CONFIG_FLOAT
+    ff_mpegaudiodec_init_mmx(s);
+#endif
+#if CONFIG_FLOAT
+    ff_dct_init(&s->dct, 5, DCT_II);
+#endif
+    if (HAVE_ALTIVEC && CONFIG_FLOAT) ff_mpegaudiodec_init_altivec(s);
 
     avctx->sample_fmt= OUT_FMT;
     s->error_recognition= avctx->error_recognition;
@@ -393,6 +416,20 @@ static av_cold int decode_init(AVCodecContext * avctx)
 
         int_pow_init();
         mpegaudio_tableinit();
+
+        for (i = 0; i < 4; i++)
+            if (ff_mpa_quant_bits[i] < 0)
+                for (j = 0; j < (1<<(-ff_mpa_quant_bits[i]+1)); j++) {
+                    int val1, val2, val3, steps;
+                    int val = j;
+                    steps  = ff_mpa_quant_steps[i];
+                    val1 = val % steps;
+                    val /= steps;
+                    val2 = val % steps;
+                    val3 = val / steps;
+                    division_tabs[i][j] = val1 + (val2 << 4) + (val3 << 8);
+                }
+
 
         for(i=0;i<7;i++) {
             float f;
@@ -485,245 +522,6 @@ static av_cold int decode_init(AVCodecContext * avctx)
     return 0;
 }
 
-/* tab[i][j] = 1.0 / (2.0 * cos(pi*(2*k+1) / 2^(6 - j))) */
-
-/* cos(i*pi/64) */
-
-#define COS0_0  FIXHR(0.50060299823519630134/2)
-#define COS0_1  FIXHR(0.50547095989754365998/2)
-#define COS0_2  FIXHR(0.51544730992262454697/2)
-#define COS0_3  FIXHR(0.53104259108978417447/2)
-#define COS0_4  FIXHR(0.55310389603444452782/2)
-#define COS0_5  FIXHR(0.58293496820613387367/2)
-#define COS0_6  FIXHR(0.62250412303566481615/2)
-#define COS0_7  FIXHR(0.67480834145500574602/2)
-#define COS0_8  FIXHR(0.74453627100229844977/2)
-#define COS0_9  FIXHR(0.83934964541552703873/2)
-#define COS0_10 FIXHR(0.97256823786196069369/2)
-#define COS0_11 FIXHR(1.16943993343288495515/4)
-#define COS0_12 FIXHR(1.48416461631416627724/4)
-#define COS0_13 FIXHR(2.05778100995341155085/8)
-#define COS0_14 FIXHR(3.40760841846871878570/8)
-#define COS0_15 FIXHR(10.19000812354805681150/32)
-
-#define COS1_0 FIXHR(0.50241928618815570551/2)
-#define COS1_1 FIXHR(0.52249861493968888062/2)
-#define COS1_2 FIXHR(0.56694403481635770368/2)
-#define COS1_3 FIXHR(0.64682178335999012954/2)
-#define COS1_4 FIXHR(0.78815462345125022473/2)
-#define COS1_5 FIXHR(1.06067768599034747134/4)
-#define COS1_6 FIXHR(1.72244709823833392782/4)
-#define COS1_7 FIXHR(5.10114861868916385802/16)
-
-#define COS2_0 FIXHR(0.50979557910415916894/2)
-#define COS2_1 FIXHR(0.60134488693504528054/2)
-#define COS2_2 FIXHR(0.89997622313641570463/2)
-#define COS2_3 FIXHR(2.56291544774150617881/8)
-
-#define COS3_0 FIXHR(0.54119610014619698439/2)
-#define COS3_1 FIXHR(1.30656296487637652785/4)
-
-#define COS4_0 FIXHR(0.70710678118654752439/2)
-
-/* butterfly operator */
-#define BF(a, b, c, s)\
-{\
-    tmp0 = val##a + val##b;\
-    tmp1 = val##a - val##b;\
-    val##a = tmp0;\
-    val##b = MULH3(tmp1, c, 1<<(s));\
-}
-
-#define BF0(a, b, c, s)\
-{\
-    tmp0 = tab[a] + tab[b];\
-    tmp1 = tab[a] - tab[b];\
-    val##a = tmp0;\
-    val##b = MULH3(tmp1, c, 1<<(s));\
-}
-
-#define BF1(a, b, c, d)\
-{\
-    BF(a, b, COS4_0, 1);\
-    BF(c, d,-COS4_0, 1);\
-    val##c += val##d;\
-}
-
-#define BF2(a, b, c, d)\
-{\
-    BF(a, b, COS4_0, 1);\
-    BF(c, d,-COS4_0, 1);\
-    val##c += val##d;\
-    val##a += val##c;\
-    val##c += val##b;\
-    val##b += val##d;\
-}
-
-#define ADD(a, b) val##a += val##b
-
-/* DCT32 without 1/sqrt(2) coef zero scaling. */
-static void dct32(INTFLOAT *out, const INTFLOAT *tab)
-{
-    INTFLOAT tmp0, tmp1;
-
-    INTFLOAT val0 , val1 , val2 , val3 , val4 , val5 , val6 , val7 ,
-             val8 , val9 , val10, val11, val12, val13, val14, val15,
-             val16, val17, val18, val19, val20, val21, val22, val23,
-             val24, val25, val26, val27, val28, val29, val30, val31;
-
-    /* pass 1 */
-    BF0( 0, 31, COS0_0 , 1);
-    BF0(15, 16, COS0_15, 5);
-    /* pass 2 */
-    BF( 0, 15, COS1_0 , 1);
-    BF(16, 31,-COS1_0 , 1);
-    /* pass 1 */
-    BF0( 7, 24, COS0_7 , 1);
-    BF0( 8, 23, COS0_8 , 1);
-    /* pass 2 */
-    BF( 7,  8, COS1_7 , 4);
-    BF(23, 24,-COS1_7 , 4);
-    /* pass 3 */
-    BF( 0,  7, COS2_0 , 1);
-    BF( 8, 15,-COS2_0 , 1);
-    BF(16, 23, COS2_0 , 1);
-    BF(24, 31,-COS2_0 , 1);
-    /* pass 1 */
-    BF0( 3, 28, COS0_3 , 1);
-    BF0(12, 19, COS0_12, 2);
-    /* pass 2 */
-    BF( 3, 12, COS1_3 , 1);
-    BF(19, 28,-COS1_3 , 1);
-    /* pass 1 */
-    BF0( 4, 27, COS0_4 , 1);
-    BF0(11, 20, COS0_11, 2);
-    /* pass 2 */
-    BF( 4, 11, COS1_4 , 1);
-    BF(20, 27,-COS1_4 , 1);
-    /* pass 3 */
-    BF( 3,  4, COS2_3 , 3);
-    BF(11, 12,-COS2_3 , 3);
-    BF(19, 20, COS2_3 , 3);
-    BF(27, 28,-COS2_3 , 3);
-    /* pass 4 */
-    BF( 0,  3, COS3_0 , 1);
-    BF( 4,  7,-COS3_0 , 1);
-    BF( 8, 11, COS3_0 , 1);
-    BF(12, 15,-COS3_0 , 1);
-    BF(16, 19, COS3_0 , 1);
-    BF(20, 23,-COS3_0 , 1);
-    BF(24, 27, COS3_0 , 1);
-    BF(28, 31,-COS3_0 , 1);
-
-
-
-    /* pass 1 */
-    BF0( 1, 30, COS0_1 , 1);
-    BF0(14, 17, COS0_14, 3);
-    /* pass 2 */
-    BF( 1, 14, COS1_1 , 1);
-    BF(17, 30,-COS1_1 , 1);
-    /* pass 1 */
-    BF0( 6, 25, COS0_6 , 1);
-    BF0( 9, 22, COS0_9 , 1);
-    /* pass 2 */
-    BF( 6,  9, COS1_6 , 2);
-    BF(22, 25,-COS1_6 , 2);
-    /* pass 3 */
-    BF( 1,  6, COS2_1 , 1);
-    BF( 9, 14,-COS2_1 , 1);
-    BF(17, 22, COS2_1 , 1);
-    BF(25, 30,-COS2_1 , 1);
-
-    /* pass 1 */
-    BF0( 2, 29, COS0_2 , 1);
-    BF0(13, 18, COS0_13, 3);
-    /* pass 2 */
-    BF( 2, 13, COS1_2 , 1);
-    BF(18, 29,-COS1_2 , 1);
-    /* pass 1 */
-    BF0( 5, 26, COS0_5 , 1);
-    BF0(10, 21, COS0_10, 1);
-    /* pass 2 */
-    BF( 5, 10, COS1_5 , 2);
-    BF(21, 26,-COS1_5 , 2);
-    /* pass 3 */
-    BF( 2,  5, COS2_2 , 1);
-    BF(10, 13,-COS2_2 , 1);
-    BF(18, 21, COS2_2 , 1);
-    BF(26, 29,-COS2_2 , 1);
-    /* pass 4 */
-    BF( 1,  2, COS3_1 , 2);
-    BF( 5,  6,-COS3_1 , 2);
-    BF( 9, 10, COS3_1 , 2);
-    BF(13, 14,-COS3_1 , 2);
-    BF(17, 18, COS3_1 , 2);
-    BF(21, 22,-COS3_1 , 2);
-    BF(25, 26, COS3_1 , 2);
-    BF(29, 30,-COS3_1 , 2);
-
-    /* pass 5 */
-    BF1( 0,  1,  2,  3);
-    BF2( 4,  5,  6,  7);
-    BF1( 8,  9, 10, 11);
-    BF2(12, 13, 14, 15);
-    BF1(16, 17, 18, 19);
-    BF2(20, 21, 22, 23);
-    BF1(24, 25, 26, 27);
-    BF2(28, 29, 30, 31);
-
-    /* pass 6 */
-
-    ADD( 8, 12);
-    ADD(12, 10);
-    ADD(10, 14);
-    ADD(14,  9);
-    ADD( 9, 13);
-    ADD(13, 11);
-    ADD(11, 15);
-
-    out[ 0] = val0;
-    out[16] = val1;
-    out[ 8] = val2;
-    out[24] = val3;
-    out[ 4] = val4;
-    out[20] = val5;
-    out[12] = val6;
-    out[28] = val7;
-    out[ 2] = val8;
-    out[18] = val9;
-    out[10] = val10;
-    out[26] = val11;
-    out[ 6] = val12;
-    out[22] = val13;
-    out[14] = val14;
-    out[30] = val15;
-
-    ADD(24, 28);
-    ADD(28, 26);
-    ADD(26, 30);
-    ADD(30, 25);
-    ADD(25, 29);
-    ADD(29, 27);
-    ADD(27, 31);
-
-    out[ 1] = val16 + val24;
-    out[17] = val17 + val25;
-    out[ 9] = val18 + val26;
-    out[25] = val19 + val27;
-    out[ 5] = val20 + val28;
-    out[21] = val21 + val29;
-    out[13] = val22 + val30;
-    out[29] = val23 + val31;
-    out[ 3] = val24 + val20;
-    out[19] = val25 + val21;
-    out[11] = val26 + val22;
-    out[27] = val27 + val23;
-    out[ 7] = val28 + val18;
-    out[23] = val29 + val19;
-    out[15] = val30 + val17;
-    out[31] = val31;
-}
 
 #if CONFIG_FLOAT
 static inline float round_sample(float *sum)
@@ -817,7 +615,7 @@ static inline int round_sample(int64_t *sum)
 
 void av_cold RENAME(ff_mpa_synth_init)(MPA_INT *window)
 {
-    int i;
+    int i, j;
 
     /* max = 18760, max sum over all 16 coefs : 44736 */
     for(i=0;i<257;i++) {
@@ -834,41 +632,29 @@ void av_cold RENAME(ff_mpa_synth_init)(MPA_INT *window)
         if (i != 0)
             window[512 - i] = v;
     }
+
+    // Needed for avoiding shuffles in ASM implementations
+    for(i=0; i < 8; i++)
+        for(j=0; j < 16; j++)
+            window[512+16*i+j] = window[64*i+32-j];
+
+    for(i=0; i < 8; i++)
+        for(j=0; j < 16; j++)
+            window[512+128+16*i+j] = window[64*i+48-j];
 }
 
-/* 32 sub band synthesis filter. Input: 32 sub band samples, Output:
-   32 samples. */
-/* XXX: optimize by avoiding ring buffer usage */
-void RENAME(ff_mpa_synth_filter)(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
-                         MPA_INT *window, int *dither_state,
-                         OUT_INT *samples, int incr,
-                         INTFLOAT sb_samples[SBLIMIT])
+static void apply_window_mp3_c(MPA_INT *synth_buf, MPA_INT *window,
+                               int *dither_state, OUT_INT *samples, int incr)
 {
-    register MPA_INT *synth_buf;
     register const MPA_INT *w, *w2, *p;
-    int j, offset;
+    int j;
     OUT_INT *samples2;
 #if CONFIG_FLOAT
     float sum, sum2;
 #elif FRAC_BITS <= 15
-    int32_t tmp[32];
     int sum, sum2;
 #else
     int64_t sum, sum2;
-#endif
-
-    offset = *synth_buf_offset;
-    synth_buf = synth_buf_ptr + offset;
-
-#if FRAC_BITS <= 15 && !CONFIG_FLOAT
-    dct32(tmp, sb_samples);
-    for(j=0;j<32;j++) {
-        /* NOTE: can cause a loss in precision if very high amplitude
-           sound */
-        synth_buf[j] = av_clip_int16(tmp[j]);
-    }
-#else
-    dct32(synth_buf, sb_samples);
 #endif
 
     /* copy to avoid wrap */
@@ -909,10 +695,45 @@ void RENAME(ff_mpa_synth_filter)(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
     SUM8(MLSS, sum, w + 32, p);
     *samples = round_sample(&sum);
     *dither_state= sum;
+}
+
+
+/* 32 sub band synthesis filter. Input: 32 sub band samples, Output:
+   32 samples. */
+/* XXX: optimize by avoiding ring buffer usage */
+#if !CONFIG_FLOAT
+void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
+                         MPA_INT *window, int *dither_state,
+                         OUT_INT *samples, int incr,
+                         INTFLOAT sb_samples[SBLIMIT])
+{
+    register MPA_INT *synth_buf;
+    int offset;
+#if FRAC_BITS <= 15
+    int32_t tmp[32];
+    int j;
+#endif
+
+    offset = *synth_buf_offset;
+    synth_buf = synth_buf_ptr + offset;
+
+#if FRAC_BITS <= 15
+    dct32(tmp, sb_samples);
+    for(j=0;j<32;j++) {
+        /* NOTE: can cause a loss in precision if very high amplitude
+           sound */
+        synth_buf[j] = av_clip_int16(tmp[j]);
+    }
+#else
+    dct32(synth_buf, sb_samples);
+#endif
+
+    apply_window_mp3_c(synth_buf, window, dither_state, samples, incr);
 
     offset = (offset - 32) & 511;
     *synth_buf_offset = offset;
 }
+#endif
 
 #define C3 FIXHR(0.86602540378443864676/2)
 
@@ -1240,17 +1061,18 @@ static int mp_decode_layer2(MPADecodeContext *s)
                         qindex = alloc_table[j+b];
                         bits = ff_mpa_quant_bits[qindex];
                         if (bits < 0) {
+                            int v2;
                             /* 3 values at the same time */
                             v = get_bits(&s->gb, -bits);
-                            steps = ff_mpa_quant_steps[qindex];
+                            v2 = division_tabs[qindex][v];
+                            steps  = ff_mpa_quant_steps[qindex];
+
                             s->sb_samples[ch][k * 12 + l + 0][i] =
-                                l2_unscale_group(steps, v % steps, scale);
-                            v = v / steps;
+                                l2_unscale_group(steps, v2        & 15, scale);
                             s->sb_samples[ch][k * 12 + l + 1][i] =
-                                l2_unscale_group(steps, v % steps, scale);
-                            v = v / steps;
+                                l2_unscale_group(steps, (v2 >> 4) & 15, scale);
                             s->sb_samples[ch][k * 12 + l + 2][i] =
-                                l2_unscale_group(steps, v, scale);
+                                l2_unscale_group(steps,  v2 >> 8      , scale);
                         } else {
                             for(m=0;m<3;m++) {
                                 v = get_bits(&s->gb, bits);
@@ -1752,6 +1574,7 @@ static void compute_stereo(MPADecodeContext *s,
     }
 }
 
+#if !CONFIG_FLOAT
 static void compute_antialias_integer(MPADecodeContext *s,
                               GranuleDef *g)
 {
@@ -1791,45 +1614,7 @@ static void compute_antialias_integer(MPADecodeContext *s,
         ptr += 18;
     }
 }
-
-static void compute_antialias_float(MPADecodeContext *s,
-                              GranuleDef *g)
-{
-    float *ptr;
-    int n, i;
-
-    /* we antialias only "long" bands */
-    if (g->block_type == 2) {
-        if (!g->switch_point)
-            return;
-        /* XXX: check this for 8000Hz case */
-        n = 1;
-    } else {
-        n = SBLIMIT - 1;
-    }
-
-    ptr = g->sb_hybrid + 18;
-    for(i = n;i > 0;i--) {
-        float tmp0, tmp1;
-        float *csa = &csa_table_float[0][0];
-#define FLOAT_AA(j)\
-        tmp0= ptr[-1-j];\
-        tmp1= ptr[   j];\
-        ptr[-1-j] = tmp0 * csa[0+4*j] - tmp1 * csa[1+4*j];\
-        ptr[   j] = tmp0 * csa[1+4*j] + tmp1 * csa[0+4*j];
-
-        FLOAT_AA(0)
-        FLOAT_AA(1)
-        FLOAT_AA(2)
-        FLOAT_AA(3)
-        FLOAT_AA(4)
-        FLOAT_AA(5)
-        FLOAT_AA(6)
-        FLOAT_AA(7)
-
-        ptr += 18;
-    }
-}
+#endif
 
 static void compute_imdct(MPADecodeContext *s,
                           GranuleDef *g,
@@ -2227,7 +2012,11 @@ static int mp_decode_frame(MPADecodeContext *s,
     for(ch=0;ch<s->nb_channels;ch++) {
         samples_ptr = samples + ch;
         for(i=0;i<nb_frames;i++) {
-            RENAME(ff_mpa_synth_filter)(s->synth_buf[ch], &(s->synth_buf_offset[ch]),
+            RENAME(ff_mpa_synth_filter)(
+#if CONFIG_FLOAT
+                         s,
+#endif
+                         s->synth_buf[ch], &(s->synth_buf_offset[ch]),
                          RENAME(ff_mpa_synth_window), &s->dither_state,
                          samples_ptr, s->nb_channels,
                          s->sb_samples[ch][i]);
@@ -2297,7 +2086,7 @@ static void flush(AVCodecContext *avctx){
     s->last_buf_size= 0;
 }
 
-#if CONFIG_MP3ADU_DECODER
+#if CONFIG_MP3ADU_DECODER || CONFIG_MP3ADUFLOAT_DECODER
 static int decode_frame_adu(AVCodecContext * avctx,
                         void *data, int *data_size,
                         AVPacket *avpkt)
@@ -2347,9 +2136,9 @@ static int decode_frame_adu(AVCodecContext * avctx,
     *data_size = out_size;
     return buf_size;
 }
-#endif /* CONFIG_MP3ADU_DECODER */
+#endif /* CONFIG_MP3ADU_DECODER || CONFIG_MP3ADUFLOAT_DECODER */
 
-#if CONFIG_MP3ON4_DECODER
+#if CONFIG_MP3ON4_DECODER || CONFIG_MP3ON4FLOAT_DECODER
 
 /**
  * Context for MP3On4 decoder
@@ -2513,7 +2302,7 @@ static int decode_frame_mp3on4(AVCodecContext * avctx,
     *data_size = out_size;
     return buf_size;
 }
-#endif /* CONFIG_MP3ON4_DECODER */
+#endif /* CONFIG_MP3ON4_DECODER || CONFIG_MP3ON4FLOAT_DECODER */
 
 #if !CONFIG_FLOAT
 #if CONFIG_MP1_DECODER

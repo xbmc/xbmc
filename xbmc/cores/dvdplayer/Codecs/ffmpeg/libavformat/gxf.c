@@ -71,7 +71,7 @@ static int gxf_probe(AVProbeData *p) {
 /**
  * \brief gets the stream index for the track with the specified id, creates new
  *        stream if not found
- * \param stream id of stream to find / add
+ * \param id     id of stream to find / add
  * \param format stream format identifier
  */
 static int get_sindex(AVFormatContext *s, int id, int format) {
@@ -191,7 +191,7 @@ static AVRational fps_tag2avr(int32_t fps) {
 
 /**
  * \brief convert UMF attributes flags to AVRational fps
- * \param fps fps value from flags
+ * \param flags UMF flags to convert
  * \return fps as AVRational, or 0 / 0 if unknown
  */
 static AVRational fps_umf2avr(uint32_t flags) {
@@ -397,9 +397,11 @@ start:
     if (tmp != 1)
         goto start;
     last_pos = url_ftell(pb);
-    url_fseek(pb, -5, SEEK_CUR);
+    if (url_fseek(pb, -5, SEEK_CUR) < 0)
+        goto out;
     if (!parse_packet_header(pb, &type, &len) || type != PKT_MEDIA) {
-        url_fseek(pb, last_pos, SEEK_SET);
+        if (url_fseek(pb, last_pos, SEEK_SET) < 0)
+            goto out;
         goto start;
     }
     get_byte(pb);
@@ -407,8 +409,8 @@ start:
     cur_timestamp = get_be32(pb);
     last_found_pos = url_ftell(pb) - 16 - 6;
     if ((track >= 0 && track != cur_track) || (timestamp >= 0 && timestamp > cur_timestamp)) {
-        url_fseek(pb, last_pos, SEEK_SET);
-        goto start;
+        if (url_fseek(pb, last_pos, SEEK_SET) >= 0)
+            goto start;
     }
 out:
     if (last_found_pos)
@@ -477,6 +479,7 @@ static int gxf_packet(AVFormatContext *s, AVPacket *pkt) {
 }
 
 static int gxf_seek(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) {
+    int res = 0;
     uint64_t pos;
     uint64_t maxlen = 100 * 1024 * 1024;
     AVStream *st = s->streams[0];
@@ -492,7 +495,9 @@ static int gxf_seek(AVFormatContext *s, int stream_index, int64_t timestamp, int
     if (idx < st->nb_index_entries - 2)
         maxlen = st->index_entries[idx + 2].pos - pos;
     maxlen = FFMAX(maxlen, 200 * 1024);
-    url_fseek(s->pb, pos, SEEK_SET);
+    res = url_fseek(s->pb, pos, SEEK_SET);
+    if (res < 0)
+        return res;
     found = gxf_resync_media(s, maxlen, -1, timestamp);
     if (FFABS(found - timestamp) > 4)
         return -1;
@@ -503,7 +508,8 @@ static int64_t gxf_read_timestamp(AVFormatContext *s, int stream_index,
                                   int64_t *pos, int64_t pos_limit) {
     ByteIOContext *pb = s->pb;
     int64_t res;
-    url_fseek(pb, *pos, SEEK_SET);
+    if (url_fseek(pb, *pos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
     res = gxf_resync_media(s, pos_limit - *pos, -1, -1);
     *pos = url_ftell(pb);
     return res;

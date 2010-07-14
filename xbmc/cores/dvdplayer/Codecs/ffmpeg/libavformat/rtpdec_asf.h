@@ -29,9 +29,8 @@
  * Parse a Windows Media Server-specific SDP line
  *
  * @param s RTSP demux context
- * @param line the SDP line to be parsed
  */
-void ff_wms_parse_sdp_a_line(AVFormatContext *s, const char *p);
+int ff_wms_parse_sdp_a_line(AVFormatContext *s, const char *p);
 
 /**
  * Handlers for the x-asf-pf payloads (the payload ID for RTP/ASF).

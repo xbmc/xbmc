@@ -213,10 +213,10 @@ static int smacker_read_header(AVFormatContext *s, AVFormatParameters *ap)
         av_free(smk->frm_flags);
         return AVERROR(EIO);
     }
-    ((int32_t*)st->codec->extradata)[0] = le2me_32(smk->mmap_size);
-    ((int32_t*)st->codec->extradata)[1] = le2me_32(smk->mclr_size);
-    ((int32_t*)st->codec->extradata)[2] = le2me_32(smk->full_size);
-    ((int32_t*)st->codec->extradata)[3] = le2me_32(smk->type_size);
+    ((int32_t*)st->codec->extradata)[0] = av_le2ne32(smk->mmap_size);
+    ((int32_t*)st->codec->extradata)[1] = av_le2ne32(smk->mclr_size);
+    ((int32_t*)st->codec->extradata)[2] = av_le2ne32(smk->full_size);
+    ((int32_t*)st->codec->extradata)[3] = av_le2ne32(smk->type_size);
 
     smk->curstream = -1;
     smk->nextpos = url_ftell(pb);
@@ -236,7 +236,7 @@ static int smacker_read_packet(AVFormatContext *s, AVPacket *pkt)
     int pos;
 
     if (url_feof(s->pb) || smk->cur_frame >= smk->frames)
-        return AVERROR(EIO);
+        return AVERROR_EOF;
 
     /* if we demuxed all streams, pass another frame */
     if(smk->curstream < 0) {
