@@ -75,7 +75,7 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-bool CPluginDirectory::StartScript(const CStdString& strPath)
+bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir)
 {
   CURL url(strPath);
 
@@ -121,7 +121,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   if (g_pythonParser.evalFile(file, argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, scriptName);
+    success = WaitOnScriptResult(file, scriptName, retrievingDir);
   }
   else
 #endif
@@ -138,7 +138,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
   CURL url(strPath);
   CPluginDirectory* newDir = new CPluginDirectory();
 
-  bool success = newDir->StartScript(strPath);
+  bool success = newDir->StartScript(strPath, false);
 
   resultItem = *newDir->m_fileResult;
 
@@ -381,7 +381,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 {
   CURL url(strPath);
 
-  bool success = this->StartScript(strPath);
+  bool success = this->StartScript(strPath, 1040);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -431,7 +431,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)
+bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName, bool retrievingDir)
 {
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
@@ -469,25 +469,29 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
       if (progressBar)
       {
         progressBar->SetHeading(scriptName);
-        progressBar->SetLine(0, 1040);
+        progressBar->SetLine(0, retrievingDir ? 1040 : 10214);
         progressBar->SetLine(1, "");
         progressBar->SetLine(2, "");
+        progressBar->ShowProgressBar(retrievingDir);
         progressBar->StartModal();
       }
     }
 
     if (progressBar)
     { // update the progress bar and check for user cancel
-      CStdString label;
-      if (m_totalItems > 0)
+      if (retrievingDir)
       {
-        label.Format(g_localizeStrings.Get(1042).c_str(), m_listItems->Size(), m_totalItems);
-        progressBar->SetPercentage((int)((m_listItems->Size() * 100 ) / m_totalItems));
-        progressBar->ShowProgressBar(true);
+        CStdString label;
+        if (m_totalItems > 0)
+        {
+          label.Format(g_localizeStrings.Get(1042).c_str(), m_listItems->Size(), m_totalItems);
+          progressBar->SetPercentage((int)((m_listItems->Size() * 100 ) / m_totalItems));
+          progressBar->ShowProgressBar(true);
+        }
+        else
+          label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems->Size());
+        progressBar->SetLine(2, label);
       }
-      else
-        label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems->Size());
-      progressBar->SetLine(2, label);
       progressBar->Progress();
       if (progressBar->IsCanceled())
       { // user has cancelled our process - cancel our process
