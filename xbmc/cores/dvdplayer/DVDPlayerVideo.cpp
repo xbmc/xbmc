@@ -616,8 +616,8 @@ void CDVDPlayerVideo::Process()
             int iResult = OutputPicture(pTempNV12Picture, pts);
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
 #elif 0
-            // testing YUY2 rendering functions
-            DVDVideoPicture* pTempYUY2Picture = CDVDCodecUtils::ConvertToYUY2Picture(&picture);
+            // testing YUY2 or UYVY rendering functions
+            DVDVideoPicture* pTempYUY2Picture = CDVDCodecUtils::ConvertToYUY2Picture(&picture, false);
             int iResult = OutputPicture(pTempYUY2Picture, pts);
             CDVDCodecUtils::FreePicture(pTempYUY2Picture);
 #endif
@@ -891,7 +891,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     AutoCrop(pSource);
     CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
   }
-  else if(pSource->format == DVDVideoPicture::FMT_YUY2)
+  else if(pSource->format == DVDVideoPicture::FMT_YUY2 || pSource->format == DVDVideoPicture::FMT_UYVY)
   {
     AutoCrop(pSource);
     CDVDCodecUtils::CopyYUY2Picture(pDest, pSource);
@@ -1200,7 +1200,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
      (pPicture->format == DVDVideoPicture::FMT_NV12) ||
-     (pPicture->format == DVDVideoPicture::FMT_YUY2) )
+     (pPicture->format == DVDVideoPicture::FMT_YUY2) ||
+     (pPicture->format == DVDVideoPicture::FMT_UYVY))
   {
     RECT crop;
 
@@ -1259,10 +1260,16 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   detect = level * pPicture->iWidth + black2;
 
   //YV12 and NV12 have planar Y plane
-  //YUY2 has Y packed with U and V
-  int xadvance = 1;
+  //YUY2 and UYVY have Y packed with U and V
+  int xspacing = 1;
+  int xstart   = 0;
   if (pPicture->format == DVDVideoPicture::FMT_YUY2)
-    xadvance = 2;
+    xspacing = 2;
+  else if (pPicture->format == DVDVideoPicture::FMT_UYVY)
+  {
+    xspacing = 2;
+    xstart   = 1;
+  }
 
   // Crop top
   s      = pPicture->data[0];
@@ -1270,7 +1277,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   for (unsigned int y = 0; y < pPicture->iHeight/2; y++)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
+    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
       total += s[x];
     s += pPicture->iLineSize[0];
 
@@ -1289,7 +1296,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   for (unsigned int y = (int)pPicture->iHeight; y > pPicture->iHeight/2; y--)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
+    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
       total += s[x];
     s -= pPicture->iLineSize[0];
 
@@ -1310,7 +1317,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop left
   s    = pPicture->data[0];
   last = black2;
-  for (unsigned int x = 0; x < pPicture->iWidth/2; x += xadvance)
+  for (unsigned int x = xstart; x < pPicture->iWidth/2*xspacing; x += xspacing)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)
@@ -1319,7 +1326,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
     if (total > detect)
     {
       if (total - black2 > (last - black2) * multi)
-        crop.left = x;
+        crop.left = x / xspacing;
       break;
     }
     last = total;
@@ -1328,7 +1335,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop right
   s    = pPicture->data[0] + (pPicture->iWidth-1);
   last = black2;
-  for (unsigned int x = (int)pPicture->iWidth-1; x > pPicture->iWidth/2; x -= xadvance)
+  for (unsigned int x = (int)pPicture->iWidth*xspacing-1; x > pPicture->iWidth/2*xspacing; x -= xspacing)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)
@@ -1338,7 +1345,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
     if (total > detect)
     {
       if (total - black2 > (last - black2) * multi)
-        crop.right = pPicture->iWidth - x;
+        crop.right = pPicture->iWidth - (x / xspacing);
       break;
     }
     last = total;
