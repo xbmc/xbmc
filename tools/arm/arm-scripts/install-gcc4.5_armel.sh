@@ -14,7 +14,7 @@ http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libgcc1_4.5-20100321-1_armel.de
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libgomp1_4.5-20100321-1_armel.deb \
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libstdc++6_4.5-20100321-1_armel.deb \ 
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libstdc++6-4.5-dev_4.5-20100321-1_armel.deb \
-http://ftp.debian.org/debian/pool/main/libe/libelf/libelfg0_0.8.13-1_armel.deb \
+http://ftp.debian.org/debian/pool/main/libe/libelf/libelfg0_0.8.13-1_armel.deb"
 
 # Download them using wget
 mkdir -p gcc-4.5-debs
