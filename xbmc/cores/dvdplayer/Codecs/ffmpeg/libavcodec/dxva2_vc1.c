@@ -175,7 +175,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     unsigned dxva_size;
     int result;
 
-    if (ctx->decoder->dxva2_decoder_get_buffer(ctx->decoder, DXVA2_BitStreamDateBufferType,
+    if (ctx->decoder->dxva2_decoder_get_buffer(ctx, DXVA2_BitStreamDateBufferType,
                                               &dxva_data, &dxva_size)<0)
         return -1;
 

@@ -1191,13 +1191,13 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
 
   nSize    = pIn->GetActualDataLength();
   pIn->GetTime(&rtStart, &rtStop);
-  double startpts;
-  
+  //double startpts;
+  //startpts = pts_dtoi(((double)(rtStart/10)));
   if (rtStop <= rtStart && rtStop != _I64_MIN)
-    rtStop = rtStart + (m_rtAvrTimePerFrame/10);
-  startpts = pts_dtoi(((double)(rtStart/10)));
+    rtStop = rtStart + (m_rtAvrTimePerFrame);
 
-  m_pCodecContext->reordered_opaque  = startpts;
+
+  m_pCodecContext->reordered_opaque  = rtStart;
 
   int        got_picture;
   int        used_bytes;
@@ -1209,41 +1209,42 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     m_pFFBuffer    = (BYTE*)realloc(m_pFFBuffer, m_nFFBufferSize);
   }
 
-    // Required number of additionally allocated bytes at the end of the input bitstream for decoding.
-    // This is mainly needed because some optimized bitstream readers read
-    // 32 or 64 bit at once and could read over the end.<br>
-    // Note: If the first 23 bits of the additional bytes are not 0, then damaged
-    // MPEG bitstreams could cause overread and segfault.
-    
-    memcpy(m_pFFBuffer, pData, nSize);
-    memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
-    
+  // Required number of additionally allocated bytes at the end of the input bitstream for decoding.
+  // This is mainly needed because some optimized bitstream readers read
+  // 32 or 64 bit at once and could read over the end.<br>
+  // Note: If the first 23 bits of the additional bytes are not 0, then damaged
+  // MPEG bitstreams could cause overread and segfault.
+  
+  memcpy(m_pFFBuffer, pData, nSize);
+  memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
+  
   
 
-    
-    used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
-    //used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
+  
+  used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
+  
+  
 
-    if (m_pCodecContext->has_b_frames)
-    {
-      m_BFrames[m_nPosB].rtStart  = rtStart;
-      m_BFrames[m_nPosB].rtStop  = rtStop;
-      m_nPosB            = 1 - m_nPosB;
-    }
-    if (used_bytes < 0)
-    {
-      CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
-      return S_OK;
-    }
-    
-    if (used_bytes != nSize && !m_pCodecContext->hurry_up)
-      CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, nSize, used_bytes);
+  if (m_pCodecContext->has_b_frames)
+  {
+    m_BFrames[m_nPosB].rtStart  = rtStart;
+    m_BFrames[m_nPosB].rtStop  = rtStop;
+    m_nPosB      = 1 - m_nPosB;
+  }
+  if (used_bytes < 0)
+  {
+    CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
+    return S_OK;
+  }
+  
+  if (used_bytes != nSize && !m_pCodecContext->hurry_up)
+    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, nSize, used_bytes);
 
-    if (!got_picture || !m_pFrame->data[0] || pIn->IsPreroll() == S_OK || rtStart < 0) 
-      return S_OK;
+  if (!got_picture || !m_pFrame->data[0] || pIn->IsPreroll() == S_OK || rtStart < 0) 
+    return S_OK;
+  Com::SmartPtr<IMediaSample>  pOut;
   if (m_nDXVAMode == MODE_SOFTWARE)
   {
-    Com::SmartPtr<IMediaSample>  pOut;
     BYTE*          pDataOut = NULL;
 
     UpdateAspectRatio();
@@ -1257,7 +1258,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     pOut->SetTime(&rtStart, &rtStop);
     pOut->SetMediaTime(NULL, NULL);
 
- /* this is the original from mpc-hc */
+ /* this is the original from mpc-hc */    
     if (m_pSwsContext == NULL) 
       InitSwscale();
     
@@ -1297,23 +1298,41 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     hr = m_pOutput->Deliver(pOut);
     return hr;
   }
+  else if (m_nDXVAMode == MODE_DXVA1)
+  {
     //nSize  -= used_bytes;
     //pData += used_bytes;
-  int result = -1;
-  if (m_pDXVADecoder)// m_nDXVAMode == MODE_DXVA1 || m_nDXVAMode == MODE_DXVA2 )
-  {
-    //CheckPointer (m_pDXVADecoder, E_UNEXPECTED);
-    UpdateAspectRatio();
-
-    // Change aspect ratio for DXVA1
-    if ((m_nDXVAMode == MODE_DXVA1) &&
-      ReconnectOutput(PictWidthRounded(), PictHeightRounded(), true, PictWidth(), PictHeight()) == S_OK)
+    if (m_pDXVADecoder)//  || m_nDXVAMode == MODE_DXVA2 )
     {
-      m_pDXVADecoder->ConfigureDXVA1();
+      int result = -1;
+      //CheckPointer (m_pDXVADecoder, E_UNEXPECTED);
+      UpdateAspectRatio();
+
+      // Change aspect ratio for DXVA1
+      if ((m_nDXVAMode == MODE_DXVA1) && ReconnectOutput(PictWidthRounded(), PictHeightRounded(), true, PictWidth(), PictHeight()) == S_OK)
+        m_pDXVADecoder->ConfigureDXVA1();
+
+      if (m_pDXVADecoder->GetDeliveryBuffer(rtStart, rtStop,&pOut))
+      {
+        int field_type,slice_type;
+        slice_type = m_pFrame->pict_type;
+        /*Based on what happen in h264.c at switch (h->sei_pic_struct)*/
+        if (m_pFrame->interlaced_frame == 0 && m_pFrame->repeat_pict == 0)
+          field_type = PICT_TOP_FIELD;
+        else if(m_pFrame->interlaced_frame == 0 && m_pFrame->repeat_pict == 1)
+          field_type = PICT_BOTTOM_FIELD;
+        else 
+          field_type = PICT_FRAME;
+
+        m_pDXVADecoder->SetTypeSpecificFlags(pOut, (FF_SLICE_TYPE)slice_type, (FF_FIELD_TYPE)field_type);
+        hr = m_pDXVADecoder->GetIAMVideoAccelerator()->DisplayFrame(m_pDXVADecoder->GetCurrentBufferIndex(),pOut);
+
+      }
+      
+      //result = m_pDXVADecoder->Decode(m_pCodecContext, m_pFrame);
     }
-     
-     result = m_pDXVADecoder->Decode(m_pCodecContext, m_pFrame);  
   }
+  
   
 
   return hr;

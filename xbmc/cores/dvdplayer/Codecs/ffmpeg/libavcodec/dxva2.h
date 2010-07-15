@@ -38,39 +38,7 @@
 	DECODER_TYPE_DXVA_1,   ///< IAMVideoAccelerator
 	DECODER_TYPE_DXVA_2    ///< IDirectXVideoDecoder
 };
-#if 0
-struct dxva_context {
-    /**
-     * DXVA2 decoder object
-     */
-    IDirectXVideoDecoder *decoder;
 
-    /**
-     * DXVA2 configuration used to create the decoder
-     */
-    const DXVA2_ConfigPictureDecode *cfg;
-
-    /**
-     * The number of surface in the surface array
-     */
-    unsigned surface_count;
-
-    /**
-     * The array of Direct3D surfaces used to create the decoder
-     */
-    LPDIRECT3DSURFACE9 *surface;
-
-    /**
-     * A bit field configuring the workarounds needed for using the decoder
-     */
-    uint64_t workaround;
-
-    /**
-     * Private to the FFmpeg AVHWAccel implementation
-     */
-    unsigned report_id;
-};
-#endif
 struct dxva_context {
     /**
      * for dxva2 decoder.dxvadecoder should be a IDirectXVideoDecoder
@@ -112,7 +80,7 @@ typedef struct dxva_decoder_context {
     int (*dxva2_decoder_begin_frame)(struct dxva_context *ctx, unsigned index);
 	int (*dxva2_decoder_end_frame)(struct dxva_context *ctx, unsigned index);
 	int (*dxva2_decoder_execute)(struct dxva_context *ctx, DXVA2_DecodeExecuteParams *exec);
-	int (*dxva2_decoder_get_buffer)(struct dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size);
+	int (*dxva2_decoder_get_buffer)(struct dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size);
 	int (*dxva2_decoder_release_buffer)(struct dxva_context *ctx, unsigned type);
 } dxva_decoder_context;
 /*int (*AddExecuteBuffer)(dxva_directshow_context*, unsigned type, unsigned size, const void *data, unsigned *real_size);*/

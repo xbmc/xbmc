@@ -41,6 +41,24 @@ enum PCI_Vendors
   PCIV_S3_Graphics    = 0x5333
 };
 
+typedef enum
+{
+	PICT_TOP_FIELD     = 1,
+	PICT_BOTTOM_FIELD  = 2,
+	PICT_FRAME         = 3
+} FF_FIELD_TYPE;
+
+typedef enum
+{
+	I_TYPE  = 1, ///< Intra
+	P_TYPE  = 2, ///< Predicted
+	B_TYPE  = 3, ///< Bi-dir predicted
+	S_TYPE  = 4, ///< S(GMC)-VOP MPEG4
+	SI_TYPE = 5, ///< Switching Intra
+	SP_TYPE = 6, ///< Switching Predicted
+	BI_TYPE = 7
+} FF_SLICE_TYPE;
+
 // Bitmasks for DXVA compatibility check
 #define DXVA_UNSUPPORTED_LEVEL    1
 #define DXVA_TOO_MUCH_REF_FRAMES  2
@@ -76,6 +94,8 @@ public:
 
   void CreateDummySurface();
   bool  ConfigureDXVA1();
+  bool DXVADisplayFrame(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop);
+  bool  GetDeliveryBuffer(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, IMediaSample** ppSampleToDeliver);
   void  SetDirectXVideoDec (IDirectXVideoDecoder* pDirectXVideoDec)  { m_pDirectXVideoDec = pDirectXVideoDec; };
   /* ffmpeg callbacks*/
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
@@ -84,10 +104,21 @@ public:
   int   DXVABeginFrame(dxva_context *ctx, unsigned index);
   int   DXVAEndFrame(dxva_context *ctx, unsigned index);
   int   DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec);
-  int   DXVAGetBuffer(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size);
+  int   DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size);
   int   DXVAReleaseBuffer(dxva_context *ctx, unsigned type);
+  //Function used from ffmpeg dxva callbacks
   IAMVideoAccelerator* GetIAMVideoAccelerator(){return m_pAMVideoAccelerator;}
-  DWORD GetCurrentBufferIndex(){return m_dwBufferIndex;}
+  HRESULT FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferIndex);
+  DWORD GetCurrentBufferIndex()
+  {
+    return m_dwBufferIndex;
+  }
+  void SetCurrentBufferIndex(DWORD index)
+  {
+    m_dwBufferIndex = index;
+  }
+  unsigned GetBufferSize(unsigned index){ return m_ComBufferInfo[index].dwBytesToAllocate;}
+  DWORD              m_dwNumBuffersInfo;
   static bool      Supports(enum PixelFormat fmt);
 protected:
   struct SVideoBuffer
@@ -115,13 +146,18 @@ protected:
 
   /*std::vector<directshow_dxva_h264*> m_videoBuffer;*/
   CXBMCVideoDecFilter* m_pFilter;
+public:
+  void SetTypeSpecificFlags(IMediaSample* pMS,FF_SLICE_TYPE slice_type, FF_FIELD_TYPE field_type);
+  
 private:
-  DxvaDecoderType						m_nEngine;
   void Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber);
+  
+
+  DxvaDecoderType						m_nEngine;
   Com::SmartQIPtr<IAMVideoAccelerator> m_pAMVideoAccelerator;
   AMVABUFFERINFO          m_DXVA1BufferInfo[MAX_COM_BUFFER];
   DXVA_BufferDescription       m_DXVA1BufferDesc[MAX_COM_BUFFER];
-  DWORD              m_dwNumBuffersInfo;
+  
   DXVA_ConfigPictureDecode    m_DXVA1Config;
   AMVACompBufferInfo        m_ComBufferInfo[COMP_BUFFER_COUNT];
   DWORD              m_dwBufferIndex;

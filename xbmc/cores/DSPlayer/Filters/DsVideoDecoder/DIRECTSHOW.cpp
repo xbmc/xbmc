@@ -50,7 +50,7 @@ static int DXVAEndFrameS(dxva_context *ctx, unsigned index)
 static int DXVAExecuteS(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
 { return ((CDXVADecoder*)ctx->decoder)->DXVAExecute(ctx, exec); }
 
-static int DXVAGetBufferS(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
+static int DXVAGetBufferS(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size)
 { return ((CDXVADecoder*)ctx->decoder)->DXVAGetBuffer(ctx, type, dxva_data, dxva_size); }
 
 static int DXVAReleaseBufferS(dxva_context *ctx, unsigned type)
@@ -133,6 +133,64 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber)
 	memset (&m_DXVA1BufferInfo, 0, sizeof(m_DXVA1BufferInfo));
 	memset (&m_ExecuteParams, 0, sizeof(m_ExecuteParams));
 	Flush();
+}
+
+bool CDXVADecoder::ConfigureDXVA1()
+{
+  
+	HRESULT							hr = S_FALSE;
+	DXVA_ConfigPictureDecode		ConfigRequested;
+
+	if (m_pAMVideoAccelerator)
+	{
+		memset (&ConfigRequested, 0, sizeof(ConfigRequested));
+		ConfigRequested.guidConfigBitstreamEncryption	= DXVA_NoEncrypt;
+		ConfigRequested.guidConfigMBcontrolEncryption	= DXVA_NoEncrypt;
+		ConfigRequested.guidConfigResidDiffEncryption	= DXVA_NoEncrypt;
+		ConfigRequested.bConfigBitstreamRaw				= 2;
+
+		writeDXVA_QueryOrReplyFunc (&ConfigRequested.dwFunction, DXVA_QUERYORREPLYFUNCFLAG_DECODER_PROBE_QUERY, DXVA_PICTURE_DECODING_FUNCTION);
+		hr = m_pAMVideoAccelerator->Execute (ConfigRequested.dwFunction, &ConfigRequested, sizeof(DXVA_ConfigPictureDecode), &m_DXVA1Config, sizeof(DXVA_ConfigPictureDecode), 0, NULL);
+
+		// Copy to DXVA2 structure (simplify code based on accelerator config)
+		m_DXVA2Config.guidConfigBitstreamEncryption	= m_DXVA1Config.guidConfigBitstreamEncryption;
+		m_DXVA2Config.guidConfigMBcontrolEncryption	= m_DXVA1Config.guidConfigMBcontrolEncryption;
+		m_DXVA2Config.guidConfigResidDiffEncryption	= m_DXVA1Config.guidConfigResidDiffEncryption;
+		m_DXVA2Config.ConfigBitstreamRaw			= m_DXVA1Config.bConfigBitstreamRaw;
+		m_DXVA2Config.ConfigMBcontrolRasterOrder	= m_DXVA1Config.bConfigMBcontrolRasterOrder;
+		m_DXVA2Config.ConfigResidDiffHost			= m_DXVA1Config.bConfigResidDiffHost;
+		m_DXVA2Config.ConfigSpatialResid8			= m_DXVA1Config.bConfigSpatialResid8;
+		m_DXVA2Config.ConfigResid8Subtraction		= m_DXVA1Config.bConfigResid8Subtraction;
+		m_DXVA2Config.ConfigSpatialHost8or9Clipping	= m_DXVA1Config.bConfigSpatialHost8or9Clipping;
+		m_DXVA2Config.ConfigSpatialResidInterleaved	= m_DXVA1Config.bConfigSpatialResidInterleaved;
+		m_DXVA2Config.ConfigIntraResidUnsigned		= m_DXVA1Config.bConfigIntraResidUnsigned;
+		m_DXVA2Config.ConfigResidDiffAccelerator	= m_DXVA1Config.bConfigResidDiffAccelerator;
+		m_DXVA2Config.ConfigHostInverseScan			= m_DXVA1Config.bConfigHostInverseScan;
+		m_DXVA2Config.ConfigSpecificIDCT			= m_DXVA1Config.bConfigSpecificIDCT;
+		m_DXVA2Config.Config4GroupedCoefs			= m_DXVA1Config.bConfig4GroupedCoefs;
+
+		if (SUCCEEDED (hr))
+		{
+			writeDXVA_QueryOrReplyFunc (&m_DXVA1Config.dwFunction, DXVA_QUERYORREPLYFUNCFLAG_DECODER_LOCK_QUERY, DXVA_PICTURE_DECODING_FUNCTION);
+			hr = m_pAMVideoAccelerator->Execute (m_DXVA1Config.dwFunction, &m_DXVA1Config, sizeof(DXVA_ConfigPictureDecode), &ConfigRequested, sizeof(DXVA_ConfigPictureDecode), 0, NULL);
+
+			// TODO : check config!
+//			ASSERT (ConfigRequested.bConfigBitstreamRaw == 2);
+
+			AMVAUncompDataInfo		DataInfo;
+			DWORD					dwNum = COMP_BUFFER_COUNT;
+			DataInfo.dwUncompWidth	= m_pFilter->PictWidthRounded();
+			DataInfo.dwUncompHeight	= m_pFilter->PictHeightRounded();
+			memcpy (&DataInfo.ddUncompPixelFormat, m_pFilter->GetPixelFormat(), sizeof (DDPIXELFORMAT));
+			hr = m_pAMVideoAccelerator->GetCompBufferInfo (m_pFilter->GetDXVADecoderGuid(), &DataInfo, &dwNum, m_ComBufferInfo);
+		}
+    else
+    {
+      CLog::Log(LOGERROR,"%s config dxva1 failed",__FUNCTION__);
+      return false;
+    }
+	}
+	return true;
 }
 
 CDXVADecoder* CDXVADecoder::Acquire()
@@ -274,7 +332,7 @@ bool CDXVADecoder::Supports(enum PixelFormat fmt)
 
 int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  CSingleLock lock(m_section);
+  //CSingleLock lock(m_section);
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->GetDXVADecoder();
@@ -341,9 +399,21 @@ void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
     pic->data[i] = NULL;
 }
 
+HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferIndex)
+{
+	HRESULT		hr;
+	int			nTry;
+
+	dwBufferIndex	= 0; //(dwBufferIndex + 1) % m_ComBufferInfo[DXVA_PICTURE_DECODE_BUFFER].dwNumCompBuffers;
+
+	DO_DXVA_PENDING_LOOP (m_pAMVideoAccelerator->QueryRenderStatus ((DWORD)-1, dwBufferIndex, 0));
+
+	return hr;
+}
+
 int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 {
-  CSingleLock lock(m_section);
+  //CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -357,20 +427,31 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
   
 	for (int i=0; i<20; i++)
 	{
-  DO_DXVA_PENDING_LOOP (acc->BeginFrame(&BeginFrameInfo));
+    hr = acc->BeginFrame(&BeginFrameInfo);
     if (SUCCEEDED (hr))
     {
-      m_dwBufferIndex = index;
-      return 0;
+      DWORD dwBufferIndex = 0;
+      hr = acc->QueryRenderStatus((DWORD)-1, dwBufferIndex, 0);
+      dec->SetCurrentBufferIndex(dwBufferIndex);
+			//hr = FindFreeDXVA1Buffer ((DWORD)-1, m_dwBufferIndex);
+      
+      break;
+
     }
-    else
-      return -1;
+    if (SUCCEEDED (hr)) 
+      break;
+		Sleep(1);
   }
-return 0;
+  if (FAILED(hr))
+    return -1;
+  else 
+  return 0;
+
 }
 
 int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
 {
+  //CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -408,18 +489,55 @@ inline DWORD GetDXVA1CompressedType (DWORD dwDXVA2CompressedType)
 		}
 	}
 }
-int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void *dxva_data, unsigned dxva_size)
+int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size)
 {
+  //CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT hr;
   LONG		lStride;
-  hr = acc->GetBuffer(GetDXVA1CompressedType(type), dec->GetCurrentBufferIndex(), FALSE, (void**)&dxva_data, &lStride);
+  void *data;
+  DWORD bufindex = dec->GetCurrentBufferIndex();
+  unsigned dxva1type = GetDXVA1CompressedType(type);
+  hr = acc->GetBuffer(dxva1type, bufindex, FALSE, (void**)&data, &lStride);
+  *dxva_size = dec->GetBufferSize(dxva1type);
+  //TODO set dxva_size
+  *dxva_data = data;
   return 0;
 }
 
 int CDXVADecoder::DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
 {
+  //CSingleLock lock(m_section);
+  HRESULT hr = E_INVALIDARG;
+  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
+  const int count = exec->NumCompBuffers;
+  AMVABUFFERINFO info[MAX_COM_BUFFER];
+  DXVA_BufferDescription dsc[MAX_COM_BUFFER];
+  for (int i = 0; i < count; i++) 
+  {
+    const DXVA2_DecodeBufferDesc *b = &exec->pCompressedBuffers[i];
+    dsc[i].dwTypeIndex      = GetDXVA1CompressedType(b->CompressedBufferType);
+    dsc[i].dwBufferIndex    = 0;
+    dsc[i].dwDataOffset     = b->DataOffset;
+    dsc[i].dwDataSize       = b->DataSize;
+    dsc[i].dwFirstMBaddress = b->FirstMBaddress;
+    dsc[i].dwNumMBsInBuffer = b->NumMBsInBuffer;
+    dsc[i].dwWidth          = b->Width;
+    dsc[i].dwHeight         = b->Height;
+    dsc[i].dwStride         = b->Stride;
+    dsc[i].dwReservedBits   = b->ReservedBits;
+
+    info[i].dwTypeIndex   = GetDXVA1CompressedType(b->CompressedBufferType);
+    info[i].dwBufferIndex = 0;
+    info[i].dwDataOffset  = b->DataOffset;
+    info[i].dwDataSize    = b->DataSize;
+  }
+  DWORD function = 0x01000000;
+  DWORD result;
+ hr = acc->Execute(function,dsc, sizeof(*dsc) * count,&result, sizeof(result),count, info);
+  //todo add the execution
 return 0;
 }
 
@@ -427,65 +545,101 @@ return 0;
 
 int CDXVADecoder::DXVAReleaseBuffer(dxva_context *ctx, unsigned type)
 {
+  //CSingleLock lock(m_section);
+  HRESULT hr = E_INVALIDARG;
+  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
+  int nTry = 0;
+  for (int i=0; i<20; i++)
+	{
+  DO_DXVA_PENDING_LOOP (acc->ReleaseBuffer(GetDXVA1CompressedType(type), dec->GetCurrentBufferIndex()));
+    if (SUCCEEDED (hr))
+    {
+      return 0;
+    }
+    else
+      return -1;
+  }
 return 0;
 }
 
-bool CDXVADecoder::ConfigureDXVA1()
+void CDXVADecoder::SetTypeSpecificFlags(IMediaSample* pMS,FF_SLICE_TYPE slice_type, FF_FIELD_TYPE field_type)
 {
-  
-	HRESULT							hr = S_FALSE;
-	DXVA_ConfigPictureDecode		ConfigRequested;
-
-	if (m_pAMVideoAccelerator)
+  if(Com::SmartQIPtr<IMediaSample2> pMS2 = pMS)
 	{
-		memset (&ConfigRequested, 0, sizeof(ConfigRequested));
-		ConfigRequested.guidConfigBitstreamEncryption	= DXVA_NoEncrypt;
-		ConfigRequested.guidConfigMBcontrolEncryption	= DXVA_NoEncrypt;
-		ConfigRequested.guidConfigResidDiffEncryption	= DXVA_NoEncrypt;
-		ConfigRequested.bConfigBitstreamRaw				= 2;
-
-		writeDXVA_QueryOrReplyFunc (&ConfigRequested.dwFunction, DXVA_QUERYORREPLYFUNCFLAG_DECODER_PROBE_QUERY, DXVA_PICTURE_DECODING_FUNCTION);
-		hr = m_pAMVideoAccelerator->Execute (ConfigRequested.dwFunction, &ConfigRequested, sizeof(DXVA_ConfigPictureDecode), &m_DXVA1Config, sizeof(DXVA_ConfigPictureDecode), 0, NULL);
-
-		// Copy to DXVA2 structure (simplify code based on accelerator config)
-		m_DXVA2Config.guidConfigBitstreamEncryption	= m_DXVA1Config.guidConfigBitstreamEncryption;
-		m_DXVA2Config.guidConfigMBcontrolEncryption	= m_DXVA1Config.guidConfigMBcontrolEncryption;
-		m_DXVA2Config.guidConfigResidDiffEncryption	= m_DXVA1Config.guidConfigResidDiffEncryption;
-		m_DXVA2Config.ConfigBitstreamRaw			= m_DXVA1Config.bConfigBitstreamRaw;
-		m_DXVA2Config.ConfigMBcontrolRasterOrder	= m_DXVA1Config.bConfigMBcontrolRasterOrder;
-		m_DXVA2Config.ConfigResidDiffHost			= m_DXVA1Config.bConfigResidDiffHost;
-		m_DXVA2Config.ConfigSpatialResid8			= m_DXVA1Config.bConfigSpatialResid8;
-		m_DXVA2Config.ConfigResid8Subtraction		= m_DXVA1Config.bConfigResid8Subtraction;
-		m_DXVA2Config.ConfigSpatialHost8or9Clipping	= m_DXVA1Config.bConfigSpatialHost8or9Clipping;
-		m_DXVA2Config.ConfigSpatialResidInterleaved	= m_DXVA1Config.bConfigSpatialResidInterleaved;
-		m_DXVA2Config.ConfigIntraResidUnsigned		= m_DXVA1Config.bConfigIntraResidUnsigned;
-		m_DXVA2Config.ConfigResidDiffAccelerator	= m_DXVA1Config.bConfigResidDiffAccelerator;
-		m_DXVA2Config.ConfigHostInverseScan			= m_DXVA1Config.bConfigHostInverseScan;
-		m_DXVA2Config.ConfigSpecificIDCT			= m_DXVA1Config.bConfigSpecificIDCT;
-		m_DXVA2Config.Config4GroupedCoefs			= m_DXVA1Config.bConfig4GroupedCoefs;
-
-		if (SUCCEEDED (hr))
+		AM_SAMPLE2_PROPERTIES props;
+		if(SUCCEEDED(pMS2->GetProperties(sizeof(props), (BYTE*)&props)))
 		{
-			writeDXVA_QueryOrReplyFunc (&m_DXVA1Config.dwFunction, DXVA_QUERYORREPLYFUNCFLAG_DECODER_LOCK_QUERY, DXVA_PICTURE_DECODING_FUNCTION);
-			hr = m_pAMVideoAccelerator->Execute (m_DXVA1Config.dwFunction, &m_DXVA1Config, sizeof(DXVA_ConfigPictureDecode), &ConfigRequested, sizeof(DXVA_ConfigPictureDecode), 0, NULL);
+			props.dwTypeSpecificFlags &= ~0x7f;
 
-			// TODO : check config!
-//			ASSERT (ConfigRequested.bConfigBitstreamRaw == 2);
+			if(field_type == PICT_FRAME)
+				props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_WEAVE;
+			else
+			{
+				if(field_type == PICT_TOP_FIELD)
+					props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_FIELD1FIRST;
+				//if(m_fb.flags & PIC_FLAG_REPEAT_FIRST_FIELD)
+				//	props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_REPEAT_FIELD;
+			}
 
-			AMVAUncompDataInfo		DataInfo;
-			DWORD					dwNum = COMP_BUFFER_COUNT;
-			DataInfo.dwUncompWidth	= m_pFilter->PictWidthRounded();
-			DataInfo.dwUncompHeight	= m_pFilter->PictHeightRounded();
-			memcpy (&DataInfo.ddUncompPixelFormat, m_pFilter->GetPixelFormat(), sizeof (DDPIXELFORMAT));
-			hr = m_pAMVideoAccelerator->GetCompBufferInfo (m_pFilter->GetDXVADecoderGuid(), &DataInfo, &dwNum, m_ComBufferInfo);
+			switch (slice_type)
+			{
+			case I_TYPE :
+			case SI_TYPE :
+				props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_I_SAMPLE;
+				break;
+			case P_TYPE :
+			case SP_TYPE :
+				props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_P_SAMPLE;
+				break;
+			default :
+				props.dwTypeSpecificFlags |= AM_VIDEO_FLAG_B_SAMPLE;
+				break;
+			}
+
+			pMS2->SetProperties(sizeof(props), (BYTE*)&props);
 		}
-    else
-    {
-      CLog::Log(LOGERROR,"%s config dxva1 failed",__FUNCTION__);
-      return false;
-    }
 	}
-	return true;
+  REFERENCE_TIME rtstart,rtend;
+  HRESULT hr;
+  pMS->GetTime(&rtstart,&rtend);
+	hr = pMS->SetTime(&rtstart,&rtend);
+}
+
+
+bool CDXVADecoder::DXVADisplayFrame(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop)
+{
+/*  CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
+  REFERENCE_TIME starttime = (avctx->reordered_opaque * 10);
+  REFERENCE_TIME frame_length_avg = dec->m_pFilter->m_rtAvrTimePerFrame;
+  Com::SmartPtr<IMediaSample>		pSampleToDeliver;
+  if (GetDeliveryBuffer(starttime, frame_length_avg, &pSampleToDeliver)
+  {
+  
+  }*/
+return true;
+}
+
+bool CDXVADecoder::GetDeliveryBuffer(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, IMediaSample** ppSampleToDeliver)
+{
+	HRESULT					hr;
+  Com::SmartPtr<IMediaSample>	pNewSample;
+
+	// Change aspect ratio for DXVA2
+	if (m_nEngine == DECODER_TYPE_DXVA_2)
+	{
+		m_pFilter->UpdateAspectRatio();
+		m_pFilter->ReconnectOutput(m_pFilter->PictWidthRounded(), m_pFilter->PictHeightRounded(), true, m_pFilter->PictWidth(), m_pFilter->PictHeight());
+	}
+	hr		= m_pFilter->GetOutputPin()->GetDeliveryBuffer(&pNewSample, 0, 0, 0);
+
+	if (SUCCEEDED (hr))
+	{
+		pNewSample->SetTime(&rtStart, &rtStop);
+		pNewSample->SetMediaTime(NULL, NULL);
+		*ppSampleToDeliver = pNewSample.Detach();
+	}
+	return (SUCCEEDED(hr));
 }
 
 
