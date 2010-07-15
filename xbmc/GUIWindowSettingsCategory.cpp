@@ -1111,10 +1111,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_application.ReloadSkin();
     }
-	  else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
+    else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
     {
       g_weatherManager.Refresh();
- 	  }
+    }
   }
   else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...

@@ -569,7 +569,6 @@ void CGUISettings::Initialize()
   AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
 #endif
 #ifdef HAVE_LIBCRYSTALHD
-	
   AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
 #endif
 #ifdef HAVE_LIBVDADECODER
@@ -609,7 +608,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#if defined(HAS_GL) || HAS_GLES == 2	// May need changing for GLES
+#if defined(HAS_GL) || HAS_GLES == 2  // May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
   AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
