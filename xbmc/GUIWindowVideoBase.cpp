@@ -184,55 +184,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          if (iItem < 0 || iItem >= m_vecItems->Size())
-            return false;
-
-          CFileItemPtr item = m_vecItems->Get(iItem);
-
-          if (item->m_strPath.Equals("add") || item->IsParentFolder())
-            return false;
-
-          ADDON::ScraperPtr scraper;
-          if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
-          {
-            CStdString strDir;
-            if (item->IsVideoDb()       &&
-                item->HasVideoInfoTag() &&
-              !item->GetVideoInfoTag()->m_strPath.IsEmpty())
-            {
-              strDir = item->GetVideoInfoTag()->m_strPath;
-            }
-            else
-              CUtil::GetDirectory(item->m_strPath,strDir);
-
-            SScanSettings settings;
-            bool foundDirectly = false;
-            scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
-
-            if (!scraper &&
-              !(m_database.HasMovieInfo(item->m_strPath) ||
-                m_database.HasTvShowInfo(strDir)                           ||
-                m_database.HasEpisodeInfo(item->m_strPath)))
-            {
-              // hack
-              CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-              if (pDialog && pDialog->IsScanning())
-                return true;
-
-              CStdString strOldPath = item->m_strPath;
-              item->m_strPath = strDir;
-              OnAssignContent(iItem,1, scraper, settings);
-              item->m_strPath = strOldPath;
-              return true;
-            }
-
-            if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
-              return true;
-          }
-
-          OnInfo(item.get(),scraper);
-
-          return true;
+          return OnInfo(iItem);
         }
         else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
         {
@@ -904,6 +856,59 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
+
+  return true;
+}
+
+bool CGUIWindowVideoBase::OnInfo(int iItem) 
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  CFileItemPtr item = m_vecItems->Get(iItem);
+
+  if (item->m_strPath.Equals("add") || item->IsParentFolder())
+    return false;
+
+  ADDON::ScraperPtr scraper;
+  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
+  {
+    CStdString strDir;
+    if (item->IsVideoDb()       &&
+        item->HasVideoInfoTag() &&
+        !item->GetVideoInfoTag()->m_strPath.IsEmpty())
+    {
+      strDir = item->GetVideoInfoTag()->m_strPath;
+    }
+    else
+      CUtil::GetDirectory(item->m_strPath,strDir);
+
+    SScanSettings settings;
+    bool foundDirectly = false;
+    scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
+
+    if (!scraper &&
+        !(m_database.HasMovieInfo(item->m_strPath) ||
+          m_database.HasTvShowInfo(strDir)           ||
+          m_database.HasEpisodeInfo(item->m_strPath)))
+    {
+      // hack
+      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (pDialog && pDialog->IsScanning())
+        return true;
+
+      CStdString strOldPath = item->m_strPath;
+      item->m_strPath = strDir;
+      OnAssignContent(iItem,1, scraper, settings);
+      item->m_strPath = strOldPath;
+      return true;
+    }
+
+    if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
+      return true;
+  }
+
+  OnInfo(item.get(), scraper);
 
   return true;
 }
