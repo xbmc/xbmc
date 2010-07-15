@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31429 -->
+<!--Based on english strings version 31818 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -123,7 +123,7 @@
   <string id="164">无盘</string>
   <string id="165">当前光盘</string>
   <string id="166">皮肤</string>
-  <string id="167">启用 FTP 服务器</string>
+  <string id="167"></string>
   <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
@@ -194,6 +194,7 @@
   <string id="240">显示模式</string>
   <string id="241">全屏#%d</string>
   <string id="242">窗口</string>
+  <string id="243">刷新率</string>
 
   <string id="247">脚本</string>
   <string id="248">语言</string>
@@ -453,7 +454,7 @@
   <string id="517">最近播放的专辑</string>
   <string id="518">运行</string>
   <string id="519">运行方式</string>
-  <string id="520">编辑软件标题</string>
+  <string id="520"></string>
   <string id="521">合辑</string>
   <string id="522">移除源</string>
   <string id="523">切换媒体</string>
@@ -601,7 +602,7 @@
   <string id="715">- 分配方式</string>
   <string id="716">自动（动态分配）</string>
   <string id="717">手动（静态分配）</string>
-  <string id="718">默认（Dashboard）</string>
+  <string id="718"></string>
   <string id="719">- IP 地址</string>
   <string id="720">- 子网掩码</string>
   <string id="721">- 默认网关</string>
@@ -772,9 +773,9 @@
   <string id="1234">程序和图片和音乐</string>
   <string id="1235">程序和图片和视频</string>
 
-  <string id="1245">FTP 账号</string>
-  <string id="1246">FTP 密码</string>
-  <string id="1247">用户密码设置成功！</string>
+  <string id="1245"></string>
+  <string id="1246"></string>
+  <string id="1247"></string>
 
   <string id="1250">自动检测</string>
   <string id="1251">自动检测系统</string>
@@ -897,18 +898,18 @@
   <string id="12009">重新生成索引...</string>
   <string id="12010">返回到音乐窗口</string>
   <string id="12011">返回到视频窗口</string>
-  <string id="12012">更新金手指列表</string>
-  <string id="12013">金手指</string>
-  <string id="12014">没有找到金手指</string>
-  <string id="12015">金手指设置</string>
-  <string id="12016">所有金手指信息丢失，请更新金手指列表！</string>
+  <string id="12012"></string>
+  <string id="12013"></string>
+  <string id="12014"></string>
+  <string id="12015"></string>
+  <string id="12016"></string>
   <string id="12017">从上次中断处继续播放</string>
   <string id="12018">否</string>
   <string id="12019">是</string>
   <string id="12020">询问</string>
   <string id="12021">从头开始播放</string>
   <string id="12022">从 %s 处继续播放</string>
-  <string id="12023">正在验证金手指...</string>
+  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -928,7 +929,7 @@
   <string id="12327">输入管理员密码</string>
   <string id="12328">输入解锁密码</string>
   <string id="12329">或按 C 取消</string>
-  <string id="12330">输入 XBOX 手柄按键顺序，然后</string>
+  <string id="12330">输入游戏手柄按钮组合，然后</string>
   <string id="12331">按 Start 确认，或按 Back 取消</string>
   <string id="12332">设置锁定</string>
   <string id="12333">解除锁定</string>
@@ -959,9 +960,9 @@
   <string id="12377">将要初始化所有配置</string>
   <string id="12378">每幅图片显示时间</string>
   <string id="12379">使用移动和缩放特效</string>
-  <string id="12380">在 PAL 制式播放 NTSC 视频</string>
-  <string id="12381">在 NTSC 制式播放 PAL 视频</string>
-  <string id="12382">以 PAL60 制式播放 NTSC 视频</string>
+  <string id="12380"></string>
+  <string id="12381"></string>
+  <string id="12382"></string>
   <string id="12383">12小时制</string>
   <string id="12384">24小时制</string>
   <string id="12385">日/月</string>
@@ -984,8 +985,8 @@
   <string id="13003">- 延迟</string>
   <string id="13004">- 最小影音文件时长</string>
   <string id="13005">关机</string>
-  <string id="13006">Dashboard</string>
-  <string id="13007">使用自定义 Dashboard 路径</string>
+  <string id="13006"></string>
+  <string id="13007"></string>
   <string id="13008">自动关机功能</string>
   <string id="13009">退出</string>
   <string id="13010">休眠</string>
@@ -999,8 +1000,8 @@
   <string id="13021">挂接移动存储器</string>
   <string id="13022">不安全的移除设备</string>
   <string id="13023">成功移除设备</string>
-  <string id="13024">游戏手柄插入</string>
-  <string id="13025">游戏手柄拔出</string>
+  <string id="13024">游戏杆插入</string>
+  <string id="13025">游戏杆拔出</string>
 
   <string id="13050">电池电量不足</string>
 
@@ -1040,27 +1041,27 @@
   <string id="13146">控制 XBMC，修改这些设置将影响对</string>
   <string id="13147">系统的控制。你确认要处理吗？</string>
  
-  <string id="13150">硬盘密匙：</string>
-  <string id="13151">硬盘温度：</string>
-  <string id="13152">DVD 型号：</string>
-  <string id="13153">DVD 固件版本：</string>
-  <string id="13154">硬盘型号：</string>
-  <string id="13155">硬盘序列号：</string>
-  <string id="13156">硬盘固件版本：</string>
-  <string id="13157">硬盘密码：</string>
-  <string id="13158">硬盘锁定状态：</string>
+  <string id="13150"></string>
+  <string id="13151"></string>
+  <string id="13152"></string>
+  <string id="13153"></string>
+  <string id="13154"></string>
+  <string id="13155"></string>
+  <string id="13156"></string>
+  <string id="13157"></string>
+  <string id="13158"></string>
   <string id="13159">子网掩码</string>
   <string id="13160">网关地址</string>
   <string id="13161">首选 DNS 服务器地址</string>
   <string id="13162">初始化失败</string>
 
-  <string id="13163">游戏手柄</string>
-  <string id="13164">键盘</string>
-  <string id="13165">鼠标</string>
-  <string id="13166">耳麦</string>
-  <string id="13167">记忆卡</string>
-  <string id="13168">遥控器</string>
-  <string id="13169">控制器端口</string>
+  <string id="13163"></string>
+  <string id="13164"></string>
+  <string id="13165"></string>
+  <string id="13166"></string>
+  <string id="13167"></string>
+  <string id="13168"></string>
+  <string id="13169"></string>
 
   <string id="13170">从不</string>
   <string id="13171">立即</string>
@@ -1736,6 +1737,8 @@
   <string id="20253">WebDAV服务器（HTTP）</string>
   <string id="20254">WebDAV服务器（HTTPS）</string>
   <string id="20255">首次登录，编辑您的用户配置</string>
+  <string id="20256">HTS Tvheadend 客户端</string>
+  <string id="20257">VDR Streamdev 客户端</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1743,14 +1746,14 @@
   <string id="20303">你要跳过并继续吗？</string>
   <string id="20304">RSS 信源</string>
 
-  <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
+  <string id="20306"></string>
   <string id="20307">备用 DNS 服务器地址</string>
   <string id="20308">DHCP 服务器：</string>
   <string id="20309">新建文件夹</string>
   <string id="20310">播放时关闭 LCD 背光</string>
   <string id="20311">未知或板载（保护状态）</string>
   <string id="20312">暂停时关闭 LCD 背光</string>
-  <string id="20313">暂停时打开 LED</string>
+  <string id="20313"></string>
   <string id="20314">视频 - 资料库</string>
   <string id="20315"></string>
   <string id="20316">排序：标签</string>
@@ -1889,6 +1892,8 @@
   <string id="20449">无法连接远程服务器</string>
   <string id="20450">要继续扫描吗？</string>
   <string id="20451">国家</string>
+  <string id="20452">集</string>
+  <string id="20453">集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2117,6 +2122,10 @@
   <string id="22042">白/兰</string>
   <string id="22043">黑/白</string>
 
+  <string id="22079">默认选择动作</string>
+  <string id="22080">选定</string>
+  <string id="22081">显示信息</string>
+
   <string id="23049">图文字幕不可用</string>
   <string id="23050">开启图文字幕</string>
   <string id="23051">片段 %i</string>
@@ -2167,6 +2176,7 @@
   <string id="24039">禁用扩展功能</string>
   <string id="24040">（清除当前设置）</string>
   <string id="24041">从zip文件安装</string>
+  <string id="24042">正在下载 %i%%</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
