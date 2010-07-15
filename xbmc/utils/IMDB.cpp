@@ -70,8 +70,9 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
   if (m_info->Content() == CONTENT_MUSICVIDEOS)
     movieTitle.Replace("-"," ");
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s')",
-    __FUNCTION__, movieTitle.c_str(), m_info->Name().c_str(), m_info->Path().c_str(), ADDON::TranslateContent(m_info->Content()).c_str());
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (path: '%s', content: '%s', version: '%s')",
+    __FUNCTION__, movieTitle.c_str(), m_info->Name().c_str(), m_info->Path().c_str(),
+    ADDON::TranslateContent(m_info->Content()).c_str(), m_info->Version().str.c_str());
 
   if (m_info->GetParser().HasFunction("CreateSearchUrl"))
   {
