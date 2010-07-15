@@ -99,8 +99,10 @@ IF %comp%==vs2008 (
 :EXE_COMPILE
   IF %buildmode%==clean goto COMPILE_EXE
   rem ---------------------------------------------
-  rem	check for existing xbe
+  rem	check for existing exe
   rem ---------------------------------------------
+  IF EXIST buildlog.html del buildlog.html /q
+  
   IF EXIST %EXE% (
     goto EXE_EXIST
   )
@@ -302,18 +304,21 @@ IF %comp%==vs2008 (
   goto END
   )
   IF %comp%==vs2008 (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\BuildLog.htm"
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\BuildLog.htm"
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\BuildLog.htm"
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\BuildLog.htm"
   )
   IF NOT EXIST %log% goto END
+  
+  copy %log% ./buildlog.html > NUL
+  
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
   
   IF %comp%==vs2008 (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\" BuildLog.htm
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\" BuildLog.htm
   )
   
   start /D%log%
