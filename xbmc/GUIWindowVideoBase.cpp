@@ -860,6 +860,33 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
   return true;
 }
 
+bool CGUIWindowVideoBase::OnSelect(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  CFileItemPtr item = m_vecItems->Get(iItem);
+
+  if (!item->m_bIsFolder)
+  {
+    switch (g_guiSettings.GetInt("myvideos.selectaction")) 
+    {
+    case SELECT_ACTION_CHOOSE:
+      // TODO
+      break;
+    case SELECT_ACTION_INFO:
+      if (OnInfo(iItem))
+        return true;
+      break;
+    case SELECT_ACTION_PLAY:
+    default:
+      break;
+    }
+  }
+
+  return CGUIMediaWindow::OnSelect(iItem);
+}
+
 bool CGUIWindowVideoBase::OnInfo(int iItem) 
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())

@@ -183,6 +183,13 @@ enum PowerState
   POWERSTATE_ASK
 };
 
+enum VideoSelectAction
+{
+  SELECT_ACTION_CHOOSE = 0,
+  SELECT_ACTION_PLAY,
+  SELECT_ACTION_INFO
+};
+
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings

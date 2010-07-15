@@ -545,6 +545,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("myvideos.selectaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+//      pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
+      pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_PLAY);
+      pControl->AddLabel(g_localizeStrings.Get(22082), SELECT_ACTION_INFO);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
