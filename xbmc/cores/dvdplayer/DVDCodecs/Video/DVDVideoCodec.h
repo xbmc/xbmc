@@ -82,8 +82,8 @@ struct DVDVideoPicture
     FMT_YUV420P = 0,
     FMT_VDPAU,
     FMT_NV12,
-    FMT_UYVY,       // place holder for future expansion
-    FMT_YUY2,       //place holder for future expansion
+    FMT_UYVY,
+    FMT_YUY2,
     FMT_DXVA,
     FMT_VAAPI,
   } format;
