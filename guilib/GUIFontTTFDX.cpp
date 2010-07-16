@@ -140,8 +140,9 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   m_textureHeight = desc.Height;
   m_textureWidth = desc.Width;
 
+  DWORD flags = (newTexture->Usage & D3DUSAGE_DYNAMIC) ? D3DLOCK_DISCARD : 0;
   D3DLOCKED_RECT rect;
-  newTexture->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+  newTexture->LockRect(0, &rect, NULL, flags);
   memset(rect.pBits, 0, rect.Pitch * m_textureHeight);
   newTexture->UnlockRect(0);
 

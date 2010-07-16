@@ -88,7 +88,11 @@ void CD3DTexture::Release()
 bool CD3DTexture::LockRect(UINT level, D3DLOCKED_RECT *lr, const RECT *rect, DWORD flags)
 {
   if (m_texture)
+  {
+    if ((flags & D3DLOCK_DISCARD) && !(m_usage & D3DUSAGE_DYNAMIC))
+      flags &= ~D3DLOCK_DISCARD;
     return (D3D_OK == m_texture->LockRect(level, lr, rect, flags));
+  }
   return false;
 }
 
