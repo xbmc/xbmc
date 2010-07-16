@@ -1382,10 +1382,9 @@ void CCrystalHD::Reset(void)
   {
     // Calling for non-error flush, Flushes all the decoder
     //  buffers, input, decoded and to be decoded. 
-    m_reset = 60;
+    m_reset = 10;
     m_wait_timeout = 1;
     m_dll->DtsFlushInput(m_device, 2);
-    ::Sleep(100);
   }
 
   while (m_BusyList.Count())
