@@ -34,6 +34,7 @@
 #include "Subtitles/decss/DeCSSInputPin.h"
 
 #include "DIRECTSHOW.h"
+#include "../splitters/DSStreamInfo.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -147,10 +148,8 @@ protected:
   // === Private functions
   void        Cleanup();
   int          FindCodec(const CMediaType* mtIn);
-  void        AllocExtradata(AVCodecContext* pAVCtx, const CMediaType* mt);
   bool        IsMultiThreadSupported(int nCodec);
   void        GetOutputFormats (int& nNumber, VIDEO_OUTPUT_FORMATS** ppFormats);
-  void        CalcAvgTimePerFrame();
   void        DetectVideoCard(HWND hWnd);
   UINT        GetAdapter(IDirect3D9* pD3D, HWND hWnd);
   int          GetCspFromMediaType(GUID& subtype);
@@ -170,7 +169,6 @@ public:
   DllSwScale m_dllSwScale;
   
   CodecID     m_pAVCodecID;
-  AVCodec*               m_pAVCodec;
   AVCodecContext*        m_pCodecContext;
   AVFrame*               m_pFrame;
   AVPicture*             m_pConvertFrame;

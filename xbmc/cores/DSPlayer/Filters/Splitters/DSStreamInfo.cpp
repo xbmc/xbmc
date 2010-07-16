@@ -49,6 +49,13 @@ CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata, cons
   Assign(right, withextradata, containerFormat); 
 }
 
+CDSStreamInfo::CDSStreamInfo(const CMediaType &pmt)
+{
+  extradata = NULL;
+  Clear();
+  Assign(pmt);
+}
+
 CDSStreamInfo::~CDSStreamInfo()
 {
   if( extradata && extrasize ) 
@@ -72,7 +79,7 @@ void CDSStreamInfo::Clear()
 
   fpsscale = 0;
   fpsrate  = 0;
-  m_avgtimeperframe = 0;
+  avgtimeperframe = 0;
   height   = 0;
   width    = 0;
   aspect   = 0.0;
@@ -156,7 +163,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
-  m_avgtimeperframe   = right.m_avgtimeperframe;
+  avgtimeperframe   = right.avgtimeperframe;
   height   = right.height;
   width    = right.width;
   aspect   = right.aspect;
@@ -346,5 +353,86 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
       MEDIASUBTYPE_NULL;
 
     mtype.lSampleSize = 1;
+  }
+}
+
+void CDSStreamInfo::Assign(const CMediaType &pmt)
+{
+  Clear();
+
+  const BYTE*    data = NULL;
+  unsigned int  size = 0;
+
+  if(pmt.formattype == FORMAT_VideoInfo)
+  {
+    VIDEOINFOHEADER*  vih = (VIDEOINFOHEADER*)pmt.pbFormat;
+    width = vih->bmiHeader.biWidth;
+    height  = abs(vih->bmiHeader.biHeight);
+    codec_tag  = vih->bmiHeader.biCompression;
+    size = pmt.cbFormat-sizeof(VIDEOINFOHEADER);
+    data = size?pmt.pbFormat+sizeof(VIDEOINFOHEADER):NULL;
+    avgtimeperframe = vih->AvgTimePerFrame;
+  }
+  else if(pmt.formattype == FORMAT_VideoInfo2)
+  {
+    VIDEOINFOHEADER2*  vih2 = (VIDEOINFOHEADER2*)pmt.pbFormat;
+    width    = vih2->bmiHeader.biWidth;
+    height  = abs(vih2->bmiHeader.biHeight);
+    codec_tag  = vih2->bmiHeader.biCompression;
+    size = pmt.cbFormat-sizeof(VIDEOINFOHEADER2);
+    data = size?pmt.pbFormat+sizeof(VIDEOINFOHEADER2):NULL;
+    avgtimeperframe = vih2->AvgTimePerFrame;
+  }
+  else if(pmt.formattype == FORMAT_MPEGVideo)
+  {
+    MPEG1VIDEOINFO*    mpgv = (MPEG1VIDEOINFO*)pmt.pbFormat;
+    width    = mpgv->hdr.bmiHeader.biWidth;
+    height  = abs(mpgv->hdr.bmiHeader.biHeight);
+    codec_tag  = mpgv->hdr.bmiHeader.biCompression;
+    MPEG1VIDEOINFO*    mpeg1info = (MPEG1VIDEOINFO*)pmt.pbFormat;
+    if (mpeg1info->cbSequenceHeader)
+    {
+      size = mpeg1info->cbSequenceHeader;
+      data = mpeg1info->bSequenceHeader;
+    }
+    avgtimeperframe = mpgv->hdr.AvgTimePerFrame;
+  }
+  else if(pmt.formattype == FORMAT_MPEG2Video)
+  {
+    MPEG2VIDEOINFO*    mpg2v = (MPEG2VIDEOINFO*)pmt.pbFormat;
+    width = mpg2v->hdr.bmiHeader.biWidth;
+    height = abs(mpg2v->hdr.bmiHeader.biHeight);
+    codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
+
+    if (mpg2v->hdr.bmiHeader.biCompression == NULL)
+      codec_tag = pmt.subtype.Data1;
+    //for fourcc 'avc1' and 'AVC1'
+    //mpg2v->dwFlags is corresponding to the nal data length but until i find a sample
+    //that conflict with the decoder i wont add it to the process
+    MPEG2VIDEOINFO*    mpeg2info = (MPEG2VIDEOINFO*)pmt.pbFormat;
+    if (mpeg2info->cbSequenceHeader)
+    {
+      size = mpeg2info->cbSequenceHeader;
+      data = (const uint8_t*)mpeg2info->dwSequenceHeader;
+    }
+    avgtimeperframe = mpg2v->hdr.AvgTimePerFrame;
+    
+  }
+  else if (pmt.formattype==FORMAT_VorbisFormat2)
+  {
+    const VORBISFORMAT2 *vf2=(const VORBISFORMAT2*)pmt.pbFormat;
+    size=pmt.cbFormat-sizeof(VORBISFORMAT2);
+    data=size?pmt.pbFormat+sizeof(VORBISFORMAT2):NULL;
+  }
+  else
+  {
+    avgtimeperframe = 1;
+  }
+
+  if (size)
+  {
+    extrasize  = size;
+    extradata = malloc(extrasize);
+    memcpy((void*)extradata, data, size);
   }
 }

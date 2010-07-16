@@ -35,6 +35,7 @@ public:
   CDSStreamInfo();
   CDSStreamInfo(const CDSStreamInfo &right, bool withextradata = true, const char *containerFormat = "");
   CDSStreamInfo(const CDemuxStream &right, bool withextradata = true, const char *containerFormat = "");
+  CDSStreamInfo(const CMediaType &pmt);
 
   ~CDSStreamInfo();
 
@@ -44,6 +45,7 @@ public:
 
   void Assign(const CDSStreamInfo &right, bool withextradata, const char *containerFormat);
   void Assign(const CDemuxStream &right, bool withextradata, const char *containerFormat);
+  void Assign(const CMediaType &pmt);
 
   CodecID codec_id;
   StreamType type;
@@ -56,7 +58,7 @@ public:
   // VIDEO
   int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int fpsrate;
-  REFERENCE_TIME m_avgtimeperframe;
+  REFERENCE_TIME avgtimeperframe;
   BITMAPINFOHEADER *m_bih;
   BYTE *m_vinfo;
   VIDEOINFOHEADER m_vi;
@@ -66,6 +68,8 @@ public:
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
   bool stills; // there may be odd still frames in video
+  int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
+  int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
 
   // AUDIO
   unsigned int formatextraaudio;
@@ -81,6 +85,7 @@ public:
   // CODEC EXTRADATA
   void*        extradata; // extra data for codec_id to use
   unsigned int extrasize; // size of extra data
+  unsigned int codec_tag; // extra identifier hints for decoding
 
   bool m_bIsmpegts;
 

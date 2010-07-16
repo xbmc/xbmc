@@ -130,21 +130,22 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     s.streamInfo = hint;
     s.pid = iStream;
 
-    switch(pStream->type) {
-    case STREAM_VIDEO:
-      m_streams[VIDEO].push_back(s);
-      break;
-    case STREAM_AUDIO:
-      m_streams[AUDIO].push_back(s);
-      break;
-    case STREAM_SUBTITLE:
-      m_streams[SUBPIC].push_back(s);
-      break;
-    default:
-      // unsupported stream
-      delete hint;
-      break;
-    }
+    switch(pStream->type) 
+    {
+      case STREAM_VIDEO:
+        m_streams[VIDEO].push_back(s);
+        break;
+      case STREAM_AUDIO:
+        m_streams[AUDIO].push_back(s);
+        break;
+      case STREAM_SUBTITLE:
+        m_streams[SUBPIC].push_back(s);
+        break;
+      default:
+        // unsupported stream
+        delete hint;
+        break;
+      }
   }
 
   /*if(m_streams[SUBPIC].size() == 1) {

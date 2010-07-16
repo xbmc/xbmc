@@ -108,7 +108,6 @@ CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr)
 
   m_pCpuId             = new CCpuId();
   m_pDXVADecoder       = NULL;
-  m_pAVCodec           = NULL;
   m_pAVCodecID         = CODEC_ID_NONE;
   m_pCodecContext      = NULL;
   m_pFrame             = NULL;
@@ -385,11 +384,6 @@ void CXBMCVideoDecFilter::Cleanup()
   }
   SAFE_DELETE(m_pDXVADecoder);
 
-  
-
-  
-
-  m_pAVCodec    = NULL;
   m_pCodecContext    = NULL;
   m_pFrame    = NULL;
   m_pFFBuffer    = NULL;
@@ -412,26 +406,6 @@ void CXBMCVideoDecFilter::Cleanup()
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
   m_dllSwScale.Unload();
-}
-
-void CXBMCVideoDecFilter::CalcAvgTimePerFrame()
-{
-  CMediaType &mt  = m_pInput->CurrentMediaType();
-  if (mt.formattype==FORMAT_VideoInfo)
-    m_rtAvrTimePerFrame = ((VIDEOINFOHEADER*)mt.pbFormat)->AvgTimePerFrame;
-  else if (mt.formattype==FORMAT_VideoInfo2)
-    m_rtAvrTimePerFrame = ((VIDEOINFOHEADER2*)mt.pbFormat)->AvgTimePerFrame;
-  else if (mt.formattype==FORMAT_MPEGVideo)
-    m_rtAvrTimePerFrame = ((MPEG1VIDEOINFO*)mt.pbFormat)->hdr.AvgTimePerFrame;
-  else if (mt.formattype==FORMAT_MPEG2Video)
-    m_rtAvrTimePerFrame = ((MPEG2VIDEOINFO*)mt.pbFormat)->hdr.AvgTimePerFrame;
-  else
-  {
-    ASSERT (FALSE);
-    m_rtAvrTimePerFrame  = 1;
-  }
-
-  m_rtAvrTimePerFrame = std::max (1i64, m_rtAvrTimePerFrame);
 }
 
 STDMETHODIMP CXBMCVideoDecFilter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -492,15 +466,17 @@ enum PixelFormat CXBMCVideoDecFilter::GetFormat( struct AVCodecContext * avctx, 
 HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaType *pmt)
 {
   int    nNewCodec;
+  AVCodec* pCodec;
 
   if (direction != PINDIR_INPUT)
     return __super::SetMediaType(direction,pmt);
-
+  
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     return E_FAIL;
 
   m_dllAvCodec.avcodec_register_all();
   
+  CDSStreamInfo *hint = new CDSStreamInfo(*pmt);
   
   nNewCodec = FindCodec(pmt);
   m_pAVCodecID = ffCodecs[nNewCodec].nFFCodec;
@@ -510,181 +486,63 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   m_pCodecContext  = m_dllAvCodec.avcodec_alloc_context();
   m_nCodecNb  = nNewCodec;
   m_bReorderBFrame  = true;
-  m_pAVCodec = NULL;
   
   CheckPointerDbg(m_pCodecContext, E_POINTER, "failed to avcodec_alloc_context");
 
-  if(pmt->formattype == FORMAT_VideoInfo)
-  {
-        VIDEOINFOHEADER*  vih = (VIDEOINFOHEADER*)pmt->pbFormat;
-        m_pCodecContext->width    = vih->bmiHeader.biWidth;
-        m_pCodecContext->height  = abs(vih->bmiHeader.biHeight);
-        m_pCodecContext->codec_tag  = vih->bmiHeader.biCompression;
-      }
-      else if(pmt->formattype == FORMAT_VideoInfo2)
-      {
-        VIDEOINFOHEADER2*  vih2 = (VIDEOINFOHEADER2*)pmt->pbFormat;
-        m_pCodecContext->width    = vih2->bmiHeader.biWidth;
-        m_pCodecContext->height  = abs(vih2->bmiHeader.biHeight);
-        m_pCodecContext->codec_tag  = vih2->bmiHeader.biCompression;
-      }
-      else if(pmt->formattype == FORMAT_MPEGVideo)
-      {
-        MPEG1VIDEOINFO*    mpgv = (MPEG1VIDEOINFO*)pmt->pbFormat;
-        m_pCodecContext->width    = mpgv->hdr.bmiHeader.biWidth;
-        m_pCodecContext->coded_width = mpgv->hdr.bmiHeader.biWidth;
-        m_pCodecContext->height  = abs(mpgv->hdr.bmiHeader.biHeight);
-        m_pCodecContext->coded_height = abs(mpgv->hdr.bmiHeader.biHeight);
-        m_pCodecContext->codec_tag  = mpgv->hdr.bmiHeader.biCompression;
-      }
-      else if(pmt->formattype == FORMAT_MPEG2Video)
-      {
-        MPEG2VIDEOINFO*    mpg2v = (MPEG2VIDEOINFO*)pmt->pbFormat;
-        m_nWidth = mpg2v->hdr.bmiHeader.biWidth;
-        //m_pCodecContext->height  = abs(mpg2v->hdr.bmiHeader.biHeight);
-        m_nHeight = abs(mpg2v->hdr.bmiHeader.biHeight);
-        //m_pCodecContext->codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
 
-        if (mpg2v->hdr.bmiHeader.biCompression == NULL)
-        {
-          //m_pCodecContext->codec_tag = pmt->subtype.Data1;
-        }
-        else if ( (m_pCodecContext->codec_tag == MAKEFOURCC('a','v','c','1')) || (m_pCodecContext->codec_tag == MAKEFOURCC('A','V','C','1')))
-        {
+  if ( (hint->codec_tag == MAKEFOURCC('a','v','c','1')) || (hint->codec_tag == MAKEFOURCC('A','V','C','1')))
+    m_bReorderBFrame = false;
 
-          //m_pCodecContext->nal_length_size = mpg2v->dwFlags;
+  pCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
+  CheckPointerDbg(pCodec, VFW_E_UNSUPPORTED_VIDEO, "Codec not supported with the internal decoder");
 
-          m_bReorderBFrame = false;
-
-
-        }
-      }
-
-#if 0
-    while((m_pAVCodec = m_dllAvCodec.av_codec_next(m_pAVCodec)))
-    {
-      if(m_pAVCodec->id == ffCodecs[nNewCodec].nFFCodec)
-      //&& m_pAVCodec->capabilities & CODEC_CAP_HWACCEL_DIRECTSHOW)
-      {
-        
-        CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating Directshow(%d)",ffCodecs[nNewCodec].nFFCodec);
-        
-        DIRECTSHOW::CDXVADecoder* d_dec = new DIRECTSHOW::CDXVADecoder();
-        m_pCodecContext->codec_id = ffCodecs[nNewCodec].nFFCodec;
-        
-        if(PIX_FMT_DXVA2_VLD == m_pAVCodec->pix_fmts[0])// == PIX_FMT_DXVA2_VLD) m_pAVCodec->pix_fmts ? m_pAVCodec->pix_fmts[0] : PIX_FMT_NONE))
-        {
-          d_dec->Open(m_pCodecContext,PIX_FMT_DXVA2_VLD);
-          m_pDXVADecoder = d_dec;
-          m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
-          break;
-        }
-        m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
-        CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get DIRECTSHOW decoder");
-        d_dec->Release();
-        }
-    }
-#endif
+  m_pCodecContext->opaque = (void*) this;
+  m_pCodecContext->debug_mv        = 0;
+  m_pCodecContext->debug           = 0;
+  m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
+  m_pCodecContext->get_format = GetFormat;
       
-        
-      m_pAVCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
-      CheckPointer (m_pAVCodec, VFW_E_UNSUPPORTED_VIDEO);
-  
-      
-      m_pCodecContext->opaque = (void*) this;
-      
+  if (ffCodecs[nNewCodec].nFFCodec != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
+    m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
-      m_pCodecContext->debug_mv        = 0;
-      m_pCodecContext->debug           = 0;
-      m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
-      m_pCodecContext->get_format = GetFormat;
-      
-      if (ffCodecs[nNewCodec].nFFCodec != CODEC_ID_H264 && m_pAVCodec->capabilities & CODEC_CAP_DR1)
-        m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
+  m_pCodecContext->coded_width = hint->width;
+  m_pCodecContext->coded_height = hint->height;
+  m_pCodecContext->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
+  m_pCodecContext->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
+  /* The codectag is currently used in mpegvideo.c at MPV_common_init*/
+  m_pCodecContext->codec_tag = hint->codec_tag;//ffCodecs[nNewCodec].fourcc;
 
-      m_pCodecContext->coded_width = m_nWidth;
-      m_pCodecContext->coded_height = m_nHeight;
-      m_pCodecContext->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
-      m_pCodecContext->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
-      /* The codectag is currently used in mpegvideo.c at MPV_common_init*/
-      //m_pCodecContext->codec_tag        = ffCodecs[nNewCodec].fourcc;
-
-      //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
-      //m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
-      m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
+  //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
+  //m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
+  m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
        
-      
-      //m_pCodecContext->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
-      /*m_pCodecContext->postgain        = 1.0f; TODO */
+  //m_pCodecContext->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
       
       
-      
-      
-      
-      AllocExtradata (m_pCodecContext, pmt);
-      
-      CalcAvgTimePerFrame();
+  if (hint->extrasize > 0)
+  {
+    m_pCodecContext->extradata_size = hint->extrasize;
+    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hint->extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, hint->extradata, hint->extrasize);
+  }
+  m_rtAvrTimePerFrame = std::max (1i64, hint->avgtimeperframe);
 
-/*Todo add better probing of codec for setting the num of threads*/
-      m_dllAvCodec.avcodec_thread_init(m_pCodecContext,1);
+  int num_threads = std::min(8 /*MAX_THREADS*/, m_pCpuId->GetProcessorNumber());
+  if( num_threads > 1 && IsDXVASupported() // thumbnail extraction fails when run threaded
+  && ( pCodec->id == CODEC_ID_H264 || pCodec->id == CODEC_ID_MPEG4 ))
+    m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
+      
+  if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec)<0)
+  {
+    CLog::Log(LOGERROR,"%s failed to open codec",__FUNCTION__);
+    return VFW_E_INVALIDMEDIATYPE;
+  }
+      
+  m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
+  CheckPointer (m_pFrame, E_POINTER);
 
       
-      if (m_dllAvCodec.avcodec_open(m_pCodecContext, m_pAVCodec)<0)
-      {
-        CLog::DebugLog("%s failed to open codec",__FUNCTION__);
-        return VFW_E_INVALIDMEDIATYPE;
-      }
-      
-      m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
-      CheckPointer (m_pFrame,    E_POINTER);
-
-      
-      BuildDXVAOutputFormat();
-      return __super::SetMediaType(direction, pmt);
-
-      /*end temporary*/
-      switch (ffCodecs[m_nCodecNb].nFFCodec)
-      {
-      case CODEC_ID_H264 :
-        int    nCompat;
-        /*nCompat = m_dllAvCodec.FFH264CheckCompatibility(PictWidthRounded(), PictHeightRounded(),
-                                                        m_pCodecContext, (BYTE*)m_pCodecContext->extradata, 
-                                                        m_pCodecContext->extradata_size, m_nPCIVendor, 
-                                                        m_nPCIDevice, m_VideoDriverVersion);*/
-        if(nCompat>0)
-        {
-          switch(m_nDXVACheckCompatibility)
-          {
-          case 0 :
-            m_bDXVACompatible = false;            
-            break;
-          case 1 :
-            if(nCompat != DXVA_UNSUPPORTED_LEVEL) m_bDXVACompatible = false;
-            break;
-          case 2 :
-            if(nCompat != DXVA_TOO_MUCH_REF_FRAMES) m_bDXVACompatible = false;
-            break;
-          }
-        }
-        break;
-      case CODEC_ID_MPEG2VIDEO :
-        // DSP is disable for DXVA decoding (to keep default idct_permutation)
-        m_pCodecContext->dsp_mask ^= FF_MM_FORCE;
-        break;
-      default:
-        m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-        break;
-      }
-      int numthreads = m_pCpuId->GetProcessorNumber();
-      m_dllAvCodec.avcodec_thread_init(m_pCodecContext,numthreads);
-      // Force single thread for DXVA !
-      if (IsDXVASupported())
-        m_dllAvCodec.avcodec_thread_init(m_pCodecContext,1);
-
-      BuildDXVAOutputFormat();
-    
-  
-
+  BuildDXVAOutputFormat();
   return __super::SetMediaType(direction, pmt);
 }
 
@@ -773,70 +631,6 @@ void CXBMCVideoDecFilter::GetOutputFormats (int& nNumber, VIDEO_OUTPUT_FORMATS**
   nNumber    = m_nVideoOutputCount;
   *ppFormats  = m_pVideoOutputFormat;
 }
-
-
-
-void CXBMCVideoDecFilter::AllocExtradata(AVCodecContext* pAVCtx, const CMediaType* pmt)
-{
-  const BYTE*    data = NULL;
-  unsigned int  size = 0;
-
-  if (pmt->formattype==FORMAT_VideoInfo)
-  {
-    size = pmt->cbFormat-sizeof(VIDEOINFOHEADER);
-    data = size?pmt->pbFormat+sizeof(VIDEOINFOHEADER):NULL;
-  }
-  else if (pmt->formattype==FORMAT_VideoInfo2)
-  {
-    size = pmt->cbFormat-sizeof(VIDEOINFOHEADER2);
-    data = size?pmt->pbFormat+sizeof(VIDEOINFOHEADER2):NULL;
-  }
-  else if (pmt->formattype==FORMAT_MPEGVideo)
-  {
-    MPEG1VIDEOINFO*    mpeg1info = (MPEG1VIDEOINFO*)pmt->pbFormat;
-    if (mpeg1info->cbSequenceHeader)
-    {
-      size = mpeg1info->cbSequenceHeader;
-      data = mpeg1info->bSequenceHeader;
-    }
-  }
-  else if (pmt->formattype==FORMAT_MPEG2Video)
-  {
-    MPEG2VIDEOINFO*    mpeg2info = (MPEG2VIDEOINFO*)pmt->pbFormat;
-    if (mpeg2info->cbSequenceHeader)
-    {
-      
-      size = mpeg2info->cbSequenceHeader;
-      data = (const uint8_t*)mpeg2info->dwSequenceHeader;
-      /*std::vector<BYTE> extravect;
-      for (int xx = 0 ; xx < size; xx++)
-      {
-        extravect.push_back((BYTE)data[xx]);
-      }*/
-      
-      //memcpy((void*)extravect.at(0),pAVCtx->extradata,size);
-      //pAVCtx->extradata[1] = (const BYTE)mpeg2info->dwProfile;
-      //pAVCtx->extradata[3] = mpeg2info->dwLevel;
-      //(data[4]&3) = mpeg2info->dwFlags-1;
-      
-    }
-  }
-  else if (pmt->formattype==FORMAT_VorbisFormat2)
-  {
-    const VORBISFORMAT2 *vf2=(const VORBISFORMAT2*)pmt->pbFormat;
-    size=pmt->cbFormat-sizeof(VORBISFORMAT2);
-    data=size?pmt->pbFormat+sizeof(VORBISFORMAT2):NULL;
-  }
-
-  if (size)
-  {
-    pAVCtx->extradata_size  = size;
-    pAVCtx->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(size + FF_INPUT_BUFFER_PADDING_SIZE);
-    /*pAVCtx->extradata = (uint8_t*)calloc(1,size+FF_INPUT_BUFFER_PADDING_SIZE);*/
-    memcpy((void*)pAVCtx->extradata, data, size);
-  }
-}
-
 
 HRESULT CXBMCVideoDecFilter::CompleteConnect(PIN_DIRECTION direction, IPin* pReceivePin)
 {
