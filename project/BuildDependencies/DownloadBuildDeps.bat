@@ -26,6 +26,8 @@ md lib
 md include
 md %TMP_PATH%
 
+cd scripts
+
 FOR /F "tokens=*" %%S IN ('dir /B "*_d.bat"') DO (
   echo running %%S ...
   CALL %%S
