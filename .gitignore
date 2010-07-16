@@ -83,6 +83,8 @@ config.log
 /addons/visualization.projectm/projectM.vis
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
+/addons/script.module.pil/
+/addons/script.module.pysqlite/
 
 # /guilib/
 /guilib/Makefile
@@ -301,6 +303,7 @@ config.log
 /system/players/dvdplayer/libexpat-1.dll
 /system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
+/system/players/dvdplayer/librtmp.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
@@ -388,6 +391,7 @@ config.log
 # /tools/TexturePacker
 /tools/TexturePacker/TexturePacker
 /tools/TexturePacker/Makefile
+/tools/TexturePacker/*.dll
 
 # /tools/XBMCTex/
 /tools/XBMCTex/Makefile
