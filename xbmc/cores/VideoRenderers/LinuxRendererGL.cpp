@@ -1208,9 +1208,9 @@ void CLinuxRendererGL::LoadShaders(int field)
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2 ||
            CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_UYVY)
   {
-    m_textureUpload = &CLinuxRendererGL::UploadYUY2Texture;
-    m_textureCreate = &CLinuxRendererGL::CreateYUY2Texture;
-    m_textureDelete = &CLinuxRendererGL::DeleteYUY2Texture;
+    m_textureUpload = &CLinuxRendererGL::UploadYUV422PackedTexture;
+    m_textureCreate = &CLinuxRendererGL::CreateYUV422PackedTexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteYUV422PackedTexture;
   }
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
   {
@@ -2420,7 +2420,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
 #endif
 }
 
-void CLinuxRendererGL::UploadYUY2Texture(int source)
+void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
@@ -2472,7 +2472,7 @@ void CLinuxRendererGL::UploadYUY2Texture(int source)
 
 }
 
-void CLinuxRendererGL::DeleteYUY2Texture(int index)
+void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -2519,7 +2519,7 @@ void CLinuxRendererGL::DeleteYUY2Texture(int index)
   }
 }
 
-bool CLinuxRendererGL::CreateYUY2Texture(int index)
+bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
@@ -2527,7 +2527,7 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
   GLuint    *pbo    = m_buffers[index].pbo;
 
   // Delete any old texture
-  DeleteYUY2Texture(index);
+  DeleteYUV422PackedTexture(index);
 
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;

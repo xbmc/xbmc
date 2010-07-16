@@ -617,9 +617,10 @@ void CDVDPlayerVideo::Process()
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
 #elif 0
             // testing YUY2 or UYVY rendering functions
-            DVDVideoPicture* pTempYUY2Picture = CDVDCodecUtils::ConvertToYUY2Picture(&picture, false);
-            int iResult = OutputPicture(pTempYUY2Picture, pts);
-            CDVDCodecUtils::FreePicture(pTempYUY2Picture);
+            DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_UYVY);
+            //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_YUY2);
+            int iResult = OutputPicture(pTempYUVPackedPicture, pts);
+            CDVDCodecUtils::FreePicture(pTempYUVPackedPicture);
 #endif
 
             if(m_started == false)
@@ -894,7 +895,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   else if(pSource->format == DVDVideoPicture::FMT_YUY2 || pSource->format == DVDVideoPicture::FMT_UYVY)
   {
     AutoCrop(pSource);
-    CDVDCodecUtils::CopyYUY2Picture(pDest, pSource);
+    CDVDCodecUtils::CopyYUV422PackedPicture(pDest, pSource);
   }
 #ifdef HAS_DX
   else if(pSource->format == DVDVideoPicture::FMT_DXVA)

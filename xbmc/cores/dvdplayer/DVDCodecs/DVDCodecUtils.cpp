@@ -218,7 +218,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
   return pPicture;
 }
 
-DVDVideoPicture* CDVDCodecUtils::ConvertToYUY2Picture(DVDVideoPicture *pSrc, bool uyvy)
+DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format)
 {
   // Clone a YV12 picture to new YUY2 or UYVY picture.
   DVDVideoPicture* pPicture = new DVDVideoPicture;
@@ -239,10 +239,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUY2Picture(DVDVideoPicture *pSrc, boo
       pPicture->iLineSize[1] = 0;
       pPicture->iLineSize[2] = 0;
       pPicture->iLineSize[3] = 0;
-      if (uyvy)
-        pPicture->format = DVDVideoPicture::FMT_UYVY;
-      else
-        pPicture->format = DVDVideoPicture::FMT_YUY2;
+      pPicture->format = format;
 
       //if this is going to be used for anything else than testing the renderer
       //the libraries should not be loaded on every function call
@@ -262,7 +259,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUY2Picture(DVDVideoPicture *pSrc, boo
         int      dstStride[] = { pPicture->iLineSize[0], NULL,               NULL,               NULL };
 
         int dstformat;
-        if (uyvy)
+        if (format == DVDVideoPicture::FMT_UYVY)
           dstformat = PIX_FMT_UYVY422;
         else
           dstformat = PIX_FMT_YUYV422;
@@ -327,7 +324,7 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
   return true;
 }
 
-bool CDVDCodecUtils::CopyYUY2Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
+bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
