@@ -661,9 +661,9 @@ void CMPCOutputThread::CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   for (int y = 0; y < h/2; y++, s_y += stride)
   {
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
   }
   //copy chroma
   //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
@@ -723,18 +723,18 @@ void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   for (int y = 0; y < h/2; y++, s_y += stride)
   {
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
   }
   //copy chroma
   uint8_t *s_uv = procOut->UVbuff;
   uint8_t *d_uv = pBuffer->m_uv_buffer_ptr;
   for (int y = 0; y < h/4; y++, s_uv += stride) {
     fast_memcpy(d_uv, s_uv, w);
-    d_uv += stride;
+    d_uv += w;
     fast_memcpy(d_uv, s_uv, w);
-    d_uv += stride;
+    d_uv += w;
   }
   pBuffer->m_interlace = false;
 }
