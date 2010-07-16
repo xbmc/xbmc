@@ -1562,7 +1562,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
     ./configure \
-      --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS" \
+      --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
@@ -1589,7 +1589,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
+      `case $host_cpu in powerpc*|arm*|amd64*|x86_64*|ia64*) echo --enable-pic ;; esac` \
       --cc="$CC" &&
       sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
       sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
