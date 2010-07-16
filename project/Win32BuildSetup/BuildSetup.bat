@@ -178,7 +178,6 @@ IF %comp%==vs2008 (
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
   Echo Lircmap.xml>>exclude.txt
-  Echo getdeps.bat>>exclude.txt
   
   md BUILD_WIN32\Xbmc
 
@@ -187,7 +186,6 @@ IF %comp%==vs2008 (
   copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
   copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
-  call dependencies\getdeps.bat > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   IF %comp%==vs2008 (
     xcopy vs_redistributable\vs2008\vcredist_x86.exe BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
