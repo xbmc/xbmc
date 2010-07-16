@@ -304,7 +304,7 @@ IF %comp%==vs2008 (
   IF %comp%==vs2008 (
     SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\BuildLog.htm"
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\BuildLog.htm"
+    SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\BuildLog.htm"
   )
   IF NOT EXIST %log% goto END
   
@@ -316,7 +316,7 @@ IF %comp%==vs2008 (
   IF %comp%==vs2008 (
     SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\" BuildLog.htm
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\" BuildLog.htm
+    SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" BuildLog.htm
   )
   
   start /D%log%
