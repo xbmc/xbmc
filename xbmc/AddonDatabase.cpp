@@ -485,6 +485,9 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Creator", addon->Author());
   pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
   pItem->SetProperty("Addon.Rating", addon->Stars());
+  CStdString starrating;
+  starrating.Format("rating%d.png", addon->Stars());
+  pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
   pItem->SetProperty("Addon.Broken", addon->Props().broken);
 }
