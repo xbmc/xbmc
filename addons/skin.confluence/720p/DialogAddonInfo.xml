@@ -177,7 +177,7 @@
 					<posy>90</posy>
 					<width>160</width>
 					<height>32</height>
-					<texture>LeftRating/$INFO[ListItem.Property(Addon.Rating)]</texture>
+					<texture>LeftRating/$INFO[ListItem.Property(Addon.StarRating)]</texture>
 				</control>
 				<control type="label">
 					<description>Summary txt</description>
