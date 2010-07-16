@@ -26,7 +26,7 @@
 #ifndef _DXVA2API_H
 #define _DXVA2API_H
 
-#define MINGW_DXVA2API_H_VERSION (2)
+#define MINGW_DXVA2API_H_VERSION (1)
 
 #if __GNUC__ >=3
 #pragma GCC system_header
@@ -183,11 +183,6 @@ typedef struct _DXVA_PictureParameters {
     UCHAR   bBitstreamConcealmentMethod;
 } DXVA_PictureParameters, *LPDXVA_PictureParameters;
 
-typedef struct _DXVA_QmatrixData {
-    BYTE    bNewQmatrix[4];
-    WORD    Qmatrix[4][8 * 8];
-} DXVA_QmatrixData, *LPDXVA_QmatrixData;
-
 typedef struct _DXVA_SliceInfo {
     USHORT  wHorizontalPosition;
     USHORT  wVerticalPosition;
@@ -285,7 +280,11 @@ typedef struct {
     UCHAR   bScalingLists4x4[6][16];
     UCHAR   bScalingLists8x8[2][64];
 } DXVA_Qmatrix_H264;
-
+/* DXVA Mpeg2*/
+typedef struct {
+  BYTE bNewQmatrix[4]; /* intra Y, inter Y, intra chroma, inter chroma */
+  WORD Qmatrix[4][8 * 8];
+} DXVA_QmatrixData;
 
 typedef struct {
     UINT    BSNALunitDataLocation;
