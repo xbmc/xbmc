@@ -225,22 +225,30 @@ struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float lev
 }
 
 /*
-  builds a lookup table to convert from the input mapping to the output
-  mapping, this decreases the amount of work per sample to remap it.
+  Builds a lookup table without extra adjustments, useful if we simply
+  want to find out which channels are active.
+  For final adjustments, BuildMap() is used.
 */
-void CPCMRemap::BuildMap()
+void CPCMRemap::ResolveChannels()
 {
-  if (!m_inSet || !m_outSet) return;
-
   unsigned int in_ch, out_ch;
   bool hasSide = false;
   bool hasBack = false;
-
-  m_inStride  = m_inSampleSize * m_inChannels ;
-  m_outStride = m_inSampleSize * m_outChannels;
-
+  
   memset(m_useable, 0, sizeof(m_useable));
-  if (m_ignoreLayout)
+
+  if (!m_outSet)
+  {
+    /* Output format is not known yet, assume the full configured map.
+     * Note that m_ignoreLayout-using callers normally ignore the result of
+     * this function when !m_outSet, when it is called only for an advice for
+     * the caller of SetInputFormat about the best possible output map, and
+     * they can still set their output format arbitrarily in their call to
+     * SetOutputFormat. */
+    for (enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
+         m_useable[*chan] = true;
+  }
+  else if (m_ignoreLayout)
   {
     for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
       m_useable[m_outMap[out_ch]] = true;
@@ -285,14 +293,9 @@ void CPCMRemap::BuildMap()
       else if (m_inMap[in_ch] == PCM_SIDE_RIGHT) m_inMap[in_ch] = PCM_BACK_RIGHT;   
   }
 
-  /* see if we need to normalize the levels */
-  bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
-  CLog::Log(LOGDEBUG, "CPCMRemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
-
   /* resolve all the channels */
   struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
   std::vector<enum PCMChannels> path;
-  int counts[PCM_MAX_CH];
 
   for (int i = 0; i < PCM_MAX_CH + 1; i++)
   {
@@ -300,7 +303,7 @@ void CPCMRemap::BuildMap()
       m_lookupMap[i][j].channel = PCM_INVALID;
   }
 
-  memset(counts, 0, sizeof(counts));
+  memset(m_counts, 0, sizeof(m_counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
 
     for (int i = 0; i < PCM_MAX_CH + 1; i++)
@@ -316,9 +319,30 @@ void CPCMRemap::BuildMap()
       dst->channel   = m_inMap[in_ch];
       dst->in_offset = in_ch * 2;
       dst->level     = info->level;
-      counts[dst->channel]++;
+      m_counts[dst->channel]++;
     }
   }
+}
+
+/*
+  builds a lookup table to convert from the input mapping to the output
+  mapping, this decreases the amount of work per sample to remap it.
+*/
+void CPCMRemap::BuildMap()
+{
+  struct PCMMapInfo *dst;
+  unsigned int out_ch;
+
+  if (!m_inSet || !m_outSet) return;
+
+  m_inStride  = m_inSampleSize * m_inChannels ;
+  m_outStride = m_inSampleSize * m_outChannels;
+
+  /* see if we need to normalize the levels */
+  bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
+  CLog::Log(LOGDEBUG, "CPCMRemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
+
+  ResolveChannels();
 
   /* convert the levels into RMS values */
   float loudest    = 0.0;
@@ -331,7 +355,7 @@ void CPCMRemap::BuildMap()
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
       dst->copy  = false;
-      dst->level = dst->level / sqrt((float)counts[dst->channel]);
+      dst->level = dst->level / sqrt((float)m_counts[dst->channel]);
       scale     += dst->level;
       ++count;
     }

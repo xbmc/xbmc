@@ -89,8 +89,10 @@ protected:
   bool               m_useable  [PCM_MAX_CH];
   int                m_inStride, m_outStride;
   struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
+  int                m_counts[PCM_MAX_CH];
 
   struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
+  void               ResolveChannels(); //!< Partial BuildMap(), just enough to see which output channels are active
   void               BuildMap();
   void               DumpMap(CStdString info, int unsigned channels, enum PCMChannels *channelMap);
   void               Dispose();
