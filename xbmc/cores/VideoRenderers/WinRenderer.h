@@ -182,6 +182,8 @@ protected:
   virtual void Render(DWORD flags);
   void         RenderSW(DWORD flags);
   void         RenderPS(DWORD flags);
+  void         Stage1(DWORD flags);
+  void         Stage2(DWORD flags);
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
@@ -203,42 +205,38 @@ protected:
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
 
-  bool m_bConfigured;
-
-  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
-  RenderMethod        m_renderMethod;
+  bool                 m_bConfigured;
+  SVideoBuffer         m_VideoBuffers[NUM_BUFFERS];
+  RenderMethod         m_renderMethod;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
-  DllAvUtil          *m_dllAvUtil;
-  DllAvCodec         *m_dllAvCodec;
-  DllSwScale         *m_dllSwScale;
-  struct SwsContext  *m_sw_scale_ctx;
+  DllAvUtil           *m_dllAvUtil;
+  DllAvCodec          *m_dllAvCodec;
+  DllSwScale          *m_dllSwScale;
+  struct SwsContext   *m_sw_scale_ctx;
 
   // Software rendering
   D3DTEXTUREFILTERTYPE m_StretchRectFilter;
   CD3DTexture          m_SWTarget;
 
   // PS rendering
-  CD3DTexture         m_IntermediateTarget;
-  CD3DTexture         m_IntermediateStencilSurface;
+  bool                 m_bUseHQScaler;
+  CD3DTexture          m_IntermediateTarget;
+  CD3DTexture          m_IntermediateStencilSurface;
 
-  CYUV2RGBShader*     m_colorShader;
-  CConvolutionShader* m_scalerShader;
+  CYUV2RGBShader*      m_colorShader;
+  CConvolutionShader*  m_scalerShader;
 
-  void Stage1(DWORD flags);
-  void Stage2(DWORD flags);
-
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  ESCALINGMETHOD       m_scalingMethod;
+  ESCALINGMETHOD       m_scalingMethodGui;
 
   D3DCAPS9 m_deviceCaps;
 
-  bool m_bUseHQScaler;
-  bool m_bFilterInitialized;
+  bool                 m_bFilterInitialized;
 
   // clear colour for "black" bars
-  DWORD          m_clearColour;
-  unsigned int   m_flags;
+  DWORD                m_clearColour;
+  unsigned int         m_flags;
 };
 
 #else

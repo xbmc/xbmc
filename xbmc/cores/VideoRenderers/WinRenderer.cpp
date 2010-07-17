@@ -165,10 +165,10 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   if(m_sourceWidth  != width
   || m_sourceHeight != height)
   {
-    m_sourceWidth = width;
-    m_sourceHeight = height;
+    m_sourceWidth       = width;
+    m_sourceHeight      = height;
     // need to recreate textures
-    m_NumYV12Buffers = 0;
+    m_NumYV12Buffers    = 0;
     m_iYV12RenderBuffer = 0;
   }
 
@@ -934,7 +934,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   else if(m_renderMethod == RENDER_PS)
   {
     if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
-    && (   method == VS_SCALINGMETHOD_AUTO 
+    && (   method == VS_SCALINGMETHOD_AUTO
         || method == VS_SCALINGMETHOD_LINEAR))
         return true;
 
