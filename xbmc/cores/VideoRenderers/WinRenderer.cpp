@@ -912,40 +912,55 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CWinRenderer::Supports(ERENDERFEATURE feature)
 {
-  if(feature == RENDERFEATURE_BRIGHTNESS)
-    return true;
-  
-  if(feature == RENDERFEATURE_CONTRAST)
-    return true;
+  if (m_renderMethod == RENDER_DXVA || m_renderMethod == RENDER_PS)
+  {
+    if(feature == RENDERFEATURE_BRIGHTNESS)
+      return true;
 
+    if(feature == RENDERFEATURE_CONTRAST)
+      return true;
+  }
   return false;
 }
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if (m_renderMethod == RENDER_DXVA)
   {
     if(method == VS_SCALINGMETHOD_LINEAR)
       return true;
     return false;
   }
-
-  if(D3DSHADER_VERSION_MAJOR(m_deviceCaps.PixelShaderVersion) >= 3)
+  else if(m_renderMethod == RENDER_PS)
   {
-    if(method == VS_SCALINGMETHOD_LINEAR
-    || method == VS_SCALINGMETHOD_CUBIC
-    || method == VS_SCALINGMETHOD_LANCZOS2
-    || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-    || method == VS_SCALINGMETHOD_AUTO)
-      return true;
+    if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
+    && (   method == VS_SCALINGMETHOD_AUTO 
+        || method == VS_SCALINGMETHOD_LINEAR))
+        return true;
 
-    //lanczos3 is only allowed through advancedsettings.xml because it's very slow
-    if (g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3)
-      return true;
+    if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(3, 0))
+    {
+      if(method == VS_SCALINGMETHOD_CUBIC
+      || method == VS_SCALINGMETHOD_LANCZOS2
+      || method == VS_SCALINGMETHOD_LANCZOS3_FAST)
+        return true;
+
+      //lanczos3 is only allowed through advancedsettings.xml because it's very slow
+      if (g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3)
+        return true;
+    }
   }
-  else if(method == VS_SCALINGMETHOD_LINEAR)
-    return true;
+  else if(m_renderMethod == RENDER_SW)
+  {
+    if(method == VS_SCALINGMETHOD_NEAREST
+    || method == VS_SCALINGMETHOD_AUTO )
+      return true;
 
+    if(method == VS_SCALINGMETHOD_LINEAR
+    && m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
+	  && m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+	    return true;
+  }
   return false;
 }
 
