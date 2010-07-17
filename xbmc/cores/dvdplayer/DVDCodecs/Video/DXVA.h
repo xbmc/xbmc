@@ -106,7 +106,6 @@ public:
   void Close();
   REFERENCE_TIME Add   (IDirect3DSurface9* source);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
-  void           CropSource(RECT& dst, RECT& src, const D3DSURFACE_DESC& desc);
   int            Size() { return m_size; }
 
   CProcessor* Acquire();

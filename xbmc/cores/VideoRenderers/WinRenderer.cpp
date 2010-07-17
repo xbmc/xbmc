@@ -588,6 +588,38 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
+void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
+{
+  if(dst.left < 0)
+  {
+    src.left -= dst.left
+              * (src.right - src.left)
+              / (dst.right - dst.left);
+    dst.left  = 0;
+  }
+  if(dst.top < 0)
+  {
+    src.top -= dst.top
+             * (src.bottom - src.top)
+             / (dst.bottom - dst.top);
+    dst.top  = 0;
+  }
+  if(dst.right > (LONG)desc.Width)
+  {
+    src.right -= (dst.right - desc.Width)
+               * (src.right - src.left)
+               / (dst.right - dst.left);
+    dst.right  = desc.Width;
+  }
+  if(dst.bottom > (LONG)desc.Height)
+  {
+    src.bottom -= (dst.bottom - desc.Height)
+                * (src.bottom - src.top)
+                / (dst.bottom - dst.top);
+    dst.bottom  = desc.Height;
+  }
+}
+
 void CWinRenderer::Render(DWORD flags)
 {
   if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
@@ -668,6 +700,9 @@ void CWinRenderer::RenderSW(DWORD flags)
   D3DSURFACE_DESC desc;
   if (FAILED(target->GetDesc(&desc)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
+
+  // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
+  CropSource(srcRect, dstRect, desc);
 
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 

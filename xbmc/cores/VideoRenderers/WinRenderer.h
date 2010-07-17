@@ -176,6 +176,8 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
+  static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
+
 protected:
   virtual void Render(DWORD flags);
   void         RenderSW(DWORD flags);
