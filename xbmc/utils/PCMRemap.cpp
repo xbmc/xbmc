@@ -438,22 +438,25 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
 
   CLog::Log(LOGINFO, "CPCMRemap: Configured speaker layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
 
-  /* set m_layoutMap to the intersection of the input and speaker layouts;
-     we don't perform upmixing so the extra channels from speaker layout are not needed */
+  
+  DumpMap("I", channels, channelMap);
+  BuildMap();
+
+  /* now remove the empty channels from PCMLayoutMap;
+   * we don't perform upmixing so we want the minimum amount of those */
   if (channelMap) {
+    if (!m_outSet)
+      ResolveChannels(); /* Do basic channel resolving to find out the empty channels;
+                          * If m_outSet == true, this was done already by BuildMap() above */
     int i = 0;
-    for (unsigned int inChan = 0; inChan < channels; ++inChan)
-      for (enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
-        if (channelMap[inChan] == *chan) {
-          m_layoutMap[i++] = *chan;
-          break;
-        }
+    for (enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
+      if (m_lookupMap[*chan][0].channel != PCM_INVALID) {
+        /* something is mapped here, so add the channel */
+        m_layoutMap[i++] = *chan;
+      }
     m_layoutMap[i] = PCM_INVALID;
   } else
     memcpy(m_layoutMap, PCMLayoutMap[m_channelLayout], sizeof(PCMLayoutMap[m_channelLayout]));
-
-  DumpMap("I", channels, channelMap);
-  BuildMap();
 
   return m_layoutMap;
 }
