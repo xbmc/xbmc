@@ -74,6 +74,19 @@ struct PCMMapInfo
   bool  copy;
 };
 
+//!  Channels remapper class
+/*!
+   The usual set-up process:
+   - user calls SetInputFormat with the input channels information
+   - SetInputFormat responds with a channelmap corresponding to the speaker
+     layout that the user has configured, with empty (according to information
+     calculated from the input channelmap) channels removed
+   - user uses this information to create the desired output channelmap,
+     and calls SetOutputFormat to set it (if the channelmap contains channels
+     that do not exist in the configured speaker layout, they will contain
+     only silence unless ignoreLayout is true)
+ */
+
 class CPCMRemap
 {
 protected:
