@@ -35,7 +35,6 @@
 #include "Application.h"
 #include "Util.h"
 #include "win32/WIN32Util.h"
-#include "LocalizeStrings.h"
 #include "VideoReferenceClock.h"
 
 using namespace std;
@@ -84,26 +83,9 @@ CRenderSystemDX::~CRenderSystemDX()
   DestroyRenderSystem();
 }
 
-void CRenderSystemDX::CheckDXVersion()
-{
-  CStdString strSystemFolder = CWIN32Util::GetSystemPath();
-  CStdString dxtestfile = CUtil::AddFileToFolder(strSystemFolder, "D3DX9_42.dll");
-
-  HANDLE hDevice = 0;
-  if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
-  {
-    CLog::Log(LOGWARNING, "%s - old DirectX runtime. You need DirectX 9.0c, dated August 2009 or later.", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
-  }
-  else
-    CloseHandle(hDevice);
-}
-
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-
-  CheckDXVersion();
 
   m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
@@ -415,12 +397,6 @@ bool CRenderSystemDX::CreateDevice()
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
 
-  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - XBMC requires a graphics card supporting Pixel Shaders 2.0");
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
-  }
-
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
   if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
@@ -435,7 +411,7 @@ bool CRenderSystemDX::CreateDevice()
     m_defaultD3DPool  = D3DPOOL_MANAGED;
   }
 
-    m_renderCaps = 0;
+  m_renderCaps = 0;
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 

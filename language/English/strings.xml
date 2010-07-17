@@ -826,8 +826,8 @@
 
   <string id="2100">Script failed! : %s</string>
   <string id="2101">Newer version needed - See log</string>
-  <string id="2102">Graphics Card</string>
-  <string id="2103">Requirements not met - See log</string>
+  <string id="2102"></string>
+  <string id="2103"></string>
 
   <string id="4501">Enable LCD/VFD</string>
 
