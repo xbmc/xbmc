@@ -190,6 +190,9 @@ protected:
   bool UpdateRenderMethod();
 
   void UpdateVideoFilter();
+  void SelectSWVideoFilter();
+  void SelectPSVideoFilter();
+  void UpdatePSVideoFilter();
   bool SetupIntermediateRenderTarget();
 
   void RenderProcessor(DWORD flags);

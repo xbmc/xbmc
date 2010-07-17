@@ -443,16 +443,27 @@ bool CWinRenderer::SetupIntermediateRenderTarget()
   return true;
 }
 
-void CWinRenderer::UpdateVideoFilter()
+void CWinRenderer::SelectSWVideoFilter()
 {
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
-    return;
+  switch (m_scalingMethod)
+  {
+  case VS_SCALINGMETHOD_AUTO:
+  case VS_SCALINGMETHOD_LINEAR:
+    if (Supports(VS_SCALINGMETHOD_LINEAR))
+    {
+      m_StretchRectFilter = D3DTEXF_LINEAR;
+      break;
+    }
+    // fall through for fallback
+  case VS_SCALINGMETHOD_NEAREST:
+  default:
+    m_StretchRectFilter = D3DTEXF_POINT;
+    break;
+  }
+}
 
-  m_bFilterInitialized = true;
-
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
-  m_scalingMethod    = m_scalingMethodGui;
-
+void CWinRenderer::SelectPSVideoFilter()
+{
   m_bUseHQScaler = false;
 
   switch (m_scalingMethod)
@@ -492,7 +503,10 @@ void CWinRenderer::UpdateVideoFilter()
     m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     m_bUseHQScaler = true;
   }
+}
 
+void CWinRenderer::UpdatePSVideoFilter()
+{
   SAFE_RELEASE(m_scalerShader)
 
   if (m_bUseHQScaler)
@@ -505,8 +519,6 @@ void CWinRenderer::UpdateVideoFilter()
       m_bUseHQScaler = false;
     }
   }
-
-  // Scaler is figured out. HQ scaler requires an intermediate render target.
 
   if(m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
@@ -540,6 +552,39 @@ void CWinRenderer::UpdateVideoFilter()
     if (!m_colorShader->Create(true))
       SAFE_RELEASE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
+  }
+}
+
+void CWinRenderer::UpdateVideoFilter()
+{
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
+    return;
+
+  m_bFilterInitialized = true;
+
+  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethod    = m_scalingMethodGui;
+
+  if (!Supports(m_scalingMethod))
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - chosen scaling method %d is not supported by renderer", (int)m_scalingMethod);
+    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+    return;
+  }
+
+  switch(m_renderMethod)
+  {
+  case RENDER_SW:
+    SelectSWVideoFilter();
+    break;
+
+  case RENDER_PS:
+    SelectPSVideoFilter();
+    UpdatePSVideoFilter();
+    break;
+
+  default:
+    return;
   }
 }
 
