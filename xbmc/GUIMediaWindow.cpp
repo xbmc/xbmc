@@ -1332,7 +1332,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     // translate our button press
     CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
     if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
-      btn = buttons[pMenu->GetButton() - 1].first;
+      btn = (CONTEXT_BUTTON)buttons[pMenu->GetButton() - 1].first;
 
     // deselect our item
     if (iItem >= 0 && iItem < m_vecItems->Size())

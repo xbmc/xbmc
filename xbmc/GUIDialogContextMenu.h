@@ -113,11 +113,11 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER10
                     };
 
-class CContextButtons : public std::vector< std::pair<CONTEXT_BUTTON, CStdString> >
+class CContextButtons : public std::vector< std::pair<unsigned int, CStdString> >
 {
 public:
-  void Add(CONTEXT_BUTTON, const CStdString &label);
-  void Add(CONTEXT_BUTTON, int label);
+  void Add(unsigned int, const CStdString &label);
+  void Add(unsigned int, int label);
 };
 
 class CGUIDialogContextMenu :
@@ -132,9 +132,9 @@ public:
   virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
   void ClearButtons();
-  int AddButton(int iLabel);
-  int AddButton(const CStdString &strButton);
-  int GetNumButtons();
+  int AddButton(int label, int value = -1);
+  int AddButton(const CStdString &label, int value = -1);
+  unsigned int GetNumButtons();
   void EnableButton(int iButton, bool bEnable);
   int GetButton();
   void OffsetPosition(float offsetX, float offsetY);
@@ -161,6 +161,6 @@ protected:
   static void ClearDefault(const CStdString &strType);
 
 private:
-  int m_iNumButtons;
   int m_iClickedButton;
+  CContextButtons m_buttons;
 };
