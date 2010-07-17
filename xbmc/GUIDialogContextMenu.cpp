@@ -761,34 +761,25 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   return;
 }
 
-int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint *pos)
+int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
 {
-  // no choices??
   if (choices.size() == 0)
-    return 0;
+    return -1;
 
-  // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
-    // load our menu
     pMenu->Initialize();
 
     for (unsigned int i = 0; i < choices.size(); i++)
-      pMenu->AddButton(choices[i]);
+      pMenu->AddButton(choices[i].second, choices[i].first);
 
-    // position it correctly
-    if (pos)
-      pMenu->OffsetPosition(pos->x, pos->y);
-    else
-      pMenu->PositionAtCurrentFocus();
-
+    pMenu->PositionAtCurrentFocus();
     pMenu->DoModal();
 
-    if (pMenu->GetButton() > 0)
-      return pMenu->GetButton();
+    return pMenu->GetButton();
   }
-  return 0;
+  return -1;
 }
 
 void CGUIDialogContextMenu::PositionAtCurrentFocus()

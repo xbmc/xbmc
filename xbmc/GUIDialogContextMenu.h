@@ -149,7 +149,11 @@ public:
   static void GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons);
   static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
 
-  static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint *point = NULL);
+  /*! \brief Show the context menu with the given choices
+   \param choices the choices available for the user.
+   \return -1 if no choice is made, else the chosen option.
+   */
+  static int ShowAndGetChoice(const CContextButtons &choices);
 
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:

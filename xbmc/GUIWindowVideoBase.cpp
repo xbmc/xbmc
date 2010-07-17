@@ -963,13 +963,13 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
         itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
-        vector<CStdString> choices;
+        CContextButtons choices;
         CStdString resumeString;
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
-        choices.push_back(resumeString);
-        choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
+        choices.Add(1, resumeString);
+        choices.Add(2, 12021); // start from the beginning
         int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-        if (!retVal)
+        if (retVal < 0)
           return false; // don't do anything
         resumeItem = (retVal == 1);
       }

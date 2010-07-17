@@ -1175,9 +1175,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
-    vector<CStdString> choices;
-    choices.push_back(g_localizeStrings.Get(22034));
-    choices.push_back(g_localizeStrings.Get(22035));
+    CContextButtons choices;
+    choices.Add(1, g_localizeStrings.Get(22034));
+    choices.Add(2, g_localizeStrings.Get(22035));
 
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
