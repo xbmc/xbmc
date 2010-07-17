@@ -585,7 +585,13 @@ AC_DEFUN([XB_FIND_SONAME],
       sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
   if [[ -z "$$1_SONAME" ]]; then
     AC_MSG_RESULT([no])
-    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    if test -z "$3" || test "x${$3}" = "xyes"; then
+      AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    else
+      AC_MSG_WARN([Unable to determine soname of lib$2 library])
+      $3=no
+      AC_MSG_WARN([lib$2 support disabled])
+    fi
   else
     AC_MSG_RESULT([$$1_SONAME])
     AC_SUBST($1_SONAME)
