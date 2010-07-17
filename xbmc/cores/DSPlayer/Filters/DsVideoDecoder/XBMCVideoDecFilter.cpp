@@ -36,7 +36,7 @@
 #include "utils/SystemInfo.h"
 
 #include "VideoDecOutputPin.h"
-#include "CpuId.h"
+#include "utils/CPUInfo.h"
 
 #include "DShowUtil/DShowUtil.h"
 #include "DShowUtil/MediaTypes.h"
@@ -106,7 +106,6 @@ CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr)
   if(!(m_pOutput = new CVideoDecOutputPin(NAME("CVideoDecOutputPin"), this, phr, L"Output"))) 
     *phr = E_OUTOFMEMORY;
 
-  m_pCpuId             = new CCpuId();
   m_pDXVADecoder       = NULL;
   m_pAVCodecID         = CODEC_ID_NONE;
   m_pCodecContext      = NULL;
@@ -124,7 +123,6 @@ CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr)
   m_nWorkaroundBug     = FF_BUG_AUTODETECT;
   m_nErrorConcealment  = FF_EC_DEBLOCK | FF_EC_GUESS_MVS;
 
-  m_nThreadNumber      = m_pCpuId->GetProcessorNumber();
   m_nDiscardMode       = AVDISCARD_DEFAULT;
   m_nErrorRecognition  = FF_ER_CAREFUL;
   m_nIDCTAlgo          = FF_IDCT_AUTO;
@@ -217,8 +215,6 @@ void CXBMCVideoDecFilter::DetectVideoCard(HWND hWnd)
 CXBMCVideoDecFilter::~CXBMCVideoDecFilter()
 {
   Cleanup();
-
-  SAFE_DELETE(m_pCpuId);
 }
 
 inline int LNKO(int a, int b)
@@ -280,76 +276,6 @@ void CXBMCVideoDecFilter::GetOutputSize(int& w, int& h, int& arx, int& ary, int 
     h = PictHeightRounded();
   }
 #endif
-}
-
-int CXBMCVideoDecFilter::PictWidth()
-{
-  return m_nWidth; 
-}
-
-int CXBMCVideoDecFilter::PictHeight()
-{
-  return m_nHeight;
-}
-
-int CXBMCVideoDecFilter::PictWidthRounded()
-{
-  // Picture height should be rounded to 16 for DXVA
-  return ((m_nWidth + 15) / 16) * 16;
-}
-
-int CXBMCVideoDecFilter::PictHeightRounded()
-{
-  // Picture height should be rounded to 16 for DXVA
-  return ((m_nHeight + 15) / 16) * 16;
-}
-
-
-int CXBMCVideoDecFilter::FindCodec(const CMediaType* mtIn)
-{
-  for (int i=0; i<countof(ffCodecs); i++)
-    if (mtIn->subtype == *ffCodecs[i].clsMinorType)
-    {
-      switch (ffCodecs[i].nFFCodec)
-      {
-      case CODEC_ID_H264 :
-        #if 1 //INTERNAL_DECODER_H264_DXVA
-        m_bUseDXVA = (DXVAFilters & 1) != 0;
-        #else
-        m_bUseDXVA = false;
-        #endif
-        #if 1 // INTERNAL_DECODER_H264
-        m_bUseFFmpeg = (FFmpegFilters & 1) != 0;
-        #else
-        m_bUseFFmpeg = false;
-        #endif
-        break;
-      case CODEC_ID_VC1 :
-        #if 1 // INTERNAL_DECODER_VC1_DXVA
-        m_bUseDXVA = (DXVAFilters & 2) != 0;
-        #else
-        m_bUseDXVA = false;
-        #endif
-        #if 1 // INTERNAL_DECODER_VC1
-        m_bUseFFmpeg = (FFmpegFilters & 2) != 0;
-        #else
-        m_bUseFFmpeg = false;
-        #endif
-        break;
-      case CODEC_ID_MPEG2VIDEO :
-        #if 1 // INTERNAL_DECODER_MPEG2_DXVA
-        m_bUseDXVA = true;
-        #endif
-        m_bUseFFmpeg = false;  // No Mpeg2 software support with ffmpeg!
-        break;
-      default :
-        m_bUseDXVA = false;
-      }
-      
-      return ((m_bUseDXVA || m_bUseFFmpeg) ? i : -1);
-    }
-
-  return -1;
 }
 
 void CXBMCVideoDecFilter::Cleanup()
@@ -465,7 +391,6 @@ enum PixelFormat CXBMCVideoDecFilter::GetFormat( struct AVCodecContext * avctx, 
 
 HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaType *pmt)
 {
-  int    nNewCodec;
   AVCodec* pCodec;
 
   if (direction != PINDIR_INPUT)
@@ -478,13 +403,19 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   
   CDSStreamInfo *hint = new CDSStreamInfo(*pmt);
   
-  nNewCodec = FindCodec(pmt);
-  m_pAVCodecID = ffCodecs[nNewCodec].nFFCodec;
-    if (nNewCodec == -1) 
-      return VFW_E_TYPE_NOT_ACCEPTED;
-    BITMAPINFOHEADER* bmh;
+  
+  m_bUseFFmpeg = true;
+  m_pAVCodecID = hint->codec_id;
+
+  if (m_pAVCodecID == -1) 
+    return VFW_E_TYPE_NOT_ACCEPTED;
+  else if(m_pAVCodecID == CODEC_ID_H264)
+    m_bUseDXVA = true;
+  else
+    m_bUseDXVA = false;
+
   m_pCodecContext  = m_dllAvCodec.avcodec_alloc_context();
-  m_nCodecNb  = nNewCodec;
+  
   m_bReorderBFrame  = true;
   
   CheckPointerDbg(m_pCodecContext, E_POINTER, "failed to avcodec_alloc_context");
@@ -492,8 +423,16 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
 
   if ( (hint->codec_tag == MAKEFOURCC('a','v','c','1')) || (hint->codec_tag == MAKEFOURCC('A','V','C','1')))
     m_bReorderBFrame = false;
+  for (int i=0; i<countof(ffCodecs); i++)
+  {
+    if (pmt->subtype == *ffCodecs[i].clsMinorType)
+    {
+      m_nCodecNb = i;
+      break;
+    }
+  }
 
-  pCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
+  pCodec = m_dllAvCodec.avcodec_find_decoder(m_pAVCodecID);//ffCodecs[nNewCodec].nFFCodec);
   CheckPointerDbg(pCodec, VFW_E_UNSUPPORTED_VIDEO, "Codec not supported with the internal decoder");
 
   m_pCodecContext->opaque = (void*) this;
@@ -502,9 +441,15 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
       
-  if (ffCodecs[nNewCodec].nFFCodec != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
+  if (m_pAVCodecID != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
+  if (hint->profile != 0)
+    m_pCodecContext->profile = hint->profile;
+  if (hint->level != 0)
+    m_pCodecContext->level = hint->level;
+  m_nWidth = hint->width;
+  m_nHeight = hint->height;
   m_pCodecContext->coded_width = hint->width;
   m_pCodecContext->coded_height = hint->height;
   m_pCodecContext->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
@@ -515,9 +460,6 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
   //m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-       
-  //m_pCodecContext->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
-      
       
   if (hint->extrasize > 0)
   {
@@ -527,10 +469,12 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   }
   m_rtAvrTimePerFrame = std::max (1i64, hint->avgtimeperframe);
 
-  int num_threads = std::min(8 /*MAX_THREADS*/, m_pCpuId->GetProcessorNumber());
+  int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && IsDXVASupported() // thumbnail extraction fails when run threaded
-  && ( pCodec->id == CODEC_ID_H264 || pCodec->id == CODEC_ID_MPEG4 ))
+  && ( pCodec->id != CODEC_ID_H264 || pCodec->id == CODEC_ID_MPEG4 ))
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
+  else
+    m_dllAvCodec.avcodec_thread_init(m_pCodecContext, 1);
       
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec)<0)
   {

@@ -77,14 +77,17 @@ void CDSStreamInfo::Clear()
   extradata = NULL;
   extrasize = 0;
 
-  fpsscale = 0;
-  fpsrate  = 0;
+  level           = 0;
+  profile         = 0;
+  codec_tag       = 0;
+  fpsscale        = 0;
+  fpsrate         = 0;
   avgtimeperframe = 0;
-  height   = 0;
-  width    = 0;
-  aspect   = 0.0;
-  vfr      = false;
-  stills   = false;
+  height          = 0;
+  width           = 0;
+  aspect          = 0.0;
+  vfr             = false;
+  stills          = false;
 
 
   channels   = 0;
@@ -362,7 +365,11 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
 
   const BYTE*    data = NULL;
   unsigned int  size = 0;
+  
 
+  m_dllAvFormat.Load();
+  //find the codecid
+  codec_id = m_dllAvFormat.av_codec_get_id(mp_bmp_taglists,pmt.subtype.Data1);
   if(pmt.formattype == FORMAT_VideoInfo)
   {
     VIDEOINFOHEADER*  vih = (VIDEOINFOHEADER*)pmt.pbFormat;
@@ -415,6 +422,8 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
       size = mpeg2info->cbSequenceHeader;
       data = (const uint8_t*)mpeg2info->dwSequenceHeader;
     }
+    profile = mpeg2info->dwProfile;
+    level = mpeg2info->dwLevel;
     avgtimeperframe = mpg2v->hdr.AvgTimePerFrame;
     
   }

@@ -417,27 +417,37 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
-  AMVABeginFrameInfo BeginFrameInfo;
-  BeginFrameInfo.dwDestSurfaceIndex	= index;
-  BeginFrameInfo.dwSizeInputData		= sizeof(index);
-  BeginFrameInfo.pInputData			= &index;
-  BeginFrameInfo.dwSizeOutputData		= 0;
-  BeginFrameInfo.pOutputData			= NULL;
+
   int					nTry = 0;
   
 	for (int i=0; i<20; i++)
 	{
-    hr = acc->BeginFrame(&BeginFrameInfo);
-    if (SUCCEEDED (hr))
+    if (ctx->decoder->type == DECODER_TYPE_DXVA_1)
     {
-      DWORD dwBufferIndex = 0;
-      hr = acc->QueryRenderStatus((DWORD)-1, dwBufferIndex, 0);
-      dec->SetCurrentBufferIndex(dwBufferIndex);
-			//hr = FindFreeDXVA1Buffer ((DWORD)-1, m_dwBufferIndex);
+      AMVABeginFrameInfo BeginFrameInfo;
+      BeginFrameInfo.dwDestSurfaceIndex	= index;
+      BeginFrameInfo.dwSizeInputData		= sizeof(index);
+      BeginFrameInfo.pInputData			= &index;
+      BeginFrameInfo.dwSizeOutputData		= 0;
+      BeginFrameInfo.pOutputData			= NULL;
+      DO_DXVA_PENDING_LOOP(acc->BeginFrame(&BeginFrameInfo));
       
-      break;
+      if (SUCCEEDED (hr))
+      {
+			  //hr = FindFreeDXVA1Buffer ((DWORD)-1, m_dwBufferIndex);
+        DWORD dwBufferIndex;
+        m_dwBufferIndex = dwBufferIndex = 0;
+        DO_DXVA_PENDING_LOOP (acc->QueryRenderStatus ((DWORD)-1, dwBufferIndex, 0));
+        ASSERT(dwBufferIndex == 0);
+        break;
 
+      }
     }
+    else if (ctx->decoder->type == DECODER_TYPE_DXVA_2)
+    {
+    
+    }
+
     if (SUCCEEDED (hr)) 
       break;
 		Sleep(1);

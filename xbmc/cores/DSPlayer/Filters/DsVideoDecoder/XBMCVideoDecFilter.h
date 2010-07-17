@@ -35,6 +35,7 @@
 
 #include "DIRECTSHOW.h"
 #include "../splitters/DSStreamInfo.h"
+#include "../splitters/DSGuidHelper.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -84,7 +85,6 @@ protected:
 
   //TODO Move the one that are supported to the global dsplayer renderer settings
   // === Persistants parameters (registry)
-  int                    m_nThreadNumber;
   int                    m_nDiscardMode;
   int                    m_nErrorRecognition;
   int                    m_nIDCTAlgo;
@@ -147,7 +147,6 @@ protected:
   static const unsigned        m_buffer_max = 32;
   // === Private functions
   void        Cleanup();
-  int          FindCodec(const CMediaType* mtIn);
   bool        IsMultiThreadSupported(int nCodec);
   void        GetOutputFormats (int& nNumber, VIDEO_OUTPUT_FORMATS** ppFormats);
   void        DetectVideoCard(HWND hWnd);
@@ -165,6 +164,7 @@ protected:
 
 public:
   DllAvCodec m_dllAvCodec;
+  DllAvFormat m_dllAvFormat;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   
@@ -214,10 +214,10 @@ public:
   BOOL            IsSupportedDecoderMode(const GUID& mode);
   void            BuildDXVAOutputFormat();
   int              GetPicEntryNumber();
-  int              PictWidth();
-  int              PictHeight();
-  int              PictWidthRounded();
-  int              PictHeightRounded();
+  int              PictWidth() { return m_nWidth; }
+  int              PictHeight() { return m_nHeight; }
+  int              PictWidthRounded() { return ((m_nWidth + 15) / 16) * 16; }
+  int              PictHeightRounded() { return ((m_nHeight + 15) / 16) * 16; }
   inline bool          UseDXVA2()  { return (m_nDXVAMode == DECODER_TYPE_DXVA_2); };
   void            FlushDXVADecoder()  { if (m_pDXVADecoder) m_pDXVADecoder->Flush(); }
 
