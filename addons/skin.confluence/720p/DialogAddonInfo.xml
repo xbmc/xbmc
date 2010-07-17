@@ -4,6 +4,7 @@
 		<system>1</system>
 		<posx>185</posx>
 		<posy>60</posy>
+		<origin x="185" y="10">!IsEmpty(ListItem.Property(Addon.broken))</origin>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -419,6 +420,52 @@
 					<onright>60</onright>
 					<onup>8</onup>
 					<ondown>6</ondown>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+				<posx>0</posx>
+				<posy>600</posy>
+				<control type="image">
+					<description>background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>920</width>
+					<height>100</height>
+					<texture border="20">OverlayDialogBackground.png</texture>
+				</control>
+				<control type="image">
+					<description>Icon image</description>
+					<posx>18</posx>
+					<posy>18</posy>
+					<width>64</width>
+					<height>64</height>
+					<texture>DefaultIconError.png</texture>
+				</control>
+				<control type="label">
+					<description>header label</description>
+					<posx>100</posx>
+					<posy>15</posy>
+					<width>800</width>
+					<height>25</height>
+					<font>font13_title</font>
+					<label>24096</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="textbox">
+					<description>Reason label</description>
+					<posx>100</posx>
+					<posy>35</posy>
+					<width>800</width>
+					<height>50</height>
+					<font>font13</font>
+					<label>$INFO[ListItem.Property(Addon.broken)]</label>
+					<align>left</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
 				</control>
 			</control>
 		</control>
