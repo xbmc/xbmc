@@ -917,6 +917,12 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       }
     break;
 
+    case BCM::BC_STS_DEC_NOT_OPEN:
+    break;
+
+    case BCM::BC_STS_DEC_NOT_STARTED:
+    break;
+
     case BCM::BC_STS_IO_USER_ABORT:
     break;
 
