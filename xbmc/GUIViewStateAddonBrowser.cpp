@@ -78,6 +78,15 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.m_strThumbnailImage = "DefaultHardDisk.png";
     m_sources.push_back(share);
   }
+  if (CAddonMgr::Get().HasOutdatedAddons())
+  {
+    CMediaSource share;
+    share.strPath = "addons://outdated/";
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.strName = g_localizeStrings.Get(24043);
+    share.m_strThumbnailImage = "DefaultHardDisk.png";
+    m_sources.push_back(share);
+  }
   if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY,true))
   {
     CMediaSource share;

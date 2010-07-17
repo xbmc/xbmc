@@ -58,6 +58,10 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     CAddonMgr::Get().GetAllAddons(addons, path.GetHostName().Equals("enabled"));
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
   }
+  else if (path.GetHostName().Equals("outdated"))
+  {
+    CAddonMgr::Get().GetAllOutdatedAddons(addons);
+  }
   else if (path.GetHostName().Equals("repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);

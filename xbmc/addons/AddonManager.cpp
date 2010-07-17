@@ -290,6 +290,34 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
   return !addons.empty();
 }
 
+bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
+{
+  CSingleLock lock(m_critSection);
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  {
+    VECADDONS temp;
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
+    {
+      AddonPtr repoAddon;
+      for (unsigned int j = 0; j < temp.size(); j++)
+      {
+        if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
+          continue;
+
+        if (temp[j]->Version() < repoAddon->Version())
+          addons.push_back(repoAddon);
+      }
+    }
+  }
+  return !addons.empty();
+}
+
+bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
+{
+  VECADDONS dummy;
+  return GetAllOutdatedAddons(dummy,enabled);
+}
+
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);
