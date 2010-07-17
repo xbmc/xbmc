@@ -1315,31 +1315,14 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(true);
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return false;
-    // load our menu
-    pMenu->Initialize();
-
-    // add the buttons and execute it
-    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
-      pMenu->AddButton((*it).second);
-
-    // position it correctly
-    pMenu->PositionAtCurrentFocus();
-
-    pMenu->DoModal();
-
-    // translate our button press
-    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
-    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
-      btn = (CONTEXT_BUTTON)buttons[pMenu->GetButton() - 1].first;
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
 
     // deselect our item
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(false);
 
-    if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(iItem, btn);
+    if (choice >= 0)
+      return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
   }
   return false;
 }

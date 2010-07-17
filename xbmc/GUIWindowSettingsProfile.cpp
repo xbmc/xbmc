@@ -74,34 +74,17 @@ int CGUIWindowSettingsProfile::GetSelectedItem()
 
 void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 {
-  // calculate our position
-  float posX = 200;
-  float posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_PROFILES);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return ;
-  // load our menu
-  pMenu->Initialize();
   if (iItem == (int)g_settings.GetNumProfiles())
     return;
 
-  // add the needed buttons
-  int btnLoad = pMenu->AddButton(20092); // load profile
-  int btnDelete=0;
+  // popup the context menu
+  CContextButtons choices;
+  choices.Add(1, 20092); // Load profile
   if (iItem > 0)
-    btnDelete = pMenu->AddButton(117); // Delete
+    choices.Add(2, 117); // Delete
 
-  // position it correctly
-  pMenu->OffsetPosition(posX, posY);
-  pMenu->DoModal();
-  int iButton = pMenu->GetButton();
-  if (iButton == btnLoad)
+  int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (choice == 1)
   {
     unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
@@ -112,7 +95,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     return;
   }
 
-  if (iButton == btnDelete)
+  if (choice == 2)
   {
     if (g_settings.DeleteProfile(iItem))
       iItem--;

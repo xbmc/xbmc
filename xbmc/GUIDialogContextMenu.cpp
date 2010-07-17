@@ -230,49 +230,19 @@ float CGUIDialogContextMenu::GetWidth()
     return CGUIDialog::GetWidth();
 }
 
-unsigned int CGUIDialogContextMenu::GetNumButtons()
-{
-  return m_buttons.size();
-}
-
-void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
-{
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START + iButton - 1); // -1 as the default button starts at 1
-  if (pControl) pControl->SetEnabled(bEnable);
-}
-
 bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
     return false;
 
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (pMenu)
-  {
-    // load our menu
-    pMenu->Initialize();
+  // grab our context menu
+  CContextButtons buttons;
+  GetContextButtons(strType, item, buttons);
 
-    // grab our context menu
-    CContextButtons buttons;
-    GetContextButtons(strType, item, buttons);
-
-    // add the buttons and execute it
-    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
-      pMenu->AddButton((*it).second);
-    // position it correctly
-    pMenu->OffsetPosition(posX, posY);
-    pMenu->DoModal();
-
-    // translate our button press
-    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
-    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
-      btn = (CONTEXT_BUTTON)buttons[pMenu->GetButton() - 1].first;
-
-    if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(strType, item, btn);
-  }
+  int button = ShowAndGetChoice(buttons);
+  if (button >= 0)
+    return OnContextButton(strType, item, (CONTEXT_BUTTON)button);
   return false;
 }
 
@@ -706,59 +676,23 @@ void CGUIDialogContextMenu::ClearDefault(const CStdString &strType)
 
 void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdString& strPath)
 {
-  // what should we display?
-  vector <CStdString> vecTypes;
-  if (!strType.Equals("music"))
-    vecTypes.push_back(g_localizeStrings.Get(2)); // My Music
-  if (!strType.Equals("video"))
-    vecTypes.push_back(g_localizeStrings.Get(3)); // My Videos
-  if (!strType.Equals("pictures"))
-    vecTypes.push_back(g_localizeStrings.Get(1)); // My Pictures
-  if (!strType.Equals("files"))
-    vecTypes.push_back(g_localizeStrings.Get(7)); // My Files
-
-  // something went wrong
-  if (vecTypes.size() != 3)
-    return;
-
   // create menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  pMenu->Initialize();
+  CContextButtons choices;
+  if (!strType.Equals("music"))
+    choices.Add(WINDOW_MUSIC_FILES, 2);
+  if (!strType.Equals("video"))
+    choices.Add(WINDOW_VIDEO_FILES, 3);
+  if (!strType.Equals("pictures"))
+    choices.Add(WINDOW_PICTURES, 1);
+  if (!strType.Equals("files"))
+    choices.Add(WINDOW_FILES, 7);
 
-  // add buttons
-  int btn_Type[3];
-  for (int i=0; i<3; i++)
+  int window = ShowAndGetChoice(choices);
+  if (window >= 0)
   {
-    btn_Type[i] = pMenu->AddButton(vecTypes[i]);
+    CUtil::ClearFileItemCache();
+    g_windowManager.ChangeActiveWindow(window, strPath);
   }
-
-  // display menu
-  pMenu->CenterWindow();
-  pMenu->DoModal();
-
-  // check selection
-  int btn = pMenu->GetButton();
-  for (int i=0; i<3; i++)
-  {
-    if (btn == btn_Type[i])
-    {
-      // map back to correct window
-      int iWindow = WINDOW_INVALID;
-      if (vecTypes[i].Equals(g_localizeStrings.Get(2)))
-        iWindow = WINDOW_MUSIC_FILES;
-      else if (vecTypes[i].Equals(g_localizeStrings.Get(3)))
-        iWindow = WINDOW_VIDEO_FILES;
-      else if (vecTypes[i].Equals(g_localizeStrings.Get(1)))
-        iWindow = WINDOW_PICTURES;
-      else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
-        iWindow = WINDOW_FILES;
-
-      CUtil::ClearFileItemCache();
-      g_windowManager.ChangeActiveWindow(iWindow, strPath);
-      return;
-    }
-  }
-  return;
 }
 
 int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
