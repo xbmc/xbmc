@@ -610,6 +610,80 @@ void CWinRenderer::Render(DWORD flags)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
+  if (m_renderMethod == RENDER_SW)
+    RenderSW(flags);
+  else if (m_renderMethod == RENDER_PS)
+    RenderPS(flags);
+}
+
+void CWinRenderer::RenderSW(DWORD flags)
+{
+  // 1. convert yuv to rgb
+  m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
+                                                      m_sourceWidth, m_sourceHeight, PIX_FMT_YUV420P,
+                                                      m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
+                                                      SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+  SVideoBuffer* buf = &m_VideoBuffers[m_iYV12RenderBuffer];
+
+  D3DLOCKED_RECT srclr[3];
+  if(!(buf->planes[0].texture.LockRect(0, &srclr[0], NULL, D3DLOCK_READONLY))
+  || !(buf->planes[1].texture.LockRect(0, &srclr[1], NULL, D3DLOCK_READONLY))
+  || !(buf->planes[2].texture.LockRect(0, &srclr[2], NULL, D3DLOCK_READONLY)))
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock yuv textures into memory");
+  
+  D3DLOCKED_RECT destlr = {0,0};
+  if (!m_SWTarget.LockRect(0, &destlr, NULL, D3DLOCK_DISCARD))
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock swtarget texture into memory");
+
+  uint8_t *src[]  = { (uint8_t*)srclr[0].pBits, (uint8_t*)srclr[1].pBits, (uint8_t*)srclr[2].pBits, 0 };
+  int srcStride[] = { srclr[0].Pitch, srclr[1].Pitch, srclr[2].Pitch, 0 };
+  uint8_t *dst[]  = { (uint8_t*) destlr.pBits, 0, 0, 0 };
+  int dstStride[] = { destlr.Pitch, 0, 0, 0 };
+
+  m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
+
+  buf->planes[0].texture.UnlockRect(0);
+  buf->planes[1].texture.UnlockRect(0);
+  buf->planes[2].texture.UnlockRect(0);
+
+  m_SWTarget.UnlockRect(0);
+
+  // 2. scale to display
+
+  // Don't know where this martian comes from but it can happen in the initial frames of a video
+  if ((m_destRect.x1 < 0 && m_destRect.x2 < 0) || (m_destRect.y1 < 0 && m_destRect.y2 < 0))
+    return;
+
+  RECT srcRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
+  IDirect3DSurface9* source;
+  if(!m_SWTarget.GetSurfaceLevel(0, &source))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
+
+  RECT dstRect = { m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2 };
+  IDirect3DSurface9* target;
+  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
+
+  D3DSURFACE_DESC desc;
+  if (FAILED(target->GetDesc(&desc)))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
+
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  if(FAILED(pD3DDevice->StretchRect(source, &srcRect, target, &dstRect, m_StretchRectFilter)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - unable to StretchRect");
+    if (!(m_deviceCaps.Caps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES))
+      CLog::Log(LOGDEBUG, __FUNCTION__" - missing D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES");
+  }
+
+  target->Release();
+  source->Release();
+}
+
+void CWinRenderer::RenderPS(DWORD flags)
+{
   if (!m_bUseHQScaler)
   {
     Stage1(flags);

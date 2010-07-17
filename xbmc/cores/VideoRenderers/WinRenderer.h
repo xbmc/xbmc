@@ -178,6 +178,8 @@ public:
 
 protected:
   virtual void Render(DWORD flags);
+  void         RenderSW(DWORD flags);
+  void         RenderPS(DWORD flags);
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
