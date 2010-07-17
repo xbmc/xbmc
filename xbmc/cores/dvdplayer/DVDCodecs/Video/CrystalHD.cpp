@@ -777,11 +777,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
 #else
             if (m_color_space == BCM::MODE422_YUY2)
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
 #endif
             //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
@@ -833,18 +831,48 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           }
           else
           {
-            //fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
-            // Perform the color space conversion.
-            uint8_t* src[] =       { procOut.Ybuff, NULL, NULL, NULL };
-            int      srcStride[] = { stride*2, 0, 0, 0 };
-            uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
-            int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
+            switch(pBuffer->m_format)
+            {
+              case DVDVideoPicture::FMT_YUY2:
+                if (pBuffer->m_interlace)
+                {
+                  // do simple line doubling de-interlacing.
+                  // copy luma
+                  int yuy2_w = w * 2;
+                  int yuy2_stride = stride*2;
+                  uint8_t *s_y = procOut.Ybuff;
+                  uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+                  for (int y = 0; y < h/2; y++, s_y += yuy2_stride)
+                  {
+                    fast_memcpy(d_y, s_y, yuy2_w);
+                    d_y += yuy2_w;
+                    fast_memcpy(d_y, s_y, yuy2_w);
+                    d_y += yuy2_w;
+                  }
+                  pBuffer->m_interlace = false;
+                }
+                else
+                {
+                  fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
+                }
+              break;
+              case DVDVideoPicture::FMT_YUV420P:
+                // TODO: deinterlace for yuy2 -> yv12, icky
+                {
+                  // Perform the color space conversion.
+                  uint8_t* src[] =       { procOut.Ybuff, NULL, NULL, NULL };
+                  int      srcStride[] = { stride*2, 0, 0, 0 };
+                  uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
+                  int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
 
-            m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
-              pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
-              pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
-              SWS_FAST_BILINEAR, NULL, NULL, NULL);
-            m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+                  m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
+                    pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
+                    pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
+                    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                  m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+                }
+              break;
+            }
           }
 
           m_ReadyList.Push(pBuffer);
