@@ -7,15 +7,6 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<control type="image">
-			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture>black-back.png</texture>
-			<animation effect="fade" delay="10000" time="600">WindowOpen</animation>
-		</control>
 		<control type="group">
 			<posx>1070</posx>
 			<posy>638</posy>
