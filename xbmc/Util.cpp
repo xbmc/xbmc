@@ -220,8 +220,16 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   // Windows SMB Network (SMB)
   else if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
-    strFilename = g_localizeStrings.Get(20171);
-
+  {
+    if (url.GetHostName().IsEmpty())
+    {
+      strFilename = g_localizeStrings.Get(20171);
+    }
+    else
+    {
+      strFilename = url.GetHostName();
+    }
+  }
   // XBMSP Network
   else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
     strFilename = "XBMSP Network";
