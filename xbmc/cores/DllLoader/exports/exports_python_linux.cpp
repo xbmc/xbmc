@@ -229,11 +229,6 @@ FILE* xbp_fopen64(const char *filename, const char *mode)
 
 #ifdef __APPLE__
 
-int xbp_stat(const char * path, struct stat * buf)
-{
-  CStdString strName = _P(path);
-  return stat(strName.c_str(), buf);
-}
 
 int xbp_lstat(const char * path, struct stat * buf)
 {
