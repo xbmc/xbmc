@@ -423,7 +423,8 @@ bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
 #if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL)
-  if (format == PIX_FMT_VDPAU_MPEG4) return true;
+  //disabled for now because it doesn't work right
+  //if (format == PIX_FMT_VDPAU_MPEG4) return true;
 #endif
   else return false;
 }
