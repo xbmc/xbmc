@@ -128,3 +128,9 @@ private:
       FLOAT tu, tv;
   };
 };
+
+class CTestShader : public CWinShader
+{
+public:
+  virtual bool Create();
+};
