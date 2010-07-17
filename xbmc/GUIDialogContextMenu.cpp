@@ -91,46 +91,64 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
 }
 
 void CGUIDialogContextMenu::OnInitWindow()
-{ // disable the template button control
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE);
-  if (pControl)
-  {
-    pControl->SetVisible(false);
-  }
+{
   m_clickedButton = -1;
   // set initial control focus
   m_lastControlID = BUTTON_START;
   CGUIDialog::OnInitWindow();
 }
 
-void CGUIDialogContextMenu::ClearButtons()
-{ // destroy our buttons (if we have them from a previous viewing)
+void CGUIDialogContextMenu::SetupButtons()
+{
+  if (!m_buttons.size())
+    return;
+
+  // disable the template button control
+  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetFirstFocusableControl(BUTTON_TEMPLATE);
+  if (!pButtonTemplate) pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
+  if (!pButtonTemplate)
+    return;
+  pButtonTemplate->SetVisible(false);
+
+  // add our buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
-    // get the button to remove...
-    CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START + i);
-    if (pControl)
-    {
-      // remove the control from our list
-      RemoveControl(pControl);
-      // kill the button
-      pControl->FreeResources();
-      delete pControl;
+    CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
+    if (pButton)
+    { // set the button's ID and position
+      int id = BUTTON_START + i;
+      pButton->SetID(id);
+      pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+      pButton->SetVisible(true);
+      pButton->SetNavigation(id - 1, id + 1, id, id);
+      pButton->SetLabel(m_buttons[i].second);
+      AddControl(pButton);
     }
   }
-  m_buttons.clear();
-}
 
-int CGUIDialogContextMenu::AddButton(int iLabel, int value)
-{
-  return AddButton(g_localizeStrings.Get(iLabel), value);
-}
+  // update the navigation of the first and last buttons
+  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START);
+  if (pControl)
+    pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  pControl = (CGUIControl *)GetControl(BUTTON_END);
+  if (pControl)
+    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
 
-void CGUIDialogContextMenu::OffsetPosition(float offsetX, float offsetY)
-{
-  float newX = m_posX + offsetX - GetWidth() * 0.5f;
-  float newY = m_posY + offsetY - GetHeight() * 0.5f;
-  SetPosition(newX, newY);
+  // fix up the height of the background image
+  pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl)
+  {
+    pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+    if (pControl2)
+      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+  }
+
+  // update our default control
+  if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
+    m_defaultControl = BUTTON_START;
+  while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
+    m_defaultControl++;
 }
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
@@ -148,59 +166,6 @@ void CGUIDialogContextMenu::SetPosition(float posX, float posY)
   if (top)
     posY += top->GetHeight();
   CGUIDialog::SetPosition(posX, posY);
-}
-
-int CGUIDialogContextMenu::AddButton(const CStdString &strLabel, int value /* = -1 */)
-{ // add a button to our control
-  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetFirstFocusableControl(BUTTON_TEMPLATE);
-  if (!pButtonTemplate) pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
-  if (!pButtonTemplate) return 0;
-  CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
-  if (!pButton) return 0;
-  // set the button's ID and position
-  if (value < 0)
-    value = m_buttons.size() + 1; // default is to start at 1
-  int id = BUTTON_START + m_buttons.size();
-  m_buttons.Add(value, strLabel);
-  pButton->SetID(id);
-  pButton->SetPosition(pButtonTemplate->GetXPosition(), (m_buttons.size() - 1)*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-  pButton->SetVisible(true);
-  pButton->SetNavigation(id - 1, id + 1, id, id);
-  pButton->SetLabel(strLabel);
-  AddControl(pButton);
-  // and update the size of our menu
-  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-  if (pControl)
-  {
-    pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
-    if (pControl2)
-      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
-  }
-  return value;
-}
-
-void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
-{
-  // update the navigation of the first and last buttons
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START);
-  if (pControl)
-    pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(BUTTON_END);
-  if (pControl)
-    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  // update our default control
-  if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
-    m_defaultControl = BUTTON_START;
-  // check the default control has focus...
-  while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
-    m_defaultControl++;
-  CGUIDialog::DoModal();
-}
-
-int CGUIDialogContextMenu::GetButton()
-{
-  return m_clickedButton;
 }
 
 float CGUIDialogContextMenu::GetHeight()
@@ -632,11 +597,13 @@ void CGUIDialogContextMenu::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   SetInitialVisibility();
+  SetupButtons();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
 {
-  ClearButtons();
+  m_buttons.clear();
+  CGUIDialog::OnWindowUnload();
 }
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
@@ -703,15 +670,11 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
+    pMenu->m_buttons = choices;
     pMenu->Initialize();
-
-    for (unsigned int i = 0; i < choices.size(); i++)
-      pMenu->AddButton(choices[i].second, choices[i].first);
-
     pMenu->PositionAtCurrentFocus();
     pMenu->DoModal();
-
-    return pMenu->GetButton();
+    return pMenu->m_clickedButton;
   }
   return -1;
 }
@@ -726,7 +689,7 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
     {
       CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f)
                    + window->GetRenderPosition();
-      OffsetPosition(pos.x,pos.y);
+      SetPosition(m_posX + pos.x - GetWidth() * 0.5f, m_posY + pos.y - GetHeight() * 0.5f);
       return;
     }
   }

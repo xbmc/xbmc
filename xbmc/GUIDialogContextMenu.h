@@ -127,21 +127,7 @@ public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
-  void ClearButtons();
-  int AddButton(int label, int value = -1);
-  int AddButton(const CStdString &label, int value = -1);
-  unsigned int GetNumButtons();
-  void EnableButton(int iButton, bool bEnable);
-  int GetButton();
-  void OffsetPosition(float offsetX, float offsetY);
-
-  //! Positions the current context menu in the middle of the focused control. If it can not
-  //! find it then it positions the context menu in the middle of the screen
-  void PositionAtCurrentFocus();
 
   static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
@@ -155,14 +141,23 @@ public:
    */
   static int ShowAndGetChoice(const CContextButtons &choices);
 
-  static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:
+  void SetupButtons();
+
+  /*! \brief Position the context menu in the middle of the focused control.
+   If no control is available it is positioned in the middle of the screen.
+   */
+  void PositionAtCurrentFocus();
+
   float GetWidth();
   float GetHeight();
   virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
+  static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
   int m_clickedButton;
