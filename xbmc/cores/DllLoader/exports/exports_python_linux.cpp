@@ -241,20 +241,6 @@ int xbp_lstat(const char * path, struct stat * buf)
   return lstat(strName.c_str(), buf);
 }
 
-#else
-
-int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf)
-{
-  CStdString strName = _P(filename);
-  return __xstat64(ver, strName.c_str(), stat_buf);
-}
-
-int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
-{
-  CStdString strName = _P(filename);
-  return __lxstat64(ver, strName.c_str(), stat_buf);
-}
-
 #endif
 
 } // extern "C"
