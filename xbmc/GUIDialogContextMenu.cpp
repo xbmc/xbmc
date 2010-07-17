@@ -718,13 +718,14 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
 
 void CGUIDialogContextMenu::PositionAtCurrentFocus()
 {
-  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
   if (window)
   {
     const CGUIControl *focusedControl = window->GetFocusedControl();
     if (focusedControl)
     {
-      CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f);
+      CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f)
+                   + window->GetRenderPosition();
       OffsetPosition(pos.x,pos.y);
       return;
     }
