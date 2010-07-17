@@ -204,7 +204,7 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   else if (m_protocol == NET_PROTOCOL_HTSP)
     m_port = "9982";
   else if (m_protocol == NET_PROTOCOL_VTP)
-    m_port = "2001";
+    m_port = "2004";
 
   UpdateButtons();
 }
