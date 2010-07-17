@@ -39,8 +39,9 @@ int xbp_utime(const char *filename, struct utimbuf *times);
 int xbp_rename(const char *oldname, const char *newname);
 int xbp_mkdir(const char *dirname);
 int xbp_open(const char *filename, int oflag, int pmode);
-#ifdef __APPLE__
 int xbp_lstat(const char * path, struct stat * buf);
+#ifndef __APPLE__
+int xbp_lstat64(const char * path, struct stat64 * buf);
 #endif
 void *xbp_dlopen(const char *filename, int flag);
 int xbp_dlclose(void *handle);
@@ -93,10 +94,14 @@ int PYTHON_WRAP(mkdir)(const char *dirname)
   return xbp_mkdir(dirname);
 }
 
-#ifdef __APPLE__
 int PYTHON_WRAP(lstat)(const char * path, struct stat * buf)
 {
   return xbp_lstat(path, buf);
+}
+#ifndef __APPLE__
+int PYTHON_WRAP(lstat64)(const char * path, struct stat64 * buf)
+{
+  return xbp_lstat64(path, buf);
 }
 #endif
 
