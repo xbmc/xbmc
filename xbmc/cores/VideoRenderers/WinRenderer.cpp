@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "Texture.h"
 #include "WindowingFactory.h"
 #include "AdvancedSettings.h"
@@ -34,6 +35,9 @@
 #include "MathUtils.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 #include "VideoShaders/WinVideoFilter.h"
+#include "../dvdplayer/Codecs/DllSwScale.h"
+#include "../dvdplayer/Codecs/DllAvCodec.h"
+#include "LocalizeStrings.h"
 
 CWinRenderer::CWinRenderer()
 {
@@ -43,11 +47,19 @@ CWinRenderer::CWinRenderer()
   m_colorShader = NULL;
   m_scalerShader = NULL;
 
+  m_renderMethod = RENDER_PS;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_StretchRectFilter = D3DTEXF_POINT;
 
   m_bUseHQScaler = false;
   m_bFilterInitialized = false;
+
+  m_sw_scale_ctx = NULL;
+  // All three load together
+  m_dllAvUtil = NULL;
+  m_dllAvCodec = NULL;
+  m_dllSwScale = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -76,6 +88,78 @@ void CWinRenderer::ManageTextures()
   }
 }
 
+void CWinRenderer::SelectRenderMethod()
+{
+  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    m_renderMethod = RENDER_DXVA;
+  }
+  else
+  {
+    int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+    CLog::Log(LOGDEBUG, __FUNCTION__": Requested render method: %d", requestedMethod);
+
+    switch(requestedMethod)
+    {
+      case RENDER_METHOD_AUTO:
+      case RENDER_METHOD_D3D_PS:
+        // Try the pixel shaders support
+        if (m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0))
+        {
+          CTestShader* shader = new CTestShader;
+          if (shader->Create())
+          {
+            m_renderMethod = RENDER_PS;
+            shader->Release();
+            break;
+          }
+          else
+          {
+            CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D setup is most likely incomplete");
+            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
+            shader->Release();
+          }
+        }
+        else
+        {
+          CLog::Log(LOGNOTICE, "D3D: graphics adapter does not support Pixel Shaders 2.0");
+        }
+        CLog::Log(LOGNOTICE, "D3D: falling back to SW mode");
+      // drop through to software
+      case RENDER_METHOD_SOFTWARE:
+      default:
+        m_renderMethod = RENDER_SW;
+        break;
+    }
+  }
+  CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method: %d", m_renderMethod);
+}
+
+bool CWinRenderer::UpdateRenderMethod()
+{
+  if (m_SWTarget.Get())
+    m_SWTarget.Release();
+
+  if (m_renderMethod == RENDER_SW)
+  {
+    m_dllAvUtil  = new DllAvUtil();
+    m_dllAvCodec = new DllAvCodec();
+    m_dllSwScale = new DllSwScale();
+
+    if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+      CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
+
+    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+
+    if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
+      return false;
+    }
+  }
+  return true;
+}
+
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   if(m_sourceWidth  != width
@@ -94,10 +178,12 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-
   ManageDisplay();
 
   m_bConfigured = true;
+
+  SelectRenderMethod();
+  UpdateRenderMethod();
 
   return true;
 }
@@ -297,6 +383,9 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
+  if (m_SWTarget.Get())
+    m_SWTarget.Release();
+
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
   if (m_IntermediateStencilSurface.Get())
@@ -312,6 +401,15 @@ void CWinRenderer::UnInit()
     DeleteYV12Texture(i);
 
   m_NumYV12Buffers = 0;
+
+  if (m_sw_scale_ctx)
+  {
+    m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
+    m_sw_scale_ctx = NULL;
+  }
+  SAFE_DELETE(m_dllSwScale);
+  SAFE_DELETE(m_dllAvCodec);
+  SAFE_DELETE(m_dllAvUtil);
 }
 
 bool CWinRenderer::SetupIntermediateRenderTarget()
@@ -607,10 +705,24 @@ bool CWinRenderer::CreateYV12Texture(int index)
   DeleteYV12Texture(index);
 
   SVideoBuffer &buf = m_VideoBuffers[index];
+  D3DPOOL pool;
+  DWORD   usage;
 
-  if ( !buf.planes[0].texture.Create(m_sourceWidth    , m_sourceHeight    , 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool())
-    || !buf.planes[1].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool())
-    || !buf.planes[2].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool()))
+  if (m_renderMethod == RENDER_SW)
+  {
+    // Need the textures in system memory for quick read and write
+    pool  = D3DPOOL_SYSTEMMEM;
+    usage = 0;
+  }
+  else
+  {
+    pool  = g_Windowing.DefaultD3DPool();
+    usage = g_Windowing.DefaultD3DUsage();
+  }
+
+  if ( !buf.planes[0].texture.Create(m_sourceWidth    , m_sourceHeight    , 1, usage, D3DFMT_L8, pool)
+    || !buf.planes[1].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, usage, D3DFMT_L8, pool)
+    || !buf.planes[2].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, usage, D3DFMT_L8, pool))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;

@@ -74,6 +74,10 @@ class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
 
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
+
 namespace DXVA { class CProcessor; }
 
 struct DRAWRECT
@@ -100,8 +104,12 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
+enum RenderMethod
+{
+  RENDER_PS=0x01,
+  RENDER_SW=0x02,
+  RENDER_DXVA=0x03,
+};
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -178,6 +186,9 @@ protected:
   void         CopyYV12Texture(int dest);
   int          NextYV12Texture();
 
+  void SelectRenderMethod();
+  bool UpdateRenderMethod();
+
   void UpdateVideoFilter();
   bool SetupIntermediateRenderTarget();
 
@@ -188,7 +199,19 @@ protected:
   bool m_bConfigured;
 
   SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
+  RenderMethod        m_renderMethod;
 
+  // software scale libraries (fallback if required pixel shaders version is not available)
+  DllAvUtil          *m_dllAvUtil;
+  DllAvCodec         *m_dllAvCodec;
+  DllSwScale         *m_dllSwScale;
+  struct SwsContext  *m_sw_scale_ctx;
+
+  // Software rendering
+  D3DTEXTUREFILTERTYPE m_StretchRectFilter;
+  CD3DTexture          m_SWTarget;
+
+  // PS rendering
   CD3DTexture         m_IntermediateTarget;
   CD3DTexture         m_IntermediateStencilSurface;
 
