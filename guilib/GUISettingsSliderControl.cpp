@@ -37,8 +37,6 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 
 void CGUISettingsSliderControl::Render()
 {
-  if (IsDisabled()) return ;
-
   // make sure the button has focus if it should have...
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
@@ -48,7 +46,12 @@ void CGUISettingsSliderControl::Render()
   // now render our text
   m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
   m_label.SetText(CGUISliderControl::GetDescription());
-  m_label.SetColor(HasFocus() ? CGUILabel::COLOR_FOCUSED : CGUILabel::COLOR_TEXT);
+  if (IsDisabled())
+    m_label.SetColor(CGUILabel::COLOR_DISABLED);
+  else if (HasFocus())
+    m_label.SetColor(CGUILabel::COLOR_FOCUSED);
+  else
+    m_label.SetColor(CGUILabel::COLOR_TEXT);
   m_label.Render();
 }
 
