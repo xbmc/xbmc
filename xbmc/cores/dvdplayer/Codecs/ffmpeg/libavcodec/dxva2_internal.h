@@ -33,7 +33,6 @@ unsigned ff_dxva2_get_surface_index(const struct dxva_context *,
                                     const Picture *picture);
 
 int ff_dxva2_commit_buffer(AVCodecContext *, struct dxva_context *,
-                           DXVA2_DecodeBufferDesc *,
                            unsigned type, const void *data, unsigned size,
                            unsigned mb_count);
 

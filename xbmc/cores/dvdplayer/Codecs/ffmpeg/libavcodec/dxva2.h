@@ -51,7 +51,13 @@ struct dxva_context {
      */
     
     const DXVA2_ConfigPictureDecode *cfg;
+
     /**
+     * for compatibility with dxva1 we need to use it from the context
+     */
+	DXVA2_DecodeExecuteParams exec;
+	
+	/**
      * The amount of the buffer used for the decoding process
      */
     unsigned surface_count;
@@ -79,7 +85,8 @@ typedef struct dxva_decoder_context {
     void *dxvadecoder;
     int (*dxva2_decoder_begin_frame)(struct dxva_context *ctx, unsigned index);
 	int (*dxva2_decoder_end_frame)(struct dxva_context *ctx, unsigned index);
-	int (*dxva2_decoder_execute)(struct dxva_context *ctx, DXVA2_DecodeExecuteParams *exec);
+	/*int (*dxva2_decoder_add_execute)(struct dxva_context *ctx, unsigned type, unsigned size, const void *data, unsigned *real_size);*/
+	int (*dxva2_decoder_execute)(struct dxva_context *ctx);/*, DXVA2_DecodeExecuteParams *exec);*/
 	int (*dxva2_decoder_get_buffer)(struct dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size);
 	int (*dxva2_decoder_release_buffer)(struct dxva_context *ctx, unsigned type);
 } dxva_decoder_context;

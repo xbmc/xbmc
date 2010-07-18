@@ -103,7 +103,7 @@ public:
   /* AVHWAccel dxvadecoder callbacks*/
   int   DXVABeginFrame(dxva_context *ctx, unsigned index);
   int   DXVAEndFrame(dxva_context *ctx, unsigned index);
-  int   DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec);
+  int   DXVAExecute(dxva_context *ctx);
   int   DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size);
   int   DXVAReleaseBuffer(dxva_context *ctx, unsigned type);
   //Function used from ffmpeg dxva callbacks

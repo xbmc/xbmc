@@ -47,8 +47,8 @@ static int DXVABeginFrameS(dxva_context *ctx, unsigned index)
 static int DXVAEndFrameS(dxva_context *ctx, unsigned index)
 { return ((CDXVADecoder*)ctx->decoder)->DXVAEndFrame(ctx, index); }
 
-static int DXVAExecuteS(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
-{ return ((CDXVADecoder*)ctx->decoder)->DXVAExecute(ctx, exec); }
+static int DXVAExecuteS(dxva_context *ctx)
+{ return ((CDXVADecoder*)ctx->decoder)->DXVAExecute(ctx); }
 
 static int DXVAGetBufferS(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size)
 { return ((CDXVADecoder*)ctx->decoder)->DXVAGetBuffer(ctx, type, dxva_data, dxva_size); }
@@ -259,6 +259,10 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
+  m_ExecuteParams.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];
+  for (int i = 0; i < 6; i++)
+    memset (&m_ExecuteParams.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
+  m_context->exec = m_ExecuteParams;
   m_context->decoder->dxvadecoder = (void*)this;
   m_context->decoder->type = m_nEngine;
   m_context->decoder->dxva2_decoder_begin_frame = DXVABeginFrameS;
@@ -266,6 +270,7 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   m_context->decoder->dxva2_decoder_execute = DXVAExecuteS;
   m_context->decoder->dxva2_decoder_get_buffer = DXVAGetBufferS;
   m_context->decoder->dxva2_decoder_release_buffer = DXVAReleaseBufferS;
+
   
   avctx->hwaccel_context = m_context;
   return true;
@@ -333,7 +338,7 @@ bool CDXVADecoder::Supports(enum PixelFormat fmt)
 int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CSingleLock lock(m_section);
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  CLog::DebugLog("%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->GetDXVADecoder();
 
@@ -383,7 +388,8 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  CSingleLock lock(m_section);
+  //CSingleLock lock(m_section);
+  CLog::DebugLog("%s",__FUNCTION__);
   IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 
   for(unsigned i = 0; i < m_buffer_count; i++)
@@ -413,7 +419,7 @@ HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferInde
 
 int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 {
-  //CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -442,6 +448,10 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
         break;
 
       }
+      else
+      {
+      ASSERT(0);
+      }
     }
     else if (ctx->decoder->type == DECODER_TYPE_DXVA_2)
     {
@@ -461,7 +471,7 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 
 int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
 {
-  //CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -516,39 +526,48 @@ int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_da
   return 0;
 }
 
-int CDXVADecoder::DXVAExecute(dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
+int CDXVADecoder::DXVAExecute(dxva_context *ctx)
 {
-  //CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
   HRESULT hr = E_INVALIDARG;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
-  const int count = exec->NumCompBuffers;
+  const int count = ctx->exec.NumCompBuffers;
+
   AMVABUFFERINFO info[MAX_COM_BUFFER];
   DXVA_BufferDescription dsc[MAX_COM_BUFFER];
   for (int i = 0; i < count; i++) 
   {
-    const DXVA2_DecodeBufferDesc *b = &exec->pCompressedBuffers[i];
-    dsc[i].dwTypeIndex      = GetDXVA1CompressedType(b->CompressedBufferType);
+    //const DXVA2_DecodeBufferDesc *b = &ctx->exec;
+    dsc[i].dwTypeIndex      = GetDXVA1CompressedType(ctx->exec.pCompressedBuffers[i].CompressedBufferType);
     dsc[i].dwBufferIndex    = 0;
-    dsc[i].dwDataOffset     = b->DataOffset;
-    dsc[i].dwDataSize       = b->DataSize;
-    dsc[i].dwFirstMBaddress = b->FirstMBaddress;
-    dsc[i].dwNumMBsInBuffer = b->NumMBsInBuffer;
-    dsc[i].dwWidth          = b->Width;
-    dsc[i].dwHeight         = b->Height;
-    dsc[i].dwStride         = b->Stride;
-    dsc[i].dwReservedBits   = b->ReservedBits;
+    dsc[i].dwDataOffset     = ctx->exec.pCompressedBuffers[i].DataOffset;
+    dsc[i].dwDataSize       = ctx->exec.pCompressedBuffers[i].DataSize;
+    dsc[i].dwFirstMBaddress = ctx->exec.pCompressedBuffers[i].FirstMBaddress;
+    dsc[i].dwNumMBsInBuffer = ctx->exec.pCompressedBuffers[i].NumMBsInBuffer;
+    dsc[i].dwWidth          = ctx->exec.pCompressedBuffers[i].Width;
+    dsc[i].dwHeight         = ctx->exec.pCompressedBuffers[i].Height;
+    dsc[i].dwStride         = ctx->exec.pCompressedBuffers[i].Stride;
+    dsc[i].dwReservedBits   = ctx->exec.pCompressedBuffers[i].ReservedBits;
 
-    info[i].dwTypeIndex   = GetDXVA1CompressedType(b->CompressedBufferType);
+    info[i].dwTypeIndex   = GetDXVA1CompressedType(ctx->exec.pCompressedBuffers[i].CompressedBufferType);
     info[i].dwBufferIndex = 0;
-    info[i].dwDataOffset  = b->DataOffset;
-    info[i].dwDataSize    = b->DataSize;
+    info[i].dwDataOffset  = ctx->exec.pCompressedBuffers[i].DataOffset;
+    info[i].dwDataSize    = ctx->exec.pCompressedBuffers[i].DataSize;
   }
   DWORD function = 0x01000000;
   DWORD result;
- hr = acc->Execute(function,dsc, sizeof(*dsc) * count,&result, sizeof(result),count, info);
-  //todo add the execution
-return 0;
+  hr = acc->Execute(function, dsc, sizeof(*dsc) * count,&result, sizeof(result),count, info);
+  if (FAILED(hr))
+    ASSERT(0);
+  for (int i = 0; i < count; i++) 
+  {
+    hr = acc->ReleaseBuffer (info[i].dwTypeIndex, info[i].dwBufferIndex);
+    if (FAILED(hr))
+      ASSERT(0);
+  }
+  ctx->exec.NumCompBuffers = 0;
+  return 0;
 }
 
 

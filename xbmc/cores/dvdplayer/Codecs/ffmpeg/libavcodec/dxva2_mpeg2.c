@@ -194,7 +194,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     bs->DataSize             = current - dxva_data;
     bs->NumMBsInBuffer       = mb_count;
 
-    return ff_dxva2_commit_buffer(avctx, ctx, sc,
+    return ff_dxva2_commit_buffer(avctx, ctx,
                                   DXVA2_SliceControlBufferType,
                                   ctx_pic->slice,
                                   ctx_pic->slice_count * sizeof(*ctx_pic->slice),

@@ -21,6 +21,14 @@
  */
 
 #include "dxva2_internal.h"
+/*this is the order of the sequence for rendering the image*/
+/*
+AVCodecContext->get_buffer
+start_frame
+decode_slice
+end_frame
+AVCodecContext->release_buffer
+*/
 
 static int dxva2_default_begin_frame(struct dxva_context *ctx,
                                      unsigned index)
@@ -30,21 +38,7 @@ static int dxva2_default_begin_frame(struct dxva_context *ctx,
 	return 0;
 }
 
-static int dxva2_default_end_frame(struct dxva_context *ctx, unsigned index)
-{
-	if (FAILED(IDirectXVideoDecoder_EndFrame((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, NULL)))
-		return -1;
-	return 0;
-}
 
-static int dxva2_default_execute(struct dxva_context *ctx, DXVA2_DecodeExecuteParams *exec)
-{
-    if (FAILED(IDirectXVideoDecoder_Execute((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, exec))) {
-        //av_log(avctx, AV_LOG_ERROR, "Failed to execute\n");
-        return -1;
-    }
-	return 0;
-}
 
 static int dxva2_default_get_buffer(struct dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size)
 {
@@ -55,6 +49,31 @@ static int dxva2_default_get_buffer(struct dxva_context *ctx, unsigned type, voi
     }
 	*dxva_data = data;
 	*dxva_size = size;
+	return 0;
+}
+
+static int dxva2_default_execute(struct dxva_context *ctx)
+{
+    unsigned i;
+    for (i=0; i<ctx->exec.NumCompBuffers; i++)
+	{
+        if (FAILED(IDirectXVideoDecoder_ReleaseBuffer((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, ctx->exec.pCompressedBuffers[i].CompressedBufferType))) {
+            av_log(ctx, AV_LOG_ERROR, "Failed to IDirectXVideoDecoder_ReleaseBuffer\n");
+        }
+	}
+	return 0;
+    if (FAILED(IDirectXVideoDecoder_Execute((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, &ctx->exec))) {
+        av_log(ctx, AV_LOG_ERROR, "Failed to execute\n");
+        return -1;
+    }
+	ctx->exec.NumCompBuffers = 0;
+	return 0;
+}
+
+static int dxva2_default_end_frame(struct dxva_context *ctx, unsigned index)
+{
+	if (FAILED(IDirectXVideoDecoder_EndFrame((IDirectXVideoDecoder *)ctx->decoder->dxvadecoder, NULL)))
+		return -1;
 	return 0;
 }
 

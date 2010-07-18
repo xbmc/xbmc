@@ -200,7 +200,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     bs->NumMBsInBuffer       = s->mb_width * s->mb_height;
     assert((bs->DataSize & 127) == 0);
 
-    return ff_dxva2_commit_buffer(avctx, ctx, sc,
+    return ff_dxva2_commit_buffer(avctx, ctx,
                                   DXVA2_SliceControlBufferType,
                                   slice, sizeof(*slice), bs->NumMBsInBuffer);
 }

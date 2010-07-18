@@ -43,7 +43,6 @@ unsigned ff_dxva2_get_surface_index(const struct dxva_context *ctx,
 
 int ff_dxva2_commit_buffer(AVCodecContext *avctx,
                            struct dxva_context *ctx,
-                           DXVA2_DecodeBufferDesc *dsc,
                            unsigned type, const void *data, unsigned size,
                            unsigned mb_count)
 {
@@ -59,21 +58,26 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
     if (size <= dxva_size) {
         memcpy(dxva_data, data, size);
 
-        memset(dsc, 0, sizeof(*dsc));
+        /*memset(dsc, 0, sizeof(*dsc));
         dsc->CompressedBufferType = type;
         dsc->DataSize             = size;
-        dsc->NumMBsInBuffer       = mb_count;
-
+        dsc->NumMBsInBuffer       = mb_count;*/
+		ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].CompressedBufferType = type;
+        ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].DataSize             = size;
+        ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].NumMBsInBuffer       = mb_count;
+		ctx->exec.NumCompBuffers++;
         result = 0;
     } else {
         av_log(avctx, AV_LOG_ERROR, "Buffer for type %d was too small\n", type);
         result = -1;
     }
-	
-    if (ctx->decoder->dxva2_decoder_release_buffer(ctx, type)<0) {
+/*test moving this to execute  function*/
+#if 0
+	if (ctx->decoder->dxva2_decoder_release_buffer(ctx, type)<0) {
         av_log(avctx, AV_LOG_ERROR, "Failed to release buffer type %d\n", type);
 		result = -1;
     }
+#endif
     return result;
 }
 /*dxva2 decoder function*/
@@ -88,7 +92,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     struct dxva_context *ctx = avctx->hwaccel_context;
 	unsigned               buffer_count = 0;
     DXVA2_DecodeBufferDesc buffer[4];
-    DXVA2_DecodeExecuteParams exec;
+    /*DXVA2_DecodeExecuteParams exec;*/
     int      result, surfaceindex;
 	const Picture *current_picture = s->current_picture_ptr;
 	
@@ -97,7 +101,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
 		return -1;
 	}
 
-    result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
+    result = ff_dxva2_commit_buffer(avctx, ctx,
                                     DXVA2_PictureParametersBufferType,
                                     pp, pp_size, 0);
     if (result) {
@@ -108,7 +112,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     buffer_count++;
 
     if (qm_size > 0) {
-        result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
+        result = ff_dxva2_commit_buffer(avctx, ctx,
                                         DXVA2_InverseQuantizationMatrixBufferType,
                                         qm, qm_size, 0);
         if (result) {
@@ -133,12 +137,14 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
 
     assert(buffer_count == 1 + (qm_size > 0) + 2);
 
-    memset(&exec, 0, sizeof(exec));
+    /*memset(&exec, 0, sizeof(exec));
     exec.NumCompBuffers      = buffer_count;
     exec.pCompressedBuffers  = buffer;
-    exec.pExtensionData      = NULL;
+    exec.pExtensionData      = NULL;*/
 	
-    if (ctx->decoder->dxva2_decoder_execute(ctx , &exec)<0) {
+    /*if (ctx->decoder->dxva2_decoder_execute(ctx , &exec)<0) {*/
+	if (ctx->decoder->dxva2_decoder_execute(ctx)<0) {
+	    av_log(avctx, AV_LOG_ERROR, "Failed on dxva2_decoder_execute\n");
         result = -1;
     }
 
