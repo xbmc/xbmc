@@ -328,31 +328,24 @@ SectionEnd
 ;DirectX webinstaller Section
 
 !if "${xbmc_target}" == "dx"
-Section "DirectX WebInstall" SEC_DIRECTX
+Section "DirectX Install" SEC_DIRECTX
  
-  SectionIn 1 2
- 
-  SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\dxwebsetup.exe"
-  DetailPrint "Running DirectX Setup..."
-  ExecWait '"$TEMP\dxwebsetup.exe" /Q /r:n' $DirectXSetupError
-  Delete "$TEMP\dxwebsetup.exe"
-  SetOutPath "$INSTDIR"
+  SectionIn 1 2 RO
 
-  ;do minimal install if webinstaller failed for some reason
-  IfFileExists $SYSDIR\D3DX9_43.dll done
+  DetailPrint "Running DirectX Setup..."
+
   SetOutPath "$TEMP\dxsetup"
-  File "${xbmc_root}\..\dependencies\dxsetup\Aug2009_d3dx9_42_x86.cab"
   File "${xbmc_root}\..\dependencies\dxsetup\dsetup32.dll"
   File "${xbmc_root}\..\dependencies\dxsetup\DSETUP.dll"
   File "${xbmc_root}\..\dependencies\dxsetup\dxdllreg_x86.cab"
   File "${xbmc_root}\..\dependencies\dxsetup\DXSETUP.exe"
   File "${xbmc_root}\..\dependencies\dxsetup\dxupdate.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\Jun2010_D3DCompiler_43_x86.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\Jun2010_d3dx9_43_x86.cab"
   ExecWait '"$TEMP\dxsetup\dxsetup.exe" /silent' $DirectXSetupError
   RMDir /r "$TEMP\dxsetup"
   SetOutPath "$INSTDIR"
 
-  done:
   DetailPrint "Finished DirectX Setup"
   
 SectionEnd
@@ -360,7 +353,7 @@ SectionEnd
 Section "-Check DirectX installation" SEC_DIRECTXCHECK
 
   IfFileExists $SYSDIR\D3DX9_43.dll +2 0
-    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtimes from Microsoft and install it again."
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtime from Microsoft and install it again."
 
 SectionEnd
 !endif
