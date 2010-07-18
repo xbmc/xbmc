@@ -43,10 +43,12 @@ public:
   static void MarkWatched(const CFileItemPtr &pItem, bool bMark);
   static void UpdateVideoTitle(const CFileItem* pItem);
 
-  //! Shows the resume menu following the 'resumeautomatically' guisettig (also checks if there is a bookmark on the file)
-  //! It changes item.m_lStartOffset if resuming otherwise does nothing to item
-  //! If the user cancels the operation on the menu "false" is returned
-  static bool OnResumeShowMenu(CFileItem &item);
+  /*! \brief Show the resume menu for this item (if it has a resume bookmark)
+   If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME
+   \param item item to check for a resume bookmark
+   \return true if an option was chosen, false if the resume menu was cancelled.
+   */
+  static bool ShowResumeMenu(CFileItem &item);
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
@@ -74,8 +76,19 @@ protected:
    \return true if the action is performed, false otherwise
    */
   bool OnInfo(int item);
+  /*! \brief perform a given action on a file
+   \param item the selected item
+   \param action the action to perform
+   \return true if the action is performed, false otherwise
+   */
+  bool OnFileAction(int item, int action);
+  /*! \brief checks the database for a resume position and puts together a string
+   \param item selected item
+   \return string containing the resume position or an empty string if there is no resume position
+   */
+  static CStdString GetResumeString(CFileItem item);
   void OnRestartItem(int iItem);
-  void OnResumeItem(int iItem);
+  bool OnResumeItem(int iItem);
   void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
