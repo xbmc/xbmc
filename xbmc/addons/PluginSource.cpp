@@ -81,5 +81,13 @@ CPluginSource::Content CPluginSource::Translate(const CStdString &content)
     return CPluginSource::UNKNOWN;
 }
 
+bool CPluginSource::IsType(TYPE type) const
+{
+  return ((type == ADDON_VIDEO && Provides(VIDEO))
+       || (type == ADDON_AUDIO && Provides(AUDIO))
+       || (type == ADDON_IMAGE && Provides(IMAGE))
+       || (type == ADDON_EXECUTABLE && Provides(EXECUTABLE)));
+}
+
 } /*namespace ADDON*/
 
