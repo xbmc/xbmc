@@ -59,6 +59,7 @@
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
+#include "utils/Builtins.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -911,6 +912,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->m_strPath.Mid(19)))
         Update(m_vecItems->m_strPath);
+      return true;
+    }
+    else if (pItem->m_strPath.Left(14).Equals("addons://more/"))
+    {
+      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->m_strPath.Mid(14) + ",return)");
       return true;
     }
 
