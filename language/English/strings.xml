@@ -2218,6 +2218,7 @@
 
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
+  <string id="24098">Broken</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
