@@ -80,7 +80,7 @@ public:
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
-  static bool GetAnimations(const TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
+  static bool GetAnimations(TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
 
   /*! \brief Create an info label from an XML element
    Processes XML elements of the form
