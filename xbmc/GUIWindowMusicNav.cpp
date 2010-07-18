@@ -822,9 +822,9 @@ CStdString CGUIWindowMusicNav::GetStartFolder(const CStdString &dir)
   else if (dir.Equals("Top100"))
     return "musicdb://5/";
   else if (dir.Equals("Top100Songs"))
-    return "musicdb://5/2/";
-  else if (dir.Equals("Top100Albums"))
     return "musicdb://5/1/";
+  else if (dir.Equals("Top100Albums"))
+    return "musicdb://5/2/";
   else if (dir.Equals("RecentlyAddedAlbums"))
     return "musicdb://6/";
   else if (dir.Equals("RecentlyPlayedAlbums"))
