@@ -168,6 +168,8 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
+    if (!addon->Props().broken.IsEmpty())
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
     if (addon2 && addon2->Version() < addon->Version())
     {
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
