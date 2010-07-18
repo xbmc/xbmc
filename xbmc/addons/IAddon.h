@@ -46,6 +46,10 @@ namespace ADDON
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
+    ADDON_VIDEO, // virtual addon types
+    ADDON_AUDIO,
+    ADDON_IMAGE,
+    ADDON_EXECUTABLE,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
