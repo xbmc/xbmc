@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31818 -->
+<!--Based on english strings version 31902 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -509,6 +509,7 @@
   <string id="572">制作公司</string>
   <string id="573">路径</string> 
   <string id="574">国家</string>
+  <string id="575">进行中</string>
   
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -826,8 +827,8 @@
 
   <string id="2100">脚本错误！：%s</string>
   <string id="2101">需要新版本 - 详见日志</string>
-  <string id="2102">显卡</string>
-  <string id="2103">条件不满足 - 详见日志</string>
+  <string id="2102"></string>
+  <string id="2103"></string>
 
   <string id="4501">启用 LCD/VFD</string>
 
@@ -1232,6 +1233,7 @@
   <string id="13428">允许硬件加速（CrystalHD）</string>
   <string id="13429">允许硬件加速（VDADecoder）</string>
   <string id="13430">允许硬件加速（OpenMax）</string>
+  <string id="13431">像素着色器</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -2125,6 +2127,8 @@
   <string id="22079">默认选择动作</string>
   <string id="22080">选定</string>
   <string id="22081">显示信息</string>
+  <string id="22082">更多...</string>
+  <string id="22083">全部播放</string>
 
   <string id="23049">图文字幕不可用</string>
   <string id="23050">开启图文字幕</string>
@@ -2177,6 +2181,7 @@
   <string id="24040">（清除当前设置）</string>
   <string id="24041">从zip文件安装</string>
   <string id="24042">正在下载 %i%%</string>
+  <string id="24043">可更新项</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
