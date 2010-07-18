@@ -188,8 +188,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_PLAYER_PLAY && !g_application.IsPlayingVideo())
         {
-          OnResumeItem(iItem);
-          return true;
+          return OnResumeItem(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -852,12 +851,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_NO)
-    OnResumeItem(iItem);
-  else
-    return CGUIMediaWindow::OnClick(iItem);
-
-  return true;
+  return CGUIMediaWindow::OnClick(iItem);
 }
 
 bool CGUIWindowVideoBase::OnSelect(int iItem)
@@ -868,23 +862,61 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   if (!item->m_bIsFolder)
-  {
-    switch (g_guiSettings.GetInt("myvideos.selectaction")) 
-    {
-    case SELECT_ACTION_CHOOSE:
-      // TODO
-      break;
-    case SELECT_ACTION_INFO:
-      if (OnInfo(iItem))
-        return true;
-      break;
-    case SELECT_ACTION_PLAY:
-    default:
-      break;
-    }
-  }
+    return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
+}
+
+bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
+{
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  
+  switch (action)
+  {
+  case SELECT_ACTION_CHOOSE:
+    {
+      CContextButtons choices;
+      bool resume = false;
+
+      if (!item->IsLiveTV())
+      {
+        CStdString resumeString = GetResumeString(*item);
+        if (!resumeString.IsEmpty()) 
+        {
+          resume = true;
+          choices.Add(SELECT_ACTION_RESUME, resumeString);
+          choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        }
+      }
+      if (!resume)
+        choices.Add(SELECT_ACTION_PLAY, 208);   // Play
+
+      choices.Add(SELECT_ACTION_INFO, 22081); // Info
+      choices.Add(SELECT_ACTION_MORE, 22082); // More
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return true;
+
+      return OnFileAction(iItem, value);
+    }
+    break;
+  case SELECT_ACTION_PLAY_OR_RESUME:
+    return OnResumeItem(iItem);
+  case SELECT_ACTION_INFO:
+    if (OnInfo(iItem))
+      return true;
+    break;
+  case SELECT_ACTION_MORE:
+    OnPopupMenu(iItem);
+    return true;
+  case SELECT_ACTION_RESUME:
+    item->m_lStartOffset = STARTOFFSET_RESUME;
+    break;
+  case SELECT_ACTION_PLAY:
+  default:
+    break;
+  }
+  return OnClick(iItem);
 }
 
 bool CGUIWindowVideoBase::OnInfo(int iItem) 
@@ -945,51 +977,54 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-
-bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
+CStdString CGUIWindowVideoBase::GetResumeString(CFileItem item) 
 {
-  // we always resume the movie if the user doesn't want us to ask
-  bool resumeItem = g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_ASK;
-
-  if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
+  CStdString resumeString;
+  CVideoDatabase db;
+  if (db.Open())
   {
-    // check to see whether we have a resume offset available
-    CVideoDatabase db;
-    if (db.Open())
-    {
-      CBookmark bookmark;
-      CStdString itemPath(item.m_strPath);
-      if (item.IsVideoDb())
-        itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
-      if (db.GetResumeBookMark(itemPath, bookmark) )
-      { // prompt user whether they wish to resume
-        CContextButtons choices;
-        CStdString resumeString;
-        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
-        choices.Add(1, resumeString);
-        choices.Add(2, 12021); // start from the beginning
-        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-        if (retVal < 0)
-          return false; // don't do anything
-        resumeItem = (retVal == 1);
-      }
-      db.Close();
+    CBookmark bookmark;
+    CStdString itemPath(item.m_strPath);
+    if (item.IsVideoDb())
+      itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (db.GetResumeBookMark(itemPath, bookmark) )
+      resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
+    db.Close();
+  }
+  return resumeString;
+}
+
+bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
+{
+  if (!item.m_bIsFolder && !item.IsLiveTV())
+  {
+    CStdString resumeString = GetResumeString(item);
+    if (!resumeString.IsEmpty())
+    { // prompt user whether they wish to resume
+      CContextButtons choices;
+      choices.Add(1, resumeString);
+      choices.Add(2, 12021); // start from the beginning
+      int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (retVal < 0)
+        return false; // don't do anything
+      item.m_lStartOffset = STARTOFFSET_RESUME;
     }
   }
-  if (resumeItem)
-    item.m_lStartOffset = STARTOFFSET_RESUME;
-
   return true;
 }
 
-void CGUIWindowVideoBase::OnResumeItem(int iItem)
+bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
-  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  // Show menu asking the user
-  if ( OnResumeShowMenu(*item) )
-    CGUIMediaWindow::OnClick(iItem);
+  if (!item->m_bIsFolder && !item->IsLiveTV()) 
+  {
+    CStdString resumeString = GetResumeString(*item);
+    return OnFileAction(iItem, !resumeString.IsEmpty() ? SELECT_ACTION_CHOOSE : SELECT_ACTION_PLAY);
+  }
+  
+  return true;
 }
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
@@ -1066,10 +1101,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_YES)
-          buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_NO)
-          buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
+        buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
@@ -1156,8 +1188,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_RESUME_ITEM:
-    OnResumeItem(itemNumber);
-    return true;
+    return OnFileAction(itemNumber, SELECT_ACTION_RESUME);
 
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");

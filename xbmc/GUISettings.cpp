@@ -537,13 +537,6 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* vp = AddCategory(5, "videoplayer", 14086);
 
-  map<int,int> resume;
-  resume.insert(make_pair(106,RESUME_NO));
-  resume.insert(make_pair(107,RESUME_YES));
-  resume.insert(make_pair(12020,RESUME_ASK));
-  AddInt(vp, "videoplayer.resumeautomatically", 12017, RESUME_ASK, resume, SPIN_CONTROL_TEXT);
-  AddSeparator(vp, "videoplayer.sep1");
-
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
@@ -623,7 +616,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
-  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY, SELECT_ACTION_PLAY, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
+  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.cleanstrings", 20418, false);
