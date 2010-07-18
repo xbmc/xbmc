@@ -467,8 +467,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   switch (addonProps.type)
   {
     case ADDON_PLUGIN:
-      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT:
+      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
