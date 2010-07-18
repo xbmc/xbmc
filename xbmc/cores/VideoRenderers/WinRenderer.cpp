@@ -979,7 +979,7 @@ void SVideoBuffer::StartRender()
 {
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
-    if(planes[i].rect.pBits)
+    if(planes[i].texture.Get() && planes[i].rect.pBits)
       planes[i].texture.UnlockRect(0);
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
   }
@@ -991,7 +991,8 @@ void SVideoBuffer::StartDecode()
   id = 0;
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
-    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
+    if(planes[i].texture.Get()
+    && planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
       CLog::Log(LOGERROR, "CWinRenderer::SVideoBuffer::StartDecode - failed to lock texture into memory");
