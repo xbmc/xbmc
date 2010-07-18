@@ -56,6 +56,12 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create addon index");
     m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
 
+    CLog::Log(LOGINFO, "create addonextra table");
+    m_pDS->exec("CREATE TABLE addonextra (id integer, key text, value text)\n");
+
+    CLog::Log(LOGINFO, "create addonextra index");
+    m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
+
     CLog::Log(LOGINFO, "create repo table");
     m_pDS->exec("CREATE TABLE repo (id integer primary key, addonID text,"
                 "checksum text, lastcheck text)\n");
@@ -131,6 +137,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   }
+  if (version < 11)
+  {
+    m_pDS->exec("CREATE TABLE addonextra (id integer, key text, value text)\n");
+    m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
+  }
   return true;
 }
 
@@ -159,6 +170,13 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
 
     sql = PrepareSQL("insert into addonlinkrepo (idRepo, idAddon) values (%i,%i)",idRepo,idAddon);
     m_pDS->exec(sql.c_str());
+
+    const InfoMap &info = addon->ExtraInfo();
+    for (InfoMap::const_iterator i = info.begin(); i != info.end(); ++i)
+    {
+      sql = PrepareSQL("insert into addonextra(id, key, value) values (%i, '%s', '%s')", idAddon, i->first.c_str(), i->second.c_str());
+      m_pDS->exec(sql.c_str());
+    }
     return idAddon;
   }
   catch (...)
@@ -214,7 +232,15 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       m_pDS2->query(sql.c_str());
       if (!m_pDS2->eof())
         props.broken = m_pDS2->fv(0).get_asString();
-      
+
+      sql = PrepareSQL("select key,value from addonextra where id=%i", id);
+      m_pDS2->query(sql.c_str());
+      while (!m_pDS2->eof())
+      {
+        props.extrainfo.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
+        m_pDS2->next();
+      }
+
       addon = CAddonMgr::AddonFromProps(props);
       return NULL != addon.get();
     }
@@ -285,6 +311,8 @@ void CAddonDatabase::DeleteRepository(int idRepo)
     sql = PrepareSQL("delete from broken where addonID in (select addonID from addon join addonlinkrepo on addonlinkrepo.idAddon=addon.id where addonlinkrepo.idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
+    m_pDS->exec(sql.c_str());
+    sql = PrepareSQL("delete from addonextra where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addonlinkrepo where idRepo=%i",idRepo);
     m_pDS->exec(sql.c_str());

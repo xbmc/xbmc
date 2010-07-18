@@ -32,13 +32,18 @@ public:
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
 
   CPluginSource(const cp_extension_t *ext);
-  CPluginSource(const AddonProps &props) : CAddon(props) {}
+  CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
   bool Provides(const Content& content) {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
 
   static Content Translate(const CStdString &content);
 private:
+  /*! \brief Set the provided content for this plugin
+   If no valid content types are passed in, we set the EXECUTABLE type
+   \param content a space-separated list of content types
+   */
+  void SetProvides(const CStdString &content);
   std::set<Content> m_providedContent;
 };
 

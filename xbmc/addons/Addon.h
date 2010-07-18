@@ -96,6 +96,7 @@ public:
   CStdString fanart;
   ADDONDEPS dependencies;
   CStdString broken;
+  InfoMap    extrainfo;
   int        stars;
 };
 
@@ -146,6 +147,7 @@ public:
 
   // properties
   const TYPE Type() const { return m_props.type; }
+  bool IsType(TYPE type) const { return type == m_props.type; }
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
@@ -163,6 +165,7 @@ public:
   const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
+  const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   ADDONDEPS GetDeps();
 
 protected:
