@@ -933,7 +933,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
   //startpts = pts_dtoi(((double)(rtStart/10)));
   if (rtStop <= rtStart && rtStop != _I64_MIN)
     rtStop = rtStart + (m_rtAvrTimePerFrame);
-
+  
 
   m_pCodecContext->reordered_opaque  = rtStart;
 
@@ -1052,6 +1052,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
 
       if (m_pDXVADecoder->GetDeliveryBuffer(rtStart, rtStop,&pOut))
       {
+        //This seem to be work but need to verify if the issyncpoint can help to set the fieldtype
         int field_type,slice_type;
         slice_type = m_pFrame->pict_type;
         /*Based on what happen in h264.c at switch (h->sei_pic_struct)*/
@@ -1061,8 +1062,9 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
           field_type = PICT_BOTTOM_FIELD;
         else 
           field_type = PICT_FRAME;
-
+        
         m_pDXVADecoder->SetTypeSpecificFlags(pOut, (FF_SLICE_TYPE)slice_type, (FF_FIELD_TYPE)field_type);
+        //TODO add a structure with index, time start and stop to select the right one to display depending on the current time
         hr = m_pDXVADecoder->GetIAMVideoAccelerator()->DisplayFrame(m_pDXVADecoder->GetCurrentBufferIndex(),pOut);
 
       }

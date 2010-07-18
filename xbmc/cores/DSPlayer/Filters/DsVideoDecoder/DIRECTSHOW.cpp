@@ -116,6 +116,8 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber)
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->decoder = (dxva_decoder_context*)calloc(1, sizeof(dxva_decoder_context));
   m_context->cfg = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
+  m_context->exec.pCompressedBuffers = (DXVA2_DecodeBufferDesc*)calloc(6, sizeof(DXVA2_DecodeBufferDesc));
+  m_context->exec.pExtensionData = (DXVA2_DecodeExtensionData*)calloc(6, sizeof(DXVA2_DecodeExtensionData));
   m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
 
 	m_pFilter			= pFilter;
@@ -259,11 +261,12 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
-  m_ExecuteParams.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];
-  for (int i = 0; i < 6; i++)
-    memset (&m_ExecuteParams.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
-  m_context->exec = m_ExecuteParams;
+  
   m_context->decoder->dxvadecoder = (void*)this;
+  m_context->exec.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];//= m_ExecuteParams;
+  for (int i = 0; i < 6; i++)
+    memset (&m_context->exec.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
+  
   m_context->decoder->type = m_nEngine;
   m_context->decoder->dxva2_decoder_begin_frame = DXVABeginFrameS;
   m_context->decoder->dxva2_decoder_end_frame = DXVAEndFrameS;

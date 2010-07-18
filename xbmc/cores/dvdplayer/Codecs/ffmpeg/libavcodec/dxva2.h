@@ -55,9 +55,9 @@ struct dxva_context {
     /**
      * for compatibility with dxva1 we need to use it from the context
      */
-	DXVA2_DecodeExecuteParams exec;
+	  DXVA2_DecodeExecuteParams exec;
 	
-	/**
+	  /**
      * The amount of the buffer used for the decoding process
      */
     unsigned surface_count;
