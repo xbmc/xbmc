@@ -392,7 +392,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
         // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
-        g_application.OnAction(CAction(newEvent.appcommand.action));
+        g_application.OnAppCommand(CAction(newEvent.appcommand.action));
       }
       break;
   }
@@ -2311,6 +2311,23 @@ bool CApplication::OnKey(const CKey& key)
 
   g_Keyboard.Reset();
 
+  return OnAction(action);
+}
+
+// OnAppCommand is called in response to a XBMC_APPCOMMAND event.
+
+bool CApplication::OnAppCommand(const CAction &action)
+{
+  // Reset the screen saver
+  ResetScreenSaver();
+
+  // If we were currently in the screen saver wake up and don't process the appcommand
+  if (WakeUpScreenSaverAndDPMS())
+  {
+    return true;
+  }
+
+  // Process the appcommand
   return OnAction(action);
 }
 
