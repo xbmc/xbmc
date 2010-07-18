@@ -2,7 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Anssi Hannula-->
 <!--Email: anssi@xbmc.org-->
-<!--Date of translation: 07/17/2010-->
+<!--Date of translation: 07/18/2010-->
+<!--Based on English strings r31923-->
 <!--$Revision$-->
 <strings>
   <string id="0">Ohjelmat</string>
@@ -120,13 +121,11 @@
   <string id="164">Ei levyä</string>
   <string id="165">Levy asetettu</string>
   <string id="166">Ulkoasu</string>
-  <string id="167">FTP-palvelin käytössä</string>
-  <string id="168">
-  </string>
+  <string id="167"></string>
+  <string id="168"></string>
   <string id="169">Näytön resoluutio</string>
   <string id="170">Säädä näytön päivitysnopeus elokuvaan sopivaksi</string>
-  <string id="171">
-  </string>
+  <string id="171"></string>
   <string id="172">Julkaistu</string>
   <string id="173">4:3 videoiden näyttömuoto</string>
   <string id="175">Musiikkityyli</string>
@@ -443,7 +442,7 @@ ei saada yhteyttä</string>
   <string id="517">Viimeksi toistetut albumit</string>
   <string id="518">Käynnistä</string>
   <string id="519">Käynnistys...</string>
-  <string id="520">Muokkaa XBE:n nimeä</string>
+  <string id="520"></string>
   <string id="521">Kokoelmat</string>
   <string id="522">Poista sijainti</string>
   <string id="523">Vaihda mediavalikkoa</string>
@@ -582,7 +581,7 @@ ei saada yhteyttä</string>
   <string id="715">- Määritys</string>
   <string id="716">Automaattinen (DHCP)</string>
   <string id="717">Manuaalinen (Kiinteä)</string>
-  <string id="718">Oletusasetukset (Dashboard)</string>
+  <string id="718"></string>
   <string id="719">- IP-osoite</string>
   <string id="720">- Aliverkon peite</string>
   <string id="721">- Oletusyhdyskäytävä</string>
@@ -743,9 +742,9 @@ ei saada yhteyttä</string>
   <string id="1233">Ohjelmat ja videot ja musiikki</string>
   <string id="1234">Ohjelmat ja kuvat ja musiikki</string>
   <string id="1235">Ohjelmat ja kuvat ja videot</string>
-  <string id="1245">FTP-käyttäjätunnus</string>
-  <string id="1246">FTP-salasana</string>
-  <string id="1247">Salasanan asetus onnistui</string>
+  <string id="1245"></string>
+  <string id="1246"></string>
+  <string id="1247"></string>
   <string id="1250">Tunnistus</string>
   <string id="1251">Järjestelmän automaattitunnistus</string>
   <string id="1252">Lempinimi</string>
@@ -785,8 +784,8 @@ ei saada yhteyttä</string>
   <string id="2050">Kesto</string>
   <string id="2100">Skripti virhe! : %s</string>
   <string id="2101">Tarvitaan uudempi versio - Katso lisää virhelokista</string>
-  <string id="2102">Grafiikkakortti</string>
-  <string id="2103">Vaatimukset eivät täyty - Katso lisää virhelokista</string>
+  <string id="2102"></string>
+  <string id="2103"></string>
   <string id="4501">LCD/VFD käytössä</string>
   <string id="10000">Päävalikko</string>
   <string id="10001">Ohjelmat</string>
@@ -847,18 +846,18 @@ ei saada yhteyttä</string>
   <string id="12009">Luo indeksi uudestaan...</string>
   <string id="12010">Palaa Musiikki-valikkoon</string>
   <string id="12011">Palaa Videot-valikkoon</string>
-  <string id="12012">Päivitä trainer-lista</string>
-  <string id="12013">Trainerit</string>
-  <string id="12014">Ei trainereita</string>
-  <string id="12015">Trainer-asetukset</string>
-  <string id="12016">Kaikki rekisteröidyt trainerit ovat kadonneet. Päivitä lista uudelleen</string>
+  <string id="12012"></string>
+  <string id="12013"></string>
+  <string id="12014"></string>
+  <string id="12015"></string>
+  <string id="12016"></string>
   <string id="12017">Jatka pysäytetystä kohdasta</string>
   <string id="12018">Ei</string>
   <string id="12019">Kyllä</string>
   <string id="12020">Kysy</string>
   <string id="12021">Aloita alusta</string>
   <string id="12022">Jatka %s:sta</string>
-  <string id="12023">Tarkastetaan nykyisiä trainereita...</string>
+  <string id="12023"></string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -908,9 +907,9 @@ ei saada yhteyttä</string>
   <string id="12377">Tämä korvaa kaikki aiemmat asetukset</string>
   <string id="12378">Yksittäisen kuvan näyttöaika</string>
   <string id="12379">Panorointi- ja zoomaustehosteet käytössä</string>
-  <string id="12380">NTSC-videot PAL-nopeudella</string>
-  <string id="12381">PAL-videot NTSC-nopeudella</string>
-  <string id="12382">NTSC-videot PAL60-nopeudella</string>
+  <string id="12380"></string>
+  <string id="12381"></string>
+  <string id="12382"></string>
   <string id="12383">12-tuntinen kello</string>
   <string id="12384">24-tuntinen kello</string>
   <string id="12385">Päivä/Kuukausi</string>
@@ -929,8 +928,8 @@ ei saada yhteyttä</string>
   <string id="13003">- Viive</string>
   <string id="13004">- Tiedoston vähimmäiskesto</string>
   <string id="13005">Sammuta</string>
-  <string id="13006">Käynnistä dashboard</string>
-  <string id="13007">Valinnainen dashboardin polku</string>
+  <string id="13006"></string>
+  <string id="13007"></string>
   <string id="13008">Sammutusmuoto</string>
   <string id="13009">Poistu</string>
   <string id="13010">Horrostila</string>
@@ -976,26 +975,26 @@ ei saada yhteyttä</string>
   <string id="13145">Mikäli käytät tälllä hetkellä XBMC:in ohjaukseen Apple kauko-ohjainta,</string>
   <string id="13146">et voi tämän jälkeen ohjata XBMC:ia.</string>
   <string id="13147">Haluatko jatkaa?</string>
-  <string id="13150">Lukituskoodi:</string>
-  <string id="13151">Lämpötila:</string>
-  <string id="13152">Malli:</string>
-  <string id="13153">Firmware:</string>
-  <string id="13154">Malli:</string>
-  <string id="13155">Sarjanro:</string>
-  <string id="13156">Firmware:</string>
-  <string id="13157">Salasana:</string>
-  <string id="13158">Lukitus:</string>
+  <string id="13150"></string>
+  <string id="13151"></string>
+  <string id="13152"></string>
+  <string id="13153"></string>
+  <string id="13154"></string>
+  <string id="13155"></string>
+  <string id="13156"></string>
+  <string id="13157"></string>
+  <string id="13158"></string>
   <string id="13159">Aliverkon peite</string>
   <string id="13160">Yhdyskäytävä</string>
   <string id="13161">Ensisijainen DNS</string>
   <string id="13162">Alustus epäonnistui</string>
-  <string id="13163">Peliohjain</string>
-  <string id="13164">Näppäimistö</string>
-  <string id="13165">Hiiri</string>
-  <string id="13166">Kuuloke-mikrofoni</string>
-  <string id="13167">Muistikortti</string>
-  <string id="13168">Kaukosäädin</string>
-  <string id="13169">Ohjaimen liitäntä</string>
+  <string id="13163"></string>
+  <string id="13164"></string>
+  <string id="13165"></string>
+  <string id="13166"></string>
+  <string id="13167"></string>
+  <string id="13168"></string>
+  <string id="13169"></string>
   <string id="13170">Ei koskaan</string>
   <string id="13171">Heti</string>
   <string id="13172">%i sekunnin kuluttua</string>
@@ -1634,14 +1633,14 @@ ole määriteltäviä asetuksia</string>
   <string id="20302">Kansioon kirjoitus epäonnistui:</string>
   <string id="20303">Ohitetaanko ja jatketaanko suoritusta?</string>
   <string id="20304">RSS-syöte</string>
-  <string id="20306">Ei voida tunnistaa</string>
+  <string id="20306"></string>
   <string id="20307">Toissijainen DNS</string>
   <string id="20308">DHCP-palvelin:</string>
   <string id="20309">Luo uusi kansio</string>
   <string id="20310">Himmennä LCD toistettaessa</string>
   <string id="20311">Tuntematon tai suojattu</string>
   <string id="20312">Himmennä LCD taukojen ajaksi</string>
-  <string id="20313">Etupaneelin valo päällä taukojen aikana</string>
+  <string id="20313"></string>
   <string id="20314">Videot - Kirjasto</string>
   <string id="20315"></string>
   <string id="20316">Järjestä: ID</string>
@@ -1992,6 +1991,8 @@ ole määriteltäviä asetuksia</string>
   <string id="22079">Oletustoiminto valittaessa</string>
   <string id="22080">Valitse</string>
   <string id="22081">Näytä tiedot</string>
+  <string id="22082">Lisää...</string>
+  <string id="22083">Toista kaikki</string>
   <string id="23049">Teksti-tv ei ole käytettävissä</string>
   <string id="23050">Teksti-tv käytössä</string>
   <string id="23051">Osa %i</string>
