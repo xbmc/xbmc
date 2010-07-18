@@ -700,26 +700,16 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
 
 int cp_to_clog(cp_log_severity_t lvl)
 {
-  if( lvl == CP_LOG_DEBUG )
-    return 0;
-  else if (lvl == CP_LOG_INFO)
-    return 1;
-  else if (lvl == CP_LOG_WARNING)
-    return 3;
-  else
-    return 4;
+  if (lvl >= CP_LOG_ERROR)
+    return LOGINFO;
+  return LOGDEBUG;
 }
 
 cp_log_severity_t clog_to_cp(int lvl)
 {
-  if (lvl >= 4)
-    return CP_LOG_ERROR;
-  else if (lvl == 3)
-    return CP_LOG_WARNING;
-  else if (lvl >= 1)
+  if (lvl >= LOG_LEVEL_DEBUG)
     return CP_LOG_INFO;
-  else
-    return CP_LOG_DEBUG;
+  return CP_LOG_ERROR;
 }
 
 void cp_fatalErrorHandler(const char *msg)
