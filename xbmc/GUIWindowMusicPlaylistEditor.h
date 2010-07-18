@@ -44,6 +44,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnQueueItem(int iItem);
+  virtual CStdString GetStartFolder(const CStdString &dir) { return ""; };
 
   void OnPlaylistContext();
   int GetCurrentPlaylistItem();
