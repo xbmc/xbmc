@@ -20,28 +20,51 @@
  */
 #include "PluginSource.h"
 #include "AddonManager.h"
+#include "StringUtils.h"
 
 using namespace std;
 
 namespace ADDON
 {
 
+CPluginSource::CPluginSource(const AddonProps &props)
+  : CAddon(props)
+{
+  CStdString provides;
+  InfoMap::const_iterator i = Props().extrainfo.find("provides");
+  if (i != Props().extrainfo.end())
+    provides = i->second;
+  SetProvides(provides);
+}
+
 CPluginSource::CPluginSource(const cp_extension_t *ext)
   : CAddon(ext)
 {
+  CStdString provides;
   if (ext)
   {
-    vector<CStdString> provides;
-    CAddonMgr::Get().GetExtList(ext->configuration, "provides", provides);
-    for (unsigned int i = 0; i < provides.size(); i++)
+    provides = CAddonMgr::Get().GetExtValue(ext->configuration, "provides");
+    if (!provides.IsEmpty())
+      Props().extrainfo.insert(make_pair("provides", provides));
+  }
+  SetProvides(provides);
+}
+
+void CPluginSource::SetProvides(const CStdString &content)
+{
+  vector<CStdString> provides;
+  if (!content.IsEmpty())
+  {
+    StringUtils::SplitString(content, " ", provides);
+    for (unsigned int i = 0; i < provides.size(); ++i)
     {
       Content content = Translate(provides[i]);
       if (content != UNKNOWN)
         m_providedContent.insert(content);
     }
-    if (Type() == ADDON_SCRIPT && m_providedContent.empty())
-      m_providedContent.insert(EXECUTABLE);
   }
+  if (Type() == ADDON_SCRIPT && m_providedContent.empty())
+    m_providedContent.insert(EXECUTABLE);
 }
 
 CPluginSource::Content CPluginSource::Translate(const CStdString &content)
