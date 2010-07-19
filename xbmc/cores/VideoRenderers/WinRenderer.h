@@ -199,7 +199,7 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
-  bool SetupIntermediateRenderTarget();
+  bool CreateIntermediateRenderTarget();
 
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
