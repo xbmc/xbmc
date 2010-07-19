@@ -1018,7 +1018,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder && !item->IsLiveTV()) 
+  if (!item->m_bIsFolder)
   {
     CStdString resumeString = GetResumeString(*item);
     return OnFileAction(iItem, !resumeString.IsEmpty() ? SELECT_ACTION_CHOOSE : SELECT_ACTION_PLAY);
