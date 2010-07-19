@@ -39,6 +39,27 @@
 #include "../dvdplayer/Codecs/DllAvCodec.h"
 #include "LocalizeStrings.h"
 
+typedef struct {
+  RenderMethod  method;
+  const char   *name;
+} RenderMethodDetail;
+
+static RenderMethodDetail RenderMethodDetails[] = {
+    { RENDER_SW     , "Software" },
+    { RENDER_PS     , "Pixel Shaders" },
+    { RENDER_DXVA   , "DXVA" },
+    { RENDER_INVALID, NULL }
+};
+
+static RenderMethodDetail *FindRenderMethod(RenderMethod m)
+{
+  for (unsigned i = 0; RenderMethodDetails[i].method != RENDER_INVALID; i++) {
+    if (RenderMethodDetails[i].method == m)
+      return &RenderMethodDetails[i];
+  }
+  return NULL;
+}
+
 CWinRenderer::CWinRenderer()
 {
   m_iYV12RenderBuffer = 0;
@@ -132,7 +153,8 @@ void CWinRenderer::SelectRenderMethod()
         break;
     }
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method: %d", m_renderMethod);
+  RenderMethodDetail *rmdet = FindRenderMethod(m_renderMethod);
+  CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method %d: %s", m_renderMethod, rmdet != NULL ? rmdet->name : "unknown");
 }
 
 bool CWinRenderer::UpdateRenderMethod()
