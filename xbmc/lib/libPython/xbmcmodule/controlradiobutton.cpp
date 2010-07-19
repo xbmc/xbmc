@@ -37,7 +37,6 @@
 #endif
 #include "../XBPythonDll.h"
 #include "GUIRadioButtonControl.h"
-#include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
 #include "control.h"
 #include "pyutil.h"
