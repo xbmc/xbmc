@@ -99,9 +99,11 @@
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
 #if Py_UNICODE_SIZE == 2
-  FUNCTION(PyUnicodeUCS2_AsUnicode)
+  FUNCTION(PyUnicodeUCS2_AsUTF8String)
+  FUNCTION(PyUnicodeUCS2_DecodeUTF8)
 #else
-  FUNCTION(PyUnicodeUCS4_AsUnicode)
+  FUNCTION(PyUnicodeUCS4_AsUTF8String)
+  FUNCTION(PyUnicodeUCS4_DecodeUTF8)
 #endif
   FUNCTION(Py_MakePendingCalls)
   FUNCTION(PyEval_SaveThread)
