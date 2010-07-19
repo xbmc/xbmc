@@ -39,6 +39,7 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_focused = false;
   m_invalidated = true;
   m_isPlaying = false;
+  m_group.SetPushUpdates(true);
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
