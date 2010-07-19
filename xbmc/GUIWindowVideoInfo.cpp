@@ -614,8 +614,12 @@ void CGUIWindowVideoInfo::Play(bool resume)
     Close(true);
     if (resume)
       movie.m_lStartOffset = STARTOFFSET_RESUME;
-    else
-      CGUIWindowVideoBase::ShowResumeMenu(movie);
+    else if (!CGUIWindowVideoBase::ShowResumeMenu(movie)) 
+    {
+      // The Resume dialog was closed without any choice
+      DoModal();
+      return;
+    }
     pWindow->PlayMovie(&movie);
   }
 }
