@@ -106,9 +106,10 @@ struct YUVRANGE
 
 enum RenderMethod
 {
-  RENDER_PS=0x01,
-  RENDER_SW=0x02,
-  RENDER_DXVA=0x03,
+  RENDER_INVALID = 0x00,
+  RENDER_PS      = 0x01,
+  RENDER_SW      = 0x02,
+  RENDER_DXVA    = 0x03,
 };
 
 #define PLANE_Y 0
