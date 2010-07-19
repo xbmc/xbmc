@@ -196,10 +196,10 @@ extern "C"
   }*/
 #ifndef _LINUX
   FUNCTION4(PyUnicodeUCS2_AsUTF8String)
-  FUNCTION4(PyUnicodeUCS2_DecodeUTF8)
+  FUNCTION12(PyUnicodeUCS2_DecodeUTF8)
 #else
   FUNCTION4(PyUnicodeUCS4_AsUTF8String)
-  FUNCTION4(PyUnicodeUCS4_DecodeUTF8)
+  FUNCTION12(PyUnicodeUCS4_DecodeUTF8)
 #endif
   FUNCTION(Py_MakePendingCalls)
   FUNCTION(PyEval_SaveThread)
