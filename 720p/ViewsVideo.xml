@@ -14,11 +14,6 @@
 		<control type="group">
 			<include>TVSeasonsVisible</include>
 			<include>MediaViewFade</include>
-			<include>TVSeasonsFadeOutAnim</include>
-		</control>
-		<control type="group">
-			<include>TVSeasonsVisible</include>
-			<include>MediaViewFade</include>
 			<include>TVSeasonsFadeInAnim</include>
 			<control type="group">
 				<include>TVSeasonsThumbPos</include>
