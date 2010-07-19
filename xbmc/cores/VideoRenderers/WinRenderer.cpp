@@ -412,7 +412,7 @@ void CWinRenderer::UnInit()
   SAFE_DELETE(m_dllAvUtil);
 }
 
-bool CWinRenderer::SetupIntermediateRenderTarget()
+bool CWinRenderer::CreateIntermediateRenderTarget()
 {
   // Initialize a render target for intermediate rendering - same size as the video source
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
@@ -525,7 +525,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_IntermediateStencilSurface.Get())
     m_IntermediateStencilSurface.Release();
 
-  if (m_bUseHQScaler && !SetupIntermediateRenderTarget())
+  if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
     SAFE_RELEASE(m_scalerShader)
     m_bUseHQScaler = true;
