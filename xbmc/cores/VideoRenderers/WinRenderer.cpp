@@ -568,8 +568,7 @@ void CWinRenderer::UpdateVideoFilter()
   if (!Supports(m_scalingMethod))
   {
     CLog::Log(LOGWARNING, __FUNCTION__" - chosen scaling method %d is not supported by renderer", (int)m_scalingMethod);
-    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-    return;
+    m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   }
 
   switch(m_renderMethod)
@@ -581,6 +580,10 @@ void CWinRenderer::UpdateVideoFilter()
   case RENDER_PS:
     SelectPSVideoFilter();
     UpdatePSVideoFilter();
+    break;
+
+  case RENDER_DXVA:
+    // Everything already setup, nothing to do.
     break;
 
   default:
@@ -927,7 +930,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_SCALINGMETHOD_LINEAR)
+    if(method == VS_SCALINGMETHOD_DXVA_HARDWARE)
       return true;
     return false;
   }
