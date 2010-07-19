@@ -542,8 +542,7 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_DX
   renderers.insert(make_pair(13431, RENDER_METHOD_D3D_PS));
-  // 13611 == Standard w/o CrystalHD but still using shaders so not really software
-  renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE));
+  renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif
 
 #ifdef HAS_GL
