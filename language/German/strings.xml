@@ -511,6 +511,7 @@
   <string id="572">Studio</string>
   <string id="573">Pfad</string>
   <string id="574">Land</string>
+  <string id="575">Im Gange</string>
 
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
@@ -1875,6 +1876,8 @@
   <string id="20449">Der Server ist wahrscheinlich nicht verfügbar.</string>
   <string id="20450">Wollen Sie mit der Aktualisierung fortfahren?</string>
   <string id="20451">Länder</string>
+  <string id="20452">Episode</string>
+  <string id="20453">Episoden</string>
 
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
@@ -2097,6 +2100,12 @@
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
 
+  <string id="22079">Standard Auswahl Aktion</string>
+  <string id="22080">Wähle</string>
+  <string id="22081">Informationen anzeigen</string>
+  <string id="22082">Mehr...</string>
+  <string id="22083">Alles abspielen</string>
+
   <string id="23049">Videotext nicht verfügbar</string>
   <string id="23050">Videotext aktivieren</string>
   <string id="23051">Teil %i</string>
@@ -2145,6 +2154,8 @@
   <string id="24039">Deaktivierte Add-ons</string>
   <string id="24040">(Die aktuelle Einstellung löschen)</string>
   <string id="24041">Aus ZIP Datei installieren</string>
+  <string id="24042">Herunterladen %i%%</string>
+  <string id="24043">Verfügbare Updates</string>
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>
