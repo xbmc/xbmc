@@ -455,7 +455,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(56)</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
