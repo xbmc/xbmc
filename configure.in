@@ -738,6 +738,9 @@ if test "$use_librtmp" != "no"; then
       use_librtmp="no"
     fi
    ])
+  if test "$use_librtmp" != "no" && test "$host_vendor" != "apple"; then
+    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
+  fi
   if test "$use_librtmp" != "no"; then
     AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
   fi
