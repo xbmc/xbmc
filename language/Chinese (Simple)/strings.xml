@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31902 -->
+<!--Based on english strings version 31967 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -904,10 +904,10 @@
   <string id="12014"></string>
   <string id="12015"></string>
   <string id="12016"></string>
-  <string id="12017">从上次中断处继续播放</string>
-  <string id="12018">否</string>
-  <string id="12019">是</string>
-  <string id="12020">询问</string>
+  <string id="12017"></string>
+  <string id="12018"></string>
+  <string id="12019"></string>
+  <string id="12020"></string>
   <string id="12021">从头开始播放</string>
   <string id="12022">从 %s 处继续播放</string>
   <string id="12023"></string>
@@ -1528,6 +1528,7 @@
   <string id="16316">自动</string>
   <string id="16317">时间平滑（半速）</string>
   <string id="16318">时间/空间平滑（半速）</string>
+  <string id="16319">DXVA</string>
 
   <string id="16400">视频后处理</string>
   <string id="16401">禁用</string>
@@ -2000,7 +2001,7 @@
   <string id="21449">摇控器发送键盘按键</string>
   <string id="21450">- 编辑</string>
   <string id="21451">需要访问互联网。</string>
-  <string id="21452">获取更多</string>
+  <string id="21452">获取更多...</string>
   <string id="21453">根文件系统</string>
 
   <string id="21800">文件名称</string>
@@ -2218,6 +2219,7 @@
 
   <string id="24096">库中的扩展功能被标记为已损坏。</string>
   <string id="24097">要在系统中禁用它吗？</string>
+  <string id="24098">已损坏</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
