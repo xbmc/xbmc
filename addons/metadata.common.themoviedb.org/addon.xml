@@ -12,11 +12,11 @@
     <platform>all</platform>
     <minversion>20000</minversion>
     <summary lang="en">TMDb Scraper Library</summary>
-    <summary lang="hu">TMDb scraper könyvtár</summary>
+    <summary lang="hu">TMDb leolvasó-könyvtár</summary>
     <summary lang="nl">TMDb Scraper Collectie</summary>
     <summary lang="pt">Scraper de filmes TMDb</summary>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
-    <description lang="hu">Bélyegképek és fanart letöltése a www.themoviedb.org webhelyről.</description>
+    <description lang="hu">Bélyeg- és fanartképek letöltése a www.themoviedb.org-ról</description>
     <description lang="nl">Download afbeeldingen en fanart van www.themoviedb.org</description>
     <description lang="pt">Descarregar informação de filmes de www.themoviedb.org</description>
   </extension>

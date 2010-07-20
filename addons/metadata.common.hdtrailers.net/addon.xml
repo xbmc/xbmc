@@ -10,7 +10,7 @@
              library="hdtrailers.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">HD-Trailers.net Scraper Library</summary>
-    <summary lang="hu">HD-Trailers.net Scraper Könyvtár</summary>
+    <summary lang="hu">HD-Trailers.net leolvasó-könyvtár</summary>
     <summary lang="nl">HD-Trailers.net Scraper Collectie</summary>
     <description lang="en">Download Movie Trailers from www.hd-trailers.net</description>
     <description lang="hu">Filmelőzetesek letöltése a www.hd-trailers.net-ről.</description>
