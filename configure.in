@@ -870,7 +870,7 @@ if test "x$use_vdpau" != "xno"; then
     AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [],
       [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
     [if test "x$use_vdpau" = "xyes"; then 
-      AC_MSG_ERROR([$vdpau_no_found])
+      AC_MSG_ERROR([$vdpau_not_found])
     else
       use_vdpau="no"
       AC_MSG_RESULT($vdpau_not_found)
