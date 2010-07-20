@@ -251,9 +251,9 @@ class Packet:
         for a in range ( 0, self.num_packets() ):
             try:
                 sock.sendto(self.get_udp_message(a+1), addr)
-                return True
             except:
                 return False
+        return True
 
 
 class PacketHELO (Packet):
