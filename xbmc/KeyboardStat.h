@@ -50,29 +50,16 @@ public:
   void Initialize();
   void Reset();
   void ResetState();
-  int HandleEvent(XBMC_Event& newEvent);
+  int  HandleEvent(XBMC_Event& newEvent);
   void Update(XBMC_Event& event);
-//  bool GetShift() { return m_bShift;};
-//  bool GetCtrl() { return m_bCtrl;};
-//  bool GetAlt() { return m_bAlt;};
-//  bool GetRAlt() { return m_bRAlt;};
-//  bool GetSuper() { return m_bSuper;};
-//  char GetAscii();// { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode()
-//  wchar_t GetUnicode();// { return m_wUnicode;};
-//  uint8_t GetVKey() { return m_VKey;};
-//  unsigned int KeyHeld() const;
 
   void GetKey(CKey& key);
 
 private:
-  bool m_bShift;
-  bool m_bCtrl;
-  bool m_bAlt;
-  bool m_bRAlt;
-  bool m_bSuper;
-  char m_cAscii;
-  wchar_t m_wUnicode;
-  uint8_t m_VKey;
+  uint8_t  m_VKey;
+  wchar_t  m_wUnicode;
+  char     m_cAscii;
+  uint32_t m_Modifiers;
 
   XBMCKey m_lastKey;
   unsigned int m_lastKeyTime;
