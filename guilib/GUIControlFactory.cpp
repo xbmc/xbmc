@@ -416,12 +416,12 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int 
 bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, vector<CAnimation> &animations)
 {
   TiXmlElement* node = control->FirstChildElement("animation");
-  g_SkinInfo->ResolveIncludes(node);
   bool ret = false;
   if (node)
     animations.clear();
   while (node)
   {
+    g_SkinInfo->ResolveIncludes(node);
     ret = true;
     if (node->FirstChild())
     {
