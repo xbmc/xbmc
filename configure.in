@@ -46,7 +46,8 @@ openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
-librtmp_not_found="== Could not find libRTMP. libRTMP support disabled. =="
+librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
+librtmp_disabled="== RTMP support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -172,6 +173,12 @@ AC_ARG_ENABLE([pulse],
   [enable PulseAudio support (default is auto)])],
   [use_pulse=$enableval],
   [use_pulse=auto])
+
+AC_ARG_ENABLE([rtmp],
+  [AS_HELP_STRING([--enable-rtmp],
+  [enable RTMP support via librtmp (default is auto)])],
+  [use_librtmp=$enableval],
+  [use_librtmp=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -722,8 +729,21 @@ else
 fi
 
 # libRTMP
-AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],use_librtmp=yes,
-use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
+if test "$use_librtmp" != "no"; then
+  AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
+   [if test "$use_librtmp" = "yes"; then
+      AC_MSG_ERROR($librtmp_not_found)
+    elif test "$use_librtmp" != "no"; then
+      AC_MSG_NOTICE($librtmp_not_found)
+      use_librtmp="no"
+    fi
+   ])
+  if test "$use_librtmp" != "no"; then
+    AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+  fi
+else
+  AC_MSG_NOTICE($librtmp_disabled)
+fi
 
 ### External libraries checks
 # External FFmpeg
@@ -780,10 +800,6 @@ else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
-fi
-
-if test "$use_librtmp" = "yes"; then
-  AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
 fi
 
 # External liba52 if deprecated a52 support is enabled
@@ -1253,7 +1269,7 @@ else
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
-if test "$use_librtmp" = "yes"; then
+if test "$use_librtmp" != "no"; then
   final_message="$final_message\n  libRTMP support:\tYes"
 else
   final_message="$final_message\n  libRTMP support:\tNo"
