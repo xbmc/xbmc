@@ -122,13 +122,15 @@ bool cResponsePacket::initStream(uint32_t opCode, uint32_t streamID, uint32_t du
 
 void cResponsePacket::finalise()
 {
-  *(uint32_t*)&buffer[userDataLenPos] = htonl(bufUsed - headerLength);
+  uint32_t networked = htonl(bufUsed - headerLength);
+  memcpy(&buffer[userDataLenPos], &networked, sizeof(networked));
   //Log::getInstance()->log("Client", Log::DEBUG, "RP finalise %lu", bufUsed - headerLength);
 }
 
 void cResponsePacket::finaliseStream()
 {
-  *(uint32_t*)&buffer[userDataLenPosStream] = htonl(bufUsed - headerLengthStream);
+  uint32_t networked = htonl(bufUsed - headerLengthStream);
+  memcpy(&buffer[userDataLenPosStream], &networked, sizeof(networked));
 }
 
 
@@ -152,7 +154,10 @@ bool cResponsePacket::add_String(const char* string)
 bool cResponsePacket::add_U32(uint32_t ul)
 {
   if (!checkExtend(sizeof(uint32_t))) return false;
-  *(uint32_t*)&buffer[bufUsed] = htonl(ul);
+
+  uint32_t networked = htonl(ul);
+  memcpy( &buffer[bufUsed], &networked, sizeof(networked) );
+
   bufUsed += sizeof(uint32_t);
   return true;
 }
@@ -168,25 +173,38 @@ bool cResponsePacket::add_U8(uint8_t c)
 bool cResponsePacket::add_S32(int32_t l)
 {
   if (!checkExtend(sizeof(int32_t))) return false;
-  *(int32_t*)&buffer[bufUsed] = htonl(l);
+
+  int32_t networked = htonl(l);
+  memcpy( &buffer[bufUsed], &networked, sizeof(networked) );
+
   bufUsed += sizeof(int32_t);
   return true;
 }
 
 bool cResponsePacket::add_U64(uint64_t ull)
 {
+  printf("Add uint64 %lld\n", ull);
+
   if (!checkExtend(sizeof(uint64_t))) return false;
-  *(uint64_t*)&buffer[bufUsed] = htonll(ull);
+
+  uint64_t networked = htonll(ull);
+  memcpy( &buffer[bufUsed], &networked, sizeof(networked) );
+
   bufUsed += sizeof(uint64_t);
   return true;
 }
 
 bool cResponsePacket::add_double(double d)
 {
+  printf("Add double %f\n", float(d));
+
   if (!checkExtend(sizeof(double))) return false;
   uint64_t ull;
   memcpy(&ull,&d,sizeof(double));
-  *(uint64_t*)&buffer[bufUsed] = htonll(ull);
+
+  uint64_t networked = htonll(ull);
+  memcpy( &buffer[bufUsed], &networked, sizeof(networked) );
+
   bufUsed += sizeof(uint64_t);
   return true;
 }
