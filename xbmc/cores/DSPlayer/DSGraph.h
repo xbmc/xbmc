@@ -77,6 +77,7 @@ public:
     if (wait)
       msg->Acquire();
 
+    CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
     PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM) msg);
     
     if (wait)

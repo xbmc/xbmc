@@ -799,6 +799,7 @@ void CDSGraph::ProcessThreadMessages()
   {
 
     CDSMsg* msg = reinterpret_cast<CDSMsg *>( _msg.lParam );
+    CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
 
     if ( msg->IsType(CDSMsg::GENERAL_SET_WINDOW_POS) )
     {

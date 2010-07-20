@@ -186,7 +186,20 @@ void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 //CThread
 void CDSPlayer::OnStartup()
 {
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
   CThread::SetName("CDSPlayer");
+
+  START_PERFORMANCE_COUNTER
+  if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
+    PlayerState = DSPLAYER_ERROR;
+  END_PERFORMANCE_COUNTER
+
+  m_hReadyEvent.Set(); // Start playback
+
+  if (PlayerState == DSPLAYER_ERROR)
+    return;
+
+  HandleStart();
 }
 
 void CDSPlayer::OnExit()
@@ -204,6 +217,7 @@ void CDSPlayer::OnExit()
     m_callback.OnPlayBackEnded();
 
   m_bStop = true;
+  CoUninitialize();
 }
 
 void CDSPlayer::HandleStart()
@@ -217,18 +231,6 @@ void CDSPlayer::Process()
 
 #define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSED) \
   break;
-
-  START_PERFORMANCE_COUNTER
-  if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
-    PlayerState = DSPLAYER_ERROR;
-  END_PERFORMANCE_COUNTER
-
-  m_hReadyEvent.Set(); // Start playback
-
-  if (PlayerState == DSPLAYER_ERROR)
-    return;
-
-  HandleStart();
   
   HRESULT hr = S_OK;
 
