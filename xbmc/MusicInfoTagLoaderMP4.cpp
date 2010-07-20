@@ -226,6 +226,9 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
   case g_CoverArtAtomName:
     {
       // This cover-art handling is pretty much what was in the old MP4 tag processing code..
+
+      // note that according to http://atomicparsley.sourceforge.net/mpeg-4files.html the type
+      // of image (PNG=14 or JPG=13) is contained in pMetadata[-5] but we currently don't use this.
       m_thumbSize = metaSize;
       delete[] m_thumbData;
       m_thumbData = new BYTE[m_thumbSize];
