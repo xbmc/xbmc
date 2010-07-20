@@ -12,9 +12,11 @@
     <platform>all</platform>
     <minversion>20000</minversion>
     <summary>LastFM Scraper Library</summary>
+    <summary lang="hu">LastFM leolvasó-könyvtár</summary>
     <summary lang="nl">LastFM Scraper Collectie</summary>
     <summary lang="pt">Scraper de música LastFM</summary>
     <description>Download Music information</description>
+    <description lang="hu">Zenei információk letöltése a Last.FM-ről</description>
     <description lang="nl">Download muziek informatie</description>
     <description lang="pt">Descarregar informação de música de www.last.fm</description>
   </extension>

@@ -17,15 +17,15 @@
     debugging="false"/>
   <extension point="xbmc.addon.metadata">
     <summary>Confluence skin by Jezz_X. (XBMC's default skin)</summary>
-    <summary lang="hu">Confluence skin. Készítő: Jezz_X</summary>
+    <summary lang="hu">Confluence arculat. Készítő: Jezz_X</summary>
     <summary lang="nl">Confluence skin door Jezz_X</summary>
     <summary lang="zh">Jezz_X开发的Confluence皮肤</summary>
     <description>Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
-    <description lang="hu">A Confluence az alapértelmezett skin az XBMC-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű skin elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen az XBMC-vel először találkozóknak is.</description>
+    <description lang="hu">A Confluence az alapértelmezett arculat az XBMC-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű arculat elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen az XBMC-vel először találkozóknak is.</description>
 	<description lang="nl">Confluence is de standaard skin voor XBMC 9.11 en hoger. Het combineert de concepten van andere populaire skins, waarbij het tracht hun goede ideëen te integreren in een skin die gemakkelijk in gebruik is.</description>
     <description lang="zh">在XBMC 9.11之后的版本中Confluence是默认皮肤。它集合了许多流行皮肤的创意，力求把这些优点融合到一个皮肤中，使得首次使用XBMC的用户能更容易上手。</description>
     <disclaimer>Confluence is the default skin for XBMC, removing it may cause issues</disclaimer>
-    <disclaimer lang="hu">A Confluence az alapértelmezett XBMC skin. Annak eltávolítása problémákat okozhat.</disclaimer>
+    <disclaimer lang="hu">A Confluence az alapértelmezett XBMC arculat. Annak eltávolítása problémákat okozhat.</disclaimer>
     <disclaimer lang="nl">Confluence is de standaard XMBC skin, het verwijderen van Confluence kan leiden tot problemen.</disclaimer>
     <disclaimer lang="zh">Confluence是XMBC的默认皮肤，删除它可能导致故障。</disclaimer>
     <platform>all</platform>

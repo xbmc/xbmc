@@ -14,16 +14,16 @@
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">AllMusic album information</summary>
-    <summary lang="hu">Zenei információk letöltése az AllMusic.com-ról</summary>
+    <summary lang="hu">AllMusic.com album információk</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器</summary>
     <description lang="en">Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.
 All genres and styles of music are covered here, ranging from the most commercially popular to the most obscure. We critique albums and artists within the context of their own genres - from opera to garage rock to traditional country. This ensures that fans of any style of music can depend on us to keep them up-to-date with their favorite artists as well as introduce them to new sounds.</description>
-    <description lang="hu">Az AllMusic.com használata a médiatár adatok feltöltésére, amely webhely 1995-ben jött létre a zenerajongók szenvedélyének kiszolgálására.
+    <description lang="hu">Az AllMusic.com használata a médiatáradatok feltöltésére. Ez a webhely 1995-ben a zenerajongók szenvedélyének kiszolgálására jött létre.
 Az AMG szerkesztői csapata a szakértő közreműködőkkel együtt (mind zenei fanatikus a maga nemében), az allmusic-ot a legátfogóbb zenei információforrássá tették a világon.
-Minden létező stílus és zenei irányzat feldolgozásra kerül itt. Kezdve a legpopulárisabbtól a legismeretelenebbig. Mi kritikát mondunk a lemezekről és előadókról a saját stílusukon belül az operától a garázs rock-on át a hagyományos coutry zenéig. Ez biztosítja, hogy bármely stílus rajongói napra készek legyenek a kedvenc előadóikkal, ugyanakkor az új hangzások is eljussanak hozzájuk.</description>
+Minden létező stílus és zenei irányzat feldolgozásra kerül itt. Kezdve a legpopulárisabbtól a legismeretlenebbig. Mi kritikát mondunk a lemezekről és előadókról, az operától a garázs rock-on át a hagyományos country zenéig. Ez biztosítja, hogy bármely stílus rajongói napra készek legyenek a kedvenc előadóikkal, ugyanakkor az új hangzások is eljussanak hozzájuk.</description>
    <description lang="nl">Gebruik AllMusic.com om de metadata van jouw collectie op te halen.
   De AllMusic website is ontstaan in 1995 als webstek voor echte muziekfans.
 The AMG redactie, samen met honderden bijdragende experen (allen muziekfans in hun eigen gebied), hebben van allmusic het meest complete muziek naslagwerk gemaakt op deze planeet.

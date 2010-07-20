@@ -12,10 +12,10 @@
     <platform>all</platform>
     <minversion>20000</minversion>
     <summary lang="en">HTBackdrops Scraper Library</summary>
-    <summary lang="hu">HTBackdrops scraper könyvtár</summary>
+    <summary lang="hu">HTBackdrops leolvasó-könyvtár</summary>
     <summary lang="pt">Biblioteca de fundos HTBackdrops</summary>
     <description lang="en">Download backdrops from www.htbackdrops.com</description>
-    <description lang="hu">Médiaadatok letöltése www.htbackdrops.com webhelyről.</description>
+    <description lang="hu">Fanartképek letöltése a www.htbackdrops.com-ról</description>
     <description lang="pt">Descarregar fundos de www.htbackdrops.com</description>
   </extension>
 </addon>
