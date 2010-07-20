@@ -35,6 +35,7 @@
 #define MAX_STRING_POST_SIZE 20000
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
+#define DEFAULT_PAGE        "index.html"
 
 using namespace XFILE;
 using namespace std;
@@ -115,6 +116,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
   CStdString strURL = url;
+  CStdString originalURL = url;
   bool get  = strcmp(method, "GET")  == 0;
   bool post = strcmp(method, "POST") == 0;
 
@@ -145,7 +147,16 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     {
       strURL.Format("special://xbmc/web%s", strURL.c_str());
       if (CDirectory::Exists(strURL))
-        strURL += "/index.html";
+      {
+        if (strURL.Right(1).Equals("/"))
+        {
+          strURL += DEFAULT_PAGE;
+        }
+        else
+        {
+          return CreateRedirect(connection, originalURL += "/");
+        }
+      }
       return CreateFileDownloadResponse(connection, strURL);
     }
 #endif
@@ -222,6 +233,15 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   }
 #endif
   return MHD_NO;
+}
+
+int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL)
+{
+  struct MHD_Response *response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+  int ret = MHD_queue_response (connection, MHD_HTTP_FOUND, response);
+  MHD_add_response_header(response, "Location", strURL);
+  MHD_destroy_response (response);
+  return ret;
 }
 
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)

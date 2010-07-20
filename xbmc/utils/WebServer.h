@@ -74,6 +74,7 @@ private:
 #endif
   static void ContentReaderFreeCallback (void *cls);
   static int HttpApi(struct MHD_Connection *connection);
+  static int CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL);
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
 
