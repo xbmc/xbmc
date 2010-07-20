@@ -634,5 +634,5 @@ class XBMCClient:
             elif icon_file.lower()[-3:] == "gif":
                 return ICON_GIF
             elif icon_file.lower()[-3:] == "jpg":
-                return ICON_JPG
+                return ICON_JPEG
         return ICON_NONE
