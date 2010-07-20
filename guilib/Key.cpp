@@ -24,7 +24,6 @@
 
 CKey::CKey(void)
 {
-  m_buttonCode = KEY_INVALID;
   m_leftTrigger = 0;
   m_rightTrigger = 0;
   m_leftThumbX = 0.0f;
@@ -33,12 +32,22 @@ CKey::CKey(void)
   m_rightThumbY = 0.0f;
   m_repeat = 0.0f;
   m_fromHttpApi = false;
+  m_buttonCode = KEY_INVALID;
+  m_VKey = 0;
+  m_wUnicode = 0;
+  m_cAscii = 0;
+  m_bShift = 0;
+  m_bCtrl = 0;
+  m_bAlt = 0;
+  m_bRAlt = 0;
+  m_bSuper = 0;
   m_held = 0;
 }
 
 CKey::~CKey(void)
 {}
 
+/* Commented out temporarily prior to permanent removal
 CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
 {
   m_leftTrigger = leftTrigger;
@@ -47,10 +56,41 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
   m_leftThumbY = leftThumbY;
   m_rightThumbX = rightThumbX;
   m_rightThumbY = rightThumbY;
-  m_buttonCode = buttonCode;
   m_repeat = repeat;
   m_fromHttpApi = false;
+  m_buttonCode = buttonCode;
+  m_VKey = 0;
+  m_wUnicode = 0;
+  m_cAscii = 0;
+  m_bShift = 0;
+  m_bCtrl = 0;
+  m_bAlt = 0;
+  m_bRAlt = 0;
+  m_bSuper = 0;
   m_held = 0;
+}
+*/
+
+CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat, uint8_t vkey, wchar_t unicode, char ascii, bool shift, bool ctrl, bool alt, bool ralt, bool super, unsigned int held)
+{
+  m_leftTrigger = leftTrigger;
+  m_rightTrigger = rightTrigger;
+  m_leftThumbX = leftThumbX;
+  m_leftThumbY = leftThumbY;
+  m_rightThumbX = rightThumbX;
+  m_rightThumbY = rightThumbY;
+  m_repeat = repeat;
+  m_fromHttpApi = false;
+  m_buttonCode = buttonCode;
+  m_VKey = vkey;
+  m_wUnicode = unicode;
+  m_cAscii = ascii;
+  m_bShift = shift;
+  m_bCtrl = ctrl;
+  m_bAlt = alt;
+  m_bRAlt = ralt;
+  m_bSuper = super;
+  m_held = held;
 }
 
 CKey::CKey(const CKey& key)
@@ -58,32 +98,49 @@ CKey::CKey(const CKey& key)
   *this = key;
 }
 
-uint32_t CKey::GetButtonCode() const // for backwards compatibility only
+void CKey::Reset()
 {
-  return m_buttonCode;
-}
-
-wchar_t CKey::GetUnicode() const
-{
-  if (m_buttonCode>=KEY_ASCII && m_buttonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
-    return (wchar_t)(m_buttonCode - KEY_ASCII);
-  else
-    return 0;
+  m_leftTrigger = 0;
+  m_rightTrigger = 0;
+  m_leftThumbX = 0.0f;
+  m_leftThumbY = 0.0f;
+  m_rightThumbX = 0.0f;
+  m_rightThumbY = 0.0f;
+  m_repeat = 0.0f;
+  m_fromHttpApi = false;
+  m_buttonCode = KEY_INVALID;
+  m_VKey = 0;
+  m_wUnicode = 0;
+  m_cAscii = 0;
+  m_bShift = 0;
+  m_bCtrl = 0;
+  m_bAlt = 0;
+  m_bRAlt = 0;
+  m_bSuper = 0;
+  m_held = 0;
 }
 
 const CKey& CKey::operator=(const CKey& key)
 {
   if (&key == this) return * this;
-  m_leftTrigger = key.m_leftTrigger;
+  m_leftTrigger  = key.m_leftTrigger;
   m_rightTrigger = key.m_rightTrigger;
-  m_buttonCode = key.m_buttonCode;
-  m_leftThumbX = key.m_leftThumbX;
-  m_leftThumbY = key.m_leftThumbY;
-  m_rightThumbX = key.m_rightThumbX;
-  m_rightThumbY = key.m_rightThumbY;
-  m_repeat = key.m_repeat;
-  m_fromHttpApi = key.m_fromHttpApi;
-  m_held = key.m_held;
+  m_leftThumbX   = key.m_leftThumbX;
+  m_leftThumbY   = key.m_leftThumbY;
+  m_rightThumbX  = key.m_rightThumbX;
+  m_rightThumbY  = key.m_rightThumbY;
+  m_repeat       = key.m_repeat;
+  m_fromHttpApi  = key.m_fromHttpApi;
+  m_buttonCode   = key.m_buttonCode;
+  m_VKey         = key.m_VKey;
+  m_wUnicode     = key.m_wUnicode;
+  m_cAscii       = key.m_cAscii;
+  m_bShift       = key.m_bShift;
+  m_bCtrl        = key.m_bCtrl;
+  m_bAlt         = key.m_bAlt;
+  m_bRAlt        = key.m_bRAlt;
+  m_bSuper       = m_bSuper;
+  m_held         = key.m_held;
   return *this;
 }
 
@@ -153,14 +210,38 @@ void CKey::SetFromHttpApi(bool bFromHttpApi)
   m_fromHttpApi = bFromHttpApi;
 }
 
+void CKey::SetButtonCode(uint32_t buttoncode)
+{
+  m_buttonCode = buttoncode;
+}
+
+void CKey::SetVKey(uint8_t vkey)
+{
+  m_VKey = vkey;
+}
+
+void CKey::SetAscii(char ascii)
+{
+  m_cAscii = ascii;
+}
+
+void CKey::SetUnicode(wchar_t unicode)
+{
+  m_wUnicode = unicode;
+}
+
+void CKey::SetModifiers(bool ctrl, bool shift, bool alt, bool ralt, bool super)
+{
+  m_bCtrl  = ctrl;
+  m_bShift = shift;
+  m_bAlt   = alt;
+  m_bRAlt  = ralt;
+  m_bSuper = super;
+}
+
 void CKey::SetHeld(unsigned int held)
 {
   m_held = held;
-}
-
-unsigned int CKey::GetHeld() const
-{
-  return m_held;
 }
 
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)

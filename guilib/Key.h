@@ -502,13 +502,12 @@ class CKey
 {
 public:
   CKey(void);
-  CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+  // CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+  CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f, uint8_t vkey = 0, wchar_t unicode = 0, char ascii = 0, bool shift = 0, bool ctrl = 0, bool alt = 0, bool ralt = 0, bool super = 0, unsigned int held = 0);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
-  uint32_t GetButtonCode() const; // for backwards compatibility only
-  wchar_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
   uint8_t GetLeftTrigger() const;
   uint8_t GetRightTrigger() const;
   float GetLeftThumbX() const;
@@ -522,8 +521,24 @@ public:
   void SetFromHttpApi(bool);
   bool GetFromHttpApi() const;
 
+  void Reset();
+  void SetButtonCode(uint32_t buttoncode);
+  void SetVKey(uint8_t vkey);
+  void SetAscii(char ascii);
+  void SetUnicode(wchar_t unicode);
+  void SetModifiers(bool ctrl, bool shift, bool alt, bool ralt, bool super);
   void SetHeld(unsigned int held);
-  unsigned int GetHeld() const;
+
+  inline uint32_t GetButtonCode() const { return m_buttonCode;};
+  inline uint8_t  GetVKey() const       { return m_VKey;};
+  inline wchar_t  GetUnicode() const    { return m_wUnicode;};
+  inline char     GetAscii() const      { return m_cAscii;};
+  inline bool     GetCtrl() const       { return m_bCtrl; };
+  inline bool     GetShift() const      { return m_bShift; };
+  inline bool     GetAlt() const        { return m_bAlt; };
+  inline bool     GetRAlt() const       { return m_bRAlt; };
+  inline bool     GetSuper() const      { return m_bSuper; };
+  inline unsigned int GetHeld() const   { return m_held; };
 
   enum Modifier {
     MODIFIER_CTRL = 0x00010000,
@@ -534,6 +549,16 @@ public:
 
 private:
   uint32_t m_buttonCode;
+  uint8_t  m_VKey;
+  wchar_t  m_wUnicode;
+  char     m_cAscii;
+  bool     m_bShift;
+  bool     m_bCtrl;
+  bool     m_bAlt;
+  bool     m_bRAlt;
+  bool     m_bSuper;
+  unsigned int m_held;
+
   uint8_t m_leftTrigger;
   uint8_t m_rightTrigger;
   float m_leftThumbX;
@@ -542,7 +567,6 @@ private:
   float m_rightThumbY;
   float m_repeat; // time since last keypress
   bool m_fromHttpApi;
-  unsigned int m_held;
 };
 #endif
 

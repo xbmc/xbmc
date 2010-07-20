@@ -2187,7 +2187,6 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    g_Keyboard.Reset();
     CLog::Log(LOGDEBUG, "%s: %i pressed, screen saver/dpms woken up", __FUNCTION__, (int) key.GetButtonCode());
     return true;
   }
@@ -2200,8 +2199,6 @@ bool CApplication::OnKey(const CKey& key)
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-
-    g_Keyboard.Reset();
 
     if (!key.IsAnalogButton())
       CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
@@ -2241,7 +2238,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt() || g_Keyboard.GetSuper())))
+            (control->IsContainer() && key.GetShift() && !(key.GetCtrl() || key.GetAlt() || key.GetRAlt() || key.GetSuper())))
           useKeyboard = true;
       }
     }
@@ -2280,14 +2277,12 @@ bool CApplication::OnKey(const CKey& key)
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
-          if (g_Keyboard.GetUnicode())
-            action = CAction(g_Keyboard.GetAscii() | KEY_ASCII, g_Keyboard.GetUnicode());
+          if (key.GetUnicode())
+            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
           else
-            action = CAction(g_Keyboard.GetVKey() | KEY_VKEY);
+            action = CAction(key.GetVKey() | KEY_VKEY);
         }
       }
-
-      g_Keyboard.Reset();
 
       CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.GetID());
 
@@ -2308,8 +2303,6 @@ bool CApplication::OnKey(const CKey& key)
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
-
-  g_Keyboard.Reset();
 
   return OnAction(action);
 }
@@ -3056,32 +3049,14 @@ bool CApplication::ProcessKeyboard()
 {
   MEASURE_FUNCTION;
 
-  // process the keyboard buttons etc.
-  uint8_t vkey = g_Keyboard.GetVKey();
-  wchar_t unicode = g_Keyboard.GetUnicode();
-  if (vkey || unicode)
+  // Get the keypress from the keyboard
+  CKey key;
+  g_Keyboard.GetKey(key);
+
+  // If we have a valid keypress pass it to OnKey
+  if (key.GetVKey() || key.GetUnicode())
   {
-    // got a valid keypress - convert to a key code
-    uint32_t keyID;
-    if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
-      keyID = vkey | KEY_VKEY;
-    else
-      keyID = KEY_UNICODE;
-    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
-
-    // Check what modifiers are held down and update the key code as appropriate
-    if (g_Keyboard.GetCtrl())
-        keyID |= CKey::MODIFIER_CTRL;
-    if (g_Keyboard.GetShift())
-        keyID |= CKey::MODIFIER_SHIFT;
-    if (g_Keyboard.GetAlt())
-        keyID |= CKey::MODIFIER_ALT;
-    if (g_Keyboard.GetSuper())
-        keyID |= CKey::MODIFIER_SUPER;
-
-    // Create a key object with the keypress data and pass it to OnKey to be executed
-    CKey key(keyID);
-    key.SetHeld(g_Keyboard.KeyHeld());
+    g_Keyboard.Reset();
     return OnKey(key);
   }
   return false;
