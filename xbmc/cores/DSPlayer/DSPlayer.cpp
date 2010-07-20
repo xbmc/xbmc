@@ -294,28 +294,32 @@ void CDSPlayer::Process()
     if ((m_currentRate < 0) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
     {
       double clock = m_pClock.GetClock() - m_clockStart; // Time elapsed since the rate change
-      //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
-
-      // New position
-      uint64_t newPos = g_dsGraph->GetTime() + (uint64_t) clock;
-      //CLog::Log(LOGDEBUG, "New position : %f", DS_TIME_TO_SEC(newPos));
-
-      // Check boundaries
-      if (newPos <= 0)
+      // Only seek if elapsed time is greater than 250 ms
+      if (abs(DS_TIME_TO_MSEC(clock)) >= 250)
       {
-        newPos = 0;
-        m_currentRate = 1;
-        m_callback.OnPlayBackSpeedChanged(1);
-        m_bSpeedChanged = true;
-      } else if (newPos >= g_dsGraph->GetTotalTime())
-      {
-        CloseFile();
-        break;
+        //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
+
+        // New position
+        uint64_t newPos = g_dsGraph->GetTime() + (uint64_t) clock;
+        //CLog::Log(LOGDEBUG, "New position : %f", DS_TIME_TO_SEC(newPos));
+
+        // Check boundaries
+        if (newPos <= 0)
+        {
+          newPos = 0;
+          m_currentRate = 1;
+          m_callback.OnPlayBackSpeedChanged(1);
+          m_bSpeedChanged = true;
+        } else if (newPos >= g_dsGraph->GetTotalTime())
+        {
+          CloseFile();
+          break;
+        }
+
+        g_dsGraph->Seek(newPos);
+
+        m_clockStart = m_pClock.GetClock();
       }
-
-      g_dsGraph->Seek(newPos);
-
-      m_clockStart = m_pClock.GetClock();
     }
 
     CHECK_PLAYER_STATE
@@ -328,7 +332,7 @@ void CDSPlayer::Process()
     }
     //Handle fastforward stuff
    
-    Sleep(250);
+    Sleep(50);
     CHECK_PLAYER_STATE
 
     if (g_dsGraph->FileReachedEnd())
