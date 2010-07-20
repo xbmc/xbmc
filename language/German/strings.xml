@@ -1,10 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: pgoeri-->
-<!--Email: pgoeri@chello.at-->
-<!--Date of translation: 11/05/2010-->
-<!--$Revision$-->
-<!--Based on english strings version 31001-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -126,7 +120,7 @@
   <string id="164">Keine Disc</string>
   <string id="165">Disc eingelegt</string>
   <string id="166">Skin</string>
-  <string id="167">FTP-Server aktivieren</string>
+  <string id="167"></string>
   <string id="168"></string>
   <string id="169">Auflösung</string>
   <string id="170">Bildwiederholungsrate anpassen</string>
@@ -636,7 +630,7 @@
   <string id="747">Fehler beim Laden des Bildes</string>
   <string id="748">Pfad bearbeiten</string>
   <string id="749">Spiegelbild</string>
-  <string id="750">Sicher?</string>
+  <string id="750">Sind Sie sicher?</string>
   <string id="751">Quelle entfernen</string>
 
   <string id="754">Programmlink hinzufügen</string>
@@ -890,22 +884,23 @@
   <string id="12004">Skripte/Informationen</string>
   <string id="12005">Vollbild-Video</string>
   <string id="12006">Audio-Visualisierung</string>
+
   <string id="12008">Datei-Stapeln-Dialog</string>
   <string id="12009">Index neu erstellen...</string>
   <string id="12010">Zurück zu Musik</string>
   <string id="12011">Zurück zu Videos</string>
-  <string id="12012">Trainer-Liste aktualisieren</string>
-  <string id="12013">Trainer</string>
-  <string id="12014">Es wurden keine Trainer gefunden</string>
-  <string id="12015">Trainer-Einstellungen</string>
-  <string id="12016">Registrierte Trainer fehlen. Bitte Liste aktualisieren.</string>
-  <string id="12017">Wiedergabe immer an der letzten Position fortsetzen</string>
-  <string id="12018">Nein</string>
-  <string id="12019">Ja</string>
-  <string id="12020">Fragen</string>
+  <string id="12012"></string>
+  <string id="12013"></string>
+  <string id="12014"></string>
+  <string id="12015"></string>
+  <string id="12016"></string>
+  <string id="12017"></string>
+  <string id="12018"></string>
+  <string id="12019"></string>
+  <string id="12020"></string>
   <string id="12021">Am Anfang starten</string>
   <string id="12022">Bei %s fortsetzen</string>
-  <string id="12023">Vergleiche vorhandene Trainer...</string>
+  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -2192,6 +2187,7 @@
 
   <string id="24096">Das Add-on wurde im Depot als defekt markiert.</string>
   <string id="24097">Wollen Sie es in Ihrem System deaktivieren?</string>
+  <string id="24098">Defekt</string>
 
   <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY Tastatur</string>
