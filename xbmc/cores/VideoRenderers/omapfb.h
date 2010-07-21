@@ -178,7 +178,7 @@ struct omapfb_memory_read {
 	__u16 w;
 	__u16 h;
 	size_t buffer_size;
-	void __user *buffer;
+	void /*__user*/ *buffer;
 };
 
 struct omapfb_ovl_colormode {
