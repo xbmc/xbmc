@@ -1712,7 +1712,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
+    CFLAGS="$CFLAGS -O3 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
   else
