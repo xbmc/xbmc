@@ -1,9 +1,9 @@
-#ifndef LINUXRENDERERGLES_RENDERER
-#define LINUXRENDERERGLES_RENDERER
+#ifndef OMAPOVERLAYRENDERER_RENDERER
+#define OMAPOVERLAYRENDERER_RENDERER
 
 /*
- *      Copyright (C) 2010 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,21 +22,31 @@
  *
  */
 
-#if HAS_GLES == 2 && !defined(HAS_OMAP_OVERLAY)
+#ifdef HAS_OMAP_OVERLAY
 
-#include "../../../guilib/FrameBufferObject.h"
-#include "../../../guilib/Shader.h"
+#undef __u8
+#undef byte
+
+extern "C"
+{
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+
+#include <linux/fb.h>
+#include <linux/omapfb.h>
+}
+
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
 #include "BaseRenderer.h"
 
 class CBaseTexture;
-namespace Shaders { class BaseYUV2RGBShader; }
-namespace Shaders { class BaseVideoFilterShader; }
-
-#define NUM_BUFFERS 3
-
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
@@ -80,6 +90,7 @@ struct YUVCOEF
   float b_up, b_vp;
 };
 
+/*
 enum RenderMethod
 {
   RENDER_GLSL=0x01,
@@ -94,6 +105,7 @@ enum RenderQuality
   RQ_MULTIPASS,
   RQ_SOFTWARE
 };
+*/
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -110,15 +122,13 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class DllAvUtil;
-class DllAvCodec;
 class DllSwScale;
 
-class CLinuxRendererGLES : public CBaseRenderer
+class COmapOverlayRenderer : public CBaseRenderer
 {
 public:
-  CLinuxRendererGLES();
-  virtual ~CLinuxRendererGLES();
+  COmapOverlayRenderer();
+  virtual ~COmapOverlayRenderer();
 
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
@@ -126,7 +136,7 @@ public:
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -136,6 +146,8 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
+  virtual void         AddProcessor(void *processor);
+
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
@@ -144,116 +156,32 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
-protected:
-  virtual void Render(DWORD flags, int renderBuffer);
+private:
+  unsigned int NextYV12Image();
+  bool CreateYV12Image(unsigned int index, unsigned int width, unsigned int height);
+  bool FreeYV12Image(unsigned int index);
 
-  void ChooseUpscalingMethod();
-  bool IsSoftwareUpscaling();
-  void InitializeSoftwareUpscaling();
-
-  virtual void ManageTextures();
-  int  NextYV12Texture();
-  virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int field=FIELD_FULL);
-  void SetTextureFilter(GLenum method);
-  void UpdateVideoFilter();
-
-  // textures
-  void (CLinuxRendererGLES::*m_textureUpload)(int index);
-  void (CLinuxRendererGLES::*m_textureDelete)(int index);
-  bool (CLinuxRendererGLES::*m_textureCreate)(int index);
-
-  void UploadYV12Texture(int index);
-  void DeleteYV12Texture(int index);
-  bool CreateYV12Texture(int index);
-
-  void CalculateTextureSourceRects(int source, int num_planes);
-
-  // renderers
-  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
-  void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
-
-  CFrameBufferObject m_fbo;
-
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
-  int m_iLastRenderBuffer;
+  DllSwScale  *m_dllSwScale;
 
   bool m_bConfigured;
-  bool m_bValidated;
-  bool m_bImageReady;
-  unsigned m_iFlags;
-  GLenum m_textureTarget;
-  unsigned short m_renderMethod;
-  RenderQuality m_renderQuality;
-  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
-  bool m_StrictBinding;
+  unsigned int m_iFlags;
+  unsigned int m_sourceWidth;
+  unsigned int m_sourceHeight;
 
-  // Software upscaling.
-  int m_upscalingWidth;
-  int m_upscalingHeight;
-  YV12Image m_imScaled;
-  bool m_isSoftwareUpscaling;
+  YV12Image    m_yuvBuffers[2];
+  unsigned int m_currentBuffer;
 
-  // Raw data used by renderer
-  int m_currentField;
-  int m_reloadShaders;
-
-  struct YUVPLANE
+  // The Overlay handlers
+  int m_overlayfd;
+  struct fb_var_screeninfo m_overlayScreenInfo;
+  struct omapfb_plane_info m_overlayPlaneInfo;
+  struct omapfb_mem_info   m_overlayMemInfo;
+  struct
   {
-    GLuint id;
-    CRect  rect;
-
-    float  width;
-    float  height;
-
-    unsigned texwidth;
-    unsigned texheight;
-
-    unsigned flipindex;
-  };
-
-  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
-  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
-
-  struct YUVBUFFER
-  {
-    YUVBUFFER();
-   ~YUVBUFFER();
-
-    YUVFIELDS fields;
-    YV12Image image;
-    unsigned  flipindex; /* used to decide if this has been uploaded */
-  };
-
-  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
-
-  // YV12 decoder textures
-  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_buffers;
-
-  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
-                , unsigned width,  unsigned height
-                , int stride, void* data );
-
-  Shaders::BaseYUV2RGBShader     *m_pYUVShader;
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
-
-  // clear colour for "black" bars
-  float m_clearColour;
-
-  // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil   *m_dllAvUtil;
-  DllAvCodec  *m_dllAvCodec;
-  DllSwScale  *m_dllSwScale;
-  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int m_rgbBufferSize;
-
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
-
+    unsigned x;
+    unsigned y;
+    uint8_t *buf;
+  } m_framebuffers[2];
 };
 
 

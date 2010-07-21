@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 
-#if HAS_GLES == 2
+#if HAS_GLES == 2 && !defined(HAS_OMAP_OVERLAY)
 #include <locale.h>
 #include "MatrixGLES.h"
 #include "LinuxRendererGLES.h"

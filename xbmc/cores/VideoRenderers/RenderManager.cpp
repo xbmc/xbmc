@@ -36,16 +36,6 @@
 #include "PlatformInclude.h"
 #endif
 
-#if defined(HAS_GL)
-  #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
-  #include "LinuxRendererGLES.h"
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#elif defined(HAS_SDL)
-  #include "LinuxRenderer.h"
-#endif
-
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
@@ -272,6 +262,8 @@ unsigned int CXBMCRenderManager::PreInit()
   {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
+#elif defined(HAS_OMAP_OVERLAY)
+    m_pRenderer = new COmapOverlayRenderer();
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)

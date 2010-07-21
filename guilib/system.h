@@ -132,6 +132,7 @@
 #define HAS_GL
 #define HAS_GLX
 #define HAS_LINUX_NETWORK
+#define HAS_OMAP_OVERLAY
 //#define HAS_SDL_AUDIO
 #define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
