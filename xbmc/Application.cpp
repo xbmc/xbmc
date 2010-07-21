@@ -3050,8 +3050,7 @@ bool CApplication::ProcessKeyboard()
   MEASURE_FUNCTION;
 
   // Get the keypress from the keyboard
-  CKey key;
-  g_Keyboard.GetKey(key);
+  const CKey key(g_Keyboard.GetKey());
 
   // If we have a valid keypress pass it to OnKey
   if (key.GetVKey() || key.GetUnicode())

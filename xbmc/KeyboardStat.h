@@ -53,7 +53,7 @@ public:
   int  HandleEvent(XBMC_Event& newEvent);
   void Update(XBMC_Event& event);
 
-  void GetKey(CKey& key);
+  const CKey GetKey();
 
 private:
   uint8_t  m_VKey;

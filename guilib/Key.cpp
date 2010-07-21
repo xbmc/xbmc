@@ -170,16 +170,6 @@ void CKey::SetFromHttpApi(bool bFromHttpApi)
   m_fromHttpApi = bFromHttpApi;
 }
 
-void CKey::SetKeystroke(uint32_t buttonCode, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
-{
-  m_buttonCode = buttonCode;
-  m_VKey       = vkey;
-  m_wUnicode   = unicode;
-  m_cAscii     = ascii;
-  m_Modifiers  = modifiers;
-  m_held       = held;
-}
-
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)
 {
   m_id = actionID;

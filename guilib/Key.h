@@ -521,17 +521,16 @@ public:
   bool GetFromHttpApi() const;
 
   void Reset();
-  void SetKeystroke(uint32_t buttonCode, uint8_t vkey = 0, wchar_t unicode = 0, char ascii = 0, uint32_t modifiers = 0, unsigned int held = 0);
 
   inline uint32_t GetButtonCode() const { return m_buttonCode;};
   inline uint8_t  GetVKey() const       { return m_VKey;};
   inline wchar_t  GetUnicode() const    { return m_wUnicode;};
   inline char     GetAscii() const      { return m_cAscii;};
-  inline bool     GetCtrl() const       { return m_Modifiers & MODIFIER_CTRL  ? 1 : 0; };
-  inline bool     GetShift() const      { return m_Modifiers & MODIFIER_SHIFT ? 1 : 0; };
-  inline bool     GetAlt() const        { return m_Modifiers & MODIFIER_ALT   ? 1 : 0; };
-  inline bool     GetRAlt() const       { return m_Modifiers & MODIFIER_RALT  ? 1 : 0; };
-  inline bool     GetSuper() const      { return m_Modifiers & MODIFIER_SUPER ? 1 : 0; };
+  inline bool     GetCtrl() const       { return (m_Modifiers & MODIFIER_CTRL)  == MODIFIER_CTRL  ? true : false; };
+  inline bool     GetShift() const      { return (m_Modifiers & MODIFIER_SHIFT) == MODIFIER_SHIFT ? true : false; };
+  inline bool     GetAlt() const        { return (m_Modifiers & MODIFIER_ALT)   == MODIFIER_ALT   ? true : false; };
+  inline bool     GetRAlt() const       { return (m_Modifiers & MODIFIER_RALT)  == MODIFIER_RALT  ? true : false; };
+  inline bool     GetSuper() const      { return (m_Modifiers & MODIFIER_SUPER) == MODIFIER_SUPER ? true : false; };
   inline unsigned int GetHeld() const   { return m_held; };
 
   enum Modifier {
