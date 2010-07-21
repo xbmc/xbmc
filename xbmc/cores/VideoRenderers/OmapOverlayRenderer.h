@@ -38,7 +38,7 @@ extern "C"
 #include <sys/ioctl.h>
 
 #include <linux/fb.h>
-#include <linux/omapfb.h>
+#include "omapfb.h"
 }
 
 #include "../../settings/VideoSettings.h"
