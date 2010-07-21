@@ -122,8 +122,6 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class DllSwScale;
-
 class COmapOverlayRenderer : public CBaseRenderer
 {
 public:
@@ -161,12 +159,12 @@ private:
   bool CreateYV12Image(unsigned int index, unsigned int width, unsigned int height);
   bool FreeYV12Image(unsigned int index);
 
-  DllSwScale  *m_dllSwScale;
-
   bool m_bConfigured;
   unsigned int m_iFlags;
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
+
+  unsigned int m_overlayWidth;
 
   YV12Image    m_yuvBuffers[2];
   unsigned int m_currentBuffer;

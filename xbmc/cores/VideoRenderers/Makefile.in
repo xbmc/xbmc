@@ -7,6 +7,7 @@ SRCS=LinuxRenderer.cpp \
      RenderManager.cpp \
      LinuxRendererGL.cpp \
      LinuxRendererGLES.cpp \
+     yuv.S \
      OmapOverlayRenderer.cpp \
      OverlayRenderer.cpp \
      OverlayRendererGL.cpp \

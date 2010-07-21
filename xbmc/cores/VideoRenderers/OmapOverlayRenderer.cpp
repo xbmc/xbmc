@@ -26,13 +26,12 @@
 
 #ifdef HAS_OMAP_OVERLAY
 #include "OmapOverlayRenderer.h"
-#include "../dvdplayer/Codecs/DllSwScale.h"
 #include "log.h"
+
+extern void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
 
 COmapOverlayRenderer::COmapOverlayRenderer()
 {
-  m_dllSwScale = new DllSwScale;
-
   m_yuvBuffers[0].plane[0] = NULL;
   m_yuvBuffers[0].plane[1] = NULL;
   m_yuvBuffers[0].plane[2] = NULL;
@@ -52,8 +51,6 @@ COmapOverlayRenderer::COmapOverlayRenderer()
 COmapOverlayRenderer::~COmapOverlayRenderer()
 {
   UnInit();
-
-  delete m_dllSwScale;
 }
 
 bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags)
@@ -69,6 +66,9 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
   {
     m_sourceWidth = width;
     m_sourceHeight = height;
+
+    // Set output to image size but pad it to be a multiple of 16
+    m_overlayWidth = (m_sourceWidth+15)&~15;
 
     // Open the framebuffer
     m_overlayfd = open("/dev/fb1", O_RDWR);
@@ -87,7 +87,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     }
 
     // Enable the framebuffer
-    m_overlayScreenInfo.xres = m_sourceWidth;
+    m_overlayScreenInfo.xres = m_overlayWidth;
     m_overlayScreenInfo.yres = m_sourceHeight;
     m_overlayScreenInfo.xoffset = 0;
     m_overlayScreenInfo.yoffset = 0;
@@ -200,22 +200,7 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
 
   YV12Image *image = &m_yuvBuffers[source];
 
-  struct SwsContext *context = m_dllSwScale->sws_getContext(image->width, image->height, PIX_FMT_YUV420P,
-                                                            image->width, image->height, PIX_FMT_YUV422P,
-                                                            SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-  if (context)
-  {
-    uint8_t *src[]  = { image->plane[0],  image->plane[1],  image->plane[2],  0 };
-    int srcStride[] = { image->stride[0], image->stride[1], image->stride[2], 0 };
-
-    // TODO here we could probably convert straight into the framebuffer if its memory mapped?
-    uint8_t *dst[]  = { m_framebuffers[source].buf, 0, 0, 0 };
-    int dstStride[] = { image->width * 4, 0, 0, 0 };
-
-    m_dllSwScale->sws_scale(context, src, srcStride, 0, image->height, dst, dstStride);
-    m_dllSwScale->sws_freeContext(context);
-  }
+  yuv420_to_yuv422(m_framebuffer[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayWidth);
 }
 
 void COmapOverlayRenderer::FlipPage(int source)
