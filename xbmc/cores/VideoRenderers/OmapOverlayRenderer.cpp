@@ -171,10 +171,10 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
     return -1;
 
   /* take next available buffer */
-  if( source == AUTOSOURCE )
+  if( source == AUTOSOURCE || source > 1 || source < 0)
     source = NextYV12Image();
 
-  printf("image [%i, %i]\n", image->width, image->height);
+  printf("GetImage %i\n", source);
 
   YV12Image &im = m_yuvBuffers[source];
 
@@ -190,6 +190,8 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->cshift_x = im.cshift_x;
   image->cshift_y = im.cshift_y;
 
+  printf("image [%i, %i]\n", image->width, image->height);
+
   return source;
 }
 
@@ -200,7 +202,9 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
 
   YV12Image *image = &m_yuvBuffers[source];
 
+  printf("Converting yuv %i - Begin\n", source);
   yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayWidth);
+  printf("Converting yuv %i - Done\n", source);
 }
 
 void COmapOverlayRenderer::FlipPage(int source)
@@ -208,12 +212,14 @@ void COmapOverlayRenderer::FlipPage(int source)
   if (!m_bConfigured)
     return;
 
+  printf("Flip %i\n", source);
   m_overlayScreenInfo.xoffset = m_framebuffers[source].x;
   m_overlayScreenInfo.yoffset = m_framebuffers[source].y;
+  printf("FBIOPAN_DISPLAY %i\n", source);
   ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
+  printf("OMAPFB_WAITFORGO %i\n", source);
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
-
-  m_currentBuffer = NextYV12Image();
+  printf("Flipped %i\n", source);
 }
 
 void COmapOverlayRenderer::Reset()
