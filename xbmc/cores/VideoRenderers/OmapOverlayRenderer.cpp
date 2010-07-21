@@ -28,7 +28,7 @@
 #include "OmapOverlayRenderer.h"
 #include "log.h"
 
-extern void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
+extern "C" void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
 
 COmapOverlayRenderer::COmapOverlayRenderer()
 {
