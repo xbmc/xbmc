@@ -208,8 +208,8 @@ void COmapOverlayRenderer::FlipPage(int source)
   if (!m_bConfigured)
     return;
 
-  m_overlayScreenInfo.xoffset = m_framebuffers[m_currentBuffer].x;
-  m_overlayScreenInfo.yoffset = m_framebuffers[m_currentBuffer].y;
+  m_overlayScreenInfo.xoffset = m_framebuffers[source].x;
+  m_overlayScreenInfo.yoffset = m_framebuffers[source].y;
   ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
 
