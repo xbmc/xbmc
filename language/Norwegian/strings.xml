@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Based on english strings version 28467 -->
+<!--Translator: Jon-Sindre Husum-->
+<!--Email: jhusum@gmail.com-->
+<!--Date of translation: 07/20/2010-->
+<!--$Revision$-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Bilder</string>
@@ -38,20 +41,18 @@
   <string id="45">Fre</string>
   <string id="46">Lør</string>
   <string id="47">Søn</string>
- 
-  <string id="51">Jan</string> 
-  <string id="52">Feb</string> 
-  <string id="53">Mar</string> 
-  <string id="54">Apr</string> 
-  <string id="55">Mai</string> 
-  <string id="56">Jun</string> 
-  <string id="57">Jul</string> 
-  <string id="58">Aug</string> 
-  <string id="59">Sep</string> 
-  <string id="60">Okt</string> 
-  <string id="61">Nov</string> 
-  <string id="62">Des</string> 
-
+  <string id="51">Jan</string>
+  <string id="52">Feb</string>
+  <string id="53">Mar</string>
+  <string id="54">Apr</string>
+  <string id="55">Mai</string>
+  <string id="56">Jun</string>
+  <string id="57">Jul</string>
+  <string id="58">Aug</string>
+  <string id="59">Sep</string>
+  <string id="60">Okt</string>
+  <string id="61">Nov</string>
+  <string id="62">Des</string>
   <string id="98">Visning: Auto</string>
   <string id="99">Visning: Auto stor</string>
   <string id="100">Visning: Ikoner</string>
@@ -67,7 +68,6 @@
   <string id="110">Lag miniatyrbilder</string>
   <string id="111">Snarveier</string>
   <string id="112">Pause</string>
-
   <string id="115">Kopier</string>
   <string id="116">Flytt</string>
   <string id="117">Slett</string>
@@ -121,18 +121,16 @@
   <string id="165">Disk tilstede</string>
   <string id="166">Skinn</string>
   <string id="167">Aktiver FTP server</string>
-  <string id="168"></string>
+  <string id="168">
+  </string>
   <string id="169">Oppløsning</string>
   <string id="170">Sett oppdateringsfrekvens til å samsvare med video</string>
   <string id="171">
   </string>
   <string id="172">Utgitt</string>
   <string id="173">Vis 4:3-videoer som</string>
-  <string id="174">
-  </string>
   <string id="175">Stemninger</string>
   <string id="176">Stiler</string>
-
   <string id="179">Sang</string>
   <string id="180">Lengde</string>
   <string id="181">Velg album</string>
@@ -156,7 +154,7 @@
   <string id="202">Slagord</string>
   <string id="203">Handling</string>
   <string id="205">Stemmer:</string>
-  <string id="206">Skuesp.</string><!--shortened to fit aeon skin-->
+  <string id="206">Skuesp.</string>
   <string id="207">Plott</string>
   <string id="208">Spill</string>
   <string id="209">Neste</string>
@@ -186,7 +184,10 @@
   <string id="237">Forminsking</string>
   <string id="238">Forstørring</string>
   <string id="239">Tøm spilleliste når ferdigspilt</string>
-
+  <string id="240">Visningsmodus</string>
+  <string id="241">Full skjerm</string>
+  <string id="242">Vindu</string>
+  <string id="243">Oppdateringsfrekvens</string>
   <string id="247">Skript</string>
   <string id="248">Språk</string>
   <string id="249">Musikk</string>
@@ -237,10 +238,10 @@
   <string id="296">Slett bokmerker</string>
   <string id="297">Lydforsinkelse</string>
   <string id="298">Bokmerker</string>
-  <string id="299">- Forsterker kan håndtere AAC</string> 
-  <string id="300">- Forsterker kan håndtere MP1</string> 
-  <string id="301">- Forsterker kan håndtere MP2</string> 
-  <string id="302">- Forsterker kan håndtere MP3</string> 
+  <string id="299">- Forsterker kan håndtere AAC</string>
+  <string id="300">- Forsterker kan håndtere MP1</string>
+  <string id="301">- Forsterker kan håndtere MP2</string>
+  <string id="302">- Forsterker kan håndtere MP3</string>
   <string id="303">Forsinkelse</string>
   <string id="304">Språk</string>
   <string id="305">Aktivert</string>
@@ -355,6 +356,7 @@
   <string id="417">Viser: Store ikoner</string>
   <string id="418">Lav</string>
   <string id="419">Høy</string>
+  <string id="420">HDMI</string>
   <string id="422">Slett albuminformasjon</string>
   <string id="423">Slett CD-informasjon</string>
   <string id="424">Velg</string>
@@ -469,7 +471,7 @@
   <string id="546">Passthrough lydenhet</string>
   <string id="547">Ingen biografi for denne artist</string>
   <string id="548">Miks multikanals audio til stereo</string>
-  <string id="550">Sort.: %s</string><!--shortened to fit Confluence skin-->
+  <string id="550">Sort.: %s</string>
   <string id="551">Navn</string>
   <string id="552">Dato</string>
   <string id="553">Størrelse</string>
@@ -493,6 +495,7 @@
   <string id="571">Standard</string>
   <string id="572">Studio</string>
   <string id="573">Sti</string>
+  <string id="574">Land</string>
   <string id="580">Sorteringsretning</string>
   <string id="581">Sorteringsmetode</string>
   <string id="582">Visningsmodus</string>
@@ -564,6 +567,7 @@
   <string id="662">Denne filen er ikke lenger tilgjengelig.</string>
   <string id="663">Vil du fjerne den fra biblioteket?</string>
   <string id="664">Let etter script</string>
+  <string id="665">Kompresjonsnivå</string>
   <string id="700">Renser bibliotek</string>
   <string id="701">Fjerner gamle sanger fra biblioteket</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
@@ -587,9 +591,11 @@
   <string id="726">Forandringer er ikke lagret. Vil du fortsette uten å lagre?</string>
   <string id="727">Webserver</string>
   <string id="728">FTP-server</string>
-  <string id="729"></string>
+  <string id="729">
+  </string>
   <string id="730">Webserverport</string>
-  <string id="731"></string>
+  <string id="731">
+  </string>
   <string id="732">Lagre &amp; bruke</string>
   <string id="733">Webserverpassord</string>
   <string id="734">Intet passord</string>
@@ -614,7 +620,6 @@
   <string id="755">Rediger programsti</string>
   <string id="756">Rediger programnavn</string>
   <string id="757">Rediger stidybden</string>
-
   <string id="759">Vis: Stor liste</string>
   <string id="760">Gul</string>
   <string id="761">Hvit</string>
@@ -624,8 +629,6 @@
   <string id="765">Blå/grønn</string>
   <string id="766">Lys grå</string>
   <string id="767">Grå</string>
-  <!-- strings 768 and 769 reserved for more subtitle colors --> 
-
   <string id="770">Feil %i: delt mappe ikke tilgjengelig</string>
   <string id="771">- Automatisk FATX begrensning</string>
   <string id="772">Lydmaskinvare</string>
@@ -657,13 +660,11 @@
   <string id="850">Ugyldig portnummer</string>
   <string id="851">Gyldig område er 1-65535</string>
   <string id="852">Gyldig område er 1024-65535</string>
-
   <string id="1000">Forhåndsvisning av skjermbeskytter</string>
   <string id="1001">Kan ikke koble til</string>
   <string id="1002">XBMC kunne ikke koble til nettverksplasseringen.</string>
   <string id="1003">Dette kan være fordi nettverket ikke er tilkoblet.</string>
   <string id="1004">Ønsker du å legge den til likevel?</string>
-
   <string id="1006">IP-adresse</string>
   <string id="1007">Legg til nettverksplassering</string>
   <string id="1008">Protokoll</string>
@@ -709,6 +710,7 @@
   <string id="1048">- Brukernavn</string>
   <string id="1049">Skript-innstillinger</string>
   <string id="1050">Singler</string>
+  <string id="1051">Skriv inn webadresse</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
@@ -777,9 +779,11 @@
   <string id="1417">kornete</string>
   <string id="1418">tordenvær</string>
   <string id="1419">tordenvær</string>
+  <string id="1420">Moderat</string>
   <string id="1450">Slukk skjerm når ikke i bruk</string>
   <string id="2050">Spilletid</string>
   <string id="2100">Skript mislyktes! : %s</string>
+  <string id="2101">Nyere versjon trengs - Se logg</string>
   <string id="4501">Aktiver LCD/VFD</string>
   <string id="10000">Forside</string>
   <string id="10001">Programmer</string>
@@ -802,6 +806,7 @@
   <string id="10018">Innstillinger - Nettverk</string>
   <string id="10019">Innstillinger - Utseende</string>
   <string id="10020">Skript</string>
+  <string id="10021">Internettleser</string>
   <string id="10028">Filmer/Spilleliste</string>
   <string id="10034">Innstillinger - Profiler</string>
   <string id="10100">Ja/Nei dialog</string>
@@ -937,6 +942,7 @@
   <string id="13023">Enhet ble fjernet</string>
   <string id="13024">Joystick ble plugget inn</string>
   <string id="13025">Joystick ble plugget ut</string>
+  <string id="13050">Batterinivå lavt</string>
   <string id="13100">Flimmerfilter</string>
   <string id="13101">La skjermdriver velge (krever omstart)</string>
   <string id="13105">Vertical blank sync</string>
@@ -1144,7 +1150,13 @@
   <string id="13422">Start bildefremvisning her</string>
   <string id="13423">Husk for denne katalogen</string>
   <string id="13424">Bruk 'Pixel buffer objects'</string>
-  <string id="13425">Broadcom Crystal HD</string> 
+  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13426">Tillat hardware aksellerasjon (VAAPI)</string>
+  <string id="13427">Tillat hardware aksellerasjon (DXVA2)</string>
+  <string id="13428">Tillat hardware aksellerasjon (CrystalHD)</string>
+  <string id="13429">Tillat hardware aksellerasjon (VDADecoder)</string>
+  <string id="13430">Tillat hardware aksellerasjon (OpenMax)</string>
+  <string id="13431">Pixel Shaders</string>
   <string id="13500">A/V synkmetode</string>
   <string id="13501">Lydklokking</string>
   <string id="13502">Videoklokking (dropp/dupliser lyd)</string>
@@ -1255,16 +1267,13 @@
   <string id="15015">Fjern</string>
   <string id="15016">Spill</string>
   <string id="15019">Legg til</string>
-
   <string id="15052">Passord</string>
-
   <string id="15100">Bibliotek</string>
   <string id="15101">Database</string>
   <string id="15102">* Alle album</string>
   <string id="15103">* Alle artister</string>
   <string id="15104">* Alle sanger</string>
   <string id="15105">* Alle sjangre</string>
-
   <string id="15107">Mellomlagrer...</string>
   <string id="15108">Navigasjonslyder</string>
   <string id="15109">Standard for skinnet</string>
@@ -1348,7 +1357,6 @@
   <string id="15310">Åpner kilde med flere stier</string>
   <string id="15311">Sti:</string>
   <string id="16000">Generelt</string>
-
   <string id="16002">Internettoppslag</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
@@ -1408,15 +1416,20 @@
   <string id="16307">Bikubisk (programvare)</string>
   <string id="16308">Lanczos (programvare)</string>
   <string id="16309">Sinc (programvare)</string>
-  <string id="16310">Temporal</string>
-  <string id="16311">Temporal/romlig</string>
+  <string id="16310">Temporær</string>
+  <string id="16311">Temporær/romlig</string>
   <string id="16312">(VDPAU) Støyreduksjon</string>
   <string id="16313">(VDPAU) Skarphet</string>
   <string id="16314">Omvendt telecine</string>
-  <string id="16315">Lanczos3-optimalisert</string> 
-  <string id="16316">Automatisk</string> 
-  <string id="16317">Temporal (halv)</string> 
-  <string id="16318">Temporal/romlig (halv)</string> 
+  <string id="16315">Lanczos3-optimalisert</string>
+  <string id="16316">Automatisk</string>
+  <string id="16317">Temporær (halv)</string>
+  <string id="16318">Temporær/romlig (halv)</string>
+  <string id="16319">DXVA</string>
+  <string id="16400">Video post-prosessering</string>
+  <string id="16401">Deaktivert</string>
+  <string id="16402">Aktivert for SD innhold</string>
+  <string id="16403">Alltid aktivert</string>
   <string id="17500">Slå av skjerm etter</string>
   <string id="19000">Bytt til kanal</string>
   <string id="20000">Mappe for lagret musikk</string>
@@ -1437,7 +1450,6 @@
   <string id="20017">Lokal miniatyr</string>
   <string id="20018">Ingen miniatyr</string>
   <string id="20019">Velg miniatyr</string>
-  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)--> 
   <string id="20022">
   </string>
   <string id="20023">Konflikt</string>
@@ -1598,6 +1610,7 @@
   <string id="20190">Egendefinert</string>
   <string id="20191">Aktiver feilsøkingslogging</string>
   <string id="20192">Last ned ekstra informasjon under oppdateringer</string>
+  <string id="20193">Standard service for albuminformasjon</string>
   <string id="20194">Standardtjener for musikkinformasjon</string>
   <string id="20195">Bytt skraper</string>
   <string id="20196">Eksporter musikkbibliotek</string>
@@ -1607,8 +1620,8 @@
   <string id="20250">Party on! (filmer)</string>
   <string id="20251">Mikser drinker (filmer)</string>
   <string id="20252">Fyller glassene (filmer)</string>
-  <string id="20253">WebDAV-server (HTTP)</string> 
-  <string id="20254">WebDAV-server (HTTPS)</string> 
+  <string id="20253">WebDAV-server (HTTP)</string>
+  <string id="20254">WebDAV-server (HTTPS)</string>
   <string id="20300">Webserverkatalog (HTTP)</string>
   <string id="20301">Webserverkatalog (HTTPS)</string>
   <string id="20302">Kunne ikke skrive til mappe:</string>
@@ -1750,11 +1763,14 @@
   <string id="20443">Ønsker du å fornye info for alle</string>
   <string id="20444">elementer innenfor denne stien?</string>
   <string id="20445">FanArt</string>
-  <string id="20446">Lokalt lagret informasjon funnet.</string> 
-  <string id="20447">Ignorer og hent på nytt fra internett?</string> 
-  <string id="20448">Kunne ikke laste ned informasjon</string> 
-  <string id="20449">Server er sannsynligvis utilgjengelig.</string> 
-  <string id="20450">Vil du fortsette skanning?</string> 
+  <string id="20446">Lokalt lagret informasjon funnet.</string>
+  <string id="20447">Ignorer og hent på nytt fra internett?</string>
+  <string id="20448">Kunne ikke laste ned informasjon</string>
+  <string id="20449">Server er sannsynligvis utilgjengelig.</string>
+  <string id="20450">Vil du fortsette skanning?</string>
+  <string id="20451">Land</string>
+  <string id="20452">episode</string>
+  <string id="20453">episoder</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">ADVARSEL: TuxBoxen er i opptaksmodus!</string>
@@ -1850,7 +1866,10 @@
   <string id="21447">Lydspråk</string>
   <string id="21448">Språk for undertekster</string>
   <string id="21449">Fjernkontroll sender tastetrykk (tastatur)</string>
-  <string id="21450">- Editer</string> 
+  <string id="21450">- Editer</string>
+  <string id="21451">Internettilkobling kreves.</string>
+  <string id="21452">Hent mer...</string>
+  <string id="21453">Rot filsystem</string>
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
@@ -1963,51 +1982,83 @@
   <string id="22041">hvitt/rødt</string>
   <string id="22042">hvitt/blått</string>
   <string id="22043">svart/hvitt</string>
-  <string id="23049">Tekst-tv utilgjengelig</string> 
+  <string id="22080">Velg</string>
+  <string id="22081">Show informasjon</string>
+  <string id="22082">Mer...</string>
+  <string id="22083">Spill alle</string>
+  <string id="23049">Tekst-tv utilgjengelig</string>
   <string id="23050">Aktiver tekst-tv</string>
   <string id="23051">Del %i</string>
   <string id="23052">Bufrer %i byte</string>
-  <string id="23053">Stopper</string> 
-  <string id="23054">Kjører</string> 
+  <string id="23053">Stopper</string>
+  <string id="23054">Kjører</string>
   <string id="23100">Ekstern spiller aktiv</string>
   <string id="23101">Trykk OK for å avslutte spilleren</string>
   <string id="23104">Trykk OK når avspilling er ferdig</string>
-
- <!-- strings 24000 thru 24299 reserved for the addons framework --> 
-  <string id="24000">Add-on</string> 
-  <string id="24001">Add-ons</string> 
- 
-  <string id="24005">Plugin</string> 
-  <string id="24007">Skraper</string> 
-  <string id="24008">Skjermsparerr</string> 
-  <string id="24009">Skript</string> 
-  <string id="24010">Visualisering</string> 
- 
-  <string id="24020">Konfigurer Add-on</string> 
-  <string id="24021">Deaktiver Add-on</string> 
-  <string id="24022">Aktiver Add-on</string> 
-  <string id="24023">Add-on deaktivert</string> 
-  <string id="24027">Værtjeneste</string> 
-  <string id="24028">Weather.com (standard)</string> 
-  <string id="24030">Denne Add-on kan ikke konfigureres</string> 
-  <string id="24031">Feil ved henting av innstillinger</string> 
- 
-  <string id="24050">Tilgjengelige Add-ons</string> 
-  <string id="24051">Versjon:</string> 
-  <string id="24052">Fraskrivelse:</string> 
-  <string id="24053">Lisens:</string> 
-  <string id="24059">Vil du installere denne Add-on?</string> 
- 
-  <string id="24070">Add-on kan ikke brukes</string> 
-  <string id="24071">En ukjent feil har oppstått</string> 
-  <string id="24072">Innstillinger påkrevet</string> 
-  <string id="24073">Kunne ikke koble til</string> 
-  <string id="24074">Må startes på nytt</string> 
-  <string id="24080">Forsøk ny oppkobling?</string> 
-  <string id="24089">Add-on starter på nytt</string> 
- 
-  <string id="24090">Lås Add-on manager</string> 
-
+  <string id="24000">Add-on</string>
+  <string id="24001">Add-ons</string>
+  <string id="24002">Add-on valg</string>
+  <string id="24003">Add-on informasjon</string>
+  <string id="24005">Plugin</string>
+  <string id="24007">Skraper</string>
+  <string id="24008">Skjermsparerr</string>
+  <string id="24009">Skript</string>
+  <string id="24010">Visualisering</string>
+  <string id="24011">Add-on repository</string>
+  <string id="24012">Undertekst</string>
+  <string id="24013">Sangtekst</string>
+  <string id="24014">TV informasjon</string>
+  <string id="24015">Musikk video informasjon</string>
+  <string id="24016">Album informasjon</string>
+  <string id="24017">Artist informasjon</string>
+  <string id="24020">Konfigurer Add-on</string>
+  <string id="24021">Deaktiver Add-on</string>
+  <string id="24022">Aktiver Add-on</string>
+  <string id="24023">Add-on deaktivert</string>
+  <string id="24027">Værtjeneste</string>
+  <string id="24028">Weather.com (standard)</string>
+  <string id="24030">Denne Add-on kan ikke konfigureres</string>
+  <string id="24031">Feil ved henting av innstillinger</string>
+  <string id="24032">Alle add-ons</string>
+  <string id="24033">Hent Add-ons</string>
+  <string id="24034">Se etter oppdateringer</string>
+  <string id="24035">Tving oppdatering</string>
+  <string id="24036">Endringslogg</string>
+  <string id="24037">Avinstaller</string>
+  <string id="24038">Installer</string>
+  <string id="24039">Deaktivere Add-ons</string>
+  <string id="24040">(Tilbakestill innstilling)</string>
+  <string id="24041">Installer fra zip-fil</string>
+  <string id="24042">Laster ned %i%%</string>
+  <string id="24043">Tilgjengelige oppdateringer</string>
+  <string id="24050">Tilgjengelige Add-ons</string>
+  <string id="24051">Versjon:</string>
+  <string id="24052">Fraskrivelse:</string>
+  <string id="24053">Lisens:</string>
+  <string id="24054">Endringslogg</string>
+  <string id="24059">Vil du installere denne Add-on?</string>
+  <string id="24060">Hvorfor vil du deaktivere denne add-on?</string>
+  <string id="24061">Add-on oppdatering tilgjengelig!</string>
+  <string id="24062">Aktivere add-on</string>
+  <string id="24063">Automatisk oppdatering</string>
+  <string id="24064">Add-on aktivert</string>
+  <string id="24065">Add-on oppdatert</string>
+  <string id="24066">Kansellere nedlasting av add-on?</string>
+  <string id="24067">Laster ned add-ons</string>
+  <string id="24068">Oppdatering tilgjengelig</string>
+  <string id="24069">Oppdater</string>
+  <string id="24070">Add-on kan ikke brukes</string>
+  <string id="24071">En ukjent feil har oppstått</string>
+  <string id="24072">Innstillinger påkrevet</string>
+  <string id="24073">Kunne ikke koble til</string>
+  <string id="24074">Må startes på nytt</string>
+  <string id="24075">Deaktivere</string>
+  <string id="24080">Forsøk ny oppkobling?</string>
+  <string id="24089">Add-on starter på nytt</string>
+  <string id="24090">Lås Add-on manager</string>
+  <string id="24096">Add-on er markert som ødelagt i repository.</string>
+  <string id="24097">Vil du deaktivere den i systemet?</string>
+  <string id="24098">Ødelagt</string>
   <string id="29800">Biblioteksmodus</string>
   <string id="29801">QWERTY-tastatur</string>
   <string id="29802">Passthrough-lyd i bruk</string>
@@ -2084,7 +2135,21 @@
   <string id="33081">Denne filen er stablet, velg den delen du vil spille fra.</string>
   <string id="33082">Sti til skript</string>
   <string id="33083">Aktiver knapp for egendefinert skript</string>
-
-  
-  <string id="34100">Høyttalerkonfigurasjon</string> 
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
+  <string id="34100">Høyttalerkonfigurasjon</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7,0</string>
+  <string id="34110">7.1</string>
 </strings>

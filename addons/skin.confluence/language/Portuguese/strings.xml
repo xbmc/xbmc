@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: hudo-->
 <!--Email: hudokkow [AT] gmail [DOT] com-->
-<!--Date of translation: 06/01/2010-->
+<!--Date of translation: 07/19/2010-->
 <!--$Revision$-->
-<!--Based on english strings version r29546-->
+<!--Based on english strings version r31350 -->
 
 <strings>
   <string id="31000">Mude o seu</string>
@@ -51,7 +51,7 @@
   <string id="31104">Reproduzir trailers numa janela [COLOR=grey3](Apenas diálogo de informação vídeo)[/COLOR]</string>
   <string id="31105">Mostrar títulos de média na procura em fundo</string>
   <string id="31106">Opções várias</string>
-  <string id="31107"></string>
+  <string id="31107">Esconder leitura de flags dos ficheiros de vídeo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Esconder botões do menu principal</string>
   <string id="31109">Fundos de média</string>
   <string id="31110">Editar fundo pra tipo de média</string>
@@ -60,10 +60,10 @@
   <string id="31113">Imagem única</string>
   <string id="31114">Imagens multiplas</string>
   <string id="31115">Customizar</string>
-  <string id="31116">Addon scripts</string>
+  <string id="31116"></string>
   <string id="31117">Mostrar vídeos adicionados recentemente</string>
-  <string id="31118">Submenu da página inicial</string>
-  <string id="31119">Ligar botão de script costumizado</string>
+  <string id="31118">Submenu de Programas da página inicial</string>
+  <string id="31119">Ligar botão de Add-ons costumizado</string>
   <string id="31120">ETIQUETA DE BOTÃO</string>
   <string id="31121">CAMINHO PARA O SCRIPT</string>
   <string id="31122">Página meteorológica</string>
@@ -71,10 +71,10 @@
   <string id="31124">Mostrar vídeo "A reproduzir" em fundo</string>
   <string id="31125">Mostrar visualização "A reproduzir" em fundo</string>
   <string id="31126">Ligar letras no OSD de música</string>
-  <string id="31127">CAMINHO PARA O SCRIPT DE LETRAS</string>
-  <string id="31128">Letras do XBMC</string>
+  <string id="31127">CAMINHO PARA O ADD-ON DE LETRAS</string>
+  <string id="31128">Letras</string>
   <string id="31129">Ligar descarregar de legendas no OSD de Vídeo</string>
-  <string id="31130">CAMINHO PARA SCRIPT DE LEGENDAS</string>
+  <string id="31130">CAMINHO PARA ADD-ON DE LEGENDAS</string>
   <string id="31140">OSD de Música</string>
   <string id="31141">OSD de Vídeo</string>
   <string id="31200">Atalhos</string>
@@ -83,9 +83,6 @@
   <string id="31203">Escolha a sua música</string>
   <string id="31204">Atalhos de secção</string>
   <string id="31205">Fonte das letras</string>
-  <string id="31250">Radar &amp; Previsão</string>
-  <string id="31251">Previsão</string>
-  <string id="31252">Script TWC</string>
   <string id="31300">Temp corrente</string>
   <string id="31301">Última actualização</string>
   <string id="31302">Menu</string>
