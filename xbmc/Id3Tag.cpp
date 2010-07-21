@@ -485,6 +485,9 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
     // remove any leading spaces
     strTemp.TrimLeft();
 
+    if (strTemp.IsEmpty())
+      break;
+
     // start off looking for (something)
     if (strTemp[0] == '(')
     {
