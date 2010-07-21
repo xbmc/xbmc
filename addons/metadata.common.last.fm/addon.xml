@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.last.fm"
        name="Last.FM"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -11,12 +11,14 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <minversion>20000</minversion>
-    <summary>LastFM Scraper Library</summary>
+    <summary lang="en">LastFM Scraper Library</summary>
+    <summary lang="es">Scraper de música de LastFM</summary>
     <summary lang="hu">LastFM leolvasó-könyvtár</summary>
     <summary lang="nl">LastFM Scraper Collectie</summary>
     <summary lang="pt">Scraper de música LastFM</summary>
-    <description>Download Music information</description>
-    <description lang="hu">Zenei információk letöltése a Last.FM-ről</description>
+    <description lang="en">Download Music information</description>
+    <description lang="es">Descargar información musical de www.last.fm</description>
+    <description lang="hu">Zene információk letöltése a www.last.fm webhelyről</description>
     <description lang="nl">Download muziek informatie</description>
     <description lang="pt">Descarregar informação de música de www.last.fm</description>
   </extension>
