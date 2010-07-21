@@ -1,3 +1,6 @@
+[B]1.0.9[/B]
+- translation cosmetics
+
 [B]1.0.8[/B]
 - changed hdtrailers.net version dependency
 

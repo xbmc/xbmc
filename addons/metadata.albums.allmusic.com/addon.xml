@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.albums.allmusic.com"
        name="AllMusic"
-       version="1.0.4"
+       version="1.0.6"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -14,6 +14,7 @@
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">AllMusic album information</summary>
+    <summary lang="es">Scraper de Álbums de AllMusic</summary>
     <summary lang="hu">AllMusic.com album információk</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器</summary>
@@ -21,6 +22,10 @@
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.
 All genres and styles of music are covered here, ranging from the most commercially popular to the most obscure. We critique albums and artists within the context of their own genres - from opera to garage rock to traditional country. This ensures that fans of any style of music can depend on us to keep them up-to-date with their favorite artists as well as introduce them to new sounds.</description>
+    <description lang="es">Este scraper utiliza Allmusic.com para rellenar la información de la librería musical.
+La página web allmusic fue creada en el 1995 cómo un sitio donde los fans podíaan compartir su pasión por la música.
+El equipo de AMG, junto con cuentos de colaboradores expertos (todos ellos fans de la música) han hecho de allmusic uno de los sitios más extensos del planeta. Todos ellos intentan crear y mantener unos contenidos que los amantes de la música y los profesionales del sector obtienen de AMG.
+Todos los géneros y estilos musicales tienen cabida, desde los más comerciales hasta los más oscuros. En allmusic se critican los álbumes y los artistas en el entorno que les corresponde - desde opera, pasando por rock hasta country tradicional. Así se asegura que los fans de cualquier estilo de música puedan depender de nosotros para mantenerse al día de las novedades de sus artistas favoritos y descubrir nuevos sonidos.</description>
     <description lang="hu">Az AllMusic.com használata a médiatáradatok feltöltésére. Ez a webhely 1995-ben a zenerajongók szenvedélyének kiszolgálására jött létre.
 Az AMG szerkesztői csapata a szakértő közreműködőkkel együtt (mind zenei fanatikus a maga nemében), az allmusic-ot a legátfogóbb zenei információforrássá tették a világon.
 Minden létező stílus és zenei irányzat feldolgozásra kerül itt. Kezdve a legpopulárisabbtól a legismeretlenebbig. Mi kritikát mondunk a lemezekről és előadókról, az operától a garázs rock-on át a hagyományos country zenéig. Ez biztosítja, hogy bármely stílus rajongói napra készek legyenek a kedvenc előadóikkal, ugyanakkor az új hangzások is eljussanak hozzájuk.</description>
