@@ -200,7 +200,7 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
 
   YV12Image *image = &m_yuvBuffers[source];
 
-  yuv420_to_yuv422(m_framebuffer[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayWidth);
+  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayWidth);
 }
 
 void COmapOverlayRenderer::FlipPage(int source)
@@ -242,14 +242,6 @@ unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[],
 unsigned int COmapOverlayRenderer::PreInit()
 {
   UnInit();
-
-  printf("PreInit\n");
-
-  if (!m_dllSwScale->Load())
-  {
-    CLog::Log(LOGERROR, "COmapOverlayRenderer::PreInit - failed to load rescale libraries!");
-    return false;
-  }
 
   return true;
 }
