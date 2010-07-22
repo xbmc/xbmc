@@ -53,14 +53,20 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["originaltitle"] = videoInfo->m_strOriginalTitle.c_str();
   if (field.Equals("lastplayed") && !videoInfo->m_lastPlayed.IsEmpty())
     result["lastplayed"] = videoInfo->m_lastPlayed.c_str();
+  if (field.Equals("showtitle") && !videoInfo->m_strShowTitle.IsEmpty())
+    result["showtitle"] = videoInfo->m_strShowTitle.c_str();
+  if (field.Equals("firstaired") && !videoInfo->m_strFirstAired.IsEmpty())
+    result["firstaired"] = videoInfo->m_strFirstAired.c_str();
 
   if (field.Equals("season") && videoInfo->m_iSeason > 0)
     result["season"] = videoInfo->m_iSeason;
+  if (field.Equals("episode") && videoInfo->m_iEpisode > 0)
+    result["episode"] = videoInfo->m_iEpisode;
   if (field.Equals("runtime") && !videoInfo->m_strRuntime.IsEmpty())
     result["runtime"] = videoInfo->m_strRuntime.c_str();
   if (field.Equals("year") && videoInfo->m_iYear > 0)
     result["year"] = videoInfo->m_iYear;
-  if (field.Equals("playcount") && videoInfo->m_playCount > 0)
+  if (field.Equals("playcount") && videoInfo->m_playCount >= 0)
     result["playcount"] = videoInfo->m_playCount;
   if (field.Equals("rating"))
     result["rating"] = (double)videoInfo->m_fRating;
