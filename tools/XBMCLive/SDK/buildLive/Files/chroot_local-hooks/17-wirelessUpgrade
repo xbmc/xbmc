@@ -83,11 +83,11 @@ make install
 popd
 pushd .
 
-rm -f compat-wireless-*
+rm -rf compat-wireless-*
 
 # Clean up all tricks
-rm /sbin/uname
-mv /sbin/uname.ori /sbin/uname
+rm /bin/uname
+mv /bin/uname.ori /bin/uname
 
 rm /sbin/depmod
 mv /sbin/depmod.ori /sbin/depmod
