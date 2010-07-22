@@ -79,7 +79,7 @@ public:
                       float contrast,
                       float brightness,
                       unsigned int flags,
-                      SVideoBuffer* YUVbuf);
+                      YUVBuffer* YUVbuf);
 
 protected:
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -88,7 +88,7 @@ protected:
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
-  virtual void SetShaderParameters(D3DXMATRIX* matrix, SVideoBuffer* YUVbuf, unsigned int sourceWidth);
+  virtual void SetShaderParameters(D3DXMATRIX* matrix, YUVBuffer* YUVbuf, unsigned int sourceWidth);
 
 private:
   CYUV2RGBMatrix m_matrix;

@@ -195,7 +195,7 @@ void CYUV2RGBShader::Render(unsigned int sourceWidth, unsigned int sourceHeight,
                                float contrast,
                                float brightness,
                                unsigned int flags,
-                               SVideoBuffer* YUVbuf)
+                               YUVBuffer* YUVbuf)
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
@@ -264,7 +264,7 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
                          flags);
 }
 
-void CYUV2RGBShader::SetShaderParameters(D3DXMATRIX* matrix, SVideoBuffer* YUVbuf, unsigned int sourceWidth)
+void CYUV2RGBShader::SetShaderParameters(D3DXMATRIX* matrix, YUVBuffer* YUVbuf, unsigned int sourceWidth)
 {
   m_effect.SetMatrix( "g_ColorMatrix", matrix);
   m_effect.SetTechnique( "YUV2RGB_T" );
