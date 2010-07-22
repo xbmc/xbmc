@@ -40,34 +40,45 @@ CCriticalSection CPlaylistOperations::VirtualCriticalSection;
 
 JSON_STATUS CPlaylistOperations::Create(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isString() && !(parameterObject.isObject() && parameterObject.isMember(PLAYLIST_MEMBER_FILE) && parameterObject[PLAYLIST_MEMBER_FILE].isString()))
+  if (!(parameterObject.isString() || parameterObject.isNull() || parameterObject.isObject()))
     return InvalidParams;
 
-  CSingleLock lock(VirtualCriticalSection);
-  CStdString file = parameterObject.isString() ? parameterObject.asString() : parameterObject[PLAYLIST_MEMBER_FILE].asString();
+  CStdString file = "";
+  CStdString id   = "";
 
-  CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
-  if (playlist && playlist->Load(file))
+  if (parameterObject.isObject())
   {
-    CStdString id;
+    if (parameterObject.isMember(PLAYLIST_MEMBER_FILE) && parameterObject[PLAYLIST_MEMBER_FILE].isString())
+      file = parameterObject[PLAYLIST_MEMBER_FILE].asString();
 
-    if (parameterObject.isObject() && parameterObject.isMember(PLAYLIST_MEMBER_VIRTUAL) && parameterObject[PLAYLIST_MEMBER_VIRTUAL].isString())
+    if (parameterObject.isMember(PLAYLIST_MEMBER_VIRTUAL) && parameterObject[PLAYLIST_MEMBER_VIRTUAL].isString())
       id = parameterObject[PLAYLIST_MEMBER_VIRTUAL].asString();
-    else
-    {
-      do
-      {
-        id = StringUtils::CreateUUID();
-      } while (VirtualPlaylists.find(id) != VirtualPlaylists.end());
-    }
-
-    VirtualPlaylists[id] = playlist;
-    result[PLAYLIST_MEMBER_VIRTUAL] = id;
-
-    return OK;
   }
 
-  return InvalidParams;
+  CPlayListPtr playlist;
+
+  if (file.size() > 0)
+  {
+    CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
+    if (playlist == NULL || !playlist->Load(file))
+      return playlist == NULL ? InvalidParams : InternalError;
+  }
+  else
+    playlist = CPlayListPtr(new CPlayList());
+
+  if (id.size() == 0)
+  {
+    do
+    {
+      id = StringUtils::CreateUUID();
+    } while (VirtualPlaylists.find(id) != VirtualPlaylists.end());
+  }
+
+  CSingleLock lock(VirtualCriticalSection);
+  VirtualPlaylists[id] = playlist;
+  result[PLAYLIST_MEMBER_VIRTUAL] = id;
+
+  return OK;
 }
 
 JSON_STATUS CPlaylistOperations::Destroy(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
@@ -106,18 +117,18 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
 
 JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  const Value param = ForceObject(parameterObject);
-  if (!param["file"].isString())
-    return InvalidParams;
+  Value param = ForceObject(parameterObject);
 
   CSingleLock lock(VirtualCriticalSection);
   CPlayListPtr playlist = GetPlaylist(param);
+  param.removeMember(PLAYLIST_MEMBER_VIRTUAL);
 
   if (playlist)
   {
-    CStdString file = param["file"].asString();
-    CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
-    playlist->Add(item);
+    CFileItemList list;
+    if (CFileItemHandler::FillFileItemList(param, list) && list.Size() > 0)
+      playlist->Add(list);
+
     return ACK;
   }
 
