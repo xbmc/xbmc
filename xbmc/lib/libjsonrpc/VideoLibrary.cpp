@@ -113,23 +113,6 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
-{
-/*  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return InternalError;
-
-  int artistID = parameterObject.get("artistid", -1).asInt();
-//  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1);
-  CFileItemList items;
-//  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1);
-  if (videodatabase.GetMusicVideoAlbumsNav("", items, -1, -1, artistID, -1, -1, -1, -1))
-    HandleFileItemList("albumid", "albums", items, parameterObject, result);
-
-  videodatabase.Close();*/
-  return OK;
-}
-
 JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
