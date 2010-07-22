@@ -3058,7 +3058,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
   // run query
   bool bResult = GetSongsByWhere(strBaseDir, strWhere, items);
-  if (bResult)
+  if (bResult && idArtist != -1)
   {
     CStdString strArtist;
     GetArtistById(idArtist,strArtist);
