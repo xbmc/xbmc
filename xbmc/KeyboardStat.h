@@ -40,6 +40,7 @@
 
 #include "XBMC_events.h"
 #include "system.h" // for DWORD
+#include "Key.h"
 
 class CKeyboardStat
 {
