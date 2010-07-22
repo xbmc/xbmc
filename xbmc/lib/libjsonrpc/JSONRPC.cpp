@@ -143,10 +143,10 @@ Command CJSONRPC::m_commands[] = {
   { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
 
 // File
-  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the root directory of the media windows" },
+  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the sources of the media windows. Parameter example {\"media\": \"video\"}. Media can be video, music, pictures or files" },
   { "Files.Download",                               CFileOperations::Download,                           FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
 
-  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory" },
+  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory. Parameter example {\"directory\": \"foo/bar\", \"media\": \"video\"}. Media can be video, music, pictures or files" },
 
 // Music library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
