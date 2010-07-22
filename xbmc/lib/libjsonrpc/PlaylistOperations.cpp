@@ -96,7 +96,7 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
     if (!name.IsEmpty())
       result["name"] = playlist->GetName();
 
-    HandleFileItemList(NULL, "items", items, parameterObject, result);
+    HandleFileItemList(NULL, true, "items", items, parameterObject, result);
 
     return OK;
   }

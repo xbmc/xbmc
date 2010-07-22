@@ -121,7 +121,7 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["rating"] = (int)musicInfo->GetRating();
 }
 
-void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
@@ -141,15 +141,16 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
     Value object;
     CFileItemPtr item = items.Get(i);
 
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
-    if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
-      object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+    if (allowFile)
+    {
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+        object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
-/*    if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
-      object["file"] = item->m_strPath.c_str();*/
-    if (!object.isMember("file"))
-      object["file"] = item->m_strPath.c_str();
+      if (!object.isMember("file"))
+        object["file"] = item->m_strPath.c_str();
+    }
 
     if (id)
     {

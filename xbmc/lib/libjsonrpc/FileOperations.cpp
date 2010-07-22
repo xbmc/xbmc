@@ -46,7 +46,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
         items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
 
-      HandleFileItemList(NULL, "shares", items, parameterObject, result);
+      HandleFileItemList(NULL, true, "shares", items, parameterObject, result);
     }
 
     return OK;
@@ -108,8 +108,8 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
             filteredFiles.Add(items[i]);
         }
 
-        HandleFileItemList(NULL, "directories", filteredDirectories, parameterObject, result);
-        HandleFileItemList(NULL, "files", filteredFiles, parameterObject, result);
+        HandleFileItemList(NULL, true, "directories", filteredDirectories, parameterObject, result);
+        HandleFileItemList(NULL, true, "files", filteredFiles, parameterObject, result);
 
         return OK;
       }
