@@ -229,11 +229,13 @@
 					</control>
 					<control type="radiobutton" id="17">
 						<description>Flatten</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>20411</label>
 					</control>
 					<control type="radiobutton" id="11">
 						<description>Unlock Shares</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>20336</label>
 						<onclick>xbmc.mastermode</onclick>
@@ -252,6 +254,7 @@
 					</control>
 					<control type="radiobutton" id="201">
 						<description>Toggle MoviesFanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(VideoLibraryMovieFanart)</onclick>
@@ -260,6 +263,7 @@
 					</control>
 					<control type="radiobutton" id="202">
 						<description>Toggle TVShow Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(VideoLibraryTVFanart)</onclick>
@@ -268,6 +272,7 @@
 					</control>
 					<control type="radiobutton" id="203">
 						<description>Toggle MusicVideo Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(VideoLibraryMusicVideoFanart)</onclick>
@@ -276,6 +281,7 @@
 					</control>
 					<control type="radiobutton" id="204">
 						<description>Toggle Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31318</label>
 						<onclick>Skin.ToggleSetting(VideoLibraryFanartView504)</onclick>
@@ -283,6 +289,7 @@
 						<visible>[Control.IsVisible(504) + [Container.Content(Movies) | Container.Content(TVShows)]]</visible>
 					</control>
 					<control type="radiobutton" id="205">
+						<textwidth>170</textwidth>
 						<description>Toggle Fanart View Media Info</description>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31005</label>
