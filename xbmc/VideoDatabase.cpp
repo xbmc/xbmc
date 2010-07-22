@@ -4804,7 +4804,7 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
   if (idGenre != -1)
     where = PrepareSQL("join genrelinkmusicvideo on genrelinkmusicvideo.idMVideo=musicvideoview.idMVideo where genrelinkmusicvideo.idGenre=%i", idGenre);
   else if (idStudio != -1)
-    where = PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo=musicvideoview.idMVideo where studiolinkmusicvideo.idAtudio=%i", idStudio);
+    where = PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo=musicvideoview.idMVideo where studiolinkmusicvideo.idStudio=%i", idStudio);
   else if (idDirector != -1)
     where = PrepareSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idMVideo=musicvideoview.idMVideo where directorlinkmusicvideo.idDirector=%i", idDirector);
   else if (idYear !=-1)
