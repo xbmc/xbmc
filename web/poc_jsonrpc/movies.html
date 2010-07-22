@@ -6,7 +6,7 @@
 <script type="text/javascript">
 function CallPlay(movieid) {
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{ "jsonrpc": "2.0", "method": "XBMC.Play", "params": { "movieid": ' + movieid + ' }, "id": 1 }');
 }
 </script>
@@ -34,7 +34,7 @@ function CallPlay(movieid) {
 
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "fields": ["title", "plot"] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);

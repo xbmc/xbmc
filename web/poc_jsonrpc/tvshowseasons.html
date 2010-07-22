@@ -29,7 +29,7 @@
 var tvshowid = gup("tvshowid");
 
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "tvshowid": ' + tvshowid + ', "fields": [ "season" ] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
