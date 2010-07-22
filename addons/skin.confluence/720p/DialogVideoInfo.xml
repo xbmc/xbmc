@@ -904,6 +904,12 @@
 								<visible>!IsEmpty(ListItem.Writer)</visible>
 							</item>
 							<item>
+								<label>$LOCALIZE[20339]:</label>
+								<label2>$INFO[ListItem.Director]</label2>
+								<onclick>-</onclick>
+								<visible>!IsEmpty(ListItem.Director)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[562]:</label>
 								<label2>$INFO[ListItem.Year]</label2>
 								<onclick>-</onclick>
