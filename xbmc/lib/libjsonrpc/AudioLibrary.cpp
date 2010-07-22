@@ -112,17 +112,34 @@ JSON_STATUS CAudioLibrary::ScanForContent(const CStdString &method, ITransportLa
 bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CMusicDatabase musicdatabase;
-  if ((parameterObject["artistid"].isInt() || parameterObject["albumid"].isInt() || parameterObject["genreid"].isInt()) && musicdatabase.Open())
-  {
-    int artistID = ParameterAsInt(parameterObject, -1, "artistid");
-    int albumID  = ParameterAsInt(parameterObject, -1, "albumid");
-    int genreID  = ParameterAsInt(parameterObject, -1, "genreid");
+  bool success = false;
 
-    bool success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+  if (musicdatabase.Open())
+  {
+    if (parameterObject["artistid"].isInt() || parameterObject["albumid"].isInt() || parameterObject["genreid"].isInt())
+    {
+      int artistID = ParameterAsInt(parameterObject, -1, "artistid");
+      int albumID  = ParameterAsInt(parameterObject, -1, "albumid");
+      int genreID  = ParameterAsInt(parameterObject, -1, "genreid");
+
+      success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+    }
+    if (parameterObject["songid"].isInt())
+    {
+      int songID = ParameterAsInt(parameterObject, -1, "songid");
+      if (songID != -1)
+      {
+        CSong song;
+        if (musicdatabase.GetSongById(songID, song))
+        {
+          list.Add(CFileItemPtr(new CFileItem(song)));
+          success = true;
+        }
+      }
+    }
 
     musicdatabase.Close();
-    return success;
   }
 
-  return false;
+  return success;
 }
