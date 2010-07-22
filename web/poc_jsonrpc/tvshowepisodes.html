@@ -6,7 +6,7 @@
 <script type="text/javascript">
 function CallPlay(episodeid) {
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "episodeid": ' + episodeid + ' }, "id": 1}');
 }
 </script>
@@ -37,7 +37,7 @@ var tvshowid = gup("tvshowid");
 var season   = gup("season");
 
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "tvshowid": ' + tvshowid + ', "season": ' + season + ', "fields": ["plot"] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);

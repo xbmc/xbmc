@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "JSONRPC.Introspect", "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
