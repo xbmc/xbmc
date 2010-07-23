@@ -162,7 +162,7 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
 {
   // Verify that the depth format exists
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
-                                         D3DDEVTYPE_HAL,
+                                         m_devType,
                                          AdapterFormat,
                                          D3DUSAGE_DEPTHSTENCIL,
                                          D3DRTYPE_SURFACE,
@@ -172,7 +172,7 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
 
   // Verify that the depth format is compatible
   hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
-                                      D3DDEVTYPE_HAL,
+                                      m_devType,
                                       AdapterFormat,
                                       BackBufferFormat,
                                       DepthFormat);
@@ -320,17 +320,17 @@ bool CRenderSystemDX::CreateDevice()
 
   CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
 
-  D3DDEVTYPE devType = D3DDEVTYPE_HAL;
+  m_devType = D3DDEVTYPE_HAL;
 
 #if defined(DEBUG_PS) || defined (DEBUG_VS)
-    devType = D3DDEVTYPE_REF
+    m_devType = D3DDEVTYPE_REF
 #endif
 
   BuildPresentParameters();
 
   if (m_useD3D9Ex)
   {
-    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, devType, m_hFocusWnd,
+    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, m_devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
 
     if (FAILED(hr))
@@ -338,15 +338,15 @@ bool CRenderSystemDX::CreateDevice()
       CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
-      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
           D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
         if( FAILED( hr ) )
         {
-          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
             D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
         }
         if(FAILED( hr ) )
@@ -357,22 +357,22 @@ bool CRenderSystemDX::CreateDevice()
   else
   {
 
-    hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
+    hr = m_pD3D->CreateDevice(m_adapter, m_devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
 
     if (FAILED(hr))
     {
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
-      hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+      hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+        hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
           D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
         if( FAILED( hr ) )
         {
-          hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+          hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
             D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
         }
         if(FAILED( hr ) )
@@ -416,7 +416,7 @@ bool CRenderSystemDX::CreateDevice()
   CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
-                                           D3DDEVTYPE_HAL,
+                                           m_devType,
                                            m_D3DPP.BackBufferFormat,
                                            m_defaultD3DUsage,
                                            D3DRTYPE_TEXTURE,

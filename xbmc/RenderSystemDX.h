@@ -112,6 +112,7 @@ protected:
   LPDIRECT3DDEVICE9           m_pD3DDevice;
   unsigned int                m_screenHeight;
 
+  D3DDEVTYPE                  m_devType;
   D3DPRESENT_PARAMETERS       m_D3DPP;
   D3DDISPLAYMODEEX            m_D3DDMEX;
   HWND                        m_hFocusWnd;
