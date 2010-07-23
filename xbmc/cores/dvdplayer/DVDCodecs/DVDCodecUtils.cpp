@@ -106,16 +106,6 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 
 bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
-  pImage->plane[0]  = pSrc->data[0];
-  pImage->plane[1]  = pSrc->data[1];
-  pImage->plane[2]  = pSrc->data[2];
-  pImage->stride[0] = pSrc->iLineSize[0];
-  pImage->stride[1] = pSrc->iLineSize[1];
-  pImage->stride[2] = pSrc->iLineSize[2];
-
-  return true;
-
-
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
   int w = pSrc->iWidth;

@@ -1146,7 +1146,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   }
 
   // copy picture to overlay
-/*
   YV12Image image;
 
   int index = g_renderManager.GetImage(&image);
@@ -1167,9 +1166,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
-*/
-
-  g_renderManager.DrawSlice(pPicture->data, pPicture->iLineSize, pPicture->iWidth, pPicture->iHeight, 0, 0);
 
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
 

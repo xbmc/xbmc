@@ -27,6 +27,8 @@
 #ifdef HAS_OMAP_OVERLAY
 #include "OmapOverlayRenderer.h"
 #include "log.h"
+#include <stdlib.h>
+#include <malloc.h>
 
 extern "C" void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
 
@@ -172,7 +174,7 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
   /* take next available buffer */
   if( source == AUTOSOURCE || source > 1 || source < 0)
-    source = NextYV12Image();
+    source = m_currentBuffer;
 
   printf("GetImage %i\n", source);
 
@@ -320,16 +322,19 @@ bool COmapOverlayRenderer::CreateYV12Image(unsigned int index, unsigned int widt
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  im.stride[0] = im.width;
-  im.stride[1] = im.width >> im.cshift_x;
-  im.stride[2] = im.width >> im.cshift_x;
+  unsigned paddedWidth = (im.width + 15) & ~15;
+  printf("w %i | padded %i\n", width, paddedWidth);
+
+  im.stride[0] = paddedWidth;
+  im.stride[1] = paddedWidth >> im.cshift_x;
+  im.stride[2] = paddedWidth >> im.cshift_x;
 
   im.planesize[0] = im.stride[0] * im.height;
   im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   for (int i = 0; i < 3; i++)
-    im.plane[i] = new BYTE[im.planesize[i]];
+    im.plane[i] = (BYTE *)memalign(16, im.planesize[i]);
 
   return true;
 }
@@ -339,7 +344,7 @@ bool COmapOverlayRenderer::FreeYV12Image(unsigned int index)
   YV12Image &im = m_yuvBuffers[index];
   for (int i = 0; i < 3; i++)
   {
-    delete[] im.plane[i];
+    free(im.plane[i]);
     im.plane[i] = NULL;
   }
 
