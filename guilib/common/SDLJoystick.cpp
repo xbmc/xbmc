@@ -94,6 +94,8 @@ void CJoystick::Initialize()
       {
         m_JoystickNames.push_back(string(SDL_JoystickName(i)));
         CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
+        CLog::Log(LOGNOTICE, "Details: Total Axis: %d Total Hats: %d Total Buttons: %d",
+            SDL_JoystickNumAxes(joy), SDL_JoystickNumHats(joy), SDL_JoystickNumButtons(joy));        
       }
       else
       {
