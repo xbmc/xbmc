@@ -181,6 +181,7 @@ static int convert_fmode(const char* mode)
   return iMode;
 }
 
+#ifdef _WIN32
 static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 {
   CStdStringW strwname(wdata->name);
@@ -212,6 +213,7 @@ static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
   wdata->time_write = data->time_write;
   wdata->size = data->size;
 }
+#endif
 
 extern "C"
 {
