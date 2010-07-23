@@ -212,14 +212,16 @@ void COmapOverlayRenderer::FlipPage(int source)
   if (!m_bConfigured)
     return;
 
-  printf("Flip %i\n", source);
-  m_overlayScreenInfo.xoffset = m_framebuffers[source].x;
-  m_overlayScreenInfo.yoffset = m_framebuffers[source].y;
-  printf("FBIOPAN_DISPLAY %i\n", source);
+  printf("Flip %i\n", m_currentBuffer);
+  m_overlayScreenInfo.xoffset = m_framebuffers[m_currentBuffer].x;
+  m_overlayScreenInfo.yoffset = m_framebuffers[m_currentBuffer].y;
+  printf("FBIOPAN_DISPLAY %i\n", m_currentBuffer);
   ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
-  printf("OMAPFB_WAITFORGO %i\n", source);
+  printf("OMAPFB_WAITFORGO %i\n", m_currentBuffer);
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
-  printf("Flipped %i\n", source);
+  printf("Flipped %i\n", m_currentBuffer);
+
+  m_currentBuffer = NextYV12Image();
 }
 
 void COmapOverlayRenderer::Reset()
@@ -242,6 +244,8 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
+  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w, h, stride[0], stride[1], m_overlayWidth);
+
   return 0;
 }
 
