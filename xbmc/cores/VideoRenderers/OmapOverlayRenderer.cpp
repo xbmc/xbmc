@@ -205,7 +205,7 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
   YV12Image *image = &m_yuvBuffers[source];
 
   printf("Converting yuv %i - Begin\n", source);
-  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayWidth);
+  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width & ~15, image->height & ~15, image->stride[0], image->stride[1], m_overlayWidth);
   printf("Converting yuv %i - Done\n", source);
 }
 
@@ -246,7 +246,7 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
-  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w, h, stride[0], stride[1], m_overlayWidth);
+  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w & ~15, h & ~15, stride[0], stride[1], m_overlayWidth);
 
   return 0;
 }
