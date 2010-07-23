@@ -111,7 +111,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
       return false;
     }
 
-    for (unsigned int i = 0; i < memSize / 4; i++)
+    for (unsigned int i = 0; i < wantedMemSize / 4; i++)
       ((uint32_t*)fbmem)[i] = 0x80008000;
 
     m_overlayScreenInfo.xres_virtual = m_overlayScreenInfo.xres;
