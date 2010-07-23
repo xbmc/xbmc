@@ -881,20 +881,6 @@ void CKeyboardStat::Update(XBMC_Event& event)
 // Set the supplied CKey from the current keyboard state.
 
 const CKey CKeyboardStat::GetKey()
-{ uint32_t buttoncode;
-
-    // got a valid keypress - convert to a key code
-    if (m_VKey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
-      buttoncode = m_VKey | KEY_VKEY;
-    else
-      buttoncode = KEY_UNICODE;
-
-    // The key mapping tables used by CButtonTranslator require that
-    // the key code be ORed with the modifiers bitmask.
-    buttoncode |= m_Modifiers;
-
-    // Create and return a CKey
-    CKey key(buttoncode, 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, m_VKey, m_wUnicode, m_cAscii, m_Modifiers, m_keyHoldTime);
-    
-    return key;
+{
+  return CKey(m_VKey, m_wUnicode, m_cAscii, m_Modifiers, m_keyHoldTime);
 }

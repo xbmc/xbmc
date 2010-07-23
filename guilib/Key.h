@@ -502,7 +502,8 @@ class CKey
 {
 public:
   CKey(void);
-  CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f, uint8_t vkey = 0, wchar_t unicode = 0, char ascii = 0, uint32_t modifiers = 0, unsigned int held = 0);
+  CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+  CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
@@ -520,18 +521,12 @@ public:
   void SetFromHttpApi(bool);
   bool GetFromHttpApi() const;
 
-  void Reset();
-
-  inline uint32_t GetButtonCode() const { return m_buttonCode;};
-  inline uint8_t  GetVKey() const       { return m_VKey;};
-  inline wchar_t  GetUnicode() const    { return m_wUnicode;};
-  inline char     GetAscii() const      { return m_cAscii;};
-  inline bool     GetCtrl() const       { return (m_Modifiers & MODIFIER_CTRL)  == MODIFIER_CTRL  ? true : false; };
-  inline bool     GetShift() const      { return (m_Modifiers & MODIFIER_SHIFT) == MODIFIER_SHIFT ? true : false; };
-  inline bool     GetAlt() const        { return (m_Modifiers & MODIFIER_ALT)   == MODIFIER_ALT   ? true : false; };
-  inline bool     GetRAlt() const       { return (m_Modifiers & MODIFIER_RALT)  == MODIFIER_RALT  ? true : false; };
-  inline bool     GetSuper() const      { return (m_Modifiers & MODIFIER_SUPER) == MODIFIER_SUPER ? true : false; };
-  inline unsigned int GetHeld() const   { return m_held; };
+  inline uint32_t GetButtonCode() const { return m_buttonCode; }
+  inline uint8_t  GetVKey() const       { return m_vkey; }
+  inline wchar_t  GetUnicode() const    { return m_unicode; }
+  inline char     GetAscii() const      { return m_ascii; }
+  inline uint32_t GetModifiers() const  { return m_modifiers; };
+  inline unsigned int GetHeld() const   { return m_held; }
 
   enum Modifier {
     MODIFIER_CTRL  = 0x00010000,
@@ -542,11 +537,13 @@ public:
   };
 
 private:
+  void Reset();
+
   uint32_t m_buttonCode;
-  uint8_t  m_VKey;
-  wchar_t  m_wUnicode;
-  char     m_cAscii;
-  uint32_t m_Modifiers;
+  uint8_t  m_vkey;
+  wchar_t  m_unicode;
+  char     m_ascii;
+  uint32_t m_modifiers;
   unsigned int m_held;
 
   uint8_t m_leftTrigger;

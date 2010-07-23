@@ -24,27 +24,16 @@
 
 CKey::CKey(void)
 {
-  m_leftTrigger = 0;
-  m_rightTrigger = 0;
-  m_leftThumbX = 0.0f;
-  m_leftThumbY = 0.0f;
-  m_rightThumbX = 0.0f;
-  m_rightThumbY = 0.0f;
-  m_repeat = 0.0f;
-  m_fromHttpApi = false;
-  m_buttonCode = KEY_INVALID;
-  m_VKey = 0;
-  m_wUnicode = 0;
-  m_cAscii = 0;
-  m_Modifiers = 0;
-  m_held = 0;
+  Reset();
 }
 
 CKey::~CKey(void)
 {}
 
-CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat, uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
+CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
 {
+  Reset();
+  m_buttonCode = buttonCode;
   m_leftTrigger = leftTrigger;
   m_rightTrigger = rightTrigger;
   m_leftThumbX = leftThumbX;
@@ -52,12 +41,20 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
   m_rightThumbX = rightThumbX;
   m_rightThumbY = rightThumbY;
   m_repeat = repeat;
-  m_fromHttpApi = false;
-  m_buttonCode = buttonCode;
-  m_VKey = vkey;
-  m_wUnicode = unicode;
-  m_cAscii = ascii;
-  m_Modifiers = modifiers;
+}
+
+CKey::CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
+{
+  Reset();
+  if (vkey) // FIXME: This needs cleaning up - should we always use the unicode key where available?
+    m_buttonCode = vkey | KEY_VKEY;
+  else
+    m_buttonCode = KEY_UNICODE;
+  m_buttonCode |= modifiers;
+  m_vkey = vkey;
+  m_unicode = unicode;
+  m_ascii = ascii;
+  m_modifiers = modifiers;
   m_held = held;
 }
 
@@ -77,10 +74,10 @@ void CKey::Reset()
   m_repeat = 0.0f;
   m_fromHttpApi = false;
   m_buttonCode = KEY_INVALID;
-  m_VKey = 0;
-  m_wUnicode = 0;
-  m_cAscii = 0;
-  m_Modifiers = 0;
+  m_vkey = 0;
+  m_unicode = 0;
+  m_ascii = 0;
+  m_modifiers = 0;
   m_held = 0;
 }
 
@@ -96,10 +93,10 @@ const CKey& CKey::operator=(const CKey& key)
   m_repeat       = key.m_repeat;
   m_fromHttpApi  = key.m_fromHttpApi;
   m_buttonCode   = key.m_buttonCode;
-  m_VKey         = key.m_VKey;
-  m_wUnicode     = key.m_wUnicode;
-  m_cAscii       = key.m_cAscii;
-  m_Modifiers    = key.m_Modifiers;
+  m_vkey         = key.m_vkey;
+  m_unicode     = key.m_unicode;
+  m_ascii       = key.m_ascii;
+  m_modifiers    = key.m_modifiers;
   m_held         = key.m_held;
   return *this;
 }
