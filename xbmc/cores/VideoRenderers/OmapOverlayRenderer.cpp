@@ -69,9 +69,6 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     m_sourceWidth = width;
     m_sourceHeight = height;
 
-    // Set output to image size but pad it to be a multiple of 16
-    m_overlayWidth = (m_sourceWidth+15)&~15;
-
     // Open the framebuffer
     m_overlayfd = open("/dev/fb1", O_RDWR);
     if (m_overlayfd == -1)
@@ -89,25 +86,22 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     }
 
     // Enable the framebuffer
-    m_overlayScreenInfo.xres = m_overlayWidth;
-    m_overlayScreenInfo.yres = m_sourceHeight;
+    m_overlayScreenInfo.xres = m_sourceWidth  & ~15;
+    m_overlayScreenInfo.yres = m_sourceHeight & ~15;
     m_overlayScreenInfo.xoffset = 0;
     m_overlayScreenInfo.yoffset = 0;
     m_overlayScreenInfo.nonstd = OMAPFB_COLOR_YUY422;
 
     unsigned int frameSize = m_overlayScreenInfo.xres * m_overlayScreenInfo.yres * 2;
-    unsigned int memSize = 0;//m_overlayScreenInfo.size;
-
-    if (!memSize)
+    unsigned int wantedMemSize = frameSize * 2;
+    if (m_overlayMemInfo.size != wantedMemSize)
     {
-      struct omapfb_mem_info mi = m_overlayMemInfo;
-      mi.size = frameSize * 2;
+      m_overlayMemInfo.size = wantedMemSize;
       if (ioctl(m_overlayfd, OMAPFB_SETUP_MEM, &mi))
       {
         CLog::Log(LOGERROR, "OmapOverlay: Failed to setup memory");
         return false;
       }
-      memSize = mi.size;
     }
 
     uint8_t *fbmem = (uint8_t *)mmap(NULL, memSize, PROT_READ|PROT_WRITE, MAP_SHARED, m_overlayfd, 0);
@@ -141,8 +135,8 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
 
     m_overlayPlaneInfo.pos_x      = 0;
     m_overlayPlaneInfo.pos_y      = 0;
-    m_overlayPlaneInfo.out_width  = width;
-    m_overlayPlaneInfo.out_height = height;
+    m_overlayPlaneInfo.out_width  = m_overlayScreenInfo.xres;
+    m_overlayPlaneInfo.out_height = m_overlayScreenInfo.yres;
 
     if (ioctl(m_overlayfd, OMAPFB_SETUP_PLANE, &m_overlayPlaneInfo) == -1)
     {
@@ -153,7 +147,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     for (unsigned int i = 0; i < 2; i++)
     {
       FreeYV12Image(i);
-      CreateYV12Image(i, m_sourceWidth, m_sourceHeight);
+      CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
     }
 
     m_currentBuffer = 0;
@@ -205,7 +199,7 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
   YV12Image *image = &m_yuvBuffers[source];
 
   printf("Converting yuv %i - Begin\n", source);
-  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width & ~15, image->height & ~15, image->stride[0], image->stride[1], m_overlayWidth);
+  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width & ~15, image->height & ~15, image->stride[0], image->stride[1], m_overlayScreenInfo.xres);
   printf("Converting yuv %i - Done\n", source);
 }
 
@@ -246,7 +240,7 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
-  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w & ~15, h & ~15, stride[0], stride[1], m_overlayWidth);
+  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w & ~15, h & ~15, stride[0], stride[1], m_overlayScreenInfo.xres);
 
   return 0;
 }
@@ -322,12 +316,9 @@ bool COmapOverlayRenderer::CreateYV12Image(unsigned int index, unsigned int widt
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  unsigned paddedWidth = (im.width + 15) & ~15;
-  printf("w %i | padded %i\n", width, paddedWidth);
-
-  im.stride[0] = paddedWidth;
-  im.stride[1] = paddedWidth >> im.cshift_x;
-  im.stride[2] = paddedWidth >> im.cshift_x;
+  im.stride[0] = width;
+  im.stride[1] = width >> im.cshift_x;
+  im.stride[2] = width >> im.cshift_x;
 
   im.planesize[0] = im.stride[0] * im.height;
   im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );

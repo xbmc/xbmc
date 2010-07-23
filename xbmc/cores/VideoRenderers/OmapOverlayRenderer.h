@@ -164,8 +164,6 @@ private:
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
 
-  unsigned int m_overlayWidth;
-
   YV12Image    m_yuvBuffers[2];
   unsigned int m_currentBuffer;
 
