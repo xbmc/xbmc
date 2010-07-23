@@ -57,7 +57,7 @@
 		<green>Green</green>
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
-                <teletext>Teletext</teletext>
+		<teletext>Teletext</teletext>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
