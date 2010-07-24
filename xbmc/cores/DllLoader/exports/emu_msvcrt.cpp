@@ -181,6 +181,40 @@ static int convert_fmode(const char* mode)
   return iMode;
 }
 
+#ifdef _WIN32
+static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
+{
+  CStdStringW strwname(wdata->name);
+  CStdString strname;
+  g_charsetConverter.wToUTF8(strwname, strname);
+  int size = sizeof(data->name);
+  strncpy(data->name, strname.c_str(), size);
+  if (size)
+    data->name[size - 1] = '\0';
+  data->attrib = wdata->attrib;
+  data->time_create = wdata->time_create;
+  data->time_access = wdata->time_access;
+  data->time_write = wdata->time_write;
+  data->size = wdata->size;
+}
+
+static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
+{
+  CStdString strname(data->name);
+  CStdStringW strwname;
+  g_charsetConverter.utf8ToW(strname, strwname, false);
+  int size = sizeof(wdata->name) / sizeof(wchar_t);
+  wcsncpy(wdata->name, strwname.c_str(), size);
+  if (size)
+    wdata->name[size - 1] = '\0';
+  wdata->attrib = data->attrib;
+  wdata->time_create = data->time_create;
+  wdata->time_access = data->time_access;
+  wdata->time_write = data->time_write;
+  wdata->size = data->size;
+}
+#endif
+
 extern "C"
 {
   void dll_sleep(unsigned long imSec)
@@ -712,7 +746,14 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(CUtil::ValidatePath(_P(str)), data);
+      struct _wfinddata64i32_t wdata;
+      CStdString strfile = CUtil::ValidatePath(_P(str));
+      CStdStringW strwfile;
+      g_charsetConverter.utf8ToW(strfile, strwfile, false);
+      intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -789,7 +830,14 @@ extern "C"
       }
     }
     if (found >= MAX_OPEN_DIRS)
-      return _findnext64i32(f, data); // local dir
+    {
+      struct _wfinddata64i32_t wdata;
+      to_wfinddata64i32(data, &wdata);
+      intptr_t ret = _wfindnext64i32(f, &wdata); // local dir
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
+    }
 
     // we have a valid data struture. get next item!
     int iItem = vecDirsOpen[found].curr_index;
