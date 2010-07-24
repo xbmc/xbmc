@@ -52,6 +52,7 @@ private:
   void SeekChapter(int iChapter);
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
+  void ToggleOSD();
 
   enum SEEK_TYPE { SEEK_ABSOLUTE, SEEK_RELATIVE };
   enum SEEK_DIRECTION { SEEK_FORWARD, SEEK_BACKWARD };
