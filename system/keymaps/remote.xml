@@ -142,7 +142,6 @@
       <start>OSD</start>
       <title>CodecInfo</title>
       <info>Info</info>
-      <select>AspectRatio</select>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
       <language>AudioNextLanguage</language>

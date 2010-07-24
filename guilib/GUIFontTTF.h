@@ -35,11 +35,13 @@ struct FT_FaceRec_;
 struct FT_LibraryRec_;
 struct FT_GlyphSlotRec_;
 struct FT_BitmapGlyphRec_;
+struct FT_StrokerRec_;
 
 typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
+typedef struct FT_StrokerRec_ *FT_Stroker;
 
 typedef uint32_t character_t;
 typedef uint32_t color_t;
@@ -70,7 +72,7 @@ public:
 
   void Clear();
 
-  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
+  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
 
   virtual void Begin() = 0;
   virtual void End() = 0;
@@ -138,6 +140,7 @@ protected:
 
   // freetype stuff
   FT_Face    m_face;
+  FT_Stroker m_stroker;
 
   float m_originX;
   float m_originY;

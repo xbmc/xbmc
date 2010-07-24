@@ -48,6 +48,7 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "DateTime.h"
 
 #include <stdio.h>
 
@@ -195,6 +196,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   switch (action.GetID())
   {
+  case ACTION_SHOW_OSD:
+    ToggleOSD();
+    return true;
 
   case ACTION_SHOW_GUI:
     {
@@ -206,23 +210,45 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_SELECT_ITEM:
+  case ACTION_PLAYER_PLAY:
+  case ACTION_PAUSE:
+    if (m_timeCodePosition > 0)
+    {
+      SeekToTimeCodeStamp(SEEK_ABSOLUTE);
+      return true;
+    }
+    break;
+
   case ACTION_STEP_BACK:
-    g_application.m_pPlayer->Seek(false, false);
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+    else
+      g_application.m_pPlayer->Seek(false, false);
     return true;
     break;
 
   case ACTION_STEP_FORWARD:
-    g_application.m_pPlayer->Seek(true, false);
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+    else
+      g_application.m_pPlayer->Seek(true, false);
     return true;
     break;
 
   case ACTION_BIG_STEP_BACK:
-    g_application.m_pPlayer->Seek(false, true);
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+    else
+      g_application.m_pPlayer->Seek(false, true);
     return true;
     break;
 
   case ACTION_BIG_STEP_FORWARD:
-    g_application.m_pPlayer->Seek(true, true);
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+    else
+      g_application.m_pPlayer->Seek(true, true);
     return true;
     break;
 
@@ -405,6 +431,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     return true;
     break;
   case ACTION_SMALL_STEP_BACK:
+    if (m_timeCodePosition > 0)
+      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+    else
     {
       int orgpos = (int)g_application.GetTime();
       int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
@@ -534,11 +563,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         fontPath += g_guiSettings.GetString("subtitles.font");
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, 1.0f, RES_PAL_4x3, true);
-        if (!subFont)
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), false, 1.0f, 1.0f, RES_PAL_4x3, true);
+        CGUIFont *borderFont = g_fontManager.LoadTTF("__subtitleborder__", fontPath, 0xFF000000, 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), true, 1.0f, 1.0f, RES_PAL_4x3, true);
+        if (!subFont || !borderFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
-          m_subsLayout = new CGUITextLayout(subFont, true);
+          m_subsLayout = new CGUITextLayout(subFont, true, 0, borderFont);
       }
       else
         m_subsLayout = NULL;
@@ -573,6 +603,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (m_subsLayout)
       {
         g_fontManager.Unload("__subtitle__");
+        g_fontManager.Unload("__subtitleborder__");
         delete m_subsLayout;
         m_subsLayout = NULL;
       }
@@ -736,17 +767,20 @@ void CGUIWindowFullScreen::FrameMove()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "hh:mm";
+    CStdString strDispTime = "00:00:00";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-    for (int count = 0; count < m_timeCodePosition; count++)
+
+    for (int pos = 7, i = m_timeCodePosition; pos >= 0 && i > 0; pos--)
     {
-      if (m_timeCodeStamp[count] == -1)
-        strDispTime[count] = ':';
-      else
-        strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
+      if (strDispTime[pos] != ':')
+      {
+        i -= 1;
+        strDispTime[pos] = (char)m_timeCodeStamp[i] + '0';
+      }
     }
-    strDispTime += "/" + g_infoManager.GetLabel(PLAYER_DURATION) + " [" + g_infoManager.GetLabel(PLAYER_TIME) + "]"; // duration [ time ]
+
+    strDispTime += "/" + g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS) + " [" + g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }
@@ -791,7 +825,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
     if(!m_subsLayout)
       return;
 
-    CStdString subtitleText;
+    CStdString subtitleText = "How now brown cow";
     if (g_application.m_pPlayer->GetCurrentSubtitle(subtitleText))
     {
       // Remove HTML-like tags from the subtitles until
@@ -834,35 +868,48 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 
 void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
-  if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
+  if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
     m_timeCodeShow = true;
     m_timeCodeTimeout = CTimeUtils::GetTimeMS();
-    int itime = remote - 58;
-    if (m_timeCodePosition <= 4 && m_timeCodePosition != 2)
-    {
-      m_timeCodeStamp[m_timeCodePosition++] = itime;
-      if (m_timeCodePosition == 2)
-        m_timeCodeStamp[m_timeCodePosition++] = -1;
-    }
-    if (m_timeCodePosition > 4)
-    {
-      long itotal, ih, im, is = 0;
-      ih = (m_timeCodeStamp[0] - 0) * 10;
-      ih += (m_timeCodeStamp[1] - 0);
-      im = (m_timeCodeStamp[3] - 0) * 10;
-      im += (m_timeCodeStamp[4] - 0);
-      im *= 60;
-      ih *= 3600;
-      itotal = ih + im + is;
 
-      if (itotal < g_application.GetTotalTime())
-        g_application.SeekTime((double)itotal);
-
-      m_timeCodePosition = 0;
-      m_timeCodeShow = false;
+    if (m_timeCodePosition < 6)
+      m_timeCodeStamp[m_timeCodePosition++] = remote - REMOTE_0;
+    else
+    {
+      // rotate around
+      for (int i = 0; i < 5; i++)
+        m_timeCodeStamp[i] = m_timeCodeStamp[i+1];
+      m_timeCodeStamp[5] = remote - REMOTE_0;
     }
   }
+}
+
+void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION direction)
+{
+  double total = GetTimeCodeStamp();
+  if (type == SEEK_RELATIVE)
+    total = g_application.GetTime() + (((direction == SEEK_FORWARD) ? 1 : -1) * total);
+
+  if (total < g_application.GetTotalTime())
+    g_application.SeekTime(total);
+
+  m_timeCodePosition = 0;
+  m_timeCodeShow = false;
+}
+
+double CGUIWindowFullScreen::GetTimeCodeStamp()
+{
+  // Convert the timestamp into an integer
+  int tot = 0;
+  for (int i = 0; i < m_timeCodePosition; i++)
+    tot = tot * 10 + m_timeCodeStamp[i];
+
+  // Interpret result as HHMMSS
+  int s = tot % 100; tot /= 100;
+  int m = tot % 100; tot /= 100;
+  int h = tot % 100;
+  return h * 3600 + m * 60 + s;
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
@@ -909,5 +956,17 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
       g_settings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
     }
+  }
+}
+
+void CGUIWindowFullScreen::ToggleOSD()
+{
+  CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
+  if (pOSD)
+  {
+    if (pOSD->IsDialogRunning())
+      pOSD->Close();
+    else
+      pOSD->DoModal();
   }
 }
