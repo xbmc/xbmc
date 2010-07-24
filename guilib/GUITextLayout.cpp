@@ -44,9 +44,10 @@ CStdString CGUIString::GetAsString() const
   return text;
 }
 
-CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight)
+CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
 {
   m_font = font;
+  m_borderFont = borderFont;
   m_textColor = 0;
   m_wrap = wrap;
   m_maxHeight = fHeight;
@@ -156,6 +157,22 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
     alignment &= ~XBFONT_CENTER_Y;
   }
+  if (m_borderFont)
+  {
+    float by = y;
+    m_borderFont->Begin();
+    for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
+    {
+      const CGUIString &string = *i;
+      uint32_t align = alignment;
+      if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
+        align &= ~XBFONT_JUSTIFIED;
+
+      m_borderFont->DrawText(x, by, m_colors, 0, string.m_text, align, maxWidth);
+      by += m_borderFont->GetLineHeight();
+    }
+    m_borderFont->End();
+  }
   m_font->Begin();
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
@@ -164,7 +181,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
 
-    DrawOutlineText(m_font, x, y, m_colors, outlineColor, outlineWidth, string.m_text, align, maxWidth);
+    m_font->DrawText(x, y, m_colors, 0, string.m_text, align, maxWidth);
     y += m_font->GetLineHeight();
   }
   m_font->End();
