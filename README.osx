@@ -145,13 +145,18 @@ first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
  $ ./bootstrap
+ $ make -C lib/librtmp
+ $ sudo make -C lib/librtmp install
  $ ./configure
  $ make clean
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
+ $ make -C lib/addons/script.module.pysqlite
+ $ sh lib/librtmp/darwin_package_librtmp.sh
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-and command-line building. The "make clean" ensures that there areno stale
+and command-line building. The "make clean" ensures that there are no stale
 binaries from svn that might cause problems The last step will pre-build
 the majority of the codecs and libs:
 
@@ -215,6 +220,9 @@ before running xcodebuild from the command-line.
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
+ $ make -C lib/addons/script.module.pysqlite
+ $ sh lib/librtmp/darwin_package_librtmp.sh
  $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
 
  b)
@@ -229,30 +237,11 @@ before running xcodebuild from the command-line.
 This section describes how to package XBMC in a disk image for
 distribution.
 
-  1. Create 2 directories "extras/user" and "extras/system" in the root of
-  the source tree.
+  1. build XBMC.app from XCode so that the application bundle is correctly updated.
 
-    1.1. "extras/user" - anything found in this directory will be
-    copied to the users XBMC directory (~/Library/Application
-    Support/XBMC) on first run. Examples:
+  2. make -C tools/PackageMaker/
 
-        extras/user/scripts/XBMC Lyrics
-        extras/user/plugins/music/iTunes
-
-    1.2. "extras/system" - anything found in this directory will be
-    copied to the XBMC application bundle at build time
-    (XBMC.app/Contents/Resources/XBMC/). Examples:
-
-        extras/system/skin/MediaStream
-        extras/system/skin/My Skin
-
-
-  2. After performing step 1, build XBMC.app from XCode so that the
-  application bundle is correctly updated.
-
-  3. make -C tools/PackageMaker/
-
-  4. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
+  3. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
   present in the users XBMC build directory:
 
 Remember to unmount/eject XBMC.dmg before attempting to recreate it,
