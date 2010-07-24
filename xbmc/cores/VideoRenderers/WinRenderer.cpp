@@ -777,9 +777,10 @@ void CWinRenderer::Stage1(DWORD flags)
     pD3DDevice->GetDepthStencilSurface(&oldDS);
     pD3DDevice->SetDepthStencilSurface(newDS);
 
+    CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
 
-    m_colorShader->Render(m_sourceWidth, m_sourceHeight, m_sourceRect, rtRect,
+    m_colorShader->Render(m_sourceWidth, m_sourceHeight, srcRect, rtRect,
                                 g_settings.m_currentVideoSettings.m_Contrast,
                                 g_settings.m_currentVideoSettings.m_Brightness,
                                 m_flags,
