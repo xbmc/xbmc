@@ -530,6 +530,11 @@
 						<label>5</label>
 						<onclick>ActivateWindow(Settings)</onclick>
 					</control>
+					<control type="button" id="90146">
+						<include>ButtonHomeSubCommonValues</include>
+						<label>24001</label>
+						<onclick>ActivateWindow(AddonBrowser)</onclick>
+					</control>
 					<control type="button" id="90142">
 						<include>ButtonHomeSubCommonValues</include>
 						<label>7</label>

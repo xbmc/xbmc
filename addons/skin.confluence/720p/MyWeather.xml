@@ -741,6 +741,7 @@
 					<itemgap>0</itemgap>
 					<control type="radiobutton" id="200">
 						<description>Fanart Toggle</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(ShowWeatherFanart)</onclick>
@@ -748,6 +749,7 @@
 					</control>
 					<control type="button" id="201">
 						<description>Search</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31317</label>
 						<onclick>Skin.SetPath(WeatherFanartDir)</onclick>

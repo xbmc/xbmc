@@ -1189,7 +1189,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>375</width>
+					<width>600</width>
 					<height>210</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
@@ -1200,72 +1200,18 @@
 				<control type="image">
 					<posx>8</posx>
 					<posy>202</posy>
-					<width>359</width>
+					<width>600</width>
 					<height>194</height>
 					<aspectratio aligny="top">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 				</control>
-				<control type="label">
-					<description>Title txt</description>
-					<posx>380</posx>
-					<posy>0</posy>
-					<width>235</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Title]</label>
-					<align>left</align>
-					<aligny>top</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<wrapmultiline>true</wrapmultiline>
-				</control>
-				<control type="label">
-					<description>Season txt</description>
-					<posx>380</posx>
-					<posy>130</posy>
-					<width>235</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Season,[COLOR=blue]$LOCALIZE[20373] :[/COLOR] ]</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Episodes Value</description>
-					<posx>380</posx>
-					<posy>155</posy>
-					<width>235</width>
-					<height>25</height>
-					<label>$INFO[ListItem.episode,[COLOR=blue]$LOCALIZE[20359] :[/COLOR] ]</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<scroll>true</scroll>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>First Aired txt</description>
-					<posx>380</posx>
-					<posy>180</posy>
-					<width>235</width>
-					<height>25</height>
-					<label>$INFO[ListItem.premiered,[COLOR=blue]$LOCALIZE[31322] :[/COLOR] ]</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
 				<control type="grouplist">
 					<description>Media Codec Flagging Images</description>
 					<posx>0</posx>
-					<posy>220</posy>
+					<posy>210</posy>
 					<width>600</width>
-					<align>left</align>
+					<align>center</align>
 					<itemgap>0</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VideoCodecFlaggingConditions</include>
@@ -1273,9 +1219,23 @@
 					<include>AspectCodecFlaggingConditions</include>
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
+				<control type="label">
+					<description>INFO txt</description>
+					<posx>0</posx>
+					<posy>245</posy>
+					<width>600</width>
+					<height>25</height>
+					<label>$INFO[ListItem.Season,[COLOR=blue] $LOCALIZE[20373] :[/COLOR] ] $INFO[ListItem.episode,[COLOR=blue] $LOCALIZE[20359] :[/COLOR] ] $INFO[ListItem.premiered,[COLOR=blue] $LOCALIZE[31322] :[/COLOR] ]</label>
+					<align>center</align>
+					<aligny>top</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<wrapmultiline>true</wrapmultiline>
+				</control>
 				<control type="image">
 					<posx>0</posx>
-					<posy>265</posy>
+					<posy>275</posy>
 					<width>600</width>
 					<height>4</height>
 					<texture>separator.png</texture>
@@ -1283,7 +1243,7 @@
 				<control type="textbox">
 					<description>Description Value for TVShows</description>
 					<posx>0</posx>
-					<posy>270</posy>
+					<posy>280</posy>
 					<width>600</width>
 					<height>140</height>
 					<font>font12</font>

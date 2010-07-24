@@ -412,10 +412,10 @@ void CScraperParser::Clean(CStdString& strDirty)
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
-      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      RemoveWhiteSpace(strConverted);
       strDirty.erase(i,i2-i+11);
-      strDirty.Insert(i,szTrimmed);
-      i += strlen(szTrimmed);
+      strDirty.Insert(i,strConverted);
+      i += strConverted.size();
     }
     else
       break;
@@ -427,10 +427,10 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != -1)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
-      const char* szTrimmed = RemoveWhiteSpace(strBuffer.c_str());
+      RemoveWhiteSpace(strBuffer);
       strDirty.erase(i,i2-i+10);
-      strDirty.Insert(i,szTrimmed);
-      i += strlen(szTrimmed);
+      strDirty.Insert(i,strBuffer);
+      i += strBuffer.size();
     }
     else
       break;
@@ -444,10 +444,10 @@ void CScraperParser::Clean(CStdString& strDirty)
       strBuffer = strDirty.substr(i+14,i2-i-14);
       CStdString strConverted;
       HTML::CHTMLUtil::ConvertHTMLToAnsi(strBuffer,strConverted);
-      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      RemoveWhiteSpace(strConverted);
       strDirty.erase(i,i2-i+14);
-      strDirty.Insert(i,szTrimmed);
-      i += strlen(szTrimmed);
+      strDirty.Insert(i,strConverted);
+      i += strConverted.size();
     }
     else
       break;
@@ -469,17 +469,10 @@ void CScraperParser::Clean(CStdString& strDirty)
   }
 }
 
-char* CScraperParser::RemoveWhiteSpace(const char *string2)
+void CScraperParser::RemoveWhiteSpace(CStdString &string)
 {
-  if (!string2) return (char*)"";
-  char* string = (char*)string2;
-  size_t pos = strlen(string)-1;
-  while ((string[pos] == ' ' || string[pos] == '\n' || string[pos] == '\t') 
-         && string[pos] && pos)
-    string[pos--] = '\0';
-  while ((*string == ' ' || *string == '\n' || *string == '\t') && *string != '\0')
-    string++;
-  return string;
+  string.TrimLeft(" \t\r\n");
+  string.TrimRight(" \t\r\n");
 }
 
 void CScraperParser::ClearBuffers()
