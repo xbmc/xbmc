@@ -142,14 +142,14 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
     g_graphicsContext.RemoveTransform();
 }
 
-void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth)
+void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth)
 {
   if (!m_font)
     return;
 
-  // set the main text color
+  // set the outline color
   if (m_colors.size())
-    m_colors[0] = color;
+    m_colors[0] = outlineColor;
 
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
@@ -173,6 +173,11 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     }
     m_borderFont->End();
   }
+
+  // set the main text color
+  if (m_colors.size())
+    m_colors[0] = color;
+
   m_font->Begin();
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
