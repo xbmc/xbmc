@@ -129,7 +129,7 @@ enum BufferMemoryType
 
 struct SVideoBuffer
 {
-  virtual ~SVideoBuffer() { Release(); }
+  virtual ~SVideoBuffer() {}
   virtual void Release() {};            // Release any allocated resource
   virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
   virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
@@ -145,11 +145,12 @@ struct SVideoPlane
 
 struct YUVBuffer : SVideoBuffer
 {
+  ~YUVBuffer();
   bool Create(BufferMemoryType memoryType, unsigned int width, unsigned int height);
-  void Release();
-  void StartDecode();
-  void StartRender();
-  void Clear();
+  virtual void Release();
+  virtual void StartDecode();
+  virtual void StartRender();
+  virtual void Clear();
 
   SVideoPlane planes[MAX_PLANES];
 
@@ -166,8 +167,9 @@ struct DXVABuffer : SVideoBuffer
     proc = NULL;
     id   = 0;
   }
-  void Release();
-  void StartDecode();
+  ~DXVABuffer();
+  virtual void Release();
+  virtual void StartDecode();
 
   DXVA::CProcessor* proc;
   int64_t           id;

@@ -988,6 +988,11 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
 
 //============================================
 
+YUVBuffer::~YUVBuffer()
+{
+  Release();
+}
+
 bool YUVBuffer::Create(BufferMemoryType memoryType, unsigned int width, unsigned int height)
 {
   m_memoryType = memoryType;
@@ -1067,6 +1072,11 @@ void YUVBuffer::Clear()
 }
 
 //==================================
+
+DXVABuffer::~DXVABuffer()
+{
+  Release();
+}
 
 void DXVABuffer::Release()
 {
