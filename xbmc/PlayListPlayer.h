@@ -47,24 +47,100 @@ public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
   virtual bool OnMessage(CGUIMessage &message);
-  void PlayNext(int offset = 1, bool bAutoPlay = false);
+
+  /*! \brief Play the next (or another) entry in the current playlist
+   \param offset The offset from the current entry (defaults to 1, i.e. the next entry).
+   \param autoPlay Whether we should start playing if not already (defaults to false).
+   */
+  void PlayNext(int offset = 1, bool autoPlay = false);
+
+  /*! \brief Play the previous entry in the current playlist
+   \sa PlayNext
+   */
   void PlayPrevious();
+
   void Play();
-  void Play(int iSong, bool bAutoPlay = false, bool bPlayPrevious = false);
+
+  /*! \brief Start playing a particular entry in the current playlist
+   \param index the index of the item to play. This value is modified to ensure it lies within the current playlist.
+   \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
+   \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
+   */
+  void Play(int index, bool replace = false, bool playPreviousOnFail = false);
+
+  /*! \brief Returns the index of the current item in active playlist.
+   \return Current item in the active playlist.
+   \sa SetCurrentSong
+   */
   int GetCurrentSong() const;
-  int GetNextSong(int offset) const; ///< Returns the song index that is offset away from the current song
+
+  /*! \brief Change the current item in the active playlist.
+   \param index item index in playlist. Set only if the index is within the range of the current playlist.
+   \sa GetCurrentSong
+   */
+  void SetCurrentSong(int index);
+
   int GetNextSong();
-  void SetCurrentSong(int iSong);
-  void SetCurrentPlaylist(int iPlaylist);
+  
+  /*! \brief Get the index in the playlist that is offset away from the current index in the current playlist.
+   Obeys any repeat settings (eg repeat one will return the current index regardless of offset)
+   \return the index of the entry, or -1 if there is no current playlist. There is no guarantee that the returned index is valid.
+   */
+  int GetNextSong(int offset) const;
+
+  /*! \brief Set the active playlist
+   \param playList Values can be PLAYLIST_NONE, PLAYLIST_MUSIC or PLAYLIST_VIDEO
+   \sa GetCurrentPlaylist
+   */
+  void SetCurrentPlaylist(int playlist);
+
+  /*! \brief Get the currently active playlist
+   \return PLAYLIST_NONE, PLAYLIST_MUSIC or PLAYLIST_VIDEO
+   \sa SetCurrentPlaylist, GetPlaylist
+   */
   int GetCurrentPlaylist() const;
-  CPlayList& GetPlaylist(int iPlaylist);
+
+  /*! \brief Get a particular playlist object
+   \param playList Values can be PLAYLIST_MUSIC or PLAYLIST_VIDEO
+   \return A reference to the CPlayList object.
+   \sa GetCurrentPlaylist
+   */
+  CPlayList& GetPlaylist(int playlist);
   const CPlayList& GetPlaylist(int iPlaylist) const;
+
+  /*! \brief Removes any item from all playlists located on a removable share
+   \return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
+   */
   int RemoveDVDItems();
+
+  /*! \brief Resets the current song and unplayable counts.
+   Does not alter the active playlist.
+  */
   void Reset();
+
   void ClearPlaylist(int iPlaylist);
   void Clear();
-  void SetShuffle(int iPlaylist, bool bYesNo);
+
+  /*! \brief Set shuffle state of a playlist.
+   If the shuffle state changes, the playlist is shuffled or unshuffled.
+   Has no effect if Party Mode is enabled.
+   \param playlist the playlist to (un)shuffle, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
+   \param shuffle set true to shuffle, false to unshuffle.
+   \sa IsShuffled
+   */
+  void SetShuffle(int playlist, bool shuffle);
+  
+  /*! \brief Return whether a playlist is shuffled.
+   If partymode is enabled, this always returns false.
+   \param playlist the playlist to query for shuffle state, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
+   \return true if the given playlist is shuffled and party mode isn't enabled, false otherwise.
+   \sa SetShuffle
+   */
   bool IsShuffled(int iPlaylist) const;
+
+  /*! \brief Return whether or not something has been played yet from the current playlist.
+   \return true if something has been played, false otherwise.
+   */
   bool HasPlayedFirstFile() const;
 
   void SetRepeat(int iPlaylist, REPEAT_STATE state);
@@ -76,8 +152,18 @@ public:
   void Add(int iPlaylist, CFileItemList& items);
 
 protected:
-  bool Repeated(int iPlaylist) const;
-  bool RepeatedOne(int iPlaylist) const;
+  /*! \brief Returns true if the given is set to repeat all
+   \param playlist Playlist to be query
+   \return true if the given playlist is set to repeat all, false otherwise.
+   */
+  bool Repeated(int playlist) const;
+
+  /*! \brief Returns true if the given is set to repeat one
+   \param playlist Playlist to be query
+   \return true if the given playlist is set to repeat one, false otherwise.
+   */
+  bool RepeatedOne(int playlist) const;
+
   void ReShuffle(int iPlaylist, int iPosition);
 
   bool m_bPlayedFirstFile;

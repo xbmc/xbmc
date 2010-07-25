@@ -75,4 +75,5 @@
       <hat id="1" position="up">Up</hat>
       <hat id="1" position="down">Down</hat>
     </joystick>
+  </global>
 </keymap>
