@@ -72,7 +72,7 @@ static bool LoadTexture(int width, int height, int stride
   D3DLOCKED_RECT lr;
   if (!texture->LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)");
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
     texture->Release();
     return false;
   }
@@ -106,7 +106,12 @@ static bool LoadTexture(int width, int height, int stride
     memcpy(dst, src, bpp * width);
   }
 
-  texture->UnlockRect(0);
+  if (!texture->UnlockRect(0))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture");
+    texture->Release();
+    return false;
+  }
 
   return true;
 }

@@ -114,6 +114,10 @@ void CDXTexture::LoadToGPU()
       }
     }
   }
+  else
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
+  }
   m_texture.UnlockRect(0);
 
   delete [] m_pixels;
