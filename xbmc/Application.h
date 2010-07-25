@@ -74,6 +74,7 @@ class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CGUITextLayout;
 
 class CBackgroundPlayer : public CThread
 {
@@ -334,6 +335,8 @@ protected:
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
+  
+  CGUITextLayout *m_debugLayout;
 
 #ifdef HAS_SDL
   int        m_frameCount;

@@ -98,7 +98,6 @@ public:
 
 
   static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text);
   static void Filter(CStdString &text);
 
 protected:
@@ -138,7 +137,6 @@ private:
   };
   static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth);
   static void ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText);
 
   static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);

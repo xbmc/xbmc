@@ -335,6 +335,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
+  m_debugLayout = NULL;
 }
 
 CApplication::~CApplication(void)
@@ -1660,6 +1661,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
 
+  delete m_debugLayout;
+  m_debugLayout = NULL;
+
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
@@ -2103,6 +2107,16 @@ void CApplication::RenderMemoryStatus()
     lastShift = now;
   }
 
+  if (!m_debugLayout)
+  {
+    CGUIFont *font13 = g_fontManager.GetDefaultFont();
+    CGUIFont *font13border = g_fontManager.GetDefaultFont(true);
+    if (font13)
+      m_debugLayout = new CGUITextLayout(font13, true, 0, font13border);
+  }
+  if (!m_debugLayout)
+    return;
+
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
     CStdString info;
@@ -2123,7 +2137,8 @@ void CApplication::RenderMemoryStatus()
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 
   // render the skin debug info
@@ -2156,7 +2171,9 @@ void CApplication::RenderMemoryStatus()
 
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.08f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 }
 

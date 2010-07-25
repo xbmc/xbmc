@@ -579,39 +579,6 @@ void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, c
   font->DrawText(x, y, color, shadowColor, utf32, align, 0);
 }
 
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text)
-{
-  if (!font) return;
-  vecText utf32;
-  AppendToUTF32(text, 0, utf32);
-  vecColors colors;
-  colors.push_back(color);
-  DrawOutlineText(font, x, y, colors, outlineColor, outlineWidth, utf32, 0, 0);
-}
-
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth)
-{
-  if (outlineWidth)
-  {
-    outlineWidth = (int32_t)(outlineWidth * font->GetScaleFactor() + 0.5f);
-    if (outlineWidth < 2)
-      outlineWidth = 2;
-  }
-
-  for (unsigned int i = 1; i < outlineWidth; i++)
-  {
-    unsigned int ymax = (unsigned int)(sqrt((float)outlineWidth*outlineWidth - i*i) + 0.5f);
-    for (unsigned int j = 1; j < ymax; j++)
-    {
-      font->DrawText(x - i, y + j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x - i, y - j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x + i, y + j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x + i, y - j, outlineColor, 0, text, align, maxWidth);
-    }
-  }
-  font->DrawText(x, y, colors, 0, text, align, maxWidth);
-}
-
 void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32)
 {
   // NOTE: Assumes a single line of text
