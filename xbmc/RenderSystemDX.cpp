@@ -58,6 +58,10 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 
   m_pD3D        = NULL;
   m_pD3DDevice  = NULL;
+  m_devType     = D3DDEVTYPE_HAL;
+#if defined(DEBUG_PS) || defined (DEBUG_VS)
+    m_devType = D3DDEVTYPE_REF
+#endif
   m_hFocusWnd   = NULL;
   m_hDeviceWnd  = NULL;
   m_nBackBufferWidth  = 0;
@@ -92,11 +96,19 @@ bool CRenderSystemDX::InitRenderSystem()
 
   if (m_useD3D9Ex)
   {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - trying D3D9Ex...");
     if (FAILED(g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
-      return false;
-    CLog::Log(LOGDEBUG, "%s - using D3D9Ex", __FUNCTION__);
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - D3D9Ex creation failure, falling back to D3D9");
+      m_useD3D9Ex = false;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - using D3D9Ex");
+    }
   }
-  else
+
+  if (!m_useD3D9Ex)
   {
     m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
     if(m_pD3D == NULL)
@@ -319,12 +331,6 @@ bool CRenderSystemDX::CreateDevice()
     return false;
 
   CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
-
-  m_devType = D3DDEVTYPE_HAL;
-
-#if defined(DEBUG_PS) || defined (DEBUG_VS)
-    m_devType = D3DDEVTYPE_REF
-#endif
 
   BuildPresentParameters();
 
