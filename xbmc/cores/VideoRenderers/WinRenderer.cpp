@@ -734,7 +734,7 @@ void CWinRenderer::RenderSW(DWORD flags)
   if(FAILED(pD3DDevice->StretchRect(source, &srcRect, target, &dstRect, m_StretchRectFilter)))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - unable to StretchRect");
-    if (!(m_deviceCaps.Caps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES))
+    if (!(m_deviceCaps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES))
       CLog::Log(LOGDEBUG, __FUNCTION__" - missing D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES");
   }
 
