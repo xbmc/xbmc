@@ -1040,14 +1040,16 @@ namespace VIDEO
           CUtil::GetDirectory(pItem->m_strPath, strPath);
           onlineThumb = CUtil::AddFileToFolder(strPath, onlineThumb);
         }
-        DownloadImage(onlineThumb, cachedThumb, true, pDialog, bApplyToDir ? parentDir : "");
+        DownloadImage(onlineThumb, cachedThumb, true, pDialog);
       }
     }
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, parentDir);
+    if (bApplyToDir)
+      ApplyThumbToFolder(parentDir, cachedThumb);
   }
 
-  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */, const CStdString &directory /*= "" */)
+  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)
   {
     if (progress)
     {
@@ -1064,8 +1066,6 @@ namespace VIDEO
       CFile::Delete(destination);
       return;
     }
-    if (!directory.IsEmpty())
-      ApplyThumbToFolder(directory, destination);
   }
 
   INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
