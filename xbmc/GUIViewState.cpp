@@ -36,6 +36,7 @@
 #include "addons/AddonManager.h"
 #include "ViewState.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "Key.h"
@@ -339,6 +340,9 @@ VECSOURCES& CGUIViewState::GetSources()
 
 void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
 {
+  if (!g_advancedSettings.m_bVirtualShares)
+    return;
+
   CFileItemList items;
   if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
   { // add the plugin source
