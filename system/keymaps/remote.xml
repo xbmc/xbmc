@@ -365,6 +365,16 @@
     <remote>
     </remote>
   </AddonBrowser>
+  <AddonInformation>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonInformation>
+  <AddonSettings>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonSettings>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>

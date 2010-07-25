@@ -482,6 +482,16 @@
       <key id='65446'>Close</key>
     </keyboard>
   </MovieInformation>
+  <AddonInformation>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </AddonInformation>
+  <AddonSettings>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </AddonSettings>
   <LockSettings>
     <keyboard>
       <escape>Close</escape>

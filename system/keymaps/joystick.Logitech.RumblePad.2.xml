@@ -237,4 +237,17 @@
       <button id="3">Close</button>
     </joystick>
   </PictureInfo>
+
+  <AddonInformation>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <button id="3">Close</button>
+    </joystick>
+  </AddonInformation>
+
+  <AddonSettings>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <button id="3">Close</button>
+    </joystick>
+  </AddonSettings>
+
 </keymap>

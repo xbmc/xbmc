@@ -258,4 +258,14 @@
       <button id="6">ParentDir</button>
     </joystick>
   </AddonBrowser>
+  <AddonInformation>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonSettings>
 </keymap>
