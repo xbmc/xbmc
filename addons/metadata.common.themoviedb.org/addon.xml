@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.themoviedb.org"
        name="The MovieDB common scraper functions"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -16,10 +16,12 @@
     <summary lang="hu">TMDb leolvasó-könyvtár</summary>
     <summary lang="nl">TMDb Scraper Collectie</summary>
     <summary lang="pt">Scraper de filmes TMDb</summary>
+    <summary lang="pl">Scraper biblioteki TMDb</summary>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
     <description lang="es">Descarga información, posters y fanart de www.themoviedb.org</description>
     <description lang="hu">Bélyeg- és fanartképek letöltése a www.themoviedb.org webhelyről</description>
     <description lang="nl">Download afbeeldingen en fanart van www.themoviedb.org</description>
     <description lang="pt">Descarregar informação de filmes de www.themoviedb.org</description>
+    <description lang="pl">Pobieraj ikony i fanarty z www.themoviedb.org</description>
   </extension>
 </addon>
