@@ -214,6 +214,7 @@
 					<itemgap>0</itemgap>
 					<control type="radiobutton" id="14">
 						<description>Watched Toggle</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>20367</label>
 					</control>
@@ -224,6 +225,7 @@
 					</control>
 					<control type="radiobutton" id="19">
 						<description>Filter</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>587</label>
 					</control>
