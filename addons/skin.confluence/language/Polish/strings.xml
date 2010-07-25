@@ -1,23 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/06/2009-->
+<!--Translator: Rafał Wójcik-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 07/25/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
+  <string id="31001">Lubię</string>
+  <string id="31002">Nie lubię</string>
   <string id="31003">Opcje zasilania</string>
+  <string id="31004">Pracuję...</string>
+  <string id="31005">Ukryj info</string>
   <string id="31007">Wtyczki</string>
   <string id="31020">Ostatnio dodane</string>
-  <string id="31021">Wideo - Pliki</string>
-  <string id="31022">Muzyka - Pliki</string>
+  <string id="31021">Wideo p pliki</string>
+  <string id="31022">Muzyka - pliki</string>
   <string id="31023">Otwarzam</string>
   <string id="31024">strona</string>
   <string id="31025">pozycji</string>
-  <string id="31026">Dostosuj</string>
+  <string id="31026">Różne opcje</string>
   <string id="31027">Lokalizacja</string>
   <string id="31028">Plakaty</string>
+  <string id="31029">Fanart</string>
   <string id="31030">Pełna lista</string>
-  <string id="31031">Podgląd</string>
-  <string id="31032">Przezrocze</string>
+  <string id="31031">Miniatury zdjęć</string>
+  <string id="31033">info</string>
   <string id="31040">Teraz odtwarzane</string>
   <string id="31042">ODTWARZAM</string>
   <string id="31043">PAUZA</string>
@@ -33,35 +40,84 @@
   <string id="31058">Dostępne w systemie pliki muzyczne</string>
   <string id="31059">Obecna playlista</string>
   <string id="31060">Pozycja w wyniku połączenia części[CR]wybierz, którą chcesz odtwarzać.</string>
+  <string id="31061">Aktualnie wybrany</string>
   <string id="31101">Opcje ekranu głównego</string>
   <string id="31102">Tło</string>
   <string id="31103">Wyświetlaj "Pauza" podczas pokazu slajdów</string>
+  <string id="31104">Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]</string>
   <string id="31105">Wyświetlaj tytuły podczas skanowania w tle</string>
-  <string id="31106">Różnego rodzaju opcje</string>
+  <string id="31106">Różne opcje</string>
+  <string id="31108">Ukryj przyciski głównego menu</string>
   <string id="31109">Tła ekranu głównego</string>
+  <string id="31110">Edytuj tło dla</string>
+  <string id="31111">Ukryj</string>
   <string id="31112">Opcje</string>
-  <string id="31117">Pokazuj "Ostatnio dodane"</string>
-  <string id="31300">Obecne warunki</string>
+  <string id="31113">Pojedynczy obraz</string>
+  <string id="31114">Wiele obrazów</string>
+  <string id="31115">Modyfikacja</string>
+  <string id="31117">Pokazuj ostatnio dodane wideo</string>
+  <string id="31118">Podmenu programów na stronie głównej</string>
+  <string id="31119">Włącz własny przycisk wtyczki</string>
+  <string id="31120">ETYKIETA PRZYCISKU</string>
+  <string id="31121">ŚCIEŻKA DO WTYCZKI</string>
+  <string id="31122">Strona pogody</string>
+  <string id="31123">Użyj plakatów zamiast banerów dla seriali</string>
+  <string id="31124">Pokazuj aktualnie odtwarzane wideo jako tło</string>
+  <string id="31125">Pokazuj aktualną wizualizację jako tło</string>
+  <string id="31126">Włącz tekst piosenki w OSD</string>
+  <string id="31127">ŚCIEŻKA DO WTYCZKI TEKSTy PIOSENEK</string>
+  <string id="31128">Teksty piosenek</string>
+  <string id="31130">ŚCIEŻKA DO WTYCZKI NAPISY DO FILMÓW</string>
+  <string id="31140">Muzyka - OSD</string>
+  <string id="31141">Wideo - OSD</string>
+  <string id="31200">Skróty</string>
+  <string id="31201">Kategorie</string>
+  <string id="31202">Pokaż obsadę</string>
+  <string id="31203">Wybierz swoją piosenkę</string>
+  <string id="31204">Linki sekcji</string>
+  <string id="31205">Źródło tekstów piosenek</string>
+  <string id="31300">Temperatura</string>
   <string id="31301">ostatnia aktualizacja</string>
+  <string id="31302">Menu</string>
   <string id="31304">Zdjęcia</string>
+  <string id="31305">Nie wykryto płyty</string>
+  <string id="31306">Wysuń</string>
+  <string id="31307">Ukryj fanart</string>
+  <string id="31308">Szczegóły o filmie</string>
+  <string id="31309">Używana pamięć:</string>
   <string id="31310">Numer ścieżki</string>
   <string id="31311">OBRAZ FANART[CR][CR]NIEDOSTĘPNY[CR][CR] KLIKNIJ PRZYCISK, ABY DODAĆ</string>
+  <string id="31312">Bieżący scraper</string>
+  <string id="31313">Wybierz scraper</string>
+  <string id="31314">Opcje skanowania zawartości</string>
   <string id="31315">Podstawowe</string>
-  <string id="31320">Udane logowanie</string>
+  <string id="31317">Wskaż ścieżkę fanartu</string>
+  <string id="31318">Mały fanart</string>
+  <string id="31319">Wybrany profil</string>
+  <string id="31320">Ostatnio zalogowany</string>
+  <string id="31321">Wybór piosenki karaoke</string>
   <string id="31322">Emisja</string>
   <string id="31323">Najnowsze filmy</string>
   <string id="31324">Najnowsze odcinki</string>
   <string id="31325">Opcje playlisty</string>
-  <string id="31326">Zrobione</string>
-  <string id="31327">Wymiary</string>
+  <string id="31326">Utworzony</string>
+  <string id="31327">Rozdzielczość</string>
   <string id="31328">Ostatnio dodane</string>
-  <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
-  <string id="31400">[B]KONFIGURUJ USTAWIENIA WYŚWIETLANIA[/B][CR][CR]Wybór skóry · Set language and region · Change file listing options[CR]Set up a screensaver</string>
-  <string id="31401">[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts</string>
-  <string id="31402">[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options</string>
-  <string id="31403">[B]KONFIGURUJ USTAWIENIA ZDJĘĆ[/B][CR][CR]Set picture listing options · Configure slideshows</string>
-  <string id="31404">[B]KONFIGURUJ USTAWIENIA POGODY[/B][CR][CR]Set three cities to collect weather information</string>
-  <string id="31405">[B]KONFIGURUJ USTAWIENIA SIECI[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
-  <string id="31406">[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
-  <string id="31407">[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
+  <string id="31330">Kliknij przycisk, aby[CR][CR]odtworzyć zwiastun</string>
+  <string id="31351">Pauza</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Przewiń</string>
+  <string id="31354">Cofnij</string>
+  <string id="31355">Menu filmu</string>
+  <string id="31356">Pobierz napisy</string>
+  <string id="31400">[B]KONFIGURUJ USTAWIENIA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Lista plików[CR]Wygaszacz ekranu</string>
+  <string id="31401">[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Lista wideo[CR]Czcionka napisów</string>
+  <string id="31402">[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Lista utworów[CR]Publikacja piosenek · Opcje karaoke</string>
+  <string id="31403">[B]KONFIGURUJ USTAWIENIA ZDJĘĆ[/B][CR][CR]Lista zdjęć · Pokaz slajdów</string>
+  <string id="31404">[B]KONFIGURUJ USTAWIENIA POGODY[/B][CR][CR]Ustaw pogodę dla trzech miast</string>
+  <string id="31405">[B]KONFIGURUJ USTAWIENIA SIECI[/B][CR][CR]Zdalna kontrola XBMC · Współdzielenie plików[CR]Dostęp do Internetu</string>
+  <string id="31406">[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Ustawienia wyświetlania · Wyjście audio · Zdalne sterowania[CR]Opcje zasilania · Debugging · Blokady</string>
+  <string id="31407">[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Ustawienia skóry · Pozycje menu głównego[CR]Tła skóry</string>
+  <string id="31408">[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzaj wtyczkami · Przeglądaj i instaluj wtyczki[CR]Ustawienia wtyczek</string>
+  <string id="31421">Wybierz profil użytkownika</string>
 </strings>
