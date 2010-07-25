@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.albums.allmusic.com"
        name="AllMusic"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -18,6 +18,7 @@
     <summary lang="hu">AllMusic.com album információk</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器</summary>
+    <summary lang="zh">Informacje o albumach z AllMusic</summary>
     <description lang="en">Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.
@@ -41,6 +42,7 @@ Alle genres en stijlen worden gedekt, gaande van de meest commerciele tot de mee
 allmusic网站创建于1995年，它是音乐爱好者的乐园。
 AMG的编辑和许多专业撰稿人（都是音乐狂热分子）共同把allmusic建成世界上最全面的音乐资料库。他们致力于创造和维护音乐爱好者和业内专业人士期望从AMG得到的知识和精神产品。
 这里涵盖了所有的音乐流派和风格，评价从最流行到晦涩和冷门的音乐，讨论不同风格的专辑和艺术家 - 从歌剧到摇滚乐到传统的乡村音乐。力求让所有音乐爱好者都能在这里了解他所喜爱的艺术家最新动态，并为他们介绍新的音乐。</description>
+    <description lang="pl">Używa AllMusic.com do pobierania informacji o albumach z Twojej muzycznej biblioteki.</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -1,3 +1,6 @@
+[B]1.0.11[/B]
+- added Polish translation
+
 [B]1.0.9[/B]
 - translation cosmetics
 

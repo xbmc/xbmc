@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.mtv.com"
        name="MTV"
-       version="1.0.4"
+       version="1.0.5"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -18,6 +18,7 @@
     <summary lang="pt">Scraper de música MTV</summary>
     <summary lang="se">MTV Musikvideoskrapa</summary>
     <summary lang="zh">MTV音乐电视刮削器</summary>
+    <summary lang="pl">Scraper teledysków MTV</summary>
     <description lang="en">Download Music Video information</description>
     <description lang="es">Descarga Información de Videoclips de www.mtv.com</description>
     <description lang="hu">Zenei videóklip információk letöltése</description>
@@ -26,6 +27,7 @@
     <description lang="pt">Descarregar informação de música de www.mtv.com</description>
     <description lang="se">Ladda ner musikvideo information från MTV.</description>
     <description lang="zh">下载音乐电视资料。</description>
+    <description lang="pl">Pobieraj informacje o teledyskach</description>
     <platform>all</platform>
   </extension>
 </addon>
