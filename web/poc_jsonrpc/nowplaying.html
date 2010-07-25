@@ -59,7 +59,7 @@ if (players["video"] || players["audio"]) {
   var array = result["items"];
 
   if (activeItem >= 0) {
-    var imgSrc = array[activeItem]["thumbnail"] ? ('vfs/' + escape(array[activeItem]["thumbnail"])) : "images/DefaultAlbumCover.png";
+    var imgSrc = array[activeItem]["thumbnail"] ? ('/vfs/' + escape(array[activeItem]["thumbnail"])) : "images/DefaultAlbumCover.png";
     document.write('<img src="' + imgSrc + '"></img>');
 
     document.write('<br></br>');
