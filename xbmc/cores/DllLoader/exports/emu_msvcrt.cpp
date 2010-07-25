@@ -1820,15 +1820,13 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      if (pFile->GetLength() <= LONG_MAX)
-        buffer->st_size = (_off_t)pFile->GetLength();
-      else
+      struct __stat64 tStat = {};
+      if (pFile->Stat(&tStat) == 0)
       {
-        buffer->st_size = 0;
-        CLog::Log(LOGWARNING, "WARNING: File is larger than _fstat64i32 can handle, file size will be reported as 0 bytes");
+        CUtil::Stat64ToStat64i32(buffer, &tStat);
+        return 0;
       }
-      buffer->st_mode = _S_IFREG;
-      return 0;
+      return -1;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
