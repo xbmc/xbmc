@@ -280,6 +280,40 @@ CGUIFont* GUIFontManager::GetFont(const CStdString& strFontName, bool fallback /
   return NULL;
 }
 
+CGUIFont* GUIFontManager::GetDefaultFont(bool border)
+{
+  // first find "font13" or "__defaultborder__"
+  unsigned int font13index = m_vecFonts.size();
+  CGUIFont *font13border = NULL;
+  for (unsigned int i = 0; i < m_vecFonts.size(); i++)
+  {
+    CGUIFont* font = m_vecFonts[i];
+    if (font->GetFontName() == "font13")
+      font13index = i;
+    else if (font->GetFontName() == "__defaultborder__")
+      font13border = font;
+  }
+  // no "font13" means no default font is found - use the first font found.
+  if (font13index == m_vecFonts.size())
+  {
+    if (m_vecFonts.empty())
+      return NULL;
+    font13index = 0;
+  }
+
+  if (border)
+  {
+    if (!font13border)
+    { // create it
+      CGUIFont *font13 = m_vecFonts[font13index];
+      OrigFontInfo fontInfo = m_vecFontInfo[font13index];
+      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
+    }
+    return font13border;
+  }
+  return m_vecFonts[font13index];
+}
+
 void GUIFontManager::Clear()
 {
   for (int i = 0; i < (int)m_vecFonts.size(); ++i)

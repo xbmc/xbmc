@@ -53,7 +53,7 @@ public:
   virtual void SetHeight(float height);
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
-  virtual CStdString GetLabel() const;
+  virtual CStdString GetDescription() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   void SetAltClickActions(const std::vector<CGUIActionDescriptor> &clickActions);
 

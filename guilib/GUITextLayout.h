@@ -70,7 +70,7 @@ public:
   // main function to render strings
   void Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid = false);
   void RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo);
-  void RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth);
+  void RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth);
 
   /*! \brief Returns the precalculated width and height of the text to be rendered (in constant time).
    \param width [out] width of text
@@ -98,7 +98,6 @@ public:
 
 
   static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text);
   static void Filter(CStdString &text);
 
 protected:
@@ -138,7 +137,6 @@ private:
   };
   static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth);
   static void ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText);
 
   static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
