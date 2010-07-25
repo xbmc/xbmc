@@ -104,7 +104,20 @@ bool CRenderSystemDX::InitRenderSystem()
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - using D3D9Ex");
+      D3DCAPS9 caps;
+      memset(&caps, 0, sizeof(caps));
+      m_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, m_devType, &caps);
+      // Evaluate if the driver is WDDM - this detection method is not guaranteed 100%
+      if (!(caps.Caps2 & D3DCAPS2_CANSHARERESOURCE) || !(caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES))
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - driver looks like XPDM or earlier, falling back to D3D9");
+        m_useD3D9Ex = false;
+        m_pD3D->Release();
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - using D3D9Ex");
+      }
     }
   }
 
