@@ -263,4 +263,14 @@
       <button id="6">Close</button>
     </joystick>
   </PictureInfo>
+  <AddonInformation>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </AddonSettings>
 </keymap>

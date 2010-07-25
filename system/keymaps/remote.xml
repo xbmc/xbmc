@@ -95,6 +95,9 @@
   <MyFiles>
     <remote>
       <clear>Delete</clear>
+      <zero>Highlight</zero>
+      <star>Move</star>
+      <hash>Rename</hash>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
@@ -144,7 +147,9 @@
       <info>Info</info>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
+      <star>ShowSubtitles</star>
       <language>AudioNextLanguage</language>
+      <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -360,6 +365,16 @@
     <remote>
     </remote>
   </AddonBrowser>
+  <AddonInformation>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonInformation>
+  <AddonSettings>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonSettings>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>

@@ -304,6 +304,16 @@
       <button id="2">PreviousMenu</button>
     </joystick>
   </Settings>
+  <AddonInformation>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </AddonSettings>
   <MyPicturesSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="2">PreviousMenu</button>
