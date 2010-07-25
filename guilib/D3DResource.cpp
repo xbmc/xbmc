@@ -96,10 +96,11 @@ bool CD3DTexture::LockRect(UINT level, D3DLOCKED_RECT *lr, const RECT *rect, DWO
   return false;
 }
 
-void CD3DTexture::UnlockRect(UINT level)
+bool CD3DTexture::UnlockRect(UINT level)
 {
   if (m_texture)
-    m_texture->UnlockRect(level);
+    return (D3D_OK == m_texture->UnlockRect(level));
+  return false;
 }
 
 bool CD3DTexture::GetLevelDesc(UINT level, D3DSURFACE_DESC *desc)
@@ -297,16 +298,18 @@ bool CD3DEffect::BeginPass(UINT pass)
   return false;
 }
 
-void CD3DEffect::EndPass()
+bool CD3DEffect::EndPass()
 {
   if (m_effect)
-    m_effect->EndPass();
+    return (D3D_OK == m_effect->EndPass());
+  return false;
 }
 
-void CD3DEffect::End()
+bool CD3DEffect::End()
 {
   if (m_effect)
-    m_effect->End();
+    return (D3D_OK == m_effect->End());
+  return false;
 }
 
 bool CD3DEffect::CreateEffect()

@@ -154,10 +154,16 @@ bool CWinShader::Execute(LPDIRECT3DDEVICE9 pD3DDevice)
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
-    pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, m_primitivesCount, m_verts, m_vertsize);
-    m_effect.EndPass();
+    HRESULT hr = pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, m_primitivesCount, m_verts, m_vertsize);
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitiveUP %08X", hr);
+
+    if (!m_effect.EndPass())
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
   }
-  m_effect.End();
+  if (!m_effect.End())
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
+
   pD3DDevice->SetPixelShader( NULL );
 
   for (unsigned int i=0; i < m_boundTexturesCount; i++)
@@ -340,9 +346,12 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
     float16Vals[i] = kernelVals[i];
 
   D3DLOCKED_RECT lr;
-  m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD);
+  if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
   memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*kern.GetSize()*4);
-  m_HQKernelTexture.UnlockRect(0);
+  if (!m_HQKernelTexture.UnlockRect(0))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
+
 
   delete[] float16Vals;
 

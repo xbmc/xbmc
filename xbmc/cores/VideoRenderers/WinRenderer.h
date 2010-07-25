@@ -124,7 +124,7 @@ enum RenderMethod
 struct SVideoPlane
 {
   CD3DTexture    texture;
-  D3DLOCKED_RECT rect;
+  D3DLOCKED_RECT rect;                  // rect.pBits != NULL is used to know if the texture is locked
 };
 
 struct SVideoBuffer

@@ -700,11 +700,13 @@ void CWinRenderer::RenderSW(DWORD flags)
 
   m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
-  buf->planes[0].texture.UnlockRect(0);
-  buf->planes[1].texture.UnlockRect(0);
-  buf->planes[2].texture.UnlockRect(0);
+  if(!(buf->planes[0].texture.UnlockRect(0))
+  || !(buf->planes[1].texture.UnlockRect(0))
+  || !(buf->planes[2].texture.UnlockRect(0)))
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock yuv textures");
 
-  m_SWTarget.UnlockRect(0);
+  if (!m_SWTarget.UnlockRect(0))
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock swtarget texture");
 
   // 2. scale to display
 
@@ -1006,7 +1008,8 @@ void SVideoBuffer::StartRender()
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
     if(planes[i].texture.Get() && planes[i].rect.pBits)
-      planes[i].texture.UnlockRect(0);
+      if (!planes[i].texture.UnlockRect(0))
+        CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture %d", i);
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
   }
 }
@@ -1021,7 +1024,7 @@ void SVideoBuffer::StartDecode()
     && planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
-      CLog::Log(LOGERROR, "CWinRenderer::SVideoBuffer::StartDecode - failed to lock texture into memory");
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture %d into memory", i);
     }
   }
 }
