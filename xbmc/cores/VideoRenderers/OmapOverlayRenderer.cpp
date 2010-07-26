@@ -57,11 +57,11 @@ COmapOverlayRenderer::~COmapOverlayRenderer()
 
 bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags)
 {
-  printf("Configure with [%i, %i] and [%i, %i] and fps %f and flags %i\n", width, height, d_width, d_height, fps, flags);
+  CLog::Log(LOGINFO, "OmapOverlay: Configure with [%i, %i] and [%i, %i] and fps %f and flags %i\n", width, height, d_width, d_height, fps, flags);
 
   if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_NV12)
   {
-    printf("Bad format\n");
+    CLog::Log(LOGERROR, "OmapOverlay: Does not support NV12 format");
     return false;
   }
   else if (width != m_sourceWidth || height != m_sourceHeight)
@@ -151,8 +151,6 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     }
 
     m_currentBuffer = 0;
-
-    printf("Proper format, continuing\n");
   }
 
   m_iFlags = flags;
@@ -170,8 +168,6 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE || source > 1 || source < 0)
     source = m_currentBuffer;
 
-  printf("GetImage %i\n", source);
-
   YV12Image &im = m_yuvBuffers[source];
 
   for (int p=0;p<MAX_PLANES;p++)
@@ -186,8 +182,6 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->cshift_x = im.cshift_x;
   image->cshift_y = im.cshift_y;
 
-  printf("image [%i, %i]\n", image->width, image->height);
-
   return source;
 }
 
@@ -198,9 +192,7 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
 
   YV12Image *image = &m_yuvBuffers[source];
 
-  printf("Converting yuv %i - Begin\n", source);
   yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayScreenInfo.xres * 2);
-  printf("Converting yuv %i - Done\n", source);
 }
 
 void COmapOverlayRenderer::FlipPage(int source)
@@ -208,14 +200,10 @@ void COmapOverlayRenderer::FlipPage(int source)
   if (!m_bConfigured)
     return;
 
-  printf("Flip %i\n", m_currentBuffer);
   m_overlayScreenInfo.xoffset = m_framebuffers[m_currentBuffer].x;
   m_overlayScreenInfo.yoffset = m_framebuffers[m_currentBuffer].y;
-  printf("FBIOPAN_DISPLAY %i\n", m_currentBuffer);
   ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
-  printf("OMAPFB_WAITFORGO %i\n", m_currentBuffer);
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
-  printf("Flipped %i\n", m_currentBuffer);
 
   m_currentBuffer = NextYV12Image();
 }
@@ -255,7 +243,6 @@ unsigned int COmapOverlayRenderer::PreInit()
 void COmapOverlayRenderer::UnInit()
 {
   CLog::Log(LOGINFO, "COmapOverlayRenderer::UnInit");
-  printf("UnInit\n");
   m_bConfigured = false;
   m_iFlags = 0;
   m_currentBuffer = 0;
