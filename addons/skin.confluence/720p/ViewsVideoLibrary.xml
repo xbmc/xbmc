@@ -188,7 +188,7 @@
 				<scroll>true</scroll>
 				<align>center</align>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] , $LOCALIZE[12391]]</label>
 			</control>
 		</control>
 		<control type="group">
@@ -505,7 +505,7 @@
 					<scroll>true</scroll>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Duration]</label>
+					<label>$INFO[ListItem.Duration,, $LOCALIZE[12391]]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 				</control>
