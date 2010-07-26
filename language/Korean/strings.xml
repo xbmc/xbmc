@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/14/2010-->
+<!--Date of translation: 07/26/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -481,6 +481,7 @@
   <string id="572">스튜디오</string>
   <string id="573">경로</string>
   <string id="574">국가</string>
+  <string id="575">진행중</string>
   <string id="580">정렬 방향</string>
   <string id="581">정렬 방법</string>
   <string id="582">보기 모드</string>
@@ -740,8 +741,7 @@
   <string id="1403">햇빛</string>
   <string id="1404">많은</string>
   <string id="1405">:</string>
-  <string id="1406">
-  </string>
+  <string id="1406">:</string>
   <string id="1407">국지적인</string>
   <string id="1408">얼음</string>
   <string id="1409">눈</string>
@@ -760,8 +760,6 @@
   <string id="2050">상영시간</string>
   <string id="2100">스크립트 실패! : %s</string>
   <string id="2101">새 버전이 필요함 - 로그를 보세요</string>
-  <string id="2102">그래픽 카드</string>
-  <string id="2103">요구상항이 충족되지 않음 - 로그를 보세요</string>
   <string id="4501">LCD/VFD 사용</string>
   <string id="10000">홈</string>
   <string id="10001">프로그램</string>
@@ -822,10 +820,6 @@
   <string id="12009">인텍스 재생성...</string>
   <string id="12010">음악 윈도우로 돌아가기</string>
   <string id="12011">비디오 윈도우로 돌아가기</string>
-  <string id="12017">마지막 중지된 곳에서 되시작</string>
-  <string id="12018">아니오</string>
-  <string id="12019">예</string>
-  <string id="12020">물어보기</string>
   <string id="12021">처음부터 시작</string>
   <string id="12022">%s 부터 되시작</string>
   <string id="12310">0</string>
@@ -1057,10 +1051,8 @@
   <string id="13386">시간 기반 검색 사용</string>
   <string id="13387">트랙 이름 템플릿 - 오른쪽</string>
   <string id="13388">사전설정</string>
-  <string id="13389">이 시각화에 사용가능한
-사전설정이 없습니다</string>
-  <string id="13390">이 시각화에 사용가능한
-설정이 없습니다</string>
+  <string id="13389">이 시각화에 사용가능한&#10;사전설정이 없습니다</string>
+  <string id="13390">이 시각화에 사용가능한&#10;설정이 없습니다</string>
   <string id="13391">꺼내기/읽기</string>
   <string id="13392">오디오 재생중이면 시각화 사용</string>
   <string id="13393">크기 계산</string>
@@ -1100,6 +1092,7 @@
   <string id="13428">하드웨어 가속 허용 (CrystalHD)</string>
   <string id="13429">하드웨어 가속 허용 (VDADecoder)</string>
   <string id="13430">하드웨어 가속 허용 (OpenMax)</string>
+  <string id="13431">픽셀 셰이더</string>
   <string id="13500">A/V 동기 방식</string>
   <string id="13501">오디오 클럭</string>
   <string id="13502">비디오 클럭 (오디오 버림/반복)</string>
@@ -1362,6 +1355,7 @@
   <string id="16316">자동</string>
   <string id="16317">시간적 (반)</string>
   <string id="16318">시간적/공간적 (반)</string>
+  <string id="16319">DXVA</string>
   <string id="16400">비디오 후처리</string>
   <string id="16401">사용안함</string>
   <string id="16402">SD 컨텐츠 사용함</string>
@@ -1793,7 +1787,7 @@
   <string id="21449">리모콘이 키보드 누름 보냄</string>
   <string id="21450">- 수정</string>
   <string id="21451">인터넷 연결이 필요함.</string>
-  <string id="21452">더 가져오기</string>
+  <string id="21452">더 가져오기...</string>
   <string id="21453">루트 파일시스템</string>
   <string id="21800">파일 이름</string>
   <string id="21801">파일 경로</string>
@@ -1870,7 +1864,7 @@
   <string id="21899">라벨</string>
   <string id="21900">출생/결성</string>
   <string id="22000">시작때 라이브러리 업데이트</string>
-  <string id="22001">항상 백그라운드로 라이브러리 업데이트</string>
+  <string id="22001">라이브러리 업데이트 진행 숨기기</string>
   <string id="22002">- DNS 접미사</string>
   <string id="22004">%2.3f 초 느리게</string>
   <string id="22005">%2.3f 초 빠르게</string>
@@ -1907,6 +1901,11 @@
   <string id="22041">하양/빨강</string>
   <string id="22042">하양/파랑</string>
   <string id="22043">검정/하양</string>
+  <string id="22079">기본 선택 동작</string>
+  <string id="22080">선택</string>
+  <string id="22081">정보 보이기</string>
+  <string id="22082">더 보기...</string>
+  <string id="22083">모두 재생</string>
   <string id="23049">문자다중방송 사용할수 없음</string>
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
@@ -1951,6 +1950,7 @@
   <string id="24040">(현재 설정 지우기)</string>
   <string id="24041">압축 파일에서 설치</string>
   <string id="24042">%i%% 다운로드중</string>
+  <string id="24043">사용가능한 업데이트</string>
   <string id="24050">사용가능한 추가기능</string>
   <string id="24051">버전:</string>
   <string id="24052">권리포기</string>
@@ -1978,6 +1978,7 @@
   <string id="24090">추가기능 관리자 잠금</string>
   <string id="24096">추가기능이 저장소에 깨진것으로 표시되어 있습니다.</string>
   <string id="24097">시스템에서 사용안함으로 하시겠습니까?</string>
+  <string id="24098">깨짐</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
