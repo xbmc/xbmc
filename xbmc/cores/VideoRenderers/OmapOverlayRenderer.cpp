@@ -27,6 +27,7 @@
 #ifdef HAS_OMAP_OVERLAY
 #include "OmapOverlayRenderer.h"
 #include "log.h"
+#include "GUISettings.h"
 #include <stdlib.h>
 #include <malloc.h>
 
