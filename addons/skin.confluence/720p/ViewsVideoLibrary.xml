@@ -946,19 +946,19 @@
 					<scroll>true</scroll>
 				</control>
 				<control type="label">
-					<description>First Aired txt</description>
+					<description>Aired txt</description>
 					<posx>150</posx>
 					<posy>170</posy>
 					<width>140</width>
 					<height>25</height>
-					<label>$LOCALIZE[20416]:</label>
+					<label>$LOCALIZE[31322]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
-					<description>First Aired Value</description>
+					<description>Aired Value</description>
 					<posx>160</posx>
 					<posy>170</posy>
 					<width>440</width>
@@ -1535,19 +1535,19 @@
 					<posy>200</posy>
 					<visible>!Skin.HasSetting(VideoLibraryFanartView504)</visible>
 					<control type="label">
-						<description>First Aired txt</description>
+						<description>Aired txt</description>
 						<posx>150</posx>
 						<posy>170</posy>
 						<width>140</width>
 						<height>25</height>
-						<label>$LOCALIZE[20416]:</label>
+						<label>$LOCALIZE[31322]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
-						<description>First Aired Value</description>
+						<description>Aired Value</description>
 						<posx>160</posx>
 						<posy>170</posy>
 						<width>440</width>
@@ -1606,19 +1606,19 @@
 					<posy>30</posy>
 					<visible>Skin.HasSetting(VideoLibraryFanartView504) + !Skin.HasSetting(TVShowsUsePosters)</visible>
 					<control type="label">
-						<description>First Aired txt</description>
+						<description>Aired txt</description>
 						<posx>150</posx>
 						<posy>170</posy>
 						<width>140</width>
 						<height>25</height>
-						<label>$LOCALIZE[20416]:</label>
+						<label>$LOCALIZE[31322]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
-						<description>First Aired Value</description>
+						<description>Aired Value</description>
 						<posx>160</posx>
 						<posy>170</posy>
 						<width>440</width>
@@ -2113,19 +2113,19 @@
 						<texture>separator.png</texture>
 					</control>
 					<control type="label">
-						<description>First Aired txt</description>
+						<description>Aired txt</description>
 						<posx>150</posx>
 						<posy>210</posy>
 						<width>140</width>
 						<height>25</height>
-						<label>$LOCALIZE[20416]:</label>
+						<label>$LOCALIZE[31322]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
-						<description>First Aired Value</description>
+						<description>Aired Value</description>
 						<posx>160</posx>
 						<posy>210</posy>
 						<width>440</width>
