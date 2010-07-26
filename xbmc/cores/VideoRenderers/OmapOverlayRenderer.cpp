@@ -34,6 +34,8 @@ extern "C" void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *
 
 COmapOverlayRenderer::COmapOverlayRenderer()
 {
+  m_bConfigured = false;
+
   m_yuvBuffers[0].plane[0] = NULL;
   m_yuvBuffers[0].plane[1] = NULL;
   m_yuvBuffers[0].plane[2] = NULL;
@@ -46,8 +48,6 @@ COmapOverlayRenderer::COmapOverlayRenderer()
 
   m_framebuffers[0].buf = NULL;
   m_framebuffers[1].buf = NULL;
-
-  UnInit();
 }
 
 COmapOverlayRenderer::~COmapOverlayRenderer()
@@ -144,17 +144,18 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
       return false;
     }
 
+    m_bConfigured = true;
+
     for (unsigned int i = 0; i < 2; i++)
     {
       FreeYV12Image(i);
-      CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
+      m_bConfigured &= CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
     }
 
     m_currentBuffer = 0;
   }
 
   m_iFlags = flags;
-  m_bConfigured = true;
 
   return m_bConfigured;
 }
@@ -242,7 +243,10 @@ unsigned int COmapOverlayRenderer::PreInit()
 
 void COmapOverlayRenderer::UnInit()
 {
-  CLog::Log(LOGINFO, "COmapOverlayRenderer::UnInit");
+  if (!m_bConfigured)
+    return;
+
+  CLog::Log(LOGINFO, "OmapOverlay: UnInit");
   m_bConfigured = false;
   m_iFlags = 0;
   m_currentBuffer = 0;
@@ -314,19 +318,17 @@ bool COmapOverlayRenderer::CreateYV12Image(unsigned int index, unsigned int widt
   for (int i = 0; i < 3; i++)
     im.plane[i] = (BYTE *)memalign(16, im.planesize[i]);
 
-  return true;
+  return im.plane[0] != NULL && im.plane[1] != NULL && im.plane[2] != NULL;
 }
 
 bool COmapOverlayRenderer::FreeYV12Image(unsigned int index)
 {
   YV12Image &im = m_yuvBuffers[index];
   for (int i = 0; i < 3; i++)
-  {
     free(im.plane[i]);
-    im.plane[i] = NULL;
-  }
 
   memset(&im , 0, sizeof(YV12Image));
+  im.plane[0] = im.plane[1] = im.plane[2] = NULL;
 
   return true;
 }
