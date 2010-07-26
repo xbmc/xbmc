@@ -62,6 +62,11 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
 {
   CLog::Log(LOGINFO, "OmapOverlay: Configure with [%i, %i] and [%i, %i] and fps %f and flags %i\n", width, height, d_width, d_height, fps, flags);
 
+  CalculateFrameAspectRatio(d_width, d_height);
+  ChooseBestResolution(fps);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+  ManageDisplay();
+
   if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_NV12)
   {
     CLog::Log(LOGERROR, "OmapOverlay: Does not support NV12 format");
@@ -135,8 +140,6 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     }
 
     m_overlayPlaneInfo.enabled = 1;
-
-    m_drawRegion.SetRect(0, 0, m_overlayScreenInfo.xres,  m_overlayScreenInfo.yres);
 
     m_overlayPlaneInfo.pos_x      = 0;
     m_overlayPlaneInfo.pos_y      = 0;
@@ -216,6 +219,7 @@ void COmapOverlayRenderer::Reset()
 
 void COmapOverlayRenderer::Update(bool bPauseDrawing)
 {
+  ManageDisplay();
 }
 
 void COmapOverlayRenderer::AddProcessor(void *processor)
@@ -232,18 +236,18 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (m_currentDisplayBuffer == currentDisplayedBuffered)
     return;
 
-  YV12Image *image = &m_yuvBuffers[m_currentDisplayBuffer];
-  CRect drawRegion(0, 0, image->width, image->height);
-  drawRegion = g_graphicsContext.generateAABB(drawRegion);
+  ManageDisplay();
 
-  if (m_drawRegion != drawRegion)
+  static CRect lastDestRect;
+
+  if (m_destRect != lastDestRect)
   {
-    m_drawRegion = drawRegion;
+    lastDestRect = m_destRect;
 
-    m_overlayPlaneInfo.pos_x      = m_drawRegion.x1;
-    m_overlayPlaneInfo.pos_y      = m_drawRegion.y1;
-    m_overlayPlaneInfo.out_width  = m_drawRegion.Width();
-    m_overlayPlaneInfo.out_height = m_drawRegion.Height();
+    m_overlayPlaneInfo.pos_x      = (int)m_destRect.x1;
+    m_overlayPlaneInfo.pos_y      = (int)m_destRect.y1;
+    m_overlayPlaneInfo.out_width  = (int)m_destRect.Width();
+    m_overlayPlaneInfo.out_height = (int)m_destRect.Height();
 
     if (ioctl(m_overlayfd, OMAPFB_SETUP_PLANE, &m_overlayPlaneInfo) == -1)
       CLog::Log(LOGERROR, "OmapOverlay: Failed to set plane info");

@@ -167,7 +167,6 @@ private:
   YV12Image    m_yuvBuffers[2];
   unsigned int m_currentBackBuffer;
   unsigned int m_currentDisplayBuffer;
-  CRect        m_drawRegion;
 
   // The Overlay handlers
   int m_overlayfd;
