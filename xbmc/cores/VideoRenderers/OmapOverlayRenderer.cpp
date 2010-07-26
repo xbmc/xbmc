@@ -136,7 +136,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
 
     m_overlayPlaneInfo.enabled = 1;
 
-    m_drawRegion.SetRect(0, 0, image->width, image->height);
+    m_drawRegion.SetRect(0, 0, m_overlayScreenInfo.xres,  m_overlayScreenInfo.yres);
 
     m_overlayPlaneInfo.pos_x      = 0;
     m_overlayPlaneInfo.pos_y      = 0;
