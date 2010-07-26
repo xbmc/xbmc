@@ -1,3 +1,6 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#ifdef HAS_OMAP_OVERLAY
 /*
     Copyright (C) 2008 Mans Rullgard
 
@@ -122,3 +125,5 @@ yuv420_to_yuv422:
 
         pop             {r3-r11,pc}
         .endfunc
+#endif
+#endif
