@@ -136,6 +136,8 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
 
     m_overlayPlaneInfo.enabled = 1;
 
+    m_drawRegion.SetRect(0, 0, image->width, image->height);
+
     m_overlayPlaneInfo.pos_x      = 0;
     m_overlayPlaneInfo.pos_y      = 0;
     m_overlayPlaneInfo.out_width  = m_overlayScreenInfo.xres;
@@ -230,8 +232,26 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (m_currentDisplayBuffer == currentDisplayedBuffered)
     return;
 
+  YV12Image *image = &m_yuvBuffers[m_currentDisplayBuffer];
+  CRect drawRegion(0, 0, image->width, image->height);
+  drawRegion = g_graphicsContext.generateAABB(drawRegion);
+
+  if (m_drawRegion != drawRegion)
+  {
+    m_drawRegion = drawRegion;
+
+    m_overlayPlaneInfo.pos_x      = m_drawRegion.x1;
+    m_overlayPlaneInfo.pos_y      = m_drawRegion.y1;
+    m_overlayPlaneInfo.out_width  = m_drawRegion.Width();
+    m_overlayPlaneInfo.out_height = m_drawRegion.Height();
+
+    if (ioctl(m_overlayfd, OMAPFB_SETUP_PLANE, &m_overlayPlaneInfo) == -1)
+      CLog::Log(LOGERROR, "OmapOverlay: Failed to set plane info");
+  }
+
   m_overlayScreenInfo.xoffset = m_framebuffers[m_currentDisplayBuffer].x;
   m_overlayScreenInfo.yoffset = m_framebuffers[m_currentDisplayBuffer].y;
+
   ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
 
