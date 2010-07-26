@@ -85,6 +85,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         m_lockedTimer.StartZero();
         g_infoManager.SetShowCodec(true);
       }
+      visAction = VIS_ACTION_LOCK_PRESET;
     }
     break;
   case ACTION_VIS_PRESET_SHOW:
