@@ -28,6 +28,7 @@
 #include "OmapOverlayRenderer.h"
 #include "log.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include <stdlib.h>
 #include <malloc.h>
 
