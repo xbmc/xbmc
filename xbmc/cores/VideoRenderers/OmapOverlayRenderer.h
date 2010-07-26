@@ -165,7 +165,8 @@ private:
   unsigned int m_sourceHeight;
 
   YV12Image    m_yuvBuffers[2];
-  unsigned int m_currentBuffer;
+  unsigned int m_currentBackBuffer;
+  unsigned int m_currentDisplayBuffer;
 
   // The Overlay handlers
   int m_overlayfd;

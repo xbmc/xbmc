@@ -48,6 +48,9 @@ COmapOverlayRenderer::COmapOverlayRenderer()
 
   m_framebuffers[0].buf = NULL;
   m_framebuffers[1].buf = NULL;
+
+  m_currentBackBuffer = 0;
+  m_currentDisplayBuffer = 1;
 }
 
 COmapOverlayRenderer::~COmapOverlayRenderer()
@@ -152,7 +155,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
       m_bConfigured &= CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
     }
 
-    m_currentBuffer = 0;
+    m_currentBackBuffer = 0;
   }
 
   m_iFlags = flags;
@@ -167,7 +170,7 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
   /* take next available buffer */
   if( source == AUTOSOURCE || source > 1 || source < 0)
-    source = m_currentBuffer;
+    source = m_currentBackBuffer;
 
   YV12Image &im = m_yuvBuffers[source];
 
@@ -201,12 +204,8 @@ void COmapOverlayRenderer::FlipPage(int source)
   if (!m_bConfigured)
     return;
 
-  m_overlayScreenInfo.xoffset = m_framebuffers[m_currentBuffer].x;
-  m_overlayScreenInfo.yoffset = m_framebuffers[m_currentBuffer].y;
-  ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
-  ioctl(m_overlayfd, OMAPFB_WAITFORGO);
-
-  m_currentBuffer = NextYV12Image();
+  m_currentDisplayBuffer = m_currentBackBuffer;
+  m_currentBackBuffer = NextYV12Image();
 }
 
 void COmapOverlayRenderer::Reset()
@@ -225,11 +224,23 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   if (!m_bConfigured)
     return;
+
+  static unsigned int currentDisplayedBuffered = -1;
+
+  if (m_currentDisplayBuffer == currentDisplayedBuffered)
+    return;
+
+  m_overlayScreenInfo.xoffset = m_framebuffers[m_currentDisplayBuffer].x;
+  m_overlayScreenInfo.yoffset = m_framebuffers[m_currentDisplayBuffer].y;
+  ioctl(m_overlayfd, FBIOPAN_DISPLAY, &m_overlayScreenInfo);
+  ioctl(m_overlayfd, OMAPFB_WAITFORGO);
+
+  currentDisplayedBuffered = m_currentDisplayBuffer;
 }
 
 unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
-  yuv420_to_yuv422(m_framebuffers[m_currentBuffer].buf, src[0], src[1], src[2], w, h, stride[0], stride[1], m_overlayScreenInfo.xres * 2);
+  yuv420_to_yuv422(m_framebuffers[m_currentBackBuffer].buf, src[0], src[1], src[2], w, h, stride[0], stride[1], m_overlayScreenInfo.xres * 2);
 
   return 0;
 }
@@ -249,7 +260,7 @@ void COmapOverlayRenderer::UnInit()
   CLog::Log(LOGINFO, "OmapOverlay: UnInit");
   m_bConfigured = false;
   m_iFlags = 0;
-  m_currentBuffer = 0;
+  m_currentBackBuffer = 0;
 
   for (unsigned int i = 0; i < 2; i++)
     FreeYV12Image(i);
@@ -295,7 +306,7 @@ bool COmapOverlayRenderer::Supports(ESCALINGMETHOD method)
 
 unsigned int COmapOverlayRenderer::NextYV12Image()
 {
-  return 1 - m_currentBuffer;
+  return 1 - m_currentBackBuffer;
 }
 
 bool COmapOverlayRenderer::CreateYV12Image(unsigned int index, unsigned int width, unsigned int height)
