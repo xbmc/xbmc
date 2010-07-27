@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: Anssi Hannula-->
 <!--Email: anssi@xbmc.org-->
-<!--Date of translation: 07/18/2010-->
-<!--Based on English strings r31923-->
+<!--Based on English strings r32199-->
 <!--$Revision$-->
 <strings>
   <string id="0">Ohjelmat</string>
@@ -851,10 +849,10 @@ ei saada yhteyttä</string>
   <string id="12014"></string>
   <string id="12015"></string>
   <string id="12016"></string>
-  <string id="12017">Jatka pysäytetystä kohdasta</string>
-  <string id="12018">Ei</string>
-  <string id="12019">Kyllä</string>
-  <string id="12020">Kysy</string>
+  <string id="12017"></string>
+  <string id="12018"></string>
+  <string id="12019"></string>
+  <string id="12020"></string>
   <string id="12021">Aloita alusta</string>
   <string id="12022">Jatka %s:sta</string>
   <string id="12023"></string>
@@ -1429,6 +1427,7 @@ ole määriteltäviä asetuksia</string>
   <string id="16316">Automaattinen</string>
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16319">DXVA</string>
   <string id="16400">Videon jälkikäsittely</string>
   <string id="16401">Ei käytössä</string>
   <string id="16402">Käytössä ei-teräväpiirtovideolle</string>
@@ -1874,7 +1873,7 @@ ole määriteltäviä asetuksia</string>
   <string id="21449">Kauko-ohjain lähettää näppäimistön painallukset</string>
   <string id="21450">Muokkaa</string>
   <string id="21451">Internet-yhteys vaaditaan.</string>
-  <string id="21452">Nouda lisää</string>
+  <string id="21452">Nouda lisää...</string>
   <string id="21453">Juurikansio</string>
   <string id="21800">Tiedoston nimi</string>
   <string id="21801">Tiedoston polku</string>
@@ -1951,7 +1950,7 @@ ole määriteltäviä asetuksia</string>
   <string id="21899">Nimi</string>
   <string id="21900">Syntynyt/perustettu</string>
   <string id="22000">Päivitä kirjasto ohjelman käynnistyessä</string>
-  <string id="22001">Suorita päivitys taustalla</string>
+  <string id="22001">Piilota päivityksen edistyminen</string>
   <string id="22002">- DNS-loppupääte</string>
   <string id="22004">Viivästetty: %2.3fs</string>
   <string id="22005">Aiennettu: %2.3fs</string>
@@ -2075,6 +2074,7 @@ ole määriteltäviä asetuksia</string>
   </string>
   <string id="24096">Ohjelmavarasto on merkinnyt lisäosan vialliseksi.</string>
   <string id="24097">Poistetaanko lisäosa käytöstä?</string>
+  <string id="24098">Viallinen</string>
   <string id="29800">Kirjastotila</string>
   <string id="29801">QWERTY-näppäimistö</string>
   <string id="29802">Läpisyötetty ääni käytössä</string>
