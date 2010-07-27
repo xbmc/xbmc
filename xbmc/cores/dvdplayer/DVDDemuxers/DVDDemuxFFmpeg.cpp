@@ -33,12 +33,6 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/DVDInputStreamBluray.h"
-#ifdef HAS_FILESYSTEM_MMS
-#include "DVDInputStreams/DVDInputStreamMMS.h"
-#endif
-#ifdef HAS_LIBRTMP
-#include "DVDInputStreams/DVDInputStreamRTMP.h"
-#endif
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -810,53 +804,20 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   if(time < 0)
     time = 0;
 
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  CDVDInputStream::ISeekTime* ist = dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInput);
+  if (ist)
   {
-    if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
+    if (!ist->SeekTime(time))
       return false;
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
 
     Flush();
+    //RTMP did this for some reason
+    //m_ioContext->buf_ptr = m_ioContext->buf_end;
     return true;
   }
-
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-  {
-    if (!((CDVDInputStreamBluray*)m_pInput)->SeekTime(time))
-      return false;
-
-    if(startpts)
-      *startpts = DVD_NOPTS_VALUE;
-
-    Flush();
-    return true;
-  }
-
-#ifdef HAS_FILESYSTEM_MMS
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
-  {
-    if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
-      return false;
-
-    Flush();
-    return true;
-  }
-#endif
-
-#ifdef HAS_LIBRTMP
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
-  {
-    if (!((CDVDInputStreamRTMP*)m_pInput)->SeekTime(time))
-      return false;
-
-    Flush();
-    m_ioContext->buf_ptr = m_ioContext->buf_end;
-
-    return true;
-  }
-#endif
 
   if(!m_pInput->Seek(0, SEEK_POSSIBLE)
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))

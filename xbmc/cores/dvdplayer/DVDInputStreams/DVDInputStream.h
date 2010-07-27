@@ -66,6 +66,13 @@ public:
     virtual int GetTime() = 0;
   };
 
+  class ISeekTime
+  {
+    public:
+    virtual ~ISeekTime() {};
+    virtual bool SeekTime(int ms) = 0;
+  };
+
   class IChapter
   {
     public:    

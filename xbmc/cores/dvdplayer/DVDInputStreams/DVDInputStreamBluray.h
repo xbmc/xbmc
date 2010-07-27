@@ -30,6 +30,7 @@ class CDVDInputStreamBluray
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
+  , public CDVDInputStream::ISeekTime
 {
 public:
   CDVDInputStreamBluray();
