@@ -810,20 +810,6 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
   return(b);
 }
 
-bool CWIN32Util::IsShareInVecsource(VECSOURCES &vecShare, CMediaSource &share)
-{
-  if(vecShare.empty())
-    return false;
-
-  std::vector<CMediaSource>::iterator it;
-  for( it = vecShare.begin(); it != vecShare.end(); it++ )
-  {
-    if(share.strPath.Equals(it->strPath))
-      return true;
-  }
-  return false;
-}
-
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType, bool bonlywithmedia)
 {
   WCHAR* pcBuffer= NULL;
@@ -910,8 +896,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
            ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
              CMediaSource::SOURCE_TYPE_UNKNOWN );
         }
-        if(!IsShareInVecsource(localDrives, share))
-          localDrives.push_back(share);
+
+        localDrives.push_back(share);
       }
       iPos += (wcslen( pcBuffer + iPos) + 1 );
     } while( wcslen( pcBuffer + iPos ) > 0 );
