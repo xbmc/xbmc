@@ -736,8 +736,8 @@ namespace VIDEO
       if (items[i]->m_bIsFolder)
         continue;
       
-      if (CUtil::IsURLEncoded(items[i]->m_strPath))
-        CUtil::URLDecode(items[i]->m_strPath);
+      // URLDecode just in case, since the path maybe encoded
+      CUtil::URLDecode(items[i]->m_strPath);
       
       CStdString strPath;
       CUtil::GetDirectory(items[i]->m_strPath, strPath);
