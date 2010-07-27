@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 8/7/2010 -->
+  <!-- Translator: Anssi Hannula -->
   <!-- Finnish strings for Confluence skin based on English strings revision 31350 -->
 <strings>
   <!-- Misc labels -->
@@ -57,7 +56,7 @@
   <string id="31101">Päävalikon asetukset</string>
   <string id="31102">Tausta</string>
   <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
-  <string id="31104">Toista esittelyt ikkunassa [COLOR=grey3](Videotiedot ainoastaan)[/COLOR]</string>
+  <string id="31104">Toista esittelyt ikkunassa [COLOR=grey3](Videotiedot-ikkuna)[/COLOR]</string>
   <string id="31105">Näytä median nimet taustahaussa</string>
   <string id="31106">Yleiset asetukset</string>
   <string id="31107"></string>
@@ -74,20 +73,20 @@
   <string id="31118">Päävalikon alivalikko</string>
   <string id="31119">Oma skripti-painike</string>
   <string id="31120">PAINIKKEEN TEKSTI</string>
-  <string id="31121">LAAJENNUKSEN POLKU</string>
+  <string id="31121">LISÄOSAN POLKU</string>
   <string id="31122">Sääsivu</string>
   <string id="31123">Käytä TV-ohjelmilla "Juliste"-näkymää</string>
   <string id="31124">Näytä taustalla "Nyt katsellaan"-video</string>
   <string id="31125">Näytä taustalla "Nyt kuunnellaan"-visualisointi</string>
 
   <string id="31126">Sanoitukset musiikin kuvaruutuvalikosta käytössä</string>
-  <string id="31127">LAAJENNUKSEN POLKU</string>
+  <string id="31127">LISÄOSAN POLKU</string>
   <string id="31128">Sanoitukset</string>
-  <string id="31129">Tekstityksen lataus videoiden kuvaruutuvalikosta käytössä</string>
-  <string id="31130">LAAJENNUKSEN POLKU</string>
+  <string id="31129">Tekstityksen lataaminen videoiden kuvaruutuvalikosta käytössä</string>
+  <string id="31130">LISÄOSAN POLKU</string>
 
-  <string id="31140">Musiikki OSD</string>
-  <string id="31141">Video OSD</string>
+  <string id="31140">Musiikki-OSD</string>
+  <string id="31141">Video-OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Pikavalinnat</string>
@@ -145,10 +144,10 @@
   <string id="31402">[B]Muokkaa musiikki-asetuksia[/B][CR][CR]Hallitse musiikkikirjastoa · Aseta musiikkitoiston asetukset · Vaihda musiikkilistauksen[CR]asetuksia · Aseta kappaleen lähetysasetuksia · Aseta karaoke-asetukset</string>
   <string id="31403">[B]Muokkaa kuva-asetuksia[/B][CR][CR]Aseta kuvalistauksen asetukset · Määritä kuvaesityksiä</string>
   <string id="31404">[B]Muokkaa sää-asetuksia[/B][CR][CR]Aseta kolme kaupunkia joista noudetaan säätiedot</string>
-  <string id="31405">[B]Muokkaa verkkoasetuksia[/B][CR][CR]Aseta XBMC ohjaus UPNP:n ja HTTP:n kautta · Määritä tiedostojen jako[CR]Aseta internet asetukset</string>
+  <string id="31405">[B]Muokkaa verkkoasetuksia[/B][CR][CR]Aseta XBMC:n ohjaus UPNP:n ja HTTP:n kautta · Määritä tiedostojen jako[CR]Aseta internet-asetukset</string>
   <string id="31406">[B]Muokkaa järjestelmän asetuksia[/B][CR][CR]Aseta ja kalibroi näyttö · Määritä äänilähtö · Aseta kauko-ohjaus[CR]Aseta sähkönsäästöasetukset · Ota debuggaus käyttöön · Muokkaa pääkäyttäjän lukituksia</string>
   <string id="31407">[B]Muokkaa ulkoasun asetuksia[/B][CR][CR]Aseta Confluence-ulkoasun asetukset · Lisää ja poista päävalikon kohteita[CR]Vaihda ulkoasun taustakuvia</string>
-  <string id="31408">[B]Muokkaa laajennuksia[/B][CR][CR]Hallitse asennettuja laajennuksia · Valitse ja asenna laajennuksia xbmc.org:sta[CR]Muokkaa laajennusten asetuksia</string> 
+  <string id="31408">[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia</string> 
 
-  <string id="31421">Valitse XBMC käyttäjäprofiili[CR]kirjautuaksesi sisään</string>
+  <string id="31421">Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään</string>
 </strings>
