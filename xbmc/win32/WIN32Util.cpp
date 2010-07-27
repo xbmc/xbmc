@@ -897,7 +897,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
              CMediaSource::SOURCE_TYPE_UNKNOWN );
         }
 
-        localDrives.push_back(share);
+        AddOrReplace(localDrives, share);
       }
       iPos += (wcslen( pcBuffer + iPos) + 1 );
     } while( wcslen( pcBuffer + iPos ) > 0 );
