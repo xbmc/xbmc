@@ -788,7 +788,7 @@
 						<texture>HomeHasSub.png</texture>
 						<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(3) | Container(9000).HasFocus(5) | Container(9000).HasFocus(7) | Container(9000).HasFocus(9) | [Container(9000).HasFocus(1) + [[Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))] | [Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))] | [Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))] | [Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))] | [Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))] | [Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))]]] | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
 						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
-						<animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
+						<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
 					</control>
 				</focusedlayout>
 				<content>
