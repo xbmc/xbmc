@@ -1282,7 +1282,7 @@ void CUtil::URLEncode(CStdString& strURLData)
 
 bool CUtil::IsURLEncoded(const CStdString& strPath)
 {
-  return IsInternetStream(strPath, true) && strPath.Find('%') && !strPath.Find(' ');
+  return IsInternetStream(strPath, true) && strPath.Find('%') > 0 && strPath.Find(' ') < 0;
 }
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
