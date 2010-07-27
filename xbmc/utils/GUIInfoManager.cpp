@@ -3281,6 +3281,16 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
   // Find a thumb for this file.
   item.SetVideoThumb();
+  if (!item.HasThumbnail())
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(item.GetCachedVideoThumb(), strPath, strFileName);
+
+    // create unique thumb for auto generated thumbs
+    CStdString cachedThumb = strPath + "auto-" + strFileName;
+    if (CFile::Exists(cachedThumb))
+      item.SetThumbnailImage(cachedThumb);
+  }
 
   // find a thumb for this stream
   if (item.IsInternetStream())
