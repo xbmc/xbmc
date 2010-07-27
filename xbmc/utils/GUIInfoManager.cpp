@@ -1063,24 +1063,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case PLAYER_PATH:
   case PLAYER_FILEPATH:
-     if (m_currentFile)
-     {
-       if (m_currentFile->HasMusicInfoTag())
-         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
-       else if (m_currentFile->HasVideoInfoTag())
-         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
-       if (strLabel.IsEmpty())
-         strLabel = m_currentFile->m_strPath;
-     }
-     if (info == PLAYER_PATH)
-     {
-       // do this twice since we want the path outside the archive if this
-       // is to be of use.
-       if (CUtil::IsInArchive(strLabel))
-         strLabel = CUtil::GetParentPath(strLabel);
-       strLabel = CUtil::GetParentPath(strLabel);
-     }
-     break;
+    if (m_currentFile)
+    {
+      if (m_currentFile->HasMusicInfoTag())
+        strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+      else if (m_currentFile->HasVideoInfoTag())
+        strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (strLabel.IsEmpty())
+        strLabel = m_currentFile->m_strPath;
+    }
+    if (info == PLAYER_PATH)
+    {
+      // do this twice since we want the path outside the archive if this
+      // is to be of use.
+      if (CUtil::IsInArchive(strLabel))
+        strLabel = CUtil::GetParentPath(strLabel);
+      strLabel = CUtil::GetParentPath(strLabel);
+    }
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -3856,7 +3856,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_FILENAME_AND_PATH:
     {
       CStdString path;
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
         path = item->GetMusicInfoTag()->GetURL();
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
