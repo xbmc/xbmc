@@ -13,8 +13,10 @@
     library_osx="Euphoria.xbs"/>
   <extension point="xbmc.addon.metadata">
     <summary>About as psychedelic as screensavers get</summary>
+    <summary lang="fi">Mahdollisesti kaikkein psykedeelisin näytönsäästäjä</summary>
     <summary lang="hu">A legpszihedelikusabb képernyővédő</summary>
     <description>This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
+    <description lang="fi">Tämä on mahdollisesti niin psykedeelinen kuin vain näytönsäästäjä voi olla. mogumbo luuli, että hänen Plasma-näytönäästäjänsä oli asteikon huipulla, mutta tämä ohittaa senkin. Oksennuspussin hakeminen on suositeltavaa ennen pitkäaikaista tuijottamista.</description>
     <description lang="hu">Ez a legpszihedelikusabb képernyővédő. mogumbo úgy gondolta, hogy a Plasma képernyővédő van a lista tetején,de ez még inkább kábító. Jobb ha keresel egy légibetegség zacskót mielőtt túl sokáig néznéd a képernyőt.</description>
     <description lang="nl">Ongetwijfeld de meest psychedelische screensaver. mogumbo dacht dat zijn Plasma screensaver al bovenaan deze lijst stond, maar deze is zelf nog meer misselijkmakend.</description>
     <disclaimer></disclaimer>
