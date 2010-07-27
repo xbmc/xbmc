@@ -18,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "system.h"
+#ifdef HAS_LIBBDNAV
 
 #include "DVDInputStreamMPLS.h"
 #include "DVDFactoryInputStream.h"
@@ -125,3 +127,4 @@ BitstreamStats CDVDInputStreamMPLS::GetBitstreamStats() const
   return m_stream->GetBitstreamStats();
 }
 
+#endif

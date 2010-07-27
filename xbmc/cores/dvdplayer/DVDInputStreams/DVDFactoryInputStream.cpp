@@ -28,7 +28,12 @@
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
+#ifdef HAS_LIBBDNAV
 #include "DVDInputStreamMPLS.h"
+#endif
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreamBluray.h"
+#endif
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDInputStreamHTSP.h"
 #endif
@@ -53,6 +58,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
+#ifdef HAVE_LIBBLURAY
+  else if (item.IsType(".bdmv") || item.IsType(".mpls"))
+    return new CDVDInputStreamBluray();
+#endif
 #ifdef HAS_LIBBDNAV
   else if (item.IsType(".mpls"))
     return new CDVDInputStreamMPLS;
