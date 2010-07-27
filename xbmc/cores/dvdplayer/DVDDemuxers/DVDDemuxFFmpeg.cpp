@@ -1151,11 +1151,9 @@ std::string CDVDDemuxFFmpeg::GetFileName()
 
 int CDVDDemuxFFmpeg::GetChapterCount()
 {
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapterCount();
-
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-    return ((CDVDInputStreamBluray*)m_pInput)->GetChapterCount();
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
+    return ich->GetChapterCount();
 
   if(m_pFormatContext == NULL)
     return 0;
@@ -1168,11 +1166,9 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
 int CDVDDemuxFFmpeg::GetChapter()
 {
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapter();
-
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-    return ((CDVDInputStreamBluray*)m_pInput)->GetChapter();
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
+    return ich->GetChapter();
 
   if(m_pFormatContext == NULL
   || m_iCurrentPts == DVD_NOPTS_VALUE)
@@ -1192,9 +1188,9 @@ int CDVDDemuxFFmpeg::GetChapter()
 
 void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
 {
-  if(m_pInput && ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)
-                || m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY)) )
-    return;
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)  
+    ich->GetChapterName(strChapterName);
   else
   {
     #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
@@ -1210,23 +1206,11 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(chapter < 1)
     chapter = 1;
 
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CLog::Log(LOGDEBUG, "%s - chapter seeking using navigator", __FUNCTION__);
-    if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
-      return false;
-
-    if(startpts)
-      *startpts = DVD_NOPTS_VALUE;
-
-    Flush();
-    return true;
-  }
-
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
   {
     CLog::Log(LOGDEBUG, "%s - chapter seeking using input stream", __FUNCTION__);
-    if(!((CDVDInputStreamBluray*)m_pInput)->SeekChapter(chapter))
+    if(!ich->SeekChapter(chapter))
       return false;
 
     if(startpts)

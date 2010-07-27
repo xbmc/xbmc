@@ -57,6 +57,7 @@ public:
 class CDVDInputStreamNavigator
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
+  , public CDVDInputStream::IChapter
 {
 public:
   CDVDInputStreamNavigator(IDVDPlayer* player);
@@ -112,6 +113,7 @@ public:
 
   int GetChapter()      { return m_iPart; }      // the current part in the current title
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
+  void GetChapterName(std::string& name) {};
   bool SeekChapter(int iChapter);
 
   int GetTotalTime(); // the total time in milli seconds

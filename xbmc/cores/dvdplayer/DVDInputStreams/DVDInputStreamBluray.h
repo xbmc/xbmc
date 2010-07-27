@@ -29,6 +29,7 @@ typedef struct bd_title_info BLURAY_TITLE_INFO;
 class CDVDInputStreamBluray 
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
+  , public CDVDInputStream::IChapter
 {
 public:
   CDVDInputStreamBluray();
@@ -43,6 +44,7 @@ public:
   
   int GetChapter();
   int GetChapterCount();
+  void GetChapterName(std::string& name) {};
   bool SeekChapter(int ch);
 
   int GetTotalTime();

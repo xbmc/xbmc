@@ -66,6 +66,16 @@ public:
     virtual int GetTime() = 0;
   };
 
+  class IChapter
+  {
+    public:    
+    virtual ~IChapter() {};
+    virtual int  GetChapter() = 0;
+    virtual int  GetChapterCount() = 0;
+    virtual void GetChapterName(std::string& name) = 0;
+    virtual bool SeekChapter(int ch) = 0;
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
