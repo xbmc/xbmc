@@ -77,6 +77,8 @@ Export win32_exports[] =
   { "_fstat",                     -1, (void*)dll_fstat,                     NULL },
   { "_mkdir",                     -1, (void*)dll_mkdir,                     NULL },
   { "_stat",                      -1, (void*)dll_stat,                      NULL },
+  { "_fstat32",                   -1, (void*)dll_fstat,                     NULL },
+  { "_stat32",                    -1, (void*)dll_stat,                      NULL },
   { "_findclose",                 -1, (void*)dll_findclose,                 NULL },
   { "_findfirst",                 -1, (void*)dll_findfirst,                 NULL },
   { "_findnext",                  -1, (void*)dll_findnext,                  NULL },
