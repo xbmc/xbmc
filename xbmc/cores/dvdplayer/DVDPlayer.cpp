@@ -3462,7 +3462,10 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
   {
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
     if (result) // this is more correct (dvds in particular)
+    {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime()/60;
+    }
     return result;
   }
   else
