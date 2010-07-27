@@ -1360,7 +1360,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   }
   else
   {
-    output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
+    CURL url(fileItem.m_strPath);
+    CStdString strPath(url.GetWithoutUserDetails());
+    CUtil::URLDecode(strPath);
+    output = openTag + "Filename:" + strPath;  // currently playing item filename
     if (g_application.IsPlaying())
       if (!g_application.m_pPlayer->IsPaused())
         output+=closeTag+openTag+"PlayStatus:Playing";
