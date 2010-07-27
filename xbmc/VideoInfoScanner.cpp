@@ -735,6 +735,10 @@ namespace VIDEO
     {
       if (items[i]->m_bIsFolder)
         continue;
+      
+      if (CUtil::IsURLEncoded(items[i]->m_strPath))
+        CUtil::URLDecode(items[i]->m_strPath);
+      
       CStdString strPath;
       CUtil::GetDirectory(items[i]->m_strPath, strPath);
       CUtil::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
