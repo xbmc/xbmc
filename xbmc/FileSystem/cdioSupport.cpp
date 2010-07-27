@@ -223,7 +223,7 @@ char* CLibcdio::GetDeviceFileName()
         ::cdio_destroy(p_cdio);
       }
       else
-        s_defaultDevice = "";
+        s_defaultDevice = strdup("");
     }
   }
   return s_defaultDevice;
