@@ -9,10 +9,12 @@
     <summary lang="fi">Tyhjä ruutu</summary>
     <summary lang="hu">Képernyővédő ami elfeketíti a képernyőt</summary>
     <summary lang="zh">黑屏屏幕保护程序</summary>
+    <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
     <description>Black is a simple screensaver that will turn your screen black.</description>
     <description lang="fi">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
     <description lang="hu">A Black egy egyszerű képernyővédő ami feketévé változtatja a képernyőt.</description>
     <description lang="zh">黑屏屏保是一个简单的屏幕保护程序，它使你的显示器进入黑屏状态。</description>
+    <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
     <platform>all</platform>
   </extension>
 </addon>
