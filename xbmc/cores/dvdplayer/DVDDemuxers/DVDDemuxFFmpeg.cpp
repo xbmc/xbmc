@@ -1066,10 +1066,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     //FFMPEG has an error doesn't set type properly for DTS
     if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
       m_streams[iId]->codec = CODEC_ID_DTS;
-
+#ifdef HAVE_LIBBLURAY
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
       static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, m_streams[iId]->language);
-
+#endif
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
       // this stuff is really only valid for dvd's.
