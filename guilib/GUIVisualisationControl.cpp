@@ -93,16 +93,21 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 
 void CGUIVisualisationControl::Render()
 {
-  if (!m_addon && g_application.IsPlayingAudio() && !m_bAttemptedLoad)
+  if (g_application.IsPlayingAudio())
   {
-    AddonPtr viz;
-    if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
-      LoadAddon(viz);
+    if (m_bInvalidated)
+      FreeResources(true);
 
-    m_bAttemptedLoad = true;
+    if (!m_addon && !m_bAttemptedLoad)
+    {
+      AddonPtr viz;
+      if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
+        LoadAddon(viz);
+
+      m_bAttemptedLoad = true;
+    }
   }
-  else
-    CGUIRenderingControl::Render();
+  CGUIRenderingControl::Render();
 }
 
 void CGUIVisualisationControl::FreeResources(bool immediately)
