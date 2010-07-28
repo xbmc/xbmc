@@ -34,8 +34,8 @@
 using namespace std;
 
 // Comment out one of the following defines to select the colourspace to use
-//#define RGBA8888
-#define RGB565
+#define RGBA8888
+//#define RGB565
 
 #if defined(RGBA8888)
 #define RSIZE	8
