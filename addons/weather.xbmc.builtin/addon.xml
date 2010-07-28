@@ -8,9 +8,11 @@
     <summary>Current weather conditions.</summary>
     <summary lang="hu">A jelenlegi időjárás.</summary>
     <summary lang="zh">当前天气状况</summary>
+    <summary lang="pl">Aktualne warunki pogodowe.</summary>
     <description>This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
     <description lang="hu">Ez az alapértelmezett időjárás információforrás.[CR][CR]Tájékoztat a jelenlegi időjárásról, valamint négynapos előrejelzést ad.</description>
     <description lang="zh">这是默认的天气预报信息来源。[CR][CR]它提供了当前的天气状况和未来4天的天气预报。</description>
+    <description lang="pl">Jest to domyślne źródło pogody.[CR][CR]Dostarcza aktualną pogodę oraz prognozę na cztery dni.</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -15,11 +15,13 @@
     <summary lang="hu">Vizualizáció két hullámformával</summary>
     <summary lang="nl">Visualisatie</summary>
     <summary lang="zh">可视化效果</summary>
+    <summary lang="pl">Wizualizacja pokazująca dwie fale dźwięku</summary>
     <description>Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
     <description lang="hu">A Waveform egy egyszerű vizualizáció, amely 2db hullámot mutat reprezentálva a bal és a jobb hangcsatornákat, melyek a zene ritmusára mozognak.</description>
     <description lang="nl">Waveform is een simpele muziekvisualisatie die 2 golfvormen op het scherm toont, respectievelijk voor het linker en rechter geluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
     <description lang="zh">Waveform是一个简单的可视化效果，它在屏幕上显示两个波形图，分别与音乐左右声道的节拍相呼应。</description>
+    <description lang="pl">Waveform jest prostą wizualizacją pokazującą dwie fale dźwiękowe na ekranie. Każda na jeden kanał dźwięku.</description>
     <disclaimer></disclaimer>
     <platform>all</platform>
   </extension>

@@ -12,10 +12,12 @@
     <summary lang="fi">iTunes -visualisoinnit</summary>
     <summary lang="hu">iTunes Vizualizáció</summary>
     <summary lang="nl">iTunes Visualisaties</summary>
+    <summary lang="pl">Wrapper wizualizacji iTunes</summary>
     <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
     <description lang="fi">Mahdollistaa OSX iTunes -asennuksen visualisointien käytön XBMC:ssä.</description>
     <description lang="hu">Az iTunes Vizualizáció lehetővé teszi, hogy használd az OSX iTunes telepítésedben meglévő vizualizációkat az XBMC-ben</description>
     <description lang="nl">iTunes Visualisaties kan gebruik maken van de visualisaties van jouw iTunes installatie in OSX</description>
+    <description lang="pl">Wrapper pozwala XBMC na użycie wizualizacji z iTunes (tylko system OSX)</description>
     <disclaimer></disclaimer>
     <platform>osx</platform>
   </extension>

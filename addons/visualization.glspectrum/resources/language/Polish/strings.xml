@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tryb</string>
+    <string id="30001">Wypełnione</string>
+    <string id="30002">Siatka</string>
+    <string id="30003">Punkty</string>
+    <string id="30004">Wysokość słupków</string>
+    <string id="30005">Małe</string>
+    <string id="30006">Domyślne</string>
+    <string id="30007">Duże</string>
+    <string id="30008">Bardzo duże</string>
+    <string id="30009">Szybkość</string>
+    <string id="30010">Bardzo wolne</string>
+    <string id="30011">Wolne</string>
+    <string id="30012">Domyślne</string>
+    <string id="30013">Szybkie</string>
+    <string id="30014">Bardzo szybkie</string>
+</strings>
