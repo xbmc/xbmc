@@ -432,6 +432,36 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
   fi
 fi
 
+# Checks for library functions.
+AC_FUNC_ALLOCA
+AC_FUNC_CHOWN
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_FSEEKO
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_LSTAT
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_FUNC_MEMCMP
+AC_FUNC_MKTIME
+AC_FUNC_MMAP
+# Boxee is apparently having compile problems
+# if HAVE_REALLOC is defined.  Sort this later.
+#AC_FUNC_REALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
+AC_FUNC_STAT
+AC_FUNC_STRCOLL
+AC_FUNC_STRFTIME
+AC_FUNC_STRTOD
+AC_FUNC_UTIME_NULL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
+
+# Check for various sizes
+AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([size_t])
+
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
@@ -1078,36 +1108,6 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_C_BIGENDIAN
-
-# Checks for library functions.
-AC_FUNC_ALLOCA
-AC_FUNC_CHOWN
-AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_FSEEKO
-AC_PROG_GCC_TRADITIONAL
-AC_FUNC_LSTAT
-AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
-AC_FUNC_MEMCMP
-AC_FUNC_MKTIME
-AC_FUNC_MMAP
-# Boxee is apparently having compile problems
-# if HAVE_REALLOC is defined.  Sort this later.
-#AC_FUNC_REALLOC
-AC_FUNC_SELECT_ARGTYPES
-AC_FUNC_SETVBUF_REVERSED
-AC_TYPE_SIGNAL
-AC_FUNC_STAT
-AC_FUNC_STRCOLL
-AC_FUNC_STRFTIME
-AC_FUNC_STRTOD
-AC_FUNC_UTIME_NULL
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
-
-# Check for various sizes
-AC_CHECK_SIZEOF([int])
-AC_CHECK_SIZEOF([size_t])
 
 if test "$cross_compiling" = "yes"; then
   final_message="$final_message\n  Crosscomp.:\tYes"
