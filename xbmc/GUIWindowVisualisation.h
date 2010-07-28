@@ -25,27 +25,20 @@
 #include "MusicInfoTag.h"
 #include "Stopwatch.h"
 
-namespace ADDON
-{
-  class CVisualisation;
-}
-
 class CGUIWindowVisualisation :
       public CGUIWindow
 {
 public:
   CGUIWindowVisualisation(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
   virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
 protected:
-  bool UpdateTrack();
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+
   CStopWatch m_initTimer;
   CStopWatch m_lockedTimer;
   bool m_bShowPreset;
-  boost::shared_ptr<ADDON::CVisualisation> m_addon;
   MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };
 
