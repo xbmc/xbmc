@@ -214,7 +214,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     if (!pFontFile)
     {
       pFontFile = new CGUIFontTTF(TTFfontName);
-      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect))
+      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
       {
         delete pFontFile;
         // font could not be loaded
