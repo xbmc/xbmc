@@ -949,8 +949,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
       }
     }
   }
-  if (watchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
-    GoParentFolder();
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
