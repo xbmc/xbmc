@@ -773,7 +773,9 @@ namespace VIDEO
     if (!reg.RegComp(regexp))
       return false;
 
-    CStdString strLabel=item->m_strPath;
+    CStdString strLabel = item->m_strPath;
+    // URLDecode since the path may be an URL
+    CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
     int regexppos, regexp2pos;
@@ -863,7 +865,9 @@ namespace VIDEO
     if (!reg.RegComp(regexp))
       return false;
 
-    CStdString strLabel=item->m_strPath;
+    CStdString strLabel = item->m_strPath;
+    // URLDecode since the path may be an URL
+    CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
     int regexppos;
