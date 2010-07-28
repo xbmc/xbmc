@@ -23,11 +23,6 @@
 
 #include "GUIDialog.h"
 
-namespace ADDON
-{
-  class CVisualisation;
-}
-
 class CGUIDialogMusicOSD :
       public CGUIDialog
 {
@@ -38,5 +33,4 @@ public:
   virtual void FrameMove();
 protected:
   virtual void OnInitWindow();
-  ADDON::CVisualisation *m_pVisualisation;
 };
