@@ -204,7 +204,7 @@ namespace VIDEO
      \param progress progressbar to update - defaults to NULL
      \param directory directory that this thumbnail should be applied to. Defaults to empty
      */
-    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL, const CStdString &directory = "");
+    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL);
 
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
