@@ -148,8 +148,9 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     return;
 
   // set the outline color
+  vecColors outlineColors;
   if (m_colors.size())
-    m_colors[0] = outlineColor;
+    outlineColors.push_back(outlineColor);
 
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
@@ -168,7 +169,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
       if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
         align &= ~XBFONT_JUSTIFIED;
 
-      m_borderFont->DrawText(x, by, m_colors, 0, string.m_text, align, maxWidth);
+      m_borderFont->DrawText(x, by, outlineColors, 0, string.m_text, align, maxWidth);
       by += m_borderFont->GetLineHeight();
     }
     m_borderFont->End();
