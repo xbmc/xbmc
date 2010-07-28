@@ -230,7 +230,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   }
   if (items.Size() == 0)
   {
-    CFileItemPtr item(new CFileItem("addons://more",false));
+    CFileItemPtr item(new CFileItem("addons://more/"+content,false));
     item->SetLabelPreformated(true);
     item->SetLabel(g_localizeStrings.Get(21452));
     item->SetThumbnailImage("DefaultAddon.png");
