@@ -766,9 +766,7 @@ if test "$use_librtmp" != "no"; then
     fi
    ])
   if test "$use_librtmp" != "no" && test "$host_vendor" != "apple"; then
-    PKG_CHECK_MODULES([LIBRTMP],  [librtmp],
-      [INCLUDES="$INCLUDES $LIBRTMP_CFLAGS"; LIBS="$LIBS $LIBRTMP_LIBS"],
-      XB_FIND_SONAME([LIBRTMP], [rtmp], [use_librtmp]))
+    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
   fi
   if test "$use_librtmp" != "no"; then
     AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
