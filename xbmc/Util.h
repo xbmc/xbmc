@@ -175,7 +175,7 @@ public:
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
-  static void DeleteDirectoryCache(const CStdString strType = "");
+  static void DeleteDirectoryCache(const CStdString &prefix = "");
   static void DeleteMusicDatabaseDirectoryCache();
   static void DeleteVideoDatabaseDirectoryCache();
   static CStdString MusicPlaylistsLocation();
@@ -198,7 +198,6 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
-  static void ClearFileItemCache();
 
   static void InitRandomSeed();
 

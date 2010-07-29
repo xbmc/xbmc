@@ -1686,92 +1686,80 @@ bool CApplication::LoadUserWindows()
   g_SkinInfo->GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
-    CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-
-    WIN32_FIND_DATA NextFindFileData;
-    HANDLE hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
-    while (hFind != INVALID_HANDLE_VALUE)
+    CFileItemList items;
+    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", false))
     {
-      WIN32_FIND_DATA FindFileData = NextFindFileData;
-
-      if (!FindNextFile(hFind, &NextFindFileData))
+      for (int i = 0; i < items.Size(); ++i)
       {
-        FindClose(hFind);
-        hFind = INVALID_HANDLE_VALUE;
-      }
+        if (items[i]->m_bIsFolder)
+          continue;
+        CStdString skinFile = CUtil::GetFileName(items[i]->m_strPath);
+        if (skinFile.Left(6).CompareNoCase("custom") == 0)
+        {
+          TiXmlDocument xmlDoc;
+          if (!xmlDoc.LoadFile(items[i]->m_strPath))
+          {
+            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            continue;
+          }
 
-      // skip "up" directories, which come in all queries
-      if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
-        continue;
+          // Root element should be <window>
+          TiXmlElement* pRootElement = xmlDoc.RootElement();
+          CStdString strValue = pRootElement->Value();
+          if (!strValue.Equals("window"))
+          {
+            CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
+            continue;
+          }
 
-      CStdString strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
-      CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-      CStdString strLower(FindFileData.cFileName);
-      strLower.MakeLower();
-      strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
-      TiXmlDocument xmlDoc;
-      if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
-      {
-        CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-        continue;
-      }
+          // Read the <type> element to get the window type to create
+          // If no type is specified, create a CGUIWindow as default
+          CGUIWindow* pWindow = NULL;
+          CStdString strType;
+          if (pRootElement->Attribute("type"))
+            strType = pRootElement->Attribute("type");
+          else
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("type");
+            if (pType && pType->FirstChild())
+              strType = pType->FirstChild()->Value();
+          }
+          int id = WINDOW_INVALID;
+          if (!pRootElement->Attribute("id", &id))
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("id");
+            if (pType && pType->FirstChild())
+              id = atol(pType->FirstChild()->Value());
+          }
+          int visibleCondition = 0;
+          CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-      // Root element should be <window>
-      TiXmlElement* pRootElement = xmlDoc.RootElement();
-      CStdString strValue = pRootElement->Value();
-      if (!strValue.Equals("window"))
-      {
-        CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
-        continue;
-      }
+          if (strType.Equals("dialog"))
+            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
+          else if (strType.Equals("submenu"))
+            pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
+          else if (strType.Equals("buttonmenu"))
+            pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
+          else
+            pWindow = new CGUIStandardWindow(id + WINDOW_HOME, skinFile);
 
-      // Read the <type> element to get the window type to create
-      // If no type is specified, create a CGUIWindow as default
-      CGUIWindow* pWindow = NULL;
-      CStdString strType;
-      if (pRootElement->Attribute("type"))
-        strType = pRootElement->Attribute("type");
-      else
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("type");
-        if (pType && pType->FirstChild())
-          strType = pType->FirstChild()->Value();
+          // Check to make sure the pointer isn't still null
+          if (pWindow == NULL)
+          {
+            CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+            return false;
+          }
+          if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
+          {
+            delete pWindow;
+            continue;
+          }
+          pWindow->SetVisibleCondition(visibleCondition, false);
+          g_windowManager.AddCustomWindow(pWindow);
+        }
       }
-      int id = WINDOW_INVALID;
-      if (!pRootElement->Attribute("id", &id))
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("id");
-        if (pType && pType->FirstChild())
-          id = atol(pType->FirstChild()->Value());
-      }
-      int visibleCondition = 0;
-      CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
-
-      if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
-      else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
-      else
-        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
-
-      // Check to make sure the pointer isn't still null
-      if (pWindow == NULL)
-      {
-        CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-        return false;
-      }
-      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
-      {
-        delete pWindow;
-        continue;
-      }
-      pWindow->SetVisibleCondition(visibleCondition, false);
-      g_windowManager.AddCustomWindow(pWindow);
     }
-    CloseHandle(hFind);
   }
   return true;
 }
