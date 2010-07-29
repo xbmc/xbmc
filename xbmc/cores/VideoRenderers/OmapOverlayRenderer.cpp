@@ -37,6 +37,7 @@ extern "C" void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *
 COmapOverlayRenderer::COmapOverlayRenderer()
 {
   m_bConfigured = false;
+  m_backbufferReady = false;
 
   m_yuvBuffers[0].plane[0] = NULL;
   m_yuvBuffers[0].plane[1] = NULL;
@@ -155,6 +156,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     }
 
     m_bConfigured = true;
+    m_backbufferReady = true;
 
     for (unsigned int i = 0; i < 2; i++)
     {
@@ -172,7 +174,7 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
 
 int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
 {
-  if (!m_bConfigured)
+  if (!m_bConfigured || !m_backbufferReady)
     return -1;
 
   /* take next available buffer */
@@ -193,6 +195,8 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->cshift_x = im.cshift_x;
   image->cshift_y = im.cshift_y;
 
+  m_backbufferReady = false;
+
   return source;
 }
 
@@ -208,12 +212,16 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
 
 int COmapOverlayRenderer::PutImage(YV12Image *image, int source)
 {
+  if (!m_bConfigured || !m_backbufferReady)
+    return -1;
+
   /* take next available buffer */
   if( source == AUTOSOURCE || source > 1 || source < 0)
     source = m_currentBackBuffer;
 
   yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayScreenInfo.xres * 2);
 
+  m_backbufferReady = false;
   return source;
 }
 
@@ -224,6 +232,7 @@ void COmapOverlayRenderer::FlipPage(int source)
 
   m_currentDisplayBuffer = m_currentBackBuffer;
   m_currentBackBuffer = NextYV12Image();
+  m_backbufferReady = true;
 }
 
 void COmapOverlayRenderer::Reset()
@@ -296,6 +305,7 @@ void COmapOverlayRenderer::UnInit()
 
   CLog::Log(LOGINFO, "OmapOverlay: UnInit");
   m_bConfigured = false;
+  m_backbufferReady = false;
   m_iFlags = 0;
   m_currentBackBuffer = 0;
 

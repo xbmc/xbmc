@@ -161,6 +161,7 @@ private:
   bool FreeYV12Image(unsigned int index);
 
   bool m_bConfigured;
+  bool m_backbufferReady;
   unsigned int m_iFlags;
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
