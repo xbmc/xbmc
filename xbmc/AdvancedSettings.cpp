@@ -265,6 +265,9 @@ void CAdvancedSettings::Initialize()
   m_bgInfoLoaderMaxThreads = 5;
 
   m_measureRefreshrate = false;
+
+  m_guiUseDirtyRegions = false;
+  m_guiVisualizeDirtyRegions = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -756,6 +759,13 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
+
+  pElement = pRootElement->FirstChildElement("gui");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "usedirtyregions",       m_guiUseDirtyRegions);
+    XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
   }
 
   // load in the GUISettings overrides:

@@ -30,6 +30,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "addons/Skin.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 
@@ -496,7 +497,6 @@ bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
   return first->GetRenderOrder() < second->GetRenderOrder();
 }
 
-#ifdef VISUALIZE_DIRTY_REGION
 void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
 {
   glColor4f(r, g, b, a);
@@ -507,7 +507,6 @@ void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
     glVertex3f(rect.x1, rect.y2, 0.0f);	// Top Left Of The Texture and Quad
   glEnd();
 }
-#endif
 
 void CGUIWindowManager::Render()
 {
@@ -520,15 +519,16 @@ void CGUIWindowManager::Render()
 
   m_unifiedDirtyRegion.Union(currentDirtyRegion);
 
-#ifdef USE_DIRTY_REGION
-  if (m_unifiedDirtyRegion.IsEmpty())
-    return;
   GLint oldRegion[8];
-  glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
-  // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
-  glScissor(m_unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - m_unifiedDirtyRegion.y2, m_unifiedDirtyRegion.Width(), m_unifiedDirtyRegion.Height());
-  glEnable(GL_SCISSOR_TEST);
-#endif
+  if (g_advancedSettings.m_guiUseDirtyRegions)
+  {
+    if (m_unifiedDirtyRegion.IsEmpty())
+      return;
+    glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
+    // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
+    glScissor(m_unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - m_unifiedDirtyRegion.y2, m_unifiedDirtyRegion.Width(), m_unifiedDirtyRegion.Height());
+    glEnable(GL_SCISSOR_TEST);
+  }
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -547,37 +547,39 @@ void CGUIWindowManager::Render()
       (*it)->Render();
   }
 
-#ifdef VISUALIZE_DIRTY_REGION
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  glOrtho(0.0f, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0f, -1.0f, 1.0f);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_TEXTURE_2D);
-
-  for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
+  if (g_advancedSettings.m_guiVisualizeDirtyRegions)
   {
-    CRect rect = m_DirtyRegion[i];
-    DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
-  }
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
-  DrawColoredQuad(m_unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
-#endif
+    glOrtho(0.0f, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0f, -1.0f, 1.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);          // Turn Blending On
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_TEXTURE_2D);
+
+    for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
+    {
+      CRect rect = m_DirtyRegion[i];
+      DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
+    }
+
+    DrawColoredQuad(m_unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
+  }
 
   // Reset dirtyregion
   m_DirtyRegion.clear();
 
-#ifdef USE_DIRTY_REGION
-  if (m_unifiedDirtyRegion.IsEmpty())
-    return;
-  glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
-#endif
+  if (g_advancedSettings.m_guiUseDirtyRegions)
+  {
+    if (m_unifiedDirtyRegion.IsEmpty())
+      return;
+    glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
+  }
 
   m_unifiedDirtyRegion = currentDirtyRegion;
 }

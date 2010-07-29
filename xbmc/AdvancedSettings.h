@@ -263,6 +263,9 @@ class CAdvancedSettings
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
+
+    bool m_guiUseDirtyRegions;
+    bool m_guiVisualizeDirtyRegions;
 };
 
 extern CAdvancedSettings g_advancedSettings;
