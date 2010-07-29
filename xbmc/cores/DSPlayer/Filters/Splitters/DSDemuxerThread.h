@@ -89,6 +89,7 @@ protected:
   CDVDDemux* m_pSubtitleDemuxer;
 
 
+  int        m_streamsCount;
   struct StreamList {
     UINT       pin_index;
     CDSOutputPin *pin;
@@ -100,6 +101,7 @@ protected:
   CAMEvent m_pSeekProtect;
 	HANDLE   m_hSeekProtection;
 	BOOL     m_bTrustCRC;
+
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   /*bool OpenAudioStream(int iStream, int source);

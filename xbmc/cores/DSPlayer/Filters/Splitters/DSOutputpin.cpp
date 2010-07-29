@@ -200,13 +200,96 @@ void CDSOutputPin::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
-HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
-{
-  return S_OK;
-}
-
 HRESULT CDSOutputPin::DoBufferProcessingLoop(void)
 {
+  HRESULT hr = __super::DoBufferProcessingLoop();
+  // We will get here earlier when a stream switcher block the stream
+	// We must stop to fill the queue
+	// the pin thread is still active, it's just waiting for a new command
+  m_bIsProcessing = false;
+  CLog::DebugLog("%s",__FUNCTION__);
+  if (hr == S_OK)
+  {
+    Flush();
+  }
+  return hr;
+}
+
+/* this function is called from CSourceStream and its the main loop for develiring samples*/
+HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
+{
+  //CLog::DebugLog("%s",__FUNCTION__);
+  CheckPointer(pSample,E_POINTER);
+	BYTE *pData;
+	long cbData;
+	REFERENCE_TIME	tBlockDuration, tSmpStart, tSmpEnd;	
+	LONGLONG aDuration;
+  // Access the sample's data buffer
+  pSample->GetPointer(&pData);
+  cbData = pSample->GetSize();
+
+  CDVDMsg* pMsg;
+  int iPriority = 0;
+  MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 50, iPriority);
+  do
+  {
+    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
+    {
+      CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
+      assert(0);
+    }
+    else if (ret == MSGQ_TIMEOUT)
+    {
+        // if we only wanted priority messages, this isn't a stall
+      if( 0 )
+        break;
+      assert(0);
+    }
+    if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
+    {
+      m_packets.clear();
+    
+    }
+    else if(pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+    {
+      DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
+      bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
+      
+      //CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+      //m_packets.pop_front();
+      tBlockDuration = pPacket->duration * 10; //Sample duration
+      tSmpStart = mPrevStartTime;
+      BOOL syncpoint = FALSE;
+    // Check for PTS first
+      if (pPacket->pts != DVD_NOPTS_VALUE) 
+        tSmpStart = (pPacket->pts * 10);
+      else if (pPacket->dts != DVD_NOPTS_VALUE) // if thats not set, use DTS
+        tSmpStart = (pPacket->dts * 10);
+      else
+        syncpoint = TRUE;
+      tSmpEnd = tSmpStart + ((pPacket->duration > 0) ? (pPacket->duration * 10) : 1);
+      
+      tSmpStart -= m_rtStart;
+	    tSmpEnd -= m_rtStart;
+      pSample->SetTime(&tSmpStart, &tSmpEnd);
+	    pSample->SetMediaTime(NULL,NULL);
+      
+      memcpy(pPacket->pData, pData, pPacket->iSize);
+      pSample->SetActualDataLength(pPacket->iSize);
+      pSample->SetSyncPoint(syncpoint);
+      mPrevStartTime = tSmpEnd;
+      if(m_bDiscontinuity)
+	    {
+        pSample->SetDiscontinuity(m_bDiscontinuity);
+		    m_bDiscontinuity = false;
+      }
+      pSample->SetPreroll((tSmpStart < 0)? 0 : 1);
+    }
+  }
+  while (1);
+  pMsg->Release();
+
+  
   return S_OK;
 }
 

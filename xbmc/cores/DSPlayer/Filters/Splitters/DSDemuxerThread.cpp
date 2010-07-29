@@ -77,6 +77,7 @@ CDSDemuxerThread::CDSDemuxerThread(CDSDemuxerFilter* pFilter ,LPWSTR pFileName)
     delete m_pInputStream;
     assert(0);
   }
+  m_streamsCount = m_pDemuxer->GetNrOfStreams();
 }
 
 CDSDemuxerThread::~CDSDemuxerThread()
@@ -93,12 +94,12 @@ HRESULT CDSDemuxerThread::CreateOutputPin()
   HRESULT	hr = S_OK;
   CLog::DebugLog("%s",__FUNCTION__);
 	delete [] m_pStreamList;
-	m_pStreamList = new StreamList[m_pDemuxer->GetNrOfStreams()];
+	m_pStreamList = new StreamList[m_streamsCount];
 	if (m_pStreamList == NULL)
 		return S_FALSE;
   const CDVDDemuxFFmpeg *pDemuxer = static_cast<const CDVDDemuxFFmpeg*>(m_pDemuxer);
   const char *containerFormat = pDemuxer->m_pFormatContext->iformat->name;
-	for(int i=0; i < m_pDemuxer->GetNrOfStreams(); i++)
+	for(int i=0; i < m_streamsCount; i++)
 	{
 		CDemuxStream* pStream = m_pDemuxer->GetStream(i);
     CDSStreamInfo hint(*pStream, true, containerFormat);
@@ -155,7 +156,7 @@ void CDSDemuxerThread::Stop()
   if(m_pSubtitleDemuxer)
     m_pSubtitleDemuxer->Abort();
 
-  for (INT i=0; i<m_pDemuxer->GetNrOfStreams(); i++)
+  for (INT i=0; i<m_streamsCount; i++)
   {
 		m_pStreamList[i].pin->EndStream();
   }
@@ -187,7 +188,7 @@ BOOL CDSDemuxerThread::Create(void)
   
   HRESULT hr = CreateOutputPin();
   
-  for (int i=0; i<m_pDemuxer->GetNrOfStreams(); i++)
+  for (int i=0; i<m_streamsCount; i++)
     m_pStreamList[i].pin->Reset();
 
   if (!CAMThread::Create())
@@ -226,8 +227,30 @@ DWORD CDSDemuxerThread::ThreadProc()
 		}
 		if (bStop)
 			break;
-    while (1) 
+    while (1)
     {
+      /*take a look at the message queue is full*/
+      for (int i=0; i<m_streamsCount; i++)
+      {
+        if (m_pStreamList[i].pin->m_messageQueue.IsFull())
+        {
+          Sleep(10);
+          continue;
+        }
+      }
+
+/*Is it really needed for ds demuxer*/
+#if 0
+      // always yield to players if they have data
+      for (int i=0; i<m_streamsCount; i++)
+      {
+        if (m_pStreamList[i].pin->m_messageQueue.GetDataSize() > 0)
+        {
+          Sleep(0);
+          break;
+        }
+      }
+#endif
       DemuxPacket* pPacket = NULL;
       CDemuxStream *pStream = NULL;
 
@@ -237,16 +260,27 @@ DWORD CDSDemuxerThread::ThreadProc()
       {
         /* probably a empty DsPacket, just free it and move on */
         CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-        break;
+        continue;
       }
       if (!pPacket)
 	    {
         CLog::DebugLog("%s no packet from demuxer assuming end of stream",__FUNCTION__);
-        for (int i=0; i<m_pDemuxer->GetNrOfStreams(); i++)
-          m_pStreamList[i].pin->EndStream();
 	      /*end of stream detected*/
-        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-        break; // wait for new commands
+        // always yield to players if they have data
+      
+        for (int i=0; i<m_streamsCount; i++)
+        {
+          if (m_pStreamList[i].pin->m_messageQueue.GetDataSize() > 0)
+          {
+            Sleep(100);
+            continue;
+          }
+        }
+
+          if (!m_pInputStream->IsEOF())
+            CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
+          break;
+        
 				
 			} 
       else 
@@ -272,7 +306,7 @@ CDSOutputPin *CDSDemuxerThread::GetOutputPinIndex(UINT index) const
 	if (m_pStreamList == NULL)
 		return NULL;
 
-	for (INT i=0; i<m_pDemuxer->GetNrOfStreams(); i++) 
+	for (INT i=0; i<m_streamsCount; i++) 
   {
 		if (m_pStreamList[i].pin_index == index)
 			return m_pStreamList[i].pin;
@@ -282,7 +316,7 @@ CDSOutputPin *CDSDemuxerThread::GetOutputPinIndex(UINT index) const
 
 void CDSDemuxerThread::BlockProc()
 {
-  for (INT i=0; i<m_pDemuxer->GetNrOfStreams(); i++) 
+  for (INT i=0; i<m_streamsCount; i++) 
   {
 		m_pStreamList[i].pin->DisableWriteBlock();
 	}
@@ -291,13 +325,13 @@ void CDSDemuxerThread::BlockProc()
 
 void CDSDemuxerThread::UnBlockProc(bool bPauseMode)
 {
-  for (INT i=0; i<m_pDemuxer->GetNrOfStreams(); i++) 
+  for (INT i=0; i<m_streamsCount; i++) 
   {
     m_pStreamList[i].pin->SetProcessingFlag();
 		m_pStreamList[i].pin->DisableWriteBlock();
 	}
   CallWorker(CMD_WAKEUP);
-  for (INT i=0; i<m_pDemuxer->GetNrOfStreams(); i++) 
+  for (INT i=0; i<m_streamsCount; i++) 
   {
 		m_pStreamList[i].pin->EnableWriteBlock();
 	}
