@@ -2678,24 +2678,16 @@ CStdString CUtil::VideoPlaylistsLocation()
 
 void CUtil::DeleteMusicDatabaseDirectoryCache()
 {
-  CUtil::DeleteDirectoryCache("mdb");
+  CUtil::DeleteDirectoryCache("mdb-");
 }
 
 void CUtil::DeleteVideoDatabaseDirectoryCache()
 {
-  CUtil::DeleteDirectoryCache("vdb");
+  CUtil::DeleteDirectoryCache("vdb-");
 }
 
-void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
+void CUtil::DeleteDirectoryCache(const CStdString &prefix)
 {
-  CStdString strFile = "";
-  if (!strType.IsEmpty())
-  {
-    strFile += strType;
-    if (!strFile.Right(1).Equals("-"))
-      strFile += "-";
-  }
-
   CStdString searchPath = "special://temp/";
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
@@ -2706,7 +2698,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
     if (items[i]->m_bIsFolder)
       continue;
     CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
-    if (fileName.Left(strFile.GetLength()) == strFile)
+    if (fileName.Left(prefix.GetLength()) == prefix)
       XFILE::CFile::Delete(items[i]->m_strPath);
   }
 }
@@ -3112,17 +3104,6 @@ void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& str
     destPath.Replace(strSrcPath,"");
     destPath = CUtil::AddFileToFolder(strDstPath, destPath);
     CFile::Cache(items[i]->m_strPath, destPath);
-  }
-}
-
-void CUtil::ClearFileItemCache()
-{
-  CFileItemList items;
-  CDirectory::GetDirectory("special://temp/", items, ".fi", false);
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (!items[i]->m_bIsFolder)
-      CFile::Delete(items[i]->m_strPath);
   }
 }
 

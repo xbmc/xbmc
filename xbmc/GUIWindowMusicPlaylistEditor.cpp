@@ -187,19 +187,7 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
 
 void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
 {
-  CStdString searchPath = "special://temp/";
-  CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
-    return;
-
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (items[i]->m_bIsFolder)
-      continue;
-    CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
-    if (fileName.Left(2) == "r-")
-      XFILE::CFile::Delete(items[i]->m_strPath);
-  }
+  CUtil::DeleteDirectoryCache("r-");
 }
 
 void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)

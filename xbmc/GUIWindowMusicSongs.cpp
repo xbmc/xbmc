@@ -58,7 +58,7 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 
   m_thumbLoader.SetObserver(this);
   // Remove old HD cache every time XBMC is loaded
-  DeleteDirectoryCache();
+  CUtil::DeleteDirectoryCache();
 }
 
 CGUIWindowMusicSongs::~CGUIWindowMusicSongs(void)
@@ -431,36 +431,9 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowMusicSongs::DeleteDirectoryCache()
-{
-  CStdString searchPath = "special://temp/";
-  CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
-    return;
-
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (items[i]->m_bIsFolder)
-      continue;
-    XFILE::CFile::Delete(items[i]->m_strPath);
-  }
-}
-
 void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
 {
-  CStdString searchPath = "special://temp/";
-  CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
-    return;
-
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (items[i]->m_bIsFolder)
-      continue;
-    CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
-    if (fileName.Left(2) == "r-")
-      XFILE::CFile::Delete(items[i]->m_strPath);
-  }
+  CUtil::DeleteDirectoryCache("r-");
 }
 
 void CGUIWindowMusicSongs::PlayItem(int iItem)
