@@ -1345,20 +1345,17 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
 void CUtil::RemoveTempFiles()
 {
-  WIN32_FIND_DATA wfd;
+  CStdString searchPath = g_settings.GetDatabaseFolder();
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", false))
+    return;
 
-  CStdString strAlbumDir = CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), "*.tmp");
-  memset(&wfd, 0, sizeof(wfd));
-
-  CAutoPtrFind hFind( FindFirstFile(_P(strAlbumDir).c_str(), &wfd));
-  if (!hFind.isValid())
-    return ;
-  do
+  for (int i = 0; i < items.Size(); ++i)
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
+    if (items[i]->m_bIsFolder)
+      continue;
+    XFILE::CFile::Delete(items[i]->m_strPath);
   }
-  while (FindNextFile(hFind, &wfd));
 }
 
 void CUtil::ClearSubtitles()
@@ -1898,21 +1895,24 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   if (!fn_template.Find("%03d"))
     return "";
 
+  CStdString searchPath;
+  CUtil::GetDirectory(fn_template, searchPath);
+  CStdString mask = CUtil::GetExtension(fn_template);
+
+  CStdString name;
+  name.Format(fn_template.c_str(), 0);
+
+  CFileItemList items;
+  if (!CDirectory::GetDirectory(searchPath, items, mask, false))
+    return name;
+
+  items.SetFastLookup(true);
   for (int i = 0; i <= max; i++)
   {
     CStdString name;
     name.Format(fn_template.c_str(), i);
-
-    WIN32_FIND_DATA wfd;
-    HANDLE hFind;
-    memset(&wfd, 0, sizeof(wfd));
-    if ((hFind = FindFirstFile(_P(name).c_str(), &wfd)) != INVALID_HANDLE_VALUE)
-      FindClose(hFind);
-    else
-    {
-      // FindFirstFile didn't find the file 'szName', return it
+    if (!items.Get(name))
       return name;
-    }
   }
   return "";
 }
@@ -2688,26 +2688,27 @@ void CUtil::DeleteVideoDatabaseDirectoryCache()
 
 void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
 {
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CStdString strFile = "special://temp/";
+  CStdString strFile = "";
   if (!strType.IsEmpty())
   {
     strFile += strType;
     if (!strFile.Right(1).Equals("-"))
       strFile += "-";
   }
-  strFile += "*.fi";
-  CAutoPtrFind hFind(FindFirstFile(_P(strFile).c_str(), &wfd));
-  if (!hFind.isValid())
+
+  CStdString searchPath = "special://temp/";
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
     return;
-  do
+
+  for (int i = 0; i < items.Size(); ++i)
   {
-    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-      CFile::Delete(CUtil::AddFileToFolder("special://temp/", wfd.cFileName));
+    if (items[i]->m_bIsFolder)
+      continue;
+    CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
+    if (fileName.Left(strFile.GetLength()) == strFile)
+      XFILE::CFile::Delete(items[i]->m_strPath);
   }
-  while (FindNextFile(hFind, &wfd));
 }
 
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)

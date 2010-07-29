@@ -28,6 +28,7 @@
 #include "FileSystem/PlaylistFileDirectory.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/Directory.h"
 #include "PlayListM3U.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
@@ -35,9 +36,6 @@
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "LocalizeStrings.h"
-#include "AutoPtrHandle.h"
-
-using namespace AUTOPTR;
 
 #define CONTROL_LABELFILES        12
 
@@ -189,19 +187,19 @@ void CGUIWindowMusicPlaylistEditor::UpdateButtons()
 
 void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
 {
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
+  CStdString searchPath = "special://temp/";
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
+    return;
 
-  CStdString searchPath = "special://temp/r-*.fi";
-  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
-  if (!hFind.isValid())
-    return ;
-  do
+  for (int i = 0; i < items.Size(); ++i)
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
+    if (items[i]->m_bIsFolder)
+      continue;
+    CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
+    if (fileName.Left(2) == "r-")
+      XFILE::CFile::Delete(items[i]->m_strPath);
   }
-  while (FindNextFile(hFind, &wfd));
 }
 
 void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
