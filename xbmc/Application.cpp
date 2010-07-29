@@ -1126,9 +1126,6 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
-#ifdef HAS_PYTHON
-  g_pythonParser.m_bStartup = true;
-#endif
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
@@ -1147,7 +1144,12 @@ bool CApplication::Initialize()
   }
 
   if (!g_settings.UsingLoginScreen())
+  {
     UpdateLibraries();
+#ifdef HAS_PYTHON
+  g_pythonParser.m_bLogin = true;
+#endif
+  }
 
   m_slowTimer.StartZero();
 
