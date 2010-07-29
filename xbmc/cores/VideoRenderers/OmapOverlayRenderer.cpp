@@ -242,7 +242,7 @@ void COmapOverlayRenderer::FlipPage(int source)
   m_currentBackBuffer = NextYV12Image();
 }
 
-void COmapOverlayRender::HasFlipped()
+void COmapOverlayRenderer::HasFlipped()
 {
   m_backbufferReady = true;
 }
