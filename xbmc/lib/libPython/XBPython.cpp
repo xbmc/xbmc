@@ -641,18 +641,19 @@ int XBPython::getScriptId(const CStdString &strFile)
 
 bool XBPython::isRunning(int scriptId)
 {
-  bool bRunning = false;
   CSingleLock lock(m_critSection);
 
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
+  for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); it++)
   {
     if (it->id == scriptId)
-      bRunning = true;
-    ++it;
+    {
+      if(it->bDone)
+        return false;
+      else
+        return true;
+    }
   }
-
-  return bRunning;
+  return false;
 }
 
 bool XBPython::isStopping(int scriptId)
