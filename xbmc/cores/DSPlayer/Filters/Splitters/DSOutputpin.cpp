@@ -240,6 +240,8 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
     }
     else if (ret == MSGQ_TIMEOUT)
     {
+      CLog::Log(LOGERROR, "Got MSGQ_TIMEOUT");
+      break;
         // if we only wanted priority messages, this isn't a stall
       if( 0 )
         break;
@@ -274,7 +276,7 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
       pSample->SetTime(&tSmpStart, &tSmpEnd);
 	    pSample->SetMediaTime(NULL,NULL);
       
-      memcpy(pPacket->pData, pData, pPacket->iSize);
+      memcpy(pData, pPacket->pData, pPacket->iSize);
       pSample->SetActualDataLength(pPacket->iSize);
       pSample->SetSyncPoint(syncpoint);
       mPrevStartTime = tSmpEnd;
@@ -283,8 +285,10 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
         pSample->SetDiscontinuity(m_bDiscontinuity);
 		    m_bDiscontinuity = false;
       }
-      pSample->SetPreroll((tSmpStart < 0)? 0 : 1);
+      BOOL ispreroll = (tSmpStart < 0) ? 1 : 0;
+      pSample->SetPreroll(ispreroll);
     }
+    break;
   }
   while (1);
   pMsg->Release();
