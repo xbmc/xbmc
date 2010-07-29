@@ -1148,24 +1148,31 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // copy picture to overlay
   YV12Image image;
 
-  int index = g_renderManager.GetImage(&image);
+  image.plane[0]  = pPicture->data[0];
+  image.plane[1]  = pPicture->data[1];
+  image.plane[2]  = pPicture->data[2];
+
+  image.stride[0] = pPicture->iLineSize[0];
+  image.stride[1] = pPicture->iLineSize[1];
+  image.stride[2] = pPicture->iLineSize[2];
+
+  image.width  = pPicture->iWidth;
+  image.height = pPicture->iHeight;
+
+  int index = g_renderManager.PutImage(&image);
 
   // video device might not be done yet
   while (index < 0 && !CThread::m_bStop &&
          CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime )
   {
     Sleep(1);
-    index = g_renderManager.GetImage(&image);
+    index = g_renderManager.PutImage(&image);
   }
 
   if (index < 0)
     return EOS_DROPPED;
 
-  ProcessOverlays(pPicture, &image, pts);
-
-  // tell the renderer that we've finished with the image (so it can do any
-  // post processing before FlipPage() is called.)
-  g_renderManager.ReleaseImage(index);
+//  ProcessOverlays(pPicture, &image, pts);
 
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
 

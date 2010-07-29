@@ -26,6 +26,7 @@
 #include "GUISettings.h"
 #include "GraphicContext.h"
 #include "utils/log.h"
+#include "utils/fastmemcpy.h"
 #include "MathUtils.h"
 
 
@@ -234,6 +235,59 @@ void CBaseRenderer::ManageDisplay()
   m_sourceRect.y2 = (float)m_sourceHeight - g_settings.m_currentVideoSettings.m_CropBottom;
 
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount);
+}
+
+void CBaseRenderer::CopyYV12Image(YV12Image *pDst, YV12Image *pSrc)
+{
+  BYTE *s = pSrc->plane[0];
+  BYTE *d = pDst->plane[0];
+  int w = pSrc->width;
+  int h = pSrc->height;
+  if ((w == pSrc->stride[0]) && ((unsigned int) pSrc->stride[0] == pDst->stride[0]))
+  {
+    fast_memcpy(d, s, w*h);
+  }
+  else
+  {
+    for (int y = 0; y < h; y++)
+    {
+      fast_memcpy(d, s, w);
+      s += pSrc->stride[0];
+      d += pDst->stride[0];
+    }
+  }
+  s = pSrc->plane[1];
+  d = pDst->plane[1];
+  w = pSrc->width >> 1;
+  h = pSrc->height >> 1;
+  if ((w==pSrc->stride[1]) && ((unsigned int) pSrc->stride[1]==pDst->stride[1]))
+  {
+    fast_memcpy(d, s, w*h);
+  }
+  else
+  {
+    for (int y = 0; y < h; y++)
+    {
+      fast_memcpy(d, s, w);
+      s += pSrc->stride[1];
+      d += pDst->stride[1];
+    }
+  }
+  s = pSrc->plane[2];
+  d = pDst->plane[2];
+  if ((w==pSrc->stride[2]) && ((unsigned int) pSrc->stride[2]==pDst->stride[2]))
+  {
+    fast_memcpy(d, s, w*h);
+  }
+  else
+  {
+    for (int y = 0; y < h; y++)
+    {
+      fast_memcpy(d, s, w);
+      s += pSrc->stride[2];
+      d += pDst->stride[2];
+    }
+  }
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)

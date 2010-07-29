@@ -409,6 +409,21 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_bImageReady = true;
 }
 
+int CLinuxRendererGL::PutImage(YV12Image *pSrc, int source)
+{
+  YV12Image image;
+  YV12Image *pDst = &image;
+  source = GetImage(pDst, source);
+  if (source == -1)
+    return -1;
+
+  CopyYV12Image(pDst, pSrc);
+
+  ReleaseImage(source);
+
+  return source;
+}
+
 void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 {
   YUVBUFFER& buf    =  m_buffers[source];

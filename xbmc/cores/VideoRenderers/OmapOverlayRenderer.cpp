@@ -206,6 +206,17 @@ void COmapOverlayRenderer::ReleaseImage(int source, bool preserve)
   yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayScreenInfo.xres * 2);
 }
 
+int COmapOverlayRenderer::PutImage(YV12Image *image, int source)
+{
+  /* take next available buffer */
+  if( source == AUTOSOURCE || source > 1 || source < 0)
+    source = m_currentBackBuffer;
+
+  yuv420_to_yuv422(m_framebuffers[source].buf, image->plane[0], image->plane[1], image->plane[2], image->width, image->height, image->stride[0], image->stride[1], m_overlayScreenInfo.xres * 2);
+
+  return source;
+}
+
 void COmapOverlayRenderer::FlipPage(int source)
 {
   if (!m_bConfigured)

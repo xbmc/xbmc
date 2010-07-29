@@ -78,6 +78,14 @@ public:
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
   }
+
+  inline int PutImage(YV12Image *image, int source = AUTOSOURCE)
+  {
+    if (m_pRenderer)
+      return m_pRenderer->PutImage(image, source);
+    return -1;
+  }
+
   inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
   {
     CSharedLock lock(m_sharedSection);
