@@ -88,7 +88,6 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderYM.cpp \
      OggTag.cpp \
      VorbisTag.cpp \
-     AutoPtrHandle.cpp \
      AutoSwitch.cpp \
      ButtonTranslator.cpp \
      Crc32.cpp \
