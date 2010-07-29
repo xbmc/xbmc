@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">렌더링 화질</string>
+    <string id="30001">낮음</string>
+    <string id="30002">중간</string>
+    <string id="30003">높음</string>
+    <string id="30004">최대</string>
+    <string id="30005">셔플 모드</string>
+    <string id="30006">부드러운 프리셋 시간</string>
+    <string id="30007">프리셋 시간</string>
+    <string id="30008">비트 감지도</string>
+</strings>

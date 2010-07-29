@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">모드</string>
+    <string id="30001">채워짐</string>
+    <string id="30002">와이어 프레임</string>
+    <string id="30003">점</string>
+    <string id="30004">바 높이</string>
+    <string id="30005">낮음</string>
+    <string id="30006">보통</string>
+    <string id="30007">높음</string>
+    <string id="30008">매우 높음</string>
+    <string id="30009">속도</string>
+    <string id="30010">매우 느림</string>
+    <string id="30011">느림</string>
+    <string id="30012">보통</string>
+    <string id="30013">빠름</string>
+    <string id="30014">매우 빠름</string>
+</strings>

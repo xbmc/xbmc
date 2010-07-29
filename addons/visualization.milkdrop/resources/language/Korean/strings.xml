@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">자동 블렌드 시간</string>
+    <string id="30001">프리셋사이 간격</string>
+    <string id="30002">추가적 랜덤 간격</string>
+    <string id="30003">비등방성 필터링 활성화</string>
+    <string id="30004">하드컷 활성화</string>
+    <string id="30005">하드컷을 위한 음량 임계치</string>
+    <string id="30006">하드컷 사이의 평균 시간</string>
+    <string id="30007">최대 리프레쉬 레이트</string>
+    <string id="30008">스테레오 3D 활성화</string>
+    <string id="30009">프리셋 팩</string>
+</strings>
