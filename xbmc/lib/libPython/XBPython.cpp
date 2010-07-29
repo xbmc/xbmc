@@ -124,7 +124,6 @@ extern "C" {
 XBPython::XBPython()
 {
   m_bInitialized      = false;
-  m_bStartup          = false;
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
@@ -469,37 +468,12 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  if (m_bStartup)
-  {
-    m_bStartup = false;
-
-    // autoexec.py - userdata
-    CStdString strAutoExecPy = _P("special://home/scripts/autoexec.py");
-
-    if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
-
-    // autoexec.py - system
-    CStdString strAutoExecPy2 = _P("special://xbmc/scripts/autoexec.py");
-
-    // Make sure special://xbmc & special://home don't point to the same location
-    if (strAutoExecPy != strAutoExecPy2)
-    {
-      if ( XFILE::CFile::Exists(strAutoExecPy2) )
-        evalFile(strAutoExecPy2);
-      else
-        CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy2.c_str());
-    }
-  }
-
   if (m_bLogin)
   {
     m_bLogin = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = _P("special://profile/scripts/autoexec.py");
+    CStdString strAutoExecPy = _P("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
