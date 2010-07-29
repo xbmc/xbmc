@@ -292,7 +292,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
         return false;
     }
 
-    if ( (flags & READ_NO_CACHE) == 0 && CUtil::IsInternetStream(strFileName, true) && !CUtil::IsPicture(strFileName) )
+    if ( (flags & READ_NO_CACHE) == 0 && CUtil::IsInternetStream(strFileName) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     CURL url(strFileName);
