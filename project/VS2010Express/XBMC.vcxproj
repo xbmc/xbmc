@@ -384,7 +384,8 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\AC3Codec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp" />
@@ -1119,7 +1120,8 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AC3Codec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h" />
