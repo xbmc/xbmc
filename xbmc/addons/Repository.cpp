@@ -169,9 +169,9 @@ bool CRepositoryUpdateJob::DoWork()
       }
       else
       {
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info,
-                                                          g_localizeStrings.Get(24061),
-                                                          addon->Name(),TOAST_DISPLAY_TIME,false);
+        g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(),
+                                                            g_localizeStrings.Get(24061),
+                                                            addon->Name(),TOAST_DISPLAY_TIME,false);
       }
     }
     if (!addons[i]->Props().broken.IsEmpty())

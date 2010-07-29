@@ -303,7 +303,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             if (update)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24065),
                                                   TOAST_DISPLAY_TIME,false);
@@ -311,7 +311,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             else
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24064),
                                                   TOAST_DISPLAY_TIME,false);
