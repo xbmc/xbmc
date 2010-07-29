@@ -21,6 +21,8 @@
 
 #include "ShoutcastRipFile.h"
 #include "Id3Tag.h"
+#include "FileSystem/Directory.h"
+#include "FileItem.h"
 #include "GUISettings.h"
 
 // prevent inclusion of config.h from libshout
@@ -353,8 +355,6 @@ void CShoutcastRipFile::PrepareRecording( )
 void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName )
 {
   INT i;
-  WIN32_FIND_DATA wfd;
-  HANDLE hFind;
 
   char szNewFileName[1024];
   char szTempFilePath[1024];
@@ -376,13 +376,10 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
   strcpy( szTempFilePath, filePath );
 
   //first look if we need to create the directory
-  memset(&wfd, 0, sizeof(wfd));
-  hFind = FindFirstFile(szTempFilePath, &wfd);
-  //lets create a directory if it doesn't exist
-  if ( wfd.cFileName[0] == 0 )
-  {
-    CreateDirectory( szTempFilePath, NULL );
-  }
+  XFILE::CDirectory::Create(filePath);
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory(filePath, items, ".mp3", false);
+  items.SetFastLookup(true);
 
   for ( i = m_iTrackCount; i <= MAX_RECORDED_TRACKS; i++ )
   {
@@ -404,12 +401,9 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
 #endif
       sprintf(szNewFileName, szTempFilePath, szMaxFileName, i );
     }
-    memset(&wfd, 0, sizeof(wfd));
-    hFind = FindFirstFile(szNewFileName, &wfd);
-    if ( wfd.cFileName[0] == 0 )
+    if (!items.Get(szNewFileName))
     {
       strcpy( m_szFilteredFileName, szNewFileName );
-      FindClose( hFind );
       //set the appropriate trackNumber
       m_Tag.SetTrackNumber(i);
       if ( !m_recState.bHasMetaData )
@@ -424,7 +418,6 @@ void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName 
   }
   //if its the MAX_RECORDED_TRACKS. file, we overwrite it
   strcpy( m_szFilteredFileName, szNewFileName );
-  FindClose( hFind );
   return ;
 }
 
