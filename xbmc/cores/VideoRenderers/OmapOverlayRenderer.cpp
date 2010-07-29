@@ -240,6 +240,10 @@ void COmapOverlayRenderer::FlipPage(int source)
 
   m_currentDisplayBuffer = m_currentBackBuffer;
   m_currentBackBuffer = NextYV12Image();
+}
+
+void COmapOverlayRender::HasFlipped()
+{
   m_backbufferReady = true;
 }
 

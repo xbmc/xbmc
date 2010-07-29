@@ -758,6 +758,7 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 void CGraphicContext::Flip()
 {
   g_Windowing.PresentRender();
+  g_renderManager.HasFlipped();
 }
 
 void CGraphicContext::ApplyHardwareTransform()

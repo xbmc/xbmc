@@ -141,6 +141,7 @@ public:
   virtual int          PutImage(YV12Image *image, int source = AUTOSOURCE);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         FlipPage(int source);
+  void HasFlipped();
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */

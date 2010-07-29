@@ -99,6 +99,13 @@ public:
   unsigned int PreInit();
   void UnInit();
 
+  void HasFlipped()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->HasFlipped();
+  }
+
 #ifdef HAS_DX
   void AddProcessor(DXVA::CProcessor* processor, int64_t id)
   {
