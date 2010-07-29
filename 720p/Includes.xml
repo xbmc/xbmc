@@ -1940,6 +1940,31 @@
 				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 		</focusedlayout>
+		<!-- Plugins -->
+		<!-- Albums -->
+		<itemlayout condition="Container.content(plugins)" width="180" height="180">
+			<control type="image">
+				<description>Album cover</description>
+				<include>PanelStreamAlbumImage</include>
+			</control>
+			<control type="label">
+				<description>No Thumb label</description>
+				<include>PanelStreamNoThumbFade</include>
+				<include>PanelStreamAlbumNoThumb</include>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.content(plugins)" width="180" height="180">
+			<control type="image">
+				<description>Album cover</description>
+				<include>PanelStreamAlbumImageFocusAnim</include>
+				<include>PanelStreamAlbumImage</include>
+			</control>
+			<control type="label">
+				<include>PanelStreamAlbumNoThumbFocusAnim</include>
+				<include>PanelStreamAlbumNoThumb</include>
+			</control>
+		</focusedlayout>
+		
 		<!-- Episodes -->
 		<itemlayout condition="Container.content(episodes)" width="262" height="185">
 			<control type="image">

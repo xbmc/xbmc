@@ -890,7 +890,7 @@
 	<include name="PanelStream">
 		<control type="group">
 			<include>PanelStreamVisible</include>
-			<include>MediaViewBGOverlay</include>
+<!--			<include>MediaViewBGOverlay</include> -->
 		</control>
 
 		<control type="group">
@@ -1728,11 +1728,57 @@
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<onright>9009</onright>
 					<orientation>vertical</orientation>
-					<posx>69.5</posx>
+					<posx>10</posx>
 					<posy>34</posy>
-					<width>1141</width>
+					<width>1260</width>
 					<height>500</height>
-					<include>PanelStreamLayout</include>
+					<itemlayout width="210" height="220">
+						<control type="image">
+							<description>Album cover</description>
+							<include>PanelStreamAlbumImageDims</include>
+							<include>PanelStreamImageDims</include>
+							<info>ListItem.Icon</info>
+							<bordersize>3</bordersize>
+						</control>
+						<control type="label">
+							<posx>105</posx>
+							<posy>195</posy>
+							<width>210</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>$INFO[listitem.title ]</label>
+							<font>MediumSmallTitleFont</font>
+							<textcolor>FFffffff</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+						</control>
+					</itemlayout>
+					<focusedlayout width="210" height="220">
+						<control type="image">
+							<description>Album cover</description>
+							<posx>9</posx>
+							<posy>0</posy>
+							<width>195</width>
+							<height>195</height>
+							<info>ListItem.Icon</info>
+							<bordertexture>plugin-stream-highlight.png</bordertexture>
+							<bordersize>7.5</bordersize>
+						</control>
+						<control type="label">
+							<posx>105</posx>
+							<posy>195</posy>
+							<width>210</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>$INFO[listitem.title ]</label>
+							<font>MediumSmallTitleFont</font>
+							<textcolor>FFffffff</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+						</control>
+
+					</focusedlayout>
+					
 				</control>
 			</control>
 		</control>
