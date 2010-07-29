@@ -497,6 +497,8 @@ bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
   return first->GetRenderOrder() < second->GetRenderOrder();
 }
 
+#ifdef HAS_GL
+// TODO Need to draw this in the RenderSystems instead
 void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
 {
   glColor4f(r, g, b, a);
@@ -507,6 +509,7 @@ void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
     glVertex3f(rect.x1, rect.y2, 0.0f);	// Top Left Of The Texture and Quad
   glEnd();
 }
+#endif
 
 void CGUIWindowManager::Render()
 {
@@ -549,6 +552,7 @@ void CGUIWindowManager::Render()
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
   {
+#ifdef HAS_GL
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -569,6 +573,7 @@ void CGUIWindowManager::Render()
     }
 
     DrawColoredQuad(m_unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
+#endif
   }
 
   // Reset dirtyregion
