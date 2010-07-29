@@ -81,6 +81,7 @@ public:
 
   inline int PutImage(YV12Image *image, int source = AUTOSOURCE)
   {
+    CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       return m_pRenderer->PutImage(image, source);
     return -1;
