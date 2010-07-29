@@ -925,7 +925,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   }
 
   int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
-  int itemsBefore = items.Size();
 
   for (int i = 0; i < items.Size(); i++)
   {
