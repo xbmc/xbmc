@@ -94,7 +94,7 @@
 #include "utils/log.h"
 #include "Picture.h"
 #include "JobManager.h"
-#include "cores/dvdplayer/DVDSubtitles/SamiTagConvertor.h"
+#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 
 using namespace std;
@@ -1579,7 +1579,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
       if(pStream->Open(items[i]->m_strPath))
       {
-        SamiTagConvertor TagConv;
+        CDVDSubtitleTagSami TagConv;
         TagConv.LoadHead(pStream);
         if (TagConv.m_Langclass.size() >= 2)
         {
