@@ -457,7 +457,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    items.Sort(g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
