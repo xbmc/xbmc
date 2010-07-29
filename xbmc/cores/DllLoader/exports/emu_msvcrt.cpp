@@ -157,6 +157,19 @@ extern "C" void __stdcall update_emu_environ()
     // Should we check for valid strings here? should HTTPS_PROXY use https://?
     dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
     dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+#ifdef _WIN32
+    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+#endif
+    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    {
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+#ifdef _WIN32
+      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
+      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+#endif
+    }
   }
   else
   {
