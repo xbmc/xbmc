@@ -35,21 +35,88 @@
 #include "Subtitles/DSUtil/DSMPropertyBag.h"
 #include "Subtitles/DSUtil/FontInstaller.h"
 #include "Filters/XBMCFileReader.h"
-//#include <boost/shared_ptr.hpp>
 
+
+#include "singlelock.h"
 using namespace std;
 using namespace boost;
-
+#define INVALID_TIME (_I64_MIN)
 typedef struct DsPacketStruct
 {
   BYTE* pInputBuffer;    // data
   int   pInputBufferSize; // data size
   REFERENCE_TIME rtStart; //start time
   REFERENCE_TIME rtStop;  //stop time
-  ;
+  DWORD TrackNumber;      //Track id
+	BOOL bDiscontinuity;
+  BOOL bSyncPoint;
+  BOOL bAppendable;
+	AM_MEDIA_TYPE* pmt;
 } DsPacketStruct;
+class CPacketUtils
+{
+public:
+  static void FreeDemuxPacket(DsPacketStruct* pp)
+  {
+    if (pp)
+    {
+      try {
+        if (pp->pInputBuffer) _aligned_free(pp->pInputBuffer);
+        delete pp;
+      }
+      catch(...) {
+        CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
+      }
+    }
+  }
+  static DsPacketStruct* AllocateDemuxPacket(int iDataSize = 0)
+  {
+  DsPacketStruct* pp = new DsPacketStruct;
+  if (!pp) return NULL;
+  
 
-class Packet : public DsPacketStruct
+  try
+  {
+    memset(pp, 0, sizeof(DsPacketStruct));
+
+    if (iDataSize > 0)
+    {
+      // need to allocate a few bytes more.
+      // From avcodec.h (ffmpeg)
+      /**
+        * Required number of additionally allocated bytes at the end of the input bitstream for decoding.
+        * this is mainly needed because some optimized bitstream readers read
+        * 32 or 64 bit at once and could read over the end<br>
+        * Note, if the first 23 bits of the additional bytes are not 0 then damaged
+        * MPEG bitstreams could cause overread and segfault
+        */
+      pp->pInputBuffer =(BYTE*)_aligned_malloc(iDataSize + 8, 16);
+      if (!pp->pInputBuffer)
+      {
+        FreeDemuxPacket(pp);
+        return NULL;
+      }
+
+      // reset the last 8 bytes to 0;
+      memset(pp->pInputBuffer + iDataSize, 0, 8);
+    }
+
+    // setup defaults
+    pp->pInputBufferSize = iDataSize;
+    pp->rtStart   = INVALID_TIME;
+    pp->rtStop    = INVALID_TIME;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown", __FUNCTION__);
+    FreeDemuxPacket(pp);
+    pp = NULL;
+  }
+  return pp;
+  }
+};
+
+/*class Packet : public DsPacketStruct
 {
 public:
   Packet(int packetSize = 0)
@@ -63,21 +130,20 @@ public:
     bDiscontinuity = FALSE;
     bAppendable = FALSE;
   }
-	virtual ~Packet() 
+  ~Packet()
   {
     if(pmt) 
       DeleteMediaType(pmt);
-
-    try 
+     try 
     {
-      if (pInputBuffer) 
+      if (pInputBuffer)
         _aligned_free(pInputBuffer);
     }
     catch(...) {
       CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
     }
-    //free(pInputBuffer);
   }
+
   Packet* operator=(Packet* pkt)
   {
     ASSERT(this != pkt);
@@ -88,7 +154,7 @@ public:
   
 	DWORD TrackNumber;
 	BOOL bDiscontinuity, bSyncPoint, bAppendable;
-	static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
+	//static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
 	AM_MEDIA_TYPE* pmt;
   bool empty() {if (pInputBufferSize == 0) return true; else return false; }
 
@@ -131,17 +197,20 @@ public:
     //set the new size of the current buffer
     pInputBufferSize += pkt->pInputBufferSize;
   }
-};
+};*/
 
 class CPacketQueue 
-  : public CCritSec, 
-    protected std::list<boost::shared_ptr<Packet>>
 {
+private:
   int m_size;
+  typedef std::list<DsPacketStruct*> PacketList;
+  PacketList m_packetlist;
+protected:
+  CCriticalSection m_queuelock;
 public:
   CPacketQueue();
-  void Add(boost::shared_ptr<Packet> p);
-  boost::shared_ptr<Packet> Remove();
+  void Add(DsPacketStruct* p);
+  DsPacketStruct* Remove();
   void RemoveAll();
   int GetCount(), GetSize();
   
@@ -184,10 +253,8 @@ class CBaseSplitterOutputPin
 protected:
   vector<CMediaType> m_mts;
   int m_nBuffers;
-
 private:
   CPacketQueue m_queue;
-
   HRESULT m_hrDeliver;
 
   bool m_fFlushing, m_fFlushed;
@@ -219,7 +286,7 @@ protected:
 
   // override this if you need some second level stream specific demuxing (optional)
   // the default implementation will send the sample as is
-  virtual HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
+  virtual HRESULT DeliverPacket(DsPacketStruct* p);
 
   // IMediaSeeking
 
@@ -274,7 +341,7 @@ public:
   int QueueCount();
   int QueueSize();
   HRESULT QueueEndOfStream();
-  HRESULT QueuePacket(boost::shared_ptr<Packet> p);
+  HRESULT QueuePacket(DsPacketStruct* p);
 
   // returns true for everything which (the lack of) would not block other streams (subtitle streams, basically)
   virtual bool IsDiscontinuous();
@@ -304,7 +371,7 @@ class CBaseSplitterFilter
   , public IBufferInfo
 {
   CCritSec m_csPinMap;
-  map<DWORD, CBaseSplitterOutputPin*> m_pPinMap;
+  map<DWORD, boost::shared_ptr<CBaseSplitterOutputPin>> m_pPinMap;
 
   CCritSec m_csmtnew;
   map<DWORD, CMediaType> m_mtnew;
@@ -318,7 +385,7 @@ protected:
   boost::shared_ptr<CBaseSplitterInputPin> m_pInput;
   list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
 
-  CBaseSplitterOutputPin* GetOutputPin(DWORD TrackNum);
+  boost::shared_ptr<CBaseSplitterOutputPin> GetOutputPin(DWORD TrackNum);
   DWORD GetOutputTrackNum(CBaseSplitterOutputPin* pPin);
   HRESULT AddOutputPin(DWORD TrackNum, boost::shared_ptr<CBaseSplitterOutputPin> pPin);
   HRESULT RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt);
@@ -334,14 +401,14 @@ protected:
   double m_dRate;
 
   list<UINT64> m_bDiscontinuitySent;
-  list<CBaseSplitterOutputPin*> m_pActivePins;
+  list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pActivePins;
 
   CAMEvent m_eEndFlush;
   bool m_fFlushing;
 
   void DeliverBeginFlush();
   void DeliverEndFlush();
-  HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
+  HRESULT DeliverPacket(DsPacketStruct* p);
 
   DWORD m_priority;
 

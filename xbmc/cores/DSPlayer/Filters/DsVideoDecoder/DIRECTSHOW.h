@@ -126,11 +126,15 @@ protected:
     SVideoBuffer();
    ~SVideoBuffer();
 
+    void Init(int index);
     void Clear();
 
     IDirect3DSurface9* surface;
+    int                surface_index;
     bool               used;
     int                age;
+    REFERENCE_TIME     rt_start;
+    REFERENCE_TIME     rt_stop;
   };
 
   long                         m_references;

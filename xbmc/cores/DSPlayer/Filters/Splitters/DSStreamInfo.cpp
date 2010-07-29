@@ -163,6 +163,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const
     extradata = 0;
   }
   PinNameW = right.PinNameW;
+  mtype    = right.mtype;
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
@@ -198,6 +199,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     extradata = malloc(extrasize);
     memcpy(extradata, right.ExtraData, extrasize);
   }
+  
   /****************/
   /* AUDIO STREAM */
   /****************/
@@ -206,7 +208,11 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     PinNameW = L"Audio";
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream *avstream = static_cast<AVStream*>(stream->pPrivate);
-
+    
+   int override_tag = m_dllAvFormat.av_codec_get_tag(mp_codecid_override_taglists, avstream->codec->codec_id);
+   if (override_tag)
+     avstream->codec->codec_tag = override_tag;
+   else
     avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
 
     mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id, avstream->codec->codec_tag);
@@ -214,7 +220,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     //Link to WAVEFORMATEX structure
     //http://msdn.microsoft.com/en-us/library/dd390970%28VS.85%29.aspx
 
-    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + avstream->codec->extradata_size);
+    
+    
     
     if (avstream->codec->codec_id == CODEC_ID_AAC)
     {
@@ -232,41 +239,34 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
       mtype.SetFormat((BYTE*)wfe, sizeof(WAVEFORMATEX)+wfe->cbSize);
       return;
     }
-    
+    WAVEFORMATEX *wvfmt = (WAVEFORMATEX*) mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + avstream->codec->extradata_size);
     // TODO: values for this are non-trivial, see <mmreg.h>
     wvfmt->wFormatTag = avstream->codec->codec_tag;
 
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec = avstream->codec->sample_rate;
+    wvfmt->nAvgBytesPerSec = avstream->codec->bit_rate / 8;
+    wvfmt->nBlockAlign= avstream->codec->block_align ? avstream->codec->block_align : 1;
     wvfmt->wBitsPerSample = avstream->codec->bits_per_coded_sample;
+#if 0/*This is getting the sample format correctly but do we need it?*/
     if (wvfmt->wBitsPerSample == 0)
       wvfmt->wBitsPerSample = m_dllAvCodec.av_get_bits_per_sample_format(avstream->codec->sample_fmt);
-    wvfmt->cbSize = 0;
-
-    if ( avstream->codec->block_align > 0 )
-      wvfmt->nBlockAlign = avstream->codec->block_align;
-    else
-    {
-
-      if ( wvfmt->wBitsPerSample == 0 )
-      {
-        CLog::Log(LOGERROR,"bits per sample is 0 this is NO GOOD");  
-      }
-      wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);
-
-    }
-
-
-    wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
-
-    wvfmt->cbSize = avstream->codec->extradata_size + sizeof(WAVEFORMATEX);
+#endif
     if (avstream->codec->extradata_size > 0)
     {
+      wvfmt->cbSize = avstream->codec->extradata_size;
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     }
+    else
+    {
+      wvfmt->cbSize = sizeof(WAVEFORMATEX);
+    }
+
     //TODO Fix the sample size 
-    if (avstream->codec->bits_per_coded_sample == 0)
-      mtype.SetSampleSize(256000);
+    //if (avstream->codec->bits_per_coded_sample == 0)
+    //  mtype.SetSampleSize(256000);
+    //else
+    mtype.SetSampleSize(wvfmt->nChannels * wvfmt->nSamplesPerSec * 32 >> 3);/*This seem to be the appropriate size to use*/
 
 
     channels      = stream->iChannels;
@@ -283,8 +283,11 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-
-    avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id);
+    int override_tag = m_dllAvFormat.av_codec_get_tag(mp_codecid_override_taglists, avstream->codec->codec_id);
+    if (override_tag)
+      avstream->codec->codec_tag = override_tag;
+    else
+    avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
 
     mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id, avstream->codec->codec_tag);
 

@@ -54,7 +54,12 @@ public:
   CStdString ContainerFormat;
 
   CMediaType mtype;
-
+  CMediaType GetMediaType()
+  {
+    CMediaType g_type;
+    CopyMediaType(&g_type,&mtype);
+    return g_type;
+  }
   // VIDEO
   int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int fpsrate;

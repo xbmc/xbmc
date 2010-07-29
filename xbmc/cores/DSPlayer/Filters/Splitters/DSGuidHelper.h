@@ -105,6 +105,32 @@ const AVCodecTag mp_wav_tags[] = {
 
 const struct AVCodecTag * const mp_wav_taglists[] = {ff2_codec_wav_tags, mp_wav_tags, 0};
 
+const AVCodecTag mp_codecid_override_tags[] = {
+    { CODEC_ID_AAC,               MKTAG('M', 'P', '4', 'A')},
+    { CODEC_ID_AC3,               0x2000},
+    { CODEC_ID_ADPCM_IMA_AMV,     MKTAG('A', 'M', 'V', 'A')},
+    { CODEC_ID_DTS,               0x2001},
+    { CODEC_ID_EAC3,              MKTAG('E', 'A', 'C', '3')},
+    { CODEC_ID_H264,              MKTAG('A', 'V', 'C', '1')},
+    { CODEC_ID_MPEG4,             MKTAG('X', 'V', 'I', 'D')},
+    { CODEC_ID_PCM_BLURAY,        MKTAG('B', 'P', 'C', 'M')},
+    { CODEC_ID_PCM_S8,            MKTAG('t', 'w', 'o', 's')},
+    { CODEC_ID_PCM_U8,            1},
+    { CODEC_ID_PCM_S16BE,         MKTAG('t', 'w', 'o', 's')},
+    { CODEC_ID_PCM_S16LE,         1},
+    { CODEC_ID_PCM_S24BE,         MKTAG('i', 'n', '2', '4')},
+    { CODEC_ID_PCM_S24LE,         1},
+    { CODEC_ID_PCM_S32BE,         MKTAG('i', 'n', '3', '2')},
+    { CODEC_ID_PCM_S32LE,         1},
+    { CODEC_ID_MP2,               0x50},
+    { CODEC_ID_MPEG2VIDEO,        MKTAG('M', 'P', 'G', '2')},
+    { CODEC_ID_TRUEHD,            MKTAG('T', 'R', 'H', 'D')},
+    { CODEC_ID_NONE,              0 },
+};
+
+const struct AVCodecTag * const mp_codecid_override_taglists[] =
+                        {mp_codecid_override_tags, 0};
+
 const AVCodecTag mp_bmp_tags[] = {
   { CODEC_ID_AMV,               MKTAG('A', 'M', 'V', 'V')},
   { CODEC_ID_BETHSOFTVID,       MKTAG('B', 'E', 'T', 'H')},

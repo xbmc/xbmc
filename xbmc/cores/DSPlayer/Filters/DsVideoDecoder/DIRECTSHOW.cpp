@@ -67,11 +67,24 @@ CDXVADecoder::SVideoBuffer::~SVideoBuffer()
   Clear();
 }
 
+void CDXVADecoder::SVideoBuffer::Init(int index)
+{
+  //surface = (directshow_dxva_h264*)calloc(1, sizeof(directshow_dxva_h264));
+  //memset(surface,0,sizeof(directshow_dxva_h264));
+  age = 0;
+  used = 0;
+  surface_index = index;
+  rt_start = 0;
+  rt_stop  = 0;
+}
+
 void CDXVADecoder::SVideoBuffer::Clear()
 {
   SAFE_RELEASE(surface);
-  age     = 0;
-  used    = 0;
+  age      = 0;
+  used     = 0;
+  rt_start = 0;
+  rt_stop  = 0;
 }
 CDXVADecoder* CDXVADecoder::CreateDecoder (CXBMCVideoDecFilter* pFilter, IAMVideoAccelerator* pAMVideoAccelerator, const GUID* guidDecoder, int nPicEntryNumber)
 {
@@ -253,7 +266,12 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
   CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
 
-  
+  for (unsigned int i = 0; i < m_buffer_max; i++)
+  {
+    m_buffer[i].Init(i);
+    
+  }
+
   m_buffer_count = 16;
   CreateDummySurface();
   m_pFilter = (CXBMCVideoDecFilter*)avctx->opaque;
@@ -340,7 +358,7 @@ bool CDXVADecoder::Supports(enum PixelFormat fmt)
 
 int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  //CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
   CLog::DebugLog("%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->GetDXVADecoder();
@@ -370,8 +388,8 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     CLog::Log(LOGERROR, "%s - unable to find new unused buffer",__FUNCTION__);
     return -1;
   }
-
-  pic->reordered_opaque = avctx->reordered_opaque;
+  buf->rt_start = pic->reordered_opaque = avctx->reordered_opaque;
+  buf->rt_stop = buf->rt_start + ctx->GetAvrTimePerFrame();
   pic->type = FF_BUFFER_TYPE_USER;
   pic->age = INT_MAX; //According to ffmpeg api it should be initialized with this value
   //What is this i forgot :S
@@ -391,7 +409,7 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  //CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
   CLog::DebugLog("%s",__FUNCTION__);
   IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 

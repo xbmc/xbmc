@@ -365,8 +365,8 @@ enum PixelFormat CXBMCVideoDecFilter::GetFormat( struct AVCodecContext * avctx, 
 {
   CXBMCVideoDecFilter* ctx  = (CXBMCVideoDecFilter*)avctx->opaque;
 
-  /*if(!ctx->IsHardwareAllowed())
-    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);*/
+  if(!ctx->IsDXVASupported())
+    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
@@ -961,7 +961,11 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
   
   used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
   
-  
+  if (used_bytes < 0)
+  {
+    CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
+    return S_OK;
+  }
 
   if (m_pCodecContext->has_b_frames)
   {
@@ -969,18 +973,18 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     m_BFrames[m_nPosB].rtStop  = rtStop;
     m_nPosB      = 1 - m_nPosB;
   }
-  if (used_bytes < 0)
-  {
-    CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
-    return S_OK;
-  }
+  
   
   if (used_bytes != nSize && !m_pCodecContext->hurry_up)
-    CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, nSize, used_bytes);
+    CLog::DebugLog("%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, nSize, used_bytes);
 
-  if (!got_picture || !m_pFrame->data[0] || pIn->IsPreroll() == S_OK || rtStart < 0) 
+  if (!got_picture || !m_pFrame->data[0]) 
     return S_OK;
+  if (pIn->IsPreroll() == S_OK || rtStart < 0)
+    return S_OK;
+
   Com::SmartPtr<IMediaSample>  pOut;
+
   if (m_nDXVAMode == MODE_SOFTWARE)
   {
     BYTE*          pDataOut = NULL;
@@ -988,9 +992,13 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     UpdateAspectRatio();
     if(FAILED(hr = GetDeliveryBuffer(m_pCodecContext->width, m_pCodecContext->height, &pOut)) || FAILED(hr = pOut->GetPointer(&pDataOut)))
       return hr;
-  
-    rtStart = m_pFrame->reordered_opaque;
-    rtStop  = m_pFrame->reordered_opaque + m_rtAvrTimePerFrame;
+    
+    /*this is only used if it has a start*/
+    if (m_pFrame->reordered_opaque > 0)
+    {
+      rtStart = m_pFrame->reordered_opaque;
+      rtStop  = m_pFrame->reordered_opaque + m_rtAvrTimePerFrame;
+    }
     ReorderBFrames(rtStart, rtStop);
 
     pOut->SetTime(&rtStart, &rtStop);
@@ -1048,7 +1056,10 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
 
       // Change aspect ratio for DXVA1
       if ((m_nDXVAMode == MODE_DXVA1) && ReconnectOutput(PictWidthRounded(), PictHeightRounded(), true, PictWidth(), PictHeight()) == S_OK)
+      {
         m_pDXVADecoder->ConfigureDXVA1();
+        CLog::DebugLog("CDXVADecoder->ConfigureDXVA1");
+      }
 
       if (m_pDXVADecoder->GetDeliveryBuffer(rtStart, rtStop,&pOut))
       {

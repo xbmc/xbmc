@@ -46,36 +46,40 @@ CPacketQueue::CPacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(boost::shared_ptr<Packet> p)
+void CPacketQueue::Add(DsPacketStruct* p)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock lock(m_queuelock);
+  ASSERT(p);
 
-  if(p)
+  m_size += p->pInputBufferSize;
+  
+  if(p->bAppendable && !p->bDiscontinuity && !p->pmt
+  && p->rtStart == INVALID_TIME
+  && ! m_packetlist.empty() && m_packetlist.back()->rtStart != INVALID_TIME)
   {
-    m_size += p->pInputBufferSize;
-    if(p->bAppendable && !p->bDiscontinuity && !p->pmt
-    && p->rtStart == Packet::INVALID_TIME
-    && ! empty() && back()->rtStart != Packet::INVALID_TIME)
-    {
-      boost::shared_ptr<Packet> tail = back();
-
+      /*Just appen to the last packet*/
+      DsPacketStruct* tail = m_packetlist.back();
+      m_packetlist.pop_back();
       int oldsize = tail->pInputBufferSize;
       int newsize = tail->pInputBufferSize + p->pInputBufferSize;
       tail->pInputBuffer = (BYTE*)_aligned_realloc(tail->pInputBuffer,newsize,16);
       memcpy(tail->pInputBuffer + oldsize, p->pInputBuffer, p->pInputBufferSize);
-      return;
-    }
+      
+      m_packetlist.push_back(tail);
+    return;
   }
 
-  push_back(p);
+
+  m_packetlist.push_back(p);
 }
 
-boost::shared_ptr<Packet> CPacketQueue::Remove()
+DsPacketStruct* CPacketQueue::Remove()
 {
-  CAutoLock cAutoLock(this);
-  ASSERT(__super::size() > 0);
-  boost::shared_ptr<Packet> p = front();
-  pop_front();
+  CSingleLock lock(m_queuelock);
+  ASSERT(m_packetlist.size() > 0);
+  DsPacketStruct* p = m_packetlist.front();
+  ASSERT(p);
+  m_packetlist.pop_front();
   if(p)
     m_size -= p->pInputBufferSize;
   return p;
@@ -83,20 +87,25 @@ boost::shared_ptr<Packet> CPacketQueue::Remove()
 
 void CPacketQueue::RemoveAll()
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock lock(m_queuelock);
+  for (PacketList::iterator it = m_packetlist.begin(); it != m_packetlist.end();)
+  {
+    it = m_packetlist.erase(it);
+  }
   m_size = 0;
-  __super::clear();
+  
 }
 
 int CPacketQueue::GetCount()
 {
-  CAutoLock cAutoLock(this); 
-  return __super::size();
+  CSingleLock lock(m_queuelock);
+  int res = m_packetlist.size();
+  return res;
 }
 
 int CPacketQueue::GetSize()
 {
-  CAutoLock cAutoLock(this); 
+  CSingleLock lock(m_queuelock);
   return m_size;
 }
 
@@ -208,7 +217,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(vector<CMediaType>& mts, LPCWSTR 
   //m_mts.Copy(mts);
   m_nBuffers = std::max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
-  m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
+  m_brs.rtLastDeliverTime = INVALID_TIME;
 }
 
 CBaseSplitterOutputPin::CBaseSplitterOutputPin(LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers)
@@ -219,7 +228,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(LPCWSTR pName, CBaseFilter* pFilt
 {
   m_nBuffers = std::max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
-  m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
+  m_brs.rtLastDeliverTime = INVALID_TIME;
 }
 
 CBaseSplitterOutputPin::~CBaseSplitterOutputPin()
@@ -359,7 +368,7 @@ HRESULT CBaseSplitterOutputPin::DeliverEndFlush()
 
 HRESULT CBaseSplitterOutputPin::DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate)
 {
-  m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
+  m_brs.rtLastDeliverTime = INVALID_TIME;
   if(m_fFlushing) return S_FALSE;
   m_rtStart = tStart;
   if(!ThreadExists()) return S_FALSE;
@@ -381,10 +390,11 @@ int CBaseSplitterOutputPin::QueueSize()
 
 HRESULT CBaseSplitterOutputPin::QueueEndOfStream()
 {
-  return QueuePacket(boost::shared_ptr<Packet>()); // NULL means EndOfStream
+  DsPacketStruct* p = new DsPacketStruct;
+  return QueuePacket(p); // NULL means EndOfStream
 }
 
-HRESULT CBaseSplitterOutputPin::QueuePacket(boost::shared_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::QueuePacket(DsPacketStruct* p)
 {
   if(!ThreadExists()) 
     return S_FALSE;
@@ -451,10 +461,10 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
     int cnt = 0;
     do
     {
-      boost::shared_ptr<Packet> p;
+      DsPacketStruct* p;
 
       {
-        CAutoLock cAutoLock(&m_queue);
+        /*CAutoLock cAutoLock(&m_queue);*/
         if((cnt = m_queue.GetCount()) > 0)
           p = m_queue.Remove();
       }
@@ -471,8 +481,9 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
           ? DeliverPacket(p)
           : DeliverEndOfStream();
 
-        m_eEndFlush.Wait(); // .. so we have to wait until it is done
 
+        m_eEndFlush.Wait(); // .. so we have to wait until it is done
+        CPacketUtils::FreeDemuxPacket(p);
         if(hr != S_OK && !m_fFlushed) // and only report the error in m_hrDeliver if we didn't flush the stream
         {
           // CAutoLock cAutoLock(&m_csQueueLock);
@@ -485,7 +496,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
   }
 }
 
-HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::DeliverPacket(DsPacketStruct* p)
 {
   HRESULT hr;
 
@@ -498,9 +509,9 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 
   m_brs.nBytesSinceLastDeliverTime += nBytes;
 
-  if(p->rtStart != Packet::INVALID_TIME)
+  if(p->rtStart != INVALID_TIME)
   {
-    if(m_brs.rtLastDeliverTime == Packet::INVALID_TIME)
+    if(m_brs.rtLastDeliverTime == INVALID_TIME)
     {
       m_brs.rtLastDeliverTime = p->rtStart;
       m_brs.nBytesSinceLastDeliverTime = 0;
@@ -576,7 +587,7 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
       m_mts.push_back(*p->pmt);
     }
 
-    bool fTimeValid = p->rtStart != Packet::INVALID_TIME;
+    bool fTimeValid = p->rtStart != INVALID_TIME;
 
     ASSERT(!p->bSyncPoint || fTimeValid);
 
@@ -616,11 +627,12 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
 
     if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
-      boost::shared_ptr<Packet> p(new Packet());
+      DsPacketStruct* p = new DsPacketStruct;
       p->TrackNumber = (DWORD)-1;
       p->rtStart = -1; p->rtStop = 0;
       p->bSyncPoint = FALSE;
-      p->SetData(" ", 2);
+      
+      memcpy(&p->pInputBuffer[0], " ", 2);
       QueuePacket(p);
       break;
     }
@@ -763,11 +775,11 @@ STDMETHODIMP CBaseSplitterFilter::NonDelegatingQueryInterface(REFIID riid, void*
     __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
-CBaseSplitterOutputPin* CBaseSplitterFilter::GetOutputPin(DWORD TrackNum)
+boost::shared_ptr<CBaseSplitterOutputPin> CBaseSplitterFilter::GetOutputPin(DWORD TrackNum)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  CBaseSplitterOutputPin* pPin = NULL;
+  boost::shared_ptr<CBaseSplitterOutputPin> pPin;
   //m_pPinMap.Lookup(TrackNum, pPin);
   if (m_pPinMap.count(TrackNum)>0)
   {
@@ -789,14 +801,14 @@ DWORD CBaseSplitterFilter::GetOutputTrackNum(CBaseSplitterOutputPin* pPin)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  for (map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
+  for (map<DWORD, boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
     DWORD TrackNum;
-    CBaseSplitterOutputPin* pPinTmp;
+    boost::shared_ptr<CBaseSplitterOutputPin> pPinTmp;
     TrackNum = it->first;
     pPinTmp = it->second;
     //m_pPinMap.GetNextAssoc(pos, TrackNum, pPinTmp);
-    if(pPinTmp == pPin)
+    if(pPinTmp.get() == pPin)
       return TrackNum;
   }
   
@@ -807,8 +819,8 @@ DWORD CBaseSplitterFilter::GetOutputTrackNum(CBaseSplitterOutputPin* pPin)
 HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt)
 {
   CAutoLock cAutoLock(&m_csPinMap);
-  CBaseSplitterOutputPin* pPin = NULL;
-  map<DWORD, CBaseSplitterOutputPin*>::iterator it;
+  boost::shared_ptr<CBaseSplitterOutputPin> pPin;
+  map<DWORD, boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it;
   for (it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
     if (it->first == TrackNumSrc)
@@ -841,7 +853,7 @@ HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, boost::shared_ptr<CBas
   CAutoLock cAutoLock(&m_csPinMap);
 
   if(!(pPin.get())) return E_INVALIDARG;
-  m_pPinMap[TrackNum] = pPin.get();
+  m_pPinMap[TrackNum] = pPin;
   m_pOutputs.push_back(pPin);
   return S_OK;
 }
@@ -949,7 +961,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
     list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();
     while (it != m_pOutputs.end() && !m_fFlushing)
     {
-      CBaseSplitterOutputPin* pPin = (*it).get();
+      boost::shared_ptr<CBaseSplitterOutputPin> pPin = *it;
       if(pPin->IsConnected() && pPin->IsActive())
       {
         m_pActivePins.push_back(pPin);
@@ -963,9 +975,9 @@ DWORD CBaseSplitterFilter::ThreadProc()
     while(!DemuxLoop());
 
     //we stop the thread of the active pins here
-    for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
+    for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
     {
-      CBaseSplitterOutputPin* pPin = *it;
+      boost::shared_ptr<CBaseSplitterOutputPin> pPin = *it;
       pPin->QueueEndOfStream();
     }
     
@@ -977,18 +989,18 @@ DWORD CBaseSplitterFilter::ThreadProc()
   return 0;
 }
 
-HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
+HRESULT CBaseSplitterFilter::DeliverPacket(DsPacketStruct* p)
 {
   HRESULT hr = S_FALSE;
 
-  CBaseSplitterOutputPin* pPin = GetOutputPin(p->TrackNumber);
+  boost::shared_ptr<CBaseSplitterOutputPin> pPin = GetOutputPin(p->TrackNumber);
   if(!pPin || !pPin->IsConnected())
     return S_FALSE;
 
  //|| !m_pActivePins.Find(pPin))
   
   bool gotit = false;
-  for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() ; it++)
+  for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() ; it++)
   {
     if (*it  == pPin)
       gotit = true;
@@ -996,7 +1008,7 @@ HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
   }
   if (!gotit)
     return S_FALSE;
-  if(p->rtStart != Packet::INVALID_TIME)
+  if(p->rtStart != INVALID_TIME)
   {
     m_rtCurrent = p->rtStart;
 
@@ -1035,7 +1047,7 @@ HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
 
   if(S_OK != hr)
   {
-    for ( list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
+    for ( list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
     {
       if (*it == pPin)
       {
@@ -1059,9 +1071,9 @@ HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
 bool CBaseSplitterFilter::IsAnyPinDrying()
 {
   int totalcount = 0, totalsize = 0;
-  for ( list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
+  for ( list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
   {
-    CBaseSplitterOutputPin* pPin = *it;
+    boost::shared_ptr<CBaseSplitterOutputPin> pPin = *it;
     int count = pPin->QueueCount();
     int size = pPin->QueueSize();
     if(!pPin->IsDiscontinuous() && (count < MINPACKETS || size < MINPACKETSIZE))
@@ -1510,7 +1522,7 @@ STDMETHODIMP CBaseSplitterFilter::GetStatus(int i, int& samples, int& size)
   {
     if (xx == i)
     {
-      CBaseSplitterOutputPin* pPin = (*it).get();
+      boost::shared_ptr<CBaseSplitterOutputPin> pPin = (*it);
       samples = pPin->QueueCount();
       size = pPin->QueueSize();
       return pPin->IsConnected() ? S_OK : S_FALSE;

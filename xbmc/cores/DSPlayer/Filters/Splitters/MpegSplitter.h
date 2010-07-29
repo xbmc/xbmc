@@ -68,15 +68,15 @@ public:
 
 class CMpegSplitterOutputPin : public CBaseSplitterOutputPin, protected CCritSec
 {
-	boost::shared_ptr<Packet> m_p;
+	boost::shared_ptr<DsPacketStruct> m_p;
   
-  std::list<boost::shared_ptr<Packet>> m_pl;
+  std::list<boost::shared_ptr<DsPacketStruct>> m_pl;
 	REFERENCE_TIME m_rtPrev, m_rtOffset, m_rtMaxShift;
 	bool m_fHasAccessUnitDelimiters;
 
 protected:
 	HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
-	HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
+	HRESULT DeliverDsPacketStruct(boost::shared_ptr<DsPacketStruct> p);
 	HRESULT DeliverEndFlush();
 
 public:

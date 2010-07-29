@@ -274,9 +274,14 @@ VIDEOINFOHEADER *CDSGuidHelper::CreateVIH(const CDemuxStreamVideo *stream, AVStr
   pvi->rcTarget = empty_tagrect;
   pvi->rcTarget.right = pvi->rcSource.right = stream->iWidth;
   pvi->rcTarget.bottom = pvi->rcSource.bottom = stream->iHeight;
-  pvi->bmiHeader.biSize = ULONG(sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size);
+  if (avstream->codec->extradata_size > 0)
+  {
+    pvi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  }
+  else
+    pvi->bmiHeader.biSize = ULONG(sizeof(BITMAPINFOHEADER));
 
-  memcpy((BYTE*)&pvi->bmiHeader + sizeof(BITMAPINFOHEADER), avstream->codec->extradata, avstream->codec->extradata_size);
+  
   pvi->bmiHeader.biWidth = stream->iWidth;
   pvi->bmiHeader.biHeight = stream->iHeight;
 
@@ -290,7 +295,8 @@ VIDEOINFOHEADER *CDSGuidHelper::CreateVIH(const CDemuxStreamVideo *stream, AVStr
   pvi->bmiHeader.biYPelsPerMeter = 0;
   pvi->bmiHeader.biXPelsPerMeter = 0;
 
-  *size = sizeof(VIDEOINFOHEADER) + avstream->codec->extradata_size;
+  *size = sizeof(VIDEOINFOHEADER);
+  /*The extradata is missing might need an interface added to the demuxer to be able to request those info*/
   return pvi;
 }
 
