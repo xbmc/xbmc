@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator[wm]-->
 <!--Translator: bugre (werner), Fabiano Santiago (fabianosan) -->
 <!--Email: wxxx333@gmail.com, fabianosan@hotmail.com-->
-<!--Date of translation: 12/21/2009, revision: 14/07/2010-->
+<!--Date of translation: 12/21/2009, last revision: 29/07/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 31755-->
+<!--Based on english strings version 32026-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -197,6 +197,8 @@
   <string id="239">Limpar a lista de reprodução ao terminar</string>
   <string id="240">Modo de Exibição</string>
   <string id="241">Tela Cheia #%d</string>
+  <string id="242">Janela</string>
+  <string id="243">Taxa de Atualização</string>
 
   <string id="247">Scripts</string>
   <string id="248">Idioma</string>
@@ -511,9 +513,10 @@
   <string id="572">Estúdio</string>
   <string id="573">Caminho</string>
   <string id="574">País</string>
+  <string id="575">Em progresso</string>
 
-  <string id="580">Direção de ordenamento</string>
-  <string id="581">Método de ordenamento</string>
+  <string id="580">Direção de ordenação</string>
+  <string id="581">Método de ordenação</string>
   <string id="582">Modo de exibição</string>
   <string id="583">Lembrar modo de exibição para pastas diferentes</string>
   <string id="584">Crescente</string>
@@ -900,18 +903,19 @@
   <string id="12009">Reconstruindo índice...</string>
   <string id="12010">Voltar para janela de músicas</string>
   <string id="12011">Voltar para janela de vídeos</string>
-  <string id="12012">Atualizar lista de trainer</string>
-  <string id="12013">Trainer</string>
-  <string id="12014">Trainers não encontrado</string>
-  <string id="12015">Configurações de trainer</string>
-  <string id="12016">Todos os trainers registrados estão perdidos. Atualize sua lista</string>
+  <string id="12012">Atualizar lista de trailer</string>
+  <string id="12013">Trailer</string>
+  <string id="12014">Trailer não encontrado</string>
+  <string id="12015">Configurações de trailer</string>
+  <string id="12016">Todos os trailers registrados estão perdidos. Atualize sua lista</string>
   <string id="12017">Iniciar automaticamente na última posição</string>
   <string id="12018">Não</string>
   <string id="12019">Sim</string>
   <string id="12020">Perguntar</string>
-  <string id="12021">Retomar da posição %s</string>
-  <string id="12022">Iniciar do começo</string>
-  <string id="12023">Validando trainers existentes...</string>
+  <string id="12021">Reiniciar Reprodução</string>
+  <string id="12022">Retomar da posição %s</string>
+  <string id="12023">Validando trailers existentes...</string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -988,7 +992,7 @@
   <string id="13005">Desligar</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Usar caminho personalizado para a dashboard</string>
-  <string id="13008">Modo de desligamente padrão</string>
+  <string id="13008">Modo de desligamento padrão</string>
   <string id="13009">Terminar</string>
   <string id="13010">Hibernar</string>
   <string id="13011">Suspender</string>
@@ -1230,6 +1234,7 @@
   <string id="13428">Permitir aceleração por hardware (CrystalHD)</string>
   <string id="13429">Permitir aceleração por hardware (VDADecoder)</string>
   <string id="13430">Permitir aceleração por hardware (OpenMax)</string>
+  <string id="13431">Pixel Shaders</string>
 
   <string id="13500">Método de syncronização de A/V</string>
   <string id="13501">Relógio de áudio</string>
@@ -1346,9 +1351,10 @@
   <string id="14091">Conjunto de caracteres</string>
   <string id="14092">Depurando</string>
   <string id="14093">Segurança</string>
-  <string id="14094">Disposit Entrada</string>
+  <string id="14094">Disp. de Entrada</string>
   <string id="14095">Econ. de energia</string>
-  <string id="15015">Remove</string>
+
+  <string id="15015">Remover</string>
   <string id="15016">Jogos</string>
 
   <string id="15019">Adicionar</string>
@@ -1523,6 +1529,12 @@
   <string id="16316">Auto</string>
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16319">DXVA</string>
+
+  <string id="16400">Pós-processamento de video</string>
+  <string id="16401">Desativado</string>
+  <string id="16402">Ativar para conteúdo SD</string>
+  <string id="16403">Sempre ativado</string>
 
   <string id="17500">Exibir intervalo para descanso</string>
 
@@ -1531,7 +1543,7 @@
   <string id="20000">Pasta de músicas salvas</string>
   <string id="20001">Usar DVD-player externo</string>
   <string id="20002">DVD-player externo</string>
-  <string id="20003">Pasta de trainers</string>
+  <string id="20003">Pasta de trailers</string>
   <string id="20004">Pasta de screenshots</string>
 
   <string id="20006">Pasta lista de reprodução</string>
@@ -1729,7 +1741,9 @@
   <string id="20253">Servidor WebDAV (HTTP)</string>
   <string id="20254">Servidor WebDAV (HTTPS)</string>
   <string id="20255">Primeiro logon, editar seu perfil</string>
-  
+  <string id="20256">Cliente HTS Tvheadend</string>
+  <string id="20257">Cliente VDR Streamdev</string>
+
   <string id="20300">Diretório do servidor Web (HTTP)</string>
   <string id="20301">Diretório do servidor Web (HTTPS)</string>
   <string id="20302">Impossível gravar na pasta:</string>
@@ -1882,6 +1896,8 @@
   <string id="20449">Provavelmente o servidor está indisponível.</string>
   <string id="20450">Deseja continuar a procura?</string>
   <string id="20451">Paises</string>
+  <string id="20452">episódio</string>
+  <string id="20453">episódios</string>
 
 
   <string id="21330">Exibir arquivos e diretórios ocultos</string>
@@ -2109,6 +2125,12 @@
   <string id="22042">branco/azul</string>
   <string id="22043">preto/branco</string>
 
+  <string id="22079">Selecione a ação padrão</string>
+  <string id="22080">Selecione</string>
+  <string id="22081">Exibir Informação</string>
+  <string id="22082">Mais...</string>
+  <string id="22083">Tocar tudo</string>
+
   <string id="23049">Teletext indisponível</string>
   <string id="23050">Ativar Teletext</string>
   <string id="23051">Parte %i</string>
@@ -2116,13 +2138,14 @@
   <string id="23053">Parando</string>
   <string id="23054">Executando</string>
 
+
   <string id="23000">Plugin do Tempo</string>
   <string id="23001">- Configurações do plugin</string>
   <string id="23050">Teletext ativado</string>
   <string id="23051">Parte %i</string>
 
-  <string id="23100">Tocador externo ativo</string>
-  <string id="23101">Clique OK para terminar o tocador</string>
+  <string id="23100">Player Externo Ativo</string>
+  <string id="23101">Clique OK para sair do player</string>
 
   <string id="23104">Clique OK quando execução tiver terminado</string>
 
@@ -2163,6 +2186,8 @@
   <string id="24039">Desativar Add-ons</string>
   <string id="24040">(Limpar configuração atual)</string>
   <string id="24041">Instalar a partir de um arquivo ZIP</string>
+  <string id="24042">Baixando %i%%</string>
+  <string id="24043">Atualizações Disponíveis</string>
 
   <string id="24050">Add-ons Disponíveis</string>
   <string id="24051">Versão:</string>
@@ -2189,7 +2214,6 @@
   <string id="24075">Desativar</string>
   <string id="24080">Reconectar?</string>
   <string id="24089">Add-on reiniciado</string>
-
   <string id="24090">Bloq. Gerenciador de Add-on</string>
 
   <string id="24091"></string>
@@ -2198,8 +2222,12 @@
   <string id="24094"></string>
   <string id="24095"></string>
 
+  <string id="24096">O Add-on foi marcado como quebrado no repositório.</string>
+  <string id="24097">Gostaria de desativá-lo em seu sistema?</string>
+  <string id="24098">Quebrado</string>
 
-  <string id="29800">Modo de coleção</string>
+
+  <string id="29800">Modo Coleção</string>
   <string id="29801">Teclado QWERTY</string>
   <string id="29802">Utilizando áudio em passthrough</string>
 
