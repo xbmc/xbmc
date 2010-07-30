@@ -121,11 +121,9 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
     if (!movie)
       continue;
 
+    haveValidResults = true;
+
     movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
-
-    if (movie)
-      haveValidResults = true;
-
     while (movie)
     {
       // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
@@ -453,8 +451,9 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
 
   // unthreaded
   bool sortList = true;
-  int success = 0;
-  if (!(success = InternalFindMovie(strMovie, movieList, sortList)))
+  int success = InternalFindMovie(strMovie, movieList, sortList);
+  // NOTE: this might be improved by rescraping if the match quality isn't high?
+  if (success && !movieList.size())
   { // no results. try without cleaning chars like '.' and '_'
     success = InternalFindMovie(strMovie, movieList, sortList, false);
   }
