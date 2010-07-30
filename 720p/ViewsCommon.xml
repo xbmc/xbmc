@@ -958,7 +958,7 @@
 	<include name="PanelStream">
 		<control type="group">
 			<include>PanelStreamVisible</include>
-<!--			<include>MediaViewBGOverlay</include> -->
+			<include>MediaViewBGOverlay</include>
 		</control>
 
 		<control type="group">
