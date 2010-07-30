@@ -13,6 +13,7 @@
     <include>ImageStream</include>
     <include>WallStream</include>
     <include>Coverflow</include>
+		<include>PluginStream</include>
     <!-- -->
 
     <control type="group">
