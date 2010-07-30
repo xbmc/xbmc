@@ -77,7 +77,8 @@ bool CSaveFileStateJob::DoWork()
         if (updateListing)
         {
           CUtil::DeleteVideoDatabaseDirectoryCache();
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          CFileItemPtr msgItem(new CFileItem(m_item));
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
           g_windowManager.SendThreadMessage(message);
         }
       }
