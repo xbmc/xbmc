@@ -2857,12 +2857,13 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
     std::swap(m_items[item1], m_items[item2]);
 }
 
-void CFileItemList::UpdateItem(const CFileItem *item)
+bool CFileItemList::UpdateItem(const CFileItem *item)
 {
-  if (!item) return;
+  if (!item) return false;
   CFileItemPtr oldItem = Get(item->m_strPath);
   if (oldItem)
     *oldItem = *item;
+  return oldItem;
 }
 
 void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)

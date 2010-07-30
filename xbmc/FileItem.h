@@ -414,7 +414,11 @@ public:
 
   void Swap(unsigned int item1, unsigned int item2);
 
-  void UpdateItem(const CFileItem *item);
+  /*! \brief Update an item in the item list
+   \param item the new item, which we match based on path to an existing item in the list
+   \return true if the item exists in the list (and was thus updated), false otherwise.
+   */
+  bool UpdateItem(const CFileItem *item);
 
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
