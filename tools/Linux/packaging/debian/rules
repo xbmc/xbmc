@@ -17,37 +17,46 @@ ifeq (,$(SVNVERSION))
 	SVNVERSION = $(shell cat debian/svnrevision 2>/dev/null)
 endif
 
-# List of options to pass to configure. Can be overridden.
-XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
-  --build=$(DEB_BUILD_GNU_TYPE) \
-  --prefix=/usr --docdir=/usr/share/doc/xbmc \
-  --enable-gl --enable-vdpau --disable-vaapi --disable-vdadecoder \
-  --disable-profiling --enable-joystick --enable-xrandr --disable-ccache \
-  --enable-pulse --disable-mid --enable-avahi --disable-asap-codec \
-  --enable-webserver --disable-libdts --disable-liba52
-
 # Whether we're building for release or not
 ifeq (yes,$(XBMC_RELEASE))
-  XBMC_CONFIG_OPTIONS += --disable-debug --enable-optimizations
+  DEBUG_OPTIONS = --disable-debug --enable-optimizations
 else
-  XBMC_CONFIG_OPTIONS += --enable-debug
+  DEBUG_OPTIONS = --enable-debug
 endif
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
-  XBMC_CONFIG_OPTIONS += --enable-faac
+  DISTRO_SPECIFIC_OPTIONS = --enable-faac
 else
-  XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
+  DISTRO_SPECIFIC_OPTIONS = --enable-external-libraries --disable-dvdcss \
     --disable-non-free
 endif
 
 # Add the SVN revision if we could determine the svn revision
 ifneq (,$(SVNVERSION))
-  XBMC_CONFIG_OPTIONS += SVN_REV="$(SVNVERSION)"
+  SVNVERSION_OPTION = SVN_REV="$(SVNVERSION)"
 endif
 
 # Various environment variables to set
-XBMC_CONFIG_OPTIONS += CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+ENV_OPTIONS = CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+
+# List of options to pass to configure. Can be overridden.
+# Extra options can simply be passed using XBMC_CONFIG_EXTRA_OPTIONS env
+# variable.
+XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
+  --build=$(DEB_BUILD_GNU_TYPE) \
+  --prefix=/usr --docdir=/usr/share/doc/xbmc \
+  $(DEBUG_OPTIONS) \
+  --enable-gl --disable-gles --enable-vdpau --disable-vaapi \
+  --disable-vdadecoder --disable-openmax --disable-tegra --disable-profiling \
+  --enable-joystick --enable-xrandr --enable-goom --disable-ccache \
+  --enable-pulse --enable-rtmp --enable-ffmpeg-libvorbis --disable-mid \
+  --enable-hal --enable-avahi --disable-non-free --disable-asap-codec \
+  --enable-webserver --disable-libdts --disable-liba52 \
+  $(XBMC_CONFIG_EXTRA_OPTIONS) \
+  $(DISTRO_SPECIFIC_OPTIONS) \
+  $(SVNVERSION_OPTION) \
+  $(ENV_OPTIONS)
 
 # Input files used for generating other files
 INPUT_FILES = debian/control.in
@@ -76,8 +85,6 @@ override_dh_auto_configure: configure
 
 override_dh_auto_install:
 	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
-	install -D -m 0644 $(CURDIR)/tools/XBMCLive/xbmc-live.conf \
-	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
 	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
 		WII_EXTRA_OPTS=-DCWIID_OLD
 
