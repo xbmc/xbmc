@@ -233,7 +233,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     CFileItemPtr item(new CFileItem("addons://more",false));
     item->SetLabelPreformated(true);
     item->SetLabel(g_localizeStrings.Get(21452));
-    item->SetThumbnailImage("DefaultAddon.png");
+    item->SetIconImage("DefaultAddon.png");
     items.Add(item);
   }
   return items.Size() > 0;
