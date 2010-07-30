@@ -1,4 +1,4 @@
-xbmc (1:10.05~svn29980+fhs~deb1-1) unstable; urgency=low
+xbmc (2:10.0~svn32346~deb1-1) unstable; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
@@ -59,7 +59,7 @@ xbmc (1:10.05~svn29980+fhs~deb1-1) unstable; urgency=low
   * Take advantage of FHS compliance support in XBMC.
   * Support parallel builds.
 
- -- Andres Mejia <mcitadel@gmail.com>  Sun, 09 May 2010 16:37:52 -0400
+ -- Andres Mejia <mcitadel@gmail.com>  Fri, 30 Jul 2010 17:40:15 -0400
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 
