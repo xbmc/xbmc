@@ -48,6 +48,8 @@ public:
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
+  STDMETHODIMP Notify(IBaseFilter* pSender, Quality q){return E_NOTIMPL;}
+
   // classes
   CDVDMessageQueue m_messageQueue;
   //CDVDMessageQueue& m_messageParent;
@@ -66,12 +68,12 @@ public:
 	void SetPauseMode(bool bPauseMode);
 protected:
   virtual HRESULT FillBuffer(IMediaSample *pSamp);
-	virtual HRESULT GetMediaType(int iPosition, CMediaType* pMediaType);
-	virtual HRESULT CheckMediaType(const CMediaType* pMediaType);
+  virtual HRESULT GetMediaType(int iPosition, CMediaType* pMediaType);
+  virtual HRESULT CheckMediaType(const CMediaType* pMediaType);
 
-    // called from CBaseOutputPin during connection to ask for
-    // the count and size of buffers we need.
-	virtual HRESULT DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES *ppropInputRequest);
+  // called from CBaseOutputPin during connection to ask for
+  // the count and size of buffers we need.
+  virtual HRESULT DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES *ppropInputRequest);
 
 	virtual HRESULT OnThreadStartPlay(void);
 	virtual HRESULT OnThreadDestroy(void);

@@ -38,7 +38,7 @@
 
 #include "filters/XBMCFileSource.h"
 #include "filters/Splitters/AviSplitter.h"
-#include "filters/Splitters/XBMCFFmpegSplitter.h"
+#include "filters/Splitters/DSDemuxerFilter.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
 #include "filters/Splitters/MpegSplitter.h"
 #include "filters/VMR9AllocatorPresenter.h"

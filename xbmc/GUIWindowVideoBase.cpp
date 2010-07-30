@@ -1011,7 +1011,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
       }
-      else
+      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       { // get players
         VECPLAYERCORES vecCores;
         if (item->IsVideoDb())
