@@ -356,6 +356,23 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
   }
 }
 
+void CGUIViewState::AddLiveTVSources()
+{
+  VECSOURCES *sources = g_settings.GetSourcesFromType("video");
+  for (IVECSOURCES it = sources->begin(); it != sources->end(); it++)
+  {
+    if (CUtil::IsLiveTV((*it).strPath))
+    {
+      CMediaSource source;
+      source.strPath = (*it).strPath;
+      source.strName = (*it).strName;
+      source.m_strThumbnailImage = "";
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+      m_sources.push_back(source);
+    }
+  }
+}
+
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, size | Foldername, empty
