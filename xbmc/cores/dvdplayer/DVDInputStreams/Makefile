@@ -14,8 +14,7 @@ SRCS=	DVDFactoryInputStream.cpp \
 	DVDInputStreamRTMP.cpp \
 	DVDInputStreamStack.cpp \
 	DVDInputStreamHTSP.cpp \
-        DVDInputStreamMMS.cpp \
-        DVDInputStreamMPLS.cpp \
+	DVDInputStreamMMS.cpp \
 	DVDInputStreamBluray.cpp \
 
 LIB=	DVDInputStreams.a
