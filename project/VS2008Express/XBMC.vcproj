@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -89,8 +89,8 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -181,8 +181,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -281,8 +281,8 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -374,8 +374,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
