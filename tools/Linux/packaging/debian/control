@@ -21,8 +21,8 @@ Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
  libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
  nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev,
-Standards-Version: 3.8.4
+ libmodplug-dev, librtmp-dev,
+Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
@@ -30,7 +30,7 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
 Package: xbmc
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
-         xbmc-skin-confluence (= ${binary:Version}), 
+         xbmc-skin-confluence (= ${binary:Version}),
          xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
