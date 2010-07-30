@@ -41,11 +41,12 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 Export win32_exports[] =
 {
   // kernel32
-  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                               NULL },
+  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                            NULL },
+  { "FindNextFileA",                                -1, (void*)dllFindNextFileA,                             NULL },
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                            NULL },
+  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                       NULL },
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
 //  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
