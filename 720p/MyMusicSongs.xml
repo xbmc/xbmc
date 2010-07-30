@@ -8,12 +8,12 @@
 
     <!-- -->
     <include>List</include>
-    <include>MusicAlbums</include>
     <include>MusicSongs</include>
     <include>Coverflow</include>
     <include>InfoList</include>
     <include>PanelStream</include>
     <include>WallStream</include>
+		<include>PluginStream</include>
     <!-- -->
 
     <control type="group">
