@@ -1906,17 +1906,6 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
 fi
 ], [0])
 
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure --with-ssl-dir=/opt/local/include CFLAGS="$CFLAGS"
-  else
-    ./configure --without-openssl \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS"
-  fi
-], [0])
-
 XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="$CFLAGS -fno-common" \

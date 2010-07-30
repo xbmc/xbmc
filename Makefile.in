@@ -62,10 +62,6 @@ DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
 	xbmc/cores/dvdplayer/Codecs/libdvd \
 
-ifneq (@HAVE_LIBBLURAY@,1)
-DVDPCODECS_DIRS+=xbmc/cores/dvdplayer/Codecs/libbdnav
-endif
-
 ifneq (@USE_EXTERNAL_LIBASS@,1)
 DVDPCODECS_DIRS+=lib/libass/xbmc
 endif
@@ -272,8 +268,6 @@ xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
-xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -383,7 +377,6 @@ externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
 	codecs libs python visualizations screensavers eventclients skins \
-	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
@@ -440,10 +433,6 @@ OBJSXBMC=	\
 	xbmc/lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/settings/settings.a
-
-ifneq (@HAVE_LIBBLURAY@,1)
-OBJSXBMC+= xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a
-endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
