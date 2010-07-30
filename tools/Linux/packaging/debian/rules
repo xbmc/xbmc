@@ -30,7 +30,7 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 ifeq (yes,$(XBMC_RELEASE))
   XBMC_CONFIG_OPTIONS += --disable-debug --enable-optimizations
 else
-  XBMC_CONFIG_OPTIONS += --enable-debug --disable-optimizations
+  XBMC_CONFIG_OPTIONS += --enable-debug
 endif
 
 # Ubuntu or Debian specific options
