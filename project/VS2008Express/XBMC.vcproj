@@ -1379,19 +1379,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h"
 						>
 					</File>
 				</Filter>
