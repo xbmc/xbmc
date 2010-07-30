@@ -55,7 +55,7 @@ CIMDB::~CIMDB()
 }
 
 int CIMDB::InternalFindMovie(const CStdString &strMovie,
-                             IMDB_MOVIELIST& movielist, bool& sortMovieList)
+                             IMDB_MOVIELIST& movielist, bool& sortMovieList, bool cleanChars /* = true */)
 {
   movielist.clear();
 
@@ -63,7 +63,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
 
   CStdString strName = strMovie;
   CStdString movieTitle, movieTitleAndYear, movieYear;
-  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true);
+  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true, cleanChars);
 
   movieTitle.ToLower();
 
@@ -121,9 +121,11 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
     if (!movie)
       continue;
 
-    haveValidResults = true;
-
     movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+
+    if (movie)
+      haveValidResults = true;
+
     while (movie)
     {
       // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
@@ -421,11 +423,11 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   if (!m_info->Load())
     return 0;
 
+  m_found = 0;
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
     m_strMovie = strMovie;
-    m_found = 0;
     if (ThreadHandle())
       StopThread();
     Create();
@@ -451,11 +453,14 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
 
   // unthreaded
   bool sortList = true;
-  int success = InternalFindMovie(strMovie, movieList, sortList);
+  if (!(m_found = InternalFindMovie(strMovie, movieList, sortList)))
+  { // no results. try without cleaning chars like '.' and '_'
+    m_found = InternalFindMovie(strMovie, movieList, sortList, false);
+  }
   // sort our movie list by fuzzy match
   if (sortList)
     std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
-  return success;
+  return m_found;
 }
 
 bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
