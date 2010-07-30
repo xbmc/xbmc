@@ -197,10 +197,9 @@ static int convert_fmode(const char* mode)
 #ifdef _WIN32
 static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 {
-  CStdStringW strwname(wdata->name);
   CStdString strname;
-  g_charsetConverter.wToUTF8(strwname, strname);
-  int size = sizeof(data->name);
+  g_charsetConverter.wToUTF8(wdata->name, strname);
+  size_t size = sizeof(data->name) / sizeof(char);
   strncpy(data->name, strname.c_str(), size);
   if (size)
     data->name[size - 1] = '\0';
@@ -213,10 +212,9 @@ static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
 
 static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
 {
-  CStdString strname(data->name);
   CStdStringW strwname;
-  g_charsetConverter.utf8ToW(strname, strwname, false);
-  int size = sizeof(wdata->name) / sizeof(wchar_t);
+  g_charsetConverter.utf8ToW(data->name, strwname, false);
+  size_t size = sizeof(wdata->name) / sizeof(wchar_t);
   wcsncpy(wdata->name, strwname.c_str(), size);
   if (size)
     wdata->name[size - 1] = '\0';
@@ -760,9 +758,8 @@ extern "C"
 
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
-      CStdString strfile = CUtil::ValidatePath(_P(str));
       CStdStringW strwfile;
-      g_charsetConverter.utf8ToW(strfile, strwfile, false);
+      g_charsetConverter.utf8ToW(CUtil::ValidatePath(_P(str)), strwfile, false);
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
         to_finddata64i32(&wdata, data);
