@@ -105,8 +105,17 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   if (FAILED(hr))
     return hr;
-
-  hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+  /* Usually the call coming from IMediaSeeking is done on renderers and is passed upstream
+     In every case i seen so far its much better to directly query the IMediaSeeking from the splitter
+	 directly which avoid confusion when the codecs dont pass the call correctly upstream*/
+  BeginEnumFilters(pFilterGraph, pEF, pBF)
+  {
+	  if (DShowUtil::IsSplitter(pBF))
+	    hr = pBF->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+  }
+  EndEnumFilters
+  if (!m_pMediaSeeking)
+    hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaControl), (void**)&m_pMediaControl);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaEvent), (void**)&m_pMediaEvent);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pBasicAudio), (void**)&m_pBasicAudio);
