@@ -1005,8 +1005,6 @@
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F58E293911FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
 		F58E293A11FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
-		F591FAA010D56F9B001DF66A /* DVDInputStreamMPLS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F591FA9E10D56F9B001DF66A /* DVDInputStreamMPLS.cpp */; };
-		F591FAA110D56F9B001DF66A /* DVDInputStreamMPLS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F591FA9E10D56F9B001DF66A /* DVDInputStreamMPLS.cpp */; };
 		F591FAA910D5703D001DF66A /* libbdnav.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F591FAA810D5703D001DF66A /* libbdnav.a */; };
 		F591FAAA10D5703D001DF66A /* libbdnav.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F591FAA810D5703D001DF66A /* libbdnav.a */; };
 		F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
@@ -3690,8 +3688,6 @@
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
 		F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamBluray.cpp; sourceTree = "<group>"; };
 		F58E293811FFC103006F4D46 /* DVDInputStreamBluray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamBluray.h; sourceTree = "<group>"; };
-		F591FA9E10D56F9B001DF66A /* DVDInputStreamMPLS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamMPLS.cpp; sourceTree = "<group>"; };
-		F591FA9F10D56F9B001DF66A /* DVDInputStreamMPLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamMPLS.h; sourceTree = "<group>"; };
 		F591FAA810D5703D001DF66A /* libbdnav.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbdnav.a; path = xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a; sourceTree = "<group>"; };
 		F592568610FBF2E100D2C91D /* ConvolutionKernels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvolutionKernels.h; sourceTree = "<group>"; };
 		F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvolutionKernels.cpp; sourceTree = "<group>"; };
@@ -5275,8 +5271,6 @@
 				E38E15640D25F9FA00618676 /* DVDInputStreamMemory.h */,
 				F5D8F86A104CD1C0004A11AB /* DVDInputStreamMMS.h */,
 				F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */,
-				F591FA9E10D56F9B001DF66A /* DVDInputStreamMPLS.cpp */,
-				F591FA9F10D56F9B001DF66A /* DVDInputStreamMPLS.h */,
 				E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */,
 				E38E15660D25F9FA00618676 /* DVDInputStreamNavigator.h */,
 				E38E15670D25F9FA00618676 /* dvdnav */,
@@ -8077,7 +8071,6 @@
 				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
 				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
-				F591FAA010D56F9B001DF66A /* DVDInputStreamMPLS.cpp in Sources */,
 				F595994510E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp in Sources */,
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
@@ -8950,7 +8943,6 @@
 				E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
 				431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
-				F591FAA110D56F9B001DF66A /* DVDInputStreamMPLS.cpp in Sources */,
 				7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568910FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				7C45DD691102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */,
