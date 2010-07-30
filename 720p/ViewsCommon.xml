@@ -589,6 +589,18 @@
 						<label>$INFO[ListItem.Title]</label>
 						<visible>![Container.Content(albums) | Container.Content(artists)] | [Container.Content(albums) + IsEmpty(ListItem.Album)]</visible>
 					</control>
+					
+					<control type="label">
+						<posx>0</posx>
+						<posy>30</posy>
+						<description>Subtitle</description>
+						<width>InfoListTitleWidth</width>
+						<font>MediumTitleFont</font>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(plugincontent)</visible>
+					</control>
+					
 					<control type="label">
 						<description>Album</description>
 						<width>InfoListTitleWidth</width>
@@ -607,6 +619,7 @@
 					<visible>!Container.Content(Artists)</visible>
 					<posx>21</posx>
 					<posy>-21</posy>
+				
 					<control type="label">
 						<description>Star Rating Label</description>
 						<posy>70</posy>
@@ -616,6 +629,7 @@
 						<label>$LOCALIZE[563]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
+						<visible>!Container.Content(plugincontent)</visible>
 					</control>
 					<control type="image">
 						<description>Star Rating</description>
@@ -627,7 +641,33 @@
 						<posy>57</posy>
 						<posx>63</posx>
 						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						<visible>!Container.Content(plugincontent)</visible>
 					</control>
+
+					<control type="label">
+						<description>Star Rating Label</description>
+						<posy>76</posy>
+						<posx>39</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[563]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(plugincontent) + ![IsEmpty(ListItem.Property(userRating)) + IsEmpty(ListItem.Property(rating))]</visible>
+					</control>
+					<control type="image">
+						<description>Star Rating</description>
+						<align>left</align>
+						<info>ListItem.StarRating</info>
+						<aspectratio>keep</aspectratio>
+						<width>105</width>
+						<height>47</height>
+						<posy>66</posy>
+						<posx>55</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						<visible>Container.Content(plugincontent)</visible>
+					</control>
+					
 					<control type="label">
 						<description>Year Label</description>
 						<posy>95</posy>
@@ -637,7 +677,7 @@
 						<label>$LOCALIZE[345]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
 					</control>
 					<control type="label">
 						<description>Year</description>
@@ -646,7 +686,7 @@
 						<width>180</width>
 						<label>$INFO[ListItem.Year]</label>
 						<align>left</align>
-						<visible>![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
 					</control>
 					<control type="label">
 						<description>Tracks Label</description>
@@ -677,7 +717,7 @@
 						<label>$LOCALIZE[31132]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)]</visible>
 					</control>
 					<control type="label">
 						<description>Duration</description>
@@ -686,7 +726,7 @@
 						<width>180</width>
 						<label>$INFO[ListItem.Duration]</label>
 						<align>left</align>
-						<visible>![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)]</visible>
 					</control>
 					<control type="label">
 						<description>Duration Label Songs</description>
@@ -757,7 +797,17 @@
 							<height>216</height>
 							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
-							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
+							<visible>![Content.Content(plugincontent) | Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
+						</control>
+						<control type="textbox">
+							<description>Plot</description>
+							<width>InfoListTitleWidth</width>
+							<posy>-40</posy>
+							<height>279</height>
+							<width>400</width>
+							<label>$INFO[ListItem.Plot]</label>
+							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
+							<visible>Container.Content(plugincontent)</visible>
 						</control>
 						<control type="textbox">
 							<description>Plot</description>
