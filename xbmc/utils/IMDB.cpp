@@ -423,11 +423,11 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   if (!m_info->Load())
     return 0;
 
-  m_found = 0;
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
     m_strMovie = strMovie;
+    m_found = 0;
     if (ThreadHandle())
       StopThread();
     Create();
@@ -453,14 +453,15 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
 
   // unthreaded
   bool sortList = true;
-  if (!(m_found = InternalFindMovie(strMovie, movieList, sortList)))
+  int success = 0;
+  if (!(success = InternalFindMovie(strMovie, movieList, sortList)))
   { // no results. try without cleaning chars like '.' and '_'
-    m_found = InternalFindMovie(strMovie, movieList, sortList, false);
+    success = InternalFindMovie(strMovie, movieList, sortList, false);
   }
   // sort our movie list by fuzzy match
   if (sortList)
     std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
-  return m_found;
+  return success;
 }
 
 bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
