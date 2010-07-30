@@ -797,7 +797,7 @@
 							<height>216</height>
 							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
-							<visible>![Content.Content(plugincontent) | Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
+							<visible>![Container.Content(plugincontent) | Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
 						</control>
 						<control type="textbox">
 							<description>Plot</description>
