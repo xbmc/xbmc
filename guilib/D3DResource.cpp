@@ -404,10 +404,11 @@ bool CD3DVertexBuffer::Lock(UINT level, UINT size, void **data, DWORD flags)
   return false;
 }
 
-void CD3DVertexBuffer::Unlock()
+bool CD3DVertexBuffer::Unlock()
 {
   if (m_vertex)
-    m_vertex->Unlock();
+    return (D3D_OK == m_vertex->Unlock());
+  return false;
 }
 
 void CD3DVertexBuffer::OnDestroyDevice()

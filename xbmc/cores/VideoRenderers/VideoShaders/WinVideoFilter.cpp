@@ -101,12 +101,22 @@ bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned 
 
 bool CWinShader::LockVertexBuffer(void **data)
 {
-  return m_vb.Lock(0, m_vbsize, data, 0);
+  if (!m_vb.Lock(0, m_vbsize, data, 0))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock vertex buffer");
+    return false;
+  }
+  return true;
 }
 
-void CWinShader::UnlockVertexBuffer()
+bool CWinShader::UnlockVertexBuffer()
 {
-  m_vb.Unlock();
+  if (!m_vb.Unlock())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock vertex buffer");
+    return false;
+  }
+  return true;
 }
 
 void CWinShader::ReleaseInternal()
