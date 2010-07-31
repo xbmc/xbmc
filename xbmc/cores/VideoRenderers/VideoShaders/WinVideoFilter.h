@@ -56,7 +56,7 @@ public:
 protected:
   virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
   virtual bool LockVertexBuffer(void **data);
-  virtual void UnlockVertexBuffer();
+  virtual bool UnlockVertexBuffer();
   virtual void ReleaseInternal();
   virtual bool LoadEffect(CStdString filename, DefinesMap* defines);
   virtual bool Execute();
