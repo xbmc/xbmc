@@ -95,6 +95,8 @@ protected:
 
 private:
   CYUV2RGBMatrix m_matrix;
+  unsigned int   m_sourceWidth, m_sourceHeight;
+  CRect          m_sourceRect, m_destRect;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -123,7 +125,9 @@ protected:
   virtual void ReleaseInternal();
 
 private:
-  CD3DTexture m_HQKernelTexture;
+  CD3DTexture   m_HQKernelTexture;
+  unsigned int  m_sourceWidth, m_sourceHeight;
+  CRect         m_sourceRect, m_destRect;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
