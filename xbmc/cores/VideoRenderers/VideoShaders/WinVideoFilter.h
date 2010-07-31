@@ -48,25 +48,28 @@ private:
 class CWinShader
 {
 protected:
-  CWinShader();
+  CWinShader() {}
 
 public:
   void Release(); // for user code only, like the SAFE_RELEASE() construct
 
 protected:
-  virtual bool CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
+  virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
+  virtual bool LockVertexBuffer(void **data);
+  virtual void UnlockVertexBuffer();
   virtual void ReleaseInternal();
   virtual bool LoadEffect(CStdString filename, DefinesMap* defines);
-  virtual bool Execute(LPDIRECT3DDEVICE9 pD3DDevice);
-  void*        GetVertexBuffer() { return m_verts; }
+  virtual bool Execute();
 
   CD3DEffect   m_effect;
   unsigned int m_boundTexturesCount;
 
 private:
-  void*        m_verts;
-  unsigned int m_vertsize;
-  unsigned int m_primitivesCount;
+  CD3DVertexBuffer m_vb;
+  unsigned int     m_vbsize;
+  DWORD            m_FVF;
+  unsigned int     m_vertsize;
+  unsigned int     m_primitivesCount;
 };
 
 class CYUV2RGBShader : public CWinShader

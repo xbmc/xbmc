@@ -82,36 +82,41 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
 
 //===================================================================
 
-CWinShader::CWinShader()
-{
-  m_verts = NULL;
-}
-
 void CWinShader::Release()
 {
   ReleaseInternal(); // virtual, so calls the child function, which is supposed to call down the hierarchy
   delete this;
 }
 
-bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
+bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
 {
-  // Allocate the vertex buffer
-  m_verts = malloc(vertCount * vertSize);
+  if (!m_vb.Create(vertCount * vertSize, D3DUSAGE_WRITEONLY, FVF, g_Windowing.DefaultD3DPool()))
+    return false;
+  m_vbsize = vertCount * vertSize;
+  m_FVF = FVF;
   m_vertsize = vertSize;
   m_primitivesCount = primitivesCount;
-  return (m_verts != NULL);
+  return true;
+}
+
+bool CWinShader::LockVertexBuffer(void **data)
+{
+  return m_vb.Lock(0, m_vbsize, data, 0);
+}
+
+void CWinShader::UnlockVertexBuffer()
+{
+  m_vb.Unlock();
 }
 
 void CWinShader::ReleaseInternal()
 {
-  if (m_verts)
-  {
-    free(m_verts);
-    m_verts = NULL;
-  }
   if (m_effect.Get())
     m_effect.Release();
   
+  if (m_vb.Get())
+    m_vb.Release();
+
   //derived classes: always call Base::ReleaseInternal() at the end
 }
 
@@ -138,8 +143,13 @@ bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute(LPDIRECT3DDEVICE9 pD3DDevice)
+bool CWinShader::Execute()
 {
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  pD3DDevice->SetFVF(m_FVF);
+  pD3DDevice->SetStreamSource(0, m_vb.Get(), 0, m_vertsize);
+
   UINT cPasses, iPass;
   if (!m_effect.Begin( &cPasses, 0 ))
   {
@@ -154,9 +164,9 @@ bool CWinShader::Execute(LPDIRECT3DDEVICE9 pD3DDevice)
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
-    HRESULT hr = pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, m_primitivesCount, m_verts, m_vertsize);
+    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, m_primitivesCount);
     if (FAILED(hr))
-      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitiveUP %08X", hr);
+      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitive %08X", hr);
 
     if (!m_effect.EndPass())
       CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
@@ -178,7 +188,7 @@ bool CYUV2RGBShader::Create(bool singlepass)
 {
   ReleaseInternal();
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
   m_boundTexturesCount = 3;
 
   DefinesMap defines;
@@ -196,36 +206,30 @@ bool CYUV2RGBShader::Create(bool singlepass)
 }
 
 void CYUV2RGBShader::Render(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect,
-                               float contrast,
-                               float brightness,
-                               unsigned int flags,
-                               YUVBuffer* YUVbuf)
+                            CRect sourceRect, CRect destRect,
+                            float contrast,
+                            float brightness,
+                            unsigned int flags,
+                            YUVBuffer* YUVbuf)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-  PrepareParameters(sourceWidth, sourceHeight,
-                               sourceRect,
-                               destRect,
-                               contrast,
-                               brightness,
-                               flags);
+  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect,
+                    contrast, brightness, flags);
   SetShaderParameters(m_matrix.Matrix(), YUVbuf, sourceWidth);
-  Execute(pD3DDevice);
+  Execute();
 }
 
 void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect,
-                               float contrast,
-                               float brightness,
-                               unsigned int flags)
+                                       CRect sourceRect,
+                                       CRect destRect,
+                                       float contrast,
+                                       float brightness,
+                                       unsigned int flags)
 {
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
 
-  CUSTOMVERTEX* v = (CUSTOMVERTEX*)CWinShader::GetVertexBuffer();
+  CUSTOMVERTEX* v;
+  CWinShader::LockVertexBuffer((void**)&v);
 
   v[0].x = destRect.x1;
   v[0].y = destRect.y1;
@@ -265,6 +269,8 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
     v[i].rhw = 1.0f;
   }
 
+  CWinShader::UnlockVertexBuffer();
+
   m_matrix.SetParameters(contrast * 0.02f,
                          brightness * 0.01f - 0.5f,
                          flags);
@@ -301,7 +307,7 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
       return false;
   }
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
   m_boundTexturesCount = 2;
 
   if(!LoadEffect(effectString, NULL))
@@ -317,16 +323,14 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
 }
 
 void CConvolutionShader::Render(CD3DTexture &sourceTexture,
-                               unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect)
+                                unsigned int sourceWidth, unsigned int sourceHeight,
+                                CRect sourceRect,
+                                CRect destRect)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
-  Execute(pD3DDevice);
+  Execute();
 }
 
 bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
@@ -359,10 +363,11 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 }
 
 void CConvolutionShader::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect)
+                                           CRect sourceRect,
+                                           CRect destRect)
 {
-  CUSTOMVERTEX* v = (CUSTOMVERTEX*)CWinShader::GetVertexBuffer();
+  CUSTOMVERTEX* v;
+  CWinShader::LockVertexBuffer((void**)&v);
 
   v[0].x = destRect.x1;
   v[0].y = destRect.y1;
@@ -393,6 +398,8 @@ void CConvolutionShader::PrepareParameters(unsigned int sourceWidth, unsigned in
     v[i].z = 0.0f;
     v[i].rhw = 1.0f;
   }
+
+  CWinShader::UnlockVertexBuffer();
 }
 
 void CConvolutionShader::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
