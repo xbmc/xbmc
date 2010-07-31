@@ -264,7 +264,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   }
   else
   {
-    if (item.m_bIsFolder && scraper->Content() != CONTENT_TVSHOWS)
+    if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
       CDirectory::GetDirectory(item.m_strPath, items,"",true,false,DIR_CACHE_ONCE,true,true);
