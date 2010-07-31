@@ -64,9 +64,9 @@
   <string id="100">Ver: Icones</string>
   <string id="101">Ver: Lista</string>
   <string id="102">Examinar</string>
-  <string id="103">Ord por: Nome</string>
-  <string id="104">Ord por: Data</string>
-  <string id="105">Ord por: Tamanho</string>
+  <string id="103">Ordenar por: Nome</string>
+  <string id="104">Ordenar por: Data</string>
+  <string id="105">Ordenar por: Tamanho</string>
   <string id="106">Não</string>
   <string id="107">Sim</string>
   <string id="108">Apresentação</string>
@@ -219,11 +219,11 @@
   <string id="263">Permitir controle do XBMC por HTTP</string>
   <string id="264">Gravar</string>
   <string id="265">Parar grav.</string>
-  <string id="266">Ord por: faixa</string>
-  <string id="267">Ord por: tempo</string>
-  <string id="268">Ord por: título</string>
-  <string id="269">Ord por: artista</string>
-  <string id="270">Ord por: álbum</string>
+  <string id="266">Ordenar por: faixa</string>
+  <string id="267">Ordenar por: tempo</string>
+  <string id="268">Ordenar por: título</string>
+  <string id="269">Ordenar por: artista</string>
+  <string id="270">Ordenar por: álbum</string>
   <string id="271">Top 100</string>
   <string id="272">Ajuste do canto superior esquerdo</string>
   <string id="273">Ajuste do canto inferior direito</string>
@@ -309,13 +309,13 @@
   <string id="358">Todos os álbuns</string>
   <string id="359">Álbuns adicionados recentemente </string>
   <string id="360">Proteção de tela</string>
-  <string id="361">Apresentação recurs.</string>
+  <string id="361">Apresentação recursiva</string>
   <string id="362">Nível de escurecimento da proteção de tela</string>
-  <string id="363">Ord por: arquivo</string>
+  <string id="363">Ordenar por: arquivo</string>
   <string id="364">- Receiver com suporte a Dolby Digital (AC3)</string>
-  <string id="365">Ord por: nome</string>
-  <string id="366">Ord por: ano</string>
-  <string id="367">Ord por: votação</string>
+  <string id="365">Ordenar por: nome</string>
+  <string id="366">Ordenar por: ano</string>
+  <string id="367">Ordenar por: votação</string>
   <string id="368">IMDb</string>
   <string id="369">Título</string>
   <string id="370">Trovoadas</string>
@@ -339,9 +339,9 @@
   <string id="388">Cedo</string>
   <string id="389">Pancada de chuva</string>
   <string id="390">Nevada forte</string>
-  <string id="391">Mín</string>
+  <string id="391">Mínima</string>
   <string id="392">Média</string>
-  <string id="393">Máx</string>
+  <string id="393">Máxima</string>
   <string id="394">Nevoeiro</string>
   <string id="395">Neblina</string>
   <string id="396">Selecione local</string>
@@ -378,11 +378,11 @@
   <string id="427">Disco</string>
   <string id="428">Insira o CD/DVD correto</string>
   <string id="429">Por favor insira o seguinte CD/DVD</string>
-  <string id="430">Ord por: DVD#</string>
+  <string id="430">Ordenar por: DVD#</string>
   <string id="431">Sem cache</string>
   <string id="432">Excluir filme da coleção</string>
   <string id="433">Deseja excluir '%s'?</string>
-  <string id="434"></string>
+
   <string id="437">Disco removível</string>
   <string id="438">Abrindo arquivo</string>
   <string id="439">Cache</string>
@@ -393,7 +393,7 @@
   <string id="444">Vídeo</string>
   <string id="445">Áudio</string>
   <string id="446">DVD</string>
-  <string id="447">AutoExecutar</string>
+  <string id="447">Auto executar</string>
   <string id="448">LCD</string>
   <string id="449">Ativado</string>
   <string id="450">Colunas</string>
@@ -431,7 +431,7 @@
   <string id="486">Repetir</string>
   <string id="487">Repetir uma</string>
   <string id="488">Repetir pastas</string>
-  <string id="489">AutoExecutar próxima música</string>
+  <string id="489">Auto executar próxima música</string>
   <string id="491">- Usar ícones grandes</string>
   <string id="492">Aumentar legendas</string>
   <string id="493">Opções avançadas (apenas para experts!)</string>
@@ -439,7 +439,7 @@
   <string id="495">Ampliar área do vídeo para a mesma resolução da tela</string>
   <string id="496">Calibragem</string>
   <string id="497">Exibir extensão dos arquivos</string>
-  <string id="498">Ord por: tipo</string>
+  <string id="498">Ordenar por: tipo</string>
   <string id="499">Impossível conectar com serviço online de busca</string>
   <string id="500">A recuperação de informação do álbum falhou</string>
   <string id="501">Procurando nomes do álbum...</string>
@@ -447,7 +447,7 @@
   <string id="503">Ocupado</string>
   <string id="504">Vazio</string>
   <string id="505">Carregando informações de mídia a partir de arquivos...</string>
-  <string id="507">Ord por: uso</string>
+  <string id="507">Ordenar por: uso</string>
   <string id="510">Ativar visualizações</string>
   <string id="511">Ativar troca do modo de vídeo</string>
   <string id="512">Janela inicial</string>
@@ -488,7 +488,7 @@
   <string id="547">Sem biografia para este artista</string>
   <string id="548">Converter áudio multicanal para estéreo</string>
 
-  <string id="550">Ord por: %s</string>
+  <string id="550">Ordenar por: %s</string>
   <string id="551">Nome</string>
   <string id="552">Data</string>
   <string id="553">Tamanho</string>
@@ -625,8 +625,8 @@
   <string id="733">- Senha</string>
   <string id="734">Sem senha</string>
   <string id="735">- Codificação</string>
-  <string id="736">- Estilo:</string>
-  <string id="737">- Cor:</string>
+  <string id="736">- Estilo</string>
+  <string id="737">- Cor</string>
   <string id="738">Normal</string>
   <string id="739">Negrito</string>
   <string id="740">Itálico</string>
@@ -903,18 +903,18 @@
   <string id="12009">Reconstruindo índice...</string>
   <string id="12010">Voltar para janela de músicas</string>
   <string id="12011">Voltar para janela de vídeos</string>
-  <string id="12012">Atualizar lista de trailer</string>
-  <string id="12013">Trailer</string>
-  <string id="12014">Trailer não encontrado</string>
-  <string id="12015">Configurações de trailer</string>
-  <string id="12016">Todos os trailers registrados estão perdidos. Atualize sua lista</string>
+  <string id="12012">Atualizar lista de trainer</string>
+  <string id="12013">Trainer</string>
+  <string id="12014">Trainers não encontrado</string>
+  <string id="12015">Configurações de trainer</string>
+  <string id="12016">Todos os trainers registrados estão perdidos. Atualize sua lista</string>
   <string id="12017">Iniciar automaticamente na última posição</string>
   <string id="12018">Não</string>
   <string id="12019">Sim</string>
   <string id="12020">Perguntar</string>
-  <string id="12021">Reiniciar Reprodução</string>
+  <string id="12021">Iniciar/Reiniciar</string>
   <string id="12022">Retomar da posição %s</string>
-  <string id="12023">Validando trailers existentes...</string>
+  <string id="12023">Validando trainers existentes...</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -992,7 +992,7 @@
   <string id="13005">Desligar</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Usar caminho personalizado para a dashboard</string>
-  <string id="13008">Modo de desligamento padrão</string>
+  <string id="13008">Modo de desligamento</string>
   <string id="13009">Terminar</string>
   <string id="13010">Hibernar</string>
   <string id="13011">Suspender</string>
@@ -1006,7 +1006,7 @@
   <string id="13022">Remoção insegura de dispositivo</string>
   <string id="13023">Dispositivo removido com sucesso</string>
   <string id="13024">Joystick conectado</string>
-  <string id="13025">Joystick desconecatdo</string>
+  <string id="13025">Joystick desconectado</string>
 
   <string id="13050">Bateria fraca</string>
 
@@ -1140,7 +1140,7 @@
   <string id="13320">Estéreo</string>
   <string id="13321">Apenas esquerda</string>
   <string id="13322">Apenas direita</string>
-  <string id="13323">Habilitar suporte karaoke</string>
+  <string id="13323">Habilitar suporte ao karaokê</string>
   <string id="13324">Transparência do fundo</string>
   <string id="13325">Transparência do primeiro plano</string>
   <string id="13326">Atraso A/V</string>
@@ -1238,10 +1238,10 @@
 
   <string id="13500">Método de syncronização de A/V</string>
   <string id="13501">Relógio de áudio</string>
-  <string id="13502">Relógio de vídeo (drop/dupe áudio)</string>
-  <string id="13503">Relógio de vídeo (resample áudio)</string>
-  <string id="13504">Máximo (%) de resample</string>
-  <string id="13505">Qualidade de resample</string>
+  <string id="13502">Relógio de vídeo (cortar/ignorar áudio)</string>
+  <string id="13503">Relógio de vídeo (reamostragem de áudio)</string>
+  <string id="13504">Máximo (%) de reamostragem</string>
+  <string id="13505">Qualidade de reamostragem</string>
   <string id="13506">Baixo(rápido)</string>
   <string id="13507">Médio</string>
   <string id="13508">Alto</string>
@@ -1250,7 +1250,7 @@
 
   <string id="13600">Controle Remoto Apple</string>
 
-  <string id="13602">Permite iniciar o XBMC através do CRemoto</string>
+  <string id="13602">Permite iniciar o XBMC através do Controle Remoto</string>
   <string id="13603">Tempo de espera para sequenciamento</string>
 
   <string id="13610">Desabilitado</string>
@@ -1258,8 +1258,8 @@
   <string id="13612">Controle Remoto Universal</string>
   <string id="13613">Controle Remoto universal (Harmony)</string>
 
-  <string id="13620">Erro CRemoto Apple</string>
-  <string id="13621">Suporte ao CRemoto Apple pode ser habilitado.</string>
+  <string id="13620">Erro Controle Remoto Apple</string>
+  <string id="13621">Suporte ao Controle Remoto Apple pode ser habilitado.</string>
 
   <string id="14000">Agrupar</string>
   <string id="14001">Desagrupar</string>
@@ -1345,7 +1345,7 @@
   <string id="14085">Tocar CDs de áudio automaticamente</string>
   <string id="14086">Tocar</string>
   <string id="14087">DVDs</string>
-  <string id="14088">Tocar DVDs autmaticamente</string>
+  <string id="14088">Tocar DVDs automaticamente</string>
   <string id="14089">Fonte para uso em legendas de texto</string>
   <string id="14090">Internacional</string>
   <string id="14091">Conjunto de caracteres</string>
@@ -1354,7 +1354,7 @@
   <string id="14094">Disp. de Entrada</string>
   <string id="14095">Econ. de energia</string>
 
-  <string id="15015">Remover</string>
+  <string id="15015">Remove</string>
   <string id="15016">Jogos</string>
 
   <string id="15019">Adicionar</string>
@@ -1365,7 +1365,7 @@
   <string id="15101">Banco de dados</string>
   <string id="15102">* Todos álbuns</string>
   <string id="15103">* Todos artistas</string>
-  <string id="15104">* Todas músicas</string>
+  <string id="15104">* Todas as músicas</string>
   <string id="15105">* Todos gêneros</string>
 
   <string id="15107">Carregando...</string>
@@ -1532,9 +1532,9 @@
   <string id="16319">DXVA</string>
 
   <string id="16400">Pós-processamento de video</string>
-  <string id="16401">Desativado</string>
-  <string id="16402">Ativar para conteúdo SD</string>
-  <string id="16403">Sempre ativado</string>
+  <string id="16401">Desabilitado</string>
+  <string id="16402">Ativar para Conteúdo SD</string>
+  <string id="16403">Sempre Ligado</string>
 
   <string id="17500">Exibir intervalo para descanso</string>
 
@@ -1543,8 +1543,8 @@
   <string id="20000">Pasta de músicas salvas</string>
   <string id="20001">Usar DVD-player externo</string>
   <string id="20002">DVD-player externo</string>
-  <string id="20003">Pasta de trailers</string>
-  <string id="20004">Pasta de screenshots</string>
+  <string id="20003">Pasta de trainers</string>
+  <string id="20004">Pasta para captura de tela</string>
 
   <string id="20006">Pasta lista de reprodução</string>
   <string id="20007">Gravações</string>
@@ -1721,7 +1721,7 @@
   <string id="20186">Por favor aguarde</string>
   <string id="20187">Guardando valores da EEPROM</string>
   <string id="20188">Guardando valores da BIOS</string>
-  <string id="20189">Habilitar auto-rolagem para enredo &amp; crítica</string>
+  <string id="20189">Habilitar auto rolagem para enredo &amp; crítica</string>
   <string id="20190">Personalizado</string>
   <string id="20191">Habilitar registro de depuração</string>
   <string id="20192">Baixar informação adicional durante atualizações</string>
@@ -1760,7 +1760,7 @@
   <string id="20313">Ligar o LED durante a pausa</string>
   <string id="20314">Vídeos - Coleção</string>
   <string id="20315">Saves de jogos</string>
-  <string id="20316">Ord por: ID</string>
+  <string id="20316">Ordenar por: ID</string>
   <string id="20317">Baixar saves de jogos</string>
   <string id="20318">Save de jogo instalado no disco</string>
   <string id="20319">Falha ao baixar save de jogo</string>
@@ -1846,7 +1846,7 @@
   <string id="20399">Ir para vídeos musicais do álbum</string>
   <string id="20400">Ir para vídeos musicais do artista</string>
   <string id="20401">Reproduzir vídeo musical</string>
-  <string id="20402">Baixar ícones de autores quando adicionando na coleção</string>
+  <string id="20402">Baixar ícones de atores ao criar a coleção</string>
   <string id="20403">Selecionar ícone de ator</string>
 
   <string id="20405">Remover marcador do episódio</string>
@@ -1998,7 +1998,7 @@
   <string id="21446">Codec de áudio</string>
   <string id="21447">Idioma do áudio</string>
   <string id="21448">Idioma da legenda</string>
-  <string id="21449">CRemoto envia aperto de teclas</string>
+  <string id="21449">Controle Remoto envia aperto de teclas</string>
   <string id="21450">- Editar</string>
   <string id="21451">Necessário conexão com a Internet.</string>
   <string id="21452">Obter Mais</string>
@@ -2084,7 +2084,7 @@
 
 
   <string id="22000">Atualizar coleção ao iniciar</string>
-  <string id="22001">Sempre atualizar coleção em segundo-plano</string>
+  <string id="22001">Sempre atualizar coleção em segundo plano</string>
   <string id="22002">- Sufixo de DNS</string>
 
   <string id="22004">Postergado em: %2.3fs</string>
@@ -2104,7 +2104,7 @@
   <string id="22018">Canais ao vivo</string>
   <string id="22019">Gravações por título</string>
   <string id="22020">Guia</string>
-  <string id="22021">Erro (%) permitido no aspect ratio</string>
+  <string id="22021">Erro (%) permitido na proporção de aspecto</string>
   <string id="22022">Incluir arquivos de vídeo nas listagens</string>
   <string id="22023">Fabricante DirectX:</string>
   <string id="22024">Versão Direct3D:</string>
@@ -2114,22 +2114,22 @@
   <string id="22031">- Tamanho</string>
   <string id="22032">- Cores</string>
   <string id="22033">- Conjunto de Caracteres</string>
-  <string id="22034">Exportar itens de karaoke em HTML</string>
-  <string id="22035">Exportar itens de karaoke em CSV</string>
-  <string id="22036">Importar itens de karaoke...</string>
-  <string id="22037">Auto-exibir seletor de música</string>
-  <string id="22038">Exportar itens de karaoke...</string>
+  <string id="22034">Exportar itens de karaokê em HTML</string>
+  <string id="22035">Exportar itens de karaokê em CSV</string>
+  <string id="22036">Importar itens de karaokê...</string>
+  <string id="22037">Auto exibir seletor de música</string>
+  <string id="22038">Exportar itens de karaokê...</string>
   <string id="22039">Informe número da música</string>
   <string id="22040">branco/verde</string>
   <string id="22041">branco/vermelho</string>
   <string id="22042">branco/azul</string>
   <string id="22043">preto/branco</string>
 
-  <string id="22079">Selecione a ação padrão</string>
-  <string id="22080">Selecione</string>
-  <string id="22081">Exibir Informação</string>
+  <string id="22079">Selecionar ação padrão</string>
+  <string id="22080">Escolher</string>
+  <string id="22081">Mostrar Informação</string>
   <string id="22082">Mais...</string>
-  <string id="22083">Tocar tudo</string>
+  <string id="22083">Tocar Tudo</string>
 
   <string id="23049">Teletext indisponível</string>
   <string id="23050">Ativar Teletext</string>
@@ -2144,7 +2144,7 @@
   <string id="23050">Teletext ativado</string>
   <string id="23051">Parte %i</string>
 
-  <string id="23100">Player Externo Ativo</string>
+  <string id="23100">Player externo ativo</string>
   <string id="23101">Clique OK para sair do player</string>
 
   <string id="23104">Clique OK quando execução tiver terminado</string>
@@ -2155,14 +2155,14 @@
   <string id="24002">Opções Add-on</string>
   <string id="24003">Informação do Add-on</string>
 
-  <string id="24005">Orige Media</string>
+  <string id="24005">Locais de Midia</string>
   <string id="24007">Informação do Filme</string>
   <string id="24008">Proteção de Tela</string>
   <string id="24009">Script</string>
   <string id="24010">Visualização</string>
   <string id="24011">Repositório de Add-on</string>
   <string id="24012">Legendas</string>
-  <string id="24013">Lyrics</string>
+  <string id="24013">Letras</string>
   <string id="24014">Informação de TV</string>
   <string id="24015">Informação de Video Musical (clipe)</string>
   <string id="24016">Informação de Album</string>
@@ -2214,7 +2214,7 @@
   <string id="24075">Desativar</string>
   <string id="24080">Reconectar?</string>
   <string id="24089">Add-on reiniciado</string>
-  <string id="24090">Bloq. Gerenciador de Add-on</string>
+  <string id="24090">Bloquear Gerenciador de Add-on</string>
 
   <string id="24091"></string>
   <string id="24092"></string>
@@ -2222,12 +2222,12 @@
   <string id="24094"></string>
   <string id="24095"></string>
 
-  <string id="24096">O Add-on foi marcado como quebrado no repositório.</string>
-  <string id="24097">Gostaria de desativá-lo em seu sistema?</string>
-  <string id="24098">Quebrado</string>
+  <string id="24096">O Add-on foi marcado como indisponível no repositório.</string>
+  <string id="24097">Você deseja desabilitar em seu sistema?</string>
+  <string id="24098">Indisponível</string>
 
 
-  <string id="29800">Modo Coleção</string>
+  <string id="29800">Modo de coleção</string>
   <string id="29801">Teclado QWERTY</string>
   <string id="29802">Utilizando áudio em passthrough</string>
 
@@ -2310,5 +2310,5 @@
   <string id="33082">Caminho para o script</string>
   <string id="33083">Habilitar botão de script personalizado</string>
 
-  <string id="34100">Config. Auto-falante</string>
+  <string id="34100">Configurar alto-falantes</string>
 </strings>
