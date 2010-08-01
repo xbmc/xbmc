@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 #      Copyright (C) 2010 Team XBMC
 #      http://www.xbmc.org
@@ -36,6 +36,6 @@ for k in "${ADDONSLIST[@]}" ; do
 		echo "Needed package ($k) not found, exiting..."
 		exit 1
 	fi
-	unzip $latestPackage -d $WORKPATH/buildLive/Files/chroot_local-includes/usr/share/xbmc/addons
+	unzip -q $latestPackage -d $WORKPATH/buildLive/Files/chroot_local-includes/usr/share/xbmc/addons
 	rm $latestPackage
 done

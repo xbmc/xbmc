@@ -25,7 +25,7 @@ echo
 cd /root
 pushd .
 
-wget --no-proxy http://www.orbit-lab.org/kernel/compat-wireless-2.6-stable/v2.6.35/compat-wireless-2.6.35-rc2.tar.bz2
+wget --no-proxy -q http://www.orbit-lab.org/kernel/compat-wireless-2.6-stable/v2.6.35/compat-wireless-2.6.35-rc2.tar.bz2
 
 # 
 # uname -r gives the host version, we need the chrooted one

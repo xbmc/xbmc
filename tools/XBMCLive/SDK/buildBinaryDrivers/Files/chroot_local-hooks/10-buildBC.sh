@@ -30,7 +30,7 @@ if [ ! -f crystalhd-HEAD.tar.gz ]; then
 	exit
 fi
 
-tar xvf crystalhd-HEAD.tar.gz
+tar xf crystalhd-HEAD.tar.gz
 
 # Make libraries
 cd crystalhd/linux_lib/libcrystalhd
@@ -75,7 +75,7 @@ mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
 depmod $kernelVersion
-tar cvf /tmp/modules.tar modules.* kernel/drivers/video/broadcom/*
+tar cf /tmp/modules.tar modules.* kernel/drivers/video/broadcom/*
 popd
 
 pushd .
@@ -86,14 +86,14 @@ cp -f crystalhd/driver/linux/20-crystalhd.rules ./Files/lib/udev/rules.d/
 
 mkdir -p ./Files/lib/modules/$kernelVersion
 cd ./Files/lib/modules/$kernelVersion
-tar xvf /tmp/modules.tar
+tar xf /tmp/modules.tar
 rm /tmp/modules.tar
 popd
 
 pushd .
 # Prepare tar for real build
 cd Files
-tar cvf /tmp/crystalhd.tar *
+tar cf /tmp/crystalhd.tar *
 
 popd
 rm -rf ./Files
