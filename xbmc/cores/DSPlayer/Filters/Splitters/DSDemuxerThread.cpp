@@ -42,6 +42,7 @@ CDSDemuxerThread::CDSDemuxerThread(CDSDemuxerFilter* pFilter ,LPWSTR pFileName)
   : m_pFilter(pFilter)
   , m_pStreamList(NULL)
   , m_filenameW(pFileName)
+  , m_messenger("ds_demuxer")
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
@@ -113,7 +114,8 @@ HRESULT CDSDemuxerThread::CreateOutputPin()
     CopyMemory(szPinName, hint.PinNameW.c_str(), cch * sizeof(WCHAR));
 		// create a new outpin
 
-		m_pStreamList[i].pin = new CDSOutputPin((CSource*)m_pFilter, &hr, szPinName, hint);
+		/*m_pStreamList[i].pin = new CDSOutputPin((CSource*)m_pFilter, &hr, szPinName, hint);*/
+    m_pStreamList[i].pin = new CDSOutputPin((CSource*)m_pFilter, szPinName, hint, &hr);
 
 		m_pStreamList[i].pin_index = (UINT)i;//pStream->iPhysicalId;
 		
@@ -131,17 +133,11 @@ HRESULT CDSDemuxerThread::CreateOutputPin()
 
 void CDSDemuxerThread::SeekTo(REFERENCE_TIME rt)
 {
-int rt_sec;
-  int64_t rt_dvd = rt / 10;
-  rt_sec = DVD_TIME_TO_MSEC(rt_dvd);
-  double start = DVD_NOPTS_VALUE;
-  if (m_pDemuxer)
-  {
-    if (!m_pDemuxer->SeekTime(rt_sec, false, &start))
-      CLog::Log(LOGERROR,"%s failed to seek",__FUNCTION__);
-  }
-  else
-    CLog::Log(LOGERROR,"%s demuxer is closed",__FUNCTION__);
+  
+
+  __int64 seek_msec;
+  seek_msec = DS_TIME_TO_MSEC(rt);
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek_msec, true, true, true));
 }
 
 void CDSDemuxerThread::Stop()
@@ -193,16 +189,59 @@ BOOL CDSDemuxerThread::Create(void)
 
   if (!CAMThread::Create())
     return FALSE;
-
   return SetThreadPriority(m_hThread, THREAD_PRIORITY_ABOVE_NORMAL);
   
+}
+
+void CDSDemuxerThread::HandleMessages()
+{
+  CDVDMsg* pMsg;
+  
+//TODO ADD
+//chapter seeking
+//stream switching
+//demuxer reset
+//maybe rate 
+  while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
+  {
+
+    try
+    {
+      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0)
+      {
+        CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
+
+        double start = DVD_NOPTS_VALUE;
+        int time = msg.GetTime();
+        CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
+        if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
+        {
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
+          if(m_pSubtitleDemuxer)
+          {
+            if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
+              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
+          }
+          //FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
+        }
+        else
+          CLog::Log(LOGWARNING, "error while seeking");
+      }
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s - Exception thrown when handling message", __FUNCTION__);
+    }
+    pMsg->Release();
+  }
+
 }
 
 DWORD CDSDemuxerThread::ThreadProc()
 {
   CLog::DebugLog("%s",__FUNCTION__);
 	assert(m_pFilter != NULL);
-
+  m_messenger.Init();
 	m_pSeekProtect.Set();
   while (1) 
   {
@@ -229,28 +268,29 @@ DWORD CDSDemuxerThread::ThreadProc()
 			break;
     while (1)
     {
-      /*take a look at the message queue is full*/
+      
+      HandleMessages();
+      
+
+      //take a look at the message queue is full
       for (int i=0; i<m_streamsCount; i++)
       {
-        if (m_pStreamList[i].pin->m_messageQueue.IsFull())
+        if (!m_pStreamList[i].pin->AcceptsData() && m_pStreamList[i].pin->IsConnected())
         {
           Sleep(10);
           continue;
         }
       }
-
-/*Is it really needed for ds demuxer*/
-#if 0
       // always yield to players if they have data
       for (int i=0; i<m_streamsCount; i++)
       {
-        if (m_pStreamList[i].pin->m_messageQueue.GetDataSize() > 0)
+        if (m_pStreamList[i].pin->m_messageQueue.GetDataSize() > 0 || m_pStreamList[i].pin->IsConnected())
         {
           Sleep(0);
-          break;
+          break;//exit for
         }
       }
-#endif
+
       DemuxPacket* pPacket = NULL;
       CDemuxStream *pStream = NULL;
 
@@ -266,20 +306,11 @@ DWORD CDSDemuxerThread::ThreadProc()
 	    {
         CLog::DebugLog("%s no packet from demuxer assuming end of stream",__FUNCTION__);
 	      /*end of stream detected*/
-        // always yield to players if they have data
-      
-        for (int i=0; i<m_streamsCount; i++)
-        {
-          if (m_pStreamList[i].pin->m_messageQueue.GetDataSize() > 0)
-          {
-            Sleep(100);
-            continue;
-          }
-        }
+        
 
           if (!m_pInputStream->IsEOF())
             CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
-          break;
+          continue;
         
 				
 			} 

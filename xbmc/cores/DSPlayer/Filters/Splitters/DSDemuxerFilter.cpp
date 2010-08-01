@@ -58,6 +58,9 @@ CDSDemuxerFilter::CDSDemuxerFilter(LPUNKNOWN pUnk, HRESULT *phr)
 
 CDSDemuxerFilter::~CDSDemuxerFilter()
 {
+  CLog::DebugLog("%s deleting demuxer thread",__FUNCTION__);
+  delete m_pDemuxerThread;
+  delete [] m_filenameW;
 }
 
 STDMETHODIMP CDSDemuxerFilter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -150,6 +153,7 @@ STDMETHODIMP CDSDemuxerFilter::Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* 
   }
   m_pDemuxerThread->Create();
 	m_rtDuration = m_rtStop = m_pDemuxerThread->GetDuration();
+  return S_OK;
 }
 
 // IMediaSeeking
@@ -212,7 +216,8 @@ STDMETHODIMP CDSDemuxerFilter::SetPositions(LONGLONG* pCurrent, DWORD dwCurrentF
 
   // scope for autolock
   {
-    CAutoLock lock(&m_SeekLock);
+    
+    CAutoLock lock(&m_cStateLock);
 
     // set start position
     if(StartPosBits == AM_SEEKING_AbsolutePositioning)

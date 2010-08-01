@@ -32,10 +32,11 @@ class CXBMCSplitterFilter;
 //********************************************************************
 //
 //********************************************************************
-class CDSOutputPin : public CSourceStream
+class CDSOutputPin 
+  : public CSourceStream              
 {
 public:
-  CDSOutputPin(CSource *pFilter, HRESULT* phr, LPCWSTR pName, CDSStreamInfo& hints);
+  CDSOutputPin(CSource *pFilter, LPCWSTR pName, CDSStreamInfo& hints, HRESULT* phr);
   virtual ~CDSOutputPin();
 
   void SetNewStartTime(REFERENCE_TIME aTime);
@@ -52,10 +53,12 @@ public:
 
   // classes
   CDVDMessageQueue m_messageQueue;
-  //CDVDMessageQueue& m_messageParent;
+  
 
-  //void PushBlock(KaxBlockGroup & aBlock);
-
+  //CSourceSeeking
+  HRESULT ChangeStart();
+	HRESULT ChangeStop();
+	HRESULT ChangeRate();
   
 	HRESULT DeliverBeginFlush();
 	HRESULT DeliverEndFlush();
@@ -83,7 +86,7 @@ protected:
 	//void SendOneHeaderPerSample(binary* CodecPrivateData, int DataLen);
 	
 	void UpdateFromSeek();
-
+  CCritSec m_SeekLock;
 private:
   CDSStreamInfo m_hints;
   std::list<DVDMessageListItem> m_packets;// Packet queue

@@ -84,11 +84,12 @@ protected:
   CStdString m_filenameA; // holds the actual filename
   //CDVDMessageQueue m_messenger;     // thread messenger
 
-  CDVDInputStream* m_pInputStream;  // input stream for current playing file
-  CDVDDemux* m_pDemuxer;            // demuxer for current playing file
-  CDVDDemux* m_pSubtitleDemuxer;
-
-
+  CDVDInputStream*    m_pInputStream;  // input stream for current playing file
+  CDVDDemux*          m_pDemuxer;            // demuxer for current playing file
+  CDVDDemux*          m_pSubtitleDemuxer;
+  CDVDMessageQueue    m_messenger;     // thread messenger
+  void                HandleMessages();
+  //Output pins
   int        m_streamsCount;
   struct StreamList {
     UINT       pin_index;

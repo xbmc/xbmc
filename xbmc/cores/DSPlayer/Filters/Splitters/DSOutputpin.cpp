@@ -35,11 +35,12 @@
 // CDSOutputPin
 //
 
-CDSOutputPin::CDSOutputPin(CSource* pFilter, HRESULT* phr, LPCWSTR pName, CDSStreamInfo& hints)
+CDSOutputPin::CDSOutputPin(CSource *pFilter, LPCWSTR pName, CDSStreamInfo& hints, HRESULT* phr)
  : CSourceStream(NAME("CDSOutputPin"), phr, pFilter, pName)
  , m_hints(hints)
  , m_messageQueue(DShowUtil::WToA(pName).c_str())
  , m_rtStart(0)
+ , mPrevStartTime(0)
  , m_bDiscontinuity(false)
  , m_bIsProcessing(false) 
 {
@@ -70,8 +71,11 @@ CDSOutputPin::~CDSOutputPin()
 
 HRESULT CDSOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pAllocProps)
 {
-  ASSERT(pAlloc);
-  ASSERT(pAllocProps);
+  CheckPointer(pAlloc,E_POINTER);
+  CheckPointer(pAllocProps, E_POINTER);
+
+  CAutoLock cAutoLock(m_pFilter->pStateLock());
+
   ALLOCATOR_PROPERTIES	Actual;
   HRESULT hr = NOERROR;
 
@@ -124,7 +128,7 @@ HRESULT CDSOutputPin::CheckMediaType(const CMediaType* pmt)
 
 HRESULT CDSOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 {
-  CAutoLock cAutoLock(m_pLock);
+  CAutoLock cAutoLock(m_pFilter->pStateLock());
 
   if(iPosition < 0) 
     return E_INVALIDARG;
@@ -139,7 +143,12 @@ HRESULT CDSOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 
 HRESULT CDSOutputPin::OnThreadStartPlay(void)
 {
-  m_bDiscontinuity = true;	
+  m_bDiscontinuity = true;
+  if (m_hints.type == STREAM_AUDIO)
+  {
+    SetThreadPriority(m_hThread, THREAD_PRIORITY_NORMAL + 1);
+  }
+    
 	return NOERROR;
 }
 
@@ -154,7 +163,7 @@ HRESULT CDSOutputPin::DeliverBeginFlush()
   m_bIsProcessing = false;
   Flush();
   HRESULT result = CBaseOutputPin::DeliverBeginFlush();
-  CLog::DebugLog("%s",__FUNCTION__);
+  CLog::Log(LOGINFO,"%s",__FUNCTION__);
   return result;
 }
 
@@ -163,31 +172,31 @@ HRESULT CDSOutputPin::DeliverEndFlush()
   m_messageQueue.End();
   m_messageQueue.Init();
   HRESULT result = CBaseOutputPin::DeliverEndFlush();
-  CLog::DebugLog("%s",__FUNCTION__);
+  CLog::Log(LOGINFO,"%s",__FUNCTION__);
 	return result;
 }
 
 void CDSOutputPin::EndStream()
 {
-	CLog::DebugLog("%s",__FUNCTION__);
+	CLog::Log(LOGINFO,"%s",__FUNCTION__);
 	m_messageQueue.End();
 }
 
 void CDSOutputPin::Reset()
 {
-	CLog::DebugLog("%s",__FUNCTION__);
+  CLog::Log(LOGINFO,"%s",__FUNCTION__);
 	m_messageQueue.Init();
 }
 
 void CDSOutputPin::DisableWriteBlock()
 {
-	CLog::DebugLog("%s",__FUNCTION__);
+	CLog::Log(LOGINFO,"%s",__FUNCTION__);
 	//m_messageQueue.
 }
 
 void CDSOutputPin::EnableWriteBlock()
 {
-	CLog::DebugLog("%s",__FUNCTION__);
+	CLog::Log(LOGINFO,"%s",__FUNCTION__);
 	//m_messageQueue.
 }
 
@@ -207,7 +216,7 @@ HRESULT CDSOutputPin::DoBufferProcessingLoop(void)
 	// We must stop to fill the queue
 	// the pin thread is still active, it's just waiting for a new command
   m_bIsProcessing = false;
-  CLog::DebugLog("%s",__FUNCTION__);
+  CLog::Log(LOGINFO,"%s",__FUNCTION__);
   if (hr == S_OK)
   {
     Flush();
@@ -218,19 +227,18 @@ HRESULT CDSOutputPin::DoBufferProcessingLoop(void)
 /* this function is called from CSourceStream and its the main loop for develiring samples*/
 HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
 {
-  //CLog::DebugLog("%s",__FUNCTION__);
+  //CLog::Log(LOGINFO,"%s",__FUNCTION__);
   CheckPointer(pSample,E_POINTER);
 	BYTE *pData;
 	long cbData;
 	REFERENCE_TIME	tBlockDuration, tSmpStart, tSmpEnd;	
 	LONGLONG aDuration;
   // Access the sample's data buffer
-  pSample->GetPointer(&pData);
-  cbData = pSample->GetSize();
+  
 
   CDVDMsg* pMsg;
   int iPriority = 0;
-  MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 50, iPriority);
+  MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 417, iPriority);
   do
   {
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
@@ -240,7 +248,7 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      CLog::Log(LOGERROR, "Got MSGQ_TIMEOUT");
+      CLog::Log(LOGERROR, "%s Got MSGQ_TIMEOUT",__FUNCTION__);
       break;
         // if we only wanted priority messages, this isn't a stall
       if( 0 )
@@ -273,11 +281,16 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
       
       tSmpStart -= m_rtStart;
 	    tSmpEnd -= m_rtStart;
+      cbData = pSample->GetSize();
+      if (cbData != pPacket->iSize)
+        pSample->SetActualDataLength(pPacket->iSize);
+      pSample->GetPointer(&pData);
+      
       pSample->SetTime(&tSmpStart, &tSmpEnd);
 	    pSample->SetMediaTime(NULL,NULL);
       
       memcpy(pData, pPacket->pData, pPacket->iSize);
-      pSample->SetActualDataLength(pPacket->iSize);
+      
       pSample->SetSyncPoint(syncpoint);
       mPrevStartTime = tSmpEnd;
       if(m_bDiscontinuity)
@@ -288,10 +301,11 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
       BOOL ispreroll = (tSmpStart < 0) ? 1 : 0;
       pSample->SetPreroll(ispreroll);
     }
+    pMsg->Release();
     break;
   }
   while (1);
-  pMsg->Release();
+  
 
   
   return S_OK;
@@ -299,9 +313,10 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
 
 STDMETHODIMP CDSOutputPin::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
+  CAutoLock cAutoLock(m_pFilter->pStateLock());
   CheckPointer(ppv, E_POINTER);
   if(riid == IID_IMediaSeeking)
     return m_pFilter->NonDelegatingQueryInterface(riid,ppv);
 
-  __super::NonDelegatingQueryInterface(riid, ppv);
+  return CSourceStream::NonDelegatingQueryInterface(riid, ppv);
 }  
