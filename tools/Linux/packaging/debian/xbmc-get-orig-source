@@ -126,6 +126,7 @@ prepare_orig_tarball() {
         -o -name config.status -o -name config.cache -o -name config.log \
         \) -exec rm -f "{}" \; \) -o \
         \( -type d -a -name autom4te.cache -prune -exec rm -rf "{}" \; \) \)
+    rm xbmc-$XBMC_VERSION/.gitignore
 
     # Remove empty directories
     echo "Removing empty directories"
