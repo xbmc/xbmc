@@ -185,7 +185,7 @@ extern "C" BOOL WINAPI dllFindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATA lpFi
   struct _WIN32_FIND_DATAW FindFileDataW;
   to_WIN32_FIND_DATAW(lpFindFileData, &FindFileDataW);
   BOOL res = FindNextFileW(hFindFile, &FindFileDataW);
-  if (!res)
+  if (res)
     to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
   return res;
 #else
