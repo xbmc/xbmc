@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 18/07/2010-->
-<!--Based on English r31919-->
+<!--Date of translation: 31/07/2010-->
+<!--Based on English r32080-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -482,8 +482,8 @@
   <string id="542">DVD ikonok</string>
   <string id="543">DVD</string>
   <string id="544">Médiainfó</string>
-  <string id="545">Hangkimenet</string>
-  <string id="546">Passthrough kimenet</string>
+  <string id="545">Hanglejátszás eszköze</string>
+  <string id="546">Közvetlen-hangtovábbítás (passthrough) eszköze</string>
   <string id="547">Nincs életrajz ehhez az előadóhoz</string>
   <string id="548">A dekódolt többcsatornás hangok lekeverése sztereóra</string>
 
@@ -792,8 +792,8 @@
 
   <string id="1260">Szolgáltatások hirdetése más rendszerek felé a Zeroconf segítségével</string>
 
-  <string id="1300">Egyedi hangeszköz megadása</string>
-  <string id="1301">Egyedi passthrough megadása</string>
+  <string id="1300">Egyedi hanglejátszó eszköz megadása</string>
+  <string id="1301">Egyedi hangtovábbító eszköz megadása</string>
 
   <string id="1396">Hófúvásos</string>
   <string id="1397">és</string>
@@ -1532,6 +1532,7 @@
   <string id="16316">Auto</string>
   <string id="16317">Temporal (fél)</string>
   <string id="16318">Temporal/Spatial (fél)</string>
+  <string id="16319">DXVA</string>
 
   <string id="16400">Videó minőségjavítás (post processing)</string>
   <string id="16401">Tiltva</string>
@@ -2087,7 +2088,7 @@
   <!-- 21900-től 21999-ig diavetítés infora fenntartva -->
 
   <string id="22000">Médiatár frissítése induláskor</string>
-  <string id="22001">Médiatár folyamatos frissítése a háttérben</string>
+  <string id="22001">Médiatár frissítési állapotának elrejtése</string>
   <string id="22002">- DNS utótag</string>
 
   <string id="22004">Késleltet: %2.3fmp</string>
@@ -2222,12 +2223,12 @@
 
   <string id="24096">A kiegészítőt működésképtelennek jelölték a tárhelyen.</string>
   <string id="24097">Akarod letiltani a számítógépeden?</string>
-  <string id="24098">Működésképtelen</string> 
+  <string id="24098">Működésképtelen</string>
 
   <!-- 29800-tól 29998 a default PM3 arculat-hoz foglalva -->
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
-  <string id="29802">Passthrough hang esetén tiltva</string>
+  <string id="29802">Hangtovábbítás-módban tiltva</string>
 
   <string id="29999"></string>
 
