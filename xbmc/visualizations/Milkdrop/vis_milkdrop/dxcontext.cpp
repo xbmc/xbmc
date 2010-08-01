@@ -70,7 +70,7 @@ DXContext::DXContext(LPDIRECT3DDEVICE9 device, char* szIniFile)
     m_szWindowCaption[0] = 0;
     m_hwnd = NULL;
     //m_lpD3D = NULL;
-    HRESULT state = device->GetDirect3D(&m_lpD3D);
+    //HRESULT state = device->GetDirect3D(&m_lpD3D);
     m_lpDevice = device;
     m_hmod_d3d8 = NULL;
     m_zFormat = D3DFMT_UNKNOWN;
