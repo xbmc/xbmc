@@ -639,6 +639,12 @@ else
     AC_MSG_ERROR($missing_library))
 fi
 
+# This is used to skip some submodule configuration on non-Apple hardware
+HOST_NOT_APPLE=1
+if [[ "$host_vendor" = "apple" ]]; then
+  HOST_NOT_APPLE=0
+fi
+
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
@@ -1582,10 +1588,8 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
       --disable-cpplibs \
       CC="$CC" \
       CXX="$CXX"
-  else
-    true
   fi
-], [0])
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
@@ -1753,10 +1757,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
     CFLAGS="$CFLAGS -O3 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
-  else
-    true
   fi
-], [0])
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   if test "$host_vendor" = "apple" ; then
@@ -1790,10 +1792,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
     CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
-  else
-    true
   fi
-], 0)
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then
@@ -1801,7 +1801,7 @@ XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
     CFLAGS="$CFLAGS -fno-common" \
     ./configure
   fi
-], [0])
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/libass], [
   if test "$host_vendor" = "apple" ; then
@@ -1923,20 +1923,16 @@ XB_CONFIG_MODULE([lib/libmodplug], [
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
-  else
-    true
   fi
-], [0])
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/libmicrohttpd], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
-  else
-    true
   fi
-], [0])
+], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/cpluff], [
   if test "$host_vendor" = "apple" ; then
