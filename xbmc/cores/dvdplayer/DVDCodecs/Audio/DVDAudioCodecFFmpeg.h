@@ -44,16 +44,11 @@ public:
 
 protected:
   AVCodecContext*   m_pCodecContext;
-  AVAudioConvert*   m_pConvert;;
-  enum SampleFormat m_iSampleFormat;
   AEChLayout        m_channelLayout;
   int               m_iMapChannels;
 
   BYTE *m_pBuffer1;
   int   m_iBufferSize1;
-
-  BYTE *m_pBuffer2;
-  int   m_iBufferSize2;
 
   bool m_bOpenedCodec;
   int m_iBuffered;

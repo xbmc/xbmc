@@ -45,7 +45,7 @@ bool CAE::Initialize()
 
   /* open the renderer */
   m_renderer = new CALSADirectSound();
-  if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 16, false, false, false))
+  if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
   {
     delete m_renderer;
     return false;

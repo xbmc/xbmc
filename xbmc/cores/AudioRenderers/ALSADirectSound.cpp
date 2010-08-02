@@ -199,8 +199,15 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   nErr = snd_pcm_hw_params_set_access(m_pPlayHandle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 
-  // always use 16 bit samples
-  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16);
+  switch(m_uiBitsPerSample) {
+    case 8 : nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_U8   ); break;
+    case 16: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16  ); break;
+    case 24: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S24  ); break;
+    case 32: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_FLOAT); break;
+
+    default:
+      return false;
+  }
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
 
   nErr = snd_pcm_hw_params_set_rate_near(m_pPlayHandle, hw_params, &m_uiSamplesPerSec, NULL);
