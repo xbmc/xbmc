@@ -111,3 +111,5 @@ override_dh_gencontrol:
 		-i "debian/xbmc-bin/DEBIAN/control"
 	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBVDPAU_DEPENDS)/" \
 		-i "debian/xbmc-bin/DEBIAN/control"
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBRTMP_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"

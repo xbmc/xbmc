@@ -75,6 +75,11 @@ case "$1" in
         fi
         printf "$LIBVDPAU_DEPENDS"
         ;;
+    LIBRTMP_DEPENDS)
+        LIBRTMP_DEPENDS=$(cat /var/lib/dpkg/info/librtmp0.shlibs | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        printf "$LIBRTMP_DEPENDS"
+        ;;
 esac
 
 exit 0
