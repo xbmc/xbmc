@@ -40,7 +40,7 @@
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#include "utils/PCMRemap.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 #include "GUIFont.h" // for FONT_STYLE_* definitions
 
 using namespace std;
@@ -424,9 +424,9 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
   map<int,int> channelLayout;
-  for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
+  for(int layout = 0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34101+layout, layout));
-  AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);

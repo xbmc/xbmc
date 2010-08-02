@@ -64,6 +64,7 @@
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #include "GUIFontManager.h"
+#include "cores/AudioEngine/AE.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
@@ -1866,6 +1867,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
            strSetting.Equals("videolibrary.removeduplicates"))
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
+  else if (strSetting.Equals("audiooutput.channellayout"))
+  {
+    g_application.RestartAE();
   }
 
   UpdateSettings();

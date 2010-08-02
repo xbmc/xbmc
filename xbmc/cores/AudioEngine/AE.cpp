@@ -21,13 +21,16 @@
 
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "GUISettings.h"
 
 #include "AE.h"
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
 
 CAE::CAE():
-  m_state(AE_STATE_INVALID)
+  m_state   (AE_STATE_INVALID),
+  m_renderer(NULL),
+  m_buffer  (NULL)
 {
 }
 
@@ -47,16 +50,18 @@ CAE::~CAE()
 bool CAE::Initialize()
 {
   DeInitialize();
-
-  /* TODO: these are settings, load them */
-  m_chLayout     = CAEUtil::GetStdChLayout  (AE_CH_LAYOUT_2_0);
-  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout      );
+  CSingleLock lock(m_critSection);
 
   /* open the renderer */
+  m_chLayout = CAEUtil::GetStdChLayout((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"));
+  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
+  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout")));
+
   m_renderer = new CALSADirectSound();
   if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
   {
     delete m_renderer;
+    m_renderer = NULL;
     return false;
   }
 
@@ -68,6 +73,11 @@ bool CAE::Initialize()
 
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
   m_state        = AE_STATE_READY;
+
+  list<CAEStream*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    (*itt)->Initialize();
+
   return true;
 }
 
@@ -80,9 +90,16 @@ void CAE::DeInitialize()
   CSingleLock lock(m_critSection);
 
   m_state = AE_STATE_SHUTDOWN;
-  m_renderer->Deinitialize();
-  delete   m_renderer;
+  if (m_renderer)
+  {
+    m_renderer->Deinitialize();
+    delete m_renderer;
+    m_renderer = NULL;
+  }
+
   delete[] m_buffer;
+  m_buffer = NULL;
+
   m_state = AE_STATE_INVALID;
 }
 
@@ -199,10 +216,6 @@ void CAE::Stop()
   if (m_state == AE_STATE_READY) return;
   m_state = AE_STATE_STOP;
   lock.Leave();
-
-  /* wait for the thread to shutdown */
-  while(GetState() != AE_STATE_READY)
-    sleep(1);
 }
 
 float CAE::GetDelay()

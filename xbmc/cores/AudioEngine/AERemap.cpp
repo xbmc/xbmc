@@ -24,6 +24,7 @@
 #include "AE.h"
 #include "AEUtil.h"
 #include "utils/log.h"
+#include "GUISettings.h"
 
 using namespace std;
 
@@ -193,8 +194,9 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
   }
 
   /* normalize the values */
-  /* TODO: this is a setting */
-  if (true)
+  bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
+  CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
+  if (!dontnormalize)
   {
     float max = 0;
     for(int o = 0; output[o] != AE_CH_NULL; ++o)

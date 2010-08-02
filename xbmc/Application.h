@@ -169,6 +169,7 @@ public:
   void CheckAudioScrobblerStatus();
   void CheckForTitleChange();
   void ActivateScreenSaver(bool forceType = false);
+  void RestartAE();
 
   virtual void Process();
   void ProcessSlow();

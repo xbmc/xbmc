@@ -25,43 +25,71 @@
 #include "AEUtil.h"
 
 CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout):
-  m_convertBuffer  (NULL),
-  m_valid          (true),
-  m_convertFn      (NULL),
-  m_frameBuffer    (NULL),
-  m_frameBufferSize(0   ),
-  m_ssrc           (NULL),
-  m_framesBuffered (0   ),
-  m_paused         (0   )
+  m_convertBuffer  (NULL ),
+  m_valid          (false),
+  m_convertFn      (NULL ),
+  m_frameBuffer    (NULL ),
+  m_frameBufferSize(0    ),
+  m_ssrc           (NULL ),
+  m_framesBuffered (0    ),
+  m_paused         (0    )
 {
-  m_bytesPerFrame          = (CAEUtil::DataFormatToBits(dataFormat) >> 3) * channelCount;
+  m_ssrcData.data_out = NULL;
+
+  m_initDataFormat    = dataFormat;
+  m_initSampleRate    = sampleRate;
+  m_initChannelCount  = channelCount;
+  m_initChannelLayout = channelLayout;
+  Initialize();
+}
+
+void CAEStream::Initialize()
+{
+  CSingleLock lock(m_critSection);
+  if (m_valid)
+  {
+    Flush();
+    delete[] m_newPacket.data;
+    delete[] m_frameBuffer;
+
+    if (m_convert)
+      delete[] m_convertBuffer;
+
+    if (m_resample)
+    {
+      delete[] m_ssrcData.data_out;
+      m_ssrcData.data_out = NULL;
+    }
+  }
+
+  m_bytesPerFrame          = (CAEUtil::DataFormatToBits(m_initDataFormat) >> 3) * m_initChannelCount;
   m_aeChannelCount         = AE.GetChannelCount();
   m_aePacketSamples        = AE.GetFrames() * m_aeChannelCount;
 
   /* if no layout provided, guess one */
-  if (channelLayout == NULL) {
+  if (m_initChannelLayout == NULL) {
     static AEChannel guess[2][3] = {
       {AE_CH_FC, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
     };
     
-    if (channelCount > 0 && channelCount <= 2)
-      channelLayout = guess[channelCount-1];
+    if (m_initChannelCount > 0 && m_initChannelCount <= 2)
+      m_initChannelLayout = guess[m_initChannelCount-1];
     else {
       m_valid = false;
       return;
     }
   }
   
-  m_format.m_dataFormat    = dataFormat;
-  m_format.m_sampleRate    = sampleRate;
-  m_format.m_channelCount  = channelCount;
-  m_format.m_channelLayout = channelLayout;
+  m_format.m_dataFormat    = m_initDataFormat;
+  m_format.m_sampleRate    = m_initSampleRate;
+  m_format.m_channelCount  = m_initChannelCount;
+  m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = AE.GetFrames();
-  m_format.m_frameSamples  = m_format.m_frames * channelCount;
+  m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
   m_format.m_frameSize     = m_format.m_frames * m_bytesPerFrame;
 
-  if (!m_remap.Initialize(channelLayout, AE.GetChannelLayout(), false))
+  if (!m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false))
   {
     m_valid = false;
     return;
@@ -73,14 +101,14 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   m_packet.data       = NULL;
 
   m_frameBuffer   = new uint8_t[m_format.m_frameSize];
-  m_resample      = sampleRate != AE.GetSampleRate();
-  m_convert       = dataFormat != AE_FMT_FLOAT;
+  m_resample      = m_initSampleRate != AE.GetSampleRate();
+  m_convert       = m_initDataFormat != AE_FMT_FLOAT;
 
   /* if we need to convert, set it up */
   if (m_convert)
   {
     /* get the conversion function and allocate a buffer for the data */
-    m_convertFn = CAEConvert::ToFloat(dataFormat);
+    m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
     if (m_convertFn) m_convertBuffer = new float[m_format.m_frameSamples];
     else             m_valid         = false;
   }
@@ -91,14 +119,16 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   if (m_resample)
   {
     int err;
-    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, channelCount, &err);
+    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_ssrcData.input_frames  = m_format.m_frames;
     m_ssrcData.data_out      = new float[m_format.m_frameSamples * 2];
     m_ssrcData.output_frames = m_format.m_frames * 2;
-    m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)sampleRate;
+    m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.end_of_input  = 0;
   }
+
+  m_valid = true;
 }
 
 CAEStream::~CAEStream()

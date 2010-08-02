@@ -3237,8 +3237,9 @@ void CApplication::Stop()
 
     // shutdown the AudioEngine
     AE.Stop();
-    AE.DeInitialize();
+    m_aeThread->StopThread(true);
     delete m_aeThread;
+    AE.DeInitialize();
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
@@ -4337,6 +4338,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (!m_screenSaver->ID().IsEmpty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
+}
+
+void CApplication::RestartAE()
+{
+    AE.Stop();
+    m_aeThread->StopThread(true);
+
+    if (AE.Initialize())
+    {
+      CLog::Log(LOGINFO, "Starting audio thread");
+      m_aeThread->Create();
+    }
 }
 
 void CApplication::CheckShutdown()
