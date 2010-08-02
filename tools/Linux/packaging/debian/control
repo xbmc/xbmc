@@ -3,7 +3,6 @@ Section: video
 Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
-DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
  libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
@@ -147,7 +146,7 @@ Description: XBMC Media Center (arch-independent data package)
  working XBMC.
 
 Package: xbmc-bin
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 armel
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Provides: xbmc-common
@@ -174,7 +173,7 @@ Description: XBMC Media Center (binary data package)
  This package contains all the binary data needed to have a working XBMC.
 
 Package: xbmc-dbg
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 armel
 Section: debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
@@ -299,7 +298,7 @@ Description: XBMC Media Center (Event Client Dev package)
  This is the Development package for XBMC Event Client.
 
 Package: xbmc-eventclients-wiiremote
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 armel
 Depends: xbmc-eventclients-common (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
