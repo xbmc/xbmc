@@ -18,11 +18,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include <math.h>
 
 #include "AERemap.h"
 #include "AE.h"
 #include "AEUtil.h"
-#include <math.h>
+#include "utils/log.h"
 
 using namespace std;
 
@@ -228,7 +229,7 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
   }
 
   /* dump the matrix */
-  printf("==[Downmix Matrix]==\n");
+  CLog::Log(LOGINFO, "==[Downmix Matrix]==");
   for(int o = 0; output[o] != AE_CH_NULL; ++o)
   {
     AEMixInfo *info = &m_mixInfo[output[o]];
@@ -237,14 +238,14 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
     CStdString s = CAEUtil::GetChName(output[o]) + CStdString(" =");
     for(int i = 0; i < info->srcCount; ++i)
     {
-      char lvl[9];
-      snprintf(lvl, sizeof(lvl), "(%1.4f)", info->srcIndex[i].level);
+      CStdString lvl;
+      lvl.Format("(%1.4f)", info->srcIndex[i].level);
       s.append(CStdString(" ") + CAEUtil::GetChName(input[info->srcIndex[i].index]) + lvl);
     }
 
-    printf("%s\n", s.c_str());
+    CLog::Log(LOGINFO, "%s", s.c_str());
   }
-  printf("====================\n");
+  CLog::Log(LOGINFO, "====================\n");
 
   return true;
 }

@@ -590,8 +590,8 @@ bool CApplication::Create()
   if (AE.GetState() == AE_STATE_READY)
   {
     CLog::Log(LOGINFO, "Starting audio thread");
-    CThread *t = new CThread(&AE);
-    t->Create();
+    m_aeThread = new CThread(&AE);
+    m_aeThread->Create();
   }
 
   CLog::Log(LOGINFO, "creating subdirectories");
@@ -3234,6 +3234,11 @@ void CApplication::Stop()
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
+
+    // shutdown the AudioEngine
+    AE.Stop();
+    AE.DeInitialize();
+    delete m_aeThread;
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))

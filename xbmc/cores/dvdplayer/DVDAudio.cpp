@@ -72,7 +72,7 @@ void CDVDAudio::UnRegisterAudioCallback()
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
   CLog::Log(LOGNOTICE,
-    "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s",
+    "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
     codec,
     audioframe.channel_count,
     audioframe.sample_rate,

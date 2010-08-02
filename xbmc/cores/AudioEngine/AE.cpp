@@ -33,6 +33,14 @@ CAE::CAE():
 CAE::~CAE()
 {
   DeInitialize();
+
+  /* free the streams */
+  while(!m_streams.empty())
+  {
+    CAEStream *s = m_streams.front();
+    /* note: the stream will call RemoveStream via it's dtor */
+    delete s;
+  }
 }
 
 bool CAE::Initialize()
@@ -137,6 +145,7 @@ void CAE::Run()
     lock.Enter();
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     {
+      if (m_state != AE_STATE_RUN) break;
       stream = *itt;
 
       /* dont process streams that are paused */
@@ -179,7 +188,13 @@ void CAE::Run()
 void CAE::Stop()
 {
   CSingleLock lock(m_critSection);
+  if (m_state == AE_STATE_READY) return;
   m_state = AE_STATE_STOP;
+  lock.Leave();
+
+  /* wait for the thread to shutdown */
+  while(GetState() != AE_STATE_READY)
+    sleep(1);
 }
 
 float CAE::GetDelay()
