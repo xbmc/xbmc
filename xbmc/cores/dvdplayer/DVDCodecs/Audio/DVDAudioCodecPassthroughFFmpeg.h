@@ -43,7 +43,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual enum PCMChannels *GetChannelMap() { static enum PCMChannels map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
+  virtual AEChLayout GetChannelMap() { static enum AEChannel map[3] = {AE_CH_FL, AE_CH_FR, AE_CH_NULL}; return map; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }

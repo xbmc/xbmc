@@ -25,7 +25,9 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
-#include "cores/AudioRenderers/IAudioRenderer.h"
+
+#include "AudioEngine/AE.h"
+#include "AudioEngine/AEStream.h"
 
 class CFileItem;
 #ifndef _LINUX
@@ -158,7 +160,7 @@ private:
 
   int m_currentStream;
 
-  IAudioRenderer*   m_pAudioDecoder[2];
+  CAEStream*        m_pAudioStream[2];
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];
@@ -179,17 +181,13 @@ private:
 
   // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_channelCount[2];
-  enum PCMChannels*m_channelMap[2];
+  AEChLayout       m_channelMap[2];
   unsigned int     m_sampleRate[2];
   unsigned int     m_bitsPerSample[2];
   unsigned int     m_BytesPerSecond;
 
   unsigned int     m_CacheLevel;
   unsigned int     m_LastCacheLevelCheck;
-
-    // resampler
-  Cssrc            m_resampler[2];
-  bool             m_resampleAudio;
 
   // our file
   CFileItem*        m_currentFile;

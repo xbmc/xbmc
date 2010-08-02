@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,22 +18,32 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef __AUDIO_RENDERER_FACTORY_H__
-#define __AUDIO_RENDERER_FACTORY_H__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef AEFILTER_H
+#define AEFILTER_H
 
-#include "IAudioRenderer.h"
-#include "IAudioCallback.h"
+/*
+  Implements a Kaiser-Bessel Window FIR Filter
+  http://arc.id.au/FilterDesign.html
+*/
 
-class CAudioRendererFactory
+#include "FilterButterworth24db.h"
+
+class CAEFilter
 {
-public:
-  static IAudioRenderer *Create(IAudioCallback* pCallback, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough);
-  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
-  static IAudioRenderer *CreateFromUri(const CStdString &soundsystem, CStdString &renderer);
+  static float Ino(float x);
+public:
+  typedef struct
+  {
+    bool lpf;
+    CFilterButterworth24db f;
+    float v, s;
+  } FInfo;
+
+  static FInfo* InitializeLPF(unsigned int cutoff, unsigned int sampleRate);
+  static FInfo* InitializeHPF(unsigned int cutoff, unsigned int sampleRate);
+  static void   Filter(FInfo *info, float *data, unsigned int samples);
 };
+
 #endif

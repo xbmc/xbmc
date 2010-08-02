@@ -32,6 +32,7 @@
 #include "Picture.h"
 #include "TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
+#include "cores/AudioEngine/AE.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
 #ifdef HAS_LCD
@@ -520,7 +521,6 @@ bool CApplication::Create()
   // Init our DllLoaders emu env
   init_emu_environ();
 
-
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -584,6 +584,15 @@ bool CApplication::Create()
   g_powerManager.SetDefaults();
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
+
+  /* Initalize the AudioEngine */
+  AE.Initialize();
+  if (AE.GetState() == AE_STATE_READY)
+  {
+    CLog::Log(LOGINFO, "Starting audio thread");
+    CThread *t = new CThread(&AE);
+    t->Create();
+  }
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());

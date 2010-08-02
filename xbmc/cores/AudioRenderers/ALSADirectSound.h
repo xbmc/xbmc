@@ -51,7 +51,8 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CALSADirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual AEAudioFormat GetAudioFormat() { return m_format; }
   virtual ~CALSADirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -61,9 +62,6 @@ public:
   virtual bool Stop();
   virtual bool Resume();
 
-  virtual long GetCurrentVolume() const;
-  virtual void Mute(bool bMute);
-  virtual bool SetCurrentVolume(long nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
@@ -71,13 +69,13 @@ public:
   virtual void Flush();
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
+  AEAudioFormat		m_format;
+
   static bool SoundDeviceExists(const CStdString& device);
   static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard);
   snd_pcm_t 		*m_pPlayHandle;
 
   IAudioCallback* m_pCallback;
-  CPCMAmplifier 	m_amp;
-  long m_nCurrentVolume;
   snd_pcm_uframes_t m_dwPacketSize;
   unsigned int      m_dwNumPackets;
   bool m_bPause;

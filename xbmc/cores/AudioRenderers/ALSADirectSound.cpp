@@ -41,50 +41,26 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
-  enum PCMChannels *outLayout;
+  /* figure out how many channels we need to open */
+  static enum AEChannel ALSAChannelMap[9] =
+    {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
-  static enum PCMChannels ALSAChannelMap[8] =
-  {
-    PCM_FRONT_LEFT  , PCM_FRONT_RIGHT  ,
-    PCM_BACK_LEFT   , PCM_BACK_RIGHT   ,
-    PCM_FRONT_CENTER, PCM_LOW_FREQUENCY,
-    PCM_SIDE_LEFT   , PCM_SIDE_RIGHT
-  };
+  int i, c;
+  int iChannels = 0;
+  for(c = 0; c < 8; ++c)
+    for(i = 0; channelLayout[i] != AE_CH_NULL; ++i)
+      if (channelLayout[i] == ALSAChannelMap[c])
+      {
+        iChannels = c + 1;
+        break;
+      }
+
+  if (iChannels == 0)
+    return false;
 
   CStdString deviceuse;
-
-  /* setup the channel mapping */
-  m_uiDataChannels = iChannels;
-  m_remap.Reset();
-
-  if (!bPassthrough && channelMap)
-  {
-    /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
-    unsigned int outChannels = 0;
-    unsigned int ch = 0, map;
-    while(outLayout[ch] != PCM_INVALID)
-    {
-      for(map = 0; map < 8; ++map)
-        if (outLayout[ch] == ALSAChannelMap[map])
-        {
-          if (map > outChannels)
-            outChannels = map;
-          break;
-        }
-      ++ch;
-    }
-
-    m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
-    if (m_remap.CanRemap())
-    {
-      iChannels = outChannels;
-      if (m_uiDataChannels != (unsigned int)iChannels)
-        CLog::Log(LOGDEBUG, "CALSADirectSound::CALSADirectSound - Requested channels changed from %i to %i", m_uiDataChannels, iChannels);
-    }
-  }
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -98,11 +74,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
-  m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
-
-  m_nCurrentVolume = g_settings.m_nVolumeLevel;
-  if (!m_bPassthrough)
-     m_amp.SetVolume(m_nCurrentVolume);
 
   snd_pcm_uframes_t dwFrameCount = 512;
   unsigned int      dwNumPackets = 16;
@@ -185,7 +156,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   CLog::Log(LOGDEBUG, "%s - using alsa device %s", __FUNCTION__, deviceuse.c_str());
 
-  nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+  nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
 
   if(nErr == -EBUSY)
   {
@@ -197,7 +168,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
       m_pPlayHandle = NULL;
     }
     Sleep(200);
-    nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+    nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
   }
 
   if(nErr < 0 && deviceuse != device)
@@ -208,7 +179,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
       snd_pcm_close(m_pPlayHandle);
       m_pPlayHandle = NULL;
     }
-    nErr = snd_pcm_open_lconf(&m_pPlayHandle, device.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+    nErr = snd_pcm_open_lconf(&m_pPlayHandle, device.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
 
   }
 
@@ -289,6 +260,27 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
+  switch(uiBitsPerSample)
+  {
+    case  8: m_format.m_dataFormat = AE_FMT_U8   ; break;
+    case 16: m_format.m_dataFormat = AE_FMT_S16LE; break;
+    case 32: m_format.m_dataFormat = AE_FMT_FLOAT; break;
+    default:
+      return false;
+  }
+
+  AEChLayout layout = new AEChannel[iChannels+1];
+  for(i = 0; i < iChannels; ++i)
+    layout[i] = ALSAChannelMap[i];
+  layout[iChannels] = AE_CH_NULL;
+
+  m_format.m_sampleRate    = uiSamplesPerSec;
+  m_format.m_channelCount  = iChannels;
+  m_format.m_channelLayout = layout;
+  m_format.m_frames        = dwFrameCount;
+  m_format.m_frameSamples  = m_format.m_frames * m_format.m_channelCount;
+  m_format.m_frameSize     = (uiBitsPerSample / 8) * m_format.m_frameSamples;
+
   m_bIsAllocated = true;
   return true;
 }
@@ -303,6 +295,9 @@ CALSADirectSound::~CALSADirectSound()
 //***********************************************************************************************
 bool CALSADirectSound::Deinitialize()
 {
+  if (m_bIsAllocated)
+    delete[] m_format.m_channelLayout;
+
   m_bIsAllocated = false;
   if (m_pPlayHandle)
   {
@@ -404,35 +399,6 @@ bool CALSADirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CALSADirectSound::GetCurrentVolume() const
-{
-  return m_nCurrentVolume;
-}
-
-//***********************************************************************************************
-void CALSADirectSound::Mute(bool bMute)
-{
-  if (!m_bIsAllocated)
-    return;
-
-  if (bMute)
-    SetCurrentVolume(VOLUME_MINIMUM);
-  else
-    SetCurrentVolume(m_nCurrentVolume);
-
-}
-
-//***********************************************************************************************
-bool CALSADirectSound::SetCurrentVolume(long nVolume)
-{
-  if (!m_bIsAllocated) return -1;
-  m_nCurrentVolume = nVolume;
-  m_amp.SetVolume(nVolume);
-  return true;
-}
-
-
-//***********************************************************************************************
 unsigned int CALSADirectSound::GetSpace()
 {
   if (!m_bIsAllocated) return 0;
@@ -471,12 +437,9 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 
   int framesToWrite;
 
-  framesToWrite     = std::min(GetSpace(), (len / m_uiDataChannels) * m_uiChannels);
-  framesToWrite    /= m_dwPacketSize;
-  framesToWrite    *= m_dwPacketSize;
-  int bytesToWrite  = framesToWrite;
-  int inputSamples  = ((framesToWrite / m_uiChannels) * m_uiDataChannels) / 2;
-  framesToWrite     = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
+  framesToWrite  = len / m_dwPacketSize;
+  framesToWrite *= m_dwPacketSize;
+  framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
   {
@@ -486,29 +449,8 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     return 0;
   }
 
-  // handle volume de-amp
-  if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)data, inputSamples);
+  int writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
 
-  int writeResult;
-  if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
-  {
-    char dummy[bytesToWrite];
-    memset(dummy,0,sizeof(dummy));
-    writeResult = snd_pcm_writei(m_pPlayHandle, dummy, framesToWrite);
-  }
-  else
-  {
-    if (m_remap.CanRemap())
-    {
-      /* remap the data to the correct channels */
-      uint8_t outData[bytesToWrite];
-      m_remap.Remap((void *)data, outData, framesToWrite);
-      writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
-    }
-    else
-      writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
-  }
   if (  writeResult == -EPIPE  )
   {
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
@@ -529,7 +471,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause)
       snd_pcm_start(m_pPlayHandle);
     
-    return writeResult * (m_uiBitsPerSample / 8) * m_uiDataChannels;
+    return snd_pcm_frames_to_bytes(m_pPlayHandle, writeResult);
   }
 
   return 0;
@@ -575,7 +517,7 @@ float CALSADirectSound::GetCacheTotal()
 //***********************************************************************************************
 unsigned int CALSADirectSound::GetChunkLen()
 {
-  return (m_dwPacketSize / m_uiChannels) * m_uiDataChannels;
+  return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CALSADirectSound::SetPlaySpeed(int iSpeed)

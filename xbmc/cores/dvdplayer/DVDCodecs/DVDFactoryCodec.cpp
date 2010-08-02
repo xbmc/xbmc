@@ -45,10 +45,12 @@
 #include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
+#if 0
 #if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
   #include "Audio/DVDAudioCodecPassthrough.h"
 #endif
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
+#endif
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
@@ -226,6 +228,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+#if 0
   if (passthrough)
   {
 #if (defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)) && !defined(WIN32)
@@ -236,6 +239,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
     pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
     if ( pCodec ) return pCodec;
   }
+#endif
 
   switch (hint.codec)
   {
