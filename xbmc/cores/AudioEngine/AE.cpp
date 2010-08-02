@@ -91,7 +91,8 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   return stream;
 }
 
-void CAE::RemoveStream(CAEStream *stream) {
+void CAE::RemoveStream(CAEStream *stream)
+{
   CSingleLock lock(m_critSection);
   m_streams.remove(stream);
 }
