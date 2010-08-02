@@ -246,7 +246,8 @@ void CDVDAudioCodecLibMad::Reset()
 
 AEChLayout CDVDAudioCodecLibMad::GetChannelMap()
 {
-  assert(m_iSourceChannels > 0 && m_iSourceChannels <= 2);
+  if (m_iSourceChannels == 0 || m_iSourceChannels > 2) return NULL;
+
   static enum AEChannel map[2][3] = {
     {AE_CH_FC, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
