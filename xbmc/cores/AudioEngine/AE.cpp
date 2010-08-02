@@ -45,7 +45,7 @@ bool CAE::Initialize()
 
   /* open the renderer */
   m_renderer = new CALSADirectSound();
-  if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 16, false, false, false))
+  if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
   {
     delete m_renderer;
     return false;
@@ -91,7 +91,8 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   return stream;
 }
 
-void CAE::RemoveStream(CAEStream *stream) {
+void CAE::RemoveStream(CAEStream *stream)
+{
   CSingleLock lock(m_critSection);
   m_streams.remove(stream);
 }

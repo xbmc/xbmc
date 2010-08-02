@@ -76,7 +76,7 @@ public:
 private:
   /* these are private as the class is a singleton */
   CAE();
-  ~CAE();
+  virtual ~CAE();
 
   enum AEState              m_state;
 
