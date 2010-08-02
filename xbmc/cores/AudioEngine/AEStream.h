@@ -39,6 +39,7 @@ class CAEStream
 public:
   CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
   ~CAEStream();
+  void Initialize();
 
   unsigned int GetFrameSize() {return m_format.m_frameSize;}
   unsigned int AddData(void *data, unsigned int size);
@@ -57,7 +58,11 @@ public:
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
 private:
-  CCriticalSection m_critSection;
+  CCriticalSection  m_critSection;
+  enum AEDataFormat m_initDataFormat;
+  unsigned int      m_initSampleRate;
+  unsigned int      m_initChannelCount;
+  AEChLayout        m_initChannelLayout;
   
   typedef struct
   {
