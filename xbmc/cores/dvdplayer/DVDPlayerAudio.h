@@ -30,6 +30,10 @@
 #include "BitstreamStats.h"
 #include "DVDPlayerAudioResampler.h"
 
+#include "AudioEngine/AE.h"
+#include "AudioEngine/AEAudioFormat.h"
+#include "AudioEngine/AEUtil.h"
+
 #include <list>
 #include <queue>
 
@@ -53,11 +57,11 @@ typedef struct stDVDAudioFrame
   double duration;
   unsigned int size;
 
-  int channels;
-  enum PCMChannels *channel_map;
-  int bits_per_sample;
-  int sample_rate;
-  bool passthrough;
+  int         channel_count;
+  AEChLayout  channel_layout;
+  int         bits_per_sample;
+  int         sample_rate;
+  bool        passthrough;
 } DVDAudioFrame;
 
 class CPTSOutputQueue

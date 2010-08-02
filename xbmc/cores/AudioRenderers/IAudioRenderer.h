@@ -30,8 +30,10 @@
 #endif // _MSC_VER > 1000
 
 #include "StdString.h"
-#include "cores/IAudioCallback.h"
-#include "PCMRemap.h"
+#include "IAudioCallback.h"
+#include "AudioEngine/AEAudioFormat.h"
+#include "AudioEngine/AEUtil.h"
+
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
@@ -43,7 +45,9 @@ class IAudioRenderer
 public:
   IAudioRenderer() {};
   virtual ~IAudioRenderer() {};
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false) = 0;
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false) = 0;
+  virtual AEAudioFormat GetAudioFormat() = 0;
+
   virtual void UnRegisterAudioCallback() = 0;
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual float GetDelay() = 0;
@@ -59,16 +63,11 @@ public:
   virtual bool Resume() = 0;
   virtual unsigned int GetChunkLen() = 0;
 
-  virtual long GetCurrentVolume() const = 0;
-  virtual void Mute(bool bMute) = 0;
-  virtual bool SetCurrentVolume(long nVolume) = 0;
-  virtual void SetDynamicRangeCompression(long drc) {};
   virtual int SetPlaySpeed(int iSpeed) = 0;
   virtual void WaitCompletion() = 0;
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) = 0;
 
 protected:
-  CPCMRemap m_remap;
 
 private:
 };

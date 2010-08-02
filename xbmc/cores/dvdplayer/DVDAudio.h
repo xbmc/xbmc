@@ -28,6 +28,8 @@
 #include "cores/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
+#include "AudioEngine/AEStream.h"
+
 #ifndef _LINUX
 enum CodecID;
 #else
@@ -71,7 +73,9 @@ public:
   void Finish();
   void Drain();
 
-  IAudioRenderer* m_pAudioDecoder;
+  void SetSpeed(int iSpeed);
+
+  CAEStream *m_pAudioStream;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   IAudioCallback* m_pCallback;

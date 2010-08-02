@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,22 +18,22 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef __AUDIO_RENDERER_FACTORY_H__
-#define __AUDIO_RENDERER_FACTORY_H__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef AEUTIL_H
+#define AEUTIL_H
 
-#include "IAudioRenderer.h"
-#include "IAudioCallback.h"
+#include "AEAudioFormat.h"
 
-class CAudioRendererFactory
+class CAEUtil
 {
 public:
-  static IAudioRenderer *Create(IAudioCallback* pCallback, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough);
-  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
-private:
-  static IAudioRenderer *CreateFromUri(const CStdString &soundsystem, CStdString &renderer);
+  static unsigned int            GetChLayoutCount  (const AEChLayout src);
+  static const char*             GetChName         (const AEChannel  ch );
+  static const char*             GetChLayoutStr    (const AEChLayout src);
+  static AEChLayout              GetStdChLayout    (const enum AEStdChLayout layout);
+  static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
+  static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
+  static const enum AEDataFormat BitsToDataFormat  (const unsigned int bits);
 };
+
 #endif

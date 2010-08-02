@@ -26,7 +26,9 @@
 #include "GUISettings.h"
 #include "utils/log.h"
 
-CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
+CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() :
+  CDVDAudioCodec(),
+  m_pChannelMap (NULL)
 {
   m_bInitializedDecoder = false;
 
@@ -105,25 +107,34 @@ bool CDVDAudioCodecLibFaad::SyncStream()
   return false;
 }
 
-enum PCMChannels* CDVDAudioCodecLibFaad::GetChannelMap()
+AEChLayout CDVDAudioCodecLibFaad::GetChannelMap()
 {
   int index = 0;
+
+  delete m_pChannelMap;
+  m_pChannelMap = new enum AEChannel[m_iSourceChannels + 1];
+
   for(int i = 0; i < m_iSourceChannels; ++i)
     switch(m_frameInfo.channel_position[i])
     {
-      case FRONT_CHANNEL_CENTER: m_pChannelMap[index++] = PCM_FRONT_CENTER ; break;
-      case FRONT_CHANNEL_LEFT  : m_pChannelMap[index++] = PCM_FRONT_LEFT   ; break;
-      case FRONT_CHANNEL_RIGHT : m_pChannelMap[index++] = PCM_FRONT_RIGHT  ; break;
-      case SIDE_CHANNEL_LEFT   : m_pChannelMap[index++] = PCM_SIDE_LEFT    ; break;
-      case SIDE_CHANNEL_RIGHT  : m_pChannelMap[index++] = PCM_SIDE_RIGHT   ; break;
-      case BACK_CHANNEL_LEFT   : m_pChannelMap[index++] = PCM_BACK_LEFT    ; break;
-      case BACK_CHANNEL_RIGHT  : m_pChannelMap[index++] = PCM_BACK_RIGHT   ; break;
-      case BACK_CHANNEL_CENTER : m_pChannelMap[index++] = PCM_BACK_CENTER  ; break;
-      case LFE_CHANNEL         : m_pChannelMap[index++] = PCM_LOW_FREQUENCY; break;
+      case FRONT_CHANNEL_CENTER: m_pChannelMap[index++] = AE_CH_FC ; break;
+      case FRONT_CHANNEL_LEFT  : m_pChannelMap[index++] = AE_CH_FL ; break;
+      case FRONT_CHANNEL_RIGHT : m_pChannelMap[index++] = AE_CH_FR ; break;
+      case SIDE_CHANNEL_LEFT   : m_pChannelMap[index++] = AE_CH_SL ; break;
+      case SIDE_CHANNEL_RIGHT  : m_pChannelMap[index++] = AE_CH_SR ; break;
+      case BACK_CHANNEL_LEFT   : m_pChannelMap[index++] = AE_CH_BL ; break;
+      case BACK_CHANNEL_RIGHT  : m_pChannelMap[index++] = AE_CH_BR ; break;
+      case BACK_CHANNEL_CENTER : m_pChannelMap[index++] = AE_CH_BC ; break;
+      case LFE_CHANNEL         : m_pChannelMap[index++] = AE_CH_LFE; break;
     }
 
+  m_pChannelMap[index] = AE_CH_NULL;
   if (index < m_iSourceChannels)
+  {
+    delete[] m_pChannelMap;
+    m_pChannelMap = NULL;
     return NULL;
+  }
 
   assert(index == m_iSourceChannels);
   return m_pChannelMap;

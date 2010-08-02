@@ -41,9 +41,11 @@ void CNullDirectSound::DoWork()
 CNullDirectSound::CNullDirectSound()
 {
 }
-bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+
+bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGERROR,"Creating a Null Audio Renderer, Check your audio settings as this should not happen");
+  int iChannels = CAEUtil::GetChLayoutCount(channelLayout);
   if (iChannels == 0)
     iChannels = 2;
 
@@ -100,25 +102,6 @@ bool CNullDirectSound::Stop()
   Flush();
   return true;
 }
-
-//***********************************************************************************************
-long CNullDirectSound::GetCurrentVolume() const
-{
-  return m_nCurrentVolume;
-}
-
-//***********************************************************************************************
-void CNullDirectSound::Mute(bool bMute)
-{
-}
-
-//***********************************************************************************************
-bool CNullDirectSound::SetCurrentVolume(long nVolume)
-{
-  m_nCurrentVolume = nVolume;
-  return true;
-}
-
 
 //***********************************************************************************************
 unsigned int CNullDirectSound::GetSpace()
@@ -207,4 +190,14 @@ void CNullDirectSound::Update()
       m_packetsSent = 0;
     m_lastUpdate = currentTime;
   }
+}
+
+AEAudioFormat CNullDirectSound::GetAudioFormat()
+{
+  return (AEAudioFormat){
+    m_dataFormat   : AE_FMT_INVALID,
+    m_sampleRate   : 0,
+    m_channelCount : 0,
+    m_channelLayout: NULL,
+  };
 }

@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "log.h"
 #include "NullDirectSound.h"
+#include "AudioEngine/AEUtil.h"
 
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
@@ -41,7 +42,7 @@
 
 #define ReturnOnValidInitialize(rendererName)    \
 {                                                \
-  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
+  if (audioSink->Initialize(pCallback, device, channelLayout, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
   {                                              \
     CLog::Log(LOGDEBUG, "%s::Initialize"         \
       " - Channels: %i"                          \
@@ -52,7 +53,7 @@
       " - IsPassthrough %s"                      \
       " - audioDevice: %s",                      \
       rendererName,                              \
-      iChannels,                                 \
+      CAEUtil::GetChLayoutCount(channelLayout),  \
       uiSamplesPerSec,                           \
       uiBitsPerSample,                           \
       bResample ? "true" : "false",              \
@@ -82,7 +83,7 @@
   return new rendererClass(); \
 }
 
-IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   IAudioRenderer* audioSink = NULL;
   CStdString renderer;

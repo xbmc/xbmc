@@ -41,7 +41,8 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   CNullDirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual AEAudioFormat GetAudioFormat();
   virtual ~CNullDirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -51,9 +52,6 @@ public:
   virtual bool Stop();
   virtual bool Resume();
 
-  virtual long GetCurrentVolume() const;
-  virtual void Mute(bool bMute);
-  virtual bool SetCurrentVolume(long nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void DoWork();

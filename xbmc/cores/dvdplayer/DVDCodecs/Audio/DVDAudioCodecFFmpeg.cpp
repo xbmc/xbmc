@@ -42,7 +42,7 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_pConvert = NULL;
   m_bOpenedCodec = false;
 
-  m_channelMap[0] = PCM_INVALID;
+  m_channelLayout[0] = PCM_INVALID;
   m_channels = 0;
   m_layout = 0;
 }
@@ -253,13 +253,7 @@ static unsigned count_bits(int64_t value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
-  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
-    return; //nothing to do here
-
-  m_channels = m_pCodecContext->channels;
-  m_layout   = m_pCodecContext->channel_layout;
-
-  int64_t layout;
+  int layout;
 
   int bits = count_bits(m_pCodecContext->channel_layout);
   if (bits == m_pCodecContext->channels)
@@ -270,36 +264,35 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
     layout = m_dllAvCodec.avcodec_guess_channel_layout(m_pCodecContext->channels, m_pCodecContext->codec_id, NULL);
   }
 
-  int index = 0;
-  if (layout & CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
-  if (layout & CH_FRONT_RIGHT          ) m_channelMap[index++] = PCM_FRONT_RIGHT          ;
-  if (layout & CH_FRONT_CENTER         ) m_channelMap[index++] = PCM_FRONT_CENTER         ;
-  if (layout & CH_LOW_FREQUENCY        ) m_channelMap[index++] = PCM_LOW_FREQUENCY        ;
-  if (layout & CH_BACK_LEFT            ) m_channelMap[index++] = PCM_BACK_LEFT            ;
-  if (layout & CH_BACK_RIGHT           ) m_channelMap[index++] = PCM_BACK_RIGHT           ;
-  if (layout & CH_FRONT_LEFT_OF_CENTER ) m_channelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
-  if (layout & CH_FRONT_RIGHT_OF_CENTER) m_channelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
-  if (layout & CH_BACK_CENTER          ) m_channelMap[index++] = PCM_BACK_CENTER          ;
-  if (layout & CH_SIDE_LEFT            ) m_channelMap[index++] = PCM_SIDE_LEFT            ;
-  if (layout & CH_SIDE_RIGHT           ) m_channelMap[index++] = PCM_SIDE_RIGHT           ;
-  if (layout & CH_TOP_CENTER           ) m_channelMap[index++] = PCM_TOP_CENTER           ;
-  if (layout & CH_TOP_FRONT_LEFT       ) m_channelMap[index++] = PCM_TOP_FRONT_LEFT       ;
-  if (layout & CH_TOP_FRONT_CENTER     ) m_channelMap[index++] = PCM_TOP_FRONT_CENTER     ;
-  if (layout & CH_TOP_FRONT_RIGHT      ) m_channelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
-  if (layout & CH_TOP_BACK_LEFT        ) m_channelMap[index++] = PCM_TOP_BACK_LEFT        ;
-  if (layout & CH_TOP_BACK_CENTER      ) m_channelMap[index++] = PCM_TOP_BACK_CENTER      ;
-  if (layout & CH_TOP_BACK_RIGHT       ) m_channelMap[index++] = PCM_TOP_BACK_RIGHT       ;
+  index = 0;
+  if (layout & CH_FRONT_LEFT           ) m_channelLayout[index++] = AE_CH_FL  ;
+  if (layout & CH_FRONT_RIGHT          ) m_channelLayout[index++] = AE_CH_FR  ;
+  if (layout & CH_FRONT_CENTER         ) m_channelLayout[index++] = AE_CH_FC  ;
+  if (layout & CH_LOW_FREQUENCY        ) m_channelLayout[index++] = AE_CH_LFE ;
+  if (layout & CH_BACK_LEFT            ) m_channelLayout[index++] = AE_CH_BL  ;
+  if (layout & CH_BACK_RIGHT           ) m_channelLayout[index++] = AE_CH_BR  ;
+  if (layout & CH_FRONT_LEFT_OF_CENTER ) m_channelLayout[index++] = AE_CH_FLOC;
+  if (layout & CH_FRONT_RIGHT_OF_CENTER) m_channelLayout[index++] = AE_CH_FROC;
+  if (layout & CH_BACK_CENTER          ) m_channelLayout[index++] = AE_CH_BC  ;
+  if (layout & CH_SIDE_LEFT            ) m_channelLayout[index++] = AE_CH_SL  ;
+  if (layout & CH_SIDE_RIGHT           ) m_channelLayout[index++] = AE_CH_SR  ;
+  if (layout & CH_TOP_CENTER           ) m_channelLayout[index++] = AE_CH_TC  ;
+  if (layout & CH_TOP_FRONT_LEFT       ) m_channelLayout[index++] = AE_CH_TFL ;
+  if (layout & CH_TOP_FRONT_CENTER     ) m_channelLayout[index++] = AE_CH_TFC ;
+  if (layout & CH_TOP_FRONT_RIGHT      ) m_channelLayout[index++] = AE_CH_TFR ;
+  if (layout & CH_TOP_BACK_LEFT        ) m_channelLayout[index++] = AE_CH_BL  ;
+  if (layout & CH_TOP_BACK_CENTER      ) m_channelLayout[index++] = AE_CH_BC  ;
+  if (layout & CH_TOP_BACK_RIGHT       ) m_channelLayout[index++] = AE_CH_BR  ;
+  m_channelLayout[index] = AE_CH_NULL;
 
-  //terminate the channel map
-  m_channelMap[index] = PCM_INVALID;
+  m_channels = m_pCodecContext->channels;
 }
 
-enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
+AEChLayout CDVDAudioCodecFFmpeg::GetChannelMap()
 {
   BuildChannelMap();
-
-  if (m_channelMap[0] == PCM_INVALID)
+  if (m_channelLayout[0] == AE_CH_NULL)
     return NULL;
 
-  return m_channelMap;
+  return m_channelLayout;
 }

@@ -22,7 +22,7 @@
  */
 
 #include "system.h"
-#include "../../../../utils/PCMRemap.h"
+#include "AudioEngine/AEAudioFormat.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
@@ -78,7 +78,7 @@ public:
   /*
    * returns the channel mapping
    */
-  virtual enum PCMChannels* GetChannelMap() = 0;
+  virtual AEChLayout GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream

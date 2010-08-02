@@ -244,11 +244,12 @@ void CDVDAudioCodecLibMad::Reset()
   }
 }
 
-enum PCMChannels* CDVDAudioCodecLibMad::GetChannelMap()
+AEChLayout CDVDAudioCodecLibMad::GetChannelMap()
 {
-  static enum PCMChannels map[2][2] = {
-    {PCM_FRONT_CENTER},
-    {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}
+  assert(m_iSourceChannels > 0 && m_iSourceChannels <= 2);
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
   };
 
   return map[m_iSourceChannels - 1];
