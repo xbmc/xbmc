@@ -53,6 +53,9 @@ public:
 
   void SetVolume(int volume);
   void SetDynamicRangeCompression(int drc);
+
+  unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
+  unsigned int GetChannelCount() { return m_format.m_channelCount; }
 private:
   CCriticalSection m_critSection;
   

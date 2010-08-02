@@ -48,6 +48,7 @@ const char* CAEUtil::GetChName(const AEChannel ch)
 
 const char* CAEUtil::GetChLayoutStr(const AEChLayout src)
 {
+  if (src == NULL) return "NULL";
   unsigned int i = 0;
   CStdString s;
   for(i = 0; i < AE_CH_MAX && src[i] != AE_CH_NULL; ++i)

@@ -20,6 +20,7 @@
  */
 
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include "AE.h"
 #include "AEUtil.h"
@@ -93,6 +94,13 @@ enum AEState CAE::GetState()
 
 CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout)
 {
+  CLog::Log(LOGINFO, "CAE::GetStream - %d, %u, %u, %s",
+    CAEUtil::DataFormatToBits(dataFormat),
+    sampleRate,
+    channelCount,
+    CAEUtil::GetChLayoutStr(channelLayout)
+  );
+
   CSingleLock lock(m_critSection);
   CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout);
   m_streams.push_back(stream);
