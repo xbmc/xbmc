@@ -19,7 +19,7 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
  libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
  nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev,"
+ libmodplug-dev, librtmp-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
     BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, libcrystalhd-dev,"
@@ -74,6 +74,11 @@ case "$1" in
           exit 1
         fi
         printf "$LIBVDPAU_DEPENDS"
+        ;;
+    LIBRTMP_DEPENDS)
+        LIBRTMP_DEPENDS=$(cat /var/lib/dpkg/info/librtmp0.shlibs | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        printf "$LIBRTMP_DEPENDS"
         ;;
 esac
 

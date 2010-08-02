@@ -5,7 +5,7 @@ Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
 DM-Upload-Allowed: yes
 Build-Depends: #BUILD_DEPENDS#
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
