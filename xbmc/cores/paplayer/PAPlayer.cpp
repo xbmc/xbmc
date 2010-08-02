@@ -355,9 +355,7 @@ void PAPlayer::DrainStream(int stream)
 
 bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
-
-  if (m_pAudioStream[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
+  if (m_pAudioStream[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == samplerate/* && m_bitsPerSample[num] == bitspersample*/)
   {
     CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio renderer");
   }
@@ -365,15 +363,15 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
   {
     FreeStream(num);
     CLog::Log(LOGDEBUG, "PAPlayer: Creating new audio renderer");
-    m_bitsPerSample[num]  = 16;
-    m_sampleRate[num]     = outputSampleRate;
-    m_channelCount[num]   = channels;
-    m_channelMap[num]     = NULL;
-    m_BytesPerSecond      = (m_bitsPerSample[num] / 8)* outputSampleRate * channels;
+    m_bitsPerSample[num] = 16;
+    m_sampleRate   [num] = samplerate;
+    m_channelCount [num] = channels;
+    m_channelMap   [num] = NULL;
+    m_BytesPerSecond     = (m_bitsPerSample[num] / 8)* samplerate * channels;
 
     /* Open the device */
     m_pAudioStream[num] = AE.GetStream(
-      CAEUtil::BitsToDataFormat(m_bitsPerSample[num]),
+      AE_FMT_FLOAT,
       m_sampleRate  [num],
       m_channelCount[num],
       m_channelMap  [num]
@@ -398,7 +396,7 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
 
   // fire off our init to our callback  
   if (m_pCallback)
-    m_pCallback->OnInitialize(channels, outputSampleRate, m_bitsPerSample[num]);
+    m_pCallback->OnInitialize(channels, samplerate, m_bitsPerSample[num]);
   return true;
 }
 
@@ -954,9 +952,26 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
   if (!m_pAudioStream[stream] || dec.GetStatus() == STATUS_NO_FILE)
     return false;
 
-  /* FIXME */
-  int amount = m_pAudioStream[stream]->GetFrameSize();
-  m_pAudioStream[stream]->AddData(dec.GetData(amount), amount);
+  int amount = std::min((unsigned int)OUTPUT_SAMPLES, dec.GetDataSize()); //m_pAudioStream[stream]->GetFrameSamples();
+  if (amount == 0) return false;
+  //if (amount > dec.GetDataSize()) return false;
+  
+  void *data = dec.GetData(amount);
+  amount *= sizeof(float);
+  while(amount > 0)
+  {
+    int wrote = m_pAudioStream[stream]->AddData(data, amount);
+
+    /* FIXME, this should wait on a signal */
+    if (wrote == 0)
+    {
+      sleep(1);
+      continue;
+    }
+
+    data   += wrote;
+    amount -= wrote;
+  }
 
   return true;
 }
