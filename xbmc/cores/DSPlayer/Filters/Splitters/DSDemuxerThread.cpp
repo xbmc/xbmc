@@ -79,11 +79,12 @@ CDSDemuxerThread::CDSDemuxerThread(CDSDemuxerFilter* pFilter ,LPWSTR pFileName)
     assert(0);
   }
   m_streamsCount = m_pDemuxer->GetNrOfStreams();
+  m_playSpeed = DVD_PLAYSPEED_NORMAL;
 }
 
 CDSDemuxerThread::~CDSDemuxerThread()
 {
-  BlockProc();
+  //BlockProc();
 	CallWorker(CMD_STOP);
 	Close();
 	delete [] m_pStreamList;
@@ -133,16 +134,28 @@ HRESULT CDSDemuxerThread::CreateOutputPin()
 
 void CDSDemuxerThread::SeekTo(REFERENCE_TIME rt)
 {
-  
-
   __int64 seek_msec;
   seek_msec = DS_TIME_TO_MSEC(rt);
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek_msec, true, true, true));
 }
 
+void CDSDemuxerThread::SetPlaySpeed(int speed)
+{
+  if (speed != DVD_PLAYSPEED_PAUSE)
+    CallWorker(CMD_WAKEUP);
+  m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
+  for (int i = 0;  i < m_streamsCount; i++)
+  {
+    m_pStreamList[i].pin->SetSpeed(speed);
+  }
+  //Is this needed for directshow?
+  //SynchronizeDemuxer(100);
+}
+
 void CDSDemuxerThread::Stop()
 {
-  BlockProc();
+  //TODO
+  //Verify the the player is running before doing this
   
 
   // tell demuxer to abort
@@ -177,7 +190,7 @@ bool CDSDemuxerThread::ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stream)
   return false;
 }
 
-//CThread
+//CAMThread
 
 BOOL CDSDemuxerThread::Create(void)
 {
@@ -222,10 +235,18 @@ void CDSDemuxerThread::HandleMessages()
             if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
               CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
+          for (int i = 0; i < m_streamsCount; i++)
+          {
+            m_pStreamList[i].pin->Flush();
+          }
           //FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+      { 
+        m_playSpeed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
       }
     }
     catch (...)
@@ -242,7 +263,6 @@ DWORD CDSDemuxerThread::ThreadProc()
   CLog::DebugLog("%s",__FUNCTION__);
 	assert(m_pFilter != NULL);
   m_messenger.Init();
-	m_pSeekProtect.Set();
   while (1) 
   {
 		DWORD aCmd;
@@ -268,9 +288,13 @@ DWORD CDSDemuxerThread::ThreadProc()
 			break;
     while (1)
     {
-      
+ 
       HandleMessages();
-      
+      if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
+      {
+        for (int i=0; i<m_streamsCount; i++)
+          m_pStreamList[i].pin->SetProcessingFlag();
+      }
 
       //take a look at the message queue is full
       for (int i=0; i<m_streamsCount; i++)
@@ -324,6 +348,11 @@ DWORD CDSDemuxerThread::ThreadProc()
 			  {
             thePin->SendMessage(new CDVDMsgDemuxerPacket(pPacket));
 				}
+        if (pPacket->pts != DVD_NOPTS_VALUE)
+          m_pFilter->SetCurrentPosition(pPacket->pts * 10);
+        else if (pPacket->dts != DVD_NOPTS_VALUE)
+          m_pFilter->SetCurrentPosition(pPacket->dts * 10);
+
 			}
 			if (CheckRequest(&aCmd))
 				break;
@@ -343,27 +372,4 @@ CDSOutputPin *CDSDemuxerThread::GetOutputPinIndex(UINT index) const
 			return m_pStreamList[i].pin;
 	}
 	return NULL;
-}
-
-void CDSDemuxerThread::BlockProc()
-{
-  for (INT i=0; i<m_streamsCount; i++) 
-  {
-		m_pStreamList[i].pin->DisableWriteBlock();
-	}
-  CallWorker(CMD_SLEEP);
-}
-
-void CDSDemuxerThread::UnBlockProc(bool bPauseMode)
-{
-  for (INT i=0; i<m_streamsCount; i++) 
-  {
-    m_pStreamList[i].pin->SetProcessingFlag();
-		m_pStreamList[i].pin->DisableWriteBlock();
-	}
-  CallWorker(CMD_WAKEUP);
-  for (INT i=0; i<m_streamsCount; i++) 
-  {
-		m_pStreamList[i].pin->EnableWriteBlock();
-	}
 }

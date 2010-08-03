@@ -65,9 +65,7 @@ public:
   __int64 GetDuration() {return (DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) * 10); }
 
   void SeekTo(REFERENCE_TIME rt);
-	void BlockProc();
-	void UnBlockProc(bool bPauseMode);
-
+  void SetPlaySpeed(int speed);
 protected:
   enum WorkState {
 		CMD_STOP,
@@ -75,6 +73,7 @@ protected:
 		CMD_WAKEUP,
 	};
 
+  int m_playSpeed;
 	virtual DWORD ThreadProc();
 	HRESULT CreateOutputPin();
 

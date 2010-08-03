@@ -50,16 +50,10 @@ CDSOutputPin::CDSOutputPin(CSource *pFilter, LPCWSTR pName, CDSStreamInfo& hints
   }*/
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
+  m_messageQueue.Init();
+  m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_mt = hints.mtype;
-  if (hints.type == STREAM_VIDEO)
-  {
-    m_mt.SetSampleSize(1);
-  }
-  else if (hints.type == STREAM_AUDIO)
-  {
-    
-  }
   
 	m_mts.push_back(m_mt);
 }
@@ -178,8 +172,11 @@ HRESULT CDSOutputPin::DeliverEndFlush()
 
 void CDSOutputPin::EndStream()
 {
-	CLog::Log(LOGINFO,"%s",__FUNCTION__);
-	m_messageQueue.End();
+  CLog::Log(LOGINFO,"%s",__FUNCTION__);
+  if (m_speed > 0) 
+    m_messageQueue.WaitUntilEmpty();
+	
+	m_messageQueue.Abort();
 }
 
 void CDSOutputPin::Reset()
@@ -188,17 +185,14 @@ void CDSOutputPin::Reset()
 	m_messageQueue.Init();
 }
 
-void CDSOutputPin::DisableWriteBlock()
+void CDSOutputPin::SetSpeed(int speed)
 {
-	CLog::Log(LOGINFO,"%s",__FUNCTION__);
-	//m_messageQueue.
+  if(m_messageQueue.IsInited())
+    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+  else
+    m_speed = speed;
 }
 
-void CDSOutputPin::EnableWriteBlock()
-{
-	CLog::Log(LOGINFO,"%s",__FUNCTION__);
-	//m_messageQueue.
-}
 
 void CDSOutputPin::Flush()
 {
@@ -237,8 +231,19 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
   
 
   CDVDMsg* pMsg;
-  int iPriority = 0;
-  MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 417, iPriority);
+  int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && IsConnected()) ? 1 : 0;
+  
+  int iQueueTimeOut = 1000;
+  if (m_hints.type == STREAM_VIDEO)
+  {
+    iQueueTimeOut = (int)((m_hints.avgtimeperframe) / 1000);
+  }
+  else if (m_hints.type == STREAM_AUDIO)
+  {
+    //temporary timeout 1000 but still need to fix this
+  }
+  
+  MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
   do
   {
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
@@ -248,19 +253,26 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
     }
     else if (ret == MSGQ_TIMEOUT)
     {
+      // if we only wanted priority messages, this isn't a stall
+      if( iPriority )
+        continue;
       CLog::Log(LOGERROR, "%s Got MSGQ_TIMEOUT",__FUNCTION__);
       break;
         // if we only wanted priority messages, this isn't a stall
-      if( 0 )
-        break;
-      assert(0);
     }
-    if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
       m_packets.clear();
     
     }
-    else if(pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
+    {
+      m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+      //Duplicate called from demuxerthread
+      //if (m_speed != DVD_PLAYSPEED_PAUSE)
+      // SetProcessingFlag();
+    }
+    else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
@@ -285,7 +297,7 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
       if (cbData != pPacket->iSize)
         pSample->SetActualDataLength(pPacket->iSize);
       pSample->GetPointer(&pData);
-      
+
       pSample->SetTime(&tSmpStart, &tSmpEnd);
 	    pSample->SetMediaTime(NULL,NULL);
       
@@ -309,6 +321,10 @@ HRESULT CDSOutputPin::FillBuffer(IMediaSample *pSample)
 
   
   return S_OK;
+}
+HRESULT CDSOutputPin::DeliverEndOfStream(void)
+{
+  return CSourceStream::DeliverEndOfStream();
 }
 
 STDMETHODIMP CDSOutputPin::NonDelegatingQueryInterface(REFIID riid, void** ppv)

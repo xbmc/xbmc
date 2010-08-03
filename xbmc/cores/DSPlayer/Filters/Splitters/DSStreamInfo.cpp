@@ -317,7 +317,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     {
       mtype.pbFormat = (BYTE *)g_GuidHelper.CreateMPEG2VI(stream, avstream, &mtype.cbFormat, (ContainerFormat == "mpegts"));
     }
-
+    avgtimeperframe = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));;
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;
     height    = stream->iHeight;

@@ -49,13 +49,13 @@ public:
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
-  STDMETHODIMP Notify(IBaseFilter* pSender, Quality q){return E_NOTIMPL;}
+  STDMETHODIMP Notify(IBaseFilter* pSender, Quality q)  { return E_NOTIMPL; }
 
   // classes
   CDVDMessageQueue m_messageQueue;
-  
+  //function called from demuxer thread
+  void SetSpeed(int speed);
 
-  //CSourceSeeking
   HRESULT ChangeStart();
 	HRESULT ChangeStop();
 	HRESULT ChangeRate();
@@ -63,11 +63,11 @@ public:
 	HRESULT DeliverBeginFlush();
 	HRESULT DeliverEndFlush();
 
+  HRESULT DeliverEndOfStream(void);
+
   void Flush();
 	void EndStream();
 	void Reset();
-	void DisableWriteBlock();
-	void EnableWriteBlock();
 	void SetPauseMode(bool bPauseMode);
 protected:
   virtual HRESULT FillBuffer(IMediaSample *pSamp);
@@ -86,7 +86,9 @@ protected:
 	//void SendOneHeaderPerSample(binary* CodecPrivateData, int DataLen);
 	
 	void UpdateFromSeek();
-  CCritSec m_SeekLock;
+
+  int m_speed;
+
 private:
   CDSStreamInfo m_hints;
   std::list<DVDMessageListItem> m_packets;// Packet queue

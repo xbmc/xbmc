@@ -80,6 +80,9 @@ public:
   STDMETHODIMP SetRate(double dRate);
   STDMETHODIMP GetRate(double* pdRate);
   STDMETHODIMP GetPreroll(LONGLONG* pllPreroll);
+  //Called from demux thread
+  void         SetCurrentPosition(LONGLONG pos);
+  
 
   // IAMStreamSelect
   //STDMETHODIMP Count(DWORD* pcStreams);
@@ -97,6 +100,7 @@ private:
   HRESULT ChangeStop();
   HRESULT ChangeRate();
 	
+  CRefTime m_rtPosition;      // current position
   CRefTime m_rtDuration;      // length of stream
   CRefTime m_rtStart;         // source will start here
   CRefTime m_rtStop;          // source will stop here

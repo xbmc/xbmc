@@ -49,6 +49,7 @@ CDSDemuxerFilter::CDSDemuxerFilter(LPUNKNOWN pUnk, HRESULT *phr)
 {
   m_rtStop = _I64_MAX / 2;
   m_rtDuration = m_rtStop;
+  m_rtPosition = 0;
   m_dRateSeeking = 1.0;
 	
   m_dwSeekingCaps = AM_SEEKING_CanGetDuration		| AM_SEEKING_CanGetStopPos |
@@ -90,11 +91,11 @@ STDMETHODIMP CDSDemuxerFilter::Pause()
 	
 	if(m_State == State_Stopped)
 	{
-		m_pDemuxerThread->UnBlockProc(false);
+		m_pDemuxerThread->SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 	}
 	else if(m_State == State_Running)
 	{
-		m_pDemuxerThread->BlockProc();
+    m_pDemuxerThread->SetPlaySpeed(DVD_PLAYSPEED_PAUSE);
 	}
 
 	return __super::Pause();
@@ -103,7 +104,7 @@ STDMETHODIMP CDSDemuxerFilter::Pause()
 STDMETHODIMP CDSDemuxerFilter::Run(REFERENCE_TIME tStart)
 {
   CLog::DebugLog("%s",__FUNCTION__);
-  m_pDemuxerThread->UnBlockProc(false);
+  m_pDemuxerThread->SeekTo(false);
   return __super::Run(tStart);
 }
 
@@ -153,6 +154,7 @@ STDMETHODIMP CDSDemuxerFilter::Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* 
   }
   m_pDemuxerThread->Create();
 	m_rtDuration = m_rtStop = m_pDemuxerThread->GetDuration();
+
   return S_OK;
 }
 
@@ -166,8 +168,6 @@ STDMETHODIMP CDSDemuxerFilter::GetDuration(LONGLONG* pDuration)
   *pDuration = m_rtDuration;
   return S_OK;
 }
-
-// IMediaSeeking
 
 STDMETHODIMP CDSDemuxerFilter::GetCapabilities(DWORD* pCapabilities)
 {
@@ -190,7 +190,7 @@ STDMETHODIMP CDSDemuxerFilter::CheckCapabilities(DWORD* pCapabilities)
 }
 
 STDMETHODIMP CDSDemuxerFilter::QueryPreferredFormat(GUID* pFormat) {return GetTimeFormat(pFormat);}
-STDMETHODIMP CDSDemuxerFilter::GetCurrentPosition(LONGLONG* pCurrent) {return E_NOTIMPL;}
+STDMETHODIMP CDSDemuxerFilter::GetCurrentPosition(LONGLONG* pCurrent) {*pCurrent = m_rtStart;return S_OK;}
 STDMETHODIMP CDSDemuxerFilter::SetPositions(LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags)
 {
   DWORD StopPosBits = dwStopFlags & AM_SEEKING_PositioningBitsMask;
@@ -309,10 +309,23 @@ STDMETHODIMP CDSDemuxerFilter::ConvertTimeFormat(LONGLONG* pTarget, const GUID* 
 
 STDMETHODIMP CDSDemuxerFilter::GetPositions(LONGLONG* pCurrent, LONGLONG* pStop)
 {
+  CAutoLock lock(pStateLock());
+  
+  if (pCurrent)
+    *pCurrent = m_rtPosition;
+  if(pStop)
+    *pStop = m_rtStop;
+  return S_OK;
   if(pCurrent)
     if(FAILED(ConvertTimeFormat(pCurrent, &TIME_FORMAT_FRAME, *pCurrent, &TIME_FORMAT_MEDIA_TIME))) return E_FAIL;
   if(pStop)
     if(FAILED(ConvertTimeFormat(pStop, &TIME_FORMAT_FRAME, *pStop, &TIME_FORMAT_MEDIA_TIME))) return E_FAIL;
 
   return S_OK;
+}
+void CDSDemuxerFilter::SetCurrentPosition(LONGLONG pos)
+{
+  CAutoLock lock(pStateLock());
+  if (pos) 
+    m_rtPosition = pos;
 }
