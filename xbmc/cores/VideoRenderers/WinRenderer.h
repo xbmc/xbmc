@@ -120,13 +120,6 @@ enum RenderMethod
 #define FIELD_ODD 1
 #define FIELD_EVEN 2
 
-enum BufferMemoryType
-{
-  DontCare,
-  SystemMemory,
-  VideoMemory
-};
-
 struct SVideoBuffer
 {
   virtual ~SVideoBuffer() {}
@@ -146,7 +139,7 @@ struct SVideoPlane
 struct YUVBuffer : SVideoBuffer
 {
   ~YUVBuffer();
-  bool Create(BufferMemoryType memoryType, unsigned int width, unsigned int height);
+  bool Create(unsigned int width, unsigned int height);
   virtual void Release();
   virtual void StartDecode();
   virtual void StartRender();
@@ -155,7 +148,6 @@ struct YUVBuffer : SVideoBuffer
   SVideoPlane planes[MAX_PLANES];
 
 private:
-  BufferMemoryType m_memoryType;
   unsigned int     m_width;
   unsigned int     m_height;
 };

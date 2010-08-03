@@ -562,7 +562,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_bUseHQScaler)
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(false))
+    if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight))
     {
       m_IntermediateTarget.Release();
       m_IntermediateStencilSurface.Release();
@@ -575,7 +575,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (!m_bUseHQScaler) //fallback from HQ scalers and multipass creation above
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(true))
+    if (!m_colorShader->Create(true, m_sourceWidth, m_sourceHeight))
       SAFE_RELEASE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
   }
@@ -765,11 +765,11 @@ void CWinRenderer::Stage1(DWORD flags)
 {
   if (!m_bUseHQScaler)
   {
-      m_colorShader->Render(m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect,
-                              g_settings.m_currentVideoSettings.m_Contrast,
-                              g_settings.m_currentVideoSettings.m_Brightness,
-                              m_flags,
-                              (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
+      m_colorShader->Render(m_sourceRect, m_destRect,
+                            g_settings.m_currentVideoSettings.m_Contrast,
+                            g_settings.m_currentVideoSettings.m_Brightness,
+                            m_flags,
+                            (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
   {
@@ -786,11 +786,11 @@ void CWinRenderer::Stage1(DWORD flags)
     CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
 
-    m_colorShader->Render(m_sourceWidth, m_sourceHeight, srcRect, rtRect,
-                                g_settings.m_currentVideoSettings.m_Contrast,
-                                g_settings.m_currentVideoSettings.m_Brightness,
-                                m_flags,
-                                (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
+    m_colorShader->Render(srcRect, rtRect,
+                          g_settings.m_currentVideoSettings.m_Contrast,
+                          g_settings.m_currentVideoSettings.m_Brightness,
+                          m_flags,
+                          (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
     // Restore the render target
     pD3DDevice->SetRenderTarget(0, oldRT);
@@ -890,14 +890,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
   {
     YUVBuffer *buf = new YUVBuffer();
 
-    BufferMemoryType memoryType;
-
-    if (m_renderMethod == RENDER_SW)
-      memoryType = SystemMemory; // Need the textures in system memory for quick read and write
-    else
-      memoryType = DontCare;
-
-    if (!buf->Create(memoryType, m_sourceWidth, m_sourceHeight))
+    if (!buf->Create(m_sourceWidth, m_sourceHeight))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
       return false;
@@ -995,40 +988,14 @@ YUVBuffer::~YUVBuffer()
   Release();
 }
 
-bool YUVBuffer::Create(BufferMemoryType memoryType, unsigned int width, unsigned int height)
+bool YUVBuffer::Create(unsigned int width, unsigned int height)
 {
-  m_memoryType = memoryType;
   m_width = width;
   m_height = height;
 
-  D3DPOOL pool;
-  DWORD   usage;
-
-  switch(m_memoryType)
-  {
-  case DontCare:
-    pool  = g_Windowing.DefaultD3DPool();
-    usage = g_Windowing.DefaultD3DUsage();
-    break;
-
-  case SystemMemory:
-    pool  = D3DPOOL_SYSTEMMEM;
-    usage = 0;
-    break;
-
-  case VideoMemory:
-    pool  = D3DPOOL_DEFAULT;
-    usage = D3DUSAGE_DYNAMIC;
-    break;
-
-  default:
-    CLog::Log(LOGERROR, __FUNCTION__" - unknown memory type %d", m_memoryType);
-    return false;
-  }
-
-  if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, usage, D3DFMT_L8, pool)
-    || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, usage, D3DFMT_L8, pool)
-    || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, usage, D3DFMT_L8, pool))
+  if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+    || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+    || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
     return false;
 
   return true;
