@@ -680,8 +680,7 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  CStdString strHomePath, installPath = INSTALL_PATH,
-    binInstallPath = BIN_INSTALL_PATH;
+  CStdString strHomePath;
   strHomePath = ResolveExecutablePath();
 #ifdef _WIN32
   CStdStringW strPathW, strTargetW;
@@ -736,9 +735,12 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       strPath = strHomePath;
   }
 
+#if defined(_LINUX) && !defined(__APPLE__)
   /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
    * and BIN_INSTALL_PATH differ
    */
+  CStdString installPath = INSTALL_PATH;
+  CStdString binInstallPath = BIN_INSTALL_PATH;
   if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
   {
     int pos = strPath.length() - binInstallPath.length();
@@ -750,6 +752,7 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       strPath.append(installPath);
     }
   }
+#endif
 }
 
 CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
