@@ -31,9 +31,6 @@
 #include "../xbmc/FileSystem/Directory.h"
 #include "tinyXML/tinyxml.h"
 #include "addons/Skin.h"
-#ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
-#endif
 
 using namespace std;
 using namespace XFILE;
@@ -57,46 +54,17 @@ void CGUIAudioManager::Initialize(int iDevice)
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return;
 
-  if (iDevice==CAudioContext::DEFAULT_DEVICE)
-  {
-    CSingleLock lock(m_cs);
-    
-    if (m_bInitialized)
-      return;
-
-    CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
-#ifdef _WIN32
-    bool bAudioOnAllSpeakers=false;
-    g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
-    g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-    m_bInitialized = true;
-#elif defined(HAS_SDL_AUDIO)
-    Mix_CloseAudio();
-    if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
-       CLog::Log(LOGERROR, "Unable to open audio mixer");
-    m_bInitialized = true;
-#endif
-  }
+  CSingleLock lock(m_cs);
+  m_bInitialized = true;
 }
 
 void CGUIAudioManager::DeInitialize(int iDevice)
 {
-  if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
-
   CSingleLock lock(m_cs);
 
   if (!m_bInitialized)
     return;
 
-  CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
-
-  if (m_actionSound) //  Wait for finish when an action sound is playing
-    while(m_actionSound->IsPlaying()) {}
-
-  Stop();
-#ifdef HAS_SDL_AUDIO
-  Mix_CloseAudio();
-#endif
   m_bInitialized = false;
 }
 
@@ -112,8 +80,7 @@ void CGUIAudioManager::Stop()
   for (windowSoundsMap::iterator it=m_windowSounds.begin();it!=m_windowSounds.end();it++)
   {
     CGUISound* sound=it->second;
-    if (sound->IsPlaying())
-      sound->Stop();
+    sound->Stop();
 
     delete sound;
   }
@@ -122,8 +89,7 @@ void CGUIAudioManager::Stop()
   for (pythonSoundsMap::iterator it1=m_pythonSounds.begin();it1!=m_pythonSounds.end();it1++)
   {
     CGUISound* sound=it1->second;
-    if (sound->IsPlaying())
-      sound->Stop();
+    sound->Stop();
 
     delete sound;
   }

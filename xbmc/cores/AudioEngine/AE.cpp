@@ -135,6 +135,15 @@ void CAE::StopSound(CAESound *sound)
   }
 }
 
+bool CAE::IsPlaying(CAESound *sound)
+{
+  CSingleLock lock(m_critSection);
+  list<SoundState>::iterator itt;
+  for(itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    if ((*itt).owner == sound) return true;
+  return false;
+}
+
 void CAE::RemoveStream(CAEStream *stream)
 {
   CSingleLock lock(m_critSection);
