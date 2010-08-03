@@ -39,8 +39,9 @@ public:
   void   Play();
   void   Stop();
   bool   IsPlaying();
-  void   SetVolume(float level) { m_volume = level; }
-  float  GetVolume()            { return m_volume ; }
+
+  void   SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
+  float  GetVolume()             { return m_volume ; }
   float* GetFrame(unsigned int frame);
 private:
   CCriticalSection m_critSection;

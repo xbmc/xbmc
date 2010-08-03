@@ -253,7 +253,7 @@ float* CAESound::GetFrame(unsigned int frame)
   return &m_samples[frame * m_channelCount];
 }
 
-void CAESound::IsPlaying()
+bool CAESound::IsPlaying()
 {
   if (!m_valid) return false;
   return AE.IsPlaying(this);

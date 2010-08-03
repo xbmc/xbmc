@@ -209,8 +209,9 @@ void CAE::Run()
       }
 
       /* mix the frame into the output */
+      float volume = (*sitt).owner->GetVolume();
       for(i = 0; i < m_channelCount; ++i)
-        out[i] += frame[i];
+        out[i] += frame[i] * volume;
       ++div;
     }
 
