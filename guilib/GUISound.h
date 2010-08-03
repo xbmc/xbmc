@@ -31,11 +31,13 @@ public:
   virtual ~CGUISound();
 
   bool        Load(const CStdString& strFile);
+  bool        CompareFile(const CStdString& strFile);
   void        Play();
   void        Stop();
   bool        IsPlaying();
   void        SetVolume(float level);
 
 private:
+  CStdString   m_file;
   CAESound    *m_sound;
 };
