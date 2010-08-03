@@ -27,6 +27,7 @@
 
 #include "AEAudioFormat.h"
 #include "AEStream.h"
+#include "AESound.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AudioRenderers/IAudioRenderer.h"
@@ -43,6 +44,7 @@ enum AEState
 };
 
 class CAEStream;
+class CAESound;
 class CAE : public IRunnable
 {
 public:
@@ -54,8 +56,6 @@ public:
     return *instance;
   }
 
-  bool         Initialize();
-  void         DeInitialize();
   enum AEState GetState();
   virtual void Run();
   void         Stop();
@@ -63,6 +63,8 @@ public:
 
   /* returns a new stream for data in the specified format */
   CAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
+  void PlaySound(CAESound *sound);
+  void StopSound(CAESound *sound);
 
   /* these are for the streams so they can provide compatible data */
   unsigned int        GetSampleRate   () {return m_format.m_sampleRate   ;}
@@ -77,6 +79,8 @@ private:
   /* these are private as the class is a singleton */
   CAE();
   virtual ~CAE();
+  bool Initialize();
+  void DeInitialize();
 
   enum AEState              m_state;
 
@@ -90,8 +94,15 @@ private:
   AEAudioFormat		    m_format;
   CAEConvert::AEConvertFrFn m_convertFn;
 
+  /* currently playing sounds */
+  typedef struct {
+    CAESound     *owner;
+    unsigned int  frame;
+  } SoundState;
+  list<SoundState>          m_sounds;
+
   /* the streams, output buffer and output buffer fill size */
-  list<CAEStream*>         m_streams;
+  list<CAEStream*>          m_streams;
   uint8_t                  *m_buffer;
   unsigned int              m_bufferSize;
 
