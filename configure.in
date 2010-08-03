@@ -1886,6 +1886,8 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
       --disable-skyrocket
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
