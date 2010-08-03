@@ -36,8 +36,6 @@ CAE::CAE():
 
 CAE::~CAE()
 {
-  DeInitialize();
-
   /* free the streams */
   while(!m_streams.empty())
   {
@@ -49,13 +47,12 @@ CAE::~CAE()
 
 bool CAE::Initialize()
 {
-  DeInitialize();
-  CSingleLock lock(m_critSection);
-
   /* open the renderer */
   m_chLayout = CAEUtil::GetStdChLayout((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"));
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout")));
+  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s",
+    CAEUtil::GetStdChLayoutName((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"))
+  );
 
   m_renderer = new CALSADirectSound();
   if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
@@ -83,12 +80,6 @@ bool CAE::Initialize()
 
 void CAE::DeInitialize()
 {
-  enum AEState s = GetState();
-  if (s == AE_STATE_INVALID) return;
-  if (s == AE_STATE_RUN) Stop();
-
-  CSingleLock lock(m_critSection);
-
   m_state = AE_STATE_SHUTDOWN;
   if (m_renderer)
   {
@@ -115,13 +106,33 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
     CAEUtil::DataFormatToBits(dataFormat),
     sampleRate,
     channelCount,
-    CAEUtil::GetChLayoutStr(channelLayout)
+    CAEUtil::GetChLayoutStr(channelLayout).c_str()
   );
 
   CSingleLock lock(m_critSection);
   CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout);
   m_streams.push_back(stream);
   return stream;
+}
+
+void CAE::PlaySound(CAESound *sound)
+{
+   CSingleLock lock(m_critSection);
+   m_sounds.push_back((SoundState){
+      owner: sound,
+      frame: 0
+   });
+}
+
+void CAE::StopSound(CAESound *sound)
+{
+  CSingleLock lock(m_critSection);
+  list<SoundState>::iterator itt;
+  for(itt = m_sounds.begin(); itt != m_sounds.end(); )
+  {
+    if ((*itt).owner == sound) m_sounds.erase(itt);
+    else ++itt;
+  }
 }
 
 void CAE::RemoveStream(CAEStream *stream)
@@ -133,6 +144,7 @@ void CAE::RemoveStream(CAEStream *stream)
 void CAE::Run()
 {
   list<CAEStream*>::iterator itt;
+  list<SoundState>::iterator sitt;
   CAEStream *stream;
   
   float        out[m_channelCount];
@@ -140,9 +152,16 @@ void CAE::Run()
   unsigned int i;
 
   CSingleLock lock(m_critSection);
+  if (!AE.Initialize())
+  {
+    CLog::Log(LOGERROR, "CAE::Run - Failed to initialize");
+    return;
+  }
+
   m_state = AE_STATE_RUN;
   lock.Leave();
 
+  CLog::Log(LOGINFO, "CAE::Run - Thread Started");
   while(GetState() == AE_STATE_RUN)
   {
 
@@ -153,6 +172,7 @@ void CAE::Run()
         float buffer[frames * m_format.m_channelCount];
         m_remap.Remap((float*)m_buffer, buffer, frames);
 
+        /* this call must block! */
         int wrote = m_renderer->AddPackets(buffer, sizeof(buffer));
         if (!wrote)
 		continue;
@@ -168,6 +188,24 @@ void CAE::Run()
     div = 1;
 
     lock.Enter();
+    /* mix in any sounds */
+    for(sitt = m_sounds.begin(); sitt != m_sounds.end(); )
+    {
+      float *frame = (*sitt).owner->GetFrame((*sitt).frame++);
+      /* if no more frames, remove it from the list */
+      if (frame == NULL)
+      {
+        m_sounds.erase(sitt);
+        continue;
+      }
+
+      /* mix the frame into the output */
+      for(i = 0; i < m_channelCount; ++i)
+        out[i] += frame[i];
+      ++div;
+    }
+
+    /* mix in any running streams */
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     {
       if (m_state != AE_STATE_RUN) break;
@@ -180,8 +218,9 @@ void CAE::Run()
       if (!frame)
         continue;
 
+      float volume = stream->GetVolume();
       for(i = 0; i < m_channelCount; ++i)
-        out[i] += frame[i];
+        out[i] += frame[i] * volume;
 
       ++div;
     }
@@ -204,9 +243,11 @@ void CAE::Run()
     }
   }
 
-  m_renderer->Stop();
+  CLog::Log(LOGINFO, "CAE::Run - Thread Terminating");
   lock.Enter();
-  m_state = AE_STATE_READY;
+  m_renderer->Stop();
+  DeInitialize();
+  m_state = AE_STATE_INVALID;
   lock.Leave();
 }
 
