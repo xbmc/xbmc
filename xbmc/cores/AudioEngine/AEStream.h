@@ -52,8 +52,9 @@ public:
   void Drain   ();
   void Flush   ();
 
-  void SetVolume(int volume);
-  void SetDynamicRangeCompression(int drc);
+  float GetVolume()             { return m_volume;   }
+  void  SetVolume(float volume) { m_volume = volume; }
+  void  SetDynamicRangeCompression(int drc);
 
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
@@ -77,6 +78,7 @@ private:
   float   *m_convertBuffer; /* buffer for converted data */
   bool     m_valid;         /* true if the stream is valid */
   CAERemap m_remap;         /* the remapper */
+  float    m_volume;        /* the volume level */
 
   CAEConvert::AEConvertToFn m_convertFn;
 

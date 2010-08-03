@@ -46,7 +46,7 @@ const char* CAEUtil::GetChName(const AEChannel ch)
   return channels[ch];
 }
 
-const char* CAEUtil::GetChLayoutStr(const AEChLayout src)
+CStdString CAEUtil::GetChLayoutStr(const AEChLayout src)
 {
   if (src == NULL) return "NULL";
   unsigned int i = 0;
@@ -58,7 +58,7 @@ const char* CAEUtil::GetChLayoutStr(const AEChLayout src)
       s.append(",");
   }
 
-  return s.c_str();
+  return s;
 }
 
 AEChLayout CAEUtil::GetStdChLayout(const enum AEStdChLayout layout)
