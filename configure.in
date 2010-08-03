@@ -1690,6 +1690,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \
       --host=$host_alias \
       --build=$build_alias \
