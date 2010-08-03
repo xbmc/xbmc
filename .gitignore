@@ -439,9 +439,6 @@ config.log
 # /xbmc/cores/dvdplayer/Codecs
 /xbmc/cores/dvdplayer/Codecs/Makefile
 
-# /xbmc/cores/dvdplayer/Codecs/libvpx/
-/xbmc/cores/dvdplayer/Codecs/libvpx/
-
 # /xbmc/cores/dvdplayer/Codecs/ffmpeg/
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.err

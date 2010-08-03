@@ -94,7 +94,6 @@ prepare_orig_tarball() {
         rm -rf xbmc-$XBMC_VERSION/lib/librtmp
         rm -rf xbmc-$XBMC_VERSION/lib/libSDL-OSX
         rm -rf xbmc-$XBMC_VERSION/lib/libssh_win32
-        rm -rf xbmc-$XBMC_VERSION/lib/libvpx
         rm -rf xbmc-$XBMC_VERSION/lib/pcre
         rm -rf xbmc-$XBMC_VERSION/libmicrohttpd_win32
         rm -rf xbmc-$XBMC_VERSION/libmysql_win32
