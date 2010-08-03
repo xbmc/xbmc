@@ -1920,7 +1920,7 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" 
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
 
