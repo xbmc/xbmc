@@ -680,7 +680,8 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  CStdString strHomePath;
+  CStdString strHomePath, installPath = INSTALL_PATH,
+    binInstallPath = BIN_INSTALL_PATH;
   strHomePath = ResolveExecutablePath();
 #ifdef _WIN32
   CStdStringW strPathW, strTargetW;
@@ -733,6 +734,21 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       strPath = strHomePath.Left(last_sep);
     else
       strPath = strHomePath;
+  }
+
+  /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
+   * and BIN_INSTALL_PATH differ
+   */
+  if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
+  {
+    int pos = strPath.length() - binInstallPath.length();
+    CStdString tmp = strPath;
+    tmp.erase(0, pos);
+    if (!tmp.compare(binInstallPath))
+    {
+      strPath.erase(pos, strPath.length());
+      strPath.append(installPath);
+    }
   }
 }
 
