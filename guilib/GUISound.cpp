@@ -70,7 +70,7 @@ void CGUISound::Stop()
 }
 
 // \brief Sets the volume of the sound
-void CGUISound::SetVolume(int level)
+void CGUISound::SetVolume(float level)
 {
   if (m_sound) m_sound->SetVolume(level);
 }

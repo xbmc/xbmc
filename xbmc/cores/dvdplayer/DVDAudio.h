@@ -58,7 +58,7 @@ public:
   void RegisterAudioCallback(IAudioCallback* pCallback);
   void UnRegisterAudioCallback();
 
-  void SetVolume(int iVolume);
+  void SetVolume(float volume);
   void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();

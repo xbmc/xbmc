@@ -43,7 +43,8 @@ CAESound::CAESound(const CStdString &filename) :
   m_valid       (false),
   m_channelCount(0    ),
   m_samples     (NULL ),
-  m_frameCount  (0    )
+  m_frameCount  (0    ),
+  m_volume      (1.0f )
 {
   m_filename = filename;
 }

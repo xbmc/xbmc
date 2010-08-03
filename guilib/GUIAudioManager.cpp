@@ -386,18 +386,18 @@ void CGUIAudioManager::Enable(bool bEnable)
 }
 
 // \brief Sets the volume of all playing sounds
-void CGUIAudioManager::SetVolume(int iLevel)
+void CGUIAudioManager::SetVolume(float level)
 {
   CSingleLock lock(m_cs);
 
   if (m_actionSound)
-    m_actionSound->SetVolume(iLevel);
+    m_actionSound->SetVolume(level);
 
   windowSoundsMap::iterator it=m_windowSounds.begin();
   while (it!=m_windowSounds.end())
   {
     if (it->second)
-      it->second->SetVolume(iLevel);
+      it->second->SetVolume(level);
 
     ++it;
   }
@@ -406,7 +406,7 @@ void CGUIAudioManager::SetVolume(int iLevel)
   while (it1!=m_pythonSounds.end())
   {
     if (it1->second)
-      it1->second->SetVolume(iLevel);
+      it1->second->SetVolume(level);
 
     ++it1;
   }

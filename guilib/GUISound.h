@@ -34,7 +34,7 @@ public:
   void        Play();
   void        Stop();
   bool        IsPlaying();
-  void        SetVolume(int level);
+  void        SetVolume(float level);
 
 private:
   CAESound    *m_sound;
