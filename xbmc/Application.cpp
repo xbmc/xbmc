@@ -2615,7 +2615,7 @@ bool CApplication::OnAction(const CAction &action)
       }
 
       SetHardwareVolume(volume);
-      g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+      g_audioManager.SetVolume(volume);
     }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
@@ -4900,7 +4900,7 @@ void CApplication::SetVolume(int iPercent)
   // convert the percentage to a mB (milliBell) value (*100 for dB)
   long hardwareVolume = (long)((float)iPercent * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
   SetHardwareVolume(hardwareVolume);
-  g_audioManager.SetVolume(iPercent);
+  g_audioManager.SetVolume(hardwareVolume);
 }
 
 void CApplication::SetHardwareVolume(long hardwareVolume)

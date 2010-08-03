@@ -261,10 +261,10 @@ void CDVDAudio::Drain()
     m_pAudioStream->Drain();
 }
 
-void CDVDAudio::SetVolume(int iVolume)
+void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioStream) m_pAudioStream->SetVolume(iVolume);
+  if (m_pAudioStream) m_pAudioStream->SetVolume(volume);
 }
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)

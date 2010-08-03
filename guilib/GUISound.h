@@ -34,7 +34,7 @@ public:
   void        Play();
   void        Stop();
   bool        IsPlaying();
-  void        SetVolume(int level);
+  void        SetVolume(float level);
   void        Wait(uint32_t millis = 500);
 
 private:
