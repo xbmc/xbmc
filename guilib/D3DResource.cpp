@@ -123,7 +123,9 @@ void CD3DTexture::SaveTexture()
   {
     delete[] m_data;
     m_data = NULL;
-    if (!(m_usage & D3DUSAGE_RENDERTARGET) && !(m_usage & D3DUSAGE_DEPTHSTENCIL))
+    if(!(m_usage & D3DUSAGE_RENDERTARGET)
+    && !(m_usage & D3DUSAGE_DEPTHSTENCIL)
+    && !(m_pool == D3DPOOL_DEFAULT && (m_usage & D3DUSAGE_DYNAMIC) == 0))
     {
       D3DLOCKED_RECT lr;
       if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
