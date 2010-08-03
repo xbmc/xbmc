@@ -1827,6 +1827,8 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
