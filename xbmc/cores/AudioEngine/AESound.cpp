@@ -231,7 +231,7 @@ bool CAESound::Initialize()
   /* if we got here, the file was valid and we have the data but it may need re-sampling still */
   if (sampleRate != AE.GetSampleRate())
   {
-    unsigned int space = ((samples / sampleRate) * AE.GetSampleRate()) * 2;
+    unsigned int space = (unsigned int)((((float)samples / (float)sampleRate) * (float)AE.GetSampleRate()) * 2.0f);
     SRC_DATA data;
     data.data_in       = m_samples;
     data.input_frames  = m_frameCount;
