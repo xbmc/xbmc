@@ -69,12 +69,12 @@ bool CAE::Initialize()
   m_bufferSize   = 0;
 
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
-  m_state        = AE_STATE_READY;
 
   list<CAEStream*>::iterator itt;
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     (*itt)->Initialize();
 
+  m_state = AE_STATE_READY;
   return true;
 }
 
@@ -152,14 +152,6 @@ void CAE::RemoveStream(CAEStream *stream)
 
 void CAE::Run()
 {
-  list<CAEStream*>::iterator itt;
-  list<SoundState>::iterator sitt;
-  CAEStream *stream;
-  
-  float        out[m_channelCount];
-  unsigned int div;
-  unsigned int i;
-
   CSingleLock lock(m_critSection);
   if (!AE.Initialize())
   {
@@ -169,6 +161,14 @@ void CAE::Run()
 
   m_state = AE_STATE_RUN;
   lock.Leave();
+
+  list<CAEStream*>::iterator itt;
+  list<SoundState>::iterator sitt;
+  CAEStream *stream;
+  
+  float        out[m_channelCount];
+  unsigned int div;
+  unsigned int i;
 
   CLog::Log(LOGINFO, "CAE::Run - Thread Started");
   while(GetState() == AE_STATE_RUN)
@@ -266,14 +266,12 @@ void CAE::Stop()
   CSingleLock lock(m_critSection);
   if (m_state == AE_STATE_READY) return;
   m_state = AE_STATE_STOP;
-  lock.Leave();
 }
 
 float CAE::GetDelay()
 {
   CSingleLock lock(m_critSection);
   if (m_state == AE_STATE_INVALID) return 0.0f;
-
   return m_renderer->GetDelay() + m_bufferSize / m_frameSize / m_format.m_sampleRate;
 }
 
