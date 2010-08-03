@@ -267,12 +267,6 @@ void CDVDAudio::SetVolume(float volume)
   if (m_pAudioStream) m_pAudioStream->SetVolume(volume);
 }
 
-void CDVDAudio::SetDynamicRangeCompression(long drc)
-{
-  CSingleLock lock (m_critSection);
-  if (m_pAudioStream) m_pAudioStream->SetDynamicRangeCompression(drc);
-}
-
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);

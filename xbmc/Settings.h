@@ -205,13 +205,11 @@ public:
 
   int iAdditionalSubtitleDirectoryChecked;
 
-  int m_HttpApiBroadcastPort;
-  int m_HttpApiBroadcastLevel;
-  int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
-  int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
-  int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
-  bool m_bMute;
-  int m_iSystemTimeTotalUp;    // Uptime in minutes!
+  int   m_HttpApiBroadcastPort;
+  int   m_HttpApiBroadcastLevel;
+  float m_fVolumeLevel;          // measured in milliBels -60dB -> 0dB range.
+  bool  m_bMute;
+  int   m_iSystemTimeTotalUp;    // Uptime in minutes!
 
   CStdString m_userAgent;
 

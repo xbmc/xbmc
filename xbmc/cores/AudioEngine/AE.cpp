@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "GUISettings.h"
@@ -47,6 +48,8 @@ CAE::~CAE()
 
 bool CAE::Initialize()
 {
+  m_volume = g_settings.m_fVolumeLevel;
+
   /* open the renderer */
   m_chLayout = CAEUtil::GetStdChLayout((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"));
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
@@ -210,12 +213,15 @@ void CAE::Run()
         continue;
       }
 
-      /* mix the frame into the output */
-      float volume = (*sitt).owner->GetVolume();
-      for(i = 0; i < m_channelCount; ++i)
-        out[i] += frame[i] * volume;
+      /* we still need to take frames when muted */
+      if (!g_settings.m_bMute) {
+        /* mix the frame into the output */
+        float volume = (*sitt).owner->GetVolume();
+        for(i = 0; i < m_channelCount; ++i)
+          out[i] += frame[i] * volume;
+        ++div;
+      }
 
-      ++div;
       ++sitt;
     }
 
@@ -232,13 +238,25 @@ void CAE::Run()
       if (!frame)
         continue;
 
-      float volume = stream->GetVolume();
-      for(i = 0; i < m_channelCount; ++i)
-        out[i] += frame[i] * volume;
-
-      ++div;
+      /* we still need to take frames when muted */
+      if (!g_settings.m_bMute) {
+        float volume = stream->GetVolume();
+        for(i = 0; i < m_channelCount; ++i)
+          out[i] += frame[i] * volume;
+        ++div;
+      }
     }
     lock.Leave();
+
+    /* if muted just zero the data and continue */
+    if (g_settings.m_bMute) {
+      memset(&m_buffer[m_bufferSize], 0, sizeof(out));
+      m_bufferSize += sizeof(out);
+      continue;
+    }
+
+    for(i = 0; i < m_channelCount; ++i)
+      out[i] *= m_volume;
 
     if (div > 1)
     {
@@ -279,4 +297,16 @@ float CAE::GetDelay()
   return m_renderer->GetDelay() + m_bufferSize / m_frameSize / m_format.m_sampleRate;
 }
 
+float CAE::GetVolume()
+{
+  CSingleLock lock(m_critSection);
+  return m_volume;
+}
+
+void CAE::SetVolume(float volume)
+{
+  CSingleLock lock(m_critSection);
+  g_settings.m_fVolumeLevel = volume;
+  m_volume = volume;
+}
 

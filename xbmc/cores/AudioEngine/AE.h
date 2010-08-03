@@ -61,6 +61,9 @@ public:
   void         Stop();
   float        GetDelay();
 
+  float        GetVolume();
+  void         SetVolume(float volume);
+
   /* returns a new stream for data in the specified format */
   CAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
   void PlaySound(CAESound *sound);
@@ -84,6 +87,7 @@ private:
   void DeInitialize();
 
   enum AEState              m_state;
+  float                     m_volume;
 
   /* the desired channelCount, layout and frameSize */
   unsigned int              m_channelCount;

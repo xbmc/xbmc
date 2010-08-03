@@ -347,7 +347,7 @@ protected:
 
   CThread *m_aeThread;
 
-  void SetHardwareVolume(long hardwareVolume);
+  void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 

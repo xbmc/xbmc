@@ -98,9 +98,7 @@ void CSettings::Initialize()
   m_bStartVideoWindowed = false;
   m_bAddonAutoUpdate = false;
 
-  m_nVolumeLevel = 0;
-  m_dynamicRangeCompressionLevel = 0;
-  m_iPreMuteVolumeLevel = 0;
+  m_fVolumeLevel = 1.0f;
   m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
@@ -719,8 +717,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
-    GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
-    GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
+    GetFloat  (pElement, "volumelevel", m_fVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -883,8 +880,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement volumeNode("audio");
   pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
-  XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
-  XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
+  XMLUtils::SetFloat(pNode, "volumelevel", m_fVolumeLevel);
 
   SaveCalibration(pRoot);
 
