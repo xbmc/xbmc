@@ -68,6 +68,8 @@ public:
 
   void UpdateItem(const CFileItem *item);
 
+  const CStdString& ResolveURL(const CFileItemPtr &item) const;
+
 protected:
   CStdString m_strPlayListName;
   CStdString m_strBasePath;
