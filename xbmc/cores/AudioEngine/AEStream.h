@@ -53,7 +53,7 @@ public:
   void Flush   ();
 
   float GetVolume()             { return m_volume;   }
-  void  SetVolume(float volume) { m_volume = volume; }
+  void  SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   void  SetDynamicRangeCompression(int drc);
 
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
