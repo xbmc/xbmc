@@ -65,6 +65,7 @@ public:
   CAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
   void PlaySound(CAESound *sound);
   void StopSound(CAESound *sound);
+  bool IsPlaying(CAESound *sound);
 
   /* these are for the streams so they can provide compatible data */
   unsigned int        GetSampleRate   () {return m_format.m_sampleRate   ;}

@@ -37,6 +37,10 @@ public:
   bool Initialize();
 
   void   Play();
+  void   Stop();
+  bool   IsPlaying();
+  void   SetVolume(float level) { m_volume = level; }
+  float  GetVolume()            { return m_volume ; }
   float* GetFrame(unsigned int frame);
 private:
   CCriticalSection m_critSection;
@@ -45,6 +49,7 @@ private:
   unsigned int     m_channelCount;
   float           *m_samples;
   unsigned int     m_frameCount;
+  float            m_volume;
 };
 
 #endif

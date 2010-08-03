@@ -229,9 +229,6 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
-#endif
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
@@ -546,10 +543,6 @@ bool CApplication::Create()
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
-#ifdef HAS_SDL_AUDIO
-  sdlFlags |= SDL_INIT_AUDIO;
-#endif
-
 #ifdef HAS_SDL_JOYSTICK
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
@@ -605,14 +598,10 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
-  /* Initalize the AudioEngine */
-  AE.Initialize();
-  if (AE.GetState() == AE_STATE_READY)
-  {
-    CLog::Log(LOGINFO, "Starting audio thread");
-    m_aeThread = new CThread(&AE);
-    m_aeThread->Create();
-  }
+   /* Initalize the AudioEngine */
+  CLog::Log(LOGINFO, "Starting audio thread");
+  m_aeThread = new CThread(&AE);
+  m_aeThread->Create();
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
@@ -2626,11 +2615,7 @@ bool CApplication::OnAction(const CAction &action)
       }
 
       SetHardwareVolume(volume);
-  #ifndef HAS_SDL_AUDIO
-      g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
-  #else
       g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-  #endif
     }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
@@ -3239,7 +3224,6 @@ void CApplication::Stop()
     AE.Stop();
     m_aeThread->StopThread(true);
     delete m_aeThread;
-    AE.DeInitialize();
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
@@ -4344,12 +4328,8 @@ void CApplication::RestartAE()
 {
     AE.Stop();
     m_aeThread->StopThread(true);
-
-    if (AE.Initialize())
-    {
-      CLog::Log(LOGINFO, "Starting audio thread");
-      m_aeThread->Create();
-    }
+    CLog::Log(LOGINFO, "Starting audio thread");
+    m_aeThread->Create();
 }
 
 void CApplication::CheckShutdown()
