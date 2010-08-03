@@ -184,11 +184,6 @@ bool CWinShader::Execute()
   if (!m_effect.End())
     CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
 
-  pD3DDevice->SetPixelShader( NULL );
-
-  for (unsigned int i=0; i < m_boundTexturesCount; i++)
-    pD3DDevice->SetTexture(i, NULL);
-
   return true;
 }
 
@@ -199,7 +194,6 @@ bool CYUV2RGBShader::Create(bool singlepass, unsigned int sourceWidth, unsigned 
   ReleaseInternal();
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 3;
 
   DefinesMap defines;
   if (singlepass)
@@ -370,7 +364,6 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
   }
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 2;
 
   if(!LoadEffect(effectString, NULL))
   {

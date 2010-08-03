@@ -62,7 +62,6 @@ protected:
   virtual bool Execute();
 
   CD3DEffect   m_effect;
-  unsigned int m_boundTexturesCount;
 
 private:
   CD3DVertexBuffer m_vb;
