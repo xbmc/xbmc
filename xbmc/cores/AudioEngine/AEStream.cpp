@@ -27,6 +27,7 @@
 CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout):
   m_convertBuffer  (NULL ),
   m_valid          (false),
+  m_volume         (1.0f ),
   m_convertFn      (NULL ),
   m_frameBuffer    (NULL ),
   m_frameBufferSize(0    ),
@@ -320,11 +321,6 @@ void CAEStream::Flush()
   /* reset our counts */
   m_frameBufferSize = 0;
   m_framesBuffered  = 0;
-}
-
-void CAEStream::SetVolume(int volume)
-{
-  //FIXME
 }
 
 void CAEStream::SetDynamicRangeCompression(int drc)

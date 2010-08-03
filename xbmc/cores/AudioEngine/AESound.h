@@ -22,16 +22,8 @@
 #ifndef AESOUND_H
 #define AESOUND_H
 
-#include <samplerate.h>
-#include <list>
-
 #include "StdString.h"
 #include "utils/CriticalSection.h"
-
-#include "AE.h"
-#include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
 
 using namespace std;
 

@@ -23,13 +23,14 @@
 #define AEUTIL_H
 
 #include "AEAudioFormat.h"
+#include "StdString.h"
 
 class CAEUtil
 {
 public:
   static unsigned int            GetChLayoutCount  (const AEChLayout src);
   static const char*             GetChName         (const AEChannel  ch );
-  static const char*             GetChLayoutStr    (const AEChLayout src);
+  static CStdString              GetChLayoutStr    (const AEChLayout src);
   static AEChLayout              GetStdChLayout    (const enum AEStdChLayout layout);
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
