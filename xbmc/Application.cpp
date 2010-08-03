@@ -3689,9 +3689,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       SetPlaySpeed(iSpeed);
     }
 
+    if( IsPlayingAudio() )
+    {
+      if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+    }
+
 #ifdef HAS_VIDEO_PLAYBACK
     if( IsPlayingVideo() )
     {
+      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+
       // if player didn't manange to switch to fullscreen by itself do it here
       if( options.fullscreen && g_renderManager.IsStarted()
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
