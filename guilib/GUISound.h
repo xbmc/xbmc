@@ -31,6 +31,7 @@ public:
   virtual ~CGUISound();
 
   bool        Load(const CStdString& strFile);
+  bool        CompareFile(const CStdString& strFile);
   void        Play();
   void        Stop();
   bool        IsPlaying();
@@ -38,5 +39,6 @@ public:
   void        Wait(uint32_t millis = 500);
 
 private:
+  CStdString   m_file;
   CAESound    *m_sound;
 };

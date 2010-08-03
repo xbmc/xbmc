@@ -39,6 +39,7 @@ CGUISound::~CGUISound()
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
+  m_file = strFile;
   m_sound = new CAESound(strFile);
   if (!m_sound->Initialize())
   {
@@ -48,6 +49,11 @@ bool CGUISound::Load(const CStdString& strFile)
   }
 
   return true;
+}
+
+bool CGUISound::CompareFile(const CStdString& strFile)
+{
+  return m_sound && m_file.Equals(strFile);
 }
 
 // \brief Starts playback of the sound

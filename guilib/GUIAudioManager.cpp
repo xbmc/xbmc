@@ -148,8 +148,16 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   if (it==m_actionSoundMap.end())
     return;
 
+  CStdString filename = CUtil::AddFileToFolder(m_strMediaDir, it->second);
+
   if (m_actionSound)
   {
+    if (m_actionSound->CompareFile(filename))
+    {
+      m_actionSound->Play();
+      return;
+    }
+
     delete m_actionSound;
     m_actionSound=NULL;
   }
@@ -194,19 +202,27 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (strFile.IsEmpty())
     return;
 
+  CStdString filename = CUtil::AddFileToFolder(m_strMediaDir, strFile);
+
   //  One sound buffer for each window
   windowSoundsMap::iterator itsb=m_windowSounds.find(id);
   if (itsb!=m_windowSounds.end())
   {
     CGUISound* sound=itsb->second;
-    if (sound->IsPlaying())
-      sound->Stop();
+    if (sound->CompareFile(filename))
+    {
+      sound->Play();
+      return;
+    }
+    else
+      if (sound->IsPlaying())
+        sound->Stop();
     delete sound;
     m_windowSounds.erase(itsb++);
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(CUtil::AddFileToFolder(m_strMediaDir, strFile)))
+  if (!sound->Load(filename))
   {
     delete sound;
     return;
