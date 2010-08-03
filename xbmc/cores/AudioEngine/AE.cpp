@@ -130,7 +130,7 @@ void CAE::StopSound(CAESound *sound)
   list<SoundState>::iterator itt;
   for(itt = m_sounds.begin(); itt != m_sounds.end(); )
   {
-    if ((*itt).owner == sound) m_sounds.erase(itt);
+    if ((*itt).owner == sound) itt = m_sounds.erase(itt);
     else ++itt;
   }
 }
@@ -204,7 +204,7 @@ void CAE::Run()
       /* if no more frames, remove it from the list */
       if (frame == NULL)
       {
-        m_sounds.erase(sitt);
+        sitt = m_sounds.erase(sitt);
         continue;
       }
 
