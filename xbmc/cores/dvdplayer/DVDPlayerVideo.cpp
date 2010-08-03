@@ -583,7 +583,7 @@ void CDVDPlayerVideo::Process()
               sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
             }
 
-            if (sPostProcessType)
+            if (!sPostProcessType.empty())
             {
               mPostProcess.SetType(sPostProcessType);
               if (mPostProcess.Process(&picture))
