@@ -200,6 +200,8 @@ void CAE::Run()
     /* mix in any sounds */
     for(sitt = m_sounds.begin(); sitt != m_sounds.end(); )
     {
+      if (m_state != AE_STATE_RUN) break;
+
       float *frame = (*sitt).owner->GetFrame((*sitt).frame++);
       /* if no more frames, remove it from the list */
       if (frame == NULL)
@@ -212,7 +214,9 @@ void CAE::Run()
       float volume = (*sitt).owner->GetVolume();
       for(i = 0; i < m_channelCount; ++i)
         out[i] += frame[i] * volume;
+
       ++div;
+      ++sitt;
     }
 
     /* mix in any running streams */
