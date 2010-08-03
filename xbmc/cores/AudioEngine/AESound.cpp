@@ -83,7 +83,7 @@ bool CAESound::Initialize()
   }
 
   struct __stat64 st;
-  if (file->Stat(&st) < 0)
+  if (!file->Open(m_filename) || file->Stat(&st) < 0)
   {
     CLog::Log(LOGERROR, "CAESound::Initialize - Failed to stat file: %s", m_filename.c_str());
     delete file;
@@ -159,21 +159,6 @@ bool CAESound::Initialize()
        m_frameCount = samples / m_channelCount;
        isDATA       = m_frameCount > 0;
 
-       static AEChannel layouts[][3] = {
-         {AE_CH_FC, AE_CH_NULL},
-         {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
-       };
-
-       /* setup the remapper */
-       CAERemap remap;
-       if (!remap.Initialize(layouts[m_channelCount], AE.GetChannelLayout(), false))
-       {
-         CLog::Log(LOGERROR, "CAESound::Initialize - Failed to initialize the remapper: %s", m_filename.c_str());
-         file->Close();
-         delete file;
-         return false;
-       }
-
        /* get the conversion function */
        CAEConvert::AEConvertToFn convertFn;
        convertFn = CAEConvert::ToFloat(CAEUtil::BitsToDataFormat(bitsPerSample));
@@ -197,6 +182,32 @@ bool CAESound::Initialize()
          /* convert the sample to float */
          convertFn(raw, 1, &m_samples[s]);
        }
+
+
+       static AEChannel layouts[][3] = {
+         {AE_CH_FC, AE_CH_NULL},
+         {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
+       };
+
+       /* setup the remapper */
+       CAERemap remap;
+       if (!remap.Initialize(layouts[m_channelCount - 1], AE.GetChannelLayout(), false))
+       {
+         CLog::Log(LOGERROR, "CAESound::Initialize - Failed to initialize the remapper: %s", m_filename.c_str());
+         delete[] m_samples;
+         m_samples = NULL;
+
+         file->Close();
+         delete file;
+         return false;
+       }
+
+       /* remap the frames */
+       float *remapped = new float[m_frameCount * AE.GetChannelCount()];
+       remap.Remap(m_samples, remapped, m_frameCount);
+       delete[] m_samples;
+       m_samples = remapped;
+       m_channelCount = AE.GetChannelCount();
     }
     else
     {
