@@ -113,7 +113,6 @@ public:
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
   void SetVolume(float volume)                          { m_dvdAudio.SetVolume(volume); }
-  void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
   std::string GetPlayerInfo();
   int GetAudioBitrate();

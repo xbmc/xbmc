@@ -59,7 +59,6 @@ public:
   void UnRegisterAudioCallback();
 
   void SetVolume(float volume);
-  void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, CodecID codec);
