@@ -266,27 +266,21 @@ void CAE::Run()
   list<SoundState>::iterator sitt;
   CAEStream *stream;
   
-  float        out[m_channelCount];
+  float        out[m_channelCount         ];
+  float        dst[m_format.m_channelCount];
   unsigned int div;
   unsigned int i;
 
   CLog::Log(LOGINFO, "CAE::Run - Thread Started");
   while(GetState() == AE_STATE_RUN)
   {
-
-    /* this normally only loops once, its not really needed (implement audio events!) */
+    /* this normally only loops once */
     while(m_bufferSize >= m_format.m_frameSize)
     {
-        int frames = m_bufferSize / m_frameSize;
-        float buffer[frames * m_format.m_channelCount];
-        m_remap.Remap((float*)m_buffer, buffer, frames);
-
         /* this call must block! */
-        int wrote = m_renderer->AddPackets(buffer, sizeof(buffer));
+        int wrote = m_renderer->AddPackets(m_buffer, m_bufferSize);
         if (!wrote) continue;
 
-        wrote /= m_format.m_channelCount;
-        wrote *= m_channelCount;
 	int left = m_bufferSize - wrote;
         memmove(&m_buffer[0], &m_buffer[wrote], left);
         m_bufferSize -= wrote;
@@ -361,13 +355,16 @@ void CAE::Run()
         out[i] *= mul;
     }
 
+    /* remap the frame before we buffer it */
+    m_remap.Remap(out, dst, 1);
+
     /* do we need to convert */
     if (m_convertFn)
-      m_bufferSize += m_convertFn(out, m_channelCount, &m_buffer[m_bufferSize]);
+      m_bufferSize += m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferSize]);
     else
     {
-      memcpy(&m_buffer[m_bufferSize], out, sizeof(out));
-      m_bufferSize += sizeof(out);
+      memcpy(&m_buffer[m_bufferSize], dst, sizeof(dst));
+      m_bufferSize += sizeof(dst);
     }
   }
 
