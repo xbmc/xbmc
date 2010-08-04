@@ -3709,10 +3709,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
 
-      // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
+      if (!item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        // Save information about the stream if we currently have no data
         if (!details->HasStreamDetails())
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
