@@ -1400,10 +1400,9 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 //********************************************************************************************************************************
 void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where;
-  where.Format("join actorlinkmovie on actorlinkmovie.idMovie=movieview.idMovie "
-               "join actors on actors.idActor=actorlinkmovie.idActor "
-               "where actors.strActor='%s'", strActor.c_str());
+  CStdString where = PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie=movieview.idMovie "
+                                "join actors on actors.idActor=actorlinkmovie.idActor "
+                                "where actors.strActor='%s'", strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
