@@ -10,6 +10,7 @@
     <include>PanelStream</include>
     <include>Coverflow</include>
     <include>WallStream</include>
+    <include>PluginStream</include>
 
     <control type="group">
       <include>TopOverlayTitlePos</include>
