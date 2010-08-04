@@ -795,6 +795,7 @@
 -->
 
 <!-- Sort Options -->
+<!--
         <control type="label" id="969">
           <description>Sort By</description>
           <label>$LOCALIZE[31023]</label>
@@ -896,7 +897,7 @@
           <onclick>Container.SetSortMethod(9)</onclick>
           <include>OMButtonItem</include>
         </control>
-<!--
+
         <control type="button" id="983">
           <description>Sort by Size button</description>
           <visible>Container.Content(scripts) | Window.IsVisible(MyPictures) | Window.IsVisible(MyPrograms) | Container.Content(files)</visible>
@@ -912,7 +913,7 @@
           <onclick>Container.SetSortMethod(5)</onclick>
           <include>OMButtonItem</include>
         </control>
--->
+
         <control type="button" id="985">
           <description>Sort by Usage button</description>
           <visible>Window.IsVisible(MyPrograms)</visible>
@@ -966,7 +967,7 @@
 			<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
           	<include>OMButtonItem</include>
         </control>
-		
+		-->
 		
       </control>
 
