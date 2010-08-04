@@ -29,7 +29,8 @@ Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az o
     <description lang="nl">DirectX spectrum is een visualisatie van een roterende 3D spectrum analyse weergegeven met behulp van DirectX. Het beweegt mee met de beat van de muziek, waarbij een golf effect ontstaat over het spectrum raster.
 Het bevat instellingen om de spectrum balk hoogte, de snelheid en hoe de balken worden weergegeven (vol, punten, draden) aan te passen. Deze visualisatie neemt weinig geheugen in en vergt ook niet veel van de CPU.</description>
     <description lang="pl">Wizualizacja pokazuje obracający się, trójwymiarowy analizator widma, renderowany przy użyciu DirectX. Możesz ustawić wysokość słupków, ich prędkość i wygląd.</description>
-    <description lang="pt">O DirectX Spectrum é uma visualização que mostra um analisador espectral rotativavo, renderizado em DirectX, que se sincroniza com a batida, criando assin um efeito de ondas na grelha espectral.</description>
+    <description lang="pt">O DirectX Spectrum é uma visualização que mostra um analisador espectral rotativavo, renderizado em DirectX, que se sincroniza com a batida, criando assin um efeito de ondas na grelha espectral.
+Pode-se definir a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que utiliza pouco o CPU e com um visual fantástico.</description>
     <description lang="zh">DirectX spectrum可视化效果是DirectX渲染的一个旋转的三维频谱分析仪，频谱矩阵随着音乐节拍而象波浪起伏。
 你还可以设置频谱棒的高度、变换速度、以及呈现效果（固体、点、框架）。这是一个不错的轻量级，低CPU使用率的可视化效果。</description>
     <platform>windx</platform>
