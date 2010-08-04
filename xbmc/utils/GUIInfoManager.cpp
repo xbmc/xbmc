@@ -2245,8 +2245,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case SYSTEM_HAS_ADDON:
-        bReturn = CAddonMgr::Get().HasAddon(m_stringParameters[info.GetData1()]);
+      {
+        AddonPtr addon;
+        bReturn = CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
         break;
+      }
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
       case CONTAINER_MOVE_NEXT:
