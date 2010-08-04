@@ -446,7 +446,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Albums) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -464,7 +464,7 @@
 
         <control type="button" id="915">
           <description>Media Preview button</description>
-          <visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
           <label>$LOCALIZE[31707]</label>
           <onclick>Container.SetViewMode(51)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -473,7 +473,7 @@
 
         <control type="button" id="916">
           <description>Showcase view button</description>
-          <visible>!Control.IsVisible(58) + !Container.Content(movies) + !Container.Content(Episodes)  + !Container.Content(Albums) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(58) + !Container.Content(movies) + !Container.Content(Episodes)  + !Container.Content(Albums) + !Container.Content(Artists) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
           <label>$LOCALIZE[31702]</label>
           <onclick>Container.SetViewMode(58)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -515,7 +515,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+		<!--
         <control type="button" id="951">
           <description>Albums view button</description>
           <visible>!Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)] + !Container.Content(Songs)</visible>
@@ -533,6 +533,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
+		-->
 
         <control type="button" id="953">
           <description>Coverflow view button</description>
@@ -563,7 +564,7 @@
 
         <control type="button" id="957">
           <description>Panel Stream view button</description>
-          <visible>!Control.IsVisible(52) + [!Window.IsVisible(MyPictures)] + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(52) + [!Window.IsVisible(MyPictures)] + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
           <label>$LOCALIZE[31715]</label>
           <onclick>Container.SetViewMode(52)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -572,7 +573,7 @@
 
         <control type="button" id="958">
           <description>Wall Stream view button</description>
-          <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
           <label>$LOCALIZE[31714]</label>
           <onclick>Container.SetViewMode(53)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -581,7 +582,7 @@
 
 		<control type="button" id="959">
           <description>Plugin Stream view button</description>
-          <visible>!Control.IsVisible(59)</visible>
+          <visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
           <label>$LOCALIZE[31722]</label>
           <onclick>Container.SetViewMode(59)</onclick>
           <onclick>SetFocus(50)</onclick>

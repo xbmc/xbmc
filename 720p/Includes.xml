@@ -1986,7 +1986,7 @@
 				<visible>true</visible>
 				<align>center</align>
 				<scroll>false</scroll>
-				<label>$INFO[ListItem.Episode]. $INFO[ListItem.Label]</label>
+				<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.title]</label>
 				<font>EpisodeTitles</font>
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>
@@ -2012,7 +2012,7 @@
 				<visible>true</visible>
 				<align>center</align>
 				<scroll>false</scroll>
-				<label>$INFO[ListItem.Episode]. $INFO[ListItem.Label]</label>
+				<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.title]</label>
 				<font>EpisodeTitles</font>
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>

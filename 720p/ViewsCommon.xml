@@ -1802,20 +1802,21 @@
 					<height>500</height>
 					<itemlayout width="210" height="220">
 						<control type="image">
-							<description>Album cover</description>
-							<include>PanelStreamAlbumImageDims</include>
-							<include>PanelStreamImageDims</include>
+							<posx>15</posx>
+							<posy>7</posy>
+							<width>180</width>
+							<height>180</height>
 							<info>ListItem.Icon</info>
 							<bordersize>3</bordersize>
 						</control>
 						<control type="label">
 							<posx>105</posx>
-							<posy>195</posy>
+							<posy>200</posy>
 							<width>210</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<scroll>false</scroll>
-							<label>$INFO[listitem.title ]</label>
+							<label>$INFO[listitem.title]</label>
 							<font>MediumSmallTitleFont</font>
 							<textcolor>FFffffff</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -1823,18 +1824,17 @@
 					</itemlayout>
 					<focusedlayout width="210" height="220">
 						<control type="image">
-							<description>Album cover</description>
-							<posx>9</posx>
-							<posy>0</posy>
-							<width>195</width>
-							<height>195</height>
+							<posx>11</posx>
+							<posy>3</posy>
+							<width>188</width>
+							<height>188</height>
 							<info>ListItem.Icon</info>
 							<bordertexture>plugin-stream-highlight.png</bordertexture>
-							<bordersize>7.5</bordersize>
+							<bordersize>7</bordersize>
 						</control>
 						<control type="label">
 							<posx>105</posx>
-							<posy>195</posy>
+							<posy>200</posy>
 							<width>210</width>
 							<align>center</align>
 							<aligny>center</aligny>
