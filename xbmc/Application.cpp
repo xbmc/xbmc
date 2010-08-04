@@ -4767,6 +4767,9 @@ void CApplication::ProcessSlow()
   
   if (!IsPlayingVideo())
     ADDON::CAddonMgr::Get().UpdateRepos();
+
+  AE.GarbageCollect();
+
 }
 
 // Global Idle Time in Seconds

@@ -169,30 +169,6 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
 
   #undef RM
 
-  /* make the LFE channel if it does not exist in the source and we have one */
-  if (!finalStage && !m_mixInfo[AE_CH_LFE].in_src && m_mixInfo[AE_CH_LFE].in_dst)
-  {
-    AEMixInfo *info;
-    /* setup the high pass filters */
-    for(int o = 0; output[o] != AE_CH_NULL; ++o)
-    {
-      if (output[o] == AE_CH_LFE) continue;
-      info         = &m_mixInfo[output[o]];
-      info->filter = CAEFilter::InitializeHPF(100, AE.GetSampleRate());
-    }
-
-    info         = &m_mixInfo[AE_CH_LFE];
-    info->in_src = true;
-    info->filter = CAEFilter::InitializeLPF(110, AE.GetSampleRate());
-    for(int i = 0; input[i] != AE_CH_NULL; ++i)
-    {
-      AEMixLevel *lvl = &info->srcIndex[info->srcCount++];
-      lvl->level = 1;
-      lvl->index = i;
-    }
-
-  }
-
   /* normalize the values */
   bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
   CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
@@ -206,24 +182,13 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
       for(int i = 0; i < info->srcCount; ++i)
         sum += info->srcIndex[i].level;
 
-      /* LFE gets normalized seperately we are upmixing */
-      if (output[o] == AE_CH_LFE)
-      {
-       float scale = 1.0f / sum;
-       for(int i = 0; i < info->srcCount; ++i)
-        info->srcIndex[i].level *= scale;
-      }
-      else
-        if (sum > max)
-          max = sum;
+      if (sum > max)
+        max = sum;
     }
 
     float scale = 1.0f / max;
     for(int o = 0; output[o] != AE_CH_NULL; ++o)
     {
-      /* LFE has been normalized already */
-      if (output[o] == AE_CH_LFE) continue;
-
       AEMixInfo *info = &m_mixInfo[output[o]];
       for(int i = 0; i < info->srcCount; ++i)
         info->srcIndex[i].level *= scale;
@@ -307,8 +272,6 @@ void CAERemap::Remap(float *in, float *out, unsigned int frames)
           *out += in[info->srcIndex[i].index] * info->srcIndex[i].level;
       }
 
-      /* apply filtering if we need to */
-      if (info->filter) CAEFilter::Filter(info->filter, out, 1);
       ++out;
     }
     in += m_inChannels;

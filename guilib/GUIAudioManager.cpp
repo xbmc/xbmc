@@ -152,12 +152,6 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 
   if (m_actionSound)
   {
-    if (m_actionSound->CompareFile(filename))
-    {
-      m_actionSound->Play();
-      return;
-    }
-
     delete m_actionSound;
     m_actionSound=NULL;
   }
@@ -209,14 +203,8 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (itsb!=m_windowSounds.end())
   {
     CGUISound* sound=itsb->second;
-    if (sound->CompareFile(filename))
-    {
-      sound->Play();
-      return;
-    }
-    else
-      if (sound->IsPlaying())
-        sound->Stop();
+    if (sound->IsPlaying())
+      sound->Stop();
     delete sound;
     m_windowSounds.erase(itsb++);
   }

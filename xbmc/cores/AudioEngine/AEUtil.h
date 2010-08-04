@@ -31,7 +31,7 @@ public:
   static unsigned int            GetChLayoutCount  (const AEChLayout src);
   static const char*             GetChName         (const AEChannel  ch );
   static CStdString              GetChLayoutStr    (const AEChLayout src);
-  static AEChLayout              GetStdChLayout    (const enum AEStdChLayout layout);
+  static const AEChLayout        GetStdChLayout    (const enum AEStdChLayout layout);
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const enum AEDataFormat BitsToDataFormat  (const unsigned int bits);

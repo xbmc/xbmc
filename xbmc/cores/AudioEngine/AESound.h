@@ -30,9 +30,6 @@ using namespace std;
 class CAESound
 {
 public:
-  CAESound(const CStdString &filename);
-  ~CAESound();
-
   void DeInitialize();
   bool Initialize();
 
@@ -44,8 +41,15 @@ public:
   float  GetVolume()             { return m_volume ; }
   float* GetFrame(unsigned int frame);
 private:
+  /* only the AE can create these objects */
+  friend class CAE;
+  CAESound(const CStdString &filename);
+  ~CAESound();
+
   CCriticalSection m_critSection;
   CStdString       m_filename;
+  int              m_refcount; /* used for GC */
+  unsigned int     m_ts;       /* used for GC */
   bool             m_valid;
   unsigned int     m_channelCount;
   float           *m_samples;

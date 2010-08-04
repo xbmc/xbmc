@@ -61,12 +61,12 @@ CStdString CAEUtil::GetChLayoutStr(const AEChLayout src)
   return s;
 }
 
-AEChLayout CAEUtil::GetStdChLayout(const enum AEStdChLayout layout)
+const AEChLayout CAEUtil::GetStdChLayout(const enum AEStdChLayout layout)
 {
   if (layout < 0 || layout >= AE_CH_LAYOUT_MAX)
     return NULL;
 
-  static enum AEChannel layouts[AE_CH_LAYOUT_MAX][AE_CH_MAX + 1] = {
+  static enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
     {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_LFE, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_NULL},

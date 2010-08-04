@@ -21,10 +21,11 @@
 
 #include "system.h"
 #include "GUISound.h"
-#include "AudioContext.h"
 #include "Settings.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
+
+#include "cores/AudioEngine/AE.h"
 
 CGUISound::CGUISound() :
   m_sound(NULL)
@@ -33,21 +34,14 @@ CGUISound::CGUISound() :
 
 CGUISound::~CGUISound()
 {
-  delete m_sound;
+  if (m_sound) AE.FreeSound(m_sound);
 }
 
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
-  m_file = strFile;
-  m_sound = new CAESound(strFile);
-  if (!m_sound->Initialize())
-  {
-    delete m_sound;
-    m_sound = NULL;
-    return false;
-  }
-
+  m_sound = AE.GetSound(strFile);
+  if (!m_sound) return false;
   return true;
 }
 
