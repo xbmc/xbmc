@@ -370,8 +370,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         {
           if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
           { // need the list updated as well
-            m_vecItems->Save();
-            Update(m_vecItems->m_strPath);
+            UpdateFileList();
           }
         }
         else if (newItem)
