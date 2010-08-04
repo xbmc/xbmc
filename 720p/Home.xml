@@ -1226,11 +1226,6 @@
               <onclick>XBMC.RestartApp()</onclick>
             </item>
             -->
-						<item id="4">
-							<description>Refresh Button</description>
-							<label> $LOCALIZE[31075] </label>
-							<onclick>XBMC.ReloadSkin()</onclick>
-						</item>
 						<!--
             <item id="5">
               <description>Dashboard Button</description>
