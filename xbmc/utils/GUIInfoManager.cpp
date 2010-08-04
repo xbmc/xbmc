@@ -412,6 +412,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
     else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
+    else if (strTest.Left(16).Equals("system.hasaddon("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -2239,6 +2241,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
               bReturn = g_settings.GetWatchMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) == VIDEO_SHOW_UNWATCHED;
           }
         }
+        break;
+      case SYSTEM_HAS_ADDON:
+        bReturn = CAddonMgr::Get().HasAddon(m_stringParameters[info.GetData1()]);
         break;
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
