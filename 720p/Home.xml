@@ -848,77 +848,7 @@
 			<control type="group" id="301">
 				<include>HomeSubMenuGroupDims</include>
 				<include>HomeSubMenuBackground</include>
-				<control type="list" id="406">
-					<description>System Side Menu</description>
-					<onup>406</onup>
-					<ondown>406</ondown>
-					<visible>[Container(300).HasFocus(6) | Control.HasFocus(406) | Control.HasFocus(506)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-					<include>HomeSideMenu</include>
-					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-						<control type="image">
-							<include>HomeSideMenuNFBGImage</include>
-						</control>
-						<control type="label">
-							<include>HomeSideMenuNFBGLabel</include>
-						</control>
-						<control type="image">
-							<include>HomeSideMenuFOBGImage</include>
-							<animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + Container(406).Position(0)">focus</animation>
-							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + !Container(406).Position(0)">focus</animation>
-							<animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnPrevious + Container(406).Position(6)">focus</animation>
-							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnPrevious + !Container(406).Position(6)">focus</animation>
-						</control>
-						<control type="label">
-							<include>HomeSideMenuFOBGLabel</include>
-							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnNext">focus</animation>
-							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnPrevious">focus</animation>
-						</control>
-					</focusedlayout>
-					<content>
-						<!--
-            <item id="1">
-              <description>Settings Button</description>
-              <label> $LOCALIZE[31060] </label>
-              <onclick>SetFocus(506)</onclick>
-            </item>
-            -->
-						<item id="2">
-							<description>Scripts Button</description>
-							<label> $LOCALIZE[31061] </label>
-							<onclick>XBMC.ActivateWindow(20)</onclick>
-						</item>
-						<item id="3">
-							<description>My Files Button</description>
-							<label> $LOCALIZE[31062] </label>
-							<onclick>XBMC.ActivateWindow(3)</onclick>
-						</item>
-						<!--
-            <item id="4">
-              <description>My Favorites Button</description>
-              <label> $LOCALIZE[31063] </label>
-              <onclick>SetFocus(300)</onclick>
-              <onclick>XBMC.ActivateWindow(Favourites)</onclick>
-            </item>
-            -->
-						<item id="9">
-							<description>Profiles Settings Button</description>
-							<label> $LOCALIZE[31064] </label>
-							<onclick>XBMC.ActivateWindow(34)</onclick>
-						</item>
-						<!--
-            <item id="5">
-              <description>Info Button</description>
-              <label> $LOCALIZE[31065] </label>
-              <onclick>XBMC.ActivateWindow(7)</onclick>
-            </item>
-            -->
-						<item id="6">
-							<description>Credits Button</description>
-							<label> $LOCALIZE[31800] </label>
-							<onclick>XBMC.ActivateWindow(4)</onclick>
-						</item>
-					</content>
-				</control>
+				    
 				<control type="list" id="407">
 					<description>Power Side Menu</description>
 					<onup>407</onup>
