@@ -27,6 +27,7 @@
 
 #ifndef _LINUX
 #include <process.h>
+#include "utils/CharsetConverter.h"
 #endif
 
 #include "../dll_tracker.h"
@@ -100,6 +101,58 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 #define CORRECT_SEP_STR(str)
 #endif
 
+#ifdef _WIN32
+static void to_WIN32_FIND_DATA(LPWIN32_FIND_DATAW wdata, LPWIN32_FIND_DATA data)
+{
+  CStdString strname;
+  g_charsetConverter.wToUTF8(wdata->cFileName, strname);
+  size_t size = sizeof(data->cFileName) / sizeof(char);
+  strncpy(data->cFileName, strname.c_str(), size);
+  if (size)
+    data->cFileName[size - 1] = '\0';
+
+  g_charsetConverter.wToUTF8(wdata->cAlternateFileName, strname);
+  size = sizeof(data->cAlternateFileName) / sizeof(char);
+  strncpy(data->cAlternateFileName, strname.c_str(), size);
+  if (size)
+    data->cAlternateFileName[size - 1] = '\0';
+
+  data->dwFileAttributes = wdata->dwFileAttributes;
+  data->ftCreationTime = wdata->ftCreationTime;
+  data->ftLastAccessTime = wdata->ftLastAccessTime;
+  data->ftLastWriteTime = wdata->ftLastWriteTime;
+  data->nFileSizeHigh = wdata->nFileSizeHigh;
+  data->nFileSizeLow = wdata->nFileSizeLow;
+  data->dwReserved0 = wdata->dwReserved0;
+  data->dwReserved1 = wdata->dwReserved1;
+}
+
+static void to_WIN32_FIND_DATAW(LPWIN32_FIND_DATA data, LPWIN32_FIND_DATAW wdata)
+{
+  CStdStringW strwname;
+  g_charsetConverter.utf8ToW(data->cFileName, strwname, false);
+  size_t size = sizeof(wdata->cFileName) / sizeof(wchar_t);
+  wcsncpy(wdata->cFileName, strwname.c_str(), size);
+  if (size)
+    wdata->cFileName[size - 1] = '\0';
+
+  g_charsetConverter.utf8ToW(data->cAlternateFileName, strwname, false);
+  size = sizeof(wdata->cAlternateFileName) / sizeof(wchar_t);
+  wcsncpy(wdata->cAlternateFileName, strwname.c_str(), size);
+  if (size)
+    data->cAlternateFileName[size - 1] = '\0';
+
+  wdata->dwFileAttributes = data->dwFileAttributes;
+  wdata->ftCreationTime = data->ftCreationTime;
+  wdata->ftLastAccessTime = data->ftLastAccessTime;
+  wdata->ftLastWriteTime = data->ftLastWriteTime;
+  wdata->nFileSizeHigh = data->nFileSizeHigh;
+  wdata->nFileSizeLow = data->nFileSizeLow;
+  wdata->dwReserved0 = data->dwReserved0;
+  wdata->dwReserved1 = data->dwReserved1;
+}
+#endif
+
 extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
 {
   char* p = strdup(lpFileName);
@@ -112,9 +165,32 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
     e[0] = '\0';
   }
 
+#ifdef _WIN32
+  struct _WIN32_FIND_DATAW FindFileDataW;
+  CStdStringW strwfile;
+  g_charsetConverter.utf8ToW(_P(p), strwfile, false);
+  HANDLE res = FindFirstFileW(strwfile.c_str(), &FindFileDataW);
+  if (res != INVALID_HANDLE_VALUE)
+    to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
+#else
   HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
+#endif
   free(p);
   return res;
+}
+
+extern "C" BOOL WINAPI dllFindNextFileA(HANDLE hFindFile, LPWIN32_FIND_DATA lpFindFileData)
+{
+#ifdef _WIN32
+  struct _WIN32_FIND_DATAW FindFileDataW;
+  to_WIN32_FIND_DATAW(lpFindFileData, &FindFileDataW);
+  BOOL res = FindNextFileW(hFindFile, &FindFileDataW);
+  if (res)
+    to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
+  return res;
+#else
+  return FindNextFile(hFindFile, lpFindFileData);
+#endif
 }
 
 // should be moved to CFile! or use CFile::stat
