@@ -1172,7 +1172,7 @@
 					<item id="12">
 						<description>App Store Menu</description>
 						<label> $LOCALIZE[31952] </label>
-						<onclick>Plex.ActivateWindow(1,plex://localhost/system/appstore,return)</onclick>
+						<onclick>Plex.ActivateWindow(1,plex://localhost/system/plexonline,return)</onclick>
 						<visible>!Skin.HasSetting(HideAppStore)</visible>
 					</item>
 					<item id="1">
