@@ -80,6 +80,8 @@ bool CSaveFileStateJob::DoWork()
         {
           CUtil::DeleteVideoDatabaseDirectoryCache();
           CFileItemPtr msgItem(new CFileItem(m_item));
+          if (m_item.HasProperty("original_listitem_url"))
+            msgItem->m_strPath = m_item.GetProperty("original_listitem_url");
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
           g_windowManager.SendThreadMessage(message);
         }
