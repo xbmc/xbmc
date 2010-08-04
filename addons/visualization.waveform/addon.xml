@@ -17,6 +17,7 @@
     <summary lang="ko">두개의 웨이브폼을 보여주는 음악시각화</summary>
     <summary lang="nl">Visualisatie</summary>
     <summary lang="pl">Wizualizacja pokazująca dwie fale dźwięku</summary>
+    <summary lang="pt">Visualização que mostra 2 gráficos ondulantes</summary>
     <summary lang="zh">可视化效果</summary>
     <description lang="en">Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
@@ -25,6 +26,7 @@
     <description lang="ko">Waveform은 간단히 두개의 웨이브폼을 화면에 보여줍니다. 각각 왼쪽, 오른쪽 채널이고 음악의 비트에 따라 움직입니다.</description>
     <description lang="nl">Waveform is een simpele muziekvisualisatie die 2 golfvormen op het scherm toont, respectievelijk voor het linker en rechter geluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
     <description lang="pl">Waveform jest prostą wizualizacją pokazującą dwie fale dźwiękowe na ekranie. Każda na jeden kanał dźwięku.</description>
+    <description lang="pt">O Waveform é um visualizador simples que mostra 2 gráficos ondulantes no ecrã, um para cada canal estéreo.</description>
     <description lang="zh">Waveform是一个简单的可视化效果，它在屏幕上显示两个波形图，分别与音乐左右声道的节拍相呼应。</description>
     <platform>all</platform>
   </extension>

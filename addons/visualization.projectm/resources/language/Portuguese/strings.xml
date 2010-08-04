@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Portuguese strings.xml by hudo (hudokkow [AT] gmail [DOT] com) -->
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Qualidade de renderização</string>
+    <string id="30001">Baixa</string>
+    <string id="30002">Média</string>
+    <string id="30003">Alta</string>
+    <string id="30004">Máxima</string>
+    <string id="30005">Modo aleatório</string>
+    <string id="30006">Duração de pré-definição suave</string>
+    <string id="30007">Duração de pré-definição</string>
+    <string id="30008">Sensibilidade da batida</string>
+</strings>
