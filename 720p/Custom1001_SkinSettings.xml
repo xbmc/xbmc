@@ -216,6 +216,7 @@
           <include>GeneralSkinOption</include>
         </control>
 
+        <!--
 				<control type="togglebutton" id="281">
 					<description>Path to Lyrics Script</description>
 					<label>$LOCALIZE[20141] $LOCALIZE[31046]</label>
@@ -224,7 +225,7 @@
    				<altclick>Skin.Reset(LyricsScriptPath)</altclick>
    				<usealttexture>Skin.String(LyricsScriptPath)</usealttexture>
 					<include>GeneralSkinOption</include>
-				</control>
+				</control>-->
 
         <!--
         <control type="radiobutton" id="245">
@@ -317,22 +318,6 @@
           <label>$LOCALIZE[31956] $LOCALIZE[31001]</label>
           <onclick>Skin.ToggleSetting(HideVideos)</onclick>
           <selected>!Skin.HasSetting(HideVideos)</selected>
-        </control>
-        
-        <control type="radiobutton" id="225">
-          <description>Show Movies Menu</description>
-          <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31956] $LOCALIZE[31111]</label>
-          <onclick>Skin.ToggleSetting(HideMovies)</onclick>
-          <selected>!Skin.HasSetting(HideMovies)</selected>
-        </control>
-
-        <control type="radiobutton" id="230">
-          <description>Show TV shows Menu</description>
-          <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31956] $LOCALIZE[31008]</label>
-          <onclick>Skin.ToggleSetting(HideTVshows)</onclick>
-          <selected>!Skin.HasSetting(HideTVshows)</selected>
         </control>
         
         <control type="radiobutton" id="235">
@@ -661,48 +646,6 @@
   				<label>$LOCALIZE[20141] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</label>
   				<altlabel>$LOCALIZE[192] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
   				<usealttexture>Skin.String(CustomVideosBGFolder)</usealttexture>
-          <include>GeneralSkinOption</include>
-  			</control>
-
-        <control type="togglebutton" id="303">
-          <description>Custom Movies BG image</description>
-  				<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-  				<altlabel>$LOCALIZE[31659] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-  				<onclick>Skin.SetImage(CustomMoviesBG)</onclick>
-  				<altclick>Skin.Reset(CustomMoviesBG)</altclick>
-  				<usealttexture>Skin.String(CustomMoviesBG)</usealttexture>
-          <include>GeneralSkinOption</include>
-        </control>
-        
-  			<control type="togglebutton" id="304">
-          <description>Custom Movies BG Images Folder</description>
-  				<onclick>Skin.SetPath(CustomMoviesBGFolder)</onclick>
-  				<onclick>Skin.Reset(CustomMoviesBG)</onclick>
-  				<altclick>Skin.Reset(CustomMoviesBGFolder)</altclick>
-  				<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-  				<altlabel>$LOCALIZE[192] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-  				<usealttexture>Skin.String(CustomMoviesBGFolder)</usealttexture>
-          <include>GeneralSkinOption</include>
-  			</control>
-
-        <control type="togglebutton" id="305">
-          <description>Custom TV Shows BG image</description>
-  				<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-  				<altlabel>$LOCALIZE[31659] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-  				<onclick>Skin.SetImage(CustomTVShowsBG)</onclick>
-  				<altclick>Skin.Reset(CustomTVShowsBG)</altclick>
-  				<usealttexture>Skin.String(CustomTVShowsBG)</usealttexture>
-          <include>GeneralSkinOption</include>
-        </control>
-
-  			<control type="togglebutton" id="306">
-          <description>Custom TV Shows BG Images Folder</description>
-  				<onclick>Skin.SetPath(CustomTVShowsBGFolder)</onclick>
-  				<onclick>Skin.Reset(CustomTVShowsBG)</onclick>
-  				<altclick>Skin.Reset(CustomTVShowsBGFolder)</altclick>
-  				<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-  				<altlabel>$LOCALIZE[192] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-  				<usealttexture>Skin.String(CustomTVShowsBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
   			
