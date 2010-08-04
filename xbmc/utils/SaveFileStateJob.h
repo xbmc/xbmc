@@ -44,6 +44,8 @@ bool CSaveFileStateJob::DoWork()
 
             // consider this item as played
             videodatabase.IncrementPlayCount(m_item);
+            m_item.GetVideoInfoTag()->m_playCount++;
+            m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
           }
           else
