@@ -525,7 +525,11 @@ bool CRenderSystemDX::PresentRenderImpl()
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
       SetThreadPriority(GetCurrentThread(), priority);
   }
-  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+
+  if (m_useD3D9Ex)
+    hr = ((IDirect3DDevice9Ex*)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, 0);
+  else
+    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
   {
