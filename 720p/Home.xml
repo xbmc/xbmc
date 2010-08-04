@@ -1519,7 +1519,7 @@
 					<description>Settings Sub Side Menu</description>
 					<onup>506</onup>
 					<ondown>506</ondown>
-					<onleft>301</onleft>
+					<onleft>300</onleft>
 					<onright>506</onright>
 					<scrolltime>200</scrolltime>
 					<visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
