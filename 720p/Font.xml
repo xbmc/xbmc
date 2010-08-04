@@ -347,14 +347,14 @@
       <name>HomeMenuFocusFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-      <size>50</size>
+      <size>46</size>
     </font>
 
     <font>
       <name>HomeMenuInfoFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-      <size>20</size>
+      <size>18</size>
     </font>
 
 		<!-- Home screen panel font -->

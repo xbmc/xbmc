@@ -659,7 +659,7 @@
 	</include>
 	<include name="HomeMainMenuFOLabel">
 		<posx>806</posx>
-		<posy>20</posy>
+		<posy>18</posy>
 		<width>600</width>
 		<height>0</height>
 		<info>ListItem.Label</info>
@@ -671,7 +671,7 @@
 	</include>
 	<include name="HomeMainMenuFOLabel2">
 		<posx>806</posx>
-		<posy>49</posy>
+		<posy>47</posy>
 		<width>600</width>
 		<height>0</height>
 		<info>ListItem.Label</info>
@@ -683,7 +683,7 @@
 	</include>
   <include name="HomeMainMenuFOCaption2">
     <posx>797</posx>
-    <posy>4</posy>
+    <posy>74</posy>
     <width>250</width>
     <height>20</height>
     <info>ListItem.Label2</info>

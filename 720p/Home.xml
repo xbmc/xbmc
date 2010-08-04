@@ -1114,7 +1114,7 @@
 				<itemlayout width="600" height="60">
 					<control type="label">
 						<posx>802</posx>
-						<posy>10</posy>
+						<posy>14</posy>
 						<width>600</width>
 						<height>0</height>
 						<info>ListItem.Label</info>
