@@ -205,6 +205,17 @@
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
+					<control type="image">
+						<visible>[Container.Content(albums) | Container.Content(Songs) | Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2)</visible>
+						<posx>520</posx>
+						<posy>9</posy>
+						<width>57</width>
+						<height>29</height>
+						<aspectratio>keep</aspectratio>
+						<texture>Unwatchedcount.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
 					<control type="label">
 						<posx>60</posx>
 						<width>454</width>
@@ -261,7 +272,7 @@
 						<posy>2</posy>
 						<width>104</width>
 						<height>42</height>
-						<align>right</align>
+						<align>center</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
 						<font>SmallDefaultCapsFont</font>
@@ -309,7 +320,17 @@
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
-
+					<control type="image">
+						<visible>[Container.Content(albums) | Container.Content(Songs) | Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2)</visible>
+						<posx>520</posx>
+						<posy>9</posy>
+						<width>57</width>
+						<height>29</height>
+						<aspectratio>keep</aspectratio>
+						<texture>UnwatchedcountFocused.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
 					<control type="label">
 						<posx>60</posx>
 						<width>454</width>
@@ -505,7 +526,7 @@
 						<posy>2</posy>
 						<width>95</width>
 						<height>42</height>
-						<align>right</align>
+						<align>center</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
 						<font>SmallDefaultCapsFont</font>
@@ -829,6 +850,13 @@
 							<height>317</height>
 							<info>ListItem.Property(description)</info>
 							<visible>Container.Content(albums)</visible>
+						</control>
+						<control type="textbox">
+							<description>Album review</description>
+							<width>InfoListTitleWidth</width>
+							<height>317</height>
+							<info>ListItem.Property(description)</info>
+							<visible>Container.Content(songs)</visible>
 						</control>
 						<control type="textbox">
 							<description>Album review</description>
