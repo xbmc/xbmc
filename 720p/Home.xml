@@ -1181,18 +1181,6 @@
 						<visible>!Skin.HasSetting(HideVideos)</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
 					</item>
-					<item id="9">
-						<description>My Movies Button</description>
-						<label> $LOCALIZE[31111] </label>
-						<onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
-						<visible>false</visible>
-					</item>
-					<item id="8">
-						<description>My TV Shows Button</description>
-						<label> $LOCALIZE[31008] </label>
-						<onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
-						<visible>false</visible>
-					</item>
 					<item id="2">
 						<description>My Music Button</description>
 						<label> $LOCALIZE[31972] </label>
