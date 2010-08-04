@@ -184,10 +184,10 @@ enum VideoSelectAction
 {
   SELECT_ACTION_CHOOSE = 0,
   SELECT_ACTION_PLAY_OR_RESUME,
+  SELECT_ACTION_RESUME,
   SELECT_ACTION_INFO,
   SELECT_ACTION_MORE,
-  SELECT_ACTION_PLAY,
-  SELECT_ACTION_RESUME
+  SELECT_ACTION_PLAY
 };
 
 // replay gain settings struct for quick access by the player multiple
