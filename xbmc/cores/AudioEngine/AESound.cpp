@@ -40,6 +40,7 @@ typedef struct
 } WAVE_CHUNK;
 
 CAESound::CAESound(const CStdString &filename) :
+  m_refcount    (0    ),
   m_valid       (false),
   m_channelCount(0    ),
   m_samples     (NULL ),
@@ -57,8 +58,6 @@ CAESound::~CAESound()
 void CAESound::DeInitialize()
 {
   CSingleLock lock(m_critSection);
-  AE.StopSound(this);
-
   delete[] m_samples;
   m_samples      = NULL;
   m_frameCount   = 0;

@@ -31,8 +31,8 @@
 
 #include "StdString.h"
 #include "IAudioCallback.h"
-#include "AudioEngine/AEAudioFormat.h"
-#include "AudioEngine/AEUtil.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/AEUtil.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();

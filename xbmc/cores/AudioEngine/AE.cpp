@@ -19,7 +19,7 @@
  *
  */
 
-#include "Application.h"
+#include "utils/TimeUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "GUISettings.h"
@@ -51,11 +51,23 @@ bool CAE::Initialize()
   m_volume = g_settings.m_fVolumeLevel;
 
   /* open the renderer */
-  m_chLayout = CAEUtil::GetStdChLayout((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"));
+  enum AEStdChLayout chLayout = AE_CH_LAYOUT_2_0;
+  switch(g_guiSettings.GetInt("audiooutput.channellayout")) {
+    default:
+    case 0: chLayout = AE_CH_LAYOUT_2_0; break;
+    case 1: chLayout = AE_CH_LAYOUT_2_1; break;
+    case 2: chLayout = AE_CH_LAYOUT_3_0; break;
+    case 3: chLayout = AE_CH_LAYOUT_3_1; break;
+    case 4: chLayout = AE_CH_LAYOUT_4_0; break;
+    case 5: chLayout = AE_CH_LAYOUT_4_1; break;
+    case 6: chLayout = AE_CH_LAYOUT_5_0; break;
+    case 7: chLayout = AE_CH_LAYOUT_5_1; break;
+    case 8: chLayout = AE_CH_LAYOUT_7_0; break;
+    case 9: chLayout = AE_CH_LAYOUT_7_1; break;
+  }
+  m_chLayout     = CAEUtil::GetStdChLayout(chLayout);
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s",
-    CAEUtil::GetStdChLayoutName((enum AEStdChLayout)g_guiSettings.GetInt("audiooutput.channellayout"))
-  );
+  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName(chLayout));
 
   m_renderer = new CALSADirectSound();
   if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
@@ -65,14 +77,20 @@ bool CAE::Initialize()
     return false;
   }
 
-  m_frameSize    = sizeof(float) * m_channelCount;
   m_format       = m_renderer->GetAudioFormat();
+  m_frameSize    = sizeof(float) * m_channelCount;
   m_convertFn    = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer       = new uint8_t[m_format.m_frameSize];
+  m_buffer       = new uint8_t[m_format.m_frameSize * 2];
   m_bufferSize   = 0;
 
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
 
+  /* re-intiialize sounds */
+  map<const CStdString, CAESound*>::iterator sitt;
+  for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
+    sitt->second->Initialize();
+
+  /* re-initialize streams */
   list<CAEStream*>::iterator itt;
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     (*itt)->Initialize();
@@ -118,22 +136,101 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   return stream;
 }
 
+CAESound *CAE::GetSound(CStdString file)
+{
+  CLog::Log(LOGINFO, "CAE::GetSound - %s", file.c_str());
+  CSingleLock lock(m_critSection);
+  CAESound *sound;
+
+  /* see if we have a valid sound */
+  if ((sound = m_sounds[file]))
+  {
+    /* increment the reference count */
+    ++sound->m_refcount;
+    return sound;
+  }
+
+  sound = new CAESound(file);
+  if (!sound->Initialize())
+  {
+    delete sound;
+    return NULL;
+  }
+
+  m_sounds[file] = sound;
+  sound->m_refcount = 1;
+
+  return sound;
+}
+
 void CAE::PlaySound(CAESound *sound)
 {
-   CSingleLock lock(m_critSection);
-   m_sounds.push_back((SoundState){
+   SoundState ss = {
       owner: sound,
       frame: 0
-   });
+   };
+   CSingleLock lock(m_critSection);
+   m_playing_sounds.push_back(ss);
+}
+
+void CAE::FreeSound(CAESound *sound)
+{
+  CSingleLock lock(m_critSection);
+  /* decrement the sound's ref count */
+  --sound->m_refcount;
+  ASSERT(sound->m_refcount >= 0);
+
+  /* if other processes are using the sound, dont remove it */
+  if (sound->m_refcount > 0)
+    return;
+
+  /* set the timeout to 30 seconds */
+  sound->m_ts = CTimeUtils::GetTimeMS() + 30000;
+
+  /* stop the sound playing */
+  list<SoundState>::iterator itt;
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  {
+    if ((*itt).owner == sound) itt = m_playing_sounds.erase(itt);
+    else ++itt;
+  }
+}
+
+void CAE::GarbageCollect()
+{
+  CSingleLock lock(m_critSection);
+
+  unsigned int ts = CTimeUtils::GetTimeMS();
+  map<const CStdString, CAESound*>::iterator itt;
+  list<map<const CStdString, CAESound*>::iterator> remove;
+
+  for(itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+  {
+    CAESound *sound = itt->second;
+    /* free any sounds that are no longer used and are > 30 seconds old */
+    if (sound->m_refcount == 0 && ts > sound->m_ts)
+    {
+      delete sound;
+      remove.push_back(itt);
+      continue;
+    }
+  }
+
+  /* erase the entries from the map */
+  while(!remove.empty())
+  {
+    m_sounds.erase(remove.front());
+    remove.pop_front();
+  }
 }
 
 void CAE::StopSound(CAESound *sound)
 {
   CSingleLock lock(m_critSection);
   list<SoundState>::iterator itt;
-  for(itt = m_sounds.begin(); itt != m_sounds.end(); )
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
-    if ((*itt).owner == sound) itt = m_sounds.erase(itt);
+    if ((*itt).owner == sound) itt = m_playing_sounds.erase(itt);
     else ++itt;
   }
 }
@@ -142,7 +239,7 @@ bool CAE::IsPlaying(CAESound *sound)
 {
   CSingleLock lock(m_critSection);
   list<SoundState>::iterator itt;
-  for(itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); ++itt)
     if ((*itt).owner == sound) return true;
   return false;
 }
@@ -186,12 +283,11 @@ void CAE::Run()
 
         /* this call must block! */
         int wrote = m_renderer->AddPackets(buffer, sizeof(buffer));
-        if (!wrote)
-		continue;
+        if (!wrote) continue;
 
         wrote /= m_format.m_channelCount;
         wrote *= m_channelCount;
-	int left  = m_bufferSize - wrote;
+	int left = m_bufferSize - wrote;
         memmove(&m_buffer[0], &m_buffer[wrote], left);
         m_bufferSize -= wrote;
     }
@@ -201,7 +297,7 @@ void CAE::Run()
 
     lock.Enter();
     /* mix in any sounds */
-    for(sitt = m_sounds.begin(); sitt != m_sounds.end(); )
+    for(sitt = m_playing_sounds.begin(); sitt != m_playing_sounds.end(); )
     {
       if (m_state != AE_STATE_RUN) break;
 
@@ -209,7 +305,7 @@ void CAE::Run()
       /* if no more frames, remove it from the list */
       if (frame == NULL)
       {
-        sitt = m_sounds.erase(sitt);
+        sitt = m_playing_sounds.erase(sitt);
         continue;
       }
 

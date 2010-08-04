@@ -22,6 +22,9 @@
 #ifndef AE_H
 #define AE_H
 
+#include <list>
+#include <map>
+
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
@@ -30,7 +33,7 @@
 #include "AESound.h"
 #include "AEConvert.h"
 #include "AERemap.h"
-#include "AudioRenderers/IAudioRenderer.h"
+#include "cores/AudioRenderers/IAudioRenderer.h"
 
 using namespace std;
 
@@ -66,9 +69,16 @@ public:
 
   /* returns a new stream for data in the specified format */
   CAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
+
+  /* returns a new sound object */
+  CAESound *GetSound(CStdString file);
+  void FreeSound(CAESound *sound);
   void PlaySound(CAESound *sound);
   void StopSound(CAESound *sound);
   bool IsPlaying(CAESound *sound);
+
+  /* free's sounds that have expired */
+  void GarbageCollect();
 
   /* these are for the streams so they can provide compatible data */
   unsigned int        GetSampleRate   () {return m_format.m_sampleRate   ;}
@@ -77,14 +87,16 @@ public:
   unsigned int        GetFrames       () {return m_format.m_frames       ;}
   unsigned int        GetFrameSize    () {return m_frameSize             ;}
   
-  /* this is called by streams on dtor, you should never need to call this directly */
-  void RemoveStream(CAEStream *stream);
 private:
   /* these are private as the class is a singleton */
   CAE();
   virtual ~CAE();
   bool Initialize();
   void DeInitialize();
+
+  /* this is called by streams on dtor, you should never need to call this directly */
+  friend class CAEStream;
+  void RemoveStream(CAEStream *stream);
 
   enum AEState              m_state;
   float                     m_volume;
@@ -104,12 +116,13 @@ private:
     CAESound     *owner;
     unsigned int  frame;
   } SoundState;
-  list<SoundState>          m_sounds;
+  list<SoundState>          m_playing_sounds;
 
-  /* the streams, output buffer and output buffer fill size */
-  list<CAEStream*>          m_streams;
-  uint8_t                  *m_buffer;
-  unsigned int              m_bufferSize;
+  /* the streams, sounds, output buffer and output buffer fill size */
+  list<CAEStream*>                 m_streams;
+  map<const CStdString, CAESound*> m_sounds;
+  uint8_t                         *m_buffer;
+  unsigned int                     m_bufferSize;
 
   /* the channel remapper */
   CAERemap                  m_remap;

@@ -23,7 +23,6 @@
 #define AEREMAP_H
 
 #include "AEAudioFormat.h"
-#include "AEFilter.h"
 
 class CAERemap {
 public:
@@ -44,7 +43,6 @@ private:
     bool              in_dst;
     int               outIndex;
     int               srcCount;
-    CAEFilter::FInfo *filter;
     AEMixLevel        srcIndex[AE_CH_MAX];
   } AEMixInfo;
 
