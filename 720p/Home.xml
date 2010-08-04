@@ -1177,7 +1177,7 @@
 					</item>
 					<item id="1">
 						<description>My Videos Button</description>
-						<label> $LOCALIZE[31001] </label>
+						<label> $LOCALIZE[31971] </label>
 						<visible>!Skin.HasSetting(HideVideos)</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
 					</item>
@@ -1195,13 +1195,13 @@
 					</item>
 					<item id="2">
 						<description>My Music Button</description>
-						<label> $LOCALIZE[31002] </label>
+						<label> $LOCALIZE[31972] </label>
 						<visible>!Skin.HasSetting(HideMusic)</visible>
 						<onclick>XBMC.ActivateWindow(5)</onclick>
 					</item>
 					<item id="3">
 						<description>My Pics Button</description>
-						<label> $LOCALIZE[31003] </label>
+						<label> $LOCALIZE[31973] </label>
 						<visible>!Skin.HasSetting(HidePictures)</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>

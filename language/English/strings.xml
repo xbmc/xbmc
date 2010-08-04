@@ -249,6 +249,10 @@
   <string id="31962">Power Menu</string>
   <string id="31963">displays</string>
 	<string id="31964">Sleep Display</string>
+	
+	<string id="31971">Video Plug-ins</string>
+	<string id="31972">Music Plug-ins</string>
+	<string id="31973">Picture Plug-ins</string>
 
 	<string id="31998">Hide Now Playing in Visualizer</string>
 	<string id="31999">End Time</string>
