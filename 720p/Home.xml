@@ -1219,33 +1219,6 @@
 							<visible>!Skin.HasSetting(ShowSleep)</visible>
 						</item>
 						-->
-						<!--
-            <item id="3">
-              <description>Reload Button</description>
-              <label> $LOCALIZE[31073] </label>
-              <onclick>XBMC.RestartApp()</onclick>
-            </item>
-            -->
-						<!--
-            <item id="5">
-              <description>Dashboard Button</description>
-              <label> $LOCALIZE[31074] </label>
-              <onclick>XBMC.Dashboard()</onclick>
-              <visible>System.Platform.Xbox</visible>
-            </item>
-            <item id="6">
-              <description>Suspend</description>
-              <label> $LOCALIZE[13011] </label>
-              <onclick>XBMC.Suspend()</onclick>
-              <visible>!System.Platform.Xbox</visible>
-            </item>
-            <item id="7">
-              <description>Hibernate</description>
-              <label> $LOCALIZE[13010] </label>
-              <onclick>XBMC.Hibernate()</onclick>
-              <visible>!System.Platform.Xbox</visible>
-            </item>
-            -->
 						<item id="8">
 							<description>Logout Button</description>
 							<label> $LOCALIZE[20126] </label>
