@@ -398,7 +398,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
 {
   strTitleAndYear = strFileName;
 
@@ -444,6 +444,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
+  if (bCleanChars)
   {
     bool initialDots = true;
     bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
