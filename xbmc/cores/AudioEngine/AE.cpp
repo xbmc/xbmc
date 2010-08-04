@@ -67,7 +67,7 @@ bool CAE::Initialize()
   }
   m_chLayout     = CAEUtil::GetStdChLayout(chLayout);
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGINFO, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName(chLayout));
+  CLog::Log(LOGDEBUG, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName(chLayout));
 
   m_renderer = new CALSADirectSound();
   if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
@@ -138,7 +138,6 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
 
 CAESound *CAE::GetSound(CStdString file)
 {
-  CLog::Log(LOGINFO, "CAE::GetSound - %s", file.c_str());
   CSingleLock lock(m_critSection);
   CAESound *sound;
 
