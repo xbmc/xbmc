@@ -27,9 +27,9 @@ pushd .
 
 apt-get -y install build-essential ncurses-dev gettext xmlto libasound2-dev libncursesw5-dev
 
-wget --no-proxy ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.23.tar.bz2
-wget --no-proxy ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.23.tar.bz2
-wget --no-proxy ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.23.tar.bz2
+wget --no-proxy -q ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.23.tar.bz2
+wget --no-proxy -q ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.23.tar.bz2
+wget --no-proxy -q ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.23.tar.bz2
 
 # 
 # uname -r gives the host version, we need the chrooted one
