@@ -605,7 +605,7 @@
           <description>Setup Options</description>
           <label>$LOCALIZE[31713]</label>
           <include>OMTitleItem</include>
-          <visible>!Window.IsVisible(MyPrograms)</visible>
+          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyPictures)</visible>
         </control>
 
 <!--
@@ -618,6 +618,8 @@
           <include>OMButtonItem</include>
         </control>
 -->
+
+<!--
         <control type="button" id="2001">
           <description>Library button</description>
           <visible>Window.IsVisible(MyMusicFiles)</visible>
@@ -626,6 +628,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
+-->
 
 <!--
         <control type="button" id="2002">
@@ -637,6 +640,7 @@
           <include>OMButtonItem</include>
         </control>
 -->
+<!--
         <control type="button" id="2003">
           <description>Files button</description>
           <visible>Window.IsVisible(MyMusicLibrary)</visible>
@@ -645,7 +649,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+-->
 <!--
         <control type="button" id="6">
           <description>Slideshow button</description>
@@ -662,12 +666,14 @@
         </control>
 -->
 
+<!--
         <control type="button" id="8">
           <description>Search button</description>
           <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>137</label>
           <include>OMButtonItem</include>
         </control>
+-->
         
         <!--
         <control type="button" id="9">
@@ -707,12 +713,14 @@
           <include>OMButtonItem</include>
         </control>
 
+<!--
         <control type="radiobutton" id="14">
           <description>Watched Toggle</description>
           <visible>Window.IsActive(24)</visible>
           <label>20367</label>
           <include>OMButtonItem</include>
         </control>
+-->
 <!--
         <control type="radiobutton" id="16">
           <description>PartyMode</description>
