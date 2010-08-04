@@ -67,7 +67,7 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
   }
   ++m_inChannels;
 
-  /* the final stage does not need any downmix/remap or upmix */
+  /* the final stage does not need any down/upmix */
   if (finalStage)
     return true;
 
