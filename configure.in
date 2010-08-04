@@ -1657,6 +1657,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1792,6 +1794,8 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
@@ -1808,7 +1812,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -D CMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   else
 set -x
-    rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
+    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
@@ -1853,6 +1857,8 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
       --disable-skyrocket
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
@@ -1892,7 +1898,7 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" 
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
 
@@ -1919,7 +1925,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
     ./configure --disable-nls \
       --host=$host_alias \
       --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS"
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
 
