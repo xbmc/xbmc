@@ -4300,7 +4300,7 @@
 					</item>
 					<item id="8">
 						<description>Skin Settings Button</description>
-						<label> $LOCALIZE[31667] $LOCALIZE[31603] </label>
+						<label>$LOCALIZE[31603] </label>
 						<onclick>XBMC.ReplaceWindow(1001)</onclick>
 					</item>
 					<item id="1">

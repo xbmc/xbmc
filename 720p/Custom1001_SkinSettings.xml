@@ -105,7 +105,7 @@
 
       <control type="label" id="2">
         <description>Title</description>
-        <label> $LOCALIZE[31667] $LOCALIZE[31603]</label>
+        <label> $LOCALIZE[31603]</label>
         <include>SettingsLowerTitle</include>
         <visible>!Control.HasFocus(1000)</visible>
       </control>
