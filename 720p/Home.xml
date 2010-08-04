@@ -1579,21 +1579,28 @@
 							<label> $LOCALIZE[31003] </label>
 							<onclick>XBMC.ActivateWindow(12)</onclick>
 						</item>
+						<!--
 						<item id="4">
 							<description>Programs Settings Button</description>
 							<label> $LOCALIZE[31004] </label>
 							<onclick>XBMC.ActivateWindow(13)</onclick>
-						</item>
+						</item>-->
 						<item id="5">
 							<description>System Settings Button</description>
 							<label> $LOCALIZE[31006] </label>
 							<onclick>XBMC.ActivateWindow(16)</onclick>
 						</item>
 						<item id="6">
+							<description>About Button</description>
+							<label> $LOCALIZE[31800] </label>
+							<onclick>XBMC.ActivateWindow(4)</onclick>
+						</item>
+						<!--
+						<item id="6">
 							<description>Network Settings Button</description>
 							<label> $LOCALIZE[31602] </label>
 							<onclick>XBMC.ActivateWindow(18)</onclick>
-						</item>
+						</item>-->
 						<item id="7">
 							<description>Developer Settings Button</description>
 							<label> Developer </label>
