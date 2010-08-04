@@ -11,6 +11,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyzer</summary>
     <summary lang="fi">Pyörivä 3D-spektrianalysaattori</summary>
+    <summary lang="fr">Visualisation montrant un analyseur de spectre 3D en rotation</summary>
     <summary lang="hu">Vizualizáció 3D spektrum analizátorral</summary>
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
     <summary lang="nl">OpenGL visualisatie</summary>
@@ -20,6 +21,8 @@
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
     <description lang="fi">Näyttää pyörivän 3D-spektrianalysaattorin, joka liikkuu musiikin tahdissa tuottaen aaltotehosteen spektrikuvaajaan.
 Spektripalkin korkeuden, nopeuden, ja piirtotavan (täytetyt, pisteet, ääriviivat) voi asettaa asetuksista. Spectrum on kevyt visualisointi joka näyttää hyvältä.</description>
+    <description lang="fr">Opengl Spectrum est une visualisation montrant un analyseur de spectre 3D en rotation sous Opengl. Il réagit au tempo de la musique créant un effet d'onde sur la grille.  
+Il possède quelques paramètres pour ajuster la hauteur de barre du spectre, sa vitesse, et le rendu des barres (plein, en points, en fil de fer). Une visualisation légère, agréable à regarder.</description>
     <description lang="hu">Az Opengl Spectrum egy olyan vizualizáció ami egy 3D hang spektrum analizátort mutat Opengl segítségével megjelenítve, ami a zene ritmusára mozog egy hullám-effektust képezve a teljes spektrumhálón.
 Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az oszlopok hogyan jelenjenek meg (teli, pontok, drótváz). Ez egy kis erőforrásigényű vizualizáció ami nagyon jól mutat.</description>
     <description lang="ko">Opengl 스펙트럼은 회전하는 3D 스펙트럼 분석기를 통해 음악시각화를 보여주며 음악의 비트가 만들어내는 웨이브 효과를 스펙트럼 그리드에 보여줍니다. 설정에서 스펙트럼 바의 높이, 속도, 바의 갯수 (채워짐, 점, 와이어 프레임)를 지정할수 있습니다. 가볍고 CPU를 많이 사용하지 않습니다.</description>

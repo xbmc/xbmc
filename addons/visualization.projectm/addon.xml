@@ -18,6 +18,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">projectM takes you flying through the soundwaves you're hearing</summary>
     <summary lang="fi">projectM lennättää sinut ääniaaltojen läpi</summary>
+    <summary lang="fr">projectM vous entraine à travers les ondes sonores que vous écoutez</summary>
     <summary lang="nl">projectM Visualisatie</summary>
     <summary lang="hu">A projectM végigrepít a zene hullámain</summary>
     <summary lang="ko">projectM 은 사운드웨이브 속으로 날아가는듯한 효과를 보여줍니다.</summary>
@@ -28,6 +29,9 @@ All projectM requires is a video card with 3D acceleration and your favorite mus
     <description lang="fi">projectM on uskomaton musiikkivisualisointi, joka on yhteisön kovan työn tulos. Käyttäjät voivat luoda esiasetuksia, jotka yhdistävät musiikin kuviin.
 projectM -visualisointi on LGPL-lisensoitu Milkdropin uudelleenimplementointi OpenGL:llä.
 projectM tarvitsee vain 3D-kiihdyttävän näytönohjaimen ja lempimusiikkisi.</description>
+    <description lang="fr">projectM est un fantastique visualiseur musical. Il n'y a rien de meilleur dans l'univers Unix. L'ampleur de projectM vient du travail énorme de la communauté. Des utilisateurs comme vous peuvent créer des préréglages qui connecteront la musique avec des visuels incroyables. Essayez-le!
+Le visualisation projectM est un réalisation sous LGPL de Milkdrop en OpenGL.
+Le seul pré-requis de projectM est une carte graphique avec accélération 3D et votre musique.</description>
     <description lang="hu">A projectM egy fantasztikus zenei vizualizáció. Nincs ennél jobb a Unix világban. A projectM különlegessége, hogy egy egész fejlesztői közösség nehéz munkájából jött létre. A felhasználók, mint te egyedi beállításokat hozhatnak létre ami összekapcsolja a zenét a hihetetlen látványelemekkel. Próbáld ki!
 A projectM Vizualizáció a Milkdrop újrakódolása LGPL licenc alatt, OpenGL videókártya támogatást használva.
 Minden projectM látványbeállításhoz 3D gyorsításra képes videókártya és a kedvenc zenéd szükséges.</description>
