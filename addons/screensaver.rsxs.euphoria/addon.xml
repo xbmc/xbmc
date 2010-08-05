@@ -19,6 +19,7 @@
     <summary lang="ko">싸이키델릭 화면보호기</summary>
     <summary lang="pl">Tak psychodeliczny jak tylko się da</summary>
     <summary lang="pt">A mais psicadélica protecção de ecrã.</summary>
+    <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
     <description lang="en">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="fi">Tämä on mahdollisesti niin psykedeelinen kuin vain näytönsäästäjä voi olla. mogumbo luuli, että hänen Plasma-näytönäästäjänsä oli asteikon huipulla, mutta tämä ohittaa senkin. Oksennuspussin hakeminen on suositeltavaa ennen pitkäaikaista tuijottamista.</description>
     <description lang="fr">Un écran de veille psychédélique. mogumbo croyait son économiseur Plasma en haut de l'échelle mais, celui-ci est encore plus nauséeux. Mieux vaut se munir d'un de ces sacs anti-mal-de-l'air avant de regarder celui-ci trop longtemps.</description>
@@ -27,6 +28,7 @@
     <description lang="nl">Ongetwijfeld de meest psychedelische screensaver. mogumbo dacht dat zijn Plasma screensaver al bovenaan deze lijst stond, maar deze is zelf nog meer misselijkmakend.</description>
     <description lang="pl">Tak psychodeliczny wygaszacz jak tylko się da. Lepiej zaopatrz się w worki na chorobę lokomocyjną.</description>
     <description lang="pt">Esta é provavelmente a protecção de ecrã mais psicadélica de sempre. O mogumbo (autor) pensou que a sua protecção de ecrã 'Plasma' estava no topo da escala de protecções nauseantes mas esta parece ainda pior. Procure um saco de enjoo e sente-se, se vai ficar muito tempo a olhar para o ecrã.</description>
+    <description lang="zh">这大概是最具迷幻效果的屏幕保护程序了。mogumbo以为他的Plasma屏保已经是数一数二了，但这个更令人作犯晕。如果你要长时间盯视它最好先准备一个晕机袋。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>

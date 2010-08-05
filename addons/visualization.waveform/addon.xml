@@ -18,7 +18,7 @@
     <summary lang="nl">Visualisatie</summary>
     <summary lang="pl">Wizualizacja pokazująca dwie fale dźwięku</summary>
     <summary lang="pt">Visualização que mostra 2 gráficos ondulantes</summary>
-    <summary lang="zh">可视化效果</summary>
+    <summary lang="zh">在屏幕上显示两个波形图的可视化效果</summary>
     <description lang="en">Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
     <description lang="fr">Waveform une simple visualisation montrant deux graphiques de forme d'onde à l'écran. Une pour chaque voie, gauche et droite, qui bouge en fonction du tempo</description>
