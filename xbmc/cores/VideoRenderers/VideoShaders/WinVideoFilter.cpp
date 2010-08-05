@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "WinVideoFilter.h"
 #include "WindowingFactory.h"
 #include "../../../utils/log.h"
@@ -26,6 +28,7 @@
 #include <map>
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
+
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -494,3 +497,5 @@ bool CTestShader::Create()
   }
   return true;
 }
+
+#endif
