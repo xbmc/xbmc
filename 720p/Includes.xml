@@ -576,7 +576,7 @@
 		<texture border="8,7,7,0">DialogContextTop.png</texture>
 	</include>
 	<include name="ContextDialogMiddleTexture">
-		<texture border="4,0,3,0">DialogContextMiddle.png</texture>
+		<texture border="2,0,3,0">DialogContextMiddle.png</texture>
 	</include>
 	<include name="ContextDialogBottomTexture">
 		<texture border="7,0,7,7">DialogContextBottom.png</texture>
