@@ -17,7 +17,7 @@
     <summary lang="hu">TV műsor információk a TheTVDB.com-ról</summary>
     <summary lang="pl">Pobieraj dane o serialach TV z TheTVDB.com</summary>
     <summary lang="pt">Scraper de séries de TV TVDB.com</summary>
-    <summary lang="zh">电视剧集刮削器</summary>
+    <summary lang="zh">从TheTVDB.com获取电视剧集信息</summary>
     <description lang="en">TheTVDB.com is a TV Scraper. The site is a massive open database that can be modified by anybody and contains full meta data for many shows in different languages. All content and images on the site have been contributed by their users for users and have a high standard or quality. The database schema and website are open source under the GPL.</description>
     <description lang="es">TheTVDB.com es un scraper para series de televisión. Esta pagina web es una base de datos immensa que puede ser modificada por cualquiera y contiene informaciós de series y capítulos en distintos idiomas. Todo el contenido y las imágenes de este sitio han sido creadas y enviadas por sus usuarios bajo unas estrictas normas de tamaño y calidad. El esquema de la base de datos y la página web són consultables y de código abierto bajo licencia GPL.</description>
     <description lang="fr">TheTVDB.com est un scraper TV. Le site est une immense base de données libre qui peut être modifiée par n'importe qui et qui contient toutes les infos pour beaucoup de séries en différentes langues. Toutes les infos et images du site proviennent de contributions d'utilisateurs pour les utilisateurs et sont d'excellente qualité. Le schéma de la base de données et le site Web sont en open source sous licence GPL.</description>

@@ -19,6 +19,7 @@
     <summary lang="ko">아마도 두번째로 가장 사이키델릭한 화면보호기</summary>
     <summary lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie</summary>
     <summary lang="pt">Provavelmente a segunda mais psicadélica protecção de ecrã</summary>
+    <summary lang="zh">也许是排名第二的迷幻效果屏幕保护程序</summary>
     <description lang="en">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="fi">Todennäköisesti toiseksi psykedeelisin olemassa oleva näytönsäästäjä. Kuvittelepa vain kaikki nuo värit lentelemässä ympäriinsä.</description>
     <description lang="fr">Probablement le second économiseur le plus psychédélique de l'histoire. Essayez seulement d'imaginer toutes ces couleurs en mouvement.</description>
@@ -27,6 +28,7 @@
     <description lang="nl">Een heel erg psychedelische screensaver.</description>
     <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferię poruszających się barw.</description>
     <description lang="pt">Provavelmente a segunda mais psicadélica protecção de ecrã de sempre. Experimente-a para ver todas as cores moverem-se livremente.</description>
+    <description lang="zh">也许是排名第二的迷幻效果屏幕保护程序。你将看到所有颜色满处乱飞。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>

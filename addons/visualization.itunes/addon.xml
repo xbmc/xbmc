@@ -16,6 +16,7 @@
     <summary lang="nl">iTunes Visualisaties</summary>
     <summary lang="pl">Wrapper wizualizacji iTunes</summary>
     <summary lang="pt">Visualização iTunes</summary>
+    <summary lang="zh">iTunes可视化效果包</summary>
     <description lang="en">iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
     <description lang="fi">Mahdollistaa OSX iTunes -asennuksen visualisointien käytön XBMC:ssä.</description>
     <description lang="fr">La visualisation iTunes vous permet d'utiliser vos visualisations depuis iTunes dans XBMC</description>
@@ -24,6 +25,7 @@
     <description lang="nl">iTunes Visualisaties kan gebruik maken van de visualisaties van jouw iTunes installatie in OSX</description>
     <description lang="pl">Wrapper pozwala XBMC na użycie wizualizacji z iTunes (tylko system OSX)</description>
     <description lang="pt">O iTunes Visualization Wrapper permite usar visualizações do seu OSX iTunes no XBMC</description>
+    <description lang="zh">iTunes可视化效果包允许你使用安装到XBMC的来自于OSX iTunes的可视化效果</description>
     <platform>osx</platform>
   </extension>
 </addon>
