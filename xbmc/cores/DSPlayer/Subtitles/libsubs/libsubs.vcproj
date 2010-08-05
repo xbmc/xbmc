@@ -75,7 +75,7 @@
 				ProgramDatabaseFile="$(ConfigurationName)\$(TargetName).pdb"
 				MapExports="false"
 				SubSystem="2"
-				ImportLibrary="$(ConfigurationName)\libsubs.lib"
+				ImportLibrary="$(OutDir)\libsubs.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -157,7 +157,7 @@
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="false"
-				ImportLibrary="$(ConfigurationName)\libsubs.lib"
+				ImportLibrary="$(OutDir)\libsubs.lib"
 				TargetMachine="1"
 			/>
 			<Tool
