@@ -21,6 +21,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
 
@@ -141,3 +143,5 @@ class CTestShader : public CWinShader
 public:
   virtual bool Create();
 };
+
+#endif
