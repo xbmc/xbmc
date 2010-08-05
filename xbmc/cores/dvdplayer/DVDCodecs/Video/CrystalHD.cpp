@@ -661,9 +661,9 @@ void CMPCOutputThread::CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   for (int y = 0; y < h/2; y++, s_y += stride)
   {
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
   }
   //copy chroma
   //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
@@ -723,18 +723,18 @@ void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   for (int y = 0; y < h/2; y++, s_y += stride)
   {
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
     fast_memcpy(d_y, s_y, w);
-    d_y += stride;
+    d_y += w;
   }
   //copy chroma
   uint8_t *s_uv = procOut->UVbuff;
   uint8_t *d_uv = pBuffer->m_uv_buffer_ptr;
   for (int y = 0; y < h/4; y++, s_uv += stride) {
     fast_memcpy(d_uv, s_uv, w);
-    d_uv += stride;
+    d_uv += w;
     fast_memcpy(d_uv, s_uv, w);
-    d_uv += stride;
+    d_uv += w;
   }
   pBuffer->m_interlace = false;
 }
@@ -777,11 +777,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
 #else
             if (m_color_space == BCM::MODE422_YUY2)
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
 #endif
             //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
@@ -829,11 +827,40 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                 else
                   CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
               break;
+              default:
+              break;
             }
           }
           else
           {
-            //fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
+            switch(pBuffer->m_format)
+            {
+              case DVDVideoPicture::FMT_YUY2:
+                if (pBuffer->m_interlace)
+                {
+                  // do simple line doubling de-interlacing.
+                  // copy luma
+                  int yuy2_w = w * 2;
+                  int yuy2_stride = stride*2;
+                  uint8_t *s_y = procOut.Ybuff;
+                  uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+                  for (int y = 0; y < h/2; y++, s_y += yuy2_stride)
+                  {
+                    fast_memcpy(d_y, s_y, yuy2_w);
+                    d_y += yuy2_w;
+                    fast_memcpy(d_y, s_y, yuy2_w);
+                    d_y += yuy2_w;
+                  }
+                  pBuffer->m_interlace = false;
+                }
+                else
+                {
+                  fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
+                }
+              break;
+              case DVDVideoPicture::FMT_YUV420P:
+                // TODO: deinterlace for yuy2 -> yv12, icky
+                {
             // Perform the color space conversion.
             uint8_t* src[] =       { procOut.Ybuff, NULL, NULL, NULL };
             int      srcStride[] = { stride*2, 0, 0, 0 };
@@ -846,6 +873,11 @@ bool CMPCOutputThread::GetDecoderOutput(void)
               SWS_FAST_BILINEAR, NULL, NULL, NULL);
             m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
           }
+              break;
+              default:
+              break;
+            }
+          }
 
           m_ReadyList.Push(pBuffer);
           m_ready_event.Set();
@@ -854,7 +886,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         else
         {
           if (m_PictureNumber != procOut.PicInfo.picture_number)
-            CLog::Log(LOGDEBUG, "%s: No timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp);
+            CLog::Log(LOGDEBUG, "%s: No timestamp detected: %"PRIu64, __MODULE_NAME__, procOut.PicInfo.timeStamp);
           m_PictureNumber = procOut.PicInfo.picture_number;
         }
       }
@@ -887,6 +919,12 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         m_format_valid = true;
         m_ready_event.Set();
       }
+    break;
+
+    case BCM::BC_STS_DEC_NOT_OPEN:
+    break;
+
+    case BCM::BC_STS_DEC_NOT_STARTED:
     break;
 
     case BCM::BC_STS_IO_USER_ABORT:
@@ -1382,10 +1420,9 @@ void CCrystalHD::Reset(void)
   {
     // Calling for non-error flush, Flushes all the decoder
     //  buffers, input, decoded and to be decoded. 
-    m_reset = 60;
+    m_reset = 10;
     m_wait_timeout = 1;
     m_dll->DtsFlushInput(m_device, 2);
-    ::Sleep(100);
   }
 
   while (m_BusyList.Count())
@@ -1825,7 +1862,7 @@ void CCrystalHD::bitstream_alloc_and_copy(
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)
 {
   CLog::Log(LOGDEBUG, "----------------------------------\n%s","");
-  CLog::Log(LOGDEBUG, "\tTimeStamp: %llu\n", pib.timeStamp);
+  CLog::Log(LOGDEBUG, "\tTimeStamp: %"PRIu64"\n", pib.timeStamp);
   CLog::Log(LOGDEBUG, "\tPicture Number: %d\n", pib.picture_number);
   CLog::Log(LOGDEBUG, "\tWidth: %d\n", pib.width);
   CLog::Log(LOGDEBUG, "\tHeight: %d\n", pib.height);

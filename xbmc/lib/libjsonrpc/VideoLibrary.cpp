@@ -41,7 +41,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
   CFileItemList items;
   if (videodatabase.GetMoviesNav("", items))
-    HandleFileItemList("movieid", "movies", items, parameterObject, result);
+    HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -60,7 +60,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetTvShowsNav("", items))
-    HandleFileItemList("tvshowid", "tvshows", items, parameterObject, result);
+    HandleFileItemList("tvshowid", false, "tvshows", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -83,7 +83,7 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("", items, -1, -1, -1, -1, tvshowID))
-    HandleFileItemList(NULL, "seasons", items, param, result);
+    HandleFileItemList(NULL, false, "seasons", items, param, result);
 
   videodatabase.Close();
   return OK;
@@ -107,26 +107,9 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, season))
-    HandleFileItemList("episodeid", "episodes", items, param, result);
+    HandleFileItemList("episodeid", true, "episodes", items, param, result);
 
   videodatabase.Close();
-  return OK;
-}
-
-JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
-{
-/*  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return InternalError;
-
-  int artistID = parameterObject.get("artistid", -1).asInt();
-//  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1);
-  CFileItemList items;
-//  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1);
-  if (videodatabase.GetMusicVideoAlbumsNav("", items, -1, -1, artistID, -1, -1, -1, -1))
-    HandleFileItemList("albumid", "albums", items, parameterObject, result);
-
-  videodatabase.Close();*/
   return OK;
 }
 
@@ -148,7 +131,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("", items, -1, -1, artistID, -1, -1, albumID))
-    HandleFileItemList("musicvideoid", "musicvideos", items, param, result);
+    HandleFileItemList("musicvideoid", true, "musicvideos", items, param, result);
 
   videodatabase.Close();
   return OK;
@@ -162,7 +145,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMoviesNav("", items))
-    HandleFileItemList("movieid", "movies", items, parameterObject, result);
+    HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -176,7 +159,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedEpisodesNav("", items))
-    HandleFileItemList("episodeid", "episodes", items, parameterObject, result);
+    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -190,7 +173,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMusicVideosNav("", items))
-    HandleFileItemList("musicvideoid", "musicvideos", items, parameterObject, result);
+    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;

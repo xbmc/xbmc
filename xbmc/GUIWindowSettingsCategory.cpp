@@ -598,6 +598,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("myvideos.selectaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
+      pControl->AddLabel(g_localizeStrings.Get(208), SELECT_ACTION_PLAY_OR_RESUME);
+      pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
+      pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -870,11 +880,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
         pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
-    }
-    else if (strSetting.Equals("services.webserverport"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
 #endif
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
@@ -1271,9 +1276,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
-    vector<CStdString> choices;
-    choices.push_back(g_localizeStrings.Get(22034));
-    choices.push_back(g_localizeStrings.Get(22035));
+    CContextButtons choices;
+    choices.Add(1, g_localizeStrings.Get(22034));
+    choices.Add(2, g_localizeStrings.Get(22035));
 
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )

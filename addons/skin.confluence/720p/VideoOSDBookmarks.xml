@@ -88,7 +88,7 @@
 					<width>225</width>
 					<height>15</height>
 					<font>font12</font>
-					<selectedcolor>green</selectedcolor>
+					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
 					<aligny>center</aligny>
 					<info>ListItem.Label</info>
@@ -111,11 +111,11 @@
 				</control>
 				<control type="label">
 					<posx>112</posx>
-					<posy>1507</posy>
+					<posy>150</posy>
 					<width>225</width>
 					<height>15</height>
 					<font>font12</font>
-					<selectedcolor>green</selectedcolor>
+					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
 					<aligny>center</aligny>
 					<info>ListItem.Label</info>

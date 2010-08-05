@@ -102,11 +102,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (CFile::Exists("special://scripts/autoexec.py") &&
-                watch.GetElapsedMilliseconds() < 5000.f)
-            {
-              while (watch.GetElapsedMilliseconds() < 5000) Sleep(10);
-            }
             LoadProfile(iItem);
           }
           else
@@ -214,30 +209,16 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   // mark the item
   m_vecItems->Get(iItem)->Select(true);
 
-  // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu) return false;
-
-  // initialize the menu (loaded on demand)
-  pMenu->Initialize();
-
-  int btn_EditProfile   = pMenu->AddButton(20067);
-  int btn_DeleteProfile = 0;
-  int btn_ResetLock = 0;
+  CContextButtons choices;
+  choices.Add(1, 20067);
 /*  if (m_viewControl.GetSelectedItem() != 0) // no deleting the default profile
-    btn_DeleteProfile = pMenu->AddButton(117); */
+    choices.Add(2, 117); */
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
-    btn_ResetLock = pMenu->AddButton(12334);
+    choices.Add(3, 12334);
 
-  // position it correctly
-  pMenu->OffsetPosition(posX, posY);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid > 0)
+  int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (choice == 3)
   {
-    if (btnid == btn_ResetLock)
-    {
       if (g_passwordManager.CheckLock(g_settings.GetMasterProfile().getLockMode(),g_settings.GetMasterProfile().getLockCode(),20075))
         g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
       else // be inconvenient
@@ -245,12 +226,13 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 
       return true;
     }
+  
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
 
-    if (btnid == btn_EditProfile)
+  if (choice == 1)
       CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
-    if (btnid == btn_DeleteProfile)
+  if (choice == 2)
     {
       int iDelete = m_viewControl.GetSelectedItem();
       m_viewControl.Clear();
@@ -258,12 +240,11 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
       Update();
       m_viewControl.SetSelectedItem(0);
     }
-  }
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)g_settings.GetNumProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
-  return (btnid > 0);
+  return (choice > 0);
 }
 
 CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)

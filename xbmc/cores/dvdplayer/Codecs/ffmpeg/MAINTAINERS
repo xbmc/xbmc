@@ -34,7 +34,7 @@ QuickTime faststart:
 Miscellaneous Areas
 ===================
 
-documentation                           Mike Melanson, Diego Biurrun
+documentation                           Mike Melanson
 website                                 Robert Swain
 build system (configure,Makefiles)      Diego Biurrun, Mans Rullgard
 project server                          Diego Biurrun, Mans Rullgard
@@ -98,6 +98,8 @@ Generic Parts:
     simple_idct.c, simple_idct.h        Michael Niedermayer
   postprocessing:
     libpostproc/*                       Michael Niedermayer
+  table generation:
+    tableprint.c, tableprint.h          Reimar Doeffinger
 
 Codecs:
   4xm.c                                 Michael Niedermayer
@@ -205,10 +207,11 @@ Codecs:
   vcr1.c                                Michael Niedermayer
   vmnc.c                                Kostya Shishkov
   vorbis_enc.c                          Oded Shimon
-  vorbis_dec.c                          Denes Balatoni
+  vorbis_dec.c                          Denes Balatoni, David Conrad
   vp3*                                  Mike Melanson
   vp5                                   Aurelien Jacobs
   vp6                                   Aurelien Jacobs
+  vp8                                   David Conrad
   vqavideo.c                            Mike Melanson
   wavpack.c                             Kostya Shishkov
   wmaprodec.c                           Sascha Sommer
@@ -293,6 +296,7 @@ Muxers/Demuxers:
   oggdec.c, oggdec.h                    David Conrad
   oggenc.c                              Baptiste Coudurier
   oggparse*.c                           David Conrad
+  oma.c                                 Maxim Poliakovski
   psxstr.c                              Mike Melanson
   pva.c                                 Ivo van Poorten
   r3d.c                                 Baptiste Coudurier
@@ -330,7 +334,6 @@ Alpha                                   Mans Rullgard, Falk Hueffner
 ARM                                     Mans Rullgard
 AVR32                                   Mans Rullgard
 MIPS                                    Mans Rullgard
-BeOS                                    Francois Revol
 Mac OS X / PowerPC                      Romain Dolbeau, Guillaume Poirier
 Amiga / PowerPC                         Colin Ward
 Linux / PowerPC                         Luca Barbato

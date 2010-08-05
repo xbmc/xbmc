@@ -45,7 +45,7 @@ public:
   bool Create(UINT width, UINT height, UINT mipLevels, DWORD usage, D3DFORMAT format, D3DPOOL pool);
   void Release();
   bool LockRect(UINT level, D3DLOCKED_RECT *lr, const RECT *rect, DWORD flags);
-  void UnlockRect(UINT level);
+  bool UnlockRect(UINT level);
   bool GetLevelDesc(UINT level, D3DSURFACE_DESC *desc);
   bool GetSurfaceLevel(UINT level, LPDIRECT3DSURFACE9 *surface);
 
@@ -93,8 +93,8 @@ public:
   bool SetTexture(D3DXHANDLE handle, CD3DTexture &texture);
   bool Begin(UINT *passes, DWORD flags);
   bool BeginPass(UINT pass);
-  void EndPass();
-  void End();
+  bool EndPass();
+  bool End();
 
   ID3DXEffect *Get() const { return m_effect; };
 
@@ -117,7 +117,7 @@ public:
   bool Create(UINT length, DWORD usage, DWORD fvf, D3DPOOL pool);
   void Release();
   bool Lock(UINT offset, UINT size, void **data, DWORD flags);
-  void Unlock();
+  bool Unlock();
 
   LPDIRECT3DVERTEXBUFFER9 Get() const { return m_vertex; };
 

@@ -32,14 +32,12 @@
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/Directory.h"
 #include "MediaManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
-#include "AutoPtrHandle.h"
 #include "utils/log.h"
-
-using namespace AUTOPTR;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -60,7 +58,7 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 
   m_thumbLoader.SetObserver(this);
   // Remove old HD cache every time XBMC is loaded
-  DeleteDirectoryCache();
+  CUtil::DeleteDirectoryCache();
 }
 
 CGUIWindowMusicSongs::~CGUIWindowMusicSongs(void)
@@ -433,38 +431,9 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowMusicSongs::DeleteDirectoryCache()
-{
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CStdString searchPath = "special://temp/*.fi";
-  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
-  if (!hFind.isValid())
-    return;
-  do
-  {
-    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
-  }
-  while (FindNextFile(hFind, &wfd));
-}
-
 void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
 {
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CStdString searchPath = "special://temp/r-*.fi";
-  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
-  if (!hFind.isValid())
-    return;
-  do
-  {
-    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
-  }
-  while (FindNextFile(hFind, &wfd));
+  CUtil::DeleteDirectoryCache("r-");
 }
 
 void CGUIWindowMusicSongs::PlayItem(int iItem)

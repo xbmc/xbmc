@@ -24,6 +24,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "addons/AddonManager.h"
+#include "addons/Visualisation.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -45,17 +46,67 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
   ControlType = GUICONTROL_VISUALISATION;
 }
 
+bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
+{
+  switch (message.GetMessage())
+  {
+  case GUI_MSG_GET_VISUALISATION:
+    message.SetPointer(m_addon.get());
+    return m_addon;
+  case GUI_MSG_VISUALISATION_RELOAD:
+    FreeResources(true);
+    return true;
+  case GUI_MSG_PLAYBACK_STARTED:
+    if (m_addon)
+    {
+      m_addon->UpdateTrack();
+      return true;
+    }
+    break;
+  }
+  return CGUIRenderingControl::OnMessage(message);
+}
+
+bool CGUIVisualisationControl::OnAction(const CAction &action)
+{
+  if (!m_addon)
+    return false;
+
+  switch (action.GetID())
+  {
+  case ACTION_VIS_PRESET_NEXT:
+    return m_addon->OnAction(VIS_ACTION_NEXT_PRESET);
+  case ACTION_VIS_PRESET_PREV:
+    return m_addon->OnAction(VIS_ACTION_PREV_PRESET);
+  case ACTION_VIS_PRESET_RANDOM:
+    return m_addon->OnAction(VIS_ACTION_RANDOM_PRESET);
+  case ACTION_VIS_RATE_PRESET_PLUS:
+    return m_addon->OnAction(VIS_ACTION_RATE_PRESET_PLUS);
+  case ACTION_VIS_RATE_PRESET_MINUS:
+    return m_addon->OnAction(VIS_ACTION_RATE_PRESET_MINUS);
+  case ACTION_VIS_PRESET_LOCK:
+    return m_addon->OnAction(VIS_ACTION_LOCK_PRESET);
+  default:
+    return CGUIRenderingControl::OnAction(action);
+  }
+}
+
 void CGUIVisualisationControl::Render()
 {
-  if (!m_addon && g_application.IsPlayingAudio() && !m_bAttemptedLoad)
+  if (g_application.IsPlayingAudio())
   {
+    if (m_bInvalidated)
+      FreeResources(true);
+
+    if (!m_addon && !m_bAttemptedLoad)
+    {
     AddonPtr viz;
     if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
       LoadAddon(viz);
 
     m_bAttemptedLoad = true;
   }
-  else
+  }
     CGUIRenderingControl::Render();
 }
 

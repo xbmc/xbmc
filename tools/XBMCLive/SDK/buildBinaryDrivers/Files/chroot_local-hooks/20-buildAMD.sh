@@ -66,14 +66,14 @@ mkdir -p updates/dkms
 
 cp /tmp/fglrx.ko updates/dkms
 depmod $kernelVersion
-tar cvf /tmp/modules.tar modules.* updates
+tar cf /tmp/modules.tar modules.* updates
 rm updates/dkms/fglrx.ko
 popd
 
 pushd .
 mkdir -p lib/modules/$kernelVersion
 cd lib/modules/$kernelVersion
-tar xvf /tmp/modules.tar
+tar xf /tmp/modules.tar
 rm /tmp/modules.tar
 popd
 

@@ -124,17 +124,6 @@ extern "C" void __stdcall init_emu_environ()
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
-#elif defined(_WIN32)
-  dll_putenv("OS=win32");
-  // preliminary change to get HOME* vars in Win7 x64
-  // todo: dll__environ should return all system vars
-  CStdString  strtmp;
-  CStdStringW strwtmp = _wgetenv(L"HOMEDRIVE");
-  g_charsetConverter.wToUTF8(strwtmp, strtmp);
-  dll_putenv(CStdString("HOMEDRIVE="+strtmp).c_str());
-  strwtmp = _wgetenv(L"HOMEPATH");
-  g_charsetConverter.wToUTF8(strwtmp, strtmp);
-  dll_putenv(CStdString("HOMEPATH="+strtmp).c_str());
 #elif defined(__APPLE__)
   dll_putenv("OS=darwin");
 #elif defined(_LINUX)
@@ -168,6 +157,19 @@ extern "C" void __stdcall update_emu_environ()
     // Should we check for valid strings here? should HTTPS_PROXY use https://?
     dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
     dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+#ifdef _WIN32
+    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+#endif
+    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    {
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+#ifdef _WIN32
+      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
+      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+#endif
+  }
   }
   else
   {
@@ -191,6 +193,38 @@ static int convert_fmode(const char* mode)
     iMode |= _O_WRONLY  | O_CREAT;
   return iMode;
 }
+
+#ifdef _WIN32
+static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
+{
+  CStdString strname;
+  g_charsetConverter.wToUTF8(wdata->name, strname);
+  size_t size = sizeof(data->name) / sizeof(char);
+  strncpy(data->name, strname.c_str(), size);
+  if (size)
+    data->name[size - 1] = '\0';
+  data->attrib = wdata->attrib;
+  data->time_create = wdata->time_create;
+  data->time_access = wdata->time_access;
+  data->time_write = wdata->time_write;
+  data->size = wdata->size;
+}
+
+static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
+{
+  CStdStringW strwname;
+  g_charsetConverter.utf8ToW(data->name, strwname, false);
+  size_t size = sizeof(wdata->name) / sizeof(wchar_t);
+  wcsncpy(wdata->name, strwname.c_str(), size);
+  if (size)
+    wdata->name[size - 1] = '\0';
+  wdata->attrib = data->attrib;
+  wdata->time_create = data->time_create;
+  wdata->time_access = data->time_access;
+  wdata->time_write = data->time_write;
+  wdata->size = data->size;
+}
+#endif
 
 extern "C"
 {
@@ -723,7 +757,13 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(CUtil::ValidatePath(_P(str)), data);
+      struct _wfinddata64i32_t wdata;
+      CStdStringW strwfile;
+      g_charsetConverter.utf8ToW(CUtil::ValidatePath(_P(str)), strwfile, false);
+      intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -800,7 +840,14 @@ extern "C"
       }
     }
     if (found >= MAX_OPEN_DIRS)
-      return _findnext64i32(f, data); // local dir
+    {
+      struct _wfinddata64i32_t wdata;
+      to_wfinddata64i32(data, &wdata);
+      intptr_t ret = _wfindnext64i32(f, &wdata); // local dir
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
+    }
 
     // we have a valid data struture. get next item!
     int iItem = vecDirsOpen[found].curr_index;
@@ -1783,15 +1830,13 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      if (pFile->GetLength() <= LONG_MAX)
-        buffer->st_size = (_off_t)pFile->GetLength();
-      else
+      struct __stat64 tStat = {};
+      if (pFile->Stat(&tStat) == 0)
       {
-        buffer->st_size = 0;
-        CLog::Log(LOGWARNING, "WARNING: File is larger than _fstat64i32 can handle, file size will be reported as 0 bytes");
-      }
-      buffer->st_mode = _S_IFREG;
+        CUtil::Stat64ToStat64i32(buffer, &tStat);
       return 0;
+    }
+      return -1;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {

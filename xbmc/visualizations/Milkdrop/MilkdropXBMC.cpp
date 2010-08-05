@@ -25,6 +25,9 @@
 #include "../../addons/include/xbmc_vis_dll.h"
 #include "../../addons/include/xbmc_addon_cpp_dll.h"
 #include "XmlDocument.h"
+#include <string>
+#include <direct.h>
+
 
 #define strnicmp _strnicmp
 #define strcmpi  _strcmpi
@@ -33,10 +36,10 @@ CPlugin* g_plugin=NULL;
 char g_visName[512];
 
 #define PRESETS_DIR "special://xbmc/addons/visualization.milkdrop/presets"
-#define CONFIG_FILE "special://profile/visualisations/Milkdrop.conf"
 
 char m_szPresetSave[256] = "";
 char g_packFolder[256] = "Milkdrop";
+std::string g_configFile;
 
 // settings vector
 std::vector<DllSetting> g_vecSettings;
@@ -103,6 +106,8 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
   strcpy(g_visName, visprops->name);
+  g_configFile = std::string(visprops->profile) + std::string("milkdrop.conf");
+  _mkdir(visprops->profile);
 	
   Preinit();
   g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
@@ -262,7 +267,7 @@ void LoadSettings()
 	CXmlDocument doc;
 
 	char szXMLFile[1024];
-  strcpy(szXMLFile,CONFIG_FILE);
+  strcpy(szXMLFile,g_configFile.c_str());
 
   // update our settings structure
   // setup our settings structure (passable to GUI)
@@ -463,7 +468,7 @@ void LoadSettings()
 void SaveSettings()
 {
   char szXMLFile[1024];
-  strcpy(szXMLFile,CONFIG_FILE);
+  strcpy(szXMLFile,g_configFile.c_str());
 
   WriteXML doc;
   if (!doc.Open(szXMLFile, "visualisation"))
@@ -615,6 +620,8 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
    
     if(!g_vecSettings.empty() && !g_vecSettings[0].entry.empty() && *(int*)value < g_vecSettings[0].entry.size())
     {
+      if(strncmp(m_szPresetSave, g_vecSettings[0].entry[*(int*)value], sizeof(m_szPresetSave)) != 0)
+      {
       // Check if its a zip or a folder
       SetPresetDir(g_vecSettings[0].entry[*(int*)value]);
 
@@ -628,6 +635,7 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
       g_plugin->m_nCurrentPreset = -1;
       g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
     }
+  }
   }
   else
     return STATUS_UNKNOWN;

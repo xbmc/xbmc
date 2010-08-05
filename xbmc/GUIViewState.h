@@ -72,6 +72,7 @@ protected:
    \param label the name of the addons source
    */
   void AddAddonsSource(const CStdString &content, const CStdString &label);
+  void AddLiveTVSources();
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);

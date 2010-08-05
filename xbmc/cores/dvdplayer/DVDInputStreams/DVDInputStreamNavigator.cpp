@@ -1059,6 +1059,24 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   int audio    = GetActiveAudioStream();
   int subtitle = GetActiveSubtitleStream();
 
+  if (iChapter == (m_iPart + 1))
+  {
+    if (m_dll.dvdnav_next_pg_search(m_dvdnav) == DVDNAV_STATUS_ERR)
+    {
+      CLog::Log(LOGERROR, "dvdnav: dvdnav_next_pg_search( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
+      return false;
+    }
+  }
+  else
+  if (iChapter == (m_iPart - 1))
+  {
+    if (m_dll.dvdnav_prev_pg_search(m_dvdnav) == DVDNAV_STATUS_ERR)
+    {
+      CLog::Log(LOGERROR, "dvdnav: dvdnav_prev_pg_search( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
+      return false;
+    }
+  }
+  else  
   if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGERROR, "dvdnav: dvdnav_part_play failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));

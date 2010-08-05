@@ -21,7 +21,8 @@
 #include "avcodec.h"
 #include "dsputil.h"
 #include "get_bits.h"
-#include "colorspace.h"
+#include "bytestream.h"
+#include "libavutil/colorspace.h"
 
 //#define DEBUG
 //#define DEBUG_PACKET_CONTENTS
@@ -31,6 +32,7 @@
 #define DVBSUB_REGION_SEGMENT   0x11
 #define DVBSUB_CLUT_SEGMENT     0x12
 #define DVBSUB_OBJECT_SEGMENT   0x13
+#define DVBSUB_DISPLAYDEFINITION_SEGMENT 0x14
 #define DVBSUB_DISPLAY_SEGMENT  0x80
 
 #define cm (ff_cropTbl + MAX_NEG_CROP)
@@ -216,6 +218,15 @@ typedef struct DVBSubRegion {
     struct DVBSubRegion *next;
 } DVBSubRegion;
 
+typedef struct DVBSubDisplayDefinition {
+    int version;
+
+    int x;
+    int y;
+    int width;
+    int height;
+} DVBSubDisplayDefinition;
+
 typedef struct DVBSubContext {
     int composition_id;
     int ancillary_id;
@@ -227,6 +238,7 @@ typedef struct DVBSubContext {
 
     int display_list_size;
     DVBSubRegionDisplay *display_list;
+    DVBSubDisplayDefinition *display_definition;
 } DVBSubContext;
 
 
@@ -334,6 +346,8 @@ static void delete_state(DVBSubContext *ctx)
         av_free(clut);
     }
 
+    av_freep(&ctx->display_definition);
+
     /* Should already be null */
     if (ctx->object_list)
         av_log(0, AV_LOG_ERROR, "Memory deallocation error!\n");
@@ -342,9 +356,7 @@ static void delete_state(DVBSubContext *ctx)
 static av_cold int dvbsub_init_decoder(AVCodecContext *avctx)
 {
     int i, r, g, b, a = 0;
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
-
-    memset(avctx->priv_data, 0, sizeof(DVBSubContext));
+    DVBSubContext *ctx = avctx->priv_data;
 
     ctx->composition_id = avctx->sub_id & 0xffff;
     ctx->ancillary_id = avctx->sub_id >> 16;
@@ -414,7 +426,7 @@ static av_cold int dvbsub_init_decoder(AVCodecContext *avctx)
 
 static av_cold int dvbsub_close_decoder(AVCodecContext *avctx)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
     DVBSubRegionDisplay *display;
 
     delete_state(ctx);
@@ -717,7 +729,7 @@ static int dvbsub_read_8bit_string(uint8_t *destbuf, int dbuf_len,
 static void dvbsub_parse_pixel_data_block(AVCodecContext *avctx, DVBSubObjectDisplay *display,
                                           const uint8_t *buf, int buf_size, int top_bottom, int non_mod)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
 
     DVBSubRegion *region = get_region(ctx, display->region_id);
     const uint8_t *buf_end = buf + buf_size;
@@ -834,7 +846,7 @@ static void dvbsub_parse_pixel_data_block(AVCodecContext *avctx, DVBSubObjectDis
 static void dvbsub_parse_object_segment(AVCodecContext *avctx,
                                         const uint8_t *buf, int buf_size)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
 
     const uint8_t *buf_end = buf + buf_size;
     const uint8_t *block;
@@ -893,7 +905,7 @@ static void dvbsub_parse_object_segment(AVCodecContext *avctx,
 static void dvbsub_parse_clut_segment(AVCodecContext *avctx,
                                         const uint8_t *buf, int buf_size)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
 
     const uint8_t *buf_end = buf + buf_size;
     int clut_id;
@@ -981,7 +993,7 @@ static void dvbsub_parse_clut_segment(AVCodecContext *avctx,
 static void dvbsub_parse_region_segment(AVCodecContext *avctx,
                                         const uint8_t *buf, int buf_size)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
 
     const uint8_t *buf_end = buf + buf_size;
     int region_id, object_id;
@@ -1093,7 +1105,7 @@ static void dvbsub_parse_region_segment(AVCodecContext *avctx,
 static void dvbsub_parse_page_segment(AVCodecContext *avctx,
                                         const uint8_t *buf, int buf_size)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
     DVBSubRegionDisplay *display;
     DVBSubRegionDisplay *tmp_display_list, **tmp_ptr;
 
@@ -1254,10 +1266,51 @@ static void save_display_set(DVBSubContext *ctx)
 }
 #endif
 
+static void dvbsub_parse_display_definition_segment(AVCodecContext *avctx,
+                                                    const uint8_t *buf,
+                                                    int buf_size)
+{
+    DVBSubContext *ctx = avctx->priv_data;
+    DVBSubDisplayDefinition *display_def = ctx->display_definition;
+    int dds_version, info_byte;
+
+    if (buf_size < 5)
+        return;
+
+    info_byte   = bytestream_get_byte(&buf);
+    dds_version = info_byte >> 4;
+    if (display_def && display_def->version == dds_version)
+        return; // already have this display definition version
+
+    if (!display_def) {
+        display_def             = av_mallocz(sizeof(*display_def));
+        ctx->display_definition = display_def;
+    }
+    if (!display_def)
+        return;
+
+    display_def->version = dds_version;
+    display_def->x       = 0;
+    display_def->y       = 0;
+    display_def->width   = bytestream_get_be16(&buf) + 1;
+    display_def->height  = bytestream_get_be16(&buf) + 1;
+
+    if (buf_size < 13)
+        return;
+
+    if (info_byte & 1<<3) { // display_window_flag
+        display_def->x = bytestream_get_be16(&buf);
+        display_def->y = bytestream_get_be16(&buf);
+        display_def->width  = bytestream_get_be16(&buf) - display_def->x + 1;
+        display_def->height = bytestream_get_be16(&buf) - display_def->y + 1;
+    }
+}
+
 static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
                                         int buf_size, AVSubtitle *sub)
 {
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
+    DVBSubContext *ctx = avctx->priv_data;
+    DVBSubDisplayDefinition *display_def = ctx->display_definition;
 
     DVBSubRegion *region;
     DVBSubRegionDisplay *display;
@@ -1265,11 +1318,17 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
     DVBSubCLUT *clut;
     uint32_t *clut_table;
     int i;
+    int offset_x=0, offset_y=0;
 
     sub->rects = NULL;
     sub->start_display_time = 0;
     sub->end_display_time = ctx->time_out * 1000;
     sub->format = 0;
+
+    if (display_def) {
+        offset_x = display_def->x;
+        offset_y = display_def->y;
+    }
 
     sub->num_rects = ctx->display_list_size;
 
@@ -1288,8 +1347,8 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
         if (!region)
             continue;
 
-        rect->x = display->x_pos;
-        rect->y = display->y_pos;
+        rect->x = display->x_pos + offset_x;
+        rect->y = display->y_pos + offset_y;
         rect->w = region->width;
         rect->h = region->height;
         rect->nb_colors = (1 << region->depth);
@@ -1338,8 +1397,8 @@ static int dvbsub_decode(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    DVBSubContext *ctx = (DVBSubContext*) avctx->priv_data;
-    AVSubtitle *sub = (AVSubtitle*) data;
+    DVBSubContext *ctx = avctx->priv_data;
+    AVSubtitle *sub = data;
     const uint8_t *p, *p_end;
     int segment_type;
     int page_id;
@@ -1389,6 +1448,8 @@ static int dvbsub_decode(AVCodecContext *avctx,
             case DVBSUB_OBJECT_SEGMENT:
                 dvbsub_parse_object_segment(avctx, p, segment_length);
                 break;
+            case DVBSUB_DISPLAYDEFINITION_SEGMENT:
+                dvbsub_parse_display_definition_segment(avctx, p, segment_length);
             case DVBSUB_DISPLAY_SEGMENT:
                 *data_size = dvbsub_display_end_segment(avctx, p, segment_length, sub);
                 break;

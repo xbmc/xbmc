@@ -28,6 +28,7 @@
 
 #include "avcodec.h"
 #include "bytestream.h"
+#include "vorbis.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -144,19 +145,17 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
     int l;
 
     if(data) {
-        int samples = OGGVORBIS_FRAME_SIZE;
+        const int samples = avccontext->frame_size;
         float **buffer ;
+        int c, channels = context->vi.channels;
 
         buffer = vorbis_analysis_buffer(&context->vd, samples) ;
-        if(context->vi.channels == 1) {
+        for (c = 0; c < channels; c++) {
+            int co = (channels > 8) ? c :
+                ff_vorbis_encoding_channel_layout_offsets[channels-1][c];
             for(l = 0 ; l < samples ; l++)
-                buffer[0][l]=audio[l]/32768.f;
-        } else {
-            for(l = 0 ; l < samples ; l++){
-                buffer[0][l]=audio[l*2]/32768.f;
-                buffer[1][l]=audio[l*2+1]/32768.f;
+                buffer[c][l]=audio[l*channels+co]/32768.f;
             }
-        }
         vorbis_analysis_wrote(&context->vd, samples) ;
     } else {
         if(!context->eof)
@@ -171,8 +170,12 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
         while(vorbis_bitrate_flushpacket(&context->vd, &op)) {
             /* i'd love to say the following line is a hack, but sadly it's
              * not, apparently the end of stream decision is in libogg. */
-            if(op.bytes==1)
+            if(op.bytes==1 && op.e_o_s)
                 continue;
+            if (context->buffer_index + sizeof(ogg_packet) + op.bytes > BUFFER_SIZE) {
+                av_log(avccontext, AV_LOG_ERROR, "libvorbis: buffer overflow.");
+                return -1;
+            }
             memcpy(context->buffer + context->buffer_index, &op, sizeof(ogg_packet));
             context->buffer_index += sizeof(ogg_packet);
             memcpy(context->buffer + context->buffer_index, op.packet, op.bytes);
@@ -190,9 +193,14 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
         avccontext->coded_frame->pts= av_rescale_q(op2->granulepos, (AVRational){1, avccontext->sample_rate}, avccontext->time_base);
         //FIXME we should reorder the user supplied pts and not assume that they are spaced by 1/sample_rate
 
+        if (l > buf_size) {
+            av_log(avccontext, AV_LOG_ERROR, "libvorbis: buffer overflow.");
+            return -1;
+        }
+
         memcpy(packets, op2->packet, l);
         context->buffer_index -= l + sizeof(ogg_packet);
-        memcpy(context->buffer, context->buffer + l + sizeof(ogg_packet), context->buffer_index);
+        memmove(context->buffer, context->buffer + l + sizeof(ogg_packet), context->buffer_index);
 //        av_log(avccontext, AV_LOG_DEBUG, "E%d\n", l);
     }
 

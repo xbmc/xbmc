@@ -2380,31 +2380,26 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 void CMusicDatabase::DeleteCDDBInfo()
 {
 #ifdef HAS_DVD_DRIVE
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CStdString strCDDBFileMask = CUtil::AddFileToFolder(g_settings.GetCDDBFolder(), "*.cddb");
-
-  map<ULONG, CStdString> mapCDDBIds;
-
-  CAutoPtrFind hFind( FindFirstFile(_P(strCDDBFileMask), &wfd));
-  if (!hFind.isValid())
+  CFileItemList items;
+  if (!CDirectory::GetDirectory(g_settings.GetCDDBFolder(), items, ".cddb", false))
   {
     CGUIDialogOK::ShowAndGetInput(313, 426, 0, 0);
     return ;
   }
-
   // Show a selectdialog that the user can select the albuminfo to delete
   CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
     pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
     pDlg->Reset();
-    do
+
+    map<ULONG, CStdString> mapCDDBIds;
+    for (int i = 0; i < items.Size(); ++i)
     {
-      if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-      {
-        CStdString strFile = wfd.cFileName;
+      if (items[i]->m_bIsFolder)
+        continue;
+
+      CStdString strFile = CUtil::GetFileName(items[i]->m_strPath);
         strFile.Delete(strFile.size() - 5, 5);
         ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
         Xcddb cddb;
@@ -2426,8 +2421,6 @@ void CMusicDatabase::DeleteCDDBInfo()
         pDlg->Add(str);
         mapCDDBIds.insert(pair<ULONG, CStdString>(lDiscId, str));
       }
-    }
-    while (FindNextFile(hFind, &wfd));
 
     pDlg->Sort();
     pDlg->DoModal();
@@ -2875,7 +2868,7 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
   }
 
   bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
-  if (bResult)
+  if (bResult && idArtist != -1)
   {
     CStdString strArtist;
     GetArtistById(idArtist,strArtist);
@@ -3058,7 +3051,7 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
   // run query
   bool bResult = GetSongsByWhere(strBaseDir, strWhere, items);
-  if (bResult)
+  if (bResult && idArtist != -1)
   {
     CStdString strArtist;
     GetArtistById(idArtist,strArtist);

@@ -170,6 +170,15 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
     }
     trg += o->width;
   }
+
+  /* if nothing visible, just output a dummy pixel */
+  if(max_x <= min_x
+  || max_y <= min_y)
+  {
+    max_y = max_x = 1;
+    min_y = min_x = 0;
+  }
+
   return rgba;
 }
 

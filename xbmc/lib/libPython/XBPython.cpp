@@ -124,7 +124,6 @@ extern "C" {
 XBPython::XBPython()
 {
   m_bInitialized      = false;
-  m_bStartup          = false;
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
@@ -376,7 +375,7 @@ void XBPython::Initialize()
       // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+      setenv("PYTHONPATH", _P("special://xbmcbin/system/python/python24.zip").c_str(), 1);
 #endif /* __APPLE__ */
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
@@ -469,37 +468,12 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  if (m_bStartup)
-  {
-    m_bStartup = false;
-
-    // autoexec.py - userdata
-    CStdString strAutoExecPy = _P("special://home/scripts/autoexec.py");
-
-    if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
-
-    // autoexec.py - system
-    CStdString strAutoExecPy2 = _P("special://xbmc/scripts/autoexec.py");
-
-    // Make sure special://xbmc & special://home don't point to the same location
-    if (strAutoExecPy != strAutoExecPy2)
-    {
-      if ( XFILE::CFile::Exists(strAutoExecPy2) )
-        evalFile(strAutoExecPy2);
-      else
-        CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy2.c_str());
-    }
-  }
-
   if (m_bLogin)
   {
     m_bLogin = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = _P("special://profile/scripts/autoexec.py");
+    CStdString strAutoExecPy = _P("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
@@ -667,18 +641,19 @@ int XBPython::getScriptId(const CStdString &strFile)
 
 bool XBPython::isRunning(int scriptId)
 {
-  bool bRunning = false;
   CSingleLock lock(m_critSection);
 
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
+  for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); it++)
   {
     if (it->id == scriptId)
-      bRunning = true;
-    ++it;
+    {
+      if(it->bDone)
+        return false;
+      else
+        return true;
   }
-
-  return bRunning;
+  }
+  return false;
 }
 
 bool XBPython::isStopping(int scriptId)

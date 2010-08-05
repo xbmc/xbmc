@@ -50,8 +50,6 @@ CGUISliderControl::~CGUISliderControl(void)
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
-  if (!IsDisabled())
-  {
     if (m_iInfoCode)
       SetIntValue(g_infoManager.GetInt(m_iInfoCode));
 
@@ -68,7 +66,7 @@ void CGUISliderControl::Render()
 
     if ((int)fWidth > 1)
     {
-      if (m_bHasFocus)
+    if (m_bHasFocus && !IsDisabled())
       {
         m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
         m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
@@ -83,7 +81,6 @@ void CGUISliderControl::Render()
         m_guiMid.Render();
       }
     }
-  }
   CGUIControl::Render();
 }
 

@@ -169,7 +169,7 @@ bool CRepositoryUpdateJob::DoWork()
       }
       else
       {
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info,
+        g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(),
                                                           g_localizeStrings.Get(24061),
                                                           addon->Name(),TOAST_DISPLAY_TIME,false);
       }

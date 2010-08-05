@@ -34,11 +34,12 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include "SystemGlobals.h"
 #include <assert.h>
 
 using namespace std;
 
-CGUITextureManager g_TextureManager;
+CGUITextureManager& g_TextureManager = g_SystemGlobals.m_TextureManager;
 
 /************************************************************************/
 /*                                                                      */
@@ -402,13 +403,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   }
   else
   {
-    // normal picture
-    // convert from utf8
-    CStdString texturePath;
-    g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
-
     pTexture = new CTexture();
-    if(!pTexture->LoadFromFile(texturePath))
+    if(!pTexture->LoadFromFile(strPath))
       return 0;
     width = pTexture->GetWidth();
     height = pTexture->GetHeight();

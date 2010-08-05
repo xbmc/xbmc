@@ -130,6 +130,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS_SOFTWARE , 16308));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC_SOFTWARE    , 16309));
     entries.push_back(make_pair(VS_SCALINGMETHOD_VDPAU_HARDWARE   , 13120));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_DXVA_HARDWARE    , 16319));
     entries.push_back(make_pair(VS_SCALINGMETHOD_AUTO             , 16316));
 
     /* remove unsupported methods */

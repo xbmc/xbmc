@@ -23,6 +23,13 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
     BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, libcrystalhd-dev,"
+else
+    BUILD_DEPENDS="$BUILD_DEPENDS librtmp-dev,"
+fi
+
+# include librtmp-dev for Ubuntu maverick as well
+if [ $(lsb_release -cs) = "maverick" ]; then
+    BUILD_DEPENDS="$BUILD_DEPENDS librtmp-dev,"
 fi
 
 case "$1" in
@@ -74,6 +81,11 @@ case "$1" in
           exit 1
         fi
         printf "$LIBVDPAU_DEPENDS"
+        ;;
+    LIBRTMP_DEPENDS)
+        LIBRTMP_DEPENDS=$(cat /var/lib/dpkg/info/librtmp0.shlibs | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        printf "$LIBRTMP_DEPENDS"
         ;;
 esac
 

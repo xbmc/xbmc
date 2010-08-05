@@ -190,7 +190,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   }
 
-  CLog::Log(LOGWARNING, "CFactoryDirectory::Create - Unsupported protocol %s", strProtocol.c_str());
+  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;
 }
 

@@ -646,11 +646,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
 
-    // replace invalid spaces
-    CStdString strFileName = url2.GetFileName();
-    strFileName.Replace(" ", "%20");
-    url2.SetFileName(strFileName);
-
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();

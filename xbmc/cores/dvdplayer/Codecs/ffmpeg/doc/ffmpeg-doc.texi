@@ -7,6 +7,16 @@
 @sp 3
 @end titlepage
 
+@chapter Synopsis
+
+The generic syntax is:
+
+@example
+@c man begin SYNOPSIS
+ffmpeg [[infile options][@option{-i} @var{infile}]]... @{[outfile options] @var{outfile}@}...
+@c man end
+@end example
+
 @chapter Description
 @c man begin DESCRIPTION
 
@@ -50,18 +60,7 @@ specified for the inputs.
 
 @c man end DESCRIPTION
 
-@chapter Invocation
-
-@section Syntax
-
-The generic syntax is:
-
-@example
-@c man begin SYNOPSIS
-ffmpeg [[infile options][@option{-i} @var{infile}]]... @{[outfile options] @var{outfile}@}...
-@c man end
-@end example
-
+@chapter Options
 @c man begin OPTIONS
 
 @include fftools-common-opts.texi
@@ -100,7 +99,16 @@ Specifying a positive offset means that the corresponding
 streams are delayed by 'offset' seconds.
 
 @item -timestamp @var{time}
-Set the timestamp.
+Set the recording timestamp in the container.
+The syntax for @var{time} is:
+@example
+now|([(YYYY-MM-DD|YYYYMMDD)[T|t| ]]((HH[:MM[:SS[.m...]]])|(HH[MM[SS[.m...]]]))[Z|z])
+@end example
+If the value is "now" it takes the current time.
+Time is local time unless 'Z' or 'z' is appended, in which case it is
+interpreted as UTC.
+If the year-month-day part is not specified it takes the current
+year-month-day.
 
 @item -metadata @var{key}=@var{value}
 Set a metadata key/value pair.
@@ -218,27 +226,21 @@ The following abbreviations are recognized:
 
 @item -aspect @var{aspect}
 Set aspect ratio (4:3, 16:9 or 1.3333, 1.7777).
-@item -croptop @var{size}
+@item -croptop @var{size} (deprecated - use -vf crop=x:y:width:height instead)
 Set top crop band size (in pixels).
-@item -cropbottom @var{size}
+@item -cropbottom @var{size} (deprecated - use -vf crop=x:y:width:height instead)
 Set bottom crop band size (in pixels).
-@item -cropleft @var{size}
+@item -cropleft @var{size} (deprecated - use -vf crop=x:y:width:height instead)
 Set left crop band size (in pixels).
-@item -cropright @var{size}
+@item -cropright @var{size} (deprecated - use -vf crop=x:y:width:height instead)
 Set right crop band size (in pixels).
 @item -padtop @var{size}
-Set top pad band size (in pixels).
 @item -padbottom @var{size}
-Set bottom pad band size (in pixels).
 @item -padleft @var{size}
-Set left pad band size (in pixels).
 @item -padright @var{size}
-Set right pad band size (in pixels).
 @item -padcolor @var{hex_color}
-Set color of padded bands. The value for padcolor is expressed
-as a six digit hexadecimal number where the first two digits
-represent red, the middle two digits green and last two digits
-blue (default = 000000 (black)).
+All the pad options have been removed. Use -vf
+pad=width:height:x:y:color instead.
 @item -vn
 Disable video recording.
 @item -bt @var{tolerance}
@@ -290,6 +292,12 @@ Add a new video stream to the current output stream.
 
 @item -vlang @var{code}
 Set the ISO 639 language code (3 letters) of the current video stream.
+
+@item -vf @var{filter_graph}
+@var{filter_graph} is a description of the filter graph to apply to
+the input video.
+Use the option "-filters" to show all the available filters (including
+also sources and sinks).
 
 @end table
 
@@ -624,6 +632,15 @@ Timestamp discontinuity delta threshold.
 Set the maximum demux-decode delay.
 @item -muxpreload @var{seconds}
 Set the initial demux-decode delay.
+@item -streamid @var{output-stream-index}:@var{new-value}
+Assign a new value to a stream's stream-id field in the next output file.
+All stream-id fields are reset to default for each output file.
+
+For example, to set the stream 0 PID to 33 and the stream 1 PID to 36 for
+an output mpegts file:
+@example
+ffmpeg -i infile -streamid 0:33 -streamid 1:36 out.ts
+@end example
 @end table
 
 @section Preset files
@@ -946,6 +963,8 @@ The @code{-newvideo}, @code{-newaudio} and @code{-newsubtitle}
 options have to be specified immediately after the name of the output
 file to which you want to add them.
 @c man end EXAMPLES
+
+@include filters.texi
 
 @ignore
 

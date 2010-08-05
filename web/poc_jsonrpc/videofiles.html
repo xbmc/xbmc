@@ -39,7 +39,7 @@ String.prototype.endsWith = function(str)
 var directory = gup("directory");
 
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 
 if (directory)
   http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media": "video", "directory": "' + unescape(directory) + '", "sort": { "method": "label", "order": "ascending" } }, "id": 1}');

@@ -89,8 +89,8 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -287,7 +287,6 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="2"
 				DataExecutionPrevention="2"
 				TargetMachine="1"
@@ -381,8 +380,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1386,11 +1385,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h"
 						>
 					</File>
 				</Filter>
@@ -3299,7 +3306,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\AutoPtrHandle.cpp"
+					RelativePath="..\..\xbmc\utils\AutoPtrHandle.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AutoPtrHandle.h"
 					>
 				</File>
 				<File

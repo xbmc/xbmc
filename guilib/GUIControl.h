@@ -261,6 +261,12 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  /*!
+   \brief Return the coordinates of the top left of the control, in the control's parent coordinates
+   \return The top left coordinates of the control
+   */
+  virtual CPoint GetPosition() const { return CPoint(GetXPosition(), GetYPosition()); };
+
   /*! \brief Called when the mouse is over the control.
    Default implementation selects the control.
    \param point location of the mouse in transformed skin coordinates

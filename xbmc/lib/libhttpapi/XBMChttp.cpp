@@ -1360,7 +1360,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   }
   else
   {
-    output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
+    CURL url(fileItem.m_strPath);
+    CStdString strPath(url.GetWithoutUserDetails());
+    CUtil::URLDecode(strPath);
+    output = openTag + "Filename:" + strPath;  // currently playing item filename
     if (g_application.IsPlaying())
       if (!g_application.m_pPlayer->IsPaused())
         output+=closeTag+openTag+"PlayStatus:Playing";
@@ -2070,15 +2073,14 @@ void CXbmcHttp::ResetKey()
 
 int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
 {
-  int buttonCode=0;
+  uint32_t buttonCode=0;
   uint8_t leftTrigger=0, rightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameters");
-    
   else
   {
-    buttonCode=(int) strtol(paras[0], NULL, 0);
+    buttonCode=(uint32_t) strtol(paras[0], NULL, 0);
     if (numParas>1) {
       leftTrigger=(uint8_t) atoi(paras[1]) ;
       if (numParas>2) {

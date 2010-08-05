@@ -130,11 +130,11 @@ void CGUIToggleButtonControl::SetAltLabel(const string &label)
     m_selectButton.SetLabel(label);
 }
 
-CStdString CGUIToggleButtonControl::GetLabel() const
+CStdString CGUIToggleButtonControl::GetDescription() const
 {
   if (m_bSelected)
-    return m_selectButton.GetLabel();
-  return CGUIButtonControl::GetLabel();
+    return m_selectButton.GetDescription();
+  return CGUIButtonControl::GetDescription();
 }
 
 void CGUIToggleButtonControl::SetAltClickActions(const vector<CGUIActionDescriptor> &clickActions)

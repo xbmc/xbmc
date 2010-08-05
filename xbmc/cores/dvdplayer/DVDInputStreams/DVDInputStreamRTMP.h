@@ -25,7 +25,9 @@
 #include "DVDInputStream.h"
 #include "DllLibRTMP.h"
 
-class CDVDInputStreamRTMP : public CDVDInputStream
+class CDVDInputStreamRTMP 
+  : public CDVDInputStream
+  , public CDVDInputStream::ISeekTime
 {
 public:
   CDVDInputStreamRTMP();
@@ -48,7 +50,7 @@ protected:
   bool       m_bPaused;
   char*      m_sStreamPlaying;
 
-  RTMP       m_rtmp;
+  RTMP       *m_rtmp;
   DllLibRTMP m_libRTMP;
 };
 

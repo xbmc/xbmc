@@ -127,21 +127,18 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
       }
       return;
     }
-    CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (menu)
-    {
-      menu->Initialize();
-      menu->AddButton(1223);
-      menu->AddButton(12337);
-      menu->AddButton(12338);
-      menu->AddButton(12339);
-      menu->CenterWindow();
-      menu->DoModal();
+    CContextButtons choices;
+    choices.Add(1, 1223);
+    choices.Add(2, 12337);
+    choices.Add(3, 12338);
+    choices.Add(4, 12339);
+    
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
 
       CStdString newPassword;
       LockType iLockMode = LOCK_MODE_UNKNOWN;
       bool bResult = false;
-      switch(menu->GetButton())
+    switch(choice)
       {
       case 1:
         iLockMode = LOCK_MODE_EVERYONE; //Disabled! Need check routine!!!
@@ -181,7 +178,6 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
         UpdateSetting(1);
       }
     }
-  }
   if (setting.id == 2 && m_bGetUser)
   {
     CStdString strHeading;

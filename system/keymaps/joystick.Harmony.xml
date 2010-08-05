@@ -478,4 +478,14 @@
       <!-- Prev		-->      <button id="32">Close</button>
     </joystick>
   </PictureInfo>
+  <AddonInformation>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </AddonSettings>
 </keymap>

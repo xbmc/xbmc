@@ -78,7 +78,7 @@ int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding rnd){
     int64_t r=0;
     assert(c > 0);
     assert(b >=0);
-    assert(rnd >=0 && rnd<=5 && rnd!=4);
+    assert((unsigned)rnd<=5 && rnd!=4);
 
     if(a<0 && a != INT64_MIN) return -av_rescale_rnd(-a, b, c, rnd ^ ((rnd>>1)&1));
 
@@ -142,6 +142,13 @@ int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b){
     if (av_rescale_rnd(ts_a, a, b, AV_ROUND_DOWN) < ts_b) return -1;
     if (av_rescale_rnd(ts_b, b, a, AV_ROUND_DOWN) < ts_a) return  1;
     return 0;
+}
+
+int64_t av_compare_mod(uint64_t a, uint64_t b, uint64_t mod){
+    int64_t c= (a-b) & (mod-1);
+    if(c > (mod>>1))
+        c-= mod;
+    return c;
 }
 
 #ifdef TEST

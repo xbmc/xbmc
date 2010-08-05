@@ -569,14 +569,10 @@ void CKeyboardStat::Initialize()
 
 void CKeyboardStat::Reset()
 {
-  m_bShift = false;
-  m_bCtrl = false;
-  m_bAlt = false;
-  m_bRAlt = false;
-  m_bSuper = false;
-  m_cAscii = '\0';
-  m_wUnicode = '\0';
   m_VKey = 0;
+  m_wUnicode  = '\0';
+  m_cAscii    = '\0';
+  m_Modifiers = 0;
 
   ZeroMemory(&XBMC_KeyState, sizeof(XBMC_KeyState));
 }
@@ -585,11 +581,6 @@ void CKeyboardStat::ResetState()
 {
   Reset();
   XBMC_ModState = XBMCKMOD_NONE;
-}
-
-unsigned int CKeyboardStat::KeyHeld() const
-{
-  return m_keyHoldTime;
 }
 
 int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
@@ -764,11 +755,17 @@ void CKeyboardStat::Update(XBMC_Event& event)
 
     m_wUnicode = event.key.keysym.unicode;
 
-    m_bCtrl = (event.key.keysym.mod & XBMCKMOD_CTRL) != 0;
-    m_bShift = (event.key.keysym.mod & XBMCKMOD_SHIFT) != 0;
-    m_bAlt = (event.key.keysym.mod & XBMCKMOD_ALT) != 0;
-    m_bRAlt = (event.key.keysym.mod & XBMCKMOD_RALT) != 0;
-    m_bSuper = (event.key.keysym.mod & XBMCKMOD_SUPER) != 0;
+    m_Modifiers = 0;
+    if (event.key.keysym.mod & XBMCKMOD_CTRL)
+      m_Modifiers |= CKey::MODIFIER_CTRL;
+    if (event.key.keysym.mod & XBMCKMOD_SHIFT)
+      m_Modifiers |= CKey::MODIFIER_SHIFT;
+    if (event.key.keysym.mod & XBMCKMOD_ALT)
+      m_Modifiers |= CKey::MODIFIER_ALT;
+    if (event.key.keysym.mod & XBMCKMOD_RALT)
+      m_Modifiers |= CKey::MODIFIER_RALT;
+    if (event.key.keysym.mod & XBMCKMOD_SUPER)
+      m_Modifiers |= CKey::MODIFIER_SUPER;
 
     CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", event.key.keysym.scancode, event.key.keysym.sym, event.key.keysym.unicode, event.key.keysym.mod);
 
@@ -827,7 +824,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
       // back to 'a', 'b', etc.
       // It isn't clear to me if this applies to Linux and Mac as well as
       // Windows.
-      if (m_bCtrl)
+      if (m_Modifiers & CKey::MODIFIER_CTRL)
       {
         if (!m_VKey && !m_cAscii)
           LookupKeyMapping(&m_VKey, NULL, &m_wUnicode
@@ -881,101 +878,9 @@ void CKeyboardStat::Update(XBMC_Event& event)
   }
 }
 
-char CKeyboardStat::GetAscii()
+// Set the supplied CKey from the current keyboard state.
+
+const CKey CKeyboardStat::GetKey()
 {
-  char lowLevelAscii = m_cAscii;
-  int translatedAscii = GetUnicode();
-
-#ifdef DEBUG_KEYBOARD_GETCHAR
-  CLog::Log(LOGDEBUG, "low level ascii: %c ", lowLevelAscii);
-  CLog::Log(LOGDEBUG, "low level ascii code: %d ", lowLevelAscii);
-  CLog::Log(LOGDEBUG, "result char: %c ", translatedAscii);
-  CLog::Log(LOGDEBUG, "result char code: %d ", translatedAscii);
-  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", GetRAlt());
-  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", GetShift());
-#endif
-
-  if (translatedAscii >= 0 && translatedAscii < 128) // only TRUE ASCII! Otherwise XBMC crashes! No unicode not even latin 1!
-    return translatedAscii; // mapping to ASCII is supported only if the result is TRUE ASCII
-  else
-    return lowLevelAscii; // old style
-}
-
-WCHAR CKeyboardStat::GetUnicode()
-{
-  // More specific mappings, i.e. with scancodes and/or with one or even more modifiers,
-  // must be handled first/prioritized over less specific mappings! Why?
-  // Example: an us keyboard has: "]" on one key, the german keyboard has "+" on the same key,
-  // additionally the german keyboard has "~" on the same key, but the "~"
-  // can only be reached with the special modifier "AltGr" (right alt).
-  // See http://en.wikipedia.org/wiki/Keyboard_layout.
-  // If "+" is handled first, the key is already consumed and "~" can never be reached.
-  // The least specific mappings, e.g. "regardless modifiers" should be done at last/least prioritized.
-
-  WCHAR lowLevelUnicode = m_wUnicode;
-  BYTE key = m_VKey;
-
-#ifdef DEBUG_KEYBOARD_GETCHAR
-  CLog::Log(LOGDEBUG, "low level unicode char: %c ", lowLevelUnicode);
-  CLog::Log(LOGDEBUG, "low level unicode code: %d ", lowLevelUnicode);
-  CLog::Log(LOGDEBUG, "low level vkey: %d ", key);
-  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", GetRAlt());
-  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", GetShift());
-#endif
-
-  if (GetRAlt())
-  {
-    if (g_keyboardLayoutConfiguration.containsDeriveXbmcCharFromVkeyWithRalt(key))
-    {
-      WCHAR resultUnicode = g_keyboardLayoutConfiguration.valueOfDeriveXbmcCharFromVkeyWithRalt(key);
-#ifdef DEBUG_KEYBOARD_GETCHAR
-      CLog::Log(LOGDEBUG, "derived with ralt to code: %d ", resultUnicode);
-#endif
-      return resultUnicode;
-    }
-  }
-
-  if (GetShift())
-  {
-    if (g_keyboardLayoutConfiguration.containsDeriveXbmcCharFromVkeyWithShift(key))
-    {
-      WCHAR resultUnicode = g_keyboardLayoutConfiguration.valueOfDeriveXbmcCharFromVkeyWithShift(key);
-#ifdef DEBUG_KEYBOARD_GETCHAR
-      CLog::Log(LOGDEBUG, "derived with shift to code: %d ", resultUnicode);
-#endif
-      return resultUnicode;
-    }
-  }
-
-  if (g_keyboardLayoutConfiguration.containsDeriveXbmcCharFromVkeyRegardlessModifiers(key))
-  {
-    WCHAR resultUnicode = g_keyboardLayoutConfiguration.valueOfDeriveXbmcCharFromVkeyRegardlessModifiers(key);
-#ifdef DEBUG_KEYBOARD_GETCHAR
-    CLog::Log(LOGDEBUG, "derived to code: %d ", resultUnicode);
-#endif
-    return resultUnicode;
-  }
-
-  if (GetRAlt())
-  {
-    if (g_keyboardLayoutConfiguration.containsChangeXbmcCharWithRalt(lowLevelUnicode))
-    {
-      WCHAR resultUnicode = g_keyboardLayoutConfiguration.valueOfChangeXbmcCharWithRalt(lowLevelUnicode);
-#ifdef DEBUG_KEYBOARD_GETCHAR
-      CLog::Log(LOGDEBUG, "changed char with ralt to code: %d ", resultUnicode);
-#endif
-      return resultUnicode;
-    };
-  }
-
-  if (g_keyboardLayoutConfiguration.containsChangeXbmcCharRegardlessModifiers(lowLevelUnicode))
-  {
-    WCHAR resultUnicode = g_keyboardLayoutConfiguration.valueOfChangeXbmcCharRegardlessModifiers(lowLevelUnicode);
-#ifdef DEBUG_KEYBOARD_GETCHAR
-    CLog::Log(LOGDEBUG, "changed char to code: %d ", resultUnicode);
-#endif
-    return resultUnicode;
-  };
-
-  return lowLevelUnicode;
+  return CKey(m_VKey, m_wUnicode, m_cAscii, m_Modifiers, m_keyHoldTime);
 }

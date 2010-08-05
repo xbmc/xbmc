@@ -340,11 +340,15 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   else
     return false;
 
-  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFileNameAndPath, "");
+  CStdString playablePath = strFileNameAndPath;
+  if (CUtil::IsStack(playablePath))
+    playablePath = XFILE::CStackDirectory::GetFirstStackedFile(playablePath);
+
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, playablePath, "");
   if (!pInputStream)
     return false;
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(strFileNameAndPath.c_str(), ""))
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(playablePath.c_str(), ""))
   {
     delete pInputStream;
     return false;

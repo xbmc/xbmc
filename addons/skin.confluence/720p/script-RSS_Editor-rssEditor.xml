@@ -1,4 +1,4 @@
-<window id="129">
+<window>
 	<defaultcontrol>10</defaultcontrol>
 	<coordinates>
 		<system>1</system>
@@ -52,7 +52,7 @@
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
-		<control type="label"id="3">
+		<control type="label" id="3">
 			<description>List label</description>
 			<posx>20</posx>
 			<posy>60</posy>

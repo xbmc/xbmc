@@ -376,7 +376,7 @@
 			<posx>485</posx>
 			<posy>120</posy>
 			<height>30</height>
-			<width>370</width>
+			<width>325</width>
 			<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] $INFO[MusicPlayer.offset(1).Title]</label>
 			<align>right</align>
 			<aligny>center</aligny>

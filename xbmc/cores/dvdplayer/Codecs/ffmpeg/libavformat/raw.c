@@ -283,6 +283,7 @@ static int video_read_header(AVFormatContext *s,
                 st->codec->codec_id == CODEC_ID_MPEG4 ||
                 st->codec->codec_id == CODEC_ID_DIRAC ||
                 st->codec->codec_id == CODEC_ID_DNXHD ||
+                st->codec->codec_id == CODEC_ID_VC1   ||
                 st->codec->codec_id == CODEC_ID_H264) {
         st->codec->time_base= (AVRational){1,25};
     }
@@ -456,6 +457,7 @@ static int h263_probe(AVProbeData *p)
     int invalid_psc=0;
     int res_change=0;
     int src_fmt, last_src_fmt=-1;
+    int last_gn=0;
 
     for(i=0; i<p->buf_size; i++){
         code = (code<<8) + p->buf[i];
@@ -468,9 +470,16 @@ static int h263_probe(AVProbeData *p)
 
             if((code&0x300)==0x200 && src_fmt){
                 valid_psc++;
+                last_gn=0;
             }else
                 invalid_psc++;
             last_src_fmt= src_fmt;
+        } else if((code & 0xffff800000) == 0x800000) {
+            int gn= (code>>(23-5)) & 0x1F;
+            if(gn<last_gn){
+                invalid_psc++;
+            }else
+                last_gn= gn;
         }
     }
 //av_log(NULL, AV_LOG_ERROR, "h263_probe: psc:%d invalid:%d res_change:%d\n", valid_psc, invalid_psc, res_change);
@@ -663,7 +672,7 @@ static int adts_aac_probe(AVProbeData *p)
     uint8_t *buf;
     uint8_t *end = buf0 + p->buf_size - 7;
 
-    if (ff_id3v2_match(buf0)) {
+    if (ff_id3v2_match(buf0, ID3v2_DEFAULT_MAGIC)) {
         buf0 += ff_id3v2_tag_len(buf0);
     }
     buf = buf0;
@@ -705,7 +714,7 @@ static int adts_aac_read_header(AVFormatContext *s,
     st->need_parsing = AVSTREAM_PARSE_FULL;
 
     ff_id3v1_read(s);
-    ff_id3v2_read(s);
+    ff_id3v2_read(s, ID3v2_DEFAULT_MAGIC);
 
     return 0;
 }

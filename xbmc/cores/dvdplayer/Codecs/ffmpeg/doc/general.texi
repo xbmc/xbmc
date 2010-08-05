@@ -281,6 +281,8 @@ following image formats are supported:
     @tab Portable GrayMap image
 @item PGMYUV       @tab X @tab X
     @tab PGM with U and V components in YUV 4:2:0
+@item PIC          @tab @tab X
+    @tab Pictor/PC Paint
 @item PNG          @tab X @tab X
     @tab 2/4 bpp not supported yet
 @item PPM          @tab X @tab X
@@ -439,8 +441,8 @@ following image formats are supported:
     @tab fourcc: VP50
 @item On2 VP6                @tab     @tab  X
     @tab fourcc: VP60,VP61,VP62
-@item VP8                    @tab  X  @tab  X
-    @tab fourcc: VP80, de/encoding supported through external library libvpx
+@item VP8                    @tab  E  @tab  X
+    @tab fourcc: VP80, encoding supported through external library libvpx
 @item planar RGB             @tab     @tab  X
     @tab fourcc: 8BPS
 @item Q-team QPEG            @tab     @tab  X
@@ -587,10 +589,10 @@ following image formats are supported:
 @item Enhanced AC-3          @tab     @tab  X
 @item FLAC (Free Lossless Audio Codec)  @tab  X  @tab  IX
 @item G.729                  @tab     @tab  X
-@item GSM                    @tab  E  @tab  E
-    @tab supported through external library libgsm
-@item GSM Microsoft variant  @tab  E  @tab  E
-    @tab supported through external library libgsm
+@item GSM                    @tab  E  @tab  X
+    @tab encoding supported through external library libgsm
+@item GSM Microsoft variant  @tab  E  @tab  X
+    @tab encoding supported through external library libgsm
 @item IMC (Intel Music Coder)  @tab     @tab  X
 @item MACE (Macintosh Audio Compression/Expansion) 3:1  @tab     @tab  X
 @item MACE (Macintosh Audio Compression/Expansion) 6:1  @tab     @tab  X
@@ -633,7 +635,7 @@ following image formats are supported:
 @item QCELP / PureVoice      @tab     @tab  X
 @item QDesign Music Codec 2  @tab     @tab  X
     @tab There are still some distortions.
-@item RealAudio 1.0 (14.4K)  @tab     @tab  X
+@item RealAudio 1.0 (14.4K)  @tab  X  @tab  X
     @tab Real 14400 bit/s codec
 @item RealAudio 2.0 (28.8K)  @tab     @tab  X
     @tab Real 28800 bit/s codec
@@ -706,7 +708,6 @@ performance on systems without hardware floating point support).
 @multitable @columnfractions .4 .1 .1
 @item Name              @tab Input  @tab Output
 @item ALSA              @tab X      @tab X
-@item BEOS audio        @tab X      @tab X
 @item BKTR              @tab X      @tab
 @item DV1394            @tab X      @tab
 @item JACK              @tab X      @tab
@@ -722,10 +723,6 @@ performance on systems without hardware floating point support).
 
 
 @chapter Platform Specific information
-
-@section BeOS
-
-BeOS support is broken in mysterious ways.
 
 @section DOS
 
@@ -784,6 +781,12 @@ bash directly to work around this:
 @example
 bash ./configure
 @end example
+
+@subsection Darwin (MacOS X, iPhone)
+
+MacOS X on PowerPC or ARM (iPhone) requires a preprocessor from
+@url{http://github.com/yuvi/gas-preprocessor} to build the optimized
+assembler functions.
 
 @section Windows
 

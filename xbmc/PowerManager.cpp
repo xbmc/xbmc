@@ -26,6 +26,7 @@
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/Weather.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -268,6 +269,7 @@ void CPowerManager::OnWake()
 #endif
 
   g_application.UpdateLibraries();
+  g_weatherManager.Refresh();
 
   CAnnouncementManager::Announce(System, "xbmc", "Resume");
 }

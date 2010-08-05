@@ -1,0 +1,39 @@
+From bd6fb2964e2ddb7400991d1b61d578d5ab9c0052 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 22:27:09 -0400
+Subject: [PATCH 15/32] changed: check some more url_fseeks in asf demuxer to avoid problems if file system is unseekable
+
+---
+ libavformat/asfdec.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/libavformat/asfdec.c b/libavformat/asfdec.c
+index 4d8882f..b60922a 100644
+--- a/libavformat/asfdec.c
++++ b/libavformat/asfdec.c
+@@ -1074,7 +1074,8 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
+     if (s->packet_size > 0)
+         pos= (pos+s->packet_size-1-s->data_offset)/s->packet_size*s->packet_size+ s->data_offset;
+     *ppos= pos;
+-    url_fseek(s->pb, pos, SEEK_SET);
++    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
++        return AV_NOPTS_VALUE;
+ 
+ //printf("asf_read_pts\n");
+     asf_reset_header(s);
+@@ -1116,7 +1117,11 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
+     int64_t current_pos= url_ftell(s->pb);
+     int i;
+ 
+-    url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET);
++    if(url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET) < 0) {
++      asf->index_read= -1;
++      return;
++    }
++
+     get_guid(s->pb, &g);
+     if (!guidcmp(&g, &index_guid)) {
+         int64_t itime, last_pos=-1;
+-- 
+1.7.0
+

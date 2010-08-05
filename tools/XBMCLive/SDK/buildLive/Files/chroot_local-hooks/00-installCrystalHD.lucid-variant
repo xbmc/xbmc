@@ -34,7 +34,7 @@ if [ ! -f crystalhd.tar ]; then
 	exit
 fi
 
-tar xvf crystalhd.tar > /dev/null
+tar xf crystalhd.tar > /dev/null
 
 # Make libraries
 cd crystalhd/linux_lib/libcrystalhd

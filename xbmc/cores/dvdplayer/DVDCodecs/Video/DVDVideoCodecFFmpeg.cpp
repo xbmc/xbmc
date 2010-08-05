@@ -182,6 +182,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       if(pCodec->id == hints.codec
       && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
       {
+        if ((pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_XVID) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+          continue;
+
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
         CVDPAU* vdp = new CVDPAU();
         m_pCodecContext->codec_id = hints.codec;
@@ -219,7 +222,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
 
-  if (pCodec->id != CODEC_ID_H264 && pCodec->id != CODEC_ID_VP8 && pCodec->capabilities & CODEC_CAP_DR1)
+  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,69,0)
+      && pCodec->id != CODEC_ID_VP8
+#endif
+     )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
   // if we don't do this, then some codecs seem to fail.

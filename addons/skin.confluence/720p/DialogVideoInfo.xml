@@ -426,7 +426,7 @@
 								<visible>!IsEmpty(ListItem.Episode)</visible>
 							</item>
 							<item>
-								<label>$LOCALIZE[20416]:</label>
+								<label>$LOCALIZE[31322]:</label>
 								<label2>$INFO[ListItem.Premiered]</label2>
 								<onclick>-</onclick>
 								<visible>!IsEmpty(ListItem.Premiered)</visible>
@@ -570,7 +570,7 @@
 								<visible>!IsEmpty(ListItem.Episode)</visible>
 							</item>
 							<item>
-								<label>$LOCALIZE[20416]:</label>
+								<label>$LOCALIZE[31322]:</label>
 								<label2>$INFO[ListItem.Premiered]</label2>
 								<onclick>-</onclick>
 								<visible>!IsEmpty(ListItem.Premiered)</visible>
@@ -727,7 +727,7 @@
 								<visible>!IsEmpty(ListItem.Episode)</visible>
 							</item>
 							<item>
-								<label>$LOCALIZE[20416]:</label>
+								<label>$LOCALIZE[31322]:</label>
 								<label2>$INFO[ListItem.Premiered]</label2>
 								<onclick>-</onclick>
 								<visible>!IsEmpty(ListItem.Premiered)</visible>
@@ -902,6 +902,12 @@
 								<label2>$INFO[ListItem.Writer]</label2>
 								<onclick>-</onclick>
 								<visible>!IsEmpty(ListItem.Writer)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[20339]:</label>
+								<label2>$INFO[ListItem.Director]</label2>
+								<onclick>-</onclick>
+								<visible>!IsEmpty(ListItem.Director)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[562]:</label>

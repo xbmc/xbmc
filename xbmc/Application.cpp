@@ -341,6 +341,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
+  m_debugLayout = NULL;
 }
 
 CApplication::~CApplication(void)
@@ -398,7 +399,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
         // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
-        g_application.OnAction(CAction(newEvent.appcommand.action));
+        g_application.OnAppCommand(CAction(newEvent.appcommand.action));
       }
       break;
   }
@@ -761,7 +762,6 @@ bool CApplication::InitDirectoriesLinux()
 
   if (xbmcPath.IsEmpty())
   {
-    xbmcPath = INSTALL_PATH;
     /* Check if xbmc binaries and arch independent data files are being kept in
      * separate locations. */
     if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
@@ -1139,9 +1139,6 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
-#ifdef HAS_PYTHON
-  g_pythonParser.m_bStartup = true;
-#endif
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
@@ -1160,7 +1157,12 @@ bool CApplication::Initialize()
   }
 
   if (!g_settings.UsingLoginScreen())
+  {
     UpdateLibraries();
+#ifdef HAS_PYTHON
+  g_pythonParser.m_bLogin = true;
+#endif
+  }
 
   m_slowTimer.StartZero();
 
@@ -1674,6 +1676,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
 
+  delete m_debugLayout;
+  m_debugLayout = NULL;
+
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
@@ -1696,34 +1701,21 @@ bool CApplication::LoadUserWindows()
   g_SkinInfo->GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
-    CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-
-    WIN32_FIND_DATA NextFindFileData;
-    HANDLE hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
-    while (hFind != INVALID_HANDLE_VALUE)
+    CFileItemList items;
+    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", false))
     {
-      WIN32_FIND_DATA FindFileData = NextFindFileData;
-
-      if (!FindNextFile(hFind, &NextFindFileData))
+      for (int i = 0; i < items.Size(); ++i)
       {
-        FindClose(hFind);
-        hFind = INVALID_HANDLE_VALUE;
-      }
-
-      // skip "up" directories, which come in all queries
-      if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
+        if (items[i]->m_bIsFolder)
         continue;
-
-      CStdString strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
-      CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-      CStdString strLower(FindFileData.cFileName);
-      strLower.MakeLower();
-      strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
+        CStdString skinFile = CUtil::GetFileName(items[i]->m_strPath);
+        if (skinFile.Left(6).CompareNoCase("custom") == 0)
+        {
       TiXmlDocument xmlDoc;
-      if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
+          if (!xmlDoc.LoadFile(items[i]->m_strPath))
       {
-        CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
         continue;
       }
 
@@ -1732,7 +1724,7 @@ bool CApplication::LoadUserWindows()
       CStdString strValue = pRootElement->Value();
       if (!strValue.Equals("window"))
       {
-        CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
+            CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
         continue;
       }
 
@@ -1759,13 +1751,13 @@ bool CApplication::LoadUserWindows()
       CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
       if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
+            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
       else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
+            pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
       else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
+            pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
       else
-        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
+            pWindow = new CGUIStandardWindow(id + WINDOW_HOME, skinFile);
 
       // Check to make sure the pointer isn't still null
       if (pWindow == NULL)
@@ -1781,7 +1773,8 @@ bool CApplication::LoadUserWindows()
       pWindow->SetVisibleCondition(visibleCondition, false);
       g_windowManager.AddCustomWindow(pWindow);
     }
-    CloseHandle(hFind);
+  }
+    }
   }
   return true;
 }
@@ -2130,6 +2123,16 @@ void CApplication::RenderMemoryStatus()
     lastShift = now;
   }
 
+  if (!m_debugLayout)
+  {
+    CGUIFont *font13 = g_fontManager.GetDefaultFont();
+    CGUIFont *font13border = g_fontManager.GetDefaultFont(true);
+    if (font13)
+      m_debugLayout = new CGUITextLayout(font13, true, 0, font13border);
+  }
+  if (!m_debugLayout)
+    return;
+
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
     CStdString info;
@@ -2150,7 +2153,8 @@ void CApplication::RenderMemoryStatus()
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 
   // render the skin debug info
@@ -2183,7 +2187,9 @@ void CApplication::RenderMemoryStatus()
 
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.08f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 }
 
@@ -2214,7 +2220,6 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    g_Keyboard.Reset();
     CLog::Log(LOGDEBUG, "%s: %i pressed, screen saver/dpms woken up", __FUNCTION__, (int) key.GetButtonCode());
     return true;
   }
@@ -2227,8 +2232,6 @@ bool CApplication::OnKey(const CKey& key)
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-
-    g_Keyboard.Reset();
 
     if (!key.IsAnalogButton())
       CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
@@ -2268,7 +2271,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt() || g_Keyboard.GetSuper())))
+           (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT)) // shift and no other modifiers
           useKeyboard = true;
       }
     }
@@ -2307,14 +2310,12 @@ bool CApplication::OnKey(const CKey& key)
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
-          if (g_Keyboard.GetUnicode())
-            action = CAction(g_Keyboard.GetAscii() | KEY_ASCII, g_Keyboard.GetUnicode());
+          if (key.GetUnicode())
+            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
           else
-            action = CAction(g_Keyboard.GetVKey() | KEY_VKEY);
+            action = CAction(key.GetVKey() | KEY_VKEY);
         }
       }
-
-      g_Keyboard.Reset();
 
       CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.GetID());
 
@@ -2336,8 +2337,23 @@ bool CApplication::OnKey(const CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
-  g_Keyboard.Reset();
+  return OnAction(action);
+}
 
+// OnAppCommand is called in response to a XBMC_APPCOMMAND event.
+
+bool CApplication::OnAppCommand(const CAction &action)
+{
+  // Reset the screen saver
+  ResetScreenSaver();
+
+  // If we were currently in the screen saver wake up and don't process the appcommand
+  if (WakeUpScreenSaverAndDPMS())
+  {
+    return true;
+  }
+
+  // Process the appcommand
   return OnAction(action);
 }
 
@@ -2488,23 +2504,6 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
-    // OSD toggling
-    if (action.GetID() == ACTION_SHOW_OSD)
-    {
-      if (IsPlayingVideo() && IsPlayingFullScreenVideo())
-      {
-        CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
-        if (pOSD)
-        {
-          if (pOSD->IsDialogRunning())
-            pOSD->Close();
-          else
-            pOSD->DoModal();
-          return true;
-        }
-      }
-    }
-
     // pause : pauses current audio song
     if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
@@ -3066,32 +3065,13 @@ bool CApplication::ProcessKeyboard()
 {
   MEASURE_FUNCTION;
 
-  // process the keyboard buttons etc.
-  uint8_t vkey = g_Keyboard.GetVKey();
-  wchar_t unicode = g_Keyboard.GetUnicode();
-  if (vkey || unicode)
+  // Get the keypress from the keyboard
+  const CKey key(g_Keyboard.GetKey());
+
+  // If we have a valid keypress pass it to OnKey
+  if (key.GetVKey() || key.GetUnicode())
   {
-    // got a valid keypress - convert to a key code
-    uint32_t keyID;
-    if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
-      keyID = vkey | KEY_VKEY;
-    else
-      keyID = KEY_UNICODE;
-    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
-
-    // Check what modifiers are held down and update the key code as appropriate
-    if (g_Keyboard.GetCtrl())
-        keyID |= CKey::MODIFIER_CTRL;
-    if (g_Keyboard.GetShift())
-        keyID |= CKey::MODIFIER_SHIFT;
-    if (g_Keyboard.GetAlt())
-        keyID |= CKey::MODIFIER_ALT;
-    if (g_Keyboard.GetSuper())
-        keyID |= CKey::MODIFIER_SUPER;
-
-    // Create a key object with the keypress data and pass it to OnKey to be executed
-    CKey key(keyID);
-    key.SetHeld(g_Keyboard.KeyHeld());
+    g_Keyboard.Reset();
     return OnKey(key);
   }
   return false;
@@ -3557,7 +3537,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   { // we modify the item so that it becomes a real URL
     CFileItem item_new;
     if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+    {
+      item_new.SetProperty("original_listitem_url", item.HasProperty("original_listitem_url") ? item.GetProperty("original_listitem_url") : item.m_strPath);
       return PlayFile(item_new, false);
+    }
     return false;
   }
 
@@ -3736,18 +3719,27 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       SetPlaySpeed(iSpeed);
     }
 
+    if( IsPlayingAudio() )
+    {
+      if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+    }
+
 #ifdef HAS_VIDEO_PLAYBACK
     if( IsPlayingVideo() )
     {
+      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+
       // if player didn't manange to switch to fullscreen by itself do it here
       if( options.fullscreen && g_renderManager.IsStarted()
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
 
-      // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
+      if (!item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        // Save information about the stream if we currently have no data
         if (!details->HasStreamDetails())
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())

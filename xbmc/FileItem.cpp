@@ -1953,18 +1953,13 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
-#ifdef HAS_LIBBDNAV
+#ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
-            CUtil::AddFileToFolder(dvdPath, "PLAYLIST/00000.mpls", path);
-            dvdPath.Empty();
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
             if (CFile::Exists(path))
-            {
               dvdPath = path;
-              dvdPath.Replace("00000.mpls","main.mpls");
             }
-          }
 #endif
           if (!dvdPath.IsEmpty())
           {
@@ -2365,6 +2360,8 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
    || IsInternetStream()
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
+   || IsAddonsPath()
    || IsParentFolder()
    || IsMusicDb())
     return "";
@@ -2509,6 +2506,8 @@ CStdString CFileItem::GetUserVideoThumb() const
    || IsInternetStream()
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
+   || IsAddonsPath()
    || IsParentFolder()
    || IsLiveTV())
     return "";
@@ -2677,6 +2676,7 @@ CStdString CFileItem::GetLocalFanart() const
    || CUtil::IsUPnP(strFile)
    || IsLiveTV()
    || IsPlugin()
+   || IsAddonsPath()
    || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.IsEmpty())
     return "";
@@ -2857,12 +2857,13 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
     std::swap(m_items[item1], m_items[item2]);
 }
 
-void CFileItemList::UpdateItem(const CFileItem *item)
+bool CFileItemList::UpdateItem(const CFileItem *item)
 {
-  if (!item) return;
+  if (!item) return false;
   CFileItemPtr oldItem = Get(item->m_strPath);
   if (oldItem)
     *oldItem = *item;
+  return oldItem;
 }
 
 void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)

@@ -7,6 +7,13 @@
 @sp 3
 @end titlepage
 
+@chapter Synopsis
+
+@example
+@c man begin SYNOPSIS
+ffplay [options] @file{input_file}
+@c man end
+@end example
 
 @chapter Description
 @c man begin DESCRIPTION
@@ -16,15 +23,7 @@ libraries and the SDL library. It is mostly used as a testbed for the
 various FFmpeg APIs.
 @c man end
 
-@chapter Invocation
-
-@section Syntax
-@example
-@c man begin SYNOPSIS
-ffplay [options] @file{input_file}
-@c man end
-@end example
-
+@chapter Options
 @c man begin OPTIONS
 
 @include fftools-common-opts.texi
@@ -57,6 +56,12 @@ Force format.
 Set window title (default is the input filename).
 @item -loop @var{number}
 Loops movie playback <number> times. 0 means forever.
+@item -vf @var{filter_graph}
+@var{filter_graph} is a description of the filter graph to apply to
+the input video.
+Use the option "-filters" to show all the available filters (including
+also sources and sinks).
+
 @end table
 
 @section Advanced options
@@ -103,6 +108,12 @@ Select the desired subtitle stream number, counting from 0. The number
 refers to the list of all the input subtitle streams. If it is greater
 than the number of subtitle streams minus one, then the last one is
 selected, if it is negative the subtitle rendering is disabled.
+@item -autoexit
+Exit when video is done playing.
+@item -exitonkeydown
+Exit if any key is pressed.
+@item -exitonmousedown
+Exit if any mouse button is pressed.
 @end table
 
 @section While playing
@@ -141,6 +152,8 @@ Seek to percentage in file corresponding to fraction of width.
 @end table
 
 @c man end
+
+@include filters.texi
 
 @ignore
 

@@ -79,6 +79,10 @@ class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
 
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
+
 namespace DXVA { class CProcessor; }
 
 struct DRAWRECT
@@ -105,8 +109,13 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
+enum RenderMethod
+{
+  RENDER_INVALID = 0x00,
+  RENDER_PS      = 0x01,
+  RENDER_SW      = 0x02,
+  RENDER_DXVA    = 0x03,
+};
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -116,33 +125,51 @@ extern YUVRANGE yuv_range_full;
 #define FIELD_ODD 1
 #define FIELD_EVEN 2
 
+struct SVideoBuffer
+{
+  virtual ~SVideoBuffer() {}
+  virtual void Release() {};            // Release any allocated resource
+  virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
+  virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
+  virtual void Clear() {};              // clear the buffer with solid black
+};
+
 // YV12 decoder textures
 struct SVideoPlane
 {
   CD3DTexture    texture;
-  D3DLOCKED_RECT rect;
+  D3DLOCKED_RECT rect;                  // rect.pBits != NULL is used to know if the texture is locked
 };
 
-struct SVideoBuffer
+struct YUVBuffer : SVideoBuffer
 {
-  SVideoBuffer()
+  ~YUVBuffer();
+  bool Create(unsigned int width, unsigned int height);
+  virtual void Release();
+  virtual void StartDecode();
+  virtual void StartRender();
+  virtual void Clear();
+
+  SVideoPlane planes[MAX_PLANES];
+
+private:
+  unsigned int     m_width;
+  unsigned int     m_height;
+};
+
+struct DXVABuffer : SVideoBuffer
+{
+  DXVABuffer()
   {
     proc = NULL;
     id   = 0;
   }
-  ~SVideoBuffer()
-  {
-    Clear();
-  }
-
-  void StartDecode();
-  void StartRender();
-
-  void Clear();
+  ~DXVABuffer();
+  virtual void Release();
+  virtual void StartDecode();
 
   DXVA::CProcessor* proc;
   int64_t           id;
-  SVideoPlane       planes[MAX_PLANES];
 };
 
 #ifdef HAS_DS_PLAYER
@@ -177,42 +204,61 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
+  static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
+
 protected:
   virtual void Render(DWORD flags);
+  void         RenderSW(DWORD flags);
+  void         RenderPS(DWORD flags);
+  void         Stage1(DWORD flags);
+  void         Stage2(DWORD flags);
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
-  void         ClearYV12Texture(int index);
   bool         CreateYV12Texture(int index);
   void         CopyYV12Texture(int dest);
   int          NextYV12Texture();
 
+  void SelectRenderMethod();
+  bool UpdateRenderMethod();
+
   void UpdateVideoFilter();
-  bool SetupIntermediateRenderTarget();
+  void SelectSWVideoFilter();
+  void SelectPSVideoFilter();
+  void UpdatePSVideoFilter();
+  bool CreateIntermediateRenderTarget();
 
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
 
   bool m_bConfigured;
+  SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
+  RenderMethod         m_renderMethod;
 
-  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
+  // software scale libraries (fallback if required pixel shaders version is not available)
+  DllAvUtil           *m_dllAvUtil;
+  DllAvCodec          *m_dllAvCodec;
+  DllSwScale          *m_dllSwScale;
+  struct SwsContext   *m_sw_scale_ctx;
 
+  // Software rendering
+  D3DTEXTUREFILTERTYPE m_StretchRectFilter;
+  CD3DTexture          m_SWTarget;
+
+  // PS rendering
+  bool                 m_bUseHQScaler;
   CD3DTexture         m_IntermediateTarget;
   CD3DTexture         m_IntermediateStencilSurface;
 
   CYUV2RGBShader*     m_colorShader;
   CConvolutionShader* m_scalerShader;
 
-  void Stage1(DWORD flags);
-  void Stage2(DWORD flags);
-
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
 
   D3DCAPS9 m_deviceCaps;
 
-  bool m_bUseHQScaler;
   bool m_bFilterInitialized;
 
   // clear colour for "black" bars

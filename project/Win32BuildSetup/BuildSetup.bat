@@ -99,8 +99,10 @@ IF %comp%==vs2008 (
 :EXE_COMPILE
   IF %buildmode%==clean goto COMPILE_EXE
   rem ---------------------------------------------
-  rem	check for existing xbe
+  rem	check for existing exe
   rem ---------------------------------------------
+  IF EXIST buildlog.html del buildlog.html /q
+  
   IF EXIST %EXE% (
     goto EXE_EXIST
   )
@@ -148,7 +150,6 @@ IF %comp%==vs2008 (
 :MAKE_BUILD_EXE
   ECHO Copying files...
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
-  md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
   Echo CVS>>exclude.txt
@@ -177,14 +178,14 @@ IF %comp%==vs2008 (
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
   Echo Lircmap.xml>>exclude.txt
-  Echo getdeps.bat>>exclude.txt
+  
+  md BUILD_WIN32\Xbmc
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
   copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
-  call dependencies\getdeps.bat > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   IF %comp%==vs2008 (
     xcopy vs_redistributable\vs2008\vcredist_x86.exe BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
@@ -301,18 +302,21 @@ IF %comp%==vs2008 (
   goto END
   )
   IF %comp%==vs2008 (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\BuildLog.htm"
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\BuildLog.htm"
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\BuildLog.htm"
+    SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\BuildLog.htm"
   )
   IF NOT EXIST %log% goto END
+  
+  copy %log% ./buildlog.html > NUL
+  
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
   
   IF %comp%==vs2008 (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%\objs\" BuildLog.htm
   ) ELSE (
-    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+    SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" BuildLog.htm
   )
   
   start /D%log%

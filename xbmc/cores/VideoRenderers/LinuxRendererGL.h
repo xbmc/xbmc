@@ -187,9 +187,9 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
-  void UploadYUY2Texture(int index);
-  void DeleteYUY2Texture(int index);
-  bool CreateYUY2Texture(int index);
+  void UploadYUV422PackedTexture(int index);
+  void DeleteYUV422PackedTexture(int index);
+  bool CreateYUV422PackedTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 

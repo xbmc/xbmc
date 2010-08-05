@@ -160,7 +160,7 @@ static void freeBlocks(llBlock *start)
   while (start)
 	{
     llBlock *llB = start->next;
-    GlobalFree(start);
+    VirtualFree(start, 0, MEM_RELEASE);
 	  start=llB;
 	}
 }
@@ -178,7 +178,7 @@ static void *newBlock(int size)
   }
   alloc_size=sizeof(llBlock);
   if ((int)size > LLB_DSIZE) alloc_size += size - LLB_DSIZE;
-  llb = (llBlock *)GlobalAlloc(GMEM_FIXED,alloc_size); // grab bigger block if absolutely necessary (heh)
+  llb = (llBlock *)VirtualAlloc(NULL, alloc_size, MEM_COMMIT, PAGE_EXECUTE_READWRITE); // grab bigger block if absolutely necessary (heh)
   llb->sizeused=size;
   llb->next = blocks_head;  
   blocks_head = llb;

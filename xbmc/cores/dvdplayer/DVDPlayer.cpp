@@ -2729,6 +2729,9 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
       msg->Wait(&m_bStop, 0);
       msg->Release();
 
+      // purge any pending PLAYER_STARTED messages
+      m_messenger.Flush(CDVDMsg::PLAYER_STARTED);
+
       // we should now wait for init cache
       SetCaching(CACHESTATE_INIT);
       m_CurrentAudio.started    = false;
@@ -3459,7 +3462,10 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
   {
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
     if (result) // this is more correct (dvds in particular)
+    {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime()/60;
+    }
     return result;
   }
   else

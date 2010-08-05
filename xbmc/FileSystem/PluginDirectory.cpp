@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "Application.h"
 
 using namespace XFILE;
 using namespace std;
@@ -75,7 +76,7 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-bool CPluginDirectory::StartScript(const CStdString& strPath)
+bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir)
 {
   CURL url(strPath);
 
@@ -121,7 +122,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   if (g_pythonParser.evalFile(file, argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, scriptName);
+    success = WaitOnScriptResult(file, scriptName, retrievingDir);
   }
   else
 #endif
@@ -138,7 +139,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
   CURL url(strPath);
   CPluginDirectory* newDir = new CPluginDirectory();
 
-  bool success = newDir->StartScript(strPath);
+  bool success = newDir->StartScript(strPath, false);
 
   resultItem = *newDir->m_fileResult;
 
@@ -381,7 +382,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 {
   CURL url(strPath);
 
-  bool success = this->StartScript(strPath);
+  bool success = StartScript(strPath, true);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -431,7 +432,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)
+bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName, bool retrievingDir)
 {
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
@@ -453,8 +454,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
     // check our script is still running
 #ifdef HAS_PYTHON
-    int id = g_pythonParser.getScriptId(scriptPath.c_str());
-    if (id == -1)
+    if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
 #endif
     { // nope - bail
       CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
@@ -466,18 +466,29 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+      // if script has shown progressbar don't override it
+      if (progressBar && progressBar->IsActive())
+      {
+        startTime = CTimeUtils::GetTimeMS();
+        progressBar = NULL;
+      }
+
       if (progressBar)
       {
         progressBar->SetHeading(scriptName);
-        progressBar->SetLine(0, 1040);
+        progressBar->SetLine(0, retrievingDir ? 1040 : 10214);
         progressBar->SetLine(1, "");
         progressBar->SetLine(2, "");
+        progressBar->ShowProgressBar(retrievingDir);
         progressBar->StartModal();
       }
     }
 
     if (progressBar)
     { // update the progress bar and check for user cancel
+      if (retrievingDir)
+      {
       CStdString label;
       if (m_totalItems > 0)
       {
@@ -488,6 +499,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
       else
         label.Format(g_localizeStrings.Get(1041).c_str(), m_listItems->Size());
       progressBar->SetLine(2, label);
+      }
       progressBar->Progress();
       if (progressBar->IsCanceled())
       { // user has cancelled our process - cancel our process
@@ -512,7 +524,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
   }
   if (progressBar)
-    progressBar->Close();
+    g_application.getApplicationMessenger().Close(progressBar, false, false);
 
   return !m_cancelled && m_success;
 }

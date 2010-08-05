@@ -1,0 +1,26 @@
+From 9b70478348796c0257c5f5b70ed32f14de2f64ed Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 15:24:00 -0400
+Subject: [PATCH 24/32] fixed: when playing mpegts over rtp/rtsp/sdp, lavf must still read PAT/SDT to get available streams
+
+---
+ libavformat/mpegts.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index 3332439..d1f85ed 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -1731,6 +1731,9 @@ MpegTSContext *ff_mpegts_parse_open(AVFormatContext *s)
+     ts->raw_packet_size = TS_PACKET_SIZE;
+     ts->stream = s;
+     ts->auto_guess = 1;
++    mpegts_open_section_filter(ts, SDT_PID, sdt_cb, ts, 1);
++    mpegts_open_section_filter(ts, PAT_PID, pat_cb, ts, 1);
++
+     return ts;
+ }
+ 
+-- 
+1.7.0
+

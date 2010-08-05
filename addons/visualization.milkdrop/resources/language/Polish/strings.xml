@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Interwał automatycznego mieszania</string>
+    <string id="30001">Interwał efektów</string>
+    <string id="30002">Dodatkowy czas losowy</string>
+    <string id="30003">Włącz filtrowanie anizotropowe</string>
+    <string id="30004">Włącz "ostre cięcia"</string>
+    <string id="30005">Próg głośności dla "ostrych cięć"</string>
+    <string id="30006">Średni czas pomiędzy "ostrymi cięciami"</string>
+    <string id="30007">Maksymalna częstotliwość odświeżania</string>
+    <string id="30008">Włącz tryb 3D</string>
+    <string id="30009">Paczka efektów</string>
+</strings>

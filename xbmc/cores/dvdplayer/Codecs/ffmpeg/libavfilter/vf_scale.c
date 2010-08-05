@@ -152,10 +152,7 @@ static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
     scale->vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
 
     outpicref = avfilter_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
-    outpicref->pts = picref->pts;
-    outpicref->pos = picref->pos;
-    outpicref->interlaced           = picref->interlaced;
-    outpicref->top_field_first      = picref->top_field_first;
+    avfilter_copy_picref_props(outpicref, picref);
 
     outlink->outpic = outpicref;
 
@@ -173,7 +170,7 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     ScaleContext *scale = link->dst->priv;
     int out_h;
     AVFilterPicRef *cur_pic = link->cur_pic;
-    uint8_t *data[4];
+    const uint8_t *data[4];
 
     if (scale->slice_y == 0 && slice_dir == -1)
         scale->slice_y = link->dst->outputs[0]->h;

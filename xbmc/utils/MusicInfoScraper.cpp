@@ -94,8 +94,9 @@ void CMusicInfoScraper::FindAlbuminfo()
   if (!m_scraper->Load() || !m_scraper->GetParser().HasFunction("CreateAlbumSearchUrl"))
     return;
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str());
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (path: '%s', content: '%s', version: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
+    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
   
   vector<CStdString> extras;
   extras.push_back(strAlbum);
@@ -189,8 +190,9 @@ void CMusicInfoScraper::FindArtistinfo()
   g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[0]);
   CUtil::URLEncode(extras[0]);
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str());
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
+    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
 
   CScraperUrl scrURL;
   vector<CStdString> url = m_scraper->Run("CreateArtistSearchUrl",scrURL,m_http,&extras);

@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 #include <assert.h>
 
@@ -113,21 +114,41 @@ int main(int argc,char* argv[]){
     int skip_bytes = argc<6 ? 0 : atoi(argv[5]);
     int size0=0;
     int size1=0;
+    int maxdist = 0;
 
     if(argc<3){
         printf("tiny_psnr <file1> <file2> [<elem size> [<shift> [<skip bytes>]]]\n");
-        printf("For WAV files use the following:\n");
-        printf("./tiny_psnr file1.wav file2.wav 2 0 44 to skip the header.\n");
-        return -1;
+        printf("WAV headers are skipped automatically.\n");
+        return 1;
     }
 
     f[0]= fopen(argv[1], "rb");
     f[1]= fopen(argv[2], "rb");
     if(!f[0] || !f[1]){
         fprintf(stderr, "Could not open input files.\n");
-        return -1;
+        return 1;
     }
-    fseek(f[shift<0], shift < 0 ? -shift : shift, SEEK_SET);
+
+    for (i = 0; i < 2; i++) {
+        uint8_t *p = buf[i];
+        if (fread(p, 1, 12, f[i]) != 12)
+            return 1;
+        if (!memcmp(p,   "RIFF", 4) &&
+            !memcmp(p+8, "WAVE", 4)) {
+            if (fread(p, 1, 8, f[i]) != 8)
+                return 1;
+            while (memcmp(p, "data", 4)) {
+                int s = p[4] | p[5]<<8 | p[6]<<16 | p[7]<<24;
+                fseek(f[i], s, SEEK_CUR);
+                if (fread(p, 1, 8, f[i]) != 8)
+                    return 1;
+            }
+        } else {
+            fseek(f[i], -12, SEEK_CUR);
+        }
+    }
+
+    fseek(f[shift<0], abs(shift), SEEK_CUR);
 
     fseek(f[0],skip_bytes,SEEK_CUR);
     fseek(f[1],skip_bytes,SEEK_CUR);
@@ -139,11 +160,14 @@ int main(int argc,char* argv[]){
         for(j=0; j<FFMIN(s0,s1); j++){
             int64_t a= buf[0][j];
             int64_t b= buf[1][j];
+            int dist;
             if(len==2){
                 a= (int16_t)(a | (buf[0][++j]<<8));
                 b= (int16_t)(b | (buf[1][  j]<<8));
             }
             sse += (a-b) * (a-b);
+            dist = abs(a-b);
+            if (dist > maxdist) maxdist = dist;
         }
         size0 += s0;
         size1 += s1;
@@ -159,9 +183,10 @@ int main(int argc,char* argv[]){
     else
         psnr= 1000*F-1; //floating point free infinity :)
 
-    printf("stddev:%5d.%02d PSNR:%3d.%02d bytes:%9d/%9d\n",
+    printf("stddev:%5d.%02d PSNR:%3d.%02d MAXDIFF:%5d bytes:%9d/%9d\n",
         (int)(dev/F), (int)(dev%F),
         (int)(psnr/F), (int)(psnr%F),
+        maxdist,
         size0, size1);
     return 0;
 }

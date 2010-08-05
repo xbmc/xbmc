@@ -26,6 +26,7 @@
 #include "DVDStreamInfo.h"
 #include "StdString.h"
 #include "utils/log.h"
+#include "DVDSubtitleTagMicroDVD.h"
 
 using namespace std;
 
@@ -57,35 +58,29 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
   char line[1024];
 
   CRegExp reg;
-  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?(\\|(.*?))?$"))
+  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}"))
     return false;
+  CDVDSubtitleTagMicroDVD TagConv;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
-    if (reg.RegFind(line) > -1)
+    if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
+      line[strlen(line) - 1] = 0;
+
+    int pos = reg.RegFind(line);
+    if (pos > -1)
     {
+      const char* text = line + pos + reg.GetFindLen();
       char* startFrame = reg.GetReplaceString("\\1");
       char* endFrame   = reg.GetReplaceString("\\2");
-      char* lines[3];
-      lines[0] = reg.GetReplaceString("\\3");
-      lines[1] = reg.GetReplaceString("\\5");
-      lines[2] = reg.GetReplaceString("\\7");
-      if(lines[2] && *lines[2])
-          for(char* p = lines[2];*p;p++)
-            if(*p == '|')
-              *p = ' ';
       CDVDOverlayText* pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
       pOverlay->iPTSStartTime = m_framerate * atoi(startFrame);
       pOverlay->iPTSStopTime  = m_framerate * atoi(endFrame);
 
-      for(int i=0;i<3 && lines[i] && *lines[i];i++)
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
+      TagConv.ConvertLine(pOverlay, text, strlen(text));
 
-      free(lines[0]);
-      free(lines[1]);
-      free(lines[2]);
       free(startFrame);
       free(endFrame);
 

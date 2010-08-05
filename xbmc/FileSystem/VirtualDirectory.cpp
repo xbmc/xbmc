@@ -109,7 +109,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       if (XFILE::CFile::Exists(strThumb))
         pItem->SetThumbnailImage(strThumb);
     }
-    else if (strPathUpper.Left(11) == "SOUNDTRACK:")
+    else if (pItem->m_strPath.Left(9) == "addons://")
       strIcon = "DefaultHardDisk.png";
     else if (pItem->IsLastFM()
           || pItem->IsVideoDb()

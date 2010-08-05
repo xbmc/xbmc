@@ -74,6 +74,7 @@ class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CGUITextLayout;
 
 class CBackgroundPlayer : public CThread
 {
@@ -155,6 +156,7 @@ public:
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(const CKey& key);
+  bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
@@ -333,6 +335,8 @@ protected:
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
+  
+  CGUITextLayout *m_debugLayout;
 
 #ifdef HAS_SDL
   int        m_frameCount;

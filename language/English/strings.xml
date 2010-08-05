@@ -508,6 +508,7 @@
   <string id="572">Studio</string>
   <string id="573">Path</string>
   <string id="574">Country</string>
+  <string id="575">In progress</string>
 
   <string id="580">Sort direction</string>
   <string id="581">Sort method</string>
@@ -825,8 +826,8 @@
 
   <string id="2100">Script failed! : %s</string>
   <string id="2101">Newer version needed - See log</string>
-  <string id="2102">Graphics Card</string>
-  <string id="2103">Requirements not met - See log</string>
+  <string id="2102"></string>
+  <string id="2103"></string>
 
   <string id="4501">Enable LCD/VFD</string>
 
@@ -902,10 +903,10 @@
   <string id="12014"></string>
   <string id="12015"></string>
   <string id="12016"></string>
-  <string id="12017">Resume from where last stopped</string>
-  <string id="12018">No</string>
-  <string id="12019">Yes</string>
-  <string id="12020">Ask</string>
+  <string id="12017"></string>
+  <string id="12018"></string>
+  <string id="12019"></string>
+  <string id="12020"></string>
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023"></string>
@@ -1232,6 +1233,7 @@
   <string id="13428">Allow hardware acceleration (CrystalHD)</string>
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
   <string id="13430">Allow hardware acceleration (OpenMax)</string>
+  <string id="13431">Pixel Shaders</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -1526,6 +1528,7 @@
   <string id="16316">Auto</string>
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16319">DXVA</string>
 
   <string id="16400">Video post-processing</string>
   <string id="16401">Disabled</string>
@@ -1998,7 +2001,7 @@
   <string id="21449">Remote control sends keyboard presses</string>
   <string id="21450">- Edit</string>
   <string id="21451">Internet connection required.</string>
-  <string id="21452">Get More</string>
+  <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
 
   <string id="21800">File name</string>
@@ -2081,7 +2084,7 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">Update library on startup</string>
-  <string id="22001">Always update library in background</string>
+  <string id="22001">Hide progress of library updates</string>
   <string id="22002">- DNS suffix</string>
 
   <string id="22004">Delayed by: %2.3fs</string>
@@ -2121,6 +2124,12 @@
   <string id="22041">white/red</string>
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
+
+  <string id="22079">Default select action</string>
+  <string id="22080">Choose</string>
+  <string id="22081">Show Information</string>
+  <string id="22082">More...</string>
+  <string id="22083">Play all</string>
 
   <string id="23049">Teletext not available</string>
   <string id="23050">Activate Teletext</string>
@@ -2173,6 +2182,7 @@
   <string id="24040">(Clear the current setting)</string>
   <string id="24041">Install from zip file</string>
   <string id="24042">Downloading %i%%</string>
+  <string id="24043">Available Updates</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2209,6 +2219,7 @@
 
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
+  <string id="24098">Broken</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

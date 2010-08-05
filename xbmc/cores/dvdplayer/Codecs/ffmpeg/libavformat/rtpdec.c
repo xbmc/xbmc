@@ -34,6 +34,8 @@
 #include "rtpdec_asf.h"
 #include "rtpdec_h263.h"
 #include "rtpdec_h264.h"
+#include "rtpdec_mpeg4.h"
+#include "rtpdec_svq3.h"
 #include "rtpdec_xiph.h"
 
 //#define DEBUG
@@ -50,9 +52,6 @@
 /* statistics functions */
 RTPDynamicProtocolHandler *RTPFirstDynamicPayloadHandler= NULL;
 
-static RTPDynamicProtocolHandler mp4v_es_handler= {"MP4V-ES", AVMEDIA_TYPE_VIDEO, CODEC_ID_MPEG4};
-static RTPDynamicProtocolHandler mpeg4_generic_handler= {"mpeg4-generic", AVMEDIA_TYPE_AUDIO, CODEC_ID_AAC};
-
 void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler)
 {
     handler->next= RTPFirstDynamicPayloadHandler;
@@ -61,8 +60,8 @@ void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler)
 
 void av_register_rtp_dynamic_payload_handlers(void)
 {
-    ff_register_dynamic_payload_handler(&mp4v_es_handler);
-    ff_register_dynamic_payload_handler(&mpeg4_generic_handler);
+    ff_register_dynamic_payload_handler(&ff_mp4v_es_dynamic_handler);
+    ff_register_dynamic_payload_handler(&ff_mpeg4_generic_dynamic_handler);
     ff_register_dynamic_payload_handler(&ff_amr_nb_dynamic_handler);
     ff_register_dynamic_payload_handler(&ff_amr_wb_dynamic_handler);
     ff_register_dynamic_payload_handler(&ff_h263_1998_dynamic_handler);
@@ -70,6 +69,7 @@ void av_register_rtp_dynamic_payload_handlers(void)
     ff_register_dynamic_payload_handler(&ff_h264_dynamic_handler);
     ff_register_dynamic_payload_handler(&ff_vorbis_dynamic_handler);
     ff_register_dynamic_payload_handler(&ff_theora_dynamic_handler);
+    ff_register_dynamic_payload_handler(&ff_svq3_dynamic_handler);
 
     ff_register_dynamic_payload_handler(&ff_ms_rtp_asf_pfv_handler);
     ff_register_dynamic_payload_handler(&ff_ms_rtp_asf_pfa_handler);
@@ -317,9 +317,8 @@ void rtp_send_punch_packets(URLContext* rtp_handle)
  * open a new RTP parse context for stream 'st'. 'st' can be NULL for
  * MPEG2TS streams to indicate that they should be demuxed inside the
  * rtp demux (otherwise CODEC_ID_MPEG2TS packets are returned)
- * TODO: change this to not take rtp_payload data, and use the new dynamic payload system.
  */
-RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, RTPPayloadData *rtp_payload_data)
+RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type)
 {
     RTPDemuxContext *s;
 
@@ -331,7 +330,6 @@ RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *r
     s->first_rtcp_ntp_time = AV_NOPTS_VALUE;
     s->ic = s1;
     s->st = st;
-    s->rtp_payload_data = rtp_payload_data;
     rtp_init_statistics(&s->statistics, 0); // do we know the initial sequence from sdp?
     if (!strcmp(ff_rtp_enc_name(payload_type), "MP2T")) {
         s->ts = ff_mpegts_parse_open(s->ic);
@@ -370,58 +368,6 @@ rtp_parse_set_dynamic_protocol(RTPDemuxContext *s, PayloadContext *ctx,
 {
     s->dynamic_protocol_context = ctx;
     s->parse_packet = handler->parse_packet;
-}
-
-static int rtp_parse_mp4_au(RTPDemuxContext *s, const uint8_t *buf)
-{
-    int au_headers_length, au_header_size, i;
-    GetBitContext getbitcontext;
-    RTPPayloadData *infos;
-
-    infos = s->rtp_payload_data;
-
-    if (infos == NULL)
-        return -1;
-
-    /* decode the first 2 bytes where the AUHeader sections are stored
-       length in bits */
-    au_headers_length = AV_RB16(buf);
-
-    if (au_headers_length > RTP_MAX_PACKET_LENGTH)
-      return -1;
-
-    infos->au_headers_length_bytes = (au_headers_length + 7) / 8;
-
-    /* skip AU headers length section (2 bytes) */
-    buf += 2;
-
-    init_get_bits(&getbitcontext, buf, infos->au_headers_length_bytes * 8);
-
-    /* XXX: Wrong if optionnal additional sections are present (cts, dts etc...) */
-    au_header_size = infos->sizelength + infos->indexlength;
-    if (au_header_size <= 0 || (au_headers_length % au_header_size != 0))
-        return -1;
-
-    infos->nb_au_headers = au_headers_length / au_header_size;
-    if (!infos->au_headers || infos->au_headers_allocated < infos->nb_au_headers) {
-        av_free(infos->au_headers);
-        infos->au_headers = av_malloc(sizeof(struct AUHeaders) * infos->nb_au_headers);
-        infos->au_headers_allocated = infos->nb_au_headers;
-    }
-
-    /* XXX: We handle multiple AU Section as only one (need to fix this for interleaving)
-       In my test, the FAAD decoder does not behave correctly when sending each AU one by one
-       but does when sending the whole as one big packet...  */
-    infos->au_headers[0].size = 0;
-    infos->au_headers[0].index = 0;
-    for (i = 0; i < infos->nb_au_headers; ++i) {
-        infos->au_headers[0].size += get_bits_long(&getbitcontext, infos->sizelength);
-        infos->au_headers[0].index = get_bits_long(&getbitcontext, infos->indexlength);
-    }
-
-    infos->nb_au_headers = 1;
-
-    return 0;
 }
 
 /**
@@ -565,29 +511,6 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             av_new_packet(pkt, len);
             memcpy(pkt->data, buf, len);
             break;
-            // moved from below, verbatim.  this is because this section handles packets, and the lower switch handles
-            // timestamps.
-            // TODO: Put this into a dynamic packet handler...
-        case CODEC_ID_AAC:
-            if (rtp_parse_mp4_au(s, buf))
-                return -1;
-            {
-                RTPPayloadData *infos = s->rtp_payload_data;
-                if (infos == NULL)
-                    return -1;
-                buf += infos->au_headers_length_bytes + 2;
-                len -= infos->au_headers_length_bytes + 2;
-
-                /* XXX: Fixme we only handle the case where rtp_parse_mp4_au define
-                    one au_header */
-                av_new_packet(pkt, infos->au_headers[0].size);
-                memcpy(pkt->data, buf, infos->au_headers[0].size);
-                buf += infos->au_headers[0].size;
-                len -= infos->au_headers[0].size;
-            }
-            s->read_buf_size = len;
-            rv= 0;
-            break;
         default:
             av_new_packet(pkt, len);
             memcpy(pkt->data, buf, len);
@@ -605,11 +528,42 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
 
 void rtp_parse_close(RTPDemuxContext *s)
 {
-    // TODO: fold this into the protocol specific data fields.
-    av_free(s->rtp_payload_data->mode);
-    av_free(s->rtp_payload_data->au_headers);
     if (!strcmp(ff_rtp_enc_name(s->payload_type), "MP2T")) {
         ff_mpegts_parse_close(s->ts);
     }
     av_free(s);
+}
+
+int ff_parse_fmtp(AVStream *stream, PayloadContext *data, const char *p,
+                  int (*parse_fmtp)(AVStream *stream,
+                                    PayloadContext *data,
+                                    char *attr, char *value))
+{
+    char attr[256];
+    char *value;
+    int res;
+    int value_size = strlen(p) + 1;
+
+    if (!(value = av_malloc(value_size))) {
+        av_log(stream, AV_LOG_ERROR, "Failed to allocate data for FMTP.");
+        return AVERROR(ENOMEM);
+    }
+
+    // remove protocol identifier
+    while (*p && *p == ' ') p++; // strip spaces
+    while (*p && *p != ' ') p++; // eat protocol identifier
+    while (*p && *p == ' ') p++; // strip trailing spaces
+
+    while (ff_rtsp_next_attr_and_value(&p,
+                                       attr, sizeof(attr),
+                                       value, value_size)) {
+
+        res = parse_fmtp(stream, data, attr, value);
+        if (res < 0 && res != AVERROR_PATCHWELCOME) {
+            av_free(value);
+            return res;
+        }
+    }
+    av_free(value);
+    return 0;
 }

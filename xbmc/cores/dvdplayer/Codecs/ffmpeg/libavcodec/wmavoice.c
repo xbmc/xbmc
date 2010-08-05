@@ -287,7 +287,7 @@ typedef struct {
 } WMAVoiceContext;
 
 /**
- * Sets up the variable bit mode (VBM) tree from container extradata.
+ * Set up the variable bit mode (VBM) tree from container extradata.
  * @param gb bit I/O context.
  *           The bit context (s->gb) should be loaded with byte 23-46 of the
  *           container extradata (i.e. the ones containing the VBM tree).
@@ -660,7 +660,7 @@ static void calc_input_response(WMAVoiceContext *s, float *lpcs,
  *    overlap-add method (otherwise you get clicking-artifacts).
  *
  * @param s WMA Voice decoding context
- * @param s fcb_type Frame (codebook) type
+ * @param fcb_type Frame (codebook) type
  * @param synth_pf input: the noisy speech signal, output: denoised speech
  *                 data; should be 16-byte aligned (for ASM purposes)
  * @param size size of the speech data
@@ -744,6 +744,7 @@ static void wiener_denoise(WMAVoiceContext *s, int fcb_type,
  * @param samples Output buffer for filtered samples
  * @param size Buffer size of synth & samples
  * @param lpcs Generated LPCs used for speech synthesis
+ * @param zero_exc_pf destination for zero synthesis filter (16-byte aligned)
  * @param fcb_type Frame type (silence, hardcoded, AW-pulses or FCB-pulses)
  * @param pitch Pitch of the input signal
  */
@@ -1342,7 +1343,7 @@ static void synth_block_fcb_acb(WMAVoiceContext *s, GetBitContext *gb,
                                   wmavoice_ipol2_coeffs, 4,
                                   idx, 8, size);
         } else
-            av_memcpy_backptr(excitation, sizeof(float) * block_pitch,
+            av_memcpy_backptr((uint8_t *) excitation, sizeof(float) * block_pitch,
                               sizeof(float) * size);
     }
 
@@ -1901,7 +1902,7 @@ static int wmavoice_decode_packet(AVCodecContext *ctx, void *data,
 
     if (*data_size < 480 * sizeof(float)) {
         av_log(ctx, AV_LOG_ERROR,
-               "Output buffer too small (%d given - %lu needed)\n",
+               "Output buffer too small (%d given - %zu needed)\n",
                *data_size, 480 * sizeof(float));
         return -1;
     }

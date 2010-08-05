@@ -94,8 +94,8 @@ static int get_packetheader(NUTContext *nut, ByteIOContext *bc, int calculate_ch
     int64_t size;
 //    start= url_ftell(bc) - 8;
 
-    startcode= be2me_64(startcode);
-    startcode= ff_crc04C11DB7_update(0, &startcode, 8);
+    startcode= av_be2ne64(startcode);
+    startcode= ff_crc04C11DB7_update(0, (uint8_t*)&startcode, 8);
 
     init_checksum(bc, ff_crc04C11DB7_update, startcode);
     size= ff_get_v(bc);

@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "WinVideoFilter.h"
 #include "WindowingFactory.h"
 #include "../../../utils/log.h"
@@ -26,6 +28,7 @@
 #include <map>
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
+
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -82,36 +85,51 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
 
 //===================================================================
 
-CWinShader::CWinShader()
-{
-  m_verts = NULL;
-}
-
 void CWinShader::Release()
 {
   ReleaseInternal(); // virtual, so calls the child function, which is supposed to call down the hierarchy
   delete this;
 }
 
-bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
+bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
 {
-  // Allocate the vertex buffer
-  m_verts = malloc(vertCount * vertSize);
+  if (!m_vb.Create(vertCount * vertSize, D3DUSAGE_WRITEONLY, FVF, g_Windowing.DefaultD3DPool()))
+    return false;
+  m_vbsize = vertCount * vertSize;
+  m_FVF = FVF;
   m_vertsize = vertSize;
   m_primitivesCount = primitivesCount;
-  return (m_verts != NULL);
+  return true;
+}
+
+bool CWinShader::LockVertexBuffer(void **data)
+{
+  if (!m_vb.Lock(0, m_vbsize, data, 0))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock vertex buffer");
+    return false;
+  }
+  return true;
+}
+
+bool CWinShader::UnlockVertexBuffer()
+{
+  if (!m_vb.Unlock())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock vertex buffer");
+    return false;
+  }
+  return true;
 }
 
 void CWinShader::ReleaseInternal()
 {
-  if (m_verts)
-  {
-    free(m_verts);
-    m_verts = NULL;
-  }
   if (m_effect.Get())
     m_effect.Release();
   
+  if (m_vb.Get())
+    m_vb.Release();
+
   //derived classes: always call Base::ReleaseInternal() at the end
 }
 
@@ -138,8 +156,13 @@ bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute(LPDIRECT3DDEVICE9 pD3DDevice)
+bool CWinShader::Execute()
 {
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  pD3DDevice->SetFVF(m_FVF);
+  pD3DDevice->SetStreamSource(0, m_vb.Get(), 0, m_vertsize);
+
   UINT cPasses, iPass;
   if (!m_effect.Begin( &cPasses, 0 ))
   {
@@ -154,26 +177,26 @@ bool CWinShader::Execute(LPDIRECT3DDEVICE9 pD3DDevice)
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
-    pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, m_primitivesCount, m_verts, m_vertsize);
-    m_effect.EndPass();
-  }
-  m_effect.End();
-  pD3DDevice->SetPixelShader( NULL );
+    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, m_primitivesCount);
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitive %08X", hr);
 
-  for (unsigned int i=0; i < m_boundTexturesCount; i++)
-    pD3DDevice->SetTexture(i, NULL);
+    if (!m_effect.EndPass())
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
+  }
+  if (!m_effect.End())
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
 
   return true;
 }
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(bool singlepass)
+bool CYUV2RGBShader::Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight)
 {
   ReleaseInternal();
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 3;
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   DefinesMap defines;
   if (singlepass)
@@ -186,31 +209,35 @@ bool CYUV2RGBShader::Create(bool singlepass)
     CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
     return false;
   }
+
+  m_sourceWidth = sourceWidth;
+  m_sourceHeight = sourceHeight;
+
+  if(!m_YUVPlanes[0].Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUV planes.");
+    return false;
+  }
+
   return true;
 }
 
-void CYUV2RGBShader::Render(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect,
+void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
                                float contrast,
                                float brightness,
                                unsigned int flags,
-                               SVideoBuffer* YUVbuf)
+                            YUVBuffer* YUVbuf)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-  PrepareParameters(sourceWidth, sourceHeight,
-                               sourceRect,
-                               destRect,
-                               contrast,
-                               brightness,
-                               flags);
-  SetShaderParameters(m_matrix.Matrix(), YUVbuf, sourceWidth);
-  Execute(pD3DDevice);
+  PrepareParameters(sourceRect, destRect,
+                    contrast, brightness, flags);
+  UploadToGPU(YUVbuf);
+  SetShaderParameters();
+  Execute();
 }
 
-void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
+void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                CRect destRect,
                                float contrast,
                                float brightness,
@@ -219,35 +246,41 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
 
-  CUSTOMVERTEX* v = (CUSTOMVERTEX*)CWinShader::GetVertexBuffer();
+  if (m_sourceRect != sourceRect || m_destRect != destRect)
+  {
+    m_sourceRect = sourceRect;
+    m_destRect = destRect;
+
+    CUSTOMVERTEX* v;
+    CWinShader::LockVertexBuffer((void**)&v);
 
   v[0].x = destRect.x1;
   v[0].y = destRect.y1;
-  v[0].tu = sourceRect.x1 / sourceWidth;
-  v[0].tv = sourceRect.y1 / sourceHeight;
-  v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-  v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[0].tu = sourceRect.x1 / m_sourceWidth;
+    v[0].tv = sourceRect.y1 / m_sourceHeight;
+    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
   v[1].x = destRect.x2;
   v[1].y = destRect.y1;
-  v[1].tu = sourceRect.x2 / sourceWidth;
-  v[1].tv = sourceRect.y1 / sourceHeight;
-  v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-  v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[1].tu = sourceRect.x2 / m_sourceWidth;
+    v[1].tv = sourceRect.y1 / m_sourceHeight;
+    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
   v[2].x = destRect.x2;
   v[2].y = destRect.y2;
-  v[2].tu = sourceRect.x2 / sourceWidth;
-  v[2].tv = sourceRect.y2 / sourceHeight;
-  v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-  v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[2].tu = sourceRect.x2 / m_sourceWidth;
+    v[2].tv = sourceRect.y2 / m_sourceHeight;
+    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
   v[3].x = destRect.x1;
   v[3].y = destRect.y2;
-  v[3].tu = sourceRect.x1 / sourceWidth;
-  v[3].tv = sourceRect.y2 / sourceHeight;
-  v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-  v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[3].tu = sourceRect.x1 / m_sourceWidth;
+    v[3].tv = sourceRect.y2 / m_sourceHeight;
+    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
   // -0.5 offset to compensate for D3D rasterization
   // set z and rhw
@@ -258,19 +291,57 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
     v[i].z = 0.0f;
     v[i].rhw = 1.0f;
   }
+    CWinShader::UnlockVertexBuffer();
+  }
 
   m_matrix.SetParameters(contrast * 0.02f,
                          brightness * 0.01f - 0.5f,
                          flags);
 }
 
-void CYUV2RGBShader::SetShaderParameters(D3DXMATRIX* matrix, SVideoBuffer* YUVbuf, unsigned int sourceWidth)
+void CYUV2RGBShader::SetShaderParameters()
 {
-  m_effect.SetMatrix( "g_ColorMatrix", matrix);
+  m_effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
   m_effect.SetTechnique( "YUV2RGB_T" );
-  m_effect.SetTexture( "g_YTexture",  YUVbuf->planes[0].texture ) ;
-  m_effect.SetTexture( "g_UTexture",  YUVbuf->planes[1].texture ) ;
-  m_effect.SetTexture( "g_VTexture",  YUVbuf->planes[2].texture ) ;
+  m_effect.SetTexture( "g_YTexture",  m_YUVPlanes[0] ) ;
+  m_effect.SetTexture( "g_UTexture",  m_YUVPlanes[1] ) ;
+  m_effect.SetTexture( "g_VTexture",  m_YUVPlanes[2] ) ;
+}
+
+void CYUV2RGBShader::ReleaseInternal()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_YUVPlanes[i].Get())
+      m_YUVPlanes[i].Release();
+  }
+}
+
+bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
+{
+  const RECT rect = { 0, 0, m_sourceWidth, m_sourceHeight };
+  const RECT recthalf = { 0, 0, m_sourceWidth / 2, m_sourceHeight / 2};
+  const POINT point = { 0, 0 };
+
+  for (int i = 0; i<3; i++)
+  {
+    IDirect3DSurface9 *src, *dest;
+    if(FAILED(YUVbuf->planes[i].texture.Get()->GetSurfaceLevel(0, &src)))
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for source YUV plane %d", i);
+    if (FAILED(m_YUVPlanes[i].Get()->GetSurfaceLevel(0, &dest)))
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for destination YUV plane %d", i);
+
+    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, i == 0 ? &rect : &recthalf, dest, &point)))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to copy plane %d from sysmem to vidmem.", i);
+      src->Release();
+      dest->Release();
+      return false;
+    }
+    src->Release();
+    dest->Release();
+  }
+  return true;
 }
 
 //==================================================================================
@@ -295,8 +366,7 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
       return false;
   }
 
-  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 2;
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
 
   if(!LoadEffect(effectString, NULL))
   {
@@ -315,12 +385,10 @@ void CConvolutionShader::Render(CD3DTexture &sourceTexture,
                                CRect sourceRect,
                                CRect destRect)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX1 );
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
-  Execute(pD3DDevice);
+  Execute();
 }
 
 bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
@@ -340,9 +408,12 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
     float16Vals[i] = kernelVals[i];
 
   D3DLOCKED_RECT lr;
-  m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD);
+  if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
   memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*kern.GetSize()*4);
-  m_HQKernelTexture.UnlockRect(0);
+  if (!m_HQKernelTexture.UnlockRect(0))
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
+
 
   delete[] float16Vals;
 
@@ -353,7 +424,16 @@ void CConvolutionShader::PrepareParameters(unsigned int sourceWidth, unsigned in
                                CRect sourceRect,
                                CRect destRect)
 {
-  CUSTOMVERTEX* v = (CUSTOMVERTEX*)CWinShader::GetVertexBuffer();
+  if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
+  || m_sourceRect != sourceRect || m_destRect != destRect)
+  {
+    m_sourceWidth = sourceWidth;
+    m_sourceHeight = sourceHeight;
+    m_sourceRect = sourceRect;
+    m_destRect = destRect;
+
+    CUSTOMVERTEX* v;
+    CWinShader::LockVertexBuffer((void**)&v);
 
   v[0].x = destRect.x1;
   v[0].y = destRect.y1;
@@ -384,6 +464,9 @@ void CConvolutionShader::PrepareParameters(unsigned int sourceWidth, unsigned in
     v[i].z = 0.0f;
     v[i].rhw = 1.0f;
   }
+
+    CWinShader::UnlockVertexBuffer();
+  }
 }
 
 void CConvolutionShader::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
@@ -400,3 +483,19 @@ void CConvolutionShader::ReleaseInternal()
     m_HQKernelTexture.Release();
   CWinShader::ReleaseInternal();
 }
+
+//==========================================================
+
+bool CTestShader::Create()
+{
+  CStdString effectString = "special://xbmc/system/shaders/testshader.fx";
+
+  if(!LoadEffect(effectString, NULL))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    return false;
+  }
+  return true;
+}
+
+#endif

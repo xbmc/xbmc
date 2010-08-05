@@ -67,7 +67,7 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(Home)</mytv>
+      <mytv>XBMC.ActivateWindow(VideoLibrary,TvShows)</mytv>
       <red>XBMC.ActivateWindow(Home)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
@@ -95,6 +95,9 @@
   <MyFiles>
     <remote>
       <clear>Delete</clear>
+      <zero>Highlight</zero>
+      <star>Move</star>
+      <hash>Rename</hash>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
@@ -142,10 +145,11 @@
       <start>OSD</start>
       <title>CodecInfo</title>
       <info>Info</info>
-      <select>AspectRatio</select>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
+      <star>ShowSubtitles</star>
       <language>AudioNextLanguage</language>
+      <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -361,6 +365,16 @@
     <remote>
     </remote>
   </AddonBrowser>
+  <AddonInformation>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonInformation>
+  <AddonSettings>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonSettings>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>
@@ -424,6 +438,7 @@
   <MusicInformation>
     <remote>
       <back>Close</back>
+      <info>Close</info>
     </remote>
   </MusicInformation>
   <MovieInformation>

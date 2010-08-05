@@ -56,6 +56,7 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "path", CSmartPlaylistRule::FIELD_PATH, CSmartPlaylistRule::BROWSEABLE_FIELD, 573 },
                                          { "playcount", CSmartPlaylistRule::FIELD_PLAYCOUNT, CSmartPlaylistRule::NUMERIC_FIELD, 567 },
                                          { "lastplayed", CSmartPlaylistRule::FIELD_LASTPLAYED, CSmartPlaylistRule::DATE_FIELD, 568 },
+                                         { "inprogress", CSmartPlaylistRule::FIELD_INPROGRESS, CSmartPlaylistRule::BOOLEAN_FIELD, 575 },
                                          { "rating", CSmartPlaylistRule::FIELD_RATING, CSmartPlaylistRule::NUMERIC_FIELD, 563 },
                                          { "comment", CSmartPlaylistRule::FIELD_COMMENT, CSmartPlaylistRule::TEXT_FIELD, 569 },
                                          { "dateadded", CSmartPlaylistRule::FIELD_DATEADDED, CSmartPlaylistRule::DATE_FIELD, 570 },
@@ -260,6 +261,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_AIRDATE);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_LASTPLAYED);
+    fields.push_back(FIELD_INPROGRESS);
     if (!sortOrders)
       fields.push_back(FIELD_GENRE);
     fields.push_back(FIELD_YEAR); // premiered
@@ -284,6 +286,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_WRITER);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_LASTPLAYED);
+    fields.push_back(FIELD_INPROGRESS);
     fields.push_back(FIELD_GENRE);
     fields.push_back(FIELD_COUNTRY);
     fields.push_back(FIELD_YEAR); // premiered
@@ -502,6 +505,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = negate + GetDatabaseField(m_field, strType) + "!= ''";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
+    else if (m_field == FIELD_INPROGRESS)
+      query = "idFile " + negate + " in (select idFile from bookmark where type = 1)";
   }
   else if (strType == "musicvideos")
   {
@@ -537,6 +542,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idepisode" + negate + " in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idwriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
+    else if (m_field == FIELD_INPROGRESS)
+      query = "idFile " + negate + " in (select idFile from bookmark where type = 1)";
   }
   if (m_field == FIELD_VIDEORESOLUTION)
     query = "idFile" + negate + GetVideoResolutionQuery();
@@ -640,6 +647,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_CREDITS);   // join required
     else if (field == FIELD_PLAYCOUNT) result = "playCount";
     else if (field == FIELD_LASTPLAYED) result = "lastPlayed";
+    else if (field == FIELD_INPROGRESS) result = "cant_order_by_inprogress";    // join required
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_GENRE);    // join required
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_YEAR);
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_DIRECTOR); // join required
@@ -708,6 +716,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_AIRDATE) result.Format("c%02d", VIDEODB_ID_EPISODE_AIRED);
     else if (field == FIELD_PLAYCOUNT) result = "playCount";
     else if (field == FIELD_LASTPLAYED) result = "lastPlayed";
+    else if (field == FIELD_INPROGRESS) result = "cant_order_by_inprogress";    // join required
     else if (field == FIELD_GENRE) result = "cant_order_by_genre";    // join required
     else if (field == FIELD_YEAR) result = "premiered";
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_EPISODE_DIRECTOR); // join required

@@ -74,12 +74,14 @@
 #include "SingleLock.h"
 #include "log.h"
 
+#include "addons/AddonManager.h"
+
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
-using ADDON::CVisualisation;
+using namespace ADDON;
 
 CGUIInfoManager g_infoManager;
 
@@ -412,6 +414,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
     else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
+    else if (strTest.Left(16).Equals("system.hasaddon("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -2240,6 +2244,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           }
         }
         break;
+      case SYSTEM_HAS_ADDON:
+      {
+        AddonPtr addon;
+        bReturn = CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        break;
+      }
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
       case CONTAINER_MOVE_NEXT:
@@ -3281,6 +3291,16 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
   // Find a thumb for this file.
   item.SetVideoThumb();
+  if (!item.HasThumbnail())
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(item.GetCachedVideoThumb(), strPath, strFileName);
+
+    // create unique thumb for auto generated thumbs
+    CStdString cachedThumb = strPath + "auto-" + strFileName;
+    if (CFile::Exists(cachedThumb))
+      item.SetThumbnailImage(cachedThumb);
+  }
 
   // find a thumb for this stream
   if (item.IsInternetStream())
@@ -3658,10 +3678,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return track;
     }
   case LISTITEM_ARTIST:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtist();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strArtist;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetArtist();
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
@@ -3671,14 +3691,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strDirector;
   case LISTITEM_ALBUM:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbum();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetAlbum();
     break;
   case LISTITEM_YEAR:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetYearString();
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
@@ -3686,6 +3704,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
       return strResult;
     }
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetYearString();
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
@@ -3699,10 +3719,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
     break;
   case LISTITEM_GENRE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetGenre();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strGenre;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetGenre();
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -3721,12 +3741,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
-        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
@@ -3751,11 +3771,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      if (item->HasMusicInfoTag())
-      {
-        if (item->GetMusicInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
-      }
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
@@ -3763,7 +3778,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
-
+      if (item->HasMusicInfoTag())
+      {
+        if (item->GetMusicInfoTag()->GetDuration() > 0)
+          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
+      }
       return duration;
     }
   case LISTITEM_PLOT:

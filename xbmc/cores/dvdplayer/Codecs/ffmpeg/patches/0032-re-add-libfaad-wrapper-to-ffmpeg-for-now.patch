@@ -1,0 +1,468 @@
+From efcea92386298ac1fdefa66f678e5b9ebbe6345d Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Wed, 14 Jul 2010 12:47:13 -0400
+Subject: [PATCH 1/2] re-add libfaad wrapper to ffmpeg for now
+
+---
+ xbmc/cores/dvdplayer/Codecs/ffmpeg/configure       |   25 ++
+ .../cores/dvdplayer/Codecs/ffmpeg/doc/general.texi |    2 +-
+ .../dvdplayer/Codecs/ffmpeg/libavcodec/Makefile    |    1 +
+ .../dvdplayer/Codecs/ffmpeg/libavcodec/allcodecs.c |    1 +
+ .../dvdplayer/Codecs/ffmpeg/libavcodec/libfaad.c   |  333 ++++++++++++++++++++
+ 5 files changed, 361 insertions(+), 1 deletions(-)
+ create mode 100644 xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/libfaad.c
+
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/configure b/xbmc/cores/dvdplayer/Codecs/ffmpeg/configure
+index 965220c..9276f90 100755
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/configure
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/configure
+@@ -167,6 +167,8 @@ External library support:
+                            and libraw1394 [no]
+   --enable-libdirac        enable Dirac support via libdirac [no]
+   --enable-libfaac         enable FAAC support via libfaac [no]
++  --enable-libfaad         enable FAAD support via libfaad [no]
++  --enable-libfaadbin      open libfaad.so.0 at runtime [no]
+   --enable-libgsm          enable GSM support via libgsm [no]
+   --enable-libmp3lame      enable MP3 encoding via libmp3lame [no]
+   --enable-libnut          enable NUT (de)muxing via libnut,
+@@ -869,6 +871,8 @@ CONFIG_LIST="
+     libdc1394
+     libdirac
+     libfaac
++    libfaad
++    libfaadbin
+     libgsm
+     libmp3lame
+     libnut
+@@ -1300,6 +1304,8 @@ latm_parser_deps="libfaad"
+ libdirac_decoder_deps="libdirac !libschroedinger"
+ libdirac_encoder_deps="libdirac"
+ libfaac_encoder_deps="libfaac"
++libfaad_decoder_deps="libfaad"
++libfaadbin_extralibs='$ldl'
+ libfaad_latm_decoder_deps="libfaad"
+ libfaadbin_decoder_extralibs='$ldl'
+ libgsm_decoder_deps="libgsm"
+@@ -2353,10 +2359,26 @@ fi
+ 
+ disabled static && LIBNAME=""
+ 
++if enabled_any libfaad libfaadbin ; then
++    if check_header faad.h; then
++        check_cc <<EOF
++#include <faad.h>
++#ifndef FAAD2_VERSION
++ok faad1
++#endif
++int main(void) { return 0; }
++EOF
++        test $? = 0 && enable libfaad2
++    else
++        die "FAAD test failed."
++    fi
++fi
++
+ die_license_disabled() {
+     enabled $1 || { enabled $2 && die "$2 is $1 and --enable-$1 is not specified."; }
+ }
+ 
++die_license_disabled gpl libfaad2
+ die_license_disabled gpl libx264
+ die_license_disabled gpl libxvid
+ die_license_disabled gpl postproc
+@@ -2646,6 +2668,7 @@ enabled libdirac   && add_cflags $(pkg-config --cflags dirac) &&
+                       require  libdirac libdirac_decoder/dirac_parser.h dirac_decoder_init $(pkg-config --libs dirac) &&
+                       require  libdirac libdirac_encoder/dirac_encoder.h dirac_encoder_init $(pkg-config --libs dirac)
+ enabled libfaac    && require2 libfaac "stdint.h faac.h" faacEncGetVersion -lfaac
++enabled libfaad    && require2 libfaad faad.h faacDecOpen -lfaad
+ enabled libgsm     && require  libgsm gsm/gsm.h gsm_create -lgsm
+ enabled libmp3lame && require  libmp3lame lame/lame.h lame_init -lmp3lame
+ enabled libnut     && require  libnut libnut.h nut_demuxer_init -lnut
+@@ -2924,6 +2947,8 @@ echo "AVISynth enabled          ${avisynth-no}"
+ echo "libdc1394 support         ${libdc1394-no}"
+ echo "libdirac enabled          ${libdirac-no}"
+ echo "libfaac enabled           ${libfaac-no}"
++echo "libfaad enabled           ${libfaad-no}"
++echo "libfaad dlopened          ${libfaadbin-no}"
+ echo "libgsm enabled            ${libgsm-no}"
+ echo "libmp3lame enabled        ${libmp3lame-no}"
+ echo "libnut enabled            ${libnut-no}"
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi b/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
+index 3a1fb7c..d7f85e8 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
+@@ -1031,7 +1031,7 @@ These library packages are only available from Cygwin Ports
+ (@url{http://sourceware.org/cygwinports/}) :
+ 
+ @example
+-yasm, libSDL-devel, libdirac-devel, libfaac-devel, libgsm-devel,
++yasm, libSDL-devel, libdirac-devel, libfaac-devel, libfaad-devel, libgsm-devel,
+ libmp3lame-devel, libschroedinger1.0-devel, speex-devel, libtheora-devel,
+ libxvidcore-devel
+ @end example
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/Makefile b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/Makefile
+index 082e7f0..dafd1f0 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/Makefile
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/Makefile
+@@ -526,6 +526,7 @@ OBJS-$(CONFIG_WEBM_MUXER)              += xiph.o mpeg4audio.o \
+ OBJS-$(CONFIG_LIBDIRAC_DECODER)           += libdiracdec.o
+ OBJS-$(CONFIG_LIBDIRAC_ENCODER)           += libdiracenc.o libdirac_libschro.o
+ OBJS-$(CONFIG_LIBFAAC_ENCODER)            += libfaac.o
++OBJS-$(CONFIG_LIBFAAD_DECODER)            += libfaad.o
+ OBJS-$(CONFIG_LIBFAAD_LATM_DECODER)       += latmaac.o
+ OBJS-$(CONFIG_LIBGSM_DECODER)             += libgsm.o
+ OBJS-$(CONFIG_LIBGSM_ENCODER)             += libgsm.o
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/allcodecs.c b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/allcodecs.c
+index 9f396ce..0a24f45 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/allcodecs.c
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/allcodecs.c
+@@ -343,6 +343,7 @@ void avcodec_register_all(void)
+     /* external libraries */
+     REGISTER_ENCDEC  (LIBDIRAC, libdirac);
+     REGISTER_ENCODER (LIBFAAC, libfaac);
++    REGISTER_DECODER (LIBFAAD, libfaad);
+     REGISTER_DECODER (LIBFAAD_LATM, libfaad_latm);
+     REGISTER_ENCDEC  (LIBGSM, libgsm);
+     REGISTER_ENCDEC  (LIBGSM_MS, libgsm_ms);
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/libfaad.c b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/libfaad.c
+new file mode 100644
+index 0000000..679729a
+--- /dev/null
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/libfaad.c
+@@ -0,0 +1,333 @@
++/*
++ * Faad decoder
++ * Copyright (c) 2003 Zdenek Kabelac
++ * Copyright (c) 2004 Thomas Raivio
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with FFmpeg; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++/**
++ * @file
++ * AAC decoder.
++ *
++ * still a bit unfinished - but it plays something
++ */
++
++#include "avcodec.h"
++#include "faad.h"
++
++#ifndef FAADAPI
++#define FAADAPI
++#endif
++
++/*
++ * when CONFIG_LIBFAADBIN is true libfaad will be opened at runtime
++ */
++//#undef CONFIG_LIBFAADBIN
++//#define CONFIG_LIBFAADBIN 0
++//#define CONFIG_LIBFAADBIN 1
++
++#if CONFIG_LIBFAADBIN
++#include <dlfcn.h>
++static const char* const libfaadname = "libfaad.so";
++#else
++#define dlopen(a)
++#define dlclose(a)
++#endif
++
++typedef struct {
++    void* handle;               /* dlopen handle */
++    void* faac_handle;          /* FAAD library handle */
++    int sample_size;
++    int init;
++
++    /* faad calls */
++    faacDecHandle FAADAPI (*faacDecOpen)(void);
++    faacDecConfigurationPtr FAADAPI (*faacDecGetCurrentConfiguration)(faacDecHandle hDecoder);
++#ifndef FAAD2_VERSION
++    int FAADAPI (*faacDecSetConfiguration)(faacDecHandle hDecoder,
++                                           faacDecConfigurationPtr config);
++    int FAADAPI (*faacDecInit)(faacDecHandle hDecoder,
++                               unsigned char *buffer,
++                               unsigned long *samplerate,
++                               unsigned long *channels);
++    int FAADAPI (*faacDecInit2)(faacDecHandle hDecoder, unsigned char *pBuffer,
++                                unsigned long SizeOfDecoderSpecificInfo,
++                                unsigned long *samplerate, unsigned long *channels);
++    int FAADAPI (*faacDecDecode)(faacDecHandle hDecoder,
++                                 unsigned char *buffer,
++                                 unsigned long *bytesconsumed,
++                                 short *sample_buffer,
++                                 unsigned long *samples);
++#else
++    unsigned char FAADAPI (*faacDecSetConfiguration)(faacDecHandle hDecoder,
++                                                     faacDecConfigurationPtr config);
++    long FAADAPI (*faacDecInit)(faacDecHandle hDecoder,
++                                unsigned char *buffer,
++                                unsigned long buffer_size,
++                                unsigned long *samplerate,
++                                unsigned char *channels);
++    char FAADAPI (*faacDecInit2)(faacDecHandle hDecoder, unsigned char *pBuffer,
++                                 unsigned long SizeOfDecoderSpecificInfo,
++                                 unsigned long *samplerate, unsigned char *channels);
++    void *FAADAPI (*faacDecDecode)(faacDecHandle hDecoder,
++                                   faacDecFrameInfo *hInfo,
++                                   unsigned char *buffer,
++                                   unsigned long buffer_size);
++    char* FAADAPI (*faacDecGetErrorMessage)(unsigned char errcode);
++#endif
++
++    void FAADAPI (*faacDecClose)(faacDecHandle hDecoder);
++
++
++} FAACContext;
++
++static const unsigned long faac_srates[] =
++{
++    96000, 88200, 64000, 48000, 44100, 32000,
++    24000, 22050, 16000, 12000, 11025, 8000
++};
++
++static void channel_setup(AVCodecContext *avctx)
++{
++#ifdef FAAD2_VERSION
++    FAACContext *s = avctx->priv_data;
++    if (avctx->request_channels > 0 && avctx->request_channels == 2 &&
++        avctx->request_channels < avctx->channels) {
++        faacDecConfigurationPtr faac_cfg;
++        avctx->channels = 2;
++        faac_cfg = s->faacDecGetCurrentConfiguration(s->faac_handle);
++        faac_cfg->downMatrix = 1;
++        s->faacDecSetConfiguration(s->faac_handle, faac_cfg);
++    }
++#endif
++}
++
++static av_cold int faac_init_mp4(AVCodecContext *avctx)
++{
++    FAACContext *s = avctx->priv_data;
++    unsigned long samplerate;
++#ifndef FAAD2_VERSION
++    unsigned long channels;
++#else
++    unsigned char channels;
++#endif
++    int r = 0;
++
++    if (avctx->extradata){
++        r = s->faacDecInit2(s->faac_handle, (uint8_t*) avctx->extradata,
++                            avctx->extradata_size,
++                            &samplerate, &channels);
++        if (r < 0){
++            av_log(avctx, AV_LOG_ERROR,
++                   "faacDecInit2 failed r:%d   sr:%ld  ch:%ld  s:%d\n",
++                   r, samplerate, (long)channels, avctx->extradata_size);
++        } else {
++            avctx->sample_rate = samplerate;
++            avctx->channels = channels;
++            channel_setup(avctx);
++            s->init = 1;
++        }
++    }
++
++    return r;
++}
++
++static int faac_decode_frame(AVCodecContext *avctx,
++                             void *data, int *data_size,
++                             AVPacket *avpkt)
++{
++    const uint8_t *buf = avpkt->data;
++    int buf_size = avpkt->size;
++    FAACContext *s = avctx->priv_data;
++#ifndef FAAD2_VERSION
++    unsigned long bytesconsumed;
++    short *sample_buffer = NULL;
++    unsigned long samples;
++    int out;
++#else
++    faacDecFrameInfo frame_info;
++    void *out;
++#endif
++    if(buf_size == 0)
++        return 0;
++#ifndef FAAD2_VERSION
++    out = s->faacDecDecode(s->faac_handle,
++                           (unsigned char*)buf,
++                           &bytesconsumed,
++                           data,
++                           &samples);
++    samples *= s->sample_size;
++    if (data_size)
++        *data_size = samples;
++    return (buf_size < (int)bytesconsumed)
++        ? buf_size : (int)bytesconsumed;
++#else
++
++    if(!s->init){
++        unsigned long srate;
++        unsigned char channels;
++        int r = s->faacDecInit(s->faac_handle, buf, buf_size, &srate, &channels);
++        if(r < 0){
++            av_log(avctx, AV_LOG_ERROR, "libfaad: codec init failed.\n");
++            return -1;
++        }
++        avctx->sample_rate = srate;
++        avctx->channels = channels;
++        channel_setup(avctx);
++        s->init = 1;
++    }
++
++    out = s->faacDecDecode(s->faac_handle, &frame_info, (unsigned char*)buf, (unsigned long)buf_size);
++
++    if (frame_info.error > 0) {
++        av_log(avctx, AV_LOG_ERROR, "libfaad: frame decoding failed: %s\n",
++               s->faacDecGetErrorMessage(frame_info.error));
++        return -1;
++    }
++    if (!avctx->frame_size)
++        avctx->frame_size = frame_info.samples/avctx->channels;
++    frame_info.samples *= s->sample_size;
++    memcpy(data, out, frame_info.samples); // CHECKME - can we cheat this one
++
++    if (data_size)
++        *data_size = frame_info.samples;
++
++    return (buf_size < (int)frame_info.bytesconsumed)
++        ? buf_size : (int)frame_info.bytesconsumed;
++#endif
++}
++
++static av_cold int faac_decode_end(AVCodecContext *avctx)
++{
++    FAACContext *s = avctx->priv_data;
++
++    s->faacDecClose(s->faac_handle);
++
++    dlclose(s->handle);
++    return 0;
++}
++
++static av_cold int faac_decode_init(AVCodecContext *avctx)
++{
++    FAACContext *s = avctx->priv_data;
++    faacDecConfigurationPtr faac_cfg;
++
++#if CONFIG_LIBFAADBIN
++    const char* err = 0;
++
++    s->handle = dlopen(libfaadname, RTLD_LAZY);
++    if (!s->handle)
++    {
++        av_log(avctx, AV_LOG_ERROR, "FAAD library: %s could not be opened! \n%s\n",
++               libfaadname, dlerror());
++        return -1;
++    }
++
++#define dfaac(a) do {                                                   \
++        const char* n = AV_STRINGIFY(faacDec ## a);                     \
++        if (!err && !(s->faacDec ## a = dlsym(s->handle, n))) {         \
++            err = n;                                                    \
++        }                                                               \
++    } while(0)
++#else  /* !CONFIG_LIBFAADBIN */
++#define dfaac(a)     s->faacDec ## a = faacDec ## a
++#endif /* CONFIG_LIBFAADBIN */
++
++    // resolve all needed function calls
++    dfaac(Open);
++    dfaac(Close);
++    dfaac(GetCurrentConfiguration);
++    dfaac(SetConfiguration);
++    dfaac(Init);
++    dfaac(Init2);
++    dfaac(Decode);
++#ifdef FAAD2_VERSION
++    dfaac(GetErrorMessage);
++#endif
++
++#undef dfaac
++
++#if CONFIG_LIBFAADBIN
++    if (err) {
++        dlclose(s->handle);
++        av_log(avctx, AV_LOG_ERROR, "FAAD library: cannot resolve %s in %s!\n",
++               err, libfaadname);
++        return -1;
++    }
++#endif
++
++    s->faac_handle = s->faacDecOpen();
++    if (!s->faac_handle) {
++        av_log(avctx, AV_LOG_ERROR, "FAAD library: cannot create handler!\n");
++        faac_decode_end(avctx);
++        return -1;
++    }
++
++
++    faac_cfg = s->faacDecGetCurrentConfiguration(s->faac_handle);
++
++    if (faac_cfg) {
++        switch (avctx->bits_per_coded_sample) {
++        case 8: av_log(avctx, AV_LOG_ERROR, "FAADlib unsupported bps %d\n", avctx->bits_per_coded_sample); break;
++        default:
++        case 16:
++#ifdef FAAD2_VERSION
++            faac_cfg->outputFormat = FAAD_FMT_16BIT;
++#endif
++            s->sample_size = 2;
++            break;
++        case 24:
++#ifdef FAAD2_VERSION
++            faac_cfg->outputFormat = FAAD_FMT_24BIT;
++#endif
++            s->sample_size = 3;
++            break;
++        case 32:
++#ifdef FAAD2_VERSION
++            faac_cfg->outputFormat = FAAD_FMT_32BIT;
++#endif
++            s->sample_size = 4;
++            break;
++        }
++
++        faac_cfg->defSampleRate = (!avctx->sample_rate) ? 44100 : avctx->sample_rate;
++        faac_cfg->defObjectType = LC;
++    }
++
++    s->faacDecSetConfiguration(s->faac_handle, faac_cfg);
++
++    faac_init_mp4(avctx);
++
++    if(!s->init && avctx->channels > 0)
++        channel_setup(avctx);
++
++    avctx->sample_fmt = SAMPLE_FMT_S16;
++    return 0;
++}
++
++AVCodec libfaad_decoder = {
++    "libfaad",
++    AVMEDIA_TYPE_AUDIO,
++    CODEC_ID_AAC,
++    sizeof(FAACContext),
++    faac_decode_init,
++    NULL,
++    faac_decode_end,
++    faac_decode_frame,
++    .long_name = NULL_IF_CONFIG_SMALL("libfaad AAC (Advanced Audio Codec)"),
++};
+-- 
+1.7.0
+

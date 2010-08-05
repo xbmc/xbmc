@@ -474,7 +474,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
-    pItem->SetThumbnailImage("DefaultAddSource.png");
+    pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
@@ -482,13 +482,13 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
-    pItem->m_strPath = strParentPath;
+    pItem->m_strPath = (m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     m_vecItems[iList]->AddFront(pItem, 0);
   }
 
-  m_strParentPath[iList] = strParentPath;
+  m_strParentPath[iList] = (m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
 
   if (strDirectory.IsEmpty())
   {
@@ -992,9 +992,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     return ;
   }
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (pMenu)
-  {
+
     bool showEntry = false;
     if (item >= m_vecItems[list]->Size()) item = -1;
     if (item >= 0)
@@ -1004,53 +1002,44 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     VECPLAYERCORES vecCores;
     CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
 
-    // load our menu
-    pMenu->Initialize();
     // add the needed buttons
-    int btn_SelectAll = pMenu->AddButton(188); // SelectAll
+  CContextButtons choices;
+  if (item >= 0)
+  {
+    choices.Add(1, 188); // SelectAll
+    if (!pItem->IsParentFolder())
+      choices.Add(2, CFavourites::IsFavourite(pItem.get(), GetID()) ? 14077 : 14076); // Add/Remove Favourite
+    if (vecCores.size() > 1)
+      choices.Add(3, 15213); // Play Using...
+    if (CanRename(list) && !pItem->IsParentFolder())
+      choices.Add(4, 118); // Rename
+    if (CanDelete(list) && showEntry)
+      choices.Add(5, 117); // Delete
+    if (CanCopy(list) && showEntry)
+      choices.Add(6, 115); // Copy
+    if (CanMove(list) && showEntry)
+      choices.Add(7, 116); // Move
+  }
+  if (CanNewFolder(list))
+    choices.Add(8, 20309); // New Folder
+  if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
+    choices.Add(9, 13393); // Calculate Size
+  choices.Add(10, 5);     // Settings
+  choices.Add(11, 20128); // Go To Root
+  choices.Add(12, 523);     // switch media
 
-    int btn_HandleFavourite;  // Add/Remove Favourite
-    if (CFavourites::IsFavourite(pItem.get(), GetID()))
-      btn_HandleFavourite = pMenu->AddButton(14077);
-    else
-      btn_HandleFavourite = pMenu->AddButton(14076);
-
-    int btn_PlayUsing = pMenu->AddButton(15213); // Play Using ..
-    int btn_Rename = pMenu->AddButton(118); // Rename
-    int btn_Delete = pMenu->AddButton(117); // Delete
-    int btn_Copy = pMenu->AddButton(115); // Copy
-    int btn_Move = pMenu->AddButton(116); // Move
-    int btn_NewFolder = pMenu->AddButton(20309); // New Folder
-    int btn_Size = pMenu->AddButton(13393); // Calculate Size
-    int btn_Settings = pMenu->AddButton(5);     // Settings
-    int btn_GoToRoot = pMenu->AddButton(20128); // Go To Root
-    int btn_Switch = pMenu->AddButton(523);     // switch media
-
-    pMenu->EnableButton(btn_SelectAll, item >= 0);
-    pMenu->EnableButton(btn_HandleFavourite, item >=0 && !pItem->IsParentFolder());
-    pMenu->EnableButton(btn_PlayUsing, item >= 0 && vecCores.size() > 1);
-    pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !pItem->IsParentFolder());
-    pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
-    pMenu->EnableButton(btn_Copy, item >= 0 && CanCopy(list) && showEntry);
-    pMenu->EnableButton(btn_Move, item >= 0 && CanMove(list) && showEntry);
-    pMenu->EnableButton(btn_NewFolder, CanNewFolder(list));
-    pMenu->EnableButton(btn_Size, item >=0 && pItem->m_bIsFolder && !pItem->IsParentFolder());
-
-    // position it correctly
-    pMenu->OffsetPosition(posX, posY);
-    pMenu->DoModal();
-    int btnid = pMenu->GetButton();
-    if (btnid == btn_SelectAll)
+  int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (btnid == 1)
     {
       OnSelectAll(list);
       bDeselect=false;
     }
-    if (btnid == btn_HandleFavourite)
+  if (btnid == 2)
     {
       CFavourites::AddOrRemove(pItem.get(), GetID());
       return;
     }
-    if (btnid == btn_PlayUsing)
+  if (btnid == 3)
     {
       VECPLAYERCORES vecCores;
       CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
@@ -1058,17 +1047,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       if (g_application.m_eForcedNextPlayer != EPC_NONE)
         OnStart(pItem.get());
     }
-    if (btnid == btn_Rename)
+  if (btnid == 4)
       OnRename(list);
-    if (btnid == btn_Delete)
+  if (btnid == 5)
       OnDelete(list);
-    if (btnid == btn_Copy)
+  if (btnid == 6)
       OnCopy(list);
-    if (btnid == btn_Move)
+  if (btnid == 7)
       OnMove(list);
-    if (btnid == btn_NewFolder)
+  if (btnid == 8)
       OnNewFolder(list);
-    if (btnid == btn_Size)
+  if (btnid == 9)
     {
       // setup the progress dialog, and show it
       CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -1100,17 +1089,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       if (progress)
         progress->Close();
     }
-    if (btnid == btn_Settings)
+  if (btnid == 10)
     {
       g_windowManager.ActivateWindow(WINDOW_SETTINGS_MENU);
       return;
     }
-    if (btnid == btn_GoToRoot)
+  if (btnid == 11)
     {
       Update(list,"");
       return;
     }
-    if (btnid == btn_Switch)
+  if (btnid == 12)
     {
       CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->m_strPath);
       return;
@@ -1120,7 +1109,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     { // deselect item as we didn't do anything
       pItem->Select(false);
     }
-  }
 }
 
 // Highlights the item in the list under the cursor

@@ -49,17 +49,18 @@ namespace PYXBMC
     //              for non-unicode data?
     if (PyUnicode_Check(pObject))
     {
-      // this will probably not really work since the python DLL assumes that
-      // that wchar_t is 2 bytes and linux is actually 4 bytes. That's why
-      // so building a CStdStringW will not work
-      //
-      CStdString utf8String;
 
-      CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
-      g_charsetConverter.wToUTF8(utf16String, utf8String);
+      // Python unicode objects are UCS2 or UCS4 depending on compilation
+      // options, wchar_t is 16-bit or 32-bit depending on platform.
+      // Avoid the complexity by just letting python convert the string.
+      PyObject *utf8_pyString = PyUnicode_AsUTF8String(pObject);
 
-      buf = utf8String;
+      if (utf8_pyString)
+      {
+        buf = PyString_AsString(utf8_pyString);
+        Py_DECREF(utf8_pyString);
       return 1;
+    }
     }
     if (PyString_Check(pObject))
     {

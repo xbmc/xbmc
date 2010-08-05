@@ -21,6 +21,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
 
@@ -48,23 +50,25 @@ private:
 class CWinShader
 {
 protected:
-  CWinShader();
+  CWinShader() {}
 
 public:
   void Release(); // for user code only, like the SAFE_RELEASE() construct
 
 protected:
-  virtual bool CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
+  virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
+  virtual bool LockVertexBuffer(void **data);
+  virtual bool UnlockVertexBuffer();
   virtual void ReleaseInternal();
   virtual bool LoadEffect(CStdString filename, DefinesMap* defines);
-  virtual bool Execute(LPDIRECT3DDEVICE9 pD3DDevice);
-  void*        GetVertexBuffer() { return m_verts; }
+  virtual bool Execute();
 
   CD3DEffect   m_effect;
-  unsigned int m_boundTexturesCount;
 
 private:
-  void*        m_verts;
+  CD3DVertexBuffer m_vb;
+  unsigned int     m_vbsize;
+  DWORD            m_FVF;
   unsigned int m_vertsize;
   unsigned int m_primitivesCount;
 };
@@ -72,26 +76,29 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(bool singlepass);
-  virtual void Render(unsigned int sourceWidth, unsigned int sourceHeight,
-                      CRect sourceRect,
+  virtual bool Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight);
+  virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
                       float brightness,
                       unsigned int flags,
-                      SVideoBuffer* YUVbuf);
+                      YUVBuffer* YUVbuf);
 
 protected:
-  virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                                 CRect sourceRect,
+  virtual void PrepareParameters(CRect sourceRect,
                                  CRect destRect,
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
-  virtual void SetShaderParameters(D3DXMATRIX* matrix, SVideoBuffer* YUVbuf, unsigned int sourceWidth);
+  virtual void SetShaderParameters();
+  virtual void ReleaseInternal();
+  virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 
 private:
   CYUV2RGBMatrix m_matrix;
+  unsigned int   m_sourceWidth, m_sourceHeight;
+  CRect          m_sourceRect, m_destRect;
+  CD3DTexture    m_YUVPlanes[3];
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -121,6 +128,8 @@ protected:
 
 private:
   CD3DTexture m_HQKernelTexture;
+  unsigned int  m_sourceWidth, m_sourceHeight;
+  CRect         m_sourceRect, m_destRect;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -128,3 +137,11 @@ private:
       FLOAT tu, tv;
   };
 };
+
+class CTestShader : public CWinShader
+{
+public:
+  virtual bool Create();
+};
+
+#endif

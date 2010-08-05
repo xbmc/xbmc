@@ -88,14 +88,19 @@ void CD3DTexture::Release()
 bool CD3DTexture::LockRect(UINT level, D3DLOCKED_RECT *lr, const RECT *rect, DWORD flags)
 {
   if (m_texture)
+  {
+    if ((flags & D3DLOCK_DISCARD) && !(m_usage & D3DUSAGE_DYNAMIC))
+      flags &= ~D3DLOCK_DISCARD;
     return (D3D_OK == m_texture->LockRect(level, lr, rect, flags));
+  }
   return false;
 }
 
-void CD3DTexture::UnlockRect(UINT level)
+bool CD3DTexture::UnlockRect(UINT level)
 {
   if (m_texture)
-    m_texture->UnlockRect(level);
+    return (D3D_OK == m_texture->UnlockRect(level));
+  return false;
 }
 
 bool CD3DTexture::GetLevelDesc(UINT level, D3DSURFACE_DESC *desc)
@@ -118,6 +123,10 @@ void CD3DTexture::SaveTexture()
   {
     delete[] m_data;
     m_data = NULL;
+    if(!(m_usage & D3DUSAGE_RENDERTARGET)
+    && !(m_usage & D3DUSAGE_DEPTHSTENCIL)
+    && !(m_pool == D3DPOOL_DEFAULT && (m_usage & D3DUSAGE_DYNAMIC) == 0))
+    {
     D3DLOCKED_RECT lr;
     if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
     {
@@ -127,6 +136,7 @@ void CD3DTexture::SaveTexture()
       memcpy(m_data, lr.pBits, memUsage);
       UnlockRect(0);
     }
+  }
   }
   SAFE_RELEASE(m_texture);
 }
@@ -290,16 +300,18 @@ bool CD3DEffect::BeginPass(UINT pass)
   return false;
 }
 
-void CD3DEffect::EndPass()
+bool CD3DEffect::EndPass()
 {
   if (m_effect)
-    m_effect->EndPass();
+    return (D3D_OK == m_effect->EndPass());
+  return false;
 }
 
-void CD3DEffect::End()
+bool CD3DEffect::End()
 {
   if (m_effect)
-    m_effect->End();
+    return (D3D_OK == m_effect->End());
+  return false;
 }
 
 bool CD3DEffect::CreateEffect()
@@ -394,10 +406,11 @@ bool CD3DVertexBuffer::Lock(UINT level, UINT size, void **data, DWORD flags)
   return false;
 }
 
-void CD3DVertexBuffer::Unlock()
+bool CD3DVertexBuffer::Unlock()
 {
   if (m_vertex)
-    m_vertex->Unlock();
+    return (D3D_OK == m_vertex->Unlock());
+  return false;
 }
 
 void CD3DVertexBuffer::OnDestroyDevice()

@@ -893,6 +893,6 @@ AVCodec ape_decoder = {
     ape_decode_close,
     ape_decode_frame,
     .capabilities = CODEC_CAP_SUBFRAMES,
-    .flush= ape_flush,
+    .flush = ape_flush,
     .long_name = NULL_IF_CONFIG_SMALL("Monkey's Audio"),
 };

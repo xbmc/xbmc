@@ -1,2 +1,0 @@
-; filename                        source of the file
-libvpx-0.9.1.zip           http://webm.googlecode.com/files/
