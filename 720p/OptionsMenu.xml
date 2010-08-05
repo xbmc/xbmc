@@ -582,7 +582,7 @@
 
 		<control type="button" id="959">
           <description>Plugin Stream view button</description>
-          <visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
+          
           <label>$LOCALIZE[31722]</label>
           <onclick>Container.SetViewMode(59)</onclick>
           <onclick>SetFocus(50)</onclick>
