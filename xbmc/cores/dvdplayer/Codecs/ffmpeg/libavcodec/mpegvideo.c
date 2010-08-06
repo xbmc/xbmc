@@ -200,7 +200,7 @@ void ff_copy_picture(Picture *dst, Picture *src){
 }
 
 /**
- * Releases a frame buffer
+ * Release a frame buffer
  */
 static void free_frame_buffer(MpegEncContext *s, Picture *pic)
 {
@@ -209,7 +209,7 @@ static void free_frame_buffer(MpegEncContext *s, Picture *pic)
 }
 
 /**
- * Allocates a frame buffer
+ * Allocate a frame buffer
  */
 static int alloc_frame_buffer(MpegEncContext *s, Picture *pic)
 {
@@ -356,6 +356,9 @@ static void free_picture(MpegEncContext *s, Picture *pic){
 }
 
 static int init_duplicate_context(MpegEncContext *s, MpegEncContext *base){
+    int y_size = s->b8_stride * (2 * s->mb_height + 1);
+    int c_size = s->mb_stride * (s->mb_height + 1);
+    int yc_size = y_size + 2 * c_size;
     int i;
 
     // edge emu needs blocksize + filter length - 1 (=17x17 for halfpel / 21x21 for h264)
@@ -381,6 +384,15 @@ static int init_duplicate_context(MpegEncContext *s, MpegEncContext *base){
     for(i=0;i<12;i++){
         s->pblocks[i] = &s->block[i];
     }
+
+    if (s->out_format == FMT_H263) {
+        /* ac values */
+        FF_ALLOCZ_OR_GOTO(s->avctx, s->ac_val_base, yc_size * sizeof(int16_t) * 16, fail);
+        s->ac_val[0] = s->ac_val_base + s->b8_stride + 1;
+        s->ac_val[1] = s->ac_val_base + y_size + s->mb_stride + 1;
+        s->ac_val[2] = s->ac_val[1] + c_size;
+    }
+
     return 0;
 fail:
     return -1; //free() through MPV_common_end()
@@ -400,6 +412,7 @@ static void free_duplicate_context(MpegEncContext *s){
     av_freep(&s->me.map);
     av_freep(&s->me.score_map);
     av_freep(&s->blocks);
+    av_freep(&s->ac_val_base);
     s->block= NULL;
 }
 
@@ -423,6 +436,10 @@ static void backup_duplicate_context(MpegEncContext *bak, MpegEncContext *src){
     COPY(dct_error_sum);
     COPY(dct_count[0]);
     COPY(dct_count[1]);
+    COPY(ac_val_base);
+    COPY(ac_val[0]);
+    COPY(ac_val[1]);
+    COPY(ac_val[2]);
 #undef COPY
 }
 
@@ -605,12 +622,6 @@ av_cold int MPV_common_init(MpegEncContext *s)
             }
     }
     if (s->out_format == FMT_H263) {
-        /* ac values */
-        FF_ALLOCZ_OR_GOTO(s->avctx, s->ac_val_base, yc_size * sizeof(int16_t) * 16, fail);
-        s->ac_val[0] = s->ac_val_base + s->b8_stride + 1;
-        s->ac_val[1] = s->ac_val_base + y_size + s->mb_stride + 1;
-        s->ac_val[2] = s->ac_val[1] + c_size;
-
         /* cbp values */
         FF_ALLOCZ_OR_GOTO(s->avctx, s->coded_block_base, y_size, fail);
         s->coded_block= s->coded_block_base + s->b8_stride + 1;
@@ -712,7 +723,6 @@ void MPV_common_end(MpegEncContext *s)
     }
 
     av_freep(&s->dc_val_base);
-    av_freep(&s->ac_val_base);
     av_freep(&s->coded_block_base);
     av_freep(&s->mbintra_table);
     av_freep(&s->cbp_table);
@@ -1634,7 +1644,7 @@ static inline void chroma_4mv_motion_lowres(MpegEncContext *s,
  * @param dest_cr chroma cr/v destination pointer
  * @param dir direction (0->forward, 1->backward)
  * @param ref_picture array[3] of pointers to the 3 planes of the reference picture
- * @param pic_op halfpel motion compensation function (average or put normally)
+ * @param pix_op halfpel motion compensation function (average or put normally)
  * the motion vectors are taken from s->mv and the MV type from s->mv_type
  */
 static inline void MPV_motion_lowres(MpegEncContext *s,

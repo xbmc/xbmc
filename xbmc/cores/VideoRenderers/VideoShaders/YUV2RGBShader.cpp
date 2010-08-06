@@ -182,6 +182,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
     m_defines += "#define XBMC_NV12\n";
   else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2)
     m_defines += "#define XBMC_YUY2\n";
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+    m_defines += "#define XBMC_UYVY\n";
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 #elif HAS_GLES == 2
@@ -327,6 +329,13 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       PixelShader()->LoadSource("yuv2rgb_basic_rect_YUY2.arb");
     else
       PixelShader()->LoadSource("yuv2rgb_basic_2d_YUY2.arb");
+  }
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+  {
+    if(rect)
+      PixelShader()->LoadSource("yuv2rgb_basic_rect_UYVY.arb");
+    else
+      PixelShader()->LoadSource("yuv2rgb_basic_2d_UYVY.arb");
   }
   else
   {

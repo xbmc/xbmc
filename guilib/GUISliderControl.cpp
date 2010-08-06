@@ -50,38 +50,35 @@ CGUISliderControl::~CGUISliderControl(void)
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
-  if (!IsDisabled())
+  if (m_iInfoCode)
+    SetIntValue(g_infoManager.GetInt(m_iInfoCode));
+
+  float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
+  float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
+
+  m_guiBackground.SetHeight(m_height);
+  m_guiBackground.SetWidth(m_width);
+  m_guiBackground.Render();
+
+  float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
+
+  float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
+
+  if ((int)fWidth > 1)
   {
-    if (m_iInfoCode)
-      SetIntValue(g_infoManager.GetInt(m_iInfoCode));
-
-    float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
-    float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
-
-    m_guiBackground.SetHeight(m_height);
-    m_guiBackground.SetWidth(m_width);
-    m_guiBackground.Render();
-
-    float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
-
-    float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
-
-    if ((int)fWidth > 1)
+    if (m_bHasFocus && !IsDisabled())
     {
-      if (m_bHasFocus)
-      {
-        m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
-        m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
-        m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight() * fScaleY);
-        m_guiMidFocus.Render();
-      }
-      else
-      {
-        m_guiMid.SetPosition(fPos, m_guiBackground.GetYPosition() );
-        m_guiMid.SetWidth(m_guiMid.GetTextureWidth()*fScaleX);
-        m_guiMid.SetHeight(m_guiMid.GetTextureHeight()*fScaleY);
-        m_guiMid.Render();
-      }
+      m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
+      m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
+      m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight() * fScaleY);
+      m_guiMidFocus.Render();
+    }
+    else
+    {
+      m_guiMid.SetPosition(fPos, m_guiBackground.GetYPosition() );
+      m_guiMid.SetWidth(m_guiMid.GetTextureWidth()*fScaleX);
+      m_guiMid.SetHeight(m_guiMid.GetTextureHeight()*fScaleY);
+      m_guiMid.Render();
     }
   }
   CGUIControl::Render();

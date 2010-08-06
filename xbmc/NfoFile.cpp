@@ -23,6 +23,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "NfoFile.h"
+#include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
 #include "addons/AddonManager.h"
@@ -58,7 +59,7 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode, const CStdString& strPath2)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
@@ -110,49 +111,40 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     }
   }
 
-  // Get Selected Scraper
-  CVideoDatabase database;
-  database.Open();
-  ADDON::ScraperPtr selected = database.GetScraperForPath(strPath);
-  database.Close();
-
   vector<ScraperPtr> vecScrapers;
+  ADDON::ScraperPtr selected;
+  // Get Selected Scraper
+  if (m_type == ADDON_SCRAPER_MOVIES      ||
+      m_type == ADDON_SCRAPER_MUSICVIDEOS ||
+      m_type == ADDON_SCRAPER_TVSHOWS)
+  {
+    CVideoDatabase database;
+    database.Open();
+    selected = database.GetScraperForPath(strPath);
+  }
+  if (m_type == ADDON_SCRAPER_ALBUMS ||
+      m_type == ADDON_SCRAPER_ARTISTS)
+  {
+    CMusicDatabase database;
+    database.Open();
+    database.GetScraperForPath(strPath2,selected,m_type);
+  }
 
   // add selected scraper
   if (selected)
     vecScrapers.push_back(selected);
 
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(m_type,addons);
+  // first pass - add language based scrapers
   if (g_guiSettings.GetBool("scrapers.langfallback"))
-  {
-    VECADDONS addons;
-    CAddonMgr::Get().GetAddons(m_type,addons);
-    for (unsigned i=0;i<addons.size();++i)
-    {
-      // skip selected and default scraper
-      if (addons[i]->ID().Equals(selected->ID()) || 
-          addons[i]->ID().Equals(defaultScraper->ID()))
-        continue;
-      
-      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
-
-      // skip if scraper requires settings and there's nothing set yet
-      if (scraper->RequiresSettings() && !scraper->HasUserSettings())
-          continue;
-
-      // add same language, multi-language and music scrapers
-      if (scraper->Language().Equals(g_langInfo.GetDVDSubtitleLanguage()) ||
-          scraper->Language().Equals("multi") ||
-          scraper->Supports(CONTENT_ARTISTS) ||
-          scraper->Supports(CONTENT_ALBUMS))
-      {
-        vecScrapers.push_back(scraper);
-      }
-    }
-  }
+    AddScrapers(false,addons,vecScrapers);
 
   // add default scraper
   if ((selected && selected->ID() != defaultScraper->ID()) || !selected)
     vecScrapers.push_back(defaultScraper);
+
+  AddScrapers(true,addons,vecScrapers);
 
   // search ..
   int res = -1;
@@ -175,7 +167,10 @@ bool CNfoFile::DoScrape(ScraperPtr& scraper)
   
   CScraperUrl url;
   CFileCurl http;
-  vector<CStdString> xml = scraper->Run("NfoUrl",url,http,&extras);
+  vector<CStdString> xml;
+  if (scraper->GetParser().HasFunction("NfoUrl"))
+    xml = scraper->Run("NfoUrl",url,http,&extras);
+
   for (vector<CStdString>::iterator it  = xml.begin();
                                     it != xml.end(); ++it)
   {
@@ -200,9 +195,13 @@ bool CNfoFile::DoScrape(ScraperPtr& scraper)
         stringstream str;
         str << *url;
         m_strImDbUrl = str.str();
+        SetScraperInfo(scraper);
       }
       else if (strcmp(doc.RootElement()->Value(),"url")==0)
+      {
+        SetScraperInfo(scraper);
         m_strImDbUrl = *it;
+      }
     }
   }
   return true;
@@ -226,7 +225,9 @@ int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
   if (strURL.IsEmpty())
   {
     extras.push_back(m_doc);
-    vector<CStdString> result = scraper->Run("NfoScrape",url,http,&extras);
+    vector<CStdString> result;
+    if (scraper->GetParser().HasFunction("NfoScrape"))
+      result = scraper->Run("NfoScrape",url,http,&extras);
     if (!result.empty())
     {
       TiXmlDocument doc;
@@ -303,4 +304,26 @@ void CNfoFile::Close()
   m_strImDbUrl = "";
   m_strImDbNr = "";
   m_size = 0;
+}
+
+void CNfoFile::AddScrapers(bool any, VECADDONS& addons,
+                           vector<ScraperPtr>& vecScrapers)
+{
+  for (unsigned i=0;i<addons.size();++i)
+  {
+    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+
+    // skip if scraper requires settings and there's nothing set yet
+    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
+      continue;
+
+    // add same language and multi-language
+    if (any || 
+       scraper->Language().Equals(g_langInfo.GetDVDSubtitleLanguage()) ||
+       scraper->Language().Equals("multi"))
+    {
+      if (find(vecScrapers.begin(),vecScrapers.end(),scraper) == vecScrapers.end())
+        vecScrapers.push_back(scraper);
+    }
+  }
 }

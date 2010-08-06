@@ -51,7 +51,8 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1);
+  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1,
+                   const CStdString& strPath2="");
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -84,6 +85,8 @@ private:
   ADDON::ScraperPtr m_info;
   ADDON::TYPE       m_type;
   bool DoScrape(ADDON::ScraperPtr& scraper);
+  void AddScrapers(bool any, ADDON::VECADDONS& addons,
+                   std::vector<ADDON::ScraperPtr>& vecScrapers);
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

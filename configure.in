@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
+AC_INIT([xbmc], [9.11], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -46,7 +46,6 @@ openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
-libvpx_not_found="== Could not find libvpx. WebM support disabled. =="
 librtmp_not_found="== Could not find libRTMP. libRTMP support disabled. =="
 
 # External library message strings
@@ -586,7 +585,13 @@ AC_DEFUN([XB_FIND_SONAME],
       sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
   if [[ -z "$$1_SONAME" ]]; then
     AC_MSG_RESULT([no])
-    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    if test -z "$3" || test "x${$3}" = "xyes"; then
+      AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    else
+      AC_MSG_WARN([Unable to determine soname of lib$2 library])
+      $3=no
+      AC_MSG_WARN([lib$2 support disabled])
+    fi
   else
     AC_MSG_RESULT([$$1_SONAME])
     AC_SUBST($1_SONAME)
@@ -716,10 +721,6 @@ else
   fi
 fi
 
-# WebM
-AC_CHECK_LIB([vpx], [main],use_vpx=yes,
-use_vpx=no;AC_MSG_RESULT($vpx_not_found))
-
 # libRTMP
 AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],use_librtmp=yes,
 use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
@@ -727,11 +728,9 @@ use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  AC_CHECK_LIB([avcodec],   [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avformat],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avutil],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([postproc],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([swscale],   [main],, AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libavutil libpostproc libswscale],
+                    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
+                    AC_MSG_ERROR($missing_library))
 
   # Determine whether AVPacket and relevant functions are defined in libavformat
   # or libavcodec
@@ -739,6 +738,10 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavcodec. ==)],
   [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavformat. ==)
    AC_DEFINE([AVPACKET_IN_AVFORMAT], [1], [Whether AVPacket is in libavformat.])])
+
+  # in case the headers are in a custom directory
+  SAVE_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
   # Possible places the ffmpeg headers may be
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
@@ -772,16 +775,11 @@ if test "$use_external_ffmpeg" = "yes"; then
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
   fi
+  CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
-fi
-
-if test "$use_vpx" = "yes"; then
-  USE_VPX=1
-else
-  USE_VPX=0
 fi
 
 if test "$use_librtmp" = "yes"; then
@@ -906,10 +904,13 @@ if test "x$use_crystalhd" != "xno"; then
         AC_MSG_RESULT($crystalhd_not_found)
       fi],
     [#define __LINUX_USER__])
-    # check for new crystalhd lib
+    if test "$host_vendor" != "apple"; then
+      XB_FIND_SONAME([CRYSTALHD], [crystalhd], [use_crystalhd])
+    fi
     if test "x$use_crystalhd" != "xno"; then
       SAVE_CFLAGS="$CFLAGS"
       CFLAGS="-llibcrystalhd"
+      # check for new crystalhd lib
       AC_COMPILE_IFELSE(
         [ #define __LINUX_USER__
           #include <libcrystalhd/bc_dts_types.h>
@@ -947,11 +948,11 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($openmax_disabled)
 else
   if test "$use_openmax" = "yes"; then
-    AC_CHECK_HEADER([OpenMAX/il/OMX_Types.h],
+    AC_CHECK_HEADER([OpenMAX/IL/OMX_Types.h],
       AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the 'OpenMax' library.]),
       use_openmax=no;AC_MSG_RESULT($openmax_not_found))
     if test "$use_openmax" = "yes"; then
-      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/il"
+      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/IL"
     fi
   else
     AC_MSG_NOTICE($openmax_disabled)
@@ -1252,12 +1253,6 @@ else
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
-if test "$use_vpx" = "yes"; then
-  final_message="$final_message\n  WebM support:\tYes"
-else
-  final_message="$final_message\n  WebM support:\tNo"
-fi
-
 if test "$use_librtmp" = "yes"; then
   final_message="$final_message\n  libRTMP support:\tYes"
 else
@@ -1425,7 +1420,6 @@ AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
-AC_SUBST(USE_VPX)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBFLAC_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
@@ -1548,7 +1542,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      `if test "$use_vpx" = "yes"; then echo --extra-ldflags="-L/opt/local/lib"; fi` \
       --disable-amd3dnow \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
@@ -1565,7 +1558,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffmpeg \
       --enable-shared \
       --disable-decoder=mpeg_xvmc \
-      `if test "$use_vpx" = "yes"; then echo --enable-libvpx; fi` \
       --enable-postproc \
       --enable-gpl \
       --enable-protocol=http \
@@ -1580,7 +1572,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
     ./configure \
-      --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS" \
+      --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
@@ -1595,7 +1587,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-encoder=aac \
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
-      `if test "$use_vpx" = "yes"; then echo --enable-libvpx; fi` \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
@@ -1608,8 +1599,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
-      --cc="$CC"
+      `case $host_cpu in powerpc*|arm*|amd64*|x86_64*|ia64*) echo --enable-pic ;; esac` \
+      --cc="$CC" &&
+      sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
+      sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
   fi
 ], [$USE_EXTERNAL_FFMPEG])
 

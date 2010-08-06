@@ -239,7 +239,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     bool bIsShare=false;
     CUtil::GetMatchingSource(strPath,g_settings.m_programSources,bIsShare);
     int64_t iSize=0;
-    if (bIsShare || !item->IsDefaultXBE())
+    if (bIsShare)
     {
       struct __stat64 stat;
       if (CFile::Stat(item->m_strPath,&stat) == 0)

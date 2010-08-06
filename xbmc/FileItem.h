@@ -104,7 +104,7 @@ public:
   bool IsPythonScript() const;
   bool IsXBE() const;
   bool IsPlugin() const;
-  bool IsDefaultXBE() const;
+  bool IsAddonsPath() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;

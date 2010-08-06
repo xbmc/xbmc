@@ -35,6 +35,7 @@ void ff_mms_set_stream_selection(URLContext *h, AVFormatContext *format);
 #undef NDEBUG
 #include <assert.h>
 
+#define ASF_MAX_STREAMS 127
 #define FRAME_HEADER_SIZE 17
 // Fix Me! FRAME_HEADER_SIZE may be different.
 
@@ -244,6 +245,11 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             int64_t pos1, pos2, start_time;
             int test_for_ext_stream_audio, is_dvr_ms_audio=0;
 
+            if (s->nb_streams == ASF_MAX_STREAMS) {
+                av_log(s, AV_LOG_ERROR, "too many streams\n");
+                return AVERROR(EINVAL);
+            }
+
             pos1 = url_ftell(pb);
 
             st = av_new_stream(s, 0);
@@ -380,7 +386,7 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     st->codec->palctrl = av_mallocz(sizeof(AVPaletteControl));
 #if HAVE_BIGENDIAN
                     for (i = 0; i < FFMIN(st->codec->extradata_size, AVPALETTE_SIZE)/4; i++)
-                        st->codec->palctrl->palette[i] = bswap_32(((uint32_t*)st->codec->extradata)[i]);
+                        st->codec->palctrl->palette[i] = av_bswap32(((uint32_t*)st->codec->extradata)[i]);
 #else
                     memcpy(st->codec->palctrl->palette, st->codec->extradata,
                            FFMIN(st->codec->extradata_size, AVPALETTE_SIZE));
@@ -390,8 +396,14 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
                 st->codec->codec_tag = tag1;
                 st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, tag1);
-                if(tag1 == MKTAG('D', 'V', 'R', ' '))
+                if(tag1 == MKTAG('D', 'V', 'R', ' ')){
                     st->need_parsing = AVSTREAM_PARSE_FULL;
+                    // issue658 containse wrong w/h and MS even puts a fake seq header with wrong w/h in extradata while a correct one is in te stream. maximum lameness
+                    st->codec->width  =
+                    st->codec->height = 0;
+                    av_freep(&st->codec->extradata);
+                    st->codec->extradata_size=0;
+                }
                 if(st->codec->codec_id == CODEC_ID_H264)
                     st->need_parsing = AVSTREAM_PARSE_FULL_ONCE;
             }
@@ -519,11 +531,13 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
             // there could be a optional stream properties object to follow
             // if so the next iteration will pick it up
+            continue;
         } else if (!guidcmp(&g, &ff_asf_head1_guid)) {
             int v1, v2;
             get_guid(pb, &g);
             v1 = get_le32(pb);
             v2 = get_le16(pb);
+            continue;
         } else if (!guidcmp(&g, &ff_asf_marker_header)) {
             int i, count, name_len;
             char name[1024];
@@ -1051,7 +1065,7 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     int64_t pts;
     int64_t pos= *ppos;
     int i;
-    int64_t start_pos[s->nb_streams];
+    int64_t start_pos[ASF_MAX_STREAMS];
 
     for(i=0; i<s->nb_streams; i++){
         start_pos[i]= pos;

@@ -1,0 +1,38 @@
+From b5495490e490cca760d2224e0697c35635f9ba73 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 15:22:09 -0400
+Subject: [PATCH 23/32] fixed: wrong fps for rmvb files (patch by taxigps)
+
+---
+ libavformat/rmdec.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/libavformat/rmdec.c b/libavformat/rmdec.c
+index da0d9b6..4ab4457 100644
+--- a/libavformat/rmdec.c
++++ b/libavformat/rmdec.c
+@@ -294,18 +294,17 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
+             goto fail1;
+         st->codec->width = get_be16(pb);
+         st->codec->height = get_be16(pb);
+-        st->codec->time_base.num= 1;
++        st->codec->time_base.num= 1 << 16;
+         fps= get_be16(pb);
+         st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+         get_be32(pb);
+-        fps2= get_be16(pb);
+-        get_be16(pb);
++        fps2= get_be32(pb);
+ 
+         if ((ret = rm_read_extradata(pb, st->codec, codec_data_size - (url_ftell(pb) - codec_pos))) < 0)
+             return ret;
+ 
+ //        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
+-        st->codec->time_base.den = fps * st->codec->time_base.num;
++        st->codec->time_base.den = fps2;
+         //XXX: do we really need that?
+         switch(st->codec->extradata[4]>>4){
+         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
+-- 
+1.7.0
+

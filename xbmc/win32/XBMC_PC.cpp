@@ -128,6 +128,16 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     }
     return 0;
   }
+  // setting env vars here because it doesn't work with python when
+  // they are set in XBPython.cpp (import error urllib, os, etc)
+  SetEnvironmentVariable("PYTHONOPTIMIZE", "1");
+  SetEnvironmentVariable("PYTHONHOME", "special://xbmc/system/python");
+  SetEnvironmentVariable("PYTHONPATH" ,"special://xbmc/system/python/Lib");
+
+  SetEnvironmentVariable("DVDREAD_NOKEYS" ,"1");
+  SetEnvironmentVariable("DVDCSS_METHOD" ,"key");
+  SetEnvironmentVariable("DVDCSS_VERBOSE" ,"3");
+  SetEnvironmentVariable("DVDCSS_CACHE" ,"special://masterprofile/cache");
 
 #ifndef HAS_DX
   if(CWIN32Util::GetDesktopColorDepth() < 32)

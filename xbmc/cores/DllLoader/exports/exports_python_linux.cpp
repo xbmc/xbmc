@@ -227,34 +227,18 @@ FILE* xbp_fopen64(const char *filename, const char *mode)
 #endif
 }
 
-#ifdef __APPLE__
-
-int xbp_stat(const char * path, struct stat * buf)
-{
-  CStdString strName = _P(path);
-  return stat(strName.c_str(), buf);
-}
-
 int xbp_lstat(const char * path, struct stat * buf)
 {
   CStdString strName = _P(path);
   return lstat(strName.c_str(), buf);
 }
 
-#else
-
-int xbp__xstat64(int ver, const char *filename, struct stat64 *stat_buf)
+#ifndef __APPLE__
+int xbp_lstat64(const char * path, struct stat64 * buf)
 {
-  CStdString strName = _P(filename);
-  return __xstat64(ver, strName.c_str(), stat_buf);
+  CStdString strName = _P(path);
+  return lstat64(strName.c_str(), buf);
 }
-
-int xbp__lxstat64(int ver, const char *filename, struct stat64 *stat_buf)
-{
-  CStdString strName = _P(filename);
-  return __lxstat64(ver, strName.c_str(), stat_buf);
-}
-
 #endif
 
 } // extern "C"

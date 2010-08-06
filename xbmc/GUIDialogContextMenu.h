@@ -130,11 +130,11 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_USER10
                     };
 
-class CContextButtons : public std::vector< std::pair<CONTEXT_BUTTON, CStdString> >
+class CContextButtons : public std::vector< std::pair<unsigned int, CStdString> >
 {
 public:
-  void Add(CONTEXT_BUTTON, const CStdString &label);
-  void Add(CONTEXT_BUTTON, int label);
+  void Add(unsigned int, const CStdString &label);
+  void Add(unsigned int, int label);
 };
 
 class CGUIDialogContextMenu :
@@ -144,21 +144,7 @@ public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
   virtual void SetPosition(float posX, float posY);
-  void ClearButtons();
-  int AddButton(int iLabel);
-  int AddButton(const CStdString &strButton);
-  int GetNumButtons();
-  void EnableButton(int iButton, bool bEnable);
-  int GetButton();
-  void OffsetPosition(float offsetX, float offsetY);
-
-  //! Positions the current context menu in the middle of the focused control. If it can not
-  //! find it then it positions the context menu in the middle of the screen
-  void PositionAtCurrentFocus();
 
   static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
@@ -166,18 +152,31 @@ public:
   static void GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons);
   static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
 
-  static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint *point = NULL);
+  /*! \brief Show the context menu with the given choices
+   \param choices the choices available for the user.
+   \return -1 if no choice is made, else the chosen option.
+   */
+  static int ShowAndGetChoice(const CContextButtons &choices);
 
-  static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
+  void SetupButtons();
+
+  /*! \brief Position the context menu in the middle of the focused control.
+   If no control is available it is positioned in the middle of the screen.
+   */
+  void PositionAtCurrentFocus();
+
   float GetWidth();
   float GetHeight();
 protected:
   virtual void OnInitWindow();
+  virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
+  static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
-  int m_iNumButtons;
-  int m_iClickedButton;
+  int m_clickedButton;
+  CContextButtons m_buttons;
 };

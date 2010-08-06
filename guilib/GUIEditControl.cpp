@@ -304,6 +304,7 @@ void CGUIEditControl::OnClick()
   }
   if (textChanged)
   {
+    ClearMD5();
     g_charsetConverter.utf8ToW(utf8, m_text2);
     m_cursorPos = m_text2.size();
     UpdateText();

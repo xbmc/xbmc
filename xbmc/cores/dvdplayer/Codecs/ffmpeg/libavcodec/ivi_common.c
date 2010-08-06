@@ -40,7 +40,7 @@ VLC ff_ivi_mb_vlc_tabs [8];
 VLC ff_ivi_blk_vlc_tabs[8];
 
 /**
- *  Reverses "nbits" bits of the value "val" and returns the result
+ *  Reverse "nbits" bits of the value "val" and return the result
  *  in the least significant bits.
  */
 static uint16_t inv_bits(uint16_t val, int nbits)
@@ -338,7 +338,8 @@ int ff_ivi_decode_blocks(GetBitContext *gb, IVIBandDesc *band, IVITile *tile)
     RVMapDesc   *rvmap = band->rv_map;
     void (*mc_with_delta_func)(int16_t *buf, const int16_t *ref_buf, uint32_t pitch, int mc_type);
     void (*mc_no_delta_func)  (int16_t *buf, const int16_t *ref_buf, uint32_t pitch, int mc_type);
-    const uint8_t   *base_tab, *scale_tab;
+    const uint16_t  *base_tab;
+    const uint8_t   *scale_tab;
 
     prev_dc = 0; /* init intra prediction for the DC coefficient */
 
@@ -363,6 +364,8 @@ int ff_ivi_decode_blocks(GetBitContext *gb, IVIBandDesc *band, IVITile *tile)
 
         base_tab  = is_intra ? band->intra_base  : band->inter_base;
         scale_tab = is_intra ? band->intra_scale : band->inter_scale;
+        if (scale_tab)
+            quant = scale_tab[quant];
 
         if (!is_intra) {
             mv_x = mb->mv_x;
@@ -414,7 +417,7 @@ int ff_ivi_decode_blocks(GetBitContext *gb, IVIBandDesc *band, IVITile *tile)
                     if (IVI_DEBUG && !val)
                         av_log(NULL, AV_LOG_ERROR, "Val = 0 encountered!\n");
 
-                    q = (base_tab[pos] * scale_tab[quant]) >> 8;
+                    q = (base_tab[pos] * quant) >> 9;
                     if (q > 1)
                         val = val * q + FFSIGN(val) * (((q ^ 1) - 1) >> 1);
                     trvec[pos] = val;

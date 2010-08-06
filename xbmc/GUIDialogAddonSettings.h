@@ -47,6 +47,15 @@ private:
    \return the localized addon string
    */
   CStdString GetString(const char *value, bool subSetting = false) const;
+
+  /*! \brief return a the values for a fileenum setting
+   \param path the path to use for files
+   \param mask the mask to use
+   \param options any options, such as "hideext" to hide extensions
+   \return the filenames in the path that match the mask
+   */
+  std::vector<CStdString> GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const;
+
   void CreateSections();
   void FreeSections();
   void CreateControls();

@@ -55,6 +55,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
   m_pCodecContext->sub_id = hints.identifier;
+  m_pCodecContext->codec_tag = hints.codec_tag;
 
   if( hints.extradata && hints.extrasize > 0 )
   {

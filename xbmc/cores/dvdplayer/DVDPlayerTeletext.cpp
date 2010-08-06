@@ -668,6 +668,8 @@ void CDVDTeletextData::OnExit()
 
 void CDVDTeletextData::Flush()
 {
+  if(!m_messageQueue.IsInited())
+    return;
   /* flush using message as this get's called from dvdplayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */

@@ -153,6 +153,20 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
 #endif
     if(profile)
     {
+      /* VDPAU Features Note 1
+         GPUs with this note may not support H.264 streams with the following widths:
+         49, 54, 59, 64, 113, 118, 123, 128 macroblocks
+         (769-784, 849-864, 929-944, 1009-1024, 1793-1808, 1873-1888, 1953-1968, 2033-2048 pixels). */
+      int unsupported[] = {49, 54, 59, 64, 113, 118, 123, 128};
+      for (unsigned int i = 0; i < sizeof(unsupported) / sizeof(int); i++)
+      {
+        if (unsupported[i] == (avctx->width + 15) / 16)
+        {
+          CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
+          break;
+        }
+      }
+   
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
       vdp_st = vdp_decoder_create(vdp_device, profile, avctx->width, avctx->height, 5, &decoder);

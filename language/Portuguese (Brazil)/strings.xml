@@ -2,16 +2,16 @@
 <!--Language file translated with Team XBMC Translator[wm]-->
 <!--Translator: bugre (werner), Fabiano Santiago (fabianosan) -->
 <!--Email: wxxx333@gmail.com, fabianosan@hotmail.com-->
-<!--Date of translation: 12/21/2009, revision: 06/18/2010-->
+<!--Date of translation: 12/21/2009, revision: 14/07/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 31168-->
+<!--Based on english strings version 31755-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
   <string id="2">Músicas</string>
   <string id="3">Vídeos</string>
   <string id="4">Guia de TV</string>
-  <string id="5">Configurações</string>
+  <string id="5">Opções</string>
   <string id="6">XBMC SVN</string>
   <string id="7">Arquivos</string>
   <string id="8">Tempo</string>
@@ -444,7 +444,7 @@
   <string id="502">Aberto</string>
   <string id="503">Ocupado</string>
   <string id="504">Vazio</string>
-  <string id="505">Carregando informações de mída a partir de arquivos...</string>
+  <string id="505">Carregando informações de mídia a partir de arquivos...</string>
   <string id="507">Ord por: uso</string>
   <string id="510">Ativar visualizações</string>
   <string id="511">Ativar troca do modo de vídeo</string>
@@ -909,8 +909,8 @@
   <string id="12018">Não</string>
   <string id="12019">Sim</string>
   <string id="12020">Perguntar</string>
-  <string id="12021">Iniciar do começo</string>
-  <string id="12022">Retomar da posição %s</string>
+  <string id="12021">Retomar da posição %s</string>
+  <string id="12022">Iniciar do começo</string>
   <string id="12023">Validando trainers existentes...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1203,7 +1203,7 @@
   <string id="13401">Procurar por %s</string>
   <string id="13402">Mostrar posição da faixa</string>
   <string id="13403">Limpar padrão</string>
-  <string id="13404">Renovar</string>
+  <string id="13404">Reiniciar</string>
   <string id="13405">Obter ícone</string>
   <string id="13406">Informação da imagem</string>
   <string id="13407">%s Pré-ajustes</string>

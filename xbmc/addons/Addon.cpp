@@ -147,7 +147,11 @@ static const TypeMapping types[] =
    {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0 },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
-   {"xbmc.pvrclient",                    ADDON_PVRDLL,              24018 }};
+   {"pvrclient",                         ADDON_PVRDLL,                  0 },
+   {"xbmc.addon.video",                  ADDON_VIDEO,                1037 },
+   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038 },
+   {"xbmc.addon.image",                  ADDON_IMAGE,                1039 },
+   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043 }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {

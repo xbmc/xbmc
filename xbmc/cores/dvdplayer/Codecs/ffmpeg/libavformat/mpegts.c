@@ -240,7 +240,7 @@ static int discard_pid(MpegTSContext *ts, unsigned int pid)
 }
 
 /**
- *  Assembles PES packets out of TS packets, and then calls the "section_cb"
+ *  Assemble PES packets out of TS packets, and then call the "section_cb"
  *  function when they are complete.
  */
 static void write_section_data(AVFormatContext *s, MpegTSFilter *tss1,
@@ -501,7 +501,7 @@ static const StreamType ISO_types[] = {
     { 0x04, AVMEDIA_TYPE_AUDIO,        CODEC_ID_MP3 },
     { 0x0f, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC },
     { 0x10, AVMEDIA_TYPE_VIDEO,      CODEC_ID_MPEG4 },
-    { 0x11, AVMEDIA_TYPE_AUDIO,   CODEC_ID_AAC_LATM }, /* LATM syntax */
+    { 0x11, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC }, /* LATM syntax */
     { 0x1b, AVMEDIA_TYPE_VIDEO,       CODEC_ID_H264 },
     { 0xd1, AVMEDIA_TYPE_VIDEO,      CODEC_ID_DIRAC },
     { 0xea, AVMEDIA_TYPE_VIDEO,        CODEC_ID_VC1 },
@@ -698,7 +698,7 @@ static int mpegts_push_data(MpegTSFilter *filter,
                         goto skip;
 
                     /* stream not present in PMT */
-                    if (ts->auto_guess && !pes->st) {
+                    if (!pes->st) {
                         pes->st = av_new_stream(ts->stream, pes->pid);
                         if (!pes->st)
                             return AVERROR(ENOMEM);
@@ -1024,6 +1024,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     }
     /* all parameters are there */
     mpegts_close_filter(ts, filter);
+    pes->stream->ctx_flags &= ~AVFMTCTX_NOHEADER;
 }
 
 static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len)
@@ -1432,6 +1433,7 @@ static int mpegts_read_header(AVFormatContext *s,
 
     if (s->iformat == &mpegts_demuxer) {
         /* normal demux */
+        s->ctx_flags |= AVFMTCTX_NOHEADER;
 
         /* first do a scaning to get all the services */
         url_fseek(pb, pos, SEEK_SET);
@@ -1447,10 +1449,6 @@ static int mpegts_read_header(AVFormatContext *s,
 
         dprintf(ts->stream, "tuning done\n");
 
-        /* only flag NOHEADER if we are in file mode,
-           in streaming mode scanning may take too long for users */
-        if (!url_is_streamed(pb))
-            s->ctx_flags |= AVFMTCTX_NOHEADER;
     } else {
         AVStream *st;
         int pcr_pid, pid, nb_packets, nb_pcrs, ret, pcr_l;

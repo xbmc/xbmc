@@ -32,6 +32,8 @@ public:
   virtual ~DllLibRTMPInterface() {}
   virtual void LogSetLevel(int level)=0;
   virtual void LogSetCallback(RTMP_LogCallback* cb)=0;
+  virtual RTMP *Alloc(void)=0;
+  virtual void Free(RTMP* r)=0;
   virtual void Init(RTMP* r)=0;
   virtual void Close(RTMP* r)=0;
   virtual bool SetupURL(RTMP* r, char* url)=0;
@@ -40,7 +42,7 @@ public:
   virtual bool ConnectStream(RTMP* r, int seekTime)=0;
   virtual int Read(RTMP* r, char* buf, int size)=0;
   virtual bool SendSeek(RTMP*r, int dTime)=0;
-  virtual bool SendPause(RTMP* r, bool DoPause, int dTime)=0;
+  virtual bool Pause(RTMP* r, bool DoPause)=0;
 };
 
 class DllLibRTMP : public DllDynamic, DllLibRTMPInterface
@@ -48,6 +50,8 @@ class DllLibRTMP : public DllDynamic, DllLibRTMPInterface
   DECLARE_DLL_WRAPPER(DllLibRTMP, DLL_PATH_LIBRTMP)
   DEFINE_METHOD1(void, LogSetLevel,    (int p1))
   DEFINE_METHOD1(void, LogSetCallback, (RTMP_LogCallback* p1))
+  DEFINE_METHOD0(RTMP *, Alloc         )
+  DEFINE_METHOD1(void, Free,           (RTMP* p1))
   DEFINE_METHOD1(void, Init,           (RTMP* p1))
   DEFINE_METHOD1(void, Close,          (RTMP* p1))
   DEFINE_METHOD2(bool, SetupURL,       (RTMP* p1, char* p2))
@@ -56,10 +60,12 @@ class DllLibRTMP : public DllDynamic, DllLibRTMPInterface
   DEFINE_METHOD2(bool, ConnectStream,  (RTMP* p1, int p2))
   DEFINE_METHOD3(int,  Read,           (RTMP* p1, char* p2, int p3))
   DEFINE_METHOD2(bool, SendSeek,       (RTMP* p1, int p2))
-  DEFINE_METHOD3(bool, SendPause,      (RTMP* p1, bool p2, int p3))
+  DEFINE_METHOD2(bool, Pause,          (RTMP* p1, bool p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(RTMP_LogSetLevel,LogSetLevel)
     RESOLVE_METHOD_RENAME(RTMP_LogSetCallback,LogSetCallback)
+    RESOLVE_METHOD_RENAME(RTMP_Alloc,Alloc)
+    RESOLVE_METHOD_RENAME(RTMP_Free,Free)
     RESOLVE_METHOD_RENAME(RTMP_Init,Init)
     RESOLVE_METHOD_RENAME(RTMP_Close,Close)
     RESOLVE_METHOD_RENAME(RTMP_SetupURL,SetupURL)
@@ -68,7 +74,7 @@ class DllLibRTMP : public DllDynamic, DllLibRTMPInterface
     RESOLVE_METHOD_RENAME(RTMP_ConnectStream,ConnectStream)
     RESOLVE_METHOD_RENAME(RTMP_Read,Read)
     RESOLVE_METHOD_RENAME(RTMP_SendSeek,SendSeek)
-    RESOLVE_METHOD_RENAME(RTMP_SendPause,SendPause)
+    RESOLVE_METHOD_RENAME(RTMP_Pause,Pause)
   END_METHOD_RESOLVE()
 };
 

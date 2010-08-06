@@ -166,6 +166,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   }
 
-  CLog::Log(LOGWARNING, "CFileFactory::CreateLoader - Unsupported protocol %s", strProtocol.c_str());
+  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;
 }

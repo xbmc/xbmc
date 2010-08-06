@@ -35,7 +35,7 @@ endif
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
-  XBMC_CONFIG_OPTIONS += --enable-faac --enable-crystalhd
+  XBMC_CONFIG_OPTIONS += --enable-faac
 else
   XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
     --disable-non-free

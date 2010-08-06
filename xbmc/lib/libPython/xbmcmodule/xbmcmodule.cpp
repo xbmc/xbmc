@@ -408,15 +408,15 @@ namespace PYXBMC
     int iString;
     if (!PyArg_ParseTuple(args, (char*)"i", &iString)) return NULL;
 
-    CStdStringW unicodeLabel;
+    CStdString label;
     if (iString >= 30000 && iString <= 30999)
-      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
+      label = g_localizeStringsTemp.Get(iString);
     else if (iString >= 32000 && iString <= 32999)
-      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
+      label = g_localizeStringsTemp.Get(iString);
     else
-      g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
+      label = g_localizeStrings.Get(iString);
 
-    return Py_BuildValue((char*)"u", unicodeLabel.c_str());
+    return PyUnicode_DecodeUTF8(label.c_str(), label.size(), "replace");
   }
 
   // getSkinDir() method

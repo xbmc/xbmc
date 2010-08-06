@@ -917,6 +917,12 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     filterWatched = true;
   if (items.IsPlugin())
     filterWatched = true;
+  if (items.IsSmartPlayList())
+  {
+    if (items.GetContent() == "tvshows")
+      node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
+    filterWatched = true;
+  }
 
   int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
   int itemsBefore = items.Size();

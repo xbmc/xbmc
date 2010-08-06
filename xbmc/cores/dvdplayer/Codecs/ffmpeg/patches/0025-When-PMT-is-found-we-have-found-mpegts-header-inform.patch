@@ -1,0 +1,40 @@
+From 9fb7bbd0ce679ff7bc27608622532c4e69159d57 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 15:25:56 -0400
+Subject: [PATCH 25/32] When PMT is found, we have found mpegts header information, and av_find_stream_info doesn't need to read more to find streams
+
+---
+ libavformat/mpegts.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index d1f85ed..038624c 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -1026,6 +1026,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
+     }
+     /* all parameters are there */
+     mpegts_close_filter(ts, filter);
++    pes->stream->ctx_flags &= ~AVFMTCTX_NOHEADER;
+ }
+ 
+ static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len)
+@@ -1396,6 +1397,7 @@ static int mpegts_read_header(AVFormatContext *s,
+ 
+     if (s->iformat == &mpegts_demuxer) {
+         /* normal demux */
++        s->ctx_flags |= AVFMTCTX_NOHEADER;
+ 
+         /* first do a scaning to get all the services */
+         url_fseek(pb, pos, SEEK_SET);
+@@ -1411,7 +1413,6 @@ static int mpegts_read_header(AVFormatContext *s,
+ 
+         dprintf(ts->stream, "tuning done\n");
+ 
+-        s->ctx_flags |= AVFMTCTX_NOHEADER;
+     } else {
+         AVStream *st;
+         int pcr_pid, pid, nb_packets, nb_pcrs, ret, pcr_l;
+-- 
+1.7.0
+

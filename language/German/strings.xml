@@ -1,10 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: pgoeri-->
-<!--Email: pgoeri@chello.at-->
-<!--Date of translation: 11/05/2010-->
-<!--$Revision$-->
-<!--Based on english strings version 31001-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -126,7 +120,7 @@
   <string id="164">Keine Disc</string>
   <string id="165">Disc eingelegt</string>
   <string id="166">Skin</string>
-  <string id="167">FTP-Server aktivieren</string>
+  <string id="167"></string>
   <string id="168"></string>
   <string id="169">Auflösung</string>
   <string id="170">Bildwiederholungsrate anpassen</string>
@@ -511,6 +505,7 @@
   <string id="572">Studio</string>
   <string id="573">Pfad</string>
   <string id="574">Land</string>
+  <string id="575">Im Gange</string>
 
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
@@ -635,7 +630,7 @@
   <string id="747">Fehler beim Laden des Bildes</string>
   <string id="748">Pfad bearbeiten</string>
   <string id="749">Spiegelbild</string>
-  <string id="750">Sicher?</string>
+  <string id="750">Sind Sie sicher?</string>
   <string id="751">Quelle entfernen</string>
 
   <string id="754">Programmlink hinzufügen</string>
@@ -889,22 +884,23 @@
   <string id="12004">Skripte/Informationen</string>
   <string id="12005">Vollbild-Video</string>
   <string id="12006">Audio-Visualisierung</string>
+
   <string id="12008">Datei-Stapeln-Dialog</string>
   <string id="12009">Index neu erstellen...</string>
   <string id="12010">Zurück zu Musik</string>
   <string id="12011">Zurück zu Videos</string>
-  <string id="12012">Trainer-Liste aktualisieren</string>
-  <string id="12013">Trainer</string>
-  <string id="12014">Es wurden keine Trainer gefunden</string>
-  <string id="12015">Trainer-Einstellungen</string>
-  <string id="12016">Registrierte Trainer fehlen. Bitte Liste aktualisieren.</string>
-  <string id="12017">Wiedergabe immer an der letzten Position fortsetzen</string>
-  <string id="12018">Nein</string>
-  <string id="12019">Ja</string>
-  <string id="12020">Fragen</string>
+  <string id="12012"></string>
+  <string id="12013"></string>
+  <string id="12014"></string>
+  <string id="12015"></string>
+  <string id="12016"></string>
+  <string id="12017"></string>
+  <string id="12018"></string>
+  <string id="12019"></string>
+  <string id="12020"></string>
   <string id="12021">Am Anfang starten</string>
   <string id="12022">Bei %s fortsetzen</string>
-  <string id="12023">Vergleiche vorhandene Trainer...</string>
+  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1207,7 +1203,7 @@
   <string id="13411">Minimale Lüftergeschwindigkeit</string>
 
   <string id="13413">Herunterladen</string>
-  <string id="13414">Interpreten ausblenden, die nur in Zusammenstellungen vorkommen</string>
+  <string id="13414">Interpreten anzeigen die nur in Zusammenstellungen vorkommen</string>
   <string id="13415">Render-Methode</string>
   <string id="13416">Auto-Erkennung</string>
   <string id="13417">Basis Shader (ARB)</string>
@@ -2289,6 +2285,8 @@
   <string id="20449">Der Server ist wahrscheinlich nicht verfügbar.</string>
   <string id="20450">Wollen Sie mit der Aktualisierung fortfahren?</string>
   <string id="20451">Länder</string>
+  <string id="20452">Episode</string>
+  <string id="20453">Episoden</string>
 
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
@@ -2511,6 +2509,12 @@
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
 
+  <string id="22079">Standard Auswahl Aktion</string>
+  <string id="22080">Wähle</string>
+  <string id="22081">Informationen anzeigen</string>
+  <string id="22082">Mehr...</string>
+  <string id="22083">Alles abspielen</string>
+
   <string id="23049">Videotext nicht verfügbar</string>
   <string id="23050">Videotext aktivieren</string>
   <string id="23051">Teil %i</string>
@@ -2559,6 +2563,8 @@
   <string id="24039">Deaktivierte Add-ons</string>
   <string id="24040">(Die aktuelle Einstellung löschen)</string>
   <string id="24041">Aus ZIP Datei installieren</string>
+  <string id="24042">Herunterladen %i%%</string>
+  <string id="24043">Verfügbare Updates</string>
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>
@@ -2595,6 +2601,7 @@
 
   <string id="24096">Das Add-on wurde im Depot als defekt markiert.</string>
   <string id="24097">Wollen Sie es in Ihrem System deaktivieren?</string>
+  <string id="24098">Defekt</string>
 
   <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY Tastatur</string>

@@ -123,7 +123,6 @@ static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
 {
-  int defResolution = DesktopResolution(screen);
   vector<RESOLUTION_WHR> resolutions;
 
   for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)

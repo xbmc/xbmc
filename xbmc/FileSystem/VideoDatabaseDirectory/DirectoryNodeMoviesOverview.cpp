@@ -25,6 +25,7 @@
 #include "VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
+using namespace std;
 
 CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_MOVIES_OVERVIEW, strName, pParent)
@@ -56,29 +57,27 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
 
 bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
 {
-  CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
-  vecRoot.push_back(g_localizeStrings.Get(369));  // Title
-  vecRoot.push_back(g_localizeStrings.Get(562));  // Year
-  vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
-  vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
-  vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
+  vector<pair<const char*, int> > vecRoot;
+  vecRoot.push_back(make_pair("1", 135));  // Genres
+  vecRoot.push_back(make_pair("2", 369));  // Title
+  vecRoot.push_back(make_pair("3", 562));  // Year
+  vecRoot.push_back(make_pair("4", 344));  // Actors
+  vecRoot.push_back(make_pair("5", 20348));  // Directors
+  vecRoot.push_back(make_pair("6", 20388));  // Studios
   CVideoDatabase db;
   if (db.Open())
   {
     if (db.HasSets())
-      vecRoot.push_back(g_localizeStrings.Get(20434)); // Sets
+      vecRoot.push_back(make_pair("7", 20434));  // Sets
     db.Close();
   }
-  vecRoot.push_back(g_localizeStrings.Get(20451));  // Countries
+  vecRoot.push_back(make_pair("8", 20451));  // Countries
 
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+  CStdString path = BuildPath();
+  for (unsigned int i = 0; i < vecRoot.size(); ++i)
   {
-    CFileItemPtr pItem(new CFileItem(vecRoot[i]));
-    CStdString strDir;
-    strDir.Format("%i/", i+1);
-    pItem->m_strPath = BuildPath() + strDir;
-    pItem->m_bIsFolder = true;
+    CFileItemPtr pItem(new CFileItem(path + vecRoot[i].first + "/", true));
+    pItem->SetLabel(g_localizeStrings.Get(vecRoot[i].second));
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }

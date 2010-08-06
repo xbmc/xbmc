@@ -1,0 +1,41 @@
+From 1281e5743986b399904ffd7151c9cc75e9f15a64 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 02:10:50 -0400
+Subject: [PATCH 09/32] added: Ticket #7187, TV Teletext support for DVB EBU Teletext streams
+
+---
+ libavcodec/avcodec.h |    4 ++++
+ libavformat/mpegts.c |    2 ++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/libavcodec/avcodec.h b/libavcodec/avcodec.h
+index 7cb8431..705a747 100644
+--- a/libavcodec/avcodec.h
++++ b/libavcodec/avcodec.h
+@@ -349,6 +349,10 @@ enum CodecID {
+     CODEC_ID_HDMV_PGS_SUBTITLE,
+     CODEC_ID_DVB_TELETEXT,
+ 
++    /* data codecs */
++    CODEC_ID_VBI_DATA= 0x17500,
++    CODEC_ID_VBI_TELETEXT,
++
+     /* other specific kind of codecs (generally used for attachments) */
+     CODEC_ID_TTF= 0x18000,
+ 
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index 0dc6bde..b78f4a4 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -534,6 +534,8 @@ static const StreamType DESC_types[] = {
+     { 0x7b, AVMEDIA_TYPE_AUDIO,             CODEC_ID_DTS },
+     { 0x56, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_DVB_TELETEXT },
+     { 0x59, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_DVB_SUBTITLE }, /* subtitling descriptor */
++    { 0x45, CODEC_TYPE_DATA,         CODEC_ID_VBI_DATA }, /* VBI Data descriptor */
++    { 0x46, CODEC_TYPE_DATA,     CODEC_ID_VBI_TELETEXT }, /* VBI Teletext descriptor */
+     { 0 },
+ };
+ 
+-- 
+1.7.0
+

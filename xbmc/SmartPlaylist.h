@@ -42,6 +42,7 @@ public:
                         FIELD_PATH,
                         FIELD_PLAYCOUNT,
                         FIELD_LASTPLAYED,
+                        FIELD_INPROGRESS,
                         FIELD_RATING,
                         FIELD_COMMENT,
                         FIELD_DATEADDED,

@@ -569,6 +569,13 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, color_t c
 
 void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth)
 {
+  if (outlineWidth)
+  {
+    outlineWidth = (int32_t)(outlineWidth * font->GetScaleFactor() + 0.5f);
+    if (outlineWidth < 2)
+      outlineWidth = 2;
+  }
+
   for (unsigned int i = 1; i < outlineWidth; i++)
   {
     unsigned int ymax = (unsigned int)(sqrt((float)outlineWidth*outlineWidth - i*i) + 0.5f);

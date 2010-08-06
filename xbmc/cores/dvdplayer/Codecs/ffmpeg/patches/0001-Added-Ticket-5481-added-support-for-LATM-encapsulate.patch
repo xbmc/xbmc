@@ -1,0 +1,681 @@
+From 02c708f4d46db69a035f8b3cdb85208282ff3e59 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 00:13:33 -0400
+Subject: [PATCH 01/32] Added: Ticket #5481 - added support for LATM encapsulated AAC audio streams within FFmpeg (thanks Paul Kendall).
+
+Need to configure with --enable-external-libfaad to use.
+---
+ configure                |    3 +
+ libavcodec/Makefile      |    2 +
+ libavcodec/allcodecs.c   |    2 +
+ libavcodec/avcodec.h     |    1 +
+ libavcodec/latm_parser.c |  118 ++++++++++++++
+ libavcodec/latmaac.c     |  391 ++++++++++++++++++++++++++++++++++++++++++++++
+ libavformat/avformat.h   |    2 +-
+ libavformat/mpeg.c       |    3 +
+ libavformat/mpeg.h       |    1 +
+ libavformat/mpegts.c     |    2 +-
+ libavformat/mpegts.h     |    1 +
+ 11 files changed, 524 insertions(+), 2 deletions(-)
+ create mode 100644 libavcodec/latm_parser.c
+ create mode 100644 libavcodec/latmaac.c
+
+diff --git a/configure b/configure
+index 2a1d520..3e9c009 100755
+--- a/configure
++++ b/configure
+@@ -1293,11 +1293,14 @@ vdpau_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
+ 
+ # parsers
+ h264_parser_select="golomb h264dsp"
++latm_parser_deps="libfaad"
+ 
+ # external libraries
+ libdirac_decoder_deps="libdirac !libschroedinger"
+ libdirac_encoder_deps="libdirac"
+ libfaac_encoder_deps="libfaac"
++libfaad_latm_decoder_deps="libfaad"
++libfaadbin_decoder_extralibs='$ldl'
+ libgsm_decoder_deps="libgsm"
+ libgsm_encoder_deps="libgsm"
+ libgsm_ms_decoder_deps="libgsm"
+diff --git a/libavcodec/Makefile b/libavcodec/Makefile
+index 545c355..082e7f0 100644
+--- a/libavcodec/Makefile
++++ b/libavcodec/Makefile
+@@ -526,6 +526,7 @@ OBJS-$(CONFIG_WEBM_MUXER)              += xiph.o mpeg4audio.o \
+ OBJS-$(CONFIG_LIBDIRAC_DECODER)           += libdiracdec.o
+ OBJS-$(CONFIG_LIBDIRAC_ENCODER)           += libdiracenc.o libdirac_libschro.o
+ OBJS-$(CONFIG_LIBFAAC_ENCODER)            += libfaac.o
++OBJS-$(CONFIG_LIBFAAD_LATM_DECODER)       += latmaac.o
+ OBJS-$(CONFIG_LIBGSM_DECODER)             += libgsm.o
+ OBJS-$(CONFIG_LIBGSM_ENCODER)             += libgsm.o
+ OBJS-$(CONFIG_LIBGSM_MS_DECODER)          += libgsm.o
+@@ -568,6 +569,7 @@ OBJS-$(CONFIG_H264_PARSER)             += h264_parser.o h264.o            \
+                                           h264_loopfilter.o h264_cabac.o \
+                                           h264_cavlc.o h264_ps.o \
+                                           mpegvideo.o error_resilience.o
++OBJS-$(CONFIG_LATM_PARSER)             += latm_parser.o
+ OBJS-$(CONFIG_MJPEG_PARSER)            += mjpeg_parser.o
+ OBJS-$(CONFIG_MLP_PARSER)              += mlp_parser.o mlp.o
+ OBJS-$(CONFIG_MPEG4VIDEO_PARSER)       += mpeg4video_parser.o h263.o \
+diff --git a/libavcodec/allcodecs.c b/libavcodec/allcodecs.c
+index f17d03a..9f396ce 100644
+--- a/libavcodec/allcodecs.c
++++ b/libavcodec/allcodecs.c
+@@ -343,6 +343,7 @@ void avcodec_register_all(void)
+     /* external libraries */
+     REGISTER_ENCDEC  (LIBDIRAC, libdirac);
+     REGISTER_ENCODER (LIBFAAC, libfaac);
++    REGISTER_DECODER (LIBFAAD_LATM, libfaad_latm);
+     REGISTER_ENCDEC  (LIBGSM, libgsm);
+     REGISTER_ENCDEC  (LIBGSM_MS, libgsm_ms);
+     REGISTER_ENCODER (LIBMP3LAME, libmp3lame);
+@@ -369,6 +370,7 @@ void avcodec_register_all(void)
+     REGISTER_PARSER  (H261, h261);
+     REGISTER_PARSER  (H263, h263);
+     REGISTER_PARSER  (H264, h264);
++    REGISTER_PARSER  (LATM, latm);
+     REGISTER_PARSER  (MJPEG, mjpeg);
+     REGISTER_PARSER  (MLP, mlp);
+     REGISTER_PARSER  (MPEG4VIDEO, mpeg4video);
+diff --git a/libavcodec/avcodec.h b/libavcodec/avcodec.h
+index 48666f9..7cb8431 100644
+--- a/libavcodec/avcodec.h
++++ b/libavcodec/avcodec.h
+@@ -288,6 +288,7 @@ enum CodecID {
+     CODEC_ID_MP2= 0x15000,
+     CODEC_ID_MP3, ///< preferred ID for decoding MPEG audio layer 1, 2 or 3
+     CODEC_ID_AAC,
++    CODEC_ID_AAC_LATM,
+     CODEC_ID_AC3,
+     CODEC_ID_DTS,
+     CODEC_ID_VORBIS,
+diff --git a/libavcodec/latm_parser.c b/libavcodec/latm_parser.c
+new file mode 100644
+index 0000000..4ac90c8
+--- /dev/null
++++ b/libavcodec/latm_parser.c
+@@ -0,0 +1,118 @@
++/*
++ * copyright (c) 2008 Paul Kendall <paul@kcbbs.gen.nz>
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with FFmpeg; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++/**
++ * @file latm_parser.c
++ * LATM parser
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <math.h>
++#include <sys/types.h>
++
++#include "parser.h"
++
++#define LATM_HEADER     0x56e000	// 0x2b7 (11 bits)
++#define LATM_MASK       0xFFE000	// top 11 bits
++#define LATM_SIZE_MASK  0x001FFF	// bottom 13 bits
++
++typedef struct LATMParseContext{
++    ParseContext pc;
++    int count;
++} LATMParseContext;
++
++/**
++ * finds the end of the current frame in the bitstream.
++ * @return the position of the first byte of the next frame, or -1
++ */
++static int latm_find_frame_end(AVCodecParserContext *s1, const uint8_t *buf,
++                               int buf_size) {
++    LATMParseContext *s = s1->priv_data;
++    ParseContext *pc = &s->pc;
++    int pic_found, i;
++    uint32_t state;
++
++    pic_found = pc->frame_start_found;
++    state = pc->state;
++
++    i = 0;
++    if(!pic_found){
++        for(i=0; i<buf_size; i++){
++            state = (state<<8) | buf[i];
++            if((state & LATM_MASK) == LATM_HEADER) {
++                i++;
++                s->count = - i;
++                pic_found=1;
++                break;
++            }
++        }
++    }
++
++    if(pic_found){
++        /* EOF considered as end of frame */
++        if (buf_size == 0)
++            return 0;
++        if((state & LATM_SIZE_MASK) - s->count <= buf_size) {
++            pc->frame_start_found = 0;
++            pc->state = -1;
++            return (state & LATM_SIZE_MASK) - s->count;
++	}
++    }
++
++    s->count += buf_size;
++    pc->frame_start_found = pic_found;
++    pc->state = state;
++    return END_NOT_FOUND;
++}
++
++static int latm_parse(AVCodecParserContext *s1,
++                           AVCodecContext *avctx,
++                           const uint8_t **poutbuf, int *poutbuf_size,
++                           const uint8_t *buf, int buf_size)
++{
++    LATMParseContext *s = s1->priv_data;
++    ParseContext *pc = &s->pc;
++    int next;
++
++    if(s1->flags & PARSER_FLAG_COMPLETE_FRAMES){
++        next = buf_size;
++    }else{
++        next = latm_find_frame_end(s1, buf, buf_size);
++
++        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
++            *poutbuf = NULL;
++            *poutbuf_size = 0;
++            return buf_size;
++        }
++    }
++    *poutbuf = buf;
++    *poutbuf_size = buf_size;
++    return next;
++}
++
++AVCodecParser latm_parser = {
++    { CODEC_ID_AAC_LATM },
++    sizeof(LATMParseContext),
++    NULL,
++    latm_parse,
++    ff_parse_close
++};
+diff --git a/libavcodec/latmaac.c b/libavcodec/latmaac.c
+new file mode 100644
+index 0000000..c224164
+--- /dev/null
++++ b/libavcodec/latmaac.c
+@@ -0,0 +1,391 @@
++/*
++ * copyright (c) 2008 Paul Kendall <paul@kcbbs.gen.nz>
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with FFmpeg; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++/**
++ * @file latmaac.c
++ * LATM wrapped AAC decoder
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <math.h>
++#include <sys/types.h>
++
++#include "parser.h"
++#include "get_bits.h"
++#include "put_bits.h"
++#include "mpeg4audio.h"
++#include "neaacdec.h"
++
++#define min(a,b) ((a)<(b) ? (a) : (b))
++
++/*
++    Note: This decoder filter is intended to decode LATM streams transferred
++    in MPEG transport streams which only contain one program.
++    To do a more complex LATM demuxing a separate LATM demuxer should be used.
++*/
++
++#define SYNC_LATM   0x2b7       // 11 bits
++#define MAX_SIZE    8*1024
++
++typedef struct AACDecoder
++{
++    faacDecHandle   aac_decoder;
++    uint8_t         initialized;
++
++    // parser data
++    uint8_t         audio_mux_version_A;
++    uint8_t         frameLengthType;
++    uint8_t         extra[64];            // should be way enough
++    int             extrasize;
++} AACDecoder;
++
++static inline int64_t latm_get_value(GetBitContext *b)
++{
++    uint8_t bytesForValue = get_bits(b, 2);
++    int64_t value = 0;
++    int i;
++    for (i=0; i<=bytesForValue; i++) {
++        value <<= 8;
++        value |= get_bits(b, 8);
++    }
++    return value;
++}
++
++static void readGASpecificConfig(int audioObjectType, GetBitContext *b, PutBitContext *o)
++{
++    int framelen_flag;
++    int dependsOnCoder;
++    int ext_flag;
++
++    framelen_flag = get_bits(b, 1);
++    put_bits(o, 1, framelen_flag);
++    dependsOnCoder = get_bits(b, 1);
++    put_bits(o, 1, dependsOnCoder);
++    if (dependsOnCoder) {
++        int delay = get_bits(b, 14);
++        put_bits(o, 14, delay);
++    }
++    ext_flag = get_bits(b, 1);
++    put_bits(o, 1, ext_flag);
++    
++    if (audioObjectType == 6 || audioObjectType == 20) {
++        int layerNr = get_bits(b, 3);
++        put_bits(o, 3, layerNr);
++    }
++    if (ext_flag) {
++        if (audioObjectType == 22) {
++            skip_bits(b, 5);                    // numOfSubFrame
++            skip_bits(b, 11);                   // layer_length
++
++            put_bits(o, 16, 0);
++        }
++        if (audioObjectType == 17 ||
++                audioObjectType == 19 ||
++                audioObjectType == 20 ||
++                audioObjectType == 23) {
++
++            skip_bits(b, 3);                    // stuff
++            put_bits(o, 3, 0);
++        }
++
++        skip_bits(b, 1);                        // extflag3
++        put_bits(o, 1, 0);
++    }
++}
++
++static int readAudioSpecificConfig(struct AACDecoder *decoder, GetBitContext *b)
++{
++    PutBitContext o;
++    int ret = 0;
++    int audioObjectType;
++    int samplingFrequencyIndex;
++    int channelConfiguration;
++
++    init_put_bits(&o, decoder->extra, sizeof(decoder->extra));
++
++    audioObjectType = get_bits(b, 5);
++    put_bits(&o, 5, audioObjectType);
++    if (audioObjectType == 31) {
++        uint8_t extended = get_bits(b, 6);
++        put_bits(&o, 6, extended);
++        audioObjectType = 32 + extended;
++    }
++
++    samplingFrequencyIndex = get_bits(b, 4);
++    put_bits(&o, 4, samplingFrequencyIndex);
++    if (samplingFrequencyIndex == 0x0f) {
++        uint32_t f = get_bits_long(b, 24);
++        put_bits(&o, 24, f);
++    }
++    channelConfiguration = get_bits(b, 4);
++    put_bits(&o, 4, channelConfiguration);
++
++    if (audioObjectType == 1 || audioObjectType == 2 || audioObjectType == 3
++            || audioObjectType == 4 || audioObjectType == 6 || audioObjectType == 7) {
++        readGASpecificConfig(audioObjectType, b, &o);
++    } else if (audioObjectType == 5) {
++        int sbr_present = 1;
++        samplingFrequencyIndex = get_bits(b, 4);
++        if (samplingFrequencyIndex == 0x0f) {
++            uint32_t f = get_bits_long(b, 24);
++            put_bits(&o, 24, f);
++        }
++        audioObjectType = get_bits(b, 5);
++        put_bits(&o, 5, audioObjectType);
++    } else if (audioObjectType >= 17) {
++        int epConfig;
++        readGASpecificConfig(audioObjectType, b, &o);
++        epConfig = get_bits(b, 2);
++        put_bits(&o, 2, epConfig);
++    }
++
++    // count the extradata
++    ret = put_bits_count(&o);
++    decoder->extrasize = (ret + 7) / 8;
++
++    flush_put_bits(&o);
++    return ret;
++}
++
++static void readStreamMuxConfig(struct AACDecoder *parser, GetBitContext *b)
++{
++    int audio_mux_version = get_bits(b, 1);
++    parser->audio_mux_version_A = 0;
++    if (audio_mux_version == 1) {                // audioMuxVersion
++        parser->audio_mux_version_A = get_bits(b, 1);
++    }
++
++    if (parser->audio_mux_version_A == 0) {
++        int frame_length_type;
++
++        if (audio_mux_version == 1) {
++            // taraFullness
++            latm_get_value(b);
++        }
++        get_bits(b, 1);                    // allStreamSameTimeFraming = 1
++        get_bits(b, 6);                    // numSubFrames = 0
++        get_bits(b, 4);                    // numPrograms = 0
++
++        // for each program (which there is only on in DVB)
++        get_bits(b, 3);                    // numLayer = 0
++
++        // for each layer (which there is only on in DVB)
++        if (audio_mux_version == 0) {
++            readAudioSpecificConfig(parser, b);
++        } else {
++            int ascLen = latm_get_value(b);
++            ascLen -= readAudioSpecificConfig(parser, b);
++
++            // skip left over bits
++            while (ascLen > 16) {
++                skip_bits(b, 16);
++                ascLen -= 16;
++            }
++            skip_bits(b, ascLen);
++        }
++
++        // these are not needed... perhaps
++        frame_length_type = get_bits(b, 3);
++        parser->frameLengthType = frame_length_type;
++        if (frame_length_type == 0) {
++            get_bits(b, 8);
++        } else if (frame_length_type == 1) {
++            get_bits(b, 9);
++        } else if (frame_length_type == 3 || frame_length_type == 4 || frame_length_type == 5) {
++            // celp_table_index
++            get_bits(b, 6);
++        } else if (frame_length_type == 6 || frame_length_type == 7) {
++            // hvxc_table_index
++            get_bits(b, 1);
++        }
++
++        // other data
++        if (get_bits(b, 1)) {
++            // other data present
++            if (audio_mux_version == 1) {
++                // other_data_bits
++                latm_get_value(b);
++            } else {
++                int esc, tmp;
++                // other data bits
++                int64_t other_data_bits = 0;
++                do {
++                    esc = get_bits(b, 1);
++                    tmp = get_bits(b, 8);
++                    other_data_bits = other_data_bits << 8 | tmp;
++                } while (esc);
++            }
++        }
++
++        // CRC if necessary
++        if (get_bits(b, 1)) {
++            // config_crc
++            get_bits(b, 8);
++        }
++    } else {
++        // TBD
++    }
++}
++
++static int readPayloadLengthInfo(struct AACDecoder *parser, GetBitContext *b)
++{
++    if (parser->frameLengthType == 0) {
++        uint8_t tmp;
++        int muxSlotLengthBytes = 0;
++        do {
++            tmp = get_bits(b, 8);
++            muxSlotLengthBytes += tmp;
++        } while (tmp == 255);
++        return muxSlotLengthBytes;
++    } else {
++        if (parser->frameLengthType == 3 ||
++                parser->frameLengthType == 5 ||
++                parser->frameLengthType == 7) {
++            get_bits(b, 2);
++        }
++        return 0;
++    }
++}
++
++static void readAudioMuxElement(struct AACDecoder *parser, GetBitContext *b, uint8_t *payload, int *payloadsize)
++{
++    uint8_t use_same_mux = get_bits(b, 1);
++    if (!use_same_mux) {
++        readStreamMuxConfig(parser, b);
++    }
++    if (parser->audio_mux_version_A == 0) {
++        int j;
++        int muxSlotLengthBytes = readPayloadLengthInfo(parser, b);
++        muxSlotLengthBytes = min(muxSlotLengthBytes, *payloadsize);
++        for (j=0; j<muxSlotLengthBytes; j++) {
++            *payload++ = get_bits(b, 8);
++        }
++        *payloadsize = muxSlotLengthBytes;
++    }
++}
++
++static int readAudioSyncStream(struct AACDecoder *parser, GetBitContext *b, int size, uint8_t *payload, int *payloadsize)
++{
++    int muxlength;
++
++    if (get_bits(b, 11) != SYNC_LATM) return -1;    // not LATM
++
++    muxlength = get_bits(b, 13);
++    if (muxlength+3 > size) return -1;          // not enough data, the parser should have sorted this
++
++    readAudioMuxElement(parser, b, payload, payloadsize);
++
++    return 0;
++}
++
++static void channel_setup(AVCodecContext *avctx)
++{
++    AACDecoder *decoder = avctx->priv_data;
++    
++    if (avctx->request_channels == 2 && avctx->channels > 2) {
++        NeAACDecConfigurationPtr faac_cfg;
++        avctx->channels = 2;
++        faac_cfg = NeAACDecGetCurrentConfiguration(decoder->aac_decoder);
++        if (faac_cfg) {
++            faac_cfg->downMatrix = 1;
++            faac_cfg->defSampleRate = (!avctx->sample_rate) ? 44100 : avctx->sample_rate;
++            NeAACDecSetConfiguration(decoder->aac_decoder, faac_cfg);
++        }
++    }
++}
++
++static int latm_decode_frame(AVCodecContext *avctx, void *out, int *out_size, AVPacket *avpkt)
++{
++    AACDecoder          *decoder = avctx->priv_data;
++    uint8_t             tempbuf[MAX_SIZE];
++    int                 bufsize = sizeof(tempbuf);
++    int                 max_size = *out_size;
++    NeAACDecFrameInfo   info;
++    GetBitContext       b;
++    
++    init_get_bits(&b, avpkt->data, avpkt->size * 8);
++    if (readAudioSyncStream(decoder, &b, avpkt->size, tempbuf, &bufsize)) {
++        return -1;
++    }
++
++    if (!decoder->initialized) {
++        // we are going to initialize from decoder specific info when available
++        if (decoder->extrasize > 0) {
++            if (NeAACDecInit2(decoder->aac_decoder, decoder->extra, decoder->extrasize, &avctx->sample_rate, &avctx->channels)) {
++                return -1;
++            }
++            channel_setup(avctx);
++            decoder->initialized = 1;
++        } else {
++            *out_size = 0;
++            return avpkt->size;
++        }
++    }
++
++    if (!NeAACDecDecode2(decoder->aac_decoder, &info, tempbuf, bufsize, &out, max_size)) {
++        return -1;
++    }
++    *out_size = info.samples * sizeof(short);
++    return avpkt->size;
++}
++
++static int latm_decode_init(AVCodecContext *avctx)
++{
++    AACDecoder *decoder = avctx->priv_data;
++    NeAACDecConfigurationPtr faac_cfg;
++
++    avctx->bit_rate = 0;
++    avctx->sample_fmt = SAMPLE_FMT_S16;
++    decoder->aac_decoder = NeAACDecOpen();
++    if (!decoder->aac_decoder) {
++        return -1;
++    }
++
++    faac_cfg = NeAACDecGetCurrentConfiguration(decoder->aac_decoder);
++    if (faac_cfg) {
++        faac_cfg->outputFormat = FAAD_FMT_16BIT;
++        faac_cfg->defSampleRate = (!avctx->sample_rate) ? 44100 : avctx->sample_rate;
++        faac_cfg->defObjectType = LC;
++        NeAACDecSetConfiguration(decoder->aac_decoder, faac_cfg);
++    }
++
++    decoder->initialized = 0;
++    return 0;
++}
++
++static int latm_decode_end(AVCodecContext *avctx)
++{
++    AACDecoder *decoder = avctx->priv_data;
++    NeAACDecClose(decoder->aac_decoder);
++    return 0;
++}
++
++AVCodec libfaad_latm_decoder = {
++    .name = "AAC/LATM",
++    .type = CODEC_TYPE_AUDIO,
++    .id = CODEC_ID_AAC_LATM,
++    .priv_data_size = sizeof (AACDecoder),
++    .init = latm_decode_init,
++    .close = latm_decode_end,
++    .decode = latm_decode_frame,
++    .long_name = "AAC over LATM",
++};
+diff --git a/libavformat/avformat.h b/libavformat/avformat.h
+index 7d7fce8..8037499 100644
+--- a/libavformat/avformat.h
++++ b/libavformat/avformat.h
+@@ -573,7 +573,7 @@ typedef struct AVChapter {
+ } AVChapter;
+ 
+ #if LIBAVFORMAT_VERSION_MAJOR < 53
+-#define MAX_STREAMS 20
++#define MAX_STREAMS 100
+ #endif
+ 
+ /**
+diff --git a/libavformat/mpeg.c b/libavformat/mpeg.c
+index 6fd0125..4fac90e 100644
+--- a/libavformat/mpeg.c
++++ b/libavformat/mpeg.c
+@@ -458,6 +458,9 @@ static int mpegps_read_packet(AVFormatContext *s,
+         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
+             codec_id = CODEC_ID_AAC;
+             type = AVMEDIA_TYPE_AUDIO;
++        } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
++            codec_id = CODEC_ID_AAC_LATM;
++            type = CODEC_TYPE_AUDIO;
+         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
+             codec_id = CODEC_ID_MPEG4;
+             type = AVMEDIA_TYPE_VIDEO;
+diff --git a/libavformat/mpeg.h b/libavformat/mpeg.h
+index d09b2e8..c207d3a 100644
+--- a/libavformat/mpeg.h
++++ b/libavformat/mpeg.h
+@@ -53,6 +53,7 @@
+ #define STREAM_TYPE_PRIVATE_DATA    0x06
+ #define STREAM_TYPE_AUDIO_AAC       0x0f
+ #define STREAM_TYPE_VIDEO_MPEG4     0x10
++#define STREAM_TYPE_AUDIO_AAC_LATM  0x11
+ #define STREAM_TYPE_VIDEO_H264      0x1b
+ 
+ #define STREAM_TYPE_AUDIO_AC3       0x81
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index d9ee987..0dc6bde 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -497,7 +497,7 @@ static const StreamType ISO_types[] = {
+     { 0x04, AVMEDIA_TYPE_AUDIO,        CODEC_ID_MP3 },
+     { 0x0f, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC },
+     { 0x10, AVMEDIA_TYPE_VIDEO,      CODEC_ID_MPEG4 },
+-  //{ 0x11, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC }, /* LATM syntax */
++    { 0x11, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC }, /* LATM syntax */
+     { 0x1b, AVMEDIA_TYPE_VIDEO,       CODEC_ID_H264 },
+     { 0xd1, AVMEDIA_TYPE_VIDEO,      CODEC_ID_DIRAC },
+     { 0xea, AVMEDIA_TYPE_VIDEO,        CODEC_ID_VC1 },
+diff --git a/libavformat/mpegts.h b/libavformat/mpegts.h
+index 6be9b73..a6fc56d 100644
+--- a/libavformat/mpegts.h
++++ b/libavformat/mpegts.h
+@@ -49,6 +49,7 @@
+ #define STREAM_TYPE_PRIVATE_DATA    0x06
+ #define STREAM_TYPE_AUDIO_AAC       0x0f
+ #define STREAM_TYPE_VIDEO_MPEG4     0x10
++#define STREAM_TYPE_AUDIO_AAC_LATM  0x11
+ #define STREAM_TYPE_VIDEO_H264      0x1b
+ #define STREAM_TYPE_VIDEO_VC1       0xea
+ #define STREAM_TYPE_VIDEO_DIRAC     0xd1
+-- 
+1.7.0
+

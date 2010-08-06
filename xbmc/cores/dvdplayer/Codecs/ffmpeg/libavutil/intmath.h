@@ -36,42 +36,23 @@ extern const uint32_t ff_inverse[257];
 #if HAVE_FAST_CLZ && AV_GCC_VERSION_AT_LEAST(3,4)
 
 #ifndef av_log2
-
-#define av_log2(x) (31 - __builtin_clz((x)|1))
-
-#ifndef av_log2_16bit
-#define av_log2_16bit av_log2
-#endif
-
+#   define av_log2(x) (31 - __builtin_clz((x)|1))
+#   ifndef av_log2_16bit
+#      define av_log2_16bit av_log2
+#   endif
 #endif /* av_log2 */
 
 #endif /* AV_GCC_VERSION_AT_LEAST(3,4) */
 
 #ifndef FASTDIV
-
-#if CONFIG_FASTDIV
-#    define FASTDIV(a,b)   ((uint32_t)((((uint64_t)a) * ff_inverse[b]) >> 32))
-#else
-#    define FASTDIV(a,b)   ((a) / (b))
-#endif
-
+#   if CONFIG_FASTDIV
+#       define FASTDIV(a,b) ((uint32_t)((((uint64_t)a) * ff_inverse[b]) >> 32))
+#   else
+#       define FASTDIV(a,b) ((a) / (b))
+#   endif
 #endif /* FASTDIV */
 
-/*
- * Get definition of av_log2_c from common.h.  In the event we got
- * here through common.h including this file, including it again will
- * be a no-op due to multi-inclusion guards, so we must duplicate the
- * fallback defines here.
- */
-
 #include "common.h"
-
-#ifndef av_log2
-#   define av_log2       av_log2_c
-#endif
-#ifndef av_log2_16bit
-#   define av_log2_16bit av_log2_16bit_c
-#endif
 
 extern const uint8_t ff_sqrt_tab[256];
 

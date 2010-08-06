@@ -548,6 +548,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("myvideos.selectaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
+      pControl->AddLabel(g_localizeStrings.Get(208), SELECT_ACTION_PLAY_OR_RESUME);
+      pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1145,10 +1154,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_application.ReloadSkin();
     }
-	  else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
+    else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
     {
       g_weatherManager.Refresh();
- 	  }
+    }
   }
   else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
@@ -1200,9 +1209,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
-    vector<CStdString> choices;
-    choices.push_back(g_localizeStrings.Get(22034));
-    choices.push_back(g_localizeStrings.Get(22035));
+    CContextButtons choices;
+    choices.Add(1, g_localizeStrings.Get(22034));
+    choices.Add(2, g_localizeStrings.Get(22035));
 
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )

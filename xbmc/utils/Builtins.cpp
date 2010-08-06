@@ -469,7 +469,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if ( askToResume == true )
     {
-      if ( CGUIWindowVideoBase::OnResumeShowMenu(item) == false )
+      if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
         return false;
     }
     // play media

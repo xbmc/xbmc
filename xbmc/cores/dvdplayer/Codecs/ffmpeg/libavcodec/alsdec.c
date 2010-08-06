@@ -35,6 +35,8 @@
 #include "mpeg4audio.h"
 #include "bytestream.h"
 #include "bgmc.h"
+#include "dsputil.h"
+#include "libavutil/crc.h"
 
 #include <stdint.h>
 
@@ -154,6 +156,7 @@ typedef struct {
     uint32_t samples;         ///< number of samples, 0xFFFFFFFF if unknown
     int resolution;           ///< 000 = 8-bit; 001 = 16-bit; 010 = 24-bit; 011 = 32-bit
     int floating;             ///< 1 = IEEE 32-bit floating-point, 0 = integer
+    int msb_first;            ///< 1 = original CRC calculated on big-endian system, 0 = little-endian
     int frame_length;         ///< frame length for each frame (last frame may differ)
     int ra_distance;          ///< distance between RA frames (in frames, 0...255)
     enum RA_Flag ra_flag;     ///< indicates where the size of ra units is stored
@@ -171,6 +174,7 @@ typedef struct {
     int rlslms;               ///< use "Recursive Least Square-Least Mean Square" predictor: 1 = on, 0 = off
     int chan_config_info;     ///< mapping of channels to loudspeaker locations. Unused until setting channel configuration is implemented.
     int *chan_pos;            ///< original channel positions
+    int crc_enabled;          ///< enable Cyclic Redundancy Checksum
 } ALSSpecificConfig;
 
 
@@ -188,6 +192,10 @@ typedef struct {
     AVCodecContext *avctx;
     ALSSpecificConfig sconf;
     GetBitContext gb;
+    DSPContext dsp;
+    const AVCRC *crc_table;
+    uint32_t crc_org;               ///< CRC value of the original input data
+    uint32_t crc;                   ///< CRC value calculated from decoded data
     unsigned int cur_frame_length;  ///< length of the current frame to decode
     unsigned int frame_id;          ///< the frame ID / number of the current frame
     unsigned int js_switch;         ///< if true, joint-stereo decoding is enforced
@@ -211,6 +219,7 @@ typedef struct {
     int32_t *prev_raw_samples;      ///< contains unshifted raw samples from the previous block
     int32_t **raw_samples;          ///< decoded raw samples for each channel
     int32_t *raw_buffer;            ///< contains all decoded raw samples including carryover samples
+    uint8_t *crc_buffer;            ///< buffer of byte order corrected samples used for CRC check
 } ALSDecContext;
 
 
@@ -262,13 +271,13 @@ static av_cold void dprint_specific_config(ALSDecContext *ctx)
 }
 
 
-/** Reads an ALSSpecificConfig from a buffer into the output struct.
+/** Read an ALSSpecificConfig from a buffer into the output struct.
  */
 static av_cold int read_specific_config(ALSDecContext *ctx)
 {
     GetBitContext gb;
     uint64_t ht_size;
-    int i, config_offset, crc_enabled;
+    int i, config_offset;
     MPEG4AudioConfig m4ac;
     ALSSpecificConfig *sconf = &ctx->sconf;
     AVCodecContext *avctx    = ctx->avctx;
@@ -297,7 +306,7 @@ static av_cold int read_specific_config(ALSDecContext *ctx)
     skip_bits(&gb, 3);       // skip file_type
     sconf->resolution           = get_bits(&gb, 3);
     sconf->floating             = get_bits1(&gb);
-    skip_bits1(&gb);         // skip msb_first
+    sconf->msb_first            = get_bits1(&gb);
     sconf->frame_length         = get_bits(&gb, 16) + 1;
     sconf->ra_distance          = get_bits(&gb, 8);
     sconf->ra_flag              = get_bits(&gb, 2);
@@ -312,7 +321,7 @@ static av_cold int read_specific_config(ALSDecContext *ctx)
     sconf->mc_coding            = get_bits1(&gb);
     sconf->chan_config          = get_bits1(&gb);
     sconf->chan_sort            = get_bits1(&gb);
-    crc_enabled                 = get_bits1(&gb);
+    sconf->crc_enabled          = get_bits1(&gb);
     sconf->rlslms               = get_bits1(&gb);
     skip_bits(&gb, 5);       // skip 5 reserved bits
     skip_bits1(&gb);         // skip aux_data_enabled
@@ -375,12 +384,17 @@ static av_cold int read_specific_config(ALSDecContext *ctx)
     skip_bits_long(&gb, ht_size);
 
 
-    // skip the crc data
-    if (crc_enabled) {
+    // initialize CRC calculation
+    if (sconf->crc_enabled) {
         if (get_bits_left(&gb) < 32)
             return -1;
 
-        skip_bits_long(&gb, 32);
+        if (avctx->error_recognition >= FF_ER_CAREFUL) {
+            ctx->crc_table = av_crc_get_table(AV_CRC_32_IEEE_LE);
+            ctx->crc       = 0xFFFFFFFF;
+            ctx->crc_org   = ~get_bits_long(&gb, 32);
+        } else
+            skip_bits_long(&gb, 32);
     }
 
 
@@ -392,7 +406,7 @@ static av_cold int read_specific_config(ALSDecContext *ctx)
 }
 
 
-/** Checks the ALSSpecificConfig for unsupported features.
+/** Check the ALSSpecificConfig for unsupported features.
  */
 static int check_specific_config(ALSDecContext *ctx)
 {
@@ -416,7 +430,7 @@ static int check_specific_config(ALSDecContext *ctx)
 }
 
 
-/** Parses the bs_info field to extract the block partitioning used in
+/** Parse the bs_info field to extract the block partitioning used in
  *  block switching mode, refer to ISO/IEC 14496-3, section 11.6.2.
  */
 static void parse_bs_info(const uint32_t bs_info, unsigned int n,
@@ -440,7 +454,7 @@ static void parse_bs_info(const uint32_t bs_info, unsigned int n,
 }
 
 
-/** Reads and decodes a Rice codeword.
+/** Read and decode a Rice codeword.
  */
 static int32_t decode_rice(GetBitContext *gb, unsigned int k)
 {
@@ -458,7 +472,7 @@ static int32_t decode_rice(GetBitContext *gb, unsigned int k)
 }
 
 
-/** Converts PARCOR coefficient k to direct filter coefficient.
+/** Convert PARCOR coefficient k to direct filter coefficient.
  */
 static void parcor_to_lpc(unsigned int k, const int32_t *par, int32_t *cof)
 {
@@ -476,8 +490,8 @@ static void parcor_to_lpc(unsigned int k, const int32_t *par, int32_t *cof)
 }
 
 
-/** Reads block switching field if necessary and sets actual block sizes.
- *  Also assures that the block sizes of the last frame correspond to the
+/** Read block switching field if necessary and set actual block sizes.
+ *  Also assure that the block sizes of the last frame correspond to the
  *  actual number of samples.
  */
 static void get_block_sizes(ALSDecContext *ctx, unsigned int *div_blocks,
@@ -531,7 +545,7 @@ static void get_block_sizes(ALSDecContext *ctx, unsigned int *div_blocks,
 }
 
 
-/** Reads the block data for a constant block
+/** Read the block data for a constant block
  */
 static void read_const_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -556,7 +570,7 @@ static void read_const_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Decodes the block data for a constant block
+/** Decode the block data for a constant block
  */
 static void decode_const_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -570,7 +584,7 @@ static void decode_const_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Reads the block data for a non-constant block
+/** Read the block data for a non-constant block
  */
 static int read_var_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -734,8 +748,8 @@ static int read_var_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 
     // read all residuals
     if (sconf->bgmc) {
-        unsigned int delta[sub_blocks];
-        unsigned int k    [sub_blocks];
+        unsigned int delta[8];
+        unsigned int k    [8];
         unsigned int b = av_clip((av_ceil_log2(bd->block_length) - 3) >> 1, 0, 5);
         unsigned int i = start;
 
@@ -817,7 +831,7 @@ static int read_var_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Decodes the block data for a non-constant block
+/** Decode the block data for a non-constant block
  */
 static int decode_var_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -926,7 +940,7 @@ static int decode_var_block_data(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Reads the block data.
+/** Read the block data.
  */
 static int read_block(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -944,7 +958,7 @@ static int read_block(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Decodes the block data.
+/** Decode the block data.
  */
 static int decode_block(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -966,7 +980,7 @@ static int decode_block(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Reads and decodes block data successively.
+/** Read and decode block data successively.
  */
 static int read_decode_block(ALSDecContext *ctx, ALSBlockData *bd)
 {
@@ -983,7 +997,7 @@ static int read_decode_block(ALSDecContext *ctx, ALSBlockData *bd)
 }
 
 
-/** Computes the number of samples left to decode for the current frame and
+/** Compute the number of samples left to decode for the current frame and
  *  sets these samples to zero.
  */
 static void zero_remaining(unsigned int b, unsigned int b_max,
@@ -999,7 +1013,7 @@ static void zero_remaining(unsigned int b, unsigned int b_max,
 }
 
 
-/** Decodes blocks independently.
+/** Decode blocks independently.
  */
 static int decode_blocks_ind(ALSDecContext *ctx, unsigned int ra_frame,
                              unsigned int c, const unsigned int *div_blocks,
@@ -1037,7 +1051,7 @@ static int decode_blocks_ind(ALSDecContext *ctx, unsigned int ra_frame,
 }
 
 
-/** Decodes blocks dependently.
+/** Decode blocks dependently.
  */
 static int decode_blocks(ALSDecContext *ctx, unsigned int ra_frame,
                          unsigned int c, const unsigned int *div_blocks,
@@ -1118,7 +1132,7 @@ static int decode_blocks(ALSDecContext *ctx, unsigned int ra_frame,
 }
 
 
-/** Reads the channel data.
+/** Read the channel data.
   */
 static int read_channel_data(ALSDecContext *ctx, ALSChannelData *cd, int c)
 {
@@ -1246,7 +1260,7 @@ static int revert_channel_correlation(ALSDecContext *ctx, ALSBlockData *bd,
 }
 
 
-/** Reads the frame data.
+/** Read the frame data.
  */
 static int read_frame_data(ALSDecContext *ctx, unsigned int ra_frame)
 {
@@ -1375,7 +1389,7 @@ static int read_frame_data(ALSDecContext *ctx, unsigned int ra_frame)
 }
 
 
-/** Decodes an ALS frame.
+/** Decode an ALS frame.
  */
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
@@ -1437,6 +1451,59 @@ static int decode_frame(AVCodecContext *avctx,
         INTERLEAVE_OUTPUT(32)
     }
 
+    // update CRC
+    if (sconf->crc_enabled && avctx->error_recognition >= FF_ER_CAREFUL) {
+        int swap = HAVE_BIGENDIAN != sconf->msb_first;
+
+        if (ctx->avctx->bits_per_raw_sample == 24) {
+            int32_t *src = data;
+
+            for (sample = 0;
+                 sample < ctx->cur_frame_length * avctx->channels;
+                 sample++) {
+                int32_t v;
+
+                if (swap)
+                    v = av_bswap32(src[sample]);
+                else
+                    v = src[sample];
+                if (!HAVE_BIGENDIAN)
+                    v >>= 8;
+
+                ctx->crc = av_crc(ctx->crc_table, ctx->crc, (uint8_t*)(&v), 3);
+            }
+        } else {
+            uint8_t *crc_source;
+
+            if (swap) {
+                if (ctx->avctx->bits_per_raw_sample <= 16) {
+                    int16_t *src  = (int16_t*) data;
+                    int16_t *dest = (int16_t*) ctx->crc_buffer;
+                    for (sample = 0;
+                         sample < ctx->cur_frame_length * avctx->channels;
+                         sample++)
+                        *dest++ = av_bswap16(src[sample]);
+                } else {
+                    ctx->dsp.bswap_buf((uint32_t*)ctx->crc_buffer, data,
+                                       ctx->cur_frame_length * avctx->channels);
+                }
+                crc_source = ctx->crc_buffer;
+            } else {
+                crc_source = data;
+            }
+
+            ctx->crc = av_crc(ctx->crc_table, ctx->crc, crc_source, size);
+        }
+
+
+        // check CRC sums if this is the last frame
+        if (ctx->cur_frame_length != sconf->frame_length &&
+            ctx->crc_org != ctx->crc) {
+            av_log(avctx, AV_LOG_ERROR, "CRC error.\n");
+        }
+    }
+
+
     bytes_read = invalid_frame ? buffer_size :
                                  (get_bits_count(&ctx->gb) + 7) >> 3;
 
@@ -1444,7 +1511,7 @@ static int decode_frame(AVCodecContext *avctx,
 }
 
 
-/** Uninitializes the ALS decoder.
+/** Uninitialize the ALS decoder.
  */
 static av_cold int decode_end(AVCodecContext *avctx)
 {
@@ -1474,7 +1541,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 }
 
 
-/** Initializes the ALS decoder.
+/** Initialize the ALS decoder.
  */
 static av_cold int decode_init(AVCodecContext *avctx)
 {
@@ -1606,11 +1673,27 @@ static av_cold int decode_init(AVCodecContext *avctx)
     for (c = 1; c < avctx->channels; c++)
         ctx->raw_samples[c] = ctx->raw_samples[c - 1] + channel_size;
 
+    // allocate crc buffer
+    if (HAVE_BIGENDIAN != sconf->msb_first && sconf->crc_enabled &&
+        avctx->error_recognition >= FF_ER_CAREFUL) {
+        ctx->crc_buffer = av_malloc(sizeof(*ctx->crc_buffer) *
+                                    ctx->cur_frame_length *
+                                    avctx->channels *
+                                    (av_get_bits_per_sample_format(avctx->sample_fmt) >> 3));
+        if (!ctx->crc_buffer) {
+            av_log(avctx, AV_LOG_ERROR, "Allocating buffer memory failed.\n");
+            decode_end(avctx);
+            return AVERROR(ENOMEM);
+        }
+    }
+
+    dsputil_init(&ctx->dsp, avctx);
+
     return 0;
 }
 
 
-/** Flushes (resets) the frame ID after seeking.
+/** Flush (reset) the frame ID after seeking.
  */
 static av_cold void flush(AVCodecContext *avctx)
 {

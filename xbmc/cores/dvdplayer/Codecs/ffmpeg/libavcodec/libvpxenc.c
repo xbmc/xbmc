@@ -237,14 +237,12 @@ static av_cold int vp8_init(AVCodecContext *avctx)
     enccfg.rc_target_bitrate = av_rescale_rnd(avctx->bit_rate, 1, 1000,
                                               AV_ROUND_NEAR_INF);
 
-    //convert [1,51] -> [0,63]
-    enccfg.rc_min_quantizer = ((avctx->qmin * 5 + 1) >> 2) - 1;
-    enccfg.rc_max_quantizer = ((avctx->qmax * 5 + 1) >> 2) - 1;
+    enccfg.rc_min_quantizer = avctx->qmin;
+    enccfg.rc_max_quantizer = avctx->qmax;
+    enccfg.rc_dropframe_thresh = avctx->frame_skip_threshold;
 
+    //_enc_init() will balk if kf_min_dist differs from max w/VPX_KF_AUTO
     if (avctx->keyint_min == avctx->gop_size)
-        enccfg.kf_mode = VPX_KF_FIXED;
-    //_enc_init() will balk if kf_min_dist is set in this case
-    if (enccfg.kf_mode != VPX_KF_AUTO)
         enccfg.kf_min_dist = avctx->keyint_min;
     enccfg.kf_max_dist     = avctx->gop_size;
 
@@ -278,6 +276,11 @@ static av_cold int vp8_init(AVCodecContext *avctx)
     }
 
     ctx->deadline = VPX_DL_GOOD_QUALITY;
+    /* 0-3: For non-zero values the encoder increasingly optimizes for reduced
+       complexity playback on low powered devices at the expense of encode
+       quality. */
+   if (avctx->profile != FF_PROFILE_UNKNOWN)
+       enccfg.g_profile = avctx->profile;
 
     dump_enc_cfg(avctx, &enccfg);
     /* Construct Encoder Context */

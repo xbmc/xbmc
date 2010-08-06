@@ -889,7 +889,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 
   // copy U
   p = 1;
-  //check for valid second plane, YUY2 doesn't have one
+  //check for valid second plane, YUY2 and UYVY don't have one
   if(im.plane[p] && src[p])
   {
     d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
@@ -904,7 +904,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 
   // copy V
   p = 2;
-  //check for valid third plane, NV12 and YUY2 don't have one
+  //check for valid third plane, NV12, YUY2 and UYVY don't have one
   if(im.plane[p] && src[p])
   {
     d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
@@ -1205,11 +1205,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2)
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2 ||
+           CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_UYVY)
   {
-    m_textureUpload = &CLinuxRendererGL::UploadYUY2Texture;
-    m_textureCreate = &CLinuxRendererGL::CreateYUY2Texture;
-    m_textureDelete = &CLinuxRendererGL::DeleteYUY2Texture;
+    m_textureUpload = &CLinuxRendererGL::UploadYUV422PackedTexture;
+    m_textureCreate = &CLinuxRendererGL::CreateYUV422PackedTexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteYUV422PackedTexture;
   }
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
   {
@@ -2419,7 +2420,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
 #endif
 }
 
-void CLinuxRendererGL::UploadYUY2Texture(int source)
+void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
@@ -2471,7 +2472,7 @@ void CLinuxRendererGL::UploadYUY2Texture(int source)
 
 }
 
-void CLinuxRendererGL::DeleteYUY2Texture(int index)
+void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -2518,7 +2519,7 @@ void CLinuxRendererGL::DeleteYUY2Texture(int index)
   }
 }
 
-bool CLinuxRendererGL::CreateYUY2Texture(int index)
+bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
@@ -2526,7 +2527,7 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
   GLuint    *pbo    = m_buffers[index].pbo;
 
   // Delete any old texture
-  DeleteYUY2Texture(index);
+  DeleteYUV422PackedTexture(index);
 
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
@@ -2741,8 +2742,10 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
-  //nearest neighbor doesn't work on YUY2
-  if (method == VS_SCALINGMETHOD_NEAREST && CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_YUY2)
+  //nearest neighbor doesn't work on YUY2 and UYVY
+  if (method == VS_SCALINGMETHOD_NEAREST &&
+      CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_YUY2 &&
+      CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_UYVY)
     return true;
 
   if(method == VS_SCALINGMETHOD_LINEAR

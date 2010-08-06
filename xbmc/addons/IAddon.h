@@ -46,6 +46,10 @@ namespace ADDON
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
+    ADDON_VIDEO, // virtual addon types
+    ADDON_AUDIO,
+    ADDON_IMAGE,
+    ADDON_EXECUTABLE,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
@@ -64,6 +68,7 @@ namespace ADDON
   class CAddonMgr;
   class AddonVersion;
   typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
+  typedef std::map<CStdString, CStdString> InfoMap;
   class AddonProps;
 
   class IAddon
@@ -72,6 +77,7 @@ namespace ADDON
     virtual ~IAddon() {};
     virtual AddonPtr Clone(const AddonPtr& self) const =0;
     virtual const TYPE Type() const =0;
+    virtual bool IsType(TYPE type) const =0;
     virtual AddonProps Props() const =0;
     virtual AddonProps& Props() =0;
     virtual const CStdString ID() const =0;
@@ -89,6 +95,7 @@ namespace ADDON
     virtual const CStdString Icon() const =0;
     virtual const int  Stars() const =0;
     virtual const CStdString Disclaimer() const =0;
+    virtual const InfoMap &ExtraInfo() const =0;
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;
     virtual void UpdateSetting(const CStdString& key, const CStdString& value) =0;

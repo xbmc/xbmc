@@ -57,7 +57,6 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
           control->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT ||
           control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX))
       CLog::Log(LOGWARNING, "Trying to add unsupported control type %d", control->GetControlType());
-    control->SetPushUpdates(true);
   }
   CGUIControlGroup::AddControl(control, position);
 }

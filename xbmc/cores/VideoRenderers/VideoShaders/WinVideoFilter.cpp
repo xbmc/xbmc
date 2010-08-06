@@ -400,3 +400,17 @@ void CConvolutionShader::ReleaseInternal()
     m_HQKernelTexture.Release();
   CWinShader::ReleaseInternal();
 }
+
+//==========================================================
+
+bool CTestShader::Create()
+{
+  CStdString effectString = "special://xbmc/system/shaders/testshader.fx";
+
+  if(!LoadEffect(effectString, NULL))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    return false;
+  }
+  return true;
+}

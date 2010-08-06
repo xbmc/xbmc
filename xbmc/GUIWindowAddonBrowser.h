@@ -40,13 +40,11 @@ public:
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  void RegisterJob(const CStdString& id, CFileOperationJob* job,
-                   unsigned int jobid);
-
   // job callback
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+  void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
-  static std::pair<CFileOperationJob*,unsigned int> AddJob(const CStdString& path);
+  static unsigned int AddJob(const CStdString& path);
 
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
@@ -68,7 +66,13 @@ public:
   static void InstallAddonsFromXBMCRepo(const std::set<CStdString> &addonIDs);
 
 protected:
-  void UnRegisterJob(CFileOperationJob* job);
+  /* \brief set label2 of an item based on the Addon.Status property
+   \param item the item to update
+   */
+  void SetItemLabel2(CFileItemPtr item);
+
+  void RegisterJob(const CStdString& id, unsigned int jobid);
+  void UnRegisterJob(unsigned int jobID);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
@@ -76,9 +80,20 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
   virtual CStdString GetStartFolder(const CStdString &dir);
-  std::map<CStdString,CFileOperationJob*> m_idtojob;
-  std::map<CStdString,unsigned int> m_idtojobid;
-  std::map<CFileOperationJob*,CStdString> m_jobtoid;
+private:
+  class CDownloadJob
+  {
+  public:
+    CDownloadJob(unsigned int id)
+    {
+      jobID = id;
+      progress = 0;
+    }
+    unsigned int jobID;
+    unsigned int progress;
+  };
+  typedef std::map<CStdString,CDownloadJob> JobMap;
+  JobMap m_downloadJobs;
   CCriticalSection m_critSection;
   CPictureThumbLoader m_thumbLoader;
 };

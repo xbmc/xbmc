@@ -58,6 +58,10 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     CAddonMgr::Get().GetAllAddons(addons, path.GetHostName().Equals("enabled"));
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
   }
+  else if (path.GetHostName().Equals("outdated"))
+  {
+    CAddonMgr::Get().GetAllOutdatedAddons(addons);
+  }
   else if (path.GetHostName().Equals("repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
@@ -97,7 +101,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       {
         for (unsigned int j=0;j<addons.size();++j)
         {
-          if (addons[j]->Type() == (TYPE)i)
+          if (addons[j]->IsType((TYPE)i))
           {
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
             item->m_strPath = CUtil::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
@@ -120,7 +124,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     // FIXME: Categorisation of addons needs adding here
     for (unsigned int j=0;j<addons.size();++j)
     {
-      if (addons[j]->Type() != type)
+      if (!addons[j]->IsType(type))
         addons.erase(addons.begin()+j--);
     }
   }
@@ -164,8 +168,17 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
+/*
     else if (pItem->GetProperty("Addon.Path").Left(22).Equals("special://xbmc/addons/"))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24095));
+*/
+    if (!addon->Props().broken.IsEmpty())
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
+    if (addon2 && addon2->Version() < addon->Version())
+    {
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
+      pItem->SetProperty("Addon.UpdateAvail","true");
+    }
     items.Add(pItem);
   }
 }

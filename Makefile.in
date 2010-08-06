@@ -387,7 +387,7 @@ ifeq (@USE_ASAP_CODEC@,1)
   endif
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH)),(arm, $(ARCH))),)
+ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH)),$(findstring arm, $(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -542,7 +542,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/script.module.pil
+	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/script.module.pysqlite
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
@@ -557,11 +559,13 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
-	@mkdir -p $(DESTDIR)$(datarootdir)/applications $(DESTDIR)$(datarootdir)/pixmaps
-	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(datarootdir)/pixmaps/
+	@mkdir -p $(DESTDIR)$(datarootdir)/applications
 	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
+	@install -D -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
+	@install -D -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
+	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q $(datadir)/icons/hicolor || :
 
 install-livedatas:
 	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."

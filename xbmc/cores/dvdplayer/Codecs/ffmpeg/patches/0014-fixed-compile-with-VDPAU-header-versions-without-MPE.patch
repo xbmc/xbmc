@@ -1,0 +1,69 @@
+From 0179c58c366c3a7c1e0ebdb1a7cf71dfcb9e9cde Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 03:04:26 -0400
+Subject: [PATCH 14/32] fixed: compile with VDPAU header versions without MPEG4 support.
+
+See http://repo.or.cz/w/FFMpeg-mirror/mplayer-patches.git/commitdiff/136c16af11076153717d3de31c9d84360644e006
+---
+ configure          |    3 +++
+ libavcodec/vdpau.c |    2 ++
+ libavcodec/vdpau.h |    2 ++
+ 3 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/configure b/configure
+index 60ba27d..965220c 100755
+--- a/configure
++++ b/configure
+@@ -1221,6 +1221,7 @@ mpeg2_dxva2_hwaccel_deps="dxva2api_h"
+ mpeg2_dxva2_hwaccel_select="dxva2 mpeg2video_decoder"
+ mpeg2_vaapi_hwaccel_select="vaapi mpeg2video_decoder"
+ mpeg4_vaapi_hwaccel_select="vaapi mpeg4_decoder"
++mpeg4_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h vdpau_mpeg4_support"
+ mpeg4_vdpau_decoder_select="vdpau mpeg4_decoder"
+ mpeg_xvmc_decoder_deps="X11_extensions_XvMClib_h"
+ mpeg_xvmc_decoder_select="mpegvideo_decoder"
+@@ -2583,6 +2584,8 @@ check_header sys/select.h
+ check_header termios.h
+ check_header vdpau/vdpau.h
+ check_header vdpau/vdpau_x11.h
++check_cpp_condition vdpau/vdpau.h "defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)" && enable vdpau_mpeg4_support
++
+ check_header X11/extensions/XvMClib.h
+ 
+ check_struct dxva2api.h DXVA_PictureParameters wDecodedPictureIndex
+diff --git a/libavcodec/vdpau.c b/libavcodec/vdpau.c
+index bd721e8..54fdcd6 100644
+--- a/libavcodec/vdpau.c
++++ b/libavcodec/vdpau.c
+@@ -315,6 +315,7 @@ void ff_vdpau_vc1_decode_picture(MpegEncContext *s, const uint8_t *buf,
+     render->bitstream_buffers_used        = 0;
+ }
+ 
++#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
+ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
+                                    int buf_size)
+ {
+@@ -368,5 +369,6 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
+     ff_draw_horiz_band(s, 0, s->avctx->height);
+     render->bitstream_buffers_used = 0;
+ }
++#endif
+ 
+ /* @}*/
+diff --git a/libavcodec/vdpau.h b/libavcodec/vdpau.h
+index ab5f682..b8cc37d 100644
+--- a/libavcodec/vdpau.h
++++ b/libavcodec/vdpau.h
+@@ -72,7 +72,9 @@ struct vdpau_render_state {
+         VdpPictureInfoH264        h264;
+         VdpPictureInfoMPEG1Or2    mpeg;
+         VdpPictureInfoVC1          vc1;
++#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
+         VdpPictureInfoMPEG4Part2 mpeg4;
++#endif
+     } info;
+ 
+     /** Describe size/location of the compressed video data.
+-- 
+1.7.0
+

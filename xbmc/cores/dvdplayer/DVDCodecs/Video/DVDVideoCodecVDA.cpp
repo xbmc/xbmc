@@ -736,6 +736,9 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // now we can pop the top frame.
   DisplayQueuePop();
 
+  //CLog::Log(LOGNOTICE, "%s - VDADecoderDecode dts(%f), pts(%f)", __FUNCTION__,
+  //  pDvdVideoPicture->dts, pDvdVideoPicture->pts);
+
   return VC_PICTURE | VC_BUFFER;
 }
 

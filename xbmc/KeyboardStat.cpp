@@ -24,6 +24,7 @@
 // Comment OUT, if not really debugging!!!:
 //#define DEBUG_KEYBOARD_GETCHAR
 
+#include "Key.h"
 #include "KeyboardStat.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"
@@ -587,10 +588,12 @@ void CKeyboardStat::ResetState()
   XBMC_ModState = XBMCKMOD_NONE;
 }
 
+/*
 unsigned int CKeyboardStat::KeyHeld() const
 {
   return m_keyHoldTime;
 }
+*/
 
 int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 {
@@ -881,6 +884,43 @@ void CKeyboardStat::Update(XBMC_Event& event)
   }
 }
 
+// Set the supplied CKey from the current keyboard state.
+
+void CKeyboardStat::GetKey(CKey& key)
+{
+
+  if (m_VKey || m_wUnicode)
+  { uint32_t buttoncode;
+
+    // got a valid keypress - convert to a key code
+    if (m_VKey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
+      buttoncode = m_VKey | KEY_VKEY;
+    else
+      buttoncode = KEY_UNICODE;
+    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
+
+    // Check what modifiers are held down and update the key code as appropriate
+    if (m_bCtrl)
+        buttoncode |= CKey::MODIFIER_CTRL;
+    if (m_bShift)
+        buttoncode |= CKey::MODIFIER_SHIFT;
+    if (m_bAlt)
+        buttoncode |= CKey::MODIFIER_ALT;
+    if (m_bSuper)
+        buttoncode |= CKey::MODIFIER_SUPER;
+
+    // Set the key state
+    key.Reset();
+    key.SetButtonCode(buttoncode);
+    key.SetVKey(m_VKey);
+    key.SetAscii(m_cAscii);
+    key.SetUnicode(m_wUnicode);
+    key.SetModifiers(m_bCtrl, m_bShift, m_bAlt, m_bRAlt, m_bSuper);
+    key.SetHeld(m_keyHoldTime);
+  }
+}
+
+/*
 char CKeyboardStat::GetAscii()
 {
   char lowLevelAscii = m_cAscii;
@@ -891,8 +931,8 @@ char CKeyboardStat::GetAscii()
   CLog::Log(LOGDEBUG, "low level ascii code: %d ", lowLevelAscii);
   CLog::Log(LOGDEBUG, "result char: %c ", translatedAscii);
   CLog::Log(LOGDEBUG, "result char code: %d ", translatedAscii);
-  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", GetRAlt());
-  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", GetShift());
+  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", m_bRAlt);
+  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", m_bShift);
 #endif
 
   if (translatedAscii >= 0 && translatedAscii < 128) // only TRUE ASCII! Otherwise XBMC crashes! No unicode not even latin 1!
@@ -919,11 +959,11 @@ WCHAR CKeyboardStat::GetUnicode()
   CLog::Log(LOGDEBUG, "low level unicode char: %c ", lowLevelUnicode);
   CLog::Log(LOGDEBUG, "low level unicode code: %d ", lowLevelUnicode);
   CLog::Log(LOGDEBUG, "low level vkey: %d ", key);
-  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", GetRAlt());
-  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", GetShift());
+  CLog::Log(LOGDEBUG, "ralt is pressed bool: %d ", m_bRAlt);
+  CLog::Log(LOGDEBUG, "shift is pressed bool: %d ", m_bShift);
 #endif
 
-  if (GetRAlt())
+  if (m_bRAlt)
   {
     if (g_keyboardLayoutConfiguration.containsDeriveXbmcCharFromVkeyWithRalt(key))
     {
@@ -935,7 +975,7 @@ WCHAR CKeyboardStat::GetUnicode()
     }
   }
 
-  if (GetShift())
+  if (m_bShift)
   {
     if (g_keyboardLayoutConfiguration.containsDeriveXbmcCharFromVkeyWithShift(key))
     {
@@ -956,7 +996,7 @@ WCHAR CKeyboardStat::GetUnicode()
     return resultUnicode;
   }
 
-  if (GetRAlt())
+  if (m_bRAlt)
   {
     if (g_keyboardLayoutConfiguration.containsChangeXbmcCharWithRalt(lowLevelUnicode))
     {
@@ -979,3 +1019,4 @@ WCHAR CKeyboardStat::GetUnicode()
 
   return lowLevelUnicode;
 }
+*/

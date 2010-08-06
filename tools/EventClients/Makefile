@@ -19,7 +19,7 @@ install: Clients/WiiRemote/WiiRemote
 	cp -a Clients/WiiRemote/WiiRemote $(DESTDIR)$(bindir)/xbmc-wiiremote
 	cp -a Clients/J2ME\ Client/j2me_remote.py $(DESTDIR)$(bindir)/xbmc-j2meremote
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(bindir)/xbmc-ps3remote
-	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(DESTDIR)$(bindir)/xbmc-ps3d
+	cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(DESTDIR)$(bindir)/xbmc-ps3d
 	cp -a Clients/XBMC\ Send/xbmc-send.py $(DESTDIR)$(bindir)/xbmc-send
 	mkdir -p $(DESTDIR)$(PYTHON_SITEDIR)/xbmc
 	echo 'ICON_PATH="$(datarootdir)/pixmaps/xbmc/"' > $(DESTDIR)$(PYTHON_SITEDIR)/xbmc/defs.py

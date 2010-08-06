@@ -68,6 +68,10 @@ void CGUIDialog::OnWindowLoaded()
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
+  // keyboard or controller movement should prevent autoclosing
+  if (!action.IsMouse() && m_autoClosing)
+    SetAutoClose(m_showDuration);
+
   if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
   {
     Close();

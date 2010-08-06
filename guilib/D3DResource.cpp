@@ -88,7 +88,11 @@ void CD3DTexture::Release()
 bool CD3DTexture::LockRect(UINT level, D3DLOCKED_RECT *lr, const RECT *rect, DWORD flags)
 {
   if (m_texture)
+  {
+    if ((flags & D3DLOCK_DISCARD) && !(m_usage & D3DUSAGE_DYNAMIC))
+      flags &= ~D3DLOCK_DISCARD;
     return (D3D_OK == m_texture->LockRect(level, lr, rect, flags));
+  }
   return false;
 }
 
@@ -118,14 +122,17 @@ void CD3DTexture::SaveTexture()
   {
     delete[] m_data;
     m_data = NULL;
-    D3DLOCKED_RECT lr;
-    if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
+    if (!(m_usage & D3DUSAGE_RENDERTARGET) && !(m_usage & D3DUSAGE_DEPTHSTENCIL))
     {
-      m_pitch = lr.Pitch;
-      unsigned int memUsage = GetMemoryUsage(lr.Pitch);
-      m_data = new unsigned char[memUsage];
-      memcpy(m_data, lr.pBits, memUsage);
-      UnlockRect(0);
+      D3DLOCKED_RECT lr;
+      if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
+      {
+        m_pitch = lr.Pitch;
+        unsigned int memUsage = GetMemoryUsage(lr.Pitch);
+        m_data = new unsigned char[memUsage];
+        memcpy(m_data, lr.pBits, memUsage);
+        UnlockRect(0);
+      }
     }
   }
   SAFE_RELEASE(m_texture);

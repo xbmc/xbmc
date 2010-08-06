@@ -41,7 +41,7 @@ public:
   // waits until all available data has been rendered
   void WaitForBuffers() { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData() { return !m_messageQueue.IsFull(); }
-  void SendMessage(CDVDMsg* pMsg) { m_messageQueue.Put(pMsg); }
+  void SendMessage(CDVDMsg* pMsg) { if(m_messageQueue.IsInited()) m_messageQueue.Put(pMsg); }
 
   TextCacheStruct_t* GetTeletextCache() { return &m_TXTCache; }
   void LoadPage(int p, int sp, unsigned char* buffer);

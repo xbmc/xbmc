@@ -25,6 +25,7 @@
 #include <deque>
 
 #include "DVDVideoCodec.h"
+#include "DVDStreamInfo.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
@@ -100,6 +101,7 @@ enum _CRYSTALHD_CODEC_TYPES
   CRYSTALHD_CODEC_ID_AVC1  = 2,
   CRYSTALHD_CODEC_ID_VC1   = 3,
   CRYSTALHD_CODEC_ID_WMV3  = 4,
+  CRYSTALHD_CODEC_ID_WVC1  = 5,
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
@@ -138,7 +140,7 @@ public:
   void OpenDevice();
   void CloseDevice();
 
-  bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
+  bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hints);
   void CloseDecoder(void);
   void Reset(void);
 
@@ -159,6 +161,7 @@ protected:
   bool          m_has_bcm70015;
   int           m_color_space;
   bool          m_drop_state;
+  bool          m_skip_state;
   unsigned int  m_timeout;
   unsigned int  m_wait_timeout;
   unsigned int  m_field;

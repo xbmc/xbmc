@@ -102,7 +102,6 @@ protected:
   void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
-  void CheckDXVersion();
   BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat);
 
   LPDIRECT3D9                 m_pD3D;

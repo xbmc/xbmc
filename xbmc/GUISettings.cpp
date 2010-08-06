@@ -540,19 +540,12 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* vp = AddCategory(5, "videoplayer", 14086);
 
-  map<int,int> resume;
-  resume.insert(make_pair(106,RESUME_NO));
-  resume.insert(make_pair(107,RESUME_YES));
-  resume.insert(make_pair(12020,RESUME_ASK));
-  AddInt(vp, "videoplayer.resumeautomatically", 12017, RESUME_ASK, resume, SPIN_CONTROL_TEXT);
-  AddSeparator(vp, "videoplayer.sep1");
-
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
-  // 13611 == Standard w/o CrystalHD but still using shaders so not really software
-  renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE));
+  renderers.insert(make_pair(13431, RENDER_METHOD_D3D_PS));
+  renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif
 
 #ifdef HAS_GL
@@ -572,7 +565,6 @@ void CGUISettings::Initialize()
   AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
 #endif
 #ifdef HAVE_LIBCRYSTALHD
-	
   AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
 #endif
 #ifdef HAVE_LIBVDADECODER
@@ -612,7 +604,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#if defined(HAS_GL) || HAS_GLES == 2	// May need changing for GLES
+#if defined(HAS_GL) || HAS_GLES == 2  // May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
   AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
@@ -626,6 +618,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.teletextenabled", 23090, true);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
+  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.cleanstrings", 20418, false);

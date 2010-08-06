@@ -74,6 +74,10 @@ class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
 
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
+
 namespace DXVA { class CProcessor; }
 
 struct DRAWRECT
@@ -100,8 +104,13 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
+enum RenderMethod
+{
+  RENDER_INVALID = 0x00,
+  RENDER_PS      = 0x01,
+  RENDER_SW      = 0x02,
+  RENDER_DXVA    = 0x03,
+};
 
 #define PLANE_Y 0
 #define PLANE_U 1
@@ -168,8 +177,14 @@ public:
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
+  static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
+
 protected:
   virtual void Render(DWORD flags);
+  void         RenderSW(DWORD flags);
+  void         RenderPS(DWORD flags);
+  void         Stage1(DWORD flags);
+  void         Stage2(DWORD flags);
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
@@ -178,36 +193,51 @@ protected:
   void         CopyYV12Texture(int dest);
   int          NextYV12Texture();
 
+  void SelectRenderMethod();
+  bool UpdateRenderMethod();
+
   void UpdateVideoFilter();
+  void SelectSWVideoFilter();
+  void SelectPSVideoFilter();
+  void UpdatePSVideoFilter();
+  bool CreateIntermediateRenderTarget();
+
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
 
-  bool m_bConfigured;
+  bool                 m_bConfigured;
+  SVideoBuffer         m_VideoBuffers[NUM_BUFFERS];
+  RenderMethod         m_renderMethod;
 
-  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
+  // software scale libraries (fallback if required pixel shaders version is not available)
+  DllAvUtil           *m_dllAvUtil;
+  DllAvCodec          *m_dllAvCodec;
+  DllSwScale          *m_dllSwScale;
+  struct SwsContext   *m_sw_scale_ctx;
 
-  bool                m_singleStage;
-  CD3DTexture         m_FirstPassTarget;
-  CD3DTexture         m_FirstPassTargetStencilSurface;
+  // Software rendering
+  D3DTEXTUREFILTERTYPE m_StretchRectFilter;
+  CD3DTexture          m_SWTarget;
 
-  CYUV2RGBShader*     m_colorShader;
-  CConvolutionShader* m_scalerShader;
+  // PS rendering
+  bool                 m_bUseHQScaler;
+  CD3DTexture          m_IntermediateTarget;
+  CD3DTexture          m_IntermediateStencilSurface;
 
-  void Stage1(DWORD flags);
-  void Stage2(DWORD flags);
+  CYUV2RGBShader*      m_colorShader;
+  CConvolutionShader*  m_scalerShader;
 
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  ESCALINGMETHOD       m_scalingMethod;
+  ESCALINGMETHOD       m_scalingMethodGui;
 
   D3DCAPS9 m_deviceCaps;
 
-  bool m_bUseHQScaler;
-  bool m_bFilterInitialized;
+  bool                 m_bFilterInitialized;
 
   // clear colour for "black" bars
-  DWORD          m_clearColour;
-  unsigned int   m_flags;
+  DWORD                m_clearColour;
+  unsigned int         m_flags;
 };
 
 #else

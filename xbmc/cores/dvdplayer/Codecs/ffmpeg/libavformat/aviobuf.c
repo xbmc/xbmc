@@ -23,6 +23,7 @@
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "avio.h"
+#include "internal.h"
 #include <stdarg.h>
 
 #define IO_BUFFER_SIZE 32768
@@ -246,6 +247,24 @@ void put_strz(ByteIOContext *s, const char *str)
         put_buffer(s, (const unsigned char *) str, strlen(str) + 1);
     else
         put_byte(s, 0);
+}
+
+int ff_get_v_length(uint64_t val){
+    int i=1;
+
+    while(val>>=7)
+        i++;
+
+    return i;
+}
+
+void ff_put_v(ByteIOContext *bc, uint64_t val){
+    int i= ff_get_v_length(val);
+
+    while(--i>0)
+        put_byte(bc, 128 | (val>>(7*i)));
+
+    put_byte(bc, val&127);
 }
 
 void put_le64(ByteIOContext *s, uint64_t val)
@@ -605,8 +624,7 @@ static int url_resetbuf(ByteIOContext *s, int flags)
 #endif
 {
 #if LIBAVFORMAT_VERSION_MAJOR < 53
-    URLContext *h = s->opaque;
-    if ((flags & URL_RDWR) || (h && h->flags != flags && !h->flags & URL_RDWR))
+    if (flags & URL_RDWR)
         return AVERROR(EINVAL);
 #else
     assert(flags == URL_WRONLY || flags == URL_RDONLY);
@@ -894,6 +912,14 @@ int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer)
 {
     DynBuffer *d = s->opaque;
     int size;
+    static const char padbuf[FF_INPUT_BUFFER_PADDING_SIZE] = {0};
+    int padding = 0;
+
+    /* don't attempt to pad fixed-size packet buffers */
+    if (!s->max_packet_size) {
+        put_buffer(s, padbuf, sizeof(padbuf));
+        padding = FF_INPUT_BUFFER_PADDING_SIZE;
+    }
 
     put_flush_packet(s);
 
@@ -901,6 +927,6 @@ int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer)
     size = d->size;
     av_free(d);
     av_free(s);
-    return size;
+    return size - padding;
 }
 #endif /* CONFIG_MUXERS || CONFIG_NETWORK */

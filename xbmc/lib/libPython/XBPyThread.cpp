@@ -261,7 +261,8 @@ void XBPyThread::Process()
 
           CLog::Log(LOGINFO, "-->Python script returned the following error<--");
           CLog::Log(LOGERROR, "Error Type: %s", PyString_AsString(PyObject_Str(exc_type)));
-          CLog::Log(LOGERROR, "Error Contents: %s", PyString_AsString(PyObject_Str(exc_value)));
+          if (PyObject_Str(exc_value))
+            CLog::Log(LOGERROR, "Error Contents: %s", PyString_AsString(PyObject_Str(exc_value)));
 
           tracebackModule = PyImport_ImportModule((char*)"traceback");
           if (tracebackModule != NULL)

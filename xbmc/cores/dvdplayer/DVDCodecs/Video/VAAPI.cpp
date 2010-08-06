@@ -238,12 +238,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
       break;
     case CODEC_ID_H264:
     {
+#ifdef FF_PROFILE_H264_BASELINE
       if  (avctx->profile == FF_PROFILE_H264_BASELINE)
         accepted.push_back(VAProfileH264Baseline);
       else
       {
         if(avctx->profile == FF_PROFILE_H264_MAIN)
           accepted.push_back(VAProfileH264Main); 
+#else
+      {
+        // fallback to high profile if libavcodec is too old to export
+        // profile information; it will likely work
+#endif
         // fallback to high profile if main profile is not available
         accepted.push_back(VAProfileH264High);
       }

@@ -3301,7 +3301,7 @@ int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
   int id = GetFileId(item);
   if (id < 0)
-    return -1;  // not in db
+    return 0;  // not in db, so not watched
 
   try
   {
@@ -3310,7 +3310,7 @@ int CVideoDatabase::GetPlayCount(const CFileItem &item)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strSQL = PrepareSQL("select playCount from files WHERE idFile=%i", id);
-    int count = -1;
+    int count = 0;
     if (m_pDS->query(strSQL.c_str()))
     {
       // there should only ever be one row returned

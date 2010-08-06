@@ -124,8 +124,6 @@ extern "C" void __stdcall init_emu_environ()
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
-#elif defined(_WIN32)
-  dll_putenv("OS=win32");
 #elif defined(__APPLE__)
   dll_putenv("OS=darwin");
 #elif defined(_LINUX)

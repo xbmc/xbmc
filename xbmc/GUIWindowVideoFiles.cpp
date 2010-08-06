@@ -204,7 +204,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox())
+  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -390,7 +390,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     item = m_vecItems->Get(itemNumber);
 
   CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (item)
+  if (item && !item->m_strPath.IsEmpty())
   {
     // are we in the playlists location?
     if (m_vecItems->IsVirtualDirectoryRoot())
@@ -406,7 +406,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+          if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;
         database.Open();
         ADDON::ScraperPtr info = database.GetScraperForPath(item->m_strPath);
@@ -441,7 +442,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              if (!item->IsPlayList() && !item->IsLiveTV())
+              if (!item->IsPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
             if (!info)
             { // scraper not set - allow movie information or set content
@@ -486,17 +487,20 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
 
-      if (item->m_bIsFolder)
+      if (!item->IsPlugin() && !item->IsLiveTV() && !item->IsAddonsPath())
       {
-        // Have both options for folders since we don't know whether all childs are watched/unwatched
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+        if (item->m_bIsFolder)
+        {
+          // Have both options for folders since we don't know whether all childs are watched/unwatched
+          buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+          buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+        }
+        else
+        if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+          buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+        else
+          buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
       }
-      else
-      if (item->GetOverlayImage().Equals("OverlayWatched.png"))
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }
   else

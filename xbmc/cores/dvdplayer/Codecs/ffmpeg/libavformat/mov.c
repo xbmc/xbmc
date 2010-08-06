@@ -222,14 +222,16 @@ static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 static int mov_read_chpl(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     int64_t start;
-    int i, nb_chapters, str_len;
+    int i, nb_chapters, str_len, version;
     char str[256+1];
 
     if ((atom.size -= 5) < 0)
         return 0;
 
-    get_be32(pb); // version + flags
-    get_be32(pb); // ???
+    version = get_byte(pb);
+    get_be24(pb);
+    if (version)
+        get_be32(pb); // ???
     nb_chapters = get_byte(pb);
 
     for (i = 0; i < nb_chapters; i++) {
@@ -265,9 +267,9 @@ static int mov_read_default(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             a.size = get_be32(pb);
             a.type = get_le32(pb);
         }
+        dprintf(c->fc, "type: %08x '%.4s' parent:'%.4s' sz: %"PRId64" %"PRId64" %"PRId64"\n",
+                a.type, (char*)&a.type, (char*)&atom.type, a.size, total_size, atom.size);
         total_size += 8;
-        dprintf(c->fc, "type: %08x  %.4s  sz: %"PRIx64"  %"PRIx64"   %"PRIx64"\n",
-                a.type, (char*)&a.type, a.size, atom.size, total_size);
         if (a.size == 1) { /* 64 bit extended size */
             a.size = get_be64(pb) - 8;
             total_size += 8;
@@ -535,8 +537,10 @@ int ff_mov_read_esds(AVFormatContext *fc, ByteIOContext *pb, MOVAtom atom)
                 st->codec->channels = cfg.channels;
                 if (cfg.object_type == 29 && cfg.sampling_index < 3) // old mp3on4
                     st->codec->sample_rate = ff_mpa_freq_tab[cfg.sampling_index];
+                else if (cfg.ext_sample_rate)
+                    st->codec->sample_rate = cfg.ext_sample_rate;
                 else
-                    st->codec->sample_rate = cfg.sample_rate; // ext sample rate ?
+                    st->codec->sample_rate = cfg.sample_rate;
                 dprintf(fc, "mp4a config channels %d obj %d ext obj %d "
                         "sample rate %d ext sample rate %d\n", st->codec->channels,
                         cfg.object_type, cfg.ext_object_type,
@@ -960,7 +964,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         //Parsing Sample description table
         enum CodecID id;
         int dref_id = 1;
-        MOVAtom a = { 0 };
+        MOVAtom a = { AV_RL32("stsd") };
         int64_t start_pos = url_ftell(pb);
         int size = get_be32(pb); /* size */
         uint32_t format = get_le32(pb); /* data format */
@@ -989,7 +993,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         st->codec->codec_tag = format;
         id = ff_codec_get_id(codec_movaudio_tags, format);
         if (id<=0 && ((format&0xFFFF) == 'm'+('s'<<8) || (format&0xFFFF) == 'T'+('S'<<8)))
-            id = ff_codec_get_id(ff_codec_wav_tags, bswap_32(format)&0xFFFF);
+            id = ff_codec_get_id(ff_codec_wav_tags, av_bswap32(format)&0xFFFF);
 
         if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO && id > 0) {
             st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -2363,7 +2367,7 @@ static int mov_read_header(AVFormatContext *s, AVFormatParameters *ap)
     MOVContext *mov = s->priv_data;
     ByteIOContext *pb = s->pb;
     int err;
-    MOVAtom atom = { 0 };
+    MOVAtom atom = { AV_RL32("root") };
 
     mov->fc = s;
     /* .mov and .mp4 aren't streamable anyway (only progressive download if moov is before mdat) */
@@ -2427,7 +2431,7 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
     if (!sample) {
         mov->found_mdat = 0;
         if (!url_is_streamed(s->pb) ||
-            mov_read_default(mov, s->pb, (MOVAtom){ 0, INT64_MAX }) < 0 ||
+            mov_read_default(mov, s->pb, (MOVAtom){ AV_RL32("root"), INT64_MAX }) < 0 ||
             url_feof(s->pb))
             return AVERROR_EOF;
         dprintf(s, "read fragments, offset 0x%llx\n", url_ftell(s->pb));
@@ -2494,6 +2498,8 @@ static int mov_seek_stream(AVFormatContext *s, AVStream *st, int64_t timestamp, 
 
     sample = av_index_search_timestamp(st, timestamp, flags);
     dprintf(s, "stream %d, timestamp %"PRId64", sample %d\n", st->index, timestamp, sample);
+    if (sample < 0 && st->nb_index_entries && timestamp < st->index_entries[0].timestamp)
+        sample = 0;
     if (sample < 0) /* not sure what to do */
         return -1;
     sc->current_sample = sample;
