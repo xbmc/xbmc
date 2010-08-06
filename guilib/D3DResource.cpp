@@ -123,7 +123,9 @@ void CD3DTexture::SaveTexture()
   {
     delete[] m_data;
     m_data = NULL;
-    if (!(m_usage & D3DUSAGE_RENDERTARGET) && !(m_usage & D3DUSAGE_DEPTHSTENCIL))
+    if(!(m_usage & D3DUSAGE_RENDERTARGET)
+    && !(m_usage & D3DUSAGE_DEPTHSTENCIL)
+    && !(m_pool == D3DPOOL_DEFAULT && (m_usage & D3DUSAGE_DYNAMIC) == 0))
     {
       D3DLOCKED_RECT lr;
       if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
@@ -404,10 +406,11 @@ bool CD3DVertexBuffer::Lock(UINT level, UINT size, void **data, DWORD flags)
   return false;
 }
 
-void CD3DVertexBuffer::Unlock()
+bool CD3DVertexBuffer::Unlock()
 {
   if (m_vertex)
-    m_vertex->Unlock();
+    return (D3D_OK == m_vertex->Unlock());
+  return false;
 }
 
 void CD3DVertexBuffer::OnDestroyDevice()

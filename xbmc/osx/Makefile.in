@@ -16,7 +16,6 @@ SRCS = \
 	XBMCHelper.m \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
-	CoreAudioSoundManager.cpp \
 	DarwinStorageProvider.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \

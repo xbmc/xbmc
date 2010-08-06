@@ -442,3 +442,10 @@ void CPlayList::UpdateItem(const CFileItem *item)
   }
 }
 
+const CStdString& CPlayList::ResolveURL(const CFileItemPtr &item ) const
+{
+  if (item->IsMusicDb() && item->HasMusicInfoTag())
+    return item->GetMusicInfoTag()->GetURL();
+  else
+    return item->m_strPath;
+}

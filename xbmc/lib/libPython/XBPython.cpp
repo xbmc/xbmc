@@ -375,7 +375,7 @@ void XBPython::Initialize()
       // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+      setenv("PYTHONPATH", _P("special://xbmcbin/system/python/python24.zip").c_str(), 1);
 #endif /* __APPLE__ */
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
@@ -641,18 +641,19 @@ int XBPython::getScriptId(const CStdString &strFile)
 
 bool XBPython::isRunning(int scriptId)
 {
-  bool bRunning = false;
   CSingleLock lock(m_critSection);
 
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
+  for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); it++)
   {
     if (it->id == scriptId)
-      bRunning = true;
-    ++it;
+    {
+      if(it->bDone)
+        return false;
+      else
+        return true;
+    }
   }
-
-  return bRunning;
+  return false;
 }
 
 bool XBPython::isStopping(int scriptId)

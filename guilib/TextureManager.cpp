@@ -403,13 +403,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   }
   else
   {
-    // normal picture
-    // convert from utf8
-    CStdString texturePath;
-    g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
-
     pTexture = new CTexture();
-    if(!pTexture->LoadFromFile(texturePath))
+    if(!pTexture->LoadFromFile(strPath))
       return 0;
     width = pTexture->GetWidth();
     height = pTexture->GetHeight();

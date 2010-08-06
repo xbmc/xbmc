@@ -91,7 +91,7 @@ class DXContext
         DXCONTEXT_PARAMS       m_current_mode;
         LPDIRECT3DDEVICE9      m_lpDevice;
         D3DPRESENT_PARAMETERS  m_d3dpp;
-        LPDIRECT3D9            m_lpD3D;
+        //LPDIRECT3D9            m_lpD3D;
         D3DCAPS9               m_caps;
 
     protected:

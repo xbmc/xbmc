@@ -89,8 +89,8 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -181,8 +181,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -281,8 +281,8 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -374,8 +374,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2716,7 +2716,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\AutoPtrHandle.cpp"
+					RelativePath="..\..\xbmc\utils\AutoPtrHandle.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AutoPtrHandle.h"
 					>
 				</File>
 				<File

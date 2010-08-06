@@ -193,7 +193,7 @@ static BLURAY_TITLE_INFO* get_playlist_title(BLURAY* bd, const CStdString& filen
     return false;
   }
 
-  int playlist;
+  unsigned int playlist;
   if(sscanf(filename.c_str(), "%05d.mpls", &playlist) != 1)
   {
     CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());

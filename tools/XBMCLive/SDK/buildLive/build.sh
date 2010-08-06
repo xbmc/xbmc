@@ -39,7 +39,7 @@ build()
 }
 
 if ! which lh > /dev/null ; then
-	echo "A required package (live-helper) is not available, exiting..."
+	echo "A required package (live-build) is not available, exiting..."
 	exit 1
 fi
 

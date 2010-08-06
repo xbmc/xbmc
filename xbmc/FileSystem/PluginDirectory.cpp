@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "Application.h"
 
 using namespace XFILE;
 using namespace std;
@@ -453,8 +454,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
     // check our script is still running
 #ifdef HAS_PYTHON
-    int id = g_pythonParser.getScriptId(scriptPath.c_str());
-    if (id == -1)
+    if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
 #endif
     { // nope - bail
       CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
@@ -466,6 +466,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+      // if script has shown progressbar don't override it
+      if (progressBar && progressBar->IsActive())
+      {
+        startTime = CTimeUtils::GetTimeMS();
+        progressBar = NULL;
+      }
+
       if (progressBar)
       {
         progressBar->SetHeading(scriptName);
@@ -516,7 +524,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
   }
   if (progressBar)
-    progressBar->Close();
+    g_application.getApplicationMessenger().Close(progressBar, false, false);
 
   return !m_cancelled && m_success;
 }

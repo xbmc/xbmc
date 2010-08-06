@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Qualité de Rendu</string>
+    <string id="30001">Basse</string>
+    <string id="30002">Moyenne</string>
+    <string id="30003">Haute</string>
+    <string id="30004">Maximum</string>
+    <string id="30005">Mode Aléatoire</string>
+    <string id="30006">Lisser la durée de la présélection</string>
+    <string id="30007">Durée de la présélection</string>
+    <string id="30008">Sensibilité au tempo</string>
+</strings>

@@ -64,10 +64,6 @@ DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
 	xbmc/cores/dvdplayer/Codecs/libdvd \
 
-ifneq (@HAVE_LIBBLURAY@,1)
-DVDPCODECS_DIRS+=xbmc/cores/dvdplayer/Codecs/libbdnav
-endif
-
 ifneq (@USE_EXTERNAL_LIBASS@,1)
 DVDPCODECS_DIRS+=lib/libass/xbmc
 endif
@@ -287,8 +283,6 @@ xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
-xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -406,7 +400,6 @@ externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
 	codecs libs python pvrclients visualizations screensavers eventclients skins \
-	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
@@ -463,10 +456,6 @@ OBJSXBMC=	\
 	xbmc/lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/settings/settings.a
-
-ifneq (@HAVE_LIBBLURAY@,1)
-OBJSXBMC+= xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a
-endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
@@ -549,9 +538,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
-	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/script.module.pil
-	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/script.module.pysqlite
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
+	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
@@ -566,13 +555,13 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
 	@mkdir -p $(DESTDIR)$(datarootdir)/applications
 	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
 	@install -D -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
 	@install -D -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
-	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q $(datadir)/icons/hicolor || :
+	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
 install-livedatas:
 	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."

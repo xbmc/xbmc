@@ -143,12 +143,9 @@ namespace PYXBMC
     float fPercent = 0;
     if (!PyArg_ParseTuple(args, (char*)"f", &fPercent)) return NULL;
 
-    PyXBMCGUILock();
     if (self->pGUIControl)
-    {
       ((CGUIProgressControl*)self->pGUIControl)->SetPercentage(fPercent);
-    }
-    PyXBMCGUIUnlock();
+
     Py_INCREF(Py_None);
     return Py_None;
   }

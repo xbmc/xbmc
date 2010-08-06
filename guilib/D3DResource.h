@@ -117,7 +117,7 @@ public:
   bool Create(UINT length, DWORD usage, DWORD fvf, D3DPOOL pool);
   void Release();
   bool Lock(UINT offset, UINT size, void **data, DWORD flags);
-  void Unlock();
+  bool Unlock();
 
   LPDIRECT3DVERTEXBUFFER9 Get() const { return m_vertex; };
 

@@ -191,7 +191,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->m_strPath == "install://")
+  if (item->m_strPath == "addons://install/")
   {
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = g_settings.m_fileSources;
@@ -303,7 +303,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             if (update)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24065),
                                                   TOAST_DISPLAY_TIME,false);
@@ -311,7 +311,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             else
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24064),
                                                   TOAST_DISPLAY_TIME,false);
@@ -419,7 +419,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     CFileItemPtr item(new CFileItem("addons://downloading/",true));
     item->SetLabel(g_localizeStrings.Get(24067));
     item->SetLabelPreformated(true);
-    item->SetThumbnailImage("DefaultNetwork.png");
+    item->SetIconImage("DefaultNetwork.png");
     items.Add(item);
   }
 

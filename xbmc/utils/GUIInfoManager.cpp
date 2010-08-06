@@ -77,12 +77,14 @@
 #include "SingleLock.h"
 #include "log.h"
 
+#include "addons/AddonManager.h"
+
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
-using ADDON::CVisualisation;
+using namespace ADDON;
 
 CGUIInfoManager g_infoManager;
 
@@ -437,13 +439,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
-  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
-  {
-    int pos = strTest.Find(",");
-    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
-  }
+    else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+    {
+      int pos = strTest.Find(",");
+      int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+      int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+    }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -463,6 +465,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
     else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
+    else if (strTest.Left(16).Equals("system.hasaddon("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -2381,6 +2385,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           }
         }
         break;
+      case SYSTEM_HAS_ADDON:
+      {
+        AddonPtr addon;
+        bReturn = CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        break;
+      }
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
       case CONTAINER_MOVE_NEXT:

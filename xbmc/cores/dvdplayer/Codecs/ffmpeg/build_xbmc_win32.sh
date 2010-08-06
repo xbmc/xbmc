@@ -29,7 +29,7 @@ OPTIONS="
 --enable-encoder=ac3 \
 --enable-encoder=aac"
 
-./configure --extra-cflags="-fno-common -I../libfaad2/include -Iinclude/dxva2 -I../libvpx/" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -I../libfaad2/include -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
  
 make -j3 && 
 mkdir .libs &&

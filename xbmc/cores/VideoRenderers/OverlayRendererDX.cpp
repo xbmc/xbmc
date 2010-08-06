@@ -368,7 +368,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6, g_Windowing.DefaultD3DUsage() | D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
@@ -376,7 +376,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
   }
 
   VERTEX*  vt = NULL;
-  if (!m_vertex.Lock(0, 0, (void**)&vt, D3DLOCK_DISCARD))
+  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
     CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
     m_texture.Release();

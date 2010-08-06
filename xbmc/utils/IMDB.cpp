@@ -55,7 +55,7 @@ CIMDB::~CIMDB()
 }
 
 int CIMDB::InternalFindMovie(const CStdString &strMovie,
-                             IMDB_MOVIELIST& movielist, bool& sortMovieList)
+                             IMDB_MOVIELIST& movielist, bool& sortMovieList, bool cleanChars /* = true */)
 {
   movielist.clear();
 
@@ -63,7 +63,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
 
   CStdString strName = strMovie;
   CStdString movieTitle, movieTitleAndYear, movieYear;
-  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true);
+  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true, cleanChars);
 
   movieTitle.ToLower();
 
@@ -452,6 +452,11 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   // unthreaded
   bool sortList = true;
   int success = InternalFindMovie(strMovie, movieList, sortList);
+  // NOTE: this might be improved by rescraping if the match quality isn't high?
+  if (success && !movieList.size())
+  { // no results. try without cleaning chars like '.' and '_'
+    success = InternalFindMovie(strMovie, movieList, sortList, false);
+  }
   // sort our movie list by fuzzy match
   if (sortList)
     std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);

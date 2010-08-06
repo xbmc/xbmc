@@ -33,7 +33,7 @@ if ! ls $WORKPATH/crystalhd.tar > /dev/null 2>&1; then
 		exit 1
 	fi
 
-	tar cvf crystalhd.tar crystalhd/
+	tar cf crystalhd.tar crystalhd/
 fi
 
 cp $WORKPATH/crystalhd.tar $WORKPATH/buildLive/Files/chroot_local-includes/root

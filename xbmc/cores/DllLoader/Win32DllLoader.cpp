@@ -41,11 +41,12 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 Export win32_exports[] =
 {
   // kernel32
-  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                               NULL },
+  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                            NULL },
+  { "FindNextFileA",                                -1, (void*)dllFindNextFileA,                             NULL },
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                            NULL },
+  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                       NULL },
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
 //  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
@@ -193,9 +194,8 @@ bool Win32DllLoader::Load()
   CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
 
-  CStdString strDll = _P(strFileName);
   CStdStringW strDllW;
-  g_charsetConverter.utf8ToW(strDll, strDllW);
+  g_charsetConverter.utf8ToW(_P(strFileName), strDllW);
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
@@ -368,9 +368,8 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
 
   wchar_t filepathW[MAX_PATH];
   GetModuleFileNameW(hModule, filepathW, MAX_PATH);
-  CStdStringW strfilepathW(filepathW);
   CStdString dllPath;
-  g_charsetConverter.wToUTF8(strfilepathW, dllPath);
+  g_charsetConverter.wToUTF8(filepathW, dllPath);
 
   // compare this filepath with our home directory
   CStdString homePath = _P("special://xbmc");

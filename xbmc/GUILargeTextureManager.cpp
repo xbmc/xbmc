@@ -66,7 +66,7 @@ bool CImageLoader::DoWork()
       m_texture = NULL;
     }
     else if (CTimeUtils::GetTimeMS() - start > 100)
-      CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, m_path.c_str());
+      CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, loadPath.c_str());
   }
 
   return true;

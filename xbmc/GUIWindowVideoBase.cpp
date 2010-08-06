@@ -265,7 +265,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   }
   else
   {
-    if (item.m_bIsFolder && scraper->Content() != CONTENT_TVSHOWS)
+    if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
       CDirectory::GetDirectory(item.m_strPath, items,"",true,false,DIR_CACHE_ONCE,true,true);
@@ -1340,6 +1340,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   {
     item = CFileItem(*pItem->GetVideoInfoTag());
     item.m_lStartOffset = pItem->m_lStartOffset;
+    item.SetProperty("original_listitem_url", pItem->m_strPath);
   }
 
   if (item.m_strPath.Left(17) == "pvr://recordings/")
@@ -1866,7 +1867,6 @@ void CGUIWindowVideoBase::OnSearch()
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
@@ -1993,4 +1993,17 @@ CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
   else if (dir.Equals("Plugins") || dir.Equals("Addons"))
     return "addons://sources/video/";
   return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, const CStdString &prependLabel, CFileItemList &results)
+{
+  if (!searchItems.Size())
+    return;
+
+  searchItems.Sort(g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  for (int i = 0; i < searchItems.Size(); i++)
+    searchItems[i]->SetLabel(prependLabel + searchItems[i]->GetLabel());
+  results.Append(searchItems);
+
+  searchItems.Clear();
 }

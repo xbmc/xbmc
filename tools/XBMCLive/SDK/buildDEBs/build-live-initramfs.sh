@@ -42,9 +42,9 @@ if ! ls live-initramfs_*.deb > /dev/null 2>&1 ; then
 		cd ..
 
 		# Saved, to avoid cloning for multiple builds
-		tar cvf live-boot.tar live-boot  > /dev/null 2>&1
+		tar cf live-boot.tar live-boot  > /dev/null 2>&1
 	else
-		tar xvf live-boot.tar  > /dev/null 2>&1
+		tar xf live-boot.tar  > /dev/null 2>&1
 	fi
 
 	#

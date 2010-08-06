@@ -367,7 +367,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         CFileItemPtr newItem = boost::static_pointer_cast<CFileItem>(message.GetItem());
         if (IsActive())
-          m_vecItems->UpdateItem(newItem.get());
+        {
+          if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
+          { // need the list updated as well
+            UpdateFileList();
+          }
+        }
         else if (newItem)
         { // need to remove the disc cache
           CFileItemList items;

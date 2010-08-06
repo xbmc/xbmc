@@ -113,7 +113,6 @@
 #define HAS_SDL_AUDIO
 #define HAS_SDL_OPENGL
 #define HAS_SDL_WIN_EVENTS
-#define HAS_LIBBDNAV
 #endif
 
 /*****************
@@ -143,7 +142,6 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
-#define HAS_LIBBDNAV
 #endif
 
 #ifdef HAVE_LIBSSH
@@ -223,11 +221,6 @@
 #ifdef HAVE_LIBGLES
 #undef HAS_GL
 #define HAS_GLES 1
-#endif
-
-// libbdnav conflicts with libbluray
-#ifdef HAVE_LIBBLURAY
-#undef HAS_LIBBDNAV
 #endif
 
 
