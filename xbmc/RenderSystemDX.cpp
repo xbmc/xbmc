@@ -196,7 +196,7 @@ bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
   return (SUCCEEDED(hr)) ? true : false;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
 {
   // Verify that the depth format exists
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
@@ -212,7 +212,7 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
   hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
                                       m_devType,
                                       AdapterFormat,
-                                      BackBufferFormat,
+                                      RenderTargetFormat,
                                       DepthFormat);
 
   return SUCCEEDED(hr);
