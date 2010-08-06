@@ -276,7 +276,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx/*,
 
     /* Create an annex B bitstream buffer with only slice NAL and finalize slice */
     if (ctx->decoder->dxva2_decoder_get_buffer(ctx, DXVA2_BitStreamDateBufferType,
-                                              &dxva_data, &dxva_size)<0) 
+                                              (void*)&dxva_data, &dxva_size)<0) 
         return -1;
 
     current = dxva_data;
@@ -367,7 +367,7 @@ static int start_frame(AVCodecContext *avctx,
     struct dxva_context *ctx = avctx->hwaccel_context;
     struct dxva2_picture_context *ctx_pic = h->s.current_picture_ptr->hwaccel_picture_private;
 
-    av_log(avctx, AV_LOG_ERROR, "start_frame \n");
+    /* av_log(avctx, AV_LOG_ERROR, "start_frame \n"); */
     if (!ctx->decoder || !ctx->cfg || ctx->surface_count <= 0)
         return -1;
     assert(ctx_pic);
@@ -392,7 +392,7 @@ static int decode_slice(AVCodecContext *avctx,
     const Picture *current_picture = h->s.current_picture_ptr;
     struct dxva2_picture_context *ctx_pic = current_picture->hwaccel_picture_private;
     unsigned position;
-    av_log(avctx, AV_LOG_ERROR, "decode_slice \n");
+    /* av_log(avctx, AV_LOG_ERROR, "decode_slice \n"); */
     if (ctx_pic->slice_count >= MAX_SLICES)
         return -1;
 
@@ -420,7 +420,7 @@ static int end_frame(AVCodecContext *avctx)
     MpegEncContext *s = &h->s;
     struct dxva2_picture_context *ctx_pic =
         h->s.current_picture_ptr->hwaccel_picture_private;
-    av_log(avctx, AV_LOG_ERROR, "end_frame \n");
+    /* av_log(avctx, AV_LOG_ERROR, "end_frame \n"); */
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
         return -1;
     return ff_dxva2_common_end_frame(avctx, s,

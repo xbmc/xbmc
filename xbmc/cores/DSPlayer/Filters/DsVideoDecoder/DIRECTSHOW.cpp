@@ -152,7 +152,6 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber)
 
 bool CDXVADecoder::ConfigureDXVA1()
 {
-  
 	HRESULT							hr = S_FALSE;
 	DXVA_ConfigPictureDecode		ConfigRequested;
 
@@ -358,8 +357,7 @@ bool CDXVADecoder::Supports(enum PixelFormat fmt)
 
 int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  CSingleLock lock(m_section);
-  CLog::DebugLog("%s",__FUNCTION__);
+  //CLog::DebugLog("%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->GetDXVADecoder();
 
@@ -389,7 +387,7 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     return -1;
   }
   buf->rt_start = pic->reordered_opaque = avctx->reordered_opaque;
-  buf->rt_stop = buf->rt_start + ctx->GetAvrTimePerFrame();
+  buf->rt_stop = buf->rt_start + (ctx->GetAvrTimePerFrame()/10);
   pic->type = FF_BUFFER_TYPE_USER;
   pic->age = INT_MAX; //According to ffmpeg api it should be initialized with this value
   //What is this i forgot :S
@@ -409,8 +407,8 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  CSingleLock lock(m_section);
-  CLog::DebugLog("%s",__FUNCTION__);
+  /*CSingleLock lock(m_section);*/
+  /*CLog::DebugLog("%s",__FUNCTION__);*/
   IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 
   for(unsigned i = 0; i < m_buffer_count; i++)
@@ -440,7 +438,7 @@ HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferInde
 
 int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 {
-  CSingleLock lock(m_section);
+  /*CSingleLock lock(m_section);*/
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -492,7 +490,7 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 
 int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
 {
-  CSingleLock lock(m_section);
+  /*CSingleLock lock(m_section);*/
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
   HRESULT				hr   = E_INVALIDARG;
@@ -549,7 +547,7 @@ int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_da
 
 int CDXVADecoder::DXVAExecute(dxva_context *ctx)
 {
-  CSingleLock lock(m_section);
+  /*CSingleLock lock(m_section);*/
   HRESULT hr = E_INVALIDARG;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();

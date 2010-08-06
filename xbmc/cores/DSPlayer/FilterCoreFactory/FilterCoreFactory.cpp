@@ -28,7 +28,7 @@
 #include "filters/Splitters/DSDemuxerFilter.h"
 //#include "filters/Splitters/MpegSplitter.h"
 #include "filters/XBMCFileSource.h"
-
+#include "GUISettings.h"
 
 
 InternalFilters internalFilters[] =
@@ -212,14 +212,26 @@ HRESULT CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::ve
 CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, bool showError )
 {
   CStdString filter = _filter;
-#if TEST_INTERNAL_SPLITTERS == 1
-  if ((filter.Equals("mkvsource")||filter.Equals("avisource")|| filter.Equals("mpegsource") || filter.Equals("haali") ))
-    filter = "internal_ffmpegsource";
+  bool useInternalSplitter,useInternalVideoDecoder;
+  useInternalSplitter = useInternalVideoDecoder = g_guiSettings.GetBool("dsplayer.useinternalfilters");
+
+#if TEST_INTERNAL_SPLITTERS
+  useInternalSplitter = true;
 #endif
-#if TEST_INTERNAL_VIDEO_DECODER == 1
-  if (filter.Equals("mpcvideodec") || filter.Equals("ffdvideodec"))
-    filter = "internal_videodecoder";
+#if TEST_INTERNAL_VIDEO_DECODER
+  useInternalVideoDecoder = true;
 #endif
+
+  if (useInternalSplitter)
+  {
+    if ((filter.Equals("mkvsource")||filter.Equals("avisource")|| filter.Equals("mpegsource") || filter.Equals("haali") ))
+      filter = "internal_ffmpegsource";
+  }
+  if (useInternalVideoDecoder)
+  {
+    if (filter.Equals("mpcvideodec") || filter.Equals("ffdvideodec"))
+      filter = "internal_videodecoder";
+  }
   // Is the filter internal?
   for (int i = 0; i < countof(internalFilters); i++)
   {

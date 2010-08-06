@@ -3,10 +3,9 @@
 #include "moreuuids.h"
 #include "ffmpeg_mediaguids.h"
 #include "FilterCoreFactory/FilterCoreFactory.h"
+#include "GUISettings.h"
 
-#ifndef max
-#define max(A,B)	( (A) > (B) ? (A):(B)) 
-#endif
+
 
 CDSGuidHelper g_GuidHelper;
 
@@ -363,7 +362,7 @@ MPEG1VIDEOINFO *CDSGuidHelper::CreateMPEG1VI(const CDemuxStreamVideo *stream, AV
     extradata = (BYTE*)&vih->bmiHeader + sizeof(BITMAPINFOHEADER);
   }
 
-  MPEG1VIDEOINFO *mp1vi = (MPEG1VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG1VIDEOINFO) + max(extra - 1, 0)); 
+  MPEG1VIDEOINFO *mp1vi = (MPEG1VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG1VIDEOINFO) + std::max(extra - 1, 0)); 
   memset(mp1vi, 0, sizeof(MPEG1VIDEOINFO));
 
   // The MPEG1VI is a thin wrapper around a VIH, so its easy!
@@ -382,7 +381,7 @@ MPEG1VIDEOINFO *CDSGuidHelper::CreateMPEG1VI(const CDemuxStreamVideo *stream, AV
   CoTaskMemFree((PVOID)vih);
 
   // The '1' is from the allocated space of bSequenceHeader
-  *size = sizeof(MPEG1VIDEOINFO) + max(mp1vi->cbSequenceHeader - 1, 0);
+  *size = sizeof(MPEG1VIDEOINFO) + std::max(mp1vi->cbSequenceHeader - 1, (DWORD) 0);
   return mp1vi;
 }
 
@@ -399,12 +398,16 @@ MPEG2VIDEOINFO *CDSGuidHelper::CreateMPEG2VI(const CDemuxStreamVideo *stream, AV
     extra = *size - sizeof(VIDEOINFOHEADER2);
     extra--;
   }
+  bool internalvid = g_guiSettings.GetBool("dsplayer.useinternalfilters");
 #if TEST_INTERNAL_VIDEO_DECODER
-  MPEG2VIDEOINFO *mp2vi = (MPEG2VIDEOINFO *) new BYTE[avstream->codec->extradata_size + sizeof(MPEG2VIDEOINFO)];
-
-#else
-  MPEG2VIDEOINFO *mp2vi = (MPEG2VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG2VIDEOINFO) + max(extra - 4, 0)); 
+  internalvid = true;
 #endif
+  MPEG2VIDEOINFO *mp2vi;
+  if (internalvid)
+    mp2vi = (MPEG2VIDEOINFO *) new BYTE[avstream->codec->extradata_size + sizeof(MPEG2VIDEOINFO)];
+  else
+    mp2vi = (MPEG2VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG2VIDEOINFO) + std::max(extra - 4, 0)); 
+
   memset(mp2vi, 0, sizeof(MPEG2VIDEOINFO));
   memcpy(&mp2vi->hdr, vih2, sizeof(VIDEOINFOHEADER2));
   mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
