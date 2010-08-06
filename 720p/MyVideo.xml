@@ -40,7 +40,7 @@
 				<description>Videos label</description>
 				<visible>IsEmpty(Container.FirstTitle)</visible>
 				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$LOCALIZE[31001]</label>
+				<label>$LOCALIZE[31971]</label>
 			</control>
 		</control>
 		<control type="group">

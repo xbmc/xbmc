@@ -37,7 +37,7 @@
         <description>Pictures label</description>
 				<visible>IsEmpty(Container.FirstTitle)</visible>
         <include>TopOverlayFirstTitleAreaText</include>
-        <label>$LOCALIZE[1]</label>
+        <label>$LOCALIZE[31973]</label>
       </control>
 			<control type="label">
         <description>First title</description>

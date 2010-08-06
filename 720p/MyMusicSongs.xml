@@ -40,7 +40,7 @@
         <description>Music label</description>
 				<visible>IsEmpty(Container.FirstTitle)</visible>
         <include>TopOverlayFirstTitleAreaText</include>
-        <label>$LOCALIZE[249]</label>
+        <label>$LOCALIZE[31972]</label>
       </control>
 			<control type="label">
         <description>First title</description>
