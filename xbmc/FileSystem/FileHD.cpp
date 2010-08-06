@@ -99,6 +99,7 @@ bool CFileHD::Open(const CURL& url)
   if (!m_hFile.isValid()) return false;
 
   m_i64FilePos = 0;
+  m_i64FileLen = 0;
   Seek(0, SEEK_SET);
 
   return true;
@@ -264,9 +265,15 @@ int64_t CFileHD::Seek(int64_t iFilePosition, int iWhence)
 //*********************************************************************************************
 int64_t CFileHD::GetLength()
 {
-  LARGE_INTEGER i64Size;
-  GetFileSizeEx((HANDLE)m_hFile, &i64Size);
-  return i64Size.QuadPart;
+  if(m_i64FileLen <= m_i64FilePos || m_i64FileLen == 0)
+  {
+    LARGE_INTEGER i64Size;
+    if(GetFileSizeEx((HANDLE)m_hFile, &i64Size))
+      m_i64FileLen = i64Size.QuadPart;
+    else
+      CLog::Log(LOGERROR, "CFileHD::GetLength - GetFileSizeEx failed with error %d", GetLastError());
+  }
+  return m_i64FileLen;
 }
 
 //*********************************************************************************************
