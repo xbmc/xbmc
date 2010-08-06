@@ -115,7 +115,7 @@ void CGUIDialogVideoScan::OnSetTitle(const CStdString& strTitle)
   m_strTitle = strTitle;
 }
 
-void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
+void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool scanAll)
 {
   m_ScanState = PREPARING;
 
@@ -124,7 +124,7 @@ void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool bUp
     Show();
   }
 
-  m_videoInfoScanner.Start(strDirectory,bUpdateAll);
+  m_videoInfoScanner.Start(strDirectory,scanAll);
 }
 
 void CGUIDialogVideoScan::StopScanning()

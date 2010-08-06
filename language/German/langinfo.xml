@@ -13,14 +13,6 @@
   </dvd>
 
   <regions>
-    <region name="Deutschland">
-      <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>DDDD, D. MMMM YYYY</datelong>
-      <time symbolAM="" symbolPM="">HH:mm:ss</time>
-      <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
-      <timezone>CEST</timezone>
-    </region>
     <region name="Schweiz">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
@@ -62,6 +54,14 @@
       <timezone>CEST</timezone>
     </region>
     <region name="Belgien">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Deutschland">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

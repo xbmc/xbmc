@@ -764,20 +764,7 @@ bool CFileItem::IsPicture() const
   if( m_mimetype.Left(6).Equals("image/") )
     return true;
 
-  CStdString extension;
-  CUtil::GetExtension(m_strPath, extension);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  if (extension == ".tbn" || extension == ".dds")
-    return true;
-
-  return false;
+  return CUtil::IsPicture(m_strPath);
 }
 
 bool CFileItem::IsLyrics() const
@@ -1689,6 +1676,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SIZE:
     FillSortFields(SSortFileItem::BySize);
     break;
+  case SORT_METHOD_BITRATE:
+    FillSortFields(SSortFileItem::ByBitrate);
+    break;      
   case SORT_METHOD_DRIVE_TYPE:
     FillSortFields(SSortFileItem::ByDriveType);
     break;

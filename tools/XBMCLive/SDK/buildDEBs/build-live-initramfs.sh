@@ -21,7 +21,7 @@
 
 THISDIR=$(pwd)
 
-if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
+if ! ls live-initramfs_*.deb > /dev/null 2>&1 ; then
 	echo "Making live-initramfs..."
 
 	#if you use git <= 1.6, then use: git clone git://live.debian.net/git/live-boot.git && git checkout -b debian-old-1.0 origin/debian-old-1.0
@@ -55,5 +55,8 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 
 	cd $THISDIR/live-boot
 	dpkg-buildpackage -rfakeroot -b -uc -us 
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
 	cd $THISDIR
 fi

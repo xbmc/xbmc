@@ -317,7 +317,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
     return CAddon::LoadSettings();
 
   m_settingsLoaded = true;
-  return CAddon::LoadUserSettings();
+  CAddon::LoadUserSettings();
+  return true;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

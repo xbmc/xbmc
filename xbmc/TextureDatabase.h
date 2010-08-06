@@ -30,7 +30,7 @@ public:
   virtual ~CTextureDatabase();
   virtual bool Open();
 
-  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &imageHash);
   bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
@@ -60,6 +60,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 5; };
+  virtual int GetMinVersion() const { return 6; };
   const char *GetDefaultDBName() const { return "Textures"; };
 };

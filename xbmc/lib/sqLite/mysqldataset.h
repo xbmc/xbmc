@@ -79,8 +79,26 @@ public:
   virtual void commit_transaction();
   virtual void rollback_transaction();
 
+/* virtual methods for formatting */
+  virtual char *vprepare(const char *format, va_list args);
+  virtual void vprepare_free(void *p);
+
   bool in_transaction() {return _in_transaction;};
   int query_with_reconnect(const char* query);
+
+private:
+
+  typedef struct StrAccum StrAccum;
+
+  char et_getdigit(double *val, int *cnt);
+  void appendSpace(StrAccum *pAccum, int N);
+  void mysqlVXPrintf(StrAccum *pAccum, int useExtended, const char *fmt, va_list ap);
+  void mysqlStrAccumAppend(StrAccum *p, const char *z, int N);
+  char * mysqlStrAccumFinish(StrAccum *p);
+  void mysqlStrAccumReset(StrAccum *p);
+  void mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx);
+  char *mysql_vmprintf(const char *zFormat, va_list ap);
+
 };
 
 

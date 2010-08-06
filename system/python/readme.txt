@@ -7,6 +7,3 @@ DLLs dir:
 Lib dir:
   Library directory used by python.
   Here can new packages or modules be installed by the user.
-
-dev note:
-unicodedata.pyd is taken from a window installation, so you won't find the source in cvs for it

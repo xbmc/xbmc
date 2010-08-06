@@ -154,7 +154,6 @@ INT CXBApplicationEx::Run()
       }
     }
 #endif
-
   } // while (!m_bStop)
   Destroy();
 

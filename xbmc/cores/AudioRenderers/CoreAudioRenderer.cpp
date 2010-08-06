@@ -28,6 +28,23 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+
+// based on Win32WASAPI, with default 5 channel layout changed from 4.1 to 5.0
+const enum PCMChannels default_channel_layout[][8] = 
+{
+  {PCM_FRONT_CENTER},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_SIDE_LEFT, PCM_SIDE_RIGHT}
+}; 
+
+// default order of output channels, based on Win32WASAPI
+const enum PCMChannels channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
+
 /////////////////////////////////////////////////////////////////////////////////
 // CAtomicAllocator: Wrapper class for lf_heap.
 ////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +336,7 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   {
     CFRunLoopRef theRunLoop = NULL;
     AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
-    OSStatus theError = AudioObjectSetPropertyData (kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
+    OSStatus theError = AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
     if (theError != noErr)
     {
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
@@ -341,7 +358,7 @@ CCoreAudioRenderer::~CCoreAudioRenderer()
 if (!m_Initialized) \
 return x
 
-bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, bool bPassthrough)
 {
   if (m_Initialized) // Have to clean house before we start again. TODO: Should we return failure instead?
     Deinitialize();
@@ -381,11 +398,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   if (!m_Passthrough)
   {
     // Create the Output AudioUnit Component
-    if (!m_AudioUnit.Open(kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
+    if (!m_AUOutput.Open(kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
       return false;
-
+      
     // Hook the Ouput AudioUnit to the selected device
-    if (!m_AudioUnit.SetCurrentDevice(outputDevice))
+    if (!m_AUOutput.SetCurrentDevice(outputDevice))
       return false;
 
     // If we are here and this is a passthrough stream, native handling failed.
@@ -401,7 +418,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     else
     {
       // Standard PCM data
-      configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
+      configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample, channelMap);
       // TODO: wait for audio device startup
       Sleep(100);
     }
@@ -411,25 +428,25 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
 
     // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
     // If this is not called, there is no guarantee that the callback will ever be called.
-    UInt32 bufferFrames = m_AudioUnit.GetBufferFrameSize(); // Size of the output buffer, in Frames
-    if (!m_AudioUnit.SetMaxFramesPerSlice(bufferFrames))
+    UInt32 bufferFrames = m_AUOutput.GetBufferFrameSize(); // Size of the output buffer, in Frames
+    if (!m_AUOutput.SetMaxFramesPerSlice(bufferFrames))
       return false;
 
     m_ChunkLen = bufferFrames * m_BytesPerFrame;  // This is the minimum amount of data that we will accept from a client
 
     // Setup the callback function that the AudioUnit will use to request data	
-    if (!m_AudioUnit.SetRenderProc(RenderCallback, this))
+    if (!m_AUOutput.SetRenderProc(RenderCallback, this))
       return false;
 
     // Initialize the Output AudioUnit
-    if (!m_AudioUnit.Initialize())
+    if (!m_AUOutput.Initialize())
       return false;
 
     // Log some information about the stream
     AudioStreamBasicDescription inputDesc_end, outputDesc_end;
     CStdString formatString;
-    m_AudioUnit.GetInputFormat(&inputDesc_end);
-    m_AudioUnit.GetOutputFormat(&outputDesc_end);
+    m_AUOutput.GetInputFormat(&inputDesc_end);
+    m_AUOutput.GetOutputFormat(&outputDesc_end);
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));
   }
@@ -451,6 +468,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
 
+  // Make space for remap processing
+  // AddPackets will not accept more data than m_MaxCacheLen, so a fixed size buffer should be okay.
+  // Do we need to catch memory allocation errors?
+  m_RemapBuffer = new char[m_MaxCacheLen];
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Allocated %lu bytes for channel remapping",m_MaxCacheLen);
 
   return true;
 }
@@ -463,11 +485,15 @@ bool CCoreAudioRenderer::Deinitialize()
   Stop();
   // Reset our state
   m_ChunkLen = 0;
+  delete [] m_RemapBuffer;
+  m_RemapBuffer = NULL;
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Deinitialize: deleted remapping buffer");
+  
   m_MaxCacheLen = 0;
   m_AvgBytesPerSec = 0;
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
-  m_AudioUnit.Close();
+  m_AUOutput.Close();
   m_OutputStream.Close();
   Sleep(10);
   m_AudioDevice.Close();
@@ -499,7 +525,7 @@ bool CCoreAudioRenderer::Pause()
     if (m_Passthrough)
       m_AudioDevice.Stop();
     else
-      m_AudioUnit.Stop();
+      m_AUOutput.Stop();
     m_Pause = true;
   }
 #ifdef _DEBUG
@@ -518,7 +544,7 @@ bool CCoreAudioRenderer::Resume()
     if (m_Passthrough)
       m_AudioDevice.Start();
     else
-     m_AudioUnit.Start();
+     m_AUOutput.Start();
     m_Pause = false;
   }
 #ifdef _DEBUG
@@ -534,7 +560,7 @@ bool CCoreAudioRenderer::Stop()
   if (m_Passthrough)
     m_AudioDevice.Stop();
   else
-    m_AudioUnit.Stop();
+    m_AUOutput.Stop();
 
   m_Pause = true;
 #ifdef _DEBUG
@@ -571,7 +597,7 @@ bool CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
     Float32 volPct = pow(10.0f, (float)nVolume/2000.0f);
 
     // Try to set the volume. If it fails there is not a lot to be done.
-    if (!m_AudioUnit.SetCurrentVolume(volPct))
+    if (!m_AUOutput.SetCurrentVolume(volPct))
       return false;
   }
   m_CurrentVolume = nVolume; // Store the volume setpoint. We need this to check for 'mute'
@@ -598,8 +624,13 @@ unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   unsigned int cacheSpace = GetSpace();
   if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
-
-  size_t bytesUsed = m_pCache->AddData((void*)data, len);
+  
+  // Call channel remapping routine if available available and required 
+  if(m_remap.CanRemap() && !m_Passthrough)
+    m_remap.Remap((void*)data, (void*)m_RemapBuffer, len / m_BytesPerFrame);
+  else
+    memcpy(m_RemapBuffer, data, len);
+  size_t bytesUsed = m_pCache->AddData((void*)m_RemapBuffer, len);
 
 #ifdef _DEBUG
   // Update tracking variable
@@ -723,8 +754,34 @@ OSStatus CCoreAudioRenderer::DirectRenderCallback(AudioDeviceID inDevice, const 
 //***********************************************************************************************
 // Audio Device Initialization Methods
 //***********************************************************************************************
-bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample)
+bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap)
 {
+  // Set up audio channel remaping
+  if (!channelMap) 
+  {
+    channelMap = (PCMChannels *)default_channel_layout[channels - 1];
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializePCM:    no channel map available for source, using %u channel default map",channels);
+  } 
+  else
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializePCM:    using supplied channel map for audio source",channels);
+  
+  PCMChannels *outLayout = m_remap.SetInputFormat(channels, channelMap, bitsPerSample / 8);
+  
+  // not used yet: count channels in layout selected in GUI (copied from Win32WASAPI)
+  // this could be used to create the AudioUnit with only the downmixed number of channels, but this is not currently done:
+  // - AudioUnit handles hardware with too few channels without problems (so e.g. downmixing to a hardware 4.0 setup should work)
+  // - keeping the channel number the same gives the option of simply leaving out remap in AddPackets where there is a problem.
+  int layoutChannels = 0;
+  for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
+    ++layoutChannels;
+  
+  CoreAudioChannelList outputMap;
+  m_AudioDevice.GetPreferredChannelLayout(&outputMap);
+  
+  // Create the MatrixMixer AudioUnit Component
+  if (!m_MixerUnit.Open(kAudioUnitType_Mixer, kAudioUnitSubType_MatrixMixer, kAudioUnitManufacturer_Apple))
+    return false;
+  
   // Set the input stream format for the AudioUnit (this is what is being sent to us)
   AudioStreamBasicDescription inputFormat;
   inputFormat.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
@@ -738,10 +795,15 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   inputFormat.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
   inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
   inputFormat.mReserved = 0;
-  if (!m_AudioUnit.SetInputFormat(&inputFormat))
+  if (!m_AUOutput.SetInputFormat(&inputFormat))
     return false;
-
-  // TODO: Handle channel mapping
+	
+  // Set output format for remap, using default speaker order for now.
+  // The number of channels in the audio device is still based on the channels in the source (6 for 5.1 etc.) even with downmixing active
+  // We should probably get the speaker position/order information from the OSX audio settings.
+  m_remap.SetOutputFormat(channels, (PCMChannels *)channel_order, false);
+  if(m_remap.CanRemap())
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializePCM:    Successfully created a remapping matrix.");
 
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
   m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
@@ -758,7 +820,7 @@ bool CCoreAudioRenderer::InitializePCMEncoded(UInt32 sampleRate)
   // Set the Sample Rate as defined by the spec.
   m_AudioDevice.SetNominalSampleRate((float)sampleRate);
 
-  if (!InitializePCM(2, sampleRate, 16))
+  if (!InitializePCM(2, sampleRate, 16, false))
     return false;
 
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio

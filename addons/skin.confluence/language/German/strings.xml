@@ -11,7 +11,9 @@
   <string id="31003">Power Optionen</string>
   <string id="31004">In Arbeit...</string>
   <string id="31005">Verberge Info</string>
+
   <string id="31007">Plugins</string>
+
   <string id="31020">Kürzlich hinzugefügt</string>
   <string id="31021">Video - Dateien</string>
   <string id="31022">Music - Dateien</string>
@@ -20,13 +22,16 @@
   <string id="31025">Einträge</string>
   <string id="31026">Allg. Optionen</string>
   <string id="31027">Ort</string>
+
   <string id="31028">Poster</string>
   <string id="31029">Fanart</string>
   <string id="31030">Komplette Liste</string>
   <string id="31031">Bild Vorschau</string>
   <string id="31032">Bild Wrap</string>
   <string id="31033">Info</string>
+
   <string id="31040">Jetzt gespielt</string>
+
   <string id="31042">ABSPIELEN</string>
   <string id="31043">PAUSE</string>
   <string id="31044">SCHNELL VORLAUF</string>
@@ -35,6 +40,7 @@
   <string id="31047">Aktuelle Einstellung</string>
   <string id="31048">Visualisierungs Einstellungen</string>
   <string id="31049">Schluss Zeit</string>
+
   <string id="31055">Öffne Wiedergabeliste</string>
   <string id="31056">Sichere Wiedergabeliste</string>
   <string id="31057">Schliesse Wiedergabeliste</string>
@@ -42,17 +48,15 @@
   <string id="31059">Aktuelle Wiedergabeliste</string>
   <string id="31060">Die Datei ist gestapelt, wähle den Teil zum abspielen.</string>
   <string id="31061">Aktuell ausgewählt</string>
-  <string id="31100">
-  </string>
+
+  <string id="31100"></string>
   <string id="31101">Home Screen Optionen</string>
   <string id="31102">Hintergrund</string>
   <string id="31103">Zeige "Pause" in Bilder Diaschau</string>
-  <string id="31104">
-  </string>
+  <string id="31104">Trailer im Fenster wiedergeben [COLOR=grey3](Video Information Dialog)[/COLOR]</string>
   <string id="31105">Zeige Medien Titel beim Hintergrund Scannen</string>
   <string id="31106">Sonstige Optionen</string>
-  <string id="31107">
-  </string>
+  <string id="31107">Flags von Dateinamen ausblenden [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Verstecke Hauptmenü Buttons</string>
   <string id="31109">Home Screen Hintergrund</string>
   <string id="31110">Ändere Hintergrund für Home Button</string>
@@ -76,22 +80,21 @@
   <string id="31128">XBMC Lyrics</string>
   <string id="31129">Aktiviere Untertitel-Download im Video OSD </string>
   <string id="31130">PFAD ZUM UNTERTITEL SCRIPT</string>
+
   <string id="31140">Musik OSD</string>
   <string id="31141">Video OSD</string>
+
   <string id="31200">Tastenkürzel</string>
   <string id="31201">Kategorie</string>
   <string id="31202">Zeige Darsteller</string>
   <string id="31203">Wähle Dein Lied</string>
   <string id="31204">Sektions Verknüpfung</string>
   <string id="31205">Lyrics Quelle</string>
-  <string id="31250">Radar &amp; Vorhersage</string>
-  <string id="31251">Vorhersage</string>
-  <string id="31252">TWC Script</string>
-  <string id="31300">Aktuelles Temp</string>
+
+  <string id="31300">Aktuelle Temperatur</string>
   <string id="31301">Letztes Update</string>
   <string id="31302">Menü</string>
-  <string id="31303">
-  </string>
+  <string id="31303"></string>
   <string id="31304">Bild</string>
   <string id="31305">Keine Disk vorhanden</string>
   <string id="31306">Auswerfen</string>
@@ -104,8 +107,7 @@
   <string id="31313">Wähle Scraper</string>
   <string id="31314">Inhalt Scanning Optionen</string>
   <string id="31315">Basic</string>
-  <string id="31316">
-  </string>
+  <string id="31316"></string>
   <string id="31317">Setze Fanart Pfad</string>
   <string id="31318">Kleines Fanart</string>
   <string id="31319">Ausgewähltes Profil</string>
@@ -120,12 +122,14 @@
   <string id="31328">Kürzlich Hinzugefügt</string>
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
   <string id="31330">Starte[CR][CR]Filmtrailer</string>
+
   <string id="31351">Pause</string>
   <string id="31352">Stop</string>
   <string id="31353">Vorspulen</string>
   <string id="31354">Rückspulen</string>
   <string id="31355">Filmmenü</string>
   <string id="31356">Untertitel herunterladen</string>
+
   <string id="31400">[B]KONFIGURIERE DIE DARSTELLUNGS EINSTELLUNGEN[/B][CR][CR]Wechsel den Skin · Wähle Sprache und Region · Wechsel Dateilisten Optionen[CR]Setze Bildschirmschoner</string>
   <string id="31401">[B]KONFIGURIERE VIDEO EINSTELLUNGEN[/B][CR][CR]Organisiere die Video DB · Setze die Abspiel Optionen · Wechsel die Video Auflistungs Optionen · Setze Untertitel Schrift</string>
   <string id="31402">[B]KONFIGURIERE MUSIK EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik DB · Setze die Musik Abspiel Optionen · Wechsel die Musik Auflistungs Optionen · Einrichten der Lied Vorlage · Setze Karaoke Optionen</string>

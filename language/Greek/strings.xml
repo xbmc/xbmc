@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/14/2010-->
+<!--Date of translation: 06/20/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 31095-->
+<!--Based on english strings version 31234-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -122,6 +122,7 @@
   <string id="165">Υπάρχει δίσκος</string>
   <string id="166">Κέλυφος</string>
   <string id="167">Ενεργοποίηση διακομιστή FTP</string>
+  <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
   <string id="172">Ημερομηνία κυκλοφορίας</string>
@@ -181,6 +182,8 @@
   <string id="237">Ελαχιστοποίηση</string>
   <string id="238">Μεγέθυνση</string>
   <string id="239">Εκκαθάριση λίστας αναπαραγωγής στη λήξη</string>
+  <string id="240">Κατάσταση προβολής</string>
+  <string id="241">Πλήρης οθόνη #%d</string>
   <string id="247">Scripts</string>
   <string id="248">Γλώσσα</string>
   <string id="249">Μουσική</string>
@@ -584,7 +587,9 @@
   <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
   <string id="727">Διακομιστής Ιστού</string>
   <string id="728">Διακομιστής FTP</string>
+  <string id="729">Συγχρονισμός ώρας από το Internet</string>
   <string id="730">- Θύρα</string>
+  <string id="731">Διακομιστές συγχρονισμού ώρας</string>
   <string id="732">Αποθήκευση &amp; εφαρμογή</string>
   <string id="733">- Κωδικός πρόσβασης</string>
   <string id="734">Χωρίς κωδικό πρόσβασης</string>
@@ -1952,7 +1957,7 @@
   <string id="24001">Πρόσθετα</string>
   <string id="24002">Ρυθμίσεις πρόσθετου</string>
   <string id="24003">Πληροφορίες πρόσθετου</string>
-  <string id="24005">Επέκταση</string>
+  <string id="24005">Πηγές πολυμέσων</string>
   <string id="24007">Πληροφορίες ταινίας</string>
   <string id="24008">Προφύλαξη οθόνης</string>
   <string id="24009">Script</string>
@@ -1972,15 +1977,16 @@
   <string id="24028">Weather.com (βασική)</string>
   <string id="24030">Δεν είναι δυνατή η ρύθμιση αυτού του πρόσθετου</string>
   <string id="24031">Σφάλμα στη λήψη ρυθμίσεων</string>
-  <string id="24032">Όλα τα αποθετήρια</string>
-  <string id="24033">Αποθετήρια</string>
+  <string id="24032">Όλα τα πρόσθετα</string>
+  <string id="24033">Λήψη πρόσθετων</string>
   <string id="24034">Έλεγχος για ενημερώσεις</string>
   <string id="24035">Αναγκασμένη ανανέωση</string>
   <string id="24036">Καταγραφή αλλαγών</string>
   <string id="24037">Κατάργηση εγκατάστασης</string>
   <string id="24038">Εγκατάσταση</string>
   <string id="24039">Απενεργοποιημένα πρόσθετα</string>
-  <string id="24040">(Εκκαθάριση των τρεχουσών ρυθμίσεων)</string>
+  <string id="24040">(Απαλοιφή της τρέχουσας ρύθμισης)</string>
+  <string id="24041">Εγκατάσταση από αρχείο zip</string>
   <string id="24050">Διαθέσιμα πρόσθετα</string>
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>

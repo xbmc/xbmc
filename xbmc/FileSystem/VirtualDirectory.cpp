@@ -46,6 +46,7 @@ CVirtualDirectory::CVirtualDirectory(void)
   m_allowPrompting = true;  // by default, prompting is allowed.
   m_cacheDirectory = DIR_CACHE_ONCE;  // by default, caching is done.
   m_allowNonLocalSources = true;
+  m_allowThreads = true;
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -79,7 +80,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
-    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo, true);
+    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo, m_allowThreads);
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
   if (strPath.IsEmpty())

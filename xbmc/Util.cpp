@@ -239,6 +239,14 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
 
+  // HTS Tvheadend client
+  else if (url.GetProtocol() == "htsp")
+    strFilename = g_localizeStrings.Get(20256);
+
+  // VDR Streamdev client
+  else if (url.GetProtocol() == "vtp")
+    strFilename = g_localizeStrings.Get(20257);
+
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
@@ -666,7 +674,15 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
+#ifdef _WIN32
+  CStdStringW strPathW, strTargetW;
+  g_charsetConverter.utf8ToW(strTarget, strTargetW);
+  strPathW = _wgetenv(strTargetW);
+  g_charsetConverter.wToUTF8(strPathW,strPath);
+#else
   strPath = getenv(strTarget);
+#endif
+
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
@@ -1144,6 +1160,23 @@ bool CUtil::IsWritable(const CStdString& strFile)
   return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
 }
 
+bool CUtil::IsPicture(const CStdString& strFile)
+{
+  CStdString extension = GetExtension(strFile);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+    return true;
+
+  if (extension == ".tbn" || extension == ".dds")
+    return true;
+
+  return false;
+}
+
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
   if (strFileOrFolder.IsEmpty())
@@ -1412,11 +1445,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   vector<CStdString> token;
   Tokenize(strPath,token,"/\\");
-  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  if (token.size() > 0)
   {
-    CStdString strPath2;
-    GetParentPath(strPath,strPath2);
-    strLookInPaths.push_back(strPath2);
+    if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+    {
+      CStdString strPath2;
+      GetParentPath(strPath,strPath2);
+      strLookInPaths.push_back(strPath2);
+    }
   }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)

@@ -28,12 +28,14 @@
 #include "CriticalSection.h"
 #include "SingleLock.h"
 #include "FileSystem/File.h"
-#include "StdString.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "Thread.h"
 
-FILE* CLog::m_file = NULL;
+FILE*       CLog::m_file            = NULL;
+int         CLog::m_repeatCount     = 0;
+int         CLog::m_repeatLogLevel  = -1;
+CStdString* CLog::m_repeatLine      = NULL;
 
 static CCriticalSection critSec;
 
@@ -61,6 +63,8 @@ void CLog::Close()
     fclose(m_file);
     m_file = NULL;
   }
+  delete m_repeatLine;
+  m_repeatLine = NULL;
 }
 
 
@@ -89,6 +93,27 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.FormatV(format,va);
     va_end(va);
 
+    if (m_repeatLogLevel == loglevel && *m_repeatLine == strData)
+    {
+      m_repeatCount++;
+      return;
+    }
+    else if (m_repeatCount)
+    {
+      CStdString strPrefix2, strData2;
+      strPrefix2.Format("%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ", time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
+
+      strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
+      fwrite(strPrefix2.c_str(),strPrefix2.size(),1,m_file);
+      fwrite(strData2.c_str(),strData2.size(),1,m_file);
+#if !defined(_LINUX) && (defined(_DEBUG) || defined(PROFILE))
+      OutputDebugString(strData2.c_str());
+#endif
+      m_repeatCount = 0;
+    }
+    
+    *m_repeatLine     = strData;
+    m_repeatLogLevel  = loglevel;
 
     unsigned int length = 0;
     while ( length != strData.length() )
@@ -179,6 +204,10 @@ bool CLog::Init(const char* path)
     m_file = fopen(strLogFile.c_str(),"wb");
 #endif
   }
+
+  if (!m_repeatLine)
+    m_repeatLine = new CStdString;
+
   return m_file != NULL;
 }
 

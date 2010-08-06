@@ -247,9 +247,6 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#if defined(HAS_SDL) && defined(_WIN32)
-#include <SDL/SDL_syswm.h>
-#endif
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
@@ -2108,6 +2105,14 @@ void CApplication::Render()
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
+
+  // yield to other threads, so any thread needing
+  // gfx context will get a timeslice. Newer os's
+  // doesn't automatically prempt the unlocking thread
+  // after a mutex is released. This may cause app thread
+  // to regrab gfx lock before for example python get's
+  // access to it.
+  SleepEx(0, TRUE);
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
@@ -4656,7 +4661,8 @@ bool CApplication::ExecuteAction(CGUIActionDescriptor action)
   {
 #ifdef HAS_PYTHON
     // Determine the context of the action, if possible
-    g_pythonParser.evalString(action.m_action);
+    vector<CStdString> argv;
+    g_pythonParser.evalString(action.m_action, argv);
     return true;
 #else
     return false;
@@ -4801,7 +4807,9 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get().UpdateRepos();
+  
+  if (!IsPlayingVideo())
+    ADDON::CAddonMgr::Get().UpdateRepos();
 
 #if defined(__arm__)
   // TODO: gui rendering testing, remove later
@@ -5204,7 +5212,7 @@ void CApplication::UpdateLibraries()
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("", false);
+      scanner->StartScanning("");
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

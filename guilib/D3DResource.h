@@ -23,6 +23,7 @@
 
 #ifdef HAS_DX
 #include "StdString.h"
+#include <map>
 
 class ID3DResource
 {
@@ -77,12 +78,14 @@ private:
   BYTE*     m_data;
 };
 
+typedef std::map<CStdString, CStdString> DefinesMap;
+
 class CD3DEffect : public ID3DResource
 {
 public:
   CD3DEffect();
   virtual ~CD3DEffect();
-  bool Create(const CStdString &effectString);
+  bool Create(const CStdString &effectString, DefinesMap* defines);
   void Release();
   bool SetFloatArray(D3DXHANDLE handle, const float* val, unsigned int count);
   bool SetMatrix(D3DXHANDLE handle, const D3DXMATRIX* mat);
@@ -100,9 +103,10 @@ public:
   virtual void OnLostDevice();
   virtual void OnResetDevice();
 private:
-  bool CreateEffect();
+  bool         CreateEffect();
   CStdString   m_effectString;
-  ID3DXEffect *m_effect;
+  ID3DXEffect  *m_effect;
+  DefinesMap   m_defines;
 };
 
 class CD3DVertexBuffer : public ID3DResource
@@ -130,4 +134,5 @@ private:
   // saved data
   BYTE*   m_data;
 };
+
 #endif

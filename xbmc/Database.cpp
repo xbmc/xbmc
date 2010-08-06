@@ -67,6 +67,7 @@ uint32_t CDatabase::ComputeCRC(const CStdString &text)
   return crc;
 }
 
+
 CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
 {
   //  %q is the sqlite format string for %s.
@@ -85,6 +86,26 @@ CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
   if (szSql) {
     strResult = szSql;
     sqlite3_free(szSql);
+  }
+
+  return strResult;
+}
+
+CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
+{
+  CStdString strResult = "";
+
+  if (NULL != m_pDB.get())
+  {
+    va_list args;
+    va_start(args, strStmt);
+    char *szSql = m_pDB->vprepare(strStmt.c_str(), args);
+    va_end(args);
+
+    if (szSql) {
+      strResult = szSql;
+      m_pDB->vprepare_free(szSql);
+    }
   }
 
   return strResult;
@@ -269,7 +290,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
         if (iCount > MAX_COMPRESS_COUNT)
           iCount = -1;
         m_pDS->close();
-        CStdString strSQL=FormatSQL("update version set iCompressCount=%i\n",++iCount);
+        CStdString strSQL=PrepareSQL("update version set iCompressCount=%i\n",++iCount);
         m_pDS->exec(strSQL.c_str());
         if (iCount != 0)
           return true;
@@ -344,7 +365,7 @@ bool CDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "creating version table");
     m_pDS->exec("CREATE TABLE version (idVersion integer, iCompressCount integer)\n");
-    CStdString strSQL=FormatSQL("INSERT INTO version (idVersion,iCompressCount) values(%i,0)\n", GetMinVersion());
+    CStdString strSQL=PrepareSQL("INSERT INTO version (idVersion,iCompressCount) values(%i,0)\n", GetMinVersion());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -354,7 +375,7 @@ bool CDatabase::UpdateVersionNumber()
 {
   try
   {
-    CStdString strSQL=FormatSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
+    CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
     m_pDS->exec(strSQL.c_str());
   }
   catch(...)

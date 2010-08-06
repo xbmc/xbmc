@@ -108,14 +108,17 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
+  vector<CStdString> argv;
+  argv.push_back(basePath);
+  argv.push_back(strHandle);
+  argv.push_back(options);
 
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
 #ifdef HAS_PYTHON
   CStdString file = m_addon->LibPath();
-  if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)plugin_argv) >= 0)
+  if (g_pythonParser.evalFile(file, argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
     success = WaitOnScriptResult(file, scriptName);
@@ -201,7 +204,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   SetEvent(dir->m_fetchComplete);
 }
 
-void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
+void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
@@ -219,18 +222,18 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", label2Mask));
         else
-          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", label2Mask));
         else
-          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_ARTIST:
@@ -256,6 +259,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%T", "%J"));
         break;
       }
+    case SORT_METHOD_BITRATE:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_BITRATE, 623, LABEL_MASKS("%T", "%X"));
+        break;
+      }             
     case SORT_METHOD_SIZE:
       {
         dir->m_listItems->AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%T", "%I"));
@@ -263,12 +271,12 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_FILE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_TRACKNUM:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("[%N. ]%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("[%N. ]%T", label2Mask));
         break;
       }
     case SORT_METHOD_DURATION:
@@ -303,7 +311,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_VIDEO_TITLE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_MPAA_RATING:
@@ -332,12 +340,12 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_UNSORTED:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_NONE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_DRIVE_TYPE:
@@ -406,15 +414,15 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", -1);
-  const char *argv[3];
-  argv[0] = basePath.c_str();
-  argv[1] = strHandle.c_str();
-  argv[2] = options.c_str();
+  vector<CStdString> argv;
+  argv.push_back(basePath);
+  argv.push_back(strHandle);
+  argv.push_back(options);
 
   // run the script
 #ifdef HAS_PYTHON
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0], argv[1], argv[2]);
-  if (g_pythonParser.evalFile(addon->LibPath().c_str(), 3, (const char**)argv) >= 0)
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
+  if (g_pythonParser.evalFile(addon->LibPath(), argv) >= 0)
     return true;
   else
 #endif
@@ -578,5 +586,3 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   CPluginDirectory *dir = globalHandles[handle];
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
-
-

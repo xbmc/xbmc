@@ -95,6 +95,7 @@ public:
   CStdString changelog;
   CStdString fanart;
   ADDONDEPS dependencies;
+  CStdString broken;
   int        stars;
 };
 

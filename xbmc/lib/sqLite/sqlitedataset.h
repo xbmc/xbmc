@@ -85,6 +85,10 @@ public:
   virtual void commit_transaction();
   virtual void rollback_transaction();
 
+/* virtual methods for formatting */
+  virtual char *vprepare(const char *format, va_list args);
+  virtual void vprepare_free(void *p);
+
   bool in_transaction() {return _in_transaction;}; 	
 
 };

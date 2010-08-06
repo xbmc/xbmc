@@ -31,6 +31,7 @@
 #include "utils/FileOperationJob.h"
 #include "GUIWindowManager.h"
 #include "GUIWindowAddonBrowser.h"
+#include "GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -154,11 +155,13 @@ bool CRepositoryUpdateJob::DoWork()
     return false;
 
   // check for updates
+  CAddonDatabase database;
+  database.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(addons[i]->ID(),addon) &&
-        addons[i]->Version() > addon->Version())
+    CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
+    if (addon && addons[i]->Version() > addon->Version())
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
@@ -171,6 +174,21 @@ bool CRepositoryUpdateJob::DoWork()
                                                           addon->Name(),TOAST_DISPLAY_TIME,false);
       }
     }
+    if (!addons[i]->Props().broken.IsEmpty())
+    {
+      if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
+      {
+        if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
+                                             g_localizeStrings.Get(24096),
+                                             g_localizeStrings.Get(24097),
+                                             ""))
+          database.DisableAddon(addons[i]->ID());
+
+        database.BreakAddon(addons[i]->ID(),true,addons[i]->Props().broken);
+      }
+    }
+    if (addons[i]->Props().broken.IsEmpty())
+      database.BreakAddon(addons[i]->ID(),false);
   }
 
   return true;

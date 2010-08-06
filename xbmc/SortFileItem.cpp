@@ -32,15 +32,15 @@
 
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
-inline int StartsWithToken(const CStdString& strLabel)
+CStdString SSortFileItem::RemoveArticles(const CStdString &label)
 {
   for (unsigned int i=0;i<g_advancedSettings.m_vecTokens.size();++i)
   {
-    if (g_advancedSettings.m_vecTokens[i].size() < strLabel.size() &&
-        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), strLabel.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
-      return g_advancedSettings.m_vecTokens[i].size();
+    if (g_advancedSettings.m_vecTokens[i].size() < label.size() &&
+        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), label.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
+      return label.Mid(g_advancedSettings.m_vecTokens[i].size());
   }
-  return 0;
+  return label;
 }
 
 bool SSortFileItem::Ascending(const CFileItemPtr &left, const CFileItemPtr &right)
@@ -116,7 +116,7 @@ void SSortFileItem::ByLabel(CFileItemPtr &item)
 void SSortFileItem::ByLabelNoThe(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetLabel().Mid(StartsWithToken(item->GetLabel())));
+  item->SetSortLabel(RemoveArticles(item->GetLabel()));
 }
 
 void SSortFileItem::ByFile(CFileItemPtr &item)
@@ -180,8 +180,7 @@ void SSortFileItem::BySongTitle(CFileItemPtr &item)
 void SSortFileItem::BySongTitleNoThe(CFileItemPtr &item)
 {
   if (!item) return;
-  int start = StartsWithToken(item->GetMusicInfoTag()->GetTitle());
-  item->SetSortLabel(item->GetMusicInfoTag()->GetTitle().Mid(start));
+  item->SetSortLabel(RemoveArticles(item->GetMusicInfoTag()->GetTitle()));
 }
 
 void SSortFileItem::BySongAlbum(CFileItemPtr &item)
@@ -215,15 +214,14 @@ void SSortFileItem::BySongAlbumNoThe(CFileItemPtr &item)
     label = item->GetMusicInfoTag()->GetAlbum();
   else if (item->HasVideoInfoTag())
     label = item->GetVideoInfoTag()->m_strAlbum;
-  label = label.Mid(StartsWithToken(label));
+  label = RemoveArticles(label);
 
   CStdString artist;
   if (item->HasMusicInfoTag())
     artist = item->GetMusicInfoTag()->GetArtist();
   else if (item->HasVideoInfoTag())
     artist = item->GetVideoInfoTag()->m_strArtist;
-  artist = artist.Mid(StartsWithToken(artist));
-  label += " " + artist;
+  label += " " + RemoveArticles(artist);
 
   if (item->HasMusicInfoTag())
     label.AppendFormat(" %i", item->GetMusicInfoTag()->GetTrackAndDiskNumber());
@@ -273,7 +271,7 @@ void SSortFileItem::BySongArtistNoThe(CFileItemPtr &item)
     label = item->GetMusicInfoTag()->GetArtist();
   else if (item->HasVideoInfoTag())
     label = item->GetVideoInfoTag()->m_strArtist;
-  label = label.Mid(StartsWithToken(label));
+  label = RemoveArticles(label);
 
   if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
   {
@@ -290,8 +288,7 @@ void SSortFileItem::BySongArtistNoThe(CFileItemPtr &item)
     album = item->GetMusicInfoTag()->GetAlbum();
   else if (item->HasVideoInfoTag())
     album = item->GetVideoInfoTag()->m_strAlbum;
-  album = album.Mid(StartsWithToken(album));
-  label += " " + album;
+  label += " " + RemoveArticles(album);
 
   if (item->HasMusicInfoTag())
     label.AppendFormat(" %i", item->GetMusicInfoTag()->GetTrackAndDiskNumber());
@@ -386,8 +383,7 @@ void SSortFileItem::ByMovieSortTitleNoThe(CFileItemPtr &item)
     label = item->GetVideoInfoTag()->m_strSortTitle;
   else
     label = item->GetVideoInfoTag()->m_strTitle;
-  label = label.Mid(StartsWithToken(label));
-  item->SetSortLabel(label);
+  item->SetSortLabel(RemoveArticles(label));
 }
 
 void SSortFileItem::ByMovieRating(CFileItemPtr &item)
@@ -425,7 +421,7 @@ void SSortFileItem::ByStudioNoThe(CFileItemPtr &item)
 {
   if (!item) return;
   CStdString studio = item->GetVideoInfoTag()->m_strStudio;
-  item->SetSortLabel(studio.Mid(StartsWithToken(studio)));
+  item->SetSortLabel(RemoveArticles(studio));
 }
 
 void SSortFileItem::ByEpisodeNum(CFileItemPtr &item)
@@ -469,4 +465,12 @@ void SSortFileItem::ByChannel(CFileItemPtr &item)
     item->SetSortLabel(item->GetEPGInfoTag()->ChannelName());
   else if (item->IsPVRChannel())
     item->SetSortLabel(item->GetPVRChannelInfoTag()->Name());
+}
+
+void SSortFileItem::ByBitrate(CFileItemPtr &item)
+{
+  if (!item) return;
+  CStdString label;
+  label.Format("%"PRId64, item->m_dwSize);
+  item->SetSortLabel(label);
 }

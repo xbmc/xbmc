@@ -56,7 +56,7 @@ protected:
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
   unsigned int     LoadScriptStrings();
   void             ClearScriptStrings();
-  virtual void     Update();
+  virtual bool     Update(const CStdString &strPath);
   void             SetupShares();
   PyObject*        pCallbackWindow;
   PyThreadState*   m_threadState;

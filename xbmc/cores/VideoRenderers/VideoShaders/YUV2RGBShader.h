@@ -109,6 +109,7 @@ namespace Shaders {
     GLint m_hVTex;
     GLint m_hMatrix;
     GLint m_hStretch;
+    GLint m_hStep;
 #if HAS_GLES == 2
     GLint m_hVertex;
     GLint m_hYcoord;

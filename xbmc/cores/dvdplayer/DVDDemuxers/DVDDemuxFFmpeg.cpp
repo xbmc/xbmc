@@ -1243,11 +1243,8 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       }
     }
 
-    if (m_dllAvCodec.IsLoaded())
-    {
-      AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
-      if (codec)
-        strName = codec->name;
-    }
+    AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
+    if (codec)
+      strName = codec->name;
   }
 }

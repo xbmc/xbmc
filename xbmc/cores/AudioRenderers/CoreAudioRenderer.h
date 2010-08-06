@@ -132,7 +132,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
     bool InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate);
-    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
+    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap);
     bool InitializePCMEncoded(UInt32 sampleRate);
 
     bool m_Pause;
@@ -140,10 +140,12 @@ class CCoreAudioRenderer : public IAudioRenderer
 
     long m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
     unsigned int m_ChunkLen; // Minimum amount of data accepted by AddPackets
+    char* m_RemapBuffer; // Temporary buffer for channel remapping
     CSliceQueue* m_pCache;
     size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
 
-    CCoreAudioUnit m_AudioUnit;
+    CAUOutputDevice m_AUOutput;
+    CCoreAudioUnit m_MixerUnit;
     CCoreAudioDevice m_AudioDevice;
     CCoreAudioStream m_OutputStream;
     UInt32 m_OutputBufferIndex;

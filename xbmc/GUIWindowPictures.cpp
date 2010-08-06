@@ -81,8 +81,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // is this the first time accessing this window?
-      if (m_vecItems->m_strPath == "?" || message.GetStringParam())
-        m_vecItems->m_strPath = g_settings.m_defaultPictureSource;
+      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+        message.SetStringParam(g_settings.m_defaultPictureSource);
 
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -535,7 +535,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
 CStdString CGUIWindowPictures::GetStartFolder(const CStdString &dir)
 {
   if (dir.Equals("Plugins") || dir.Equals("Addons"))
-    return "addons://sources/executable/";
+    return "addons://sources/image/";
 
   SetupShares();
   VECSOURCES shares;

@@ -462,15 +462,19 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-      if (m_speed == DVD_PLAYSPEED_PAUSE)
+      if (m_speed == DVD_PLAYSPEED_NORMAL)
+      {
+        m_dvdAudio.Resume();
+      }
+      else
       {
         m_ptsOutput.Flush();
         m_resampler.Flush();
         m_syncclock = true;
+        if (m_speed != DVD_PLAYSPEED_PAUSE)
+          m_dvdAudio.Flush();
         m_dvdAudio.Pause();
       }
-      else
-        m_dvdAudio.Resume();
     }
     pMsg->Release();
   }
@@ -485,6 +489,10 @@ void CDVDPlayerAudio::OnStartup()
   m_decode.Release();
 
   g_dvdPerformanceCounter.EnableAudioDecodePerformance(ThreadHandle());
+
+#ifdef _WIN32
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
 }
 
 void CDVDPlayerAudio::Process()
@@ -760,6 +768,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 void CDVDPlayerAudio::OnExit()
 {
   g_dvdPerformanceCounter.DisableAudioDecodePerformance();
+
+#ifdef _WIN32
+  CoUninitialize();
+#endif
 
   CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }

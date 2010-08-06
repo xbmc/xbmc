@@ -70,6 +70,11 @@ class DllSwScaleInterface
 {
 public:
    virtual ~DllSwScaleInterface() {}
+
+   virtual struct SwsContext *sws_getCachedContext(struct SwsContext *context,
+                                             int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
+                                  SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)=0;
+
    virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                   SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)=0;
 
@@ -91,6 +96,11 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
 public:
   virtual ~DllSwScale() {}
+  virtual struct SwsContext *sws_getCachedContext(struct SwsContext *context,
+                                            int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
+                               SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
+    { return ::sws_getCachedContext(context, srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
+
   virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
     { return ::sws_getContext(srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
@@ -119,6 +129,8 @@ public:
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
   DECLARE_DLL_WRAPPER(DllSwScale, DLL_PATH_LIBSWSCALE)
+  DEFINE_METHOD11(struct SwsContext *, sws_getCachedContext, ( struct SwsContext *p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8,
+							 SwsFilter * p9, SwsFilter * p10, double * p11))
   DEFINE_METHOD10(struct SwsContext *, sws_getContext, ( int p1, int p2, int p3, int p4, int p5, int p6, int p7, 
 							 SwsFilter * p8, SwsFilter * p9, double * p10))
   DEFINE_METHOD7(int, sws_scale, (struct SwsContext *p1, uint8_t** p2, int *p3, int p4, int p5, uint8_t **p6, int *p7))
@@ -126,6 +138,7 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
   DEFINE_METHOD1(void, sws_freeContext, (struct SwsContext *p1))
 
   BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD(sws_getCachedContext)
     RESOLVE_METHOD(sws_getContext)
     RESOLVE_METHOD(sws_scale)
     RESOLVE_METHOD(sws_rgb2rgb_init)

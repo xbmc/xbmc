@@ -90,7 +90,7 @@
   <string id="127">Objetos</string>
   <string id="128">Geral</string>
   <string id="129">Apresentação</string>
-  <string id="130">Info do Sistema</string>
+  <string id="130">Informação do Sistema</string>
   <string id="131">Tela</string>
   <string id="132">Álbuns</string>
   <string id="133">Artistas</string>
@@ -1674,13 +1674,13 @@
   <string id="20151">Cancelar cronômetro</string>
   <string id="20152">Bloquear preferências para %s</string>
   <string id="20153">Buscar...</string>
-  <string id="20154">Info resumida</string>
-  <string id="20155">Info de armazenamento</string>
-  <string id="20156">Info do disco rígido</string>
-  <string id="20157">Info do DVD-ROM</string>
-  <string id="20158">Info de rede</string>
-  <string id="20159">Info de vídeo</string>
-  <string id="20160">Info de hardware</string>
+  <string id="20154">Informação resumida</string>
+  <string id="20155">Informação de armazenamento</string>
+  <string id="20156">Informação do disco rígido</string>
+  <string id="20157">Informação do DVD-ROM</string>
+  <string id="20158">Informação de rede</string>
+  <string id="20159">Informação de vídeo</string>
+  <string id="20160">Informação de hardware</string>
   <string id="20161">Total</string>
   <string id="20162">Usado</string>
   <string id="20163">de</string>
@@ -1785,7 +1785,7 @@
   <string id="20352">Informação do episódio</string>
   <string id="20353">Carregando detalhes do seriado</string>
   <string id="20354">Obtendo guia do episódio</string>
-  <string id="20355">Carregando info. para episódios no diretório</string>
+  <string id="20355">Carregando informações para episódios no diretório</string>
   <string id="20356">Selecione o seriado:</string>
   <string id="20357">Digite o nome do seriado</string>
   <string id="20358">Temporada %i</string>
@@ -1808,7 +1808,7 @@
   <string id="20375">Desmarcar conteúdo</string>
 
   <string id="20377">Atualizar informações de seriado</string>
-  <string id="20378">Recarregar info. para todos os episódios?</string>
+  <string id="20378">Recarregar informações para todos os episódios?</string>
   <string id="20379">Pasta contém um único seriado</string>
   <string id="20380">Excluir pasta da lista de procura</string>
   <string id="20381">Especiais</string>
@@ -1986,6 +1986,7 @@
   <string id="21450">- Editar</string>
   <string id="21451">Necessário conexão com a Internet.</string>
   <string id="21452">Obter Mais</string>
+  <string id="21453">Raiz</string>
 
   <string id="21800">Nome do arquivo</string>
   <string id="21801">Caminho do arquivo</string>
@@ -2129,20 +2130,20 @@
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
   <string id="24002">Opções Add-on</string>
-  <string id="24003">Info. Add-on</string>
+  <string id="24003">Informação do Add-on</string>
 
   <string id="24005">Orige Media</string>
-  <string id="24007">Info. Filme</string>
+  <string id="24007">Informação do Filme</string>
   <string id="24008">Proteção de Tela</string>
   <string id="24009">Script</string>
   <string id="24010">Visualização</string>
   <string id="24011">Repositório de Add-on</string>
   <string id="24012">Legendas</string>
   <string id="24013">Lyrics</string>
-  <string id="24014">Info. TV</string>
-  <string id="24015">Info. Video Musical (clipe)</string>
-  <string id="24016">Info. de Album</string>
-  <string id="24017">Info. Artista</string>
+  <string id="24014">Informação de TV</string>
+  <string id="24015">Informação de Video Musical (clipe)</string>
+  <string id="24016">Informação de Album</string>
+  <string id="24017">Informação de Artista</string>
 
   <string id="24020">Configurar</string>
   <string id="24021">Desativar</string>
@@ -2161,6 +2162,7 @@
   <string id="24038">Instalar</string>
   <string id="24039">Desativar Add-ons</string>
   <string id="24040">(Limpar configuração atual)</string>
+  <string id="24041">Instalar a partir de um arquivo ZIP</string>
 
   <string id="24050">Add-ons Disponíveis</string>
   <string id="24051">Versão:</string>
@@ -2222,7 +2224,7 @@
   <string id="33013">Longo</string>
   <string id="33014">Utilizar tocador de DVD ao invés de tocador regular</string>
   <string id="33015">Pergunte para baixar antes de tocar vídeo</string>
-  <string id="33016">Clips</string>
+  <string id="33016">Clipes</string>
   <string id="33017">Reiniciar plugin para ativar</string>
   <string id="33018">Hoje a noite</string>
   <string id="33019">Amanhã a noite</string>

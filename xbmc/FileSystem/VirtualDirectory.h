@@ -60,10 +60,16 @@ namespace XFILE
 
     void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; };
 
+    /*! \brief Set whether we allow threaded loading of directories.
+     The default is to allow threading, so this can be used to disable it.
+     \param allowThreads if true we allow threads, if false we don't.
+     */
+    void SetAllowThreads(bool allowThreads) { m_allowThreads = allowThreads; };
   protected:
     void CacheThumbs(CFileItemList &items);
 
     VECSOURCES m_vecSources;
     bool       m_allowNonLocalSources;
+    bool       m_allowThreads;
   };
 }

@@ -453,8 +453,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-    case GUI_MSG_WINDOW_INIT:
+  case GUI_MSG_WINDOW_INIT:
     {
+      if (m_vecItems->m_strPath == "?")
+        m_vecItems->m_strPath.Empty();
       CStdString dir = message.GetStringParam(0);
       const CStdString &ret = message.GetStringParam(1);
       bool returning = ret.CompareNoCase("return") == 0;
@@ -1270,7 +1272,10 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
 void CGUIMediaWindow::OnInitWindow()
 {
+  // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
+  m_rootDir.SetAllowThreads(false);
   Update(m_vecItems->m_strPath);
+  m_rootDir.SetAllowThreads(true);
 
   if (m_iSelectedItem > -1)
     m_viewControl.SetSelectedItem(m_iSelectedItem);
