@@ -520,8 +520,8 @@ endif
 install-arch:
 	@# Arch dependent files
 	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
-	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/script.module.pil
-	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/script.module.pysqlite
+	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
+	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
