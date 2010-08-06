@@ -47,7 +47,7 @@ public:
   int               GetListSize();
   int               GetCurrentListPosition();
   void              SetCurrentListPosition(int item);
-  void              SetCallbackWindow(PyObject *object);
+  void              SetCallbackWindow(PyThreadState* state, PyObject *object);
   virtual bool      OnClick(int iItem);
   void              SetProperty(const CStdString &strProperty, const CStdString &strValue);
 
@@ -59,6 +59,7 @@ protected:
   virtual void     Update();
   void             SetupShares();
   PyObject*        pCallbackWindow;
+  PyThreadState*   m_threadState;
   HANDLE           m_actionEvent;
   bool             m_bRunning;
   CStdString       m_scriptPath;

@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUIFadeLabelControl.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -156,9 +157,7 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_LABEL_ADD, pControl->iParentId, pControl->iControlId);
     msg.SetLabel(strText);
 
-    PyXBMCGUILock();
-    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -177,9 +176,7 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
     pControl->vecLabels.clear();
-    PyXBMCGUILock();
-    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;

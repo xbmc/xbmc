@@ -1,0 +1,62 @@
+﻿<scraperfunctions>
+	<GetHDTrailersnet480p dest="3">
+		<RegExp input="$$6" output="&lt;details&gt;&lt;url function=&quot;Parse480pTrailer&quot;&gt;http://www.hd-trailers.net/blog/?s=&quot;\1%20%28Theatrical%20Trailer%29%22&lt;/url&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1" fixchars="1" trim="1" encode="1">(.*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetHDTrailersnet480p>
+	<GetHDTrailersnet720p dest="3">
+		<RegExp input="$$6" output="&lt;details&gt;&lt;url function=&quot;Parse720pTrailer&quot;&gt;http://www.hd-trailers.net/blog/?s=&quot;\1%20%28Theatrical%20Trailer%29%22&lt;/url&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1" fixchars="1" trim="1" encode="1">(.*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetHDTrailersnet720p>
+	<GetHDTrailersnet1080p dest="3">
+		<RegExp input="$$6" output="&lt;details&gt;&lt;url function=&quot;Parse1080pTrailer&quot;&gt;http://www.hd-trailers.net/blog/?s=&quot;\1%20%28Theatrical%20Trailer%29%22&lt;/url&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1" fixchars="1" trim="1" encode="1">(.*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetHDTrailersnet1080p>
+	<Parse480pTrailer dest="5">
+		<!--Fetch 480p trailer link from hdtrailers.net-->
+		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">sid=(\d*)"&gt;480p&lt;/a&gt;</expression>
+		</RegExp>
+	</Parse480pTrailer>
+	<Parse720pTrailer dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;&lt;trailer&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<!--Fallback to fetch 480p trailer link if 720p is not available-->
+			<RegExp input="$$1" output="http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1" dest="6">
+				<expression noclean="1">sid=(\d*)"&gt;480p&lt;/a&gt;</expression>
+			</RegExp>
+			<!--Fetch 720p trailer link from hdtrailers.net-->
+			<RegExp input="$$1" output="http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1" dest="6">
+				<expression noclean="1">sid=(\d*)"&gt;720p&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</Parse720pTrailer>
+	<Parse1080pTrailer dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;&lt;trailer&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<!--Fallback to fetch 480p trailer link if 720p and 1080p are not available-->
+			<RegExp input="$$1" output="http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1" dest="6">
+				<expression noclean="1">sid=(\d*)"&gt;480p&lt;/a&gt;</expression>
+			</RegExp>
+			<!--Fallback to fetch 720p trailer link if 1080p is not available-->
+			<RegExp input="$$1" output="http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1" dest="6">
+				<expression noclean="1">sid=(\d*)"&gt;720p&lt;/a&gt;</expression>
+			</RegExp>
+			<!--Fetch 1080p trailer link from hdtrailers.net-->
+			<RegExp input="$$1" output="http://playlist.yahoo.com/makeplaylist.dll?sdm=web&amp;pt=rd&amp;sid=\1" dest="6">
+				<expression noclean="1">sid=(\d*)"&gt;1080p&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</Parse1080pTrailer>
+</scraperfunctions>

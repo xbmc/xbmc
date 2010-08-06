@@ -85,7 +85,8 @@ class CAdvancedSettings
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
-    CStdString m_videoPPFFmpegType;
+    CStdString m_videoPPFFmpegDeint;
+    CStdString m_videoPPFFmpegPostProc;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -200,6 +201,7 @@ class CAdvancedSettings
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
+    int m_iTuxBoxStreamtsPort;
     bool m_bTuxBoxSubMenuSelection;
     int m_iTuxBoxDefaultSubMenu;
     int m_iTuxBoxDefaultRootMenu;
@@ -208,6 +210,8 @@ class CAdvancedSettings
     int m_iTuxBoxEpgRequestTime;
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
+    bool m_bTuxBoxZapstream;
+    int m_iTuxBoxZapstreamPort;
 
     int m_iMythMovieLength;         // minutes
 
@@ -236,6 +240,7 @@ class CAdvancedSettings
 
     bool m_AllowD3D9Ex;
     bool m_AllowDynamicTextures;
+    unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
 

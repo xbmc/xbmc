@@ -25,19 +25,26 @@
 #endif
 #include "utils/TimeUtils.h"
 
-CStopWatch::CStopWatch()
+CStopWatch::CStopWatch(bool useFrameTime /*=false*/)
 {
   m_timerPeriod      = 0.0f;
   m_startTick        = 0;
   m_isRunning        = false;
+  m_useFrameTime     = useFrameTime;
 
+  if (m_useFrameTime)
+  {
+    m_timerPeriod = 1.0f / 1000.0f; //frametime is in milliseconds
+  }
+  else
+  {
   // Get the timer frequency (ticks per second)
 #ifndef _LINUX
   m_timerPeriod = 1.0f / (float)CurrentHostFrequency();
 #else
   m_timerPeriod = 1.0f / 1000.0f; // we want seconds
 #endif
-
+  }
 }
 
 CStopWatch::~CStopWatch()
@@ -90,6 +97,8 @@ float CStopWatch::GetElapsedMilliseconds() const
 
 int64_t CStopWatch::GetTicks() const
 {
+  if (m_useFrameTime)
+    return CTimeUtils::GetFrameTime();
 #ifndef _LINUX
   return CurrentHostCounter();
 #else

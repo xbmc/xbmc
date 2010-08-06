@@ -44,6 +44,7 @@ public:
 
 protected:
   virtual void UpdateMonitor();
+  bool UseWindowedDX(bool fullScreen);
 };
 
 #endif

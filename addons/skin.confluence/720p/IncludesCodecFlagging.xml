@@ -14,7 +14,7 @@
 			<aspectratio>keep</aspectratio>
 			<texture>$INFO[ListItem.VideoCodec,flagging/video/,.png]</texture>
 			<!-- Don't show if its one of the 500 divx codecs -->
-			<visible>![stringcompare(ListItem.VideoCodec,divx) | stringcompare(ListItem.VideoCodec,div3) |stringcompare(ListItem.VideoCodec,div4) | stringcompare(ListItem.VideoCodec,div5)]</visible>
+			<visible>![substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]</visible>
 		</control>
 		<control type="image">
 			<description>Divx Codec Image</description>
@@ -22,7 +22,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/divx.png</texture>
-			<visible>stringcompare(ListItem.VideoCodec,divx) | stringcompare(ListItem.VideoCodec,div3) |stringcompare(ListItem.VideoCodec,div4) | stringcompare(ListItem.VideoCodec,div5)</visible>
+			<visible>[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]</visible>
 		</control>
 	</include>
 	<include name="VideoTypeHackFlaggingConditions">
@@ -48,7 +48,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/dvd.png</texture>
-			<visible>[substring(ListItem.FilenameAndPath,dvd) + !substring(ListItem.FilenameAndPath,hddvd)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+			<visible>[substring(ListItem.FilenameAndPath,dvd) + ![substring(ListItem.FilenameAndPath,hddvd) | substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip)]] + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 		<control type="image">
 			<description>TV Types Image</description>
@@ -57,6 +57,14 @@
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/TV.png</texture>
 			<visible>[substring(ListItem.FilenameAndPath,pdtv) | substring(ListItem.FilenameAndPath,hdtv) | substring(ListItem.FilenameAndPath,dsr)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>VHS Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/vhs.png</texture>
+			<visible>substring(ListItem.FilenameAndPath,vhs) + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 	</include>
 	<include name="VideoMPAAFlaggingConditions">

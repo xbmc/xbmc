@@ -24,10 +24,9 @@
 #include "Song.h"
 #include "Album.h"
 #include "addons/Scraper.h"
-#include "ScraperParser.h"
+#include "utils/ScraperUrl.h"
 
 class TiXmlDocument;
-class CScraperUrl;
 
 namespace XFILE { class CFileCurl; }
 
@@ -53,14 +52,13 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetTitle(const CStdString& strTitle);
   void SetRelevance(float relevance) { m_relevance = relevance; }
-  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
   bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;
   float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
-  CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

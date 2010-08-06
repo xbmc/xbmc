@@ -858,29 +858,17 @@ CStdString CDateTime::GetAsDBDateTime() const
 
 void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
 {
-  // assumes format:
-  // YYYY-MM-DD HH:MM:SS
-  int year = 0, month = 0, day = 0,
-      hour = 0, minute = 0, second = 0;
-  year = atoi(dateTime.Mid(0,4).c_str());
-  month = atoi(dateTime.Mid(5,2).c_str());
-  day = atoi(dateTime.Mid(8,2).c_str());
-  hour = atoi(dateTime.Mid(11,2).c_str());
-  minute = atoi(dateTime.Mid(14,2).c_str());
-  second = atoi(dateTime.Mid(17,2).c_str());
-  SetDateTime(year, month, day, hour, minute, second);
-}
-
-void CDateTime::SetFromDBTime(const CStdString &time)
-{
-  // assumes format:
-  // HH:MM:SS
-  int hour = 0, minute = 0, second = 0;
-  hour = atoi(time.Mid(0,2).c_str());
-  minute = atoi(time.Mid(3,2).c_str());
-  if (time.size() > 5)
-    second = atoi(time.Mid(6,2).c_str());
-  SetTime(hour, minute, second);
+  // assumes format YYYY-MM-DD HH:MM:SS
+  if (dateTime.size() == 19)
+  {
+    int year = atoi(dateTime.Mid(0,4).c_str());
+    int month = atoi(dateTime.Mid(5,2).c_str());
+    int day = atoi(dateTime.Mid(8,2).c_str());
+    int hour = atoi(dateTime.Mid(11,2).c_str());
+    int min = atoi(dateTime.Mid(14,2).c_str());
+    int sec = atoi(dateTime.Mid(17,2).c_str());
+    SetDateTime(year, month, day, hour, min, sec);
+  }
 }
 
 void CDateTime::SetFromDBDate(const CStdString &date)
@@ -901,6 +889,18 @@ void CDateTime::SetFromDBDate(const CStdString &date)
     day = atoi(date.Mid(8,2).c_str());
   }
   SetDate(year, month, day);
+}
+
+void CDateTime::SetFromDBTime(const CStdString &time)
+{
+  // assumes format:
+  // HH:MM:SS
+  int hour = 0, minute = 0, second = 0;
+  hour = atoi(time.Mid(0,2).c_str());
+  minute = atoi(time.Mid(3,2).c_str());
+  if (time.size() > 5)
+    second = atoi(time.Mid(6,2).c_str());
+  SetTime(hour, minute, second);
 }
 
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const

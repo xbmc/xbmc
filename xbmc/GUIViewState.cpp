@@ -25,7 +25,6 @@
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
 #include "GUIViewStatePrograms.h"
-#include "GUIViewStateScripts.h"
 #include "GUIViewStateTV.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
@@ -41,6 +40,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Key.h"
+#include "FileSystem/AddonsDirectory.h"
 
 using namespace std;
 
@@ -83,9 +83,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.IsPlayList())
     return new CGUIViewStateMusicPlaylist(items);
 
-  if (url.GetProtocol() == "shout")
-    return new CGUIViewStateMusicShoutcast(items);
-
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
 
@@ -116,9 +113,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_TV)
     return new CGUIViewStateWindowTV(items);
 
-  if (windowId==WINDOW_SCRIPTS)
-    return new CGUIViewStateWindowScripts(items);
-
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
 
@@ -132,12 +126,11 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   return new CGUIViewStateGeneral(items);
 }
 
-CGUIViewState::CGUIViewState(const CFileItemList& items, const CPluginSource::Content& content/*=CONTENT_NONE*/) : m_items(items)
+CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
   m_sortOrder=SORT_ORDER_ASC;
-  m_content = content;
 }
 
 CGUIViewState::~CGUIViewState()
@@ -345,31 +338,21 @@ CStdString CGUIViewState::GetExtensions()
 
 VECSOURCES& CGUIViewState::GetSources()
 {
-  // more consolidation could happen here for all content types
-  // - playlists, autoconfig network shares, whatnot
+  return m_sources;
+}
 
-  VECADDONS addons;
-  ADDON::CAddonMgr::Get().GetAddons(ADDON_PLUGIN, addons);
-
-  for (unsigned i=0; i<addons.size(); i++)
-  {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
-    if (!plugin || !plugin->Provides(m_content))
-      continue;
-
-    // format for sources's path is
-    // eg. pictures://UUID
+void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
+{
+  CFileItemList items;
+  if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
+  { // add the plugin source
     CMediaSource source;
-    CURL path;
-    path.SetProtocol("plugin");
-    path.SetHostName(plugin->ID());
-    source.strPath = path.Get();
-    source.strName = plugin->Name();
-    source.m_strThumbnailImage = plugin->Icon(); //FIXME cache by UUID
+    source.strPath = "addons://sources/" + content + "/";    
+    source.strName = label;
+    source.m_strThumbnailImage = "";
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
     m_sources.push_back(source);
   }
-  return m_sources;
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

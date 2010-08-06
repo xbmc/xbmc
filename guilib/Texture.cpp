@@ -31,6 +31,7 @@
 /*                                                                      */
 /************************************************************************/
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
+ : m_hasAlpha( true )
 {
 #ifndef HAS_DX
   m_texture = NULL;
@@ -178,6 +179,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+  m_hasAlpha = NULL != image.alpha;
+
   Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
   if (autoRotate && image.exifInfo.Orientation)
     m_orientation = image.exifInfo.Orientation - 1;
@@ -302,4 +305,9 @@ unsigned int CBaseTexture::GetBlockSize() const
   default:
     return 4;
   }
+}
+
+bool CBaseTexture::HasAlpha() const
+{
+  return m_hasAlpha;
 }

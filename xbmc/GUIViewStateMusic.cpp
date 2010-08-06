@@ -35,7 +35,6 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "FileSystem/ShoutcastDirectory.h"
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -60,6 +59,12 @@ CStdString CGUIViewStateWindowMusic::GetLockType()
 CStdString CGUIViewStateWindowMusic::GetExtensions()
 {
   return g_settings.m_musicExtensions;
+}
+
+VECSOURCES& CGUIViewStateWindowMusic::GetSources()
+{
+  AddAddonsSource("audio", g_localizeStrings.Get(1038));
+  return CGUIViewState::GetSources();
 }
 
 CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -513,9 +518,7 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);
-    if (share.strPath.Find(SHOUTCAST_MASTER_LINK) == 0)//shoutcast shares
-      m_sources.push_back(share);
-    else if (share.strPath.Find("lastfm://") == 0)//lastfm share
+    if (share.strPath.Find("lastfm://") == 0)//lastfm share
       m_sources.push_back(share);
   }
 }
@@ -613,7 +616,7 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  AddOrReplace(g_settings.m_musicSources, CGUIViewState::GetSources());
+  AddOrReplace(g_settings.m_musicSources, CGUIViewStateWindowMusic::GetSources());
   return g_settings.m_musicSources;
 }
 
@@ -667,40 +670,6 @@ VECSOURCES& CGUIViewStateWindowMusicPlaylist::GetSources()
 
   // CGUIViewState::GetSources would add music plugins
   return m_sources;
-}
-
-CGUIViewStateMusicShoutcast::CGUIViewStateMusicShoutcast(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
-{
-  /* sadly m_idepth isn't remembered when a directory is retrieved from cache */
-  /* and thus this check hardly ever works, so let's just disable it for now */
-  if( true || m_items.m_idepth > 1 )
-  { /* station list */
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
-    AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%K", "%A listeners", "%K", ""));  // Titel, Listeners | Titel, nothing
-    AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%K", "%B kbps", "%K", ""));  // Title, Bitrate | Title, nothing
-
-    SetSortMethod(g_settings.m_viewStateMusicShoutcast.m_sortMethod);
-    SetSortOrder(g_settings.m_viewStateMusicShoutcast.m_sortOrder);
-  }
-  else
-  { /* genre list */
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K", "", "%K", ""));  // Title, nothing | Title, nothing
-    SetSortMethod(SORT_METHOD_LABEL);
-    SetSortOrder(SORT_ORDER_ASC); /* maybe we should have this stored somewhere */
-  }
-
-  SetViewAsControl(DEFAULT_VIEW_LIST);
-  LoadViewState(items.m_strPath, WINDOW_MUSIC_FILES);
-}
-
-bool CGUIViewStateMusicShoutcast::AutoPlayNextItem()
-{
-  return false;
-}
-
-void CGUIViewStateMusicShoutcast::SaveViewState()
-{
-  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_settings.m_viewStateMusicShoutcast);
 }
 
 CGUIViewStateMusicLastFM::CGUIViewStateMusicLastFM(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

@@ -421,9 +421,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
       int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
       g_application.SeekTime((double)setpos);
-
-      //Make sure gui items are visible
-      g_infoManager.SetDisplayAfterSeek();
     }
     return true;
     break;
@@ -884,14 +881,15 @@ void CGUIWindowFullScreen::FrameMove()
 
 void CGUIWindowFullScreen::Render()
 {
-  RenderTTFSubtitles();
+  if (g_application.m_pPlayer)
+    RenderTTFSubtitles();
   CGUIWindow::Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
-      CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
+      CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible()))
   {
     CSingleLock lock (m_fontLock);
 
@@ -992,9 +990,6 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
   }
 
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
-
-  // Make sure gui items are visible.
-  g_infoManager.SetDisplayAfterSeek();
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

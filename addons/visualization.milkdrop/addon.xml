@@ -9,8 +9,10 @@
     library_windx="MilkDrop_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
     <summary>MilkDrop takes you flying through the soundwaves you're hearing</summary>
+    <summary lang="hu">A Milkdrop végigrepít a lejátszott zene hullámain</summary>	
     <summary lang="zh">DirectX可视化效果</summary>
     <description>MilkDrop was originally a music visualizer "plug-in" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound.</description>
+    <description lang="hu">A Milkdrop eredetileg egy beépülő modul volt a Winamp zenelejátszóhoz. Ahogy hallgatod a zenét, a Milkdrop keresztül repít a hallható hanghullámokon, felhasználva a dobritmust pszihedelikus efektusok létrehozására gazdag látványvilág megteremtésével. </description>
     <description lang="zh">MilkDrop是来自于Winamp音乐播放器的可视化插件。在你听音乐时，MilkDrop通过节拍检测触发的无数迷幻的效果，带你与声波一起飞翔，给你带来丰富的音乐和视觉旅程。</description>
     <disclaimer></disclaimer>
     <platform>windx</platform>

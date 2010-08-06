@@ -34,12 +34,14 @@ public:
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
 protected:
+  virtual bool OnClick(int iItem);
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const CStdString& strDirectory);
   virtual bool OnPlayMedia(int iItem);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   int GetRegion(int iItem, bool bReload=false);
 

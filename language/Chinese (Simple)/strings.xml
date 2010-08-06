@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31001 -->
+<!--Based on english strings version 31359 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -191,6 +191,8 @@
   <string id="237">缩小</string>
   <string id="238">放大</string>
   <string id="239">播放完成后清除列表</string>
+  <string id="240">显示模式</string>
+  <string id="241">全屏#%d</string>
 
   <string id="247">脚本</string>
   <string id="248">语言</string>
@@ -720,13 +722,13 @@
   <string id="1034">子菜单</string>
   <string id="1035">启用子菜单按钮</string>
   <string id="1036">收藏夹</string>
-  <string id="1037">视频插件</string>
-  <string id="1038">音乐插件</string>
-  <string id="1039">图片插件</string>
+  <string id="1037">视频扩展功能</string>
+  <string id="1038">音乐扩展功能</string>
+  <string id="1039">图片扩展功能</string>
   <string id="1040">载入目录</string>
   <string id="1041">检索%i项目</string>
   <string id="1042">检索%i在%i项目</string>
-  <string id="1043">程序插件</string>
+  <string id="1043">程序扩展功能</string>
   <string id="1044">设置插件缩略图</string>
   <string id="1045">插件设置</string>
   <string id="1046">接入点</string>
@@ -1523,6 +1525,11 @@
   <string id="16317">时间平滑（半速）</string>
   <string id="16318">时间/空间平滑（半速）</string>
 
+  <string id="16400">视频后处理</string>
+  <string id="16401">禁用</string>
+  <string id="16402">对标清内容启用</string>
+  <string id="16403">始终启用</string>
+
   <string id="17500">显示睡眠时间</string>
 
   <string id="19000">切换到频道</string>
@@ -1986,6 +1993,7 @@
   <string id="21450">- 编辑</string>
   <string id="21451">需要访问互联网。</string>
   <string id="21452">获取更多</string>
+  <string id="21453">根文件系统</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2157,6 +2165,7 @@
   <string id="24038">安装</string>
   <string id="24039">禁用扩展功能</string>
   <string id="24040">（清除当前设置）</string>
+  <string id="24041">从zip文件安装</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
@@ -2175,7 +2184,7 @@
   <string id="24068">可更新</string>
   <string id="24069">更新</string>
 
-  <string id="24070">扩展功能不可用</string>
+  <string id="24070">无法加载扩展功能</string>
   <string id="24071">发生未知错误</string>
   <string id="24072">需要先进行设置</string>
   <string id="24073">无法连接</string>

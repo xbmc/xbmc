@@ -92,7 +92,6 @@ IMAGES= \
 	DefaultRecentlyAddedEpisodes.png \
 	DefaultRecentlyAddedMovies.png \
 	DefaultRecentlyAddedMusicVideos.png \
-	DefaultScript.png \
 	DefaultTVShows.png \
 	DefaultVideo.png \
 	DefaultVideoCover.png \
@@ -137,6 +136,7 @@ IMAGES= \
 	flagging/audio/mp3.png \
 	flagging/audio/ogg.png \
 	flagging/audio/truehd.png \
+	flagging/audio/wavpack.png \
 	flagging/audio/wma.png \
 	flagging/audio/wmapro.png \
 	flagging/audio/wmav2.png \
@@ -163,6 +163,7 @@ IMAGES= \
 	flagging/video/vc-1.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
+	flagging/video/vhs.png \
 	floor.png \
 	folder-focus.png \
 	GlassOverlay.png \

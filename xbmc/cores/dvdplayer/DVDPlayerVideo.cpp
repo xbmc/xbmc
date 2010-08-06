@@ -283,8 +283,10 @@ void CDVDPlayerVideo::Process()
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
   DVDVideoPicture picture;
-  CDVDVideoPPFFmpeg mDeinterlace(g_advancedSettings.m_videoPPFFmpegType);
   CPulldownCorrection pulldown;
+  int postprocess_mode = g_guiSettings.GetInt("videoplayer.postprocess");
+  CDVDVideoPPFFmpeg mPostProcess("");
+  CStdString sPostProcessType;
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
 
@@ -531,6 +533,8 @@ void CDVDPlayerVideo::Process()
           memset(&picture, 0, sizeof(DVDVideoPicture));
           if (m_pVideoCodec->GetPicture(&picture))
           {
+            sPostProcessType.clear();
+
             picture.iGroupId = pPacket->iGroupId;
 
             if(picture.iDuration == 0)
@@ -564,8 +568,26 @@ void CDVDPlayerVideo::Process()
             || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
                                                 && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
             {
-              if(mDeinterlace.Process(&picture))
-                mDeinterlace.GetPicture(&picture);
+              if (!sPostProcessType.empty())
+                sPostProcessType += ",";
+              sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+            }
+
+            if ((postprocess_mode == VIDEO_POSTPROCESS_ALWAYS) ||
+                ((postprocess_mode == VIDEO_POSTPROCESS_SD_CONTENT) &&
+                 (picture.iDisplayWidth < 1280)))
+            {
+              if (!sPostProcessType.empty())
+                sPostProcessType += ",";
+              // This is what mplayer uses for its "high-quality filter combination"
+              sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
+            }
+
+            if (sPostProcessType)
+            {
+              mPostProcess.SetType(sPostProcessType);
+              if (mPostProcess.Process(&picture))
+                mPostProcess.GetPicture(&picture);
             }
 
             /* if frame has a pts (usually originiating from demux packet), use that */

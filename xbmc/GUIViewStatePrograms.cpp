@@ -34,7 +34,7 @@
 using namespace XFILE;
 using namespace ADDON;
 
-CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CPluginSource::EXECUTABLE)
+CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
@@ -69,6 +69,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
+  AddAddonsSource("executable", g_localizeStrings.Get(1043));
   AddOrReplace(g_settings.m_programSources,CGUIViewState::GetSources());
   return g_settings.m_programSources;
 }

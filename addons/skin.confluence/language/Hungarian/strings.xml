@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Alanwww1-->
 <!--Email: alanwww1@gmail.com-->
-<!--Date of translation: 15/01/2010-->
-<!--Based on English r26808-->
+<!--Date of translation: 14/06/2010-->
+<!--Based on English r31068-->
 <!--$Revision$-->
 <strings>
   <!-- Vegyes feliratok -->
@@ -30,6 +30,7 @@
   <string id="31030">Full lista</string>
   <string id="31031">Kép Bélyeg</string>
   <string id="31032">Képborító</string>
+  <string id="31033">Info</string>
 
   <!-- Extra feliratok -->
   <string id="31040">Most játszott</string>
@@ -61,10 +62,10 @@
   <string id="31104">Bemutatók játszása egy ablakban [COLOR=grey3](Csak a videó információs ablakban)[/COLOR]</string>
   <string id="31105">Médiacímek mutatása a háttérszkenner futása alatt</string>
   <string id="31106">Vegyes beállítások</string>
-  <string id="31107"></string>
+  <string id="31107">Filmjellemzők elrejtése fájlnévből való olvasás [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR] esetén</string>
   <string id="31108">Főmenügombok láthatósága</string>
-  <string id="31109">Sajátképernyő hátterek</string>
-  <string id="31110">Háttér szerkesztése ehhez a főmenügombhoz</string>
+  <string id="31109">Média hátterek</string>
+  <string id="31110">Háttér beállítása ehhez a médiatípushoz</string>
   <string id="31111">Elrejt</string>
   <string id="31112">Lehetőségek</string>
   <string id="31113">Egyetlen Kép</string>
@@ -154,6 +155,7 @@
   <string id="31405">[B]HÁLÓZATI BEÁLLÍTÁSOK[/B][CR][CR]XBMC távoli vezérlésének beállítása HTTP-n keresztül · Fájlmegosztás beállítása[CR]Internet elérési lehetőségek</string>
   <string id="31406">[B]RENDSZERBEÁLLÍTÁSOK[/B][CR][CR]Kijelzők beállítása, kalibrálása · Hangkimenet konfigurálása · Távkapcsoló beállítása[CR]Energiagazdálkodási lehetőségek beállítása · Debug bekapcsolása · Mesterzár felállítása</string>
   <string id="31407">[B]SKIN BEÁLLÍTÁSOK[/B][CR][CR]A Confluence skin beállítása · Sajátképernyő elemek hozzáadása/elvétele[CR]Skin hátterek megváltoztatása</string>
-
+  <string id="31408">[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az xbmc.org[CR]webhelyről · Kiegészítők beállításainak módosítása</string>  
+  
   <string id="31421">Válaszd ki az XBMC felhasználói profilod[CR]a belépéshez</string>
 </strings>

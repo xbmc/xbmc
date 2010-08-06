@@ -55,7 +55,7 @@ private:
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
   void FillInTVGroups();
-  
+
   /*! \brief pop up a slider dialog for a particular action
    \param action id of the action the slider responds to
    \param label id of the label to display
@@ -77,7 +77,7 @@ private:
   unsigned int m_timeCodeTimeout;
   int m_timeCodeStamp[5];
   int m_timeCodePosition;
-  
+
   int m_sliderAction; ///< \brief set to the action id for a slider being displayed \sa ShowSlider
 
   CCriticalSection m_fontLock;

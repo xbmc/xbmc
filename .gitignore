@@ -241,6 +241,7 @@ config.log
 /project/output
 
 # /project/BuildDependencies
+/project/BuildDependencies/downloads
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
 /project/BuildDependencies/scripts/tmp
@@ -252,6 +253,8 @@ config.log
 /project/VS2008Express/glib
 /project/VS2008Express/guilib
 /project/VS2008Express/libPlatinum
+/project/VS2008Express/libs
+/project/VS2008Express/objs
 /project/VS2008Express/UnrarXLib
 
 # /project/VS2010Express
@@ -271,8 +274,14 @@ config.log
 /system/cpluff.dll
 /system/ImageLib.dll
 /system/libcmyth.dll
+/system/libcurl.dll
+/system/libeay32.dll
 /system/libexif.dll
 /system/libexpat.dll
+/system/libid3tag.dll
+/system/libidn-11.dll
+/system/libssh2.dll
+/system/libssl32.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -284,9 +293,7 @@ config.log
 /system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 
-# /system/
-/system/profiles.xml
-/system/libid3tag.dll
+# /system/players/paplayer
 /system/players/paplayer/wavpack.dll
 /system/players/paplayer/libmodplug.dll
 /system/players/paplayer/StSoundLibrary.dll
@@ -299,12 +306,20 @@ config.log
 /system/players/dvdplayer/libmad.dll
 /system/players/dvdplayer/libdts.dll
 
+# /system
+/system/profiles.xml
+
 # /system/python
 /system/python/Lib/
 /system/python/python24.zip
+/system/python/python24.dll
 
 # /system/webserver
 /system/webserver
+
+# /system
+/system/zlib1.dll
+
 
 # /screensavers/
 /screensavers/Solarwinds.xbs
@@ -1081,6 +1096,7 @@ config.log
 /xbmc/lib/libPython/Python/Modules/Setup.local
 /xbmc/lib/libPython/Python/Modules/config.c
 /xbmc/lib/libPython/Python/Parser/pgen
+/xbmc/lib/libPython/Python/PC/pythonnt_rc.h
 /xbmc/lib/libPython/Python/build/
 /xbmc/lib/libPython/Python/buildno
 /xbmc/lib/libPython/Python/pyconfig.h

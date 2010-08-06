@@ -98,79 +98,15 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     {
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
-      // check for valid quickpath parameter
-      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
-      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
-      bool returning = strReturn.CompareNoCase("return") == 0;
-
-      if (!strDestination.IsEmpty())
-      {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-      }
 
       // is this the first time the window is opened?
-      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
-      {
-        strDestination = g_settings.m_defaultMusicLibSource;
-        m_vecItems->m_strPath = strDestination;
-        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-      }
-
-      CStdString destPath;
-      if (!strDestination.IsEmpty())
-      {
-        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-          destPath = "";
-        else if (strDestination.Equals("Genres"))
-          destPath = "musicdb://1/";
-        else if (strDestination.Equals("Artists"))
-          destPath = "musicdb://2/";
-        else if (strDestination.Equals("Albums"))
-          destPath = "musicdb://3/";
-        else if (strDestination.Equals("Singles"))
-          destPath = "musicdb://10/";
-        else if (strDestination.Equals("Songs"))
-          destPath = "musicdb://4/";
-        else if (strDestination.Equals("Top100"))
-          destPath = "musicdb://5/";
-        else if (strDestination.Equals("Top100Songs"))
-          destPath = "musicdb://5/2/";
-        else if (strDestination.Equals("Top100Albums"))
-          destPath = "musicdb://5/1/";
-        else if (strDestination.Equals("RecentlyAddedAlbums"))
-          destPath = "musicdb://6/";
-        else if (strDestination.Equals("RecentlyPlayedAlbums"))
-          destPath = "musicdb://7/";
-        else if (strDestination.Equals("Compilations"))
-          destPath = "musicdb://8/";
-        else if (strDestination.Equals("Playlists"))
-          destPath = "special://musicplaylists/";
-        else if (strDestination.Equals("Years"))
-          destPath = "musicdb://9/";
-        else if (strDestination.Equals("Plugins"))
-          destPath = "plugin://music/";
-        else
-        {
-          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          destPath = strDestination;
-        }
-        if (!returning || m_vecItems->m_strPath.Left(destPath.GetLength()) != destPath)
-        { // we're not returning to the same path, so set our directory to the requested path
-          m_vecItems->m_strPath = destPath;
-        }
-        SetHistoryForPath(m_vecItems->m_strPath);
-      }
-
+      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+        m_vecItems->m_strPath = g_settings.m_defaultMusicLibSource;
+      
       DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
-
-      if (message.GetParam1() != WINDOW_INVALID)
-      { // first time to this window - make sure we set the root path
-        m_startDirectory = returning ? destPath : "";
-      }
 
       //  base class has opened the database, do our check
       DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
@@ -257,14 +193,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
-  {
-    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-  }
   if (action.GetID() == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
@@ -495,7 +423,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     CMusicDatabaseDirectory dir;
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
-       !item->IsLastFM() && !item->IsShoutCast() && !item->m_bIsFolder)
+       !item->IsLastFM() && !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     }
@@ -514,7 +442,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (!inPlaylists && (dir.HasAlbumInfo(item->m_strPath)||
                               dir.IsArtistDir(item->m_strPath)   )      &&
              !dir.IsAllItem(item->m_strPath) && !item->IsParentFolder() &&
-             !item->IsLastFM() && !item->IsShoutCast()                  &&
+             !item->IsLastFM()                                          &&
              !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       if (dir.IsArtistDir(item->m_strPath))
@@ -526,7 +454,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // enable query all albums button only in album view
     if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
-       !item->IsLastFM() &&  !item->IsShoutCast()                            &&
+       !item->IsLastFM()                                                     &&
        !item->IsPlugin() && !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
@@ -585,7 +513,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
     }
-    if (item->HasVideoInfoTag() && !item->m_bIsFolder && !item->IsShoutCast())
+    if (item->HasVideoInfoTag() && !item->m_bIsFolder)
     {
       if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
@@ -877,4 +805,33 @@ void CGUIWindowMusicNav::AddSearchFolder()
     m_rootDir.SetSources(sources);
     delete viewState;
   }
+}
+
+CStdString CGUIWindowMusicNav::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("Genres"))
+    return "musicdb://1/";
+  else if (dir.Equals("Artists"))
+    return "musicdb://2/";
+  else if (dir.Equals("Albums"))
+    return "musicdb://3/";
+  else if (dir.Equals("Singles"))
+    return "musicdb://10/";
+  else if (dir.Equals("Songs"))
+    return "musicdb://4/";
+  else if (dir.Equals("Top100"))
+    return "musicdb://5/";
+  else if (dir.Equals("Top100Songs"))
+    return "musicdb://5/2/";
+  else if (dir.Equals("Top100Albums"))
+    return "musicdb://5/1/";
+  else if (dir.Equals("RecentlyAddedAlbums"))
+    return "musicdb://6/";
+  else if (dir.Equals("RecentlyPlayedAlbums"))
+   return "musicdb://7/";
+  else if (dir.Equals("Compilations"))
+    return "musicdb://8/";
+  else if (dir.Equals("Years"))
+    return "musicdb://9/";
+  return CGUIWindowMusicBase::GetStartFolder(dir);
 }

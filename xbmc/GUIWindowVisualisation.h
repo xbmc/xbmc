@@ -23,6 +23,7 @@
 
 #include "GUIWindow.h"
 #include "MusicInfoTag.h"
+#include "Stopwatch.h"
 
 namespace ADDON
 {
@@ -41,8 +42,8 @@ public:
 protected:
   bool UpdateTrack();
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  unsigned int m_initTimer;
-  unsigned int m_lockedTimer;
+  CStopWatch m_initTimer;
+  CStopWatch m_lockedTimer;
   bool m_bShowPreset;
   boost::shared_ptr<ADDON::CVisualisation> m_addon;
   MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates

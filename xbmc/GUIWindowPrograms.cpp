@@ -38,6 +38,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "utils/Builtins.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
@@ -78,73 +79,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       m_iRegionSet = 0;
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
-      // check for a passed destination path
-      CStdString strDestination = message.GetStringParam();
-      if (!strDestination.IsEmpty())
-      {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
-        // reset directory path, as we have effectively cleared it here
-        m_history.ClearPathHistory();
-      }
       // is this the first time accessing this window?
-      // a quickpath overrides the a default parameter
-      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
-      {
-        m_vecItems->m_strPath = strDestination = g_settings.m_defaultProgramSource;
-        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-      }
+      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+        m_vecItems->m_strPath = g_settings.m_defaultProgramSource;
 
       m_database.Open();
-      // try to open the destination path
-      if (!strDestination.IsEmpty())
-      {
-        // open root
-        if (strDestination.Equals("$ROOT"))
-        {
-          m_vecItems->m_strPath = "";
-          CLog::Log(LOGINFO, "  Success! Opening root listing.");
-        }
-        else
-        {
-          // default parameters if the jump fails
-          m_vecItems->m_strPath = "";
-
-          bool bIsSourceName = false;
-          SetupShares();
-          VECSOURCES shares;
-          m_rootDir.GetSources(shares);
-          int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
-          if (iIndex > -1)
-          {
-            bool bDoStuff = true;
-            if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
-            {
-              CFileItem item(shares[iIndex]);
-              if (!g_passwordManager.IsItemUnlocked(&item,"programs"))
-              {
-                m_vecItems->m_strPath = ""; // no u don't
-                bDoStuff = false;
-                CLog::Log(LOGINFO, "  Failure! Failed to unlock destination path: %s", strDestination.c_str());
-              }
-            }
-            // set current directory to matching share
-            if (bDoStuff)
-            {
-              if (bIsSourceName)
-                m_vecItems->m_strPath=shares[iIndex].strPath;
-              else
-                m_vecItems->m_strPath=strDestination;
-              CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
-            }
-          }
-          else
-          {
-            CLog::Log(LOGERROR, "  Failed! Destination parameter (%s) does not match a valid source!", strDestination.c_str());
-          }
-        }
-        SetHistoryForPath(m_vecItems->m_strPath);
-      }
 
       return CGUIMediaWindow::OnMessage(message);
     }
@@ -216,8 +155,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
-    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -263,10 +200,6 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }
-
-  case CONTEXT_BUTTON_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
-    return true;
 
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
@@ -418,4 +351,39 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     m_dlgProgress->Close();
 
   return true;
+}
+
+CStdString CGUIWindowPrograms::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+    return "addons://sources/executable/";
+    
+  SetupShares();
+  VECSOURCES shares;
+  m_rootDir.GetSources(shares);
+  bool bIsSourceName = false;
+  int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);
+  if (iIndex > -1)
+  {
+    if (iIndex < (int)shares.size() && shares[iIndex].m_iHasLock == 2)
+    {
+      CFileItem item(shares[iIndex]);
+      if (!g_passwordManager.IsItemUnlocked(&item,"programs"))
+        return "";
+    }
+    if (bIsSourceName)
+      return shares[iIndex].strPath;
+    return dir;
+  }
+  return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+bool CGUIWindowPrograms::OnClick(int iItem)
+{
+  if (m_vecItems->Get(iItem)->m_strPath.Equals("addons://more"))
+  {
+    CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.python.script)");
+    return true;
+  }
+  return CGUIMediaWindow::OnClick(iItem);
 }

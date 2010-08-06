@@ -29,6 +29,7 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include "AddonDatabase.h"
 
 class DllLibCPluff;
 extern "C"
@@ -38,8 +39,6 @@ extern "C"
 
 namespace ADDON
 {
-  typedef std::vector<AddonPtr> VECADDONS;
-  typedef std::vector<AddonPtr>::iterator IVECADDONS;
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::deque<cp_cfg_element_t*> DEQUEELEMENTS;
@@ -74,7 +73,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr : public IJobCallback
+  class CAddonMgr
   {
   public:
     static CAddonMgr &Get();
@@ -87,6 +86,7 @@ namespace ADDON
 
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon);
+    bool SetDefault(const TYPE &type, const CStdString &addonID);
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
@@ -133,8 +133,6 @@ namespace ADDON
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);
 
-    void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
-
     /* libcpluff */
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
@@ -165,6 +163,7 @@ namespace ADDON
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CStopWatch m_watch;
     CCriticalSection m_critSection;
+    CAddonDatabase m_database;
   };
 
 }; /* namespace ADDON */

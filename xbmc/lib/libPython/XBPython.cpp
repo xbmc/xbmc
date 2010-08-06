@@ -530,6 +530,23 @@ void XBPython::Process()
   }
 }
 
+bool XBPython::StopScript(const CStdString &path)
+{
+  int id = getScriptId(path);
+  if (id != -1)
+  {
+    /* if we are here we already know that this script is running.
+     * But we will check it again to be sure :)
+     */
+    if (isRunning(id))
+    {
+      stopScript(id);
+      return true;
+    }
+  }
+  return false;
+}
+
 int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)

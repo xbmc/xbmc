@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
   version="1.0.0"
@@ -13,7 +13,9 @@
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
     <summary>A mesmerizing particle effects saver</summary>
+    <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
     <description>This is a very mesmerizing particle effects saver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="hu">Ez egy lebilicselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
     <description lang="nl">Dit is een zeer fascinerende screensaver. Je kunt ongeloofelijk veel verschillende patronen bekomen.</description>
     <disclaimer></disclaimer>
     <platform>linux osx</platform>

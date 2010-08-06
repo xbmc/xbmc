@@ -273,8 +273,8 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.albumscraper", 20193, "metadata.allmusic.com", ADDON_SCRAPER_ALBUMS);
-  AddDefaultAddon(ml, "musiclibrary.artistscraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER_ARTISTS);
+  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -364,7 +364,9 @@ void CGUISettings::Initialize()
   // System settings
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
-#if defined(_WIN32) || defined (__APPLE__)
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+#if defined (__APPLE__)
   AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
 #else
   AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
@@ -378,6 +380,12 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
+
+#if defined(_WIN32) && defined(HAS_GL)
+  fakeFullScreen = true;
+  showSetting = false;
+#endif
+
 #if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {
@@ -614,6 +622,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
+  AddInt(vp, "videoplayer.postprocess", 16400, VIDEO_POSTPROCESS_DISABLED, VIDEO_POSTPROCESS_DISABLED, 1, VIDEO_POSTPROCESS_ALWAYS, SPIN_CONTROL_TEXT);
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23090, true);
 
@@ -648,9 +657,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
+  AddDefaultAddon(scp, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
+  AddDefaultAddon(scp, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddSeparator(scp,"scrapers.sep2");
   AddBool(scp, "scrapers.langfallback", 21416, false);
 
@@ -1295,10 +1304,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
-    size_t maxRes = g_settings.m_ResInfo.size();
-    if (g_Windowing.GetNumScreens())
-      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
-    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
+    for (unsigned int i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
     {
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)

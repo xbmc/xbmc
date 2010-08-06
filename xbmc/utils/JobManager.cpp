@@ -223,33 +223,47 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   m_workers.push_back(new CJobWorker(this));
 }
 
+CJob *CJobManager::PopJob()
+{
+  CSingleLock lock(m_section);
+  for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
+  {
+    if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
+    {
+      CWorkItem job = m_jobQueue[priority].front();
+      m_jobQueue[priority].pop_front();
+      // add to the processing vector
+      m_processing.push_back(job);
+      job.m_job->m_callback = this;
+      return job.m_job;
+    }
+  }
+  return NULL;
+}
+
 CJob *CJobManager::GetNextJob(const CJobWorker *worker)
 {
   CSingleLock lock(m_section);
   while (m_running)
   {
     // grab a job off the queue if we have one
-    for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
-    {
-      if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
-      {
-        CWorkItem job = m_jobQueue[priority].front();
-        m_jobQueue[priority].pop_front();
-        // add to the processing vector
-        m_processing.push_back(job);
-        job.m_job->m_callback = this;
-        return job.m_job;
-      }
-    }
+    CJob *job = PopJob();
+    if (job)
+      return job;
     // no jobs are left - sleep for 30 seconds to allow new jobs to come in
     lock.Leave();
-    if (!m_jobEvent.WaitMSec(30000))
-    { // timeout - say goodbye to the thread
-      break;
-    }
+    bool newJob = m_jobEvent.WaitMSec(30000);
     lock.Enter();
+    if (!newJob)
+      break;
     m_jobEvent.Reset();
   }
+  // ensure no jobs have come in during the period after
+  // timeout and before we held the lock
+  CJob *job = PopJob();
+  if (job)
+    return job;
+  // have no jobs
   RemoveWorker(worker);
   return NULL;
 }

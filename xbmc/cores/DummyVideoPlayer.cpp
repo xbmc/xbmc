@@ -228,8 +228,9 @@ float CDummyVideoPlayer::GetSubTitleDelay()
 
 void CDummyVideoPlayer::SeekTime(__int64 iTime)
 {
+  int seekOffset = (int)(iTime - m_clock);
   m_clock = iTime;
-  m_callback.OnPlayBackSeek((int)iTime);
+  m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 
 // return the time in milliseconds

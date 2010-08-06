@@ -54,7 +54,6 @@ namespace BCM
 
 #define __MODULE_NAME__ "CrystalHD"
 //#define USE_CHD_SINGLE_THREADED_API
-
 class DllLibCrystalHDInterface
 {
 public:
@@ -75,7 +74,18 @@ public:
   virtual BCM::BC_STATUS DtsReleaseOutputBuffs(void *hDevice, void *Reserved, int fChange)=0;
   virtual BCM::BC_STATUS DtsSetSkipPictureMode(void *hDevice, uint32_t Mode)=0;
   virtual BCM::BC_STATUS DtsFlushInput(void *hDevice, uint32_t SkipMode)=0;
-  
+
+#if (HAVE_LIBCRYSTALHD == 2)
+  // new function calls, only present in new driver/library so manually load them
+  virtual BCM::BC_STATUS DtsGetVersion(void *hDevice, uint32_t *DrVer, uint32_t *DilVer)=0;
+  virtual BCM::BC_STATUS DtsSetInputFormat(void *hDevice, BCM::BC_INPUT_FORMAT *pInputFormat)=0;
+  virtual BCM::BC_STATUS DtsGetColorPrimaries(void *hDevice, uint32_t *colorPrimaries)=0;
+  virtual BCM::BC_STATUS DtsSetColorSpace(void *hDevice, BCM::BC_OUTPUT_FORMAT Mode422)=0;
+  virtual BCM::BC_STATUS DtsGetCapabilities(void *hDevice, BCM::BC_HW_CAPS *CapsBuffer)=0;
+  virtual BCM::BC_STATUS DtsSetScaleParams(void *hDevice, BCM::BC_SCALING_PARAMS *ScaleParams)=0;
+  virtual BCM::BC_STATUS DtsIsEndOfStream(void *hDevice, uint8_t* bEOS)=0;
+  virtual BCM::BC_STATUS DtsCrystalHDVersion(void *hDevice, BCM::BC_INFO_CRYSTAL *CrystalInfo)=0;
+#endif
 };
 
 class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
@@ -100,6 +110,17 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetSkipPictureMode,(void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushInput,      (void *p1, uint32_t p2))
 
+#if (HAVE_LIBCRYSTALHD == 2)
+  DEFINE_METHOD3(BCM::BC_STATUS, DtsGetVersion,      (void *p1, uint32_t *p2, uint32_t *p3))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetInputFormat,  (void *p1, BCM::BC_INPUT_FORMAT *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsGetColorPrimaries,(void *p1, uint32_t *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetColorSpace,   (void *p1, BCM::BC_OUTPUT_FORMAT p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsGetCapabilities, (void *p1, BCM::BC_HW_CAPS *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetScaleParams,  (void *p1, BCM::BC_SCALING_PARAMS *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsIsEndOfStream,   (void *p1, uint8_t *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsCrystalHDVersion,(void *p1, BCM::BC_INFO_CRYSTAL *p2))
+#endif
+
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DtsDeviceOpen,      DtsDeviceOpen)
     RESOLVE_METHOD_RENAME(DtsDeviceClose,     DtsDeviceClose)
@@ -119,6 +140,26 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
     RESOLVE_METHOD_RENAME(DtsSetSkipPictureMode,DtsSetSkipPictureMode)
     RESOLVE_METHOD_RENAME(DtsFlushInput,      DtsFlushInput)
   END_METHOD_RESOLVE()
+  
+public:
+  bool LoadNewLibFunctions(void)
+  {
+#if (HAVE_LIBCRYSTALHD == 2)
+    int rtn;
+    rtn  = m_dll->ResolveExport("DtsGetVersion",       (void**)&m_DtsGetVersion_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetInputFormat",   (void**)&m_DtsSetInputFormat_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsGetColorPrimaries",(void**)&m_DtsGetColorPrimaries_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetColorSpace",    (void**)&m_DtsSetColorSpace_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsGetCapabilities",  (void**)&m_DtsGetCapabilities_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetScaleParams",   (void**)&m_DtsSetScaleParams_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsIsEndOfStream",    (void**)&m_DtsIsEndOfStream_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsCrystalHDVersion", (void**)&m_DtsCrystalHDVersion_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetInputFormat",   (void**)&m_DtsSetInputFormat_ptr, false);
+    return(rtn == 1);
+#else
+    return false;
+#endif
+  };
 };
 
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
@@ -278,11 +319,11 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_dll(dll),
   m_device(device),
   m_timeout(20),
-  m_interlace_buf(NULL),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0)
+  m_framerate(0.0),
+  m_interlace_buf(NULL)
 {
 }
 
@@ -862,6 +903,7 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
+  m_new_lib(false),
   m_decoder_open(false),
   m_drop_state(false),
   m_pOutputThread(NULL)
@@ -874,7 +916,18 @@ CCrystalHD::CCrystalHD() :
 #else
   if (m_dll->Load() && m_dll->IsLoaded() )
 #endif
+  {
     OpenDevice();
+    
+    m_new_lib = m_dll->LoadNewLibFunctions();
+    /*
+    if (m_new_lib)
+    {
+      uint32_t DrVer, DilVer;
+      m_dll->DtsGetVersion( NULL, &DrVer, &DilVer);
+    }
+    */
+  }
 
   // delete dll if device open fails, minimizes ram footprint
   if (!m_device)
@@ -1038,7 +1091,10 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 
     m_drop_state = false;
     m_decoder_open = true;
-    m_duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
+    // set output timeout to 1ms during startup,
+    // this will get reset once we get a picture back.
+    // the effect is to speed feeding demux packets during startup.
+    m_wait_timeout = 1;
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
@@ -1076,6 +1132,8 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
+  m_wait_timeout = 1;
+
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
   m_dll->DtsFlushInput(m_device, 2);
@@ -1109,15 +1167,9 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       }
     } while (ret != BCM::BC_STS_SUCCESS);
 
-    if (m_drop_state)
-    {
-      if (m_pOutputThread->GetReadyCount() > 1)
-        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
-    }
-
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
-      wait_state = m_pOutputThread->WaitOutput(m_duration/4000);
+      wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
   return true;
@@ -1186,8 +1238,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  m_duration = DVD_TIME_BASE / pBuffer->m_framerate;
-  pDvdVideoPicture->iDuration = m_duration;
+  pDvdVideoPicture->iDuration = DVD_TIME_BASE / pBuffer->m_framerate;
+  m_wait_timeout = pDvdVideoPicture->iDuration/2000;
   pDvdVideoPicture->color_range = pBuffer->m_color_range;
   pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
@@ -1209,7 +1261,12 @@ void CCrystalHD::SetDropState(bool bDrop)
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
+    if (m_drop_state)
+      m_dll->DtsSetSkipPictureMode(m_device, 1);
+    else
+      m_dll->DtsSetSkipPictureMode(m_device, 0);
   }
+
   if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());

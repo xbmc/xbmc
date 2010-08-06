@@ -197,18 +197,10 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   try
   {
     ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
-    if (status != STATUS_OK)
-      throw status;
-    m_initialized = true;
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->Create");
-  }
-  catch (ADDON_STATUS status)
-  {
-    if (status == STATUS_NEED_SETTINGS)
-    { // catch request for settings in initalization
+    if (status == STATUS_OK)
+      m_initialized = true;
+    else if (status == STATUS_NEED_SETTINGS)
+    {
       if (TransferSettings() == STATUS_OK)
         m_initialized = true;
       else
@@ -219,6 +211,10 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
       new CAddonStatusHandler(ID(), status, "", false);
     }
+  }
+  catch (std::exception &e)
+  {
+    HandleException(e, "m_pDll->Create");
   }
 
   return m_initialized;

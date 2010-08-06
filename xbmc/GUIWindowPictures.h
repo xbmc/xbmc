@@ -45,6 +45,7 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);

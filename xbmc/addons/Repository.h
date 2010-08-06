@@ -42,8 +42,6 @@ namespace ADDON
 
     CStdString Checksum();
     VECADDONS Parse();
-    CDateTime LastUpdate();
-    void SetUpdated(const CDateTime& time);
   private:
     CRepository(const CRepository&, const AddonPtr&);
     CStdString m_info;

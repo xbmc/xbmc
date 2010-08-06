@@ -148,11 +148,12 @@ protected:
 
   DllLibCrystalHD *m_dll;
   void          *m_device;
+  bool          m_new_lib;
 
   bool          m_decoder_open;
   bool          m_drop_state;
   unsigned int  m_timeout;
-  unsigned int  m_duration;
+  unsigned int  m_wait_timeout;
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;

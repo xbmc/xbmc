@@ -102,6 +102,23 @@ struct YUVRANGE
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
 
+
+class CYUV2RGBMatrix
+{
+public:
+  CYUV2RGBMatrix();
+  void SetParameters(float contrast, float blacklevel, unsigned int flags);
+  D3DXMATRIX* Matrix();
+
+private:
+  bool         m_NeedRecalc;
+  float        m_contrast;
+  float        m_blacklevel;
+  unsigned int m_flags;
+  D3DXMATRIX   m_mat;
+};
+
+
 class CWinRenderer : public CBaseRenderer
 {
 public:
@@ -207,8 +224,9 @@ protected:
   bool m_bFilterInitialized;
 
   // clear colour for "black" bars
-  DWORD m_clearColour;
-  unsigned int m_flags;
+  DWORD          m_clearColour;
+  unsigned int   m_flags;
+  CYUV2RGBMatrix m_matrix;
 };
 
 

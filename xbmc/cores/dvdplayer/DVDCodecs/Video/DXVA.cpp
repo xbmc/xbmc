@@ -81,7 +81,7 @@ typedef struct {
 
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
-    { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     0 },
+    { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     CODEC_ID_MPEG2VIDEO },
     { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
     { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
 
@@ -518,7 +518,8 @@ int CDecoder::Check(AVCodecContext* avctx)
     return VC_FLUSHED;
   }
 
-  if(avctx->codec_id != CODEC_ID_H264
+  if(avctx->codec_id != CODEC_ID_MPEG2VIDEO
+  && avctx->codec_id != CODEC_ID_H264
   && avctx->codec_id != CODEC_ID_VC1
   && avctx->codec_id != CODEC_ID_WMV3)
     return 0;

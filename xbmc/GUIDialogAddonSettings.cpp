@@ -545,7 +545,7 @@ void CGUIDialogAddonSettings::CreateControls()
         strcmpi(type, "number") == 0 ||strcmpi(type, "video") == 0 ||
         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
         strcmpi(type, "folder") == 0 || strcmpi(type, "executable") == 0 ||
-        strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0 ||
+        strcmpi(type, "file") == 0 || strcmpi(type, "action") == 0 ||
         strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0)
       {
         pControl = new CGUIButtonControl(*pOriginalButton);

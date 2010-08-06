@@ -103,6 +103,7 @@ protected:
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
   void CheckDXVersion();
+  BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat);
 
   LPDIRECT3D9                 m_pD3D;
 
@@ -127,6 +128,7 @@ protected:
   bool                        m_useD3D9Ex;
   DWORD                       m_defaultD3DUsage;
   D3DPOOL                     m_defaultD3DPool;
+  bool                        m_useWindowedDX;
 
   CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;

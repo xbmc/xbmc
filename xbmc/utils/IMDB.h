@@ -31,7 +31,6 @@
  */
 
 #include "Thread.h"
-#include "ScraperParser.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "DateTime.h"
@@ -59,7 +58,13 @@ public:
   virtual ~CIMDB();
 
   // threaded lookup functions
-  // returns -1 if we had an error
+
+  /*! \brief Do a search for matching media items (possibly asynchronously) with our scraper
+   \param strMovie name of the media item to look for
+   \param movielist [out] list of results to fill. May be empty on success.
+   \param pProgress progress bar to update as we go. If NULL we run on thread, if non-NULL we run off thread.
+   \return 1 on success, -1 on a scraper-specific error, 0 on some other error
+   */
   int FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
@@ -68,7 +73,7 @@ public:
   static void ShowErrorDialog(const TiXmlElement* element);
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
+  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList);
   bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
   bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
@@ -78,7 +83,6 @@ protected:
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
   XFILE::CFileCurl m_http;
-  CScraperParser m_parser;
 
   // threaded stuff
   void Process();

@@ -1912,7 +1912,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
     {
       CStdString duration;
       if (tagVal)
-        StringUtils::SecondsToTimeString(tagVal->GetDuration(), duration, TIME_FORMAT_GUESS);
+        duration = StringUtils::SecondsToTimeString(tagVal->GetDuration(), TIME_FORMAT_GUESS);
       else if (tagVid)
         duration = tagVid->m_strRuntime;
       if (!duration.IsEmpty())
@@ -2250,6 +2250,8 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
     return -1;
 
   CMusicInfoScraper scraper(info); 
+
+  info->ClearCache();
 
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing album name");

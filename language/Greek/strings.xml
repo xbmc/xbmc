@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/03/2010-->
+<!--Date of translation: 06/14/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 30777-->
+<!--Based on english strings version 31095-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -122,7 +122,6 @@
   <string id="165">Υπάρχει δίσκος</string>
   <string id="166">Κέλυφος</string>
   <string id="167">Ενεργοποίηση διακομιστή FTP</string>
-  <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
   <string id="172">Ημερομηνία κυκλοφορίας</string>
@@ -585,9 +584,7 @@
   <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
   <string id="727">Διακομιστής Ιστού</string>
   <string id="728">Διακομιστής FTP</string>
-  <string id="729">Συγχρονισμός ώρας από το Internet</string>
   <string id="730">- Θύρα</string>
-  <string id="731">Διακομιστές συγχρονισμού ώρας</string>
   <string id="732">Αποθήκευση &amp; εφαρμογή</string>
   <string id="733">- Κωδικός πρόσβασης</string>
   <string id="734">Χωρίς κωδικό πρόσβασης</string>
@@ -1983,6 +1980,7 @@
   <string id="24037">Κατάργηση εγκατάστασης</string>
   <string id="24038">Εγκατάσταση</string>
   <string id="24039">Απενεργοποιημένα πρόσθετα</string>
+  <string id="24040">(Εκκαθάριση των τρεχουσών ρυθμίσεων)</string>
   <string id="24050">Διαθέσιμα πρόσθετα</string>
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>
