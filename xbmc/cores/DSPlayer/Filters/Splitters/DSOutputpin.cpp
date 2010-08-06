@@ -217,7 +217,7 @@ DWORD CDSOutputPin::ThreadProc()
     case STREAM_AUDIO: DShowUtil::setThreadName(DWORD(-1),"DSAudioOutputPin"); break;
     case STREAM_SUBTITLE: DShowUtil::setThreadName(DWORD(-1),"DSSubtitleOutputPin"); break;
   }
-  //SetThreadName((DWORD)-1, "CDSOutputPin");
+
   m_hrDeliver = S_OK;
   m_fFlushing = m_fFlushed = false;
   m_eEndFlush.Set();

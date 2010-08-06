@@ -399,7 +399,12 @@ MPEG2VIDEOINFO *CDSGuidHelper::CreateMPEG2VI(const CDemuxStreamVideo *stream, AV
     extra = *size - sizeof(VIDEOINFOHEADER2);
     extra--;
   }
+#if TEST_INTERNAL_VIDEO_DECODER
+  MPEG2VIDEOINFO *mp2vi = (MPEG2VIDEOINFO *) new BYTE[avstream->codec->extradata_size + sizeof(MPEG2VIDEOINFO)];
+
+#else
   MPEG2VIDEOINFO *mp2vi = (MPEG2VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG2VIDEOINFO) + max(extra - 4, 0)); 
+#endif
   memset(mp2vi, 0, sizeof(MPEG2VIDEOINFO));
   memcpy(&mp2vi->hdr, vih2, sizeof(VIDEOINFOHEADER2));
   mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -410,6 +415,7 @@ MPEG2VIDEOINFO *CDSGuidHelper::CreateMPEG2VI(const CDemuxStreamVideo *stream, AV
   //mp2vi->dwFlags = 4; // where do we get flags otherwise..?
 #if TEST_INTERNAL_VIDEO_DECODER
   mp2vi->cbSequenceHeader = avstream->codec->extradata_size;
+  //mp2vi->dwSequenceHeader[0] = (DWORD)malloc(avstream->codec->extradata_size);
   memcpy(&mp2vi->dwSequenceHeader[0], avstream->codec->extradata, avstream->codec->extradata_size);
 #else
   if(extra)
