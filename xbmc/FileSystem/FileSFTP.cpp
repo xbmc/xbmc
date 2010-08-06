@@ -416,10 +416,12 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, const
 void CSFTPSessionManager::ClearOutIdleSessions()
 {
   CSingleLock lock(m_critSect);
-  for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end(); ++iter)
+  for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end();)
   {
     if (iter->second->IsIdle())
-      sessions.erase(iter);
+      iter = sessions.erase(iter);
+    else
+      iter++;
   }
 }
 
