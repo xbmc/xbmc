@@ -439,7 +439,7 @@ void cVNSIDemux::StreamSignalInfo(cResponsePacket *resp)
 
 void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
-  for (int i = 0; i < m_Streams.nstreams || !resp->end(); i++)
+  for (int i = 0; i < m_Streams.nstreams && !resp->end(); i++)
   {
     uint32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].physid)
