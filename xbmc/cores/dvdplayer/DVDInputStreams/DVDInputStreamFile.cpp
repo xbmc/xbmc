@@ -50,7 +50,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   m_pFile = new CFile();
   if (!m_pFile) return false;
 
-  unsigned int flags = READ_TRUNCATED;
+  unsigned int flags = READ_TRUNCATED | READ_BITRATE;
 
   if( CFileItem(strFile, false).IsInternetStream() )
     flags |= READ_CACHED;
@@ -119,7 +119,10 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
   if (!m_pFile)
     return m_stats; // dummy return. defined in CDVDInputStream
 
-  return m_pFile->GetBitstreamStats();
+  if(m_pFile->GetBitstreamStats())
+    return *m_pFile->GetBitstreamStats();
+  else
+    return m_stats;
 }
 
 
