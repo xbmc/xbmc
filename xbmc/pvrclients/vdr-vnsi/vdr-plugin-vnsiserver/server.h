@@ -22,21 +22,18 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <vector>
+#include <list>
 #include <vdr/thread.h>
 
 #include "config.h"
-#include "cmdcontrol.h"
+//#include "cmdcontrol.h"
 
 class cConnection;
 
-typedef std::vector<cConnection*> Connections;
+typedef std::list<cConnection*> Connections;
 
 class cServer : public cThread
 {
-private:
-  int           m_ePollFD;
-
 protected:
   virtual void Action(void);
   void NewClientConnected(int fd);
@@ -46,14 +43,14 @@ protected:
   int           m_ServerFD;
   cString       m_AllowedHostsFile;
   Connections   m_Connections;
-  cCmdControl   m_CmdControl;
+  //cCmdControl   m_CmdControl;
   static unsigned int m_IdCnt;
 
 public:
   cServer(int listenPort);
   virtual ~cServer();
 
-  cCmdControl *GetCmdControl() { return &m_CmdControl; }
+  //cCmdControl *GetCmdControl() { return &m_CmdControl; }
 };
 
 #endif /* SERVER_H */

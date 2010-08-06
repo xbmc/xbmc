@@ -40,6 +40,9 @@ public:
   void finalise();
   void finaliseStream();
   bool copyin(const uint8_t* src, uint32_t len);
+  uint8_t* reserve(uint32_t len);
+  bool unreserve(uint32_t len);
+
   bool add_String(const char* string);
   bool add_U32(uint32_t ul);
   bool add_S32(int32_t l);
@@ -56,7 +59,6 @@ private:
   uint32_t bufUsed;
 
   bool checkExtend(uint32_t by);
-  uint64_t htonll(uint64_t a);
 
   const static uint32_t headerLength          = 12;
   const static uint32_t userDataLenPos        = 8;

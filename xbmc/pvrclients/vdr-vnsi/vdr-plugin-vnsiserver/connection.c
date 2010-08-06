@@ -48,6 +48,7 @@
 #include "tools.h"
 #include "vdrcommand.h"
 #include "recplayer.h"
+#include "responsepacket.h"
 
 cConnection::cConnection(cServer *server, int fd, unsigned int id, const char *ClientAdr)
 {
@@ -68,16 +69,18 @@ cConnection::cConnection(cServer *server, int fd, unsigned int id, const char *C
 
 cConnection::~cConnection()
 {
-  Cancel(-1);
-
+  isyslog("VNSI: cConnection::~cConnection()");
   StopChannelStreaming();
+  m_socket.close(); // force closing connection
+  isyslog("VNSI: stopping cConnection thread ...");
+  Cancel(10);
+  isyslog("VNSI: done");
 
   if (m_NetLogFile)
   {
     fclose(m_NetLogFile);
     m_NetLogFile = NULL;
   }
-  Cancel();
 }
 
 void cConnection::Action(void)
@@ -97,13 +100,13 @@ void cConnection::Action(void)
 
     if (channelID == 1)
     {
-      if (!m_socket.read((uint8_t*)&requestID, sizeof(uint32_t), 1000)) break;
+      if (!m_socket.read((uint8_t*)&requestID, sizeof(uint32_t), 10000)) break;
       requestID = ntohl(requestID);
 
-      if (!m_socket.read((uint8_t*)&opcode, sizeof(uint32_t), 1000)) break;
+      if (!m_socket.read((uint8_t*)&opcode, sizeof(uint32_t), 10000)) break;
       opcode = ntohl(opcode);
 
-      if (!m_socket.read((uint8_t*)&dataLength, sizeof(uint32_t), 1000)) break;
+      if (!m_socket.read((uint8_t*)&dataLength, sizeof(uint32_t), 10000)) break;
       dataLength = ntohl(dataLength);
       if (dataLength > 200000) // a random sanity limit
       {
@@ -120,7 +123,7 @@ void cConnection::Action(void)
           break;
         }
 
-        if (!m_socket.read(data, dataLength, 1000))
+        if (!m_socket.read(data, dataLength, 10000))
         {
           esyslog("VNSI-Error: Could not read data");
           free(data);
@@ -189,7 +192,7 @@ void cConnection::Action(void)
       else
       {
         cRequestPacket* req = new cRequestPacket(requestID, opcode, data, dataLength, this);
-        m_server->GetCmdControl()->recvRequest(req);
+	m_cmdcontrol.recvRequest(req);
       }
     }
     else if (channelID == 3)

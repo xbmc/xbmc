@@ -46,6 +46,13 @@
 #include "config.h"
 #include "cxsocket.h"
 
+cxSocket::~cxSocket()
+{
+  CLOSESOCKET(m_fd);
+  delete m_pollerRead;
+  delete m_pollerWrite;
+}
+
 bool cxSocket::connect(struct sockaddr *addr, socklen_t len)
 {
   return ::connect(m_fd, addr, len) == 0;
@@ -142,7 +149,7 @@ bool cxSocket::set_multicast(int ttl)
   return true;
 }
 
-ssize_t cxSocket::sendfile(int fd_file, off_t *offset, size_t count)
+/*ssize_t cxSocket::sendfile(int fd_file, off_t *offset, size_t count)
 {
   int r;
 #ifndef __APPLE__
@@ -180,7 +187,7 @@ ssize_t cxSocket::sendfile(int fd_file, off_t *offset, size_t count)
   }
   return r;
 #endif
-}
+}*/
 
 bool cxSocket::set_cork(bool state)
 {
@@ -243,14 +250,12 @@ int cxSocket::getpeername(struct sockaddr *name, socklen_t *namelen)
   return ::getpeername(m_fd, name, namelen);
 }
 
-ssize_t cxSocket::send(const void *buf, size_t size, int flags,
-		       const struct sockaddr *to, socklen_t tolen)
+ssize_t cxSocket::send(const void *buf, size_t size, int flags, const struct sockaddr *to, socklen_t tolen)
 {
   return ::sendto(m_fd, buf, size, flags, to, tolen);
 }
 
-ssize_t cxSocket::recv(void *buf, size_t size, int flags,
-		       struct sockaddr *from, socklen_t *fromlen)
+ssize_t cxSocket::recv(void *buf, size_t size, int flags, struct sockaddr *from, socklen_t *fromlen)
 {
   return ::recvfrom(m_fd, buf, size, flags, from, fromlen);
 }
@@ -259,14 +264,15 @@ ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms)
 {
   cMutexLock CmdLock((cMutex*)&m_MutexWrite);
 
+  if(m_fd == -1) return -1;
+
   ssize_t written = (ssize_t)size;
   const unsigned char *ptr = (const unsigned char *)buffer;
-  cPoller poller(m_fd, true);
 
   while (size > 0)
   {
     errno = 0;
-    if(!poller.Poll(timeout_ms))
+    if(!m_pollerWrite->Poll(timeout_ms))
     {
       esyslog("VNSI-Error: cxSocket::write: poll() failed");
       return written-size;
@@ -297,13 +303,14 @@ ssize_t cxSocket::read(void *buffer, size_t size, int timeout_ms)
 {
   cMutexLock CmdLock((cMutex*)&m_MutexRead);
 
+  if(m_fd == -1) return -1;
+
   ssize_t missing = (ssize_t)size;
   unsigned char *ptr = (unsigned char *)buffer;
-  cPoller poller(m_fd);
 
   while (missing > 0)
   {
-    if(!poller.Poll(timeout_ms))
+    if(!m_pollerRead->Poll(timeout_ms))
     {
       esyslog("VNSI-Error: cxSocket::read: poll() failed at %d/%d", (int)(size-missing), (int)size);
       return size-missing;
@@ -328,6 +335,19 @@ ssize_t cxSocket::read(void *buffer, size_t size, int timeout_ms)
   }
 
   return size;
+}
+
+void cxSocket::set_handle(int h)
+{
+  if(h != m_fd)
+  {
+    close();
+    m_fd = h;
+    delete m_pollerRead;
+    delete m_pollerWrite;
+    m_pollerRead = new cPoller(m_fd);
+    m_pollerWrite = new cPoller(m_fd, true);
+  }
 }
 
 ssize_t cxSocket::printf(const char *fmt, ...)
@@ -362,11 +382,10 @@ ssize_t cxSocket::printf(const char *fmt, ...)
 ssize_t cxSocket::readline(char *buf, int bufsize, int timeout, int bufpos)
 {
   int n = -1, cnt = bufpos;
-  cPoller p(m_fd);
 
   do
   {
-    if(timeout>0 && !p.Poll(timeout))
+    if(timeout>0 && !m_pollerRead->Poll(timeout))
     {
       errno = EAGAIN;
       return cnt;
@@ -423,14 +442,15 @@ uint32_t cxSocket::get_local_address(char *ip_address)
   struct sockaddr_in sin;
   socklen_t len = sizeof(sin);
 
-  if(!getsockname((struct sockaddr *)&sin, &len)) {
+  if(!getsockname((struct sockaddr *)&sin, &len))
+  {
     local_addr = sin.sin_addr.s_addr;
-
-  } else {
+  }
+  else
+  {
     //esyslog("VNSI-Error: getsockname failed");
 
     // scan network interfaces
-
     conf.ifc_len = sizeof(buf);
     conf.ifc_req = buf;
     memset(buf, 0, sizeof(buf));
@@ -472,18 +492,14 @@ uint32_t cxSocket::get_local_address(char *ip_address)
 char *cxSocket::ip2txt(uint32_t ip, unsigned int port, char *str)
 {
   // inet_ntoa is not thread-safe (?)
-  if(str) {
+  if(str)
+  {
     unsigned int iph =(unsigned int)ntohl(ip);
     unsigned int porth =(unsigned int)ntohs(port);
     if(!porth)
-      sprintf(str, "%d.%d.%d.%d",
-	      ((iph>>24)&0xff), ((iph>>16)&0xff),
-	      ((iph>>8)&0xff), ((iph)&0xff));
+      sprintf(str, "%d.%d.%d.%d", ((iph>>24)&0xff), ((iph>>16)&0xff), ((iph>>8)&0xff), ((iph)&0xff));
     else
-      sprintf(str, "%u.%u.%u.%u:%u",
-	      ((iph>>24)&0xff), ((iph>>16)&0xff),
-	      ((iph>>8)&0xff), ((iph)&0xff),
-	      porth);
+      sprintf(str, "%u.%u.%u.%u:%u", ((iph>>24)&0xff), ((iph>>16)&0xff), ((iph>>8)&0xff), ((iph)&0xff), porth);
   }
   return str;
 }

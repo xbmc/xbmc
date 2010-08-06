@@ -30,7 +30,7 @@
 #include "tools.h"
 
 cRequestPacket::cRequestPacket(uint32_t requestID, uint32_t opcode, uint8_t* data, uint32_t dataLength, cConnection *cli)
-  : userData(data), userDataLength(dataLength), opCode(opcode), requestID(requestID), client(cli)
+ : requestID(requestID), opCode(opcode), userData(data), userDataLength(dataLength), client(cli)
 {
   packetPos       = 0;
   ownBlock        = true;
@@ -80,11 +80,7 @@ uint8_t cRequestPacket::extract_U8()
 uint32_t cRequestPacket::extract_U32()
 {
   if ((packetPos + sizeof(uint32_t)) > userDataLength) return 0;
-
-  uint32_t ul;
-  memcpy( &ul, &userData[packetPos], sizeof(ul) );
-  ul = ntohl(ul);
-
+  uint32_t ul = ntohl(*(uint32_t*)&userData[packetPos]);
   packetPos += sizeof(uint32_t);
   return ul;
 }
@@ -92,11 +88,7 @@ uint32_t cRequestPacket::extract_U32()
 uint64_t cRequestPacket::extract_U64()
 {
   if ((packetPos + sizeof(uint64_t)) > userDataLength) return 0;
-
-  uint64_t ull;
-  memcpy(&ull, &userData[packetPos], sizeof(ull));
-  ull = ntohll(ull);
-
+  uint64_t ull = ntohll(*(uint64_t*)&userData[packetPos]);
   packetPos += sizeof(uint64_t);
   return ull;
 }
@@ -104,9 +96,7 @@ uint64_t cRequestPacket::extract_U64()
 double cRequestPacket::extract_Double()
 {
   if ((packetPos + sizeof(uint64_t)) > userDataLength) return 0;
-  uint64_t ull;
-  memcpy(&ull, &userData[packetPos], sizeof(ull));
-  ull = ntohll(ull);
+  uint64_t ull = ntohll(*(uint64_t*)&userData[packetPos]);
   double d;
   memcpy(&d,&ull,sizeof(double));
   packetPos += sizeof(uint64_t);
@@ -116,9 +106,7 @@ double cRequestPacket::extract_Double()
 int32_t cRequestPacket::extract_S32()
 {
   if ((packetPos + sizeof(int32_t)) > userDataLength) return 0;
-  int32_t l;
-  memcpy(&l, &userData[packetPos], sizeof(l));
-  l = ntohl(l);
+  int32_t l = ntohl(*(int32_t*)&userData[packetPos]);
   packetPos += sizeof(int32_t);
   return l;
 }

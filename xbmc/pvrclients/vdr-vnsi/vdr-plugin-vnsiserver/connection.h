@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "cxsocket.h"
+#include "cmdcontrol.h"
 
 class cServer;
 class cChannel;
@@ -55,6 +56,7 @@ private:
   FILE           *m_NetLogFile;
   cString         m_ClientAddress;
   cRecPlayer     *m_RecPlayer;
+  cCmdControl     m_cmdcontrol;
 
 protected:
   virtual void Action(void);

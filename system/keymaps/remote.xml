@@ -152,6 +152,7 @@
       <subtitle>ShowSubtitles</subtitle>
       <language>AudioNextLanguage</language>
       <playlist>Playlist</playlist>
+      <language>Language</language>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>

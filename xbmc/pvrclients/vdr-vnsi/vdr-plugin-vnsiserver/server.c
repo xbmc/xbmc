@@ -20,7 +20,6 @@
  */
 
 #include <netdb.h>
-#include <sys/epoll.h>
 #include <poll.h>
 #include <assert.h>
 #include <stdio.h>
@@ -64,16 +63,10 @@ public:
   }
 };
 
-typedef struct ePoolServerData
-{
-  int serverfd;
-} ePoolServerData;
-
 cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
 {
   m_ServerPort  = listenPort;
   m_ServerId    = time(NULL) ^ getpid();
-  m_ePollFD     = epoll_create(10);
 
   cString Base(cPlugin::ConfigDirectory());
   if(*Base)
@@ -85,8 +78,6 @@ cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
     esyslog("VNSI-Error: cServer: cPlugin::ConfigDirectory() failed !");
     m_AllowedHostsFile = cString::sprintf("/video/" ALLOWED_HOSTS_FILE);
   }
-
-  Start();
 
   m_ServerFD = socket(AF_INET, SOCK_STREAM, 0);
   if(m_ServerFD == -1)
@@ -106,19 +97,15 @@ cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
   if (x < 0)
   {
     close(m_ServerFD);
+    isyslog("VNSI: Unable to start VNSI Server, port already in use ?");
+    m_ServerFD = -1;
     return;
   }
 
-  listen(m_ServerFD, 1);
+  listen(m_ServerFD, 10);
 
-  ePoolServerData *ts = new ePoolServerData;
-  ts->serverfd = m_ServerFD;
+  Start();
 
-  struct epoll_event e;
-  memset(&e, 0, sizeof(e));
-  e.events = EPOLLIN;
-  e.data.ptr = ts;
-  epoll_ctl(m_ePollFD, EPOLL_CTL_ADD, m_ServerFD, &e);
   isyslog("VNSI: VNSI Server started");
   return;
 }
@@ -126,11 +113,11 @@ cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
 cServer::~cServer()
 {
   Cancel(-1);
-  for (int i = 0; i < m_Connections.size(); i++)
+  for (Connections::iterator i = m_Connections.begin(); i != m_Connections.end(); i++)
   {
-    delete m_Connections[i];
-    m_Connections.erase(m_Connections.begin()+i);
+    delete (*i);
   }
+  m_Connections.erase(m_Connections.begin(), m_Connections.end());
   Cancel();
   isyslog("VNSI: VNSI Server stopped");
 }
@@ -186,47 +173,49 @@ void cServer::NewClientConnected(int fd)
 
 void cServer::Action(void)
 {
-  struct epoll_event ev[1];
+  fd_set fds;
+  struct timeval tv;
 
   while (Running())
   {
-    int r = epoll_wait(m_ePollFD, ev, sizeof(ev) / sizeof(ev[0]), 5000);
+    FD_ZERO(&fds);
+    FD_SET(m_ServerFD, &fds);
+
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
+    int r = select(m_ServerFD + 1, &fds, NULL, NULL, &tv);
     if (r == -1)
     {
-      esyslog("VNSI-Error: failed during epoll_wait");
+      esyslog("VNSI-Error: failed during select");
       continue;
     }
     if (r == 0)
     {
-      for (int i = 0; i < m_Connections.size(); i++)
+      for (Connections::iterator i = m_Connections.begin(); i != m_Connections.end();)
       {
-        if (!m_Connections[i]->Active())
+        if (!(*i)->Active())
         {
-          isyslog("VNSI: Client with ID %u seems to be disconnected, removing from client list", m_Connections[i]->GetID());
-          delete m_Connections[i];
-          m_Connections.erase(m_Connections.begin()+i);
+          isyslog("VNSI: Client with ID %u seems to be disconnected, removing from client list", (*i)->GetID());
+          delete (*i);
+          i = m_Connections.erase(i);
+        }
+        else
+        {
+          i++;
         }
       }
       continue;
     }
 
-    for (int i = 0; i < r; i++)
+    int fd = accept(m_ServerFD, 0, 0);
+    if (fd >= 0)
     {
-      ePoolServerData *srvdata = (ePoolServerData*) ev[i].data.ptr;
-
-      if (ev[i].events & EPOLLHUP)
-      {
-        close(srvdata->serverfd);
-        delete srvdata;
-        continue;
-      }
-
-      if (ev[i].events & EPOLLIN)
-      {
-        int fd = accept(srvdata->serverfd, 0, 0);
-        if (fd >= 0)
-          NewClientConnected(fd);
-      }
+      NewClientConnected(fd);
+    }
+    else
+    {
+      esyslog("VNSI-Error: accept failed");
     }
   }
   return;

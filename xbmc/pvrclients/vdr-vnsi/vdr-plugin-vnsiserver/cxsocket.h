@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <vdr/thread.h>
+#include <vdr/tools.h>
 
 #define CLOSESOCKET(fd) do { if(fd>=0) { ::close(fd); fd=-1; } } while(0)
 
@@ -42,6 +43,9 @@ class cxSocket {
   cMutex m_MutexWrite;
   cMutex m_MutexRead;
 
+  cPoller *m_pollerRead;
+  cPoller *m_pollerWrite;
+  
   cxSocket(const cxSocket& s);//{ m_fd = s.m_fd>=0 ? dup(s.m_fd) : -1; }
   cxSocket &operator=(const cxSocket &S);// { close(); m_fd = S.m_fd >= 0 ? dup(S.m_fd) : -1; return *this; };
 
@@ -53,10 +57,10 @@ class cxSocket {
     estDGRAM  = SOCK_DGRAM
   } eSockType;
 
-  cxSocket() : m_fd(-1) {}
+  cxSocket() : m_fd(-1), m_pollerRead(NULL), m_pollerWrite(NULL) {}
   cxSocket(eSockType type) : m_fd(::socket(PF_INET, (int)type, 0)) {}
 
-  ~cxSocket() { CLOSESOCKET(m_fd); }
+  ~cxSocket();
 
   //operator int ()  const { return Handle(); }
   //operator bool () const { return open(); }
@@ -64,7 +68,9 @@ class cxSocket {
 
   int  handle(bool take_ownership=false)
        { int r=m_fd; if(take_ownership) m_fd=-1; return r; }
-  void set_handle(int h) { if(h != m_fd) {close(); m_fd = h;} }
+
+  void set_handle(int h);
+
   bool create(eSockType type) { close(); return (m_fd=::socket(PF_INET, (int)type, 0)) >= 0; }
   bool open(void)   const { return m_fd>0; }
   void close(void)        { CLOSESOCKET(m_fd); }
@@ -73,7 +79,7 @@ class cxSocket {
 	       const struct sockaddr *to = NULL, socklen_t tolen = 0);
   ssize_t recv(void *buf, size_t size, int flags = 0,
 	       struct sockaddr *from = NULL, socklen_t *fromlen = NULL);
-  ssize_t sendfile(int fd_file, off_t *offset, size_t count);
+  //ssize_t sendfile(int fd_file, off_t *offset, size_t count);
 
   ssize_t read(void *buffer, size_t size, int timeout_ms = -1);
   ssize_t write(const void *buffer, size_t size, int timeout_ms = -1);
@@ -111,20 +117,6 @@ class cxSocket {
   uint32_t get_local_address(char *ip_address);
 
   static char *ip2txt(uint32_t ip, unsigned int port, char *str);
-};
-
-
-#include <vdr/tools.h>
-
-class cxPoller : public cPoller {
-  public:
-    cxPoller(cxSocket& Sock, bool Out=false) : cPoller(Sock.handle(), Out) {};
-
-    cxPoller(cxSocket* Socks, int count, bool Out=false)
-    {
-      for(int i=0; i<count; i++)
-        Add(Socks[i].handle(), Out);
-    }
 };
 
 //
@@ -177,8 +169,8 @@ static inline int sock_connect(int fd_control, int port, int type)
 
   uint32_t tmp = ntohl(sin.sin_addr.s_addr);
   dsyslog("VNSI: Client address: %d.%d.%d.%d",
-	 ((tmp>>24)&0xff), ((tmp>>16)&0xff),
-	 ((tmp>>8)&0xff), ((tmp)&0xff));
+         ((tmp>>24)&0xff), ((tmp>>16)&0xff),
+         ((tmp>>8)&0xff), ((tmp)&0xff));
 
 #if 0
   if ((h = gethostbyname(tmp)) == NULL) {
@@ -186,8 +178,7 @@ static inline int sock_connect(int fd_control, int port, int type)
   }
 #endif
 
-  if ((s = socket(PF_INET, type,
-		  type==SOCK_DGRAM?IPPROTO_UDP:IPPROTO_TCP)) < 0) {
+  if ((s = socket(PF_INET, type, type==SOCK_DGRAM?IPPROTO_UDP:IPPROTO_TCP)) < 0) {
     esyslog("VNSI-Error: sock_connect: failed to create socket");
     return -1;
   }

@@ -207,7 +207,7 @@ void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
 
         if (m_badDTS < 5)
         {
-          dsyslog("VNSI-Error: DTS discontinuity. DTS = %10lu, last = %10lu", dts, m_LastDTS);
+          dsyslog("VNSI-Error: DTS discontinuity. DTS = %llu, last = %llu", dts, m_LastDTS);
         }
       }
       else
@@ -301,6 +301,9 @@ bool cTSDemuxer::ProcessTSPacket(unsigned char *data)
 
   bool pusi  = TsPayloadStart(data);
   int  bytes = TS_SIZE - TsPayloadOffset(data);
+
+  if(bytes < 0 || bytes > TS_SIZE)
+    return false;
 
   if (TsError(data))
   {

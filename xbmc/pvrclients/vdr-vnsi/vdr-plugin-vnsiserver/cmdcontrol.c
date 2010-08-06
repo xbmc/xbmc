@@ -41,64 +41,42 @@ cCmdControl::cCmdControl()
   m_resp                  = NULL;
   m_processSCAN_Response  = NULL;
   m_processSCAN_Socket    = NULL;
-  m_sendBufferSize        = 8192;
-  m_sendBuffer            = (uint8_t*)malloc(m_sendBufferSize);
 
   Start();
 }
 
 cCmdControl::~cCmdControl()
 {
-  Cancel(1);
-  m_Wait.Signal();
-  free(m_sendBuffer);
+  Cancel(10);
 }
 
 bool cCmdControl::recvRequest(cRequestPacket* newRequest)
 {
+  m_mutex.Lock();
   m_req_queue.push(newRequest);
+  m_mutex.Unlock();
   m_Wait.Signal();
-  LOGCONSOLE("recvReq set req and signalled");
   return true;
 }
 
 void cCmdControl::Action(void)
 {
-  int errorCnt = 0;
-
-  if (m_req_queue.size() != 0)
-  {
-    esyslog("VNSI-Error: Response handler thread started with still present packets in queue, exiting thread");
-    return;
-  }
-
   while (Running())
   {
     LOGCONSOLE("threadMethod waiting");
-    m_Wait.Wait();  // unlocks, waits, relocks
-    if (m_req_queue.size() == 0)
+    m_Wait.Wait(500);  // unlocks, waits, relocks
+
+    m_mutex.Lock();
+    size_t s = m_req_queue.size();
+    m_mutex.Unlock();
+
+    while(s > 0)
     {
-      if (!Running())
-        break;
-
-      errorCnt++;
-      if (errorCnt >= 5 || !Running())
-      {
-        esyslog("VNSI-Error: Response handler signaled more as 5 times without packets in queue, exiting thread");
-        break;
-      }
-      continue;
-    }
-
-    errorCnt = 0;
-
-    // signalled with something in queue
-    LOGCONSOLE("thread woken with req, queue size: %i", m_req_queue.size());
-
-    while (m_req_queue.size())
-    {
+      m_mutex.Lock();
       m_req = m_req_queue.front();
       m_req_queue.pop();
+      s = m_req_queue.size();
+      m_mutex.Unlock();
 
       if (!processPacket())
       {
@@ -293,7 +271,7 @@ bool cCmdControl::process_Login() /* OPCODE 1 */
   if (protocolVersion != VNSIProtocolVersion)
   {
     esyslog("VNSI-Error: Client '%s' have a not allowed protocol version '%u', terminating client", clientName, protocolVersion);
-    delete clientName;
+    delete[] clientName;
     return false;
   }
 
@@ -316,7 +294,8 @@ bool cCmdControl::process_Login() /* OPCODE 1 */
   m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   m_req->getClient()->SetLoggedIn(true);
-  delete clientName;
+  delete[] clientName;
+
   return true;
 }
 
@@ -396,6 +375,8 @@ bool cCmdControl::processRecStream_Open() /* OPCODE 40 */
 
   m_resp->finalise();
   m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  delete[] fileName;
+
   return true;
 }
 
@@ -432,17 +413,15 @@ bool cCmdControl::processRecStream_GetBlock() /* OPCODE 42 */
 
 //  LOGCONSOLE("getblock pos = %llu length = %lu", position, amount);
 
-  checkSendBufferSize(amount);
-  uint32_t amountReceived = m_req->getClient()->m_RecPlayer->getBlock(m_sendBuffer, position, amount);
+  uint8_t* p = m_resp->reserve(amount);
+  uint32_t amountReceived = m_req->getClient()->m_RecPlayer->getBlock(p, position, amount);
+
+  if(amount > amountReceived) m_resp->unreserve(amount - amountReceived);
 
   if (!amountReceived)
   {
     m_resp->add_U32(0);
     LOGCONSOLE("written 4(0) as getblock got 0");
-  }
-  else
-  {
-    m_resp->copyin(m_sendBuffer, amountReceived);
   }
 
   m_resp->finalise();
@@ -743,6 +722,9 @@ bool cCmdControl::processTIMER_Add() /* OPCODE 83 */
 
   cString buffer = cString::sprintf("%u:%i:%s:%04d:%04d:%d:%d:%s:%s\n", flags, number, *cTimer::PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux);
 
+  delete[] file;
+  delete[] aux;
+
   cTimer *timer = new cTimer;
   if (timer->Parse(buffer))
   {
@@ -878,6 +860,10 @@ bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
     int stop = time->tm_hour * 100 + time->tm_min;
 
     cString buffer = cString::sprintf("%u:%i:%s:%04d:%04d:%d:%d:%s:%s\n", flags, number, *cTimer::PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux);
+    
+    delete[] file;
+    delete[] aux;
+
     if (!t.Parse(buffer))
     {
       esyslog("VNSI-Error: Error in timer settings");
@@ -1103,6 +1089,7 @@ bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
   m_resp->finalise();
   m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
+  delete[] fileName;
   LOGCONSOLE("Written getrecinfo");
   return true;
 }
@@ -1152,6 +1139,8 @@ bool cCmdControl::processRECORDINGS_Delete() /* OPCODE 104 */
 
   m_resp->finalise();
   m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  
+  delete[] recName;
   return true;
 }
 
@@ -1304,6 +1293,9 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
     m_resp->finalise();
     m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   }
+
+  delete[] fileName;
+  delete[] newPath;
 
   return true;
 }
@@ -1678,10 +1670,4 @@ void cCmdControl::processSCAN_SetStatus(int status)
   resp->finalise();
   m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
   delete resp;
-}
-
-void cCmdControl::checkSendBufferSize(uint32_t s) {
-  if(s <= m_sendBufferSize) return;
-  m_sendBuffer = (uint8_t*)realloc(m_sendBuffer, s);
-  m_sendBufferSize = s;
 }

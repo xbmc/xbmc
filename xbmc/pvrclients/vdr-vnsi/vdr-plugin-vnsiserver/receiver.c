@@ -75,6 +75,7 @@ cLiveReceiver::~cLiveReceiver()
 void cLiveReceiver::Receive(uchar *Data, int Length)
 {
   int p = m_Streamer->Put(Data, Length);
+
   if (p != Length)
     m_Streamer->ReportOverflow(Length - p);
 }
@@ -523,11 +524,15 @@ cLiveStreamer::cLiveStreamer()
     m_Streams[idx] = NULL;
     m_Pids[idx]    = 0;
   }
+  
+  SetTimeouts(0, 500);
 }
 
 cLiveStreamer::~cLiveStreamer()
 {
   LOGCONSOLE("Started to delete live streamer");
+
+  Cancel(-1);
 
   if (m_Device)
   {
@@ -578,86 +583,81 @@ cLiveStreamer::~cLiveStreamer()
     close(m_Frontend);
     m_Frontend = -1;
   }
+
   LOGCONSOLE("Finished to delete live streamer");
 }
 
 void cLiveStreamer::Action(void)
 {
-  int readTimeouts      = 0;
   int signalInfoCnt     = 90;
-  bool recvRetry        = true;
+  time_t last_data      = time(NULL);
+  int size              = 0;
+  int used              = 0;
+  unsigned char *buf    = NULL;
 
   while (Running())
   {
-    int size;
-    int used = 0;
-    unsigned char *buf = Get(size);
-    if (buf)
-    {
-      /* Make sure we are looking at a TS packet */
-      while (size > TS_SIZE)
-      {
-        if (buf[0] == TS_SYNC_BYTE && buf[TS_SIZE] == TS_SYNC_BYTE)
-          break;
-        buf++;
-        size--;
-        used++;
-      }
+    size = 0;
+    used = 0;
+    buf = Get(size);
 
-      while (size >= TS_SIZE)
-      {
-        if (!Running())
-          break;
-
-        unsigned int ts_pid = TsPid(buf+used);
-        cTSDemuxer *demuxer = FindStreamDemuxer(ts_pid);
-
-        if (demuxer)
-          demuxer->ProcessTSPacket(buf+used);
-
-        size  -= TS_SIZE;
-        used  += TS_SIZE;
-      }
-      Del(used);
-
-      signalInfoCnt++;
-      readTimeouts = 0;
-    }
-
-    if (!buf && m_Receiver->IsAttached())
-    {
-      cCondWait::SleepMs(18);
-      readTimeouts++;
-      if (readTimeouts > 180)
-      {
-
-        uint8_t dummyData[1];
-        sStreamPacket pkt;
-        pkt.id       = 0;
-        pkt.data     = dummyData;
-        pkt.size     = 0;
-        pkt.duration = 0;
-        pkt.dts      = DVD_NOPTS_VALUE;
-        pkt.pts      = DVD_NOPTS_VALUE;
-        sendStreamPacket(&pkt);
-
-        readTimeouts = 0;
-      }
-    }
-
-    if (!Running())
-      break;
-
-    if (!m_Receiver->IsAttached()) /** Double check here */
+    if (!m_Receiver->IsAttached())
     {
       isyslog("VNSI: returning from streamer thread, receiver is no more attached");
       break;
     }
 
-    if (time(NULL) - m_lastInfoSendet > 1)
+    // no data
+    if (buf == NULL)
+    {
+      if(time(NULL) - last_data > 10*1000) {
+        isyslog("VNSI: returning from streamer thread, timout on reading data");
+        break;
+      }
+      continue;
+    }
+
+    if(size <= TS_SIZE) {
+      continue;
+    }
+
+    /* Make sure we are looking at a TS packet */
+    while (size > TS_SIZE)
+    {
+      if (buf[0] == TS_SYNC_BYTE && buf[TS_SIZE] == TS_SYNC_BYTE)
+        break;
+      used++;
+      buf++;
+      size--;
+    }
+
+    while (size >= TS_SIZE)
+    {
+      if(!Running())
+      {
+        break;
+      }
+
+      unsigned int ts_pid = TsPid(buf);
+      cTSDemuxer *demuxer = FindStreamDemuxer(ts_pid);
+      if (demuxer)
+      {
+        demuxer->ProcessTSPacket(buf);
+	last_data = time(NULL);
+      }
+
+      buf += TS_SIZE;
+      size -= TS_SIZE;
+      used += TS_SIZE;
+    }
+    Del(used);
+
+    /* Additional Information and NO_SIGNAL timers */
+    signalInfoCnt++;
+
+    if (time(NULL) - m_lastInfoSendet > 10)
     {
       m_lastInfoSendet = time(NULL);
-
       sendSignalInfo();
     }
     else if (signalInfoCnt >= 100)
@@ -835,7 +835,7 @@ inline void cLiveStreamer::Activate(bool On)
   else
   {
     LOGCONSOLE("VDR inactive, sending stream end message");
-    Cancel(1);
+    Cancel(5);
   }
 }
 
@@ -878,6 +878,8 @@ cDevice *cLiveStreamer::GetDevice(const cChannel *Channel, int Priority)
 
   LOGCONSOLE(" * Found following device: %p (%d)", device, device ? device->CardIndex() + 1 : 0);
 
+  return device;
+ /*
 #if CONSOLEDEBUG
   if (device == cDevice::ActualDevice())
   {
@@ -945,7 +947,7 @@ cDevice *cLiveStreamer::GetDevice(const cChannel *Channel, int Priority)
     }
   }
 
-  return device;
+  return device;*/
 }
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
