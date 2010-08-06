@@ -148,129 +148,32 @@ bool CScraper::Supports(const CONTENT_TYPE &content) const
   return Type() == ScraperTypeFromContent(content);
 }
 
-bool CScraper::LoadSettings()
+bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
 {
-  //TODO if cloned settings don't exist, load master settings and copy
-  if (!Parent())
-    return CAddon::LoadUserSettings();
-  else
-    return LoadSettingsXML();
-}
-
-bool CScraper::HasSettings()
-{
-  if (!m_userXmlDoc.RootElement())
-    return LoadSettingsXML();
-
-  return true;
-}
-
-bool CScraper::LoadUserXML(const CStdString& strSaved)
-{
-  m_userXmlDoc.Clear();
-  m_userXmlDoc.Parse(strSaved.c_str());
-
-  return m_userXmlDoc.RootElement()?true:false;
-}
-
-bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
-{
-  AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon))
-    return false;
-  else if (Parent())
-    addon = Parent();
-
-  CScraperParser parser;
-  if (!parser.Load(addon))
+  m_pathContent = content;
+  if (!LoadSettings())
     return false;
 
-  if (!parser.HasFunction(strFunction))
-    return CAddon::LoadSettings();
+  if (xml.IsEmpty())
+    return true;
 
-  if (!url && strFunction.Equals("GetSettings")) // entry point
-    m_addonXmlDoc.Clear();
-
-  vector<CStdString> strHTML;
-  if (url)
-  {
-    XFILE::CFileCurl http;
-    for (unsigned int i=0;i<url->m_url.size();++i)
-    {
-      CStdString strCurrHTML;
-      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
-        return false;
-      strHTML.push_back(strCurrHTML);
-    }
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    parser.m_param[i] = strHTML[i];
-
-  CStdString strXML = parser.Parse(strFunction);
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return false;
-  }
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
-  // ok, now parse the xml file
   TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
-  }
+  if (doc.Parse(xml.c_str()))
+    m_userSettingsLoaded = SettingsFromXML(doc);
 
-  // check our document
-  if (!m_addonXmlDoc.RootElement())
-  {
-    TiXmlElement xmlRootElement("settings");
-    m_addonXmlDoc.InsertEndChild(xmlRootElement);
-  }
-
-  // loop over all tags and append any setting tags
-  TiXmlElement* pElement = doc.RootElement()->FirstChildElement("setting");
-  if (pElement)
-    m_hasSettings = true;
-  else
-    m_hasSettings = false;
-
-  while (pElement)
-  {
-    m_addonXmlDoc.RootElement()->InsertEndChild(*pElement);
-    pElement = pElement->NextSiblingElement("setting");
-  }
-
-  // and call any chains
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
-    {
-      CScraperUrl scrURL(xurl);
-      if (!LoadSettingsXML(szFunction,&scrURL))
-        return false;
-    }
-    xurl = xurl->NextSiblingElement("url");
-  }
-
-  return m_addonXmlDoc.RootElement()?true:false;
+  return m_userSettingsLoaded;
 }
 
-CStdString CScraper::GetSettings() const
+CStdString CScraper::GetPathSettings()
 {
+  if (!LoadSettings())
+    return "";
+
   stringstream stream;
-  if (m_userXmlDoc.RootElement())
-    stream << *m_userXmlDoc.RootElement();
+  TiXmlDocument doc;
+  SettingsToXML(doc);
+  if (doc.RootElement())
+    stream << *doc.RootElement();
 
   return stream.str();
 }

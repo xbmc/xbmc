@@ -49,7 +49,7 @@ protected:
   virtual void OnInitWindow();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
-  int DownloadThumbnail(const CStdString &thumbFile, bool bMultiple=false);
+  bool DownloadThumbnail(const CStdString &thumbFile);
   void OnGetThumb();
   void OnGetFanart();
   void SetSongs(const VECSONGS &songs);

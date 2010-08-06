@@ -23,7 +23,6 @@
 #if defined(HAVE_LIBCRYSTALHD)
 
 #include <deque>
-#include <vector>
 
 #include "DVDVideoCodec.h"
 
@@ -158,7 +157,6 @@ protected:
   unsigned int  m_height;
   double        m_last_pts;
 
-  std::deque<CHD_TIMESTAMP> m_timestamps;
   CMPCOutputThread *m_pOutputThread;
   CSyncPtrQueue<CPictureBuffer> m_BusyList;
 

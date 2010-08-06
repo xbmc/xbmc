@@ -134,7 +134,7 @@
 					<onclick>XBMC.Quit()</onclick>
 					<pulseonselect>no</pulseonselect>
 					<font>-</font>
-					<label>$LOCALIZE[13012] XBMC</label>
+					<label>$LOCALIZE[13012]</label>
 				</control>
 				<control type="group" id="13">
 					<width>90</width>

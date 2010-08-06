@@ -24,7 +24,7 @@ SDK_BUILDHOOKS=""
 
 # getopt-parse.bash
 
-TEMP=$(getopt -o snp:ulkgiv: --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2,intel-only,variant: -- "$@")
+TEMP=$(getopt -o snp:ulkgiv:h: --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2,intel-only,variant:,hook: -- "$@")
 eval set -- "$TEMP"
 
 while true
@@ -72,6 +72,15 @@ do
 		esac
 		echo "Enable option: Build variant $VARIANTNAME"
 		export VARIANTNAME
+		shift 2
+		;;
+	-h|--hook)
+		case "$2" in
+			"") echo "No hook name provided, exiting"; exit ;;
+			*)  HOOKNAME=$2;;
+		esac
+		echo "Enable option: Custom hook $HOOKNAME"
+		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS $HOOKNAME"
 		shift 2
 		;;
 	-p|--proxy)

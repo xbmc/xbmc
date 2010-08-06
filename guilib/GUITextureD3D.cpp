@@ -30,7 +30,7 @@ CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height
 {
 }
 
-void CGUITextureD3D::Begin()
+void CGUITextureD3D::Begin(color_t color)
 {
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
@@ -79,6 +79,7 @@ void CGUITextureD3D::Begin()
   p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
   p3DDevice->SetFVF( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
+  m_col = color;
 }
 
 void CGUITextureD3D::End()
@@ -89,7 +90,7 @@ void CGUITextureD3D::End()
     g_Windowing.Get3DDevice()->SetTexture( 1, NULL );
 }
 
-void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
+void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -109,7 +110,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   verts[0].x = x[0]; verts[0].y = y[0]; verts[0].z = z[0];
   verts[0].tu = texture.x1;   verts[0].tv = texture.y1;
   verts[0].tu2 = diffuse.x1;  verts[0].tv2 = diffuse.y1;
-  verts[0].color = color;
+  verts[0].color = m_col;
 
   verts[1].x = x[1]; verts[1].y = y[1]; verts[1].z = z[1];
   if (orientation & 4)
@@ -132,12 +133,12 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
     verts[1].tu2 = diffuse.x2;
     verts[1].tv2 = diffuse.y1;
   }
-  verts[1].color = color;
+  verts[1].color = m_col;
 
   verts[2].x = x[2]; verts[2].y = y[2]; verts[2].z = z[2];
   verts[2].tu = texture.x2;   verts[2].tv = texture.y2;
   verts[2].tu2 = diffuse.x2;  verts[2].tv2 = diffuse.y2;
-  verts[2].color = color;
+  verts[2].color = m_col;
 
   verts[3].x = x[3]; verts[3].y = y[3]; verts[3].z = z[3];
   if (orientation & 4)
@@ -160,7 +161,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
     verts[3].tu2 = diffuse.x1;
     verts[3].tv2 = diffuse.y2;
   }
-  verts[3].color = color;
+  verts[3].color = m_col;
 
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 }

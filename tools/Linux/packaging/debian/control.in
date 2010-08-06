@@ -13,8 +13,7 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
 Package: xbmc
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
-         xbmc-skin-confluence (= ${binary:Version}) |
-         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-skin-confluence (= ${binary:Version}),
          xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
@@ -66,8 +65,7 @@ Description: XBMC Media Center (XBMC Live package)
 Package: xbmc-standalone
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
-         xbmc-skin-confluence (= ${binary:Version}) |
-         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-skin-confluence (= ${binary:Version}),
          xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
@@ -225,32 +223,6 @@ Description: XBMC Media Center (Confluence skin)
  multimedia jukebox.
  .
  This package contains the XBMC Confluence Skin package.
-
-Package: xbmc-skin-pm3-hd
-Architecture: all
-Depends: xbmc-data (= ${binary:Version}),
-         ttf-liberation,
-         ${misc:Depends}
-Description: XBMC Media Center (PM3 HD skin)
- XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
- open source software media-player and entertainment hub for all your digital
- media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
- and Microsoft Windows, as well as the original Xbox game console. Created in
- 2003 by a group of like minded programmers, XBMC is a non-profit project run
- and developed by volunteers located around the world. More than 50 software
- developers have contributed to XBMC, and 100-plus translators have worked to
- expand its reach, making it available in more than 30 languages.
- .
- While XBMC functions very well as a standard media player application for
- your computer, it has been designed to be the perfect companion for your
- HTPC. Supporting an almost endless range of remote controls, and combined
- with its beautiful interface and powerful skinning engine, XBMC feels very
- natural to use from the couch and is the ideal solution for your home
- theater. Once installed, your computer will become a fully functional
- multimedia jukebox.
- .
- This package contains the XBMC PM3 HD Skin package (aka Project Mahem III
- High Definition).
 
 Package: xbmc-web
 Architecture: all

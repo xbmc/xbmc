@@ -1001,11 +1001,11 @@ int ff_rtsp_read_reply(AVFormatContext *s, RTSPMessageHeader *reply,
     return 0;
 }
 
-void ff_rtsp_send_cmd_with_content_async(AVFormatContext *s,
-                                         const char *method, const char *url,
-                                         const char *headers,
-                                         const unsigned char *send_content,
-                                         int send_content_length)
+int ff_rtsp_send_cmd_with_content_async(AVFormatContext *s,
+                                        const char *method, const char *url,
+                                        const char *headers,
+                                        const unsigned char *send_content,
+                                        int send_content_length)
 {
     RTSPState *rt = s->priv_data;
     char buf[4096];
@@ -1032,47 +1032,55 @@ void ff_rtsp_send_cmd_with_content_async(AVFormatContext *s,
 
     dprintf(s, "Sending:\n%s--\n", buf);
 
-    url_write(rt->rtsp_hd, buf, strlen(buf));
+    url_write(rt->rtsp_hd_out, buf, strlen(buf));
     if (send_content_length > 0 && send_content)
-        url_write(rt->rtsp_hd, send_content, send_content_length);
+        url_write(rt->rtsp_hd_out, send_content, send_content_length);
     rt->last_cmd_time = av_gettime();
+
+    return 0;
 }
 
-void ff_rtsp_send_cmd_async(AVFormatContext *s, const char *method,
-                            const char *url, const char *headers)
+int ff_rtsp_send_cmd_async(AVFormatContext *s, const char *method,
+                           const char *url, const char *headers)
 {
-    ff_rtsp_send_cmd_with_content_async(s, method, url, headers, NULL, 0);
+    return ff_rtsp_send_cmd_with_content_async(s, method, url, headers, NULL, 0);
 }
 
-void ff_rtsp_send_cmd(AVFormatContext *s, const char *method, const char *url,
-                      const char *headers, RTSPMessageHeader *reply,
-                      unsigned char **content_ptr)
+int ff_rtsp_send_cmd(AVFormatContext *s, const char *method, const char *url,
+                     const char *headers, RTSPMessageHeader *reply,
+                     unsigned char **content_ptr)
 {
-    ff_rtsp_send_cmd_with_content(s, method, url, headers, reply,
-                                  content_ptr, NULL, 0);
+    return ff_rtsp_send_cmd_with_content(s, method, url, headers, reply,
+                                         content_ptr, NULL, 0);
 }
 
-void ff_rtsp_send_cmd_with_content(AVFormatContext *s,
-                                   const char *method, const char *url,
-                                   const char *header,
-                                   RTSPMessageHeader *reply,
-                                   unsigned char **content_ptr,
-                                   const unsigned char *send_content,
-                                   int send_content_length)
+int ff_rtsp_send_cmd_with_content(AVFormatContext *s,
+                                  const char *method, const char *url,
+                                  const char *header,
+                                  RTSPMessageHeader *reply,
+                                  unsigned char **content_ptr,
+                                  const unsigned char *send_content,
+                                  int send_content_length)
 {
     RTSPState *rt = s->priv_data;
     HTTPAuthType cur_auth_type;
+    int ret;
 
 retry:
     cur_auth_type = rt->auth_state.auth_type;
-    ff_rtsp_send_cmd_with_content_async(s, method, url, header,
-                                        send_content, send_content_length);
+    if ((ret = ff_rtsp_send_cmd_with_content_async(s, method, url, header,
+                                                   send_content,
+                                                   send_content_length)))
+        return ret;
 
-    ff_rtsp_read_reply(s, reply, content_ptr, 0);
+    if ((ret = ff_rtsp_read_reply(s, reply, content_ptr, 0) ) < 0)
+        return ret;
 
     if (reply->status_code == 401 && cur_auth_type == HTTP_AUTH_NONE &&
         rt->auth_state.auth_type != HTTP_AUTH_NONE)
         goto retry;
+
+    return 0;
 }
 
 /**
@@ -1454,12 +1462,19 @@ static int rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
     return 0;
 }
 
+void ff_rtsp_close_connections(AVFormatContext *s)
+{
+    RTSPState *rt = s->priv_data;
+    if (rt->rtsp_hd_out != rt->rtsp_hd) url_close(rt->rtsp_hd_out);
+    url_close(rt->rtsp_hd);
+}
+
 int ff_rtsp_connect(AVFormatContext *s)
 {
     RTSPState *rt = s->priv_data;
     char host[1024], path[1024], tcpname[1024], cmd[2048], auth[128];
     char *option_list, *option, *filename;
-    URLContext *rtsp_hd;
+    URLContext *rtsp_hd, *rtsp_hd_out;
     int port, err, tcp_fd;
     RTSPMessageHeader reply1 = {}, *reply = &reply1;
     int lower_transport_mask = 0;
@@ -1538,7 +1553,9 @@ redirect:
         err = AVERROR(EIO);
         goto fail;
     }
+    rtsp_hd_out = rtsp_hd;
     rt->rtsp_hd = rtsp_hd;
+    rt->rtsp_hd_out = rtsp_hd_out;
     rt->seq = 0;
 
     tcp_fd = url_get_file_handle(rtsp_hd);
@@ -1612,7 +1629,7 @@ redirect:
     return 0;
  fail:
     ff_rtsp_close_streams(s);
-    url_close(rt->rtsp_hd);
+    ff_rtsp_close_connections(s);
     if (reply->status_code >=300 && reply->status_code < 400 && s->iformat) {
         av_strlcpy(s->filename, reply->location, sizeof(s->filename));
         av_log(s, AV_LOG_INFO, "Status %d: Redirecting to %s\n",
@@ -1629,7 +1646,6 @@ redirect:
 static int rtsp_read_header(AVFormatContext *s,
                             AVFormatParameters *ap)
 {
-    RTSPState *rt = s->priv_data;
     int ret;
 
     ret = ff_rtsp_connect(s);
@@ -1641,7 +1657,7 @@ static int rtsp_read_header(AVFormatContext *s,
     } else {
          if (rtsp_read_play(s) < 0) {
             ff_rtsp_close_streams(s);
-            url_close(rt->rtsp_hd);
+            ff_rtsp_close_connections(s);
             return AVERROR_INVALIDDATA;
         }
     }
@@ -1986,7 +2002,7 @@ static int rtsp_read_close(AVFormatContext *s)
     ff_rtsp_send_cmd_async(s, "TEARDOWN", rt->control_uri, NULL);
 
     ff_rtsp_close_streams(s);
-    url_close(rt->rtsp_hd);
+    ff_rtsp_close_connections(s);
     ff_network_close();
     return 0;
 }

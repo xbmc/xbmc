@@ -551,6 +551,11 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
   return -1;
 }
 
+int CVideoDatabase::AddFile(const CFileItem& item)
+{
+  return AddFile(item.m_strPath);
+}
+
 bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
 {
   try
@@ -3191,9 +3196,8 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
     }
     else
     {
-      assert(scraper->Parent());
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->Parent()->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetPathSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }
@@ -3220,7 +3224,7 @@ bool CVideoDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraper->Parent()->ID().c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraper->ID().c_str());
   }
   return false;
 }
@@ -3386,8 +3390,12 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
   int id = GetFileId(item);
+  
   if (id < 0)
-    return;  // not in db
+  { // no files found - we have to add one
+    id = AddFile(item);
+    if (id < 0) return;
+  }
 
   // and mark as watched
   try
@@ -5114,8 +5122,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
           return ScraperPtr();
 
         // store this path's content & settings
-        scraper->m_pathContent = content;
-        scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+        scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
         settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
         settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
         settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
@@ -5154,8 +5161,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
               CAddonMgr::Get().GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon))
           {
             scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
-            scraper->m_pathContent = content;
-            scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+            scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
             settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
             settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
             settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
@@ -7221,7 +7227,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
             {
               SScanSettings settings;
               ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
-              scraper->m_pathContent = TranslateContent(content);
+              // FIXME: scraper settings are not exported?
+              scraper->SetPathSettings(TranslateContent(content), "");
               XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
               XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
               SetScraperForPath(strPath,scraper,settings);

@@ -48,7 +48,6 @@ static int rtsp_write_record(AVFormatContext *s)
 
 static int rtsp_write_header(AVFormatContext *s)
 {
-    RTSPState *rt = s->priv_data;
     int ret;
 
     ret = ff_rtsp_connect(s);
@@ -57,7 +56,7 @@ static int rtsp_write_header(AVFormatContext *s)
 
     if (rtsp_write_record(s) < 0) {
         ff_rtsp_close_streams(s);
-        url_close(rt->rtsp_hd);
+        ff_rtsp_close_connections(s);
         return AVERROR_INVALIDDATA;
     }
     return 0;
@@ -69,13 +68,19 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
     AVFormatContext *rtpctx = rtsp_st->transport_priv;
     uint8_t *buf, *ptr;
     int size;
-    uint8_t interleave_header[4];
+    uint8_t *interleave_header, *interleaved_packet;
 
     size = url_close_dyn_buf(rtpctx->pb, &buf);
     ptr = buf;
     while (size > 4) {
         uint32_t packet_len = AV_RB32(ptr);
         int id;
+        /* The interleaving header is exactly 4 bytes, which happens to be
+         * the same size as the packet length header from
+         * url_open_dyn_packet_buf. So by writing the interleaving header
+         * over these bytes, we get a consecutive interleaved packet
+         * that can be written in one call. */
+        interleaved_packet = interleave_header = ptr;
         ptr += 4;
         size -= 4;
         if (packet_len > size || packet_len < 2)
@@ -87,8 +92,7 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
         interleave_header[0] = '$';
         interleave_header[1] = id;
         AV_WB16(interleave_header + 2, packet_len);
-        url_write(rt->rtsp_hd, interleave_header, 4);
-        url_write(rt->rtsp_hd, ptr, packet_len);
+        url_write(rt->rtsp_hd, interleaved_packet, 4 + packet_len);
         ptr += packet_len;
         size -= packet_len;
     }
@@ -157,7 +161,7 @@ static int rtsp_write_close(AVFormatContext *s)
     ff_rtsp_send_cmd_async(s, "TEARDOWN", rt->control_uri, NULL);
 
     ff_rtsp_close_streams(s);
-    url_close(rt->rtsp_hd);
+    ff_rtsp_close_connections(s);
     ff_network_close();
     return 0;
 }

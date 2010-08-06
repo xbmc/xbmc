@@ -74,7 +74,6 @@ namespace ADDON
     virtual AddonProps Props() const =0;
     virtual AddonProps& Props() =0;
     virtual const CStdString ID() const =0;
-    virtual const AddonPtr Parent() const =0;
     virtual const CStdString Name() const =0;
     virtual bool Enabled() const =0;
     virtual const AddonVersion Version() =0;
@@ -90,14 +89,16 @@ namespace ADDON
     virtual const int  Stars() const =0;
     virtual const CStdString Disclaimer() const =0;
     virtual bool HasSettings() =0;
-    virtual bool LoadSettings() =0;
     virtual void SaveSettings() =0;
-    virtual void SaveFromDefault() =0;
-    virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "") =0;
-    virtual CStdString GetSetting(const CStdString& key) const =0;
+    virtual void UpdateSetting(const CStdString& key, const CStdString& value) =0;
+    virtual CStdString GetSetting(const CStdString& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
     virtual ADDONDEPS GetDeps() =0;
+
+  protected:
+    virtual const AddonPtr Parent() const =0;
+    virtual bool LoadSettings() =0;
 
   private:
     friend class CAddonMgr;

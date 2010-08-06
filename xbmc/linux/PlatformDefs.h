@@ -426,21 +426,12 @@ typedef struct _MEMORYSTATUS
   DWORD dwLength;
   DWORD dwMemoryLoad;
 
-#ifdef __APPLE__
   uint64_t dwTotalPhys;
   uint64_t dwAvailPhys;
   uint64_t dwTotalPageFile;
   uint64_t dwAvailPageFile;
   uint64_t dwTotalVirtual;
   uint64_t dwAvailVirtual;
-#else
-  SIZE_T dwTotalPhys;
-  SIZE_T dwAvailPhys;
-  SIZE_T dwTotalPageFile;
-  SIZE_T dwAvailPageFile;
-  SIZE_T dwTotalVirtual;
-  SIZE_T dwAvailVirtual;
-#endif
 } MEMORYSTATUS, *LPMEMORYSTATUS;
 
 // Common HRESULT values

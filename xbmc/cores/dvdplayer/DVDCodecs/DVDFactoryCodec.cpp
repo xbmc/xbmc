@@ -232,7 +232,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
 
   if (passthrough)
   {
-#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
+#if (defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)) && !defined(WIN32)
     pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
     if( pCodec ) return pCodec;
 #endif

@@ -22,7 +22,7 @@
  */
 
 #include "system.h"
-#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
+#if (defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)) && !defined(WIN32)
 
 #include "DVDAudioCodec.h"
 #ifdef USE_LIBA52_DECODER

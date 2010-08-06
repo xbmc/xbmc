@@ -71,9 +71,6 @@ enum {
 static VLC vlc_sbr[10];
 static const int8_t vlc_sbr_lav[10] =
     { 60, 60, 24, 24, 31, 31, 12, 12, 31, 12 };
-static DECLARE_ALIGNED(16, float, analysis_cos_pre)[64];
-static DECLARE_ALIGNED(16, float, analysis_sin_pre)[64];
-static DECLARE_ALIGNED(16, float, analysis_cossin_post)[32][2];
 static const DECLARE_ALIGNED(16, float, zero64)[64];
 
 #define SBR_INIT_VLC_STATIC(num, size) \
@@ -116,16 +113,6 @@ av_cold void ff_aac_sbr_init(void)
     SBR_INIT_VLC_STATIC(8, 592);
     SBR_INIT_VLC_STATIC(9, 512);
 
-    for (n = 0; n < 64; n++) {
-        float pre = M_PI * n / 64;
-        analysis_cos_pre[n] = cosf(pre);
-        analysis_sin_pre[n] = sinf(pre);
-    }
-    for (k = 0; k < 32; k++) {
-        float post = M_PI * (k + 0.5) / 128;
-        analysis_cossin_post[k][0] =  4.0 * cosf(post);
-        analysis_cossin_post[k][1] = -4.0 * sinf(post);
-    }
     for (n = 1; n < 320; n++)
         sbr_qmf_window_us[320 + n] = sbr_qmf_window_us[320 - n];
     sbr_qmf_window_us[384] = -sbr_qmf_window_us[384];
@@ -142,13 +129,13 @@ av_cold void ff_aac_sbr_ctx_init(SpectralBandReplication *sbr)
     sbr->data[0].synthesis_filterbank_samples_offset = SBR_SYNTHESIS_BUF_SIZE - (1280 - 128);
     sbr->data[1].synthesis_filterbank_samples_offset = SBR_SYNTHESIS_BUF_SIZE - (1280 - 128);
     ff_mdct_init(&sbr->mdct, 7, 1, 1.0/64);
-    ff_rdft_init(&sbr->rdft, 6, IDFT_R2C);
+    ff_mdct_init(&sbr->mdct_ana, 7, 1, -2.0);
 }
 
 av_cold void ff_aac_sbr_ctx_close(SpectralBandReplication *sbr)
 {
     ff_mdct_end(&sbr->mdct);
-    ff_rdft_end(&sbr->rdft);
+    ff_mdct_end(&sbr->mdct_ana);
 }
 
 static int qsort_comparison_function_int16(const void *a, const void *b)
@@ -293,15 +280,15 @@ static void make_bands(int16_t* bands, int start, int stop, int num_bands)
     bands[num_bands-1] = stop - previous;
 }
 
-static int check_n_master(AVCodecContext *avccontext, int n_master, int bs_xover_band)
+static int check_n_master(AVCodecContext *avctx, int n_master, int bs_xover_band)
 {
     // Requirements (14496-3 sp04 p205)
     if (n_master <= 0) {
-        av_log(avccontext, AV_LOG_ERROR, "Invalid n_master: %d\n", n_master);
+        av_log(avctx, AV_LOG_ERROR, "Invalid n_master: %d\n", n_master);
         return -1;
     }
     if (bs_xover_band >= n_master) {
-        av_log(avccontext, AV_LOG_ERROR,
+        av_log(avctx, AV_LOG_ERROR,
                "Invalid bitstream, crossover band index beyond array bounds: %d\n",
                bs_xover_band);
         return -1;
@@ -349,7 +336,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
         sbr_offset_ptr = sbr_offset[5];
         break;
     default:
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Unsupported sample rate for SBR: %d\n", sbr->sample_rate);
         return -1;
     }
@@ -367,7 +354,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
     } else if (spectrum->bs_stop_freq == 15) {
         sbr->k[2] = 3*sbr->k[0];
     } else {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Invalid bs_stop_freq: %d\n", spectrum->bs_stop_freq);
         return -1;
     }
@@ -382,7 +369,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
         max_qmf_subbands = 32;
 
     if (sbr->k[2] - sbr->k[0] > max_qmf_subbands) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Invalid bitstream, too many QMF subbands: %d\n", sbr->k[2] - sbr->k[0]);
         return -1;
     }
@@ -393,7 +380,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
 
         dk = spectrum->bs_alter_scale + 1;
         sbr->n_master = ((sbr->k[2] - sbr->k[0] + (dk&2)) >> dk) << 1;
-        if (check_n_master(ac->avccontext, sbr->n_master, sbr->spectrum_params.bs_xover_band))
+        if (check_n_master(ac->avctx, sbr->n_master, sbr->spectrum_params.bs_xover_band))
             return -1;
 
         for (k = 1; k <= sbr->n_master; k++)
@@ -428,7 +415,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
         num_bands_0 = lrintf(half_bands * log2f(sbr->k[1] / (float)sbr->k[0])) * 2;
 
         if (num_bands_0 <= 0) { // Requirements (14496-3 sp04 p205)
-            av_log(ac->avccontext, AV_LOG_ERROR, "Invalid num_bands_0: %d\n", num_bands_0);
+            av_log(ac->avctx, AV_LOG_ERROR, "Invalid num_bands_0: %d\n", num_bands_0);
             return -1;
         }
 
@@ -442,7 +429,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
         vk0[0] = sbr->k[0];
         for (k = 1; k <= num_bands_0; k++) {
             if (vk0[k] <= 0) { // Requirements (14496-3 sp04 p205)
-                av_log(ac->avccontext, AV_LOG_ERROR, "Invalid vDk0[%d]: %d\n", k, vk0[k]);
+                av_log(ac->avctx, AV_LOG_ERROR, "Invalid vDk0[%d]: %d\n", k, vk0[k]);
                 return -1;
             }
             vk0[k] += vk0[k-1];
@@ -472,14 +459,14 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
             vk1[0] = sbr->k[1];
             for (k = 1; k <= num_bands_1; k++) {
                 if (vk1[k] <= 0) { // Requirements (14496-3 sp04 p205)
-                    av_log(ac->avccontext, AV_LOG_ERROR, "Invalid vDk1[%d]: %d\n", k, vk1[k]);
+                    av_log(ac->avctx, AV_LOG_ERROR, "Invalid vDk1[%d]: %d\n", k, vk1[k]);
                     return -1;
                 }
                 vk1[k] += vk1[k-1];
             }
 
             sbr->n_master = num_bands_0 + num_bands_1;
-            if (check_n_master(ac->avccontext, sbr->n_master, sbr->spectrum_params.bs_xover_band))
+            if (check_n_master(ac->avctx, sbr->n_master, sbr->spectrum_params.bs_xover_band))
                 return -1;
             memcpy(&sbr->f_master[0],               vk0,
                    (num_bands_0 + 1) * sizeof(sbr->f_master[0]));
@@ -488,7 +475,7 @@ static int sbr_make_f_master(AACContext *ac, SpectralBandReplication *sbr,
 
         } else {
             sbr->n_master = num_bands_0;
-            if (check_n_master(ac->avccontext, sbr->n_master, sbr->spectrum_params.bs_xover_band))
+            if (check_n_master(ac->avctx, sbr->n_master, sbr->spectrum_params.bs_xover_band))
                 return -1;
             memcpy(sbr->f_master, vk0, (num_bands_0 + 1) * sizeof(sbr->f_master[0]));
         }
@@ -524,7 +511,7 @@ static int sbr_hf_calc_npatches(AACContext *ac, SpectralBandReplication *sbr)
         // illegal however the Coding Technologies decoder check stream has a final
         // count of 6 patches
         if (sbr->num_patches > 5) {
-            av_log(ac->avccontext, AV_LOG_ERROR, "Too many patches: %d\n", sbr->num_patches);
+            av_log(ac->avctx, AV_LOG_ERROR, "Too many patches: %d\n", sbr->num_patches);
             return -1;
         }
 
@@ -563,12 +550,12 @@ static int sbr_make_f_derived(AACContext *ac, SpectralBandReplication *sbr)
 
     // Requirements (14496-3 sp04 p205)
     if (sbr->kx[1] + sbr->m[1] > 64) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Stop frequency border too high: %d\n", sbr->kx[1] + sbr->m[1]);
         return -1;
     }
     if (sbr->kx[1] > 32) {
-        av_log(ac->avccontext, AV_LOG_ERROR, "Start frequency border too high: %d\n", sbr->kx[1]);
+        av_log(ac->avctx, AV_LOG_ERROR, "Start frequency border too high: %d\n", sbr->kx[1]);
         return -1;
     }
 
@@ -580,7 +567,7 @@ static int sbr_make_f_derived(AACContext *ac, SpectralBandReplication *sbr)
     sbr->n_q = FFMAX(1, lrintf(sbr->spectrum_params.bs_noise_bands *
                                log2f(sbr->k[2] / (float)sbr->kx[1]))); // 0 <= bs_noise_bands <= 3
     if (sbr->n_q > 5) {
-        av_log(ac->avccontext, AV_LOG_ERROR, "Too many noise floor scale factors: %d\n", sbr->n_q);
+        av_log(ac->avctx, AV_LOG_ERROR, "Too many noise floor scale factors: %d\n", sbr->n_q);
         return -1;
     }
 
@@ -638,7 +625,7 @@ static int read_sbr_grid(AACContext *ac, SpectralBandReplication *sbr,
             ch_data->bs_amp_res = 0;
 
         if (ch_data->bs_num_env > 4) {
-            av_log(ac->avccontext, AV_LOG_ERROR,
+            av_log(ac->avctx, AV_LOG_ERROR,
                    "Invalid bitstream, too many SBR envelopes in FIXFIX type SBR frame: %d\n",
                    ch_data->bs_num_env);
             return -1;
@@ -693,7 +680,7 @@ static int read_sbr_grid(AACContext *ac, SpectralBandReplication *sbr,
         ch_data->bs_num_env                 = num_rel_lead + num_rel_trail + 1;
 
         if (ch_data->bs_num_env > 5) {
-            av_log(ac->avccontext, AV_LOG_ERROR,
+            av_log(ac->avctx, AV_LOG_ERROR,
                    "Invalid bitstream, too many SBR envelopes in VARVAR type SBR frame: %d\n",
                    ch_data->bs_num_env);
             return -1;
@@ -714,7 +701,7 @@ static int read_sbr_grid(AACContext *ac, SpectralBandReplication *sbr,
     }
 
     if (bs_pointer > ch_data->bs_num_env + 1) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Invalid bitstream, bs_pointer points to a middle noise border outside the time borders table: %d\n",
                bs_pointer);
         return -1;
@@ -722,7 +709,7 @@ static int read_sbr_grid(AACContext *ac, SpectralBandReplication *sbr,
 
     for (i = 1; i <= ch_data->bs_num_env; i++) {
         if (ch_data->t_env[i-1] > ch_data->t_env[i]) {
-            av_log(ac->avccontext, AV_LOG_ERROR, "Non monotone time borders\n");
+            av_log(ac->avctx, AV_LOG_ERROR, "Non monotone time borders\n");
             return -1;
         }
     }
@@ -907,21 +894,21 @@ static void read_sbr_extension(AACContext *ac, SpectralBandReplication *sbr,
     switch (bs_extension_id) {
     case EXTENSION_ID_PS:
         if (!ac->m4ac.ps) {
-            av_log(ac->avccontext, AV_LOG_ERROR, "Parametric Stereo signaled to be not-present but was found in the bitstream.\n");
+            av_log(ac->avctx, AV_LOG_ERROR, "Parametric Stereo signaled to be not-present but was found in the bitstream.\n");
             skip_bits_long(gb, *num_bits_left); // bs_fill_bits
             *num_bits_left = 0;
         } else {
 #if 0
             *num_bits_left -= ff_ps_data(gb, ps);
 #else
-            av_log_missing_feature(ac->avccontext, "Parametric Stereo is", 0);
+            av_log_missing_feature(ac->avctx, "Parametric Stereo is", 0);
             skip_bits_long(gb, *num_bits_left); // bs_fill_bits
             *num_bits_left = 0;
 #endif
         }
         break;
     default:
-        av_log_missing_feature(ac->avccontext, "Reserved SBR extensions are", 1);
+        av_log_missing_feature(ac->avctx, "Reserved SBR extensions are", 1);
         skip_bits_long(gb, *num_bits_left); // bs_fill_bits
         *num_bits_left = 0;
         break;
@@ -1006,7 +993,7 @@ static unsigned int read_sbr_data(AACContext *ac, SpectralBandReplication *sbr,
             return get_bits_count(gb) - cnt;
         }
     } else {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
             "Invalid bitstream - cannot apply SBR to element type %d\n", id_aac);
         sbr->start = 0;
         return get_bits_count(gb) - cnt;
@@ -1033,7 +1020,7 @@ static void sbr_reset(AACContext *ac, SpectralBandReplication *sbr)
     if (err >= 0)
         err = sbr_make_f_derived(ac, sbr);
     if (err < 0) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "SBR reset failed. Switching SBR to pure upsampling mode.\n");
         sbr->start = 0;
     }
@@ -1085,7 +1072,7 @@ int ff_decode_sbr_extension(AACContext *ac, SpectralBandReplication *sbr,
     bytes_read = ((num_sbr_bits + num_align_bits + 4) >> 3);
 
     if (bytes_read > cnt) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
+        av_log(ac->avctx, AV_LOG_ERROR,
                "Expected to read %d SBR bytes actually read %d.\n", cnt, bytes_read);
     }
     return cnt;
@@ -1139,7 +1126,7 @@ static void sbr_dequant(SpectralBandReplication *sbr, int id_aac)
  * @param   x       pointer to the beginning of the first sample window
  * @param   W       array of complex-valued samples split into subbands
  */
-static void sbr_qmf_analysis(DSPContext *dsp, RDFTContext *rdft, const float *in, float *x,
+static void sbr_qmf_analysis(DSPContext *dsp, RDFTContext *mdct, const float *in, float *x,
                              float z[320], float W[2][32][32][2],
                              float scale)
 {
@@ -1156,19 +1143,20 @@ static void sbr_qmf_analysis(DSPContext *dsp, RDFTContext *rdft, const float *in
         dsp->vector_fmul_reverse(z, sbr_qmf_window_ds, x, 320);
         for (k = 0; k < 64; k++) {
             float f = z[k] + z[k + 64] + z[k + 128] + z[k + 192] + z[k + 256];
-            z[k] = f * analysis_cos_pre[k];
-            z[k+64] = f;
+            z[k] = f;
         }
-        ff_rdft_calc(rdft, z);
-        re = z[0] * 0.5f;
-        im = 0.5f * dsp->scalarproduct_float(z+64, analysis_sin_pre, 64);
-        W[1][i][0][0] = re * analysis_cossin_post[0][0] - im * analysis_cossin_post[0][1];
-        W[1][i][0][1] = re * analysis_cossin_post[0][1] + im * analysis_cossin_post[0][0];
+        //Shuffle to IMDCT
+        z[64] = z[0];
         for (k = 1; k < 32; k++) {
-            re = z[2*k  ] - re;
-            im = z[2*k+1] - im;
-            W[1][i][k][0] = re * analysis_cossin_post[k][0] - im * analysis_cossin_post[k][1];
-            W[1][i][k][1] = re * analysis_cossin_post[k][1] + im * analysis_cossin_post[k][0];
+            z[64+2*k-1] =  z[   k];
+            z[64+2*k  ] = -z[64-k];
+        }
+        z[64+63] = z[32];
+
+        ff_imdct_half(mdct, z, z+64);
+        for (k = 0; k < 32; k++) {
+            W[1][i][k][0] = -z[63-k];
+            W[1][i][k][1] = z[k];
         }
         x += 32;
     }
@@ -1380,7 +1368,7 @@ static int sbr_hf_gen(AACContext *ac, SpectralBandReplication *sbr,
             g--;
 
             if (g < 0) {
-                av_log(ac->avccontext, AV_LOG_ERROR,
+                av_log(ac->avctx, AV_LOG_ERROR,
                        "ERROR : no subband found for frequency %d\n", k);
                 return -1;
             }
@@ -1730,7 +1718,7 @@ void ff_sbr_apply(AACContext *ac, SpectralBandReplication *sbr, int id_aac,
     }
     for (ch = 0; ch < nch; ch++) {
         /* decode channel */
-        sbr_qmf_analysis(&ac->dsp, &sbr->rdft, ch ? R : L, sbr->data[ch].analysis_filterbank_samples,
+        sbr_qmf_analysis(&ac->dsp, &sbr->mdct_ana, ch ? R : L, sbr->data[ch].analysis_filterbank_samples,
                          (float*)sbr->qmf_filter_scratch,
                          sbr->data[ch].W, 1/(-1024 * ac->sf_scale));
         sbr_lf_gen(ac, sbr, sbr->X_low, sbr->data[ch].W);

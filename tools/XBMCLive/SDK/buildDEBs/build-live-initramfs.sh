@@ -23,25 +23,32 @@ THISDIR=$(pwd)
 
 if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 	echo "Making live-initramfs..."
-	if [ ! -f live-initramfs.tar ]; then
-		git clone git://live.debian.net/git/live-initramfs.git
+
+	#if you use git <= 1.6, then use: git clone git://live.debian.net/git/live-boot.git && git checkout -b debian-old-1.0 origin/debian-old-1.0
+	#if you use git >= 1.7, then use: git clone git://live.debian.net/git/live-boot.git && git checkout debian-old-1.0
+	if [ ! -f live-boot.tar ]; then
+		git clone git://live.debian.net/git/live-boot.git
 		if [ "$?" -ne "0" ]; then
 			exit 1
 		fi
 
+		cd live-boot
+		git checkout -b debian-old-1.0 origin/debian-old-1.0
+		cd ..
+
 		# Saved, to avoid cloning for multiple builds
-		tar cvf live-initramfs.tar live-initramfs  > /dev/null 2>&1
+		tar cvf live-boot.tar live-boot  > /dev/null 2>&1
 	else
-		tar xvf live-initramfs.tar  > /dev/null 2>&1
+		tar xvf live-boot.tar  > /dev/null 2>&1
 	fi
 
 	#
 	# (Ugly) Patch to allow FAT boot disk to be mounted RW
 	#	discussions is in progress with upstream developer
 	#
-	sed -i -e "/\"\${devname}\" \${mountpoint}/s/-o ro,noatime /\$([ "\$fstype" = \"vfat\" ] \&\& echo \"-o rw,noatime,umask=000\" \|\| echo \"-o ro,noatime\") /" $THISDIR/live-initramfs/scripts/live
+	sed -i -e "/\"\${devname}\" \${mountpoint}/s/-o ro,noatime /\$([ "\$fstype" = \"vfat\" ] \&\& echo \"-o rw,noatime,umask=000\" \|\| echo \"-o ro,noatime\") /" $THISDIR/live-boot/scripts/live
 
-	cd $THISDIR/live-initramfs
+	cd $THISDIR/live-boot
 	dpkg-buildpackage -rfakeroot -b -uc -us 
 	cd $THISDIR
 fi

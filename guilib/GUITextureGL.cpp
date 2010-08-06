@@ -20,7 +20,9 @@
  */
 
 #include "system.h"
+#if defined(HAS_GL)
 #include "GUITextureGL.h"
+#endif
 #include "Texture.h"
 #include "utils/log.h"
 
@@ -31,8 +33,13 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 {
 }
 
-void CGUITextureGL::Begin()
+void CGUITextureGL::Begin(color_t color)
 {
+  m_col[0] = (GLubyte)GET_R(color);
+  m_col[1] = (GLubyte)GET_G(color);
+  m_col[2] = (GLubyte)GET_B(color);
+  m_col[3] = (GLubyte)GET_A(color);
+
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
@@ -84,22 +91,17 @@ void CGUITextureGL::End()
   glDisable(GL_TEXTURE_2D);
 }
 
-void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
+void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
-  GLubyte a = (GLubyte)GET_A(color);
-  GLubyte r = (GLubyte)GET_R(color);
-  GLubyte g = (GLubyte)GET_G(color);
-  GLubyte b = (GLubyte)GET_B(color);
-
   // Top-left vertex (corner)
-  glColor4ub(r, g, b, a);
+  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
   glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y1);
   if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
   glVertex3f(x[0], y[0], z[0]);
 
   // Top-right vertex (corner)
-  glColor4ub(r, g, b, a);
+  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
   if (orientation & 4)
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
   else
@@ -114,14 +116,14 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   glVertex3f(x[1], y[1], z[1]);
 
   // Bottom-right vertex (corner)
-  glColor4ub(r, g, b, a);
+  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
   glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y2);
   if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
   glVertex3f(x[2], y[2], z[2]);
 
   // Bottom-left vertex (corner)
-  glColor4ub(r, g, b, a);
+  glColor4ub(m_col[0], m_col[1], m_col[2], m_col[3]);
   if (orientation & 4)
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
   else

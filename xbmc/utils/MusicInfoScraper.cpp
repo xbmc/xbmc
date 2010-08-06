@@ -200,12 +200,6 @@ void CMusicInfoScraper::FindArtistinfo()
   if (!parser.Load(m_scraper) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
-  if (!m_scraper->GetSettingsXML() && parser.HasFunction("GetSettings"))
-  {
-    m_scraper->LoadSettings();
-    m_scraper->SaveFromDefault();
-  }
-
   parser.m_param[0] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
 

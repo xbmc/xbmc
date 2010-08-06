@@ -8,9 +8,9 @@
 @end titlepage
 
 
-@chapter Introduction
-
+@chapter Description
 @c man begin DESCRIPTION
+
 FFserver is a streaming server for both audio and video. It supports
 several live feeds, streaming from files and time shifting on live feeds
 (you can seek to positions in the past on each live feed, provided you
@@ -261,12 +261,13 @@ rather than as a daemon.
 @settitle FFserver video server
 
 @c man begin SEEALSO
-ffmpeg(1), ffplay(1), the @file{ffmpeg/doc/ffserver.conf} example and
-the HTML documentation of @file{ffmpeg}.
+
+ffmpeg(1), ffplay(1), ffprobe(1), the @file{ffmpeg/doc/ffserver.conf}
+example and the FFmpeg HTML documentation
 @c man end
 
-@c man begin AUTHOR
-Fabrice Bellard
+@c man begin AUTHORS
+The FFmpeg developers
 @c man end
 
 @end ignore

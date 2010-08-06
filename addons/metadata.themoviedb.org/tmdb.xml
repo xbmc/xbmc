@@ -29,6 +29,9 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-\2.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3">
 				<expression repeat="yes">&lt;movie&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;id&gt;([^&lt;]*)&lt;/id&gt;.*?&lt;released&gt;([0-9]+)-.*?&lt;/movie&gt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url cache=&quot;tmdb-\2.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3+">
+				<expression repeat="yes">&lt;movie&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;id&gt;([^&lt;]*)&lt;/id&gt;.*?&lt;released&gt;&lt;/released&gt;.*?&lt;/movie&gt;</expression>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
@@ -53,13 +56,13 @@
 				<expression>&lt;certification&gt;([^&lt;]*)&lt;/certification&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-				<expression noclean="1" repeat="yes">&lt;category type=&quot;genre&quot;.*?name=&quot;([^&quot;]*)&quot;</expression>
+				<expression noclean="1" repeat="yes">&lt;category type=&quot;genre&quot; name=&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
-				<expression noclean="1" repeat="yes">&lt;studio.*?name=&quot;([^&quot;]*)&quot;</expression>
+				<expression noclean="1" repeat="yes">&lt;studio name=&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;country&gt;\1&lt;/country&gt;" dest="5+">
-				<expression noclean="1" repeat="yes">&lt;country.*?name=&quot;([^&quot;]*)&quot;</expression>
+				<expression noclean="1" repeat="yes">&lt;country name=&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression noclean="1">&lt;overview&gt;([^&lt;]*)&lt;/overview&gt;</expression>

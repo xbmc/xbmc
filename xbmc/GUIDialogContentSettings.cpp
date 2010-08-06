@@ -91,7 +91,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper);
+      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
       return m_bNeedSave;
     }
   }
@@ -262,7 +262,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
     AddonPtr scraper = (*it)->Clone((*it));
 
-    if (m_scraper && m_scraper->Parent() && m_scraper->Parent()->ID() == (*it)->ID())
+    if (m_scraper && m_scraper->ID() == (*it)->ID())
     { // don't overwrite preconfigured scraper
       scraper = m_scraper;
     }
@@ -398,7 +398,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
       bRunScan = dialog->m_bRunScan;
-      scraper->m_pathContent = content;
+      scraper->SetPathSettings(content, "");
 
       if (content == CONTENT_TVSHOWS)
       {

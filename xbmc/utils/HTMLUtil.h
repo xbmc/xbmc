@@ -32,6 +32,7 @@ public:
   int FindClosingTag(const CStdString& strHTML, const CStdString& strTag, CStdString& strtagFound, int iPos) const;
   void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
   void getAttributeOfTag(const CStdString& strTagAndValue, const CStdString& strTag, CStdString& strValue);
+  static void RemoveTags(CStdString& strHTML);
   static void ConvertAndRemoveTags(CStdString& strHTML);
   static void ConvertHTMLToAnsi(const CStdString& strHTML, std::string& strStripped);
   static void ConvertHTMLToUTF8(const CStdString& strHTML, std::string& strStripped);

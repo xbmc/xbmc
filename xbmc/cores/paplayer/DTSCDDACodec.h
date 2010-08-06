@@ -23,7 +23,7 @@
 
 #include "DTSCodec.h"
 
-#ifdef HAS_DTS_CODEC
+#ifdef USE_LIBDTS_DECODER
 class DTSCDDACodec : public DTSCodec
 {
 public:

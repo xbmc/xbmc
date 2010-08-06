@@ -26,7 +26,7 @@
 #include "CachingCodec.h"
 #include "DllDCACodec.h"
 
-#ifdef HAS_DTS_CODEC
+#ifdef USE_LIBDTS_DECODER
 
 class DTSCodec : public CachingCodec
 {

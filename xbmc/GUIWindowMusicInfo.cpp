@@ -339,53 +339,15 @@ bool CGUIWindowMusicInfo::NeedRefresh() const
   return m_bRefresh;
 }
 
-int CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile, bool bMultiple)
+bool CGUIWindowMusicInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
-  // Download image and save as thumbFile
-  if (m_bArtistInfo)
+  const CScraperUrl &url = (m_bArtistInfo) ? m_artist.thumbURL : m_album.thumbURL;
+  for (unsigned int i = 0; i < url.m_url.size(); ++i)
   {
-    if (m_artist.thumbURL.m_url.size() == 0)
-      return 0;
-
-    int iResult=0;
-    int iMax = 1;
-    if (bMultiple)
-      iMax = INT_MAX;
-    for (unsigned int i=0;i<m_artist.thumbURL.m_url.size()&&iResult<iMax;++i)
-    {
-      CStdString strThumb;
-
-      if (bMultiple)
-        strThumb.Format("%s%i.tbn",thumbFile.c_str(),i);
-      else
-        strThumb = thumbFile;
-      if (CScraperUrl::DownloadThumbnail(strThumb,m_artist.thumbURL.m_url[i]))
-        iResult++;
-    }
-    return iResult;
+    if (CScraperUrl::DownloadThumbnail(thumbFile, url.m_url[i]))
+      return true;
   }
-  else
-  {
-    if (m_album.thumbURL.m_url.size() == 0)
-      return 0;
-
-    int iResult=0;
-    int iMax = 1;
-    if (bMultiple)
-      iMax = INT_MAX;
-    for (unsigned int i=0;i<m_album.thumbURL.m_url.size() && iResult<iMax;++i)
-    {
-      CStdString strThumb;
-      if (bMultiple)
-        strThumb.Format("%s%i.tbn",thumbFile.c_str(),i);
-      else
-        strThumb = thumbFile;
-      if (CScraperUrl::DownloadThumbnail(strThumb,m_album.thumbURL.m_url[i]))
-        iResult++;
-    }
-    return iResult;
-  }
-  return 0;
+  return false;
 }
 
 void CGUIWindowMusicInfo::OnInitWindow()

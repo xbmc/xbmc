@@ -21,7 +21,7 @@
 
 #include "system.h"
 #include "utils/log.h"
-#ifdef HAS_DTS_CODEC
+#ifdef USE_LIBDTS_DECODER
 #include "DTSCodec.h"
 
 static inline int16_t convert(int32_t i)

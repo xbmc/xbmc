@@ -53,7 +53,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       if (iControl == CONTROL_VIS_BUTTON)
       {
         CStdString addonID;
-        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID))
+        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID) == 1)
         {
           g_guiSettings.SetString("musicplayer.visualisation", addonID);
           g_settings.Save();

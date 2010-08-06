@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- should be self-explanatory -->
 <scraper framework="1.1" date="2009-01-27" cachePersistence="00:15">
-	<GetSettings dest="3">
-		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url function=&quot;GetLanguages&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/languages.xml&lt;/url&gt;" dest="5">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;30000&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; default=&quot;false&quot; enable=&quot;!eq(1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;30001&quot; type=&quot;bool&quot; id=&quot;absolutenumber&quot; default=&quot;false&quot; enable=&quot;!eq(-1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;30002&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;30003&quot; type=&quot;bool&quot; id=&quot;posters&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetSettings>
-
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
 			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
@@ -284,13 +257,4 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetEpisodeDetails>
-
-	<GetLanguages dest="3">
-		<RegExp input="$$2" output="&lt;settings&gt;&lt;setting label=&quot;30004&quot; type=&quot;labelenum&quot; id=&quot;language&quot; values=&quot;$$8&quot; sort=&quot;yes&quot; default=&quot;en&quot;&gt;&lt;/setting&gt;&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="\1|" dest="8+">
-				<expression repeat="yes">&lt;abbreviation&gt;([^&lt;]*)&lt;/abbreviation&gt;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetLanguages>
 </scraper>

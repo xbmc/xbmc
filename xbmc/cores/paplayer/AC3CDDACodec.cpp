@@ -22,7 +22,11 @@
 #include "system.h"
 #include "AC3CDDACodec.h"
 #ifdef HAS_AC3_CDDA_CODEC
+#ifdef WIN32
+#include <cdio/sector.h>
+#else
 #include "lib/libcdio/sector.h"
+#endif
 
 AC3CDDACodec::AC3CDDACodec() : AC3Codec()
 {

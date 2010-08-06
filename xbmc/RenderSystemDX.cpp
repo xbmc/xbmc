@@ -186,13 +186,12 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed           = useWindow;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount    = 1;
+  m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
 #if D3DX_SDK_VERSION >= 42
     m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
-    m_D3DPP.BackBufferCount  = 2;
 #else
 #   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
     CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
@@ -417,13 +416,18 @@ bool CRenderSystemDX::CreateDevice()
 
   m_renderCaps = 0;
 
+  CLog::Log(LOGDEBUG, "%s - texture caps: %X", __FUNCTION__, caps.TextureCaps);
+
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
                                            D3DFMT_X8R8G8B8,
                                            0,
                                            D3DRTYPE_TEXTURE,
                                            D3DFMT_DXT5 )))
+  {
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
     m_renderCaps |= RENDER_CAPS_DXT;
+  }
 
   if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
   { // we're allowed NPOT textures
@@ -435,6 +439,11 @@ bool CRenderSystemDX::CreateDevice()
   { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
+
+  if (m_renderCaps & RENDER_CAPS_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 

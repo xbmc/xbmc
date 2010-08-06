@@ -37,7 +37,7 @@ void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES);
+  CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
 }
 
 bool CWin32StorageProvider::Eject(CStdString mountpath)

@@ -20,7 +20,7 @@
  */
 
 #include "DVDAudioCodecPassthrough.h"
-#if defined(USE_LIBDTS_DECODER) || defined(USE_LIBA52_DECODER)
+#if (defined(USE_LIBDTS_DECODER) || defined(USE_LIBA52_DECODER)) && !defined(WIN32)
 
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"

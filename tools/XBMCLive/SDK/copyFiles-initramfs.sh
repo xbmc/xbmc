@@ -21,8 +21,9 @@
 
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 
-if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
+if ! ls $WORKPATH/buildDEBs/live-initramfs*.deb > /dev/null 2>&1; then
         echo "Files missing (live-initramfs), exiting..."
         exit 1
 fi
-cp $WORKPATH/buildDEBs/live-initramfs*.* $WORKPATH/buildLive/Files/chroot_local-packages
+cp $WORKPATH/buildDEBs/live-initramfs*.deb $WORKPATH/buildLive/Files/chroot_local-packages
+

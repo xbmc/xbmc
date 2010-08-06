@@ -147,7 +147,7 @@ IF %comp%==vs2008 (
 
 :MAKE_BUILD_EXE
   ECHO Copying files...
-  rmdir BUILD_WIN32 /S /Q
+  IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
   md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
@@ -209,7 +209,11 @@ IF %comp%==vs2008 (
   IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
   IF EXIST error.log del error.log > NUL
-  call buildskins.bat
+  SET build_path=%CD%
+  cd ..\..\addons\skin.confluence
+  call build.bat
+  cd %build_path%
+  rem call buildskins.bat
   rem call buildscripts.bat "%scriptpath%"
   rem call buildplugins.bat "%pluginpath%"
   rem reset variables
