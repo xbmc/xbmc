@@ -186,7 +186,7 @@
 				AdditionalOptions="/MP"
 				Optimization="3"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost;..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				RuntimeLibrary="0"
