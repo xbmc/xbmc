@@ -41,6 +41,31 @@
 #include <process.h>
 #pragma comment(lib, "comsuppw.lib")
 #include "smartptr.h"
+
+void DShowUtil::setThreadName(DWORD dwThreadID,LPCSTR szThreadName)
+{
+#ifdef _DEBUG
+ struct THREADNAME_INFO
+  {
+   DWORD dwType;     // must be 0x1000
+   LPCSTR szName;    // pointer to name (in user addr space)
+   DWORD dwThreadID; // thread ID (-1=caller thread)
+   DWORD dwFlags;    // reserved for future use, must be zero
+  } info;
+ info.dwType=0x1000;
+ info.szName=szThreadName;
+ info.dwThreadID=dwThreadID;
+ info.dwFlags=0;
+ __try
+  {
+   RaiseException(0x406D1388,0,sizeof(info)/sizeof(DWORD),(ULONG_PTR*)&info);
+  }
+ __except(EXCEPTION_CONTINUE_EXECUTION)
+  {
+  }
+#endif
+}
+
 const wchar_t *DShowUtil::StreamTypeToName(PES_STREAM_TYPE _Type)
 {
   switch (_Type)

@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\"
+				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\;..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="2"

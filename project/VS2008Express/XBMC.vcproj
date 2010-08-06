@@ -2267,14 +2267,6 @@
 								>
 							</File>
 							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerThread.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerThread.h"
-								>
-							</File>
-							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.cpp"
 								>
 							</File>
@@ -2296,6 +2288,14 @@
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.h"
 								>
 							</File>
 						</Filter>
@@ -2420,44 +2420,19 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.h"
 							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCustomBuildTool"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.cpp"

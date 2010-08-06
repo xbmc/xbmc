@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;..\..\..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,7 +67,7 @@
 				AdditionalDependencies="fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\..\project\BuildDependencies\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD"
 				ModuleDefinitionFile="libass.def"
 				GenerateDebugInformation="true"

@@ -33,18 +33,18 @@ class CDSStreamInfo
 {
 public:
   CDSStreamInfo();
-  CDSStreamInfo(const CDSStreamInfo &right, bool withextradata = true, const char *containerFormat = "");
-  CDSStreamInfo(const CDemuxStream &right, bool withextradata = true, const char *containerFormat = "");
+  CDSStreamInfo(const CDSStreamInfo &right, const char *containerFormat = "");
+  CDSStreamInfo(const CDemuxStream &right, const char *containerFormat = "");
   CDSStreamInfo(const CMediaType &pmt);
 
   ~CDSStreamInfo();
 
   void Clear(); // clears current information
-  bool Equal(const CDSStreamInfo &right, bool withextradata);
-  bool Equal(const CDemuxStream &right, bool withextradata);
+  bool Equal(const CDSStreamInfo &right);
+  bool Equal(const CDemuxStream &right);
 
-  void Assign(const CDSStreamInfo &right, bool withextradata, const char *containerFormat);
-  void Assign(const CDemuxStream &right, bool withextradata, const char *containerFormat);
+  void Assign(const CDSStreamInfo &right, const char *containerFormat);
+  void Assign(const CDemuxStream &right, const char *containerFormat);
   void Assign(const CMediaType &pmt);
 
   CodecID codec_id;
@@ -88,13 +88,13 @@ public:
 
   bool m_bIsmpegts;
 
-  bool operator==(const CDSStreamInfo& right)      { return Equal(right, true);}
-  bool operator!=(const CDSStreamInfo& right)      { return !Equal(right, true);}
-  void operator=(const CDSStreamInfo& right)       { Assign(right, true, ""); }
+  bool operator==(const CDSStreamInfo& right)      { return Equal(right);}
+  bool operator!=(const CDSStreamInfo& right)      { return !Equal(right);}
+  void operator=(const CDSStreamInfo& right)       { Assign(right, ""); }
 
-  bool operator==(const CDemuxStream& right)      { return Equal( CDSStreamInfo(right, true), true);}
-  bool operator!=(const CDemuxStream& right)      { return !Equal( CDSStreamInfo(right, true), true);}
-  void operator=(const CDemuxStream& right)      { Assign(right, true, ""); }
+  bool operator==(const CDemuxStream& right)      { return Equal( CDSStreamInfo(right ));}
+  bool operator!=(const CDemuxStream& right)      { return !Equal( CDSStreamInfo(right));}
+  void operator=(const CDemuxStream& right)      { Assign(right, ""); }
 protected:
   DllAvCodec  m_dllAvCodec;
   DllAvFormat m_dllAvFormat;

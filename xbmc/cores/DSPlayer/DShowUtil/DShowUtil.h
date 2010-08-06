@@ -150,6 +150,7 @@ typedef struct
 class  DShowUtil
 {
 public:
+  static void setThreadName(DWORD dwThreadID,LPCSTR szThreadName);
   static const wchar_t *StreamTypeToName(PES_STREAM_TYPE _Type);
   static bool GuidVectItterCompare(std::list<GUID>::iterator it, std::vector<GUID>::const_reference vect);
   static bool GuidItteratorIsNull(std::list<GUID>::iterator it);

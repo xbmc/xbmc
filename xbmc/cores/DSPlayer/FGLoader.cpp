@@ -37,10 +37,8 @@
 #include "utils/SystemInfo.h"
 
 #include "filters/XBMCFileSource.h"
-#include "filters/Splitters/AviSplitter.h"
 #include "filters/Splitters/DSDemuxerFilter.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
-#include "filters/Splitters/MpegSplitter.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
 
@@ -212,11 +210,20 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   SFilterInfos& infos = (isSplitterToo) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
   
   if (isSplitterToo)
+  {
     CLog::Log(LOGDEBUG, "%s The source filter is also a splitter.", __FUNCTION__);
-
+    if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
+    {
+      pFS = infos.pBF;
+      hr = pFS->Load(strFileW.c_str(), NULL);
+      return hr;
+    }
+  }
+  else
   if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
   {
     pFS = infos.pBF;
+
     hr = pFS->Load(strFileW.c_str(), NULL);
     assert(SUCCEEDED(hr));
   }

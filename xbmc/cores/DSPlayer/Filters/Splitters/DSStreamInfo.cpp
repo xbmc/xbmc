@@ -35,18 +35,18 @@ extern "C"
 }
 
 CDSStreamInfo::CDSStreamInfo(){ extradata = NULL; Clear(); }
-CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata, const char *containerFormat)     
+CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, const char *containerFormat)     
 {
   extradata = NULL; 
   Clear(); 
-  Assign(right, withextradata, containerFormat); 
+  Assign(right, containerFormat); 
 }
 
-CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata, const char *containerFormat)  
+CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, const char *containerFormat)  
 { 
   extradata = NULL; 
   Clear(); 
-  Assign(right, withextradata, containerFormat); 
+  Assign(right, containerFormat); 
 }
 
 CDSStreamInfo::CDSStreamInfo(const CMediaType &pmt)
@@ -99,19 +99,19 @@ void CDSStreamInfo::Clear()
   identifier = 0;
 }
 
-bool CDSStreamInfo::Equal(const CDSStreamInfo& right, bool withextradata)
+bool CDSStreamInfo::Equal(const CDSStreamInfo& right)
 {
   if( codec_id != right.codec_id
     ||  type != right.type ) return false;
 
-  if( withextradata )
+  if( extrasize != right.extrasize ) 
+    return false;
+  if( extrasize )
   {
-    if( extrasize != right.extrasize ) return false;
-    if( extrasize )
-    {
-      if( memcmp(extradata, right.extradata, extrasize) != 0 ) return false;
-    }
+    if( memcmp(extradata, right.extradata, extrasize) != 0 ) 
+      return false;
   }
+
 
   // VIDEO
   if( fpsscale != right.fpsscale
@@ -134,16 +134,16 @@ bool CDSStreamInfo::Equal(const CDSStreamInfo& right, bool withextradata)
   return true;
 }
 
-bool CDSStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
+bool CDSStreamInfo::Equal(const CDemuxStream& right)
 {
   CDSStreamInfo info;
-  info.Assign(right, withextradata, "");
-  return Equal(info, withextradata);
+  info.Assign(right  , "");
+  return Equal(info  );
 }
 
 
 // ASSIGNMENT
-void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const char* containerFormat)
+void CDSStreamInfo::Assign(const CDSStreamInfo& right, const char* containerFormat)
 {
   ContainerFormat = CStdString(containerFormat);
   codec_id = right.codec_id;
@@ -151,7 +151,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const
 
   if( extradata && extrasize ) free(extradata);
 
-  if( withextradata && right.extrasize )
+  if( right.extrasize )
   {
     extrasize = right.extrasize;
     extradata = malloc(extrasize);
@@ -184,7 +184,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const
   identifier = right.identifier;
 }
 
-void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const char* containerFormat)
+void CDSStreamInfo::Assign(const CDemuxStream& right, const char* containerFormat)
 {
   Clear();
   ContainerFormat = CStdString(containerFormat);
@@ -193,7 +193,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
   type = right.type;
   RECT empty_tagrect = {0,0,0,0};
   m_dllAvCodec.Load(); m_dllAvFormat.Load(); m_dllAvCodec.Load(); m_dllAvUtil.Load();
-  if( withextradata && right.ExtraSize )
+  if( right.ExtraSize )
   {
     extrasize = right.ExtraSize;
     extradata = malloc(extrasize);

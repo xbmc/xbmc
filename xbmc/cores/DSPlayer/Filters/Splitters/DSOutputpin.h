@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,81 +19,74 @@
  *
  */
 
+#pragma once
 
-
-#include "streams.h"
-#include "Thread.h"
-#include "DVDMessageQueue.h"
+#include <vector>
+#include <string>
 #include "DSStreamInfo.h"
-#include <deque>
-class CXBMCSplitterFilter;
+#include "PacketQueue.h"
 
-//********************************************************************
-//
-//********************************************************************
-class CDSOutputPin 
-  : public CSourceStream              
+class CDSOutputPin
+  : public CBaseOutputPin
+  , protected CAMThread
 {
 public:
-  CDSOutputPin(CSource *pFilter, LPCWSTR pName, CDSStreamInfo& hints, HRESULT* phr);
-  virtual ~CDSOutputPin();
+  CDSOutputPin(CDSStreamInfo& hints, LPCWSTR pName, CBaseFilter *pFilter, CCritSec *pLock, HRESULT *phr, const char* container = "", int nBuffers = 0);
+  ~CDSOutputPin();
 
-  void SetNewStartTime(REFERENCE_TIME aTime);
-	bool IsProcessing(void) { return m_bIsProcessing; }
-	void SetProcessingFlag()  { m_bIsProcessing = true; }
-
+  DECLARE_IUNKNOWN;
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-  void WaitForBuffers();
-  bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
-  void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
+  // IQualityControl
+  STDMETHODIMP Notify(IBaseFilter* pSender, Quality q) { return E_NOTIMPL; }
 
-  STDMETHODIMP Notify(IBaseFilter* pSender, Quality q)  { return E_NOTIMPL; }
+  // CBaseOutputPin
+  HRESULT CheckConnect(IPin* pPin);
+  HRESULT DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pProperties);
+  HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT GetMediaType(int iPosition, CMediaType* pmt);
+  HRESULT Active();
+  HRESULT Inactive();
 
-  // classes
-  CDVDMessageQueue m_messageQueue;
-  //function called from demuxer thread
-  void SetSpeed(int speed);
+  HRESULT DeliverBeginFlush();
+  HRESULT DeliverEndFlush();
 
-  HRESULT ChangeStart();
-	HRESULT ChangeStop();
-	HRESULT ChangeRate();
-  
-	HRESULT DeliverBeginFlush();
-	HRESULT DeliverEndFlush();
+  HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
 
-  HRESULT DeliverEndOfStream(void);
+  int QueueCount();
+  HRESULT QueuePacket(Packet *pPacket);
+  HRESULT QueueEndOfStream();
+  bool IsDiscontinuous();
 
-  void Flush();
-	void EndStream();
-	void Reset();
-	void SetPauseMode(bool bPauseMode);
-protected:
-  virtual HRESULT FillBuffer(IMediaSample *pSamp);
-  virtual HRESULT GetMediaType(int iPosition, CMediaType* pMediaType);
-  virtual HRESULT CheckMediaType(const CMediaType* pMediaType);
+  DWORD GetStreamId() { return m_streamId; };
+  void SetStreamId(DWORD newStreamId) { m_streamId = newStreamId; };
 
-  // called from CBaseOutputPin during connection to ask for
-  // the count and size of buffers we need.
-  virtual HRESULT DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES *ppropInputRequest);
-
-	virtual HRESULT OnThreadStartPlay(void);
-	virtual HRESULT OnThreadDestroy(void);
-
-	virtual HRESULT DoBufferProcessingLoop(void);
-
-	//void SendOneHeaderPerSample(binary* CodecPrivateData, int DataLen);
-	
-	void UpdateFromSeek();
-
-  int m_speed;
+  void SetNewMediaType(CMediaType pmt) { CAutoLock lock(&m_csMT); m_newMT = new CMediaType(pmt); }
 
 private:
+  enum {CMD_EXIT};
+  DWORD ThreadProc();
+
+  HRESULT DeliverPacket(Packet *pPacket);
+
+private:
+  CCritSec m_csMT;
   CDSStreamInfo m_hints;
-  std::list<DVDMessageListItem> m_packets;// Packet queue
-  REFERENCE_TIME          mPrevStartTime;
-	REFERENCE_TIME          m_rtStart;
-  bool					m_bDiscontinuity;
-  std::deque<CMediaType>	m_mts;
-  bool					m_bIsProcessing;
+  std::vector<CMediaType> m_mts;
+  CPacketQueue m_queue;
+
+  std::string m_containerFormat;
+
+  REFERENCE_TIME m_rtStart;
+
+  // Flush control
+  bool m_fFlushing, m_fFlushed;
+  CAMEvent m_eEndFlush;
+
+  HRESULT m_hrDeliver;
+
+  int m_nBuffers;
+
+  DWORD m_streamId;
+  CMediaType *m_newMT;
 };
