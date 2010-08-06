@@ -767,12 +767,12 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   }
   else if (dwInfo == PVR_PLAYING_DURATION)
   {
-    StringUtils::SecondsToTimeString(GetTotalTime()/1000, m_playingDuration, TIME_FORMAT_GUESS);
+    m_playingDuration = StringUtils::SecondsToTimeString(GetTotalTime()/1000, TIME_FORMAT_GUESS);
     return m_playingDuration.c_str();
   }
   else if (dwInfo == PVR_PLAYING_TIME)
   {
-    StringUtils::SecondsToTimeString(GetStartTime()/1000, m_playingTime, TIME_FORMAT_GUESS);
+    m_playingTime = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS);
     return m_playingTime.c_str();
   }
   else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR)

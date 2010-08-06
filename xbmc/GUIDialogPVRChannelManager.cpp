@@ -577,54 +577,29 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
   // popup the context menu
   // grab our context menu
   CContextButtons buttons;
-  GetContextButtons(iItem, buttons);
 
-  if (buttons.size())
-  {
-    // mark the item
-    if (iItem >= 0 && iItem < m_channelItems->Size())
-      m_channelItems->Get(iItem)->Select(true);
+  // mark the item
+  if (iItem >= 0 && iItem < m_channelItems->Size())
+    m_channelItems->Get(iItem)->Select(true);
+  else
+    return false;
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return false;
-    // load our menu
-    pMenu->Initialize();
-
-    // add the buttons and execute it
-    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
-      pMenu->AddButton((*it).second);
-
-    // position it correctly
-    pMenu->PositionAtCurrentFocus();
-
-    pMenu->DoModal();
-
-    // translate our button press
-    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
-    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
-      btn = buttons[pMenu->GetButton() - 1].first;
-
-    // deselect our item
-    if (iItem >= 0 && iItem < m_channelItems->Size())
-      m_channelItems->Get(iItem)->Select(false);
-
-    if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(iItem, btn);
-  }
-  return false;
-}
-
-void CGUIDialogPVRChannelManager::GetContextButtons(int itemNumber, CContextButtons &buttons)
-{
-  /* Check file item is in list range and get his pointer */
-  if (itemNumber < 0 || itemNumber >= (int)m_channelItems->Size()) return;
-
-  CFileItemPtr pItem = m_channelItems->Get(itemNumber);
+  CFileItemPtr pItem = m_channelItems->Get(iItem);
 
   buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
   if (pItem->GetPropertyBOOL("Virtual"))
     buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027);    /* Edit virtual channel URL */
 
+  int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+  // deselect our item
+  if (iItem >= 0 && iItem < m_channelItems->Size())
+    m_channelItems->Get(iItem)->Select(false);
+
+  if (choice < 0)
+    return false;
+
+  return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
 }
 
 bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

@@ -162,6 +162,7 @@ EXEEXT = @EXEEXT@
 GETOPT_H = @GETOPT_H@
 GL_COND_LIBTOOL_FALSE = @GL_COND_LIBTOOL_FALSE@
 GL_COND_LIBTOOL_TRUE = @GL_COND_LIBTOOL_TRUE@
+GREP = @GREP@
 HACKMODE_FALSE = @HACKMODE_FALSE@
 HACKMODE_TRUE = @HACKMODE_TRUE@
 HAVE_IMAGE = @HAVE_IMAGE@
@@ -191,6 +192,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
@@ -210,6 +212,7 @@ SYMLINKS_TRUE = @SYMLINKS_TRUE@
 SYSEXITS_H = @SYSEXITS_H@
 UNISTD_H = @UNISTD_H@
 VERSION = @VERSION@
+XMKMF = @XMKMF@
 XSCREENSAVER4_FALSE = @XSCREENSAVER4_FALSE@
 XSCREENSAVER4_TRUE = @XSCREENSAVER4_TRUE@
 X_CFLAGS = @X_CFLAGS@
@@ -219,8 +222,6 @@ X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -240,6 +241,8 @@ configdir = @configdir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 defaultdir = @defaultdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 hackdir = @hackdir@
 hackreldir = @hackreldir@
@@ -248,17 +251,21 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -276,18 +283,15 @@ DLOPEN = ../dlopen.hh
 LIBMISC = $(top_builddir)/lib/libmisc.a
 @DLOPEN_TRUE@LIBLTDL = $(top_builddir)/libltdl/libltdl.a
 @DLOPEN_TRUE@LIBLTDL_CPPFLAGS = -I$(top_builddir)/libltdl
-AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS)
+AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS) -D_LINUX -DXBMC
 AM_LDFLAGS = 
-AM_CXXFLAGS =
+AM_CXXFLAGS = 
 AM_ETAGSFLAGS = --extra=fq
 rs_cyclone_SOURCES = $(COMMON) $(COLOR) $(VECTOR) blend.cc blend.hh cyclone.cc \
 	cyclone.hh particle.cc particle.hh
 
 rs_cyclone_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am
-	g++ -shared -o Cyclone.xbs ../common.o ../color.o *.o ../../lib/libmisc.a -lXmu
-	cp Cyclone.xbs ../../../../../screensavers/
-	
 
 .SUFFIXES:
 .SUFFIXES: .cc .o .obj

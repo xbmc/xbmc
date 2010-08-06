@@ -1011,7 +1011,7 @@ void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION di
   m_timeCodeShow = false;
 }
 
-void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
+void CGUIWindowFullScreen::SeekTV(bool bPlus, bool bLargeStep)
 {
   if (bLargeStep)
   {

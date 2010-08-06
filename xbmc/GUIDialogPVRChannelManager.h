@@ -38,7 +38,6 @@ public:
 
 protected:
   virtual bool OnPopupMenu(int iItem);
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
 private:

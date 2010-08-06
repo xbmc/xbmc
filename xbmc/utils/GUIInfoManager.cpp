@@ -2883,7 +2883,7 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
   case TIME_FORMAT_HH_MM:
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_XX:
-      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);      
+      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
   default:
@@ -3252,7 +3252,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString duration;
         if (tag->NextDuration() > 0)
-          StringUtils::SecondsToTimeString(tag->NextDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(tag->NextDuration());
 
         return duration;
       }
@@ -3345,7 +3345,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
@@ -4030,20 +4030,20 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      else if (item->HasPVRChannelInfoTag())
+      if (item->HasPVRChannelInfoTag())
       {
         if (item->GetPVRChannelInfoTag()->NowDuration() > 0)
-          StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->NowDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->NowDuration());
       }
       else if (item->HasPVRRecordingInfoTag())
       {
         if (item->GetPVRRecordingInfoTag()->GetDuration() > 0)
-          StringUtils::SecondsToTimeString(item->GetPVRRecordingInfoTag()->GetDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(item->GetPVRRecordingInfoTag()->GetDuration());
       }
       else if (item->HasEPGInfoTag())
       {
         if (item->GetEPGInfoTag()->GetDuration() > 0)
-          StringUtils::SecondsToTimeString(item->GetEPGInfoTag()->GetDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(item->GetEPGInfoTag()->GetDuration());
       }
       else if (item->HasVideoInfoTag())
       {
@@ -4053,7 +4053,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
-      if (item->HasMusicInfoTag())
+      else if (item->HasMusicInfoTag())
       {
         if (item->GetMusicInfoTag()->GetDuration() > 0)
           duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
@@ -4364,7 +4364,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasPVRChannelInfoTag())
       {
         if (item->GetPVRChannelInfoTag()->NextDuration() > 0)
-          StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->NextDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->NextDuration());
       }
       return duration;
     }

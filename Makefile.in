@@ -396,6 +396,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so system/players/paplayer/libmodplug-$(ARCH).so
 else
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
+endif
 externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
