@@ -315,7 +315,7 @@
         <control type="radiobutton" id="220">
           <description>Show Videos Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31956] $LOCALIZE[31001]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31971]</label>
           <onclick>Skin.ToggleSetting(HideVideos)</onclick>
           <selected>!Skin.HasSetting(HideVideos)</selected>
         </control>
@@ -323,7 +323,7 @@
         <control type="radiobutton" id="235">
           <description>Show Music Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31956] $LOCALIZE[31002]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31972]</label>
           <onclick>Skin.ToggleSetting(HideMusic)</onclick>
           <selected>!Skin.HasSetting(HideMusic)</selected>
         </control>
@@ -331,7 +331,7 @@
         <control type="radiobutton" id="240">
           <description>Show Pictures Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31956] $LOCALIZE[31003]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31973]</label>
           <onclick>Skin.ToggleSetting(HidePictures)</onclick>
           <selected>!Skin.HasSetting(HidePictures)</selected>
         </control>
