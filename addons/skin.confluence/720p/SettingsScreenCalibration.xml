@@ -76,22 +76,22 @@
 			<texturenofocus>-</texturenofocus>
 		</control>
 		<control type="group">
-			<posx>240</posx>
+			<posx>20</posx>
 			<posy>80</posy>
 			<control type="label" id="2">
 				<description>coordinates label</description>
-				<posx>20</posx>
+				<posx>0</posx>
 				<posy>10</posy>
-				<width>750</width>
+				<width>1240</width>
 				<label>-</label>
 				<align>center</align>
 				<font>font13caps</font>
 			</control>
 			<control type="label" id="3">
 				<description>help information</description>
-				<posx>20</posx>
+				<posx>0</posx>
 				<posy>40</posy>
-				<width>750</width>
+				<width>1240</width>
 				<label>-</label>
 				<align>center</align>
 				<font>font13caps</font>

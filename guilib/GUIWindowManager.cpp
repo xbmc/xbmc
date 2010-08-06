@@ -489,8 +489,7 @@ void CGUIWindowManager::Render()
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
-    if (pWindow->NeedsClearBackground())
-      g_graphicsContext.Clear();
+    pWindow->ClearBackground();
     pWindow->Render();
   }
 

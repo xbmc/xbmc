@@ -210,8 +210,10 @@ IF %comp%==vs2008 (
   
   IF EXIST error.log del error.log > NUL
   SET build_path=%CD%
+  ECHO ------------------------------------------------------------
+  ECHO Building Confluence Skin...
   cd ..\..\addons\skin.confluence
-  call build.bat
+  call build.bat > NUL
   cd %build_path%
   rem call buildskins.bat
   rem call buildscripts.bat "%scriptpath%"

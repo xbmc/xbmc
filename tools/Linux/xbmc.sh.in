@@ -21,6 +21,7 @@
 SAVED_ARGS="$@"
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
+datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
 
 # Check for some options used by this script

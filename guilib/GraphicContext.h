@@ -98,7 +98,7 @@ public:
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
-  void Clear();
+  void Clear(color_t color = 0);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling

@@ -251,7 +251,11 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   //For audio stability make sure we have at least an 8ms buffer.
   if(hnsPeriodicity < 80000) hnsPeriodicity = 80000;
 
-  hnsRequestedDuration = hnsPeriodicity * 16;
+  // PAPlayer needs a larger buffer
+  if (bIsMusic)
+    hnsRequestedDuration = hnsPeriodicity * 16;
+  else
+    hnsRequestedDuration = hnsPeriodicity;
 
   // now create the stream buffer
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);

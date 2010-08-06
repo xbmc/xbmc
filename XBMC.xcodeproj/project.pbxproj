@@ -1823,8 +1823,6 @@
 		F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
-		F5DC888E110A655000EE1B15 /* libmodplug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888D110A655000EE1B15 /* libmodplug.a */; };
-		F5DC888F110A655000EE1B15 /* libmodplug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888D110A655000EE1B15 /* libmodplug.a */; };
 		F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
 		F5E55B5E10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
 		F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
@@ -3809,7 +3807,6 @@
 		F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-x86-osx.a"; path = "xbmc/lib/libXBMS/libxbms-x86-osx.a"; sourceTree = "<group>"; };
 		F5DC888A110A654000EE1B15 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = xbmc/lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
-		F5DC888D110A655000EE1B15 /* libmodplug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmodplug.a; path = lib/libmodplug/src/.libs/libmodplug.a; sourceTree = "<group>"; };
 		F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
 		F5E55B5C10741272006E788A /* DVDPlayerTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerTeletext.h; sourceTree = "<group>"; };
 		F5E55B64107412DE006E788A /* GUIDialogTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTeletext.h; sourceTree = "<group>"; };
@@ -3931,7 +3928,6 @@
 				F5DC8809110A495600EE1B15 /* libcrypto.dylib in Frameworks */,
 				F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
-				F5DC888E110A655000EE1B15 /* libmodplug.a in Frameworks */,
 				F5F241D5110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 				E49070F4110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
@@ -3993,7 +3989,6 @@
 				F5DC87FD110A460000EE1B15 /* libpcrecpp.dylib in Frameworks */,
 				F5DC880A110A495600EE1B15 /* libcrypto.dylib in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
-				F5DC888F110A655000EE1B15 /* libmodplug.a in Frameworks */,
 				F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 				E49070F5110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
@@ -6933,7 +6928,6 @@
 				60CF88BE10CB49F3000921B6 /* libcmyth.a */,
 				60CF88C010CB4A16000921B6 /* librefmem.a */,
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
-				F5DC888D110A655000EE1B15 /* libmodplug.a */,
 				F5A7A6F61128934C0059D6AA /* libhttpapi.a */,
 				F5A7A6F3112893440059D6AA /* libjsonrpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
@@ -9111,7 +9105,6 @@
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libRTMP,
-					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9137,7 +9130,6 @@
 					xbmc/lib/libsquish,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
-					lib/libmodplug/src/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
@@ -9203,7 +9195,6 @@
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libRTMP,
-					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9229,7 +9220,6 @@
 					xbmc/lib/libsquish,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
-					lib/libmodplug/src/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
@@ -9352,7 +9342,6 @@
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libRTMP,
-					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9379,7 +9368,6 @@
 					xbmc/lib/libsquish,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
-					lib/libmodplug/src/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
@@ -9446,7 +9434,6 @@
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libRTMP,
-					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9473,7 +9460,6 @@
 					xbmc/lib/libsquish,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
-					lib/libmodplug/src/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,

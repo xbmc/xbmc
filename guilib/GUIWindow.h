@@ -110,10 +110,9 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  /*! \brief Whether the background needs clearing prior to rendering the window
-   \return true if the background needs clearing, false otherwise.
+  /*! \brief Clear the background (if necessary) prior to rendering the window
    */
-  virtual bool NeedsClearBackground() const { return m_clearBackground; };
+  virtual void ClearBackground();
 
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
@@ -257,7 +256,7 @@ protected:
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
-  bool m_clearBackground; // set to false if background does not need to be cleared
+  CGUIInfoColor m_clearBackground; // colour to clear the window
 
   int m_renderOrder;      // for render order of dialogs
 

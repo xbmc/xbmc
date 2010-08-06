@@ -79,6 +79,7 @@ META_OBJS=src/meta/aax.o \
           src/meta/gca.o \
           src/meta/gcsw.o \
           src/meta/genh.o \
+          src/meta/gsp_gsb.o \
           src/meta/halpst.o \
           src/meta/idsp.o \
           src/meta/ish_isd.o \
@@ -198,7 +199,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 endif
 

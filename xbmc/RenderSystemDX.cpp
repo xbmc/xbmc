@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "LocalizeStrings.h"
+#include "VideoReferenceClock.h"
 
 using namespace std;
 
@@ -488,7 +489,9 @@ bool CRenderSystemDX::PresentRenderImpl()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if (g_advancedSettings.m_sleepBeforeFlip > 0)
+  //CVideoReferenceClock polls GetRasterStatus too,
+  //polling it from two threads at the same time is bad
+  if (g_advancedSettings.m_sleepBeforeFlip > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());
@@ -629,7 +632,7 @@ bool CRenderSystemDX::EndRender()
 
 bool CRenderSystemDX::ClearBuffers(color_t color)
 {
-   HRESULT hr;
+  HRESULT hr;
 
   if (!m_bRenderCreated)
     return false;
@@ -644,16 +647,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     return false;
 
   return true;
-}
-
-bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
-{
-  if (!m_bRenderCreated)
-    return false;
-
-  D3DXCOLOR color(r, g, b, a);
-
-  return ClearBuffers((DWORD)color);
 }
 
 bool CRenderSystemDX::IsExtSupported(const char* extension)

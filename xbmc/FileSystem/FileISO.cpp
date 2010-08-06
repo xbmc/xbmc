@@ -160,6 +160,7 @@ int CFileISO::Stat(const CURL& url, struct __stat64* buffer)
   m_hFile = m_isoReader.OpenFile((char*)strFName.c_str());
   if (m_hFile != INVALID_HANDLE_VALUE)
   {
+    memset(buffer, 0, sizeof(struct __stat64));
     buffer->st_size = m_isoReader.GetFileSize(m_hFile);
     buffer->st_mode = _S_IFREG;
     m_isoReader.CloseFile(m_hFile);

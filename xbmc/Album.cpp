@@ -47,8 +47,16 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
   XMLUtils::GetString(album,"type",strType);
 
   XMLUtils::GetInt(album,"year",iYear);
-  XMLUtils::GetInt(album,"rating",iRating);
-
+  int max_value = 5;
+  const TiXmlElement* rElement = album->FirstChildElement("rating");
+  int rating;
+  if (rElement)
+  {
+    XMLUtils::GetInt(album, "rating", rating);
+    if (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS && max_value>=1)
+      rating *= 5.f / max_value; // Normalise the Rating to between 1 and 5 
+    iRating = rating;
+  }
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {

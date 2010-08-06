@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#define DIFFRINGSIZE 100
+#define DIFFRINGSIZE 120
 
 class CPullupCorrection
 {
@@ -41,6 +41,7 @@ class CPullupCorrection
     double m_diffring[DIFFRINGSIZE]; //ringbuffer of differences between pts'
     int    m_ringpos;                //position of last diff added to ringbuffer
     int    m_ringfill;               //how many diffs we have in the ringbuffer
+    int    m_leadin;                 //how many timestamps we ignored
     double GetDiff(int diffnr);      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern

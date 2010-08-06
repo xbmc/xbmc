@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 30768 -->
+<!--Based on english strings version 31001 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2121,13 +2121,13 @@
 
   <string id="23104">播放完毕时点 OK</string>
 
-  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">扩展功能</string>
   <string id="24001">扩展功能</string>
   <string id="24002">扩展功能选项</string>
   <string id="24003">扩展功能信息</string>
 
-  <string id="24005">插件</string>
+  <string id="24005">媒体来源</string>
   <string id="24007">电影资料</string>
   <string id="24008">屏幕保护</string>
   <string id="24009">脚本</string>
@@ -2148,14 +2148,15 @@
   <string id="24028">Weather.com（标准）</string>
   <string id="24030">此扩展功能不可设置</string>
   <string id="24031">读取配置错误</string>
-  <string id="24032">全部库</string>
-  <string id="24033">库</string>
+  <string id="24032">全部扩展功能</string>
+  <string id="24033">获取扩展功能</string>
   <string id="24034">检查更新</string>
   <string id="24035">强制刷新</string>
   <string id="24036">更新日志</string>
   <string id="24037">卸载</string>
   <string id="24038">安装</string>
   <string id="24039">禁用扩展功能</string>
+  <string id="24040">（清除当前设置）</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>

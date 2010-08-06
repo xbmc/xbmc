@@ -185,6 +185,7 @@ int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)
 
 int CFileHomeRun::Stat(const CURL& url, struct __stat64* buffer)
 {
+  memset(buffer, 0, sizeof(struct __stat64));
   return 0;
 }
 

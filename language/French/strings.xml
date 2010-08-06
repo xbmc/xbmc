@@ -10,7 +10,7 @@
   <string id="6">XBMC SVN</string>
   <string id="7">Fichiers</string>
   <string id="8">Météo</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">Xbmc media center</string>
   
   <string id="11">Lundi</string>
   <string id="12">Mardi</string>
@@ -1806,9 +1806,9 @@
   <string id="20374">Téléchargement des infos vidéo</string>
   <string id="20375">Catégorie non assignée</string>
   
-  <string id="20377">Rafraîchir Info Séries TV</string>
-  <string id="20378">Rafraîchir info pour tous les épisodes ?</string>
-  <string id="20379">Dossier sélectionné contient une seule Série TV</string>
+  <string id="20377">Rafraîchir info séries TV</string>
+  <string id="20378">Rafraîchir les infos de tous les épisodes ?</string>
+  <string id="20379">Dossier sélectionné contient une seule série TV</string>
   <string id="20380">Exclure le dossier sélectionné du scan</string>
   <string id="20381">Spéciales</string>
   <string id="20382">Récupérer automatiquement les vignettes saisons</string>
@@ -2121,13 +2121,13 @@
   
   <string id="23104">Cliquez sur OK lorsque la lecture est terminée</string>
   
-  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
-  <string id="24002">Options de l'Add-on</string>
-  <string id="24003">Informations sur l'Add-on</string>
+  <string id="24002">Options Add-on</string>
+  <string id="24003">Infos Add-on</string>
   
-  <string id="24005">Plugin</string>
+  <string id="24005">Sources média</string>
   <string id="24007">Infos Film</string>
   <string id="24008">Ecran de veille</string>
   <string id="24009">Script</string>
@@ -2138,7 +2138,7 @@
   <string id="24014">Infos TV</string>
   <string id="24015">Infos clip</string>
   <string id="24016">Infos album</string>
-  <string id="24017">Infos artist</string>
+  <string id="24017">Infos artiste</string>
   
   <string id="24020">Configurer</string>
   <string id="24021">Désactiver</string>
@@ -2148,16 +2148,17 @@
   <string id="24028">Weather.com (standard)</string>
   <string id="24030">Cet Add-on ne peut pas être configuré</string>
   <string id="24031">Erreur de chargement des paramètres</string>
-  <string id="24032">Tous les dépôts</string>
-  <string id="24033">Dépôts</string>
+  <string id="24032">Tous les Add-ons</string>
+  <string id="24033">Récupérer Add-ons</string>
   <string id="24034">Vérifier les mises à jour</string>
   <string id="24035">Rafraîchir</string>
-  <string id="24036">Change log</string>
+  <string id="24036">Changelog</string>
   <string id="24037">Désinstaller</string>
   <string id="24038">Installer</string>
   <string id="24039">Désactiver les Add-ons</string>
+  <string id="24040">(Efface le paramètre actuel)</string>
   
-  <string id="24050">Add-on disponibles</string>
+  <string id="24050">Add-ons disponibles</string>
   <string id="24051">Version :</string>
   <string id="24052">Responsabilités</string>
   <string id="24053">Licence :</string>
@@ -2165,10 +2166,10 @@
   <string id="24059">Voulez-vous activer cet Add-on ?</string>
   <string id="24060">Voulez-vous désactiver cet Add-on ?</string>
   <string id="24061">Mise-à-jour disponible !</string>
-  <string id="24062">Activer les Add-ons</string>
-  <string id="24063">Mise-à-jour automatique</string>
+  <string id="24062">Add-ons activés</string>
+  <string id="24063">Mise-à-jour auto</string>
   <string id="24064">Add-on activé</string>
-  <string id="24065">Add-on mis à jour</string>
+  <string id="24065">Add-on à jour</string>
   <string id="24066">Annuler le téléchargement ?</string>
   <string id="24067">Téléchargement en cours</string>
   <string id="24068">Mise à jour disponible</string>
@@ -2201,7 +2202,7 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
-  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in Add-ons -->
   <string id="30011">Chercher la durée</string>
   <string id="33001">Qualité du trailer</string>
   <string id="33002">Flux</string>
@@ -2297,4 +2298,3 @@
   <!-- 34112-34200 reserved for future use -->
 
 </strings>
-

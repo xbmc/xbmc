@@ -12,7 +12,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CXXFLAGS) -shared -g -o $(SLIB) $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
 endif
 
 include ../../../Makefile.include
