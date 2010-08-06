@@ -253,8 +253,12 @@
 	<string id="31971">Video Plug-ins</string>
 	<string id="31972">Music Plug-ins</string>
 	<string id="31973">Picture Plug-ins</string>
+	
+	<string id="31981">Show Thumbnails in List View</string>
+	<string id="31982">Show Plot in Video OSD</string>
+	<string id="31983">Show Picture Descriptions in Slideshow</string>
+	<string id="31984">Show Now Playing Information in Visualisations</string>
 
-	<string id="31998">Hide Now Playing in Visualizer</string>
 	<string id="31999">End Time</string>
 	
 </strings>

@@ -128,10 +128,10 @@
         </control>
         -->
         <control type="radiobutton" id="210">
-          <description>Hide Thumbs in List View (All)</description>
-          <label>$LOCALIZE[31680]</label>
+          <description>Show Thumbs in List View (All)</description>
+          <label>$LOCALIZE[31981]</label>
           <onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
-          <selected>Skin.HasSetting(HideListViewIcons)</selected>
+          <selected>!Skin.HasSetting(HideListViewIcons)</selected>
           <include>GeneralSkinOption</include>
         </control>
         <!--
@@ -193,26 +193,26 @@
         -->
 
         <control type="radiobutton" id="240">
-          <description>Hide Plot in Video OSD</description>
-          <label>$LOCALIZE[31671]</label>
+          <description>Show Plot in Video OSD</description>
+          <label>$LOCALIZE[31982]</label>
           <onclick>Skin.ToggleSetting(HidePlotInVideoOSD)</onclick>
-          <selected>Skin.HasSetting(HidePlotInVideoOSD)</selected>
+          <selected>!Skin.HasSetting(HidePlotInVideoOSD)</selected>
           <include>GeneralSkinOption</include>
         </control>
 
         <control type="radiobutton" id="324">
-          <description>Hide Pictures description</description>
-  				<label>$LOCALIZE[31697]</label>
+          <description>Show Pictures description</description>
+  				<label>$LOCALIZE[31983]</label>
           <onclick>Skin.ToggleSetting(HideDescriptionInSlideshow)</onclick>
-          <selected>Skin.HasSetting(HideDescriptionInSlideshow)</selected>
+          <selected>!Skin.HasSetting(HideDescriptionInSlideshow)</selected>
           <include>GeneralSkinOption</include>
         </control>
 
         <control type="radiobutton" id="325">
-          <description>Hide Now playing in viz description</description>
-  				<label>$LOCALIZE[31998]</label>
+          <description>Show Now playing in viz description</description>
+  				<label>$LOCALIZE[31984]</label>
           <onclick>Skin.ToggleSetting(HideNowPlayingInViz)</onclick>
-          <selected>Skin.HasSetting(HideNowPlayingInViz)</selected>
+          <selected>!Skin.HasSetting(HideNowPlayingInViz)</selected>
           <include>GeneralSkinOption</include>
         </control>
 
