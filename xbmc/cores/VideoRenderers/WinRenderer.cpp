@@ -442,15 +442,23 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
 {
   // Initialize a render target for intermediate rendering - same size as the video source
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  D3DFORMAT format = D3DFMT_X8R8G8B8;
+  DWORD usage = D3DUSAGE_RENDERTARGET;
 
-  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
+  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) format = D3DFMT_A2B10G10R10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    format = D3DFMT_A8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    format = D3DFMT_A8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8R8G8B8, usage))    format = D3DFMT_X8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    format = D3DFMT_X8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      format = D3DFMT_R8G8B8;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": format %i", format);
+
+  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, usage, format, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
-    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
-      return false;
-    }
+    CLog::Log(LOGERROR, __FUNCTION__": render target creation failed. Going back to bilinear scaling.", format);
+    return false;
   }
 
   //Pixel shaders need a matching depth-stencil surface.

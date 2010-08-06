@@ -46,6 +46,7 @@ public:
   virtual bool PresentRender();
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
+  virtual bool IsTextureFormatOk(D3DFORMAT DepthFormat, DWORD usage);
 
   virtual void SetVSync(bool vsync);
 

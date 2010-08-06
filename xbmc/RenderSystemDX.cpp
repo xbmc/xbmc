@@ -183,6 +183,19 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+{
+  // Verify the compatibility
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         m_devType,
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_SURFACE,
+                                         depthFormat);
+
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
 BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
 {
   // Verify that the depth format exists
