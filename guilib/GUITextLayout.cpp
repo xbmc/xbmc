@@ -44,9 +44,10 @@ CStdString CGUIString::GetAsString() const
   return text;
 }
 
-CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight)
+CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
 {
   m_font = font;
+  m_borderFont = borderFont;
   m_textColor = 0;
   m_wrap = wrap;
   m_maxHeight = fHeight;
@@ -141,14 +142,15 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
     g_graphicsContext.RemoveTransform();
 }
 
-void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth)
+void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth)
 {
   if (!m_font)
     return;
 
-  // set the main text color
+  // set the outline color
+  vecColors outlineColors;
   if (m_colors.size())
-    m_colors[0] = color;
+    outlineColors.push_back(outlineColor);
 
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
@@ -156,6 +158,27 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
     alignment &= ~XBFONT_CENTER_Y;
   }
+  if (m_borderFont)
+  {
+    float by = y;
+    m_borderFont->Begin();
+    for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
+    {
+      const CGUIString &string = *i;
+      uint32_t align = alignment;
+      if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
+        align &= ~XBFONT_JUSTIFIED;
+
+      m_borderFont->DrawText(x, by, outlineColors, 0, string.m_text, align, maxWidth);
+      by += m_borderFont->GetLineHeight();
+    }
+    m_borderFont->End();
+  }
+
+  // set the main text color
+  if (m_colors.size())
+    m_colors[0] = color;
+
   m_font->Begin();
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
@@ -164,7 +187,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
 
-    DrawOutlineText(m_font, x, y, m_colors, outlineColor, outlineWidth, string.m_text, align, maxWidth);
+    m_font->DrawText(x, y, m_colors, 0, string.m_text, align, maxWidth);
     y += m_font->GetLineHeight();
   }
   m_font->End();
@@ -555,39 +578,6 @@ void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, c
   vecText utf32;
   AppendToUTF32(text, 0, utf32);
   font->DrawText(x, y, color, shadowColor, utf32, align, 0);
-}
-
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text)
-{
-  if (!font) return;
-  vecText utf32;
-  AppendToUTF32(text, 0, utf32);
-  vecColors colors;
-  colors.push_back(color);
-  DrawOutlineText(font, x, y, colors, outlineColor, outlineWidth, utf32, 0, 0);
-}
-
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth)
-{
-  if (outlineWidth)
-  {
-    outlineWidth = (int32_t)(outlineWidth * font->GetScaleFactor() + 0.5f);
-    if (outlineWidth < 2)
-      outlineWidth = 2;
-  }
-
-  for (unsigned int i = 1; i < outlineWidth; i++)
-  {
-    unsigned int ymax = (unsigned int)(sqrt((float)outlineWidth*outlineWidth - i*i) + 0.5f);
-    for (unsigned int j = 1; j < ymax; j++)
-    {
-      font->DrawText(x - i, y + j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x - i, y - j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x + i, y + j, outlineColor, 0, text, align, maxWidth);
-      font->DrawText(x + i, y - j, outlineColor, 0, text, align, maxWidth);
-    }
-  }
-  font->DrawText(x, y, colors, 0, text, align, maxWidth);
 }
 
 void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32)

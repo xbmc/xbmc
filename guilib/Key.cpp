@@ -24,32 +24,16 @@
 
 CKey::CKey(void)
 {
-  m_leftTrigger = 0;
-  m_rightTrigger = 0;
-  m_leftThumbX = 0.0f;
-  m_leftThumbY = 0.0f;
-  m_rightThumbX = 0.0f;
-  m_rightThumbY = 0.0f;
-  m_repeat = 0.0f;
-  m_fromHttpApi = false;
-  m_buttonCode = KEY_INVALID;
-  m_VKey = 0;
-  m_wUnicode = 0;
-  m_cAscii = 0;
-  m_bShift = 0;
-  m_bCtrl = 0;
-  m_bAlt = 0;
-  m_bRAlt = 0;
-  m_bSuper = 0;
-  m_held = 0;
+  Reset();
 }
 
 CKey::~CKey(void)
 {}
 
-/* Commented out temporarily prior to permanent removal
 CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
 {
+  Reset();
+  m_buttonCode = buttonCode;
   m_leftTrigger = leftTrigger;
   m_rightTrigger = rightTrigger;
   m_leftThumbX = leftThumbX;
@@ -57,39 +41,20 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
   m_rightThumbX = rightThumbX;
   m_rightThumbY = rightThumbY;
   m_repeat = repeat;
-  m_fromHttpApi = false;
-  m_buttonCode = buttonCode;
-  m_VKey = 0;
-  m_wUnicode = 0;
-  m_cAscii = 0;
-  m_bShift = 0;
-  m_bCtrl = 0;
-  m_bAlt = 0;
-  m_bRAlt = 0;
-  m_bSuper = 0;
-  m_held = 0;
 }
-*/
 
-CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat, uint8_t vkey, wchar_t unicode, char ascii, bool shift, bool ctrl, bool alt, bool ralt, bool super, unsigned int held)
+CKey::CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
 {
-  m_leftTrigger = leftTrigger;
-  m_rightTrigger = rightTrigger;
-  m_leftThumbX = leftThumbX;
-  m_leftThumbY = leftThumbY;
-  m_rightThumbX = rightThumbX;
-  m_rightThumbY = rightThumbY;
-  m_repeat = repeat;
-  m_fromHttpApi = false;
-  m_buttonCode = buttonCode;
-  m_VKey = vkey;
-  m_wUnicode = unicode;
-  m_cAscii = ascii;
-  m_bShift = shift;
-  m_bCtrl = ctrl;
-  m_bAlt = alt;
-  m_bRAlt = ralt;
-  m_bSuper = super;
+  Reset();
+  if (vkey) // FIXME: This needs cleaning up - should we always use the unicode key where available?
+    m_buttonCode = vkey | KEY_VKEY;
+  else
+    m_buttonCode = KEY_UNICODE;
+  m_buttonCode |= modifiers;
+  m_vkey = vkey;
+  m_unicode = unicode;
+  m_ascii = ascii;
+  m_modifiers = modifiers;
   m_held = held;
 }
 
@@ -109,14 +74,10 @@ void CKey::Reset()
   m_repeat = 0.0f;
   m_fromHttpApi = false;
   m_buttonCode = KEY_INVALID;
-  m_VKey = 0;
-  m_wUnicode = 0;
-  m_cAscii = 0;
-  m_bShift = 0;
-  m_bCtrl = 0;
-  m_bAlt = 0;
-  m_bRAlt = 0;
-  m_bSuper = 0;
+  m_vkey = 0;
+  m_unicode = 0;
+  m_ascii = 0;
+  m_modifiers = 0;
   m_held = 0;
 }
 
@@ -132,14 +93,10 @@ const CKey& CKey::operator=(const CKey& key)
   m_repeat       = key.m_repeat;
   m_fromHttpApi  = key.m_fromHttpApi;
   m_buttonCode   = key.m_buttonCode;
-  m_VKey         = key.m_VKey;
-  m_wUnicode     = key.m_wUnicode;
-  m_cAscii       = key.m_cAscii;
-  m_bShift       = key.m_bShift;
-  m_bCtrl        = key.m_bCtrl;
-  m_bAlt         = key.m_bAlt;
-  m_bRAlt        = key.m_bRAlt;
-  m_bSuper       = m_bSuper;
+  m_vkey         = key.m_vkey;
+  m_unicode     = key.m_unicode;
+  m_ascii       = key.m_ascii;
+  m_modifiers    = key.m_modifiers;
   m_held         = key.m_held;
   return *this;
 }
@@ -208,40 +165,6 @@ bool CKey::GetFromHttpApi() const
 void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
   m_fromHttpApi = bFromHttpApi;
-}
-
-void CKey::SetButtonCode(uint32_t buttoncode)
-{
-  m_buttonCode = buttoncode;
-}
-
-void CKey::SetVKey(uint8_t vkey)
-{
-  m_VKey = vkey;
-}
-
-void CKey::SetAscii(char ascii)
-{
-  m_cAscii = ascii;
-}
-
-void CKey::SetUnicode(wchar_t unicode)
-{
-  m_wUnicode = unicode;
-}
-
-void CKey::SetModifiers(bool ctrl, bool shift, bool alt, bool ralt, bool super)
-{
-  m_bCtrl  = ctrl;
-  m_bShift = shift;
-  m_bAlt   = alt;
-  m_bRAlt  = ralt;
-  m_bSuper = super;
-}
-
-void CKey::SetHeld(unsigned int held)
-{
-  m_held = held;
 }
 
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)

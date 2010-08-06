@@ -32,12 +32,7 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
-#ifdef HAS_FILESYSTEM_MMS
-#include "DVDInputStreams/DVDInputStreamMMS.h"
-#endif
-#ifdef HAS_LIBRTMP
-#include "DVDInputStreams/DVDInputStreamRTMP.h"
-#endif
+#include "DVDInputStreams/DVDInputStreamBluray.h"
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
@@ -298,6 +293,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
       m_ioContext->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+      m_ioContext->is_streamed = 1;
+    }
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+    {
+      m_ioContext->max_packet_size = 6144;
       m_ioContext->is_streamed = 1;
     }
     else if ((m_pInput->IsStreamType(DVDSTREAM_TYPE_TV)) ||
@@ -806,41 +806,20 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   if(time < 0)
     time = 0;
 
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  CDVDInputStream::ISeekTime* ist = dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInput);
+  if (ist)
   {
-    if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
+    if (!ist->SeekTime(time))
       return false;
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
 
     Flush();
+    //RTMP did this for some reason
+    //m_ioContext->buf_ptr = m_ioContext->buf_end;
     return true;
   }
-
-#ifdef HAS_FILESYSTEM_MMS
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
-  {
-    if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
-      return false;
-
-    Flush();
-    return true;
-  }
-#endif
-
-#ifdef HAS_LIBRTMP
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
-  {
-    if (!((CDVDInputStreamRTMP*)m_pInput)->SeekTime(time))
-      return false;
-
-    Flush();
-    m_ioContext->buf_ptr = m_ioContext->buf_end;
-
-    return true;
-  }
-#endif
 
   if(!m_pInput->Seek(0, SEEK_POSSIBLE)
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
@@ -1089,7 +1068,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     //FFMPEG has an error doesn't set type properly for DTS
     if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
       m_streams[iId]->codec = CODEC_ID_DTS;
-
+#ifdef HAVE_LIBBLURAY
+    if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
+      static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, m_streams[iId]->language);
+#endif
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
       // this stuff is really only valid for dvd's.
@@ -1132,8 +1114,9 @@ std::string CDVDDemuxFFmpeg::GetFileName()
 
 int CDVDDemuxFFmpeg::GetChapterCount()
 {
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapterCount();
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
+    return ich->GetChapterCount();
 
   if(m_pFormatContext == NULL)
     return 0;
@@ -1146,8 +1129,9 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
 int CDVDDemuxFFmpeg::GetChapter()
 {
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return ((CDVDInputStreamNavigator*)m_pInput)->GetChapter();
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
+    return ich->GetChapter();
 
   if(m_pFormatContext == NULL
   || m_iCurrentPts == DVD_NOPTS_VALUE)
@@ -1167,8 +1151,9 @@ int CDVDDemuxFFmpeg::GetChapter()
 
 void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
 {
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    return;
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)  
+    ich->GetChapterName(strChapterName);
   else
   {
     #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
@@ -1184,10 +1169,11 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(chapter < 1)
     chapter = 1;
 
-  if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
+  if(ich)
   {
-    CLog::Log(LOGDEBUG, "%s - chapter seeking using navigator", __FUNCTION__);
-    if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
+    CLog::Log(LOGDEBUG, "%s - chapter seeking using input stream", __FUNCTION__);
+    if(!ich->SeekChapter(chapter))
       return false;
 
     if(startpts)

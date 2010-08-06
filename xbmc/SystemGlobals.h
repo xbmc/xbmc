@@ -27,6 +27,7 @@
 #include "MouseStat.h"
 #include "Application.h"
 #include "GUILargeTextureManager.h"
+#include "TextureManager.h"
 #include "AudioContext.h"
 #include "GUISettings.h"
 
@@ -52,10 +53,11 @@ struct CSystemGlobals
   CWinSystemX11GL    m_Windowing;
 #endif
 
-  CGUILargeTextureManager m_largeTextureManager;
   CXBMCRenderManager m_renderManager;
   CAudioContext      m_audioContext;
   CGraphicContext    m_graphicsContext;
+  CGUITextureManager m_TextureManager;
+  CGUILargeTextureManager m_largeTextureManager;
   CMouseStat         m_Mouse;
   CApplication       m_application;
 };

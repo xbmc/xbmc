@@ -46,6 +46,7 @@
 #include "Application.h"
 #include "AddonDatabase.h"
 #include "AdvancedSettings.h"
+#include "MediaManager.h"
 
 #define CONTROL_AUTOUPDATE 5
 
@@ -194,6 +195,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   {
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = g_settings.m_fileSources;
+    g_mediaManager.GetLocalDrives(shares);
     CStdString path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
     {

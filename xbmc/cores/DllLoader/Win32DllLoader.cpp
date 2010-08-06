@@ -77,6 +77,8 @@ Export win32_exports[] =
   { "_fstat",                     -1, (void*)dll_fstat,                     NULL },
   { "_mkdir",                     -1, (void*)dll_mkdir,                     NULL },
   { "_stat",                      -1, (void*)dll_stat,                      NULL },
+  { "_fstat32",                   -1, (void*)dll_fstat,                     NULL },
+  { "_stat32",                    -1, (void*)dll_stat,                      NULL },
   { "_findclose",                 -1, (void*)dll_findclose,                 NULL },
   { "_findfirst",                 -1, (void*)dll_findfirst,                 NULL },
   { "_findnext",                  -1, (void*)dll_findnext,                  NULL },
@@ -263,7 +265,9 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const CStdString &dll)
 {
-  BYTE* image_base = (BYTE*)GetModuleHandle(_P(dll).c_str());
+  CStdStringW strdllW;
+  g_charsetConverter.utf8ToW(_P(dll), strdllW, false);
+  BYTE* image_base = (BYTE*)GetModuleHandleW(strdllW.c_str());
 
   if (!image_base)
   {
@@ -356,18 +360,22 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
         return false;
     }
   }
-  HMODULE hModule = GetModuleHandle(_P(dllName).c_str());
+  CStdStringW strdllNameW;
+  g_charsetConverter.utf8ToW(_P(dllName), strdllNameW, false);
+  HMODULE hModule = GetModuleHandleW(strdllNameW.c_str());
   if (hModule == NULL)
     return false;
 
-  char filepath[MAX_PATH];
-  GetModuleFileName(hModule, filepath, MAX_PATH);
-  CStdString dllPath = filepath;
+  wchar_t filepathW[MAX_PATH];
+  GetModuleFileNameW(hModule, filepathW, MAX_PATH);
+  CStdStringW strfilepathW(filepathW);
+  CStdString dllPath;
+  g_charsetConverter.wToUTF8(strfilepathW, dllPath);
 
   // compare this filepath with our home directory
   CStdString homePath = _P("special://xbmc");
   CStdString tempPath = _P("special://temp");
-  return ((strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), filepath, tempPath.GetLength()) == 0));}
+  return ((strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));}
 
 void Win32DllLoader::RestoreImports()
 {

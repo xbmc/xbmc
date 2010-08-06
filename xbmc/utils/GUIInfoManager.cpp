@@ -1180,24 +1180,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case PLAYER_PATH:
   case PLAYER_FILEPATH:
-     if (m_currentFile)
-     {
-       if (m_currentFile->HasMusicInfoTag())
-         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
-       else if (m_currentFile->HasVideoInfoTag())
-         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
-       if (strLabel.IsEmpty())
-         strLabel = m_currentFile->m_strPath;
-     }
-     if (info == PLAYER_PATH)
-     {
-       // do this twice since we want the path outside the archive if this
-       // is to be of use.
-       if (CUtil::IsInArchive(strLabel))
-         strLabel = CUtil::GetParentPath(strLabel);
-       strLabel = CUtil::GetParentPath(strLabel);
-     }
-     break;
+    if (m_currentFile)
+    {
+      if (m_currentFile->HasMusicInfoTag())
+        strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+      else if (m_currentFile->HasVideoInfoTag())
+        strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (strLabel.IsEmpty())
+        strLabel = m_currentFile->m_strPath;
+    }
+    if (info == PLAYER_PATH)
+    {
+      // do this twice since we want the path outside the archive if this
+      // is to be of use.
+      if (CUtil::IsInArchive(strLabel))
+        strLabel = CUtil::GetParentPath(strLabel);
+      strLabel = CUtil::GetParentPath(strLabel);
+    }
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -3518,6 +3518,16 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
   // Find a thumb for this file.
   item.SetVideoThumb();
+  if (!item.HasThumbnail())
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(item.GetCachedVideoThumb(), strPath, strFileName);
+
+    // create unique thumb for auto generated thumbs
+    CStdString cachedThumb = strPath + "auto-" + strFileName;
+    if (CFile::Exists(cachedThumb))
+      item.SetThumbnailImage(cachedThumb);
+  }
 
   // find a thumb for this stream
   if (item.IsInternetStream())
@@ -3903,10 +3913,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return track;
     }
   case LISTITEM_ARTIST:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtist();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strArtist;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetArtist();
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
@@ -3916,14 +3926,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strDirector;
   case LISTITEM_ALBUM:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbum();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetAlbum();
     break;
   case LISTITEM_YEAR:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetYearString();
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
@@ -3931,6 +3939,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
       return strResult;
     }
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetYearString();
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
@@ -3944,6 +3954,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
     break;
   case LISTITEM_GENRE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strGenre;
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetGenre();
     if (item->HasPVRChannelInfoTag())
@@ -3952,8 +3964,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetPVRRecordingInfoTag()->m_strGenre;
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Genre();
-    if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strGenre;
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -3980,12 +3990,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
-        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
@@ -4010,11 +4020,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      if (item->HasMusicInfoTag())
-      {
-        if (item->GetMusicInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
-      }
       else if (item->HasPVRChannelInfoTag())
       {
         if (item->GetPVRChannelInfoTag()->NowDuration() > 0)
@@ -4038,7 +4043,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
-
+      if (item->HasMusicInfoTag())
+      {
+        if (item->GetMusicInfoTag()->GetDuration() > 0)
+          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
+      }
       return duration;
     }
   case LISTITEM_PLOT:
@@ -4146,7 +4155,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_FILENAME_AND_PATH:
     {
       CStdString path;
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
         path = item->GetMusicInfoTag()->GetURL();
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;

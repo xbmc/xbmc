@@ -152,7 +152,6 @@ int CPlayListPlayer::GetNextSong()
   return iSong;
 }
 
-/// \brief Play next entry in current playlist
 void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
   int iSong = GetNextSong(offset);
@@ -188,7 +187,6 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   //g_partyModeManager.OnSongChange();
 }
 
-/// \brief Play previous entry in current playlist
 void CPlayListPlayer::PlayPrevious()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
@@ -218,8 +216,6 @@ void CPlayListPlayer::Play()
   Play(0);
 }
 
-/// \brief Start playing entry \e iSong in current playlist
-/// \param iSong Song in playlist
 void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
@@ -305,38 +301,22 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_bPlayedFirstFile = true;
 }
 
-/// \brief Change the current song in playlistplayer.
-/// \param iSong Song in playlist
 void CPlayListPlayer::SetCurrentSong(int iSong)
 {
   if (iSong >= -1 && iSong < GetPlaylist(m_iCurrentPlayList).size())
     m_iCurrentSong = iSong;
 }
 
-/// \brief Returns to current song in active playlist.
-/// \return Current song
 int CPlayListPlayer::GetCurrentSong() const
 {
   return m_iCurrentSong;
 }
 
-/// \brief Returns the active playlist.
-/// \return Active playlist \n
-/// Return values can be: \n
-/// - PLAYLIST_NONE \n No playlist active
-/// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO \n Playlist from music playlist window
 int CPlayListPlayer::GetCurrentPlaylist() const
 {
   return m_iCurrentPlayList;
 }
 
-/// \brief Set active playlist.
-/// \param iPlayList Playlist to set active \n
-/// Values can be: \n
-/// - PLAYLIST_NONE \n No playlist active
-/// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO \n Playlist from music playlist window
 void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 {
   if (iPlaylist == m_iCurrentPlayList)
@@ -364,11 +344,6 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
   g_windowManager.SendMessage(msg);
 }
 
-/// \brief Get the playlist object specified in \e nPlayList
-/// \param nPlayList Values can be: \n
-/// - PLAYLIST_MUSIC \n Playlist from music playlist window
-/// - PLAYLIST_VIDEO \n Playlist from music playlist window
-/// \return A reference to the CPlayList object.
 CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
 {
   switch ( iPlaylist )
@@ -403,8 +378,6 @@ const CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist) const
   }
 }
 
-/// \brief Removes any item from all playlists located on a removable share
-/// \return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
 int CPlayListPlayer::RemoveDVDItems()
 {
   int nRemovedM = m_PlaylistMusic->RemoveDVDItems();
@@ -413,7 +386,6 @@ int CPlayListPlayer::RemoveDVDItems()
   return nRemovedM + nRemovedV;
 }
 
-/// \brief Resets the playlistplayer, but the active playlist stays the same.
 void CPlayListPlayer::Reset()
 {
   m_iCurrentSong = -1;
@@ -425,14 +397,11 @@ void CPlayListPlayer::Reset()
   g_windowManager.SendMessage(msg);
 }
 
-/// \brief Whether or not something has been played yet or not from the current playlist.
 bool CPlayListPlayer::HasPlayedFirstFile() const
 {
   return m_bPlayedFirstFile;
 }
 
-/// \brief Returns \e true if iPlaylist is repeated
-/// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::Repeated(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
@@ -440,8 +409,6 @@ bool CPlayListPlayer::Repeated(int iPlaylist) const
   return false;
 }
 
-/// \brief Returns \e true if iPlaylist repeats one song
-/// \param iPlaylist Playlist to be asked
 bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 {
   if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
@@ -449,8 +416,6 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
   return false;
 }
 
-/// \brief Shuffle play the current playlist
-/// \param bYesNo To Enable shuffle play, set to \e true
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
   if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)

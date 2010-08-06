@@ -54,6 +54,14 @@ public:
   virtual bool Download(const char *path, Json::Value *result);
   virtual int GetCapabilities();
 private:
+  enum HTTPMethod
+  {
+    UNKNOWN,
+    POST,
+    GET,
+    HEAD
+  };
+
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
 
@@ -74,7 +82,10 @@ private:
 #endif
   static void ContentReaderFreeCallback (void *cls);
   static int HttpApi(struct MHD_Connection *connection);
+  static HTTPMethod GetMethod(const char *method);
+  static int CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL);
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL);
+  static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);

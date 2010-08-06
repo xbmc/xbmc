@@ -251,9 +251,9 @@ class Packet:
         for a in range ( 0, self.num_packets() ):
             try:
                 sock.sendto(self.get_udp_message(a+1), addr)
-                return True
             except:
                 return False
+        return True
 
 
 class PacketHELO (Packet):
@@ -634,5 +634,5 @@ class XBMCClient:
             elif icon_file.lower()[-3:] == "gif":
                 return ICON_GIF
             elif icon_file.lower()[-3:] == "jpg":
-                return ICON_JPG
+                return ICON_JPEG
         return ICON_NONE

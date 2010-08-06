@@ -25,7 +25,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
-#include "cores/dvdplayer/DVDSubtitles/SamiTagConvertor.h"
+#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {
@@ -82,7 +82,7 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     }
   }
 
-  SamiTagConvertor TagConv;
+  CDVDSubtitleTagSami TagConv;
   bool Taginit = TagConv.Init();
 
   while(p<end)

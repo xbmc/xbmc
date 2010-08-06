@@ -98,11 +98,12 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpa
   m_item = item;
 
   m_path = item.m_strPath;
-  if (item.IsStack())
-    m_path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     m_path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (CUtil::IsStack(m_path))
+    m_path = CStackDirectory::GetFirstStackedFile(m_path);
 }
 
 CThumbExtractor::~CThumbExtractor()

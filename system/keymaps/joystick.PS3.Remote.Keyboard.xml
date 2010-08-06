@@ -170,6 +170,22 @@
     </joystick>
   </Settings>
 
+  <AddonInformation>
+    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
+      <altname>PS3 Remote Keyboard</altname>
+      <altname>MoSart PS3 Remote Keyboard</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </AddonInformation>
+
+  <AddonSettings>
+    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
+      <altname>PS3 Remote Keyboard</altname>
+      <altname>MoSart PS3 Remote Keyboard</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </AddonSettings>
+
   <MyPicturesSettings>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>

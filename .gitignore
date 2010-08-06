@@ -81,6 +81,7 @@ config.log
 /addons/visualization.glspectrum/opengl_spectrum.vis
 /addons/visualization.milkdrop/MilkDrop_win32dx.vis
 /addons/visualization.projectm/projectM.vis
+/addons/visualization.projectm/resources/presets.zip
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/script.module.pil/

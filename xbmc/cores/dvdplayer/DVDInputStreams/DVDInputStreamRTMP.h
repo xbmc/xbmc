@@ -25,7 +25,9 @@
 #include "DVDInputStream.h"
 #include "DllLibRTMP.h"
 
-class CDVDInputStreamRTMP : public CDVDInputStream
+class CDVDInputStreamRTMP 
+  : public CDVDInputStream
+  , public CDVDInputStream::ISeekTime
 {
 public:
   CDVDInputStreamRTMP();

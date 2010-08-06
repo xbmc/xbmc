@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/20/2010-->
+<!--Date of translation: 07/03/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 31234-->
+<!--Based on english strings version 31608-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -184,6 +184,8 @@
   <string id="239">Εκκαθάριση λίστας αναπαραγωγής στη λήξη</string>
   <string id="240">Κατάσταση προβολής</string>
   <string id="241">Πλήρης οθόνη #%d</string>
+  <string id="242">Σε παράθυρο</string>
+  <string id="243">Ανανέωση βαθμολογίας</string>
   <string id="247">Scripts</string>
   <string id="248">Γλώσσα</string>
   <string id="249">Μουσική</string>
@@ -1406,6 +1408,10 @@
   <string id="16316">Αυτόματη</string>
   <string id="16317">Χρονική (κατά το ήμισυ)</string>
   <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
+  <string id="16400">Μετα-επεξεργασία βίντεο</string>
+  <string id="16401">Ανενεργή</string>
+  <string id="16402">Ενεργή για τυπική ευκρίνεια (SD)</string>
+  <string id="16403">Πάντα ενεργή</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
@@ -1731,7 +1737,7 @@
   <string id="20446">Βρέθηκαν τοπικά αποθηκευμένες πληροφορίες.</string>
   <string id="20447">Να αγνοηθούν και να ανανεωθούν από το internet;</string>
   <string id="20448">Αδυναμία λήψης πληροφοριών </string>
-  <string id="20449">Ίσως ο διακομιστής να είναι πλέον μη διαθέσιμος.</string>
+  <string id="20449">Αδυναμία σύνδεσης με τον απομακρυσμένο διακομιστή</string>
   <string id="20450">Επιθυμείτε, να συνεχίσετε  την αναζήτηση;</string>
   <string id="20451">Χώρες</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
@@ -1832,6 +1838,7 @@
   <string id="21450">- Επεξεργασία</string>
   <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
   <string id="21452">Λήψη περισσότερων</string>
+  <string id="21453">Σύστημα αρχείων ρίζας</string>
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
@@ -2003,8 +2010,8 @@
   <string id="24067">Γίνεται λήψη πρόσθετων</string>
   <string id="24068">Διαθέσιμη ενημέρωση</string>
   <string id="24069">Ενημέρωση</string>
-  <string id="24070">Αδυναμία χρήσης πρόσθετου</string>
-  <string id="24071">Παρουσιάστηκε άγνωστο σφάλμα</string>
+  <string id="24070">Αδυναμία χρήσης πρόσθετου.</string>
+  <string id="24071">Παρουσιάστηκε άγνωστο σφάλμα.</string>
   <string id="24072">Απαιτούνται ρυθμίσεις</string>
   <string id="24073">Δεν ήταν δυνατή η σύνδεση</string>
   <string id="24074">Απαιτείται επανεκκίνηση</string>
@@ -2012,6 +2019,8 @@
   <string id="24080">Νέα προσπάθεια επανασύνδεσης;</string>
   <string id="24089">Επανεκκινήσεις πρόσθετου</string>
   <string id="24090">Κλείδωμα διαχειριστή πρόσθετων</string>
+  <string id="24096">Το πρόσθετο έχει επισημανθεί ως κατεστραμμένο στο αποθετήριο.</string>
+  <string id="24097">Επιθυμητέ να απενεργοποιηθεί από το σύστημά σας;</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>

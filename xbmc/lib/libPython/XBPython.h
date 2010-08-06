@@ -100,7 +100,6 @@ public:
 
   PyThreadState *getMainThreadState();
 
-  bool m_bStartup;
   bool m_bLogin;
   CCriticalSection    m_critSection;
 private:

@@ -46,7 +46,8 @@ openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
-librtmp_not_found="== Could not find libRTMP. libRTMP support disabled. =="
+librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
+librtmp_disabled="== RTMP support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -173,6 +174,12 @@ AC_ARG_ENABLE([pulse],
   [use_pulse=$enableval],
   [use_pulse=auto])
 
+AC_ARG_ENABLE([rtmp],
+  [AS_HELP_STRING([--enable-rtmp],
+  [enable RTMP support via librtmp (default is auto)])],
+  [use_librtmp=$enableval],
+  [use_librtmp=auto])
+
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
   [enable FFmpeg vorbis encoding (default is no)])],
@@ -238,6 +245,12 @@ AC_ARG_ENABLE([liba52],
   [enable deprecated liba52 support])],
   [use_liba52=$enableval],
   [use_liba52=no])
+
+AC_ARG_ENABLE([libbluray],
+  [AS_HELP_STRING([--enable-libbluray],
+  [enable libbluray support])],
+  [use_libbluray=$enableval],
+  [use_libbluray=auto])
 
 AC_ARG_WITH([lirc-device],
   [AS_HELP_STRING([--with-lirc-device=file],
@@ -419,6 +432,36 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
   fi
 fi
 
+# Checks for library functions.
+AC_FUNC_ALLOCA
+AC_FUNC_CHOWN
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_FSEEKO
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_LSTAT
+AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+AC_FUNC_MEMCMP
+AC_FUNC_MKTIME
+AC_FUNC_MMAP
+# Boxee is apparently having compile problems
+# if HAVE_REALLOC is defined.  Sort this later.
+#AC_FUNC_REALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
+AC_FUNC_STAT
+AC_FUNC_STRCOLL
+AC_FUNC_STRFTIME
+AC_FUNC_STRTOD
+AC_FUNC_UTIME_NULL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
+
+# Check for various sizes
+AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([size_t])
+
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
@@ -511,6 +554,27 @@ PKG_CHECK_MODULES([VORBIS],     [vorbis],
 PKG_CHECK_MODULES([VORBISENC],     [vorbisenc],
   [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
   AC_MSG_ERROR($missing_library))
+
+# check for libbluray
+AS_CASE([x$use_libbluray],
+  [xyes],[
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
+  ],
+  [xauto],[
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], [use_libbluray="no"])
+  ])
+
+AS_CASE([x$use_libbluray],
+  [xyes],[
+    INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
+    LIBS="$LIBS $LIBBLURAY_LIBS";
+    AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
+    AC_SUBST([HAVE_LIBBLURAY], 1)
+  ],[
+#    AC_DEFINE([HAVE_LIBBLURAY], 0, [System has libbluray library])
+    AC_SUBST([HAVE_LIBBLURAY], 0)
+  ]
+)
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
@@ -722,8 +786,24 @@ else
 fi
 
 # libRTMP
-AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],use_librtmp=yes,
-use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
+if test "$use_librtmp" != "no"; then
+  AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
+   [if test "$use_librtmp" = "yes"; then
+      AC_MSG_ERROR($librtmp_not_found)
+    elif test "$use_librtmp" != "no"; then
+      AC_MSG_NOTICE($librtmp_not_found)
+      use_librtmp="no"
+    fi
+   ])
+  if test "$use_librtmp" != "no" && test "$host_vendor" != "apple"; then
+    XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
+  fi
+  if test "$use_librtmp" != "no"; then
+    AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
+  fi
+else
+  AC_MSG_NOTICE($librtmp_disabled)
+fi
 
 ### External libraries checks
 # External FFmpeg
@@ -780,10 +860,6 @@ else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
-fi
-
-if test "$use_librtmp" = "yes"; then
-  AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
 fi
 
 # External liba52 if deprecated a52 support is enabled
@@ -854,7 +930,7 @@ if test "x$use_vdpau" != "xno"; then
     AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [],
       [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
     [if test "x$use_vdpau" = "xyes"; then 
-      AC_MSG_ERROR([$vdpau_no_found])
+      AC_MSG_ERROR([$vdpau_not_found])
     else
       use_vdpau="no"
       AC_MSG_RESULT($vdpau_not_found)
@@ -1033,36 +1109,6 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_C_BIGENDIAN
 
-# Checks for library functions.
-AC_FUNC_ALLOCA
-AC_FUNC_CHOWN
-AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_FSEEKO
-AC_PROG_GCC_TRADITIONAL
-AC_FUNC_LSTAT
-AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
-AC_FUNC_MEMCMP
-AC_FUNC_MKTIME
-AC_FUNC_MMAP
-# Boxee is apparently having compile problems
-# if HAVE_REALLOC is defined.  Sort this later.
-#AC_FUNC_REALLOC
-AC_FUNC_SELECT_ARGTYPES
-AC_FUNC_SETVBUF_REVERSED
-AC_TYPE_SIGNAL
-AC_FUNC_STAT
-AC_FUNC_STRCOLL
-AC_FUNC_STRFTIME
-AC_FUNC_STRTOD
-AC_FUNC_UTIME_NULL
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime])
-
-# Check for various sizes
-AC_CHECK_SIZEOF([int])
-AC_CHECK_SIZEOF([size_t])
-
 if test "$cross_compiling" = "yes"; then
   final_message="$final_message\n  Crosscomp.:\tYes"
 else
@@ -1130,6 +1176,12 @@ if test "$use_goom" = "yes"; then
   final_message="$final_message\n  GOOM:\t\tYes"
 else
   final_message="$final_message\n  GOOM:\t\tNo"
+fi
+
+if test "$use_libbluray" = "yes"; then
+  final_message="$final_message\n  Bluray:\tYes"
+else
+  final_message="$final_message\n  Bluray:\tNo"
 fi
 
 if test "$use_mid" = "yes"; then
@@ -1253,7 +1305,7 @@ else
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
-if test "$use_librtmp" = "yes"; then
+if test "$use_librtmp" != "no"; then
   final_message="$final_message\n  libRTMP support:\tYes"
 else
   final_message="$final_message\n  libRTMP support:\tNo"
@@ -1508,6 +1560,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \
       --disable-ipv6 \
       --enable-unicode=ucs4 \
       --without-cxx \
@@ -1619,6 +1672,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --disable-oss \
       --disable-solaris-audio \
       --disable-al-audio \
@@ -1639,6 +1693,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       CFLAGS="$CFLAGS" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --disable-doc \
       --enable-static \
       --with-pic
@@ -1661,6 +1716,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --enable-static \
       --disable-shared \
       --disable-strip \
@@ -1689,6 +1745,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --enable-static \
       --disable-shared \
       --cc="$CC"
@@ -1697,7 +1754,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
+    CFLAGS="$CFLAGS -O3 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
   else
@@ -1720,6 +1777,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --with-pic \
       --disable-static \
       --enable-shared \
@@ -1757,7 +1815,8 @@ XB_CONFIG_MODULE([lib/libass], [
     CFLAGS="$CFLAGS" \
     ./configure \
       --host=$host_alias \
-      --build=$build_alias
+      --build=$build_alias \
+      --target=$target_alias
   fi
 ], [$USE_EXTERNAL_LIBASS])
 
@@ -1775,6 +1834,7 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --disable-static \
       --with-pic
   fi
@@ -1802,6 +1862,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --disable-shared \
       --enable-static \
       --with-pic
@@ -1834,6 +1895,7 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
+      --target=$target_alias \      
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -1854,7 +1916,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   else
     ./configure --without-openssl \
       --host=$host_alias \
-      --build=$build_alias CFLAGS="$CFLAGS"
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS"
   fi
 ], [0])
 
@@ -1865,7 +1928,8 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   else
     ./configure \
       --host=$host_alias \
-      --build=$build_alias CFLAGS="$CFLAGS"
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS" 
   fi
 ], [0])
 
@@ -1895,7 +1959,8 @@ XB_CONFIG_MODULE([lib/cpluff], [
   else
     ./configure --disable-nls \
       --host=$host_alias \
-      --build=$build_alias CFLAGS="$CFLAGS"
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS"
   fi
 ], [0])
 

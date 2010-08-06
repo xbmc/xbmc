@@ -5,12 +5,18 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
-    <summary>Screensaver that Dims your screen</summary>
+    <summary lang="en">Screensaver that dims your screen</summary>
+    <summary lang="fi">Ruudun himmennys</summary>
     <summary lang="hu">Képernyővédő ami elhalványítja a képernyőt</summary>
+    <summary lang="ko">화면을 어둡게 하는 화면보호기</summary>
+    <summary lang="pl">Wygaszacz ekranu przyciemniający ekran</summary>
     <summary lang="zh">淡出屏幕保护程序</summary>
-    <description>The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="fi">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="hu">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
+    <description lang="ko">이 화면보호기는 화면을 어둡게 하는 정도를 20-100% 사이에서 설정에서 지정할 수 있습니다.</description>
     <description lang="zh">淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。</description>
+    <description lang="pl">Ten wygaszacz ekranu płynnie przyciemnia ekran po upływie ustawionego czasu. Przyciemnienie jest ustawialne w przedziale 20-100%.</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -39,7 +39,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MMS    = 9,
   DVDSTREAM_TYPE_PVRMANAGER = 10,
-  DVDSTREAM_TYPE_MPLS   = 11
+  DVDSTREAM_TYPE_MPLS   = 11,
+  DVDSTREAM_TYPE_BLURAY = 12,
 };
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
@@ -70,6 +71,23 @@ public:
     virtual ~IDisplayTime() {};
     virtual int GetTotalTime() = 0;
     virtual int GetTime() = 0;
+  };
+
+  class ISeekTime
+  {
+    public:
+    virtual ~ISeekTime() {};
+    virtual bool SeekTime(int ms) = 0;
+  };
+
+  class IChapter
+  {
+    public:    
+    virtual ~IChapter() {};
+    virtual int  GetChapter() = 0;
+    virtual int  GetChapterCount() = 0;
+    virtual void GetChapterName(std::string& name) = 0;
+    virtual bool SeekChapter(int ch) = 0;
   };
 
   CDVDInputStream(DVDStreamType m_streamType);

@@ -2788,19 +2788,29 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
   if (needsCast)
   {
+    set<int> actors;
+    set<int>::iterator it;
+
     // create cast string
-    CStdString strSQL = PrepareSQL("select actors.strActor,actorlinkepisode.strRole,actors.strThumb from actorlinkepisode,actors where actorlinkepisode.idEpisode=%i and actorlinkepisode.idActor = actors.idActor",idEpisode);
+    CStdString strSQL = PrepareSQL("select actors.idActor,actors.strActor,actorlinkepisode.strRole,actors.strThumb from actorlinkepisode,actors where actorlinkepisode.idEpisode=%i and actorlinkepisode.idActor = actors.idActor",idEpisode);
     m_pDS2->query(strSQL.c_str());
     bool showCast=false;
     while (!m_pDS2->eof() || !showCast)
     {
       if (!m_pDS2->eof())
       {
-        SActorInfo info;
-        info.strName = m_pDS2->fv("actors.strActor").get_asString();
-        info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
-        info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
-        details.m_cast.push_back(info);
+        int idActor = m_pDS2->fv("actors.idActor").get_asInt();
+        it = actors.find(idActor);
+
+        if (it == actors.end())
+        {
+          SActorInfo info;
+          info.strName = m_pDS2->fv("actors.strActor").get_asString();
+          info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
+          info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
+          details.m_cast.push_back(info);
+          actors.insert(idActor);
+        }
         m_pDS2->next();
       }
       if (m_pDS2->eof() && !showCast)
@@ -2809,7 +2819,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
         int idShow = GetTvShowForEpisode(details.m_iDbId);
         if (idShow > -1)
         {
-          strSQL = PrepareSQL("select actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%i and actorlinktvshow.idActor = actors.idActor",idShow);
+          strSQL = PrepareSQL("select actors.idActor,actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%i and actorlinktvshow.idActor = actors.idActor",idShow);
           m_pDS2->query(strSQL.c_str());
         }
       }
@@ -4804,7 +4814,7 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
   if (idGenre != -1)
     where = PrepareSQL("join genrelinkmusicvideo on genrelinkmusicvideo.idMVideo=musicvideoview.idMVideo where genrelinkmusicvideo.idGenre=%i", idGenre);
   else if (idStudio != -1)
-    where = PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo=musicvideoview.idMVideo where studiolinkmusicvideo.idAtudio=%i", idStudio);
+    where = PrepareSQL("join studiolinkmusicvideo on studiolinkmusicvideo.idMVideo=musicvideoview.idMVideo where studiolinkmusicvideo.idStudio=%i", idStudio);
   else if (idDirector != -1)
     where = PrepareSQL("join directorlinkmusicvideo on directorlinkmusicvideo.idMVideo=musicvideoview.idMVideo where directorlinkmusicvideo.idDirector=%i", idDirector);
   else if (idYear !=-1)

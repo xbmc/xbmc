@@ -5,7 +5,7 @@
 <!--Date of translation: 11/05/2010-->
 <!--$Revision$-->
 <strings>
-  <string id="31000">Wechsel Deine</string>
+  <string id="31000">Ändern der</string>
   <string id="31001">Liebe</string>
   <string id="31002">Hass</string>
   <string id="31003">Power Optionen</string>
@@ -16,7 +16,7 @@
 
   <string id="31020">Kürzlich hinzugefügt</string>
   <string id="31021">Video - Dateien</string>
-  <string id="31022">Music - Dateien</string>
+  <string id="31022">Musik - Dateien</string>
   <string id="31023">Abspielen</string>
   <string id="31024">Seite</string>
   <string id="31025">Einträge</string>

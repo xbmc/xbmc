@@ -100,6 +100,9 @@
   <MyFiles>
     <remote>
       <clear>Delete</clear>
+      <zero>Highlight</zero>
+      <star>Move</star>
+      <hash>Rename</hash>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
@@ -147,13 +150,14 @@
       <start>OSD</start>
       <title>CodecInfo</title>
       <info>Info</info>
-      <select>AspectRatio</select>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
+      <star>ShowSubtitles</star>
       <language>AudioNextLanguage</language>
       <playlist>Playlist</playlist>
       <language>Language</language>
+      <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -380,6 +384,16 @@
     <remote>
     </remote>
   </AddonBrowser>
+  <AddonInformation>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonInformation>
+  <AddonSettings>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonSettings>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>

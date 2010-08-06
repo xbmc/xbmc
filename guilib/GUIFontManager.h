@@ -46,6 +46,7 @@ struct OrigFontInfo
    CStdString fileName;
    RESOLUTION sourceRes;
    bool preserveAspect;
+   bool border;
 };
 
 /*!
@@ -62,8 +63,15 @@ public:
 
   void Unload(const CStdString& strFontName);
   void LoadFonts(const CStdString& strFontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = RES_INVALID, bool preserveAspect = false);
+  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border = false, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = RES_INVALID, bool preserveAspect = false);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
+
+  /*! \brief return a default font
+   \param border whether the font should be a font with an outline
+   \return the font.  NULL if no default font can be found.
+   */
+  CGUIFont* GetDefaultFont(bool border = false);
+
   void Clear();
   void FreeFontFile(CGUIFontTTFBase *pFont);
 

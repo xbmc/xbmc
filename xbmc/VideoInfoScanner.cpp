@@ -774,6 +774,8 @@ namespace VIDEO
       return false;
 
     CStdString strLabel=item->m_strPath;
+    // URLDecode since the path may be an URL like foo%201x01%20bar.avi
+    CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
     int regexppos, regexp2pos;
@@ -864,6 +866,8 @@ namespace VIDEO
       return false;
 
     CStdString strLabel=item->m_strPath;
+    // URLDecode since the path may be an URL like foo%201x01%20bar.avi
+    CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
     int regexppos;
@@ -1040,14 +1044,16 @@ namespace VIDEO
           CUtil::GetDirectory(pItem->m_strPath, strPath);
           onlineThumb = CUtil::AddFileToFolder(strPath, onlineThumb);
         }
-        DownloadImage(onlineThumb, cachedThumb, true, pDialog, bApplyToDir ? parentDir : "");
+        DownloadImage(onlineThumb, cachedThumb, true, pDialog);
       }
     }
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, parentDir);
+    if (bApplyToDir)
+      ApplyThumbToFolder(parentDir, cachedThumb);
   }
 
-  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */, const CStdString &directory /*= "" */)
+  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)
   {
     if (progress)
     {
@@ -1064,8 +1070,6 @@ namespace VIDEO
       CFile::Delete(destination);
       return;
     }
-    if (!directory.IsEmpty())
-      ApplyThumbToFolder(directory, destination);
   }
 
   INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
@@ -1208,11 +1212,8 @@ namespace VIDEO
       CUtil::GetDirectory(item->m_strPath, strPath);
 
       if (bGrabAny)
-      { // looking up by folder name - movie.nfo and mymovies.xml take priority
+      { // looking up by folder name - movie.nfo takes priority
         nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
-        if (CFile::Exists(nfoFile))
-          return nfoFile;
-        nfoFile = CUtil::AddFileToFolder(strPath, "mymovies.xml");
         if (CFile::Exists(nfoFile))
           return nfoFile;
       }

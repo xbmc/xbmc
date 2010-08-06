@@ -128,6 +128,7 @@ void CJobQueue::CancelJobs()
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CJobPointer::CancelJob));
   for_each(m_jobQueue.begin(), m_jobQueue.end(), mem_fun_ref(&CJobPointer::FreeJob));
   m_jobQueue.clear();
+  m_processing.clear();
 }
 
 CJobManager &CJobManager::GetInstance()

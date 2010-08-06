@@ -31,12 +31,9 @@
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 
-using ADDON::CVisualisation;
-
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
-  m_pVisualisation = NULL;
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
@@ -68,17 +65,6 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_DEINIT:
-  case GUI_MSG_VISUALISATION_UNLOADING:
-    {
-      m_pVisualisation = NULL;
-    }
-    break;
-  case GUI_MSG_VISUALISATION_LOADED:
-    {
-      if (message.GetPointer())
-        m_pVisualisation = (CVisualisation *)message.GetPointer();
-    }
   }
   return CGUIDialog::OnMessage(message);
 }

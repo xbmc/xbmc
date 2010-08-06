@@ -225,6 +225,12 @@
 #define HAS_GLES 1
 #endif
 
+// libbdnav conflicts with libbluray
+#ifdef HAVE_LIBBLURAY
+#undef HAS_LIBBDNAV
+#endif
+
+
 #ifdef HAS_GL
 #ifdef _WIN32
 #include "GL/glew.h"

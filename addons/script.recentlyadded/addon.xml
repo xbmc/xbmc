@@ -10,9 +10,11 @@
              library="default.py" />
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Recently Added script</summary>
-    <summary lang="hu">Nemrég hozzáadott script</summary> 
+    <summary lang="hu">Nemrég hozzáadott script</summary>
+    <summary lang="ko">최근 추가 스크립트</summary> 
     <description lang="en">Recently Added script</description>
     <description lang="hu">Nemrég hozzáadott script</description>
+    <description lang="ko">최근 추가 스크립트</description>
     <platform>all</platform>
   </extension>
 </addon>

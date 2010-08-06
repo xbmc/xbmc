@@ -29,7 +29,12 @@
 #include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
+#ifdef HAS_LIBBDNAV
 #include "DVDInputStreamMPLS.h"
+#endif
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreamBluray.h"
+#endif
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDInputStreamHTSP.h"
 #endif
@@ -56,6 +61,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   }
   else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
+#ifdef HAVE_LIBBLURAY
+  else if (item.IsType(".bdmv") || item.IsType(".mpls"))
+    return new CDVDInputStreamBluray();
+#endif
 #ifdef HAS_LIBBDNAV
   else if (item.IsType(".mpls"))
     return new CDVDInputStreamMPLS;

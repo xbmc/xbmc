@@ -35,6 +35,8 @@
 #define MAX_STRING_POST_SIZE 20000
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
+#define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
+#define DEFAULT_PAGE        "index.html"
 
 using namespace XFILE;
 using namespace std;
@@ -52,11 +54,10 @@ int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *
 {
   map<CStdString, CStdString> *arguments = (map<CStdString, CStdString> *)cls;
   arguments->insert( pair<CStdString,CStdString>(key,value) );
-
   return MHD_YES; 
 }
 
-int CWebServer::AskForAuthentication (struct MHD_Connection *connection)
+int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
   int ret;
   struct MHD_Response *response;
@@ -79,7 +80,7 @@ int CWebServer::AskForAuthentication (struct MHD_Connection *connection)
   return ret;
 }
 
-bool CWebServer::IsAuthenticated (CWebServer *server, struct MHD_Connection *connection)
+bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *connection)
 {
   CSingleLock lock (server->m_critSection);
   if (!server->m_needcredentials)
@@ -107,51 +108,68 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       unsigned int *upload_data_size, void **con_cls)
 #endif
 {
-  CWebServer *server = (CWebServer *)cls;
-
-  if (!IsAuthenticated(server, connection)) 
-    return AskForAuthentication(connection); 
-
   CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
+  CWebServer *server = (CWebServer *)cls;
   CStdString strURL = url;
-  bool get  = strcmp(method, "GET")  == 0;
-  bool post = strcmp(method, "POST") == 0;
+  CStdString originalURL = url;
+  HTTPMethod methodType = GetMethod(method);
+  
+  if (!IsAuthenticated(server, connection)) 
+    return AskForAuthentication(connection);
+
+  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
+    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
 
 #ifdef HAS_JSONRPC
   if (strURL.Equals("/jsonrpc"))
   {
-    if (post)
+    if (methodType == POST)
       return JSONRPC(server, con_cls, connection, upload_data, upload_data_size);
-    else if (get)
+    else
       return CreateMemoryDownloadResponse(connection, (void *)PAGE_JSONRPC_INFO, strlen(PAGE_JSONRPC_INFO));
   }
 #endif
 
-  if (get)
+  if (methodType == GET && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
+    return HttpApi(connection);
+
+  if (strURL.Left(4).Equals("/vfs"))
   {
-    if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
-      return HttpApi(connection);
-    else if (strURL.Left(4).Equals("/vfs"))
-    {
-      strURL = strURL.Right(strURL.length() - 5);
-      CUtil::URLDecode(strURL);
-      return CreateFileDownloadResponse(connection, strURL);
-    }
-#ifdef HAS_WEB_INTERFACE
-    else if (strURL.Equals("/"))
-      return CreateFileDownloadResponse(connection, "special://xbmc/web/index.html");
-    else
-    {
-      strURL.Format("special://xbmc/web%s", strURL.c_str());
-      if (CDirectory::Exists(strURL))
-        strURL += "/index.html";
-      return CreateFileDownloadResponse(connection, strURL);
-    }
-#endif
+    strURL = strURL.Right(strURL.length() - 5);
+    CUtil::URLDecode(strURL);
+    return CreateFileDownloadResponse(connection, strURL);
   }
 
+#ifdef HAS_WEB_INTERFACE
+  if (strURL.Equals("/"))
+    strURL.Format("/%s", DEFAULT_PAGE);
+    
+  strURL.Format("special://xbmc/web%s", strURL.c_str());
+  if (CDirectory::Exists(strURL))
+  {
+    if (strURL.Right(1).Equals("/"))
+      strURL += DEFAULT_PAGE;
+    else
+      return CreateRedirect(connection, originalURL += "/");
+  }
+  return CreateFileDownloadResponse(connection, strURL);
+
+#endif
+
   return MHD_NO;
+}
+
+CWebServer::HTTPMethod CWebServer::GetMethod(const char *method)
+{
+  if (strcmp(method, "GET") == 0)
+    return GET;
+  if (strcmp(method, "POST") == 0)
+    return POST;
+  if (strcmp(method, "HEAD") == 0)
+    return HEAD;
+
+  return UNKNOWN;
 }
 
 #if (MHD_VERSION >= 0x00040001)
@@ -224,6 +242,15 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   return MHD_NO;
 }
 
+int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL)
+{
+  struct MHD_Response *response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+  int ret = MHD_queue_response (connection, MHD_HTTP_FOUND, response);
+  MHD_add_response_header(response, "Location", strURL);
+  MHD_destroy_response (response);
+  return ret;
+}
+
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
 {
   int ret = MHD_NO;
@@ -249,11 +276,36 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   {
     delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    struct MHD_Response *response = MHD_create_response_from_data (strlen(PAGE_FILE_NOT_FOUND), (void *)PAGE_FILE_NOT_FOUND, MHD_NO, MHD_NO);
-    ret = MHD_queue_response (connection, MHD_HTTP_NOT_FOUND, response);
-    MHD_destroy_response (response);
+    return CreateErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
   }
 
+  return ret;
+}
+
+int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method)
+{
+  int ret = MHD_NO;
+  size_t payloadSize = 0;
+  void *payload = NULL;
+
+  if (method != HEAD)
+  {
+    switch (responseType)
+    {
+      case MHD_HTTP_NOT_FOUND:
+        payloadSize = strlen(PAGE_FILE_NOT_FOUND);
+        payload = (void *)PAGE_FILE_NOT_FOUND;
+        break;
+      case MHD_HTTP_NOT_IMPLEMENTED:
+        payloadSize = strlen(NOT_SUPPORTED);
+        payload = (void *)NOT_SUPPORTED;
+        break;
+    }
+  }
+
+  struct MHD_Response *response = MHD_create_response_from_data (payloadSize, payload, MHD_NO, MHD_NO);
+  ret = MHD_queue_response (connection, MHD_HTTP_NOT_FOUND, response);
+  MHD_destroy_response (response);
   return ret;
 }
 
@@ -392,57 +444,57 @@ int CWebServer::GetCapabilities()
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
-  if      (strcmp(ext, ".aif") == 0)   return "audio/aiff";
-  else if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
-  else if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
-  else if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";
-  else if (strcmp(ext, ".avi") == 0)   return "video/avi";
-  else if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
-  else if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
-  else if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
-  else if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
-  else if (strcmp(ext, ".fli") == 0)   return "video/fli";
-  else if (strcmp(ext, ".gif") == 0)   return "image/gif";
-  else if (strcmp(ext, ".htm") == 0)   return "text/html";
-  else if (strcmp(ext, ".html") == 0)  return "text/html";
-  else if (strcmp(ext, ".htmls") == 0) return "text/html";
-  else if (strcmp(ext, ".ico") == 0)   return "image/x-icon";
-  else if (strcmp(ext, ".it") == 0)    return "audio/it";
-  else if (strcmp(ext, ".jpeg") == 0)  return "image/jpeg";
-  else if (strcmp(ext, ".jpg") == 0)   return "image/jpeg";
-  else if (strcmp(ext, ".json") == 0)  return "application/json";
-  else if (strcmp(ext, ".kar") == 0)   return "audio/midi";
-  else if (strcmp(ext, ".list") == 0)  return "text/plain";
-  else if (strcmp(ext, ".log") == 0)   return "text/plain";
-  else if (strcmp(ext, ".lst") == 0)   return "text/plain";
-  else if (strcmp(ext, ".m2v") == 0)   return "video/mpeg";
-  else if (strcmp(ext, ".m3u") == 0)   return "audio/x-mpequrl";
-  else if (strcmp(ext, ".mid") == 0)   return "audio/midi";
-  else if (strcmp(ext, ".midi") == 0)  return "audio/midi";
-  else if (strcmp(ext, ".mod") == 0)   return "audio/mod";
-  else if (strcmp(ext, ".mov") == 0)   return "video/quicktime";
-  else if (strcmp(ext, ".mp2") == 0)   return "audio/mpeg";
-  else if (strcmp(ext, ".mp3") == 0)   return "audio/mpeg3";
-  else if (strcmp(ext, ".mpa") == 0)   return "audio/mpeg";
-  else if (strcmp(ext, ".mpeg") == 0)  return "video/mpeg";
-  else if (strcmp(ext, ".mpg") == 0)   return "video/mpeg";
-  else if (strcmp(ext, ".mpga") == 0)  return "audio/mpeg";
-  else if (strcmp(ext, ".pcx") == 0)   return "image/x-pcx";
-  else if (strcmp(ext, ".png") == 0)   return "image/png";
-  else if (strcmp(ext, ".rm") == 0)    return "audio/x-pn-realaudio";
-  else if (strcmp(ext, ".s3m") == 0)   return "audio/s3m";
-  else if (strcmp(ext, ".sid") == 0)   return "audio/x-psid";
-  else if (strcmp(ext, ".tif") == 0)   return "image/tiff";
-  else if (strcmp(ext, ".tiff") == 0)  return "image/tiff";
-  else if (strcmp(ext, ".txt") == 0)   return "text/plain";
-  else if (strcmp(ext, ".uni") == 0)   return "text/uri-list";
-  else if (strcmp(ext, ".viv") == 0)   return "video/vivo";
-  else if (strcmp(ext, ".wav") == 0)   return "audio/wav";
-  else if (strcmp(ext, ".xm") == 0)    return "audio/xm";
-  else if (strcmp(ext, ".xml") == 0)   return "text/xml";
-  else if (strcmp(ext, ".zip") == 0)   return "application/zip";
-  else if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
-  else return NULL;
+  if (strcmp(ext, ".aif") == 0)   return "audio/aiff";
+  if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
+  if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
+  if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";
+  if (strcmp(ext, ".avi") == 0)   return "video/avi";
+  if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
+  if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
+  if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
+  if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
+  if (strcmp(ext, ".fli") == 0)   return "video/fli";
+  if (strcmp(ext, ".gif") == 0)   return "image/gif";
+  if (strcmp(ext, ".htm") == 0)   return "text/html";
+  if (strcmp(ext, ".html") == 0)  return "text/html";
+  if (strcmp(ext, ".htmls") == 0) return "text/html";
+  if (strcmp(ext, ".ico") == 0)   return "image/x-icon";
+  if (strcmp(ext, ".it") == 0)    return "audio/it";
+  if (strcmp(ext, ".jpeg") == 0)  return "image/jpeg";
+  if (strcmp(ext, ".jpg") == 0)   return "image/jpeg";
+  if (strcmp(ext, ".json") == 0)  return "application/json";
+  if (strcmp(ext, ".kar") == 0)   return "audio/midi";
+  if (strcmp(ext, ".list") == 0)  return "text/plain";
+  if (strcmp(ext, ".log") == 0)   return "text/plain";
+  if (strcmp(ext, ".lst") == 0)   return "text/plain";
+  if (strcmp(ext, ".m2v") == 0)   return "video/mpeg";
+  if (strcmp(ext, ".m3u") == 0)   return "audio/x-mpequrl";
+  if (strcmp(ext, ".mid") == 0)   return "audio/midi";
+  if (strcmp(ext, ".midi") == 0)  return "audio/midi";
+  if (strcmp(ext, ".mod") == 0)   return "audio/mod";
+  if (strcmp(ext, ".mov") == 0)   return "video/quicktime";
+  if (strcmp(ext, ".mp2") == 0)   return "audio/mpeg";
+  if (strcmp(ext, ".mp3") == 0)   return "audio/mpeg3";
+  if (strcmp(ext, ".mpa") == 0)   return "audio/mpeg";
+  if (strcmp(ext, ".mpeg") == 0)  return "video/mpeg";
+  if (strcmp(ext, ".mpg") == 0)   return "video/mpeg";
+  if (strcmp(ext, ".mpga") == 0)  return "audio/mpeg";
+  if (strcmp(ext, ".pcx") == 0)   return "image/x-pcx";
+  if (strcmp(ext, ".png") == 0)   return "image/png";
+  if (strcmp(ext, ".rm") == 0)    return "audio/x-pn-realaudio";
+  if (strcmp(ext, ".s3m") == 0)   return "audio/s3m";
+  if (strcmp(ext, ".sid") == 0)   return "audio/x-psid";
+  if (strcmp(ext, ".tif") == 0)   return "image/tiff";
+  if (strcmp(ext, ".tiff") == 0)  return "image/tiff";
+  if (strcmp(ext, ".txt") == 0)   return "text/plain";
+  if (strcmp(ext, ".uni") == 0)   return "text/uri-list";
+  if (strcmp(ext, ".viv") == 0)   return "video/vivo";
+  if (strcmp(ext, ".wav") == 0)   return "audio/wav";
+  if (strcmp(ext, ".xm") == 0)    return "audio/xm";
+  if (strcmp(ext, ".xml") == 0)   return "text/xml";
+  if (strcmp(ext, ".zip") == 0)   return "application/zip";
+  if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
+  return NULL;
 }
 
 int CWebServer::CHTTPClient::GetPermissionFlags()

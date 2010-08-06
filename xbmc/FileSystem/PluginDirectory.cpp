@@ -381,7 +381,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 {
   CURL url(strPath);
 
-  bool success = this->StartScript(strPath, 1040);
+  bool success = StartScript(strPath, true);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items

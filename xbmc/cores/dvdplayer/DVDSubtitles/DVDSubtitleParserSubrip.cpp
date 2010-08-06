@@ -23,7 +23,7 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "StdString.h"
-#include "SamiTagConvertor.h"
+#include "DVDSubtitleTagSami.h"
 
 using namespace std;
 
@@ -42,7 +42,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
   if (!CDVDSubtitleParserText::Open())
     return false;
 
-  SamiTagConvertor TagConv;
+  CDVDSubtitleTagSami TagConv;
   if (!TagConv.Init())
     return false;
 

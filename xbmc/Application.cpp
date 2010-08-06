@@ -351,6 +351,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
+  m_debugLayout = NULL;
 }
 
 CApplication::~CApplication(void)
@@ -1156,9 +1157,6 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
-#ifdef HAS_PYTHON
-  g_pythonParser.m_bStartup = true;
-#endif
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
@@ -1177,7 +1175,12 @@ bool CApplication::Initialize()
   }
 
   if (!g_settings.UsingLoginScreen())
+  {
     UpdateLibraries();
+#ifdef HAS_PYTHON
+  g_pythonParser.m_bLogin = true;
+#endif
+  }
 
   m_slowTimer.StartZero();
 
@@ -1706,6 +1709,9 @@ void CApplication::UnloadSkin()
   m_guiDialogMuteBug.ResetControlStates();
   m_guiDialogMuteBug.FreeResources(true);
 
+  delete m_debugLayout;
+  m_debugLayout = NULL;
+
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
@@ -1728,92 +1734,80 @@ bool CApplication::LoadUserWindows()
   g_SkinInfo->GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
-    CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-
-    WIN32_FIND_DATA NextFindFileData;
-    HANDLE hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
-    while (hFind != INVALID_HANDLE_VALUE)
+    CFileItemList items;
+    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", false))
     {
-      WIN32_FIND_DATA FindFileData = NextFindFileData;
-
-      if (!FindNextFile(hFind, &NextFindFileData))
+      for (int i = 0; i < items.Size(); ++i)
       {
-        FindClose(hFind);
-        hFind = INVALID_HANDLE_VALUE;
-      }
+        if (items[i]->m_bIsFolder)
+          continue;
+        CStdString skinFile = CUtil::GetFileName(items[i]->m_strPath);
+        if (skinFile.Left(6).CompareNoCase("custom") == 0)
+        {
+          TiXmlDocument xmlDoc;
+          if (!xmlDoc.LoadFile(items[i]->m_strPath))
+          {
+            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            continue;
+          }
 
-      // skip "up" directories, which come in all queries
-      if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
-        continue;
+          // Root element should be <window>
+          TiXmlElement* pRootElement = xmlDoc.RootElement();
+          CStdString strValue = pRootElement->Value();
+          if (!strValue.Equals("window"))
+          {
+            CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
+            continue;
+          }
 
-      CStdString strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
-      CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-      CStdString strLower(FindFileData.cFileName);
-      strLower.MakeLower();
-      strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
-      TiXmlDocument xmlDoc;
-      if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
-      {
-        CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-        continue;
-      }
+          // Read the <type> element to get the window type to create
+          // If no type is specified, create a CGUIWindow as default
+          CGUIWindow* pWindow = NULL;
+          CStdString strType;
+          if (pRootElement->Attribute("type"))
+            strType = pRootElement->Attribute("type");
+          else
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("type");
+            if (pType && pType->FirstChild())
+              strType = pType->FirstChild()->Value();
+          }
+          int id = WINDOW_INVALID;
+          if (!pRootElement->Attribute("id", &id))
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("id");
+            if (pType && pType->FirstChild())
+              id = atol(pType->FirstChild()->Value());
+          }
+          int visibleCondition = 0;
+          CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-      // Root element should be <window>
-      TiXmlElement* pRootElement = xmlDoc.RootElement();
-      CStdString strValue = pRootElement->Value();
-      if (!strValue.Equals("window"))
-      {
-        CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
-        continue;
-      }
+          if (strType.Equals("dialog"))
+            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
+          else if (strType.Equals("submenu"))
+            pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
+          else if (strType.Equals("buttonmenu"))
+            pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
+          else
+            pWindow = new CGUIStandardWindow(id + WINDOW_HOME, skinFile);
 
-      // Read the <type> element to get the window type to create
-      // If no type is specified, create a CGUIWindow as default
-      CGUIWindow* pWindow = NULL;
-      CStdString strType;
-      if (pRootElement->Attribute("type"))
-        strType = pRootElement->Attribute("type");
-      else
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("type");
-        if (pType && pType->FirstChild())
-          strType = pType->FirstChild()->Value();
+          // Check to make sure the pointer isn't still null
+          if (pWindow == NULL)
+          {
+            CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+            return false;
+          }
+          if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
+          {
+            delete pWindow;
+            continue;
+          }
+          pWindow->SetVisibleCondition(visibleCondition, false);
+          g_windowManager.AddCustomWindow(pWindow);
+        }
       }
-      int id = WINDOW_INVALID;
-      if (!pRootElement->Attribute("id", &id))
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("id");
-        if (pType && pType->FirstChild())
-          id = atol(pType->FirstChild()->Value());
-      }
-      int visibleCondition = 0;
-      CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
-
-      if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
-      else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
-      else
-        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
-
-      // Check to make sure the pointer isn't still null
-      if (pWindow == NULL)
-      {
-        CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-        return false;
-      }
-      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
-      {
-        delete pWindow;
-        continue;
-      }
-      pWindow->SetVisibleCondition(visibleCondition, false);
-      g_windowManager.AddCustomWindow(pWindow);
     }
-    CloseHandle(hFind);
   }
   return true;
 }
@@ -2149,6 +2143,16 @@ void CApplication::RenderMemoryStatus()
     lastShift = now;
   }
 
+  if (!m_debugLayout)
+  {
+    CGUIFont *font13 = g_fontManager.GetDefaultFont();
+    CGUIFont *font13border = g_fontManager.GetDefaultFont(true);
+    if (font13)
+      m_debugLayout = new CGUITextLayout(font13, true, 0, font13border);
+  }
+  if (!m_debugLayout)
+    return;
+
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
     CStdString info;
@@ -2169,7 +2173,8 @@ void CApplication::RenderMemoryStatus()
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 
   // render the skin debug info
@@ -2202,7 +2207,9 @@ void CApplication::RenderMemoryStatus()
 
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.08f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
-    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+
+    m_debugLayout->Update(info);
+    m_debugLayout->RenderOutline(x, y, 0xffffffff, 0xff000000, 0, 0);
   }
 }
 
@@ -2284,7 +2291,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && key.GetShift() && !(key.GetCtrl() || key.GetAlt() || key.GetRAlt() || key.GetSuper())))
+           (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT)) // shift and no other modifiers
           useKeyboard = true;
       }
     }
@@ -2517,23 +2524,6 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
-    // OSD toggling
-    if (action.GetID() == ACTION_SHOW_OSD)
-    {
-      if (IsPlayingVideo() && IsPlayingFullScreenVideo())
-      {
-        CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
-        if (pOSD)
-        {
-          if (pOSD->IsDialogRunning())
-            pOSD->Close();
-          else
-            pOSD->DoModal();
-          return true;
-        }
-      }
-    }
-
     if (!CurrentFileItem().IsLiveTV())
     {
       // pause : pauses current audio song
@@ -3099,8 +3089,7 @@ bool CApplication::ProcessKeyboard()
   MEASURE_FUNCTION;
 
   // Get the keypress from the keyboard
-  CKey key;
-  g_Keyboard.GetKey(key);
+  const CKey key(g_Keyboard.GetKey());
 
   // If we have a valid keypress pass it to OnKey
   if (key.GetVKey() || key.GetUnicode())

@@ -2209,6 +2209,14 @@ void CFileItemList::Stack()
             }
           }
 #endif
+#ifdef HAVE_LIBBLURAY
+          if (dvdPath.IsEmpty())
+          {
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
+            if (CFile::Exists(path))
+              dvdPath = path;
+          }
+#endif
           if (!dvdPath.IsEmpty())
           {
             // NOTE: should this be done for the CD# folders too?

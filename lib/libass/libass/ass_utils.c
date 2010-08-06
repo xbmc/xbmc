@@ -30,6 +30,13 @@
 #include "ass.h"
 #include "ass_utils.h"
 
+#ifdef _WIN32
+FILE *fopen_utf8(const char *_Filename, const char *_Mode)
+{
+    return fopen(_Filename, _Mode);
+}
+#endif
+
 int mystrtoi(char **p, int *res)
 {
     double temp_res;

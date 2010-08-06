@@ -120,33 +120,59 @@ enum RenderMethod
 #define FIELD_ODD 1
 #define FIELD_EVEN 2
 
-// YV12 decoder textures
-struct SVideoPlane
+enum BufferMemoryType
 {
-  CD3DTexture    texture;
-  D3DLOCKED_RECT rect;
+  DontCare,
+  SystemMemory,
+  VideoMemory
 };
 
 struct SVideoBuffer
 {
-  SVideoBuffer()
+  virtual ~SVideoBuffer() {}
+  virtual void Release() {};            // Release any allocated resource
+  virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
+  virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
+  virtual void Clear() {};              // clear the buffer with solid black
+};
+
+// YV12 decoder textures
+struct SVideoPlane
+{
+  CD3DTexture    texture;
+  D3DLOCKED_RECT rect;                  // rect.pBits != NULL is used to know if the texture is locked
+};
+
+struct YUVBuffer : SVideoBuffer
+{
+  ~YUVBuffer();
+  bool Create(BufferMemoryType memoryType, unsigned int width, unsigned int height);
+  virtual void Release();
+  virtual void StartDecode();
+  virtual void StartRender();
+  virtual void Clear();
+
+  SVideoPlane planes[MAX_PLANES];
+
+private:
+  BufferMemoryType m_memoryType;
+  unsigned int     m_width;
+  unsigned int     m_height;
+};
+
+struct DXVABuffer : SVideoBuffer
+{
+  DXVABuffer()
   {
     proc = NULL;
     id   = 0;
   }
-  ~SVideoBuffer()
-  {
-    Clear();
-  }
-
-  void StartDecode();
-  void StartRender();
-
-  void Clear();
+  ~DXVABuffer();
+  virtual void Release();
+  virtual void StartDecode();
 
   DXVA::CProcessor* proc;
   int64_t           id;
-  SVideoPlane       planes[MAX_PLANES];
 };
 
 class CWinRenderer : public CBaseRenderer
@@ -188,7 +214,6 @@ protected:
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
-  void         ClearYV12Texture(int index);
   bool         CreateYV12Texture(int index);
   void         CopyYV12Texture(int dest);
   int          NextYV12Texture();
@@ -207,7 +232,7 @@ protected:
   int  m_NumYV12Buffers;
 
   bool                 m_bConfigured;
-  SVideoBuffer         m_VideoBuffers[NUM_BUFFERS];
+  SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
 
   // software scale libraries (fallback if required pixel shaders version is not available)

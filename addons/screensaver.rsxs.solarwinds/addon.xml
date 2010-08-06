@@ -12,12 +12,15 @@
     library_linux="Solarwinds.xbs"
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
-    <summary>A mesmerizing particle effects saver</summary>
+    <summary lang="en">A mesmerizing particle effects screensaver</summary>
+    <summary lang="fi">Lumoava partikkelitehostenäytönsäästäjä</summary>
     <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
-    <description>This is a very mesmerizing particle effects saver. You'll find that you can achieve an amazing number of different patterns.</description>
-    <description lang="hu">Ez egy lebilicselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
+    <summary lang="ko">매혹적인 파티클 이펙트 화면보호기</summary>
+    <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>
+    <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
+    <description lang="ko">매혹적인 파티클 이펙트 화면보호기입니다. 아주 다양한 패턴의 보여줍니다.</description>
     <description lang="nl">Dit is een zeer fascinerende screensaver. Je kunt ongeloofelijk veel verschillende patronen bekomen.</description>
-    <disclaimer></disclaimer>
     <platform>linux osx</platform>
   </extension>
 </addon>

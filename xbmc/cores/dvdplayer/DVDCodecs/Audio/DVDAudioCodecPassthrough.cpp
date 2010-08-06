@@ -176,9 +176,10 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 {
   bool bSupportsAC3Out = false;
   bool bSupportsDTSOut = false;
+  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
 
   // TODO - move this stuff somewhere else
-  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+  if (AUDIO_IS_BITSTREAM(audioMode))
   {
     bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");

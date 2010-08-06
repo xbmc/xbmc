@@ -402,7 +402,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     return;
 
   CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
-  if (pDlgAlbumInfo)
+  if (pDlgAlbumInfo && !bRefresh)
   {
     pDlgAlbumInfo->SetArtist(artistInfo, path);
 

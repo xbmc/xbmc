@@ -1163,10 +1163,10 @@
   <string id="13346">Information du film</string>
   <string id="13347">Ajouter</string>
   <string id="13348">Chercher sur IMDb...</string>
-  <string id="13349">Scanner pour nouveau contenu</string>
+  <string id="13349">Scanner nouveau contenu</string>
   <string id="13350">Lecture en cours...</string>
   <string id="13351">Information sur l'album</string>
-  <string id="13352">Scanner</string>
+  <string id="13352">Scanner vers Médiathèque</string>
   <string id="13353">Arrêter le scan</string>
   <string id="13354">Méthode rendu :</string>
   <string id="13355">Pixel shader basse qualité</string>
@@ -1854,7 +1854,7 @@
   <string id="20413">Fanart</string>
   <string id="20414">Afficher le fanart dans les médiathèques</string>
   <string id="20415">Recherche de nouveau contenu</string>
-  <string id="20416">Première diffusion</string>
+  <string id="20416">Diffusion</string>
   <string id="20417">Scénariste</string>
   <string id="20418">Nettoyer les noms de fichier et dossier</string>
   

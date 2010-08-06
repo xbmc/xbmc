@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Jakość renderowania</string>
+    <string id="30001">Niska</string>
+    <string id="30002">Średnia</string>
+    <string id="30003">Wysoka</string>
+    <string id="30004">Maksymalna</string>
+    <string id="30005">Tryb mieszania</string>
+    <string id="30006">Smooth Preset Duration</string>
+    <string id="30007">Długość efektu</string>
+    <string id="30008">Czułość uderzeń</string>
+</strings>

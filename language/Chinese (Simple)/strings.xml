@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31967 -->
+<!--Based on english strings version 32026 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2084,7 +2084,7 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">在启动时更新资料库</string>
-  <string id="22001">总是在后台更新资料库</string>
+  <string id="22001">隐藏资料库更新进度条</string>
   <string id="22002">- DNS 后缀</string>
 
   <string id="22004">延迟：%2.3fs</string>
