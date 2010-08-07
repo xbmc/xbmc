@@ -294,6 +294,19 @@ void COmapOverlayRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   ioctl(m_overlayfd, OMAPFB_WAITFORGO);
 
   currentDisplayedBuffered = m_currentDisplayBuffer;
+
+  GLint scissorBox[8];
+  glGetIntegerv(GL_SCISSOR_BOX, scissorBox);
+
+  if (!clear)
+    glScissor(m_destRect.x1, g_graphicsContext.GetHeight() - m_destRect.y2, m_destRect.Width(), m_destRect.Height());
+
+  glEnable(GL_SCISSOR_TEST);
+
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  glScissor(scissorBox[0], scissorBox[1], scissorBox[2], scissorBox[3]);
 }
 
 unsigned int COmapOverlayRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
