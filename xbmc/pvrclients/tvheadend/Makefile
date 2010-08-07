@@ -33,7 +33,7 @@ endif
 
 OBJS = client.o HTSPSession.o HTSPData.o HTSPDemux.o thread.o tools.o
 
-all: pvrTvheadend
+all: $(LIB)
 
 # Implicit rules:
 
@@ -51,7 +51,7 @@ $(DEPFILE): Makefile
 
 # The main library:
 
-pvrTvheadend: $(OBJS) $(SILIB)
+$(LIB): $(OBJS) $(SILIB)
 	$(MAKE) -C libhts
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
@@ -61,7 +61,7 @@ install: install-lib
 
 # PVR library:
 
-install-lib: pvrTvheadend
+install-lib: $(LIB)
 	@mkdir -p $(DESTDIR)$(ADDONDIR)
 	@cp --remove-destination -r $(LIBDIR) $(DESTDIR)$(ADDONDIR)
 

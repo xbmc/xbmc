@@ -31,7 +31,7 @@ endif
 
 OBJS = channels.o client.o epg.o pvrclient-mediaportal.o recordings.o timers.o utils.o Socket.o
 
-all: pvrMPTV
+all: $(LIB)
 
 # Implicit rules:
 
@@ -49,7 +49,7 @@ $(DEPFILE): Makefile
 
 # The main library:
 
-pvrMPTV: $(OBJS) $(SILIB)
+$(LIB): $(OBJS) $(SILIB)
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -58,7 +58,7 @@ install: install-lib
 
 # PVR library:
 
-install-lib: pvrMPTV
+install-lib: $(LIB)
 	@mkdir -p $(DESTDIR)$(ADDONDIR)
 	@cp --remove-destination -r $(LIBDIR) $(DESTDIR)$(ADDONDIR)
 

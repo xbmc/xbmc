@@ -33,7 +33,7 @@ endif
 
 OBJS = client.o VNSIChannelScan.o VNSIData.o VNSIDemux.o VNSIRecording.o VNSISession.o recordings.o requestpacket.o responsepacket.o thread.o tools.o
 
-all: pvrVNSI
+all: $(LIB)
 
 # Implicit rules:
 
@@ -51,7 +51,7 @@ $(DEPFILE): Makefile
 
 # The main library:
 
-pvrVNSI: $(OBJS) $(SILIB)
+$(LIB): $(OBJS) $(SILIB)
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -60,7 +60,7 @@ install: install-lib
 
 # PVR library:
 
-install-lib: pvrVNSI
+install-lib: $(LIB)
 	@mkdir -p $(DESTDIR)$(ADDONDIR)
 	@cp --remove-destination -r $(LIBDIR) $(DESTDIR)$(ADDONDIR)
 

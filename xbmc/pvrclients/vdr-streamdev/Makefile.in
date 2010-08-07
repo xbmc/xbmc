@@ -32,7 +32,7 @@ endif
 
 OBJS = channelscan.o client.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o thread.o ringbuffer.o select.o
 
-all: pvrVDR
+all: $(LIB)
 
 # Implicit rules:
 
@@ -50,7 +50,7 @@ $(DEPFILE): Makefile
 
 # The main library:
 
-pvrVDR: $(OBJS) $(SILIB)
+$(LIB): $(OBJS) $(SILIB)
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -59,7 +59,7 @@ install: install-lib
 
 # PVR library:
 
-install-lib: pvrVDR
+install-lib: $(LIB)
 	@mkdir -p $(DESTDIR)$(ADDONDIR)
 	@cp --remove-destination -r $(LIBDIR) $(DESTDIR)$(ADDONDIR)
 
