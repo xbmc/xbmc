@@ -193,8 +193,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      CGUIControlFactory::GetFloat(pChild, "posx", m_posX);
-      CGUIControlFactory::GetFloat(pChild, "posy", m_posY);
+      XMLUtils::GetFloat(pChild, "posx", m_posX);
+      XMLUtils::GetFloat(pChild, "posy", m_posY);
 
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
