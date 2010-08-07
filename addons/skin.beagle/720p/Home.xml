@@ -1,0 +1,147 @@
+<window id="0">
+	<defaultcontrol always="true">103</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+
+    <control type="group"  id="100">
+      <posx>100</posx>
+      <posy>172</posy>
+      <height>376</height>
+      <width>256</width>
+
+      <control type="button" id="101">
+	      <description>My Weather normal push button</description>
+	      <posx>0</posx>
+	      <posy>0</posy>
+	      <width>256</width>
+	      <height>72</height>
+			  <label>Weather</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>HomeListLabel</font>
+        <textcolor>grey</textcolor>
+	      <texturefocus>Highlight256x72.bmp</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+        <pulseonselect>false</pulseonselect>
+        <onup>101</onup>
+        <ondown>102</ondown>
+      </control>
+
+      <control type="button" id="102">
+	      <description>My Music normal push button</description>
+	      <posx>0</posx>
+	      <posy>76</posy>
+	      <width>256</width>
+	      <height>72</height>
+			  <label>Music</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>HomeListLabel</font>
+        <textcolor>white</textcolor>
+	      <onclick>ActivateWindow(MyMusic)</onclick>
+	      <texturefocus>Highlight256x72.bmp</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+        <pulseonselect>false</pulseonselect>
+        <onup>101</onup>
+        <ondown>103</ondown>
+      </control>
+
+      <control type="button" id="103">
+	      <description>My Videos normal push button</description>
+	      <posx>0</posx>
+	      <posy>152</posy>
+	      <width>256</width>
+	      <height>72</height>
+			  <label>Videos</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>HomeListLabel</font>
+        <textcolor>white</textcolor>
+	      <onclick>ActivateWindow(MyVideos)</onclick>
+	      <texturefocus>Highlight256x72.bmp</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+        <pulseonselect>false</pulseonselect>
+        <onup>102</onup>
+        <ondown>104</ondown>
+      </control>
+
+      <control type="button" id="104">
+	      <description>My Photos normal push button</description>
+	      <posx>0</posx>
+	      <posy>228</posy>
+	      <width>256</width>
+	      <height>72</height>
+			  <label>Photos</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>HomeListLabel</font>
+        <textcolor>white</textcolor>
+	      <onclick>ActivateWindow(MyPictures)</onclick>
+	      <texturefocus>Highlight256x72.bmp</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+        <pulseonselect>false</pulseonselect>
+        <onup>103</onup>
+        <ondown>105</ondown>
+      </control>
+
+      <control type="button" id="105">
+	      <description>My Settings normal push button</description>
+	      <posx>0</posx>
+	      <posy>304</posy>
+	      <width>256</width>
+	      <height>72</height>
+			  <label>Settings</label>
+        <align>center</align>
+        <aligny>center</aligny>
+        <font>HomeListLabel</font>
+        <textcolor>grey</textcolor>
+	      <texturefocus>Highlight256x72.bmp</texturefocus>
+	      <texturenofocus>-</texturenofocus>
+        <pulseonselect>false</pulseonselect>
+        <onup>104</onup>
+        <ondown>105</ondown>
+      </control>
+
+    </control>
+
+		<control type="rss">
+			<description>RSS feed</description>
+			<posx>0</posx>
+			<posy>704</posy>
+			<height>16</height>
+			<width>1280</width>
+			<font>rssLabel</font>
+			<urlset>1</urlset>
+			<textcolor>blue</textcolor>
+			<titlecolor>blue</titlecolor>
+			<headlinecolor>white</headlinecolor>
+			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
+		</control>
+
+		<control type="label">
+			<description>time label</description>
+			<posx>1280</posx>
+			<posy>0</posy>
+			<width>400</width>
+			<height>28</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>clockLabel</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>[COLOR=grey]$INFO[System.Date][/COLOR] | $INFO[System.Time]</label>
+		</control>
+
+		<control type="image">
+			<description>Cover image</description>
+      <posx>860</posx>
+      <posy>200</posy>
+			<width>320</width>
+			<height>320</height>
+			<aspectratio aligny="center">keep</aspectratio>
+			<texture>$INFO[AudioPlayer.Cover]</texture>
+      <visible>Player.HasAudio</visible>
+		</control>
+
+	</controls>
+</window>

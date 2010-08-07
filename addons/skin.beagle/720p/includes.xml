@@ -1,0 +1,4 @@
+<includes>
+	<include file="defaults.xml" />
+	<include file="ViewsFileMode.xml" />
+</includes>

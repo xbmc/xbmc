@@ -1,0 +1,36 @@
+<fonts>
+	<fontset id="Default" unicode="true">
+		<font>
+			<name>HomeListLabel</name>
+			<filename>DroidSans.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
+			<name>listLabel</name>
+			<filename>DroidSans.ttf</filename>
+			<size>32</size>
+		</font>
+		<font>
+			<name>rssLabel</name>
+			<filename>DroidSans.ttf</filename>
+			<size>16</size>
+		</font>
+		<font>
+			<name>clockLabel</name>
+			<filename>DroidSans.ttf</filename>
+			<size>20</size>
+		</font>
+		<font>
+			<name>font16</name>
+			<filename>DroidSans.ttf</filename>
+			<size>16</size>
+		</font>
+
+		<font>
+			<name>default</name>
+			<filename>DroidSans.ttf</filename>
+			<size>20</size>
+		</font>
+    
+	</fontset>
+</fonts>

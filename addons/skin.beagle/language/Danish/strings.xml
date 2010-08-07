@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Kim Buchwald Christensen-->
+<!--Email: kimbchr at gmail dot com-->
+<!--Date of translation: 12/04/2009-->
+<!--$Revision$-->
+<!--Based on english strings version 25203-->
+<strings>
+  <string id="31000">Ændr din</string>
+  <string id="31001">Elsker</string>
+  <string id="31002">Hader</string>
+  <string id="31003">Strømstyring</string>
+  <string id="31007">Plugins</string>
+  <string id="31020">Nyligt tilføjet</string>
+  <string id="31021">Video - Filer</string>
+  <string id="31022">Musik - Filer</string>
+  <string id="31023">Afspiller</string>
+  <string id="31024">Side</string>
+  <string id="31025">Objekter</string>
+  <string id="31026">Div. indstillinger</string>
+  <string id="31027">Placering</string>
+  <string id="31028">Plakatvæg</string>
+  <string id="31029">Fankunst</string>
+  <string id="31030">Komplet liste</string>
+  <string id="31031">Billedeikoner</string>
+  <string id="31032">Billedevæg</string>
+  <string id="31040">Spiller nu</string>
+  <string id="31042">AFSPILLER</string>
+  <string id="31043">PAUSE</string>
+  <string id="31044">SPOL FREM</string>
+  <string id="31045">SPOL TILBAGE</string>
+  <string id="31046">Lydegenskaber</string>
+  <string id="31047">Nuværende standard</string>
+  <string id="31048">Standard til visualisering</string>
+  <string id="31049">Sluttid</string>
+  <string id="31055">Åbn afspilningsliste</string>
+  <string id="31056">Gem afspilningsliste</string>
+  <string id="31057">Luk afspilningsliste</string>
+  <string id="31058">Musikfiler til systemet</string>
+  <string id="31059">Nuværende afspilningsliste</string>
+  <string id="31060">Denne fil er stakket. Vælg den del du vil afspille fra.</string>
+  <string id="31101">Indstillinger til hovedsiden</string>
+  <string id="31102">Baggrund</string>
+  <string id="31103">Vis "PAUSE" i  billedserier</string>
+  <string id="31105">Vis medietitler i baggrundsscanneren</string>
+  <string id="31106">Diverse indstillinger</string>
+  <string id="31108">Skjul hovedsideknapper</string>
+  <string id="31109">Baggrunde til hovedsiden</string>
+  <string id="31110">Skift baggrund på hjem-knappen</string>
+  <string id="31111">Skjul</string>
+  <string id="31112">Indstillinger</string>
+  <string id="31113">Enkelt billede</string>
+  <string id="31114">Flere billeder</string>
+  <string id="31115">Tilpasningsprogram</string>
+  <string id="31116">Skripts til udvidelser</string>
+  <string id="31117">Vis nyligt tilføjne videoer</string>
+  <string id="31118">Undermenu til hovedsiden</string>
+  <string id="31119">Aktiver knap til selvvalgt skript</string>
+  <string id="31120">KNAPTITEL</string>
+  <string id="31121">STI TIL SKRIPT</string>
+  <string id="31122">Vejrside</string>
+  <string id="31123">Brug plakater og ikke bannere til TV-serier</string>
+  <string id="31124">Vis "Spiller nu" i baggrunden for videoer</string>
+  <string id="31125">Vis "Spiller nu" i baggrunden for visualisering</string>
+  <string id="31126">Aktiver "Sangtekster" på musikskærmen</string>
+  <string id="31127">STI TIL SKRIPT TIL SANGTEKSTER</string>
+  <string id="31128">XBMC Sangtekster</string>
+  <string id="31200">Genveje</string>
+  <string id="31201">Kategorier</string>
+  <string id="31202">Vis rolleliste</string>
+  <string id="31203">Vælg din sang</string>
+  <string id="31204">Sektionlinks</string>
+  <string id="31205">Sangtekstkilde</string>
+  <string id="31250">Radar og prognose</string>
+  <string id="31251">Prognose</string>
+  <string id="31252">TWC-skript</string>
+  <string id="31300">Temperatur nu</string>
+  <string id="31301">Sidst opdateret</string>
+  <string id="31302">Menu</string>
+  <string id="31304">Billede</string>
+  <string id="31305">Intet diskmedie fundet</string>
+  <string id="31306">Skub ud</string>
+  <string id="31307">Skjul fankunst</string>
+  <string id="31308">Filmdetaljer</string>
+  <string id="31309">Hukommelse i brug:</string>
+  <string id="31310">Spor nummer</string>
+  <string id="31311">FANKUNST BILLDE[CR][CR]IKKE TILGÆNGELIG[CR][CR]TRYK FOR AT VÆLGE</string>
+  <string id="31312">Nuværende Scraper</string>
+  <string id="31313">Vælg en Scraper</string>
+  <string id="31314">Indstillinger til indholdsskanning</string>
+  <string id="31315">Simpel</string>
+  <string id="31317">Vælg sti til fankunst</string>
+  <string id="31318">Lille fankunst</string>
+  <string id="31319">Valgt profil</string>
+  <string id="31320">Sidst logget ind</string>
+  <string id="31321">Sangvalg til karaoke</string>
+  <string id="31322">Sendt</string>
+  <string id="31323">Seneste film</string>
+  <string id="31324">Seneste episoder</string>
+  <string id="31325">Indstillinger til afspilningsliste</string>
+  <string id="31326">Oprettet</string>
+  <string id="31327">Opløsning</string>
+  <string id="31328">Nyligt tilføjet</string>
+  <string id="31329">[B]TIMER STARTET![/B] [COLOR=grey2] - SYSTEMET LUKKER NED OM[/COLOR]</string>
+  <string id="31400">[B]SKIFT INDSTILLINGER TIL UDSEENDE[/B][CR][CR]Skift skin · Vælg sprog og region · Skift indstillinger til fil-listen[CR]Indstil pauseskærm</string>
+  <string id="31401">[B]SKIFT INDSTILLINGER TIL VIDEOER[/B][CR][CR]Håndter din videosamling</string>
+  <string id="31402">[B]SKIFT INDSTILLINGER TIL MUSIK[/B][CR][CR]Håndter din musiksamling</string>
+  <string id="31403">[B]SKIFT INDSTILLINGER TIL BILLEDER[/B][CR][CR]Vælg hvordan billeder vises · Konfigurer billedeserier</string>
+  <string id="31404">[B]SKIFT INDSTILLINGER TIL VEJRSIDEN[/B][CR][CR]Du kan vælge tre byer, der skal hentes vejrudsigter for</string>
+  <string id="31405">[B]SKIFT NETVÆRKSINDSTILLINGER[/B][CR][CR]Indstil styring af XBMC via UPnP og HTTP · Indstil fildeling[CR]Indstillinger for adgang til Internettet</string>
+  <string id="31406">[B]SKIFT SYSTEMINDSTILLINGER[/B][CR][CR]Indstil og kalibrer skærmen · Indstil lydudgang · Indstil fjernbetjeninger[CR]Indstil strømstyring · Aktiver fejllogning · Indstil hovedlås</string>
+  <string id="31407">[B]SKIFT SKIN-INDSTILLINGER[/B][CR][CR]Indstil Confluence · Konfigurer hovedsiden[CR]Skift baggrunde i skinnet</string>
+  <string id="31420">[B][COLOR=white]XBMC kunne ikke finde en skive.[/COLOR][/B][CR][CR]Indsæt en skive i drevet og forsøg igen eller annuler</string>
+  <string id="31421">Vælg din XBMC-brugerprofil[CR]for at logge ind og fortsætte</string>
+</strings>

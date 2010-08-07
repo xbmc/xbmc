@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: hudo-->
+<!--Email: hudokkow [AT] gmail [DOT] com-->
+<!--Date of translation: 06/01/2010-->
+<!--$Revision$-->
+<!--Based on english strings version r29546-->
+
+<strings>
+  <string id="31000">Mude o seu</string>
+  <string id="31001">Adoro</string>
+  <string id="31002">Odeio</string>
+  <string id="31003">Opções de Power</string>
+  <string id="31004">A trabalhar...</string>
+  <string id="31005">Esconder INFO</string>
+  <string id="31007">Plugins</string>
+  <string id="31020">Adicionados recentemente</string>
+  <string id="31021">Vídeo - Ficheiros</string>
+  <string id="31022">Música - Ficheiros</string>
+  <string id="31023">A reproduzir</string>
+  <string id="31024">Página</string>
+  <string id="31025">Itens</string>
+  <string id="31026">Várias opções</string>
+  <string id="31027">Localização</string>
+  <string id="31028">Posters</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Lista completa</string>
+  <string id="31031">Imagem de miniaturas</string>
+  <string id="31032">Imagens</string>
+  <string id="31033">Info</string>
+  <string id="31040">A reproduzir agora</string>
+  <string id="31042">A REPRODUZIR</string>
+  <string id="31043">PAUSADO</string>
+  <string id="31044">FAST FORWARD</string>
+  <string id="31045">REWIND</string>
+  <string id="31046">Propriedades do áudio</string>
+  <string id="31047">Definição corrente</string>
+  <string id="31048">Definições de visualização</string>
+  <string id="31049">Tempo para terminar</string>
+  <string id="31055">Abrir lista de reprodução</string>
+  <string id="31056">Guardar lista de reprodução</string>
+  <string id="31057">Fechar lista de reprodução</string>
+  <string id="31058">Ficheiros de música do sistema</string>
+  <string id="31059">Lista de reprodução corrente</string>
+  <string id="31060">Ficheiro multi-parte. Escolha a parte que quer reproduzir.</string>
+  <string id="31061">Seleccionado neste momento</string>
+  <string id="31100"></string>
+  <string id="31101">Opções do menu principal</string>
+  <string id="31102">Fundo</string>
+  <string id="31103">Mostrar "Pausado" na apresentação de slides</string>
+  <string id="31104">Reproduzir trailers numa janela [COLOR=grey3](Apenas diálogo de informação vídeo)[/COLOR]</string>
+  <string id="31105">Mostrar títulos de média na procura em fundo</string>
+  <string id="31106">Opções várias</string>
+  <string id="31107"></string>
+  <string id="31108">Esconder botões do menu principal</string>
+  <string id="31109">Fundos de média</string>
+  <string id="31110">Editar fundo pra tipo de média</string>
+  <string id="31111">Esconder</string>
+  <string id="31112">Opções</string>
+  <string id="31113">Imagem única</string>
+  <string id="31114">Imagens multiplas</string>
+  <string id="31115">Customizar</string>
+  <string id="31116">Addon scripts</string>
+  <string id="31117">Mostrar vídeos adicionados recentemente</string>
+  <string id="31118">Submenu da página inicial</string>
+  <string id="31119">Ligar botão de script costumizado</string>
+  <string id="31120">ETIQUETA DE BOTÃO</string>
+  <string id="31121">CAMINHO PARA O SCRIPT</string>
+  <string id="31122">Página meteorológica</string>
+  <string id="31123">Usar "Posters" en vez de "Faixas" para séries de TV</string>
+  <string id="31124">Mostrar vídeo "A reproduzir" em fundo</string>
+  <string id="31125">Mostrar visualização "A reproduzir" em fundo</string>
+  <string id="31126">Ligar letras no OSD de música</string>
+  <string id="31127">CAMINHO PARA O SCRIPT DE LETRAS</string>
+  <string id="31128">Letras do XBMC</string>
+  <string id="31129">Ligar descarregar de legendas no OSD de Vídeo</string>
+  <string id="31130">CAMINHO PARA SCRIPT DE LEGENDAS</string>
+  <string id="31140">OSD de Música</string>
+  <string id="31141">OSD de Vídeo</string>
+  <string id="31200">Atalhos</string>
+  <string id="31201">Categorias</string>
+  <string id="31202">Mostrar elenco</string>
+  <string id="31203">Escolha a sua música</string>
+  <string id="31204">Atalhos de secção</string>
+  <string id="31205">Fonte das letras</string>
+  <string id="31250">Radar &amp; Previsão</string>
+  <string id="31251">Previsão</string>
+  <string id="31252">Script TWC</string>
+  <string id="31300">Temp corrente</string>
+  <string id="31301">Última actualização</string>
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Imagem</string>
+  <string id="31305">Disco de média não detectado</string>
+  <string id="31306">Ejectar</string>
+  <string id="31307">Esconder Fanart</string>
+  <string id="31308">Detalhes do filme</string>
+  <string id="31309">Memória usada:</string>
+  <string id="31310">Faixa número</string>
+  <string id="31311">Imagem de Fanart[CR][CR]Indisponível[CR][CR] Clique no botão para seleccionar</string>
+  <string id="31312">Scraper corrente</string>
+  <string id="31313">Escolher um scraper</string>
+  <string id="31314">Opções de procura de conteúdos</string>
+  <string id="31315">Básico</string>
+  <string id="31316"></string>
+  <string id="31317">Escolher caminho de Fanart</string>
+  <string id="31318">Fanart pequeno</string>
+  <string id="31319">Perfil seleccionado</string>
+  <string id="31320">Último ligado</string>
+  <string id="31321">Selecção de música de karaoke</string>
+  <string id="31322">Estreia</string>
+  <string id="31323">Filmes recentes</string>
+  <string id="31324">Episódeos recentes</string>
+  <string id="31325">Opções da lista de reprodução</string>
+  <string id="31326">Criado</string>
+  <string id="31327">Resolução</string>
+  <string id="31328">Adicionados recentemente</string>
+  <string id="31329">[B]Definir temporizador![/B] [COLOR=grey2] - Sistema vai desligar em[/COLOR]</string>
+  <string id="31330">Clique no botão para reproduzir o[CR][CR]Trailer do filme</string>
+  <string id="31351">Pausa</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Menu do filme</string>
+  <string id="31356">Descarregar legenda</string>
+  <string id="31357"></string>
+  <string id="31400">[B]CONFIGURAR OPÇÕES DE APARÊNCIA[/B][CR][CR]Mudar o Tema · Definir Linguagem e Região · Mudar opções de listagem de ficheiros[CR]Definir protector de ecrã</string>
+  <string id="31401">[B]CONFIGURAR OPÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Definir opções de reprodução de vídeo · Mudar opções de listagem de vídeo[CR]Definir fonte de legendas</string>
+  <string id="31402">[B]CONFIGURAR OPÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Definir opções de reprodução de música · Mudar opções de listagem de música[CR]Definir submissão de músicas · Definir opções de karaoke</string>
+  <string id="31403">[B]CONFIGURAR OPÇÕES DE IMAGENS[/B][CR][CR]Mudar opções de listagem de imagens · Configurar apresentação de slides</string>
+  <string id="31404">[B]CONFIGURAR OPÇÕES METEOROLÓGICAS[/B][CR][CR]Definir três locais para informação meteorológica</string>
+  <string id="31405">[B]CONFIGURAR OPÇÕES DE REDE[/B][CR][CR]Gerir controlo do XBMC por UPnP e HTTP · Configurar partilha de ficheiros[CR]Definir opções de acesso à Internet</string>
+  <string id="31406">[B]CONFIGURAR OPÇÕES DE SISTEMA[/B][CR][CR]Definir e calibrar ecrãs · Configurar saída de áudio · Configurar comando à distância[CR]Definir opções de poupança de energia · Ligar depuração · Definir bloqueio geral</string>
+  <string id="31407">[B]CONFIGURAR OPÇÕES DO TEMA[/B][CR][CR]Gerir o tema Confluence · Adicionar ou remover itens do menu principal[CR]Mudar fundos do tema</string>
+  <string id="31408">[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir Add-ons instalados · Procurar Add-ons em xbmc.org e instalar[CR]Alterar opções dos Add-ons</string>
+  <string id="31421">Escolha o seu perfil de utilizador do XBMC[CR]para ligar e continuar</string>
+</strings>

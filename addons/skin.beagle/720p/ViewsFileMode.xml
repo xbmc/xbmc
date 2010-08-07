@@ -1,0 +1,93 @@
+<includes>
+	<include name="CommonFileView">
+		<control type="group">
+			<visible>Control.IsVisible(506)</visible>
+
+		  <control type="label">
+			  <description>time label</description>
+			  <posx>1280</posx>
+			  <posy>0</posy>
+			  <width>400</width>
+			  <height>28</height>
+			  <align>right</align>
+			  <aligny>center</aligny>
+			  <font>clockLabel</font>
+			  <textcolor>white</textcolor>
+			  <shadowcolor>black</shadowcolor>
+			  <label>[COLOR=grey]$INFO[System.Date][/COLOR] | $INFO[System.Time]</label>
+		  </control>
+
+      <control type="list" id="506">
+			  <posx>50</posx>
+			  <posy>100</posy>
+			  <width>1180</width>
+			  <height>520</height>
+			  <onup>506</onup>
+			  <ondown>506</ondown>
+			  <viewtype label="$LOCALIZE[544]">list</viewtype>
+			  <pagecontrol>10</pagecontrol>
+			  <scrolltime>200</scrolltime>
+			  <itemlayout height="52" width="1080">
+				  <control type="label">
+					  <posx>10</posx>
+					  <posy>0</posy>
+					  <width>1180</width>
+					  <height>52</height>
+					  <font>listLabel</font>
+					  <textcolor>white</textcolor>
+					  <selectedcolor>selected</selectedcolor>
+					  <align>left</align>
+					  <aligny>center</aligny>
+					  <label>$INFO[ListItem.Label]</label>
+				  </control>
+				  <control type="label">
+					  <posx>1170</posx>
+					  <posy>0</posy>
+					  <width>1180</width>
+					  <height>52</height>
+					  <font>listLabel</font>
+					  <textcolor>white</textcolor>
+					  <selectedcolor>selected</selectedcolor>
+					  <align>right</align>
+					  <aligny>center</aligny>
+					  <label>$INFO[ListItem.Label2]</label>
+				  </control>
+			  </itemlayout>
+			  <focusedlayout height="52" width="700">
+          <control type="image">
+					  <posx>0</posx>
+					  <posy>0</posy>
+					  <width>1180</width>
+					  <height>52</height>
+            <border>4</border>
+            <texture>HighlightList.bmp</texture>
+          </control>
+				  <control type="label">
+					  <posx>10</posx>
+					  <posy>0</posy>
+					  <width>1180</width>
+					  <height>52</height>
+					  <font>listLabel</font>
+					  <textcolor>white</textcolor>
+					  <selectedcolor>selected</selectedcolor>
+					  <align>left</align>
+					  <aligny>center</aligny>
+					  <label>$INFO[ListItem.Label]</label>
+				  </control>
+				  <control type="label">
+					  <posx>1170</posx>
+					  <posy>0</posy>
+					  <width>1180</width>
+					  <height>52</height>
+					  <font>listLabel</font>
+					  <textcolor>white</textcolor>
+					  <selectedcolor>selected</selectedcolor>
+					  <align>right</align>
+					  <aligny>center</aligny>
+					  <label>$INFO[ListItem.Label2]</label>
+				  </control>
+			  </focusedlayout>
+		  </control>
+		</control>
+	</include>
+</includes>

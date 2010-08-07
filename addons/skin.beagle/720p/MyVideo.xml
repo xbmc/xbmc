@@ -1,0 +1,12 @@
+<window id="6">
+	<defaultcontrol always="true">506</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>506</views>
+	<controls>
+
+	  <control type="group">
+		  <include>CommonFileView</include>
+    </control>
+
+	</controls>
+</window>
