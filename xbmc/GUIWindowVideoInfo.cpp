@@ -310,13 +310,16 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
-        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer)
+        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
         {
           CVideoDatabase database;
-          database.Open();
-          database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
-                             m_movieItem->GetVideoInfoTag()->m_iDbId,
-                             VIDEODB_ID_TRAILER,VIDEODB_CONTENT_MOVIES);
+          if(database.Open())
+          {
+            database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
+                               m_movieItem->GetVideoInfoTag()->m_iDbId,
+                               VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
+            database.Close();
+          }
         }
       }
     }
