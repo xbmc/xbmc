@@ -638,8 +638,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool bReverse = true;
   bool bReveal = false;
   CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
-  float rMin = 0.0f;
-  float rMax = 100.0f;
   CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
   CTextureInfo textureLeftFocus, textureRightFocus;
   CTextureInfo textureUp, textureDown;
@@ -928,8 +926,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetInfoTexture(pControlNode, "texture", texture, textureFile);
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
-  XMLUtils::GetFloat(pControlNode, "rangemin", rMin);
-  XMLUtils::GetFloat(pControlNode, "rangemax", rMax);
 
   XMLUtils::GetFloat(pControlNode, "itemwidth", itemWidth);
   XMLUtils::GetFloat(pControlNode, "itemheight", itemHeight);
@@ -1270,7 +1266,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIProgressControl(
       parentID, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight,
-      textureOverlay, rMin, rMax, bReveal);
+      textureOverlay, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (type == CGUIControl::GUICONTROL_IMAGE)

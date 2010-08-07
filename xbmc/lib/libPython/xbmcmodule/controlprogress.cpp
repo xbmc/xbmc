@@ -120,7 +120,7 @@ namespace PYXBMC
       (float)pControl->dwWidth,(float)pControl->dwHeight,
       (CStdString)pControl->strTextureBg,(CStdString)pControl->strTextureLeft,
       (CStdString)pControl->strTextureMid,(CStdString)pControl->strTextureRight,
-      (CStdString)pControl->strTextureOverlay, 0, 0);
+      (CStdString)pControl->strTextureOverlay);
 
     if (pControl->pGUIControl && pControl->colorDiffuse)
         ((CGUIProgressControl *)pControl->pGUIControl)->SetColorDiffuse(pControl->colorDiffuse);
