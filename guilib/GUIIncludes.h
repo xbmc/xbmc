@@ -24,6 +24,7 @@
 #include "StdString.h"
 
 #include <map>
+#include <set>
 
 // forward definitions
 class TiXmlElement;
@@ -36,7 +37,6 @@ public:
 
   void ClearIncludes();
   bool LoadIncludes(const CStdString &includeFile);
-  bool ResolveConstant(const CStdString &constant, float &value) const;
   bool LoadIncludesFromXML(const TiXmlElement *root);
 
   /*! \brief Resolve <include>name</include> tags recursively for the given XML element
@@ -48,11 +48,15 @@ public:
 
 private:
   void ResolveIncludesForNode(TiXmlElement *node);
+  CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
   std::map<CStdString, TiXmlElement> m_includes;
   std::map<CStdString, TiXmlElement> m_defaults;
-  std::map<CStdString, float> m_constants;
+  std::map<CStdString, CStdString> m_constants;
   std::vector<CStdString> m_files;
   typedef std::vector<CStdString>::const_iterator iFiles;
+
+  std::set<std::string> m_constantAttributes;
+  std::set<std::string> m_constantNodes;
 };
 

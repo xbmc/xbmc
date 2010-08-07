@@ -95,9 +95,6 @@ public:
 
   void ResolveIncludes(TiXmlElement *node);
 
-  bool ResolveConstant(const CStdString &constant, float &value) const;
-  bool ResolveConstant(const CStdString &constant, unsigned int &value) const;
-
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
   const std::vector<CStartupWindow> &GetStartupWindows() const { return m_startupWindows; };

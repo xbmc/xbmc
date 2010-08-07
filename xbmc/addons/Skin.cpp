@@ -196,22 +196,6 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node)
   m_includes.ResolveIncludes(node);
 }
 
-bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value) const
-{
-  return m_includes.ResolveConstant(constant, value);
-}
-
-bool CSkinInfo::ResolveConstant(const CStdString &constant, unsigned int &value) const
-{
-  float fValue;
-  if (m_includes.ResolveConstant(constant, fValue))
-  {
-    value = (unsigned int)fValue;
-    return true;
-  }
-  return false;
-}
-
 int CSkinInfo::GetStartWindow() const
 {
   int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");

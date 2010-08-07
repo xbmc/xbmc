@@ -24,11 +24,55 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
+#include "StringUtils.h"
 
 using namespace std;
 
 CGUIIncludes::CGUIIncludes()
 {
+  m_constantAttributes.insert("x");
+  m_constantAttributes.insert("y");
+  m_constantAttributes.insert("width");
+  m_constantAttributes.insert("height");
+  m_constantAttributes.insert("center");
+  m_constantAttributes.insert("max");
+  m_constantAttributes.insert("min");
+  m_constantAttributes.insert("w");
+  m_constantAttributes.insert("h");
+  m_constantAttributes.insert("time");
+  m_constantAttributes.insert("acceleration");
+  m_constantAttributes.insert("delay");
+  m_constantAttributes.insert("start");
+  m_constantAttributes.insert("end");
+  m_constantAttributes.insert("center");
+  m_constantAttributes.insert("border");
+  
+  m_constantNodes.insert("posx");
+  m_constantNodes.insert("posy");
+  m_constantNodes.insert("width");
+  m_constantNodes.insert("height");
+  m_constantNodes.insert("offsetx");
+  m_constantNodes.insert("offsety");
+  m_constantNodes.insert("textoffsetx");
+  m_constantNodes.insert("textoffsety");  
+  m_constantNodes.insert("textwidth");
+  m_constantNodes.insert("spinposx");
+  m_constantNodes.insert("spinposy");
+  m_constantNodes.insert("spinwidth");
+  m_constantNodes.insert("spinheight");
+  m_constantNodes.insert("radioposx");
+  m_constantNodes.insert("radioposy");
+  m_constantNodes.insert("radiowidth");
+  m_constantNodes.insert("radioheight");
+  m_constantNodes.insert("markwidth");
+  m_constantNodes.insert("markheight");
+  m_constantNodes.insert("sliderwidth");
+  m_constantNodes.insert("sliderheight");
+  m_constantNodes.insert("itemgap");
+  m_constantNodes.insert("bordersize");
+  m_constantNodes.insert("timeperimage");
+  m_constantNodes.insert("fadetime");
+  m_constantNodes.insert("pauseatend");
 }
 
 CGUIIncludes::~CGUIIncludes()
@@ -103,7 +147,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("name") && node->FirstChild())
     {
       CStdString tagName = node->Attribute("name");
-      m_constants.insert(pair<CStdString, float>(tagName, (float)atof(node->FirstChild()->Value())));
+      m_constants.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
     }
     node = node->NextSiblingElement("constant");
   }
@@ -197,15 +241,31 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
       include = include->NextSiblingElement("include");
     }
   }
+
+  // run through this element's attributes, resolving any constants
+  TiXmlAttribute *attribute = node->FirstAttribute();
+  while (attribute)
+  { // check the attribute against our set
+    if (m_constantAttributes.count(attribute->NameStr()))
+      attribute->SetValue(ResolveConstant(attribute->ValueStr()));
+    attribute = attribute->Next();
+  }
+  // also do the value
+  if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TEXT && m_constantNodes.count(node->ValueStr()))
+    node->FirstChild()->SetValue(ResolveConstant(node->FirstChild()->ValueStr()));
 }
 
-bool CGUIIncludes::ResolveConstant(const CStdString &constant, float &value) const
+CStdString CGUIIncludes::ResolveConstant(const CStdString &constant) const
 {
-  map<CStdString, float>::const_iterator it = m_constants.find(constant);
-  if (it == m_constants.end())
-    value = (float)atof(constant.c_str());
-  else
-    value = it->second;
-  return true;
+  CStdStringArray values;
+  StringUtils::SplitString(constant, ",", values);
+  for (unsigned int i = 0; i < values.size(); ++i)
+  {
+    map<CStdString, CStdString>::const_iterator it = m_constants.find(values[i]);
+    if (it != m_constants.end())
+      values[i] = it->second;
+  }
+  CStdString value;
+  StringUtils::JoinString(values, ",", value);
+  return value;
 }
-
