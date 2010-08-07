@@ -120,7 +120,7 @@
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
 #else
-#define DLL_PATH_LIBCRYSTALHD "libbluray.dylib"
+#define DLL_PATH_LIBBLURAY "libbluray.dylib"
 #endif
 
 /* apple vdadecoder */
