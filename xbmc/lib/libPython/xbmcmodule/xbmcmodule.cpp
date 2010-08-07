@@ -1100,7 +1100,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
-    PyModule_AddObject(pXbmcModule, "abortRequested", PyBool_FromLong(0));
+    PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
   }
 }
 

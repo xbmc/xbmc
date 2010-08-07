@@ -44,7 +44,7 @@ public:
                       float width, float height, const CTextureInfo& backGroundTexture,
                       const CTextureInfo& leftTexture, const CTextureInfo& midTexture,
                       const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture,
-                      float min, float max, bool reveal=false);
+                      bool reveal=false);
   virtual ~CGUIProgressControl(void);
   virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
 
@@ -69,8 +69,6 @@ protected:
   CGUITexture m_guiMid;
   CGUITexture m_guiRight;
   CGUITexture m_guiOverlay;
-  float m_RangeMin;
-  float m_RangeMax;
   int m_iInfoCode;
   float m_fPercent;
   bool m_bReveal;

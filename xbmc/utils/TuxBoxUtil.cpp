@@ -339,6 +339,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     CFileItemPtr pbItem(new CFileItem);
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
+                    pbItem->SetLabelPreformated(true);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";
                     pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 

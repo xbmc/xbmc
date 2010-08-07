@@ -186,8 +186,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "coordinates")
     {
-      // resolve any includes within coordinates tag (such as multiple origin includes)
-      g_SkinInfo->ResolveIncludes(pChild);
       TiXmlNode* pSystem = pChild->FirstChild("system");
       if (pSystem)
       {
@@ -195,15 +193,15 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
         m_bRelativeCoords = (iCoordinateSystem == 1);
       }
 
-      CGUIControlFactory::GetFloat(pChild, "posx", m_posX);
-      CGUIControlFactory::GetFloat(pChild, "posy", m_posY);
+      XMLUtils::GetFloat(pChild, "posx", m_posX);
+      XMLUtils::GetFloat(pChild, "posy", m_posY);
 
       TiXmlElement *originElement = pChild->FirstChildElement("origin");
       while (originElement)
       {
         COrigin origin;
-        g_SkinInfo->ResolveConstant(originElement->Attribute("x"), origin.x);
-        g_SkinInfo->ResolveConstant(originElement->Attribute("y"), origin.y);
+        originElement->QueryFloatAttribute("x", &origin.x);
+        originElement->QueryFloatAttribute("y", &origin.y);
         if (originElement->FirstChild())
           origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
         m_origins.push_back(origin);
@@ -212,15 +210,12 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "camera")
     { // z is fixed
-      g_SkinInfo->ResolveConstant(pChild->Attribute("x"), m_camera.x);
-      g_SkinInfo->ResolveConstant(pChild->Attribute("y"), m_camera.y);
+      pChild->QueryFloatAttribute("x", &m_camera.x);
+      pChild->QueryFloatAttribute("y", &m_camera.y);
       m_hasCamera = true;
     }
     else if (strValue == "controls")
     {
-      // resolve any includes within controls tag (such as whole <control> includes)
-      g_SkinInfo->ResolveIncludes(pChild);
-
       TiXmlElement *pControl = pChild->FirstChildElement();
       while (pControl)
       {

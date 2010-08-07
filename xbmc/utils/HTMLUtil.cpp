@@ -120,189 +120,164 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
   strHTML = strReturn;
 }
 
-void CHTMLUtil::ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped)
+typedef struct
 {
-  // TODO UTF8: This assumes the HTML is in the users charset
-  ConvertHTMLToAnsi(strHTML, strStripped);
-  CStdString utf8String;
-  g_charsetConverter.unknownToUTF8(strStripped, utf8String);
-  strStripped = utf8String;
-}
+  const wchar_t* html;
+  const wchar_t  w;
+} HTMLMapping;
 
-void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped)
+static const HTMLMapping mappings[] =
+  {{L"&amp;",     0x0026},
+   {L"&acute;",   0x00B4},
+   {L"&agrave;",  0x00E0},
+   {L"&aacute;",  0x00E1},
+   {L"&acirc;",   0x00E2},
+   {L"&atilde;",  0x00E3},
+   {L"&auml;",    0x00E4},
+   {L"&aring;",   0x00E5},
+   {L"&aelig;",   0x00E6},
+   {L"&Agrave;",  0x00C0},
+   {L"&Aacute;",  0x00C1},
+   {L"&Acirc;",   0x00C2},
+   {L"&Atilde;",  0x00C3},
+   {L"&Auml;",    0x00C4},
+   {L"&Aring;",   0x00C5},
+   {L"AElig;",    0x00C6},
+   {L"brvbar",    0x00A6},
+   {L"&cent;",    0x00A2},
+   {L"&curren;",  0x00A4},
+   {L"&copy;",    0x00A9},
+   {L"&cedil;",   0x00B8},
+   {L"&Ccedil;",  0x00C7},
+   {L"&ccedil;",  0x00E7},
+   {L"&deg;",     0x00B0},
+   {L"&divide;",  0x00F7},
+   {L"&egrave;",  0x00E8},
+   {L"&eacute;",  0x00E9},
+   {L"&ecirc;",   0x00EA},
+   {L"&euml;",    0x00EB},
+   {L"&eth;",     0x00F0},
+   {L"&Egrave;",  0x00C8},
+   {L"&Eacute;",  0x00C9},
+   {L"&Ecirc;",   0x00CA},
+   {L"&Euml;",    0x00CB},
+   {L"&ETH;",     0x00D0},
+   {L"&quot;",    0x0022},
+   {L"&frasl;",   0x2044},
+   {L"&frac14;",  0x00BC},
+   {L"&frac12;",  0x00BD},
+   {L"&frac34;",  0x00BE},
+   {L"&gt;",      0x003E},
+   {L"&iexcl;",   0x00A1},
+   {L"&iquest;",  0x00BF},
+   {L"&igrave;",  0x00EC},
+   {L"&iacute;",  0x00ED},
+   {L"&icirc;",   0x00EE},
+   {L"&iuml;",    0x00EF},
+   {L"&Igrave;",  0x00CC},
+   {L"&Iacute;",  0x00CD},
+   {L"&Icirc;",   0x00CE},
+   {L"&Iuml;",    0x00CF},
+   {L"&lt;",      0x003C},
+   {L"&laquo;",   0x00AB},
+   {L"&macr;",    0x00AF},
+   {L"&micro;",   0x00B5},
+   {L"&middot;",  0x00B7},
+   {L"&mdash;",   0x2014},
+   {L"&nbsp;",    0x00A0},
+   {L"&ndash;",   0x2013},
+   {L"&ntilde;",  0x00F1},
+   {L"&not;",     0x00AC},
+   {L"&Ntilde;",  0x00D1},
+   {L"&ordf;",    0x00AA},
+   {L"&ordm;",    0x00BA},
+   {L"&ograve;",  0x00F2},
+   {L"&oacute;",  0x00F3},
+   {L"&ocirc;",   0x00F4},
+   {L"&otilde;",  0x00F5},
+   {L"&ouml;",    0x00F6},
+   {L"&oslash;",  0x00F8},
+   {L"&Ograve;",  0x00D2},
+   {L"&Oacute;",  0x00D3},
+   {L"&Ocirc;",   0x00D4},
+   {L"&Otilde;",  0x00D5},
+   {L"&Ouml;",    0x00D6},
+   {L"Oslash;",   0x00D8},
+   {L"&para;",    0x00B6},
+   {L"&plusmn;",  0x00B1},
+   {L"&pound;",   0x00A3},
+   {L"&raquo;",   0x00BB},
+   {L"&reg;",     0x00AE},
+   {L"&rsquo;",   0x2019},
+   {L"&sect;",    0x00A7},
+   {L"&shy;",     0x00AD},
+   {L"&sup1;",    0x00B9},
+   {L"&sup2;",    0x00B2},
+   {L"&sup3;",    0x00B3},
+   {L"&szlig;",   0x00DF},
+   {L"&thorn;",   0x00FE},
+   {L"&trade;",   0x2122},
+   {L"&THORN;",   0x00DE},
+   {L"&uml;",     0x00A8},
+   {L"&ugrave;",  0x00F9},
+   {L"&uacute;",  0x00FA},
+   {L"&ucirc;",   0x00FB},
+   {L"&uuml;",    0x00FC},
+   {L"Ugrave;",   0x00D9},
+   {L"&Uacute;",  0x00DA},
+   {L"&Ucirc;",   0x00DB},
+   {L"&Uuml;",    0x00DC},
+   {L"&yen;",     0x00A5},
+   {L"&yuml;",    0x00FF},
+   {L"&yacute;",  0x00FD},
+   {L"&Yacute;",  0x00DD},
+   {NULL,         L'\0'}};
+
+void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStripped)
 {
-  int i = 0;
   if (strHTML.size() == 0)
   {
-    strStripped = "";
+    strStripped.Empty();
     return ;
   }
-  int iAnsiPos = 0;
-  char *szAnsi = new char[strHTML.size() * 2];
-
-  while (i < (int)strHTML.size() )
+  int iPos = 0;
+  strStripped = strHTML;
+  while (mappings[iPos].html)
   {
-    char kar = strHTML[i];
-    if (kar == '&')
-    {
-      if (strHTML[i + 1] == '#')
-      {
-        int ipos = 0;
-        char szDigit[13];
-        memset(szDigit, 0, sizeof(szDigit));
-        i += 2; // skip over &#
-        if (strHTML[i] == 'x')
-        {
-          i++;  // skip over x
-          while ( ipos < 12 && strHTML[i] && isxdigit(strHTML[i]))
-            szDigit[ipos++] = strHTML[i++];
-
-          szAnsi[iAnsiPos++] = (char)(strtol(szDigit, NULL, 16) & 0xFF);
-        }
-        else
-        {
-          while ( ipos < 12 && strHTML[i] && isdigit(strHTML[i]))
-            szDigit[ipos++] = strHTML[i++];
-
-          szAnsi[iAnsiPos++] = (char)(strtol(szDigit, NULL, 10) & 0xFF);
-        }
-        i++;  // get rid of the ;
-      }
-      else
-      {
-        i++;
-        int ipos = 0;
-        char szKey[112];
-        while (strHTML[i] && strHTML[i] != ';' && ipos < 12)
-        {
-          szKey[ipos] = (unsigned char)strHTML[i];
-          szKey[ipos + 1] = 0;
-          ipos++;
-          i++;
-        }
-        i++;
-        if (strcmp(szKey, "amp") == 0) szAnsi[iAnsiPos++] = '&';
-        else if (strcmp(szKey, "quot") == 0) szAnsi[iAnsiPos++] = (char)0x22;
-        else if (strcmp(szKey, "frasl") == 0) szAnsi[iAnsiPos++] = (char)0x2F;
-        else if (strcmp(szKey, "lt") == 0) szAnsi[iAnsiPos++] = (char)0x3C;
-        else if (strcmp(szKey, "gt") == 0) szAnsi[iAnsiPos++] = (char)0x3E;
-        else if (strcmp(szKey, "trade") == 0) szAnsi[iAnsiPos++] = (char)0x99;
-        else if (strcmp(szKey, "nbsp") == 0) szAnsi[iAnsiPos++] = ' ';
-        else if (strcmp(szKey, "#160") == 0) szAnsi[iAnsiPos++] = ' ';
-        else if (strcmp(szKey, "iexcl") == 0) szAnsi[iAnsiPos++] = (char)0xA1;
-        else if (strcmp(szKey, "cent") == 0) szAnsi[iAnsiPos++] = (char)0xA2;
-        else if (strcmp(szKey, "pound") == 0) szAnsi[iAnsiPos++] = (char)0xA3;
-        else if (strcmp(szKey, "curren") == 0) szAnsi[iAnsiPos++] = (char)0xA4;
-        else if (strcmp(szKey, "yen") == 0) szAnsi[iAnsiPos++] = (char)0xA5;
-        else if (strcmp(szKey, "brvbar") == 0) szAnsi[iAnsiPos++] = (char)0xA6;
-        else if (strcmp(szKey, "sect") == 0) szAnsi[iAnsiPos++] = (char)0xA7;
-        else if (strcmp(szKey, "uml") == 0) szAnsi[iAnsiPos++] = (char)0xA8;
-        else if (strcmp(szKey, "copy") == 0) szAnsi[iAnsiPos++] = (char)0xA9;
-        else if (strcmp(szKey, "ordf") == 0) szAnsi[iAnsiPos++] = (char)0xAA;
-        else if (strcmp(szKey, "laquo") == 0) szAnsi[iAnsiPos++] = (char)0xAB;
-        else if (strcmp(szKey, "not") == 0) szAnsi[iAnsiPos++] = (char)0xAC;
-        else if (strcmp(szKey, "shy") == 0) szAnsi[iAnsiPos++] = (char)0xAD;
-        else if (strcmp(szKey, "reg") == 0) szAnsi[iAnsiPos++] = (char)0xAE;
-        else if (strcmp(szKey, "macr") == 0) szAnsi[iAnsiPos++] = (char)0xAF;
-        else if (strcmp(szKey, "deg") == 0) szAnsi[iAnsiPos++] = (char)0xB0;
-        else if (strcmp(szKey, "plusmn") == 0) szAnsi[iAnsiPos++] = (char)0xB1;
-        else if (strcmp(szKey, "sup2") == 0) szAnsi[iAnsiPos++] = (char)0xB2;
-        else if (strcmp(szKey, "sup3") == 0) szAnsi[iAnsiPos++] = (char)0xB3;
-        else if (strcmp(szKey, "acute") == 0) szAnsi[iAnsiPos++] = (char)0xB4;
-        else if (strcmp(szKey, "micro") == 0) szAnsi[iAnsiPos++] = (char)0xB5;
-        else if (strcmp(szKey, "para") == 0) szAnsi[iAnsiPos++] = (char)0xB6;
-        else if (strcmp(szKey, "middot") == 0) szAnsi[iAnsiPos++] = (char)0xB7;
-        else if (strcmp(szKey, "cedil") == 0) szAnsi[iAnsiPos++] = (char)0xB8;
-        else if (strcmp(szKey, "sup1") == 0) szAnsi[iAnsiPos++] = (char)0xB9;
-        else if (strcmp(szKey, "ordm") == 0) szAnsi[iAnsiPos++] = (char)0xBA;
-        else if (strcmp(szKey, "raquo") == 0) szAnsi[iAnsiPos++] = (char)0xBB;
-        else if (strcmp(szKey, "frac14") == 0) szAnsi[iAnsiPos++] = (char)0xBC;
-        else if (strcmp(szKey, "frac12") == 0) szAnsi[iAnsiPos++] = (char)0xBD;
-        else if (strcmp(szKey, "frac34") == 0) szAnsi[iAnsiPos++] = (char)0xBE;
-        else if (strcmp(szKey, "iquest") == 0) szAnsi[iAnsiPos++] = (char)0xBF;
-        else if (strcmp(szKey, "Agrave") == 0) szAnsi[iAnsiPos++] = (char)0xC0;
-        else if (strcmp(szKey, "Aacute") == 0) szAnsi[iAnsiPos++] = (char)0xC1;
-        else if (strcmp(szKey, "Acirc") == 0) szAnsi[iAnsiPos++] = (char)0xC2;
-        else if (strcmp(szKey, "Atilde") == 0) szAnsi[iAnsiPos++] = (char)0xC3;
-        else if (strcmp(szKey, "Auml") == 0) szAnsi[iAnsiPos++] = (char)0xC4;
-        else if (strcmp(szKey, "Aring") == 0) szAnsi[iAnsiPos++] = (char)0xC5;
-        else if (strcmp(szKey, "AElig") == 0) szAnsi[iAnsiPos++] = (char)0xC6;
-        else if (strcmp(szKey, "Ccedil") == 0) szAnsi[iAnsiPos++] = (char)0xC7;
-        else if (strcmp(szKey, "Egrave") == 0) szAnsi[iAnsiPos++] = (char)0xC8;
-        else if (strcmp(szKey, "Eacute") == 0) szAnsi[iAnsiPos++] = (char)0xC9;
-        else if (strcmp(szKey, "Ecirc") == 0) szAnsi[iAnsiPos++] = (char)0xCA;
-        else if (strcmp(szKey, "Euml") == 0) szAnsi[iAnsiPos++] = (char)0xCB;
-        else if (strcmp(szKey, "Igrave") == 0) szAnsi[iAnsiPos++] = (char)0xCC;
-        else if (strcmp(szKey, "Iacute") == 0) szAnsi[iAnsiPos++] = (char)0xCD;
-        else if (strcmp(szKey, "Icirc") == 0) szAnsi[iAnsiPos++] = (char)0xCE;
-        else if (strcmp(szKey, "Iuml") == 0) szAnsi[iAnsiPos++] = (char)0xCF;
-        else if (strcmp(szKey, "ETH") == 0) szAnsi[iAnsiPos++] = (char)0xD0;
-        else if (strcmp(szKey, "Ntilde") == 0) szAnsi[iAnsiPos++] = (char)0xD1;
-        else if (strcmp(szKey, "Ograve") == 0) szAnsi[iAnsiPos++] = (char)0xD2;
-        else if (strcmp(szKey, "Oacute") == 0) szAnsi[iAnsiPos++] = (char)0xD3;
-        else if (strcmp(szKey, "Ocirc") == 0) szAnsi[iAnsiPos++] = (char)0xD4;
-        else if (strcmp(szKey, "Otilde") == 0) szAnsi[iAnsiPos++] = (char)0xD5;
-        else if (strcmp(szKey, "Ouml") == 0) szAnsi[iAnsiPos++] = (char)0xD6;
-        else if (strcmp(szKey, "times") == 0) szAnsi[iAnsiPos++] = (char)0xD7;
-        else if (strcmp(szKey, "Oslash") == 0) szAnsi[iAnsiPos++] = (char)0xD8;
-        else if (strcmp(szKey, "Ugrave") == 0) szAnsi[iAnsiPos++] = (char)0xD9;
-        else if (strcmp(szKey, "Uacute") == 0) szAnsi[iAnsiPos++] = (char)0xDA;
-        else if (strcmp(szKey, "Ucirc") == 0) szAnsi[iAnsiPos++] = (char)0xDB;
-        else if (strcmp(szKey, "Uuml") == 0) szAnsi[iAnsiPos++] = (char)0xDC;
-        else if (strcmp(szKey, "Yacute") == 0) szAnsi[iAnsiPos++] = (char)0xDD;
-        else if (strcmp(szKey, "THORN") == 0) szAnsi[iAnsiPos++] = (char)0xDE;
-        else if (strcmp(szKey, "szlig") == 0) szAnsi[iAnsiPos++] = (char)0xDF;
-        else if (strcmp(szKey, "agrave") == 0) szAnsi[iAnsiPos++] = (char)0xE0;
-        else if (strcmp(szKey, "aacute") == 0) szAnsi[iAnsiPos++] = (char)0xE1;
-        else if (strcmp(szKey, "acirc") == 0) szAnsi[iAnsiPos++] = (char)0xE2;
-        else if (strcmp(szKey, "atilde") == 0) szAnsi[iAnsiPos++] = (char)0xE3;
-        else if (strcmp(szKey, "auml") == 0) szAnsi[iAnsiPos++] = (char)0xE4;
-        else if (strcmp(szKey, "aring") == 0) szAnsi[iAnsiPos++] = (char)0xE5;
-        else if (strcmp(szKey, "aelig") == 0) szAnsi[iAnsiPos++] = (char)0xE6;
-        else if (strcmp(szKey, "ccedil") == 0) szAnsi[iAnsiPos++] = (char)0xE7;
-        else if (strcmp(szKey, "egrave") == 0) szAnsi[iAnsiPos++] = (char)0xE8;
-        else if (strcmp(szKey, "eacute") == 0) szAnsi[iAnsiPos++] = (char)0xE9;
-        else if (strcmp(szKey, "ecirc") == 0) szAnsi[iAnsiPos++] = (char)0xEA;
-        else if (strcmp(szKey, "euml") == 0) szAnsi[iAnsiPos++] = (char)0xEB;
-        else if (strcmp(szKey, "igrave") == 0) szAnsi[iAnsiPos++] = (char)0xEC;
-        else if (strcmp(szKey, "iacute") == 0) szAnsi[iAnsiPos++] = (char)0xED;
-        else if (strcmp(szKey, "icirc") == 0) szAnsi[iAnsiPos++] = (char)0xEE;
-        else if (strcmp(szKey, "iuml") == 0) szAnsi[iAnsiPos++] = (char)0xEF;
-        else if (strcmp(szKey, "eth") == 0) szAnsi[iAnsiPos++] = (char)0xF0;
-        else if (strcmp(szKey, "ntilde") == 0) szAnsi[iAnsiPos++] = (char)0xF1;
-        else if (strcmp(szKey, "ograve") == 0) szAnsi[iAnsiPos++] = (char)0xF2;
-        else if (strcmp(szKey, "oacute") == 0) szAnsi[iAnsiPos++] = (char)0xF3;
-        else if (strcmp(szKey, "ocirc") == 0) szAnsi[iAnsiPos++] = (char)0xF4;
-        else if (strcmp(szKey, "otilde") == 0) szAnsi[iAnsiPos++] = (char)0xF5;
-        else if (strcmp(szKey, "ouml") == 0) szAnsi[iAnsiPos++] = (char)0xF6;
-        else if (strcmp(szKey, "divide") == 0) szAnsi[iAnsiPos++] = (char)0xF7;
-        else if (strcmp(szKey, "oslash") == 0) szAnsi[iAnsiPos++] = (char)0xF8;
-        else if (strcmp(szKey, "ugrave") == 0) szAnsi[iAnsiPos++] = (char)0xF9;
-        else if (strcmp(szKey, "uacute") == 0) szAnsi[iAnsiPos++] = (char)0xFA;
-        else if (strcmp(szKey, "ucirc") == 0) szAnsi[iAnsiPos++] = (char)0xFB;
-        else if (strcmp(szKey, "uuml") == 0) szAnsi[iAnsiPos++] = (char)0xFC;
-        else if (strcmp(szKey, "yacute") == 0) szAnsi[iAnsiPos++] = (char)0xFD;
-        else if (strcmp(szKey, "thorn") == 0) szAnsi[iAnsiPos++] = (char)0xFE;
-        else if (strcmp(szKey, "yuml") == 0) szAnsi[iAnsiPos++] = (char)0xFF;
-        else if (strcmp(szKey, "rsquo") == 0) szAnsi[iAnsiPos++] = (char)0x92;
-        else if (strcmp(szKey, "ndash") == 0) szAnsi[iAnsiPos++] = (char)0x96;
-        else if (strcmp(szKey, "mdash") == 0) szAnsi[iAnsiPos++] = (char)0x97;
-        else
-        {
-          // its not an ampersand code, so just copy the contents
-          szAnsi[iAnsiPos++] = '&';
-          for (unsigned int iLen=0; iLen<strlen(szKey); iLen++)
-            szAnsi[iAnsiPos++] = (unsigned char)szKey[iLen];
-        }
-      }
-    }
-    else
-    {
-      szAnsi[iAnsiPos++] = kar;
-      i++;
-    }
+    CStdStringW w2;
+    w2.Format(L"%c",mappings[iPos].w);
+    strStripped.Replace(mappings[iPos++].html,w2);
   }
-  szAnsi[iAnsiPos++] = 0;
-  strStripped = szAnsi;
-  delete [] szAnsi;;
+
+  iPos = strStripped.Find(L"&#");
+  while (iPos > 0 && iPos < (int)strStripped.size()-4)
+  {
+    iPos += 2;
+    CStdStringW num;
+    int base = 10;
+    if (strStripped[iPos+1] == L'x')
+    {
+      base = 16;
+      iPos++;
+    }
+
+    int i=iPos;
+    while ( iPos < (int)strHTML.size() && 
+           (base==16?iswxdigit(strHTML[iPos]):iswdigit(strHTML[iPos])))
+      iPos++; 
+
+    num = strHTML.Mid(i,iPos-i);
+    wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);
+    if (base == 10)
+      num.Format(L"&#%s;",num.c_str());
+    else
+      num.Format(L"&#x%s;",num.c_str());
+
+    CStdStringW num2;
+    num2.Format(L"%c",val);
+
+    strStripped.Replace(num,num2);
+    iPos = strStripped.Find(L"&#");
+  }
 }
+
