@@ -116,6 +116,13 @@
 #define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
 #endif
 
+/* libbluray */
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
+#else
+#define DLL_PATH_LIBCRYSTALHD "libbluray.dylib"
+#endif
+
 /* apple vdadecoder */
 #define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
 
