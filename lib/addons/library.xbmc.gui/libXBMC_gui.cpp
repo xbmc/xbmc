@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../addons/org.xbmc.gui.library/libXBMC_gui.h"
+#include "../../../addons/library.xbmc.gui/libXBMC_gui.h"
 #include "addons/AddonHelpers_local.h"
 
 #ifdef _WIN32

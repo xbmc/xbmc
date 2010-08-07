@@ -147,7 +147,7 @@ static const TypeMapping types[] =
    {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0 },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
-   {"pvrclient",                         ADDON_PVRDLL,                  0 },
+   {"xbmc.pvrclient",                    ADDON_PVRDLL,              24018 },
    {"xbmc.addon.video",                  ADDON_VIDEO,                1037 },
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038 },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039 },

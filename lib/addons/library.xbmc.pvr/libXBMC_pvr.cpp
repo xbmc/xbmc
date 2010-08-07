@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
+#include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
 #include "addons/AddonHelpers_local.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h"
 

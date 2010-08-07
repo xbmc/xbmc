@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../addons/org.xbmc.addon.library/libXBMC_addon.h"
-#include "../../xbmc/addons/AddonHelpers_local.h"
+#include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
+#include "../../../xbmc/addons/AddonHelpers_local.h"
 
 #ifdef _WIN32
 #include <windows.h>
