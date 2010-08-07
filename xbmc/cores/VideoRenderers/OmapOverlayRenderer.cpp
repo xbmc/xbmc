@@ -178,7 +178,7 @@ int COmapOverlayRenderer::GetImage(YV12Image *image, int source, bool readonly)
     return -1;
 
   /* take next available buffer */
-  if( source == AUTOSOURCE || source > 1 || source < 0)
+  if (source == AUTOSOURCE || source > 1 || source < 0)
     source = m_currentBackBuffer;
 
   YV12Image &im = m_yuvBuffers[source];
@@ -216,7 +216,7 @@ int COmapOverlayRenderer::PutImage(YV12Image *image, int source)
     return -1;
 
   /* take next available buffer */
-  if( source == AUTOSOURCE || source > 1 || source < 0)
+  if (source == AUTOSOURCE || source > 1 || source < 0)
     source = m_currentBackBuffer;
 
   yuv420_to_yuv422(m_framebuffers[source].buf,
