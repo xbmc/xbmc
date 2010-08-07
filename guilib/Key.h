@@ -270,7 +270,7 @@
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item
 #define ACTION_TOGGLE_DIGITAL_ANALOG  202 // switch digital <-> analog
-#define ACTION_RELOAD_KEYMAPS         204 // reloads CButtonTranslator's keymaps
+#define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
 #define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
 #define ACTION_TELETEXT_RED           215 // Teletext Color buttons to control TopText

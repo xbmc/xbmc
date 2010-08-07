@@ -97,7 +97,7 @@
 					</item>
 					<item id="3">
 						<label>19180</label>
-						<label2>31408</label2>
+						<label2>31409</label2>
 						<onclick>ActivateWindow(MyTVSettings)</onclick>
 						<icon>special://skin/backgrounds/tv.jpg</icon>
 					</item>
@@ -121,7 +121,7 @@
 					</item>
 					<item id="7">
 						<label>24001</label>
-						<label2>31409</label2>
+						<label2>31408</label2>
 						<onclick>ActivateWindow(AddonBrowser)</onclick>
 						<icon>special://skin/backgrounds/addons.jpg</icon>
 					</item>

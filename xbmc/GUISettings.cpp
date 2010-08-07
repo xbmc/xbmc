@@ -615,7 +615,7 @@ void CGUISettings::Initialize()
 #endif
   AddInt(vp, "videoplayer.postprocess", 16400, VIDEO_POSTPROCESS_DISABLED, VIDEO_POSTPROCESS_DISABLED, 1, VIDEO_POSTPROCESS_ALWAYS, SPIN_CONTROL_TEXT);
   AddSeparator(vp, "videoplayer.sep5");
-  AddBool(vp, "videoplayer.teletextenabled", 23090, true);
+  AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);

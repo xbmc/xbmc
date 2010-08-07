@@ -335,7 +335,7 @@
 						<posy>0</posy>
 						<width>45</width>
 						<height>45</height>
-						<label>23090</label>
+						<label>23050</label>
 						<font>-</font>
 						<texturefocus>OSDTeleTextFO.png</texturefocus>
 						<texturenofocus>OSDTeleTextNF.png</texturenofocus>
