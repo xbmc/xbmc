@@ -191,9 +191,9 @@ void CSkinInfo::LoadIncludes()
   m_includes.LoadIncludes(includesPath);
 }
 
-void CSkinInfo::ResolveIncludes(TiXmlElement *node, const CStdString &type)
+void CSkinInfo::ResolveIncludes(TiXmlElement *node)
 {
-  m_includes.ResolveIncludes(node, type);
+  m_includes.ResolveIncludes(node);
 }
 
 bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value) const

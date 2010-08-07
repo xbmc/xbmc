@@ -36,11 +36,18 @@ public:
 
   void ClearIncludes();
   bool LoadIncludes(const CStdString &includeFile);
-  void ResolveIncludes(TiXmlElement *node, const CStdString &type);
   bool ResolveConstant(const CStdString &constant, float &value) const;
   bool LoadIncludesFromXML(const TiXmlElement *root);
 
+  /*! \brief Resolve <include>name</include> tags recursively for the given XML element
+   Replaces any instances of <include file="foo">bar</include> with the value of the include
+   "bar" from the include file "foo".
+   \param node an XML Element - all child elements are traversed.
+   */
+  void ResolveIncludes(TiXmlElement *node);
+
 private:
+  void ResolveIncludesForNode(TiXmlElement *node);
   bool HasIncludeFile(const CStdString &includeFile) const;
   std::map<CStdString, TiXmlElement> m_includes;
   std::map<CStdString, TiXmlElement> m_defaults;

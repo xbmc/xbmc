@@ -106,7 +106,7 @@ namespace PYXBMC
     control.SetAttribute("type", cControlType);
     TiXmlElement filler("description");
     control.InsertEndChild(filler);
-    g_SkinInfo->ResolveIncludes(&control, cControlType);
+    g_SkinInfo->ResolveIncludes(&control);
 
     // ok, now check for our texture type
     TiXmlElement *pTexture = control.FirstChildElement(cTextureType);

@@ -117,15 +117,31 @@ bool CGUIIncludes::HasIncludeFile(const CStdString &file) const
   return false;
 }
 
-void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
+void CGUIIncludes::ResolveIncludes(TiXmlElement *node)
+{
+  if (!node)
+    return;
+  ResolveIncludesForNode(node);
+
+  TiXmlElement *child = node->FirstChildElement();
+  while (child)
+  {
+    ResolveIncludes(child);
+    child = child->NextSiblingElement();
+  }
+}
+
+void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
 {
   // we have a node, find any <include file="fileName">tagName</include> tags and replace
   // recursively with their real includes
   if (!node) return;
 
   // First add the defaults if this is for a control
-  if (!type.IsEmpty())
-  { // resolve defaults
+  CStdString type;
+  if (node->ValueStr() == "control")
+  {
+    type = node->Attribute("type");
     map<CStdString, TiXmlElement>::const_iterator it = m_defaults.find(type);
     if (it != m_defaults.end())
     {
@@ -139,6 +155,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
       }
     }
   }
+
   TiXmlElement *include = node->FirstChildElement("include");
   while (include && include->FirstChild())
   {

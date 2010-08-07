@@ -186,8 +186,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "coordinates")
     {
-      // resolve any includes within coordinates tag (such as multiple origin includes)
-      g_SkinInfo->ResolveIncludes(pChild);
       TiXmlNode* pSystem = pChild->FirstChild("system");
       if (pSystem)
       {
@@ -218,9 +216,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "controls")
     {
-      // resolve any includes within controls tag (such as whole <control> includes)
-      g_SkinInfo->ResolveIncludes(pChild);
-
       TiXmlElement *pControl = pChild->FirstChildElement();
       while (pControl)
       {

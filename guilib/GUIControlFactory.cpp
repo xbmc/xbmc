@@ -421,7 +421,6 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, ve
     animations.clear();
   while (node)
   {
-    g_SkinInfo->ResolveIncludes(node);
     ret = true;
     if (node->FirstChild())
     {
@@ -622,15 +621,9 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
 
 CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
-  // resolve any <include> tag's in this control
-  g_SkinInfo->ResolveIncludes(pControlNode);
-
   // get the control type
   CStdString strType = GetType(pControlNode);
   CGUIControl::GUICONTROLTYPES type = TranslateControlType(strType);
-
-  // resolve again with strType set so that <default> tags are added
-  g_SkinInfo->ResolveIncludes(pControlNode, strType);
 
   int id = 0;
   float posX = 0, posY = 0;

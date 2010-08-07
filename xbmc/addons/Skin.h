@@ -93,7 +93,8 @@ public:
    */
   static RESOLUTION TranslateResolution(const CStdString &res, RESOLUTION def);
 
-  void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
+  void ResolveIncludes(TiXmlElement *node);
+
   bool ResolveConstant(const CStdString &constant, float &value) const;
   bool ResolveConstant(const CStdString &constant, unsigned int &value) const;
 
