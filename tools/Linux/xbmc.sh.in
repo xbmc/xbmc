@@ -114,6 +114,11 @@ if [ ! $? = "0" ]; then
   echo "xbmc: ulimit is unsupported by this shell" 1>&2
 fi
 
+# Enable alpha blending off the omapdss
+if [ `uname -m` = "armv7l" ]; then
+  "$LIBDIR/xbmc/omapdss-toggle" "--enable-alphablend"
+fi
+
 LOOP=1
 while [ $(( $LOOP )) = "1" ]
 do
@@ -128,5 +133,10 @@ do
     print_crash_report
   fi
 done
+
+# Disable alpha blending off the omapdss
+if [ `uname -m` = "armv7l" ]; then
+  "$LIBDIR/xbmc/omapdss-toggle" "--disable-alphablend"
+fi
 
 exit $RET

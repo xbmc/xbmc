@@ -375,7 +375,7 @@ libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
 else
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
 endif
-externals: codecs libs python visualizations screensavers
+externals: codecs libs python visualizations screensavers omapdss-toggle
 
 xcode_depends: \
 	codecs libs python visualizations screensavers eventclients skins \
@@ -499,6 +499,9 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
+omapdss-toggle:
+	$(MAKE) -C tools/arm/omapdss-toggle/
+
 tools/TexturePacker/TexturePacker: guilib/guilib.a xbmc/lib/libsquish/libsquish-@ARCH@.a
 	$(MAKE) -C tools/TexturePacker/
 
@@ -526,6 +529,7 @@ install-scripts:
 	@install -D tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
 	@install -D -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
 	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
+	@install -D -m a=rxs tools/arm/omapdss-toggle/omapdss-toggle $(DESTDIR)$(libdir)/xbmc/omapdss-toggle
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."

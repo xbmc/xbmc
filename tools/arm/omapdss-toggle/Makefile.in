@@ -1,0 +1,13 @@
+ARCH=@ARCH@
+
+OBJS = omapdss-toggle.o
+
+TARGET = omapdss-toggle
+CLEAN_FILES=$(TARGET)
+
+all: $(TARGET)
+
+include ../../../Makefile.include
+
+$(TARGET): $(OBJS)
+	$(CC) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
