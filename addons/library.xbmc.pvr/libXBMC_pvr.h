@@ -28,24 +28,24 @@
 #include "xbmc_pvr_types.h"
 
 #ifndef _LINUX
-#include "../org.xbmc.addon.library/dlfcn-win32.h"
-#define PVR_HELPER_DLL "\\org.xbmc.pvr.library\\libXBMC_pvr.dll"
+#include "../library.xbmc.addon/dlfcn-win32.h"
+#define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr.dll"
 #else
 #include <dlfcn.h>
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-powerpc-osx.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-osx.so"
 #else
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-x86-osx.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-x86_64-linux.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-x86_64-linux.so"
 #elif defined(_POWERPC)
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-powerpc-linux.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-linux.so"
 #elif defined(_POWERPC64)
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-powerpc64-linux.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc64-linux.so"
 #else /* !__x86_64__ && !__powerpc__ */
-#define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-i486-linux.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-i486-linux.so"
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 

@@ -29,24 +29,24 @@
 typedef void* GUIHANDLE;
 
 #ifndef _LINUX
-#include "../org.xbmc.addon.library/dlfcn-win32.h"
-#define GUI_HELPER_DLL "\\org.xbmc.gui.library\\libXBMC_gui.dll"
+#include "../library.xbmc.addon/dlfcn-win32.h"
+#define GUI_HELPER_DLL "\\library.xbmc.gui\\libXBMC_gui.dll"
 #else
 #include <dlfcn.h>
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-powerpc-osx.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-powerpc-osx.so"
 #else
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-x86-osx.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-x86_64-linux.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-x86_64-linux.so"
 #elif defined(_POWERPC)
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-powerpc-linux.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-powerpc-linux.so"
 #elif defined(_POWERPC64)
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-powerpc64-linux.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-powerpc64-linux.so"
 #else /* !__x86_64__ && !__powerpc__ */
-#define GUI_HELPER_DLL "/org.xbmc.gui.library/libXBMC_gui-i486-linux.so"
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-i486-linux.so"
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 

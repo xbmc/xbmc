@@ -28,23 +28,23 @@
 
 #ifndef _LINUX
 #include "dlfcn-win32.h"
-#define ADDON_DLL "\\org.xbmc.addon.library\\libXBMC_addon.dll"
+#define ADDON_DLL "\\library.xbmc.addon\\libXBMC_addon.dll"
 #else
 #include <dlfcn.h>
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-powerpc-osx.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-osx.so"
 #else
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-x86-osx.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-x86_64-linux.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-x86_64-linux.so"
 #elif defined(_POWERPC)
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-powerpc-linux.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-linux.so"
 #elif defined(_POWERPC64)
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-powerpc64-linux.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc64-linux.so"
 #else /* !__x86_64__ && !__powerpc__ */
-#define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-i486-linux.so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-i486-linux.so"
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 
