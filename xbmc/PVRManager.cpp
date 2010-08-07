@@ -163,6 +163,8 @@ bool CPVRManager::LoadClients()
   for (unsigned i=0; i < addons.size(); i++)
   {
     const AddonPtr clientAddon = addons.at(i);
+    if (!clientAddon->Enabled())
+      continue;
 
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.

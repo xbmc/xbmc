@@ -34,6 +34,7 @@
 #include "URL.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "Application.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -130,7 +131,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   // TODO: System addons should be able to be disabled
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, isInstalled && !isSystem);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, isInstalled && (!isSystem || m_localAddon->Type() == ADDON_PVRDLL));
   SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, isEnabled ? 24021 : 24022);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isUpdatable);
@@ -174,9 +175,17 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   if (!m_localAddon.get())
     return;
 
+  CStdString xbmcPath = _P("special://xbmc/addons");
   CAddonDatabase database;
   database.Open();
-  database.DisableAddon(m_localAddon->ID(), !enable);
+  if (m_localAddon->Type() == ADDON_PVRDLL && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+    database.EnableSystemPVRAddon(m_localAddon->ID(), enable);
+  else
+    database.DisableAddon(m_localAddon->ID(), !enable);
+
+  if (m_localAddon->Type() == ADDON_PVRDLL)
+    g_application.StartPVRManager();
+
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -217,7 +226,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   if (!dialog->SetItem(item))
     return false;
 
-  dialog->DoModal(); 
+  dialog->DoModal();
   return true;
 }
 

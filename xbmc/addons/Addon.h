@@ -209,7 +209,7 @@ protected:
   bool              m_userSettingsLoaded;
 
 private:
-  friend class AddonMgr;
+  friend class CAddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
   CStdString        m_userSettingsPath;
