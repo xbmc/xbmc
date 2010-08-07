@@ -32,6 +32,7 @@ TMPDIR = /tmp
 ### Allow user defined options to overwrite defaults:
 
 -include $(VDRDIR)/Make.config
+-include $(VDRDIR)/Make.global
 
 ### The version number of VDR's plugin API (taken from VDR's "config.h"):
 

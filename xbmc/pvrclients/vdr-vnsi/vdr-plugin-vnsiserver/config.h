@@ -33,8 +33,8 @@
   #define LOGCONSOLE(x...)
 #endif
 
-#define ALLOWED_HOSTS_FILE  "vnsi-server/allowed_hosts.conf"
-#define NO_SIGNAL_FILE      "vnsi-server/noSignal.mpg"
+#define ALLOWED_HOSTS_FILE  "allowed_hosts.conf"
+#define NO_SIGNAL_FILE      "noSignal.mpg"
 #define FRONTEND_DEVICE     "/dev/dvb/adapter%d/frontend%d"
 
 #define LISTEN_PORT       34890
