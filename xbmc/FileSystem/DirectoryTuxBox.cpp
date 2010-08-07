@@ -187,7 +187,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       http.Close(); // Close old connections
     }
   }
-
+  items.SetContent("movies");
   return result;
 }
 
