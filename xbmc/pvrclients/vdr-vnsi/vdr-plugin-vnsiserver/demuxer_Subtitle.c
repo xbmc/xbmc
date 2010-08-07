@@ -50,63 +50,13 @@ void cParserSubtitle::Parse(unsigned char *data, int size, bool pusi)
   if (pusi)
   {
     /* Payload unit start */
-    m_PESStart      = true;
+    m_subtitleBufferPtr = 0;
     m_firstPUSIseen = true;
   }
 
   /* Wait for first pusi */
   if (!m_firstPUSIseen)
     return;
-
-  if (m_PESStart)
-  {
-    if (!PesIsPS1Packet(data))
-    {
-      esyslog("VNSI-Error: Subtitle PES packet contains no valid private stream 1, ignored this packet");
-      m_firstPUSIseen = false;
-      return;
-    }
-
-    m_lastDTS    = m_curDTS;
-    m_lastPTS    = m_curPTS;
-    m_lastLength = m_curLength;
-    int hlen = ParsePESHeader(data, size);
-
-    m_curLength = ((data[4] << 8) | data[5]) - hlen;
-    m_PESStart  = false;
-    data       += hlen;
-    size       -= hlen;
-
-    if (data[0] != 0x20 || data[1] != 0x00)
-    {
-      esyslog("VNSI-Error: Subtitle PES packet contains no valid identifier, ignored this packet");
-      m_firstPUSIseen = false;
-      return;
-    }
-
-    data       += 2;
-    size       -= 2;
-
-    if (m_subtitleBuffer && m_subtitleBufferPtr > 0)
-    {
-      if (m_lastLength <= m_subtitleBufferPtr)
-      {
-        sStreamPacket pkt;
-        pkt.id       = m_streamID;
-        pkt.data     = m_subtitleBuffer;
-        pkt.size     = m_lastLength;
-        pkt.duration = m_curDTS-m_lastDTS;
-        pkt.dts      = m_lastDTS;
-        pkt.pts      = m_lastPTS;
-        SendPacket(&pkt);
-      }
-      else
-      {
-        esyslog("VNSI-Error: Subtitle PES length bigger as readed length");
-      }
-      m_subtitleBufferPtr = 0;
-    }
-  }
 
   if (m_subtitleBuffer == NULL)
   {
@@ -122,4 +72,65 @@ void cParserSubtitle::Parse(unsigned char *data, int size, bool pusi)
 
   memcpy(m_subtitleBuffer+m_subtitleBufferPtr, data, size);
   m_subtitleBufferPtr += size;
+
+  if (m_subtitleBufferPtr < 6)
+    return;
+
+  uint32_t startcode =
+    (m_subtitleBuffer[0] << 24) |
+    (m_subtitleBuffer[1] << 16) |
+    (m_subtitleBuffer[2] << 8) |
+    (m_subtitleBuffer[3]);
+
+  if (startcode == 0x1be)
+  {
+    m_firstPUSIseen = false;
+    return;
+  }
+
+  int psize = m_subtitleBuffer[4] << 8 | m_subtitleBuffer[5];
+
+  if (m_subtitleBufferPtr != psize + 6)
+    return;
+
+  m_firstPUSIseen = false;
+
+  int hlen = ParsePESHeader(m_subtitleBuffer, m_subtitleBufferPtr);
+  if (hlen < 0)
+    return;
+
+  if (m_lastDTS == DVD_NOPTS_VALUE)
+  {
+    m_lastDTS = m_curDTS;
+    m_lastPTS = m_curPTS;
+  }
+
+  psize -= hlen - 6;
+  uint8_t *buf = m_subtitleBuffer + hlen;
+
+  if (psize < 2 || buf[0] != 0x20 || buf[1] != 0x00)
+    return;
+
+  psize -= 2;
+  buf += 2;
+
+  if (psize >= 6)
+  {
+    // end_of_PES_data_field_marker
+    if (buf[psize - 1] == 0xff)
+    {
+      sStreamPacket pkt;
+      pkt.id       = m_streamID;
+      pkt.data     = buf;
+      pkt.size     = psize - 1;
+      pkt.duration = m_curDTS-m_lastDTS;
+      pkt.dts      = m_curPTS;
+      pkt.pts      = m_curPTS;
+      SendPacket(&pkt);
+
+      m_lastDTS = m_curDTS;
+      m_lastPTS = m_curPTS;
+    }
+  }
+
 }

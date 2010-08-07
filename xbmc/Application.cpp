@@ -3311,6 +3311,7 @@ void CApplication::Stop()
     if (videoScan)
       videoScan->StopScanning();
 
+    StopPVRManager();
     StopServices();
     //Sleep(5000);
 
