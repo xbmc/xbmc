@@ -161,13 +161,22 @@ bool COmapOverlayRenderer::Configure(unsigned int width, unsigned int height, un
     for (unsigned int i = 0; i < 2; i++)
     {
       FreeYV12Image(i);
-      m_bConfigured &= CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
+      bool configureBuffer = CreateYV12Image(i, m_overlayScreenInfo.xres, m_overlayScreenInfo.yres);
+      if (!configureBuffer)
+        CLog::Log(LOGERROR, "OmapOverlay: Failed to create YV12 Buffer %i", i);
+
+      m_bConfigured &= configureBuffer;
     }
 
     m_currentBackBuffer = 0;
   }
 
   m_iFlags = flags;
+
+  if (m_bConfigured)
+    CLog::Log(LOGINFO, "OmapOverlay: Successfully configured");
+  else
+    CLog::Log(LOGERROR, "OmapOverlay: Failed to configure");
 
   return m_bConfigured;
 }
