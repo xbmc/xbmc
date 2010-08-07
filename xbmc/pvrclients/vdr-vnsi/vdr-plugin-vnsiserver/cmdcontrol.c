@@ -966,9 +966,11 @@ bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
       recname++;
       m_resp->add_String(m_toUTF8.Convert(recname));
     }
-    else {
+    else if (!isempty(recording->Info()->Title())) {
       m_resp->add_String(m_toUTF8.Convert(recording->Info()->Title()));
     }
+    else
+      m_resp->add_String("");
     if (!isempty(recording->Info()->ShortText()))
       m_resp->add_String(m_toUTF8.Convert(recording->Info()->ShortText()));
     else
