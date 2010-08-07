@@ -21,8 +21,8 @@ CFLAGS   ?= -g -O2 -Wall
 
 CXX      ?= g++
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
-CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
-DEFINES += -D__APPLE__
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -Wl,-no_compact_linkedit -dynamiclib -single_module -undefined dynamic_lookup -no_compact_linkedit
+DEFINES += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
 else
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 endif

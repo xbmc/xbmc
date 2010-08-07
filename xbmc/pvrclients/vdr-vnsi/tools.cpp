@@ -24,10 +24,6 @@
  */
 
 #include "tools.h"
-#ifdef __APPLE__
-# include "getline.h"
-#endif
-
 
 uint64_t ntohll(uint64_t a)
 {

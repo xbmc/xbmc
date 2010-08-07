@@ -24,9 +24,6 @@
  */
 
 #include "tools.h"
-#ifdef __APPLE__
-# include "getline.h"
-#endif
 
 ssize_t safe_read(int filedes, void *buffer, size_t size)
 {

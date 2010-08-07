@@ -22,7 +22,7 @@
 #ifndef SOL_TCP
 #define SOL_TCP IPPROTO_TCP
 #endif
-#include "OSXGNUReplacements.h"
+#include "../../../osx/OSXGNUReplacements.h"
 #else
 #include <sys/epoll.h>
 #endif

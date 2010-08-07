@@ -13,7 +13,8 @@ ADDONDIR = $(PREFIX)/share/xbmc/addons
 LIBS     = -ldl
 INCLUDES = -I. -I../../../xbmc/cores/dvdplayer/DVDDemuxers -I../../../xbmc/addons/include -I../../../xbmc/cores/dvdplayer/Codecs/ffmpeg
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
-INCLUDES +=  -I/opt/local/include
+INCLUDES +=  -I/opt/local/include -I../../
+DEFINES += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
 endif
 DEFINES += -D_LINUX -fPIC -DUSE_DEMUX
 LIBDIR   = ../../../addons/pvr.vdr.vnsi
@@ -24,7 +25,7 @@ CFLAGS   ?= -g -O2 -Wall
 
 CXX      ?= g++
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
-CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -Wl,-no_compact_linkedit -dynamiclib -single_module -undefined dynamic_lookup
 else
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 endif
