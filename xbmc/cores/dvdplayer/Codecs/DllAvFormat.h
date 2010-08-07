@@ -74,6 +74,7 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
+  virtual int avformat_seek_file(AVFormatContext *s, int stream_index, int64_t min_ts, int64_t ts, int64_t max_ts, int flags)=0;
 #if (!defined USE_EXTERNAL_FFMPEG)
   virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
 #endif
@@ -214,6 +215,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
+  DEFINE_FUNC_ALIGNED6(int, __cdecl, avformat_seek_file, AVFormatContext*, int, int64_t, int64_t, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
@@ -228,6 +230,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #else
   DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
   DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
+  DEFINE_METHOD6(int, avformat_seek_file, (AVFormatContext *p1, int p2, int64_t p3, int64_t p4, int64_t p5, int p6))
   DEFINE_METHOD1(int, av_find_stream_info_dont_call, (AVFormatContext *p1))
   DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
@@ -282,6 +285,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD_RENAME(ff_read_frame_flush, av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
+    RESOLVE_METHOD(avformat_seek_file)
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
