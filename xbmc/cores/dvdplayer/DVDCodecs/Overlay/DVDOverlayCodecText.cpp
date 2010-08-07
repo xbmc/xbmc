@@ -90,11 +90,12 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     if(*p == '{')
     {
       if(p>start)
+      {
         if(Taginit)
           TagConv.ConvertLine(m_pOverlay, start, p-start);
         else
           m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
-
+      }
       start = p+1;
 
       while(*p != '}' && p<end)
@@ -111,6 +112,7 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     p++;
   }
   if(p>start)
+  {
     if(Taginit)
     {
       TagConv.ConvertLine(m_pOverlay, start, p-start);
@@ -118,7 +120,7 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     }
     else
       m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
-
+  }
   return OC_OVERLAY;
 }
 
