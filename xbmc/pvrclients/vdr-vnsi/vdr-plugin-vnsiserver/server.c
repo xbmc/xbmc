@@ -48,8 +48,7 @@ public:
     if (!Load(AllowedHostsFile, true, true))
     {
       isyslog("VNSI-Error: Invalid or missing '%s'. falling back to 'svdrphosts.conf'.", *AllowedHostsFile);
-      cString Base(cPlugin::ConfigDirectory());
-      Base = cString::sprintf("%s/../svdrphosts.conf", *Base);
+      cString Base = cString::sprintf("%s/../svdrphosts.conf", *VNSIServerConfig.ConfigDirectory);
       if (!Load(Base, true, true))
       {
         esyslog("VNSI-Error: Invalid or missing %s. Adding 127.0.0.1 to list of allowed hosts.", *Base);
@@ -68,14 +67,13 @@ cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
   m_ServerPort  = listenPort;
   m_ServerId    = time(NULL) ^ getpid();
 
-  cString Base(cPlugin::ConfigDirectory());
-  if(*Base)
+  if(*VNSIServerConfig.ConfigDirectory)
   {
-    m_AllowedHostsFile = cString::sprintf("%s/" ALLOWED_HOSTS_FILE, *Base);
+    m_AllowedHostsFile = cString::sprintf("%s/" ALLOWED_HOSTS_FILE, *VNSIServerConfig.ConfigDirectory);
   }
   else
   {
-    esyslog("VNSI-Error: cServer: cPlugin::ConfigDirectory() failed !");
+    esyslog("VNSI-Error: cServer: missing ConfigDirectory!");
     m_AllowedHostsFile = cString::sprintf("/video/" ALLOWED_HOSTS_FILE);
   }
 

@@ -64,6 +64,7 @@ bool cPluginVNSIServer::ProcessArgs(int argc, char *argv[])
 bool cPluginVNSIServer::Initialize(void)
 {
   // Initialize any background activities the plugin shall perform.
+  VNSIServerConfig.ConfigDirectory = ConfigDirectory(PLUGIN_NAME_I18N);
   return true;
 }
 

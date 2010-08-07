@@ -33,14 +33,14 @@ cVNSIServerConfig::cVNSIServerConfig()
 
   listen_port         = LISTEN_PORT;
   SuspendMode         = smAlways;
+  ConfigDirectory     = NULL;
 }
 
 void cVNSIServerConfig::readNoSignalStream()
 {
   m_noSignalStreamSize = 0;
 
-  cString noSignalFileName(cPlugin::ConfigDirectory());
-  noSignalFileName = cString::sprintf("%s/"NO_SIGNAL_FILE, *noSignalFileName);
+  cString noSignalFileName = cString::sprintf("%s/"NO_SIGNAL_FILE, *ConfigDirectory);
 
   FILE *const f = fopen(*noSignalFileName, "rb");
   if (f)

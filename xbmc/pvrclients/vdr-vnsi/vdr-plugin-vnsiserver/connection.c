@@ -249,8 +249,7 @@ void cConnection::EnableNetLog(bool yesNo, const char* ClientName)
 {
   if (yesNo)
   {
-    cString Base(cPlugin::ConfigDirectory());
-    Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *Base, *m_ClientAddress, ClientName);
+    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientName);
 
     m_NetLogFile = fopen(*Base, "a");
     if (m_NetLogFile)

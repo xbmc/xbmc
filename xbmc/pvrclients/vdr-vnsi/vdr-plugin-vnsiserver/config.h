@@ -61,6 +61,8 @@ public:
   int  listen_port;         // Port of remote server
   int  SuspendMode;
 
+  cString ConfigDirectory;
+
   uint8_t m_noSignalStreamData[ 6 + 0xffff ];
   long    m_noSignalStreamSize;
 };
