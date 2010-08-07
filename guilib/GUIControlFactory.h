@@ -46,7 +46,6 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
-  void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
 
   /*! \brief translate from control name to control type
    \param type name of the control
