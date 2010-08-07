@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9,00"
 	Name="libXBMC_pvr"
-	ProjectGUID="{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+	ProjectGUID="{6D8C91F8-992F-4C83-9DE3-485D64EF8420}"
 	RootNamespace="XBMC_VDR"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc;..\..\..\..\xbmc\addons\include;..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers"
+				AdditionalIncludeDirectories="..\..\..\..\..\xbmc;..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers"
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../../addons/org.xbmc.pvr.library/libXBMC_pvr.dll"
+				OutputFile="../../../../../addons/library.xbmc.pvr/$(ProjectName).dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -133,6 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="../../../../../addons/library.xbmc.pvr/$(ProjectName).dll"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc\addons\include;..\..\..\..\xbmc\addons;..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers;..\..\..\..\xbmc"
+				AdditionalIncludeDirectories="..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc"
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../../addons/org.xbmc.addon.library/libXBMC_addon.dll"
+				OutputFile="../../../../../addons/library.xbmc.addon/$(ProjectName).dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -113,7 +113,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc\addons\include;..\..\..\..\xbmc\addons;..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers;..\..\..\..\xbmc"
+				AdditionalIncludeDirectories="..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\addons;..\..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -133,7 +133,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../../addons/org.xbmc.addon.library/libXBMC_addon.dll"
+				OutputFile="../../../../../addons/library.xbmc.addon/$(ProjectName).dll"
 			/>
 			<Tool
 				Name="VCALinkTool"

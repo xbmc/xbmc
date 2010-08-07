@@ -116,11 +116,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libwavpack_dll", "..\..\xbm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\xbmc\cores\paplayer\YMCodec\StSoundLibrary\StSoundLibrary.vcproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_addon", "..\..\lib\libXBMC_addon\project\VS2008Express\libXBMC_addon.vcproj", "{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_addon", "..\..\lib\addons\library.xbmc.addon\project\VS2008Express\libXBMC_addon.vcproj", "{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_pvr", "..\..\lib\libXBMC_pvr\project\VS2008Express\libXBMC_pvr.vcproj", "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_gui", "..\..\lib\addons\library.xbmc.gui\project\VS2008Express\libXBMC_gui.vcproj", "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvclient_vdr", "..\..\xbmc\pvrclients\vdr-streamdev\project\VS2008Express\XBMC_VDR.vcproj", "{838CDE27-AFDF-449F-9981-A78903C9C71E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_pvr", "..\..\lib\addons\library.xbmc.pvr\project\VS2008Express\libXBMC_pvr.vcproj", "{6D8C91F8-992F-4C83-9DE3-485D64EF8420}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_vdr", "..\..\xbmc\pvrclients\vdr-streamdev\project\VS2008Express\XBMC_VDR.vcproj", "{838CDE27-AFDF-449F-9981-A78903C9C71E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv", "..\..\xbmc\pvrclients\MediaPortal\project\VS2008Express\XBMC_MPTV.vcproj", "{74C9642E-1988-48DC-8404-11717C355378}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdts_dll", "..\..\xbmc\cores\dvdplayer\Codecs\libdts\vc++\libdts.vcproj", "{F93133AB-EB51-4955-AEDF-639632891042}"
 EndProject
@@ -542,6 +546,14 @@ Global
 		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
@@ -726,6 +738,14 @@ Global
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
