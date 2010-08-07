@@ -419,7 +419,7 @@ void CSFTPSessionManager::ClearOutIdleSessions()
   for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end();)
   {
     if (iter->second->IsIdle())
-      iter = sessions.erase(iter);
+      sessions.erase(iter++);
     else
       iter++;
   }
