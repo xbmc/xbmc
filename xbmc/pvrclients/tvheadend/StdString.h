@@ -3,7 +3,7 @@
 #include <stdint.h>
 #if !defined(_LINUX)
 #include <windows.h>
-#include "pvrclient-vdr_os.h"
+#include "pvrclient-tvheadend_os.h"
 #endif
 
 // =============================================================================

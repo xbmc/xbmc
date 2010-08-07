@@ -30,7 +30,7 @@
 typedef int ssize_t;
 typedef int mode_t;
 typedef int bool_t;
-typedef signed __int8 int8_t;
+typedef __int8 int8_t;
 typedef signed __int16 int16_t;
 typedef signed __int32 int32_t;
 typedef signed __int64 int64_t;
@@ -117,8 +117,8 @@ typedef long off_t;
 #define O_NDELAY	0
 
 #define S_IRWXO 007
-#define	S_ISDIR(m) (((m) & _S_IFDIR) == _S_IFDIR)
-#define	S_ISREG(m) (((m) & _S_IFREG) == _S_IFREG)
+//#define	S_ISDIR(m) (((m) & _S_IFDIR) == _S_IFDIR)
+//#define	S_ISREG(m) (((m) & _S_IFREG) == _S_IFREG)
 
 #ifndef SIGHUP
 #define	SIGHUP	1	/* hangup */
@@ -198,7 +198,9 @@ typedef char * caddr_t;
 #define EINPROGRESS WSAEINPROGRESS
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #define EALREADY WSAEALREADY
+#ifndef ETIMEDOUT
 #define ETIMEDOUT WSAETIMEDOUT
+#endif
 #define ECONNABORTED WSAECONNABORTED
 #define ECONNREFUSED WSAECONNREFUSED
 #define ECONNRESET WSAECONNRESET

@@ -19,7 +19,7 @@
  *
  */
 
-#include "pvrclient-vdr_os_windows.h"
+#include "os_windows.h"
 #include <sys/timeb.h>
 
 THREADLOCAL int ws32_result;

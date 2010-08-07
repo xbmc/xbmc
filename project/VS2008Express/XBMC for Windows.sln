@@ -126,6 +126,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_vdr", "..\..\xbmc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv", "..\..\xbmc\pvrclients\MediaPortal\project\VS2008Express\XBMC_MPTV.vcproj", "{74C9642E-1988-48DC-8404-11717C355378}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_hts", "..\..\xbmc\pvrclients\tvheadend\project\VS2008Express\XBMC_hts.vcproj", "{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdts_dll", "..\..\xbmc\cores\dvdplayer\Codecs\libdts\vc++\libdts.vcproj", "{F93133AB-EB51-4955-AEDF-639632891042}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAC3Codec_dll", "..\..\xbmc\cores\paplayer\AC3Codec\vc++\AC3Codec.vcproj", "{3039DB92-836E-4563-9DE0-D0C2AB28F14F}"
@@ -554,6 +556,14 @@ Global
 		{74C9642E-1988-48DC-8404-11717C355378}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{2F4A2296-3E00-4881-B6BC-1B7ADAC3CBF4}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{F93133AB-EB51-4955-AEDF-639632891042}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
