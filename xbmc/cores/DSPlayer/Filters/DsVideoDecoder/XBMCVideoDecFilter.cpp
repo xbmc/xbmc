@@ -1450,7 +1450,7 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA2Decoder(UINT nNumRenderTargets, IDirect3
   {
     if (!m_pDXVADecoder)
     {
-      //m_pDXVADecoder  = DIRECTSHOW::CDXVADecoder::CreateDecoder (this, pDirectXVideoDec, &m_DXVADecoderGUID, GetPicEntryNumber(), &m_DXVA2Config);
+		m_pDXVADecoder  = CDXVADecoder::CreateDecoder(this, pDirectXVideoDec, &m_DXVADecoderGUID, GetPicEntryNumber(), &m_DXVA2Config);
       if (m_pDXVADecoder) 
       {
         CLog::Log(LOGINFO,"YEAH GOT IT");
