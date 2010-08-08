@@ -543,6 +543,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
     {
+      m_rootDir.SetSources(g_settings.m_fileSources);
       Update(0,m_Directory[0]->m_strPath);
       Update(1,m_Directory[1]->m_strPath);
     }
