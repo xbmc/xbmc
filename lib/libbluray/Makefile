@@ -12,6 +12,8 @@
 #  Usage:
 #    make
 #    sudo make install
+#
+#  Darwin only:
 #    make install_xbmc
 
 # get OS type from shell
@@ -22,9 +24,15 @@ ifeq ($(OSTYPE),Darwin)
   CFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -I /opt/local/include
   LDFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -L/opt/local/lib
   CPPFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -I /opt/local/include
+else
+  prefix=/usr
 endif
 
-LIBBLURAY = libbluray/src/.libs/libbluray.dylib
+ifeq ($(OSTYPE),Darwin)
+  LIBBLURAY = libbluray/src/.libs/libbluray.dylib
+else
+  LIBBLURAY = libbluray/src/.libs/libbluray.so
+endif
 
 all:: $(LIBBLURAY)
 
@@ -37,7 +45,7 @@ libbluray/configure:
 ifeq ($(OSTYPE),Darwin)
 	cd  libbluray; ./configure --prefix=$(prefix) --exec-prefix=$(prefix) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"
 else
-	cd  libbluray; ./configure
+	cd  libbluray; ./configure --prefix=$(prefix) --exec-prefix=$(prefix)
 endif
 
 ifeq ($(OSTYPE),Darwin)
