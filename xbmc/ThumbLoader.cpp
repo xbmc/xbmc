@@ -150,6 +150,7 @@ bool CThumbExtractor::DoWork()
   }
   else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
+    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_path.c_str());
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
