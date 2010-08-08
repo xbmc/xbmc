@@ -80,9 +80,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
 
+#ifdef _DEBUG
   int64_t start;
   start = CurrentHostCounter();
-
+#endif
   RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   
@@ -103,11 +104,12 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
+#ifdef _DEBUG
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
   CLog::Log(LOGDEBUG,"Load %s: %.2fms", GetProperty("xmlfile").c_str(), 1000.f * (end - start) / freq);
-
+#endif
   return ret;
 }
 
@@ -591,9 +593,10 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
 
+#ifdef _DEBUG
   int64_t start;
   start = CurrentHostCounter();
-
+#endif
   // load skin xml fil
   CStdString xmlFile = GetProperty("xmlfile");
   bool bHasPath=false;
@@ -608,11 +611,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   // and now allocate resources
   CGUIControlGroup::AllocResources();
 
+#ifdef _DEBUG
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
   CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
-
+#endif
   m_bAllocated = true;
 }
 
