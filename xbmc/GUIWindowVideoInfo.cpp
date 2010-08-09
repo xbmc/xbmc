@@ -294,7 +294,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
         if (db.Open())
         {
           CFileItemList items;
-          CStdString where = db.FormatSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
+          CStdString where = db.PrepareSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
           if (db.GetTvShowsByWhere("", where, items) && items.Size())
             season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
           db.Close();
