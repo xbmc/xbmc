@@ -135,8 +135,8 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   while(si->m_decoder.GetDataSize() == 0)
     if (si->m_decoder.GetStatus() == STATUS_ENDED || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
     {
-      si->m_triggered = true;
-      si->m_player->m_callback.OnQueueNextItem();
+      if (!si->m_triggered)
+        si->m_player->m_callback.OnQueueNextItem();
       si->m_stream->Drain();
       return;
     }
