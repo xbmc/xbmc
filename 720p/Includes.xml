@@ -4318,11 +4318,13 @@
 						<label> $LOCALIZE[31003] </label>
 						<onclick>XBMC.ReplaceWindow(12)</onclick>
 					</item>
+					<!--
 					<item id="4">
 						<description>Programs Settings Button</description>
 						<label> $LOCALIZE[31004] </label>
 						<onclick>XBMC.ReplaceWindow(13)</onclick>
 					</item>
+					-->
 					<item id="5">
 						<description>Weather Settings Button</description>
 						<label> $LOCALIZE[31005] </label>
@@ -4333,11 +4335,13 @@
 						<label> $LOCALIZE[31006] </label>
 						<onclick>XBMC.ReplaceWindow(16)</onclick>
 					</item>
+					<!--
 					<item id="6">
 						<description>Network Settings Button</description>
 						<label> $LOCALIZE[31602] </label>
 						<onclick>XBMC.ReplaceWindow(18)</onclick>
 					</item>
+  				-->
 				</content>
 			</control>
 		</control>
