@@ -1082,6 +1082,11 @@ bool YUVBuffer::Create(unsigned int width, unsigned int height)
   m_width = width;
   m_height = height;
 
+  // Create the buffers in system memory and copy to D3DPOOL_DEFAULT:
+  // - helps with lost devices. A buffer can be locked for dvdplayer without interfering.
+  // - Dynamic + D3DPOOL_DEFAULT caused trouble for Intel i3 and some IGP. Bad sync/locking in the driver  I suppose
+  // and Present failed every second time for the second video played.
+  // - this is what D3D9 does behind the scenes anyway
   if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
     || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
     || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
