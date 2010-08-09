@@ -326,7 +326,6 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     StreamInfo *i = *itt;
     if (!m_crossFade)
     {
-      i->m_stream->Flush();
       i->m_stream->Drain();
     }
     else
