@@ -161,7 +161,7 @@ CAEStream::~CAEStream()
 {
   CSingleLock lock(m_critSection);
   m_valid = false;
-  AE.RemoveStream(this);
+  lock.Leave();
 
   /* de-init/free post-proc objects */
   while(!m_postProc.empty())
