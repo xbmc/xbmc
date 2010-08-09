@@ -85,6 +85,8 @@ SRCS=AnimatedGif.cpp \
      GUIControlProfiler.cpp \
      XBTF.cpp \
      XBTFReader.cpp \
+     DirtyRegionSolvers.cpp \
+     DirtyRegionTracker.cpp
 
 LIB=guilib.a
 

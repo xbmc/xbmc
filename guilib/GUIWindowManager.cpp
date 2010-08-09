@@ -516,38 +516,44 @@ void CGUIWindowManager::Render()
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
-  CRect currentDirtyRegion;
-  for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
-    currentDirtyRegion.Union(m_DirtyRegion[i]);
+  CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
-  m_unifiedDirtyRegion.Union(currentDirtyRegion);
-
-  GLint oldRegion[8];
-  if (g_advancedSettings.m_guiUseDirtyRegions)
+  for (unsigned int i = 0; i < dirtyRegions.size(); i++)
   {
-    if (m_unifiedDirtyRegion.IsEmpty())
-      return;
+    CDirtyRegion currentRegion = dirtyRegions[i];
+
+    GLint oldRegion[8];
     glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
-    // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
-    glScissor(m_unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - m_unifiedDirtyRegion.y2, m_unifiedDirtyRegion.Width(), m_unifiedDirtyRegion.Height());
-    glEnable(GL_SCISSOR_TEST);
-  }
 
-  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-  if (pWindow)
-  {
-    pWindow->ClearBackground();
-    pWindow->Render();
-  }
+    if (g_advancedSettings.m_guiUseDirtyRegions)
+    {
+      if (currentRegion.IsEmpty())
+        continue;
 
-  // we render the dialogs based on their render order.
-  vector<CGUIWindow *> renderList = m_activeDialogs;
-  stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
-  
-  for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
-  {
-    if ((*it)->IsDialogRunning())
-      (*it)->Render();
+      // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
+      glScissor(currentRegion.x1, g_graphicsContext.GetHeight() - currentRegion.y2, currentRegion.Width(), currentRegion.Height());
+      glEnable(GL_SCISSOR_TEST);
+    }
+
+    CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+    if (pWindow)
+    {
+      pWindow->ClearBackground();
+      pWindow->Render();
+    }
+
+    // we render the dialogs based on their render order.
+    vector<CGUIWindow *> renderList = m_activeDialogs;
+    stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
+    
+    for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
+    {
+      if ((*it)->IsDialogRunning())
+        (*it)->Render();
+    }
+
+    // Reset scissorbox
+    glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
   }
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
@@ -566,27 +572,15 @@ void CGUIWindowManager::Render()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_TEXTURE_2D);
 
-    for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
+    for (unsigned int i = 0; i <dirtyRegions.size(); i++)
     {
-      CRect rect = m_DirtyRegion[i];
+      CRect rect = dirtyRegions[i];
       DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
     }
-
-    DrawColoredQuad(m_unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
 #endif
   }
 
-  // Reset dirtyregion
-  m_DirtyRegion.clear();
-
-  if (g_advancedSettings.m_guiUseDirtyRegions)
-  {
-    if (m_unifiedDirtyRegion.IsEmpty())
-      return;
-    glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
-  }
-
-  m_unifiedDirtyRegion = currentDirtyRegion;
+  m_tracker.CleanMarkedRegions();
 }
 
 void CGUIWindowManager::PureProcess(unsigned int currentTime)
@@ -638,7 +632,7 @@ void CGUIWindowManager::FrameMove()
 
 void CGUIWindowManager::MarkDirtyRegion(CRect region)
 {
-  m_DirtyRegion.push_back(region);
+  m_tracker.MarkDirtyRegion(CDirtyRegion(region));
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const

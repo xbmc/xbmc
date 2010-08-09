@@ -32,6 +32,7 @@
 #include "GUIWindow.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
+#include "DirtyRegionTracker.h"
 
 class CGUIDialog;
 
@@ -150,8 +151,8 @@ private:
 
   bool m_bShowOverlay;
 
-  std::vector<CRect> m_DirtyRegion;
-  CRect m_unifiedDirtyRegion;
+  CDirtyRegionTracker m_tracker;
+
   int  m_iNested;
 };
 
