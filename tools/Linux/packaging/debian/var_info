@@ -19,17 +19,10 @@ BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
  libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
  nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev,"
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, libcrystalhd-dev,"
-else
-    BUILD_DEPENDS="$BUILD_DEPENDS librtmp-dev,"
-fi
-
-# include librtmp-dev for Ubuntu maverick as well
-if [ $(lsb_release -cs) = "maverick" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS librtmp-dev,"
+    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
 fi
 
 case "$1" in
