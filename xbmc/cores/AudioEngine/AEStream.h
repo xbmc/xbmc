@@ -31,6 +31,7 @@
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
+#include "AEPostProc.h"
 
 using namespace std;
 
@@ -56,6 +57,8 @@ public:
   void  SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   void  SetDynamicRangeCompression(int drc);
 
+  void AppendPostProc(IAEPostProc *pp);
+
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
 private:
@@ -73,12 +76,13 @@ private:
 
   AEAudioFormat m_format;
 
-  bool     m_resample;      /* true if the audio needs to be resampled  */
-  bool     m_convert;       /* true if the bitspersample needs converting */
-  float   *m_convertBuffer; /* buffer for converted data */
-  bool     m_valid;         /* true if the stream is valid */
-  CAERemap m_remap;         /* the remapper */
-  float    m_volume;        /* the volume level */
+  bool               m_resample;      /* true if the audio needs to be resampled  */
+  bool               m_convert;       /* true if the bitspersample needs converting */
+  float             *m_convertBuffer; /* buffer for converted data */
+  bool               m_valid;         /* true if the stream is valid */
+  CAERemap           m_remap;         /* the remapper */
+  float              m_volume;        /* the volume level */
+  list<IAEPostProc*> m_postProc;      /* post processing objects */
 
   CAEConvert::AEConvertToFn m_convertFn;
 

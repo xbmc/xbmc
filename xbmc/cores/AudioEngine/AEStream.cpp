@@ -237,6 +237,12 @@ unsigned int CAEStream::ProcessFrameBuffer()
       /* downmix/remap the data */
       m_remap.Remap(m_newPacket.data, pkt.data, m_format.m_frames);
 
+      /* post-process the packet */
+      list<IAEPostProc*>::iterator ppi;
+      for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
+        (*ppi)->Process(pkt.data, pkt.samples);
+
+      /* add the packet to the output */
       m_outBuffer.push_back(pkt);
       m_newPacket.samples = 0;
     }
@@ -317,6 +323,11 @@ void CAEStream::Flush()
     delete[] p.data;
     p.data = NULL;    
   };
+
+  /* flush any post-proc objects */
+  list<IAEPostProc*>::iterator ppi;
+  for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
+    (*ppi)->Flush();
   
   /* reset our counts */
   m_frameBufferSize = 0;
@@ -327,3 +338,11 @@ void CAEStream::SetDynamicRangeCompression(int drc)
 {
   //FIXME
 }
+
+void CAEStream::AppendPostProc(IAEPostProc *pp)
+{
+  CSingleLock lock(m_critSection);
+  pp->Flush();
+  m_postProc.push_back(pp);
+}
+
