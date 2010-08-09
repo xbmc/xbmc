@@ -483,9 +483,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp">
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -1033,9 +1030,6 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Atomics.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\AutoPtrHandle.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\Autorun.cpp">
@@ -2316,11 +2310,20 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerFilter.cpp">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerThread.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSOutputpin.cpp">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.cpp">
+      <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\AutoPtrHandle.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp">
+      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp">
+      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2667,9 +2670,6 @@
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h">
-      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h">
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.h">
@@ -3929,9 +3929,6 @@
     <ClInclude Include="..\..\xbmc\utils\Archive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\AutoPtrHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\Autorun.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -4853,11 +4850,20 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerFilter.h">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerThread.h">
-      <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSOutputpin.h">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.h">
+      <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\AutoPtrHandle.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h">
+      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h">
+      <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

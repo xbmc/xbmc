@@ -42,11 +42,11 @@
 // CPacketQueue
 //
 
-CPacketQueue::CPacketQueue() : m_size(0)
+CBasePacketQueue::CBasePacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(DsPacketStruct* p)
+void CBasePacketQueue::Add(DsPacketStruct* p)
 {
   CSingleLock lock(m_queuelock);
   ASSERT(p);
@@ -73,7 +73,7 @@ void CPacketQueue::Add(DsPacketStruct* p)
   m_packetlist.push_back(p);
 }
 
-DsPacketStruct* CPacketQueue::Remove()
+DsPacketStruct* CBasePacketQueue::Remove()
 {
   CSingleLock lock(m_queuelock);
   ASSERT(m_packetlist.size() > 0);
@@ -85,7 +85,7 @@ DsPacketStruct* CPacketQueue::Remove()
   return p;
 }
 
-void CPacketQueue::RemoveAll()
+void CBasePacketQueue::RemoveAll()
 {
   CSingleLock lock(m_queuelock);
   for (PacketList::iterator it = m_packetlist.begin(); it != m_packetlist.end();)
@@ -96,14 +96,14 @@ void CPacketQueue::RemoveAll()
   
 }
 
-int CPacketQueue::GetCount()
+int CBasePacketQueue::GetCount()
 {
   CSingleLock lock(m_queuelock);
   int res = m_packetlist.size();
   return res;
 }
 
-int CPacketQueue::GetSize()
+int CBasePacketQueue::GetSize()
 {
   CSingleLock lock(m_queuelock);
   return m_size;

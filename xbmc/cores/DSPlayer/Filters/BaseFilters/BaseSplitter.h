@@ -199,7 +199,7 @@ public:
   }
 };*/
 
-class CPacketQueue 
+class CBasePacketQueue 
 {
 private:
   int m_size;
@@ -208,7 +208,7 @@ private:
 protected:
   CCriticalSection m_queuelock;
 public:
-  CPacketQueue();
+  CBasePacketQueue();
   void Add(DsPacketStruct* p);
   DsPacketStruct* Remove();
   void RemoveAll();
@@ -254,7 +254,7 @@ protected:
   vector<CMediaType> m_mts;
   int m_nBuffers;
 private:
-  CPacketQueue m_queue;
+  CBasePacketQueue m_queue;
   HRESULT m_hrDeliver;
 
   bool m_fFlushing, m_fFlushed;
