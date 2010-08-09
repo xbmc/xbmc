@@ -2,7 +2,7 @@
 # This is a file run by sh used for replacing certain variables from input
 # files in the XBMC packaging.
 
-BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
+BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
  libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
  libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,

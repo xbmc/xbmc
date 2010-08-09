@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
+Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
  libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
  libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
