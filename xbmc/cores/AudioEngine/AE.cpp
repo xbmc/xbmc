@@ -121,7 +121,7 @@ enum AEState CAE::GetState()
   return m_state;
 }
 
-CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout)
+CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain/* = false */, bool ownsPostProc/* = false */)
 {
   CLog::Log(LOGINFO, "CAE::GetStream - %d, %u, %u, %s",
     CAEUtil::DataFormatToBits(dataFormat),
@@ -131,7 +131,7 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   );
 
   CSingleLock lock(m_critSection);
-  CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout);
+  CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
   m_streams.push_back(stream);
   return stream;
 }
@@ -315,17 +315,31 @@ void CAE::Run()
     }
 
     /* mix in any running streams */
-    for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    for(itt = m_streams.begin(); itt != m_streams.end();)
     {
       if (m_state != AE_STATE_RUN) break;
       stream = *itt;
 
       /* dont process streams that are paused */
-      if (stream->IsPaused()) continue;
+      if (stream->IsPaused()) {
+        ++itt;
+        continue;
+      }
 
       float *frame = stream->GetFrame();
       if (!frame)
+      {
+        /* if the stream is drained and is set to free on drain */
+        if (stream->IsDraining() && stream->IsFreeOnDrain())
+        {
+          itt = m_streams.erase(itt);
+          delete stream;
+          continue;
+        }
+
+        ++itt;
         continue;
+      }
 
       /* we still need to take frames when muted */
       if (!g_settings.m_bMute) {
@@ -334,6 +348,8 @@ void CAE::Run()
           out[i] += frame[i] * volume;
         ++div;
       }
+
+      ++itt;
     }
     lock.Leave();
 

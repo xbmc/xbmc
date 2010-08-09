@@ -39,16 +39,23 @@ class IAEPostProc;
 class CAEStream
 {
 public:
-  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout);
+  typedef void (AECBFunc)(CAEStream*stream, void *arg);
+
+  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
   ~CAEStream();
   void Initialize();
+  void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
+  void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
 
   unsigned int GetFrameSize() {return m_format.m_frameSize;}
   unsigned int AddData(void *data, unsigned int size);
   float* GetFrame();
   float GetDelay();
 
-  bool IsPaused() {return m_paused; }
+  bool IsPaused     () { return m_paused;      }
+  bool IsDraining   () { return m_draining;    }
+  bool IsFreeOnDrain() { return m_freeOnDrain; }
+
   void Pause   () {m_paused = true; }
   void Resume  () {m_paused = false;}
   void Drain   ();
@@ -66,6 +73,8 @@ public:
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
   unsigned int GetSampleRate()   { return m_format.m_sampleRate;   }
 private:
+  void InternalFlush();
+
   CCriticalSection  m_critSection;
   enum AEDataFormat m_initDataFormat;
   unsigned int      m_initSampleRate;
@@ -86,7 +95,9 @@ private:
   bool               m_valid;         /* true if the stream is valid */
   CAERemap           m_remap;         /* the remapper */
   float              m_volume;        /* the volume level */
+  bool               m_freeOnDrain;   /* true to free the stream when it has drained */
   list<IAEPostProc*> m_postProc;      /* post processing objects */
+  bool               m_ownsPostProc;  /* true if the stream should free post-proc filters */
 
   CAEConvert::AEConvertToFn m_convertFn;
 
@@ -104,6 +115,11 @@ private:
   PPacket       m_packet;
   float        *m_packetPos;
   bool          m_paused;
+  bool          m_draining;
+
+  /* callback hook for more data */
+  AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;
+  void         *m_cbDataArg , *m_cbDrainArg;
 };
 
 #endif

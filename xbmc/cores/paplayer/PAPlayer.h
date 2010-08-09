@@ -24,7 +24,7 @@
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
-#include "cores/ssrc.h"
+#include "utils/CriticalSection.h"
 
 #include "AudioEngine/AE.h"
 #include "AudioEngine/AEStream.h"
@@ -63,9 +63,9 @@ public:
   virtual void OnNothingToQueueNotify();
   virtual bool CloseFile()       { return CloseFileInternal(true); }
   virtual bool CloseFileInternal(bool bAudioDevice = true);
-  virtual bool IsPlaying() const { return m_bIsPlaying; }
+  virtual bool IsPlaying() const { return m_isPlaying; }
   virtual void Pause();
-  virtual bool IsPaused() const { return m_bPaused; }
+  virtual bool IsPaused() const { return m_isPaused; }
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return true; }
   virtual bool CanSeek();
@@ -81,7 +81,7 @@ public:
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int GetTotalTime();
-  __int64 GetTotalTime64();
+  //__int64 GetTotalTime64();
   virtual int GetAudioBitrate();
   virtual int GetChannels();
   virtual int GetBitsPerSample();
@@ -93,7 +93,7 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext();
 
-  void StreamCallback( LPVOID pPacketContext );
+  //void StreamCallback( LPVOID pPacketContext );
 
   virtual void RegisterAudioCallback(IAudioCallback *pCallback);
   virtual void UnRegisterAudioCallback();
@@ -102,11 +102,10 @@ public:
   virtual void DoAudioWork();
 
 protected:
-
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
-
+/*
   void HandleSeeking();
   bool HandleFFwdRewd();
 
@@ -122,9 +121,31 @@ protected:
   CEvent m_startEvent;
 
   int m_iSpeed;   // current playing speed
-
+*/
 private:
+  IAudioCallback    *m_audioCallback;
+  CCriticalSection   m_critSection;
 
+  typedef struct
+  {
+    CAudioDecoder       m_decoder;
+    PAPlayer           *m_player;
+    CAEStream          *m_stream;
+    CAEPPAnimationFade *m_fadeIn;
+    CAEPPAnimationFade *m_fadeOut;
+  } StreamInfo;
+
+  StreamInfo        *m_lastStream;
+  list<StreamInfo*>  m_streams;
+  bool               m_isPlaying;
+  bool               m_isPaused;
+  int                m_crossFade;
+
+  void FreeStreamInfo(StreamInfo *si);
+  static void StaticStreamOnData (CAEStream *sender, void *arg);
+  static void StaticStreamOnDrain(CAEStream *sender, void *arg);
+  static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
+/*
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
 
   __int64 m_SeekTime;
@@ -152,18 +173,14 @@ private:
   void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
 
-  void FreePostProcFilters();
   void UpdateCrossFadingTime(const CFileItem& file);
   bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
   void UpdateCacheLevel();
 
-  static void StaticOnAnimationDone(CAEPPAnimationFade *sender, void *arg);
-  void OnAnimationDone(CAEPPAnimationFade *sender);
-
   int m_currentStream;
 
   CAEStream*          m_pAudioStream[2];
-  CAEPPAnimationFade* m_pAudioFade[2];
+  //CAEPPAnimationFade* m_pAudioFade[2];
   float               m_latency[2];
   unsigned char*      m_pcmBuffer[2];
   int                 m_bufferPos[2];
@@ -199,6 +216,6 @@ private:
   // stuff for visualisation
   unsigned int     m_visBufferLength;
   short            m_visBuffer[PACKET_SIZE+2];
-
+*/
 };
 

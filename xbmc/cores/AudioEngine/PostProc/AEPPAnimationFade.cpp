@@ -33,7 +33,6 @@ CAEPPAnimationFade::CAEPPAnimationFade(float from, float to, unsigned int durati
 
 CAEPPAnimationFade::~CAEPPAnimationFade()
 {
-  DeInitialize();  
 }
 
 bool CAEPPAnimationFade::Initialize(CAEStream *stream)
@@ -44,15 +43,12 @@ bool CAEPPAnimationFade::Initialize(CAEStream *stream)
   m_stream       = stream;
   m_channelCount = stream->GetChannelCount();
   m_step         = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * (float)m_duration);
-printf("%f\n", m_step);
   m_running      = false;
   return true;
 }
 
 void CAEPPAnimationFade::DeInitialize()
 {
-  if (!m_stream) return;
-  m_stream->RemovePostProc(this);
   m_stream = NULL;
 }
 
@@ -63,9 +59,6 @@ void CAEPPAnimationFade::Flush()
 
 void CAEPPAnimationFade::Process(float *data, unsigned int frames)
 {
-  if (m_step < 0.0f)
-    printf("%d\n", frames);
-
   /* apply the current level */
   unsigned int f, c;
   for(f = 0; f < frames; ++f)
@@ -82,10 +75,9 @@ void CAEPPAnimationFade::Process(float *data, unsigned int frames)
 
     if (
       (m_step > 0.0f && m_position > m_to - m_step && m_position < m_to + m_step) ||
-      (m_step < 0.0f && m_position < m_to + m_step && m_position > m_to - m_step)
+      (m_step < 0.0f && m_position > m_to + m_step && m_position < m_to - m_step)
     )
     {
-      printf("IT done %f %f\n", m_position, m_to);
       m_position = m_to;
       m_running  = false;
       if (m_callback)

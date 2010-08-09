@@ -25,7 +25,7 @@
 #include "AEStream.h"
 #include "AEUtil.h"
 
-CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout):
+CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc):
   m_convertBuffer  (NULL ),
   m_valid          (false),
   m_volume         (1.0f ),
@@ -34,7 +34,12 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   m_frameBufferSize(0    ),
   m_ssrc           (NULL ),
   m_framesBuffered (0    ),
-  m_paused         (0    )
+  m_paused         (0    ),
+  m_draining       (false),
+  m_cbDataFunc     (NULL ),
+  m_cbDrainFunc    (NULL ),
+  m_cbDataArg      (NULL ),
+  m_cbDrainArg     (NULL )
 {
   m_ssrcData.data_out = NULL;
 
@@ -42,6 +47,8 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   m_initSampleRate    = sampleRate;
   m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
+  m_freeOnDrain       = freeOnDrain;
+  m_ownsPostProc      = ownsPostProc;
   Initialize();
 }
 
@@ -151,15 +158,19 @@ void CAEStream::Initialize()
 CAEStream::~CAEStream()
 {
   CSingleLock lock(m_critSection);
-  m_valid = 0;
-  lock.Leave();
-
-  /* deinit post-proc objects */
-  while(!m_postProc.empty())
-    m_postProc.front()->DeInitialize();
-
-  Flush();
+  m_valid = false;
   AE.RemoveStream(this);
+
+  /* de-init/free post-proc objects */
+  while(!m_postProc.empty())
+  {
+    IAEPostProc *pp = m_postProc.front();
+    m_postProc.pop_front();
+    pp->DeInitialize();
+    if (m_ownsPostProc) delete pp;
+  }
+
+  InternalFlush();
   delete[] m_frameBuffer;
   if (m_convert)
     delete[] m_convertBuffer;
@@ -172,12 +183,27 @@ CAEStream::~CAEStream()
   }
 
   delete[] m_newPacket.data;
+  CLog::Log(LOGDEBUG, "CAEStream::~CAEStream - Destructed");
+}
+
+void CAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
+{
+  CSingleLock lock(m_critSection);
+  m_cbDataFunc = cbFunc;
+  m_cbDataArg  = arg;
+}
+
+void CAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
+{
+  CSingleLock lock(m_critSection);
+  m_cbDrainFunc = cbFunc;
+  m_cbDrainArg  = arg;
 }
 
 unsigned int CAEStream::AddData(void *data, unsigned int size)
 {
   CSingleLock lock(m_critSection);
-  if (!m_valid || size == 0 || data == NULL) return 0;  
+  if (!m_valid || size == 0 || data == NULL || m_draining) return 0;  
 
   /* only buffer up to 1 second of data */
   if (m_framesBuffered >= AE.GetSampleRate())
@@ -250,14 +276,14 @@ unsigned int CAEStream::ProcessFrameBuffer()
     /* if we have a full block of data */
     if (m_newPacket.samples == m_format.m_frameSamples)
     {
-      PPacket pkt;
-      pkt.samples = m_aePacketSamples;
-      pkt.data    = new float[m_aePacketSamples];
-
       /* post-process the packet */
       list<IAEPostProc*>::iterator pitt;
       for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
-        (*pitt)->Process(pkt.data, m_format.m_frames);
+        (*pitt)->Process(m_newPacket.data, m_format.m_frames);
+
+      PPacket pkt;
+      pkt.samples = m_aePacketSamples;
+      pkt.data    = new float[m_aePacketSamples];
 
       /* downmix/remap the data */
       m_remap.Remap(m_newPacket.data, pkt.data, m_format.m_frames);
@@ -283,7 +309,15 @@ float* CAEStream::GetFrame()
     
     /* no more packets, return null */
     if (m_outBuffer.empty())
+    {
+      /* if the buffer is empty trigger the data callback function */
+      if (!m_draining && m_cbDataFunc)
+      {
+        lock.Leave();
+        m_cbDataFunc(this, m_cbDataArg);
+      }
       return NULL;
+    }
 
     /* get the next packet */
     m_packet = m_outBuffer.front();
@@ -298,13 +332,33 @@ float* CAEStream::GetFrame()
   m_packetPos      += m_aeChannelCount;
 
   --m_framesBuffered;
+
+  /* if we are draining */
+  if (m_draining)
+  {
+    /* if we have drained trigger the callback function */
+    if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc)
+    {
+      lock.Leave();
+      m_cbDrainFunc(this, m_cbDrainArg);
+    }
+  }
+  else
+  {
+    /* if the buffer is < 50% full, trigger the data callback function */ 
+    if (m_cbDataFunc && m_framesBuffered < (AE.GetSampleRate() >> 1))
+    {
+      lock.Leave();
+      m_cbDataFunc(this, m_cbDataArg);
+    }
+  }
+
   return ret;
 }
 
 float CAEStream::GetDelay()
 {
   float frames;
-  /* TODO: make me thread safe */
   CSingleLock lock(m_critSection);
   frames = m_framesBuffered;
   lock.Leave();
@@ -314,12 +368,18 @@ float CAEStream::GetDelay()
 
 void CAEStream::Drain()
 {
-  /* FIXME */
+  CSingleLock lock(m_critSection);
+  m_draining = true;
 }
 
 void CAEStream::Flush()
 {
   CSingleLock lock(m_critSection);
+  InternalFlush();
+}
+
+void CAEStream::InternalFlush()
+{
   /* reset the resampler */
   if (m_resample) {
     m_ssrcData.end_of_input = 0;
