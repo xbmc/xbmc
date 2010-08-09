@@ -10,7 +10,7 @@ SRCS = \
 	AEStream.cpp \
 	AESound.cpp \
 	AEUtil.cpp \
-	FilterButterworth24db.cpp
+	PostProc/AEPPAnimationFade.cpp
 
 LIB=audioengine.a
 

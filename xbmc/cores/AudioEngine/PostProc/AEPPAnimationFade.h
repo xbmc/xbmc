@@ -19,19 +19,32 @@
  *
  */
 
-#ifndef AEPOSTPROC_H
-#define AEPOSTPROC_H
+#ifndef AEPPANIMATIONFADE_H
+#define AEPPANIMATIONFADE_H
 
-#include "AEStream.h"
+#include "AEPostProc.h"
 
-class CAEStream;
-class IAEPostProc
+class CAEPPAnimationFade : public IAEPostProc
 {
 public:
-  virtual bool Initialize(CAEStream *stream) = 0;
-  virtual void Flush() = 0;
-  virtual void Process(float *data, unsigned int samples) = 0;
-  virtual const char* GetName() = 0;
+  virtual bool        Initialize(CAEStream *stream);
+  virtual void        Drain();
+  virtual void        Process(float *data, unsigned int samples);
+  virtual const char* GetName() { return "AnimationFade"; }
+
+  void Run();
+  void Stop();
+  void SetPosition(const float position);
+private:
+  unsigned int m_sampleRate;   /* the AE sample rate   */
+  unsigned int m_channelCount; /* the AE channel count */
+
+  bool  m_running;  /* if the fade is running */
+  float m_position; /* current fade position */
+  float m_from;     /* fade from */
+  float m_to;       /* fade to */
+  float m_length;   /* fade time in ms */
+  float m_step;     /* the fade step size */
 };
 
 #endif

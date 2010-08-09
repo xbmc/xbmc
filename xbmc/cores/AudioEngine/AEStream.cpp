@@ -20,6 +20,7 @@
  */
 
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include "AEStream.h"
 #include "AEUtil.h"
@@ -127,6 +128,21 @@ void CAEStream::Initialize()
     m_ssrcData.output_frames = m_format.m_frames * 2;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.end_of_input  = 0;
+  }
+
+  /* re-initialize post-proc objects */
+  list<IAEPostProc*>::iterator pitt;
+  for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
+  {
+    IAEPostProc *pp = *pitt;
+    if (!pp->Initialize(this))
+    {
+      CLog::Log(LOGERROR, "Failed to re-initialize post-proc filter: %s", pp->GetName());
+      pitt = m_postProc.erase(pitt);
+      continue;
+    }
+
+    ++pitt;
   }
 
   m_valid = true;
@@ -341,8 +357,12 @@ void CAEStream::SetDynamicRangeCompression(int drc)
 
 void CAEStream::AppendPostProc(IAEPostProc *pp)
 {
-  CSingleLock lock(m_critSection);
-  pp->Flush();
-  m_postProc.push_back(pp);
+  if (pp->Initialize(this))
+  {
+    CSingleLock lock(m_critSection);
+    m_postProc.push_back(pp);
+  }
+  else
+    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
 }
 
