@@ -898,7 +898,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   
   if(time < samp[0].Start)
   {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %%l64d is before first sample %l64d", time, samp[0].Start);
+    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is before first sample %l64d", time, samp[0].Start);
     time = samp[0].Start;
   }  
 
