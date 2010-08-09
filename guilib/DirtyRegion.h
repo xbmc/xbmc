@@ -5,7 +5,7 @@
 class CDirtyRegion : public CRect
 {
 public:
-  CDirtyRegion(CRect &rect) : CRect(rect) { m_age = 0; }
+  CDirtyRegion(const CRect &rect) : CRect(rect) { m_age = 0; }
   CDirtyRegion(float left, float top, float right, float bottom) : CRect(left, top, right, bottom) { m_age = 0; }
   CDirtyRegion() : CRect() { m_age = 0; }
 

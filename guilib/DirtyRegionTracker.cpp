@@ -1,16 +1,35 @@
 #include "DirtyRegionTracker.h"
-
+#include "AdvancedSettings.h"
 #include <stdio.h>
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
 {
   m_buffering = buffering;
-  m_solver = new CUnionDirtyRegionSolver();
+  m_solver = NULL;
 }
 
 CDirtyRegionTracker::~CDirtyRegionTracker()
 {
   delete m_solver;
+}
+
+void CDirtyRegionTracker::SelectAlgorithm()
+{
+  delete m_solver;
+
+  switch (g_advancedSettings.m_guiAlgorithmDirtyRegions)
+  {
+    case DIRTYREGION_SOLVER_UNION:
+      m_solver = new CUnionDirtyRegionSolver();
+      break;
+    case DIRTYREGION_SOLVER_COST_REDUCTION:
+      m_solver = new CGreedyDirtyRegionSolver();
+      break;
+    case DIRTYREGION_SOLVER_NONE:
+    default:
+      m_solver = new CFillViewportRegionSolver();
+      break;
+  }
 }
 
 void CDirtyRegionTracker::MarkDirtyRegion(const CDirtyRegion &region)
@@ -23,15 +42,10 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 {
   CDirtyRegionList output;
 
-  if (m_markedRegions.size() > 0)
+  if (m_solver && m_markedRegions.size() > 0)
     m_solver->Solve(m_markedRegions, output);
 
   return output;
-}
-
-void CDirtyRegionTracker::TimingInformation(float time)
-{
-  m_solver->TimingInformation(time);
 }
 
 void CDirtyRegionTracker::CleanMarkedRegions()

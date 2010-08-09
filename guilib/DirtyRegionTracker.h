@@ -7,10 +7,10 @@ class CDirtyRegionTracker
 public:
   CDirtyRegionTracker(int buffering = 2);
   ~CDirtyRegionTracker();
+  void SelectAlgorithm();
   void MarkDirtyRegion(const CDirtyRegion &region);
 
   CDirtyRegionList GetDirtyRegions();
-  void TimingInformation(float time);
   void CleanMarkedRegions();
 
 private:

@@ -266,8 +266,8 @@ void CAdvancedSettings::Initialize()
 
   m_measureRefreshrate = false;
 
-  m_guiUseDirtyRegions = false;
   m_guiVisualizeDirtyRegions = false;
+  m_guiAlgorithmDirtyRegions = 0;
 }
 
 bool CAdvancedSettings::Load()
@@ -764,8 +764,8 @@ bool CAdvancedSettings::Load()
   pElement = pRootElement->FirstChildElement("gui");
   if (pElement)
   {
-    XMLUtils::GetBoolean(pElement, "usedirtyregions",       m_guiUseDirtyRegions);
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
+    XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
   }
 
   // load in the GUISettings overrides:

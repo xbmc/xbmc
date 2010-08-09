@@ -50,6 +50,7 @@ CGUIWindowManager::~CGUIWindowManager(void)
 void CGUIWindowManager::Initialize()
 {
   LoadNotOnDemandWindows();
+  m_tracker.SelectAlgorithm();
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
@@ -521,15 +522,15 @@ void CGUIWindowManager::Render()
   for (unsigned int i = 0; i < dirtyRegions.size(); i++)
   {
     CDirtyRegion currentRegion = dirtyRegions[i];
+    if (currentRegion.IsEmpty())
+        continue;
 
     GLint oldRegion[8];
     glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
 
-    if (g_advancedSettings.m_guiUseDirtyRegions)
+    // If we visualize the regions we don't clip since it will never get cleared properly
+    if (!g_advancedSettings.m_guiVisualizeDirtyRegions)
     {
-      if (currentRegion.IsEmpty())
-        continue;
-
       // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
       glScissor(currentRegion.x1, g_graphicsContext.GetHeight() - currentRegion.y2, currentRegion.Width(), currentRegion.Height());
       glEnable(GL_SCISSOR_TEST);

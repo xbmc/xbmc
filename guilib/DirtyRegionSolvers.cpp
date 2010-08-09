@@ -1,4 +1,5 @@
 #include "DirtyRegionSolvers.h"
+#include "GraphicContext.h"
 #include <stdio.h>
 
 void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
@@ -11,6 +12,12 @@ void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionL
     output.push_back(unifiedRegion);
 }
 
+void CFillViewportRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
+{
+  CDirtyRegion unifiedRegion(g_graphicsContext.GetViewWindow());
+  output.push_back(unifiedRegion);
+}
+
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()
 {
   m_costNewRegion = 10.0f;
@@ -19,8 +26,6 @@ CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()
 
 void CGreedyDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
-  float totalCost = 0.0f;
-
   for (unsigned int i = 0; i < input.size(); i++)
   {
     CDirtyRegion possibleUnionRegion;
@@ -45,14 +50,8 @@ void CGreedyDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegion
     float newRegionTotalCost = m_costPerArea * currentRegion.Area() + m_costNewRegion;
 
     if (possibleUnionNbr >= 0 && possibleUnionCost < newRegionTotalCost)
-    {
       output[possibleUnionNbr] = possibleUnionRegion;
-      totalCost += possibleUnionCost;
-    }
     else
-    {
       output.push_back(currentRegion);
-      totalCost += newRegionTotalCost;
-    }
   }
 }
