@@ -25,8 +25,6 @@
 #include "AudioEngine/AEPostProc.h"
 #include "IAudioCallback.h"
 
-
-
 class CAEPPAnimationFade : public IAEPostProc
 {
 public:

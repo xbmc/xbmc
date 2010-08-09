@@ -25,8 +25,6 @@
 #include "StdString.h"
 #include "utils/CriticalSection.h"
 
-using namespace std;
-
 class CAESound
 {
 public:

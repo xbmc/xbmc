@@ -33,8 +33,6 @@
 #include "AERemap.h"
 #include "AEPostProc.h"
 
-using namespace std;
-
 class IAEPostProc;
 class CAEStream
 {
@@ -89,33 +87,33 @@ private:
 
   AEAudioFormat m_format;
 
-  bool               m_resample;      /* true if the audio needs to be resampled  */
-  bool               m_convert;       /* true if the bitspersample needs converting */
-  float             *m_convertBuffer; /* buffer for converted data */
-  bool               m_valid;         /* true if the stream is valid */
-  CAERemap           m_remap;         /* the remapper */
-  float              m_volume;        /* the volume level */
-  bool               m_freeOnDrain;   /* true to free the stream when it has drained */
-  list<IAEPostProc*> m_postProc;      /* post processing objects */
+  bool                    m_resample;      /* true if the audio needs to be resampled  */
+  bool                    m_convert;       /* true if the bitspersample needs converting */
+  float                  *m_convertBuffer; /* buffer for converted data */
+  bool                    m_valid;         /* true if the stream is valid */
+  CAERemap                m_remap;         /* the remapper */
+  float                   m_volume;        /* the volume level */
+  bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
+  std::list<IAEPostProc*> m_postProc;      /* post processing objects */
   bool               m_ownsPostProc;  /* true if the stream should free post-proc filters */
 
   CAEConvert::AEConvertToFn m_convertFn;
 
-  uint8_t      *m_frameBuffer;
-  unsigned int  m_frameBufferSize;
-  unsigned int  m_bytesPerFrame;
-  unsigned int  m_aeChannelCount;
-  unsigned int  m_aePacketSamples;
-  SRC_STATE    *m_ssrc;
-  SRC_DATA      m_ssrcData;
-  unsigned int  m_framesBuffered;
-  list<PPacket> m_outBuffer;
-  unsigned int  ProcessFrameBuffer();
-  PPacket       m_newPacket;
-  PPacket       m_packet;
-  float        *m_packetPos;
-  bool          m_paused;
-  bool          m_draining;
+  uint8_t           *m_frameBuffer;
+  unsigned int       m_frameBufferSize;
+  unsigned int       m_bytesPerFrame;
+  unsigned int       m_aeChannelCount;
+  unsigned int       m_aePacketSamples;
+  SRC_STATE         *m_ssrc;
+  SRC_DATA           m_ssrcData;
+  unsigned int       m_framesBuffered;
+  std::list<PPacket> m_outBuffer;
+  unsigned int       ProcessFrameBuffer();
+  PPacket            m_newPacket;
+  PPacket            m_packet;
+  float             *m_packetPos;
+  bool               m_paused;
+  bool               m_draining;
 
   /* callback hook for more data */
   AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;

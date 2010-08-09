@@ -60,10 +60,9 @@ void CAEPPAnimationFade::Flush()
 void CAEPPAnimationFade::Process(float *data, unsigned int frames)
 {
   /* apply the current level */
-  unsigned int f, c;
-  for(f = 0; f < frames; ++f)
+  for(unsigned int f = 0; f < frames; ++f)
   {
-    for(c = 0; c < m_channelCount; ++c, ++data)
+    for(unsigned int c = 0; c < m_channelCount; ++c, ++data)
       *data *= m_position;
 
     /* if we are not fading, we are done */

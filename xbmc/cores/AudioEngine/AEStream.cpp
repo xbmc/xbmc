@@ -25,6 +25,8 @@
 #include "AEStream.h"
 #include "AEUtil.h"
 
+using namespace std;
+
 CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc):
   m_convertBuffer  (NULL ),
   m_valid          (false),
