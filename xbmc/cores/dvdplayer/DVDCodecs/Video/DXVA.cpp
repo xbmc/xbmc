@@ -838,7 +838,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
   else if(value < def)
     return DXVA2FloatToFixed( DXVA2FixedToFloat(range.DefaultValue)
                             + (DXVA2FixedToFloat(range.MinValue) - DXVA2FixedToFloat(range.DefaultValue)) 
-                            * (value - def) / (max - def) );
+                            * (value - def) / (min - def) );
   else
     return range.DefaultValue;
 }
