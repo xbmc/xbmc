@@ -22,28 +22,50 @@
 #include "AEPPAnimationFade.h"
 #include "AE.h"
 
-CAEPPAnimationFade::CAEPPAnimationFade(float from, float to, float duration)
+CAEPPAnimationFade::CAEPPAnimationFade(float from, float to, unsigned int duration) :
+  m_stream  (NULL),
+  m_callback(NULL)
 {
   m_from     = from;
   m_to       = to;
   m_duration = duration;
 }
 
+CAEPPAnimationFade::~CAEPPAnimationFade()
+{
+  DeInitialize();  
+}
+
 bool CAEPPAnimationFade::Initialize(CAEStream *stream)
 {
-  m_channelCount = AE.GetChannelCount();
-  m_step         = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * m_duration);
+  if (m_stream != stream)
+    DeInitialize();
+
+  m_stream       = stream;
+  m_channelCount = stream->GetChannelCount();
+  m_step         = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * (float)m_duration);
+printf("%f\n", m_step);
   m_running      = false;
   return true;
 }
 
-void CAEPPAnimationFade::Drain()
+void CAEPPAnimationFade::DeInitialize()
+{
+  if (!m_stream) return;
+  m_stream->RemovePostProc(this);
+  m_stream = NULL;
+}
+
+void CAEPPAnimationFade::Flush()
 {
   /* we dont buffer, nothing to do */
 }
 
 void CAEPPAnimationFade::Process(float *data, unsigned int frames)
 {
+  if (m_step < 0.0f)
+    printf("%d\n", frames);
+
   /* apply the current level */
   unsigned int f, c;
   for(f = 0; f < frames; ++f)
@@ -58,11 +80,16 @@ void CAEPPAnimationFade::Process(float *data, unsigned int frames)
     m_position += m_step;
     m_position = std::min(1.0f, std::max(0.0f, m_position));
 
-    /* if we are finished */
-    if (m_position > m_to - 0.001 && m_position < m_to + 0.001)
+    if (
+      (m_step > 0.0f && m_position > m_to - m_step && m_position < m_to + m_step) ||
+      (m_step < 0.0f && m_position < m_to + m_step && m_position > m_to - m_step)
+    )
     {
+      printf("IT done %f %f\n", m_position, m_to);
       m_position = m_to;
       m_running  = false;
+      if (m_callback)
+        m_callback(this, m_cbArg);
     }
   }
 }
@@ -80,5 +107,11 @@ void CAEPPAnimationFade::Stop()
 void CAEPPAnimationFade::SetPosition(const float position)
 {
   m_position = std::min(1.0f, std::max(0.0f, position));
+}
+
+void CAEPPAnimationFade::SetDuration(const unsigned int duration)
+{
+  m_duration = duration;
+  m_step     = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * (float)m_duration);
 }
 

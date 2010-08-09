@@ -63,14 +63,13 @@ void CAudioDecoder::Destroy()
   m_canPlay = false;
 }
 
-bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned int nBufferSize)
+bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
 {
   Destroy();
 
   CSingleLock lock(m_critSection);
   // create our pcm buffer
-  m_pcmBuffer.Create((int)std::max<unsigned int>(2, nBufferSize) *
-                     INTERNAL_BUFFER_LENGTH);
+  m_pcmBuffer.Create(2 * INTERNAL_BUFFER_LENGTH);
 
   // reset our playback timing variables
   m_eof = false;

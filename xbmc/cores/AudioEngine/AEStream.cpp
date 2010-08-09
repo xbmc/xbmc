@@ -153,7 +153,11 @@ CAEStream::~CAEStream()
   CSingleLock lock(m_critSection);
   m_valid = 0;
   lock.Leave();
-  
+
+  /* deinit post-proc objects */
+  while(!m_postProc.empty())
+    m_postProc.front()->DeInitialize();
+
   Flush();
   AE.RemoveStream(this);
   delete[] m_frameBuffer;
@@ -250,13 +254,13 @@ unsigned int CAEStream::ProcessFrameBuffer()
       pkt.samples = m_aePacketSamples;
       pkt.data    = new float[m_aePacketSamples];
 
+      /* post-process the packet */
+      list<IAEPostProc*>::iterator pitt;
+      for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
+        (*pitt)->Process(pkt.data, m_format.m_frames);
+
       /* downmix/remap the data */
       m_remap.Remap(m_newPacket.data, pkt.data, m_format.m_frames);
-
-      /* post-process the packet */
-      list<IAEPostProc*>::iterator ppi;
-      for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
-        (*ppi)->Process(pkt.data, m_format.m_frames);
 
       /* add the packet to the output */
       m_outBuffer.push_back(pkt);
@@ -364,5 +368,22 @@ void CAEStream::AppendPostProc(IAEPostProc *pp)
   }
   else
     CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
+}
+
+void CAEStream::PrependPostProc(IAEPostProc *pp)
+{
+  if (pp->Initialize(this))
+  {
+    CSingleLock lock(m_critSection);
+    m_postProc.push_front(pp);
+  }
+  else
+    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
+}
+
+void CAEStream::RemovePostProc(IAEPostProc *pp)
+{
+  CSingleLock lock(m_critSection);
+  m_postProc.remove(pp);
 }
 

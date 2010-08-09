@@ -28,6 +28,7 @@
 
 #include "AudioEngine/AE.h"
 #include "AudioEngine/AEStream.h"
+#include "AudioEngine/PostProc/AEPPAnimationFade.h"
 
 class CFileItem;
 #ifndef _LINUX
@@ -151,17 +152,22 @@ private:
   void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
 
+  void FreePostProcFilters();
   void UpdateCrossFadingTime(const CFileItem& file);
   bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
   void UpdateCacheLevel();
 
+  static void StaticOnAnimationDone(CAEPPAnimationFade *sender, void *arg);
+  void OnAnimationDone(CAEPPAnimationFade *sender);
+
   int m_currentStream;
 
-  CAEStream*        m_pAudioStream[2];
-  float             m_latency[2];
-  unsigned char*    m_pcmBuffer[2];
-  int               m_bufferPos[2];
-  unsigned int      m_Chunklen[2];
+  CAEStream*          m_pAudioStream[2];
+  CAEPPAnimationFade* m_pAudioFade[2];
+  float               m_latency[2];
+  unsigned char*      m_pcmBuffer[2];
+  int                 m_bufferPos[2];
+  unsigned int        m_Chunklen[2];
 
   unsigned int     m_SampleRate;
   unsigned int     m_Channels;
