@@ -58,7 +58,9 @@ public:
   void  SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   void  SetDynamicRangeCompression(int drc);
 
-  void AppendPostProc(IAEPostProc *pp);
+  void AppendPostProc (IAEPostProc *pp);
+  void PrependPostProc(IAEPostProc *pp);
+  void RemovePostProc (IAEPostProc *pp);
 
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }

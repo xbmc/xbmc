@@ -76,6 +76,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
     m_bitsPerSample[i]  = 0;
 
     m_pAudioStream[i] = NULL;
+    m_pAudioFade[i] = NULL;
     m_pcmBuffer[i] = NULL;
     m_bufferPos[i] = 0;
     m_Chunklen[i]  = PACKET_SIZE;
@@ -97,15 +98,21 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 
   m_currentFile = new CFileItem;
   m_nextFile = new CFileItem;
+
+  m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
+  m_pAudioFade[0] = new CAEPPAnimationFade(1.0f, 0.0f, m_crossFading * 1000);
+  m_pAudioFade[1] = new CAEPPAnimationFade(0.0f, 1.0f, m_crossFading * 1000);
+  m_pAudioFade[0]->SetDoneCallback(&StaticOnAnimationDone, this);
+  m_pAudioFade[1]->SetDoneCallback(&StaticOnAnimationDone, this);
 }
 
 PAPlayer::~PAPlayer()
 {
+  FreePostProcFilters();
   CloseFileInternal(true);
   delete m_currentFile;
   delete m_nextFile;
 }
-
 
 void PAPlayer::OnExit()
 {
@@ -116,14 +123,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   if (m_currentlyCrossFading) CloseFileInternal(false); //user seems to be in a hurry
 
-  m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
-  //WASAPI doesn't support multiple streams, no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
-  if (file.IsCDDA() || file.IsLastFM() || g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") != CStdString::npos) m_crossFading = 0;
+  UpdateCrossFadingTime(file);
   if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip
     //set to max 2 seconds for these prev/next transitions
     if (m_crossFading > 2) m_crossFading = 2;
+
     //queue for crossfading
     bool result = QueueNextFile(file, false);
     if (result)
@@ -144,7 +150,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // always open the file using the current decoder
   m_currentDecoder = 0;
 
-  if (!m_decoder[m_currentDecoder].Create(file, (__int64)(options.starttime * 1000), m_crossFading))
+  if (!m_decoder[m_currentDecoder].Create(file, (__int64)(options.starttime * 1000)))
     return false;
 
   m_iSpeed = 1;
@@ -183,6 +189,15 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   return true;
 }
 
+void PAPlayer::FreePostProcFilters()
+{
+  delete m_pAudioFade[0];
+  m_pAudioFade[0] = NULL;
+
+  delete m_pAudioFade[1];
+  m_pAudioFade[1] = NULL;
+}
+
 void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 {
   if ((m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade")))
@@ -199,12 +214,31 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
           (m_currentFile->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
           (m_currentFile->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
         )
-        || g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") != CStdString::npos
       )
     )
     {
       m_crossFading = 0;
     }
+  }
+
+  m_pAudioFade[0]->SetDuration(m_crossFading * 1000);
+  m_pAudioFade[1]->SetDuration(m_crossFading * 1000);
+}
+
+void PAPlayer::StaticOnAnimationDone(CAEPPAnimationFade *sender, void *arg)
+{
+  ((PAPlayer*)arg)->OnAnimationDone(sender);
+}
+
+void PAPlayer::OnAnimationDone(CAEPPAnimationFade *sender)
+{
+  /* fade-out completed */
+  if (sender == m_pAudioFade[0])
+  {
+    CLog::Log(LOGDEBUG, "Finished Crossfading");
+    m_currentlyCrossFading = false;
+    FreeStream(1 - m_currentStream);
+    m_decoder[1 - m_currentDecoder].Destroy();
   }
 }
 
@@ -235,7 +269,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   // check if we can handle this file at all
   int decoder = 1 - m_currentDecoder;
   int64_t seekOffset = (file.m_lStartOffset * 1000) / 75;
-  if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
+  if (!m_decoder[decoder].Create(file, seekOffset))
   {
     m_bQueueFailed = true;
     return false;
@@ -253,18 +287,11 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   unsigned int channels, samplerate, bitspersample;
   m_decoder[decoder].GetDataFormat(&channels, &samplerate, &bitspersample);
 
-  // check the number of channels isn't changing (else we can't do crossfading)
-  if (m_crossFading && m_decoder[m_currentDecoder].GetChannels() == channels)
-  { // crossfading - need to create a new stream
-    if (!CreateStream(1 - m_currentStream, channels, samplerate, bitspersample))
-    {
-      m_decoder[decoder].Destroy();
-      CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
-    }
-  }
-  else
-  { // no crossfading if nr of channels is not the same
-    m_crossFading = 0;
+  // crossfading - need to create a new stream
+  if (m_crossFading && !CreateStream(1 - m_currentStream, channels, samplerate, bitspersample))
+  {
+    m_decoder[decoder].Destroy();
+    CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
   }
 
   *m_nextFile = file;
@@ -327,76 +354,44 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::DrainStream(int stream)
 {
-  if(m_bStopPlaying || m_pAudioStream[1 - stream])
-  {
-    m_pAudioStream[stream]->Drain();
-    return;
-  }
-
-  DWORD silence = m_pAudioStream[stream]->GetFrameSize() - m_bufferPos[stream] % m_pAudioStream[stream]->GetFrameSize();
-
-  if(silence > 0 && m_bufferPos[stream] > 0)
-  {
-    CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioStream[stream]->GetFrameSize());
-    memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence);
-    m_bufferPos[stream] += silence;
-  }
-
-  DWORD added = 0;
-  while(m_bufferPos[stream] - added >= m_pAudioStream[stream]->GetFrameSize())
-  {
-    added += m_pAudioStream[stream]->AddData(m_pcmBuffer[stream] + added, m_bufferPos[stream] - added);
-    Sleep(1);
-  }
-  m_bufferPos[stream] = 0;
-
   m_pAudioStream[stream]->Drain();
 }
 
 bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  if (m_pAudioStream[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == samplerate/* && m_bitsPerSample[num] == bitspersample*/)
-  {
-    CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio renderer");
-  }
-  else
-  {
-    FreeStream(num);
-    CLog::Log(LOGDEBUG, "PAPlayer: Creating new audio renderer");
-    m_bitsPerSample[num] = 16;
-    m_sampleRate   [num] = samplerate;
-    m_channelCount [num] = channels;
-    m_channelMap   [num] = NULL;
-    m_BytesPerSecond     = (m_bitsPerSample[num] / 8)* samplerate * channels;
+  FreeStream(num);
+  CLog::Log(LOGDEBUG, "PAPlayer: Creating new audio renderer");
+  m_bitsPerSample[num] = 16;
+  m_sampleRate   [num] = samplerate;
+  m_channelCount [num] = channels;
+  m_channelMap   [num] = NULL;
+  m_BytesPerSecond     = (m_bitsPerSample[num] / 8)* samplerate * channels;
 
-    /* Open the device */
-    m_pAudioStream[num] = AE.GetStream(
-      AE_FMT_FLOAT,
-      m_sampleRate  [num],
-      m_channelCount[num],
-      m_channelMap  [num]
-    );
+  /* Open the device */
+  m_pAudioStream[num] = AE.GetStream(
+    AE_FMT_FLOAT,
+    m_sampleRate  [num],
+    m_channelCount[num],
+    m_channelMap  [num]
+  );
 
-    if (!m_pAudioStream[num]) return false;
+  if (!m_pAudioStream[num]) return false;
 
-    m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioStream[num]->GetFrameSize() + PACKET_SIZE));
-    m_bufferPos[num] = 0;
-    m_latency[num]   = m_pAudioStream[num]->GetDelay();
-    m_Chunklen[num]  = std::max(PACKET_SIZE, (int)m_pAudioStream[num]->GetFrameSize());
-    m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
-    for (int i = 1; i < PACKET_COUNT ; i++)
-      m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
-  }
+  m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioStream[num]->GetFrameSize() + PACKET_SIZE));
+  m_bufferPos[num] = 0;
+  m_latency[num]   = m_pAudioStream[num]->GetDelay();
+  m_Chunklen[num]  = std::max(PACKET_SIZE, (int)m_pAudioStream[num]->GetFrameSize());
+  m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
+  for (int i = 1; i < PACKET_COUNT ; i++)
+    m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
   
   // set initial volume
-  SetStreamVolume(num, g_settings.m_fVolumeLevel);
-
-  // TODO: How do we best handle the callback, given that our samplerate etc. may be
-  // changing at this point?
+  SetStreamVolume(num, 1.0f);
 
   // fire off our init to our callback  
   if (m_pCallback)
     m_pCallback->OnInitialize(channels, samplerate, m_bitsPerSample[num]);
+
   return true;
 }
 
@@ -547,19 +542,17 @@ bool PAPlayer::ProcessPAP()
         if (m_decoder[1 - m_currentDecoder].GetStatus() == STATUS_QUEUED && m_pAudioStream[1 - m_currentStream])
         {
           m_currentlyCrossFading = true;
-          if (m_forceFadeToNext)
-          {
-            m_forceFadeToNext = false;
-            m_crossFadeLength = m_crossFading * 1000L;
-          }
-          else
-          {
-            m_crossFadeLength = GetTotalTime64() - GetTime();
-          }
           m_currentDecoder = 1 - m_currentDecoder;
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
           CLog::Log(LOGDEBUG, "Starting Crossfade - resuming stream %i", m_currentStream);
+
+          m_pAudioStream[1 - m_currentStream]->PrependPostProc(m_pAudioFade[0]);
+          m_pAudioStream[    m_currentStream]->PrependPostProc(m_pAudioFade[1]);
+          m_pAudioFade[0]->SetPosition(1.0f);
+          m_pAudioFade[1]->SetPosition(0.0f);
+          m_pAudioFade[0]->Run(); /* fade out */
+          m_pAudioFade[1]->Run(); /* fade in  */
 
           m_pAudioStream[m_currentStream]->Resume();
 
@@ -688,33 +681,6 @@ bool PAPlayer::ProcessPAP()
       if (retVal2 == RET_ERROR)
       {
         m_decoder[1 - m_currentDecoder].Destroy();
-      }
-
-      // if we're cross-fading, then we do this for both streams, otherwise
-      // we do it just for the one stream.
-      if (m_currentlyCrossFading)
-      {
-        if (GetTime() >= m_crossFadeLength)  // finished
-        {
-          CLog::Log(LOGDEBUG, "Finished Crossfading");
-          m_currentlyCrossFading = false;
-          SetStreamVolume(m_currentStream, g_settings.m_fVolumeLevel);
-          FreeStream(1 - m_currentStream);
-          m_decoder[1 - m_currentDecoder].Destroy();
-        }
-        else
-        {
-          float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
-          // make sure we can take valid logs.
-          if (fraction > 0.499f) fraction = 0.499f;
-          if (fraction < -0.499f) fraction = -0.499f;
-          float volumeCurrent = 2000.0f * log10(0.5f - fraction);
-          float volumeNext = 2000.0f * log10(0.5f + fraction);
-          SetStreamVolume(m_currentStream, g_settings.m_fVolumeLevel + (int)volumeCurrent);
-          SetStreamVolume(1 - m_currentStream, g_settings.m_fVolumeLevel + (int)volumeNext);
-          if (AddPacketsToStream(1 - m_currentStream, m_decoder[1 - m_currentDecoder]))
-            retVal2 = RET_SUCCESS;
-        }
       }
 
       // add packets as necessary
@@ -969,7 +935,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       continue;
     }
 
-    data   += wrote;
+    data    = (uint8_t*)data + wrote;
     amount -= wrote;
   }
 

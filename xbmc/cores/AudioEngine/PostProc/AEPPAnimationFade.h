@@ -22,30 +22,42 @@
 #ifndef AEPPANIMATIONFADE_H
 #define AEPPANIMATIONFADE_H
 
-#include "AEPostProc.h"
+#include "AudioEngine/AEPostProc.h"
+#include "IAudioCallback.h"
+
+
 
 class CAEPPAnimationFade : public IAEPostProc
 {
 public:
-  CAEPPAnimationFade(float from, float to, float duration);
+  CAEPPAnimationFade(float from, float to, unsigned int duration);
+  ~CAEPPAnimationFade();
 
   virtual bool        Initialize(CAEStream *stream);
-  virtual void        Drain();
+  virtual void        DeInitialize();
+  virtual void        Flush();
   virtual void        Process(float *data, unsigned int frames);
   virtual const char* GetName() { return "AnimationFade"; }
 
   void Run();
   void Stop();
   void SetPosition(const float position);
-private:
-  unsigned int m_channelCount; /* the AE channel count */
+  void SetDuration(const unsigned int duration);
 
-  bool  m_running;  /* if the fade is running */
-  float m_position; /* current fade position */
-  float m_from;     /* fade from */
-  float m_to;       /* fade to */
-  float m_duration; /* fade duration in ms */
-  float m_step;     /* the fade step size */
+  typedef void (DoneCallback)(CAEPPAnimationFade *sender, void *arg);
+  void SetDoneCallback(DoneCallback *callback, void *arg) { m_callback = callback; m_cbArg = arg; }
+private:
+  unsigned int  m_channelCount; /* the AE channel count */
+  CAEStream    *m_stream;
+
+  bool          m_running;  /* if the fade is running */
+  float         m_position; /* current fade position */
+  float         m_from;     /* fade from */
+  float         m_to;       /* fade to */
+  unsigned int  m_duration; /* fade duration in ms */
+  float         m_step;     /* the fade step size */
+  DoneCallback *m_callback; /* callback for on completion of fade */
+  void         *m_cbArg;    /* the argument to pass to the callback function */
 };
 
 #endif

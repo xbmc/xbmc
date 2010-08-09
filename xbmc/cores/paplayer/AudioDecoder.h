@@ -56,7 +56,7 @@ public:
   CAudioDecoder();
   ~CAudioDecoder();
 
-  bool Create(const CFileItem &file, __int64 seekOffset, unsigned int nBufferSize);
+  bool Create(const CFileItem &file, __int64 seekOffset);
   void Destroy();
 
   int ReadSamples(int numsamples);
