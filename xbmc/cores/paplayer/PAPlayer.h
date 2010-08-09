@@ -63,7 +63,7 @@ public:
   virtual void OnNothingToQueueNotify();
   virtual bool CloseFile()       { return CloseFileInternal(true); }
   virtual bool CloseFileInternal(bool bAudioDevice = true);
-  virtual bool IsPlaying() const { return m_isPlaying; }
+  virtual bool IsPlaying() const { return !m_streams.empty(); }
   virtual void Pause();
   virtual bool IsPaused() const { return m_isPaused; }
   virtual bool HasVideo() const { return false; }
@@ -136,11 +136,12 @@ private:
     CAEStream          *m_stream;
     CAEPPAnimationFade *m_fadeIn;
     CAEPPAnimationFade *m_fadeOut;
+    unsigned int        m_sent, m_change;
+    bool                m_triggered;
   } StreamInfo;
 
   StreamInfo        *m_lastStream;
   list<StreamInfo*>  m_streams;
-  bool               m_isPlaying;
   bool               m_isPaused;
   int                m_crossFade;
 

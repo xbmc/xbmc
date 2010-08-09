@@ -310,11 +310,24 @@ float* CAEStream::GetFrame()
     /* no more packets, return null */
     if (m_outBuffer.empty())
     {
-      /* if the buffer is empty trigger the data callback function */
-      if (!m_draining && m_cbDataFunc)
+      if (m_draining)
       {
-        lock.Leave();
-        m_cbDataFunc(this, m_cbDataArg);
+        /* if we are draining trigger the callback function */
+        if (m_cbDrainFunc)
+        {
+          lock.Leave();
+          m_cbDrainFunc(this, m_cbDrainArg);
+          m_cbDrainFunc = NULL;
+        }
+      }
+      else
+      {
+        /* otherwise ask for more data */
+        if (m_cbDataFunc)
+        {
+          lock.Leave();
+          m_cbDataFunc(this, m_cbDataArg);
+        }
       }
       return NULL;
     }
@@ -341,6 +354,7 @@ float* CAEStream::GetFrame()
     {
       lock.Leave();
       m_cbDrainFunc(this, m_cbDrainArg);
+      m_cbDrainFunc = NULL;
     }
   }
   else
