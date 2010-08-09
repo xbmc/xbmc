@@ -614,7 +614,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_LASTPLAYED) return "lastplayed";
     else if (field == FIELD_RATING) return "rating";
     else if (field == FIELD_COMMENT) return "comment";
-    else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) return "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) return "idsong";     // only used for order clauses
   }
   else if (type == "albums")
@@ -631,7 +631,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_ALBUMTYPE) return "strType";
     else if (field == FIELD_LABEL) return "strLabel";
     else if (field == FIELD_RATING) return "iRating";
-    else if (field == FIELD_RANDOM) return "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) return "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) return "idalbum";    // only used for order clauses
   }
   else if (type == "movies")
@@ -659,7 +659,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
-    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
   }
@@ -679,7 +679,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_DIRECTOR);   // join required
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_STUDIOS);     // join required
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
-    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idmvideo";        // only used for order clauses
     return result;
   }
@@ -698,7 +698,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_NUMEPISODES) result = "totalcount";
     else if (field == FIELD_NUMWATCHED) result = "watchedcount";
     else if (field == FIELD_PLAYCOUNT) result = "watched";
-    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     else if (field == FIELD_PATH) return "strPath";
     return result;
@@ -725,7 +725,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_SEASON) result.Format("c%02d", VIDEODB_ID_EPISODE_SEASON);
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
-    else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
+    else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
   }
