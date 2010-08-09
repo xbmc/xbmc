@@ -46,7 +46,6 @@
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
   m_audioCallback(NULL    ),
-  m_isPlaying    (false   ),
   m_isPaused     (false   )
 {
   m_crossFade = g_guiSettings.GetInt("musicplayer.crossfade");
@@ -117,85 +116,15 @@ void PAPlayer::OnExit()
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
-  m_streams.remove(si);
   delete si->m_stream;
+  m_streams.remove(si);
   si->m_decoder.Destroy();
   delete si;
 }
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  StreamInfo *si = new StreamInfo();
-  if (!si->m_decoder.Create(file, (int64_t)options.starttime * 1000L))
-  {
-    delete si;
-    return false;
-  }
-
-  si->m_player  = this;
-  si->m_stream  = NULL;
-  si->m_fadeIn  = NULL;
-  si->m_fadeOut = NULL;
-
-  unsigned int channels, sampleRate, bitsPerSample;
-  si->m_decoder.GetDataFormat(&channels, &sampleRate, &bitsPerSample);
-  si->m_stream = AE.GetStream(
-    AE_FMT_FLOAT,
-    sampleRate,
-    channels,
-    NULL, /* FIXME: channelLayout */
-    true, /* free on drain */
-    true  /* owns post-proc filters */
-  );
-
-  if (!si->m_stream)
-    FreeStreamInfo(si);
-
-  /* pause the stream and set the callbacks */
-  si->m_stream->Pause();
-  si->m_stream->SetDataCallback (StaticStreamOnData , si);
-  si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
-
-  m_isPaused  = false;
-  m_isPlaying = true;
-
-  CSingleLock lock(m_critSection);
-
-  list<StreamInfo*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end();)
-  {
-    StreamInfo *i = *itt;
-    if (!m_crossFade)
-    {
-      FreeStreamInfo(i);
-      itt = m_streams.erase(itt);
-    }
-    else
-    {
-      if (!i->m_fadeOut)
-      {
-        i->m_fadeOut = new CAEPPAnimationFade(1.0f, 0.0f, m_crossFade * 1000L);
-        i->m_fadeOut->SetDoneCallback(StaticFadeOnDone, i);
-        i->m_fadeOut->SetPosition(1.0f);
-        i->m_stream->PrependPostProc(i->m_fadeOut);
-        i->m_fadeOut->Run();
-      }
-      ++itt;
-    }
-  }
-
-  if (m_crossFade && !m_streams.empty())
-  {
-    si->m_fadeIn = new CAEPPAnimationFade(0.0f, 1.0f, m_crossFade * 1000L);
-    si->m_fadeIn->SetPosition(0.0f);
-    si->m_stream->PrependPostProc(si->m_fadeIn);
-    si->m_fadeIn->Run();
-  }
-
-  m_streams.push_back(si);
-  si->m_decoder.Start();
-  si->m_stream->Resume();
-  return true;
+  return QueueNextFile(file);
 }
 
 void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
@@ -204,11 +133,24 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   CSingleLock lock(si->m_player->m_critSection);
 
   while(si->m_decoder.GetDataSize() == 0)
-    si->m_decoder.ReadSamples(PACKET_SIZE);
+    if (si->m_decoder.GetStatus() == STATUS_ENDED || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+    {
+      si->m_triggered = true;
+      si->m_player->m_callback.OnQueueNextItem();
+      si->m_stream->Drain();
+      return;
+    }
 
   unsigned int frames = std::min(si->m_decoder.GetDataSize(), sender->GetChannelCount());
   void *data = si->m_decoder.GetData(frames);
   si->m_stream->AddData(data, frames * sizeof(float));
+  si->m_sent += frames;
+
+  if (si->m_change > 0 && !si->m_triggered && si->m_sent >= si->m_change)
+  {
+    si->m_player->m_callback.OnQueueNextItem();
+    si->m_triggered = true;
+  }
 }
 
 void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg)
@@ -334,9 +276,83 @@ void PAPlayer::OnNothingToQueueNotify()
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
-  printf("QueueNext\n");
-  //return QueueNextFile(file, true);
-  return false;
+  StreamInfo *si = new StreamInfo();
+  if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
+  {
+    delete si;
+    return false;
+  }
+
+  unsigned int channels, sampleRate, bitsPerSample;
+  si->m_decoder.GetDataFormat(&channels, &sampleRate, &bitsPerSample);
+
+  si->m_player    = this;
+  si->m_fadeIn    = NULL;
+  si->m_fadeOut   = NULL;
+  si->m_sent      = 0;
+  si->m_change    = 0;
+  si->m_triggered = false;
+
+  si->m_stream = AE.GetStream(
+    AE_FMT_FLOAT,
+    sampleRate,
+    channels,
+    NULL, /* FIXME: channelLayout */
+    true, /* free on drain */
+    true  /* owns post-proc filters */
+  );
+
+  if (!si->m_stream)
+    FreeStreamInfo(si);
+
+  /* pause the stream and set the callbacks */
+  si->m_stream->Pause();
+  si->m_stream->SetDataCallback (StaticStreamOnData , si);
+  si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
+
+  m_isPaused  = false;
+
+  CSingleLock lock(m_critSection);
+
+  list<StreamInfo*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end();)
+  {
+    StreamInfo *i = *itt;
+    if (!m_crossFade)
+    {
+      FreeStreamInfo(i);
+      itt = m_streams.erase(itt);
+    }
+    else
+    {
+      if (!i->m_fadeOut)
+      {
+        i->m_fadeOut = new CAEPPAnimationFade(1.0f, 0.0f, m_crossFade * 1000L);
+        i->m_fadeOut->SetDoneCallback(StaticFadeOnDone, i);
+        i->m_fadeOut->SetPosition(1.0f);
+        i->m_stream->PrependPostProc(i->m_fadeOut);
+        i->m_fadeOut->Run();
+      }
+      ++itt;
+    }
+  }
+
+  if (m_crossFade && !m_streams.empty())
+  {
+    si->m_fadeIn = new CAEPPAnimationFade(0.0f, 1.0f, m_crossFade * 1000L);
+    si->m_fadeIn->SetPosition(0.0f);
+    si->m_stream->PrependPostProc(si->m_fadeIn);
+    si->m_fadeIn->Run();
+  }
+
+
+  si->m_decoder.Start();
+  si->m_change = (si->m_decoder.TotalTime() - (m_crossFade * 1000)) * (sampleRate * channels) / 1000.0f;
+
+  m_streams.push_front(si);
+  si->m_stream->Resume();
+  m_callback.OnPlayBackStarted();
+  return true;
 }
 
 #if 0
@@ -724,18 +740,16 @@ bool PAPlayer::ProcessPAP()
 
 void PAPlayer::ResetTime()
 {
-#if 0
-  m_bytesSentOut = 0;
-#endif
+  if (m_streams.empty()) return;
+  StreamInfo *si = m_streams.front();
+  si->m_sent = 0;
 }
 
 __int64 PAPlayer::GetTime()
 {
-#if 0
-  __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;
-  return m_timeOffset + timeplus - m_currentFile->m_lStartOffset * 1000 / 75;
-#endif
-  return 0;
+  if (m_streams.empty()) return 0;
+  StreamInfo *si = m_streams.front();
+  return (float)si->m_sent / (float)(si->m_stream->GetSampleRate() * si->m_stream->GetChannelCount()) * 1000.0f;
 }
 
 #if 0
@@ -874,11 +888,8 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-#if 0
-  float percent = (float)GetTime() * 100.0f / GetTotalTime64();
+  float percent = (float)GetTime() * 100.0f / GetTotalTime();
   return percent;
-#endif
-  return 0;
 }
 
 #if 0
