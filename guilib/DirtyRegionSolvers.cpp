@@ -10,3 +10,49 @@ void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionL
   if (!unifiedRegion.IsEmpty())
     output.push_back(unifiedRegion);
 }
+
+CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()
+{
+  m_costNewRegion = 10.0f;
+  m_costPerArea   = 0.01f;
+}
+
+void CGreedyDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
+{
+  float totalCost = 0.0f;
+
+  for (unsigned int i = 0; i < input.size(); i++)
+  {
+    CDirtyRegion possibleUnionRegion;
+    int   possibleUnionNbr = -1;
+    float possibleUnionCost = 100000.0f;
+
+    CDirtyRegion currentRegion = input[i];
+    for (unsigned int j = 0; j < output.size(); j++)
+    {
+      CDirtyRegion temporaryUnion = output[j];
+      temporaryUnion.Union(currentRegion);
+      float temporaryCost = m_costPerArea * (temporaryUnion.Area() - output[j].Area());
+      if (temporaryCost < possibleUnionCost)
+      {
+        // TODO if the temporaryCost is 0 then we could skip checking the other regions since there exist no better solution
+        possibleUnionRegion = temporaryUnion;
+        possibleUnionNbr    = j;
+        possibleUnionCost   = temporaryCost;
+      }
+    }
+
+    float newRegionTotalCost = m_costPerArea * currentRegion.Area() + m_costNewRegion;
+
+    if (possibleUnionNbr >= 0 && possibleUnionCost < newRegionTotalCost)
+    {
+      output[possibleUnionNbr] = possibleUnionRegion;
+      totalCost += possibleUnionCost;
+    }
+    else
+    {
+      output.push_back(currentRegion);
+      totalCost += newRegionTotalCost;
+    }
+  }
+}
