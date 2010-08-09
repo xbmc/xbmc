@@ -35,6 +35,7 @@
 
 using namespace std;
 
+class IAEPostProc;
 class CAEStream
 {
 public:
@@ -61,6 +62,7 @@ public:
 
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
+  unsigned int GetSampleRate()   { return m_format.m_sampleRate;   }
 private:
   CCriticalSection  m_critSection;
   enum AEDataFormat m_initDataFormat;
