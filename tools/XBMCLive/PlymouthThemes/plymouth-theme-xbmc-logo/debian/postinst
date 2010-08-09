@@ -1,0 +1,43 @@
+#!/bin/sh -e
+# This script can be called in the following ways:
+#
+# After the package was installed:
+#       <postinst> configure <old-version>
+#
+#
+# If prerm fails during upgrade or fails on failed upgrade:
+#       <old-postinst> abort-upgrade <new-version>
+#
+# If prerm fails during deconfiguration of a package:
+#       <postinst> abort-deconfigure in-favour <new-package> <version>
+#                  removing <old-package> <version>
+#
+# If prerm fails during replacement due to conflict:
+#       <postinst> abort-remove in-favour <new-package> <version>
+
+
+case "$1" in
+    configure)
+	update-alternatives \
+		--install /lib/plymouth/themes/default.plymouth default.plymouth \
+		/lib/plymouth/themes/xbmc-logo/xbmc-logo.plymouth 10
+		update-alternatives \
+		--set default.plymouth /lib/plymouth/themes/xbmc-logo/xbmc-logo.plymouth
+
+	if which update-initramfs >/dev/null 2>&1
+	then
+	    update-initramfs -u
+	fi
+	;;
+
+    abort-upgrade|abort-deconfigure|abort-remove)
+	;;
+
+    *)
+	echo "$0 called with unknown argument \`$1'" 1>&2
+	exit 1
+	;;
+esac
+
+
+exit 0
