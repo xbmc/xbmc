@@ -256,7 +256,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
       /* post-process the packet */
       list<IAEPostProc*>::iterator ppi;
       for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
-        (*ppi)->Process(pkt.data, pkt.samples);
+        (*ppi)->Process(pkt.data, m_format.m_frames);
 
       /* add the packet to the output */
       m_outBuffer.push_back(pkt);

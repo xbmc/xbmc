@@ -30,7 +30,7 @@ class IAEPostProc
 public:
   virtual bool Initialize(CAEStream *stream) = 0;
   virtual void Flush() = 0;
-  virtual void Process(float *data, unsigned int samples) = 0;
+  virtual void Process(float *data, unsigned int frames) = 0;
   virtual const char* GetName() = 0;
 };
 

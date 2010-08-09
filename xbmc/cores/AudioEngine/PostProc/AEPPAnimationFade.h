@@ -27,23 +27,24 @@
 class CAEPPAnimationFade : public IAEPostProc
 {
 public:
+  CAEPPAnimationFade(float from, float to, float duration);
+
   virtual bool        Initialize(CAEStream *stream);
   virtual void        Drain();
-  virtual void        Process(float *data, unsigned int samples);
+  virtual void        Process(float *data, unsigned int frames);
   virtual const char* GetName() { return "AnimationFade"; }
 
   void Run();
   void Stop();
   void SetPosition(const float position);
 private:
-  unsigned int m_sampleRate;   /* the AE sample rate   */
   unsigned int m_channelCount; /* the AE channel count */
 
   bool  m_running;  /* if the fade is running */
   float m_position; /* current fade position */
   float m_from;     /* fade from */
   float m_to;       /* fade to */
-  float m_length;   /* fade time in ms */
+  float m_duration; /* fade duration in ms */
   float m_step;     /* the fade step size */
 };
 
