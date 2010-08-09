@@ -22,11 +22,17 @@
 #include "AEPPAnimationFade.h"
 #include "AE.h"
 
+CAEPPAnimationFade::CAEPPAnimationFade(float from, float to, float duration)
+{
+  m_from     = from;
+  m_to       = to;
+  m_duration = duration;
+}
+
 bool CAEPPAnimationFade::Initialize(CAEStream *stream)
 {
-  m_sampleRate   = AE.GetSampleRate();
   m_channelCount = AE.GetChannelCount();
-  m_step         = (m_to - m_from) / m_length;
+  m_step         = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * m_duration);
   m_running      = false;
   return true;
 }
@@ -36,25 +42,28 @@ void CAEPPAnimationFade::Drain()
   /* we dont buffer, nothing to do */
 }
 
-void CAEPPAnimationFade::Process(float *data, unsigned int samples)
+void CAEPPAnimationFade::Process(float *data, unsigned int frames)
 {
   /* apply the current level */
-  unsigned int s;
-  for(s = 0; s < samples; ++s)
-    data[s] *= m_position;
-
-  /* if we are not fading, we are done */
-  if (!m_running) return;
-
-  /* perform the step */
-  m_position += m_step;
-  /* clamp the result */
-  m_position = std::min(1.0f, std::max(0.0f, m_position));
-  /* if we are finished */
-  if (m_position > m_to - 0.001 && m_position < m_to + 0.001)
+  unsigned int f, c;
+  for(f = 0; f < frames; ++f)
   {
-    m_position = m_to;
-    m_running  = false;
+    for(c = 0; c < m_channelCount; ++c, ++data)
+      *data *= m_position;
+
+    /* if we are not fading, we are done */
+    if (!m_running) continue;
+
+    /* perform the step and clamp the result */
+    m_position += m_step;
+    m_position = std::min(1.0f, std::max(0.0f, m_position));
+
+    /* if we are finished */
+    if (m_position > m_to - 0.001 && m_position < m_to + 0.001)
+    {
+      m_position = m_to;
+      m_running  = false;
+    }
   }
 }
 
