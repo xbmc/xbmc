@@ -563,7 +563,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
     SAFE_RELEASE(m_scalerShader)
-    m_bUseHQScaler = true;
+    m_bUseHQScaler = false;
   }
 
   SAFE_RELEASE(m_colorShader)
