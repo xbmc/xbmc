@@ -101,8 +101,8 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
   RM(AE_CH_TFC , AE_CH_TFL, AE_CH_TFR);
   RM(AE_CH_TFR , AE_CH_FR);
   RM(AE_CH_TFL , AE_CH_FL);
-  RM(AE_CH_SR  , AE_CH_BL, AE_CH_FL);
-  RM(AE_CH_SL  , AE_CH_BR, AE_CH_FR);
+  RM(AE_CH_SR  , AE_CH_BR, AE_CH_FR);
+  RM(AE_CH_SL  , AE_CH_BL, AE_CH_FL);
   RM(AE_CH_BC  , AE_CH_BL, AE_CH_BR);
   RM(AE_CH_FROC, AE_CH_FR, AE_CH_FC);
   RM(AE_CH_FLOC, AE_CH_FL, AE_CH_FC);
