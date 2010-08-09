@@ -21,6 +21,8 @@
  *
  */
 
+#include <list>
+
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
@@ -140,10 +142,10 @@ private:
     bool                m_triggered;
   } StreamInfo;
 
-  StreamInfo        *m_lastStream;
-  list<StreamInfo*>  m_streams;
-  bool               m_isPaused;
-  int                m_crossFade;
+  StreamInfo             *m_lastStream;
+  std::list<StreamInfo*>  m_streams;
+  bool                    m_isPaused;
+  int                     m_crossFade;
 
   void FreeStreamInfo(StreamInfo *si);
   static void StaticStreamOnData (CAEStream *sender, void *arg);

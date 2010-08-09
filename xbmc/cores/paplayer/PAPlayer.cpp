@@ -39,6 +39,7 @@
 #define TIME_TO_CACHE_NEXT_FILE 5000L         // 5 seconds
 #define TIME_TO_CROSS_FADE      10000L        // 10 seconds
 
+using namespace std;
 extern XFILE::CFileShoutcast* m_pShoutCastRipper;
 
 // PAP: Psycho-acoustic Audio Player
@@ -118,8 +119,8 @@ void PAPlayer::OnExit()
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
-  delete si->m_stream;
   m_streams.remove(si);
+  delete si->m_stream;
   si->m_decoder.Destroy();
   delete si;
 }
@@ -135,13 +136,16 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   CSingleLock lock(si->m_player->m_critSection);
 
   while(si->m_decoder.GetDataSize() == 0)
-    if (si->m_decoder.GetStatus() == STATUS_ENDED || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+  {
+    int status = si->m_decoder.GetStatus();
+    if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
     {
       if (!si->m_triggered)
         si->m_player->m_callback.OnQueueNextItem();
       si->m_stream->Drain();
       return;
     }
+  }
 
   unsigned int frames = std::min(si->m_decoder.GetDataSize(), sender->GetChannelCount());
   void *data = si->m_decoder.GetData(frames);
@@ -317,13 +321,13 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   CSingleLock lock(m_critSection);
 
   list<StreamInfo*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end();)
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo *i = *itt;
     if (!m_crossFade)
     {
-      FreeStreamInfo(i);
-      itt = m_streams.erase(itt);
+      i->m_stream->Flush();
+      i->m_stream->Drain();
     }
     else
     {
@@ -335,7 +339,6 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
         i->m_stream->PrependPostProc(i->m_fadeOut);
         i->m_fadeOut->Run();
       }
-      ++itt;
     }
   }
 
