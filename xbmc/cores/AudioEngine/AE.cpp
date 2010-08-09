@@ -28,6 +28,8 @@
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
 
+using namespace std;
+
 CAE::CAE():
   m_state   (AE_STATE_INVALID),
   m_renderer(NULL),

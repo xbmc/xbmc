@@ -35,8 +35,6 @@
 #include "AERemap.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
 
-using namespace std;
-
 enum AEState
 {
   AE_STATE_INVALID, /* the AE has not been initialized */
@@ -116,13 +114,13 @@ private:
     CAESound     *owner;
     unsigned int  frame;
   } SoundState;
-  list<SoundState>          m_playing_sounds;
+  std::list<SoundState>     m_playing_sounds;
 
   /* the streams, sounds, output buffer and output buffer fill size */
-  list<CAEStream*>                 m_streams;
-  map<const CStdString, CAESound*> m_sounds;
-  uint8_t                         *m_buffer;
-  unsigned int                     m_bufferSize;
+  std::list<CAEStream*>                 m_streams;
+  std::map<const CStdString, CAESound*> m_sounds;
+  uint8_t                              *m_buffer;
+  unsigned int                          m_bufferSize;
 
   /* the channel remapper */
   CAERemap                  m_remap;
