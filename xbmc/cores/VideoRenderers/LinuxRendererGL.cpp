@@ -1114,10 +1114,8 @@ void CLinuxRendererGL::LoadShaders(int field)
       // Try GLSL shaders if supported and user requested auto or GLSL.
       if (glCreateProgram)
       {
-        bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
-                             && m_renderQuality == RQ_SINGLEPASS && !(m_renderMethod & RENDER_POT);
-
         // create regular progressive scan shader
+        bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
@@ -1362,9 +1360,14 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
-  m_pYUVShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
+
+  if (m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f) && Supports(RENDERFEATURE_NONLINSTRETCH))
+    m_pYUVShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+  else
+    m_pYUVShader->SetNonLinStretch(1.0);
+
   if     (field == FIELD_ODD)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
@@ -1465,6 +1468,7 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
+  m_pYUVShader->SetNonLinStretch(1.0);
   if     (field == FIELD_ODD)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
