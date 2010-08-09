@@ -100,7 +100,6 @@ bool CFileHD::Open(const CURL& url)
 
   m_i64FilePos = 0;
   m_i64FileLen = 0;
-  Seek(0, SEEK_SET);
 
   return true;
 }
@@ -228,22 +227,14 @@ int64_t CFileHD::Seek(int64_t iFilePosition, int iWhence)
   lPos.QuadPart = iFilePosition;
   int bSuccess;
 
-  int64_t length = GetLength();
-
   switch (iWhence)
   {
   case SEEK_SET:
-    if (iFilePosition <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
     break;
 
   case SEEK_CUR:
-    if ((GetPosition()+iFilePosition) <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
     break;
 
   case SEEK_END:
