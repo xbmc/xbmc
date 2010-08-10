@@ -446,7 +446,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -455,7 +455,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56)</visible>
+          <visible>!Control.IsVisible(56) | [Control.IsVisible(56) + Container.Content(Secondary)]</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -464,7 +464,7 @@
 
         <control type="button" id="915">
           <description>Media Preview button</description>
-          <visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[31707]</label>
           <onclick>Container.SetViewMode(51)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -537,7 +537,7 @@
 
         <control type="button" id="953">
           <description>Coverflow view button</description>
-          <visible>!Control.IsVisible(55) + !Container.Content(Episodes) + !Container.Content(Songs)</visible>
+          <visible>!Control.IsVisible(55) + !Container.Content(Episodes) + !Container.Content(Songs) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[31716]</label>
           <onclick>Container.SetViewMode(55)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -546,7 +546,7 @@
 
         <control type="button" id="955">
           <description>Pictures view button</description>
-          <visible>!Control.IsVisible(51) + [Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(51) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[1]</label>
           <onclick>Container.SetViewMode(51)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -555,7 +555,7 @@
 
         <control type="button" id="956">
           <description>Image Stream view button</description>
-          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[31712]</label>
           <onclick>Container.SetViewMode(57)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -564,7 +564,7 @@
 
         <control type="button" id="957">
           <description>Panel Stream view button</description>
-          <visible>!Control.IsVisible(52) + [!Window.IsVisible(MyPictures)] + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[31715]</label>
           <onclick>Container.SetViewMode(52)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -573,7 +573,7 @@
 
         <control type="button" id="958">
           <description>Wall Stream view button</description>
-          <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[31714]</label>
           <onclick>Container.SetViewMode(53)</onclick>
           <onclick>SetFocus(50)</onclick>
