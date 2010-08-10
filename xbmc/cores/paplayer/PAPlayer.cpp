@@ -88,6 +88,7 @@ printf("Exit\n");
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
+  m_finishing.remove(si);
   si->m_decoder.Destroy();
   if (si->m_stream)
     si->m_stream->Destroy();
@@ -271,6 +272,7 @@ bool PAPlayer::PlayNextStream()
   /* if there is a currently playing stream, stop it */
   if (m_current)
   {
+    m_finishing.push_back(m_current);
     if (!crossFade) m_current->m_stream->Drain();
     else
     {
@@ -285,8 +287,6 @@ bool PAPlayer::PlayNextStream()
       m_current->m_stream->PrependPostProc(fade);
       fade->Run();
     }
-
-    m_finishing.push_back(m_current);
   }
 
   /* get the next stream */
