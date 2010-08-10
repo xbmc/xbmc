@@ -46,6 +46,7 @@
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
   m_audioCallback(NULL    ),
+  m_current      (NULL    ),
   m_isPaused     (false   )
 {
   m_crossFade = g_guiSettings.GetInt("musicplayer.crossfade");
@@ -99,8 +100,21 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 PAPlayer::~PAPlayer()
 {
   CSingleLock lock(m_critSection);
+
+  if (m_current)
+    FreeStreamInfo(m_current);
+
   while(!m_streams.empty())
+  {
     FreeStreamInfo(m_streams.front());
+    m_streams.pop_front();
+  }
+
+  while(!m_finishing.empty())
+  {
+    FreeStreamInfo(m_finishing.front());
+    m_finishing.pop_front();
+  }
 
 #if 0
   CloseFileInternal(true);
@@ -116,15 +130,18 @@ void PAPlayer::OnExit()
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
-  m_streams.remove(si);
-  delete si->m_stream;
   si->m_decoder.Destroy();
+  delete si->m_stream;
   delete si;
 }
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  return QueueNextFile(file);
+  if (!QueueNextFile(file))
+    return false;
+
+  CSingleLock lock(m_critSection);
+  return PlayNextStream();
 }
 
 void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
@@ -134,11 +151,14 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
 
   while(si->m_decoder.GetDataSize() == 0)
   {
-    int status = si->m_decoder.GetStatus();
+    int status = si->m_decoder.GetStatus();    
     if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
     {
       if (!si->m_triggered)
-        si->m_player->m_callback.OnQueueNextItem();
+      {
+        si->m_player->PlayNextStream();
+        si->m_triggered = true;
+      }
       si->m_stream->Drain();
       return;
     }
@@ -149,9 +169,17 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   si->m_stream->AddData(data, frames * sizeof(float));
   si->m_sent += frames;
 
-  if (si->m_change > 0 && !si->m_triggered && si->m_sent >= si->m_change)
+  /* if it is time to prepare the next stream */
+  if (si->m_prepare > 0 && si->m_sent >= si->m_prepare)
   {
     si->m_player->m_callback.OnQueueNextItem();
+    si->m_prepare = 0;
+  }
+
+  /* if it is time to move to the next stream */
+  if (!si->m_triggered && si->m_sent >= si->m_change)
+  {
+    si->m_player->PlayNextStream();
     si->m_triggered = true;
   }
 }
@@ -162,7 +190,7 @@ void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg)
   CSingleLock lock(si->m_player->m_critSection);
 
   /* we dont delete the stream as it is flagged to be deleted on drain completion */
-  si->m_player->m_streams.remove(si);
+  si->m_player->m_finishing.remove(si);
   si->m_decoder.Destroy();
   delete si;
 }
@@ -290,8 +318,6 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_decoder.GetDataFormat(&channels, &sampleRate, &bitsPerSample);
 
   si->m_player    = this;
-  si->m_fadeIn    = NULL;
-  si->m_fadeOut   = NULL;
   si->m_sent      = 0;
   si->m_change    = 0;
   si->m_triggered = false;
@@ -313,46 +339,66 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_stream->SetDataCallback (StaticStreamOnData , si);
   si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
 
-  m_isPaused  = false;
+  unsigned int cacheTime = (m_crossFade * 1000) + TIME_TO_CACHE_NEXT_FILE;
+  si->m_decoder.Start();
+  si->m_change  = (si->m_decoder.TotalTime() - (m_crossFade * 1000)) * (sampleRate * channels) / 1000.0f;
+  si->m_prepare = (si->m_decoder.TotalTime() - (cacheTime         )) * (sampleRate * channels) / 1000.0f;
 
+  /* buffer some audio packets */
+  si->m_decoder.ReadSamples(PACKET_SIZE);
+
+  /* queue the stream */  
   CSingleLock lock(m_critSection);
+  m_streams.push_back(si);
+  return true;
+}
 
-  list<StreamInfo*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+bool PAPlayer::PlayNextStream()
+{
+  bool fadeIn = false;
+
+  /* if there is a currently playing stream, stop it */
+  if (m_current)
   {
-    StreamInfo *i = *itt;
-    if (!m_crossFade)
-    {
-      i->m_stream->Drain();
-    }
+    if (!m_crossFade) m_current->m_stream->Drain();
     else
     {
-      if (!i->m_fadeOut)
-      {
-        i->m_fadeOut = new CAEPPAnimationFade(1.0f, 0.0f, m_crossFade * 1000L);
-        i->m_fadeOut->SetDoneCallback(StaticFadeOnDone, i);
-        i->m_fadeOut->SetPosition(1.0f);
-        i->m_stream->PrependPostProc(i->m_fadeOut);
-        i->m_fadeOut->Run();
-      }
+      fadeIn = true;
+      CAEPPAnimationFade *fade = new CAEPPAnimationFade(1.0f, 0.0f, m_crossFade * 1000L);
+      fade->SetDoneCallback(StaticFadeOnDone, m_current);
+      fade->SetPosition(1.0f);
+      m_current->m_stream->PrependPostProc(fade);
+      fade->Run();
+      m_finishing.push_back(m_current);
     }
   }
 
-  if (m_crossFade && !m_streams.empty())
+  /* if thre is no more queued streams */
+  if (m_streams.empty())
   {
-    si->m_fadeIn = new CAEPPAnimationFade(0.0f, 1.0f, m_crossFade * 1000L);
-    si->m_fadeIn->SetPosition(0.0f);
-    si->m_stream->PrependPostProc(si->m_fadeIn);
-    si->m_fadeIn->Run();
+    m_current = NULL;
+    m_callback.OnPlayBackEnded();
+    return false;
   }
 
+  /* get the next stream */
+  m_current = m_streams.front();
+  m_streams.pop_front();
 
-  si->m_decoder.Start();
-  si->m_change = (si->m_decoder.TotalTime() - (m_crossFade * 1000)) * (sampleRate * channels) / 1000.0f;
+  /* if we are crossFading, fade it in */
+  if (fadeIn)
+  {
+    CAEPPAnimationFade *fade = new CAEPPAnimationFade(0.0f, 1.0f, m_crossFade * 1000L);
+    fade->SetPosition(0.0f);
+    m_current->m_stream->PrependPostProc(fade);
+    fade->Run();
+  }
 
-  m_streams.push_front(si);
-  si->m_stream->Resume();
+  m_isPaused  = false;
+
+  /* start playback */
   m_callback.OnPlayBackStarted();
+  m_current->m_stream->Resume();
   return true;
 }
 
@@ -741,16 +787,14 @@ bool PAPlayer::ProcessPAP()
 
 void PAPlayer::ResetTime()
 {
-  if (m_streams.empty()) return;
-  StreamInfo *si = m_streams.front();
-  si->m_sent = 0;
+  if (!m_current) return;
+  m_current->m_sent = 0;
 }
 
 __int64 PAPlayer::GetTime()
 {
-  if (m_streams.empty()) return 0;
-  StreamInfo *si = m_streams.front();
-  return (float)si->m_sent / (float)(si->m_stream->GetSampleRate() * si->m_stream->GetChannelCount()) * 1000.0f;
+  if (!m_current) return 0;
+  return (float)m_current->m_sent / (float)(m_current->m_stream->GetSampleRate() * m_current->m_stream->GetChannelCount()) * 1000.0f;
 }
 
 #if 0
@@ -767,14 +811,14 @@ __int64 PAPlayer::GetTotalTime64()
 
 int PAPlayer::GetTotalTime()
 {
-  if (m_streams.empty()) return 0;
-  return m_streams.front()->m_decoder.TotalTime();
+  if (!m_current) return 0;
+  return m_current->m_decoder.TotalTime();
 }
 
 int PAPlayer::GetCacheLevel() const
 {
-  if (m_streams.empty()) return 0;
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return -1;
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return codec->GetCacheLevel();
 
@@ -783,8 +827,8 @@ int PAPlayer::GetCacheLevel() const
 
 int PAPlayer::GetChannels()
 {
-  if (m_streams.empty()) return 0;
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return 0;
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return codec->m_Channels;
 
@@ -793,8 +837,8 @@ int PAPlayer::GetChannels()
 
 int PAPlayer::GetBitsPerSample()
 {
-  if (m_streams.empty()) return 0;
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return 0;
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return codec->m_BitsPerSample;
 
@@ -803,8 +847,8 @@ int PAPlayer::GetBitsPerSample()
 
 int PAPlayer::GetSampleRate()
 {
-  if (m_streams.empty()) return 0;
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return 0;
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return (codec->m_SampleRate / 1000) + 0.5;
 
@@ -813,8 +857,8 @@ int PAPlayer::GetSampleRate()
 
 CStdString PAPlayer::GetAudioCodecName()
 {
-  if (m_streams.empty()) return "";
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return "";
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return codec->m_CodecName;
 
@@ -823,8 +867,8 @@ CStdString PAPlayer::GetAudioCodecName()
 
 int PAPlayer::GetAudioBitrate()
 {
-  if (m_streams.empty()) return 0;
-  const ICodec* codec = m_streams.front()->m_decoder.GetCodec();
+  if (!m_current) return 0;
+  const ICodec* codec = m_current->m_decoder.GetCodec();
   if (codec)
     return codec->m_Bitrate;
   return 0;

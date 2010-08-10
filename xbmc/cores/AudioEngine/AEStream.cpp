@@ -36,7 +36,7 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   m_frameBufferSize(0    ),
   m_ssrc           (NULL ),
   m_framesBuffered (0    ),
-  m_paused         (0    ),
+  m_paused         (false),
   m_draining       (false),
   m_cbDataFunc     (NULL ),
   m_cbDrainFunc    (NULL ),
