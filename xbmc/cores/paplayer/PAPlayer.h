@@ -121,6 +121,7 @@ private:
   StreamInfo             *m_current;    /* the current playing stream */
   bool                    m_isPaused;
   int                     m_iSpeed;
+  bool                    m_fastOpen;
 
   void FreeStreamInfo(StreamInfo *si);
   bool PlayNextStream();

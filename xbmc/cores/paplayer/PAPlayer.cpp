@@ -50,7 +50,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
   m_current      (NULL    ),
   m_isPaused     (false   ),
-  m_iSpeed       (1       )
+  m_iSpeed       (1       ),
+  m_fastOpen     (true    )
 {
 }
 
@@ -102,6 +103,8 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   m_iSpeed = 1;
+  m_fastOpen = true;
+
   if (!QueueNextFile(file))
     return false;
 
@@ -286,7 +289,11 @@ bool PAPlayer::PlayNextStream()
   if (m_current)
   {
     m_finishing.push_back(m_current);
-    if (!crossFade) m_current->m_stream->Drain();
+    if (!crossFade) {
+      m_current->m_stream->Drain();
+      if (m_fastOpen) m_current->m_stream->Flush();
+      m_fastOpen = false;
+    }
     else
     {
       /* if the user is skipping tracks quickly, do a fast crossFade */
