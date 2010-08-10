@@ -37,7 +37,7 @@ class IAEPostProc;
 class CAEStream
 {
 public:
-  typedef void (AECBFunc)(CAEStream*stream, void *arg);
+  typedef void (AECBFunc)(CAEStream*stream, void *arg, unsigned int samples);
 
   void Initialize();
   void Destroy();
@@ -60,6 +60,7 @@ public:
 
   float GetVolume()             { return m_volume;   }
   void  SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
+  void  SetSpeed(double speed);
   void  SetDynamicRangeCompression(int drc);
 
   void AppendPostProc (IAEPostProc *pp);
@@ -99,7 +100,8 @@ private:
   float                   m_volume;        /* the volume level */
   bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
   std::list<IAEPostProc*> m_postProc;      /* post processing objects */
-  bool               m_ownsPostProc;  /* true if the stream should free post-proc filters */
+  bool                    m_ownsPostProc;  /* true if the stream should free post-proc filters */
+  unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
 
   CAEConvert::AEConvertToFn m_convertFn;
 

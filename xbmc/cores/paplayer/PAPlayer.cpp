@@ -46,7 +46,8 @@
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
   m_current      (NULL    ),
-  m_isPaused     (false   )
+  m_isPaused     (false   ),
+  m_iSpeed       (1       )
 {
 }
 
@@ -77,12 +78,13 @@ bool PAPlayer::CloseFile()
     m_finishing.pop_front();
   }
 
+  m_iSpeed = 1;
+
   return true;
 }
 
 void PAPlayer::OnExit()
 {
-printf("Exit\n");
 }
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
@@ -96,6 +98,7 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  m_iSpeed = 1;
   if (!QueueNextFile(file))
     return false;
 
@@ -103,7 +106,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   return PlayNextStream();
 }
 
-void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
+void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int needed)
 {
   StreamInfo *si = (StreamInfo*)arg;
   CSingleLock lock(si->m_player->m_critSection);
@@ -118,15 +121,23 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
         si->m_triggered = true;
         si->m_player->PlayNextStream();
       }
-      si->m_stream->Drain();
+      if (!si->m_stream->IsDraining())
+        si->m_stream->Drain();
       return;
     }
   }
 
-  unsigned int frames = std::min(si->m_decoder.GetDataSize(), sender->GetChannelCount());
-  void *data = si->m_decoder.GetData(frames);
-  si->m_stream->AddData(data, frames * sizeof(float));
-  si->m_sent += frames;
+  /* convert needed frames to needed samples */
+  needed *= sender->GetChannelCount();
+  while(needed > 0) {
+    unsigned int samples = std::min(si->m_decoder.GetDataSize(), needed);
+    if (samples == 0) break;
+
+    void *data = si->m_decoder.GetData(samples);
+    si->m_stream->AddData(data, samples * sizeof(float));
+    si->m_sent += samples;
+    needed     -= samples;
+  }
 
   /* if it is time to prepare the next stream */
   if (si->m_prepare > 0 && si->m_sent >= si->m_prepare)
@@ -143,7 +154,7 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   }
 }
 
-void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg)
+void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg, unsigned int unused)
 {
   StreamInfo *si = (StreamInfo*)arg;
   PAPlayer *player = si->m_player;
@@ -305,6 +316,7 @@ bool PAPlayer::PlayNextStream()
 
   /* start playback */
   m_callback.OnPlayBackStarted();
+  m_current->m_stream->SetSpeed(m_iSpeed);
   m_current->m_stream->Resume();
   return true;
 }
@@ -350,10 +362,11 @@ void PAPlayer::Process()
 
 void PAPlayer::ToFFRW(int iSpeed)
 {
-#if 0
+  CSingleLock lock(m_critSection);
   m_iSpeed = iSpeed;
-  m_callback.OnPlayBackSpeedChanged(iSpeed);
-#endif
+  if (!m_current) return;
+  m_current->m_stream->SetSpeed(m_iSpeed);
+  m_callback.OnPlayBackSpeedChanged(m_iSpeed);
 }
 
 #if 0
