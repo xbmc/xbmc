@@ -27,13 +27,16 @@
 #include "AE.h"
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
+#include "addons/Visualisation.h"
 
 using namespace std;
 
 CAE::CAE():
-  m_state   (AE_STATE_INVALID),
-  m_renderer(NULL),
-  m_buffer  (NULL)
+  m_state        (AE_STATE_INVALID),
+  m_renderer     (NULL),
+  m_buffer       (NULL),
+  m_visBuffer    (NULL),
+  m_audioCallback(NULL)
 {
 }
 
@@ -79,11 +82,13 @@ bool CAE::Initialize()
     return false;
   }
 
-  m_format       = m_renderer->GetAudioFormat();
-  m_frameSize    = sizeof(float) * m_channelCount;
-  m_convertFn    = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer       = new uint8_t[m_format.m_frameSize * 2];
-  m_bufferSize   = 0;
+  m_format        = m_renderer->GetAudioFormat();
+  m_frameSize     = sizeof(float) * m_channelCount;
+  m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
+  m_buffer        = new uint8_t[m_format.m_frameSize * 2];
+  m_visBuffer     = new uint8_t[AUDIO_BUFFER_SIZE * sizeof(float) * 2];
+  m_bufferSize    = 0;
+  m_visBufferSize = 0;
 
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
 
@@ -113,6 +118,9 @@ void CAE::DeInitialize()
 
   delete[] m_buffer;
   m_buffer = NULL;
+
+  delete[] m_visBuffer;
+  m_visBuffer = NULL;
 
   m_state = AE_STATE_INVALID;
 }
@@ -223,6 +231,12 @@ void CAE::GarbageCollect()
     m_sounds.erase(remove.front());
     remove.pop_front();
   }
+}
+
+void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  m_audioCallback = pCallback;
+  m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
 }
 
 void CAE::StopSound(CAESound *sound)
@@ -378,6 +392,22 @@ void CAE::Run()
       float mul = 1.0f / div;
       for(i = 0; i < m_channelCount; ++i)
         out[i] *= mul;
+    }
+
+    /* if we have an audio callback, use it */
+    if (m_audioCallback)
+    {
+      /* add the frame to the visBuffer */
+      memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(out));
+      m_visBufferSize += sizeof(out);
+
+      /* if the buffer full, flush it through */
+      if (m_visBufferSize >= AUDIO_BUFFER_SIZE * sizeof(float))
+      {
+        m_audioCallback->OnAudioData((const unsigned char*)m_visBuffer, AUDIO_BUFFER_SIZE * sizeof(float));
+        memmove(m_visBuffer, &m_visBuffer[m_visBufferSize], (AUDIO_BUFFER_SIZE * sizeof(float)) - m_visBufferSize);
+        m_visBufferSize -= AUDIO_BUFFER_SIZE * sizeof(float);
+      }
     }
 
     /* remap the frame before we buffer it */

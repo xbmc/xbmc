@@ -48,7 +48,6 @@ extern XFILE::CFileShoutcast* m_pShoutCastRipper;
 
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
-  m_audioCallback(NULL    ),
   m_current      (NULL    ),
   m_isPaused     (false   )
 {
@@ -778,58 +777,6 @@ bool PAPlayer::HandleFFwdRewd()
 }
 #endif
 
-void PAPlayer::RegisterAudioCallback(IAudioCallback *pCallback)
-{
-  m_audioCallback = pCallback;
-//  if (m_audioCallback)
-  //  m_audioCallback->OnInitialize(m_channelCount[m_currentStream], m_sampleRate[m_currentStream], m_bitsPerSample[m_currentStream]);
-}
-
-void PAPlayer::UnRegisterAudioCallback()
-{
-  m_audioCallback = NULL;
-}
-
-void PAPlayer::DoAudioWork()
-{
-#if 0
-  if (m_pCallback && m_visBufferLength)
-  {
-    m_pCallback->OnAudioData((BYTE*)m_visBuffer, m_visBufferLength);
-    m_visBufferLength = 0;
-  }
-#endif
-}
-
-#if 0
-void PAPlayer::StreamCallback( LPVOID pPacketContext )
-{
-  AudioPacket *pkt = (AudioPacket *)pPacketContext;
-
-
-  // only process from the current stream (if we're crossfading for instance)
-  if (pkt->stream != m_currentStream)
-    return;
-
-  m_bytesSentOut += pkt->length;
-
-  if (m_pCallback)
-  { // copy into our visualisation buffer.
-    // can't use a memcpy() here due to the context (will crash otherwise)
-    memcpy((short*)m_visBuffer, pkt->packet, pkt->length);
-    m_visBufferLength = pkt->length;
-  }
-}
-#endif
-
-void CALLBACK StaticStreamCallback( VOID* pStreamContext, VOID* pPacketContext, DWORD dwStatus )
-{
-#if 0
-  PAPlayer* pPlayer = (PAPlayer*)pStreamContext;
-  pPlayer->StreamCallback(pPacketContext);
-#endif
-}
-
 bool PAPlayer::HandlesType(const CStdString &type)
 {
   ICodec* codec=CodecFactory::CreateCodec(type);
@@ -846,43 +793,25 @@ bool PAPlayer::HandlesType(const CStdString &type)
   return false;
 }
 
-// Skip to next track/item inside the current media (if supported).
 bool PAPlayer::SkipNext()
 {
+  /* Skip to next track/item inside the current media (if supported). */
   if (!m_current) return false;
   return (m_current->m_decoder.GetCodec() && m_current->m_decoder.GetCodec()->SkipNext());
 }
 
 bool PAPlayer::CanRecord()
 {
-#if 0
-  if (!m_pShoutCastRipper) return false;
-  return m_pShoutCastRipper->CanRecord();
-#endif
   return false;
 }
 
 bool PAPlayer::IsRecording()
 {
-#if 0
-  if (!m_pShoutCastRipper) return false;
-  return m_pShoutCastRipper->IsRecording();
-#endif
   return false;
 }
 
 bool PAPlayer::Record(bool bOnOff)
 {
-#if 0
-  if (!m_pShoutCastRipper) return false;
-  if (bOnOff && IsRecording()) return true;
-  if (bOnOff == false && IsRecording() == false) return true;
-  if (bOnOff)
-    return m_pShoutCastRipper->Record();
-
-  m_pShoutCastRipper->StopRecording();
-  return true;
-#endif
   return false;
 }
 

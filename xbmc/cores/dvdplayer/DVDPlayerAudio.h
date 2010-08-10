@@ -39,7 +39,6 @@
 
 class CDVDPlayer;
 class CDVDAudioCodec;
-class IAudioCallback;
 class CDVDAudioCodec;
 
 enum CodecID;
@@ -96,9 +95,6 @@ class CDVDPlayerAudio : public CThread
 public:
   CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
   virtual ~CDVDPlayerAudio();
-
-  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
-  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   bool OpenStream(CDVDStreamInfo &hints);
   void CloseStream(bool bWaitForBuffers);

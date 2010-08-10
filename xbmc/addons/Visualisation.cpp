@@ -27,6 +27,8 @@
 #include "Settings.h"
 #include "WindowingFactory.h"
 #include "Util.h"
+#include "cores/AudioEngine/AE.h"
+#include "cores/AudioEngine/AEConvert.h"
 #ifdef _LINUX
 #include <dlfcn.h>
 #include "FileSystem/SpecialProtocol.h"
@@ -75,6 +77,13 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
       m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
     }
   }
+  else if (iBitsPerSample == 32)
+  {
+    CAEConvert::AEConvertFrFn convertFunc = CAEConvert::FrFloat(AE_FMT_S16LE);
+    if (!convertFunc) return;
+    iSize /= 4;
+    convertFunc((float*)psBuffer, iSize, (uint8_t*)m_pBuffer);
+  }
   else // assume 24 bit data
   {
     iSize /= 3;
@@ -83,6 +92,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
       m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
     }
   }
+
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
@@ -128,8 +138,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
 
     CreateBuffers();
 
-    if (g_application.m_pPlayer)
-      g_application.m_pPlayer->RegisterAudioCallback(this);
+    AE.RegisterAudioCallback(this);
 
     return true;
   }
@@ -193,7 +202,7 @@ void CVisualisation::Render()
 
 void CVisualisation::Stop()
 {
-  if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
+  AE.UnRegisterAudioCallback();
   if (Initialized())
   {
     CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Stop();
