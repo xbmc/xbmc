@@ -82,7 +82,6 @@ public:
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int GetTotalTime();
-  //__int64 GetTotalTime64();
   virtual int GetAudioBitrate();
   virtual int GetChannels();
   virtual int GetBitsPerSample();
@@ -91,38 +90,14 @@ public:
   virtual __int64 GetTime();
   virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);
-  // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext();
 
-  //void StreamCallback( LPVOID pPacketContext );
-
-  virtual void RegisterAudioCallback(IAudioCallback *pCallback);
-  virtual void UnRegisterAudioCallback();
-
   static bool HandlesType(const CStdString &type);
-  virtual void DoAudioWork();
-
 protected:
   virtual void OnStartup() {}
   virtual void Process();
   virtual void OnExit();
-/*
-  void HandleSeeking();
-  bool HandleFFwdRewd();
 
-  bool m_bPaused;
-  bool m_bIsPlaying;
-  bool m_bQueueFailed;
-  bool m_bStopPlaying;
-  bool m_cachingNextFile;
-  int  m_crossFading;
-  bool m_currentlyCrossFading;
-  __int64 m_crossFadeLength;
-
-  CEvent m_startEvent;
-
-  int m_iSpeed;   // current playing speed
-*/
 private:
   IAudioCallback    *m_audioCallback;
   CCriticalSection   m_critSection;
@@ -149,78 +124,5 @@ private:
   static void StaticStreamOnData (CAEStream *sender, void *arg);
   static void StaticStreamOnDrain(CAEStream *sender, void *arg);
   static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
-
-/*
-  bool ProcessPAP();    // does the actual reading and decode from our PAP dll
-
-  __int64 m_SeekTime;
-  int     m_IsFFwdRewding;
-  __int64 m_timeOffset;
-  bool    m_forceFadeToNext;
-
-  int m_currentDecoder;
-  CAudioDecoder m_decoder[2]; // our 2 audiodecoders (for crossfading + precaching)
-
-#ifndef _LINUX
-  void SetupDirectSound(int channels);
-#endif
-
-  // Our directsoundstream
-  friend void CALLBACK StaticStreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus );
-  bool AddPacketsToStream(int stream, CAudioDecoder &dec);
-  bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
-  void FreeStream(int stream);
-#if defined(_LINUX) || defined(_WIN32)
-  void DrainStream(int stream);
-#endif
-  bool CreateStream(int stream, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec = "");
-  void FlushStreams();
-  void WaitForStream();
-  void SetStreamVolume(int stream, long nVolume);
-
-  void UpdateCrossFadingTime(const CFileItem& file);
-  bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
-  void UpdateCacheLevel();
-
-  int m_currentStream;
-
-  CAEStream*          m_pAudioStream[2];
-  //CAEPPAnimationFade* m_pAudioFade[2];
-  float               m_latency[2];
-  unsigned char*      m_pcmBuffer[2];
-  int                 m_bufferPos[2];
-  unsigned int        m_Chunklen[2];
-
-  unsigned int     m_SampleRate;
-  unsigned int     m_Channels;
-  unsigned int     m_BitsPerSample;
-
-  unsigned int     m_SampleRateOutput;
-  unsigned int     m_BitsPerSampleOutput;
-
-  AudioPacket      m_packet[2][PACKET_COUNT];
-
-  IAudioCallback*  m_pCallback;
-
-  __int64          m_bytesSentOut;
-
-  // format (this should be stored/retrieved from the audio device object probably)
-  unsigned int     m_channelCount[2];
-  AEChLayout       m_channelMap[2];
-  unsigned int     m_sampleRate[2];
-  unsigned int     m_bitsPerSample[2];
-  unsigned int     m_BytesPerSecond;
-
-  unsigned int     m_CacheLevel;
-  unsigned int     m_LastCacheLevelCheck;
-
-  // our file
-  CFileItem*        m_currentFile;
-  CFileItem*        m_nextFile;
-
-  // stuff for visualisation
-  unsigned int     m_visBufferLength;
-  short            m_visBuffer[PACKET_SIZE+2];
-*/
 };
 

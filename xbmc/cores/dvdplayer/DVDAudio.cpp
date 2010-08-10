@@ -34,7 +34,6 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
   m_pAudioStream = NULL;
-  m_pCallback = NULL;
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
@@ -52,20 +51,6 @@ CDVDAudio::~CDVDAudio()
     m_pAudioStream->Destroy();
   }
   free(m_pBuffer);
-}
-
-void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = pCallback;
-  if (m_pCallback && m_pAudioStream && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
-}
-
-void CDVDAudio::UnRegisterAudioCallback()
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = NULL;
 }
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
@@ -96,9 +81,6 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
   if (m_pBuffer) delete[] m_pBuffer;
   m_pBuffer = new BYTE[m_dwPacketSize];
-
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
 
   return true;
 }
@@ -177,30 +159,14 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   DWORD total = len;
   DWORD copied;
 
-  //Feed audio to the visualizer if necessary.
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnAudioData(data, len);
-
-  // When paused, we need to buffer all data as renderers don't need to accept it
-  if (m_bPaused)
-  {
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + len);
-    memcpy(m_pBuffer+m_iBufferSize, data, len);
-    m_iBufferSize += len;
-    return len;
-  }
-
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
-    if(copied)
-    {
-      m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
-      memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
-      data += copied; // Move forward in caller's data
-      len -= copied; // Decrease amount of data available from caller
-      m_iBufferSize += copied; // Increase amount of data available in buffer
-    }
+    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
+
+    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+    data += copied; // Move forward in caller's data
+    len -= copied; // Decrease amount of data available from caller
+    m_iBufferSize += copied; // Increase amount of data available in buffer
 
     if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;

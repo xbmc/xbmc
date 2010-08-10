@@ -84,7 +84,9 @@ public:
   AEChLayout          GetChannelLayout() {return m_chLayout              ;}
   unsigned int        GetFrames       () {return m_format.m_frames       ;}
   unsigned int        GetFrameSize    () {return m_frameSize             ;}
-  
+
+  void RegisterAudioCallback(IAudioCallback* pCallback);
+  void UnRegisterAudioCallback() { m_audioCallback = NULL; }
 private:
   /* these are private as the class is a singleton */
   CAE();
@@ -121,9 +123,12 @@ private:
   std::map<const CStdString, CAESound*> m_sounds;
   uint8_t                              *m_buffer;
   unsigned int                          m_bufferSize;
+  uint8_t                              *m_visBuffer;
+  unsigned int                          m_visBufferSize;
 
-  /* the channel remapper */
+  /* the channel remapper and audioCallback */
   CAERemap                  m_remap;
+  IAudioCallback           *m_audioCallback;
 
   /* lock for threadsafe */
   CCriticalSection          m_critSection;

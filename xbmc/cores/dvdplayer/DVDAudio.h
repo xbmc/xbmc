@@ -55,9 +55,6 @@ public:
   CDVDAudio(volatile bool& bStop);
   ~CDVDAudio();
 
-  void RegisterAudioCallback(IAudioCallback* pCallback);
-  void UnRegisterAudioCallback();
-
   void SetVolume(float volume);
   void Pause();
   void Resume();
@@ -77,7 +74,6 @@ public:
   CAEStream *m_pAudioStream;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
-  IAudioCallback* m_pCallback;
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
   DWORD m_iBufferSize;
   DWORD m_dwPacketSize;
