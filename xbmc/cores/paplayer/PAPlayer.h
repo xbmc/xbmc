@@ -63,7 +63,7 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file);
   virtual void OnNothingToQueueNotify();
-  virtual bool CloseFile()       { return true; }
+  virtual bool CloseFile();
   virtual bool IsPlaying() const { return m_current || !m_streams.empty(); }
   virtual void Pause();
   virtual bool IsPaused() const { return m_isPaused; }

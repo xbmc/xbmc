@@ -322,6 +322,14 @@ void CAE::Run()
       if (m_state != AE_STATE_RUN) break;
       stream = *itt;
 
+      /* delete streams that are flagged for deletion */
+      if (stream->m_delete)
+      {
+        itt = m_streams.erase(itt);
+        delete stream;
+        continue;
+      }
+
       /* dont process streams that are paused */
       if (stream->IsPaused()) {
         ++itt;

@@ -53,10 +53,18 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 
 PAPlayer::~PAPlayer()
 {
+  CloseFile();
+}
+
+bool PAPlayer::CloseFile()
+{
   CSingleLock lock(m_critSection);
 
   if (m_current)
+  {
     FreeStreamInfo(m_current);
+    m_current = NULL;
+  }
 
   while(!m_streams.empty())
   {
@@ -69,17 +77,20 @@ PAPlayer::~PAPlayer()
     FreeStreamInfo(m_finishing.front());
     m_finishing.pop_front();
   }
+
+  return true;
 }
 
 void PAPlayer::OnExit()
 {
-
+printf("Exit\n");
 }
 
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
   si->m_decoder.Destroy();
-  delete si->m_stream;
+  if (si->m_stream)
+    si->m_stream->Destroy();
   delete si;
 }
 
@@ -104,8 +115,8 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
     {
       if (!si->m_triggered)
       {
-        si->m_player->PlayNextStream();
         si->m_triggered = true;
+        si->m_player->PlayNextStream();
       }
       si->m_stream->Drain();
       return;
@@ -127,28 +138,29 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg)
   /* if it is time to move to the next stream */
   if (!si->m_triggered && si->m_sent >= si->m_change)
   {
-    si->m_player->PlayNextStream();
     si->m_triggered = true;
+    si->m_player->PlayNextStream();
   }
 }
 
 void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg)
 {
   StreamInfo *si = (StreamInfo*)arg;
-  CSingleLock lock(si->m_player->m_critSection);
+  PAPlayer *player = si->m_player;
+  CSingleLock lock(player->m_critSection);
 
-  /* we dont delete the stream as it is flagged to be deleted on drain completion */
-  si->m_player->m_finishing.remove(si);
-  si->m_decoder.Destroy();
-  delete si;
+  if (si == player->m_current)
+    player->m_current = NULL;
+
+  player->FreeStreamInfo(si);
 }
 
 void PAPlayer::StaticFadeOnDone(CAEPPAnimationFade *sender, void *arg)
 {
   StreamInfo *si = (StreamInfo*)arg;
   CSingleLock lock(si->m_player->m_critSection);
-  /* the fadeout has completed rendering, so start draining */
 
+  /* the fadeout has completed rendering, so start draining */
   si->m_decoder.SetStatus(STATUS_ENDED);
   si->m_stream->Drain();
 }
@@ -214,7 +226,10 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   );
 
   if (!si->m_stream)
+  {
     FreeStreamInfo(si);
+    return false;
+  }
 
   /* pause the stream and set the callbacks */
   si->m_stream->Pause();
@@ -241,6 +256,18 @@ bool PAPlayer::PlayNextStream()
   bool         fadeIn    = false;
   unsigned int crossFade = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
 
+  /* if there is no more queued streams then we stop playing */
+  if (m_streams.empty())
+  {
+    if (m_current)
+    {
+      m_finishing.push_back(m_current);
+      m_current->m_stream->Drain();
+      m_current = NULL;
+    }
+    return false;
+  }
+
   /* if there is a currently playing stream, stop it */
   if (m_current)
   {
@@ -257,16 +284,9 @@ bool PAPlayer::PlayNextStream()
       fade->SetPosition(1.0f);
       m_current->m_stream->PrependPostProc(fade);
       fade->Run();
-      m_finishing.push_back(m_current);
     }
-  }
 
-  /* if thre is no more queued streams */
-  if (m_streams.empty())
-  {
-    m_current = NULL;
-    m_callback.OnPlayBackEnded();
-    return false;
+    m_finishing.push_back(m_current);
   }
 
   /* get the next stream */
@@ -630,7 +650,6 @@ bool PAPlayer::CanSeek()
 
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-#if 0
   __int64 seek;
   if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
   {
@@ -648,33 +667,25 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
       percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
     else
       percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
-    seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
+    seek = (int64_t)(GetTotalTime() * (GetPercentage() + percent) / 100);
   }
 
   SeekTime(seek);
-#endif
 }
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
-#if 0
   if (!CanSeek()) return;
   int seekOffset = (int)(iTime - GetTime());
-  if (m_currentFile->m_lStartOffset)
-    iTime += m_currentFile->m_lStartOffset * 1000 / 75;
-  m_SeekTime = iTime;
-  m_callback.OnPlayBackSeek((int)m_SeekTime, seekOffset);
-  CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * m_SeekTime);
-#endif
+  m_callback.OnPlayBackSeek(iTime, seekOffset);
+  CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * iTime);
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
-#if 0
   if (fPercent < 0.0f) fPercent = 0.0f;
   if (fPercent > 100.0f) fPercent = 100.0f;
-  SeekTime((__int64)(fPercent * 0.01f * (float)GetTotalTime64()));
-#endif
+  SeekTime((int64_t)(fPercent * 0.01f * (float)GetTotalTime()));
 }
 
 float PAPlayer::GetPercentage()
@@ -732,7 +743,7 @@ bool PAPlayer::HandleFFwdRewd()
     // Calculate offset to seek if we do FF/RW
     __int64 time = GetTime();
     if (m_IsFFwdRewding) snippet = (int)m_bytesSentOut;
-    time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
+    time += (int64_t)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
 
     // Is our offset inside the track range?
     if (time >= 0 && time <= m_decoder[m_currentDecoder].TotalTime())

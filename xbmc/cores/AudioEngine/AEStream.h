@@ -39,9 +39,8 @@ class CAEStream
 public:
   typedef void (AECBFunc)(CAEStream*stream, void *arg);
 
-  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
-  ~CAEStream();
   void Initialize();
+  void Destroy();
   void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
 
@@ -70,6 +69,10 @@ public:
   unsigned int GetFrameSamples() { return m_format.m_frameSamples; }
   unsigned int GetChannelCount() { return m_format.m_channelCount; }
   unsigned int GetSampleRate()   { return m_format.m_sampleRate;   }
+protected:
+  friend class CAE;
+  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
+  ~CAEStream();
 private:
   void InternalFlush();
 
@@ -91,6 +94,7 @@ private:
   bool                    m_convert;       /* true if the bitspersample needs converting */
   float                  *m_convertBuffer; /* buffer for converted data */
   bool                    m_valid;         /* true if the stream is valid */
+  bool                    m_delete;        /* true if CAE is to free this object */
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
   bool                    m_freeOnDrain;   /* true to free the stream when it has drained */

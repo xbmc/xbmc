@@ -49,7 +49,7 @@ CDVDAudio::~CDVDAudio()
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
   {
-    delete m_pAudioStream;
+    m_pAudioStream->Destroy();
   }
   free(m_pBuffer);
 }
@@ -109,7 +109,7 @@ void CDVDAudio::Destroy()
 
   if (m_pAudioStream)
   {
-    delete m_pAudioStream;
+    m_pAudioStream->Destroy();
   }
   free(m_pBuffer);
   m_pBuffer = NULL;

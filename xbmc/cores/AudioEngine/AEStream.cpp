@@ -30,6 +30,7 @@ using namespace std;
 CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc):
   m_convertBuffer  (NULL ),
   m_valid          (false),
+  m_delete         (false),
   m_volume         (1.0f ),
   m_convertFn      (NULL ),
   m_frameBuffer    (NULL ),
@@ -157,11 +158,18 @@ void CAEStream::Initialize()
   m_valid = true;
 }
 
+void CAEStream::Destroy()
+{
+  CSingleLock lock(m_critSection);
+  m_valid  = false;
+  m_delete = true;
+}
+
 CAEStream::~CAEStream()
 {
   CSingleLock lock(m_critSection);
   m_valid = false;
-  lock.Leave();
+  //lock.Leave();
 
   /* de-init/free post-proc objects */
   while(!m_postProc.empty())
@@ -302,6 +310,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
 float* CAEStream::GetFrame()
 {
   CSingleLock lock(m_critSection);
+  if (m_delete) return NULL;
 
   /* if the packet is empty, advance to the next one */
   if(!m_packet.samples)
@@ -374,9 +383,9 @@ float* CAEStream::GetFrame()
 
 float CAEStream::GetDelay()
 {
-  float frames;
   CSingleLock lock(m_critSection);
-  frames = m_framesBuffered;
+  if (m_delete) return 0.0f;
+  float frames = m_framesBuffered;
   lock.Leave();
 
   return AE.GetDelay() + (frames / AE.GetSampleRate());
