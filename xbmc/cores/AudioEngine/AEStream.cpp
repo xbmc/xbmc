@@ -77,6 +77,7 @@ void CAEStream::Initialize()
   m_bytesPerFrame          = (CAEUtil::DataFormatToBits(m_initDataFormat) >> 3) * m_initChannelCount;
   m_aeChannelCount         = AE.GetChannelCount();
   m_aePacketSamples        = AE.GetFrames() * m_aeChannelCount;
+  m_waterLevel             = AE.GetSampleRate() >> 2;
 
   /* if no layout provided, guess one */
   if (m_initChannelLayout == NULL) {
@@ -215,8 +216,8 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
   CSingleLock lock(m_critSection);
   if (!m_valid || size == 0 || data == NULL || m_draining) return 0;  
 
-  /* only buffer up to 1 second of data */
-  if (m_framesBuffered >= AE.GetSampleRate())
+  /* only buffer up to 2x the water level */
+  if (m_framesBuffered >= m_waterLevel << 1)
     return 0;
 
   uint8_t *ptr = (uint8_t*)data;
@@ -327,7 +328,7 @@ float* CAEStream::GetFrame()
         if (m_cbDrainFunc)
         {
           lock.Leave();
-          m_cbDrainFunc(this, m_cbDrainArg);
+          m_cbDrainFunc(this, m_cbDrainArg, 0);
           m_cbDrainFunc = NULL;
         }
       }
@@ -337,7 +338,7 @@ float* CAEStream::GetFrame()
         if (m_cbDataFunc)
         {
           lock.Leave();
-          m_cbDataFunc(this, m_cbDataArg);
+          m_cbDataFunc(this, m_cbDataArg, (m_format.m_frameSize - m_frameBufferSize) / m_bytesPerFrame);
         }
       }
       return NULL;
@@ -364,17 +365,17 @@ float* CAEStream::GetFrame()
     if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc)
     {
       lock.Leave();
-      m_cbDrainFunc(this, m_cbDrainArg);
+      m_cbDrainFunc(this, m_cbDrainArg, 0);
       m_cbDrainFunc = NULL;
     }
   }
   else
   {
-    /* if the buffer is < 50% full, trigger the data callback function */ 
-    if (m_cbDataFunc && m_framesBuffered < (AE.GetSampleRate() >> 1))
+    /* if the buffer is low, fill up again */ 
+    if(m_cbDataFunc && m_framesBuffered < m_waterLevel)
     {
       lock.Leave();
-      m_cbDataFunc(this, m_cbDataArg);
+      m_cbDataFunc(this, m_cbDataArg, (m_format.m_frameSize - m_frameBufferSize) / m_bytesPerFrame);
     }
   }
 
@@ -437,6 +438,21 @@ void CAEStream::InternalFlush()
   /* reset our counts */
   m_frameBufferSize = 0;
   m_framesBuffered  = 0;
+}
+
+/* applies a multipler to the ssrc speed where 1.0 is normal */
+void CAEStream::SetSpeed(double speed)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_valid || !m_resample) return;
+
+  if (speed < 0.0f) speed = 1.0f / -speed;
+  double ratio = (double)AE.GetSampleRate() / ((double)m_initSampleRate * speed);
+  m_waterLevel = (unsigned int)((double)AE.GetSampleRate() * speed) >> 2;
+  m_ssrcData.src_ratio = ratio;
+  src_set_ratio(m_ssrc, ratio);
+
+  InternalFlush();
 }
 
 void CAEStream::SetDynamicRangeCompression(int drc)

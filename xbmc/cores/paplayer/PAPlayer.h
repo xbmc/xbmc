@@ -120,12 +120,13 @@ private:
   std::list<StreamInfo*>  m_finishing;  /* finishing streams */
   StreamInfo             *m_current;    /* the current playing stream */
   bool                    m_isPaused;
+  int                     m_iSpeed;
 
   void FreeStreamInfo(StreamInfo *si);
   bool PlayNextStream();
 
-  static void StaticStreamOnData (CAEStream *sender, void *arg);
-  static void StaticStreamOnDrain(CAEStream *sender, void *arg);
+  static void StaticStreamOnData (CAEStream *sender, void *arg, unsigned int needed);
+  static void StaticStreamOnDrain(CAEStream *sender, void *arg, unsigned int unused);
   static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
 };
 
