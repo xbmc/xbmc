@@ -90,7 +90,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
     m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
   else
     m_strThumbnailImage.clear();
-
+  m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
 
@@ -300,6 +300,7 @@ void CFileItem::Reset()
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_bSelected = false;
+  m_bIsAlbum = false;
   m_strDVDLabel.Empty();
   m_strTitle.Empty();
   m_strPath.Empty();
@@ -1085,6 +1086,11 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     return IsSamePath(&dbItem);
   }
   return false;
+}
+
+bool CFileItem::IsAlbum() const
+{
+  return m_bIsAlbum;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -98,8 +98,6 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["year"] = (int)musicInfo->GetYear();
 
 //  void GetReleaseDate(SYSTEMTIME& dateTime) const;
-  if (field.Equals("albumartist") && !musicInfo->GetYearString().IsEmpty())
-    result["albumartist"] =  musicInfo->GetYearString().c_str();
 
   if (field.Equals("musicbrainztrackid") && !musicInfo->GetMusicBrainzTrackID().IsEmpty())
     result["musicbrainztrackid"] =  musicInfo->GetMusicBrainzTrackID().c_str();
@@ -176,6 +174,13 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
         FillVideoDetails(item->GetVideoInfoTag(), field, object);
       if (item->HasMusicInfoTag())
         FillMusicDetails(item->GetMusicInfoTag(), field, object);
+      if (item->IsAlbum() && item->HasProperty(field))
+      {
+        if (field == "album_rating")
+          object[field] = item->GetPropertyInt(field);
+        else
+          object[field] = item->GetProperty(field);
+      }
     }
 
     object["label"] = item->GetLabel().c_str();
