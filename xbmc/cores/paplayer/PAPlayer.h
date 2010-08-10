@@ -65,7 +65,7 @@ public:
   virtual void OnNothingToQueueNotify();
   virtual bool CloseFile()       { return CloseFileInternal(true); }
   virtual bool CloseFileInternal(bool bAudioDevice = true);
-  virtual bool IsPlaying() const { return !m_streams.empty(); }
+  virtual bool IsPlaying() const { return m_current || !m_streams.empty(); }
   virtual void Pause();
   virtual bool IsPaused() const { return m_isPaused; }
   virtual bool HasVideo() const { return false; }
@@ -133,24 +133,28 @@ private:
 
   typedef struct
   {
-    CAudioDecoder       m_decoder;
-    PAPlayer           *m_player;
-    CAEStream          *m_stream;
-    CAEPPAnimationFade *m_fadeIn;
-    CAEPPAnimationFade *m_fadeOut;
-    unsigned int        m_sent, m_change;
-    bool                m_triggered;
+    CAudioDecoder       m_decoder;      /* the decoder instance */
+    PAPlayer           *m_player;       /* the PAPlayer instance */
+    CAEStream          *m_stream;       /* the audio stream */
+    unsigned int        m_sent;         /* frames sent */
+    unsigned int        m_change;       /* frame to start xfade at */
+    unsigned int        m_prepare;      /* frame to prepare next file at */
+    bool                m_triggered;    /* if the queue callback has been called */
   } StreamInfo;
 
-  StreamInfo             *m_lastStream;
-  std::list<StreamInfo*>  m_streams;
+  std::list<StreamInfo*>  m_streams;    /* queued streams */
+  std::list<StreamInfo*>  m_finishing;  /* finishing streams */
+  StreamInfo             *m_current;    /* the current playing stream */
   bool                    m_isPaused;
   int                     m_crossFade;
 
   void FreeStreamInfo(StreamInfo *si);
+  bool PlayNextStream();
+
   static void StaticStreamOnData (CAEStream *sender, void *arg);
   static void StaticStreamOnDrain(CAEStream *sender, void *arg);
   static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
+
 /*
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
 
