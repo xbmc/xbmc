@@ -113,7 +113,7 @@
           <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(915)</visible>
           <include>VideoOSDSlideLeft</include>
         </control>
-
+<!--
         <control type="image">
           <description>Showcase Thumb</description>
           <include>OMViewLargeThumb</include>
@@ -121,7 +121,7 @@
           <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(916)</visible>
           <include>VideoOSDSlideLeft</include>
         </control>
-
+-->
         <control type="image">
           <description>TV Wide Thumb</description>
           <include>OMViewLargeThumb</include>
@@ -264,7 +264,7 @@
           <visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
           <include>OMViewLabelItem</include>
         </control>
-
+<!--
         <control type="image" id="9102">
           <description>Showcase Thumb</description>
           <texture>ViewThumbShowcase.png</texture>
@@ -277,7 +277,7 @@
           <visible>Control.IsVisible(58) + Window.IsActive(24)</visible>
           <include>OMViewLabelItem</include>
         </control>
-
+-->
         <control type="image" id="9103">
           <description>TV Wide Thumb</description>
           <texture>ViewThumbTVWide.png</texture>
@@ -470,7 +470,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+<!--
         <control type="button" id="916">
           <description>Showcase view button</description>
           <visible>!Control.IsVisible(58) + !Container.Content(movies) + !Container.Content(Episodes)  + !Container.Content(Albums) + !Container.Content(Artists) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
@@ -479,7 +479,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+-->
         <control type="button" id="925">
           <description>TV Wide view button</description>
           <visible>!Control.IsVisible(57) + [Container.Content(tvshows)]</visible>
@@ -582,7 +582,7 @@
 
 		<control type="button" id="959">
           <description>Plugin Stream view button</description>
-          
+          <visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
           <label>$LOCALIZE[31722]</label>
           <onclick>Container.SetViewMode(59)</onclick>
           <onclick>SetFocus(50)</onclick>

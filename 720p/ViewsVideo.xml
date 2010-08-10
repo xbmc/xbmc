@@ -1484,6 +1484,7 @@
 			<include>CommonSortLetters</include>
 		</control>
 	</include>
+<!--
 	<include name="Showcase">
 		<control type="group">
 			<include>ShowcaseVisible</include>
@@ -1661,4 +1662,5 @@
 			<include>CommonSortLetters</include>
 		</control>
 	</include>
+	-->
 </includes>
