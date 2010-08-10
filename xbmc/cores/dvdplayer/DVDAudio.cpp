@@ -50,7 +50,7 @@ CDVDAudio::~CDVDAudio()
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
   {
-    delete m_pAudioStream;
+    m_pAudioStream->Destroy();
   }
   if (m_pBuffer) delete[] m_pBuffer;
 }
@@ -110,7 +110,7 @@ void CDVDAudio::Destroy()
 
   if (m_pAudioStream)
   {
-    delete m_pAudioStream;
+    m_pAudioStream->Destroy();
   }
 
   if (m_pBuffer) delete[] m_pBuffer;
