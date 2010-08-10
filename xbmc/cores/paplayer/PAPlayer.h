@@ -63,8 +63,7 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file);
   virtual void OnNothingToQueueNotify();
-  virtual bool CloseFile()       { return CloseFileInternal(true); }
-  virtual bool CloseFileInternal(bool bAudioDevice = true);
+  virtual bool CloseFile()       { return true; }
   virtual bool IsPlaying() const { return m_current || !m_streams.empty(); }
   virtual void Pause();
   virtual bool IsPaused() const { return m_isPaused; }
@@ -146,7 +145,6 @@ private:
   std::list<StreamInfo*>  m_finishing;  /* finishing streams */
   StreamInfo             *m_current;    /* the current playing stream */
   bool                    m_isPaused;
-  int                     m_crossFade;
 
   void FreeStreamInfo(StreamInfo *si);
   bool PlayNextStream();
