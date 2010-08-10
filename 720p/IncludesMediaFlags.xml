@@ -71,14 +71,6 @@
 			</control>
  
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
-				<height>40</height>
-				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
-				<aspectratio>keep</aspectratio>
-			</control>
- 
-			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
@@ -87,6 +79,14 @@
 			</control>
 
 			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+ 			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
