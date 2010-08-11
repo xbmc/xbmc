@@ -16,11 +16,11 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
  libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
  libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev, libmodplug-dev,
- librtmp-dev, libcrystalhd-dev,
+ libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev,
+ libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev,
 Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
