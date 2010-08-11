@@ -1609,7 +1609,7 @@ void CDVDPlayer::OnExit()
     }
     if (m_CurrentSubtitle.id >= 0)
     {
-      CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
+      CLog::Log(LOGNOTICE, "DVDPlayer: closing subtitle stream");
       CloseSubtitleStream(!m_bAbortRequest);
     }
     if (m_CurrentTeletext.id >= 0)
