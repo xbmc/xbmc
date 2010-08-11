@@ -61,8 +61,18 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 # Input files used for generating other files
 INPUT_FILES = debian/control.in
 
+# Use --parallel option only if debhelper supports it
+DH_PARALLEL_OPT=$(shell dh_testdir --parallel 2>/dev/null && echo "--parallel")
+
+# Use source format 1.0 in Ubuntu hardy, otherwise use 3.0 (quilt).
+ifeq (hardy,$(shell lsb_release -cs))
+  SOURCE_FORMAT="1.0"
+else
+  SOURCE_FORMAT="3.0 (quilt)"
+endif
+
 %:
-	dh $@ --parallel
+	dh $@ $(DH_PARALLEL_OPT)
 
 # Target for generating control files
 .PHONY: debian/var_info
@@ -79,6 +89,7 @@ override_dh_clean:
 	find . -name config.status -o -name config.cache -o -name config.log \
 		-exec rm -f "{}" \;
 	debian/rules $(INPUT_FILES)
+	echo $(SOURCE_FORMAT) >debian/source/format
 
 override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
