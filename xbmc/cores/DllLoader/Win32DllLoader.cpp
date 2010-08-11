@@ -368,10 +368,14 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   CStdString dllPath;
   g_charsetConverter.wToUTF8(filepathW, dllPath);
 
-  // compare this filepath with our home directory
-  CStdString homePath = _P("special://xbmc");
+  // compare this filepath with some special directories
+  CStdString xbmcPath = _P("special://xbmc");
+  CStdString homePath = _P("special://home");
   CStdString tempPath = _P("special://temp");
-  return ((strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));}
+  return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.GetLength()) == 0) ||
+    (strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) ||
+    (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));
+}
 
 void Win32DllLoader::RestoreImports()
 {
