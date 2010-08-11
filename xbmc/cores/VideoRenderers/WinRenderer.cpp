@@ -754,7 +754,7 @@ void CWinRenderer::ScaleStretchRect()
 
   RECT dstRect = { m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2 };
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
 
   D3DSURFACE_DESC desc;
@@ -912,9 +912,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
 
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get back buffer");
+    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target");
     return;
   }
 
