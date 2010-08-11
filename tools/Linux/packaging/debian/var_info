@@ -17,9 +17,8 @@ BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
  libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
- nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev,"
+ libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev, libmodplug-dev,
+ librtmp-dev, libcrystalhd-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
     BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
