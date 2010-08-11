@@ -33,11 +33,11 @@ using namespace std;
 
 CAE::CAE():
   m_state        (AE_STATE_INVALID),
-  m_renderer     (NULL),
+  m_sink         (NULL),
   m_buffer       (NULL),
-  m_visBuffer    (NULL),
   m_audioCallback(NULL)
 {
+  m_visBuffer = new uint8_t[AUDIO_BUFFER_SIZE * sizeof(float) * 2];
 }
 
 CAE::~CAE()
@@ -49,6 +49,70 @@ CAE::~CAE()
     /* note: the stream will call RemoveStream via it's dtor */
     delete s;
   }
+
+  delete[] m_visBuffer;
+  m_visBuffer = NULL;
+}
+
+bool CAE::OpenSink()
+{
+  unsigned int sampleRate = 44100;
+  if (!m_streams.empty())
+    sampleRate = m_streams.front()->GetSampleRate();
+
+  CSingleLock sinkLock(m_critSectionSink);
+
+  /* if the sink is open and the sampleRate has not changed, dont re-open */
+  if (m_sink && sampleRate == m_format.m_sampleRate)
+  {
+    return true;
+  }
+
+  /* close the old sink if it is open */
+  if (m_sink)
+  {
+    m_sink->Stop();
+    m_sink->Deinitialize();
+    delete m_sink;
+    m_sink = NULL;
+
+    delete[] m_buffer;
+    m_buffer = NULL;
+  }
+
+  CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
+  m_sink = new CALSADirectSound();
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, false))
+  {
+    delete m_sink;
+    m_sink = NULL;
+    return false;
+  }
+
+  m_format        = m_sink->GetAudioFormat();
+  m_frameSize     = sizeof(float) * m_channelCount;
+  m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
+  m_buffer        = new uint8_t[m_format.m_frameSize * 2];
+  m_bufferSize    = 0;
+  m_visBufferSize = 0;
+
+  m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
+
+  /* re-init sounds */
+  map<const CStdString, CAESound*>::iterator sitt;
+  for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
+    sitt->second->Initialize();
+
+  /* re-init streams */
+  list<CAEStream*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    (*itt)->Initialize();
+
+  /* re-init the callback */
+  if (m_audioCallback)
+    m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
+
+  return true;
 }
 
 bool CAE::Initialize()
@@ -74,33 +138,23 @@ bool CAE::Initialize()
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
   CLog::Log(LOGDEBUG, "CAE::Initialize: Configured speaker layout: %s", CAEUtil::GetStdChLayoutName(chLayout));
 
-  m_renderer = new CALSADirectSound();
-  if (!m_renderer->Initialize(NULL, "default", m_chLayout, 48000, 32, false, false, false))
+  /* pretend that we have a 44.1khz float sink for sounds */
+  m_format.m_sampleRate    = 44100;
+  m_format.m_dataFormat    = AE_FMT_FLOAT;
+  m_format.m_channelCount  = m_channelCount;
+  m_format.m_channelLayout = m_chLayout;
+
+  if (!m_streams.empty())
   {
-    delete m_renderer;
-    m_renderer = NULL;
-    return false;
+    if (!OpenSink()) return false;
+    m_state = AE_STATE_READY;
+    return true;
   }
 
-  m_format        = m_renderer->GetAudioFormat();
-  m_frameSize     = sizeof(float) * m_channelCount;
-  m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer        = new uint8_t[m_format.m_frameSize * 2];
-  m_visBuffer     = new uint8_t[AUDIO_BUFFER_SIZE * sizeof(float) * 2];
-  m_bufferSize    = 0;
-  m_visBufferSize = 0;
-
-  m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
-
-  /* re-intiialize sounds */
+  /* re-init sounds */
   map<const CStdString, CAESound*>::iterator sitt;
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
     sitt->second->Initialize();
-
-  /* re-initialize streams */
-  list<CAEStream*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
-    (*itt)->Initialize();
 
   m_state = AE_STATE_READY;
   return true;
@@ -108,19 +162,19 @@ bool CAE::Initialize()
 
 void CAE::DeInitialize()
 {
+  CSingleLock sinkLock(m_critSectionSink);
+
   m_state = AE_STATE_SHUTDOWN;
-  if (m_renderer)
+  if (m_sink)
   {
-    m_renderer->Deinitialize();
-    delete m_renderer;
-    m_renderer = NULL;
+    m_sink->Stop();
+    m_sink->Deinitialize();
+    delete m_sink;
+    m_sink = NULL;
   }
 
   delete[] m_buffer;
   m_buffer = NULL;
-
-  delete[] m_visBuffer;
-  m_visBuffer = NULL;
 
   m_state = AE_STATE_INVALID;
 }
@@ -143,6 +197,11 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   CSingleLock lock(m_critSection);
   CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
   m_streams.push_back(stream);
+
+  /* if we are the only stream, re-open the sink */
+  if (m_streams.size() == 1)
+    OpenSink();
+
   return stream;
 }
 
@@ -179,6 +238,7 @@ void CAE::PlaySound(CAESound *sound)
       frame: 0
    };
    CSingleLock lock(m_critSection);
+   OpenSink();
    m_playing_sounds.push_back(ss);
 }
 
@@ -236,7 +296,8 @@ void CAE::GarbageCollect()
 void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   m_audioCallback = pCallback;
-  m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
+  if (m_audioCallback)
+    m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
 }
 
 void CAE::StopSound(CAESound *sound)
@@ -267,7 +328,12 @@ void CAE::RemoveStream(CAEStream *stream)
 
 void CAE::Run()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock    (m_critSection);
+
+  /* so we can lock the audio sink */
+  CSingleLock sinkLock(m_critSectionSink);
+  sinkLock.Leave();
+
   if (!AE.Initialize())
   {
     CLog::Log(LOGERROR, "CAE::Run - Failed to initialize");
@@ -277,29 +343,41 @@ void CAE::Run()
   m_state = AE_STATE_RUN;
   lock.Leave();
 
-  list<CAEStream*>::iterator itt;
-  list<SoundState>::iterator sitt;
-  CAEStream *stream;
-  
-  float        out[m_channelCount         ];
-  float        dst[m_format.m_channelCount];
-  unsigned int div;
-  unsigned int i;
-
   CLog::Log(LOGINFO, "CAE::Run - Thread Started");
   while(GetState() == AE_STATE_RUN)
   {
+    /* if a sink has not been opened yet */
+    sinkLock.Enter();
+    if (m_sink == NULL)
+    {
+      sinkLock.Leave();
+      usleep(1000);
+      continue;
+    }
+
+    list<CAEStream*>::iterator itt;
+    list<SoundState>::iterator sitt;
+    CAEStream *stream;
+  
+    float        out[m_channelCount         ];
+    float        dst[m_format.m_channelCount];
+    unsigned int div;
+    unsigned int i;  
+
     /* this normally only loops once */
     while(m_bufferSize >= m_format.m_frameSize)
     {
         /* this call must block! */
-        int wrote = m_renderer->AddPackets(m_buffer, m_bufferSize);
+        int wrote = m_sink->AddPackets(m_buffer, m_bufferSize);
         if (!wrote) continue;
 
 	int left = m_bufferSize - wrote;
         memmove(&m_buffer[0], &m_buffer[wrote], left);
         m_bufferSize -= wrote;
     }
+
+    /* we are finished with the sink */
+    sinkLock.Leave();
 
     memset(out, 0, sizeof(out));
     div = 1;
@@ -425,7 +503,6 @@ void CAE::Run()
 
   CLog::Log(LOGINFO, "CAE::Run - Thread Terminating");
   lock.Enter();
-  m_renderer->Stop();
   DeInitialize();
   m_state = AE_STATE_INVALID;
   lock.Leave();
@@ -440,9 +517,11 @@ void CAE::Stop()
 
 float CAE::GetDelay()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock    (m_critSection    );
+  CSingleLock sinkLock(m_critSectionSink);
+
   if (m_state == AE_STATE_INVALID) return 0.0f;
-  return m_renderer->GetDelay() + m_bufferSize / m_frameSize / m_format.m_sampleRate;
+  return m_sink->GetDelay() + m_bufferSize / m_frameSize / m_format.m_sampleRate;
 }
 
 float CAE::GetVolume()

@@ -92,6 +92,7 @@ private:
   CAE();
   virtual ~CAE();
   bool Initialize();
+  bool OpenSink();
   void DeInitialize();
 
   /* this is called by streams on dtor, you should never need to call this directly */
@@ -106,8 +107,8 @@ private:
   AEChLayout                m_chLayout;
   unsigned int              m_frameSize;
 
-  /* the renderer, its format information, and conversion function */
-  IAudioRenderer           *m_renderer;
+  /* the sink, its format information, and conversion function */
+  IAudioRenderer           *m_sink;
   AEAudioFormat		    m_format;
   CAEConvert::AEConvertFrFn m_convertFn;
 
@@ -131,7 +132,7 @@ private:
   IAudioCallback           *m_audioCallback;
 
   /* lock for threadsafe */
-  CCriticalSection          m_critSection;
+  CCriticalSection          m_critSection, m_critSectionSink;
 };
 
 /* global instance */
