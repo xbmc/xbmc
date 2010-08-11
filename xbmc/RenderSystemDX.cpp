@@ -630,6 +630,12 @@ bool CRenderSystemDX::BeginRender()
       CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
+
+  IDirect3DSurface9 *pBackBuffer;
+  m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+	m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
+  pBackBuffer->Release();
+
   m_inScene = true;
   return true;
 }
