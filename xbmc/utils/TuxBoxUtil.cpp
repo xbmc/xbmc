@@ -627,8 +627,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)
       items.m_bIsFolder = false;
-      items.SetMimeType("video/x-ms-asf");
-
+      items.SetMimeType("video/x-mpegts");
       return true;
     }
   }

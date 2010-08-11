@@ -272,6 +272,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/x-dvd-mpeg") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
+    else if( content.compare("video/x-mpegts") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpegts");
   }
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
