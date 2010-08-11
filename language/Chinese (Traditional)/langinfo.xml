@@ -12,7 +12,7 @@
   <regions>
     <region name="台北">
       <dateshort>YYYY/MM/DD</dateshort>
-      <datelong>DDDD年M月D日</datelong>
+      <datelong>YYYY年M月D日 DDDD</datelong>
       <time symbolAM="上午" symbolPM="下午">xx h:mm</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
