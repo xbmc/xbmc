@@ -943,12 +943,16 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
 #if defined(_WIN32)
+  if(strFile.Mid(1) != ":\\"
+  && strFile.Mid(1) != ":")
+    return false;
+
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
