@@ -4,22 +4,22 @@
 
 BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
- libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
- libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
- libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
- libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev, libpcre3-dev,
- liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
- libenca-dev, libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev,
- libxinerama-dev, libcurl4-openssl-dev | libcurl-dev, libdbus-1-dev,
- libhal-storage-dev, libhal-dev, libpulse-dev, libavahi-common-dev,
- libavahi-client-dev, libxrandr-dev, libavcodec-dev, libavformat-dev,
- libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev, libdts-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
- nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev,"
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
+ libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
+ libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
+ libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
+ libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libxmu-dev, libxinerama-dev, libcurl4-openssl-dev | libcurl-dev,
+ libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
+ libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
+ libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev,
+ libdts-dev, libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev,
+ libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev |
+ nvidia-190-libvdpau-dev | nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev,
+ libmicrohttpd-dev, libmodplug-dev, librtmp-dev, libcrystalhd-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
     BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
