@@ -29,11 +29,8 @@ case "$1" in
         printf "$BUILD_DEPENDS"
         ;;
     LIBCURL_DEPENDS)
-        LIBCURL_DEPENDS=$(cat /var/lib/dpkg/info/libcurl3.shlibs | \
+        LIBCURL_DEPENDS=$(cat /var/lib/dpkg/info/libcurl3-gnutls.shlibs | \
           sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
-        if [ $(lsb_release -cs) = "hardy" ]; then
-          LIBCURL_DEPENDS="libcurl3"
-        fi
         printf "$LIBCURL_DEPENDS"
         ;;
     XBMC_LIVE_DEPENDS)
