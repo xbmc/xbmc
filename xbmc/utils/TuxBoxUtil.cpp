@@ -597,13 +597,12 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if (GetRequestedAudioChannel(sSelectedAudioChannel))
         {
           if (sSelectedAudioChannel.pid != sStrmInfo.apid)
-            SetAudioChannel( strPath, sSelectedAudioChannel );
-
-          CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
-          strStreamURL.Format("http://%s:%s@%s:%i/langpid=%s", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort, sSelectedAudioChannel.pid.c_str());
+          {
+            if (SetAudioChannel(strPath, sSelectedAudioChannel))
+              CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
+          }
         }
-        else
-          strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
+        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
       }
 
       if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
