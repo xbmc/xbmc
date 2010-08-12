@@ -28,8 +28,6 @@ rm $WORKPATH/copyFiles-installer.sh
 
 rm $WORKPATH/buildDEBs/build-installer.sh
 
-chmod +x $WORKPATH/buildLive/Files/chroot_local-hooks/02-setFstab
-
 # Modify menu.lst
 
 if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
