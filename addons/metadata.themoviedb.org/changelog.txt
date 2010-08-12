@@ -1,3 +1,6 @@
+[B]1.1.0[/B]
+- added multi-language support
+
 [B]1.0.11[/B]
 - added Polish translation
 

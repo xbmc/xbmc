@@ -2,4 +2,5 @@
 <settings>
     <setting label="30000" type="bool" id="fanart" default="true"/>
     <setting label="30001" type="labelenum" values="No|480p|720p|1080p" id="TrailerQ" default="480p"/>
-</settings>
+    <setting label="30002" type="labelenum" values="da|fi|nl|de|it|es|fr|pl|hu|el|tr|ru|he|ja|pt|zh|cs|sl|hr|ko|en|sv|no" id="language" default="en"/>
+	</settings>
