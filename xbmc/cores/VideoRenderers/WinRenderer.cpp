@@ -786,18 +786,27 @@ void CWinRenderer::ScaleFixedPipeline()
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
 
+  bool cbcontrol          = (g_settings.m_currentVideoSettings.m_Contrast != 50.0f || g_settings.m_currentVideoSettings.m_Brightness != 50.0f);
+  unsigned int contrast   = (unsigned int)(g_settings.m_currentVideoSettings.m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
+  unsigned int brightness = (unsigned int)(g_settings.m_currentVideoSettings.m_Brightness * .01f * 255.0f);
+
+  D3DCOLOR diffuse  = D3DCOLOR_ARGB(255, contrast, contrast, contrast);
+  D3DCOLOR specular = D3DCOLOR_ARGB(255, brightness, brightness, brightness);
+
   struct VERTEX
   {
     FLOAT x,y,z,rhw;
+    D3DCOLOR diffuse;
+    D3DCOLOR specular;
     FLOAT tu, tv;
   };
 
   VERTEX vertex[] =
   {
-    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
-    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
   };
 
   // Compensate for D3D coordinates system
@@ -809,12 +818,32 @@ void CWinRenderer::ScaleFixedPipeline()
 
   pD3DDev->SetTexture(0, m_SWTarget.Get());
 
-  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  if (!cbcontrol)
+  {
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  }
+  else
+  {
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE2X );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_SPECULAR );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
+
+    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  }
 
   hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
   hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -830,12 +859,18 @@ void CWinRenderer::ScaleFixedPipeline()
   hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
 
   if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
     CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. (0x%08X)", hr);
 
   pD3DDev->SetTexture(0, NULL);
+
+  if (cbcontrol)
+  {
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  }
 }
 
 void CWinRenderer::RenderPS(DWORD flags)
@@ -1019,14 +1054,12 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CWinRenderer::Supports(ERENDERFEATURE feature)
 {
-  if (m_renderMethod == RENDER_DXVA || m_renderMethod == RENDER_PS)
-  {
-    if(feature == RENDERFEATURE_BRIGHTNESS)
-      return true;
+  if(feature == RENDERFEATURE_BRIGHTNESS)
+    return true;
 
-    if(feature == RENDERFEATURE_CONTRAST)
-      return true;
-  }
+  if(feature == RENDERFEATURE_CONTRAST)
+    return true;
+
   return false;
 }
 
