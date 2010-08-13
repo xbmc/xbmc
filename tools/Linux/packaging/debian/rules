@@ -61,8 +61,11 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 # Input files used for generating other files
 INPUT_FILES = debian/control.in
 
+# Use --parallel option only if debhelper supports it
+DH_PARALLEL_OPT=$(shell dh_testdir --parallel 2>/dev/null && echo "--parallel")
+
 %:
-	dh $@ --parallel
+	dh $@ $(DH_PARALLEL_OPT)
 
 # Target for generating control files
 .PHONY: debian/var_info

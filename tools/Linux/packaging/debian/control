@@ -3,24 +3,24 @@ Section: video
 Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
-Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
+DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
- libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
- libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
- libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
- libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev, libpcre3-dev,
- liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
- libenca-dev, libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev,
- libxinerama-dev, libcurl4-openssl-dev | libcurl-dev, libdbus-1-dev,
- libhal-storage-dev, libhal-dev, libpulse-dev, libavahi-common-dev,
- libavahi-client-dev, libxrandr-dev, libavcodec-dev, libavformat-dev,
- libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev, libdts-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
- nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev,
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
+ libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
+ libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
+ libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
+ libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
+ libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
+ libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
+ libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
+ libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
+ libfaad-dev, libiso9660-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev,
 Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
@@ -146,7 +146,7 @@ Description: XBMC Media Center (arch-independent data package)
  working XBMC.
 
 Package: xbmc-bin
-Architecture: i386 amd64 powerpc ppc64 armel
+Architecture: i386 amd64 powerpc ppc64
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Provides: xbmc-common
@@ -173,7 +173,7 @@ Description: XBMC Media Center (binary data package)
  This package contains all the binary data needed to have a working XBMC.
 
 Package: xbmc-dbg
-Architecture: i386 amd64 powerpc ppc64 armel
+Architecture: i386 amd64 powerpc ppc64
 Section: debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
@@ -298,7 +298,7 @@ Description: XBMC Media Center (Event Client Dev package)
  This is the Development package for XBMC Event Client.
 
 Package: xbmc-eventclients-wiiremote
-Architecture: i386 amd64 powerpc ppc64 armel
+Architecture: i386 amd64 powerpc ppc64
 Depends: xbmc-eventclients-common (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}

@@ -1,28 +1,43 @@
-xbmc (2:10.0~svn32414~deb1-1) experimental; urgency=low
+xbmc (2:10.0~svn32696~deb1-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
   * Start using an epoch for use of better package versioning.
+  * Add Debian Multimedia team to Maintainers field.
+  * Add Ouattara and myself to Uploaders field.
+  * Add DM-Upload-Allowed: yes field.
   * Switch to debhelper 7.
+  * Switch to quilt.
   * Remove unused patches.
-  * Completely rewrite debian/rules to take advantage of debhelper 7.
-  * Bump to Standards-Version 3.9.1.
+  * Completely rewrite debian/rules to take advantage of debhelper 7 and quilt.
+  * Bump to Standards-Version 3.8.4.
   * Changed Architecture field for arch-indep packages to 'all'.
-  * Included powerpc, ppc64, and armel for binary packages.
+  * Included powerpc and ppc64 for binary packages.
   * Use ${shlibs:Depends} for all binary packages.
   * Add ${misc:Depends} to all packages.
   * Changed Section to video.
   * Changed Priority to optional.
   * No need for debian/dirs file, so removing.
+  * Rename docs to xbmc-common.docs so documentation installs to xbmc-common.
   * Rename debug package to xbmc-dbg. xbmc-dbg will have debugging symbols for
     all binary packages.
+  * Rewrite the Build-Depends field, modeling it in order from what is needed
+    by configure scripts.
+  * Fix --prefix option when calling make install* in debian/rules.
   * Ensure no 'Thumbs.db' files are installed.
+  * Do not use cp -a, just cp.
   * Rewrite Description fields for each package.
   * Add Depends on python-bluez | python-lightblue for xbmc-eventclients-ps3.
+  * Add manpages for the programs installed in /usr/bin.
   * Split xmbc-common into xbmc-bin for binary data and xbmc-data for
     arch-independent data. This is done to save space in the Debian archive.
   * Add Provides, Replaces, and Conflicts field in xbmc-data for xbmc-common.
   * being used in XBMC.
+  * Add patch to change Provides field in init script to reflect script name
+    for xbmc-live.
+  * Add patch to fix issue running distclean from a symlinked directory.
+  * Add patch to ensure Windows binaries don't get installed.
+  * Use dh_install instead of unzip to install web skin packages.
   * Various fixes for lintian warnings and errors.
     + Fix not-binnmuable-all-depends-any lintian errors.
     + Fix not-binnmuable-any-depends-all lintian errors.
@@ -44,7 +59,7 @@ xbmc (2:10.0~svn32414~deb1-1) experimental; urgency=low
   * Take advantage of FHS compliance support in XBMC.
   * Support parallel builds.
 
- -- Andres Mejia <mcitadel@gmail.com>  Mon, 02 Aug 2010 00:26:40 -0400
+ -- Andres Mejia <mcitadel@gmail.com>  Fri, 30 Jul 2010 17:40:15 -0400
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 
