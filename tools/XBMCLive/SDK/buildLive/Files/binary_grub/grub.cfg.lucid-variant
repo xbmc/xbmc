@@ -5,9 +5,8 @@ insmod video
 insmod vbe
 insmod font
 insmod gfxterm
-set gfxmode="800x600x32;640x480x32;800x600;640x480"
+set gfxmode="1280x768x32;1280x720x32;1024x768x32;800x600x32;640x480x32;1280x768;1280x720;1024x768;800x600;640x480"
 if loadfont ($root)/boot/grub/unicode.pf2 ; then
- # set gfxpayload=keep
  if terminal_output gfxterm ; then true ; else
    # For backward compatibility with versions of terminal.mod that don't
    # understand terminal_output
@@ -33,13 +32,15 @@ fi
 
 menuentry "XBMCLive" {
  set quiet=1
- linux /live/vmlinuz boot=live xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+ set gfxpayload=keep
+ linux /live/vmlinuz video=vesafb boot=live xbmc=autostart,nodiskmount,setvolume splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
  initrd /live/initrd.img
 }
 
 menuentry "XBMCLive, SAFE MODE" {
  set quiet=1
- linux /live/vmlinuz boot=live xbmc=tempfs,nodiskmount,setvolume quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+ set gfxpayload=text
+ linux /live/vmlinuz boot=live xbmc=nodiskmount,setvolume quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
  initrd /live/initrd.img
 }
 
