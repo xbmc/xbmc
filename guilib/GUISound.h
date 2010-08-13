@@ -38,6 +38,7 @@ public:
   void        Stop();
   bool        IsPlaying();
   void        SetVolume(int level);
+  void        Wait(uint32_t millis = 500);
 
 private:
 #ifdef _WIN32

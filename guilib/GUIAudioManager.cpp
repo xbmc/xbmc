@@ -90,8 +90,8 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 
   CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
 
-  if (m_actionSound) //  Wait for finish when an action sound is playing
-    while(m_actionSound->IsPlaying()) {}
+  if (m_actionSound)
+    m_actionSound->Wait();
 
   Stop();
 #ifdef HAS_SDL_AUDIO
