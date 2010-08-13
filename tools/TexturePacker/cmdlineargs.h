@@ -56,14 +56,24 @@ public:
     CmdLineArgs (const int argc, const char **argv)
     {
 	std::string cmdline;
+#ifdef _LINUX
+        cmdline = "\"";
+#endif
 	for (int i = 0 ; i<argc ; i++)
 	{
 	    cmdline += std::string(argv[i]);
 	    if ( i != (argc-1) )
 	    {
-		cmdline += " ";
+#ifdef _LINUX
+		cmdline += "\" \"";
+#else
+                cmdline += " ";
+#endif
 	    }
 	}
+#ifdef _LINUX
+        cmdline += "\"";
+#endif
 	m_cmdline = new char [cmdline.length() + 1];
 	if (m_cmdline)
 	{
