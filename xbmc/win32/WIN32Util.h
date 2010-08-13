@@ -27,6 +27,7 @@
 #include "Cfgmgr32.h"
 #endif
 #include "MediaSource.h"
+#include "utils/Stopwatch.h"
 
 enum Drive_Types
 {
@@ -85,4 +86,11 @@ private:
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 #endif
+};
+
+
+class CWinIdleTimer : public CStopWatch
+{
+public:
+  void StartZero();
 };
