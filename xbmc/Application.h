@@ -301,7 +301,7 @@ protected:
   ADDON::AddonPtr m_screenSaver;
 
   // timer information
-#ifdef WIN32
+#ifdef _WIN32
   CWinIdleTimer m_idleTimer;
 #else
   CStopWatch m_idleTimer;
