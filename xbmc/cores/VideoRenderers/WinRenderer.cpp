@@ -865,12 +865,6 @@ void CWinRenderer::ScaleFixedPipeline()
     CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. (0x%08X)", hr);
 
   pD3DDev->SetTexture(0, NULL);
-
-  if (cbcontrol)
-  {
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  }
 }
 
 void CWinRenderer::RenderPS(DWORD flags)
