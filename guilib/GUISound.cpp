@@ -132,8 +132,7 @@ void CGUISound::Stop()
 #elif defined(HAS_SDL_AUDIO)
     Mix_HaltChannel(GUI_SOUND_CHANNEL);
 #endif
-
-    while(IsPlaying()) {}
+    Wait();
   }
 }
 
@@ -148,6 +147,13 @@ void CGUISound::SetVolume(int level)
     Mix_Volume(GUI_SOUND_CHANNEL, level);
 #endif
   }
+}
+
+void CGUISound::Wait(uint32_t millis/*=500*/)
+{
+  millis /= 10;
+  while (IsPlaying() && millis--)
+    Sleep(10);
 }
 
 #ifdef _WIN32
