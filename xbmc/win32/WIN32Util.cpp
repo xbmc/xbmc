@@ -1415,3 +1415,8 @@ bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
     return false;
 }
 
+void CWinIdleTimer::StartZero()
+{
+  SetThreadExecutionState(ES_SYSTEM_REQUIRED);
+  CStopWatch::StartZero();
+}
