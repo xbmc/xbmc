@@ -102,6 +102,9 @@ LIB_DIRS=\
 	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/jsoncpp/src/lib_json
+ifeq ($(findstring osx,$(ARCH)), osx)
+LIB_DIRS+=lib/libmicrohttpd
+endif
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
