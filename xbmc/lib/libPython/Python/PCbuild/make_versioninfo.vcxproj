@@ -63,6 +63,7 @@
     <CustomBuildStep>
       <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc.h</Command>
       <Outputs>$(ProjectDir)..\PC\pythonnt_rc.h</Outputs>
+      <Inputs>$(TargetDir)$(TargetFileName)</Inputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
@@ -114,6 +115,7 @@
     <CustomBuildStep>
       <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h</Command>
       <Outputs>$(ProjectDir)..\PC\pythonnt_rc_d.h</Outputs>
+      <Inputs>$(TargetDir)$(TargetFileName)</Inputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
