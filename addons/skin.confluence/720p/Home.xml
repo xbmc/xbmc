@@ -1,4 +1,5 @@
 <window id="0">
+	<backgroundcolor>none</backgroundcolor>
 	<defaultcontrol always="true">8999</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<controls>

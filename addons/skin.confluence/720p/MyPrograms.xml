@@ -1,4 +1,5 @@
 <window id="1">
+	<backgroundcolor>none</backgroundcolor>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,500,503</views>

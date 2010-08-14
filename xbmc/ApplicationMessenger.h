@@ -83,6 +83,8 @@ class CGUIDialog;
 #define TMSG_OPTICAL_MOUNT        700
 #define TMSG_OPTICAL_UNMOUNT      701
 
+#define TMSG_CALLBACK             800
+
 typedef struct
 {
   DWORD dwMessage;
@@ -94,6 +96,12 @@ typedef struct
   LPVOID lpVoid;
 }
 ThreadMessage;
+
+struct ThreadMessageCallback
+{
+  void (*callback)(void *userptr);
+  void *userptr;
+};
 
 class CApplicationMessenger
 {

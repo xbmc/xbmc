@@ -50,14 +50,16 @@ typedef struct omx_demux_packet {
 } omx_demux_packet;
 
 // an omx egl video frame
-typedef struct omx_egl_buffer {
-  EGLImageKHR egl_image;
-  GLuint texture_id;
+typedef struct OpenMaxBuffer {
   OMX_BUFFERHEADERTYPE *omx_buffer;
   int width;
   int height;
   int index;
-} omx_egl_buffer;
+
+  // used for egl based rendering if active
+  EGLImageKHR egl_image;
+  GLuint texture_id;
+} OpenMaxBuffer;
 
 
 class DllLibOpenMax;
@@ -75,6 +77,7 @@ public:
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   void SetDropState(bool bDrop);
   
+  void ReleaseOpenMaxBuffer(OpenMaxBuffer *openMaxBuffer);
 protected:
   enum OMX_CLIENT_STATE {
       DEAD,
@@ -103,7 +106,9 @@ protected:
   OMX_ERRORTYPE FreeOMXInputBuffers(bool wait);
   OMX_ERRORTYPE AllocOMXOutputBuffers(void);
   OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
+  static void CallbackAllocOMXEGLTextures(void*);
   OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
+  static void CallbackFreeOMXEGLTextures(void*);
   OMX_ERRORTYPE FreeOMXOutputEGLTextures(bool wait);
   OMX_ERRORTYPE WaitForState(OMX_STATETYPE state);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
@@ -132,16 +137,15 @@ protected:
 
   // OpenMax output buffers (video frames)
   pthread_mutex_t   m_omx_ready_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_output_ready;
-  std::vector<OMX_BUFFERHEADERTYPE*> m_omx_output_buffers;
+  std::queue<OpenMaxBuffer*> m_omx_output_ready;
+  std::vector<OpenMaxBuffer*> m_omx_output_buffers;
   bool              m_omx_output_eos;
   int               m_omx_output_port;
   //sem_t             *m_omx_flush_output;
 
   EGLDisplay        m_egl_display;
   EGLContext        m_egl_context;
-  std::queue<omx_egl_buffer*> m_omx_egl_output_ready;
-  std::vector<omx_egl_buffer*> m_omx_egl_output_buffers;
+  bool              m_portChanging;
 
 
   // OpenMax state tracking

@@ -76,6 +76,7 @@ static int contextAttributes[] =
 CWinSystemEGL g_Windowing;
 
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
+, m_eglOMXContext(0)
 {
   m_eWindowSystem = WINDOW_SYSTEM_EGL;
 
@@ -373,6 +374,12 @@ bool CWinSystemEGL::RefreshEGLContext()
     return false;
   }
 
+  if ((m_eglContext = eglCreateContext(m_eglDisplay, eglConfig, m_eglContext, contextAttributes)) == EGL_NO_CONTEXT)
+  {
+    CLog::Log(LOGERROR, "EGL Error: Could not create OMX context");
+    return false;
+  }
+
   if (m_eglSurface)
     eglDestroySurface(m_eglDisplay, m_eglSurface);
 
@@ -410,9 +417,9 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
 
 void CWinSystemEGL::ShowOSMouse(bool show)
 {
-  // Have to force it to show the cursor, otherwise it hangs!
-  //SDL_ShowCursor(show ? 1 : 0);
-  SDL_ShowCursor(1);
+  SDL_ShowCursor(show ? 1 : 0);
+  // On BB have show the cursor, otherwise it hangs! (FIXME verify it if fixed)
+  //SDL_ShowCursor(1);
 }
 
 void CWinSystemEGL::NotifyAppActiveChange(bool bActivated)
@@ -449,5 +456,21 @@ bool CWinSystemEGL::Show(bool raise)
   XSync(m_dpy, False);
   return true;
 }
+
+EGLContext CWinSystemEGL::GetEGLContext() const
+{
+  return m_eglContext;
+}
+
+EGLDisplay CWinSystemEGL::GetEGLDisplay() const
+{
+  return m_eglDisplay;
+}
+
+bool CWinSystemEGL::makeOMXCurrent()
+{
+  return true;
+}
+
 
 #endif
