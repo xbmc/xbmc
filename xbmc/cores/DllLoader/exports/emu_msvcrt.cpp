@@ -124,6 +124,17 @@ extern "C" void __stdcall init_emu_environ()
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
+#elif defined(_WIN32)
+  dll_putenv("OS=win32");
+  // preliminary change to get HOME* vars in Win7 x64
+  // todo: dll__environ should return all system vars
+  CStdString  strtmp;
+  CStdStringW strwtmp = _wgetenv(L"HOMEDRIVE");
+  g_charsetConverter.wToUTF8(strwtmp, strtmp);
+  dll_putenv(CStdString("HOMEDRIVE="+strtmp).c_str());
+  strwtmp = _wgetenv(L"HOMEPATH");
+  g_charsetConverter.wToUTF8(strwtmp, strtmp);
+  dll_putenv(CStdString("HOMEPATH="+strtmp).c_str());
 #elif defined(__APPLE__)
   dll_putenv("OS=darwin");
 #elif defined(_LINUX)
