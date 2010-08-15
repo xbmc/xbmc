@@ -1309,8 +1309,12 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CStdString addonID;
     TYPE type = TranslateType(params[0]);
+    bool allowNone = false;
+    if (type == ADDON_VIZ)
+      allowNone = true;
+
     if (type != ADDON_UNKNOWN && 
-        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,false))
+        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
       if (type == ADDON_VIZ)
