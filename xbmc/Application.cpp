@@ -254,6 +254,7 @@
 #include "MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
+#include "utils/AlarmClock.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -3233,6 +3234,8 @@ void CApplication::Stop()
   {
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
+
+    g_alarmClock.StopThread();
 
 #ifdef HAS_HTTPAPI
     if (m_pXbmcHttp)
