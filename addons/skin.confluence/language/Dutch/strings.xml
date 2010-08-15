@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
-  <string id="31000">Verander</string>
+  <string id="31000">Aanpassen</string>
   <string id="31001">Liefde</string>
   <string id="31002">Haat</string>
-  <string id="31003">Energie Beheer</string>
+  <string id="31003">Energiebeheer</string>
   <string id="31004">Bezig...</string>
   <string id="31005">Verberg INFO</string>
 
   <string id="31007">Plugins</string>
 
-  <string id="31020">Hoofdstuk titel</string>
+  <string id="31020">Hoofdstuktitel</string>
   <string id="31021">Video - Bestanden</string>
   <string id="31022">Muziek - Bestanden</string>
   <string id="31023">Afspelen</string>
   <string id="31024">Pagina</string>
   <string id="31025">Items</string>
-  <string id="31026">Diverse Opties</string>
+  <string id="31026">Diverse opties</string>
   <string id="31027">Locatie</string>
  
   <!-- View Type labels -->
@@ -34,9 +34,9 @@
   <string id="31043">PAUZE</string>
   <string id="31044">VOORUIT SPOELEN</string>
   <string id="31045">TERUGSPOELEN</string>
-  <string id="31046">Geluid Opties</string>
-  <string id="31047">Huidige Instelling</string>
-  <string id="31048">Visualization Instelling</string>
+  <string id="31046">Geluidopties</string>
+  <string id="31047">Huidige instelling</string>
+  <string id="31048">Visualisatiestijl</string>
   <string id="31049">Eind Tijd</string>
 
 
@@ -58,18 +58,18 @@
   <string id="31105">Laat media titels zien in achtergrond scanner</string>
   <string id="31106">Diverse opties</string>
   <string id="31107"></string>
-  <string id="31108">Verberg hoofd menu knoppen</string>
+  <string id="31108">Verberg hoofdmenu items</string>
   <string id="31109">Beginscherm achtergronden</string>
-  <string id="31110">Pas Achtergrond aan voor hoofd knop</string>
+  <string id="31110">Achtergrond aanpassen voor hoofdmenu item</string>
   <string id="31111">Verbergen</string>
   <string id="31112">Opties</string>
   <string id="31113">Enkele afbeelding</string>
   <string id="31114">Meerdere afbeeldingen</string>
   <string id="31115">Aanpassen</string>
-  <string id="31116">Addon scripts</string>
+  <string id="31116">Add-on scripts</string>
   <string id="31117">Laat recent toegevoegde Video's zien</string>
-  <string id="31118">Beginscherm Submenu</string>
-  <string id="31119">Activeer Aangepaste Script Knop</string>
+  <string id="31118">Beginscherm submenu</string>
+  <string id="31119">Activeer aangepaste script knop</string>
   <string id="31120">Knop label</string>
   <string id="31121">Pad naar script</string>
   <string id="31122">Weer Pagina</string>
@@ -80,10 +80,10 @@
   <string id="31126">Activeer lyrics in muziek OSD</string>
   <string id="31127">Pad naar lyrics script</string>
   <string id="31128">XBMC Lyrics</string>
-  <string id="31129">Activeer subtitel download in video OSD</string>
-  <string id="31130">Pad naar subtitel script</string>
+  <string id="31129">Activeer downloaden ondertitels in video OSD</string>
+  <string id="31130">Pad naar ondertitelingsscript</string>
 
-  <string id="31140">Musiek OSD</string>
+  <string id="31140">Muziek OSD</string>
   <string id="31141">Video OSD</string>
 
   <!-- Script labels -->
@@ -96,7 +96,7 @@
 
   <!-- Extra labels -->
   <string id="31300">Huidige temperatuur</string>
-  <string id="31301">Laatst Bijgewerkt</string>
+  <string id="31301">Laatst bijgewerkt</string>
   <string id="31302">Menu</string>
   <string id="31303"></string>
   <string id="31304">Afbeelding</string>
@@ -128,24 +128,24 @@
   <string id="31330">Klik op de knop om af te spelen[CR][CR]Film trailer</string>
 
   <!-- Video and Music OSD Labels  -->
-  <string id="31351">Pause</string>
+  <string id="31351">Pauze</string>
   <string id="31352">Stop</string>
   <string id="31353">Vooruit spoelen</string>
   <string id="31354">Terug spoelen</string>
   <string id="31355">Film menu</string>
-  <string id="31356">Download subtitels</string>
+  <string id="31356">Download ondertitels</string>
   <string id="31357"></string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGUREER UITERLIJK INSTELLINGEN[/B][CR][CR]Verander skin . Configureer taal en regio . Configureer bestandslijst opties[CR]Configureer schermbeveiliging</string>
-  <string id="31401">[B]CONFIGUREER VIDEO INSTELLINGEN[/B][CR][CR]Beheer uw video bibliotheek . Configureer video afspeel opties . Configureer video bestandslijst opties[CR]Configureer ondertitel fonts</string>
-  <string id="31402">[B]CONFIGUREER MUZIEK INSTELLINGEN[/B][CR][CR]Beheer uw muziek bibliotheek . Configureer muziek afspeel opties . Configureer muziek bestandslijst opties[CR]Configureer nummer indienen . Configureer karaoke opties</string>
-  <string id="31403">[B]CONFIGUREER FOTO INSTELLINGEN[/B][CR][CR]Configureer foto bestandslijst opties . Configureer dia voorstelling</string>
+  <string id="31400">[B]CONFIGUREER UITERLIJK INSTELLINGEN[/B][CR][CR]Verander skin. Configureer taal en regio . Configureer bestandslijst opties. Configureer schermbeveiliging</string>
+  <string id="31401">[B]CONFIGUREER VIDEO INSTELLINGEN[/B][CR][CR]Beheer uw video bibliotheek. Configureer video afspeel opties. Configureer video bestandslijst opties. Configureer ondertitel fonts</string>
+  <string id="31402">[B]CONFIGUREER MUZIEK INSTELLINGEN[/B][CR][CR]Beheer uw muziek bibliotheek. Configureer muziek afspeel opties. Configureer muziek bestandslijst opties. Configureer nummer indienen. Configureer karaoke opties</string>
+  <string id="31403">[B]CONFIGUREER FOTO INSTELLINGEN[/B][CR][CR]Configureer foto bestandslijst opties. Configureer dia voorstelling</string>
   <string id="31404">[B]CONFIGUREER WEER INSTELLINGEN[/B][CR][CR]Configureer drie plaatsen voor weer informatie</string>
-  <string id="31405">[B]CONFIGUREER NETWERK INSTELLINGEN[/B][CR][CR]Configureer de controle van XBMC via UPnP en HTTP . Configureer delen van bestanden[CR]Configureer internet toegangs opties</string>
-  <string id="31406">[B]CONFIGUREER SYSTEEM INSTELLINGEN[/B][CR][CR]Configureer en kalibreer scherm . Configureer geluids uitgang . Configureer invoer apparaten[CR]Configureer energie beheer opties . Aanzetten debugging . Confiureer vergrendel opties</string>
-  <string id="31407">[B]CONFIGUREER SKIN INSTELLINGEN[/B][CR][CR]Configureer de Confluence skin . Voeg toe of verwijder beginscherm items[CR]Verander skin achtergronden</string>
-  <string id="31408">[B]CONFIGUREER ADDONS[/B][CR][CR]Beheer uw geinstalleerde Add-ons . Browse en installeer Add-ons van xbmc.org[CR]Add-on instellingen wijzigen</string>
+  <string id="31405">[B]CONFIGUREER NETWERK INSTELLINGEN[/B][CR][CR]Configureer de controle van XBMC via UPnP en HTTP. Configureer delen van bestanden. Configureer instellingen toegang internet</string>
+  <string id="31406">[B]CONFIGUREER SYSTEEM INSTELLINGEN[/B][CR][CR]Configureer en kalibreer scherm. Configureer geluidsuitgang. Configureer invoerapparaten. Configureer energiebeheer opties. Aanzetten debugging. Configureer vergrendel opties</string>
+  <string id="31407">[B]CONFIGUREER SKIN INSTELLINGEN[/B][CR][CR]Configureer de Confluence skin. Voeg toe of verwijder beginscherm items. Verander skin achtergronden</string>
+  <string id="31408">[B]CONFIGUREER ADD-ONS[/B][CR][CR]Beheer uw geïnstalleerde Add-ons. Zoek en installeer Add-ons van xbmc.org. ]Add-on instellingen wijzigen</string>
 
   <string id="31421">Selecteer uw XBMC gebruikers profiel[CR]om in te loggen</string>
 </strings>
