@@ -60,9 +60,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
-    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build</CustomBuildAfterTargets>
-    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">Build</CustomBuildAfterTargets>
-    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    </CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">
+    </CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    </CustomBuildAfterTargets>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libmp3lame</TargetName>
