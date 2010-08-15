@@ -15,7 +15,10 @@ Usage: xbmc-get-orig-source [OPTION]\n\
                             using latest SVN revision.\n\
  --make-ppa                 Make tarball for XBMC's PPA\n\
  --make-ppa-snapshot        Make tarball for XBMC's PPA using latest SVN\n\
-                            revision.\n"
+                            revision.\n\
+ --use-revision [REV]       Use revision specified in [REV].\n\
+ --perform-ppa-upload       Perform PPA upload of the resulting source.\n\
+ --dput-host <HOST>         The dput host to use (default team-xbmc-svn-ppa).\n"
 
 # Loop that parses options passed to script
 while [ "$#" -gt "0" ]
@@ -38,6 +41,18 @@ do
             LATEST_SVN=1
             shift
             ;;
+        --use-revision)
+            SVN_REVISION="$2"
+            shift; shift
+            ;;
+        --perform-ppa-upload)
+            PERFORM_PPA_UPLOAD=1
+            shift
+            ;;
+        --dput-host)
+            DPUT_HOST="$2"
+            shift; shift
+            ;;
         -h|--help|*)
             echo "${USAGE}"
             exit 1
@@ -48,9 +63,17 @@ done
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="32746"
+if [ -z $SVN_REVISION ]; then
+  SVN_REVISION="32746"
+fi
+EPOCH="2"
 XBMC_VERSION="10.0~svn$SVN_REVISION~deb1"
 XBMC_SVN_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk"
+DEB_REVISION="1"
+UBUNTU_SUITES="lucid karmic jaunty hardy"
+if [ -z $DPUT_HOST ]; then
+  DPUT_HOST="team-xbmc-svn-ppa"
+fi
 
 # export xbmc source
 get_sources() {
@@ -139,6 +162,56 @@ create_tarball() {
         xbmc-$XBMC_VERSION/
 }
 
+# Function that performs a PPA upload. It will ensure the version is less than
+# the version specified in <XBMC_VERSION>-<DEB_REVISION> and upload a package
+# for each supported Ubuntu suite.
+perform_ppa_upload() {
+    echo "Performing PPA upload."
+    cd xbmc-$XBMC_VERSION
+    cp -r tools/Linux/packaging/debian .
+    for SUITE in $UBUNTU_SUITES; do
+      local N="1";
+
+      # Update changelog for uploads to PPA.
+      dch --force-distribution -D $SUITE \
+        -b -v "${EPOCH}:${XBMC_VERSION}-${DEB_REVISION}~0${SUITE}${N}" \
+        "Upload to XBMC PPA for Ubuntu $SUITE." 2>/dev/null
+
+      # Create source package
+      if [ "$SUITE" = "lucid" ]; then
+        # First suite should always include source tarball
+        dpkg-buildpackage -rfakeroot -us -uc -S -sa
+      else
+        # source format 3.0 (quilt) not supported in suites < lucid
+        echo "1.0" >debian/source/format
+        dpkg-buildpackage -rfakeroot -us -uc -S -sd
+      fi
+
+      # Clean changelog
+      perl -e 'local $/;
+        my @records, $fh;
+        open $fh, "<", "debian/changelog";
+        @records = split /^\b/msxg, <$fh>;
+        close $fh;
+        open $fh, ">", "debian/changelog";
+        shift @records;
+        foreach my $record (@records)
+        {
+          print $fh "$record";
+        }'
+
+      # Sign source package and upload.
+      local SOURCE_CHANGES="xbmc_${XBMC_VERSION}-${DEB_REVISION}~0${SUITE}${N}_source.changes"
+      cd ..
+      debsign "$SOURCE_CHANGES"
+      dput "$DPUT_HOST" "$SOURCE_CHANGES"
+      cd xbmc-$XBMC_VERSION
+    done
+}
+
 get_sources
 prepare_orig_tarball
 create_tarball
+if [ -n $PERFORM_PPA_UPLOAD ]; then
+  perform_ppa_upload
+fi
