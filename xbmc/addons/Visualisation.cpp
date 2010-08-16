@@ -276,7 +276,6 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
 {
   if (!m_pStruct)
     return ;
-  if (Initialized())
 
   // FIXME: iAudioDataLength should never be less than 0
   if (iAudioDataLength<0)
