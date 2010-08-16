@@ -3,8 +3,14 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 
+    <control type="image">
+      <width>1280</width>
+      <height>720</height>
+      <texture>BackgroundHome.jpg</texture>
+    </control>
+
     <control type="group"  id="100">
-      <posx>100</posx>
+      <posx>10</posx>
       <posy>172</posy>
       <height>376</height>
       <width>256</width>
@@ -120,11 +126,11 @@
 
 		<control type="label">
 			<description>time label</description>
-			<posx>1280</posx>
+			<posx>930</posx>
 			<posy>0</posy>
-			<width>400</width>
-			<height>28</height>
-			<align>right</align>
+			<width>350</width>
+			<height>25</height>
+			<align>center</align>
 			<aligny>center</aligny>
 			<font>clockLabel</font>
 			<textcolor>white</textcolor>
