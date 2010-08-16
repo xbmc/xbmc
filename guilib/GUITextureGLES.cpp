@@ -51,9 +51,52 @@ void CGUITextureGLES::Begin(color_t color)
     glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
   }
+
+  // Setup Colors
+  GLubyte r = (GLubyte)GET_R(color);
+  GLubyte g = (GLubyte)GET_G(color);
+  GLubyte b = (GLubyte)GET_B(color);
+  GLubyte a = (GLubyte)GET_A(color);
+
+  for (int i = 0; i < 4; i++)
+  {
+    m_col[i][0] = r;
+    m_col[i][1] = g;
+    m_col[i][2] = b;
+    m_col[i][3] = a;
+  }
+
+  if (m_diffuse.size())
+  {
+    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
+    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
+    glEnableVertexAttribArray(tex1Loc);
+    glEnable( GL_BLEND );
+    g_Windowing.EnableGUIShader(SM_MULTI);
+  }
   else
   {
-    g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
+    CBaseTexture* textureObject = m_texture.m_textures[m_currentFrame];
+
+    bool textureHasAlpha = textureObject->HasAlpha();
+    bool colorHasAlpha = a < 255;
+
+    if (textureHasAlpha || colorHasAlpha )
+    {
+      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND);          // Turn Blending On
+    }
+    else
+      glDisable(GL_BLEND);
+    
+    if (r < 255 || g < 255 || b < 255)         // If any of these aren't white we need to do a full color diffuse
+      g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
+    else if (textureHasAlpha && colorHasAlpha) // If only alpha is altered we can just multiply alpha
+      g_Windowing.EnableGUIShader(SM_TEXTURE_MULTIPLY_ALPHA);
+    else if (colorHasAlpha)                    // If texture has no alpha we can just set alpha to color alpha
+      g_Windowing.EnableGUIShader(SM_TEXTURE_SUBSTITUTE_ALPHA);
+    else                                       // No color diffuse, just normal texture.
+      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
   }
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
@@ -67,38 +110,6 @@ void CGUITextureGLES::Begin(color_t color)
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
-
-  if (m_diffuse.size())
-  {
-    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
-    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
-    glEnableVertexAttribArray(tex1Loc);
-    glEnable( GL_BLEND );
-    g_Windowing.EnableGUIShader(SM_MULTI);
-  }
-  else
-  {
-    CBaseTexture* textureObject = m_texture.m_textures[m_currentFrame];
-    if (textureObject->HasAlpha() || m_col[0][3] < 255 )
-    {
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      glEnable(GL_BLEND);          // Turn Blending On
-      g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
-    }
-    else
-    {
-      glDisable(GL_BLEND);
-      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
-    }
-  }
-  // Setup Colors
-  for (int i = 0; i < 4; i++)
-  {
-    m_col[i][0] = (GLubyte)GET_R(color);
-    m_col[i][1] = (GLubyte)GET_G(color);
-    m_col[i][2] = (GLubyte)GET_B(color);
-    m_col[i][3] = (GLubyte)GET_A(color);
-  }
 }
 
 void CGUITextureGLES::End()
@@ -208,37 +219,23 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   else
     glDisable(GL_TEXTURE_2D);
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
-
-  VerifyGLState();
-
   GLfloat col[4][4];
   GLfloat ver[4][3];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
+  // Setup Colors
+  GLubyte r = (GLubyte)GET_R(color);
+  GLubyte g = (GLubyte)GET_G(color);
+  GLubyte b = (GLubyte)GET_B(color);
+  GLubyte a = (GLubyte)GET_A(color);
 
-  GLint posLoc   = g_Windowing.GUIShaderGetPos();
-  GLint colLoc   = g_Windowing.GUIShaderGetCol();
-  GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
-
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-  glEnableVertexAttribArray(colLoc);
-
-  for (int i=0; i<4; i++)
+  for (int i = 0; i < 4; i++)
   {
-    // Setup Colour Values
-    col[i][0] = (GLubyte)GET_R(color);
-    col[i][1] = (GLubyte)GET_G(color);
-    col[i][2] = (GLubyte)GET_B(color);
-    col[i][3] = (GLubyte)GET_A(color);
+    col[i][0] = r;
+    col[i][1] = g;
+    col[i][2] = b;
+    col[i][3] = a;
   }
 
   // Setup vertex position values
@@ -254,6 +251,40 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   tex[0][1] = tex[1][1] = coords.y1;
   tex[1][0] = tex[2][0] = coords.x2;
   tex[2][1] = tex[3][1] = coords.y2;
+
+  bool textureHasAlpha = texture->HasAlpha();
+  bool colorHasAlpha = a < 255;
+
+  if (textureHasAlpha || colorHasAlpha )
+  {
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);          // Turn Blending On
+  }
+  else
+    glDisable(GL_BLEND);
+  
+  if (r < 255 || g < 255 || b < 255)         // If any of these aren't white we need to do a full color diffuse
+    g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
+  else if (textureHasAlpha && colorHasAlpha) // If only alpha is altered we can just multiply alpha
+    g_Windowing.EnableGUIShader(SM_TEXTURE_MULTIPLY_ALPHA);
+  else if (colorHasAlpha)                    // If texture has no alpha we can just set alpha to color alpha
+    g_Windowing.EnableGUIShader(SM_TEXTURE_SUBSTITUTE_ALPHA);
+  else                                       // No color diffuse, just normal texture.
+    g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
+
+  VerifyGLState();
+
+  GLint posLoc   = g_Windowing.GUIShaderGetPos();
+  GLint colLoc   = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(tex0Loc);
+  glEnableVertexAttribArray(colLoc);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 

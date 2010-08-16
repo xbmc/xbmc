@@ -482,7 +482,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glVertex2f(rd.left , rd.bottom);
   glEnd();
 #else
-  g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
+  g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
 
   GLfloat col[4][4];
   GLfloat ver[4][2];
