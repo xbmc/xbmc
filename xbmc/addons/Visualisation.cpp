@@ -246,7 +246,8 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
   CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
-void CVisualisation::OnDeinitialize() {
+void CVisualisation::OnDeinitialize()
+{
 }
 
 void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)

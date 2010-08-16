@@ -140,9 +140,10 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
 {
   int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) >> 1 ? iAudioDataLength : (int)sizeof( g_audio_data ) >> 1;
   int ipos, i;
-  for(ipos = 0; i = 0; i < copysize; i += 2, ++ipos) {
-    g_audio_data[0][ipos] = pAudioData[i  ]; /* FIXME: float to short */
-    g_audio_data[1][ipos] = pAudioData[i+1]; /* FIXME: float to short */
+  for(ipos = 0; i = 0; i < copysize; i += 2, ++ipos)
+  {
+    g_audio_data[0][ipos] = (int)(pAudioData[i  ] * (INT16_MAX+.5f));
+    g_audio_data[1][ipos] = (int)(pAudioData[i+1] * (INT16_MAX+.5f));
   }
 }
 
