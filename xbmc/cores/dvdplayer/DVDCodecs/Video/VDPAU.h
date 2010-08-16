@@ -113,12 +113,20 @@ public:
 
   pictureAge picAge;
   bool       recover;
-  VdpVideoSurface past[2], current, future;
+  vdpau_render_state *past[2], *current, *future;
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
   bool       upScale;
+
+  static inline void ClearUsedForRender(vdpau_render_state **st)
+  {
+    if (*st) {
+      (*st)->state &= ~FF_VDPAU_STATE_USED_FOR_RENDER;
+      *st = NULL;
+    }
+  }
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
