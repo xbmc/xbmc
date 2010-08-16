@@ -1,5 +1,6 @@
 #include "DirtyRegionTracker.h"
 #include "AdvancedSettings.h"
+#include "utils/log.h"
 #include <stdio.h>
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
@@ -21,12 +22,15 @@ void CDirtyRegionTracker::SelectAlgorithm()
   {
     case DIRTYREGION_SOLVER_UNION:
       m_solver = new CUnionDirtyRegionSolver();
+      CLog::Log(LOGDEBUG, "guilib: Union as algorithm for solving rendering passes");
       break;
     case DIRTYREGION_SOLVER_COST_REDUCTION:
+      CLog::Log(LOGDEBUG, "guilib: Cost reduction as algorithm for solving rendering passes");
       m_solver = new CGreedyDirtyRegionSolver();
       break;
     case DIRTYREGION_SOLVER_NONE:
     default:
+      CLog::Log(LOGDEBUG, "guilib: No algorithm for solving rendering passes");
       m_solver = new CFillViewportRegionSolver();
       break;
   }
