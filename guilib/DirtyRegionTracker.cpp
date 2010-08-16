@@ -46,7 +46,7 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 {
   CDirtyRegionList output;
 
-  if (m_solver && m_markedRegions.size() > 0)
+  if (m_solver)
     m_solver->Solve(m_markedRegions, output);
 
   return output;
