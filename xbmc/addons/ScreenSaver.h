@@ -39,6 +39,7 @@ public:
   void Start();
   void Render();
   void GetInfo(SCR_INFO *info);
+  void Destroy();
 };
 
 } /*namespace ADDON*/

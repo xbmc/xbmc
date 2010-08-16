@@ -74,5 +74,17 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
   if (Initialized()) m_pStruct->GetInfo(info);
 }
 
+void CScreenSaver::Destroy()
+{
+  // Free what was allocated in method CScreenSaver::CreateScreenSaver.
+  if (m_pInfo)
+  {
+    delete m_pInfo;
+    m_pInfo = NULL;
+  }
+
+  CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Destroy();
+}
+
 } /*namespace ADDON*/
 
