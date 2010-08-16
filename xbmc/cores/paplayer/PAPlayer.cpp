@@ -326,7 +326,6 @@ bool PAPlayer::PlayNextStream()
 
   /* start playback */
   m_callback.OnPlayBackStarted();
-  m_current->m_stream->SetSpeed(m_iSpeed);
   m_current->m_stream->Resume();
   return true;
 }
@@ -375,7 +374,6 @@ void PAPlayer::ToFFRW(int iSpeed)
   CSingleLock lock(m_critSection);
   m_iSpeed = iSpeed;
   if (!m_current) return;
-  m_current->m_stream->SetSpeed(m_iSpeed);
   m_callback.OnPlayBackSpeedChanged(m_iSpeed);
 }
 

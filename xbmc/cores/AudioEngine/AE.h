@@ -33,6 +33,9 @@
 #include "AESound.h"
 #include "AEConvert.h"
 #include "AERemap.h"
+
+#include "cores/IAudioCallback.h"
+#include "addons/Visualisation.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
 
 enum AEState
@@ -86,7 +89,7 @@ public:
   unsigned int        GetFrameSize    () {return m_frameSize             ;}
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
-  void UnRegisterAudioCallback() { m_audioCallback = NULL; }
+  void UnRegisterAudioCallback();
 private:
   /* these are private as the class is a singleton */
   CAE();
@@ -120,11 +123,12 @@ private:
   std::list<SoundState>     m_playing_sounds;
 
   /* the streams, sounds, output buffer and output buffer fill size */
+  bool                                  m_passthrough;
   std::list<CAEStream*>                 m_streams;
   std::map<const CStdString, CAESound*> m_sounds;
   uint8_t                              *m_buffer;
   unsigned int                          m_bufferSize;
-  uint8_t                              *m_visBuffer;
+  float                                 m_visBuffer[AUDIO_BUFFER_SIZE * 2];
   unsigned int                          m_visBufferSize;
 
   /* the channel remapper and audioCallback */
@@ -132,7 +136,7 @@ private:
   IAudioCallback           *m_audioCallback;
 
   /* lock for threadsafe */
-  CCriticalSection          m_critSection, m_critSectionSink;
+  CCriticalSection          m_critSection, m_critSectionSink, m_critSectionAC;
 };
 
 /* global instance */
