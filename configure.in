@@ -14,6 +14,29 @@ tolower(){
   echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
 
+# check for library basenames
+AC_DEFUN([XB_FIND_SONAME],
+[
+  AC_MSG_CHECKING([for lib$2 soname])
+  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
+    while read output; do objdump -p $output | \
+      grep "SONAME" | \
+      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ -z "$$1_SONAME" ]]; then
+    AC_MSG_RESULT([no])
+    if test -z "$3" || test "x${$3}" = "xyes"; then
+      AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    else
+      AC_MSG_WARN([Unable to determine soname of lib$2 library])
+      $3=no
+      AC_MSG_WARN([lib$2 support disabled])
+    fi
+  else
+    AC_MSG_RESULT([$$1_SONAME])
+    AC_SUBST($1_SONAME)
+  fi
+])
+
 # General message strings
 configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
@@ -304,6 +327,7 @@ AC_PROG_CXX
 CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
 PASSED_CFLAGS=$CFLAGS # Hack to override autoconf default values
 AC_PROG_CC
+AC_PROG_LIBTOOL
 CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
 AC_PROG_AWK
 AC_PROG_LN_S
@@ -491,7 +515,7 @@ else
   fi
 fi
 
-# platform independent libraries
+# platform common libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
@@ -504,8 +528,6 @@ AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
@@ -567,7 +589,9 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    LIBS="$LIBS $LIBBLURAY_LIBS";
+    if test "$host_vendor" != "apple"; then
+      XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
+    fi;
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
   ],[
@@ -578,6 +602,8 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
+  AC_CHECK_LIB([ssl],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([crypto],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
@@ -644,29 +670,6 @@ HOST_NOT_APPLE=1
 if [[ "$host_vendor" = "apple" ]]; then
   HOST_NOT_APPLE=0
 fi
-
-# check for library basenames
-AC_DEFUN([XB_FIND_SONAME],
-[
-  AC_MSG_CHECKING([for lib$2 soname])
-  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
-    while read output; do objdump -p $output | \
-      grep "SONAME" | \
-      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
-  if [[ -z "$$1_SONAME" ]]; then
-    AC_MSG_RESULT([no])
-    if test -z "$3" || test "x${$3}" = "xyes"; then
-      AC_MSG_ERROR([Unable to determine soname of lib$2 library])
-    else
-      AC_MSG_WARN([Unable to determine soname of lib$2 library])
-      $3=no
-      AC_MSG_WARN([lib$2 support disabled])
-    fi
-  else
-    AC_MSG_RESULT([$$1_SONAME])
-    AC_SUBST($1_SONAME)
-  fi
-])
 
 if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([CURL],        [curl])
@@ -1653,6 +1656,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
+      --enable-runtime-cpudetect \
       `case $host_cpu in powerpc*|arm*|amd64*|x86_64*|ia64*) echo --enable-pic ;; esac` \
       --cc="$CC" &&
       sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
@@ -1691,6 +1695,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1826,6 +1832,8 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --with-pic
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
@@ -1842,7 +1850,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -D CMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   else
 set -x
-    rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
+    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
@@ -1887,6 +1895,8 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
       --disable-skyrocket
   else
     ./configure \
+      CC="$CC" \
+      CXX="$CXX" \
       CFLAGS="$CFLAGS" \ 
       CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
@@ -1915,7 +1925,7 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
     ./configure \
       --host=$host_alias \
       --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" 
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
 
@@ -1931,7 +1941,7 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static --with-libgcrypt-prefix=/dev/null
   fi
 ], [$HOST_NOT_APPLE])
 
@@ -1942,7 +1952,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
     ./configure --disable-nls \
       --host=$host_alias \
       --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS"
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
 

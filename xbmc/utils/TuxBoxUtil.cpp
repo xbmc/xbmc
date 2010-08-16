@@ -339,6 +339,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     CFileItemPtr pbItem(new CFileItem);
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
+                    pbItem->SetLabelPreformated(true);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";
                     pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
@@ -596,13 +597,12 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if (GetRequestedAudioChannel(sSelectedAudioChannel))
         {
           if (sSelectedAudioChannel.pid != sStrmInfo.apid)
-            SetAudioChannel( strPath, sSelectedAudioChannel );
-
-          CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
-          strStreamURL.Format("http://%s:%s@%s:%i/langpid=%s", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort, sSelectedAudioChannel.pid.c_str());
+          {
+            if (SetAudioChannel(strPath, sSelectedAudioChannel))
+              CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
+          }
         }
-        else
-          strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
+        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
       }
 
       if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
@@ -626,8 +626,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)
       items.m_bIsFolder = false;
-      items.SetMimeType("video/x-ms-asf");
-
+      items.SetMimeType("video/x-mpegts");
       return true;
     }
   }

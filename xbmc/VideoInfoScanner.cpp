@@ -282,7 +282,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name_root,content))
+      if (RetrieveVideoInfo(items, settings.parent_name, content))
       {
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {

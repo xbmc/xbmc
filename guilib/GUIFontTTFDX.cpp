@@ -89,6 +89,7 @@ void CGUIFontTTFDX::Begin()
 
     // no other texture stages needed
     pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+    pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
     pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );

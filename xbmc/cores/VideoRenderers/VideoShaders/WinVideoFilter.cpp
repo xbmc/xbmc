@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "WinVideoFilter.h"
 #include "WindowingFactory.h"
 #include "../../../utils/log.h"
@@ -26,6 +28,7 @@
 #include <map>
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
+
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -184,22 +187,16 @@ bool CWinShader::Execute()
   if (!m_effect.End())
     CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
 
-  pD3DDevice->SetPixelShader( NULL );
-
-  for (unsigned int i=0; i < m_boundTexturesCount; i++)
-    pD3DDevice->SetTexture(i, NULL);
-
   return true;
 }
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(bool singlepass)
+bool CYUV2RGBShader::Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight)
 {
   ReleaseInternal();
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 3;
 
   DefinesMap defines;
   if (singlepass)
@@ -212,24 +209,35 @@ bool CYUV2RGBShader::Create(bool singlepass)
     CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
     return false;
   }
+
+  m_sourceWidth = sourceWidth;
+  m_sourceHeight = sourceHeight;
+
+  if(!m_YUVPlanes[0].Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+  || !m_YUVPlanes[2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUV planes.");
+    return false;
+  }
+
   return true;
 }
 
-void CYUV2RGBShader::Render(unsigned int sourceWidth, unsigned int sourceHeight,
-                            CRect sourceRect, CRect destRect,
+void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
                             float contrast,
                             float brightness,
                             unsigned int flags,
                             YUVBuffer* YUVbuf)
 {
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect,
+  PrepareParameters(sourceRect, destRect,
                     contrast, brightness, flags);
-  SetShaderParameters(m_matrix.Matrix(), YUVbuf, sourceWidth);
+  UploadToGPU(YUVbuf);
+  SetShaderParameters();
   Execute();
 }
 
-void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                                       CRect sourceRect,
+void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                        CRect destRect,
                                        float contrast,
                                        float brightness,
@@ -238,11 +246,8 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
 
-  if (m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
-  ||  m_sourceRect != sourceRect || m_destRect != destRect)
+  if (m_sourceRect != sourceRect || m_destRect != destRect)
   {
-    m_sourceWidth = sourceWidth;
-    m_sourceHeight = sourceHeight;
     m_sourceRect = sourceRect;
     m_destRect = destRect;
 
@@ -251,31 +256,31 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
 
     v[0].x = destRect.x1;
     v[0].y = destRect.y1;
-    v[0].tu = sourceRect.x1 / sourceWidth;
-    v[0].tv = sourceRect.y1 / sourceHeight;
-    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[0].tu = sourceRect.x1 / m_sourceWidth;
+    v[0].tv = sourceRect.y1 / m_sourceHeight;
+    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
     v[1].x = destRect.x2;
     v[1].y = destRect.y1;
-    v[1].tu = sourceRect.x2 / sourceWidth;
-    v[1].tv = sourceRect.y1 / sourceHeight;
-    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[1].tu = sourceRect.x2 / m_sourceWidth;
+    v[1].tv = sourceRect.y1 / m_sourceHeight;
+    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
     v[2].x = destRect.x2;
     v[2].y = destRect.y2;
-    v[2].tu = sourceRect.x2 / sourceWidth;
-    v[2].tv = sourceRect.y2 / sourceHeight;
-    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[2].tu = sourceRect.x2 / m_sourceWidth;
+    v[2].tv = sourceRect.y2 / m_sourceHeight;
+    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
     v[3].x = destRect.x1;
     v[3].y = destRect.y2;
-    v[3].tu = sourceRect.x1 / sourceWidth;
-    v[3].tv = sourceRect.y2 / sourceHeight;
-    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceWidth>>1);
-    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (sourceHeight>>1);
+    v[3].tu = sourceRect.x1 / m_sourceWidth;
+    v[3].tv = sourceRect.y2 / m_sourceHeight;
+    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
+    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
 
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
@@ -294,13 +299,49 @@ void CYUV2RGBShader::PrepareParameters(unsigned int sourceWidth, unsigned int so
                          flags);
 }
 
-void CYUV2RGBShader::SetShaderParameters(D3DXMATRIX* matrix, YUVBuffer* YUVbuf, unsigned int sourceWidth)
+void CYUV2RGBShader::SetShaderParameters()
 {
-  m_effect.SetMatrix( "g_ColorMatrix", matrix);
+  m_effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
   m_effect.SetTechnique( "YUV2RGB_T" );
-  m_effect.SetTexture( "g_YTexture",  YUVbuf->planes[0].texture ) ;
-  m_effect.SetTexture( "g_UTexture",  YUVbuf->planes[1].texture ) ;
-  m_effect.SetTexture( "g_VTexture",  YUVbuf->planes[2].texture ) ;
+  m_effect.SetTexture( "g_YTexture",  m_YUVPlanes[0] ) ;
+  m_effect.SetTexture( "g_UTexture",  m_YUVPlanes[1] ) ;
+  m_effect.SetTexture( "g_VTexture",  m_YUVPlanes[2] ) ;
+}
+
+void CYUV2RGBShader::ReleaseInternal()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_YUVPlanes[i].Get())
+      m_YUVPlanes[i].Release();
+  }
+}
+
+bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
+{
+  const RECT rect = { 0, 0, m_sourceWidth, m_sourceHeight };
+  const RECT recthalf = { 0, 0, m_sourceWidth / 2, m_sourceHeight / 2};
+  const POINT point = { 0, 0 };
+
+  for (int i = 0; i<3; i++)
+  {
+    IDirect3DSurface9 *src, *dest;
+    if(FAILED(YUVbuf->planes[i].texture.Get()->GetSurfaceLevel(0, &src)))
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for source YUV plane %d", i);
+    if (FAILED(m_YUVPlanes[i].Get()->GetSurfaceLevel(0, &dest)))
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for destination YUV plane %d", i);
+
+    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, i == 0 ? &rect : &recthalf, dest, &point)))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to copy plane %d from sysmem to vidmem.", i);
+      src->Release();
+      dest->Release();
+      return false;
+    }
+    src->Release();
+    dest->Release();
+  }
+  return true;
 }
 
 //==================================================================================
@@ -326,7 +367,6 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
   }
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
-  m_boundTexturesCount = 2;
 
   if(!LoadEffect(effectString, NULL))
   {
@@ -457,3 +497,5 @@ bool CTestShader::Create()
   }
   return true;
 }
+
+#endif

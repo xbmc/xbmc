@@ -781,7 +781,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
 
 bool CVideoReferenceClock::SetupCocoa()
 {
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up up Cocoa");
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up Cocoa");
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();

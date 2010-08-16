@@ -734,6 +734,25 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
     else
       strPath = strHomePath;
   }
+
+#if defined(_LINUX) && !defined(__APPLE__)
+  /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
+   * and BIN_INSTALL_PATH differ
+   */
+  CStdString installPath = INSTALL_PATH;
+  CStdString binInstallPath = BIN_INSTALL_PATH;
+  if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
+  {
+    int pos = strPath.length() - binInstallPath.length();
+    CStdString tmp = strPath;
+    tmp.erase(0, pos);
+    if (!tmp.compare(binInstallPath))
+    {
+      strPath.erase(pos, strPath.length());
+      strPath.append(installPath);
+    }
+  }
+#endif
 }
 
 CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
@@ -854,6 +873,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
   if(IsDAAP(strPath))
     return true;
+  
+  if(IsPlugin(strPath))
+    return false;
 
   if(IsTuxBox(strPath))
     return true;
@@ -921,12 +943,16 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
 #if defined(_WIN32)
+  if(strFile.Mid(1) != ":\\"
+  && strFile.Mid(1) != ":")
+    return false;
+
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif

@@ -158,7 +158,7 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
     g_charsetConverter.utf8ToStringCharset(strDescription);
     strLine.Format( "%s:%i,%s\n", M3U_INFO_MARKER, item->GetMusicInfoTag()->GetDuration() / 1000, strDescription.c_str() );
     file.Write(strLine.c_str(),strLine.size());
-    CStdString strFileName=item->m_strPath;
+    CStdString strFileName = ResolveURL(item);
     g_charsetConverter.utf8ToStringCharset(strFileName);
     strLine.Format("%s\n",strFileName.c_str());
     file.Write(strLine.c_str(),strLine.size());

@@ -472,6 +472,7 @@
   <MusicInformation>
     <keyboard>
       <backspace>Close</backspace>
+      <i>Close</i>
       <key id='65446'>Close</key>
     </keyboard>
   </MusicInformation>

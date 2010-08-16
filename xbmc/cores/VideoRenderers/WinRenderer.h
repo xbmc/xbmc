@@ -120,13 +120,6 @@ enum RenderMethod
 #define FIELD_ODD 1
 #define FIELD_EVEN 2
 
-enum BufferMemoryType
-{
-  DontCare,
-  SystemMemory,
-  VideoMemory
-};
-
 struct SVideoBuffer
 {
   virtual ~SVideoBuffer() {}
@@ -146,7 +139,7 @@ struct SVideoPlane
 struct YUVBuffer : SVideoBuffer
 {
   ~YUVBuffer();
-  bool Create(BufferMemoryType memoryType, unsigned int width, unsigned int height);
+  bool Create(unsigned int width, unsigned int height);
   virtual void Release();
   virtual void StartDecode();
   virtual void StartRender();
@@ -155,7 +148,6 @@ struct YUVBuffer : SVideoBuffer
   SVideoPlane planes[MAX_PLANES];
 
 private:
-  BufferMemoryType m_memoryType;
   unsigned int     m_width;
   unsigned int     m_height;
 };
@@ -211,6 +203,7 @@ protected:
   void         RenderPS(DWORD flags);
   void         Stage1(DWORD flags);
   void         Stage2(DWORD flags);
+  void         ScaleFixedPipeline();
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
@@ -242,7 +235,7 @@ protected:
   struct SwsContext   *m_sw_scale_ctx;
 
   // Software rendering
-  D3DTEXTUREFILTERTYPE m_StretchRectFilter;
+  D3DTEXTUREFILTERTYPE m_TextureFilter;
   CD3DTexture          m_SWTarget;
 
   // PS rendering

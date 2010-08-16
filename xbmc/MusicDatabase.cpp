@@ -4669,6 +4669,9 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_style", album.strStyles);
   item.SetProperty("album_type", album.strType);
   item.SetProperty("album_label", album.strLabel);
+  item.SetProperty("album_artist", album.strArtist);
+  item.SetProperty("album_genre", album.strGenre);
+  item.SetProperty("album_title", album.strAlbum);
   if (album.iRating > 0)
     item.SetProperty("album_rating", album.iRating);
 }

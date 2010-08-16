@@ -141,51 +141,16 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 {}
 
-void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
-{
-  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
-  if (pWindow)
-  {
-    pWindow->Initialize();
-    pWindow->DynamicResourceAlloc(false);
-    pWindow->AllocResources(false);
-  }
-}
-
-void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
-{
-  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
-  if (pWindow) {
-    pWindow->FreeResources(pWindow->GetLoadOnDemand());
-  }
-}
-
 void CGUIWindowFullScreen::AllocResources(bool forceLoad)
 {
   CGUIWindow::AllocResources(forceLoad);
   DynamicResourceAlloc(false);
-  PreloadDialog(WINDOW_OSD);
-  PreloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  PreloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-  PreloadDialog(WINDOW_DIALOG_FULLSCREEN_INFO);
-  // No need to preload these here, as they're preloaded by our app
-//  PreloadDialog(WINDOW_DIALOG_SEEK_BAR);
-//  PreloadDialog(WINDOW_DIALOG_VOLUME_BAR);
-//  PreloadDialog(WINDOW_DIALOG_MUTE_BUG);
 }
 
 void CGUIWindowFullScreen::FreeResources(bool forceUnload)
 {
   g_settings.Save();
   DynamicResourceAlloc(true);
-  UnloadDialog(WINDOW_OSD);
-  UnloadDialog(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-  UnloadDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
-  UnloadDialog(WINDOW_DIALOG_FULLSCREEN_INFO);
-  // No need to unload these here, as they're preloaded by our app
-//  UnloadDialog(WINDOW_DIALOG_SEEK_BAR);
-//  UnloadDialog(WINDOW_DIALOG_VOLUME_BAR);
-//  UnloadDialog(WINDOW_DIALOG_MUTE_BUG);
   CGUIWindow::FreeResources(forceUnload);
 }
 

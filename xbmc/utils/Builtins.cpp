@@ -182,6 +182,7 @@ const BUILT_IN commands[] = {
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
   { "Addon.Default.Set",          true,   "Open a select dialog to allow choosing the default addon of the given type" },
+  { "Addon.OpenSettings",         true,   "Open a settings dialog for the addon of the given id" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
@@ -1308,13 +1309,23 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CStdString addonID;
     TYPE type = TranslateType(params[0]);
+    bool allowNone = false;
+    if (type == ADDON_VIZ)
+      allowNone = true;
+
     if (type != ADDON_UNKNOWN && 
-        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,false))
+        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
       if (type == ADDON_VIZ)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
+  }
+  else if (execute.Equals("addon.opensettings") && params.size() == 1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(params[0], addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (execute.Equals("toggledpms"))
   {

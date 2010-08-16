@@ -62,6 +62,7 @@ protected:
   CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
   AUTOPTR::CAutoPtrHandle m_hFile;
   int64_t m_i64FilePos;
+  int64_t m_i64FileLen;
 };
 
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Portuguese strings.xml by hudo (hudokkow [AT] gmail [DOT] com) -->
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mistura automática de tempo</string>
+    <string id="30001">Tempo entre pré-selecções</string>
+    <string id="30002">Tempo aleatório adicional</string>
+    <string id="30003">Ligar filtro Anisotrópico</string>
+    <string id="30004">Ligar cortes</string>
+    <string id="30005">Limiar de som para cortes</string>
+    <string id="30006">Tempo médio entre cortes</string>
+    <string id="30007">Taxa máxima de refrescamento</string>
+    <string id="30008">Ligar estéreo 3D</string>
+    <string id="30009">Conjunto de pré-selecções</string>
+</strings>

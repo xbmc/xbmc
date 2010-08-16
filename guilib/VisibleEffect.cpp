@@ -38,8 +38,8 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   // time and delay
 
   float temp;
-  if (g_SkinInfo->ResolveConstant(node->Attribute("time"), temp)) m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
-  if (g_SkinInfo->ResolveConstant(node->Attribute("delay"), temp)) m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
+  if (TIXML_SUCCESS == node->QueryFloatAttribute("time", &temp)) m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
+  if (TIXML_SUCCESS == node->QueryFloatAttribute("delay", &temp)) m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
 
   const char *tween = node->Attribute("tween");
   if (tween)
@@ -73,8 +73,8 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
     }
   }
 
-  float accel;
-  g_SkinInfo->ResolveConstant(node->Attribute("acceleration"), accel);
+  float accel = 0;
+  node->QueryFloatAttribute("acceleration", &accel);
 
   if (!m_pTweener)
   { // no tweener is specified - use a linear tweener
@@ -159,8 +159,8 @@ CFadeEffect::CFadeEffect(const TiXmlElement *node, bool reverseDefaults) : CAnim
     m_startAlpha = 0;
     m_endAlpha = 100.0f;
   }
-  if (node->Attribute("start")) g_SkinInfo->ResolveConstant(node->Attribute("start"), m_startAlpha);
-  if (node->Attribute("end")) g_SkinInfo->ResolveConstant(node->Attribute("end"), m_endAlpha);
+  node->QueryFloatAttribute("start", &m_startAlpha);
+  node->QueryFloatAttribute("end", &m_endAlpha);
   if (m_startAlpha > 100.0f) m_startAlpha = 100.0f;
   if (m_endAlpha > 100.0f) m_endAlpha = 100.0f;
   if (m_startAlpha < 0) m_startAlpha = 0;
@@ -188,8 +188,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<CStdString> commaSeparated;
     StringUtils::SplitString(startPos, ",", commaSeparated);
     if (commaSeparated.size() > 1)
-      g_SkinInfo->ResolveConstant(commaSeparated[1], m_startY);
-    g_SkinInfo->ResolveConstant(commaSeparated[0], m_startX);
+      m_startY = atof(commaSeparated[1].c_str());
+    m_startX = atof(commaSeparated[0].c_str());
   }
   const char *endPos = node->Attribute("end");
   if (endPos)
@@ -197,8 +197,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<CStdString> commaSeparated;
     StringUtils::SplitString(endPos, ",", commaSeparated);
     if (commaSeparated.size() > 1)
-      g_SkinInfo->ResolveConstant(commaSeparated[1], m_endY);
-    g_SkinInfo->ResolveConstant(commaSeparated[0], m_endX);
+      m_endY = atof(commaSeparated[1].c_str());
+    m_endX = atof(commaSeparated[0].c_str());
   }
 }
 
@@ -211,8 +211,8 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
 {
   m_startAngle = m_endAngle = 0;
   m_autoCenter = false;
-  if (node->Attribute("start")) g_SkinInfo->ResolveConstant(node->Attribute("start"), m_startAngle);
-  if (node->Attribute("end")) g_SkinInfo->ResolveConstant(node->Attribute("end"), m_endAngle);
+  node->QueryFloatAttribute("start", &m_startAngle);
+  node->QueryFloatAttribute("end", &m_endAngle);
 
   // convert to a negative to account for our reversed Y axis (Needed for X and Z ???)
   m_startAngle *= -1;
@@ -228,8 +228,8 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
       vector<CStdString> commaSeparated;
       StringUtils::SplitString(centerPos, ",", commaSeparated);
       if (commaSeparated.size() > 1)
-        g_SkinInfo->ResolveConstant(commaSeparated[1], m_center.y);
-      g_SkinInfo->ResolveConstant(commaSeparated[0], m_center.x);
+        m_center.y = atof(commaSeparated[1].c_str());
+      m_center.x = atof(commaSeparated[0].c_str());
     }
   }
 }
@@ -270,21 +270,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     StringUtils::SplitString(start, ",", params);
     if (params.size() == 1)
     {
-      g_SkinInfo->ResolveConstant(params[0], m_startX);
+      m_startX = atof(params[0].c_str());
       m_startY = m_startX;
     }
     else if (params.size() == 2)
     {
-      g_SkinInfo->ResolveConstant(params[0], m_startX);
-      g_SkinInfo->ResolveConstant(params[1], m_startY);
+      m_startX = atof(params[0].c_str());
+      m_startY = atof(params[1].c_str());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      g_SkinInfo->ResolveConstant(params[0], startPosX);
-      g_SkinInfo->ResolveConstant(params[1], startPosY);
-      g_SkinInfo->ResolveConstant(params[2], m_startX);
-      g_SkinInfo->ResolveConstant(params[3], m_startY);
+      startPosX = atof(params[0].c_str());
+      startPosY = atof(params[1].c_str());
+      m_startX = atof(params[2].c_str());
+      m_startY = atof(params[3].c_str());
       m_startX *= 100.0f / width;
       m_startY *= 100.0f / height;
     }
@@ -296,21 +296,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     StringUtils::SplitString(end, ",", params);
     if (params.size() == 1)
     {
-      g_SkinInfo->ResolveConstant(params[0], m_endX);
+      m_endX = atof(params[0].c_str());
       m_endY = m_endX;
     }
     else if (params.size() == 2)
     {
-      g_SkinInfo->ResolveConstant(params[0], m_endX);
-      g_SkinInfo->ResolveConstant(params[1], m_endY);
+      m_endX = atof(params[0].c_str());
+      m_endY = atof(params[1].c_str());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      g_SkinInfo->ResolveConstant(params[0], endPosX);
-      g_SkinInfo->ResolveConstant(params[1], endPosY);
-      g_SkinInfo->ResolveConstant(params[2], m_endX);
-      g_SkinInfo->ResolveConstant(params[3], m_endY);
+      endPosX = atof(params[0].c_str());
+      endPosY = atof(params[1].c_str());
+      m_endX = atof(params[2].c_str());
+      m_endY = atof(params[3].c_str());
       m_endX *= 100.0f / width;
       m_endY *= 100.0f / height;
     }
@@ -325,8 +325,8 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
       vector<CStdString> commaSeparated;
       StringUtils::SplitString(centerPos, ",", commaSeparated);
       if (commaSeparated.size() > 1)
-        g_SkinInfo->ResolveConstant(commaSeparated[1], m_center.y);
-      g_SkinInfo->ResolveConstant(commaSeparated[0], m_center.x);
+        m_center.y = atof(commaSeparated[1].c_str());
+      m_center.x = atof(commaSeparated[0].c_str());
     }
   }
   else

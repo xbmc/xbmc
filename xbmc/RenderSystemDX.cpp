@@ -183,7 +183,20 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+{
+  // Verify the compatibility
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         m_devType,
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_SURFACE,
+                                         depthFormat);
+
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
 {
   // Verify that the depth format exists
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
@@ -199,7 +212,7 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
   hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
                                       m_devType,
                                       AdapterFormat,
-                                      BackBufferFormat,
+                                      RenderTargetFormat,
                                       DepthFormat);
 
   return SUCCEEDED(hr);
@@ -525,7 +538,11 @@ bool CRenderSystemDX::PresentRenderImpl()
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
       SetThreadPriority(GetCurrentThread(), priority);
   }
-  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+
+  if (m_useD3D9Ex)
+    hr = ((IDirect3DDevice9Ex*)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, 0);
+  else
+    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
   {
@@ -613,6 +630,12 @@ bool CRenderSystemDX::BeginRender()
       CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
+
+  IDirect3DSurface9 *pBackBuffer;
+  m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
+  pBackBuffer->Release();
+
   m_inScene = true;
   return true;
 }

@@ -1609,7 +1609,7 @@ void CDVDPlayer::OnExit()
     }
     if (m_CurrentSubtitle.id >= 0)
     {
-      CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
+      CLog::Log(LOGNOTICE, "DVDPlayer: closing subtitle stream");
       CloseSubtitleStream(!m_bAbortRequest);
     }
     if (m_CurrentTeletext.id >= 0)
@@ -2631,6 +2631,9 @@ bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
 
   CLog::Log(LOGNOTICE, "Closing audio stream");
 
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
+
   m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
   m_CurrentAudio.Clear();
@@ -2643,6 +2646,9 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers)
     return false;
 
   CLog::Log(LOGNOTICE, "Closing video stream");
+
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
 
   m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
@@ -2669,6 +2675,9 @@ bool CDVDPlayer::CloseTeletextStream(bool bWaitForBuffers)
     return false;
 
   CLog::Log(LOGNOTICE, "Closing teletext stream");
+
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
 
   m_dvdPlayerTeletext.CloseStream(bWaitForBuffers);
 

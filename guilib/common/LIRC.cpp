@@ -112,6 +112,11 @@ void CRemoteControl::setDeviceName(const CStdString& value)
     m_deviceName=value;
   else
     m_deviceName=LIRC_DEVICE;
+  if (m_bInitialized)
+  {
+    Disconnect();
+    Initialize();
+  }
 }
 
 void CRemoteControl::Initialize()

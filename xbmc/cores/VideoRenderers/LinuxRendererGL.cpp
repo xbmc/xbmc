@@ -260,8 +260,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_iLastRenderBuffer = -1;
 
-  m_nonLinStretch = g_settings.m_bNonLinStretch;
-  m_pixelRatio = g_settings.m_fPixelRatio;
+  m_nonLinStretch    = false;
+  m_nonLinStretchGui = false;
+  m_pixelRatio       = 1.0;
   return true;
 }
 
@@ -951,28 +952,35 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_nonLinStretch != g_settings.m_bNonLinStretch || m_pixelRatio != g_settings.m_fPixelRatio)
+  bool pixelRatioChanged    = (g_settings.m_fPixelRatio > 1.001f || g_settings.m_fPixelRatio < 0.999f) !=
+                              (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+  bool nonLinStretchChanged = false;
+  if (m_nonLinStretchGui != g_settings.m_bNonLinStretch || pixelRatioChanged)
   {
-    //whether non-linear stretch is already on
-    bool nonLinStretchIsOn = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+    m_nonLinStretchGui   = g_settings.m_bNonLinStretch;
+    m_pixelRatio         = g_settings.m_fPixelRatio;
+    m_reloadShaders      = 1;
+    nonLinStretchChanged = true;
 
-    m_nonLinStretch = g_settings.m_bNonLinStretch;
-    m_pixelRatio = g_settings.m_fPixelRatio;
-
-    if (g_settings.m_bNonLinStretch && (g_settings.m_fPixelRatio > 1.001f || g_settings.m_fPixelRatio < 0.999f))
+    if (m_nonLinStretchGui && (m_pixelRatio < 0.999f || m_pixelRatio > 1.001f) && Supports(RENDERFEATURE_NONLINSTRETCH))
     {
-      if (nonLinStretchIsOn)
-        return; //non-linear stretch needs to be on but is already on
+      m_nonLinStretch = true;
+      CLog::Log(LOGDEBUG, "GL: Enabling non-linear stretch");
     }
     else
     {
-      if (!nonLinStretchIsOn)
-        return; //non-linear stretch needs to be off but is already off
+      m_nonLinStretch = false;
+      CLog::Log(LOGDEBUG, "GL: Disabling non-linear stretch");
     }
-    m_reloadShaders    = 1;
   }
-  else if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
+
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && !nonLinStretchChanged)
     return;
+
+  //recompile YUV shader when non-linear stretch is turned on/off
+  //or when it's on and the scaling method changed
+  if (m_nonLinStretch || nonLinStretchChanged)
+    m_reloadShaders = 1;
 
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
@@ -1004,15 +1012,13 @@ void CLinuxRendererGL::UpdateVideoFilter()
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
-  bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
-
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    if (((m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI)) && nonLinStretch)
+    if (((m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI)) && m_nonLinStretch)
     {
       m_pVideoFilterShader = new StretchFilterShader();
       if (!m_pVideoFilterShader->CompileAndLink())
@@ -1042,7 +1048,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       }
     }
 
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, nonLinStretch);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -1114,11 +1120,9 @@ void CLinuxRendererGL::LoadShaders(int field)
       // Try GLSL shaders if supported and user requested auto or GLSL.
       if (glCreateProgram)
       {
-        bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
-                             && m_renderQuality == RQ_SINGLEPASS && !(m_renderMethod & RENDER_POT);
-
         // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
+                                                    m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
@@ -1362,9 +1366,10 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
-  m_pYUVShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+  m_pYUVShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
+
   if     (field == FIELD_ODD)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
@@ -1465,6 +1470,7 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
+  m_pYUVShader->SetNonLinStretch(1.0);
   if     (field == FIELD_ODD)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
@@ -1565,7 +1571,7 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+    m_pVideoFilterShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else

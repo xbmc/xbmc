@@ -345,6 +345,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
+  if (iWindowID == WINDOW_ADDON_BROWSER)
+    iSwitch = WINDOW_SETTINGS_MENU;
+
   if (iWindowID == WINDOW_MUSIC_FILES)
     if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
       iSwitch = WINDOW_HOME;

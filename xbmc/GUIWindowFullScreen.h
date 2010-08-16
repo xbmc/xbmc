@@ -50,8 +50,6 @@ protected:
 private:
   void RenderTTFSubtitles();
   void SeekChapter(int iChapter);
-  void PreloadDialog(unsigned int windowID);
-  void UnloadDialog(unsigned int windowID);
   void ToggleOSD();
 
   enum SEEK_TYPE { SEEK_ABSOLUTE, SEEK_RELATIVE };

@@ -294,7 +294,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
         if (db.Open())
         {
           CFileItemList items;
-          CStdString where = db.FormatSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
+          CStdString where = db.PrepareSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
           if (db.GetTvShowsByWhere("", where, items) && items.Size())
             season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
           db.Close();
@@ -310,13 +310,16 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
-        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer)
+        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
         {
           CVideoDatabase database;
-          database.Open();
-          database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
-                             m_movieItem->GetVideoInfoTag()->m_iDbId,
-                             VIDEODB_ID_TRAILER,VIDEODB_CONTENT_MOVIES);
+          if(database.Open())
+          {
+            database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
+                               m_movieItem->GetVideoInfoTag()->m_iDbId,
+                               VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
+            database.Close();
+          }
         }
       }
     }
@@ -520,7 +523,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.GetEpisodesByActor(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label = movies[i]->GetVideoInfoTag()->m_strTitle + "(" +  movies[i]->GetVideoInfoTag()->m_strShowTitle + ")";
+    CStdString label = movies[i]->GetVideoInfoTag()->m_strTitle + " (" +  movies[i]->GetVideoInfoTag()->m_strShowTitle + ")";
     movies[i]->SetLabel(label);
   }
   CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20359) + "] ", items);

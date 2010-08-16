@@ -197,8 +197,11 @@ post-start script
 			exit
 		fi
 
-		udevTriggerPID=$(pidof udevtrigger)
-		while test -d /proc/$udevTriggerPID; do sleep 1; done;
+		# Wait for udevtrigger to settle down (if any)
+		udevTriggerPID=$(ps x | grep udevtrigger | grep -v grep | cut -f2 -d ' ')
+		if [ -n "udevTriggerPID" }; then
+			while test -d /proc/$udevTriggerPID; do sleep 1; done;
+		fi
 
 		usbPort=$(findUSBPort "${lircDriver}")
 
@@ -207,7 +210,7 @@ post-start script
 			exit
 		fi
 
-		usbStatus=`cat /proc/acpi/wakeup | grep $usbport | awk {'print $3}'`
+		usbStatus=`cat /proc/acpi/wakeup | grep $usbPort | awk {'print $3}'`
 		if [ "$usbStatus" = "disabled" ]; then
 			echo $usbPort > /proc/acpi/wakeup
 			echo -1 >/sys/module/usbcore/parameters/autosuspend

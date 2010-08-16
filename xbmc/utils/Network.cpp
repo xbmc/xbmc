@@ -231,7 +231,7 @@ bool CNetwork::WakeOnLan(const char* mac)
   struct sockaddr_in saddr;
   saddr.sin_family = AF_INET;
   saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-  saddr.sin_port = htons(60000);
+  saddr.sin_port = htons(9);
 
   unsigned int value = 1;
   if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)

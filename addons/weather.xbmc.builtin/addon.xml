@@ -6,14 +6,18 @@
   <extension point="xbmc.python.weather" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Current weather conditions.</summary>
+    <summary lang="fr">Conditions météorologiques en cours.</summary>
     <summary lang="hu">A jelenlegi időjárás.</summary>
     <summary lang="ko">현재 날씨</summary>
     <summary lang="pl">Aktualne warunki pogodowe.</summary>
+    <summary lang="pt">Condições meteorológicas actuais.</summary>
     <summary lang="zh">当前天气状况</summary>
     <description lang="en">This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
+    <description lang="fr">C'est la source météo par défaut.[CR][CR]Fournit les conditions climatiques en cours et les prévisions sur 4 jours.</description>
     <description lang="hu">Ez az alapértelmezett időjárás információforrás.[CR][CR]Tájékoztat a jelenlegi időjárásról, valamint négynapos előrejelzést ad.</description>
     <description lang="ko">기본 날씨 정보입니다.[CR][CR] 현재날씨와 4일치 예보를 제공합니다.</description>
     <description lang="pl">Jest to domyślne źródło pogody.[CR][CR]Dostarcza aktualną pogodę oraz prognozę na cztery dni.</description>
+    <description lang="pt">Fonte padrão das condições meteorológicas.[CR][CR]Providencia as condições meteorológicas actuais e previsão para quatro dias.</description>
     <description lang="zh">这是默认的天气预报信息来源。[CR][CR]它提供了当前的天气状况和未来4天的天气预报。</description>
     <platform>all</platform>
   </extension>

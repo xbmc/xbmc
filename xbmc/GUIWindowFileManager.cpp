@@ -307,7 +307,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && !pItem->m_dwSize || pItem->m_strPath.Equals("add")) 
+    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->m_strPath.Equals("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -543,6 +543,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
     {
+      m_rootDir.SetSources(g_settings.m_fileSources);
       Update(0,m_Directory[0]->m_strPath);
       Update(1,m_Directory[1]->m_strPath);
     }

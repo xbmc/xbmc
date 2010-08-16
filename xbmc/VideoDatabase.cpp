@@ -1400,10 +1400,9 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 //********************************************************************************************************************************
 void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where;
-  where.Format("join actorlinkmovie on actorlinkmovie.idMovie=movieview.idMovie "
-               "join actors on actors.idActor=actorlinkmovie.idActor "
-               "where actors.strActor='%s'", strActor.c_str());
+  CStdString where = PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie=movieview.idMovie "
+                                "join actors on actors.idActor=actorlinkmovie.idActor "
+                                "where actors.strActor='%s'", strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
@@ -7387,32 +7386,39 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
 void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
                                VIDEODB_CONTENT_TYPE type)
 {
-  if (NULL == m_pDB.get()) return;
-  if (NULL == m_pDS.get()) return;
-
-  CStdString strTable, strField;
-  if (type == VIDEODB_CONTENT_MOVIES)
+  try
   {
-    strTable = "movies";
-    strField = "idMovie";
-  }
-  if (type == VIDEODB_CONTENT_TVSHOWS)
-  {
-    strTable = "tvshows";
-    strField = "idShow";
-  }
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
-  {
-    strTable = "musicvideos";
-    strField = "idMVideo";
-  }
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
 
-  if (strTable.IsEmpty())
-    return;
+    CStdString strTable, strField;
+    if (type == VIDEODB_CONTENT_MOVIES)
+    {
+      strTable = "movie";
+      strField = "idMovie";
+    }
+    if (type == VIDEODB_CONTENT_TVSHOWS)
+    {
+      strTable = "tvshow";
+      strField = "idShow";
+    }
+    if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+    {
+      strTable = "musicvideo";
+      strField = "idMVideo";
+    }
 
-  CStdString strSQL = PrepareSQL("update %s set c%02u='%s' where %s=%u",
-                                strTable.c_str(),field,strField.c_str(),id);
-  m_pDS->exec(strSQL.c_str());
+    if (strTable.IsEmpty())
+      return;
+
+    CStdString strSQL = PrepareSQL("update %s set c%02u='%s' where %s=%u",
+                                  strTable.c_str(), field, strDetail.c_str(), strField.c_str(), id);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
 }
 
 CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &name) const

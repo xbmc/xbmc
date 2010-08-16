@@ -23,6 +23,7 @@
 
 #include "DVDInputStream.h"
 
+class DllLibbluray;
 typedef struct bluray BLURAY;
 typedef struct bd_title_info BLURAY_TITLE_INFO;
 
@@ -55,6 +56,7 @@ public:
   void GetStreamInfo(int pid, char* language);
 
 protected:
+  DllLibbluray *m_dll;
   BLURAY* m_bd;
   BLURAY_TITLE_INFO* m_title;
 };

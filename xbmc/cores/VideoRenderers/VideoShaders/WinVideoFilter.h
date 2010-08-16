@@ -21,6 +21,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
 
@@ -62,7 +64,6 @@ protected:
   virtual bool Execute();
 
   CD3DEffect   m_effect;
-  unsigned int m_boundTexturesCount;
 
 private:
   CD3DVertexBuffer m_vb;
@@ -75,9 +76,8 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(bool singlepass);
-  virtual void Render(unsigned int sourceWidth, unsigned int sourceHeight,
-                      CRect sourceRect,
+  virtual bool Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight);
+  virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
                       float brightness,
@@ -85,18 +85,20 @@ public:
                       YUVBuffer* YUVbuf);
 
 protected:
-  virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                                 CRect sourceRect,
+  virtual void PrepareParameters(CRect sourceRect,
                                  CRect destRect,
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
-  virtual void SetShaderParameters(D3DXMATRIX* matrix, YUVBuffer* YUVbuf, unsigned int sourceWidth);
+  virtual void SetShaderParameters();
+  virtual void ReleaseInternal();
+  virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 
 private:
   CYUV2RGBMatrix m_matrix;
   unsigned int   m_sourceWidth, m_sourceHeight;
   CRect          m_sourceRect, m_destRect;
+  CD3DTexture    m_YUVPlanes[3];
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -141,3 +143,5 @@ class CTestShader : public CWinShader
 public:
   virtual bool Create();
 };
+
+#endif

@@ -47,6 +47,9 @@ namespace ADDON
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
 #endif
+#ifdef _WIN32
+#include "win32/WIN32Util.h"
+#endif
 #include "Autorun.h"
 #include "Bookmark.h"
 #include "utils/Stopwatch.h"
@@ -299,7 +302,11 @@ protected:
   ADDON::AddonPtr m_screenSaver;
 
   // timer information
+#ifdef _WIN32
+  CWinIdleTimer m_idleTimer;
+#else
   CStopWatch m_idleTimer;
+#endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;

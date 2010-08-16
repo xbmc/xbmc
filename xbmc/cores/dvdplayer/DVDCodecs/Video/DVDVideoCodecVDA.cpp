@@ -349,7 +349,6 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
         buf += size + 4;
       }
       assert(sps);
-      assert(pps);
 
       av_format_ctx->put_byte(pb, 1); /* version */
       av_format_ctx->put_byte(pb, sps[1]); /* profile */
@@ -360,9 +359,12 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
 
       av_format_ctx->put_be16(pb, sps_size);
       av_format_ctx->put_buffer(pb, sps, sps_size);
-      av_format_ctx->put_byte(pb, 1); /* number of pps */
-      av_format_ctx->put_be16(pb, pps_size);
-      av_format_ctx->put_buffer(pb, pps, pps_size);
+      if (pps)
+      {
+        av_format_ctx->put_byte(pb, 1); /* number of pps */
+        av_format_ctx->put_be16(pb, pps_size);
+        av_format_ctx->put_buffer(pb, pps, pps_size);
+      }
       av_util_ctx->av_free(start);
     }
     else

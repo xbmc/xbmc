@@ -171,19 +171,6 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     CFileItemPtr item = playlist[iSong];
 
   Play(iSong, bAutoPlay);
-  if (iSong < playlist.size())
-  {
-    if (playlist[iSong]->IsVideo())
-    {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-    }
-    else
-    {
-      if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-        g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
-    }
-  }
   //g_partyModeManager.OnSongChange();
 }
 
