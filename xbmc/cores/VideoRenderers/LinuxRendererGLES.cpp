@@ -1303,7 +1303,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE);
+  g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];

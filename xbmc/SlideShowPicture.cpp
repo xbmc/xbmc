@@ -731,7 +731,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
-    g_Windowing.EnableGUIShader(SM_TEXTURE);
+    g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
   }
   else
   {

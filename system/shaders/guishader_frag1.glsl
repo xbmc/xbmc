@@ -6,7 +6,7 @@ varying vec4      m_cord1;
 varying vec4      m_colour;
 uniform int       m_method;
 
-// SM_TEXTURE
+// SM_TEXTURE_COLOR_DIFFUSE
 void main ()
 {
   gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).bgra * m_colour);

@@ -30,11 +30,11 @@ using namespace Shaders;
 
 enum ESHADERMETHOD
 {
-  SM_DEFAULT = 0,
-  SM_TEXTURE = 1,
-  SM_MULTI   = 2,
-  SM_FONTS   = 3,
-  SM_TEXTURE_NOBLEND = 4,
+  SM_DEFAULT                = 0,
+  SM_TEXTURE_COLOR_DIFFUSE  = 1,
+  SM_MULTI                  = 2,
+  SM_FONTS                  = 3,
+  SM_TEXTURE_NOBLEND        = 4,
   SM_ESHADERCOUNT
 };
 

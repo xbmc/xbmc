@@ -53,7 +53,7 @@ void CGUITextureGLES::Begin(color_t color)
   }
   else
   {
-    g_Windowing.EnableGUIShader(SM_TEXTURE);
+    g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
   }
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
@@ -83,7 +83,7 @@ void CGUITextureGLES::Begin(color_t color)
     {
       glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       glEnable(GL_BLEND);          // Turn Blending On
-      g_Windowing.EnableGUIShader(SM_TEXTURE);
+      g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
     }
     else
     {
@@ -218,7 +218,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE);
+  g_Windowing.EnableGUIShader(SM_TEXTURE_COLOR_DIFFUSE);
 
   GLint posLoc   = g_Windowing.GUIShaderGetPos();
   GLint colLoc   = g_Windowing.GUIShaderGetCol();
