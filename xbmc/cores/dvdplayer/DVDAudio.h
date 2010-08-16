@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 #include "cores/AudioRenderers/IAudioRenderer.h"
-#include "cores/AudioRenderers/IAudioCallback.h"
+#include "cores/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
 #include "AudioEngine/AEStream.h"
