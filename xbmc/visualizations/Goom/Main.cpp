@@ -136,10 +136,14 @@ extern "C" void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) ? iAudioDataLength : (int)sizeof( g_audio_data );
-  memcpy( g_audio_data, pAudioData, copysize );
+  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) >> 1 ? iAudioDataLength : (int)sizeof( g_audio_data ) >> 1;
+  int ipos, i;
+  for(ipos = 0; i = 0; i < copysize; i += 2, ++ipos) {
+    g_audio_data[0][ipos] = pAudioData[i  ]; /* FIXME: float to short */
+    g_audio_data[1][ipos] = pAudioData[i+1]; /* FIXME: float to short */
+  }
 }
 
 

@@ -104,6 +104,7 @@ bool CAE::OpenSink()
     (*itt)->Initialize();
 
   /* re-init the callback */
+  CSingleLock acLock(m_critSectionAC);
   if (m_audioCallback)
   {
     m_audioCallback->OnDeinitialize();
@@ -516,9 +517,10 @@ void CAE::Run()
         /* if the buffer full, flush it through */
         if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
         {
-          m_audioCallback->OnAudioData((const unsigned char*)m_visBuffer, AUDIO_BUFFER_SIZE * sizeof(float));
-          memmove(m_visBuffer, &m_visBuffer[m_visBufferSize], sizeof(m_visBuffer) - (m_visBufferSize * sizeof(float)));
-          m_visBufferSize -= AUDIO_BUFFER_SIZE;
+          m_audioCallback->OnAudioData(m_visBuffer, AUDIO_BUFFER_SIZE);
+//          memmove(m_visBuffer, &m_visBuffer[AUDIO_BUFFER_SIZE], sizeof(m_visBuffer) - (AUDIO_BUFFER_SIZE * sizeof(float)));
+          m_visBufferSize = 0;//AUDIO_BUFFER_SIZE;
+//	  printf("%d\n", m_visBufferSize);
         }
       }
     }

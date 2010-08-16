@@ -30,7 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "StdString.h"
-#include "IAudioCallback.h"
+#include "cores/IAudioCallback.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "cores/AudioEngine/AEUtil.h"
 
