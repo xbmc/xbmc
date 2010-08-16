@@ -893,12 +893,12 @@
 						<label>$INFO[ListItem.TVShowTitle]</label>
 						<visible>Container.Content(Episodes)</visible>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<posx>11</posx>
 						<posy>19</posy>
 						<description>Title</description>
 						<width>650</width>
-						<height>60</height>
+						<height>30</height>
 						<font>MediumLargeTitleCapsFont</font>
 						<label>[COLOR FFFF9900] $LOCALIZE[20373] $INFO[ListItem.Season], $LOCALIZE[20359] $INFO[ListItem.Episode]: [/COLOR] [COLOR FFFFFFFF]$INFO[ListItem.Title] [/COLOR]</label>
 						<visible>Container.Content(Episodes)</visible>
