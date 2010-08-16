@@ -48,7 +48,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->width      = iWidth;
   m_pInfo->height     = iHeight;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-  m_pInfo->name       = Name().c_str();
+  m_pInfo->name       = strdup(Name().c_str());
 
   if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create())
     return true;
@@ -76,9 +76,11 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
 
 void CScreenSaver::Destroy()
 {
-  // Free what was allocated in method CScreenSaver::CreateScreenSaver.
+  // Release what was allocated in method CScreenSaver::CreateScreenSaver.
   if (m_pInfo)
   {
+    free((void *) m_pInfo->name);
+
     delete m_pInfo;
     m_pInfo = NULL;
   }
