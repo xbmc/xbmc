@@ -60,7 +60,7 @@
 					  <width>1180</width>
 					  <height>52</height>
             <border>4</border>
-            <texture>HighlightList.bmp</texture>
+            <texture>HighlightList.jpg</texture>
           </control>
 				  <control type="label">
 					  <posx>10</posx>
