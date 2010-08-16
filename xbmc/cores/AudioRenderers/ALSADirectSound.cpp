@@ -52,8 +52,16 @@ CALSADirectSound::CALSADirectSound()
 bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   /* figure out how many channels we need to open */
+  static enum AEChannel IEC958Map[3] =
+    {AE_CH_FL, AE_CH_FR, AE_CH_NULL};
+
   static enum AEChannel ALSAChannelMap[9] =
     {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
+
+  if (bPassthrough) {
+    channelLayout   = IEC958Map;
+    uiBitsPerSample = 16;
+  }
 
   int i, c;
   int iChannels = 0;
@@ -275,13 +283,19 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   nErr = snd_pcm_prepare (m_pPlayHandle);
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
-  switch(uiBitsPerSample)
+  if (bPassthrough) {
+    m_format.m_dataFormat = AE_FMT_IEC958;
+  }
+  else
   {
-    case  8: m_format.m_dataFormat = AE_FMT_U8   ; break;
-    case 16: m_format.m_dataFormat = AE_FMT_S16LE; break;
-    case 32: m_format.m_dataFormat = AE_FMT_FLOAT; break;
-    default:
-      return false;
+    switch(uiBitsPerSample)
+    {
+      case  8: m_format.m_dataFormat = AE_FMT_U8   ; break;
+      case 16: m_format.m_dataFormat = AE_FMT_S16LE; break;
+      case 32: m_format.m_dataFormat = AE_FMT_FLOAT; break;
+      default:
+        return false;
+    }
   }
 
   AEChLayout layout = new AEChannel[iChannels+1];

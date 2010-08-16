@@ -27,17 +27,16 @@
 #include "AE.h"
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
-#include "addons/Visualisation.h"
 
 using namespace std;
 
 CAE::CAE():
   m_state        (AE_STATE_INVALID),
-  m_sink         (NULL),
-  m_buffer       (NULL),
-  m_audioCallback(NULL)
+  m_sink         (NULL ),
+  m_passthrough  (false),
+  m_buffer       (NULL ),
+  m_audioCallback(NULL )
 {
-  m_visBuffer = new uint8_t[AUDIO_BUFFER_SIZE * sizeof(float) * 2];
 }
 
 CAE::~CAE()
@@ -49,9 +48,6 @@ CAE::~CAE()
     /* note: the stream will call RemoveStream via it's dtor */
     delete s;
   }
-
-  delete[] m_visBuffer;
-  m_visBuffer = NULL;
 }
 
 bool CAE::OpenSink()
@@ -61,9 +57,8 @@ bool CAE::OpenSink()
     sampleRate = m_streams.front()->GetSampleRate();
 
   CSingleLock sinkLock(m_critSectionSink);
-
-  /* if the sink is open and the sampleRate has not changed, dont re-open */
-  if (m_sink && sampleRate == m_format.m_sampleRate)
+  /* if the sink is open and the sampleRate & data format has not changed, dont re-open */
+  if (m_sink && sampleRate == m_format.m_sampleRate && (m_passthrough && m_format.m_dataFormat == AE_FMT_IEC958))
   {
     return true;
   }
@@ -82,7 +77,7 @@ bool CAE::OpenSink()
 
   CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
   m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, false))
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, m_passthrough))
   {
     delete m_sink;
     m_sink = NULL;
@@ -110,7 +105,10 @@ bool CAE::OpenSink()
 
   /* re-init the callback */
   if (m_audioCallback)
+  {
+    m_audioCallback->OnDeinitialize();
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
+  }
 
   return true;
 }
@@ -195,12 +193,22 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   );
 
   CSingleLock lock(m_critSection);
+  if (dataFormat == AE_FMT_IEC958 && m_passthrough)
+    return NULL;
+
   CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
   m_streams.push_back(stream);
 
-  /* if we are the only stream, re-open the sink */
-  if (m_streams.size() == 1)
+  /* if the stream is IEC958 turn on passthrough */
+  if (dataFormat == AE_FMT_IEC958)
+  {
+    m_passthrough = true;
     OpenSink();
+  }
+  else
+    /* if we are the only stream, re-open the sink */
+    if (m_streams.size() == 1)
+      OpenSink();
 
   return stream;
 }
@@ -295,9 +303,17 @@ void CAE::GarbageCollect()
 
 void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
+  CSingleLock acLock(m_critSectionAC);
   m_audioCallback = pCallback;
   if (m_audioCallback)
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
+}
+
+void CAE::UnRegisterAudioCallback()
+{
+  CSingleLock acLock(m_critSectionAC);
+  m_audioCallback = NULL;
+  m_visBufferSize = 0;
 }
 
 void CAE::StopSound(CAESound *sound)
@@ -324,6 +340,11 @@ void CAE::RemoveStream(CAEStream *stream)
 {
   CSingleLock lock(m_critSection);
   m_streams.remove(stream);
+  if (stream->GetDataFormat() == AE_FMT_IEC958)
+  {
+    m_passthrough = false;
+    OpenSink();
+  }
 }
 
 void CAE::Run()
@@ -396,8 +417,9 @@ void CAE::Run()
         continue;
       }
 
-      /* we still need to take frames when muted */
-      if (!g_settings.m_bMute) {
+      /* we still need to take frames when muted or in passthrough */
+      if (!m_passthrough && !g_settings.m_bMute)
+      {
         /* mix the frame into the output */
         float volume = (*sitt).owner->GetVolume();
         for(i = 0; i < m_channelCount; ++i)
@@ -409,6 +431,7 @@ void CAE::Run()
     }
 
     /* mix in any running streams */
+    bool done = false;
     for(itt = m_streams.begin(); itt != m_streams.end();)
     {
       if (m_state != AE_STATE_RUN) break;
@@ -443,8 +466,16 @@ void CAE::Run()
         continue;
       }
 
-      /* we still need to take frames when muted */
-      if (!g_settings.m_bMute) {
+      if (m_passthrough)
+      {
+        if (stream->GetDataFormat() == AE_FMT_IEC958 && !done)
+        {
+          memcpy(out, frame, sizeof(float) * m_channelCount);
+          done = true;
+        }
+      }
+      else if (!g_settings.m_bMute)
+      {
         float volume = stream->GetVolume();
         for(i = 0; i < m_channelCount; ++i)
           out[i] += frame[i] * volume;
@@ -462,29 +493,33 @@ void CAE::Run()
       continue;
     }
 
-    for(i = 0; i < m_channelCount; ++i)
-      out[i] *= m_volume;
-
-    if (div > 1)
+    if (!m_passthrough)
     {
-      float mul = 1.0f / div;
       for(i = 0; i < m_channelCount; ++i)
-        out[i] *= mul;
-    }
+        out[i] *= m_volume;
 
-    /* if we have an audio callback, use it */
-    if (m_audioCallback)
-    {
-      /* add the frame to the visBuffer */
-      memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(out));
-      m_visBufferSize += sizeof(out);
-
-      /* if the buffer full, flush it through */
-      if (m_visBufferSize >= AUDIO_BUFFER_SIZE * sizeof(float))
+      if (div > 1)
       {
-        m_audioCallback->OnAudioData((const unsigned char*)m_visBuffer, AUDIO_BUFFER_SIZE * sizeof(float));
-        memmove(m_visBuffer, &m_visBuffer[m_visBufferSize], (AUDIO_BUFFER_SIZE * sizeof(float)) - m_visBufferSize);
-        m_visBufferSize -= AUDIO_BUFFER_SIZE * sizeof(float);
+        float mul = 1.0f / div;
+        for(i = 0; i < m_channelCount; ++i)
+          out[i] *= mul;
+      }
+
+      /* if we have an audio callback, use it */
+      CSingleLock acLock(m_critSectionAC);
+      if (m_audioCallback)
+      {
+        /* add the frame to the visBuffer */
+        memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(out));
+        m_visBufferSize += m_channelCount;
+
+        /* if the buffer full, flush it through */
+        if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
+        {
+          m_audioCallback->OnAudioData((const unsigned char*)m_visBuffer, AUDIO_BUFFER_SIZE * sizeof(float));
+          memmove(m_visBuffer, &m_visBuffer[m_visBufferSize], sizeof(m_visBuffer) - (m_visBufferSize * sizeof(float)));
+          m_visBufferSize -= AUDIO_BUFFER_SIZE;
+        }
       }
     }
 

@@ -440,21 +440,6 @@ void CAEStream::InternalFlush()
   m_framesBuffered  = 0;
 }
 
-/* applies a multipler to the ssrc speed where 1.0 is normal */
-void CAEStream::SetSpeed(double speed)
-{
-  CSingleLock lock(m_critSection);
-  if (!m_valid || !m_resample) return;
-
-  if (speed < 0.0f) speed = 1.0f / -speed;
-  double ratio = (double)AE.GetSampleRate() / ((double)m_initSampleRate * speed);
-  m_waterLevel = (unsigned int)((double)AE.GetSampleRate() * speed) >> 2;
-  m_ssrcData.src_ratio = ratio;
-  src_set_ratio(m_ssrc, ratio);
-
-  InternalFlush();
-}
-
 void CAEStream::SetDynamicRangeCompression(int drc)
 {
   //FIXME
