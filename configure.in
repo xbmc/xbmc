@@ -447,6 +447,7 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
         use_cpu=cortex-a9],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
+        FFMPEG_EXTRAOPTIONS=--disable-armvfp
         use_cpu=cortex-a8])
   else
     # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
@@ -1634,6 +1635,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      $FFMPEG_EXTRAOPTIONS \
       --target-os=$(tolower $(uname -s)) \
       --disable-muxers \
       --enable-muxer=spdif \
