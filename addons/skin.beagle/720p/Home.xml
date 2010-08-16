@@ -4,9 +4,34 @@
 	<controls>
 
     <control type="image">
-      <width>1280</width>
-      <height>720</height>
-      <texture>BackgroundHome.jpg</texture>
+      <width>640</width>
+      <height>360</height>
+      <posx>0</posx>
+      <posy>0</posy>
+      <texture>BackgroundHomeTL.jpg</texture>
+    </control>
+
+    <control type="image">
+      <width>640</width>
+      <height>360</height>
+      <posx>640</posx>
+      <posy>0</posy>
+      <texture>BackgroundHomeTR.jpg</texture>
+    </control>
+
+    <control type="image">
+      <width>640</width>
+      <height>360</height>
+      <posy>360</posy>
+      <texture>BackgroundHomeLL.jpg</texture>
+    </control>
+
+    <control type="image">
+      <width>640</width>
+      <height>360</height>
+      <posx>640</posx>
+      <posy>360</posy>
+      <texture>BackgroundHomeLR.jpg</texture>
     </control>
 
     <control type="group"  id="100">
