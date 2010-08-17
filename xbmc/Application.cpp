@@ -1125,8 +1125,6 @@ bool CApplication::Initialize()
 
   /* window id's 3000 - 3100 are reserved for python */
 
-  StartPVRManager();
-
   // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
   {
@@ -1136,6 +1134,8 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
     }
   }
+
+  StartPVRManager();
 
   SAFE_DELETE(m_splash);
 
