@@ -315,30 +315,37 @@ bool MysqlDatabase::exists() {
 
 // methods for formatting
 // ---------------------------------------------
-void MysqlDatabase::vprepare_free(void *p)
-{
-    free(p);
-}
-
-char *MysqlDatabase::vprepare(const char *format, va_list args)
+const char *MysqlDatabase::vprepare(const char *format, va_list args)
 {
   string strFormat = format;
+  string strResult;
+  char *p;
   size_t pos;
+
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
   pos = 0;
   while ( (pos = strFormat.find("%s", pos)) != string::npos )
     strFormat.replace(pos++, 2, "%q");
 
-  //  RAND() is the mysql form of RANDOM()
-  pos = 0;
-  while ( (pos = strFormat.find("RANDOM()", pos)) != string::npos )
+  p = mysql_vmprintf(strFormat.c_str(), args);
+  if ( p )
   {
-    strFormat.replace(pos++, 8, "RAND()");
-    pos += 6;
+    strResult = p;
+    free(p);
+
+    //  RAND() is the mysql form of RANDOM()
+    pos = 0;
+    CLog::Log(LOGDEBUG,"Looking for RANDOM() in %s", strResult.c_str());
+    while ( (pos = strResult.find("RANDOM()", pos)) != string::npos )
+    {
+      CLog::Log(LOGDEBUG,"Found RANDOM()");
+      strResult.replace(pos++, 8, "RAND()");
+      pos += 6;
+    }
   }
 
-  return mysql_vmprintf(strFormat.c_str(), args);
+  return strResult.c_str();
 }
 
 /* vsprintf() functionality is based on sqlite3.c functions */
