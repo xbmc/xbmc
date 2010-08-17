@@ -46,6 +46,8 @@ namespace MathUtils
       __asm
       {
         fld x
+        fadd st, st (0)
+        fadd 0.5f
         fistpl i
       }
       return i;
@@ -57,8 +59,10 @@ namespace MathUtils
       int32_t i;
       __asm__ __volatile__ (
         "fld %1\n"
+        "fadd %%st\n"
+        "fadd %%st(1)\n"
         "fistpl %0\n"
-        : "=m"(i) : "t"(x)
+        : "=m"(i) : "u"(0.5f), "t"(x) : "st"
       );
       return i;
 
