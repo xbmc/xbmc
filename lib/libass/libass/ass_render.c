@@ -22,30 +22,14 @@
 
 #include <assert.h>
 #include <math.h>
-#include <inttypes.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_STROKER_H
-#include FT_GLYPH_H
-#include FT_SYNTHESIS_H
 
-#include "ass.h"
-#include "ass_font.h"
-#include "ass_bitmap.h"
-#include "ass_cache.h"
-#include "ass_utils.h"
-#include "ass_fontconfig.h"
-#include "ass_library.h"
-#include "ass_drawing.h"
 #include "ass_render.h"
 #include "ass_parse.h"
 
 #define MAX_GLYPHS_INITIAL 1024
 #define MAX_LINES_INITIAL 64
 #define SUBPIXEL_MASK 63
-#define SUBPIXEL_ACCURACY 7    // d6 mask for subpixel accuracy adjustment
-#define GLYPH_CACHE_MAX 1000
-#define BITMAP_CACHE_MAX_SIZE 50 * 1048576
+#define SUBPIXEL_ACCURACY 7
 
 static void ass_lazy_track_init(ASS_Renderer *render_priv)
 {
@@ -119,8 +103,7 @@ ASS_Renderer *ass_renderer_init(ASS_Library *library)
 
     priv->text_info.max_glyphs = MAX_GLYPHS_INITIAL;
     priv->text_info.max_lines = MAX_LINES_INITIAL;
-    priv->text_info.glyphs =
-        calloc(MAX_GLYPHS_INITIAL, sizeof(GlyphInfo));
+    priv->text_info.glyphs = calloc(MAX_GLYPHS_INITIAL, sizeof(GlyphInfo));
     priv->text_info.lines = calloc(MAX_LINES_INITIAL, sizeof(LineInfo));
 
     priv->settings.font_size_coeff = 1.;
@@ -132,14 +115,6 @@ ASS_Renderer *ass_renderer_init(ASS_Library *library)
         ass_msg(library, MSGL_ERR, "Init failed");
 
     return priv;
-}
-
-void ass_set_cache_limits(ASS_Renderer *render_priv, int glyph_max,
-                          int bitmap_max)
-{
-    render_priv->cache.glyph_max = glyph_max ? glyph_max : GLYPH_CACHE_MAX;
-    render_priv->cache.bitmap_max_size = bitmap_max ? 1048576 * bitmap_max :
-                                         BITMAP_CACHE_MAX_SIZE;
 }
 
 static void free_list_clear(ASS_Renderer *render_priv)
@@ -156,8 +131,6 @@ static void free_list_clear(ASS_Renderer *render_priv)
     }
 }
 
-static void ass_free_images(ASS_Image *img);
-
 void ass_renderer_done(ASS_Renderer *render_priv)
 {
     ass_font_cache_done(render_priv->cache.font_cache);
@@ -172,14 +145,13 @@ void ass_renderer_done(ASS_Renderer *render_priv)
         FT_Stroker_Done(render_priv->state.stroker);
         render_priv->state.stroker = 0;
     }
-    if (render_priv && render_priv->ftlibrary)
+    if (render_priv->ftlibrary)
         FT_Done_FreeType(render_priv->ftlibrary);
-    if (render_priv && render_priv->fontconfig_priv)
+    if (render_priv->fontconfig_priv)
         fontconfig_done(render_priv->fontconfig_priv);
-    if (render_priv && render_priv->synth_priv)
+    if (render_priv->synth_priv)
         ass_synth_done(render_priv->synth_priv);
-    if (render_priv && render_priv->eimg)
-        free(render_priv->eimg);
+    free(render_priv->eimg);
     free(render_priv->text_info.glyphs);
     free(render_priv->text_info.lines);
 
@@ -198,21 +170,85 @@ static ASS_Image *my_draw_bitmap(unsigned char *bitmap, int bitmap_w,
                                  int bitmap_h, int stride, int dst_x,
                                  int dst_y, uint32_t color)
 {
-    ASS_Image *img = calloc(1, sizeof(ASS_Image));
+    ASS_Image *img = malloc(sizeof(ASS_Image));
 
-    img->w = bitmap_w;
-    img->h = bitmap_h;
-    img->stride = stride;
-    img->bitmap = bitmap;
-    img->color = color;
-    img->dst_x = dst_x;
-    img->dst_y = dst_y;
+    if (img) {
+        img->w = bitmap_w;
+        img->h = bitmap_h;
+        img->stride = stride;
+        img->bitmap = bitmap;
+        img->color = color;
+        img->dst_x = dst_x;
+        img->dst_y = dst_y;
+    }
 
     return img;
 }
 
-static double x2scr_pos(ASS_Renderer *render_priv, double x);
-static double y2scr_pos(ASS_Renderer *render_priv, double y);
+/**
+ * \brief Mapping between script and screen coordinates
+ */
+static double x2scr(ASS_Renderer *render_priv, double x)
+{
+    return x * render_priv->orig_width_nocrop / render_priv->font_scale_x /
+        render_priv->track->PlayResX +
+        FFMAX(render_priv->settings.left_margin, 0);
+}
+static double x2scr_pos(ASS_Renderer *render_priv, double x)
+{
+    return x * render_priv->orig_width / render_priv->font_scale_x / render_priv->track->PlayResX +
+        render_priv->settings.left_margin;
+}
+static double x2scr_scaled(ASS_Renderer *render_priv, double x)
+{
+    return x * render_priv->orig_width_nocrop /
+        render_priv->track->PlayResX +
+        FFMAX(render_priv->settings.left_margin, 0);
+}
+static double x2scr_pos_scaled(ASS_Renderer *render_priv, double x)
+{
+    return x * render_priv->orig_width / render_priv->track->PlayResX +
+        render_priv->settings.left_margin;
+}
+/**
+ * \brief Mapping between script and screen coordinates
+ */
+static double y2scr(ASS_Renderer *render_priv, double y)
+{
+    return y * render_priv->orig_height_nocrop /
+        render_priv->track->PlayResY +
+        FFMAX(render_priv->settings.top_margin, 0);
+}
+static double y2scr_pos(ASS_Renderer *render_priv, double y)
+{
+    return y * render_priv->orig_height / render_priv->track->PlayResY +
+        render_priv->settings.top_margin;
+}
+
+// the same for toptitles
+static double y2scr_top(ASS_Renderer *render_priv, double y)
+{
+    if (render_priv->settings.use_margins)
+        return y * render_priv->orig_height_nocrop /
+            render_priv->track->PlayResY;
+    else
+        return y * render_priv->orig_height_nocrop /
+            render_priv->track->PlayResY +
+            FFMAX(render_priv->settings.top_margin, 0);
+}
+// the same for subtitles
+static double y2scr_sub(ASS_Renderer *render_priv, double y)
+{
+    if (render_priv->settings.use_margins)
+        return y * render_priv->orig_height_nocrop /
+            render_priv->track->PlayResY +
+            FFMAX(render_priv->settings.top_margin, 0)
+            + FFMAX(render_priv->settings.bottom_margin, 0);
+    else
+        return y * render_priv->orig_height_nocrop /
+            render_priv->track->PlayResY +
+            FFMAX(render_priv->settings.top_margin, 0);
+}
 
 /*
  * \brief Convert bitmap glyphs into ASS_Image list with inverse clipping
@@ -240,9 +276,9 @@ static ASS_Image **render_glyph_i(ASS_Renderer *render_priv,
     dst_y += bm->top;
 
     // we still need to clip against screen boundaries
-    zx = x2scr_pos(render_priv, 0);
+    zx = x2scr_pos_scaled(render_priv, 0);
     zy = y2scr_pos(render_priv, 0);
-    sx = x2scr_pos(render_priv, render_priv->track->PlayResX);
+    sx = x2scr_pos_scaled(render_priv, render_priv->track->PlayResX);
     sy = y2scr_pos(render_priv, render_priv->track->PlayResY);
 
     x0 = 0;
@@ -297,6 +333,7 @@ static ASS_Image **render_glyph_i(ASS_Renderer *render_priv,
             img = my_draw_bitmap(bm->buffer + r[j].y0 * bm->w + r[j].x0,
                 lbrk - r[j].x0, r[j].y1 - r[j].y0,
                 bm->w, dst_x + r[j].x0, dst_y + r[j].y0, color);
+            if (!img) break;
             *tail = img;
             tail = &img->next;
         }
@@ -305,6 +342,7 @@ static ASS_Image **render_glyph_i(ASS_Renderer *render_priv,
             img = my_draw_bitmap(bm->buffer + r[j].y0 * bm->w + lbrk,
                 r[j].x1 - lbrk, r[j].y1 - r[j].y0,
                 bm->w, dst_x + lbrk, dst_y + r[j].y0, color2);
+            if (!img) break;
             *tail = img;
             tail = &img->next;
         }
@@ -386,6 +424,7 @@ render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
         img = my_draw_bitmap(bm->buffer + bm->w * b_y0 + b_x0,
                              brk - b_x0, b_y1 - b_y0, bm->w,
                              dst_x + b_x0, dst_y + b_y0, color);
+        if (!img) return tail;
         *tail = img;
         tail = &img->next;
     }
@@ -395,6 +434,7 @@ render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
         img = my_draw_bitmap(bm->buffer + bm->w * b_y0 + brk,
                              b_x1 - brk, b_y1 - b_y0, bm->w,
                              dst_x + brk, dst_y + b_y0, color2);
+        if (!img) return tail;
         *tail = img;
         tail = &img->next;
     }
@@ -466,7 +506,6 @@ render_overlap(ASS_Renderer *render_priv, ASS_Image **last_tail,
     cur_top = top - by;
 
     // Query cache
-    memset(&hk, 0, sizeof(hk));
     hk.a = (*last_tail)->bitmap;
     hk.b = (*tail)->bitmap;
     hk.aw = aw;
@@ -531,23 +570,73 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
     FT_BitmapGlyph clip_bm;
     ASS_Image *cur;
     ASS_Drawing *drawing = render_priv->state.clip_drawing;
+    GlyphHashKey key;
+    GlyphHashValue *val;
     int error;
 
     if (!drawing)
         return;
 
-    // Rasterize it
-    FT_Glyph_Copy((FT_Glyph) drawing->glyph, &glyph);
-    error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
-    if (error) {
-        ass_msg(render_priv->library, MSGL_WARN,
-            "Clip vector rasterization failed: %d. Skipping.", error);
-        goto blend_vector_exit;
-    }
-    clip_bm = (FT_BitmapGlyph) glyph;
-    clip_bm->top = -clip_bm->top;
+    // Try to get mask from cache
+    ass_drawing_hash(drawing);
+    memset(&key, 0, sizeof(key));
+    key.ch = -2;
+    key.drawing_hash = drawing->hash;
+    val = cache_find_glyph(render_priv->cache.glyph_cache, &key);
 
-    assert(clip_bm->bitmap.pitch >= 0);
+    if (val) {
+        clip_bm = (FT_BitmapGlyph) val->glyph;
+    } else {
+        GlyphHashValue v;
+
+        // Not found in cache, parse and rasterize it
+        glyph = (FT_Glyph) *ass_drawing_parse(drawing, 1);
+        if (!glyph) {
+            ass_msg(render_priv->library, MSGL_WARN,
+                    "Clip vector parsing failed. Skipping.");
+            goto blend_vector_error;
+        }
+
+        // We need to translate the clip according to screen borders
+        if (render_priv->settings.left_margin != 0 ||
+            render_priv->settings.top_margin != 0) {
+            FT_Vector trans = {
+                .x = int_to_d6(render_priv->settings.left_margin),
+                .y = -int_to_d6(render_priv->settings.top_margin),
+            };
+            FT_Outline_Translate(&drawing->glyph->outline,
+                                 trans.x, trans.y);
+        }
+
+        // Check glyph bounding box size
+        if (check_glyph_area(render_priv->library, glyph)) {
+            FT_Done_Glyph(glyph);
+            glyph = 0;
+            goto blend_vector_error;
+        }
+
+        ass_msg(render_priv->library, MSGL_DBG2,
+                "Parsed vector clip: scales (%f, %f) string [%s]\n",
+                drawing->scale_x, drawing->scale_y, drawing->text);
+
+        error = FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+        if (error) {
+            ass_msg(render_priv->library, MSGL_WARN,
+                "Clip vector rasterization failed: %d. Skipping.", error);
+            FT_Done_Glyph(glyph);
+            glyph = 0;
+        }
+
+blend_vector_error:
+        clip_bm = (FT_BitmapGlyph) glyph;
+
+        // Add to cache
+        memset(&v, 0, sizeof(v));
+        v.glyph = glyph;
+        cache_add_glyph(render_priv->cache.glyph_cache, &key, &v);
+    }
+
+    if (!clip_bm) goto blend_vector_exit;
 
     // Iterate through bitmaps and blend/clip them
     for (cur = head; cur; cur = cur->next) {
@@ -565,7 +654,7 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
         ah = cur->h;
         as = cur->stride;
         bx = clip_bm->left;
-        by = clip_bm->top;
+        by = -clip_bm->top;
         bw = clip_bm->bitmap.width;
         bh = clip_bm->bitmap.rows;
         bs = clip_bm->bitmap.pitch;
@@ -591,6 +680,7 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
 
             // Allocate new buffer and add to free list
             nbuffer = malloc(as * ah);
+            if (!nbuffer) goto blend_vector_exit;
             free_list_add(render_priv, nbuffer);
 
             // Blend together
@@ -611,6 +701,7 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
 
             // Allocate new buffer and add to free list
             nbuffer = calloc(as, ah);
+            if (!nbuffer) goto blend_vector_exit;
             free_list_add(render_priv, nbuffer);
 
             // Blend together
@@ -624,8 +715,6 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
         cur->bitmap = nbuffer;
     }
 
-    // Free clip vector and its bitmap, we don't need it anymore
-    FT_Done_Glyph(glyph);
 blend_vector_exit:
     ass_drawing_free(render_priv->state.clip_drawing);
     render_priv->state.clip_drawing = 0;
@@ -635,8 +724,7 @@ blend_vector_exit:
  * \brief Convert TextInfo struct to ASS_Image list
  * Splits glyphs in halves when needed (for \kf karaoke).
  */
-static ASS_Image *render_text(ASS_Renderer *render_priv, int dst_x,
-                                int dst_y)
+static ASS_Image *render_text(ASS_Renderer *render_priv, int dst_x, int dst_y)
 {
     int pen_x, pen_y;
     int i;
@@ -733,62 +821,6 @@ static ASS_Image *render_text(ASS_Renderer *render_priv, int dst_x,
     return head;
 }
 
-/**
- * \brief Mapping between script and screen coordinates
- */
-static double x2scr(ASS_Renderer *render_priv, double x)
-{
-    return x * render_priv->orig_width_nocrop /
-        render_priv->track->PlayResX +
-        FFMAX(render_priv->settings.left_margin, 0);
-}
-static double x2scr_pos(ASS_Renderer *render_priv, double x)
-{
-    return x * render_priv->orig_width / render_priv->track->PlayResX +
-        render_priv->settings.left_margin;
-}
-
-/**
- * \brief Mapping between script and screen coordinates
- */
-static double y2scr(ASS_Renderer *render_priv, double y)
-{
-    return y * render_priv->orig_height_nocrop /
-        render_priv->track->PlayResY +
-        FFMAX(render_priv->settings.top_margin, 0);
-}
-static double y2scr_pos(ASS_Renderer *render_priv, double y)
-{
-    return y * render_priv->orig_height / render_priv->track->PlayResY +
-        render_priv->settings.top_margin;
-}
-
-// the same for toptitles
-static double y2scr_top(ASS_Renderer *render_priv, double y)
-{
-    if (render_priv->settings.use_margins)
-        return y * render_priv->orig_height_nocrop /
-            render_priv->track->PlayResY;
-    else
-        return y * render_priv->orig_height_nocrop /
-            render_priv->track->PlayResY +
-            FFMAX(render_priv->settings.top_margin, 0);
-}
-
-// the same for subtitles
-static double y2scr_sub(ASS_Renderer *render_priv, double y)
-{
-    if (render_priv->settings.use_margins)
-        return y * render_priv->orig_height_nocrop /
-            render_priv->track->PlayResY +
-            FFMAX(render_priv->settings.top_margin,
-                  0) + FFMAX(render_priv->settings.bottom_margin, 0);
-    else
-        return y * render_priv->orig_height_nocrop /
-            render_priv->track->PlayResY +
-            FFMAX(render_priv->settings.top_margin, 0);
-}
-
 static void compute_string_bbox(TextInfo *info, DBBox *bbox)
 {
     int i;
@@ -848,8 +880,6 @@ void reset_render_context(ASS_Renderer *render_priv)
     render_priv->state.frz = M_PI * render_priv->state.style->Angle / 180.;
     render_priv->state.fax = render_priv->state.fay = 0.;
     render_priv->state.wrap_style = render_priv->track->WrapStyle;
-
-    // FIXME: does not reset unsupported attributes.
 }
 
 /**
@@ -881,11 +911,10 @@ init_render_context(ASS_Renderer *render_priv, ASS_Event *event)
     render_priv->state.effect_type = EF_NONE;
     render_priv->state.effect_timing = 0;
     render_priv->state.effect_skip_timing = 0;
-    render_priv->state.drawing =
-        ass_drawing_new(render_priv->fontconfig_priv,
-                        render_priv->state.font,
-                        render_priv->settings.hinting,
-                        render_priv->ftlibrary);
+    ass_drawing_free(render_priv->state.drawing);
+    render_priv->state.drawing = ass_drawing_new(render_priv->fontconfig_priv,
+                                                 render_priv->state.font,
+                                                 render_priv->ftlibrary);
 
     apply_transition_effects(render_priv, event);
 }
@@ -899,88 +928,6 @@ static void free_render_context(ASS_Renderer *render_priv)
     render_priv->state.drawing = NULL;
 }
 
-// Calculate the cbox of a series of points
-static void
-get_contour_cbox(FT_BBox *box, FT_Vector *points, int start, int end)
-{
-    int i;
-    box->xMin = box->yMin = INT_MAX;
-    box->xMax = box->yMax = INT_MIN;
-
-    for (i = start; i < end; i++) {
-        box->xMin = (points[i].x < box->xMin) ? points[i].x : box->xMin;
-        box->xMax = (points[i].x > box->xMax) ? points[i].x : box->xMax;
-        box->yMin = (points[i].y < box->yMin) ? points[i].y : box->yMin;
-        box->yMax = (points[i].y > box->yMax) ? points[i].y : box->yMax;
-    }
-}
-
-/**
- * \brief Fix-up stroker result for huge borders by removing the contours from
- * the outline that are harmful.
-*/
-static void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x,
-                                 int border_y)
-{
-    int nc = glyph->outline.n_contours;
-    int begin, stop;
-    char modified = 0;
-    char *valid_cont;
-    int start = 0;
-    int end = -1;
-    FT_BBox *boxes = calloc(nc, sizeof(FT_BBox));
-    int i, j;
-
-    // Create a list of cboxes of the contours
-    for (i = 0; i < nc; i++) {
-        start = end + 1;
-        end = glyph->outline.contours[i];
-        get_contour_cbox(&boxes[i], glyph->outline.points, start, end);
-    }
-
-    // if a) contour's cbox is contained in another contours cbox
-    //    b) contour's height or width is smaller than the border*2
-    // the contour can be safely removed.
-    valid_cont = calloc(1, nc);
-    for (i = 0; i < nc; i++) {
-        valid_cont[i] = 1;
-        for (j = 0; j < nc; j++) {
-            if (i == j)
-                continue;
-            if (boxes[i].xMin >= boxes[j].xMin &&
-                boxes[i].xMax <= boxes[j].xMax &&
-                boxes[i].yMin >= boxes[j].yMin &&
-                boxes[i].yMax <= boxes[j].yMax) {
-                int width = boxes[i].xMax - boxes[i].xMin;
-                int height = boxes[i].yMax - boxes[i].yMin;
-                if (width < border_x * 2 || height < border_y * 2) {
-                    valid_cont[i] = 0;
-                    modified = 1;
-                    break;
-                }
-            }
-        }
-    }
-
-    // Zero-out contours that can be removed; much simpler than copying
-    if (modified) {
-        for (i = 0; i < nc; i++) {
-            if (valid_cont[i])
-                continue;
-            begin = (i == 0) ? 0 : glyph->outline.contours[i - 1] + 1;
-            stop = glyph->outline.contours[i];
-            for (j = begin; j <= stop; j++) {
-                glyph->outline.points[j].x = 0;
-                glyph->outline.points[j].y = 0;
-                glyph->outline.tags[j] = 0;
-            }
-        }
-    }
-
-    free(boxes);
-    free(valid_cont);
-}
-
 /*
  * Replace the outline of a glyph by a contour which makes up a simple
  * opaque rectangle.
@@ -992,8 +939,7 @@ static void draw_opaque_box(ASS_Renderer *render_priv, uint32_t ch,
     int i;
     int adv = d16_to_d6(glyph->advance.x);
     double scale_y = render_priv->state.scale_y;
-    double scale_x = render_priv->state.scale_x
-                     * render_priv->font_scale_x;
+    double scale_x = render_priv->state.scale_x;
     FT_OutlineGlyph og = (FT_OutlineGlyph) glyph;
     FT_Outline *ol;
     FT_Vector points[4];
@@ -1086,6 +1032,38 @@ static void stroke_outline_glyph(ASS_Renderer *render_priv,
 }
 
 /**
+ * \brief Prepare glyph hash
+ */
+static void
+fill_glyph_hash(ASS_Renderer *priv, GlyphHashKey *key,
+                ASS_Drawing *drawing, uint32_t ch)
+{
+    if (drawing->hash) {
+        key->scale_x = double_to_d16(priv->state.scale_x);
+        key->scale_y = double_to_d16(priv->state.scale_y);
+        key->outline.x = priv->state.border_x * 0xFFFF;
+        key->outline.y = priv->state.border_y * 0xFFFF;
+        key->border_style = priv->state.style->BorderStyle;
+        key->drawing_hash = drawing->hash;
+        // not very clean, but works
+        key->size = drawing->scale;
+        key->ch = -1;
+    } else {
+        key->font = priv->state.font;
+        key->size = priv->state.font_size;
+        key->ch = ch;
+        key->bold = priv->state.bold;
+        key->italic = priv->state.italic;
+        key->scale_x = double_to_d16(priv->state.scale_x);
+        key->scale_y = double_to_d16(priv->state.scale_y);
+        key->outline.x = priv->state.border_x * 0xFFFF;
+        key->outline.y = priv->state.border_y * 0xFFFF;
+        key->flags = priv->state.flags;
+        key->border_style = priv->state.style->BorderStyle;
+    }
+}
+
+/**
  * \brief Get normal and outline (border) glyphs
  * \param symbol ucs4 char
  * \param info out: struct filled with extracted data
@@ -1100,35 +1078,15 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
 {
     GlyphHashValue *val;
     GlyphHashKey key;
-    memset(&key, 0, sizeof(key));
 
-    if (drawing->hash) {
-        key.scale_x = double_to_d16(render_priv->state.scale_x);
-        key.scale_y = double_to_d16(render_priv->state.scale_y);
-        key.outline.x = render_priv->state.border_x * 0xFFFF;
-        key.outline.y = render_priv->state.border_y * 0xFFFF;
-        key.border_style = render_priv->state.style->BorderStyle;
-        key.drawing_hash = drawing->hash;
-    } else {
-        key.font = render_priv->state.font;
-        key.size = render_priv->state.font_size;
-        key.ch = symbol;
-        key.bold = render_priv->state.bold;
-        key.italic = render_priv->state.italic;
-        key.scale_x = double_to_d16(render_priv->state.scale_x);
-        key.scale_y = double_to_d16(render_priv->state.scale_y);
-        key.outline.x = render_priv->state.border_x * 0xFFFF;
-        key.outline.y = render_priv->state.border_y * 0xFFFF;
-        key.flags = render_priv->state.flags;
-        key.border_style = render_priv->state.style->BorderStyle;
-    }
+    memset(&key, 0, sizeof(key));
     memset(info, 0, sizeof(GlyphInfo));
 
+    fill_glyph_hash(render_priv, &key, drawing, symbol);
     val = cache_find_glyph(render_priv->cache.glyph_cache, &key);
     if (val) {
-        FT_Glyph_Copy(val->glyph, &info->glyph);
-        if (val->outline_glyph)
-            FT_Glyph_Copy(val->outline_glyph, &info->outline_glyph);
+        info->glyph = val->glyph;
+        info->outline_glyph = val->outline_glyph;
         info->bbox = val->bbox_scaled;
         info->advance.x = val->advance.x;
         info->advance.y = val->advance.y;
@@ -1141,7 +1099,7 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
         if (drawing->hash) {
             if(!ass_drawing_parse(drawing, 0))
                 return;
-            FT_Glyph_Copy((FT_Glyph) drawing->glyph, &info->glyph);
+            info->glyph = (FT_Glyph) drawing->glyph;
         } else {
             info->glyph =
                 ass_font_get_glyph(render_priv->fontconfig_priv,
@@ -1151,6 +1109,7 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
         }
         if (!info->glyph)
             return;
+
         info->advance.x = d16_to_d6(info->glyph->advance.x);
         info->advance.y = d16_to_d6(info->glyph->advance.y);
         FT_Glyph_Get_CBox(info->glyph, FT_GLYPH_BBOX_SUBPIXELS, &info->bbox);
@@ -1178,9 +1137,8 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
         }
 
         memset(&v, 0, sizeof(v));
-        FT_Glyph_Copy(info->glyph, &v.glyph);
-        if (info->outline_glyph)
-            FT_Glyph_Copy(info->outline_glyph, &v.outline_glyph);
+        v.glyph = info->glyph;
+        v.outline_glyph = info->outline_glyph;
         v.advance = info->advance;
         v.bbox_scaled = info->bbox;
         if (drawing->hash) {
@@ -1191,10 +1149,81 @@ get_outline_glyph(ASS_Renderer *render_priv, int symbol, GlyphInfo *info,
     }
 }
 
-static void transform_3d(FT_Vector shift, FT_Glyph *glyph,
-                         FT_Glyph *glyph2, double frx, double fry,
-                         double frz, double fax, double fay, double scale,
-                         int yshift);
+/**
+ * \brief Apply transformation to outline points of a glyph
+ * Applies rotations given by frx, fry and frz and projects the points back
+ * onto the screen plane.
+ */
+static void
+transform_3d_points(FT_Vector shift, FT_Glyph glyph, double frx, double fry,
+                    double frz, double fax, double fay, double scale,
+                    int yshift)
+{
+    double sx = sin(frx);
+    double sy = sin(fry);
+    double sz = sin(frz);
+    double cx = cos(frx);
+    double cy = cos(fry);
+    double cz = cos(frz);
+    FT_Outline *outline = &((FT_OutlineGlyph) glyph)->outline;
+    FT_Vector *p = outline->points;
+    double x, y, z, xx, yy, zz;
+    int i, dist;
+
+    dist = 20000 * scale;
+    for (i = 0; i < outline->n_points; i++) {
+        x = (double) p[i].x + shift.x + (fax * (yshift - p[i].y));
+        y = (double) p[i].y + shift.y + (-fay * p[i].x);
+        z = 0.;
+
+        xx = x * cz + y * sz;
+        yy = -(x * sz - y * cz);
+        zz = z;
+
+        x = xx;
+        y = yy * cx + zz * sx;
+        z = yy * sx - zz * cx;
+
+        xx = x * cy + z * sy;
+        yy = y;
+        zz = x * sy - z * cy;
+
+        zz = FFMAX(zz, 1000 - dist);
+
+        x = (xx * dist) / (zz + dist);
+        y = (yy * dist) / (zz + dist);
+        p[i].x = x - shift.x + 0.5;
+        p[i].y = y - shift.y + 0.5;
+    }
+}
+
+/**
+ * \brief Apply 3d transformation to several objects
+ * \param shift FreeType vector
+ * \param glyph FreeType glyph
+ * \param glyph2 FreeType glyph
+ * \param frx x-axis rotation angle
+ * \param fry y-axis rotation angle
+ * \param frz z-axis rotation angle
+ * Rotates both glyphs by frx, fry and frz. Shift vector is added before rotation and subtracted after it.
+ */
+static void
+transform_3d(FT_Vector shift, FT_Glyph *glyph, FT_Glyph *glyph2,
+             double frx, double fry, double frz, double fax, double fay,
+             double scale, int yshift)
+{
+    frx = -frx;
+    frz = -frz;
+    if (frx != 0. || fry != 0. || frz != 0. || fax != 0. || fay != 0.) {
+        if (glyph && *glyph)
+            transform_3d_points(shift, *glyph, frx, fry, frz,
+                                fax, fay, scale, yshift);
+
+        if (glyph2 && *glyph2)
+            transform_3d_points(shift, *glyph2, frx, fry, frz,
+                                fax, fay, scale, yshift);
+    }
+}
 
 /**
  * \brief Get bitmaps for a glyph
@@ -1224,38 +1253,48 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
         info->bm = info->bm_o = info->bm_s = 0;
         if (info->glyph && info->symbol != '\n' && info->symbol != 0
             && !info->skip) {
+            FT_Glyph glyph;
+            FT_Glyph outline;
+            double scale_x = render_priv->font_scale_x;
+
+            FT_Glyph_Copy(info->glyph, &glyph);
+            FT_Glyph_Copy(info->outline_glyph, &outline);
             // calculating rotation shift vector (from rotation origin to the glyph basepoint)
-            shift.x = info->hash_key.shift_x;
-            shift.y = info->hash_key.shift_y;
-            fax_scaled = info->fax * render_priv->font_scale_x *
+            shift.x = key->shift_x;
+            shift.y = key->shift_y;
+            fax_scaled = info->fax *
                          render_priv->state.scale_x;
             fay_scaled = info->fay * render_priv->state.scale_y;
             // apply rotation
-            transform_3d(shift, &info->glyph, &info->outline_glyph,
+            transform_3d(shift, &glyph, &outline,
                          info->frx, info->fry, info->frz, fax_scaled,
                          fay_scaled, render_priv->font_scale, info->asc);
 
-            // subpixel shift
-            if (info->glyph)
-                FT_Outline_Translate(
-                    &((FT_OutlineGlyph) info->glyph)->outline,
-                    info->hash_key.advance.x,
-                    -info->hash_key.advance.y);
-            if (info->outline_glyph)
-                FT_Outline_Translate(
-                    &((FT_OutlineGlyph) info->outline_glyph)->outline,
-                    info->hash_key.advance.x,
-                    -info->hash_key.advance.y);
+            // PAR correction scaling
+            FT_Matrix m = { double_to_d16(scale_x), 0,
+                            0, double_to_d16(1.0) };
 
+            // subpixel shift
+            if (glyph) {
+                FT_Outline *outl = &((FT_OutlineGlyph) glyph)->outline;
+                if (scale_x != 1.0)
+                    FT_Outline_Transform(outl, &m);
+                FT_Outline_Translate(outl, key->advance.x, -key->advance.y);
+            }
+            if (outline) {
+                FT_Outline *outl = &((FT_OutlineGlyph) outline)->outline;
+                if (scale_x != 1.0)
+                    FT_Outline_Transform(outl, &m);
+                FT_Outline_Translate(outl, key->advance.x, -key->advance.y);
+            }
             // render glyph
             error = glyph_to_bitmap(render_priv->library,
                                     render_priv->synth_priv,
-                                    info->glyph, info->outline_glyph,
+                                    glyph, outline,
                                     &info->bm, &info->bm_o,
                                     &info->bm_s, info->be,
                                     info->blur * render_priv->border_scale,
-                                    info->hash_key.shadow_offset,
-                                    info->hash_key.border_style);
+                                    key->shadow_offset, key->border_style);
             if (error)
                 info->symbol = 0;
 
@@ -1263,15 +1302,12 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
             hash_val.bm_o = info->bm_o;
             hash_val.bm = info->bm;
             hash_val.bm_s = info->bm_s;
-            cache_add_bitmap(render_priv->cache.bitmap_cache,
-                             &(info->hash_key), &hash_val);
+            cache_add_bitmap(render_priv->cache.bitmap_cache, key, &hash_val);
+
+            FT_Done_Glyph(glyph);
+            FT_Done_Glyph(outline);
         }
     }
-    // deallocate glyphs
-    if (info->glyph)
-        FT_Done_Glyph(info->glyph);
-    if (info->outline_glyph)
-        FT_Done_Glyph(info->outline_glyph);
 }
 
 /**
@@ -1384,7 +1420,7 @@ static void trim_whitespace(ASS_Renderer *render_priv)
  * the difference in lengths between this two lines.
  * The result may not be optimal, but usually is good enough.
  *
- * FIXME: implement style 0 and 3 correctly, add support for style 1
+ * FIXME: implement style 0 and 3 correctly
  */
 static void
 wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
@@ -1654,81 +1690,42 @@ static void get_base_point(DBBox *bbox, int alignment, double *bx, double *by)
 }
 
 /**
- * \brief Apply transformation to outline points of a glyph
- * Applies rotations given by frx, fry and frz and projects the points back
- * onto the screen plane.
+ * Prepare bitmap hash key of a glyph
  */
 static void
-transform_3d_points(FT_Vector shift, FT_Glyph glyph, double frx, double fry,
-                    double frz, double fax, double fay, double scale,
-                    int yshift)
+fill_bitmap_hash(ASS_Renderer *priv, BitmapHashKey *hash_key,
+                 ASS_Drawing *drawing, FT_Vector pen, uint32_t code)
 {
-    double sx = sin(frx);
-    double sy = sin(fry);
-    double sz = sin(frz);
-    double cx = cos(frx);
-    double cy = cos(fry);
-    double cz = cos(frz);
-    FT_Outline *outline = &((FT_OutlineGlyph) glyph)->outline;
-    FT_Vector *p = outline->points;
-    double x, y, z, xx, yy, zz;
-    int i, dist;
-
-    dist = 20000 * scale;
-    for (i = 0; i < outline->n_points; i++) {
-        x = (double) p[i].x + shift.x + (fax * (yshift - p[i].y));
-        y = (double) p[i].y + shift.y + (-fay * p[i].x);
-        z = 0.;
-
-        xx = x * cz + y * sz;
-        yy = -(x * sz - y * cz);
-        zz = z;
-
-        x = xx;
-        y = yy * cx + zz * sx;
-        z = yy * sx - zz * cx;
-
-        xx = x * cy + z * sy;
-        yy = y;
-        zz = x * sy - z * cy;
-
-        zz = FFMAX(zz, 1000 - dist);
-
-        x = (xx * dist) / (zz + dist);
-        y = (yy * dist) / (zz + dist);
-        p[i].x = x - shift.x + 0.5;
-        p[i].y = y - shift.y + 0.5;
+    if (!drawing->hash) {
+        hash_key->font = priv->state.font;
+        hash_key->size = priv->state.font_size;
+        hash_key->bold = priv->state.bold;
+        hash_key->italic = priv->state.italic;
+    } else {
+        hash_key->drawing_hash = drawing->hash;
+        hash_key->size = drawing->scale;
     }
+    hash_key->ch = code;
+    hash_key->outline.x = double_to_d16(priv->state.border_x);
+    hash_key->outline.y = double_to_d16(priv->state.border_y);
+    hash_key->scale_x = double_to_d16(priv->state.scale_x);
+    hash_key->scale_y = double_to_d16(priv->state.scale_y);
+    hash_key->frx = rot_key(priv->state.frx);
+    hash_key->fry = rot_key(priv->state.fry);
+    hash_key->frz = rot_key(priv->state.frz);
+    hash_key->fax = double_to_d16(priv->state.fax);
+    hash_key->fay = double_to_d16(priv->state.fay);
+    hash_key->be = priv->state.be;
+    hash_key->blur = priv->state.blur;
+    hash_key->border_style = priv->state.style->BorderStyle;
+    hash_key->shadow_offset.x = double_to_d6(
+            priv->state.shadow_x * priv->border_scale -
+            (int) (priv->state.shadow_x * priv->border_scale));
+    hash_key->shadow_offset.y = double_to_d6(
+            priv->state.shadow_y * priv->border_scale -
+            (int) (priv->state.shadow_y * priv->border_scale));
+    hash_key->flags = priv->state.flags;
 }
-
-/**
- * \brief Apply 3d transformation to several objects
- * \param shift FreeType vector
- * \param glyph FreeType glyph
- * \param glyph2 FreeType glyph
- * \param frx x-axis rotation angle
- * \param fry y-axis rotation angle
- * \param frz z-axis rotation angle
- * Rotates both glyphs by frx, fry and frz. Shift vector is added before rotation and subtracted after it.
- */
-static void
-transform_3d(FT_Vector shift, FT_Glyph *glyph, FT_Glyph *glyph2,
-             double frx, double fry, double frz, double fax, double fay,
-             double scale, int yshift)
-{
-    frx = -frx;
-    frz = -frz;
-    if (frx != 0. || fry != 0. || frz != 0. || fax != 0. || fay != 0.) {
-        if (glyph && *glyph)
-            transform_3d_points(shift, *glyph, frx, fry, frz,
-                                fax, fay, scale, yshift);
-
-        if (glyph2 && *glyph2)
-            transform_3d_points(shift, *glyph2, frx, fry, frz,
-                                fax, fay, scale, yshift);
-    }
-}
-
 
 /**
  * \brief Main ass rendering function, glues everything together
@@ -1754,6 +1751,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
     double device_x = 0;
     double device_y = 0;
     TextInfo *text_info = &render_priv->text_info;
+    GlyphInfo *glyphs = render_priv->text_info.glyphs;
     ASS_Drawing *drawing;
 
     if (event->Style >= render_priv->track->n_styles) {
@@ -1787,7 +1785,6 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         // Parse drawing
         if (drawing->i) {
             drawing->scale_x = render_priv->state.scale_x *
-                                     render_priv->font_scale_x *
                                      render_priv->font_scale;
             drawing->scale_y = render_priv->state.scale_y *
                                      render_priv->font_scale;
@@ -1808,7 +1805,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         if (text_info->length >= text_info->max_glyphs) {
             // Raise maximum number of glyphs
             text_info->max_glyphs *= 2;
-            text_info->glyphs =
+            text_info->glyphs = glyphs =
                 realloc(text_info->glyphs,
                         sizeof(GlyphInfo) * text_info->max_glyphs);
         }
@@ -1819,139 +1816,82 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
             delta =
                 ass_font_get_kerning(render_priv->state.font, previous,
                                      code);
-            pen.x += delta.x * render_priv->state.scale_x
-                     * render_priv->font_scale_x;
-            pen.y += delta.y * render_priv->state.scale_y
-                     * render_priv->font_scale_x;
+            pen.x += delta.x * render_priv->state.scale_x;
+            pen.y += delta.y * render_priv->state.scale_y;
         }
 
         ass_font_set_transform(render_priv->state.font,
-                               render_priv->state.scale_x *
-                               render_priv->font_scale_x,
+                               render_priv->state.scale_x,
                                render_priv->state.scale_y, NULL);
 
         get_outline_glyph(render_priv, code,
-                          text_info->glyphs + text_info->length, drawing);
+                          glyphs + text_info->length, drawing);
 
         // Add additional space after italic to non-italic style changes
         if (text_info->length &&
-            text_info->glyphs[text_info->length - 1].hash_key.italic &&
+            glyphs[text_info->length - 1].hash_key.italic &&
             !render_priv->state.italic) {
             int back = text_info->length - 1;
-            GlyphInfo *og = &text_info->glyphs[back];
+            GlyphInfo *og = &glyphs[back];
             while (back && og->bbox.xMax - og->bbox.xMin == 0
                    && og->hash_key.italic)
-                og = &text_info->glyphs[--back];
+                og = &glyphs[--back];
             if (og->bbox.xMax > og->advance.x) {
                 // The FreeType oblique slants by 6/16
                 pen.x += og->bbox.yMax * 0.375;
             }
         }
 
-        text_info->glyphs[text_info->length].pos.x = pen.x;
-        text_info->glyphs[text_info->length].pos.y = pen.y;
+        glyphs[text_info->length].pos.x = pen.x;
+        glyphs[text_info->length].pos.y = pen.y;
 
-        pen.x += text_info->glyphs[text_info->length].advance.x;
+        pen.x += glyphs[text_info->length].advance.x;
         pen.x += double_to_d6(render_priv->state.hspacing *
                               render_priv->font_scale
                               * render_priv->state.scale_x);
-        pen.y += text_info->glyphs[text_info->length].advance.y;
+        pen.y += glyphs[text_info->length].advance.y;
         pen.y += (render_priv->state.fay * render_priv->state.scale_y) *
-                 text_info->glyphs[text_info->length].advance.x;
+                 glyphs[text_info->length].advance.x;
 
         previous = code;
 
-        text_info->glyphs[text_info->length].symbol = code;
-        text_info->glyphs[text_info->length].linebreak = 0;
+        glyphs[text_info->length].symbol = code;
+        glyphs[text_info->length].linebreak = 0;
         for (i = 0; i < 4; ++i) {
             uint32_t clr = render_priv->state.c[i];
             change_alpha(&clr,
                          mult_alpha(_a(clr), render_priv->state.fade), 1.);
-            text_info->glyphs[text_info->length].c[i] = clr;
+            glyphs[text_info->length].c[i] = clr;
         }
-        text_info->glyphs[text_info->length].effect_type =
-            render_priv->state.effect_type;
-        text_info->glyphs[text_info->length].effect_timing =
+        glyphs[text_info->length].effect_type = render_priv->state.effect_type;
+        glyphs[text_info->length].effect_timing =
             render_priv->state.effect_timing;
-        text_info->glyphs[text_info->length].effect_skip_timing =
+        glyphs[text_info->length].effect_skip_timing =
             render_priv->state.effect_skip_timing;
-        text_info->glyphs[text_info->length].be = render_priv->state.be;
-        text_info->glyphs[text_info->length].blur = render_priv->state.blur;
-        text_info->glyphs[text_info->length].shadow_x =
-            render_priv->state.shadow_x;
-        text_info->glyphs[text_info->length].shadow_y =
-            render_priv->state.shadow_y;
-        text_info->glyphs[text_info->length].frx = render_priv->state.frx;
-        text_info->glyphs[text_info->length].fry = render_priv->state.fry;
-        text_info->glyphs[text_info->length].frz = render_priv->state.frz;
-        text_info->glyphs[text_info->length].fax = render_priv->state.fax;
-        text_info->glyphs[text_info->length].fay = render_priv->state.fay;
+        glyphs[text_info->length].be = render_priv->state.be;
+        glyphs[text_info->length].blur = render_priv->state.blur;
+        glyphs[text_info->length].shadow_x = render_priv->state.shadow_x;
+        glyphs[text_info->length].shadow_y = render_priv->state.shadow_y;
+        glyphs[text_info->length].frx = render_priv->state.frx;
+        glyphs[text_info->length].fry = render_priv->state.fry;
+        glyphs[text_info->length].frz = render_priv->state.frz;
+        glyphs[text_info->length].fax = render_priv->state.fax;
+        glyphs[text_info->length].fay = render_priv->state.fay;
         if (drawing->hash) {
-            text_info->glyphs[text_info->length].asc = drawing->asc;
-            text_info->glyphs[text_info->length].desc = drawing->desc;
+            glyphs[text_info->length].asc = drawing->asc;
+            glyphs[text_info->length].desc = drawing->desc;
         } else {
             ass_font_get_asc_desc(render_priv->state.font, code,
-                                  &text_info->glyphs[text_info->length].asc,
-                                  &text_info->glyphs[text_info->length].desc);
+                                  &glyphs[text_info->length].asc,
+                                  &glyphs[text_info->length].desc);
 
-            text_info->glyphs[text_info->length].asc *=
-                render_priv->state.scale_y;
-            text_info->glyphs[text_info->length].desc *=
-                render_priv->state.scale_y;
+            glyphs[text_info->length].asc *= render_priv->state.scale_y;
+            glyphs[text_info->length].desc *= render_priv->state.scale_y;
         }
 
-        // fill bitmap_hash_key
-        if (!drawing->hash) {
-            text_info->glyphs[text_info->length].hash_key.font =
-                render_priv->state.font;
-            text_info->glyphs[text_info->length].hash_key.size =
-                render_priv->state.font_size;
-            text_info->glyphs[text_info->length].hash_key.bold =
-                render_priv->state.bold;
-            text_info->glyphs[text_info->length].hash_key.italic =
-                render_priv->state.italic;
-        } else
-            text_info->glyphs[text_info->length].hash_key.drawing_hash =
-                drawing->hash;
-        text_info->glyphs[text_info->length].hash_key.ch = code;
-        text_info->glyphs[text_info->length].hash_key.outline.x =
-            double_to_d16(render_priv->state.border_x);
-        text_info->glyphs[text_info->length].hash_key.outline.y =
-            double_to_d16(render_priv->state.border_y);
-        text_info->glyphs[text_info->length].hash_key.scale_x =
-            double_to_d16(render_priv->state.scale_x);
-        text_info->glyphs[text_info->length].hash_key.scale_y =
-            double_to_d16(render_priv->state.scale_y);
-        text_info->glyphs[text_info->length].hash_key.frx =
-            rot_key(render_priv->state.frx);
-        text_info->glyphs[text_info->length].hash_key.fry =
-            rot_key(render_priv->state.fry);
-        text_info->glyphs[text_info->length].hash_key.frz =
-            rot_key(render_priv->state.frz);
-        text_info->glyphs[text_info->length].hash_key.fax =
-            double_to_d16(render_priv->state.fax);
-        text_info->glyphs[text_info->length].hash_key.fay =
-            double_to_d16(render_priv->state.fay);
-        text_info->glyphs[text_info->length].hash_key.advance.x = pen.x;
-        text_info->glyphs[text_info->length].hash_key.advance.y = pen.y;
-        text_info->glyphs[text_info->length].hash_key.be =
-            render_priv->state.be;
-        text_info->glyphs[text_info->length].hash_key.blur =
-            render_priv->state.blur;
-        text_info->glyphs[text_info->length].hash_key.border_style =
-            render_priv->state.style->BorderStyle;
-        text_info->glyphs[text_info->length].hash_key.shadow_offset.x =
-            double_to_d6(
-                render_priv->state.shadow_x * render_priv->border_scale -
-                (int) (render_priv->state.shadow_x *
-                render_priv->border_scale));
-        text_info->glyphs[text_info->length].hash_key.shadow_offset.y =
-            double_to_d6(
-                render_priv->state.shadow_y * render_priv->border_scale -
-                (int) (render_priv->state.shadow_y *
-                render_priv->border_scale));
-        text_info->glyphs[text_info->length].hash_key.flags =
-            render_priv->state.flags;
+        // fill bitmap hash
+        fill_bitmap_hash(render_priv, &glyphs[text_info->length].hash_key,
+                         drawing, pen, code);
 
         text_info->length++;
 
@@ -1964,7 +1904,6 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
             drawing = render_priv->state.drawing =
                 ass_drawing_new(render_priv->fontconfig_priv,
                     render_priv->state.font,
-                    render_priv->settings.hinting,
                     render_priv->ftlibrary);
         }
     }
@@ -1975,6 +1914,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         free_render_context(render_priv);
         return 1;
     }
+
     // depends on glyph x coordinates being monotonous, so it should be done before line wrap
     process_karaoke_effects(render_priv);
 
@@ -1984,14 +1924,11 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
     valign = alignment & 12;
 
     MarginL =
-        (event->MarginL) ? event->MarginL : render_priv->state.style->
-        MarginL;
+        (event->MarginL) ? event->MarginL : render_priv->state.style->MarginL;
     MarginR =
-        (event->MarginR) ? event->MarginR : render_priv->state.style->
-        MarginR;
+        (event->MarginR) ? event->MarginR : render_priv->state.style->MarginR;
     MarginV =
-        (event->MarginV) ? event->MarginV : render_priv->state.style->
-        MarginV;
+        (event->MarginV) ? event->MarginV : render_priv->state.style->MarginV;
 
     if (render_priv->state.evt_type != EVENT_HSCROLL) {
         double max_text_width;
@@ -2009,11 +1946,11 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         last_break = -1;
         for (i = 1; i < text_info->length + 1; ++i) {   // (text_info->length + 1) is the end of the last line
             if ((i == text_info->length)
-                || text_info->glyphs[i].linebreak) {
+                || glyphs[i].linebreak) {
                 double width, shift = 0;
                 GlyphInfo *first_glyph =
-                    text_info->glyphs + last_break + 1;
-                GlyphInfo *last_glyph = text_info->glyphs + i - 1;
+                    glyphs + last_break + 1;
+                GlyphInfo *last_glyph = glyphs + i - 1;
 
                 while (first_glyph < last_glyph && first_glyph->skip)
                     first_glyph++;
@@ -2035,7 +1972,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
                     shift = (max_text_width - width) / 2.0;
                 }
                 for (j = last_break + 1; j < i; ++j) {
-                    text_info->glyphs[j].pos.x += double_to_d6(shift);
+                    glyphs[j].pos.x += double_to_d6(shift);
                 }
                 last_break = i - 1;
             }
@@ -2065,6 +2002,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
                       render_priv->state.scroll_shift) - (bbox.xMax -
                                                           bbox.xMin);
     }
+
     // y coordinate for everything except positioned events
     if (render_priv->state.evt_type == EVENT_NORMAL ||
         render_priv->state.evt_type == EVENT_HSCROLL) {
@@ -2101,6 +2039,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
                       render_priv->state.clip_y1 -
                       render_priv->state.scroll_shift);
     }
+
     // positioned events are totally different
     if (render_priv->state.evt_type == EVENT_POSITIONED) {
         double base_x = 0;
@@ -2113,14 +2052,15 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         device_y =
             y2scr_pos(render_priv, render_priv->state.pos_y) - base_y;
     }
+
     // fix clip coordinates (they depend on alignment)
     if (render_priv->state.evt_type == EVENT_NORMAL ||
         render_priv->state.evt_type == EVENT_HSCROLL ||
         render_priv->state.evt_type == EVENT_VSCROLL) {
         render_priv->state.clip_x0 =
-            x2scr(render_priv, render_priv->state.clip_x0);
+            x2scr_scaled(render_priv, render_priv->state.clip_x0);
         render_priv->state.clip_x1 =
-            x2scr(render_priv, render_priv->state.clip_x1);
+            x2scr_scaled(render_priv, render_priv->state.clip_x1);
         if (valign == VALIGN_TOP) {
             render_priv->state.clip_y0 =
                 y2scr_top(render_priv, render_priv->state.clip_y0);
@@ -2139,14 +2079,15 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         }
     } else if (render_priv->state.evt_type == EVENT_POSITIONED) {
         render_priv->state.clip_x0 =
-            x2scr_pos(render_priv, render_priv->state.clip_x0);
+            x2scr_pos_scaled(render_priv, render_priv->state.clip_x0);
         render_priv->state.clip_x1 =
-            x2scr_pos(render_priv, render_priv->state.clip_x1);
+            x2scr_pos_scaled(render_priv, render_priv->state.clip_x1);
         render_priv->state.clip_y0 =
             y2scr_pos(render_priv, render_priv->state.clip_y0);
         render_priv->state.clip_y1 =
             y2scr_pos(render_priv, render_priv->state.clip_y1);
     }
+
     // calculate rotation parameters
     {
         DVector center;
@@ -2162,7 +2103,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
         }
 
         for (i = 0; i < text_info->length; ++i) {
-            GlyphInfo *info = text_info->glyphs + i;
+            GlyphInfo *info = glyphs + i;
 
             if (info->hash_key.frx || info->hash_key.fry
                 || info->hash_key.frz || info->hash_key.fax
@@ -2178,22 +2119,26 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
     }
 
     // convert glyphs to bitmaps
+    device_x *= render_priv->font_scale_x;
     for (i = 0; i < text_info->length; ++i) {
-        GlyphInfo *g = text_info->glyphs + i;
+        GlyphInfo *g = glyphs + i;
+        g->pos.x *= render_priv->font_scale_x;
         g->hash_key.advance.x =
             double_to_d6(device_x - (int) device_x +
             d6_to_double(g->pos.x & SUBPIXEL_MASK)) & ~SUBPIXEL_ACCURACY;
         g->hash_key.advance.y =
             double_to_d6(device_y - (int) device_y +
             d6_to_double(g->pos.y & SUBPIXEL_MASK)) & ~SUBPIXEL_ACCURACY;
-        get_bitmap_glyph(render_priv, text_info->glyphs + i);
+        get_bitmap_glyph(render_priv, glyphs + i);
     }
 
     memset(event_images, 0, sizeof(*event_images));
     event_images->top = device_y - text_info->lines[0].asc;
     event_images->height = text_info->height;
-    event_images->left = device_x + bbox.xMin + 0.5;
-    event_images->width = bbox.xMax - bbox.xMin + 0.5;
+    event_images->left =
+        (device_x + bbox.xMin * render_priv->font_scale_x) + 0.5;
+    event_images->width =
+        (bbox.xMax - bbox.xMin) * render_priv->font_scale_x + 0.5;
     event_images->detect_collisions = render_priv->state.detect_collisions;
     event_images->shift_direction = (valign == VALIGN_TOP) ? 1 : -1;
     event_images->event = event;
@@ -2208,7 +2153,7 @@ ass_render_event(ASS_Renderer *render_priv, ASS_Event *event,
  * \brief deallocate image list
  * \param img list pointer
  */
-static void ass_free_images(ASS_Image *img)
+void ass_free_images(ASS_Image *img)
 {
     while (img) {
         ASS_Image *next = img->next;
@@ -2217,116 +2162,30 @@ static void ass_free_images(ASS_Image *img)
     }
 }
 
-static void ass_reconfigure(ASS_Renderer *priv)
+/**
+ * \brief Check cache limits and reset cache if they are exceeded
+ */
+static void check_cache_limits(ASS_Renderer *priv, CacheStore *cache)
 {
-    ASS_Settings *settings = &priv->settings;
-
-    priv->render_id++;
-    priv->cache.glyph_cache =
-        ass_glyph_cache_reset(priv->cache.glyph_cache);
-    priv->cache.bitmap_cache =
-        ass_bitmap_cache_reset(priv->cache.bitmap_cache);
-    priv->cache.composite_cache =
-        ass_composite_cache_reset(priv->cache.composite_cache);
-    ass_free_images(priv->prev_images_root);
-    priv->prev_images_root = 0;
-
-    priv->width = settings->frame_width;
-    priv->height = settings->frame_height;
-    priv->orig_width = settings->frame_width - settings->left_margin -
-        settings->right_margin;
-    priv->orig_height = settings->frame_height - settings->top_margin -
-        settings->bottom_margin;
-    priv->orig_width_nocrop =
-        settings->frame_width - FFMAX(settings->left_margin, 0) -
-        FFMAX(settings->right_margin, 0);
-    priv->orig_height_nocrop =
-        settings->frame_height - FFMAX(settings->top_margin, 0) -
-        FFMAX(settings->bottom_margin, 0);
-}
-
-void ass_set_frame_size(ASS_Renderer *priv, int w, int h)
-{
-    if (priv->settings.frame_width != w || priv->settings.frame_height != h) {
-        priv->settings.frame_width = w;
-        priv->settings.frame_height = h;
-        if (priv->settings.aspect == 0.) {
-            priv->settings.aspect = ((double) w) / h;
-            priv->settings.storage_aspect = ((double) w) / h;
-        }
-        ass_reconfigure(priv);
+    if (cache->bitmap_cache->cache_size > cache->bitmap_max_size) {
+        ass_msg(priv->library, MSGL_V,
+                "Hitting hard bitmap cache limit (was: %ld bytes), "
+                "resetting.", (long) cache->bitmap_cache->cache_size);
+        cache->bitmap_cache = ass_bitmap_cache_reset(cache->bitmap_cache);
+        cache->composite_cache = ass_composite_cache_reset(
+            cache->composite_cache);
+        ass_free_images(priv->prev_images_root);
+        priv->prev_images_root = 0;
     }
-}
 
-void ass_set_margins(ASS_Renderer *priv, int t, int b, int l, int r)
-{
-    if (priv->settings.left_margin != l ||
-        priv->settings.right_margin != r ||
-        priv->settings.top_margin != t
-        || priv->settings.bottom_margin != b) {
-        priv->settings.left_margin = l;
-        priv->settings.right_margin = r;
-        priv->settings.top_margin = t;
-        priv->settings.bottom_margin = b;
-        ass_reconfigure(priv);
+    if (cache->glyph_cache->count > cache->glyph_max
+        || cache->glyph_cache->cache_size > cache->bitmap_max_size) {
+        ass_msg(priv->library, MSGL_V,
+            "Hitting hard glyph cache limit (was: %d glyphs, %ld bytes), "
+            "resetting.",
+            cache->glyph_cache->count, (long) cache->glyph_cache->cache_size);
+        cache->glyph_cache = ass_glyph_cache_reset(cache->glyph_cache);
     }
-}
-
-void ass_set_use_margins(ASS_Renderer *priv, int use)
-{
-    priv->settings.use_margins = use;
-}
-
-void ass_set_aspect_ratio(ASS_Renderer *priv, double dar, double sar)
-{
-    if (priv->settings.aspect != dar || priv->settings.storage_aspect != sar) {
-        priv->settings.aspect = dar;
-        priv->settings.storage_aspect = sar;
-        ass_reconfigure(priv);
-    }
-}
-
-void ass_set_font_scale(ASS_Renderer *priv, double font_scale)
-{
-    if (priv->settings.font_size_coeff != font_scale) {
-        priv->settings.font_size_coeff = font_scale;
-        ass_reconfigure(priv);
-    }
-}
-
-void ass_set_hinting(ASS_Renderer *priv, ASS_Hinting ht)
-{
-    if (priv->settings.hinting != ht) {
-        priv->settings.hinting = ht;
-        ass_reconfigure(priv);
-    }
-}
-
-void ass_set_line_spacing(ASS_Renderer *priv, double line_spacing)
-{
-    priv->settings.line_spacing = line_spacing;
-}
-
-void ass_set_fonts(ASS_Renderer *priv, const char *default_font,
-                   const char *default_family, int fc, const char *config,
-                   int update)
-{
-    free(priv->settings.default_font);
-    free(priv->settings.default_family);
-    priv->settings.default_font = default_font ? strdup(default_font) : 0;
-    priv->settings.default_family =
-        default_family ? strdup(default_family) : 0;
-
-    if (priv->fontconfig_priv)
-        fontconfig_done(priv->fontconfig_priv);
-    priv->fontconfig_priv =
-        fontconfig_init(priv->library, priv->ftlibrary, default_family,
-                        default_font, fc, config, update);
-}
-
-int ass_fonts_update(ASS_Renderer *render_priv)
-{
-    return fontconfig_update(render_priv->fontconfig_priv);
 }
 
 /**
@@ -2337,7 +2196,6 @@ ass_start_frame(ASS_Renderer *render_priv, ASS_Track *track,
                 long long now)
 {
     ASS_Settings *settings_priv = &render_priv->settings;
-    CacheStore *cache = &render_priv->cache;
 
     if (!render_priv->settings.frame_width
         && !render_priv->settings.frame_height)
@@ -2375,23 +2233,7 @@ ass_start_frame(ASS_Renderer *render_priv, ASS_Track *track,
     render_priv->prev_images_root = render_priv->images_root;
     render_priv->images_root = 0;
 
-    if (cache->bitmap_cache->cache_size > cache->bitmap_max_size) {
-        ass_msg(render_priv->library, MSGL_V,
-                "Hitting hard bitmap cache limit (was: %ld bytes), "
-                "resetting.", (long) cache->bitmap_cache->cache_size);
-        cache->bitmap_cache = ass_bitmap_cache_reset(cache->bitmap_cache);
-        cache->composite_cache = ass_composite_cache_reset(
-            cache->composite_cache);
-        ass_free_images(render_priv->prev_images_root);
-        render_priv->prev_images_root = 0;
-    }
-
-    if (cache->glyph_cache->count > cache->glyph_max) {
-        ass_msg(render_priv->library, MSGL_V,
-            "Hitting hard glyph cache limit (was: %ld glyphs), resetting.",
-            (long) cache->glyph_cache->count);
-        cache->glyph_cache = ass_glyph_cache_reset(cache->glyph_cache);
-    }
+    check_cache_limits(render_priv, &render_priv->cache);
 
     return 0;
 }

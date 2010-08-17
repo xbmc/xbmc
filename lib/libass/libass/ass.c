@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <assert.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -64,26 +65,22 @@ void ass_free_track(ASS_Track *track)
     int i;
 
     if (track->parser_priv) {
-        if (track->parser_priv->fontname)
-            free(track->parser_priv->fontname);
-        if (track->parser_priv->fontdata)
-            free(track->parser_priv->fontdata);
+        free(track->parser_priv->fontname);
+        free(track->parser_priv->fontdata);
         free(track->parser_priv);
     }
-    if (track->style_format)
-        free(track->style_format);
-    if (track->event_format)
-        free(track->event_format);
+    free(track->style_format);
+    free(track->event_format);
     if (track->styles) {
         for (i = 0; i < track->n_styles; ++i)
             ass_free_style(track, i);
-        free(track->styles);
     }
+    free(track->styles);
     if (track->events) {
         for (i = 0; i < track->n_events; ++i)
             ass_free_event(track, i);
-        free(track->events);
     }
+    free(track->events);
     free(track->name);
     free(track);
 }
@@ -135,23 +132,19 @@ int ass_alloc_event(ASS_Track *track)
 void ass_free_event(ASS_Track *track, int eid)
 {
     ASS_Event *event = track->events + eid;
-    if (event->Name)
-        free(event->Name);
-    if (event->Effect)
-        free(event->Effect);
-    if (event->Text)
-        free(event->Text);
-    if (event->render_priv)
-        free(event->render_priv);
+
+    free(event->Name);
+    free(event->Effect);
+    free(event->Text);
+    free(event->render_priv);
 }
 
 void ass_free_style(ASS_Track *track, int sid)
 {
     ASS_Style *style = track->styles + sid;
-    if (style->Name)
-        free(style->Name);
-    if (style->FontName)
-        free(style->FontName);
+
+    free(style->Name);
+    free(style->FontName);
 }
 
 // ==============================================================================================
@@ -536,12 +529,6 @@ static int process_style(ASS_Track *track, char *str)
         style->Name = strdup("Default");
     if (!style->FontName)
         style->FontName = strdup("Arial");
-    // skip '@' at the start of the font name
-    if (*style->FontName == '@') {
-        p = style->FontName;
-        style->FontName = strdup(p + 1);
-        free(p);
-    }
     free(format);
     return 0;
 
@@ -599,6 +586,7 @@ static int process_events_line(ASS_Track *track, char *str)
     if (!strncmp(str, "Format:", 7)) {
         char *p = str + 7;
         skip_spaces(&p);
+        free(track->event_format);
         track->event_format = strdup(p);
         ass_msg(track->library, MSGL_DBG2, "Event format: %s", track->event_format);
     } else if (!strncmp(str, "Dialogue:", 9)) {
@@ -620,7 +608,7 @@ static int process_events_line(ASS_Track *track, char *str)
 
         process_event_tail(track, event, str, 0);
     } else {
-        ass_msg(track->library, MSGL_V, "Not understood: '%s'", str);
+        ass_msg(track->library, MSGL_V, "Not understood: '%.30s'", str);
     }
     return 0;
 }
@@ -679,12 +667,10 @@ static int decode_font(ASS_Track *track)
     if (track->library->extract_fonts) {
         ass_add_font(track->library, track->parser_priv->fontname,
                      (char *) buf, dsize);
-        buf = 0;
     }
 
-  error_decode_font:
-    if (buf)
-        free(buf);
+error_decode_font:
+    free(buf);
     free(track->parser_priv->fontname);
     free(track->parser_priv->fontdata);
     track->parser_priv->fontname = 0;
@@ -909,6 +895,20 @@ void ass_process_chunk(ASS_Track *track, char *data, int size,
     ass_free_event(track, eid);
     track->n_events--;
     free(str);
+}
+
+/**
+ * \brief Flush buffered events.
+ * \param track track
+*/
+void ass_flush_events(ASS_Track *track)
+{
+    if (track->events) {
+        int eid;
+        for (eid = 0; eid < track->n_events; eid++)
+            ass_free_event(track, eid);
+        track->n_events = 0;
+    }
 }
 
 #ifdef CONFIG_ICONV
