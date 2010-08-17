@@ -601,8 +601,8 @@ static void blend_vector_clip(ASS_Renderer *render_priv,
         if (render_priv->settings.left_margin != 0 ||
             render_priv->settings.top_margin != 0) {
             FT_Vector trans = {
-                .x = int_to_d6(render_priv->settings.left_margin),
-                .y = -int_to_d6(render_priv->settings.top_margin),
+                trans.x = int_to_d6(render_priv->settings.left_margin),
+                trans.y = -int_to_d6(render_priv->settings.top_margin),
             };
             FT_Outline_Translate(&drawing->glyph->outline,
                                  trans.x, trans.y);
@@ -1255,6 +1255,7 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
             && !info->skip) {
             FT_Glyph glyph;
             FT_Glyph outline;
+            FT_Matrix m;
             double scale_x = render_priv->font_scale_x;
 
             FT_Glyph_Copy(info->glyph, &glyph);
@@ -1271,8 +1272,10 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
                          fay_scaled, render_priv->font_scale, info->asc);
 
             // PAR correction scaling
-            FT_Matrix m = { double_to_d16(scale_x), 0,
-                            0, double_to_d16(1.0) };
+            m.xx = double_to_d16(scale_x);
+            m.xy = 0;
+            m.yx = 0;
+            m.yy = double_to_d16(1.0);
 
             // subpixel shift
             if (glyph) {

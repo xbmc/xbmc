@@ -27,7 +27,9 @@
 #include FT_GLYPH_H
 #include FT_TRUETYPE_TABLES_H
 #include FT_OUTLINE_H
+#ifndef _WIN32
 #include <strings.h>
+#endif
 
 #include "ass.h"
 #include "ass_library.h"
@@ -426,6 +428,8 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
     FT_Face face = 0;
     int flags = 0;
     int vertical = font->desc.vertical;
+    FT_Matrix scale;
+    FT_Outline *outl;
 
     if (ch < 0x20)
         return 0;
@@ -454,9 +458,10 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
             face = font->faces[face_idx];
             index = FT_Get_Char_Index(face, ch);
             if (index == 0 && face->num_charmaps > 0) {
+                FT_CharMap cur;
                 ass_msg(font->library, MSGL_WARN,
                     "Glyph 0x%X not found, falling back to first charmap", ch);
-                FT_CharMap cur = face->charmap;
+                cur = face->charmap;
                 FT_Set_Charmap(face, face->charmaps[0]);
                 index = FT_Get_Char_Index(face, ch);
                 FT_Set_Charmap(face, cur);
@@ -520,9 +525,12 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
     }
 
     // Apply scaling and shift
-    FT_Matrix scale = { double_to_d16(font->scale_x), 0, 0,
-                        double_to_d16(font->scale_y) };
-    FT_Outline *outl = &((FT_OutlineGlyph) glyph)->outline;
+    scale.xx = double_to_d16(font->scale_x);
+    scale.xy = 0;
+    scale.yx = 0;
+    scale.yy = double_to_d16(font->scale_y);
+
+    outl = &((FT_OutlineGlyph) glyph)->outline;
     FT_Outline_Transform(outl, &scale);
     FT_Outline_Translate(outl, font->v.x, font->v.y);
     glyph->advance.x *= font->scale_x;
@@ -578,9 +586,9 @@ void ass_font_free(ASS_Font *font)
 static void
 get_contour_cbox(FT_BBox *box, FT_Vector *points, int start, int end)
 {
+    int i;
     box->xMin = box->yMin = INT_MAX;
     box->xMax = box->yMax = INT_MIN;
-    int i;
 
     for (i = start; i <= end; i++) {
         box->xMin = (points[i].x < box->xMin) ? points[i].x : box->xMin;
@@ -639,9 +647,10 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
     // or contained in another contour
     end = -1;
     for (i = 0; i < nc; i++) {
+        int dir;
         start = end + 1;
         end = glyph->outline.contours[i];
-        int dir = get_contour_direction(glyph->outline.points, start, end);
+        dir = get_contour_direction(glyph->outline.points, start, end);
         valid_cont[i] = 1;
         if (dir == inside_direction) {
             for (j = 0; j < nc; j++) {
@@ -669,9 +678,11 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
         check_inside:
         if (dir == inside_direction) {
             FT_BBox box;
+            int width;
+            int height;
             get_contour_cbox(&box, glyph->outline.points, start, end);
-            int width = box.xMax - box.xMin;
-            int height = box.yMax - box.yMin;
+            width = box.xMax - box.xMin;
+            height = box.yMax - box.yMin;
             if (width < border_x * 2 || height < border_y * 2) {
                 valid_cont[i] = 0;
                 modified = 1;
