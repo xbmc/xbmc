@@ -35,7 +35,9 @@ namespace MathUtils
     const float round_to_nearest = 0.5f;
     int i;
 
-#ifndef _LINUX
+#if defined(__SSE2__)
+    return _mm_cvtsd_si32(_mm_set_sd(x));
+#elif !defined(_LINUX)
     __asm
     {
       fld x

@@ -22,6 +22,8 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
+#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
+
 #include "AEStream.h"
 #include "AEUtil.h"
 
@@ -61,15 +63,15 @@ void CAEStream::Initialize()
   if (m_valid)
   {
     Flush();
-    delete[] m_newPacket.data;
-    delete[] m_frameBuffer;
+    _aligned_free(m_newPacket.data);
+    _aligned_free(m_frameBuffer);
 
     if (m_convert)
-      delete[] m_convertBuffer;
+      _aligned_free(m_convertBuffer);
 
     if (m_resample)
     {
-      delete[] m_ssrcData.data_out;
+      _aligned_free(m_ssrcData.data_out);
       m_ssrcData.data_out = NULL;
     }
   }
@@ -109,11 +111,11 @@ void CAEStream::Initialize()
   }
 
   m_newPacket.samples = 0;
-  m_newPacket.data    = new float[m_format.m_frameSamples];
+  m_newPacket.data    = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
   m_packet.samples    = 0;
   m_packet.data       = NULL;
 
-  m_frameBuffer   = new uint8_t[m_format.m_frameSize];
+  m_frameBuffer   = (uint8_t*)_aligned_malloc(m_format.m_frameSize, 16);
   m_resample      = m_initSampleRate != AE.GetSampleRate();
   m_convert       = m_initDataFormat != AE_FMT_FLOAT;
 
@@ -122,7 +124,7 @@ void CAEStream::Initialize()
   {
     /* get the conversion function and allocate a buffer for the data */
     m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
-    if (m_convertFn) m_convertBuffer = new float[m_format.m_frameSamples];
+    if (m_convertFn) m_convertBuffer = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
     else             m_valid         = false;
   }
   else
@@ -135,7 +137,7 @@ void CAEStream::Initialize()
     m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_ssrcData.input_frames  = m_format.m_frames;
-    m_ssrcData.data_out      = new float[m_format.m_frameSamples * 2];
+    m_ssrcData.data_out      = (float*)_aligned_malloc((sizeof(float) * m_format.m_frameSamples) * 2, 16);
     m_ssrcData.output_frames = m_format.m_frames * 2;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.end_of_input  = 0;
@@ -182,18 +184,18 @@ CAEStream::~CAEStream()
   }
 
   InternalFlush();
-  delete[] m_frameBuffer;
+  _aligned_free(m_frameBuffer);
   if (m_convert)
-    delete[] m_convertBuffer;
+    _aligned_free(m_convertBuffer);
 
   if (m_resample)
   {
-    delete[] m_ssrcData.data_out;
+    _aligned_free(m_ssrcData.data_out);
     src_delete(m_ssrc);
     m_ssrc = NULL;
   }
 
-  delete[] m_newPacket.data;
+  _aligned_free(m_newPacket.data);
   CLog::Log(LOGDEBUG, "CAEStream::~CAEStream - Destructed");
 }
 
@@ -294,7 +296,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
 
       PPacket pkt;
       pkt.samples = m_aePacketSamples;
-      pkt.data    = new float[m_aePacketSamples];
+      pkt.data    = (float*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
 
       /* downmix/remap the data */
       m_remap.Remap(m_newPacket.data, pkt.data, m_format.m_frames);
@@ -316,7 +318,7 @@ float* CAEStream::GetFrame()
   /* if the packet is empty, advance to the next one */
   if(!m_packet.samples)
   {
-    delete[] m_packet.data;
+    _aligned_free(m_packet.data);
     m_packet.data = NULL;
     
     /* no more packets, return null */
@@ -426,7 +428,7 @@ void CAEStream::InternalFlush()
   while(!m_outBuffer.empty()) {    
     PPacket p = m_outBuffer.front();
     m_outBuffer.pop_front();    
-    delete[] p.data;
+    _aligned_free(p.data);
     p.data = NULL;    
   };
 
