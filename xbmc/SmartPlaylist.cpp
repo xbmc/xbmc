@@ -467,11 +467,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase *db, const CStdString& s
   if (strType == "songs")
   {
     if (m_field == FIELD_GENRE)
-      query = negate + " ((strGenre" + parameter + ") or idsong IN (select idsong from genre,exgenresong where exgenresong.idgenre = genre.idgenre and genre.strGenre" + parameter + "))";
+      query = negate + " ((strGenre" + parameter + ") or idSong IN (select idSong from genre,exgenresong where exgenresong.idGenre = genre.idGenre and genre.strGenre" + parameter + "))";
     else if (m_field == FIELD_ARTIST)
-      query = negate + " ((strArtist" + parameter + ") or idsong IN (select idsong from artist,exartistsong where exartistsong.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+      query = negate + " ((strArtist" + parameter + ") or idSong IN (select idSong from artist,exartistsong where exartistsong.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
     else if (m_field == FIELD_ALBUMARTIST)
-      query = negate + " (idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+      query = negate + " (idalbum in (select idalbum from artist,album where album.idArtist=artist.idArtist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
@@ -479,27 +479,27 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase *db, const CStdString& s
   {
     if (m_field == FIELD_GENRE)
       query = negate + " (idAlbum in (select song.idAlbum from song join genre on song.idGenre=genre.idGenre where genre.strGenre" + parameter + ") or "
-              "idAlbum in (select song.idAlbum from song join exgenresong on song.idSong=exgenresong.idsong join genre on exgenresong.idgenre=genre.idgenre where genre.strGenre" + parameter + "))";
+              "idAlbum in (select song.idAlbum from song join exgenresong on song.idSong=exgenresong.idSong join genre on exgenresong.idGenre=genre.idGenre where genre.strGenre" + parameter + "))";
     else if (m_field == FIELD_ARTIST)
       query = negate + " (idAlbum in (select song.idAlbum from song join artist on song.idArtist=artist.idArtist where artist.strArtist" + parameter + ") or "
-              "idAlbum in (select song.idAlbum from song join exartistsong on song.idSong=exartistsong.idsong join artist on exartistsong.idartist=artist.idArtist where artist.strArtist" + parameter + "))";
+              "idAlbum in (select song.idAlbum from song join exartistsong on song.idSong=exartistsong.idSong join artist on exartistsong.idArtist=artist.idArtist where artist.strArtist" + parameter + "))";
     else if (m_field == FIELD_ALBUMARTIST)
-      query = negate + " (idalbum in (select idalbum from artist,album where album.idartist=artist.idartist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idartist = artist.idartist and artist.strArtist" + parameter + "))";
+      query = negate + " (idalbum in (select idalbum from artist,album where album.idArtist=artist.idArtist and artist.strArtist" + parameter + ") or idalbum in (select idalbum from artist,exartistalbum where exartistalbum.idArtist = artist.idArtist and artist.strArtist" + parameter + "))";
   }
   else if (strType == "movies")
   {
     if (m_field == FIELD_GENRE)
-      query = "idmovie" + negate + " in (select idmovie from genrelinkmovie join genre on genre.idgenre=genrelinkmovie.idgenre where genre.strGenre" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from genrelinkmovie join genre on genre.idGenre=genrelinkmovie.idGenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "idmovie" + negate + " in (select idmovie from directorlinkmovie join actors on actors.idactor=directorlinkmovie.iddirector where actors.strActor" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from directorlinkmovie join actors on actors.idActor=directorlinkmovie.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
-      query = "idmovie" + negate + " in (select idmovie from actorlinkmovie join actors on actors.idactor=actorlinkmovie.idactor where actors.strActor" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from actorlinkmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_WRITER)
-      query = "idmovie" + negate + " in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idwriter where actors.strActor" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from writerlinkmovie join actors on actors.idActor=writerlinkmovie.idWriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
-      query = "idmovie" + negate + " in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from studiolinkmovie join studio on studio.idStudio=studiolinkmovie.idStudio where studio.strStudio" + parameter + ")";
     else if (m_field == FIELD_COUNTRY)
-      query = "idmovie" + negate + " in (select idmovie from countrylinkmovie join country on country.idcountry=countrylinkmovie.idcountry where country.strCountry" + parameter + ")";
+      query = "idMovie" + negate + " in (select idMovie from countrylinkmovie join country on country.idCountry=countrylinkmovie.idCountry where country.strCountry" + parameter + ")";
     else if (m_field == FIELD_HASTRAILER)
       query = negate + GetDatabaseField(m_field, strType) + "!= ''";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
@@ -510,35 +510,35 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase *db, const CStdString& s
   else if (strType == "musicvideos")
   {
     if (m_field == FIELD_GENRE)
-      query = "idmvideo" + negate + " in (select idmvideo from genrelinkmusicvideo join genre on genre.idgenre=genrelinkmusicvideo.idgenre where genre.strGenre" + parameter + ")";
+      query = "idMVideo" + negate + " in (select idMVideo from genrelinkmusicvideo join genre on genre.idGenre=genrelinkmusicvideo.idGenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_ARTIST)
-      query = "idmvideo" + negate + " in (select idmvideo from artistlinkmusicvideo join actors on actors.idactor=artistlinkmusicvideo.idartist where actors.strActor" + parameter + ")";
+      query = "idMVideo" + negate + " in (select idMVideo from artistlinkmusicvideo join actors on actors.idActor=artistlinkmusicvideo.idArtist where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
-      query = "idmvideo" + negate + " in (select idmvideo from studiolinkmusicvideo join studio on studio.idstudio=studiolinkmusicvideo.idstudio where studio.strStudio" + parameter + ")";
+      query = "idMVideo" + negate + " in (select idMVideo from studiolinkmusicvideo join studio on studio.idStudio=studiolinkmusicvideo.idStudio where studio.strStudio" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "idmvideo" + negate + " in (select idmvideo from directorlinkmusicvideo join actors on actors.idactor=directorlinkmusicvideo.iddirector where actors.strActor" + parameter + ")";
+      query = "idMVideo" + negate + " in (select idMVideo from directorlinkmusicvideo join actors on actors.idActor=directorlinkmusicvideo.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
   else if (strType == "tvshows")
   {
     if (m_field == FIELD_GENRE)
-      query = "tvshow.idshow" + negate + " in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
+      query = "tvshow.idShow" + negate + " in (select idShow from genrelinktvshow join genre on genre.idGenre=genrelinktvshow.idGenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "tvshow.idshow" + negate + " in (select idshow from directorlinktvshow join actors on actors.idactor=directorlinktvshow.iddirector where actors.strActor" + parameter + ")";
+      query = "tvshow.idShow" + negate + " in (select idShow from directorlinktvshow join actors on actors.idActor=directorlinktvshow.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
-      query = "tvshow.idshow" + negate + " in (select idshow from actorlinktvshow join actors on actors.idactor=actorlinktvshow.idactor where actors.strActor" + parameter + ")";
+      query = "tvshow.idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
   }
   else if (strType == "episodes")
   {
     if (m_field == FIELD_GENRE)
-      query = "idshow" + negate + " in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
+      query = "idShow" + negate + " in (select idShow from genrelinktvshow join genre on genre.idGenre=genrelinktvshow.idGenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "idepisode" + negate + " in (select idepisode from directorlinkepisode join actors on actors.idactor=directorlinkepisode.iddirector where actors.strActor" + parameter + ")";
+      query = "idEpisode" + negate + " in (select idEpisode from directorlinkepisode join actors on actors.idActor=directorlinkepisode.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
-      query = "idepisode" + negate + " in (select idepisode from actorlinkepisode join actors on actors.idactor=actorlinkepisode.idactor where actors.strActor" + parameter + ")";
+      query = "idEpisode" + negate + " in (select idEpisode from actorlinkepisode join actors on actors.idActor=actorlinkepisode.idActor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_WRITER)
-      query = "idepisode" + negate + " in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idwriter where actors.strActor" + parameter + ")";
+      query = "idEpisode" + negate + " in (select idEpisode from writerlinkepisode join actors on actors.idActor=writerlinkepisode.idWriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
     else if (m_field == FIELD_INPROGRESS)
@@ -610,11 +610,11 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_FILENAME) return "strFilename";
     else if (field == FIELD_PATH) return "strPath";
     else if (field == FIELD_TRACKNUMBER) return "iTrack";
-    else if (field == FIELD_LASTPLAYED) return "lastplayed";
+    else if (field == FIELD_LASTPLAYED) return "lastPlayed";
     else if (field == FIELD_RATING) return "rating";
     else if (field == FIELD_COMMENT) return "comment";
     else if (field == FIELD_RANDOM) return "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) return "idsong";     // only used for order clauses
+    else if (field == FIELD_DATEADDED) return "idSong";     // only used for order clauses
   }
   else if (type == "albums")
   {
@@ -659,7 +659,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
     return result;
   }
   else if (type == "musicvideos")
@@ -679,7 +679,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_STUDIOS);     // join required
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idmvideo";        // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idMVideo";        // only used for order clauses
     return result;
   }
   if (type == "tvshows")
@@ -698,7 +698,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_NUMWATCHED) result = "watchedcount";
     else if (field == FIELD_PLAYCOUNT) result = "watched";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
     else if (field == FIELD_PATH) return "strPath";
     return result;
   }
@@ -725,7 +725,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
     return result;
   }
 
