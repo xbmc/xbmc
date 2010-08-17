@@ -75,6 +75,9 @@ public:
   void unknownToUTF8(CStdStringA &sourceDest);
   void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
 
+  void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
+  void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
+
   CStdString utf8Left(const CStdStringA &source, int num_chars);
 private:
   CStdString EMPTY;

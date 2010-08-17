@@ -388,6 +388,24 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
   convert(m_iconvSubtitleCharsetToW,sizeof(wchar_t),g_langInfo.GetSubtitleCharSet(),WCHAR_CHARSET,strSource,strDest);
 }
 
+void CCharsetConverter::fromW(const CStdStringW& strSource,
+                              CStdStringA& strDest, const CStdString& enc)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  convert(iconvString,sizeof(wchar_t),WCHAR_CHARSET,enc,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::toW(const CStdStringA& strSource,
+                            CStdStringW& strDest, const CStdString& enc)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
+  iconv_close(iconvString);
+}
+
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
