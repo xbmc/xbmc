@@ -604,8 +604,6 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
-  AC_CHECK_LIB([ssl],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([crypto],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
