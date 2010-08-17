@@ -317,7 +317,7 @@ void SqliteDatabase::rollback_transaction() {
 
 // methods for formatting
 // ---------------------------------------------
-const char *SqliteDatabase::vprepare(const char *format, va_list args)
+string SqliteDatabase::vprepare(const char *format, va_list args)
 {
   string strFormat = format;
   string strResult = "";
@@ -343,7 +343,7 @@ const char *SqliteDatabase::vprepare(const char *format, va_list args)
     sqlite3_free(p);
   }
 
-  return strResult.c_str();
+  return strResult;
 }
 
 

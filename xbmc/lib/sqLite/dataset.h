@@ -131,7 +131,7 @@ public:
   virtual void rollback_transaction() {};
 
 /* virtual methods for formatting */
-  virtual const char *vprepare(const char *format, va_list args) { return NULL; };
+  virtual std::string vprepare(const char *format, va_list args) { return std::string(""); };
 
   virtual bool in_transaction() {return false;};
 
