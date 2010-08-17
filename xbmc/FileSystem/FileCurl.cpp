@@ -1357,9 +1357,10 @@ bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString use
    if( file.Stat(url, NULL) == 0 )
    {
      content = file.GetMimeType();
+     CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> %s", url.Get().c_str(), content.c_str());
      return true;
    }
-
+   CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> failed", url.Get().c_str());
    content = "";
    return false;
 }
