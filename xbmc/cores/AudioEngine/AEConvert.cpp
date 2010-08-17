@@ -74,7 +74,7 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
   unsigned int i;
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
-#ifndef BIG_ENDIAN
+#if (BIG_ENDIAN == 0)
     *dest = AELookupS16toFloat[*(int16_t*)data + 32768];
 #else
     int16_t value;
@@ -91,7 +91,7 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
   unsigned int i;
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
-#ifndef BIG_ENDIAN
+#if (BIG_ENDIAN == 0)
     int16_t value;
     swab(data, &value, 2);
     *(int32_t*)dest = AELookupS16toFloat[value + 32768];
@@ -171,19 +171,20 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
 
 unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, uint8_t *dest)
 {
+  uint16_t *dst = (uint16_t*)dest;
   #ifdef __SSE__
   const uint32_t even = (samples / 4) * 4;
   const __m128 mul = _mm_set_ps1(INT16_MAX+.5f);
 
-  for(uint32_t i = 0; i < even; i += 4, data += 4, dest += 4)
+  for(uint32_t i = 0; i < even; i += 4, data += 4, dst += 4)
   {
     __m128 val = _mm_mul_ps(_mm_load_ps(data), mul);
-    *((__m64*)dest) = _mm_cvtps_pi16(val);
-    #ifdef BIG_ENDIAN
-    dest[0] = Endian_Swap16(dest[0]);
-    dest[1] = Endian_Swap16(dest[1]);
-    dest[2] = Endian_Swap16(dest[2]);
-    dest[3] = Endian_Swap16(dest[3]);
+    *((__m64*)dst) = _mm_cvtps_pi16(val);
+    #if (BIG_ENDIAN == 1)
+    dst[0] = Endian_Swap16(dst[0]);
+    dst[1] = Endian_Swap16(dst[1]);
+    dst[2] = Endian_Swap16(dst[2]);
+    dst[3] = Endian_Swap16(dst[3]);
     #endif
   }
 
@@ -194,7 +195,7 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
     {
       float val = *data * (INT16_MAX+.5f);
       val = val > INT16_MAX ? INT16_MAX : (val < INT16_MIN ? INT16_MIN : val);
-      *dest = MathUtils::round_int(val);
+      *dst = MathUtils::round_int(val);
     }
     else
     {
@@ -202,17 +203,17 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
       memcpy(&in, data, sizeof(float) * odd);
       __m128 val = _mm_mul_ps(in, mul);
       __m64  con = _mm_cvtps_pi16(val);
-      memcpy(dest, &con, sizeof(int16_t) * odd);
+      memcpy(dst, &con, sizeof(int16_t) * odd);
     }
   }
   #else /* no SSE */
-  for(uint32_t i = 0; i < samples; ++i, ++data, ++ret)
+  for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
     float val = *data * (INT16_MAX+.5f);
     val = val > INT16_MAX ? INT16_MAX : (val < INT16_MIN ? INT16_MIN : val);
-    *dest = MathUtils::round_int(val);
-    #ifdef BIG_ENDIAN
-    *dest = Endian_Swap16(*dest);
+    *dst = MathUtils::round_int(val);
+    #if (BIG_ENDIAN == 1)
+    *dst = Endian_Swap16(*dst);
     #endif
   }
   #endif
@@ -222,19 +223,20 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
 
 unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, uint8_t *dest)
 {
+  uint16_t *dst = (uint16_t*)dest;
   #ifdef __SSE__
   const uint32_t even = (samples / 4) * 4;
   const __m128 mul = _mm_set_ps1(INT16_MAX+.5f);
 
-  for(uint32_t i = 0; i < even; i += 4, data += 4, dest += 4)
+  for(uint32_t i = 0; i < even; i += 4, data += 4, dst += 4)
   {
     __m128 val = _mm_mul_ps(_mm_load_ps(data), mul);
-    *((__m64*)dest) = _mm_cvtps_pi16(val);
-    #ifndef BIG_ENDIAN
-    dest[0] = Endian_Swap16(dest[0]);
-    dest[1] = Endian_Swap16(dest[1]);
-    dest[2] = Endian_Swap16(dest[2]);
-    dest[3] = Endian_Swap16(dest[3]);
+    *((__m64*)dst) = _mm_cvtps_pi16(val);
+    #if (BIG_ENDIAN == 0)
+    dst[0] = Endian_Swap16(dst[0]);
+    dst[1] = Endian_Swap16(dst[1]);
+    dst[2] = Endian_Swap16(dst[2]);
+    dst[3] = Endian_Swap16(dst[3]);
     #endif
   }
 
@@ -245,7 +247,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
     {
       float val = *data * (INT16_MAX+.5f);
       val = val > INT16_MAX ? INT16_MAX : (val < INT16_MIN ? INT16_MIN : val);
-      *dest = MathUtils::round_int(val);
+      *dst = MathUtils::round_int(val);
     }
     else
     {
@@ -253,17 +255,17 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
       memcpy(&in, data, sizeof(float) * odd);
       __m128 val = _mm_mul_ps(in, mul);
       __m64  con = _mm_cvtps_pi16(val);
-      memcpy(dest, &con, sizeof(int16_t) * odd);
+      memcpy(dst, &con, sizeof(int16_t) * odd);
     }
   }
   #else /* no SSE */
-  for(uint32_t i = 0; i < samples; ++i, ++data, ++ret)
+  for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
     float val = *data * (INT16_MAX+.5f);
     val = val > INT16_MAX ? INT16_MAX : (val < INT16_MIN ? INT16_MIN : val);
-    *dest = MathUtils::round_int(val);
-    #ifndef BIG_ENDIAN
-    *dest = Endian_Swap16(*dest);
+    *dst = MathUtils::round_int(val);
+    #if (BIG_ENDIAN == 0)
+    *dst = Endian_Swap16(*dst);
     #endif
   }
   #endif

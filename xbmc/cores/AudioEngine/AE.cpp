@@ -64,9 +64,18 @@ bool CAE::OpenSink()
 
   CSingleLock sinkLock(m_critSectionSink);
   /* if the sink is open and the sampleRate & data format has not changed, dont re-open */
-  if (m_sink && sampleRate == m_format.m_sampleRate && (m_passthrough && m_format.m_dataFormat == AE_FMT_IEC958))
+  if (m_sink && sampleRate == m_format.m_sampleRate)
   {
-    return true;
+    if (m_passthrough)
+    {
+      if (m_format.m_dataFormat == AE_FMT_IEC958)
+        return true;
+    }
+    else
+    {
+      if (m_format.m_dataFormat != AE_FMT_IEC958)
+        return true;
+    }
   }
 
   /* close the old sink if it is open */
@@ -83,7 +92,7 @@ bool CAE::OpenSink()
 
   CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
   m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 16, false, false, m_passthrough))
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, m_passthrough))
   {
     delete m_sink;
     m_sink = NULL;
@@ -483,7 +492,7 @@ void CAE::Run()
 
       if (m_passthrough)
       {
-        if (stream->GetDataFormat() == AE_FMT_IEC958 && !done)
+        if (!done && stream->GetDataFormat() == AE_FMT_IEC958)
         {
           memcpy(out, frame, sizeof(float) * m_channelCount);
           done = true;
@@ -492,7 +501,7 @@ void CAE::Run()
       else if (!g_settings.m_bMute)
       {
         float volume = stream->GetVolume();
-        #if __SSE__
+        #ifdef __SSE__
         if (m_channelCount > 1)
           CAE::SSEMixSamples(out, frame, m_channelCount, volume);
         else
