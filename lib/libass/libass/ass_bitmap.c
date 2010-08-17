@@ -113,8 +113,7 @@ static void resize_tmp(ASS_SynthPriv *priv, int w, int h)
         priv->tmp_w *= 2;
     while (priv->tmp_h < h)
         priv->tmp_h *= 2;
-    if (priv->tmp)
-        free(priv->tmp);
+    free(priv->tmp);
     priv->tmp = malloc((priv->tmp_w + 1) * priv->tmp_h * sizeof(short));
 }
 
@@ -127,20 +126,17 @@ ASS_SynthPriv *ass_synth_init(double radius)
 
 void ass_synth_done(ASS_SynthPriv *priv)
 {
-    if (priv->tmp)
-        free(priv->tmp);
-    if (priv->g)
-        free(priv->g);
-    if (priv->gt2)
-        free(priv->gt2);
+    free(priv->tmp);
+    free(priv->g);
+    free(priv->gt2);
     free(priv);
 }
 
 static Bitmap *alloc_bitmap(int w, int h)
 {
     Bitmap *bm;
-    bm = calloc(1, sizeof(Bitmap));
-    bm->buffer = malloc(w * h);
+    bm = malloc(sizeof(Bitmap));
+    bm->buffer = calloc(w, h);
     bm->w = w;
     bm->h = h;
     bm->left = bm->top = 0;
@@ -149,11 +145,9 @@ static Bitmap *alloc_bitmap(int w, int h)
 
 void ass_free_bitmap(Bitmap *bm)
 {
-    if (bm) {
-        if (bm->buffer)
-            free(bm->buffer);
-        free(bm);
-    }
+    if (bm)
+        free(bm->buffer);
+    free(bm);
 }
 
 static Bitmap *copy_bitmap(const Bitmap *src)
@@ -165,7 +159,7 @@ static Bitmap *copy_bitmap(const Bitmap *src)
     return dst;
 }
 
-static int check_glyph_area(ASS_Library *library, FT_Glyph glyph)
+int check_glyph_area(ASS_Library *library, FT_Glyph glyph)
 {
     FT_BBox bbox;
     long long dx, dy;
@@ -213,7 +207,6 @@ static Bitmap *glyph_to_bitmap_internal(ASS_Library *library,
     w = bit->width;
     h = bit->rows;
     bm = alloc_bitmap(w + 2 * bord, h + 2 * bord);
-    memset(bm->buffer, 0, bm->w * bm->h);
     bm->left = bg->left - bord;
     bm->top = -bg->top - bord;
 
