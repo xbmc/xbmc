@@ -23,6 +23,11 @@
 #include <cassert>
 #include <climits>
 #include <cmath>
+#include <stdint.h>
+
+#ifdef __SSE2__
+#include <xmmintrin.h>
+#endif
 
 namespace MathUtils
 {
@@ -30,34 +35,34 @@ namespace MathUtils
   // to assert in these functions
   inline int round_int (double x)
   {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-    const float round_to_nearest = 0.5f;
-    int i;
+    if (x <= INT32_MIN) return INT32_MIN;
+    if (x >= INT32_MAX) return INT32_MAX;
 
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fadd round_to_nearest
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
-        i = floor(x + round_to_nearest);
+    #if defined(__SSE2__)
+      return _mm_cvtsd_si32(_mm_set_sd(x));
+
+    #elif !defined(_LINUX)
+      int32_t i;
+      __asm
+      {
+        fld x
+        fistpl i
+      }
+      return i;
+
+    #elif defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
+      return floor(x + 0.5f);
+
     #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
-        );
+      int32_t i;
+      __asm__ __volatile__ (
+        "fld %1\n"
+        "fistpl %0\n"
+        : "=m"(i) : "t"(x)
+      );
+      return i;
+
     #endif
-#endif
-    return (i);
   }
 
   inline int ceil_int (double x)

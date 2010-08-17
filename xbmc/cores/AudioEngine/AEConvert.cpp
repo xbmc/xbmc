@@ -23,12 +23,16 @@
 #include "AEUtil.h"
 #include "AELookupU8.h"
 #include "AELookupS16.h"
+#include "MathUtils.h"
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
+#include <string.h>
 
-#define LITTE_ENDIAN
+#ifdef __SSE__
+#include <xmmintrin.h>
+#endif
 
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
@@ -69,7 +73,7 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
   unsigned int i;
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
-#ifdef LITTE_ENDIAN
+#ifndef WORDS_BIGENDIAN
     *dest = AELookupS16toFloat[*(int16_t*)data + 32768];
 #else
     int16_t value;
@@ -86,7 +90,7 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
   unsigned int i;
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
-#ifdef LITTLE_ENDIAN
+#ifndef WORDS_BIGENDIAN
     int16_t value;
     swab(data, &value, 2);
     *(int32_t*)dest = AELookupS16toFloat[value + 32768];
@@ -117,11 +121,51 @@ unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, 
 
 unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8_t *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = (*data + 1.0f) * 127.5f;
+  #ifdef __SSE__
+  const uint32_t even = (samples / 4) * 4;
+  const __m128 mul = _mm_set_ps1(INT8_MAX+.5f);
 
-  return i;
+  for(uint32_t i = 0; i < even; i += 4, data += 4, dest += 4)
+  {
+    __m128 val = _mm_mul_ps(_mm_load_ps(data), mul);
+    __m64  con = _mm_cvtps_pi8(val);
+    dest[0] = (uint8_t)(((int8_t*)&con)[0] + 127);
+    dest[1] = (uint8_t)(((int8_t*)&con)[1] + 127);
+    dest[2] = (uint8_t)(((int8_t*)&con)[2] + 127);
+    dest[3] = (uint8_t)(((int8_t*)&con)[3] + 127);
+  }
+
+  if (samples != even)
+  {
+    const uint32_t odd = samples - even;
+    if (odd == 1)
+    {
+      float val = (*data + 1.0f) * (INT8_MAX+.5f);
+      val = val > UINT8_MAX+.0f ? UINT8_MAX+.0f : (val < 0.0f ? 0.0f : val);
+      *dest = MathUtils::round_int(val);
+    }
+    else
+    {
+      __m128 in;
+      memcpy(&in, data, sizeof(float) * odd);
+      __m128 val = _mm_mul_ps(in, mul);
+      __m64  con = _mm_cvtps_pi8(val);
+      dest[0] = (uint8_t)(((int8_t*)&con)[0] + 127);
+      dest[1] = (uint8_t)(((int8_t*)&con)[1] + 127);
+      dest[2] = (uint8_t)(((int8_t*)&con)[2] + 127);
+      dest[3] = (uint8_t)(((int8_t*)&con)[3] + 127);
+    }
+  }
+  #else /* no SSE */
+  for(uint32_t i = 0; i < samples; ++i, ++data, ++dest)
+  {
+    float val = (*data + 1.0f) * (INT8_MAX+.5f);
+    val = val > UINT8_MAX+.0f ? UINT8_MAX+.0f : (val < 0.0f ? 0.0f : val);
+    *dest = MathUtils::round_int(val);
+  }
+  #endif
+
+  return samples;
 }
 
 unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, uint8_t *dest)
@@ -131,7 +175,7 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
 
   for(i = 0; i < samples; ++i, ++data, ++d)
   {
-#ifdef LITTLE_ENDIAN
+#ifndef WORDS_BIGENDIAN
     *d = round(*data * 32767.5f);
 #else
     int16_t value = *data * 32767.5f;
@@ -147,7 +191,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
   unsigned int i;
   for(i = 0; i < samples; ++i, ++data, ++dest)
   {
-#ifdef LITTLE_ENDIAN
+#ifndef WORDS_BIGENDIAN
     int16_t value = *data * 32767.5f;
     swab(&value, dest, 2);
 #else

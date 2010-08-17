@@ -24,6 +24,8 @@
 #include "utils/log.h"
 #include "GUISettings.h"
 
+#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
+
 #include "AE.h"
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
@@ -71,13 +73,13 @@ bool CAE::OpenSink()
     delete m_sink;
     m_sink = NULL;
 
-    delete[] m_buffer;
+    _aligned_free(m_buffer);
     m_buffer = NULL;
   }
 
   CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
   m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, m_passthrough))
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 8, false, false, m_passthrough))
   {
     delete m_sink;
     m_sink = NULL;
@@ -87,7 +89,7 @@ bool CAE::OpenSink()
   m_format        = m_sink->GetAudioFormat();
   m_frameSize     = sizeof(float) * m_channelCount;
   m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer        = new uint8_t[m_format.m_frameSize * 2];
+  m_buffer        = (uint8_t*)_aligned_malloc(m_format.m_frameSize * 2, 16);
   m_bufferSize    = 0;
   m_visBufferSize = 0;
 
@@ -172,7 +174,7 @@ void CAE::DeInitialize()
     m_sink = NULL;
   }
 
-  delete[] m_buffer;
+  _aligned_free(m_buffer);
   m_buffer = NULL;
 
   m_state = AE_STATE_INVALID;
@@ -380,11 +382,12 @@ void CAE::Run()
     list<CAEStream*>::iterator itt;
     list<SoundState>::iterator sitt;
     CAEStream *stream;
-  
-    float        out[m_channelCount         ];
-    float        dst[m_format.m_channelCount];
+
+    DECLARE_ALIGNED(16, float, out[m_channelCount         ]);
+    DECLARE_ALIGNED(16, float, dst[m_format.m_channelCount]);
+
     unsigned int div;
-    unsigned int i;  
+    unsigned int i;
 
     /* this normally only loops once */
     while(m_bufferSize >= m_format.m_frameSize)
@@ -518,9 +521,7 @@ void CAE::Run()
         if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
         {
           m_audioCallback->OnAudioData(m_visBuffer, AUDIO_BUFFER_SIZE);
-//          memmove(m_visBuffer, &m_visBuffer[AUDIO_BUFFER_SIZE], sizeof(m_visBuffer) - (AUDIO_BUFFER_SIZE * sizeof(float)));
-          m_visBufferSize = 0;//AUDIO_BUFFER_SIZE;
-//	  printf("%d\n", m_visBufferSize);
+          m_visBufferSize = 0;
         }
       }
     }

@@ -28,6 +28,8 @@
 #include "FileSystem/FileFactory.h"
 #include "FileSystem/IFile.h"
 
+#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
+
 #include "AE.h"
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
@@ -59,7 +61,7 @@ CAESound::~CAESound()
 void CAESound::DeInitialize()
 {
   CSingleLock lock(m_critSection);
-  delete[] m_samples;
+  _aligned_free(m_samples);
   m_samples      = NULL;
   m_frameCount   = 0;
   m_channelCount = 0;
@@ -166,14 +168,14 @@ bool CAESound::Initialize()
 
        /* read in each sample */
        unsigned int s;
-       m_samples = new float[samples];
+       m_samples = (float*)_aligned_malloc(sizeof(float) * samples, 16);
        for(s = 0; s < samples; ++s)
        {
-         uint8_t raw[bytesPerSample];
+         DECLARE_ALIGNED(16, uint8_t, raw[bytesPerSample]);
          if (file->Read(raw, bytesPerSample) != bytesPerSample)
          {
            CLog::Log(LOGERROR, "CAESound::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
-           delete m_samples;
+           _aligned_free(m_samples);
            m_samples = NULL;
            file->Close();
            delete file;
@@ -183,7 +185,6 @@ bool CAESound::Initialize()
          /* convert the sample to float */
          convertFn(raw, 1, &m_samples[s]);
        }
-
 
        static AEChannel layouts[][3] = {
          {AE_CH_FC, AE_CH_NULL},
@@ -195,7 +196,7 @@ bool CAESound::Initialize()
        if (!remap.Initialize(layouts[m_channelCount - 1], AE.GetChannelLayout(), false))
        {
          CLog::Log(LOGERROR, "CAESound::Initialize - Failed to initialize the remapper: %s", m_filename.c_str());
-         delete[] m_samples;
+         _aligned_free(m_samples);
          m_samples = NULL;
 
          file->Close();
@@ -204,9 +205,9 @@ bool CAESound::Initialize()
        }
 
        /* remap the frames */
-       float *remapped = new float[m_frameCount * AE.GetChannelCount()];
+       float *remapped = (float*)_aligned_malloc(sizeof(float) * m_frameCount * AE.GetChannelCount(), 16);
        remap.Remap(m_samples, remapped, m_frameCount);
-       delete[] m_samples;
+       _aligned_free(m_samples);
        m_samples = remapped;
        m_channelCount = AE.GetChannelCount();
     }
@@ -236,21 +237,21 @@ bool CAESound::Initialize()
     SRC_DATA data;
     data.data_in       = m_samples;
     data.input_frames  = m_frameCount;
-    data.data_out      = new float[space];
+    data.data_out      = (float*)_aligned_malloc(sizeof(float) * space, 16);
     data.output_frames = space / m_channelCount;
     data.src_ratio     = (double)AE.GetSampleRate() / (double)sampleRate;
     if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, m_channelCount) != 0)
     {
       CLog::Log(LOGERROR, "CAESound::Initialize - Failed to resample audio: %s", m_filename.c_str());
-      delete[] data.data_out;
-      delete[] m_samples;
+      _aligned_free(data.data_out);
+      _aligned_free(m_samples);
       m_samples = NULL;
       return false;
     }
 
-    /* reassign m_samples, and realloc to save space now we have an exact frame count */
-    delete[] m_samples;
-    m_samples    = (float*)realloc(data.data_out, sizeof(float) * data.output_frames_gen * m_channelCount);
+    /* reassign m_samples */
+    _aligned_free(m_samples);
+    m_samples    = data.data_out;
     m_frameCount = data.output_frames_gen;
   }
 
