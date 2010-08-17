@@ -1591,6 +1591,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
+    CFLAGS="" \
     ./configure \
       --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
