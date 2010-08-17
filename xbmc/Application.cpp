@@ -3716,7 +3716,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         // Save information about the stream if we currently have no data
-        if (!details->HasStreamDetails())
+        if (!details->HasStreamDetails() ||
+             details->m_streamDetails.GetVideoDuration() <= 0)
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
           {
