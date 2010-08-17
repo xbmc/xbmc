@@ -79,7 +79,7 @@ bool CAE::OpenSink()
 
   CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
   m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 8, false, false, m_passthrough))
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 16, false, false, m_passthrough))
   {
     delete m_sink;
     m_sink = NULL;
