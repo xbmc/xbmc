@@ -315,10 +315,10 @@ bool MysqlDatabase::exists() {
 
 // methods for formatting
 // ---------------------------------------------
-const char *MysqlDatabase::vprepare(const char *format, va_list args)
+string MysqlDatabase::vprepare(const char *format, va_list args)
 {
   string strFormat = format;
-  string strResult;
+  string strResult = "";
   char *p;
   size_t pos;
 
@@ -336,16 +336,14 @@ const char *MysqlDatabase::vprepare(const char *format, va_list args)
 
     //  RAND() is the mysql form of RANDOM()
     pos = 0;
-    CLog::Log(LOGDEBUG,"Looking for RANDOM() in %s", strResult.c_str());
     while ( (pos = strResult.find("RANDOM()", pos)) != string::npos )
     {
-      CLog::Log(LOGDEBUG,"Found RANDOM()");
       strResult.replace(pos++, 8, "RAND()");
       pos += 6;
     }
   }
 
-  return strResult.c_str();
+  return strResult;
 }
 
 /* vsprintf() functionality is based on sqlite3.c functions */
