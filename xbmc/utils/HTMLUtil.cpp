@@ -245,7 +245,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   while (mappings[iPos].html)
   {
     CStdStringW w2;
-    w2.Format(L"%c",mappings[iPos].w);
+    w2.Format(L"%lc",mappings[iPos].w);
     strStripped.Replace(mappings[iPos++].html,w2);
   }
 
@@ -274,7 +274,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
       num.Format(L"&#x%s;",num.c_str());
 
     CStdStringW num2;
-    num2.Format(L"%c",val);
+    num2.Format(L"%lc",val);
 
     strStripped.Replace(num,num2);
     iPos = strStripped.Find(L"&#");
