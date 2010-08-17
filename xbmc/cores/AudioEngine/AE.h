@@ -137,6 +137,12 @@ private:
 
   /* lock for threadsafe */
   CCriticalSection          m_critSection, m_critSectionSink, m_critSectionAC;
+
+#ifdef __SSE__
+  static inline void SSENormalizeSamples(float *samples, uint32_t count, const uint32_t div);
+  static inline void SSEMixSamples      (float *dest, float *src, uint32_t count, const float volume);
+  static inline void SSEDeAmpSamples    (float *samples, uint32_t count, const float volume);
+#endif
 };
 
 /* global instance */

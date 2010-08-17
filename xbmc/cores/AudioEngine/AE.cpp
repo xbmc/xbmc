@@ -30,6 +30,10 @@
 #include "AEUtil.h"
 #include "AudioRenderers/ALSADirectSound.h"
 
+#ifdef __SSE__
+#include <xmmintrin.h>
+#endif
+
 using namespace std;
 
 CAE::CAE():
@@ -79,7 +83,7 @@ bool CAE::OpenSink()
 
   CLog::Log(LOGDEBUG, "CAE::OpenSink - %uHz\n", sampleRate);
   m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 8, false, false, m_passthrough))
+  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 16, false, false, m_passthrough))
   {
     delete m_sink;
     m_sink = NULL;
@@ -426,8 +430,15 @@ void CAE::Run()
       {
         /* mix the frame into the output */
         float volume = (*sitt).owner->GetVolume();
-        for(i = 0; i < m_channelCount; ++i)
-          out[i] += frame[i] * volume;
+        #ifdef __SSE__
+        if (m_channelCount > 1)
+          CAE::SSEMixSamples(out, frame, m_channelCount, volume);
+        else
+        #endif
+        {
+          for(i = 0; i < m_channelCount; ++i)
+            out[i] += frame[i] * volume;
+        }
         ++div;
       }
 
@@ -481,8 +492,15 @@ void CAE::Run()
       else if (!g_settings.m_bMute)
       {
         float volume = stream->GetVolume();
-        for(i = 0; i < m_channelCount; ++i)
-          out[i] += frame[i] * volume;
+        #if __SSE__
+        if (m_channelCount > 1)
+          CAE::SSEMixSamples(out, frame, m_channelCount, volume);
+        else
+        #endif
+        {
+          for(i = 0; i < m_channelCount; ++i)
+            out[i] += frame[i] * volume;
+        }
         ++div;
       }
 
@@ -499,14 +517,28 @@ void CAE::Run()
 
     if (!m_passthrough)
     {
-      for(i = 0; i < m_channelCount; ++i)
-        out[i] *= m_volume;
+      #ifdef __SSE__
+      if (m_channelCount > 1)
+        CAE::SSEDeAmpSamples(out, m_channelCount, m_volume);
+      else
+      #endif
+      {
+        for(i = 0; i < m_channelCount; ++i)
+          out[i] *= m_volume;
+      }
 
       if (div > 1)
       {
-        float mul = 1.0f / div;
-        for(i = 0; i < m_channelCount; ++i)
-          out[i] *= mul;
+	#ifdef __SSE__
+        if (m_channelCount > 1)
+          CAE::SSENormalizeSamples(out, m_channelCount, div);
+        else
+	#endif
+        {
+          float mul = 1.0f / div;
+          for(i = 0; i < m_channelCount; ++i)
+            out[i] *= mul;
+	}
       }
 
       /* if we have an audio callback, use it */
@@ -574,4 +606,58 @@ void CAE::SetVolume(float volume)
   g_settings.m_fVolumeLevel = volume;
   m_volume = volume;
 }
+
+#ifdef __SSE__
+inline void CAE::SSENormalizeSamples(float *samples, uint32_t count, const uint32_t div)
+{
+  const __m128 mul = _mm_set_ps1(1.0f / div);
+  uint32_t even = (count / 4) * 4;
+  for(uint32_t i = 0; i < even; i+=4, samples+=4)
+    *((__m128*)samples) = _mm_mul_ps(_mm_load_ps(samples), mul);
+
+  if (even != count)
+  {
+    uint32_t odd = count - even;
+    __m128 in;
+    memcpy(&in, samples, sizeof(float) * odd);
+    __m128 out = _mm_mul_ps(in, mul);
+    memcpy(samples, &out, sizeof(float) * odd);
+  }
+}
+
+inline void CAE::SSEMixSamples(float *dest, float *src, uint32_t count, const float volume)
+{
+  const __m128 vol = _mm_set_ps1(volume);
+  uint32_t even = (count / 4) * 4;
+  for(uint32_t i = 0; i < even; i+=4, dest+=4, src+=4)
+    *((__m128*)dest) = _mm_add_ps(_mm_load_ps(dest), _mm_mul_ps(_mm_load_ps(src), vol));
+
+  if (even != count)
+  {
+    uint32_t odd = count - even;
+    __m128 in, ou;
+    memcpy(&in, src , sizeof(float) * odd);
+    memcpy(&ou, dest, sizeof(float) * odd);
+    __m128 out = _mm_add_ps(in, _mm_mul_ps(ou, vol));
+    memcpy(dest, &out, sizeof(float) * odd);
+  }
+}
+
+inline void CAE::SSEDeAmpSamples(float *samples, uint32_t count, const float volume)
+{
+  const __m128 vol = _mm_set_ps1(volume);
+  uint32_t even = (count / 4) * 4;
+  for(uint32_t i = 0; i < even; i+=4, samples+=4)
+    *((__m128*)samples) = _mm_mul_ps(_mm_load_ps(samples), vol);
+
+  if (even != count)
+  {
+    uint32_t odd = count - even;
+    __m128 in;
+    memcpy(&in, samples, sizeof(float) * odd);
+    __m128 out = _mm_mul_ps(in, vol);
+    memcpy(samples, &out, sizeof(float) * odd);
+  }
+}
+#endif
 
