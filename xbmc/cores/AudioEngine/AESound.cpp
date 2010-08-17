@@ -32,6 +32,7 @@
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
+#include "AEUtil.h"
 
 typedef struct
 {

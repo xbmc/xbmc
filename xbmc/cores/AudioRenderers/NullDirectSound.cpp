@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "cores/AudioEngine/AEUtil.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512
