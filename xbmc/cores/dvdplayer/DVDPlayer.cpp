@@ -3173,6 +3173,12 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
+  // In case our video stalled, we must stall the subs too
+  if (m_dvdPlayerVideo.IsStalled())
+    pts = subLastPts;
+  else
+    subLastPts = pts;
+    
   return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
 }
 

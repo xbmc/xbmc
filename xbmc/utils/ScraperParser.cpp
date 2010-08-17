@@ -447,7 +447,7 @@ void CScraperParser::Clean(CStdString& strDirty)
       g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
       CStdStringW wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
-      g_charsetConverter.fromW(wbuffer,strBuffer,GetSearchStringEncoding());
+      g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
       RemoveWhiteSpace(strBuffer);
       strDirty.erase(i,i2-i+14);
       strDirty.Insert(i,strBuffer);

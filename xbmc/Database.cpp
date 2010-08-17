@@ -99,13 +99,8 @@ CStdString CDatabase::PrepareSQL(CStdString strStmt, ...) const
   {
     va_list args;
     va_start(args, strStmt);
-    char *szSql = m_pDB->vprepare(strStmt.c_str(), args);
+    strResult = m_pDB->vprepare(strStmt.c_str(), args);
     va_end(args);
-
-    if (szSql) {
-      strResult = szSql;
-      m_pDB->vprepare_free(szSql);
-    }
   }
 
   return strResult;

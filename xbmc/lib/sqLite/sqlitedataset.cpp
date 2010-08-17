@@ -317,15 +317,13 @@ void SqliteDatabase::rollback_transaction() {
 
 // methods for formatting
 // ---------------------------------------------
-void SqliteDatabase::vprepare_free(void *p)
-{
-    sqlite3_free(p);
-}
-
-char *SqliteDatabase::vprepare(const char *format, va_list args)
+string SqliteDatabase::vprepare(const char *format, va_list args)
 {
   string strFormat = format;
+  string strResult = "";
+  char *p;
   size_t pos;
+
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
   pos = 0;
@@ -338,7 +336,14 @@ char *SqliteDatabase::vprepare(const char *format, va_list args)
   while ( (pos = strFormat.find("%I64", pos)) != string::npos )
     strFormat.replace(pos++, 4, "%ll");
 
-  return sqlite3_vmprintf(strFormat.c_str(), args);
+  p = sqlite3_vmprintf(strFormat.c_str(), args);
+  if ( p )
+  {
+    strResult = p;
+    sqlite3_free(p);
+  }
+
+  return strResult;
 }
 
 
