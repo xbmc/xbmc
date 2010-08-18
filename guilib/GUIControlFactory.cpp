@@ -187,7 +187,7 @@ bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* st
     if (!min) min = 1;
     return true;
   }
-  value = atof(pNode->FirstChild()->Value());
+  value = (float)atof(pNode->FirstChild()->Value());
   return true;
 }
 
@@ -306,17 +306,17 @@ void CGUIControlFactory::GetRectFromString(const CStdString &string, CRect &rect
   StringUtils::SplitString(string, ",", strRect);
   if (strRect.size() == 1)
   {
-    rect.x1 = atof(strRect[0].c_str());
+    rect.x1 = (float)atof(strRect[0].c_str());
     rect.y1 = rect.x1;
     rect.x2 = rect.x1;
     rect.y2 = rect.x1;
   }
   else if (strRect.size() == 4)
   {
-    rect.x1 = atof(strRect[0].c_str());
-    rect.y1 = atof(strRect[1].c_str());
-    rect.x2 = atof(strRect[2].c_str());
-    rect.y2 = atof(strRect[3].c_str());
+    rect.x1 = (float)atof(strRect[0].c_str());
+    rect.y1 = (float)atof(strRect[1].c_str());
+    rect.x2 = (float)atof(strRect[2].c_str());
+    rect.y2 = (float)atof(strRect[3].c_str());
   }
 }
 
@@ -447,9 +447,9 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
     node->QueryFloatAttribute("x", &rect.x1);
     node->QueryFloatAttribute("y", &rect.y1);
     if (node->Attribute("w"))
-      rect.x2 = atof(node->Attribute("w")) + rect.x1;
+      rect.x2 = (float)atof(node->Attribute("w")) + rect.x1;
     if (node->Attribute("h"))
-      rect.y2 = atof(node->Attribute("h")) + rect.y1;
+      rect.y2 = (float)atof(node->Attribute("h")) + rect.y1;
     return true;
   }
   return false;

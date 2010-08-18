@@ -188,8 +188,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<CStdString> commaSeparated;
     StringUtils::SplitString(startPos, ",", commaSeparated);
     if (commaSeparated.size() > 1)
-      m_startY = atof(commaSeparated[1].c_str());
-    m_startX = atof(commaSeparated[0].c_str());
+      m_startY = (float)atof(commaSeparated[1].c_str());
+    m_startX = (float)atof(commaSeparated[0].c_str());
   }
   const char *endPos = node->Attribute("end");
   if (endPos)
@@ -197,8 +197,8 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
     vector<CStdString> commaSeparated;
     StringUtils::SplitString(endPos, ",", commaSeparated);
     if (commaSeparated.size() > 1)
-      m_endY = atof(commaSeparated[1].c_str());
-    m_endX = atof(commaSeparated[0].c_str());
+      m_endY = (float)atof(commaSeparated[1].c_str());
+    m_endX = (float)atof(commaSeparated[0].c_str());
   }
 }
 
@@ -228,8 +228,8 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
       vector<CStdString> commaSeparated;
       StringUtils::SplitString(centerPos, ",", commaSeparated);
       if (commaSeparated.size() > 1)
-        m_center.y = atof(commaSeparated[1].c_str());
-      m_center.x = atof(commaSeparated[0].c_str());
+        m_center.y = (float)atof(commaSeparated[1].c_str());
+      m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
 }
@@ -270,21 +270,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     StringUtils::SplitString(start, ",", params);
     if (params.size() == 1)
     {
-      m_startX = atof(params[0].c_str());
+      m_startX = (float)atof(params[0].c_str());
       m_startY = m_startX;
     }
     else if (params.size() == 2)
     {
-      m_startX = atof(params[0].c_str());
-      m_startY = atof(params[1].c_str());
+      m_startX = (float)atof(params[0].c_str());
+      m_startY = (float)atof(params[1].c_str());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      startPosX = atof(params[0].c_str());
-      startPosY = atof(params[1].c_str());
-      m_startX = atof(params[2].c_str());
-      m_startY = atof(params[3].c_str());
+      startPosX = (float)atof(params[0].c_str());
+      startPosY = (float)atof(params[1].c_str());
+      m_startX = (float)atof(params[2].c_str());
+      m_startY = (float)atof(params[3].c_str());
       m_startX *= 100.0f / width;
       m_startY *= 100.0f / height;
     }
@@ -296,21 +296,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     StringUtils::SplitString(end, ",", params);
     if (params.size() == 1)
     {
-      m_endX = atof(params[0].c_str());
+      m_endX = (float)atof(params[0].c_str());
       m_endY = m_endX;
     }
     else if (params.size() == 2)
     {
-      m_endX = atof(params[0].c_str());
-      m_endY = atof(params[1].c_str());
+      m_endX = (float)atof(params[0].c_str());
+      m_endY = (float)atof(params[1].c_str());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      endPosX = atof(params[0].c_str());
-      endPosY = atof(params[1].c_str());
-      m_endX = atof(params[2].c_str());
-      m_endY = atof(params[3].c_str());
+      endPosX = (float)atof(params[0].c_str());
+      endPosY = (float)atof(params[1].c_str());
+      m_endX = (float)atof(params[2].c_str());
+      m_endY = (float)atof(params[3].c_str());
       m_endX *= 100.0f / width;
       m_endY *= 100.0f / height;
     }
@@ -325,8 +325,8 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
       vector<CStdString> commaSeparated;
       StringUtils::SplitString(centerPos, ",", commaSeparated);
       if (commaSeparated.size() > 1)
-        m_center.y = atof(commaSeparated[1].c_str());
-      m_center.x = atof(commaSeparated[0].c_str());
+        m_center.y = (float)atof(commaSeparated[1].c_str());
+      m_center.x = (float)atof(commaSeparated[0].c_str());
     }
   }
   else
