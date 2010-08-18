@@ -570,7 +570,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase *db, const CStdString& s
       if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
       {
         playlist.SetType(strType);
-        playlistQuery = playlist.GetWhereClause(false, db);
+        playlistQuery = playlist.GetWhereClause(db, false);
       }
       if (m_operator == OPERATOR_DOES_NOT_EQUAL && playlist.GetType().Equals(strType))
         query.Format("NOT (%s)", playlistQuery.c_str());
