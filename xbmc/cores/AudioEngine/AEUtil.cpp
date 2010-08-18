@@ -117,3 +117,21 @@ const enum AEDataFormat CAEUtil::BitsToDataFormat(const unsigned int bits)
 
   return AE_FMT_INVALID;
 }
+
+const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
+{
+  if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)
+    return "UNKNOWN";
+
+  static const char *formats[AE_FMT_MAX] =
+  {
+    "AE_FMT_U8",
+    "AE_FMT_S16BE",
+    "AE_FMT_S16LE",
+    "AE_FMT_S24BE",
+    "AE_FMT_FLOAT",
+    "AE_FMT_IEC958"
+  };
+
+  return formats[dataFormat];
+}

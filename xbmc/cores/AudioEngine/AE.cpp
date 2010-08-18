@@ -24,7 +24,11 @@
 #include "utils/log.h"
 #include "GUISettings.h"
 
-#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
+#if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavutil/avutil.h>
+#else
+  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+#endif
 
 #include "AE.h"
 #include "AEUtil.h"
