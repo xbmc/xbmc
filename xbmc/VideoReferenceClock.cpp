@@ -147,7 +147,6 @@ void CVideoReferenceClock::Process()
     m_CurrTime = Now + m_ClockOffset; //add the clock offset from the previous time we stopped
     m_AdjustedFrequency = m_SystemFrequency;
     m_TotalMissedVblanks = 0;
-    m_fineadjust = 1.0;
     m_Started.Set();
 
     if (SetupSuccess)
@@ -868,7 +867,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
-    m_CurrTime += (int64_t)NrVBlanks * (int64_t)((double)m_AdjustedFrequency * m_fineadjust) / m_RefreshRate;
+    m_CurrTime += (int64_t)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
 //called from dvdclock to get the time
@@ -1115,11 +1114,6 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
     return true;
   }
   return false;
-}
-
-void CVideoReferenceClock::SetFineAdjust(double fineadjust)
-{
-  m_fineadjust = fineadjust;
 }
 
 CVideoReferenceClock g_VideoReferenceClock;

@@ -68,7 +68,6 @@ class CVideoReferenceClock : public CThread
     int64_t Wait(int64_t Target);
     bool    WaitStarted(int MSecs);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
-    void    SetFineAdjust(double fineadjust);
 
 #if defined(__APPLE__)
     void VblankHandler(int64_t nowtime, double fps);
@@ -86,7 +85,6 @@ class CVideoReferenceClock : public CThread
     int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
     int64_t m_LastRefreshTime;   //last time we updated the refreshrate
     int64_t m_SystemFrequency;   //frequency of the systemclock
-    double  m_fineadjust;
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source
     int64_t m_RefreshRate;       //current refreshrate
