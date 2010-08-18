@@ -126,6 +126,7 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   static const char *formats[AE_FMT_MAX] =
   {
     "AE_FMT_U8",
+    "AE_FMT_S8",
     "AE_FMT_S16BE",
     "AE_FMT_S16LE",
     "AE_FMT_S24BE",

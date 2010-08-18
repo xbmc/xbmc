@@ -49,6 +49,7 @@ namespace MathUtils
         fadd st, st (0)
         fadd 0.5f
         fistpl i
+        sar i, 1
       }
       return i;
 
@@ -62,6 +63,7 @@ namespace MathUtils
         "fadd %%st\n"
         "fadd %%st(1)\n"
         "fistpl %0\n"
+        "sarl $1, %0\n"
         : "=m"(i) : "u"(0.5f), "t"(x) : "st"
       );
       return i;
