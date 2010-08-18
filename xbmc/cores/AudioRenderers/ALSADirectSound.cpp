@@ -208,7 +208,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 
   switch(m_uiBitsPerSample) {
-    case 8 : nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_U8   ); break;
+    case 8 : nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S8   ); break;
     case 16: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16  ); break;
     case 24: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S24  ); break;
     case 32: nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_FLOAT); break;
@@ -282,7 +282,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   {
     switch(uiBitsPerSample)
     {
-      case  8: m_format.m_dataFormat = AE_FMT_U8   ; break;
+      case  8: m_format.m_dataFormat = AE_FMT_S8   ; break;
       case 16: m_format.m_dataFormat = AE_FMT_S16LE; break;
       case 32: m_format.m_dataFormat = AE_FMT_FLOAT; break;
       default:
