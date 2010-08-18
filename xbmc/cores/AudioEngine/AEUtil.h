@@ -35,6 +35,7 @@ public:
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const enum AEDataFormat BitsToDataFormat  (const unsigned int bits);
+  static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 };
 
 #endif

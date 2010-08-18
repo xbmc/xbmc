@@ -37,6 +37,7 @@ private:
   static unsigned int S24BE_Float(uint8_t *data, const unsigned int samples, float   *dest);
 
   static unsigned int Float_U8   (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S8   (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S16LE(float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S16BE(float   *data, const unsigned int samples, uint8_t *dest);
 public:

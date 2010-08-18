@@ -22,7 +22,11 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
-#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
+#if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavutil/avutil.h>
+#else
+  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+#endif
 
 #include "AEStream.h"
 #include "AEUtil.h"
@@ -123,6 +127,7 @@ void CAEStream::Initialize()
   if (m_convert)
   {
     /* get the conversion function and allocate a buffer for the data */
+    CLog::Log(LOGDEBUG, "CAEStream::CAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_initDataFormat));
     m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
     if (m_convertFn) m_convertBuffer = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
     else             m_valid         = false;
@@ -150,7 +155,7 @@ void CAEStream::Initialize()
     IAEPostProc *pp = *pitt;
     if (!pp->Initialize(this))
     {
-      CLog::Log(LOGERROR, "Failed to re-initialize post-proc filter: %s", pp->GetName());
+      CLog::Log(LOGERROR, "CAEStream::CAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
       pitt = m_postProc.erase(pitt);
       continue;
     }
