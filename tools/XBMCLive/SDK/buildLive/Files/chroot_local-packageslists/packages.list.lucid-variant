@@ -24,6 +24,7 @@ xbmc-ppa-keyring
 python-apt
 xbmc-live
 xbmc
+plymouth-theme-xbmc-logo
 g++ autoconf
 fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1
