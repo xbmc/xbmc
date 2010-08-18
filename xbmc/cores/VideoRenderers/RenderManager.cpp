@@ -139,8 +139,6 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
 
   double frametime = g_VideoReferenceClock.GetSpeed() / fps;
 
-  presenttime     += m_presentcorr * frametime;
-
   double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
@@ -159,6 +157,8 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
     error /= 2.0 * (0.0 + target);
 
   m_presentcorr = wrap(m_presentcorr + error * 0.02, target - 1.0, target);
+  //adjust the clockspeed slightly to minimize the error
+  g_VideoReferenceClock.SetFineAdjust(1.0 - error * 0.01 - m_presentcorr * 0.01);
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
