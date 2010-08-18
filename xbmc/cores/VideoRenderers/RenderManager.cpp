@@ -156,7 +156,8 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(error < 0)
     error /= 2.0 * (0.0 + target);
 
-  m_presentcorr = wrap(m_presentcorr + error * 0.02, target - 1.0, target);
+  //integral correction, clamp to -0.5:0.5 range
+  m_presentcorr = std::max(std::min(m_presentcorr + error * 0.02, 0.5), -0.5);
   //adjust the clockspeed slightly to minimize the error
   g_VideoReferenceClock.SetFineAdjust(1.0 - error * 0.01 - m_presentcorr * 0.01);
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
