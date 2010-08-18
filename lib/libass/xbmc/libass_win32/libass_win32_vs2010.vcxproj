@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\libass\ass_library.c" />
     <ClCompile Include="..\..\libass\ass_parse.c" />
     <ClCompile Include="..\..\libass\ass_render.c" />
+    <ClCompile Include="..\..\libass\ass_render_api.c" />
     <ClCompile Include="..\..\libass\ass_strtod.c" />
     <ClCompile Include="..\..\libass\ass_utils.c" />
   </ItemGroup>
