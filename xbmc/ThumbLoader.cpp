@@ -259,7 +259,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->m_bIsFolder &&
        pItem->HasVideoInfoTag() &&
        g_guiSettings.GetBool("myvideos.extractflags") &&
-       !pItem->GetVideoInfoTag()->HasStreamDetails())
+       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
+         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
   {
     CThumbExtractor* extract = new CThumbExtractor(*pItem,pItem->m_strPath,false);
     AddJob(extract);

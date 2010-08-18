@@ -687,12 +687,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
 
 bool CVideoInfoTag::HasStreamDetails() const
 {
-  // return false in case no duration was extracted yet
-  if (g_guiSettings.GetBool("myvideos.extractflags") &&
-      m_streamDetails.GetVideoDuration() <= 0)
-    return false;
-  else
-    return m_streamDetails.HasItems();
+  return m_streamDetails.HasItems();
 }
 
 bool CVideoInfoTag::IsEmpty() const

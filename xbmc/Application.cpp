@@ -3733,7 +3733,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
-        if (!details->HasStreamDetails())
+        if (!details->HasStreamDetails() ||
+             details->m_streamDetails.GetVideoDuration() <= 0)
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
           {
