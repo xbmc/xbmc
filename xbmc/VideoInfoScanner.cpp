@@ -1516,6 +1516,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
+    if (g_advancedSettings.m_bVideoScannerIgnoreErrors)
+      return true;
+
     if (pDialog)
     {
       CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);

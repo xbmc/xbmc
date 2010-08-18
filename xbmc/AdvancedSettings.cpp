@@ -205,6 +205,7 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryMyMoviesCategoriesToGenres = false;
   m_bVideoLibraryImportWatchedState = false;
+  m_bVideoScannerIgnoreErrors = false;
 
   m_bUseEvilB = true;
 
@@ -449,6 +450,13 @@ bool CAdvancedSettings::Load()
     if (pMyMovies)
       XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", m_bVideoLibraryMyMoviesCategoriesToGenres);
   }
+
+  pElement = pRootElement->FirstChildElement("videoscanner");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
+  }
+
   // Backward-compatibility of ExternalPlayer config
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)

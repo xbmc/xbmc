@@ -199,6 +199,8 @@ class CAdvancedSettings
     bool m_bVideoLibraryMyMoviesCategoriesToGenres;
     bool m_bVideoLibraryImportWatchedState;
 
+    bool m_bVideoScannerIgnoreErrors;
+
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
