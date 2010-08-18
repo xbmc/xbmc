@@ -1119,6 +1119,7 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
 
 void CVideoReferenceClock::SetFineAdjust(double fineadjust)
 {
+  CSingleLock SingleLock(m_CritSection);
   m_fineadjust = fineadjust;
 }
 
