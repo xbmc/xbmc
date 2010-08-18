@@ -76,6 +76,7 @@ cd $modulesdir
 mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
+rm /tmp/crystalhd.ko 
 depmod $kernelVersion
 popd
 
