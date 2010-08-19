@@ -581,8 +581,11 @@ bool CApplication::Create()
 
    /* Initalize the AudioEngine */
   CLog::Log(LOGINFO, "Starting audio thread");
-  m_aeThread = new CThread(&AE);
-  m_aeThread->Create();
+  if (AE.Initialize())
+  {
+    m_aeThread = new CThread(&AE);
+    m_aeThread->Create();
+  }
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
@@ -4297,10 +4300,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::RestartAE()
 {
-    AE.Stop();
-    m_aeThread->StopThread(true);
-    CLog::Log(LOGINFO, "Starting audio thread");
-    m_aeThread->Create();
+  /* we just re-open the sink if we need to */
+  AE.OpenSink();
 }
 
 void CApplication::CheckShutdown()

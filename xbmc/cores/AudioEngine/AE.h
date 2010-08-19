@@ -25,6 +25,7 @@
 #include <list>
 #include <map>
 
+#include "system.h"
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
@@ -94,18 +95,26 @@ private:
   /* these are private as the class is a singleton */
   CAE();
   virtual ~CAE();
+
+  /* these are only callable by the application */
+  friend class CApplication;
   bool Initialize();
   bool OpenSink();
-  void DeInitialize();
+  void Deinitialize();
 
   /* this is called by streams on dtor, you should never need to call this directly */
   friend class CAEStream;
   void RemoveStream(CAEStream *stream);
 
-  enum AEState              m_state;
-  float                     m_volume;
+  /* internal vars */
+  bool m_running;
+  CCriticalSection m_runLock;         /* released when the thread exits */
+  CCriticalSection m_critSection;     /* generic lock */
+  CCriticalSection m_critSectionSink; /* sink & configuration lock */
 
-  /* the desired channelCount, layout and frameSize */
+  /* the current configuration */
+  float                     m_volume;
+  enum AEStdChLayout        m_stdChLayout;
   unsigned int              m_channelCount;
   AEChLayout                m_chLayout;
   unsigned int              m_frameSize;
@@ -136,11 +145,8 @@ private:
   CAERemap                  m_remap;
   IAudioCallback           *m_audioCallback;
 
-  /* lock for threadsafe */
-  CCriticalSection          m_critSection, m_critSectionSink, m_critSectionAC;
 
 #ifdef __SSE__
-  /* NOTE: THESE FUNCTIONS REQUIRE ALIGNED DATA */
   static inline void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
   static inline void SSEMulArray   (float *data, const float mul, uint32_t count);
 #endif
