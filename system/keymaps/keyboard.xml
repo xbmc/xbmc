@@ -165,8 +165,8 @@
       <quote>SmallStepBack</quote>
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
-      <return>Select</return>
-      <enter>Select</enter>
+      <return>OSD</return>
+      <enter>OSD</enter>
       <m>OSD</m>
       <i>Info</i>
       <o>CodecInfo</o>
@@ -182,6 +182,12 @@
       <v>XBMC.ActivateWindow(Teletext)</v>
     </keyboard>
   </FullscreenVideo>
+  <VideoTimeSeek>
+    <keyboard>
+      <return>Select</return>
+      <enter>Select</enter>
+    </keyboard>
+</VideoTimeSeek>
   <FullscreenInfo>
     <keyboard>
       <f>FastForward</f>

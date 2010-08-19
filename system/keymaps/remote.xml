@@ -143,6 +143,7 @@
       <back>SmallStepBack</back>
       <menu>OSD</menu>
       <start>OSD</start>
+      <select>AspectRatio</select>
       <title>CodecInfo</title>
       <info>Info</info>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
@@ -152,6 +153,12 @@
       <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
+  <VideoTimeSeek>
+    <remote>
+      <select>Select</select>
+      <enter>Select</enter>
+    </remote>
+  </VideoTimeSeek>
   <FullscreenInfo>
     <remote>
       <title>CodecInfo</title>
