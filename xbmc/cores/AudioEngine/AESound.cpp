@@ -260,10 +260,10 @@ bool CAESound::Initialize()
   return true;
 }
 
-float* CAESound::GetFrame(unsigned int frame)
+float* CAESound::GetSamples()
 {
-  if (!m_valid || frame > m_frameCount || m_samples == NULL) return NULL;
-  return &m_samples[frame * m_channelCount];
+  if (!m_valid || m_samples == NULL) return NULL;
+  return m_samples;
 }
 
 bool CAESound::IsPlaying()

@@ -113,6 +113,7 @@ bool CAE::OpenSink()
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
 
   /* re-init sounds */
+  m_playing_sounds.clear();
   map<const CStdString, CAESound*>::iterator sitt;
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
     sitt->second->Initialize();
@@ -262,8 +263,9 @@ CAESound *CAE::GetSound(CStdString file)
 void CAE::PlaySound(CAESound *sound)
 {
    SoundState ss = {
-      owner: sound,
-      frame: 0
+      owner  : sound,
+      samples: sound->GetSamples(),
+      frames : sound->GetFrameCount()
    };
    CSingleLock lock(m_critSection);
    OpenSink();
@@ -430,31 +432,37 @@ void CAE::Run()
     {
       if (m_state != AE_STATE_RUN) break;
 
-      float *frame = (*sitt).owner->GetFrame((*sitt).frame++);
-      /* if no more frames, remove it from the list */
-      if (frame == NULL)
+      /* no more frames, so remove it from the list */
+      if ((*sitt).frames == 0)
       {
         sitt = m_playing_sounds.erase(sitt);
         continue;
       }
 
-      /* we still need to take frames when muted or in passthrough */
-      if (!m_passthrough && !g_settings.m_bMute)
+      float *frame = (*sitt).samples;
+      (*sitt).frames  -= m_channelCount;
+      (*sitt).samples += m_channelCount;
+
+      /* if muted, just move on, but still take
+         a frame so the sound does not hang */
+      if (g_settings.m_bMute)
       {
-        /* mix the frame into the output */
-        float volume = (*sitt).owner->GetVolume();
-        #ifdef __SSE__
-        if (m_channelCount > 1)
-          CAE::SSEMixSamples(out, frame, m_channelCount, volume);
-        else
-        #endif
-        {
-          for(i = 0; i < m_channelCount; ++i)
-            out[i] += frame[i] * volume;
-        }
-        ++div;
+        ++sitt;
+        continue;
       }
 
+      float volume = (*sitt).owner->GetVolume();
+
+      #ifdef __SSE__
+      /* if we have more then one channel, and the data is aligned */
+      if (m_channelCount > 1 && ((uintptr_t)frame & 0xF) == 0)
+        CAE::SSEMulAddArray(out, frame, volume, m_channelCount);
+      else
+      #endif
+      for(i = 0; i < m_channelCount; ++i)
+        out[i] += frame[i] * volume;
+
+      ++div;
       ++sitt;
     }
 
@@ -507,7 +515,7 @@ void CAE::Run()
         float volume = stream->GetVolume();
         #ifdef __SSE__
         if (m_channelCount > 1)
-          CAE::SSEMixSamples(out, frame, m_channelCount, volume);
+          CAE::SSEMulAddArray(out, frame, volume, m_channelCount);
         else
         #endif
         {
@@ -530,21 +538,24 @@ void CAE::Run()
 
     if (!m_passthrough)
     {
-      #ifdef __SSE__
-      if (m_channelCount > 1)
-        CAE::SSEDeAmpSamples(out, m_channelCount, m_volume);
-      else
-      #endif
+      if (m_volume != 1.0f)
       {
-        for(i = 0; i < m_channelCount; ++i)
-          out[i] *= m_volume;
+        #ifdef __SSE__
+        if (m_channelCount > 1)
+          CAE::SSEMulArray(out, m_volume, m_channelCount);
+        else
+        #endif
+        {
+          for(i = 0; i < m_channelCount; ++i)
+            out[i] *= m_volume;
+        }
       }
 
       if (div > 1)
       {
 	#ifdef __SSE__
         if (m_channelCount > 1)
-          CAE::SSENormalizeSamples(out, m_channelCount, div);
+          CAE::SSEMulArray(out, 1.0f / div, m_channelCount);
         else
 	#endif
         {
@@ -621,55 +632,83 @@ void CAE::SetVolume(float volume)
 }
 
 #ifdef __SSE__
-inline void CAE::SSENormalizeSamples(float *samples, uint32_t count, const uint32_t div)
+inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32_t count)
 {
-  const __m128 mul = _mm_set_ps1(1.0f / div);
-  uint32_t even = (count / 4) * 4;
-  for(uint32_t i = 0; i < even; i+=4, samples+=4)
-    *((__m128*)samples) = _mm_mul_ps(_mm_load_ps(samples), mul);
+  const __m128 m = _mm_set_ps1(mul);
+  uint32_t even = count & 0x2;
+
+  for(uint32_t i = 0; i < even; i+=4, data+=4, add+=4)
+  {
+    __m128 ad      = _mm_load_ps(add );
+    __m128 to      = _mm_load_ps(data);
+    *(__m128*)data = _mm_add_ps (to, _mm_mul_ps(ad, m));
+  }
 
   if (even != count)
   {
     uint32_t odd = count - even;
-    __m128 in;
-    memcpy(&in, samples, sizeof(float) * odd);
-    __m128 out = _mm_mul_ps(in, mul);
-    memcpy(samples, &out, sizeof(float) * odd);
+    if (odd == 1)
+      data[0] += *add * mul;
+    else
+    {
+      __m128 ad;
+      __m128 to;
+      if (odd == 2)
+      {
+        ad = _mm_set_ps(add [0], add [1], 0, 0);
+        to = _mm_set_ps(data[0], data[1], 0, 0);
+        __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
+        data[0] = ((float*)&ou)[0];
+        data[1] = ((float*)&ou)[1];
+      }
+      else
+      {
+        ad = _mm_set_ps(add [0], add [1], add [2], 0);
+        to = _mm_set_ps(data[0], data[1], data[2], 0);
+        __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
+        data[0] = ((float*)&ou)[0];
+        data[1] = ((float*)&ou)[1];
+        data[2] = ((float*)&ou)[2];
+      }
+    }
   }
 }
 
-inline void CAE::SSEMixSamples(float *dest, float *src, uint32_t count, const float volume)
+inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
 {
-  const __m128 vol = _mm_set_ps1(volume);
-  uint32_t even = (count / 4) * 4;
-  for(uint32_t i = 0; i < even; i+=4, dest+=4, src+=4)
-    *((__m128*)dest) = _mm_add_ps(_mm_load_ps(dest), _mm_mul_ps(_mm_load_ps(src), vol));
+  const __m128 m = _mm_set_ps1(mul);
+  uint32_t even = count & 2;
 
-  if (even != count)
+  for(uint32_t i = 0; i < even; i+=4, data+=4)
   {
-    uint32_t odd = count - even;
-    __m128 in, ou;
-    memcpy(&in, src , sizeof(float) * odd);
-    memcpy(&ou, dest, sizeof(float) * odd);
-    __m128 out = _mm_add_ps(in, _mm_mul_ps(ou, vol));
-    memcpy(dest, &out, sizeof(float) * odd);
+    __m128 to      = _mm_load_ps(data);
+    *(__m128*)data = _mm_mul_ps (to, m);
   }
-}
-
-inline void CAE::SSEDeAmpSamples(float *samples, uint32_t count, const float volume)
-{
-  const __m128 vol = _mm_set_ps1(volume);
-  uint32_t even = (count / 4) * 4;
-  for(uint32_t i = 0; i < even; i+=4, samples+=4)
-    *((__m128*)samples) = _mm_mul_ps(_mm_load_ps(samples), vol);
 
   if (even != count)
   {
     uint32_t odd = count - even;
-    __m128 in;
-    memcpy(&in, samples, sizeof(float) * odd);
-    __m128 out = _mm_mul_ps(in, vol);
-    memcpy(samples, &out, sizeof(float) * odd);
+    if (odd == 1)
+      data[0] *= mul;
+    else
+    {     
+      __m128 to;
+      if (odd == 2)
+      {
+        to = _mm_set_ps(data[0], data[1], 0, 0);
+        __m128 ou = _mm_mul_ps(to, m);
+        data[0] = ((float*)&ou)[0];
+        data[1] = ((float*)&ou)[1];
+      }
+      else
+      {
+        to = _mm_set_ps(data[0], data[1], data[2], 0);
+        __m128 ou = _mm_mul_ps(to, m);
+        data[0] = ((float*)&ou)[0];
+        data[1] = ((float*)&ou)[1];
+        data[2] = ((float*)&ou)[2];
+      }
+    }
   }
 }
 #endif
