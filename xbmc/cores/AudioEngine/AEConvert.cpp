@@ -31,6 +31,7 @@
 #include <math.h>
 #include <string.h>
 
+#undef __SSE__
 #ifdef __SSE__
 #include <xmmintrin.h>
 #endif
