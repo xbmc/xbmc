@@ -930,8 +930,9 @@ int CXbmcHttp::xbmcQueryMusicDataBase(int numParas, CStdString paras[])
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
+      CStdString sql = musicdatabase.PrepareSQL(paras[0]);
       CStdString result;
-      if (musicdatabase.GetArbitraryQuery(paras[0], openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
+      if (musicdatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
         return SetResponse(result);
       else
         return SetResponse(openTag+"Error:"+result);
@@ -953,7 +954,8 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
   if (videodatabase.Open())
   {
     CStdString result;
-    if (videodatabase.GetArbitraryQuery(paras[0], openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
+    CStdString sql = videodatabase.PrepareSQL(paras[0]);
+    if (videodatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
       return SetResponse(result);
     else
       return SetResponse(openTag+"Error:"+result);
@@ -975,7 +977,8 @@ int CXbmcHttp::xbmcExecVideoDataBase(int numParas, CStdString paras[])
     if (videodatabase.Open())
     {
       CStdString result;
-      if (videodatabase.ArbitraryExec(paras[0]))
+      CStdString sql = videodatabase.PrepareSQL(paras[0]);
+      if (videodatabase.ArbitraryExec(sql))
         return SetResponse(openTag+"SQL Exec Done");
       else
         return SetResponse(openTag+"Error:SQL Exec Failed");
@@ -997,7 +1000,8 @@ int CXbmcHttp::xbmcExecMusicDataBase(int numParas, CStdString paras[])
     if (musicdatabase.Open())
     {
       CStdString result;
-      if (musicdatabase.ArbitraryExec(paras[0]))
+      CStdString sql = musicdatabase.PrepareSQL(paras[0]);
+      if (musicdatabase.ArbitraryExec(sql))
         return SetResponse(openTag+"SQL Exec Done");
       else
         return SetResponse(openTag+"Error:SQL Exec Failed");
