@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31818 -->
+<!--Based on english strings version 32890 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1816,7 +1816,7 @@
   <string id="20373">季</string>
   <string id="20374">下载影片信息</string>
   <string id="20375">不指定内容</string>
-
+  <string id="20376">原片名</string>
   <string id="20377">刷新剧集信息</string>
   <string id="20378">刷新所有分集信息？</string>
   <string id="20379">被选文件夹包含单个电视剧集</string>
