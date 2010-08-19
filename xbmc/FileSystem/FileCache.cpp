@@ -117,25 +117,6 @@ bool CFileCache::Open(const CURL& url)
   return true;
 }
 
-bool CFileCache::Attach(IFile *pFile) {
-    CSingleLock lock(m_sync);
-
-  if (!pFile || !m_pCache)
-    return false;
-
-  m_source.Attach(pFile);
-
-  if (m_pCache->Open() != CACHE_RC_OK) {
-    CLog::Log(LOGERROR,"CFileCache::Attach - failed to open cache");
-    Close();
-    return false;
-  }
-
-  CThread::Create(false);
-
-  return true;
-}
-
 void CFileCache::Process()
 {
   if (!m_pCache) {

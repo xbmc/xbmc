@@ -84,8 +84,6 @@ public:
   int IoControl(int request, void* param) { if (m_pFile) return m_pFile->IoControl(request, param); return -1; }
 
   IFile *GetImplemenation() { return m_pFile; }
-  IFile *Detach();
-  void   Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName, bool bUseCache = true);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
