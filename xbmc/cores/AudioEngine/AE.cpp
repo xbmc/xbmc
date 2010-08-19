@@ -639,11 +639,12 @@ inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32
   while((((uintptr_t)data & 0xF) || ((uintptr_t)add & 0xF)) && count > 0)
   {
     data[0] += add[0] * mul;
+    ++add;
     ++data;
     --count;
   }
 
-  uint32_t even = count & 0x2;
+  uint32_t even = count & ~0x3;
   for(uint32_t i = 0; i < even; i+=4, data+=4, add+=4)
   {
     __m128 ad      = _mm_load_ps(add );
@@ -662,16 +663,16 @@ inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32
       __m128 to;
       if (odd == 2)
       {
-        ad = _mm_set_ps(add [0], add [1], 0, 0);
-        to = _mm_set_ps(data[0], data[1], 0, 0);
+        ad = _mm_setr_ps(add [0], add [1], 0, 0);
+        to = _mm_setr_ps(data[0], data[1], 0, 0);
         __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
         data[0] = ((float*)&ou)[0];
         data[1] = ((float*)&ou)[1];
       }
       else
       {
-        ad = _mm_set_ps(add [0], add [1], add [2], 0);
-        to = _mm_set_ps(data[0], data[1], data[2], 0);
+        ad = _mm_setr_ps(add [0], add [1], add [2], 0);
+        to = _mm_setr_ps(data[0], data[1], data[2], 0);
         __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
         data[0] = ((float*)&ou)[0];
         data[1] = ((float*)&ou)[1];
@@ -693,7 +694,7 @@ inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
     --count;
   }
 
-  uint32_t even = count & 2;
+  uint32_t even = count & ~0x3;
   for(uint32_t i = 0; i < even; i+=4, data+=4)
   {
     __m128 to      = _mm_load_ps(data);
@@ -710,14 +711,14 @@ inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
       __m128 to;
       if (odd == 2)
       {
-        to = _mm_set_ps(data[0], data[1], 0, 0);
+        to = _mm_setr_ps(data[0], data[1], 0, 0);
         __m128 ou = _mm_mul_ps(to, m);
         data[0] = ((float*)&ou)[0];
         data[1] = ((float*)&ou)[1];
       }
       else
       {
-        to = _mm_set_ps(data[0], data[1], data[2], 0);
+        to = _mm_setr_ps(data[0], data[1], data[2], 0);
         __m128 ou = _mm_mul_ps(to, m);
         data[0] = ((float*)&ou)[0];
         data[1] = ((float*)&ou)[1];
