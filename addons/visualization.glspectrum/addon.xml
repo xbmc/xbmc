@@ -22,7 +22,7 @@
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
     <description lang="fi">Näyttää pyörivän 3D-spektrianalysaattorin, joka liikkuu musiikin tahdissa tuottaen aaltotehosteen spektrikuvaajaan.
 Spektripalkin korkeuden, nopeuden, ja piirtotavan (täytetyt, pisteet, ääriviivat) voi asettaa asetuksista. Spectrum on kevyt visualisointi joka näyttää hyvältä.</description>
-    <description lang="fr">Opengl Spectrum est une visualisation montrant un analyseur de spectre 3D en rotation sous Opengl. Il réagit au tempo de la musique créant un effet d'onde sur la grille.  
+    <description lang="fr">Opengl Spectrum est une visualisation montrant un analyseur de spectre 3D en rotation sous Opengl. Il réagit au tempo de la musique créant un effet d'onde sur la grille.
 Il possède quelques paramètres pour ajuster la hauteur de barre du spectre, sa vitesse, et le rendu des barres (plein, en points, en fil de fer). Une visualisation légère, agréable à regarder.</description>
     <description lang="hu">Az Opengl Spectrum egy olyan vizualizáció ami egy 3D hang spektrum analizátort mutat Opengl segítségével megjelenítve, ami a zene ritmusára mozog egy hullám-effektust képezve a teljes spektrumhálón.
 Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az oszlopok hogyan jelenjenek meg (teli, pontok, drótváz). Ez egy kis erőforrásigényű vizualizáció ami nagyon jól mutat.</description>
@@ -30,7 +30,8 @@ Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az o
     <description lang="nl">Opengl Spectrum is een visualisatie die een roterende 3D spectrum analyse weergeeft met behulp van OpenGL. Het beweegt mee met de beat van de muziek, waarbij een golf effect ontstaat over het spectrum raster.
 Het bevat instellingen om de spectrumhoogte, de snelheid en hoe de balken worden weergegeven (vol, stippen, ...) aan te passen. Het neemt weinig geheugen in en vergt ook weinig van de CPU.</description>
     <description lang="pl">Wizualizacja pokazuje obracający się, trójwymiarowy analizator widma, renderowany przy użyciu OpenGL. Możesz ustawić wysokość słupków, ich prędkość i wygląd.</description>
-    <description lang="pt">O OpenGL Spectrum é uma visualização que mostra um analisador espectral rotativavo, renderizado em OpenGL, que se sincroniza com a batida, criando assin um efeito de ondas na grelha espectral.</description>
+    <description lang="pt">O OpenGL Spectrum é uma visualização que mostra um analisador espectral rotativavo, renderizado em OpenGL, que se sincroniza com a batida, criando assin um efeito de ondas na grelha espectral.
+Pode-se definir a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que utiliza pouco o CPU e com um visual fantástico.</description>
     <description lang="zh">Opengl Spectrum可视化效果是Opengl渲染的一个旋转的三维频谱分析图像，频谱矩阵随着音乐节拍而象波浪起伏。
 你还可以设置频谱棒的高度、变换速度、以及呈现效果（固体、点、框架）。这是一个不错的轻量级，低CPU使用率的可视化效果。</description>
     <disclaimer></disclaimer>
