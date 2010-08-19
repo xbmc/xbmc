@@ -21,9 +21,10 @@
  */
 
 #include "StdString.h"
-#include "Database.h"
 #include "tinyXML/tinyxml.h"
 #include <vector>
+
+class CDatabase;
 
 class CSmartPlaylistRule
 {
@@ -112,7 +113,7 @@ public:
                     TEXTIN_FIELD
                   };
 
-  CStdString GetWhereClause(CDatabase *db, const CStdString& strType);
+  CStdString GetWhereClause(CDatabase &db, const CStdString& strType);
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
@@ -165,8 +166,8 @@ public:
   bool GetOrderAscending() const { return m_orderAscending; };
 
   void AddRule(const CSmartPlaylistRule &rule);
-  CStdString GetWhereClause(CDatabase *db, bool needWhere = true);
-  CStdString GetOrderClause(CDatabase *db);
+  CStdString GetWhereClause(CDatabase &db, bool needWhere = true);
+  CStdString GetOrderClause(CDatabase &db);
 
   const std::vector<CSmartPlaylistRule> &GetRules() const;
 
