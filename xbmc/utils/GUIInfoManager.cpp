@@ -74,6 +74,8 @@
 #include "SingleLock.h"
 #include "log.h"
 
+#include "addons/AddonManager.h"
+
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
