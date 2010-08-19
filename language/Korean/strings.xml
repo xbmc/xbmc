@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/26/2010-->
+<!--Translator: airplanez-->
+<!--Email: airplanez@gmail.com-->
+<!--Date of translation: 08/19/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1051,8 +1053,10 @@
   <string id="13386">시간 기반 검색 사용</string>
   <string id="13387">트랙 이름 템플릿 - 오른쪽</string>
   <string id="13388">사전설정</string>
-  <string id="13389">이 시각화에 사용가능한&#10;사전설정이 없습니다</string>
-  <string id="13390">이 시각화에 사용가능한&#10;설정이 없습니다</string>
+  <string id="13389">이 시각화에 사용가능한
+사전설정이 없습니다</string>
+  <string id="13390">이 시각화에 사용가능한
+설정이 없습니다</string>
   <string id="13391">꺼내기/읽기</string>
   <string id="13392">오디오 재생중이면 시각화 사용</string>
   <string id="13393">크기 계산</string>
@@ -1615,6 +1619,7 @@
   <string id="20373">시즌</string>
   <string id="20374">영화 정보 다운로드</string>
   <string id="20375">컨텐츠 할당해제</string>
+  <string id="20376">원래 제목</string>
   <string id="20377">TV 쇼 정보 새로고침</string>
   <string id="20378">모든 에피소트 정보를 새로고치겠습니까?</string>
   <string id="20379">선택된 폴더는 하나의 TV 쇼 포함</string>
