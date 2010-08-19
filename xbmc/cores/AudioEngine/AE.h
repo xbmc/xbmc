@@ -118,7 +118,8 @@ private:
   /* currently playing sounds */
   typedef struct {
     CAESound     *owner;
-    unsigned int  frame;
+    float        *samples;
+    unsigned int  frames;
   } SoundState;
   std::list<SoundState>     m_playing_sounds;
 
@@ -139,9 +140,9 @@ private:
   CCriticalSection          m_critSection, m_critSectionSink, m_critSectionAC;
 
 #ifdef __SSE__
-  static inline void SSENormalizeSamples(float *samples, uint32_t count, const uint32_t div);
-  static inline void SSEMixSamples      (float *dest, float *src, uint32_t count, const float volume);
-  static inline void SSEDeAmpSamples    (float *samples, uint32_t count, const float volume);
+  /* NOTE: THESE FUNCTIONS REQUIRE ALIGNED DATA */
+  static inline void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
+  static inline void SSEMulArray   (float *data, const float mul, uint32_t count);
 #endif
 };
 

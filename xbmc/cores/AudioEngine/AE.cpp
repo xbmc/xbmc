@@ -440,8 +440,8 @@ void CAE::Run()
       }
 
       float *frame = (*sitt).samples;
-      (*sitt).frames  -= m_channelCount;
       (*sitt).samples += m_channelCount;
+      --(*sitt).frames;
 
       /* if muted, just move on, but still take
          a frame so the sound does not hang */
@@ -454,8 +454,7 @@ void CAE::Run()
       float volume = (*sitt).owner->GetVolume();
 
       #ifdef __SSE__
-      /* if we have more then one channel, and the data is aligned */
-      if (m_channelCount > 1 && ((uintptr_t)frame & 0xF) == 0)
+      if (m_channelCount > 1)
         CAE::SSEMulAddArray(out, frame, volume, m_channelCount);
       else
       #endif
@@ -635,8 +634,16 @@ void CAE::SetVolume(float volume)
 inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32_t count)
 {
   const __m128 m = _mm_set_ps1(mul);
-  uint32_t even = count & 0x2;
 
+  /* work around invalid alignment */
+  while((((uintptr_t)data & 0xF) || ((uintptr_t)add & 0xF)) && count > 0)
+  {
+    data[0] += add[0] * mul;
+    ++data;
+    --count;
+  }
+
+  uint32_t even = count & 0x2;
   for(uint32_t i = 0; i < even; i+=4, data+=4, add+=4)
   {
     __m128 ad      = _mm_load_ps(add );
@@ -648,7 +655,7 @@ inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32
   {
     uint32_t odd = count - even;
     if (odd == 1)
-      data[0] += *add * mul;
+      data[0] += add[0] * mul;
     else
     {
       __m128 ad;
@@ -677,8 +684,16 @@ inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32
 inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
 {
   const __m128 m = _mm_set_ps1(mul);
-  uint32_t even = count & 2;
 
+  /* work around invalid alignment */
+  while(((uintptr_t)data & 0xF) && count > 0)
+  {
+    data[0] *= mul;
+    ++data;
+    --count;
+  }
+
+  uint32_t even = count & 2;
   for(uint32_t i = 0; i < even; i+=4, data+=4)
   {
     __m128 to      = _mm_load_ps(data);
