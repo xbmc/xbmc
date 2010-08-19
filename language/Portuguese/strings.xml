@@ -100,7 +100,7 @@
   <string id="140">CPU:</string>
   <string id="141">GPU:</string>
   <string id="142">Hora:</string>
-  <string id="143">Hora e Data:</string>
+  <string id="143">Actual:</string>
   <string id="144">Versão:</string>
   <string id="145">Rede:</string>
   <string id="146">Tipo:</string>
@@ -1793,7 +1793,7 @@
   <string id="20373">Temporada</string>
   <string id="20374">A carregar informação de vídeo</string>
   <string id="20375">Conteúdo não atribuído</string>
-
+  <string id="20376">Título original</string>
   <string id="20377">Actualizar informação da série de TV</string>
   <string id="20378">Actualizar informação de todos os episódios?</string>
   <string id="20379">A pasta contém apenas uma série de TV</string>
