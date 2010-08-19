@@ -42,6 +42,7 @@ using namespace std;
 
 CAE::CAE():
   m_running      (false),
+  m_reOpened     (false),
   m_sink         (NULL ),
   m_passthrough  (false),
   m_buffer       (NULL ),
@@ -90,6 +91,9 @@ bool CAE::OpenSink()
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && sampleRate == m_format.m_sampleRate && stdChLayout == m_stdChLayout)
     return true;
+
+  /* let the thread know we have re-opened the sink */
+  m_reOpened = true;
 
   /* we are going to open, so close the old sink if it was open */
   bool reopen = false;
@@ -483,6 +487,15 @@ void CAE::Run()
     /* we need the sink */
     CSingleLock sinkLock(m_critSectionSink);
 
+    /* we dont care if it has been re-opened here */
+    m_reOpened = false;
+
+    /*
+       take a copy of the channel count so we dont crash during
+       the loop if it changes on us
+    */
+    unsigned int ourChannelCount = m_channelCount;
+
     /* the size of these is dependant on the sink's channels */
     DECLARE_ALIGNED(16, float, out[m_channelCount         ]);
     DECLARE_ALIGNED(16, float, dst[m_format.m_channelCount]);
@@ -499,11 +512,10 @@ void CAE::Run()
         m_bufferSize -= wrote;
     }
 
-    /* we are finished with the sink */
-    sinkLock.Leave();
-
     memset(out, 0, sizeof(out));
     div = 1;
+
+    sinkLock.Leave();
 
 /* ============== AESound MIXER STAGE ============= */
     CSingleLock lock(m_critSection);
@@ -520,15 +532,15 @@ void CAE::Run()
 
       float *frame = (*sitt).samples;
       float volume = (*sitt).owner->GetVolume();
-      (*sitt).samples += m_channelCount;
+      (*sitt).samples += ourChannelCount;
       --(*sitt).frames;
 
       #ifdef __SSE__
-      if (m_channelCount > 1)
-        CAE::SSEMulAddArray(out, frame, volume, m_channelCount);
+      if (ourChannelCount > 1)
+        CAE::SSEMulAddArray(out, frame, volume, ourChannelCount);
       else
       #endif
-      for(i = 0; i < m_channelCount; ++i)
+      for(i = 0; i < ourChannelCount; ++i)
         out[i] += frame[i] * volume;
 
       ++div;
@@ -573,33 +585,32 @@ void CAE::Run()
 
       float volume = stream->GetVolume();
       #ifdef __SSE__
-      if (m_channelCount > 1)
-        CAE::SSEMulAddArray(out, frame, volume, m_channelCount);
+      if (ourChannelCount > 1)
+        CAE::SSEMulAddArray(out, frame, volume, ourChannelCount);
       else
       #endif
       {
-        for(i = 0; i < m_channelCount; ++i)
+        for(i = 0; i < ourChannelCount; ++i)
           out[i] += frame[i] * volume;
       }
 
       ++div;
       ++itt;
     }
+    lock.Leave();
 
 /* ============== NORMALIZATION STAGE ============= */
-
-    lock.Leave();
 
     if (div > 1)
     {
       #ifdef __SSE__
-      if (m_channelCount > 1)
-        CAE::SSEMulArray(out, 1.0f / div, m_channelCount);
+      if (ourChannelCount > 1)
+        CAE::SSEMulArray(out, 1.0f / div, ourChannelCount);
       else
       #endif
       {
         float mul = 1.0f / div;
-        for(i = 0; i < m_channelCount; ++i)
+        for(i = 0; i < ourChannelCount; ++i)
           out[i] *= mul;
       }
     }
@@ -611,7 +622,7 @@ void CAE::Run()
     {
       /* add the frame to the visBuffer */
       memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(out));
-      m_visBufferSize += m_channelCount;
+      m_visBufferSize += ourChannelCount;
 
       /* if the buffer full, flush it through */
       if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
@@ -633,17 +644,24 @@ void CAE::Run()
     if (m_volume != 1.0f)
     {
       #ifdef __SSE__
-      if (m_channelCount > 1)
-        CAE::SSEMulArray(out, m_volume, m_channelCount);
+      if (ourChannelCount > 1)
+        CAE::SSEMulArray(out, m_volume, ourChannelCount);
       else
       #endif
       {
-        for(i = 0; i < m_channelCount; ++i)
+        for(i = 0; i < ourChannelCount; ++i)
           out[i] *= m_volume;
       }
     }
 
 /* ============== REMAP AND BUFFER STAGE ============= */
+    sinkLock.Enter();
+    /* if the config has changed while in the loop, we need to assume the data is stuffed */
+    if (m_reOpened)
+    {
+      m_reOpened = false;
+      continue;
+    }
 
     /* remap the frame before we buffer it */
     m_remap.Remap(out, dst, 1);

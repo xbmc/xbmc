@@ -107,7 +107,7 @@ private:
   void RemoveStream(CAEStream *stream);
 
   /* internal vars */
-  bool m_running;
+  bool m_running, m_reOpened;
   CCriticalSection m_runLock;         /* released when the thread exits */
   CCriticalSection m_critSection;     /* generic lock */
   CCriticalSection m_critSectionSink; /* sink & configuration lock */
