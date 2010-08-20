@@ -498,6 +498,7 @@ void CAE::Run()
     mixLock.Leave();
 
     sinkLock.Enter();
+    if (!m_reOpened)
       RunBufferStage(out);
     sinkLock.Leave();
   }
