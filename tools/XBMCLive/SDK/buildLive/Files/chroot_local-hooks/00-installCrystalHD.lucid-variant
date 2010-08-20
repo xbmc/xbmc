@@ -48,6 +48,7 @@ make
 popd 
 
 cp crystalhd/firmware/fwbin/70012/*.bin /lib/firmware
+cp crystalhd/firmware/fwbin/70015/*.bin /lib/firmware
 
 mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* /usr/lib
 
