@@ -22,7 +22,7 @@
 
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 
-if ! ls $WORKPATH/plymouth-theme-xbmc-logo.tar > /dev/null 2>&1; then
+if ! ls $WORKPATH/plymouth-theme-xbmc-logo*.deb > /dev/null 2>&1; then
 	cd $WORKPATH
 	svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk/tools/XBMCLive/PlymouthThemes/plymouth-theme-xbmc-logo
 	if [ "$?" -ne "0" ]; then
@@ -30,18 +30,12 @@ if ! ls $WORKPATH/plymouth-theme-xbmc-logo.tar > /dev/null 2>&1; then
 		exit 1
 	fi
 
-	tar cf plymouth-theme-xbmc-logo.tar plymouth-theme-xbmc-logo/
+	cd plymouth-theme-xbmc-logo
+	dpkg-buildpackage -rfakeroot -b -uc -us 
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
+	cd ..
 fi
 
-cd plymouth-theme-xbmc-logo
-dpkg-buildpackage -rfakeroot -b -uc -us 
-if [ "$?" -ne "0" ]; then
-	exit 1
-fi
-cd ..
-
-if ! ls $WORKPATH/plymouth-theme-xbmc-logo*.deb > /dev/null 2>&1; then
-	echo "Files missing (plymouth-theme-xbmc-logo), exiting..."
-	exit 1
-fi
 cp $WORKPATH/plymouth-theme-xbmc-logo*.deb $WORKPATH/buildLive/Files/chroot_local-packages
