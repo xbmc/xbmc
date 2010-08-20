@@ -143,29 +143,44 @@ public:
   void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
   AudioUnit GetComponent(){return m_Component;}
   void Close();
-  bool SetCurrentDevice(AudioDeviceID deviceId);
   bool Initialize();
   bool IsInitialized() {return m_Initialized;}
   bool SetRenderProc(AURenderCallback callback, void* pClientData);
-  UInt32 GetBufferFrameSize();
-  bool SetMaxFramesPerSlice(UInt32 maxFrames);
-  
   bool GetInputFormat(AudioStreamBasicDescription* pDesc);
   bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
   bool SetInputFormat(AudioStreamBasicDescription* pDesc);
   bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
+  bool SetMaxFramesPerSlice(UInt32 maxFrames);
+protected:
+  AudioUnit m_Component;
+  bool m_Initialized;
+};
+
+class CAUOutputDevice : public CCoreAudioUnit
+{
+public:
+  CAUOutputDevice();
+  virtual ~CAUOutputDevice();
+  bool SetCurrentDevice(AudioDeviceID deviceId);
   bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
   bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
+  UInt32 GetBufferFrameSize();
   
   void Start();
   void Stop();
   bool IsRunning();
+
   Float32 GetCurrentVolume();
-  bool SetCurrentVolume(Float32 vol);
-  
+  bool SetCurrentVolume(Float32 vol);  
 protected:
-  AudioUnit m_Component;
-  bool m_Initialized;
+};
+
+class CAUMatrixMixer : public CCoreAudioUnit
+{
+public:
+  CAUMatrixMixer();
+  virtual ~CAUMatrixMixer();
+protected:
 };
 
 // Helper Functions

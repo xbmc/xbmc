@@ -109,7 +109,7 @@ static int sdp_get_address(char *dest_addr, int size, int *ttl, const char *url)
     const char *p;
     char proto[32];
 
-    ff_url_split(proto, sizeof(proto), NULL, 0, dest_addr, size, &port, NULL, 0, url);
+    av_url_split(proto, sizeof(proto), NULL, 0, dest_addr, size, &port, NULL, 0, url);
 
     *ttl = 0;
 
@@ -148,6 +148,19 @@ static char *extradata2psets(AVCodecContext *c)
         av_log(c, AV_LOG_ERROR, "Too much extradata!\n");
 
         return NULL;
+    }
+    if (c->extradata[0] == 1) {
+        uint8_t *dummy_p;
+        int dummy_int;
+        AVBitStreamFilterContext *bsfc= av_bitstream_filter_init("h264_mp4toannexb");
+
+        if (!bsfc) {
+            av_log(c, AV_LOG_ERROR, "Cannot open the h264_mp4toannexb BSF!\n");
+
+            return NULL;
+        }
+        av_bitstream_filter_filter(bsfc, c, NULL, &dummy_p, &dummy_int, NULL, 0, 0);
+        av_bitstream_filter_close(bsfc);
     }
 
     psets = av_mallocz(MAX_PSET_SIZE);

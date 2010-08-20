@@ -98,9 +98,11 @@ extern "C"
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
 #if Py_UNICODE_SIZE == 2
-  FUNCTION(PyUnicodeUCS2_AsUnicode)
+  FUNCTION(PyUnicodeUCS2_AsUTF8String)
+  FUNCTION(PyUnicodeUCS2_DecodeUTF8)
 #else
-  FUNCTION(PyUnicodeUCS4_AsUnicode)
+  FUNCTION(PyUnicodeUCS4_AsUTF8String)
+  FUNCTION(PyUnicodeUCS4_DecodeUTF8)
 #endif
   FUNCTION(Py_MakePendingCalls)
   FUNCTION(PyEval_SaveThread)
@@ -211,9 +213,11 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Format)) &&
 #if Py_UNICODE_SIZE == 2
-      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUTF8String)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_DecodeUTF8)) &&
 #else
-      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUnicode)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUTF8String)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_DecodeUTF8)) &&
 #endif
       dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_SaveThread)) &&

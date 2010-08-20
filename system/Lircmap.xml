@@ -57,7 +57,7 @@
 		<green>Green</green>
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
-                <teletext>Teletext</teletext>
+		<teletext>Teletext</teletext>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
@@ -361,5 +361,49 @@
 		<info>epg</info>
 		<recordedtv>recordlist</recordedtv>
 		<title>teletext</title>
+	</remote>
+
+	<remote device="linux-input-layer">
+		<left>KEY_LEFT</left>
+		<right>KEY_RIGHT</right>
+		<up>KEY_UP</up>
+		<down>KEY_DOWN</down>
+		<select>KEY_ENTER</select>
+		<start>KEY_SELECT</start>
+		<back>KEY_EXIT</back>
+		<record>KEY_RECORD</record>
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+		<forward>KEY_FASTFORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<channelplus>KEY_CHANNELUP</channelplus>
+		<channelminus>KEY_CHANNELDOWN</channelminus>
+		<skipplus>KEY_NEXTSONG</skipplus>
+		<skipminus>KEY_PREVIOUSSONG</skipminus>
+		<title>KEY_TEXT</title>
+		<subtitle>KEY_SUBTITLE</subtitle>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<myvideo>KEY_VIDEO</myvideo>
+		<mymusic>KEY_AUDIO</mymusic>
+		<mypictures>KEY_MHP</mypictures>
+		<mytv>KEY_TV</mytv>
+		<one>KEY_1</one>
+		<two>KEY_2</two>
+		<three>KEY_3</three>
+		<four>KEY_4</four>
+		<five>KEY_5</five>
+		<six>KEY_6</six>
+		<seven>KEY_7</seven>
+		<eight>KEY_8</eight>
+		<nine>KEY_9</nine>
+		<zero>KEY_0</zero>
+		<red>KEY_RED</red>
+		<green>KEY_GREEN</green>
+		<yellow>KEY_YELLOW</yellow>
+		<blue>KEY_BLUE</blue>
 	</remote>
 </lircmap>

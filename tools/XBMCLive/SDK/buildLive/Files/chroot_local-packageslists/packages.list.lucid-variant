@@ -14,6 +14,7 @@ hts-tvheadend
 policykit-1
 upower
 udisks
+pmount
 python-software-properties
 plymouth
 plymouth-theme-ubuntu-text
@@ -23,6 +24,7 @@ xbmc-ppa-keyring
 python-apt
 xbmc-live
 xbmc
+plymouth-theme-xbmc-logo
 g++ autoconf
 fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1

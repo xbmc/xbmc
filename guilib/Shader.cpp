@@ -251,7 +251,10 @@ bool CARBPixelShader::Compile()
   glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &err);
   if (err>0)
   {
-    CLog::Log(LOGERROR, "GL: Error compiling ARB pixel shader");
+    const char* errStr = (const char*)glGetString(GL_PROGRAM_ERROR_STRING_ARB);
+    if (!errStr)
+      errStr = "NULL";
+    CLog::Log(LOGERROR, "GL: Error compiling ARB pixel shader, GL_PROGRAM_ERROR_STRING_ARB = %s", errStr);
     m_compiled = false;
   }
   else

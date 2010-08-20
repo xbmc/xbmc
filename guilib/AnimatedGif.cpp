@@ -47,6 +47,9 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
  #define BI_BITFIELDS  3L
 #endif
 
+#undef ALIGN
+#define ALIGN sizeof(int)         ///< Windows GDI expects all int-aligned
+
 // Macros to swap data endianness
 #define SWAP16(X)    X=Endian_SwapLE16(X)
 #define SWAP32(X)    X=Endian_SwapLE32(X)

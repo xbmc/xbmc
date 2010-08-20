@@ -70,9 +70,9 @@ static bool LoadTexture(int width, int height, int stride
   *v = (float)height / desc.Height;
 
   D3DLOCKED_RECT lr;
-  if (!texture->LockRect(0, &lr, NULL, 0))
+  if (!texture->LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)");
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
     texture->Release();
     return false;
   }
@@ -106,7 +106,12 @@ static bool LoadTexture(int width, int height, int stride
     memcpy(dst, src, bpp * width);
   }
 
-  texture->UnlockRect(0);
+  if (!texture->UnlockRect(0))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture");
+    texture->Release();
+    return false;
+  }
 
   return true;
 }
@@ -254,6 +259,9 @@ void COverlayQuadsDX::Render(SRenderState &state)
   device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
   device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
 
+  device->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+  device->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+
   device->SetRenderState( D3DRS_LIGHTING , FALSE );
   device->SetRenderState( D3DRS_ZENABLE  , FALSE );
   device->SetRenderState( D3DRS_FOGENABLE, FALSE );
@@ -363,7 +371,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6, g_Windowing.DefaultD3DUsage(), m_fvf, g_Windowing.DefaultD3DPool()))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
@@ -448,6 +456,9 @@ void COverlayImageDX::Render(SRenderState &state)
   device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_SELECTARG1 );
   device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+
+  device->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+  device->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
 
   device->SetRenderState( D3DRS_LIGHTING , FALSE );
   device->SetRenderState( D3DRS_ZENABLE  , FALSE );

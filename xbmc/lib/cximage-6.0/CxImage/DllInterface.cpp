@@ -103,7 +103,9 @@ int DetectFileType(const BYTE* pBuffer, int nBufSize)
     return CXIMAGE_FORMAT_PNG;
   if (pBuffer[0] == 'B' && pBuffer[1] == 'M')
     return CXIMAGE_FORMAT_BMP;
-  if (pBuffer[0] == 0xFF && pBuffer[1] == 0xD8 && pBuffer[2] == 0xFF && pBuffer[3] == 0xE0)
+  if (pBuffer[0] == 0xFF && pBuffer[1] == 0xD8 && pBuffer[2] == 0xFF)
+    // don't include the last APP0 byte (0xE0), as some (non-conforming) JPEG/JFIF files might have some other
+    // APPn-specific data here, and we should skip over this.
     return CXIMAGE_FORMAT_JPG;
   return CXIMAGE_FORMAT_UNKNOWN;
 }

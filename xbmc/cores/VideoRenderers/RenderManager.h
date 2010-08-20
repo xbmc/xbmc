@@ -40,6 +40,8 @@ namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
 
+#define ERRORBUFFSIZE 30
+
 class CXBMCRenderManager
 {
 public:
@@ -222,6 +224,8 @@ protected:
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
+  double     m_errorbuff[ERRORBUFFSIZE];
+  int        m_errorindex;
   EFIELDSYNC m_presentfield;
   EINTERLACEMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;

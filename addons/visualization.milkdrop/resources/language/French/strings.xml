@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Temps de mélange automatique</string>
+    <string id="30001">Temps entre les présélections</string>
+    <string id="30002">Temps supplémentaire pour le random</string>
+    <string id="30003">Activer le filtre Anisiotropique</string>
+    <string id="30004">Permettre les réductions brusques</string>
+    <string id="30005">Seuil de volume pour les réductions brusques</string>
+    <string id="30006">Temps moyen entre les coupures</string>
+    <string id="30007">Taux de rafraichissement maximum </string>
+    <string id="30008">Activer la Stereo 3D</string>
+    <string id="30009">Pack de présélections</string>
+</strings>

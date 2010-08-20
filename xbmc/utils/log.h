@@ -49,10 +49,10 @@
 
 class CLog
 {
-  static FILE*      m_file;
-  static int        m_repeatCount;
-  static int        m_repeatLogLevel;
-  static CStdString m_repeatLine;
+  static FILE*       m_file;
+  static int         m_repeatCount;
+  static int         m_repeatLogLevel;
+  static CStdString* m_repeatLine;
 public:
   CLog();
   virtual ~CLog(void);

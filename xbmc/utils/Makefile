@@ -2,6 +2,7 @@ INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
+     AutoPtrHandle.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \

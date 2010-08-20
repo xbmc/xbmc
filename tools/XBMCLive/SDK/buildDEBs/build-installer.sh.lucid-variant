@@ -28,7 +28,7 @@ fi
 
 # Rationale: live-base and live-installer have not been synced properly on Lucid (live-base lagging behind), so we need to have a workaround
 # Retrieve live_installer sources from Ubuntu's repositories
-if ! ls live-installer*.deb > /dev/null 2>&1 ; then
+if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
 	echo "Retrieving live_installer sources..."
 
 	repoURL="http://archive.ubuntu.com/ubuntu/pool/main/l/live-installer/"

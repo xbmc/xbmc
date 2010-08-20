@@ -408,15 +408,15 @@ namespace PYXBMC
     int iString;
     if (!PyArg_ParseTuple(args, (char*)"i", &iString)) return NULL;
 
-    CStdStringW unicodeLabel;
+    CStdString label;
     if (iString >= 30000 && iString <= 30999)
-      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
+      label = g_localizeStringsTemp.Get(iString);
     else if (iString >= 32000 && iString <= 32999)
-      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
+      label = g_localizeStringsTemp.Get(iString);
     else
-      g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
+      label = g_localizeStrings.Get(iString);
 
-    return Py_BuildValue((char*)"u", unicodeLabel.c_str());
+    return PyUnicode_DecodeUTF8(label.c_str(), label.size(), "replace");
   }
 
   // getSkinDir() method
@@ -851,15 +851,33 @@ namespace PYXBMC
     CStdString result;
 
     if (strcmpi(id, "datelong") == 0)
+    {
       result = g_langInfo.GetDateFormat(true);
+      result.Replace("DDDD", "%A");
+      result.Replace("MMMM", "%B");
+      result.Replace("D", "%d");
+      result.Replace("YYYY", "%Y");
+    }
     else if (strcmpi(id, "dateshort") == 0)
+    {
       result = g_langInfo.GetDateFormat(false);
+      result.Replace("MM", "%m");
+      result.Replace("DD", "%d");
+      result.Replace("YYYY", "%Y");
+    }
     else if (strcmpi(id, "tempunit") == 0)
       result = g_langInfo.GetTempUnitString();
     else if (strcmpi(id, "speedunit") == 0)
       result = g_langInfo.GetSpeedUnitString();
     else if (strcmpi(id, "time") == 0)
+    {
       result = g_langInfo.GetTimeFormat();
+      result.Replace("H", "%H");
+      result.Replace("h", "%I");
+      result.Replace("mm", "%M");
+      result.Replace("ss", "%S");
+      result.Replace("xx", "%p");
+    }
     else if (strcmpi(id, "meridiem") == 0)
       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 
@@ -1082,7 +1100,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
-    PyModule_AddObject(pXbmcModule, "abortRequested", PyBool_FromLong(0));
+    PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
   }
 }
 

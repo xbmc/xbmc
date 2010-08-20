@@ -68,18 +68,19 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
-#include "addons/Skin.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
 #include "SingleLock.h"
 #include "log.h"
+
+#include "addons/AddonManager.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
-using ADDON::CVisualisation;
+using namespace ADDON;
 
 CGUIInfoManager g_infoManager;
 
@@ -386,13 +387,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
-  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
-  {
-    int pos = strTest.Find(",");
-    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
-  }
+    else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+    {
+      int pos = strTest.Find(",");
+      int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+      int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+    }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -412,6 +413,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
     else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
+    else if (strTest.Left(16).Equals("system.hasaddon("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -1063,24 +1066,24 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case PLAYER_PATH:
   case PLAYER_FILEPATH:
-     if (m_currentFile)
-     {
-       if (m_currentFile->HasMusicInfoTag())
-         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
-       else if (m_currentFile->HasVideoInfoTag())
-         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
-       if (strLabel.IsEmpty())
-         strLabel = m_currentFile->m_strPath;
-     }
-     if (info == PLAYER_PATH)
-     {
-       // do this twice since we want the path outside the archive if this
-       // is to be of use.
-       if (CUtil::IsInArchive(strLabel))
-         strLabel = CUtil::GetParentPath(strLabel);
-       strLabel = CUtil::GetParentPath(strLabel);
-     }
-     break;
+    if (m_currentFile)
+    {
+      if (m_currentFile->HasMusicInfoTag())
+        strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+      else if (m_currentFile->HasVideoInfoTag())
+        strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+      if (strLabel.IsEmpty())
+        strLabel = m_currentFile->m_strPath;
+    }
+    if (info == PLAYER_PATH)
+    {
+      // do this twice since we want the path outside the archive if this
+      // is to be of use.
+      if (CUtil::IsInArchive(strLabel))
+        strLabel = CUtil::GetParentPath(strLabel);
+      strLabel = CUtil::GetParentPath(strLabel);
+    }
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1526,7 +1529,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+    {
+      AddonPtr addon;
+      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+      if (CAddonMgr::Get().GetAddon(strLabel,addon) && addon)
+        strLabel = addon->Name();
+    }
     break;
   case FANART_COLOR1:
     {
@@ -2240,6 +2248,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           }
         }
         break;
+      case SYSTEM_HAS_ADDON:
+      {
+        AddonPtr addon;
+        bReturn = CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        break;
+      }
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
       case CONTAINER_MOVE_NEXT:
@@ -3052,7 +3066,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRating;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRating.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+          strRating.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
         return strRating;
       }
       break;
@@ -3062,9 +3076,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
         {
           if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
-            strRatingAndVotes.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+            strRatingAndVotes.Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
           else
-            strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+            strRatingAndVotes.Format("%.1f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         }
         return strRatingAndVotes;
       }
@@ -3281,6 +3295,16 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
   // Find a thumb for this file.
   item.SetVideoThumb();
+  if (!item.HasThumbnail())
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(item.GetCachedVideoThumb(), strPath, strFileName);
+
+    // create unique thumb for auto generated thumbs
+    CStdString cachedThumb = strPath + "auto-" + strFileName;
+    if (CFile::Exists(cachedThumb))
+      item.SetThumbnailImage(cachedThumb);
+  }
 
   // find a thumb for this stream
   if (item.IsInternetStream())
@@ -3658,10 +3682,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return track;
     }
   case LISTITEM_ARTIST:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtist();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strArtist;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetArtist();
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
@@ -3671,14 +3695,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strDirector;
   case LISTITEM_ALBUM:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbum();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetAlbum();
     break;
   case LISTITEM_YEAR:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetYearString();
     if (item->HasVideoInfoTag())
     {
       CStdString strResult;
@@ -3686,6 +3708,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         strResult.Format("%i",item->GetVideoInfoTag()->m_iYear);
       return strResult;
     }
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetYearString();
     break;
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
@@ -3699,10 +3723,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
     break;
   case LISTITEM_GENRE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetGenre();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strGenre;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetGenre();
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -3721,12 +3745,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_RATING:
     {
       CStdString rating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
+        rating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > '0')
       { // song rating.  Images will probably be better than numbers for this in the long run
         rating = item->GetMusicInfoTag()->GetRating();
       }
-      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
-        rating.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
       return rating;
     }
   case LISTITEM_RATING_AND_VOTES:
@@ -3735,9 +3759,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       {
         CStdString strRatingAndVotes;
         if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
-          strRatingAndVotes.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
+          strRatingAndVotes.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
         else
-          strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+          strRatingAndVotes.Format("%.1f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         return strRatingAndVotes;
       }
     }
@@ -3751,11 +3775,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      if (item->HasMusicInfoTag())
-      {
-        if (item->GetMusicInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
-      }
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
@@ -3763,7 +3782,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
-
+      if (item->HasMusicInfoTag())
+      {
+        if (item->GetMusicInfoTag()->GetDuration() > 0)
+          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
+      }
       return duration;
     }
   case LISTITEM_PLOT:
@@ -3819,11 +3842,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         strThumb = "";
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
-      {
         strThumb = item->GetIconImage();
-        if (g_SkinInfo->GetVersion() <= 2.10)
-          strThumb.Insert(strThumb.Find("."), "Big");
-      }
       return strThumb;
     }
   case LISTITEM_OVERLAY:
@@ -3857,7 +3876,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_FILENAME_AND_PATH:
     {
       CStdString path;
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
         path = item->GetMusicInfoTag()->GetURL();
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;

@@ -61,6 +61,7 @@
 #endif
 
 #include "PlayList.h"
+#include "FileItem.h"
 
 using namespace std;
 
@@ -231,10 +232,6 @@ case TMSG_POWERDOWN:
 #endif
         exit(65);
         // TODO
-        //char szXBEFileName[1024];
-
-        //CIoSupport::GetXbePath(szXBEFileName);
-        //CUtil::RunXBE(szXBEFileName);
       }
       break;
 
@@ -507,10 +504,10 @@ case TMSG_POWERDOWN:
       if (pMsg->lpVoid)
       {
         PLAYLIST::CPlayList playlist = g_playlistPlayer.GetPlaylist(pMsg->dwParam1);
-        CFileItemList *list = (CFileItemList *)pMsg->lpVoid; //DO NOT DELETE THIS!
+        CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
 
         for (int i = 0; i < playlist.size(); i++)
-          list->Add(playlist[i]);
+          list->Add(CFileItemPtr(new CFileItem(*playlist[i])));
       }
       break;
 

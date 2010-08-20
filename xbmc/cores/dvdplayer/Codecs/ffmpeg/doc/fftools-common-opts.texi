@@ -1,3 +1,16 @@
+All the numerical options, if not specified otherwise, accept in input
+a string representing a number, which may contain one of the
+International System number postfixes, for example 'K', 'M', 'G'.
+If 'i' is appended after the postfix, powers of 2 are used instead of
+powers of 10. The 'B' postfix multiplies the value for 8, and can be
+appended after another postfix or used alone. This allows using for
+example 'KB', 'MiB', 'G' and 'B' as postfix.
+
+Options which do not take arguments are boolean options, and set the
+corresponding value to true. They can be set to false by prefixing
+with "no" the option name, for example using "-nofoo" in the
+commandline will set to false the boolean option with name "foo".
+
 @section Generic options
 
 These options are shared amongst the ff* tools.
@@ -68,5 +81,9 @@ Set the logging level used by the library.
 @item verbose
 @item debug
 @end table
+
+By default the program logs to stderr, if coloring is supported by the
+terminal, colors are used to mark errors and warnings. Log coloring
+can be disabled setting the environment variable @env{NO_COLOR}.
 
 @end table

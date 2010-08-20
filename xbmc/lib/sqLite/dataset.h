@@ -130,6 +130,9 @@ public:
   virtual void commit_transaction() {};
   virtual void rollback_transaction() {};
 
+/* virtual methods for formatting */
+  virtual std::string vprepare(const char *format, va_list args) { return std::string(""); };
+
   virtual bool in_transaction() {return false;};
 
 };

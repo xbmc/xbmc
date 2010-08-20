@@ -100,7 +100,6 @@ public:
 
 private:
   void ParseNative(const TiXmlElement* movie);
-  void ParseMyMovies(const TiXmlElement* movie);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

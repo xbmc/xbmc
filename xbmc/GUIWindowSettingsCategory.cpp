@@ -484,9 +484,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInScreens(strSetting, g_guiSettings.GetResolution());
     }
+    else if (strSetting.Equals("videoscreen.resolution"))
+    {
+      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), false);
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetValue(g_guiSettings.GetResolution());
+    }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
-      FillInResolutions(pSetting);
+      FillInRefreshRates(strSetting, g_guiSettings.GetResolution(), false);
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
@@ -496,10 +502,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSkinColors(pSetting);
     }
+    /*
+    FIXME: setting is hidden in GUI because not supported properly.
     else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
       FillInResolutions(pSetting);
     }
+    */
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -535,6 +544,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
       pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("myvideos.selectaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
+      pControl->AddLabel(g_localizeStrings.Get(208), SELECT_ACTION_PLAY_OR_RESUME);
+      pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
+      pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("network.enc"))
@@ -627,17 +646,23 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
+    else if (strSetting.Equals("videoscreen.resolution"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_guiSettings.GetInt("videoscreen.screen") != DM_WINDOWED);
+    }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
-        pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
+        pControl->SetEnabled(g_guiSettings.GetInt("videoscreen.screen") != DM_WINDOWED);
     }
     else if (strSetting.Equals("videoscreen.fakefullscreen"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
-        pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
+        pControl->SetEnabled(g_guiSettings.GetInt("videoscreen.screen") != DM_WINDOWED);
     }
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
@@ -797,11 +822,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
         pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
-    }
-    else if (strSetting.Equals("services.webserverport"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
 #endif
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
@@ -1032,10 +1052,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       }
     }
   }
-  else if (strSetting.Equals("weather.script"))
-  {
-    g_weatherManager.Refresh();
-  }
   else if (strSetting.Equals("weather.scriptsettings"))
   {
     CStdString name = g_guiSettings.GetString("weather.script");
@@ -1101,10 +1117,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_application.ReloadSkin();
     }
-	  else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
+    else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
     {
       g_weatherManager.Refresh();
- 	  }
+    }
   }
   else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
@@ -1156,9 +1172,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
-    vector<CStdString> choices;
-    choices.push_back(g_localizeStrings.Get(22034));
-    choices.push_back(g_localizeStrings.Get(22035));
+    CContextButtons choices;
+    choices.Add(1, g_localizeStrings.Get(22034));
+    choices.Add(2, g_localizeStrings.Get(22035));
 
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
@@ -1435,41 +1451,23 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("videoscreen.screen"))
   {
     DisplayMode mode = g_guiSettings.GetInt("videoscreen.screen");
-
     // Cascade
-    FillInResolutionsInternal("videoscreen.screenmode", mode);
-
-    // Auto-select the windowed or desktop resolution of the screen
-    int autoresolution = RES_DESKTOP;
-    if (mode == DM_WINDOWED)
-    {
-      autoresolution = RES_WINDOW;
-    }
-    else
-    {
-      for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
-        if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == mode)
-        {
-          autoresolution = RES_DESKTOP + idx;
-          break;
-        }
-    }
-
-    // force the resolution and the settings changed event
-    CBaseSettingControl *control = GetSetting("videoscreen.screenmode");
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-    pControl->SetValue(autoresolution);
-
-    OnResolutionChanged((RESOLUTION)autoresolution);
+    FillInResolutions("videoscreen.resolution", mode, true);
+  }
+  else if (strSetting.Equals("videoscreen.resolution"))
+  {
+    RESOLUTION nextRes = (RESOLUTION) g_guiSettings.GetInt("videoscreen.resolution");
+    // Cascade
+    FillInRefreshRates("videoscreen.screenmode", nextRes, true);
   }
   else if (strSetting.Equals("videoscreen.screenmode"))
-  { // new resolution choosen... - update if necessary
+  {
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_windowManager.SendMessage(msg);
     RESOLUTION nextRes = (RESOLUTION)msg.GetParam1();
 
-    OnResolutionChanged(nextRes);
+    OnRefreshRateChanged(nextRes);
   }
   else if (strSetting.Equals("videoscreen.vsync"))
   {
@@ -2297,19 +2295,12 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   return mode;
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
-{
-  FillInResolutionsInternal(pSetting->GetSetting(), g_guiSettings.GetInt("videoscreen.screen"));
-  CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-  pControl->SetValue(CGUISettings::GetResFromString(((CSettingString*) pSetting)->GetData()));
-}
-
-void CGUIWindowSettingsCategory::FillInResolutionsInternal(CStdString strSetting, DisplayMode mode)
+void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange)
 {
   CBaseSettingControl *control = GetSetting(strSetting);
   control->SetDelayed();
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+
   pControl->Clear();
 
   if (mode == DM_WINDOWED)
@@ -2327,25 +2318,109 @@ void CGUIWindowSettingsCategory::FillInResolutionsInternal(CStdString strSetting
       pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
     }
   }
+
+  if (UserChange)
+  {
+    // Auto-select the windowed or desktop resolution of the screen
+    int autoresolution = RES_DESKTOP;
+    if (mode == DM_WINDOWED)
+    {
+      autoresolution = RES_WINDOW;
+    }
+    else
+    {
+      for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
+        if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == mode)
+        {
+          autoresolution = RES_DESKTOP + idx;
+          break;
+        }
+    }
+    pControl->SetValue(autoresolution);
+
+    // Cascade
+    FillInRefreshRates("videoscreen.screenmode", (RESOLUTION) autoresolution, true);
+  }
+  else
+  {
+    // selecting a value is done outside of this function when UserChange = false
+  }
 }
 
-void CGUIWindowSettingsCategory::OnResolutionChanged(RESOLUTION nextRes)
+void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange)
 {
-    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetResolution(nextRes);
-    g_graphicsContext.SetVideoResolution(nextRes);
-    bool cancelled = false;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
-    {
-      g_guiSettings.SetResolution(lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes);
+  // The only meaningful parts of res here are iScreen, iWidth, iHeight
 
-      DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);
-      FillInResolutionsInternal("videoscreen.screenmode", mode);
-      CBaseSettingControl *control = GetSetting("videoscreen.screenmode");
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-      pControl->SetValue(g_guiSettings.GetResolution());
+  vector<REFRESHRATE> refreshrates;
+  if (res > RES_WINDOW)
+    refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+
+  // The control setting doesn't exist when not in standalone mode, don't manipulate it
+  CBaseSettingControl *control = GetSetting(strSetting);
+  CGUISpinControlEx *pControl= NULL;
+
+  // Populate
+  if (control)
+  {
+    control->SetDelayed();
+    pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+    pControl->Clear();
+
+    if (res == RES_WINDOW)
+    {
+      pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
     }
+    else
+    {
+      for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
+      {
+        CStdString strRR;
+        strRR.Format("%.02f%s", refreshrates[idx].RefreshRate, refreshrates[idx].Interlaced ? "i" : "");
+        pControl->AddLabel(strRR, refreshrates[idx].ResInfo_Index);
+      }
+    }
+  }
+
+  // Select a rate
+  if (UserChange)
+  {
+    RESOLUTION newresolution;
+    if (res == RES_WINDOW)
+      newresolution = RES_WINDOW;
+    else
+      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(g_settings.m_ResInfo[res].iScreen, refreshrates).ResInfo_Index;
+
+    if (pControl)
+      pControl->SetValue(newresolution);
+
+    OnRefreshRateChanged(newresolution);
+  }
+  else
+  {
+    if (pControl)
+      pControl->SetValue(res);
+  }
+}
+
+void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
+{
+  RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
+  bool cancelled = false;
+
+  g_guiSettings.SetResolution(nextRes);
+  g_graphicsContext.SetVideoResolution(nextRes);
+
+  if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+  {
+    g_guiSettings.SetResolution(lastRes);
+    g_graphicsContext.SetVideoResolution(lastRes);
+
+    DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);
+    FillInResolutions("videoscreen.resolution", mode, false);
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("videoscreen.resolution")->GetID());
+    pControl->SetValue(lastRes);
+    FillInRefreshRates("videoscreen.screenmode", lastRes, false);
+  }
 }
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)

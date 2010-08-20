@@ -25,6 +25,7 @@
 #include <deque>
 
 #include "DVDVideoCodec.h"
+#include "DVDStreamInfo.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
@@ -76,6 +77,7 @@ public:
   bool          m_interlace;
   double        m_framerate;
   uint64_t      m_timestamp;
+  int           m_color_space;
   unsigned int  m_color_range;
   unsigned int  m_color_matrix;
   uint64_t      m_PictureNumber;
@@ -96,8 +98,10 @@ enum _CRYSTALHD_CODEC_TYPES
 {
   CRYSTALHD_CODEC_ID_MPEG2 = 0,
   CRYSTALHD_CODEC_ID_H264  = 1,
-  CRYSTALHD_CODEC_ID_VC1   = 2,
-  CRYSTALHD_CODEC_ID_WMV3  = 3,
+  CRYSTALHD_CODEC_ID_AVC1  = 2,
+  CRYSTALHD_CODEC_ID_VC1   = 3,
+  CRYSTALHD_CODEC_ID_WMV3  = 4,
+  CRYSTALHD_CODEC_ID_WVC1  = 5,
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
@@ -107,11 +111,11 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 #define CRYSTALHD_FIELD_EVEN        0x01
 #define CRYSTALHD_FIELD_ODD         0x02
 
-typedef struct CHD_TIMESTAMP
-{
-  double dts;
-  double pts;
-} CHD_TIMESTAMP;
+typedef struct CHD_CODEC_PARAMS {
+  uint8_t   *sps_pps_buf;
+  uint32_t  sps_pps_size;
+  uint8_t   nal_size_bytes;
+} CHD_CODEC_PARAMS;
 
 class DllLibCrystalHD;
 class CMPCInputThread;
@@ -132,7 +136,7 @@ public:
   void OpenDevice();
   void CloseDevice();
 
-  bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
+  bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hints);
   void CloseDecoder(void);
   void Reset(void);
 
@@ -149,9 +153,11 @@ protected:
   DllLibCrystalHD *m_dll;
   void          *m_device;
   bool          m_new_lib;
-
   bool          m_decoder_open;
+  bool          m_has_bcm70015;
+  int           m_color_space;
   bool          m_drop_state;
+  bool          m_skip_state;
   unsigned int  m_timeout;
   unsigned int  m_wait_timeout;
   unsigned int  m_field;
@@ -168,6 +174,26 @@ protected:
 private:
   CCrystalHD();
   static CCrystalHD *m_pInstance;
+
+  // bitstream to bytestream (Annex B) conversion support.
+  bool bitstream_convert_init(void *in_extradata, int in_extrasize);
+  bool bitstream_convert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
+  void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
+    const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
+
+  typedef struct chd_bitstream_ctx {
+      uint8_t  length_size;
+      uint8_t  first_idr;
+      uint8_t *sps_pps_data;
+      uint32_t size;
+  } chd_bitstream_ctx;
+
+  uint32_t          m_sps_pps_size;
+  chd_bitstream_ctx m_sps_pps_context;
+  bool              m_convert_bitstream;
+
+  bool extract_sps_pps_from_avcc(int extradata_size, void *extradata);
+  CHD_CODEC_PARAMS  m_chd_params;
 };
 
 #endif

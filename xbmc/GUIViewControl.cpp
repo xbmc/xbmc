@@ -239,7 +239,7 @@ int CGUIViewControl::GetCurrentControl() const
 int CGUIViewControl::GetViewModeNumber(int number) const
 {
   CGUIBaseContainer *nextView = NULL;
-  if (number >= 0 || number < (int)m_visibleViews.size())
+  if (number >= 0 && number < (int)m_visibleViews.size())
     nextView = (CGUIBaseContainer *)m_visibleViews[number];
   else if (m_visibleViews.size())
     nextView = (CGUIBaseContainer *)m_visibleViews[0];

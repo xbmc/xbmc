@@ -53,14 +53,20 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["originaltitle"] = videoInfo->m_strOriginalTitle.c_str();
   if (field.Equals("lastplayed") && !videoInfo->m_lastPlayed.IsEmpty())
     result["lastplayed"] = videoInfo->m_lastPlayed.c_str();
+  if (field.Equals("showtitle") && !videoInfo->m_strShowTitle.IsEmpty())
+    result["showtitle"] = videoInfo->m_strShowTitle.c_str();
+  if (field.Equals("firstaired") && !videoInfo->m_strFirstAired.IsEmpty())
+    result["firstaired"] = videoInfo->m_strFirstAired.c_str();
 
   if (field.Equals("season") && videoInfo->m_iSeason > 0)
     result["season"] = videoInfo->m_iSeason;
+  if (field.Equals("episode") && videoInfo->m_iEpisode > 0)
+    result["episode"] = videoInfo->m_iEpisode;
   if (field.Equals("runtime") && !videoInfo->m_strRuntime.IsEmpty())
     result["runtime"] = videoInfo->m_strRuntime.c_str();
   if (field.Equals("year") && videoInfo->m_iYear > 0)
     result["year"] = videoInfo->m_iYear;
-  if (field.Equals("playcount") && videoInfo->m_playCount > 0)
+  if (field.Equals("playcount") && videoInfo->m_playCount >= 0)
     result["playcount"] = videoInfo->m_playCount;
   if (field.Equals("rating"))
     result["rating"] = (double)videoInfo->m_fRating;
@@ -92,8 +98,6 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["year"] = (int)musicInfo->GetYear();
 
 //  void GetReleaseDate(SYSTEMTIME& dateTime) const;
-  if (field.Equals("albumartist") && !musicInfo->GetYearString().IsEmpty())
-    result["albumartist"] =  musicInfo->GetYearString().c_str();
 
   if (field.Equals("musicbrainztrackid") && !musicInfo->GetMusicBrainzTrackID().IsEmpty())
     result["musicbrainztrackid"] =  musicInfo->GetMusicBrainzTrackID().c_str();
@@ -115,7 +119,7 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["rating"] = (int)musicInfo->GetRating();
 }
 
-void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
@@ -135,15 +139,16 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
     Value object;
     CFileItemPtr item = items.Get(i);
 
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
-    if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
-      object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+    if (allowFile)
+    {
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+        object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
-/*    if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
-      object["file"] = item->m_strPath.c_str();*/
-    if (!object.isMember("file"))
-      object["file"] = item->m_strPath.c_str();
+      if (!object.isMember("file"))
+        object["file"] = item->m_strPath.c_str();
+    }
 
     if (id)
     {
@@ -169,6 +174,13 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
         FillVideoDetails(item->GetVideoInfoTag(), field, object);
       if (item->HasMusicInfoTag())
         FillMusicDetails(item->GetMusicInfoTag(), field, object);
+      if (item->IsAlbum() && item->HasProperty(field))
+      {
+        if (field == "album_rating")
+          object[field] = item->GetPropertyInt(field);
+        else
+          object[field] = item->GetProperty(field);
+      }
     }
 
     object["label"] = item->GetLabel().c_str();

@@ -86,6 +86,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
+    case ADDON_SCRIPT_MODULE:
       return AddonPtr(new CAddon(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
@@ -241,6 +242,7 @@ bool CAddonMgr::Init()
   assert(m_cp_context);
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmcbin/addons"));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
@@ -286,6 +288,34 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
       addons.insert(addons.end(), temp.begin(), temp.end());
   }
   return !addons.empty();
+}
+
+bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
+{
+  CSingleLock lock(m_critSection);
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  {
+    VECADDONS temp;
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
+    {
+      AddonPtr repoAddon;
+      for (unsigned int j = 0; j < temp.size(); j++)
+      {
+        if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
+          continue;
+
+        if (temp[j]->Version() < repoAddon->Version())
+          addons.push_back(repoAddon);
+      }
+    }
+  }
+  return !addons.empty();
+}
+
+bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
+{
+  VECADDONS dummy;
+  return GetAllOutdatedAddons(dummy,enabled);
 }
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
@@ -437,12 +467,13 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   switch (addonProps.type)
   {
     case ADDON_PLUGIN:
-      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT:
+      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
+    case ADDON_SCRIPT_MODULE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
@@ -669,26 +700,16 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
 
 int cp_to_clog(cp_log_severity_t lvl)
 {
-  if( lvl == CP_LOG_DEBUG )
-    return 0;
-  else if (lvl == CP_LOG_INFO)
-    return 1;
-  else if (lvl == CP_LOG_WARNING)
-    return 3;
-  else
-    return 4;
+  if (lvl >= CP_LOG_ERROR)
+    return LOGINFO;
+  return LOGDEBUG;
 }
 
 cp_log_severity_t clog_to_cp(int lvl)
 {
-  if (lvl >= 4)
-    return CP_LOG_ERROR;
-  else if (lvl == 3)
-    return CP_LOG_WARNING;
-  else if (lvl >= 1)
+  if (lvl >= LOG_LEVEL_DEBUG)
     return CP_LOG_INFO;
-  else
-    return CP_LOG_DEBUG;
+  return CP_LOG_ERROR;
 }
 
 void cp_fatalErrorHandler(const char *msg)

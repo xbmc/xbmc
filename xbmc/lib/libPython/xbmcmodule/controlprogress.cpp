@@ -120,7 +120,7 @@ namespace PYXBMC
       (float)pControl->dwWidth,(float)pControl->dwHeight,
       (CStdString)pControl->strTextureBg,(CStdString)pControl->strTextureLeft,
       (CStdString)pControl->strTextureMid,(CStdString)pControl->strTextureRight,
-      (CStdString)pControl->strTextureOverlay, 0, 0);
+      (CStdString)pControl->strTextureOverlay);
 
     if (pControl->pGUIControl && pControl->colorDiffuse)
         ((CGUIProgressControl *)pControl->pGUIControl)->SetColorDiffuse(pControl->colorDiffuse);
@@ -143,12 +143,9 @@ namespace PYXBMC
     float fPercent = 0;
     if (!PyArg_ParseTuple(args, (char*)"f", &fPercent)) return NULL;
 
-    PyXBMCGUILock();
     if (self->pGUIControl)
-    {
       ((CGUIProgressControl*)self->pGUIControl)->SetPercentage(fPercent);
-    }
-    PyXBMCGUIUnlock();
+
     Py_INCREF(Py_None);
     return Py_None;
   }

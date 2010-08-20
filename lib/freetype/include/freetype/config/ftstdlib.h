@@ -100,7 +100,12 @@
 
 #define FT_FILE     FILE
 #define ft_fclose   fclose
+#ifdef _WIN32
+extern FILE *fopen_utf8(const char *_Filename, const char *_Mode);
+#define ft_fopen    fopen_utf8
+#else
 #define ft_fopen    fopen
+#endif
 #define ft_fread    fread
 #define ft_fseek    fseek
 #define ft_ftell    ftell

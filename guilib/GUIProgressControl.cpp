@@ -28,7 +28,7 @@ CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          const CTextureInfo& leftTexture,
                                          const CTextureInfo& midTexture,
                                          const CTextureInfo& rightTexture,
-                                         const CTextureInfo& overlayTexture, float min, float max,
+                                         const CTextureInfo& overlayTexture,
                                          bool reveal)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_guiBackground(posX, posY, width, height, backGroundTexture)
@@ -37,8 +37,6 @@ CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
     , m_guiRight(posX, posY, width, height, rightTexture)
     , m_guiOverlay(posX, posY, width, height, overlayTexture)
 {
-  m_RangeMin = min;
-  m_RangeMax = max;
   m_fPercent = 0;
   m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
@@ -60,18 +58,8 @@ void CGUIProgressControl::Render()
 {
   if (!IsDisabled())
   {
-    if (m_iInfoCode )
-    {
+    if (m_iInfoCode)
       m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
-      if ((m_RangeMax - m_RangeMin)> 0 && (m_RangeMax != 100 && m_RangeMin != 0) )
-      {
-        if (m_fPercent > m_RangeMax)
-          m_fPercent = m_RangeMax;
-        if (m_fPercent < m_RangeMin)
-          m_fPercent = m_RangeMin;
-        m_fPercent = ((100*(m_fPercent - m_RangeMin)) / (m_RangeMax - m_RangeMin));
-      }
-    }
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
 

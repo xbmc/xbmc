@@ -36,6 +36,7 @@
 #include "addons/AddonManager.h"
 #include "ViewState.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "Key.h"
@@ -54,7 +55,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == 0)
     return GetViewState(g_windowManager.GetActiveWindow(),items);
 
-  const CURL& url=items.GetAsUrl();
+  const CURL url=items.GetAsUrl();
 
   if (items.HasSortDetails())
     return new CGUIViewStateFromItems(items);
@@ -339,6 +340,9 @@ VECSOURCES& CGUIViewState::GetSources()
 
 void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
 {
+  if (!g_advancedSettings.m_bVirtualShares)
+    return;
+
   CFileItemList items;
   if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
   { // add the plugin source
@@ -347,7 +351,25 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     source.strName = label;
     source.m_strThumbnailImage = "";
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    source.m_ignore = true;
     m_sources.push_back(source);
+  }
+}
+
+void CGUIViewState::AddLiveTVSources()
+{
+  VECSOURCES *sources = g_settings.GetSourcesFromType("video");
+  for (IVECSOURCES it = sources->begin(); it != sources->end(); it++)
+  {
+    if (CUtil::IsLiveTV((*it).strPath))
+    {
+      CMediaSource source;
+      source.strPath = (*it).strPath;
+      source.strName = (*it).strName;
+      source.m_strThumbnailImage = "";
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+      m_sources.push_back(source);
+    }
   }
 }
 

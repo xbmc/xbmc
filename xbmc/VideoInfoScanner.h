@@ -80,7 +80,12 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, bool bUpdateAll);
+
+    /*! \brief Scan a folder using the background scanner
+     \param strDirectory path to scan
+     \param scanAll whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned.) Defaults to false.
+     */
+    void Start(const CStdString& strDirectory, bool scanAll = false);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -199,7 +204,7 @@ namespace VIDEO
      \param progress progressbar to update - defaults to NULL
      \param directory directory that this thumbnail should be applied to. Defaults to empty
      */
-    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL, const CStdString &directory = "");
+    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL);
 
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
@@ -232,9 +237,9 @@ namespace VIDEO
     int m_currentItem;
     int m_itemCount;
     bool m_bRunning;
-    bool m_bUpdateAll;
     bool m_bCanInterrupt;
     bool m_bClean;
+    bool m_scanAll;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;

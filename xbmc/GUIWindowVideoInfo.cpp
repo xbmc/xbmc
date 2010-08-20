@@ -294,7 +294,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
         if (db.Open())
         {
           CFileItemList items;
-          CStdString where = db.FormatSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
+          CStdString where = db.PrepareSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
           if (db.GetTvShowsByWhere("", where, items) && items.Size())
             season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
           db.Close();
@@ -310,13 +310,17 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
-        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer)
+        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
         {
           CVideoDatabase database;
-          database.Open();
-          database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
-                             m_movieItem->GetVideoInfoTag()->m_iDbId,
-                             VIDEODB_ID_TRAILER,VIDEODB_CONTENT_MOVIES);
+          if(database.Open())
+          {
+            database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
+                               m_movieItem->GetVideoInfoTag()->m_iDbId,
+                               VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
+            database.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+          }
         }
       }
     }
@@ -457,7 +461,6 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
@@ -501,47 +504,40 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.GetMoviesByActor(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label;
-    label.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i]->GetVideoInfoTag()->m_strTitle);
+    CStdString label = movies[i]->GetVideoInfoTag()->m_strTitle;
     if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
       label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);
-    items.Add(movies[i]);
   }
+  CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20338) + "] ", items);
 
-  movies.Clear();
   db.GetTvShowsByActor(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label;
-    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strShowTitle);
+    CStdString label = movies[i]->GetVideoInfoTag()->m_strShowTitle;
     if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
       label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);
-    items.Add(movies[i]);
   }
+  CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20364) + "] ", items);
 
-  movies.Clear();
   db.GetEpisodesByActor(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label;
-    label.Format("[%s] %s (%s)", g_localizeStrings.Get(20359), movies[i]->GetVideoInfoTag()->m_strTitle, movies[i]->GetVideoInfoTag()->m_strShowTitle);
+    CStdString label = movies[i]->GetVideoInfoTag()->m_strTitle + " (" +  movies[i]->GetVideoInfoTag()->m_strShowTitle + ")";
     movies[i]->SetLabel(label);
-    items.Add(movies[i]);
   }
+  CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20359) + "] ", items);
 
-  movies.Clear();
   db.GetMusicVideosByArtist(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label;
-    label.Format("[%s] %s - %s", g_localizeStrings.Get(20391), movies[i]->GetVideoInfoTag()->m_strArtist, movies[i]->GetVideoInfoTag()->m_strTitle);
+    CStdString label = movies[i]->GetVideoInfoTag()->m_strArtist + " - " + movies[i]->GetVideoInfoTag()->m_strTitle;
     if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
       label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);
-    items.Add(movies[i]);
   }
+  CGUIWindowVideoBase::AppendAndClearSearchItems(movies, "[" + g_localizeStrings.Get(20391) + "] ", items);
   db.Close();
 }
 
@@ -614,8 +610,12 @@ void CGUIWindowVideoInfo::Play(bool resume)
     Close(true);
     if (resume)
       movie.m_lStartOffset = STARTOFFSET_RESUME;
-    else
-      CGUIWindowVideoBase::OnResumeShowMenu(movie);
+    else if (!CGUIWindowVideoBase::ShowResumeMenu(movie)) 
+    {
+      // The Resume dialog was closed without any choice
+      DoModal();
+      return;
+    }
     pWindow->PlayMovie(&movie);
   }
 }

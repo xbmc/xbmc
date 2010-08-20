@@ -94,7 +94,7 @@
 #include "utils/log.h"
 #include "Picture.h"
 #include "JobManager.h"
-#include "cores/dvdplayer/DVDSubtitles/SamiTagConvertor.h"
+#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 
 using namespace std;
@@ -220,8 +220,16 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   // Windows SMB Network (SMB)
   else if (url.GetProtocol() == "smb" && strFilename.IsEmpty())
-    strFilename = g_localizeStrings.Get(20171);
-
+  {
+    if (url.GetHostName().IsEmpty())
+    {
+      strFilename = g_localizeStrings.Get(20171);
+    }
+    else
+    {
+      strFilename = url.GetHostName();
+    }
+  }
   // XBMSP Network
   else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
     strFilename = "XBMSP Network";
@@ -237,6 +245,14 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // ReplayTV Devices
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
+
+  // HTS Tvheadend client
+  else if (url.GetProtocol() == "htsp")
+    strFilename = g_localizeStrings.Get(20256);
+
+  // VDR Streamdev client
+  else if (url.GetProtocol() == "vtp")
+    strFilename = g_localizeStrings.Get(20257);
 
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
@@ -382,7 +398,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
 {
   strTitleAndYear = strFileName;
 
@@ -428,6 +444,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
+  if (bCleanChars)
   {
     bool initialDots = true;
     bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
@@ -663,16 +680,25 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
+  CStdString strHomePath;
+  strHomePath = ResolveExecutablePath();
+#ifdef _WIN32
+  CStdStringW strPathW, strTargetW;
+  g_charsetConverter.utf8ToW(strTarget, strTargetW);
+  strPathW = _wgetenv(strTargetW);
+  g_charsetConverter.wToUTF8(strPathW,strPath);
+#else
   strPath = getenv(strTarget);
+#endif
+
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
+    char tmp[1024];
     //expand potential relative path to full path
-    if(GetFullPathName(strPath, 1024, szXBEFileName, 0) != 0)
+    if(GetFullPathName(strPath, 1024, tmp, 0) != 0)
     {
-      strPath = szXBEFileName;
+      strPath = tmp;
     }
 #endif
   }
@@ -702,10 +728,31 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       }
     }
 #endif
-    char *szFileName = strrchr(szXBEFileName, PATH_SEPARATOR_CHAR);
-    *szFileName = 0;
-    strPath = szXBEFileName;
+    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
+    if (last_sep != string::npos)
+      strPath = strHomePath.Left(last_sep);
+    else
+      strPath = strHomePath;
   }
+
+#if defined(_LINUX) && !defined(__APPLE__)
+  /* Change strPath accordingly when target is XBMC_HOME and when INSTALL_PATH
+   * and BIN_INSTALL_PATH differ
+   */
+  CStdString installPath = INSTALL_PATH;
+  CStdString binInstallPath = BIN_INSTALL_PATH;
+  if (!strTarget.compare("XBMC_HOME") && installPath.compare(binInstallPath))
+  {
+    int pos = strPath.length() - binInstallPath.length();
+    CStdString tmp = strPath;
+    tmp.erase(0, pos);
+    if (!tmp.compare(binInstallPath))
+    {
+      strPath.erase(pos, strPath.length());
+      strPath.append(installPath);
+    }
+  }
+#endif
 }
 
 CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
@@ -826,6 +873,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
   if(IsDAAP(strPath))
     return true;
+  
+  if(IsPlugin(strPath))
+    return false;
 
   if(IsTuxBox(strPath))
     return true;
@@ -893,12 +943,16 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
 #if defined(_WIN32)
+  if(strFile.Mid(1) != ":\\"
+  && strFile.Mid(1) != ":")
+    return false;
+
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
@@ -980,6 +1034,12 @@ bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
   return url.GetProtocol().Equals("plugin");
+}
+
+bool CUtil::IsAddonsPath(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("addons");
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
@@ -1128,6 +1188,23 @@ bool CUtil::IsLastFM(const CStdString& strFile)
 bool CUtil::IsWritable(const CStdString& strFile)
 {
   return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
+}
+
+bool CUtil::IsPicture(const CStdString& strFile)
+{
+  CStdString extension = GetExtension(strFile);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+    return true;
+
+  if (extension == ".tbn" || extension == ".dds")
+    return true;
+
+  return false;
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1295,20 +1372,17 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
 void CUtil::RemoveTempFiles()
 {
-  WIN32_FIND_DATA wfd;
+  CStdString searchPath = g_settings.GetDatabaseFolder();
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", false))
+    return;
 
-  CStdString strAlbumDir = CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), "*.tmp");
-  memset(&wfd, 0, sizeof(wfd));
-
-  CAutoPtrFind hFind( FindFirstFile(_P(strAlbumDir).c_str(), &wfd));
-  if (!hFind.isValid())
-    return ;
-  do
+  for (int i = 0; i < items.Size(); ++i)
   {
-    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
+    if (items[i]->m_bIsFolder)
+      continue;
+    XFILE::CFile::Delete(items[i]->m_strPath);
   }
-  while (FindNextFile(hFind, &wfd));
 }
 
 void CUtil::ClearSubtitles()
@@ -1398,11 +1472,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   vector<CStdString> token;
   Tokenize(strPath,token,"/\\");
-  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  if (token.size() > 0)
   {
-    CStdString strPath2;
-    GetParentPath(strPath,strPath2);
-    strLookInPaths.push_back(strPath2);
+    if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+    {
+      CStdString strPath2;
+      GetParentPath(strPath,strPath2);
+      strLookInPaths.push_back(strPath2);
+    }
   }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
@@ -1529,7 +1606,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
       if(pStream->Open(items[i]->m_strPath))
       {
-        SamiTagConvertor TagConv;
+        CDVDSubtitleTagSami TagConv;
         TagConv.LoadHead(pStream);
         if (TagConv.m_Langclass.size() >= 2)
         {
@@ -1845,21 +1922,24 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   if (!fn_template.Find("%03d"))
     return "";
 
+  CStdString searchPath;
+  CUtil::GetDirectory(fn_template, searchPath);
+  CStdString mask = CUtil::GetExtension(fn_template);
+
+  CStdString name;
+  name.Format(fn_template.c_str(), 0);
+
+  CFileItemList items;
+  if (!CDirectory::GetDirectory(searchPath, items, mask, false))
+    return name;
+
+  items.SetFastLookup(true);
   for (int i = 0; i <= max; i++)
   {
     CStdString name;
     name.Format(fn_template.c_str(), i);
-
-    WIN32_FIND_DATA wfd;
-    HANDLE hFind;
-    memset(&wfd, 0, sizeof(wfd));
-    if ((hFind = FindFirstFile(_P(name).c_str(), &wfd)) != INVALID_HANDLE_VALUE)
-      FindClose(hFind);
-    else
-    {
-      // FindFirstFile didn't find the file 'szName', return it
+    if (!items.Get(name))
       return name;
-    }
   }
   return "";
 }
@@ -2625,36 +2705,29 @@ CStdString CUtil::VideoPlaylistsLocation()
 
 void CUtil::DeleteMusicDatabaseDirectoryCache()
 {
-  CUtil::DeleteDirectoryCache("mdb");
+  CUtil::DeleteDirectoryCache("mdb-");
 }
 
 void CUtil::DeleteVideoDatabaseDirectoryCache()
 {
-  CUtil::DeleteDirectoryCache("vdb");
+  CUtil::DeleteDirectoryCache("vdb-");
 }
 
-void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
+void CUtil::DeleteDirectoryCache(const CStdString &prefix)
 {
-  WIN32_FIND_DATA wfd;
-  memset(&wfd, 0, sizeof(wfd));
-
-  CStdString strFile = "special://temp/";
-  if (!strType.IsEmpty())
-  {
-    strFile += strType;
-    if (!strFile.Right(1).Equals("-"))
-      strFile += "-";
-  }
-  strFile += "*.fi";
-  CAutoPtrFind hFind(FindFirstFile(_P(strFile).c_str(), &wfd));
-  if (!hFind.isValid())
+  CStdString searchPath = "special://temp/";
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
     return;
-  do
+
+  for (int i = 0; i < items.Size(); ++i)
   {
-    if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-      CFile::Delete(CUtil::AddFileToFolder("special://temp/", wfd.cFileName));
+    if (items[i]->m_bIsFolder)
+      continue;
+    CStdString fileName = CUtil::GetFileName(items[i]->m_strPath);
+    if (fileName.Left(prefix.GetLength()) == prefix)
+      XFILE::CFile::Delete(items[i]->m_strPath);
   }
-  while (FindNextFile(hFind, &wfd));
 }
 
 bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute)
@@ -3061,17 +3134,6 @@ void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& str
   }
 }
 
-void CUtil::ClearFileItemCache()
-{
-  CFileItemList items;
-  CDirectory::GetDirectory("special://temp/", items, ".fi", false);
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    if (!items[i]->m_bIsFolder)
-      CFile::Delete(items[i]->m_strPath);
-  }
-}
-
 void CUtil::InitRandomSeed()
 {
   // Init random seed
@@ -3292,3 +3354,39 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
   }
   return decimal;
 }
+
+CStdString CUtil::ResolveExecutablePath()
+{
+  CStdString strExecutablePath;
+#ifdef WIN32
+  wchar_t szAppPathW[MAX_PATH] = L"";
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  CStdStringW strPathW = szAppPathW;
+  g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
+#elif defined(__APPLE__)
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  char     real_given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+  if (result == 0)
+    realpath(given_path, real_given_path);
+  strExecutablePath = real_given_path;
+#else
+  /* Get our PID and build the name of the link in /proc */
+  pid_t pid = getpid();
+  char linkname[64]; /* /proc/<pid>/exe */
+  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
+
+  /* Now read the symbolic link */
+  char buf[PATH_MAX];
+  int ret = readlink(linkname, buf, PATH_MAX);
+  buf[ret] = 0;
+
+  strExecutablePath = buf;
+#endif
+  return strExecutablePath;
+}
+
+

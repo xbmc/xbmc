@@ -182,6 +182,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       if(pCodec->id == hints.codec
       && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
       {
+        if ((pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_XVID) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+          continue;
+
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
         CVDPAU* vdp = new CVDPAU();
         m_pCodecContext->codec_id = hints.codec;
@@ -217,8 +220,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
+  m_pCodecContext->codec_tag = hints.codec_tag;
 
-  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
+  if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,69,0)
+      && pCodec->id != CODEC_ID_VP8
+#endif
+     )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
   // if we don't do this, then some codecs seem to fail.
@@ -233,7 +241,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set acceleration
-  m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
+  m_pCodecContext->dsp_mask = 0;//FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
 
   // advanced setting override for skip loop filter (see avcodec.h for valid options)
   // TODO: allow per video setting?

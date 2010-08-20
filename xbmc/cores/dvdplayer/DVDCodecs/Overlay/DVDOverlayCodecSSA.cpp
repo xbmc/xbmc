@@ -19,14 +19,13 @@
  *
  */
 
-#include "AutoPtrHandle.h"
 #include "DVDOverlayCodecSSA.h"
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDClock.h"
 #include "Util.h"
-#include "AutoPtrHandle.h"
+#include "utils/AutoPtrHandle.h"
 
 using namespace AUTOPTR;
 using namespace std;

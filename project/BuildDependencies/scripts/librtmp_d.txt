@@ -1,2 +1,3 @@
 ; filename                        source of the file
-librtmp.zip          http://atlantis.xbmc.org/
+rtmpdump-2.3-windows.zip          http://rtmpdump.mplayerhq.hu/download/
+rtmpdump-2.3.tgz                  http://rtmpdump.mplayerhq.hu/download/

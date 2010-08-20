@@ -24,7 +24,47 @@
 
 CKey::CKey(void)
 {
-  m_buttonCode = KEY_INVALID;
+  Reset();
+}
+
+CKey::~CKey(void)
+{}
+
+CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
+{
+  Reset();
+  m_buttonCode = buttonCode;
+  m_leftTrigger = leftTrigger;
+  m_rightTrigger = rightTrigger;
+  m_leftThumbX = leftThumbX;
+  m_leftThumbY = leftThumbY;
+  m_rightThumbX = rightThumbX;
+  m_rightThumbY = rightThumbY;
+  m_repeat = repeat;
+}
+
+CKey::CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
+{
+  Reset();
+  if (vkey) // FIXME: This needs cleaning up - should we always use the unicode key where available?
+    m_buttonCode = vkey | KEY_VKEY;
+  else
+    m_buttonCode = KEY_UNICODE;
+  m_buttonCode |= modifiers;
+  m_vkey = vkey;
+  m_unicode = unicode;
+  m_ascii = ascii;
+  m_modifiers = modifiers;
+  m_held = held;
+}
+
+CKey::CKey(const CKey& key)
+{
+  *this = key;
+}
+
+void CKey::Reset()
+{
   m_leftTrigger = 0;
   m_rightTrigger = 0;
   m_leftThumbX = 0.0f;
@@ -33,57 +73,31 @@ CKey::CKey(void)
   m_rightThumbY = 0.0f;
   m_repeat = 0.0f;
   m_fromHttpApi = false;
+  m_buttonCode = KEY_INVALID;
+  m_vkey = 0;
+  m_unicode = 0;
+  m_ascii = 0;
+  m_modifiers = 0;
   m_held = 0;
-}
-
-CKey::~CKey(void)
-{}
-
-CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
-{
-  m_leftTrigger = leftTrigger;
-  m_rightTrigger = rightTrigger;
-  m_leftThumbX = leftThumbX;
-  m_leftThumbY = leftThumbY;
-  m_rightThumbX = rightThumbX;
-  m_rightThumbY = rightThumbY;
-  m_buttonCode = buttonCode;
-  m_repeat = repeat;
-  m_fromHttpApi = false;
-  m_held = 0;
-}
-
-CKey::CKey(const CKey& key)
-{
-  *this = key;
-}
-
-uint32_t CKey::GetButtonCode() const // for backwards compatibility only
-{
-  return m_buttonCode;
-}
-
-wchar_t CKey::GetUnicode() const
-{
-  if (m_buttonCode>=KEY_ASCII && m_buttonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
-    return (wchar_t)(m_buttonCode - KEY_ASCII);
-  else
-    return 0;
 }
 
 const CKey& CKey::operator=(const CKey& key)
 {
   if (&key == this) return * this;
-  m_leftTrigger = key.m_leftTrigger;
+  m_leftTrigger  = key.m_leftTrigger;
   m_rightTrigger = key.m_rightTrigger;
-  m_buttonCode = key.m_buttonCode;
-  m_leftThumbX = key.m_leftThumbX;
-  m_leftThumbY = key.m_leftThumbY;
-  m_rightThumbX = key.m_rightThumbX;
-  m_rightThumbY = key.m_rightThumbY;
-  m_repeat = key.m_repeat;
-  m_fromHttpApi = key.m_fromHttpApi;
-  m_held = key.m_held;
+  m_leftThumbX   = key.m_leftThumbX;
+  m_leftThumbY   = key.m_leftThumbY;
+  m_rightThumbX  = key.m_rightThumbX;
+  m_rightThumbY  = key.m_rightThumbY;
+  m_repeat       = key.m_repeat;
+  m_fromHttpApi  = key.m_fromHttpApi;
+  m_buttonCode   = key.m_buttonCode;
+  m_vkey         = key.m_vkey;
+  m_unicode     = key.m_unicode;
+  m_ascii       = key.m_ascii;
+  m_modifiers    = key.m_modifiers;
+  m_held         = key.m_held;
   return *this;
 }
 
@@ -151,16 +165,6 @@ bool CKey::GetFromHttpApi() const
 void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
   m_fromHttpApi = bFromHttpApi;
-}
-
-void CKey::SetHeld(unsigned int held)
-{
-  m_held = held;
-}
-
-unsigned int CKey::GetHeld() const
-{
-  return m_held;
 }
 
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)

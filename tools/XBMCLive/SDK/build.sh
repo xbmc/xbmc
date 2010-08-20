@@ -19,17 +19,26 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
+echo
 echo "Checking availability of required packages..."
 
-REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev )
+REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev)
+NOTINSTALLED=()
 
 for k in "${REQUIREDPACKAGES[@]}" ; do 
 	if [ "$( dpkg -l  | grep "ii" | grep "$k" )" = "" ] ; then
-		echo  "Package $k is not installed, exiting." 
-		exit 1
+		NOTINSTALLED+=($k)
 	fi
 done
 
+if [ ${#NOTINSTALLED[@]} -gt 0 ]; then
+	echo
+	echo "FATAL: the following packages are missing, exiting." 
+	for k in "${NOTINSTALLED[@]}"; do 
+		echo "  $k"; 
+	done 
+	exit 1 
+fi 
 
 #
 # Make sure only root can run our script
@@ -85,37 +94,37 @@ rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 
 if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
-	if [ ! -d live-helper ]; then
-		if [ ! -f live-helper.tar ]; then
-			git clone git://live.debian.net/git/live-helper.git
+	if [ ! -d live-build ]; then
+		if [ ! -f live-build.tar ]; then
+			git clone git://live.debian.net/git/live-build.git 
 			if [ "$?" -ne "0" ]; then
 				exit 1
 			fi
 
 			# Saved, to avoid cloning for multiple builds
-			tar cvf live-helper.tar live-helper  > /dev/null 2>&1
+			tar cf live-build.tar live-build  > /dev/null 2>&1
 		else
-			tar xvf live-helper.tar  > /dev/null 2>&1
+			tar xf live-build.tar  > /dev/null 2>&1
 		fi
 
 		# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
-		cd live-helper/data/debian-cd
+		cd live-build/data/debian-cd
 		if [ ! -h $VARIANTNAME ]; then
 			ln -s lenny $VARIANTNAME
 		fi
 		cd $WORKPATH/Tools
 	fi
 
-	LH_HOMEDIR=$WORKPATH/Tools/live-helper
+	LH_HOMEDIR=$WORKPATH/Tools/live-build
 
 	export LH_BASE="${LH_HOMEDIR}"
-	export PATH="${PATH}:${LH_BASE}/helpers"
+	export PATH="${PATH}:${LH_BASE}/scripts/build"
 
 	cd $THISDIR
 fi
 
 echo "Start building, using Ubuntu $VARIANTNAME repositories ..."
-
+echo ""
 
 cd $WORKPATH
 

@@ -23,6 +23,7 @@
 #include "Album.h"
 #include "StringUtils.h"
 #include "XMLUtils.h"
+#include "MathUtils.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -47,15 +48,15 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
   XMLUtils::GetString(album,"type",strType);
 
   XMLUtils::GetInt(album,"year",iYear);
-  int max_value = 5;
   const TiXmlElement* rElement = album->FirstChildElement("rating");
-  int rating;
   if (rElement)
   {
-    XMLUtils::GetInt(album, "rating", rating);
-    if (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS && max_value>=1)
-      rating *= 5.f / max_value; // Normalise the Rating to between 1 and 5 
-    iRating = rating;
+    float rating = 0;
+    float max_rating = 5;
+    XMLUtils::GetFloat(album, "rating", rating);
+    if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating>=1)
+      rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
+    iRating = MathUtils::round_int(rating);
   }
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)

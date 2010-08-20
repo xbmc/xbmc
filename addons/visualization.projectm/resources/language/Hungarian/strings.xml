@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Megjelenítés minõsége</string>
+    <string id="30001">Alacsony</string>
+    <string id="30002">Közepes</string>
+    <string id="30003">Magas</string>
+    <string id="30004">Maximum</string>
+    <string id="30005">Keverési mód</string>
+    <string id="30006">Finom átmenet idõtartama</string>
+    <string id="30007">Átmenet idõtartama</string>
+    <string id="30008">Ritmus érzékenység</string>
+</strings>

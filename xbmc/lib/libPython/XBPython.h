@@ -64,9 +64,9 @@ public:
 
   int ScriptsSize();
   int GetPythonScriptId(int scriptPosition);
-  int evalFile(const char *);
-  int evalFile(const char *, const unsigned int, const char **);
-  int evalString(const char *, const unsigned int argc = 0, const char ** argv = NULL);
+  int evalFile(const CStdString &src);
+  int evalFile(const CStdString &src, const std::vector<CStdString> &argv);
+  int evalString(const CStdString &src, const std::vector<CStdString> &argv);
 
   bool isRunning(int scriptId);
   bool isStopping(int scriptId);
@@ -96,11 +96,10 @@ public:
   const char* getFileName(int scriptId);
 
   // returns -1 if no scripts exist with specified filename
-  int getScriptId(const char* strFile);
+  int getScriptId(const CStdString &strFile);
 
   PyThreadState *getMainThreadState();
 
-  bool m_bStartup;
   bool m_bLogin;
   CCriticalSection    m_critSection;
 private:

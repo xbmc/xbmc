@@ -124,7 +124,6 @@ extern "C" {
 XBPython::XBPython()
 {
   m_bInitialized      = false;
-  m_bStartup          = false;
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
@@ -376,7 +375,7 @@ void XBPython::Initialize()
       // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+      setenv("PYTHONPATH", _P("special://xbmcbin/system/python/python24.zip").c_str(), 1);
 #endif /* __APPLE__ */
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
@@ -469,37 +468,12 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  if (m_bStartup)
-  {
-    m_bStartup = false;
-
-    // autoexec.py - userdata
-    CStdString strAutoExecPy = _P("special://home/scripts/autoexec.py");
-
-    if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
-
-    // autoexec.py - system
-    CStdString strAutoExecPy2 = _P("special://xbmc/scripts/autoexec.py");
-
-    // Make sure special://xbmc & special://home don't point to the same location
-    if (strAutoExecPy != strAutoExecPy2)
-    {
-      if ( XFILE::CFile::Exists(strAutoExecPy2) )
-        evalFile(strAutoExecPy2);
-      else
-        CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy2.c_str());
-    }
-  }
-
   if (m_bLogin)
   {
     m_bLogin = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = _P("special://profile/scripts/autoexec.py");
+    CStdString strAutoExecPy = _P("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
@@ -546,9 +520,13 @@ bool XBPython::StopScript(const CStdString &path)
   return false;
 }
 
-int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
+int XBPython::evalFile(const CStdString &src)
+{
+  std::vector<CStdString> argv;
+  return evalFile(src, argv);
+}
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
+int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv)
 {
   CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
@@ -569,8 +547,7 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
-  if (argv != NULL)
-    pyThread->setArgv(argc, argv);
+  pyThread->setArgv(argv);
   pyThread->evalFile(src);
   PyElem inf;
   inf.id        = m_nextid;
@@ -645,7 +622,7 @@ const char* XBPython::getFileName(int scriptId)
   return cFileName;
 }
 
-int XBPython::getScriptId(const char* strFile)
+int XBPython::getScriptId(const CStdString &strFile)
 {
   int iId = -1;
 
@@ -654,7 +631,7 @@ int XBPython::getScriptId(const char* strFile)
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
-    if (!stricmp(it->strFile.c_str(), strFile))
+    if (it->strFile == strFile)
       iId = it->id;
     ++it;
   }
@@ -664,18 +641,19 @@ int XBPython::getScriptId(const char* strFile)
 
 bool XBPython::isRunning(int scriptId)
 {
-  bool bRunning = false;
   CSingleLock lock(m_critSection);
 
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
+  for(PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end(); it++)
   {
     if (it->id == scriptId)
-      bRunning = true;
-    ++it;
+    {
+      if(it->bDone)
+        return false;
+      else
+        return true;
+    }
   }
-
-  return bRunning;
+  return false;
 }
 
 bool XBPython::isStopping(int scriptId)
@@ -714,7 +692,7 @@ void XBPython::WaitForEvent(HANDLE hEvent, unsigned int timeout)
 }
 
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalString(const char *src, const unsigned int argc, const char ** argv)
+int XBPython::evalString(const CStdString &src, const std::vector<CStdString> &argv)
 {
   CLog::Log(LOGDEBUG, "XBPython::evalString (python)");
   CSingleLock lock(m_critSection);
@@ -730,8 +708,7 @@ int XBPython::evalString(const char *src, const unsigned int argc, const char **
   // Previous implementation would create a new thread for every script
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
-  if (argv != NULL)
-    pyThread->setArgv(argc, argv);
+  pyThread->setArgv(argv);
   pyThread->evalString(src);
 
   PyElem inf;

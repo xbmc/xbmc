@@ -1,8 +1,7 @@
 /*
  * FFT/IFFT transforms
  * AltiVec-enabled
- * Copyright (c) 2003 Romain Dolbeau <romain@dolbeau.org>
- * Based on code Copyright (c) 2002 Fabrice Bellard
+ * Copyright (c) 2009 Loren Merritt
  *
  * This file is part of FFmpeg.
  *
@@ -21,9 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "libavcodec/fft.h"
-#include "dsputil_ppc.h"
 #include "util_altivec.h"
-#include "dsputil_altivec.h"
+#include "types_altivec.h"
 
 /**
  * Do a complex FFT with the parameters defined in ff_fft_init(). The
@@ -32,112 +30,118 @@
  * AltiVec-enabled
  * This code assumes that the 'z' pointer is 16 bytes-aligned
  * It also assumes all FFTComplex are 8 bytes-aligned pair of float
- * The code is exactly the same as the SSE version, except
- * that successive MUL + ADD/SUB have been merged into
- * fused multiply-add ('vec_madd' in altivec)
  */
-static void ff_fft_calc_altivec(FFTContext *s, FFTComplex *z)
+
+void ff_fft_calc_altivec(FFTContext *s, FFTComplex *z);
+void ff_fft_calc_interleave_altivec(FFTContext *s, FFTComplex *z);
+
+#if HAVE_GNU_AS
+static void ff_imdct_half_altivec(FFTContext *s, FFTSample *output, const FFTSample *input)
 {
-POWERPC_PERF_DECLARE(altivec_fft_num, s->nbits >= 6);
-    register const vector float vczero = (const vector float)vec_splat_u32(0.);
+    int j, k;
+    int n = 1 << s->mdct_bits;
+    int n4 = n >> 2;
+    int n8 = n >> 3;
+    int n32 = n >> 5;
+    const uint16_t *revtabj = s->revtab;
+    const uint16_t *revtabk = s->revtab+n4;
+    const vec_f *tcos = (const vec_f*)(s->tcos+n8);
+    const vec_f *tsin = (const vec_f*)(s->tsin+n8);
+    const vec_f *pin = (const vec_f*)(input+n4);
+    vec_f *pout = (vec_f*)(output+n4);
 
-    int ln = s->nbits;
-    int j, np, np2;
-    int nblocks, nloops;
-    register FFTComplex *p, *q;
-    FFTComplex *cptr, *cptr1;
-    int k;
-
-POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
-
-    np = 1 << ln;
-
-    {
-        vector float *r, a, b, a1, c1, c2;
-
-        r = (vector float *)&z[0];
-
-        c1 = vcii(p,p,n,n);
-
-        if (s->inverse) {
-            c2 = vcii(p,p,n,p);
-        } else {
-            c2 = vcii(p,p,p,n);
-        }
-
-        j = (np >> 2);
-        do {
-            a = vec_ld(0, r);
-            a1 = vec_ld(sizeof(vector float), r);
-
-            b = vec_perm(a,a,vcprmle(1,0,3,2));
-            a = vec_madd(a,c1,b);
-            /* do the pass 0 butterfly */
-
-            b = vec_perm(a1,a1,vcprmle(1,0,3,2));
-            b = vec_madd(a1,c1,b);
-            /* do the pass 0 butterfly */
-
-            /* multiply third by -i */
-            b = vec_perm(b,b,vcprmle(2,3,1,0));
-
-            /* do the pass 1 butterfly */
-            vec_st(vec_madd(b,c2,a), 0, r);
-            vec_st(vec_nmsub(b,c2,a), sizeof(vector float), r);
-
-            r += 2;
-        } while (--j != 0);
-    }
-    /* pass 2 .. ln-1 */
-
-    nblocks = np >> 3;
-    nloops = 1 << 2;
-    np2 = np >> 1;
-
-    cptr1 = s->exptab1;
+    /* pre rotation */
+    k = n32-1;
     do {
-        p = z;
-        q = z + nloops;
-        j = nblocks;
-        do {
-            cptr = cptr1;
-            k = nloops >> 1;
-            do {
-                vector float a,b,c,t1;
+        vec_f cos,sin,cos0,sin0,cos1,sin1,re,im,r0,i0,r1,i1,a,b,c,d;
+#define CMULA(p,o0,o1,o2,o3)\
+        a = pin[ k*2+p];                       /* { z[k].re,    z[k].im,    z[k+1].re,  z[k+1].im  } */\
+        b = pin[-k*2-p-1];                     /* { z[-k-2].re, z[-k-2].im, z[-k-1].re, z[-k-1].im } */\
+        re = vec_perm(a, b, vcprm(0,2,s0,s2)); /* { z[k].re,    z[k+1].re,  z[-k-2].re, z[-k-1].re } */\
+        im = vec_perm(a, b, vcprm(s3,s1,3,1)); /* { z[-k-1].im, z[-k-2].im, z[k+1].im,  z[k].im    } */\
+        cos = vec_perm(cos0, cos1, vcprm(o0,o1,s##o2,s##o3)); /* { cos[k], cos[k+1], cos[-k-2], cos[-k-1] } */\
+        sin = vec_perm(sin0, sin1, vcprm(o0,o1,s##o2,s##o3));\
+        r##p = im*cos - re*sin;\
+        i##p = re*cos + im*sin;
+#define STORE2(v,dst)\
+        j = dst;\
+        vec_ste(v, 0, output+j*2);\
+        vec_ste(v, 4, output+j*2);
+#define STORE8(p)\
+        a = vec_perm(r##p, i##p, vcprm(0,s0,0,s0));\
+        b = vec_perm(r##p, i##p, vcprm(1,s1,1,s1));\
+        c = vec_perm(r##p, i##p, vcprm(2,s2,2,s2));\
+        d = vec_perm(r##p, i##p, vcprm(3,s3,3,s3));\
+        STORE2(a, revtabk[ p*2-4]);\
+        STORE2(b, revtabk[ p*2-3]);\
+        STORE2(c, revtabj[-p*2+2]);\
+        STORE2(d, revtabj[-p*2+3]);
 
-                a = vec_ld(0, (float*)p);
-                b = vec_ld(0, (float*)q);
+        cos0 = tcos[k];
+        sin0 = tsin[k];
+        cos1 = tcos[-k-1];
+        sin1 = tsin[-k-1];
+        CMULA(0, 0,1,2,3);
+        CMULA(1, 2,3,0,1);
+        STORE8(0);
+        STORE8(1);
+        revtabj += 4;
+        revtabk -= 4;
+        k--;
+    } while(k >= 0);
 
-                /* complex mul */
-                c = vec_ld(0, (float*)cptr);
-                /*  cre*re cim*re */
-                t1 = vec_madd(c, vec_perm(b,b,vcprmle(2,2,0,0)),vczero);
-                c = vec_ld(sizeof(vector float), (float*)cptr);
-                /*  -cim*im cre*im */
-                b = vec_madd(c, vec_perm(b,b,vcprmle(3,3,1,1)),t1);
+    ff_fft_calc_altivec(s, (FFTComplex*)output);
 
-                /* butterfly */
-                vec_st(vec_add(a,b), 0, (float*)p);
-                vec_st(vec_sub(a,b), 0, (float*)q);
+    /* post rotation + reordering */
+    j = -n32;
+    k = n32-1;
+    do {
+        vec_f cos,sin,re,im,a,b,c,d;
+#define CMULB(d0,d1,o)\
+        re = pout[o*2];\
+        im = pout[o*2+1];\
+        cos = tcos[o];\
+        sin = tsin[o];\
+        d0 = im*sin - re*cos;\
+        d1 = re*sin + im*cos;
 
-                p += 2;
-                q += 2;
-                cptr += 4;
-            } while (--k);
-
-            p += nloops;
-            q += nloops;
-        } while (--j);
-        cptr1 += nloops * 2;
-        nblocks = nblocks >> 1;
-        nloops = nloops << 1;
-    } while (nblocks != 0);
-
-POWERPC_PERF_STOP_COUNT(altivec_fft_num, s->nbits >= 6);
+        CMULB(a,b,j);
+        CMULB(c,d,k);
+        pout[2*j]   = vec_perm(a, d, vcprm(0,s3,1,s2));
+        pout[2*j+1] = vec_perm(a, d, vcprm(2,s1,3,s0));
+        pout[2*k]   = vec_perm(c, b, vcprm(0,s3,1,s2));
+        pout[2*k+1] = vec_perm(c, b, vcprm(2,s1,3,s0));
+        j++;
+        k--;
+    } while(k >= 0);
 }
+
+static void ff_imdct_calc_altivec(FFTContext *s, FFTSample *output, const FFTSample *input)
+{
+    int k;
+    int n = 1 << s->mdct_bits;
+    int n4 = n >> 2;
+    int n16 = n >> 4;
+    vec_u32 sign = {1<<31,1<<31,1<<31,1<<31};
+    vec_u32 *p0 = (vec_u32*)(output+n4);
+    vec_u32 *p1 = (vec_u32*)(output+n4*3);
+
+    ff_imdct_half_altivec(s, output+n4, input);
+
+    for (k = 0; k < n16; k++) {
+        vec_u32 a = p0[k] ^ sign;
+        vec_u32 b = p1[-k-1];
+        p0[-k-1] = vec_perm(a, a, vcprm(3,2,1,0));
+        p1[k]    = vec_perm(b, b, vcprm(3,2,1,0));
+    }
+}
+#endif /* HAVE_GNU_AS */
 
 av_cold void ff_fft_init_altivec(FFTContext *s)
 {
-    s->fft_calc = ff_fft_calc_altivec;
-    s->split_radix = 0;
+#if HAVE_GNU_AS
+    s->fft_calc   = ff_fft_calc_interleave_altivec;
+    s->imdct_calc = ff_imdct_calc_altivec;
+    s->imdct_half = ff_imdct_half_altivec;
+#endif
 }

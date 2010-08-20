@@ -175,6 +175,7 @@
 					</control>
 					<control type="radiobutton" id="19">
 						<description>Filter</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>587</label>
 					</control>
@@ -189,6 +190,7 @@
 					</control>
 					<control type="radiobutton" id="201">
 						<description>Toggle Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(MusicLibraryFanart)</onclick>
@@ -196,6 +198,7 @@
 					</control>
 					<control type="radiobutton" id="202">
 						<description>Toggle Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31318</label>
 						<onclick>Skin.ToggleSetting(MusicLibraryFanartView512)</onclick>

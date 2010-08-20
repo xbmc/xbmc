@@ -149,6 +149,7 @@ IMAGES= \
 	flagging/video/1080.png \
 	flagging/video/480.png \
 	flagging/video/540.png \
+	flagging/video/576.png \
 	flagging/video/720.png \
 	flagging/video/avc1.png \
 	flagging/video/bluray.png \

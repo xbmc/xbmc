@@ -25,10 +25,20 @@
 #include <inttypes.h>
 #include <ft2build.h>
 #include FT_GLYPH_H
+#ifndef _WIN32
+#include <strings.h>
+#endif
 
 #include "ass_library.h"
 #include "ass.h"
 #include "ass_utils.h"
+
+#ifdef _WIN32
+FILE *fopen_utf8(const char *_Filename, const char *_Mode)
+{
+    return fopen(_Filename, _Mode);
+}
+#endif
 
 int mystrtoi(char **p, int *res)
 {

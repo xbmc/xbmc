@@ -4,25 +4,24 @@ Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
 DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
+Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
- libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
- libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
- libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
- libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev, libpcre3-dev,
- liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
- libenca-dev, libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev,
- libxinerama-dev, libcurl4-openssl-dev | libcurl-dev, libdbus-1-dev,
- libhal-storage-dev, libhal-dev, libpulse-dev, libavahi-common-dev,
- libavahi-client-dev, libxrandr-dev, libavcodec-dev, libavformat-dev,
- libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev, libdts-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
- nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev,
-Standards-Version: 3.8.4
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
+ libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
+ libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
+ libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
+ libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
+ libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
+ libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
+ libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
+ libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
+ libfaad-dev, libiso9660-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev,
+Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
@@ -30,7 +29,7 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
 Package: xbmc
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
-         xbmc-skin-confluence (= ${binary:Version}), 
+         xbmc-skin-confluence (= ${binary:Version}),
          xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
@@ -198,30 +197,6 @@ Description: XBMC Media Center (debug package)
  multimedia jukebox.
  .
  This package contains debugging symbols for XBMC.
-
-Package: xbmc-scripts-example
-Architecture: all
-Depends: xbmc-data (= ${binary:Version}),
-         ${misc:Depends}
-Description: XBMC Media Center (example scripts)
- XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
- open source software media-player and entertainment hub for all your digital
- media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
- and Microsoft Windows, as well as the original Xbox game console. Created in
- 2003 by a group of like minded programmers, XBMC is a non-profit project run
- and developed by volunteers located around the world. More than 50 software
- developers have contributed to XBMC, and 100-plus translators have worked to
- expand its reach, making it available in more than 30 languages.
- .
- While XBMC functions very well as a standard media player application for
- your computer, it has been designed to be the perfect companion for your
- HTPC. Supporting an almost endless range of remote controls, and combined
- with its beautiful interface and powerful skinning engine, XBMC feels very
- natural to use from the couch and is the ideal solution for your home
- theater. Once installed, your computer will become a fully functional
- multimedia jukebox.
- .
- This package contains scripts shipped with XBMC for user conveniance.
 
 Package: xbmc-skin-confluence
 Architecture: all

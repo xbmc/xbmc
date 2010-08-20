@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 06/25/2010-->
+<!--Translator: airplanez-->
+<!--Email: airplanez@gmail.com-->
+<!--Date of translation: 08/19/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -117,7 +119,6 @@
   <string id="164">디스크 없음</string>
   <string id="165">디스크 있음</string>
   <string id="166">스킨</string>
-  <string id="167">FTP 서버 사용</string>
   <string id="169">해상도</string>
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
   <string id="172">개봉일</string>
@@ -179,6 +180,8 @@
   <string id="239">종료때 재생목록 지우기</string>
   <string id="240">화면 모드</string>
   <string id="241">전체 화면 #%d</string>
+  <string id="242">윈도우</string>
+  <string id="243">새로고침 비율</string>
   <string id="247">스크립트</string>
   <string id="248">언어</string>
   <string id="249">음악</string>
@@ -217,7 +220,6 @@
   <string id="282">%i 항목 찾음</string>
   <string id="283">검색 결과</string>
   <string id="284">결과 찾지 못함</string>
-  <string id="286">후처리 필터</string>
   <string id="287">자막</string>
   <string id="288">글꼴</string>
   <string id="289">- 크기</string>
@@ -237,11 +239,6 @@
   <string id="304">언어</string>
   <string id="305">사용함</string>
   <string id="306">논인터리브</string>
-  <string id="307">- 자동 후처리</string>
-  <string id="308">- 수직 블럭제거 필터</string>
-  <string id="309">- 수평 블럭제거 필터</string>
-  <string id="310">- 자동 밝기/명암</string>
-  <string id="311">- 디링</string>
   <string id="312">(0=자동)</string>
   <string id="313">데이터베이스 정리</string>
   <string id="314">준비중...</string>
@@ -433,7 +430,6 @@
   <string id="517">최근 재생 앨범</string>
   <string id="518">실행</string>
   <string id="519">실행...</string>
-  <string id="520">XBE 제목 수정</string>
   <string id="521">컴필레이션</string>
   <string id="522">소스 제거</string>
   <string id="523">미디어 변경</string>
@@ -487,6 +483,7 @@
   <string id="572">스튜디오</string>
   <string id="573">경로</string>
   <string id="574">국가</string>
+  <string id="575">진행중</string>
   <string id="580">정렬 방향</string>
   <string id="581">정렬 방법</string>
   <string id="582">보기 모드</string>
@@ -571,7 +568,6 @@
   <string id="715">- 할당</string>
   <string id="716">자동 (DHCP)</string>
   <string id="717">수동 (고정)</string>
-  <string id="718">기본 (대시보드)</string>
   <string id="719">- IP 주소</string>
   <string id="720">- 넷마스크</string>
   <string id="721">- 기본 게이트웨이</string>
@@ -727,9 +723,6 @@
   <string id="1233">프로그램 &amp; 비디오 &amp; 음악</string>
   <string id="1234">프로그램 &amp; 사진 &amp; 음악</string>
   <string id="1235">프로그램 &amp; 사진 &amp; 비디오</string>
-  <string id="1245">FTP 사용자명</string>
-  <string id="1246">FTP 비밀번호</string>
-  <string id="1247">정상적으로 비밀번호 설정됨</string>
   <string id="1250">자동-감지</string>
   <string id="1251">시스템 자동-감지</string>
   <string id="1252">별명</string>
@@ -750,8 +743,7 @@
   <string id="1403">햇빛</string>
   <string id="1404">많은</string>
   <string id="1405">:</string>
-  <string id="1406">
-  </string>
+  <string id="1406">:</string>
   <string id="1407">국지적인</string>
   <string id="1408">얼음</string>
   <string id="1409">눈</string>
@@ -770,8 +762,6 @@
   <string id="2050">상영시간</string>
   <string id="2100">스크립트 실패! : %s</string>
   <string id="2101">새 버전이 필요함 - 로그를 보세요</string>
-  <string id="2102">그래픽 카드</string>
-  <string id="2103">요구상항이 충족되지 않음 - 로그를 보세요</string>
   <string id="4501">LCD/VFD 사용</string>
   <string id="10000">홈</string>
   <string id="10001">프로그램</string>
@@ -832,18 +822,8 @@
   <string id="12009">인텍스 재생성...</string>
   <string id="12010">음악 윈도우로 돌아가기</string>
   <string id="12011">비디오 윈도우로 돌아가기</string>
-  <string id="12012">트레이너 목록 업데이트</string>
-  <string id="12013">트레이너</string>
-  <string id="12014">트레이너 찾지 못함</string>
-  <string id="12015">트레이너 설정</string>
-  <string id="12016">모든 등록된 트레이너가 없어짐. 목록을 업데이트 하세요</string>
-  <string id="12017">마지막 중지된 곳에서 되시작</string>
-  <string id="12018">아니오</string>
-  <string id="12019">예</string>
-  <string id="12020">물어보기</string>
   <string id="12021">처음부터 시작</string>
   <string id="12022">%s 부터 되시작</string>
-  <string id="12023">현재 트레이너 확인중...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -863,7 +843,7 @@
   <string id="12328">잠금해제 코드 입력</string>
   <string id="12329">- C 버튼을 누르면 취소</string>
   <string id="12330">게임패드 버튼 조합을 입력한 후</string>
-  <string id="12331">Start 누르거나 취소는 Back 을 누름</string>
+  <string id="12331">확인 또는, 취소하려면 뒤로 누르세요</string>
   <string id="12332">잠금 설정</string>
   <string id="12333">잠금해제</string>
   <string id="12334">잠금 초기화</string>
@@ -893,9 +873,6 @@
   <string id="12377">이전에 저장된 모든 값을 초기화합니다</string>
   <string id="12378">각각의 이미지를 표시할 시간</string>
   <string id="12379">회전 및 축소/확대 효과 사용</string>
-  <string id="12380">PAL 비율로 NTSC 비디오 재생</string>
-  <string id="12381">NTSC 비율로 PAL 비디오 재생</string>
-  <string id="12382">PAL60 비율로 NTSC 비디오 재생</string>
   <string id="12383">12시간제</string>
   <string id="12384">24시간제</string>
   <string id="12385">일/월</string>
@@ -914,8 +891,6 @@
   <string id="13003">- 지연</string>
   <string id="13004">- 최소 파일 재생시간:</string>
   <string id="13005">종료</string>
-  <string id="13006">대시보드</string>
-  <string id="13007">사용자 지정 대쉬보드 경로 사용</string>
   <string id="13008">종료 기능</string>
   <string id="13009">나가기</string>
   <string id="13010">최대절전</string>
@@ -961,26 +936,10 @@
   <string id="13145">만약 현재 XMBC 를 제어하는데 애플 리모트를</string>
   <string id="13146">사용한다면, 이 설정의 변경은  XBMC 를 제어하는데</string>
   <string id="13147">영향을 주게됩니다. 진행 하시겠습니까?</string>
-  <string id="13150">HDD 키:</string>
-  <string id="13151">HDD 온도:</string>
-  <string id="13152">DVD 모델:</string>
-  <string id="13153">DVD 펌웨어:</string>
-  <string id="13154">HDD 모델:</string>
-  <string id="13155">HDD 일련번호:</string>
-  <string id="13156">HDD 펌웨어:</string>
-  <string id="13157">HDD 비밀번호:</string>
-  <string id="13158">HDD 잠금 상태:</string>
   <string id="13159">서브넷 마스크</string>
   <string id="13160">게이트웨이</string>
   <string id="13161">기본 DNS</string>
   <string id="13162">초기화 실패</string>
-  <string id="13163">게임패드</string>
-  <string id="13164">키보드</string>
-  <string id="13165">마우스</string>
-  <string id="13166">헤드셋/마이크</string>
-  <string id="13167">메모리 유닛</string>
-  <string id="13168">무선리모콘</string>
-  <string id="13169">컨트롤러 포트</string>
   <string id="13170">안함</string>
   <string id="13171">즉시</string>
   <string id="13172">%i 초 후</string>
@@ -1137,6 +1096,7 @@
   <string id="13428">하드웨어 가속 허용 (CrystalHD)</string>
   <string id="13429">하드웨어 가속 허용 (VDADecoder)</string>
   <string id="13430">하드웨어 가속 허용 (OpenMax)</string>
+  <string id="13431">픽셀 셰이더</string>
   <string id="13500">A/V 동기 방식</string>
   <string id="13501">오디오 클럭</string>
   <string id="13502">비디오 클럭 (오디오 버림/반복)</string>
@@ -1193,7 +1153,6 @@
   <string id="14038">네트워크 설정이 변경되었습니다</string>
   <string id="14039">네트워크 설정을 변경하려면 XBMC</string>
   <string id="14040">재시작이 필요합니다. 지금 재시작 하시겠습니까?</string>
-  <string id="14041">후 처리</string>
   <string id="14043">- 재생중에도 종료</string>
   <string id="14044">%i 분</string>
   <string id="14045">%i 초</string>
@@ -1400,6 +1359,7 @@
   <string id="16316">자동</string>
   <string id="16317">시간적 (반)</string>
   <string id="16318">시간적/공간적 (반)</string>
+  <string id="16319">DXVA</string>
   <string id="16400">비디오 후처리</string>
   <string id="16401">사용안함</string>
   <string id="16402">SD 컨텐츠 사용함</string>
@@ -1593,19 +1553,19 @@
   <string id="20253">WebDAV 서버 (HTTP)</string>
   <string id="20254">WebDAV 서버 (HTTPS)</string>
   <string id="20255">처음 로그인, 프로파일을 수정하세요</string>
+  <string id="20256">HTS Tvheadend 클라이언트</string>
+  <string id="20257">VDR Streamdev 클라이언트</string>
   <string id="20300">웹 서버 디렉토리 (HTTP)</string>
   <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20302">폴더에 쓸수 없음:</string>
   <string id="20303">건너뛰고 진행 하시겠습니까?</string>
   <string id="20304">RSS 피드</string>
-  <string id="20306">알수없음. xbmc.log 의 MD5 를 BiosIDs.ini 에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
   <string id="20309">새 폴더 만들기</string>
   <string id="20310">재생때 LCD 흐리게</string>
   <string id="20311">알수없음 또는 온보드(보호됨)</string>
   <string id="20312">일시중지때 LCD 흐리게</string>
-  <string id="20313">일시중지때 LED 켜기</string>
   <string id="20314">비디오 - 라이브러리</string>
   <string id="20316">정렬: 아이디</string>
   <string id="20324">부분 재생...</string>
@@ -1659,6 +1619,7 @@
   <string id="20373">시즌</string>
   <string id="20374">영화 정보 다운로드</string>
   <string id="20375">컨텐츠 할당해제</string>
+  <string id="20376">원래 제목</string>
   <string id="20377">TV 쇼 정보 새로고침</string>
   <string id="20378">모든 에피소트 정보를 새로고치겠습니까?</string>
   <string id="20379">선택된 폴더는 하나의 TV 쇼 포함</string>
@@ -1729,9 +1690,11 @@
   <string id="20446">로컬에 저장된 정보 찾음.</string>
   <string id="20447">무시하고 인터넷에서 새로고침 할까요?</string>
   <string id="20448">정보를 다운로드할수 없음</string>
-  <string id="20449">서버를 전혀 사용할수 없는것 같습니다.</string>
+  <string id="20449">원격 서버에 연결할수 없음</string>
   <string id="20450">검색을 계속 하시겠습니까?</string>
   <string id="20451">국가</string>
+  <string id="20452">에피소드</string>
+  <string id="20453">에피소드</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>
@@ -1829,7 +1792,7 @@
   <string id="21449">리모콘이 키보드 누름 보냄</string>
   <string id="21450">- 수정</string>
   <string id="21451">인터넷 연결이 필요함.</string>
-  <string id="21452">더 가져오기</string>
+  <string id="21452">더 가져오기...</string>
   <string id="21453">루트 파일시스템</string>
   <string id="21800">파일 이름</string>
   <string id="21801">파일 경로</string>
@@ -1906,7 +1869,7 @@
   <string id="21899">라벨</string>
   <string id="21900">출생/결성</string>
   <string id="22000">시작때 라이브러리 업데이트</string>
-  <string id="22001">항상 백그라운드로 라이브러리 업데이트</string>
+  <string id="22001">라이브러리 업데이트 진행 숨기기</string>
   <string id="22002">- DNS 접미사</string>
   <string id="22004">%2.3f 초 느리게</string>
   <string id="22005">%2.3f 초 빠르게</string>
@@ -1943,6 +1906,11 @@
   <string id="22041">하양/빨강</string>
   <string id="22042">하양/파랑</string>
   <string id="22043">검정/하양</string>
+  <string id="22079">기본 선택 동작</string>
+  <string id="22080">선택</string>
+  <string id="22081">정보 보이기</string>
+  <string id="22082">더 보기...</string>
+  <string id="22083">모두 재생</string>
   <string id="23049">문자다중방송 사용할수 없음</string>
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
@@ -1986,6 +1954,8 @@
   <string id="24039">사용되지않는 추가기능</string>
   <string id="24040">(현재 설정 지우기)</string>
   <string id="24041">압축 파일에서 설치</string>
+  <string id="24042">%i%% 다운로드중</string>
+  <string id="24043">사용가능한 업데이트</string>
   <string id="24050">사용가능한 추가기능</string>
   <string id="24051">버전:</string>
   <string id="24052">권리포기</string>
@@ -2011,6 +1981,9 @@
   <string id="24080">재연결 하시겠습니까?</string>
   <string id="24089">추가기능 재시작</string>
   <string id="24090">추가기능 관리자 잠금</string>
+  <string id="24096">추가기능이 저장소에 깨진것으로 표시되어 있습니다.</string>
+  <string id="24097">시스템에서 사용안함으로 하시겠습니까?</string>
+  <string id="24098">깨짐</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
@@ -2030,7 +2003,7 @@
   <string id="33014">일반 플레이어 대신 DVD 플레이어 사용</string>
   <string id="33015">비디오 재생전에 다운로드 묻기</string>
   <string id="33016">클립</string>
-  <string id="33017">작동하기위해 플러그인 재시작</string>
+  <string id="33017">사용하기위해 플러그인 재시작</string>
   <string id="33018">오늘밤</string>
   <string id="33019">내일밤</string>
   <string id="33020">상태</string>

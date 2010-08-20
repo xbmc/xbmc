@@ -6,7 +6,7 @@
 <script type="text/javascript">
 function CallPlay(album) {
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "albumid": ' + album + ' }, "id": 1}');
 }
 
@@ -14,7 +14,7 @@ function writeArtist(artist) {
   document.write('<h2>' + artist["label"] + '</h2>');
 
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "artistid": ' + artist["artistid"] + ' }, "id": 1}');
 
   var the_object = JSON.parse(http_request.responseText);
@@ -54,7 +54,7 @@ function writeArtist(artist) {
 
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);

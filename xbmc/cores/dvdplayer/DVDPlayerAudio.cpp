@@ -462,15 +462,19 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-      if (m_speed == DVD_PLAYSPEED_PAUSE)
+      if (m_speed == DVD_PLAYSPEED_NORMAL)
+      {
+        m_dvdAudio.Resume();
+      }
+      else
       {
         m_ptsOutput.Flush();
         m_resampler.Flush();
         m_syncclock = true;
+        if (m_speed != DVD_PLAYSPEED_PAUSE)
+          m_dvdAudio.Flush();
         m_dvdAudio.Pause();
       }
-      else
-        m_dvdAudio.Resume();
     }
     pMsg->Release();
   }
@@ -515,6 +519,10 @@ void CDVDPlayerAudio::Process()
     if( result & DECODE_FLAG_TIMEOUT )
     {
       m_stalled = true;
+
+      // Flush as the audio output may keep looping if we don't
+      m_dvdAudio.Flush();
+
       continue;
     }
 

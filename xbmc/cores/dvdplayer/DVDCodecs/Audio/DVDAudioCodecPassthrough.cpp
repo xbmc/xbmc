@@ -176,9 +176,10 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 {
   bool bSupportsAC3Out = false;
   bool bSupportsDTSOut = false;
+  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
 
   // TODO - move this stuff somewhere else
-  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+  if (AUDIO_IS_BITSTREAM(audioMode))
   {
     bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
@@ -206,7 +207,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
     /* try AC3/DTS decoders first */
     m_Codec = hints.codec;
-#ifdef USE_LIBDTS_DECODER
+#ifdef USE_LIBA52_DECODER
     if(m_Codec == CODEC_ID_AC3)
     {
       if (!m_dllA52.Load())
@@ -218,7 +219,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       return true;
     }
 #endif
-#ifdef USE_LIBAC3_DECODER
+#ifdef USE_LIBDTS_DECODER
     if(m_Codec == CODEC_ID_DTS)
     {
       if (!m_dllDTS.Load())
@@ -369,14 +370,14 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   if(!frame)
     return len;
 
-#ifdef USE_LIBDTS_DECODER
+#ifdef USE_LIBA52_DECODER
   if(m_Codec == CODEC_ID_AC3)
   {
     m_OutputSize = PaddAC3Data(frame, framesize, m_OutputBuffer);
     return len;
   }
 #endif
-#ifdef USE_LIBAC3_DECODER
+#ifdef USE_LIBDTS_DECODER
   if(m_Codec == CODEC_ID_DTS)
   {
     m_OutputSize = PaddDTSData(frame, framesize, m_OutputBuffer);

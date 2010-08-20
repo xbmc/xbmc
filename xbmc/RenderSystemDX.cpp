@@ -35,7 +35,6 @@
 #include "Application.h"
 #include "Util.h"
 #include "win32/WIN32Util.h"
-#include "LocalizeStrings.h"
 #include "VideoReferenceClock.h"
 
 using namespace std;
@@ -59,6 +58,10 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 
   m_pD3D        = NULL;
   m_pD3DDevice  = NULL;
+  m_devType     = D3DDEVTYPE_HAL;
+#if defined(DEBUG_PS) || defined (DEBUG_VS)
+    m_devType = D3DDEVTYPE_REF
+#endif
   m_hFocusWnd   = NULL;
   m_hDeviceWnd  = NULL;
   m_nBackBufferWidth  = 0;
@@ -84,37 +87,41 @@ CRenderSystemDX::~CRenderSystemDX()
   DestroyRenderSystem();
 }
 
-void CRenderSystemDX::CheckDXVersion()
-{
-  CStdString strSystemFolder = CWIN32Util::GetSystemPath();
-  CStdString dxtestfile = CUtil::AddFileToFolder(strSystemFolder, "D3DX9_42.dll");
-
-  HANDLE hDevice = 0;
-  if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
-  {
-    CLog::Log(LOGWARNING, "%s - old DirectX runtime. You need DirectX 9.0c, dated August 2009 or later.", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
-  }
-  else
-    CloseHandle(hDevice);
-}
-
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-
-  CheckDXVersion();
 
   m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
   {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - trying D3D9Ex...");
     if (FAILED(g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
-      return false;
-    CLog::Log(LOGDEBUG, "%s - using D3D9Ex", __FUNCTION__);
+    {
+      CLog::Log(LOGDEBUG, __FUNCTION__" - D3D9Ex creation failure, falling back to D3D9");
+      m_useD3D9Ex = false;
+    }
+    else
+    {
+      D3DCAPS9 caps;
+      memset(&caps, 0, sizeof(caps));
+      m_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, m_devType, &caps);
+      // Evaluate if the driver is WDDM - this detection method is not guaranteed 100%
+      if (!g_advancedSettings.m_ForceD3D9Ex && (!(caps.Caps2 & D3DCAPS2_CANSHARERESOURCE) || !(caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES)))
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - driver looks like XPDM or earlier, falling back to D3D9");
+        m_useD3D9Ex = false;
+        m_pD3D->Release();
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, __FUNCTION__" - using D3D9Ex");
+      }
+    }
   }
-  else
+
+  if (!m_useD3D9Ex)
   {
     m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
     if(m_pD3D == NULL)
@@ -176,11 +183,24 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+{
+  // Verify the compatibility
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         m_devType,
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_SURFACE,
+                                         depthFormat);
+
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
 {
   // Verify that the depth format exists
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
-                                         D3DDEVTYPE_HAL,
+                                         m_devType,
                                          AdapterFormat,
                                          D3DUSAGE_DEPTHSTENCIL,
                                          D3DRTYPE_SURFACE,
@@ -190,9 +210,9 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
 
   // Verify that the depth format is compatible
   hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
-                                      D3DDEVTYPE_HAL,
+                                      m_devType,
                                       AdapterFormat,
-                                      BackBufferFormat,
+                                      RenderTargetFormat,
                                       DepthFormat);
 
   return SUCCEEDED(hr);
@@ -213,7 +233,7 @@ void CRenderSystemDX::BuildPresentParameters()
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
 #if D3DX_SDK_VERSION >= 42
-    m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
+    //m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
 #else
 #   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
     CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
@@ -338,17 +358,11 @@ bool CRenderSystemDX::CreateDevice()
 
   CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
 
-  D3DDEVTYPE devType = D3DDEVTYPE_HAL;
-
-#if defined(DEBUG_PS) || defined (DEBUG_VS)
-    devType = D3DDEVTYPE_REF
-#endif
-
   BuildPresentParameters();
 
   if (m_useD3D9Ex)
   {
-    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, devType, m_hFocusWnd,
+    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, m_devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
 
     if (FAILED(hr))
@@ -356,15 +370,15 @@ bool CRenderSystemDX::CreateDevice()
       CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
-      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
           D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
         if( FAILED( hr ) )
         {
-          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
             D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
         }
         if(FAILED( hr ) )
@@ -375,22 +389,22 @@ bool CRenderSystemDX::CreateDevice()
   else
   {
 
-    hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
+    hr = m_pD3D->CreateDevice(m_adapter, m_devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
 
     if (FAILED(hr))
     {
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
-      hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+      hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+        hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
           D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
         if( FAILED( hr ) )
         {
-          hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+          hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
             D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
         }
         if(FAILED( hr ) )
@@ -415,15 +429,9 @@ bool CRenderSystemDX::CreateDevice()
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
 
-  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - XBMC requires a graphics card supporting Pixel Shaders 2.0");
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
-  }
-
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
-  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  if (g_advancedSettings.m_AllowDynamicTextures && m_useD3D9Ex && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
   {
     m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
     m_defaultD3DPool  = D3DPOOL_DEFAULT;
@@ -435,12 +443,12 @@ bool CRenderSystemDX::CreateDevice()
     m_defaultD3DPool  = D3DPOOL_MANAGED;
   }
 
-    m_renderCaps = 0;
+  m_renderCaps = 0;
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
-                                           D3DDEVTYPE_HAL,
+                                           m_devType,
                                            m_D3DPP.BackBufferFormat,
                                            m_defaultD3DUsage,
                                            D3DRTYPE_TEXTURE,
@@ -530,7 +538,11 @@ bool CRenderSystemDX::PresentRenderImpl()
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
       SetThreadPriority(GetCurrentThread(), priority);
   }
-  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+
+  if (m_useD3D9Ex)
+    hr = ((IDirect3DDevice9Ex*)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, 0);
+  else
+    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
   {
@@ -618,6 +630,12 @@ bool CRenderSystemDX::BeginRender()
       CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
+
+  IDirect3DSurface9 *pBackBuffer;
+  m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
+  pBackBuffer->Release();
+
   m_inScene = true;
   return true;
 }

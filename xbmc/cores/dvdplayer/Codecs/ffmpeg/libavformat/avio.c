@@ -56,9 +56,14 @@ URLProtocol *av_protocol_next(URLProtocol *p)
     else  return first_protocol;
 }
 
-int av_register_protocol(URLProtocol *protocol)
+int av_register_protocol2(URLProtocol *protocol, int size)
 {
     URLProtocol **p;
+    if (size < sizeof(URLProtocol)) {
+        URLProtocol* temp = av_mallocz(sizeof(URLProtocol));
+        memcpy(temp, protocol, size);
+        protocol = temp;
+    }
     p = &first_protocol;
     while (*p != NULL) p = &(*p)->next;
     *p = protocol;
@@ -67,14 +72,30 @@ int av_register_protocol(URLProtocol *protocol)
 }
 
 #if LIBAVFORMAT_VERSION_MAJOR < 53
+/* The layout of URLProtocol as of when major was bumped to 52 */
+struct URLProtocol_compat {
+    const char *name;
+    int (*url_open)(URLContext *h, const char *filename, int flags);
+    int (*url_read)(URLContext *h, unsigned char *buf, int size);
+    int (*url_write)(URLContext *h, unsigned char *buf, int size);
+    int64_t (*url_seek)(URLContext *h, int64_t pos, int whence);
+    int (*url_close)(URLContext *h);
+    struct URLProtocol *next;
+};
+
+int av_register_protocol(URLProtocol *protocol)
+{
+    return av_register_protocol2(protocol, sizeof(struct URLProtocol_compat));
+}
+
 int register_protocol(URLProtocol *protocol)
 {
     return av_register_protocol(protocol);
 }
 #endif
 
-int url_open_protocol (URLContext **puc, struct URLProtocol *up,
-                       const char *filename, int flags)
+static int url_alloc_for_protocol (URLContext **puc, struct URLProtocol *up,
+                                   const char *filename, int flags)
 {
     URLContext *uc;
     int err;
@@ -97,17 +118,14 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
     uc->flags = flags;
     uc->is_streamed = 0; /* default = not streamed */
     uc->max_packet_size = 0; /* default: stream file */
-    err = up->url_open(uc, filename, flags);
-    if (err < 0) {
-        av_free(uc);
-        goto fail;
+    if (up->priv_data_size) {
+        uc->priv_data = av_mallocz(up->priv_data_size);
+        if (up->priv_data_class) {
+            *(const AVClass**)uc->priv_data = up->priv_data_class;
+            av_opt_set_defaults(uc->priv_data);
+        }
     }
 
-    //We must be careful here as url_seek() could be slow, for example for http
-    if(   (flags & (URL_WRONLY | URL_RDWR))
-       || !strcmp(up->name, "file"))
-        if(!uc->is_streamed && url_seek(uc, 0, SEEK_SET) < 0)
-            uc->is_streamed= 1;
     *puc = uc;
     return 0;
  fail:
@@ -118,7 +136,38 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
     return err;
 }
 
-int url_open(URLContext **puc, const char *filename, int flags)
+int url_connect(URLContext* uc)
+{
+    int err = uc->prot->url_open(uc, uc->filename, uc->flags);
+    if (err)
+        return err;
+    uc->is_connected = 1;
+    //We must be careful here as url_seek() could be slow, for example for http
+    if(   (uc->flags & (URL_WRONLY | URL_RDWR))
+       || !strcmp(uc->prot->name, "file"))
+        if(!uc->is_streamed && url_seek(uc, 0, SEEK_SET) < 0)
+            uc->is_streamed= 1;
+    return 0;
+}
+
+int url_open_protocol (URLContext **puc, struct URLProtocol *up,
+                       const char *filename, int flags)
+{
+    int ret;
+
+    ret = url_alloc_for_protocol(puc, up, filename, flags);
+    if (ret)
+        goto fail;
+    ret = url_connect(*puc);
+    if (!ret)
+        return 0;
+ fail:
+    url_close(*puc);
+    *puc = NULL;
+    return ret;
+}
+
+int url_alloc(URLContext **puc, const char *filename, int flags)
 {
     URLProtocol *up;
     const char *p;
@@ -145,11 +194,24 @@ int url_open(URLContext **puc, const char *filename, int flags)
     up = first_protocol;
     while (up != NULL) {
         if (!strcmp(proto_str, up->name))
-            return url_open_protocol (puc, up, filename, flags);
+            return url_alloc_for_protocol (puc, up, filename, flags);
         up = up->next;
     }
     *puc = NULL;
     return AVERROR(ENOENT);
+}
+
+int url_open(URLContext **puc, const char *filename, int flags)
+{
+    int ret = url_alloc(puc, filename, flags);
+    if (ret)
+        return ret;
+    ret = url_connect(*puc);
+    if (!ret)
+        return 0;
+    url_close(*puc);
+    *puc = NULL;
+    return ret;
 }
 
 int url_read(URLContext *h, unsigned char *buf, int size)
@@ -211,11 +273,13 @@ int url_close(URLContext *h)
     int ret = 0;
     if (!h) return 0; /* can happen when url_open fails */
 
-    if (h->prot->url_close)
+    if (h->is_connected && h->prot->url_close)
         ret = h->prot->url_close(h);
 #if CONFIG_NETWORK
     ff_network_close();
 #endif
+    if (h->prot->priv_data_size)
+        av_free(h->priv_data);
     av_free(h);
     return ret;
 }

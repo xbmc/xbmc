@@ -10,6 +10,16 @@ version <next>:
 - VP8 de/encoding via libvpx
 - CODEC_CAP_EXPERIMENTAL added
 - Demuxer for On2's IVF format
+- Pictor/PC Paint decoder
+- HE-AAC v2 decoder
+- libfaad2 wrapper removed
+- DTS-ES extension (XCh) decoding support
+- native VP8 decoder
+- RTSP tunneling over HTTP
+- RTP depacketization of SVQ3
+- -strict inofficial replaced by -strict unofficial
+- ffplay -exitonkeydown and -exitonmousedown options added
+- native GSM / GSM MS decoder
 
 
 
@@ -88,6 +98,7 @@ version 0.6:
 - 35% faster VP3/Theora decoding
 - faster AAC decoding
 - faster H.264 decoding
+- RealAudio 1.0 (14.4K) encoder
 
 
 

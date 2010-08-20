@@ -90,6 +90,17 @@ namespace ADDON
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabled = true);
+    /*! \brief Get all addons with available updates
+     \param addons List to fill with all outdated addons
+     \param enabled Whether to get only enabled or disabled addons
+     \return True if there are outdated addons otherwise false
+     */
+    bool GetAllOutdatedAddons(VECADDONS &addons, bool enabled = true);
+    /*! \brief Checks if there is any addon with available updates
+     \param enabled Whether to check only enabled or disabled addons
+     \return True if there are outdated addons otherwise false
+     */
+    bool HasOutdatedAddons(bool enabled = true);
     CStdString GetString(const CStdString &id, const int number);
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);

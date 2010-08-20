@@ -143,14 +143,14 @@ Command CJSONRPC::m_commands[] = {
   { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
 
 // File
-  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the root directory of the media windows" },
+  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the sources of the media windows. Parameter example {\"media\": \"video\"}. Media can be video, music, pictures or files" },
   { "Files.Download",                               CFileOperations::Download,                           FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
 
-  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory" },
+  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory. Parameter example {\"directory\": \"foo/bar\", \"media\": \"video\"}. Media can be video, music, pictures or files" },
 
 // Music library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
-  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre, Fields: album_description, album_theme, album_mood, album_style, album_type, album_label, album_artist, album_genre, album_rating, album_title" },
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
@@ -162,7 +162,6 @@ Command CJSONRPC::m_commands[] = {
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons,                           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"season\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
   { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes,                          Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"season\": 1, \"fields\": [\"plot\"], \"sortmethod\": \"episode\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
 
-  { "VideoLibrary.GetMusicVideoAlbums",             CVideoLibrary::GetMusicVideoAlbums,                  Response,     ReadData,        "" },
   { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos,                       Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
 
   { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies,               Response,     ReadData,        "Retrieve all recently added movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },

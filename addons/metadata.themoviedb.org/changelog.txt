@@ -1,3 +1,30 @@
+[B]1.1.2[/B]
+- fixed missing imdb id
+
+[B]1.1.1[/B]
+- no writers due to API changes
+
+[B]1.1.0[/B]
+- added multi-language support
+
+[B]1.0.11[/B]
+- added Polish translation
+
+[B]1.0.9[/B]
+- translation cosmetics
+
+[B]1.0.8[/B]
+- changed hdtrailers.net version dependency
+
+[B]1.0.7[/B]
+- final fix for nfourl scraping issue
+
+[B]1.0.6[/B]
+- fixed nfourl scraping issue
+
+[B]1.0.5[/B]
+- switch tmdb scraper to chain tmdb scraper library functions
+
 [B]1.0.4[/B]
 - replace dtrailer.com with HD-Trailers.net for trailer scraping
 

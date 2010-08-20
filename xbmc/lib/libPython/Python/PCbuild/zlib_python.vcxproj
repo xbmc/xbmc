@@ -111,14 +111,13 @@ nmake -nologo -f win32\Makefile.msc zlib.lib
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copy output</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>
-      </Inputs>
+      <Inputs>$(TargetPath)</Inputs>
       <Outputs>$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -177,14 +176,13 @@ nmake -nologo -f win32\Makefile.msc zlib.lib
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copy output</Message>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Inputs>
-      </Inputs>
+      <Inputs>$(TargetPath)</Inputs>
       <Outputs>$(SolutionDir)..\..\system\python\DLLs\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>

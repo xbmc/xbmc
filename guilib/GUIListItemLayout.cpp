@@ -22,7 +22,6 @@
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "GUIControlFactory.h"
-#include "addons/Skin.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIListLabel.h"
 #include "GUIImage.h"
@@ -39,6 +38,7 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_focused = false;
   m_invalidated = true;
   m_isPlaying = false;
+  m_group.SetPushUpdates(true);
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
@@ -145,9 +145,8 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 {
   m_focused = focused;
-  g_SkinInfo->ResolveIncludes(layout);
-  g_SkinInfo->ResolveConstant(layout->Attribute("width"), m_width);
-  g_SkinInfo->ResolveConstant(layout->Attribute("height"), m_height);
+  layout->QueryFloatAttribute("width", &m_width);
+  layout->QueryFloatAttribute("height", &m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
     m_condition = g_infoManager.TranslateString(condition);

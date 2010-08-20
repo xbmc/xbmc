@@ -182,6 +182,7 @@ const BUILT_IN commands[] = {
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
   { "Addon.Default.Set",          true,   "Open a select dialog to allow choosing the default addon of the given type" },
+  { "Addon.OpenSettings",         true,   "Open a settings dialog for the addon of the given id" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
@@ -343,24 +344,20 @@ int CBuiltins::Execute(const CStdString& execString)
     else
 #endif
     {
-      unsigned int argc = params.size();
-      char ** argv = new char*[argc];
+      vector<CStdString> argv = params;
 
       vector<CStdString> path;
       //split the path up to find the filename
       StringUtils::SplitString(params[0],"\\",path);
-      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
-
-      for(unsigned int i = 1; i < argc; i++)
-        argv[i] = (char*)params[i].c_str();
+      if (path.size())
+        argv[0] = path[path.size() - 1];
 
       AddonPtr script;
       CStdString scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
-      g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
-      delete [] argv;
+      g_pythonParser.evalFile(scriptpath, argv);
     }
   }
 #endif
@@ -473,7 +470,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if ( askToResume == true )
     {
-      if ( CGUIWindowVideoBase::OnResumeShowMenu(item) == false )
+      if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
         return false;
     }
     // play media
@@ -1079,7 +1076,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "");
+          scanner->StartScanning(params.size() > 1 ? params[1] : "");
       }
     }
   }
@@ -1312,13 +1309,23 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CStdString addonID;
     TYPE type = TranslateType(params[0]);
+    bool allowNone = false;
+    if (type == ADDON_VIZ)
+      allowNone = true;
+
     if (type != ADDON_UNKNOWN && 
-        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,false))
+        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
       if (type == ADDON_VIZ)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
+  }
+  else if (execute.Equals("addon.opensettings") && params.size() == 1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(params[0], addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (execute.Equals("toggledpms"))
   {

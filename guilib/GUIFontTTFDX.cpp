@@ -89,6 +89,7 @@ void CGUIFontTTFDX::Begin()
 
     // no other texture stages needed
     pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+    pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
     pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
@@ -140,8 +141,9 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   m_textureHeight = desc.Height;
   m_textureWidth = desc.Width;
 
+  DWORD flags = (desc.Usage & D3DUSAGE_DYNAMIC) ? D3DLOCK_DISCARD : 0;
   D3DLOCKED_RECT rect;
-  newTexture->LockRect(0, &rect, NULL, 0);
+  newTexture->LockRect(0, &rect, NULL, flags);
   memset(rect.pBits, 0, rect.Pitch * m_textureHeight);
   newTexture->UnlockRect(0);
 

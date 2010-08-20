@@ -219,7 +219,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
-    if (function != "NfoScrape")
+    if (function != "NfoScrape" && function != "NfoUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
     return result;
   }
@@ -239,7 +239,9 @@ vector<CStdString> CScraper::Run(const CStdString& function,
 
   result.push_back(strXML);
   TiXmlHandle docHandle( &doc );
-  TiXmlElement* xchain = doc.RootElement()->FirstChildElement("chain");
+  TiXmlElement* xchain = doc.RootElement()->FirstChildElement();
+  while (xchain && strcmp(xchain->Value(),"url") && strcmp(xchain->Value(),"chain"))
+      xchain = xchain->NextSiblingElement();
   while (xchain && xchain->FirstChild())
   {
     const char* szFunction = xchain->Attribute("function");
@@ -247,23 +249,16 @@ vector<CStdString> CScraper::Run(const CStdString& function,
     {
       CScraperUrl scrURL2;
       vector<CStdString> extras;
-      extras.push_back(xchain->FirstChild()->Value());
+      if (strcmp(xchain->Value(),"chain")==0)
+        extras.push_back(xchain->FirstChild()->Value());
+      else
+        scrURL2.ParseElement(xchain);
       vector<CStdString> result2 = Run(szFunction,scrURL2,http,&extras);
       result.insert(result.end(),result2.begin(),result2.end());
     }
-    xchain = xchain->NextSiblingElement("chain");
-  }
-  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
-    {
-      CScraperUrl scrURL2(xurl);
-      vector<CStdString> result2 = Run(szFunction,scrURL2,http);
-      result.insert(result.end(),result2.begin(),result2.end());
-    }
-    xurl = xurl->NextSiblingElement("url");
+    xchain = xchain->NextSiblingElement();
+    while (xchain && strcmp(xchain->Value(),"url") && strcmp(xchain->Value(),"chain"))
+      xchain = xchain->NextSiblingElement();
   }
   
   return result;

@@ -28,7 +28,6 @@
 #include "BaseRenderer.h"
 #include "D3DResource.h"
 #include "settings/VideoSettings.h"
-
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -72,6 +71,12 @@
 #define CONF_FLAGS_FULLSCREEN    0x10
 
 class CBaseTexture;
+class CYUV2RGBShader;
+class CConvolutionShader;
+
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
 
 namespace DXVA { class CProcessor; }
 
@@ -99,25 +104,68 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
-
-
-class CYUV2RGBMatrix
+enum RenderMethod
 {
-public:
-  CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags);
-  D3DXMATRIX* Matrix();
-
-private:
-  bool         m_NeedRecalc;
-  float        m_contrast;
-  float        m_blacklevel;
-  unsigned int m_flags;
-  D3DXMATRIX   m_mat;
+  RENDER_INVALID = 0x00,
+  RENDER_PS      = 0x01,
+  RENDER_SW      = 0x02,
+  RENDER_DXVA    = 0x03,
 };
 
+#define PLANE_Y 0
+#define PLANE_U 1
+#define PLANE_V 2
+
+#define FIELD_FULL 0
+#define FIELD_ODD 1
+#define FIELD_EVEN 2
+
+struct SVideoBuffer
+{
+  virtual ~SVideoBuffer() {}
+  virtual void Release() {};            // Release any allocated resource
+  virtual void StartDecode() {};        // Prepare the buffer to receive data from dvdplayer
+  virtual void StartRender() {};        // dvdplayer finished filling the buffer with data
+  virtual void Clear() {};              // clear the buffer with solid black
+};
+
+// YV12 decoder textures
+struct SVideoPlane
+{
+  CD3DTexture    texture;
+  D3DLOCKED_RECT rect;                  // rect.pBits != NULL is used to know if the texture is locked
+};
+
+struct YUVBuffer : SVideoBuffer
+{
+  ~YUVBuffer();
+  bool Create(unsigned int width, unsigned int height);
+  virtual void Release();
+  virtual void StartDecode();
+  virtual void StartRender();
+  virtual void Clear();
+
+  SVideoPlane planes[MAX_PLANES];
+
+private:
+  unsigned int     m_width;
+  unsigned int     m_height;
+};
+
+struct DXVABuffer : SVideoBuffer
+{
+  DXVABuffer()
+  {
+    proc = NULL;
+    id   = 0;
+  }
+  ~DXVABuffer();
+  virtual void Release();
+  virtual void StartDecode();
+
+  DXVA::CProcessor* proc;
+  int64_t           id;
+};
 
 class CWinRenderer : public CBaseRenderer
 {
@@ -130,7 +178,7 @@ public:
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
@@ -145,99 +193,69 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+
+  static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
 
 protected:
   virtual void Render(DWORD flags);
-  void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
+  void         RenderSW(DWORD flags);
+  void         RenderPS(DWORD flags);
+  void         Stage1(DWORD flags);
+  void         Stage2(DWORD flags);
+  void         ScaleFixedPipeline();
+  void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index);
-  void CopyYV12Texture(int dest);
-  int  NextYV12Texture();
+  void         DeleteYV12Texture(int index);
+  bool         CreateYV12Texture(int index);
+  void         CopyYV12Texture(int dest);
+  int          NextYV12Texture();
+
+  void SelectRenderMethod();
+  bool UpdateRenderMethod();
 
   void UpdateVideoFilter();
+  void SelectSWVideoFilter();
+  void SelectPSVideoFilter();
+  void UpdatePSVideoFilter();
+  bool CreateIntermediateRenderTarget();
 
-  bool LoadEffect(CD3DEffect &effect, CStdString filename);
-
-  // low memory renderer (default PixelShaderRenderer)
-  void RenderLowMem(CD3DEffect &effect, DWORD flags);
   void RenderProcessor(DWORD flags);
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
+  int  m_iYV12RenderBuffer;
+  int  m_NumYV12Buffers;
 
-  bool m_bConfigured;
+  bool                 m_bConfigured;
+  SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
+  RenderMethod         m_renderMethod;
 
-  typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
-  typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
+  // software scale libraries (fallback if required pixel shaders version is not available)
+  DllAvUtil           *m_dllAvUtil;
+  DllAvCodec          *m_dllAvCodec;
+  DllSwScale          *m_dllSwScale;
+  struct SwsContext   *m_sw_scale_ctx;
 
-  #define PLANE_Y 0
-  #define PLANE_U 1
-  #define PLANE_V 2
+  // Software rendering
+  D3DTEXTUREFILTERTYPE m_TextureFilter;
+  CD3DTexture          m_SWTarget;
 
-  #define FIELD_FULL 0
-  #define FIELD_ODD 1
-  #define FIELD_EVEN 2
+  // PS rendering
+  bool                 m_bUseHQScaler;
+  CD3DTexture          m_IntermediateTarget;
+  CD3DTexture          m_IntermediateStencilSurface;
 
-  // YV12 decoder textures
-  struct SVideoPlane
-  {
-    CD3DTexture    texture;
-    D3DLOCKED_RECT rect;
-  };
+  CYUV2RGBShader*      m_colorShader;
+  CConvolutionShader*  m_scalerShader;
 
-  struct SVideoBuffer
-  {
-    SVideoBuffer()
-    {
-      proc = NULL;
-      id   = 0;
-    }
-   ~SVideoBuffer()
-    {
-      Clear();
-    }
-
-    void StartDecode();
-    void StartRender();
-
-    void Clear();
-
-    DXVA::CProcessor* proc;
-    int64_t           id;
-    SVideoPlane       planes[MAX_PLANES];
-  };
-
-  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
-
-  CD3DTexture m_HQKernelTexture;
-  CD3DEffect  m_YUV2RGBEffect;
-  CD3DEffect  m_YUV2RGBHQScalerEffect;
-
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  ESCALINGMETHOD       m_scalingMethod;
+  ESCALINGMETHOD       m_scalingMethodGui;
 
   D3DCAPS9 m_deviceCaps;
 
-  bool m_bUseHQScaler;
-  bool m_bFilterInitialized;
+  bool                 m_bFilterInitialized;
 
   // clear colour for "black" bars
-  DWORD          m_clearColour;
-  unsigned int   m_flags;
-  CYUV2RGBMatrix m_matrix;
-};
-
-
-class CPixelShaderRenderer : public CWinRenderer
-{
-public:
-  CPixelShaderRenderer();
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
-
-protected:
-  virtual void Render(DWORD flags);
+  DWORD                m_clearColour;
+  unsigned int         m_flags;
 };
 
 #else

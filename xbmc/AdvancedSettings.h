@@ -108,6 +108,7 @@ class CAdvancedSettings
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
     bool  m_videoAllowLanczos3;
+    bool  m_videoAllowMpeg4VDPAU;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -195,8 +196,9 @@ class CAdvancedSettings
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
-    bool m_bVideoLibraryMyMoviesCategoriesToGenres;
     bool m_bVideoLibraryImportWatchedState;
+
+    bool m_bVideoScannerIgnoreErrors;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -239,6 +241,7 @@ class CAdvancedSettings
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
     bool m_AllowD3D9Ex;
+    bool m_ForceD3D9Ex;
     bool m_AllowDynamicTextures;
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip

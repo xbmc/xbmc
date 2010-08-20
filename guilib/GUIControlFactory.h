@@ -46,8 +46,6 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
-  void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
-  static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
 
   /*! \brief translate from control name to control type
    \param type name of the control
@@ -74,13 +72,12 @@ public:
    \return true if we found and read the tag.
    */
   static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
-  static bool GetUnsigned(const TiXmlNode* pRootNode, const char* strTag, unsigned int& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
-  static bool GetAnimations(const TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
+  static bool GetAnimations(TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
 
   /*! \brief Create an info label from an XML element
    Processes XML elements of the form

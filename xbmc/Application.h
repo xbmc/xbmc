@@ -47,6 +47,9 @@ namespace ADDON
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
 #endif
+#ifdef _WIN32
+#include "win32/WIN32Util.h"
+#endif
 #include "Autorun.h"
 #include "Bookmark.h"
 #include "utils/Stopwatch.h"
@@ -74,6 +77,7 @@ class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CGUITextLayout;
 
 class CBackgroundPlayer : public CThread
 {
@@ -155,6 +159,7 @@ public:
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(const CKey& key);
+  bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
@@ -296,7 +301,11 @@ protected:
   ADDON::AddonPtr m_screenSaver;
 
   // timer information
+#ifdef _WIN32
+  CWinIdleTimer m_idleTimer;
+#else
   CStopWatch m_idleTimer;
+#endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
@@ -333,6 +342,8 @@ protected:
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
+  
+  CGUITextLayout *m_debugLayout;
 
 #ifdef HAS_SDL
   int        m_frameCount;

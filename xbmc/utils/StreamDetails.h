@@ -54,8 +54,8 @@ public:
 
   int m_iWidth;
   int m_iHeight;
-  int m_iDuration;
   float m_fAspect;
+  int m_iDuration;
   CStdString m_strCodec;
 };
 

@@ -34,7 +34,7 @@ if [ ! -f crystalhd.tar ]; then
 	exit
 fi
 
-tar xvf crystalhd.tar > /dev/null
+tar xf crystalhd.tar > /dev/null
 
 # Make libraries
 cd crystalhd/linux_lib/libcrystalhd
@@ -76,6 +76,7 @@ cd $modulesdir
 mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
+rm /tmp/crystalhd.ko 
 depmod $kernelVersion
 popd
 

@@ -54,11 +54,11 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
   m_stretch = 0.0f;
 
-  string shaderv = 
-    "uniform vec2 stepxy;"
+  string shaderv =
+    "varying vec2 cord;"
     "void main()"
     "{"
-    "gl_TexCoord[0].xy = gl_MultiTexCoord0.xy - stepxy * 0.5;"
+    "cord = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);"
     "gl_Position = ftransform();"
     "gl_FrontColor = gl_Color;"
     "}";
@@ -120,7 +120,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   defines += "#define USE1DTEXTURE 0\n";
 #endif
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
+  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
 }
 

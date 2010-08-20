@@ -57,7 +57,7 @@ public:
   bool GetDirectory(const CStdString &base, const CStdString &folder, CFileItemList &items);
   bool Exists(const char *path);
   int Stat(const char *path, struct __stat64* buffer);
-  void Seek(sftp_file handle, uint64_t position);
+  int Seek(sftp_file handle, uint64_t position);
   int Read(sftp_file handle, void *buffer, size_t length);
   int64_t GetPosition(sftp_file handle);
   bool IsIdle();

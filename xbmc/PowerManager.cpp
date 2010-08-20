@@ -26,6 +26,7 @@
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/Weather.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -221,6 +222,10 @@ void CPowerManager::OnSleep()
   CAnnouncementManager::Announce(System, "xbmc", "Sleep");
 
   g_application.StopPlaying();
+
+#if defined(HAVE_LIBCRYSTALHD)
+  CCrystalHD::GetInstance()->Sleep();
+#endif
 }
 
 void CPowerManager::OnWake()
@@ -264,6 +269,7 @@ void CPowerManager::OnWake()
 #endif
 
   g_application.UpdateLibraries();
+  g_weatherManager.Refresh();
 
   CAnnouncementManager::Announce(System, "xbmc", "Resume");
 }

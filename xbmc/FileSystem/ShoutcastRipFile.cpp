@@ -21,7 +21,10 @@
 
 #include "ShoutcastRipFile.h"
 #include "Id3Tag.h"
+#include "FileSystem/Directory.h"
+#include "FileItem.h"
 #include "GUISettings.h"
+#include "Util.h"
 
 // prevent inclusion of config.h from libshout
 #define __SRCONFIG_H__
@@ -352,80 +355,33 @@ void CShoutcastRipFile::PrepareRecording( )
 
 void CShoutcastRipFile::SetFilename( const char* filePath, const char* fileName )
 {
-  INT i;
-  WIN32_FIND_DATA wfd;
-  HANDLE hFind;
-
-  char szNewFileName[1024];
-  char szTempFilePath[1024];
-
-  const int MY_MAX_PATH = 42;
-
-  //cut the received fileName to max.
-  char szMaxFileName[MY_MAX_PATH];
-  memset( szMaxFileName, '\0', sizeof(szMaxFileName)); //clear buffer
-  if ( strlen( fileName ) > MY_MAX_PATH - 11 )    //-11: Don't forget .mp3 and 100 - !!!
-  {
-    memmove(szMaxFileName, fileName, MY_MAX_PATH - 11 ); //then copy the appropriate size
-  }
-  else
-  {
-    strcpy(szMaxFileName, fileName );       //else, just copy the string
-  }
-
-  strcpy( szTempFilePath, filePath );
-
   //first look if we need to create the directory
-  memset(&wfd, 0, sizeof(wfd));
-  hFind = FindFirstFile(szTempFilePath, &wfd);
-  //lets create a directory if it doesn't exist
-  if ( wfd.cFileName[0] == 0 )
-  {
-    CreateDirectory( szTempFilePath, NULL );
-  }
+  XFILE::CDirectory::Create(filePath);
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory(filePath, items, ".mp3", false);
+  items.SetFastLookup(true);
 
-  for ( i = m_iTrackCount; i <= MAX_RECORDED_TRACKS; i++ )
+  CStdString file;
+  for (int i = m_iTrackCount; i <= MAX_RECORDED_TRACKS; i++ )
   {
     if ( m_recState.bHasMetaData )
-    {
-#ifndef _LINUX
-      strcat( szTempFilePath, "\\%i - %s.mp3" );  //will be "TRACKNUMBER - FILENAME.mp3"
-#else
-      strcat( szTempFilePath, "/%i - %s.mp3" );  //will be "TRACKNUMBER - FILENAME.mp3"
-#endif
-      sprintf(szNewFileName, szTempFilePath, i, szMaxFileName );
-    }
+      file.Format("%i - %s.mp3", i, fileName); // will be "TRACKNUMBER - FILENAME.mp3"
     else
+      file.Format("%s - %i.mp3", fileName, i); // will be "FILENAME - TRACKNUMBER.mp3"
+    file = CUtil::AddFileToFolder(filePath, CUtil::MakeLegalFileName(file));
+    if (!items.Get(file))
     {
-#ifndef _LINUX
-      strcat( szTempFilePath, "\\%s - %i.mp3" );  //will be "FILENAME - TRACKNUMBER.mp3"
-#else
-      strcat( szTempFilePath, "/%s - %i.mp3" );  //will be "FILENAME - TRACKNUMBER.mp3"
-#endif
-      sprintf(szNewFileName, szTempFilePath, szMaxFileName, i );
-    }
-    memset(&wfd, 0, sizeof(wfd));
-    hFind = FindFirstFile(szNewFileName, &wfd);
-    if ( wfd.cFileName[0] == 0 )
-    {
-      strcpy( m_szFilteredFileName, szNewFileName );
-      FindClose( hFind );
+      strcpy( m_szFilteredFileName, file.c_str() );
       //set the appropriate trackNumber
       m_Tag.SetTrackNumber(i);
       if ( !m_recState.bHasMetaData )
         m_iTrackCount = i;
-
-      return ;
-    }
-    else
-    {
-      strcpy( szTempFilePath, filePath ); //file exists, reset
+      return;
     }
   }
   //if its the MAX_RECORDED_TRACKS. file, we overwrite it
-  strcpy( m_szFilteredFileName, szNewFileName );
-  FindClose( hFind );
-  return ;
+  strcpy( m_szFilteredFileName, file.c_str() );
+  return;
 }
 
 void CShoutcastRipFile::RemoveIllegalChars( char *szRemoveIllegal )

@@ -129,6 +129,8 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
   pSpin->Clear();
   pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
+  pSpin->AddLabel(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP);
+  pSpin->AddLabel(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP);
   pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
   pSpin->AddLabel(g_localizeStrings.Get(20172), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS);
@@ -199,6 +201,10 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     m_port = "3689";
+  else if (m_protocol == NET_PROTOCOL_HTSP)
+    m_port = "9982";
+  else if (m_protocol == NET_PROTOCOL_VTP)
+    m_port = "2004";
 
   UpdateButtons();
 }
@@ -221,7 +227,11 @@ void CGUIDialogNetworkSetup::UpdateButtons()
     SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_TEXT, 1016);
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP &&
+                                                   m_protocol != NET_PROTOCOL_UPNP &&
+                                                   m_protocol != NET_PROTOCOL_TUXBOX &&
+                                                   m_protocol != NET_PROTOCOL_HTSP &&
+                                                   m_protocol != NET_PROTOCOL_VTP);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
@@ -239,7 +249,10 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // username
   SET_CONTROL_LABEL2(CONTROL_USERNAME, m_username);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_DAAP &&
+                                                m_protocol != NET_PROTOCOL_VTP &&
+                                                m_protocol != NET_PROTOCOL_UPNP);
+
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_USERNAME, CGUIEditControl::INPUT_TYPE_TEXT, 1019);
 
   // port
@@ -251,6 +264,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_DAV ||
                                                    m_protocol == NET_PROTOCOL_DAVS ||
                                                    m_protocol == NET_PROTOCOL_TUXBOX ||
+                                                   m_protocol == NET_PROTOCOL_HTSP ||
+                                                   m_protocol == NET_PROTOCOL_VTP ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP);
 
@@ -258,11 +273,14 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // password
   SET_CONTROL_LABEL2(CONTROL_PASSWORD, m_password);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_PASSWORD, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PASSWORD, m_protocol != NET_PROTOCOL_DAAP &&
+                                                m_protocol != NET_PROTOCOL_VTP &&
+                                                m_protocol != NET_PROTOCOL_UPNP);
+
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
   // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, TUXBOX, DAV or DAVS
+  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, HTSP, VTP, TUXBOX, DAV or DAVS
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
@@ -270,6 +288,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_DAVS ||
                                                                               m_protocol == NET_PROTOCOL_DAAP ||
                                                                               m_protocol == NET_PROTOCOL_RSS ||
+                                                                              m_protocol == NET_PROTOCOL_HTSP ||
+                                                                              m_protocol == NET_PROTOCOL_VTP ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX));
 }
 
@@ -298,6 +318,10 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("tuxbox");
   else if (m_protocol == NET_PROTOCOL_RSS)
     url.SetProtocol("rss");
+  else if (m_protocol == NET_PROTOCOL_HTSP)
+    url.SetProtocol("htsp");
+  else if (m_protocol == NET_PROTOCOL_VTP)
+    url.SetProtocol("vtp");
   if (!m_username.IsEmpty())
   {
     url.SetUserName(m_username);
@@ -312,6 +336,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||
        (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
+       (m_protocol == NET_PROTOCOL_HTSP) ||
+       (m_protocol == NET_PROTOCOL_VTP) ||
        (m_protocol == NET_PROTOCOL_TUXBOX))
       && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
   {
@@ -346,6 +372,10 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_UPNP;
   else if (protocol == "tuxbox")
     m_protocol = NET_PROTOCOL_TUXBOX;
+  else if (protocol == "htsp")
+    m_protocol = NET_PROTOCOL_HTSP;
+  else if (protocol == "vtp")
+    m_protocol = NET_PROTOCOL_VTP;
   else if (protocol == "rss")
     m_protocol = NET_PROTOCOL_RSS;
   else

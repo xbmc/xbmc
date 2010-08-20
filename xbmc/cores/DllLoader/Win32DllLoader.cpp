@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "CharsetConverter.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
@@ -40,11 +41,12 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 Export win32_exports[] =
 {
   // kernel32
-  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                               NULL },
+  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                            NULL },
+  { "FindNextFileA",                                -1, (void*)dllFindNextFileA,                             NULL },
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                            NULL },
+  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                       NULL },
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
 //  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
@@ -76,6 +78,8 @@ Export win32_exports[] =
   { "_fstat",                     -1, (void*)dll_fstat,                     NULL },
   { "_mkdir",                     -1, (void*)dll_mkdir,                     NULL },
   { "_stat",                      -1, (void*)dll_stat,                      NULL },
+  { "_fstat32",                   -1, (void*)dll_fstat,                     NULL },
+  { "_stat32",                    -1, (void*)dll_stat,                      NULL },
   { "_findclose",                 -1, (void*)dll_findclose,                 NULL },
   { "_findfirst",                 -1, (void*)dll_findfirst,                 NULL },
   { "_findnext",                  -1, (void*)dll_findnext,                  NULL },
@@ -190,7 +194,9 @@ bool Win32DllLoader::Load()
   CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
 
-  m_dllHandle = LoadLibraryEx(_P(strFileName).c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+  CStdStringW strDllW;
+  g_charsetConverter.utf8ToW(_P(strFileName), strDllW);
+  m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
     CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
@@ -259,7 +265,9 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const CStdString &dll)
 {
-  BYTE* image_base = (BYTE*)GetModuleHandle(_P(dll).c_str());
+  CStdStringW strdllW;
+  g_charsetConverter.utf8ToW(_P(dll), strdllW, false);
+  BYTE* image_base = (BYTE*)GetModuleHandleW(strdllW.c_str());
 
   if (!image_base)
   {
@@ -352,15 +360,22 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
         return false;
     }
   }
-  HMODULE hModule = GetModuleHandle(_P(dllName).c_str());
-  char filepath[MAX_PATH];
-  GetModuleFileName(hModule, filepath, MAX_PATH);
-  CStdString dllPath = filepath;
+  CStdStringW strdllNameW;
+  g_charsetConverter.utf8ToW(_P(dllName), strdllNameW, false);
+  HMODULE hModule = GetModuleHandleW(strdllNameW.c_str());
+  wchar_t filepathW[MAX_PATH];
+  GetModuleFileNameW(hModule, filepathW, MAX_PATH);
+  CStdString dllPath;
+  g_charsetConverter.wToUTF8(filepathW, dllPath);
 
-  // compare this filepath with our home directory
-  CStdString homePath = _P("special://xbmc");
+  // compare this filepath with some special directories
+  CStdString xbmcPath = _P("special://xbmc");
+  CStdString homePath = _P("special://home");
   CStdString tempPath = _P("special://temp");
-  return ((strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), filepath, tempPath.GetLength()) == 0));}
+  return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.GetLength()) == 0) ||
+    (strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) ||
+    (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));
+}
 
 void Win32DllLoader::RestoreImports()
 {

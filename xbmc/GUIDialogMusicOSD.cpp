@@ -31,12 +31,9 @@
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 
-using ADDON::CVisualisation;
-
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
-  m_pVisualisation = NULL;
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
@@ -53,7 +50,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       if (iControl == CONTROL_VIS_BUTTON)
       {
         CStdString addonID;
-        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID) == 1)
+        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
           g_guiSettings.SetString("musicplayer.visualisation", addonID);
           g_settings.Save();
@@ -68,17 +65,6 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_DEINIT:
-  case GUI_MSG_VISUALISATION_UNLOADING:
-    {
-      m_pVisualisation = NULL;
-    }
-    break;
-  case GUI_MSG_VISUALISATION_LOADED:
-    {
-      if (message.GetPointer())
-        m_pVisualisation = (CVisualisation *)message.GetPointer();
-    }
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -99,12 +85,4 @@ void CGUIDialogMusicOSD::OnInitWindow()
 {
   ResetControlStates();
   CGUIDialog::OnInitWindow();
-}
-
-bool CGUIDialogMusicOSD::OnAction(const CAction &action)
-{
-  // keyboard or controller movement should prevent autoclosing
-  if (!action.IsMouse() && m_autoClosing)
-    SetAutoClose(3000);
-  return CGUIDialog::OnAction(action);
 }

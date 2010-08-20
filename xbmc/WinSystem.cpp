@@ -102,60 +102,92 @@ int CWinSystemBase::DesktopResolution(int screen)
   return RES_DESKTOP;
 }
 
-static void AddResolution(vector<RESOLUTION_WHR> &resolutions, int width, int height, int screenDefaultRes)
+static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addindex)
 {
+  int width = g_settings.m_ResInfo[addindex].iWidth;
+  int height = g_settings.m_ResInfo[addindex].iHeight;
+
   for (unsigned int idx = 0; idx < resolutions.size(); idx++)
     if (resolutions[idx].width == width && resolutions[idx].height == height)
-      return; // this width*height was taken care of.
+      return; // already taken care of.
 
-  int screen = g_settings.m_ResInfo[screenDefaultRes].iScreen;
-  float targetfps = g_settings.m_ResInfo[screenDefaultRes].fRefreshRate;
-  //TODO: get it from another source if we can have stupid values like 0, 1?
-
-  int bestmatch = RES_DESKTOP;
-  float bestfitness = -1.0f;
-
-  for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
-  {
-    RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
-
-    if (info.iWidth  != width
-    ||  info.iHeight != height
-    ||  info.iScreen != screen)
-      continue;
-
-    float fitness = fabs(targetfps - info.fRefreshRate);
-
-    if (bestfitness <0 || fitness <  bestfitness)
-    {
-      bestfitness = fitness;
-      bestmatch = i;
-      if (bestfitness == 0.0f) // perfect match
-        break;
-    }
-  }
-
-  RESOLUTION_WHR res = {g_settings.m_ResInfo[bestmatch].iWidth, g_settings.m_ResInfo[bestmatch].iHeight, bestmatch};
+  RESOLUTION_WHR res = {width, height, addindex};
   resolutions.push_back(res);
 }
 
 static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
 {
-  return  (i.width < j.width ||
-          (i.width == j.width && i.height < j.height));
+  return (    i.width < j.width
+          || (i.width == j.width && i.height < j.height));
 }
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
 {
-    int defResolution = DesktopResolution(screen);
-    vector<RESOLUTION_WHR> resolutions;
+  vector<RESOLUTION_WHR> resolutions;
 
-    // Can't assume the resolutions are sorted in any way
-    for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
-      if (g_settings.m_ResInfo[idx].iScreen == screen)
-        AddResolution(resolutions, g_settings.m_ResInfo[idx].iWidth, g_settings.m_ResInfo[idx].iHeight, defResolution);
+  for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
+    if (g_settings.m_ResInfo[idx].iScreen == screen)
+      AddResolution(resolutions, idx);
 
-    sort(resolutions.begin(), resolutions.end(), resSortPredicate);
+  // Can't assume a sort order
+  sort(resolutions.begin(), resolutions.end(), resSortPredicate);
 
-    return resolutions;
+  return resolutions;
+}
+
+static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addindex)
+{
+  float RefreshRate = g_settings.m_ResInfo[addindex].fRefreshRate;
+  bool Interlaced = ((g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED) == D3DPRESENTFLAG_INTERLACED);
+
+  for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
+    if (   refreshrates[idx].RefreshRate == RefreshRate
+        && refreshrates[idx].Interlaced  == Interlaced )
+      return; // already taken care of.
+
+  REFRESHRATE rr = {RefreshRate, Interlaced, addindex};
+  refreshrates.push_back(rr);
+}
+
+static bool rrSortPredicate (REFRESHRATE i, REFRESHRATE j)
+{
+  return (   i.RefreshRate < j.RefreshRate
+          || i.RefreshRate == j.RefreshRate && !i.Interlaced);
+}
+
+vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height)
+{
+  vector<REFRESHRATE> refreshrates;
+
+  for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
+    if (   g_settings.m_ResInfo[idx].iScreen == screen
+        && g_settings.m_ResInfo[idx].iWidth  == width
+        && g_settings.m_ResInfo[idx].iHeight == height)
+      AddRefreshRate(refreshrates, idx);
+
+  // Can't assume a sort order
+  sort(refreshrates.begin(), refreshrates.end(), rrSortPredicate);
+
+  return refreshrates;
+}
+
+REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> rates)
+{
+  REFRESHRATE bestmatch = rates[0];
+  float bestfitness = -1.0f;
+  float targetfps = g_settings.m_ResInfo[DesktopResolution(screen)].fRefreshRate;
+
+  for (unsigned i = 0; i < rates.size(); i++)
+  {
+    float fitness = fabs(targetfps - rates[i].RefreshRate);
+
+    if (bestfitness <0 || fitness < bestfitness)
+    {
+      bestfitness = fitness;
+      bestmatch = rates[i];
+      if (bestfitness == 0.0f) // perfect match
+        break;
+    }
+  }
+  return bestmatch;
 }

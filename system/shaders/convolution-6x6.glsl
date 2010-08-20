@@ -1,6 +1,28 @@
+/*
+ *      Copyright (C) 2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 uniform sampler2D img;
 uniform vec2      stepxy;
 uniform float     m_stretch;
+varying vec2      cord;
 
 #if (USE1DTEXTURE)
   uniform sampler1D kernelTex;
@@ -64,7 +86,7 @@ half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2
 
 void main()
 {
-  vec2 pos = stretch(gl_TexCoord[0].xy);
+  vec2 pos = stretch(cord) + stepxy * 0.5;
   vec2 f = fract(pos / stepxy);
 
   half3 linetaps1   = weight((1.0 - f.x) / 2.0);
@@ -80,7 +102,7 @@ void main()
   columntaps1 /= sum;
   columntaps2 /= sum;
 
-  vec2 xystart = (-1.5 - f) * stepxy + pos;
+  vec2 xystart = (-2.5 - f) * stepxy + pos;
   vec3 xpos1 = vec3(xystart.x, xystart.x + stepxy.x, xystart.x + stepxy.x * 2.0);
   vec3 xpos2 = vec3(xystart.x + stepxy.x * 3.0, xystart.x + stepxy.x * 4.0, xystart.x + stepxy.x * 5.0);
 

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/20/2010-->
+<!--Date of translation: 07/26/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 31234-->
+<!--Based on english strings version 32185-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -121,7 +121,6 @@
   <string id="164">Δεν υπάρχει δίσκος</string>
   <string id="165">Υπάρχει δίσκος</string>
   <string id="166">Κέλυφος</string>
-  <string id="167">Ενεργοποίηση διακομιστή FTP</string>
   <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
@@ -184,6 +183,8 @@
   <string id="239">Εκκαθάριση λίστας αναπαραγωγής στη λήξη</string>
   <string id="240">Κατάσταση προβολής</string>
   <string id="241">Πλήρης οθόνη #%d</string>
+  <string id="242">Σε παράθυρο</string>
+  <string id="243">Ανανέωση βαθμολογίας</string>
   <string id="247">Scripts</string>
   <string id="248">Γλώσσα</string>
   <string id="249">Μουσική</string>
@@ -438,7 +439,6 @@
   <string id="517">Πρόσφατα εκτελεσθέντα άλμπουμ</string>
   <string id="518">Εκκίνηση</string>
   <string id="519">Εκκίνηση σε...</string>
-  <string id="520">Επεξεργασία τίτλου XBE </string>
   <string id="521">Συλλογές</string>
   <string id="522">Απομάκρυνση πηγής</string>
   <string id="523">Εναλλαγή πολυμέσων</string>
@@ -492,6 +492,7 @@
   <string id="572">Εταιρεία (studio)</string>
   <string id="573">Διαδρομή</string>
   <string id="574">Χώρα</string>
+  <string id="575">Σε εξέλιξη</string>
   <string id="580">Σειρά ταξινόμησης</string>
   <string id="581">Κριτήρια ταξινόμησης</string>
   <string id="582">Λειτουργία προβολής</string>
@@ -576,7 +577,6 @@
   <string id="715">- Εκχώρηση</string>
   <string id="716">Αυτόματη (DHCP)</string>
   <string id="717">Χειροκίνητη (Στατική)</string>
-  <string id="718">Προεπιλεγμένη (Dashboard)</string>
   <string id="719">- Διεύθυνση IP</string>
   <string id="720">- Μάσκα δικτύου</string>
   <string id="721">- Προεπιλεγμένη πύλη</string>
@@ -734,9 +734,6 @@
   <string id="1233">Εφαρμογές &amp; βίντεο &amp; μουσική</string>
   <string id="1234">Εφαρμογές &amp; εικόνες &amp; μουσική</string>
   <string id="1235">Εφαρμογές &amp; εικόνες &amp; βίντεο</string>
-  <string id="1245">Όνομα χρήστη FTP</string>
-  <string id="1246">Κωδικός πρόσβασης FTP</string>
-  <string id="1247">Ο Κωδικός πρόσβασης έχει ορισθεί επιτυχώς</string>
   <string id="1250">Αυτόματος εντοπισμός</string>
   <string id="1251">Αυτόματος εντοπισμός συστήματος</string>
   <string id="1252">Ψευδώνυμο</string>
@@ -776,8 +773,6 @@
   <string id="2050">Εκτέλεση</string>
   <string id="2100">Αποτυχία script! : %s</string>
   <string id="2101">Απαιτείται νεώτερη έκδοση - Δείτε το αρχείο καταγραφής</string>
-  <string id="2102">Κάρτα γραφικών</string>
-  <string id="2103">Δεν ικανοποιούνται οι απαιτήσεις  - Δείτε το αρχείο καταγραφής</string>
   <string id="4501">Ενεργοποίηση LCD/VFD</string>
   <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Εφαρμογές</string>
@@ -838,18 +833,8 @@
   <string id="12009">Ανακατασκευή περιεχομένων...</string>
   <string id="12010">Επιστροφή στην μουσική</string>
   <string id="12011">Επιστροφή στα βίντεο</string>
-  <string id="12012">Ενημέρωση λίστας εκπαιδευτών</string>
-  <string id="12013">Εκπαιδευτής</string>
-  <string id="12014">Δεν βρέθηκαν εκπαιδευτές</string>
-  <string id="12015">Ρυθμίσεις εκπαιδευτή</string>
-  <string id="12016">Όλοι οι Εκπαιδευτές λείπουν. Ενημερώστε τη λίστα σας.</string>
-  <string id="12017">Επανεκκίνηση από τη τελευταία θέση αναπαραγωγής</string>
-  <string id="12018">Όχι</string>
-  <string id="12019">Ναι</string>
-  <string id="12020">Ερώτηση</string>
   <string id="12021">Εκκίνηση από την αρχή</string>
   <string id="12022">Επανεκκίνηση από %s</string>
-  <string id="12023">Επικύρωση υπαρχόντων εκπαιδευτών...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -869,7 +854,7 @@
   <string id="12328">Εισάγετε κωδικό ξεκλειδώματος</string>
   <string id="12329">ή πατήστε C για ακύρωση</string>
   <string id="12330">Εισάγετε συνδυασμό πλήκτρων και</string>
-  <string id="12331">πατήστε Start, ή Back για ακύρωση</string>
+  <string id="12331">πατήστε Εντάξει, ή Επιστροφή για ακύρωση</string>
   <string id="12332">Τοποθέτηση κλειδώματος</string>
   <string id="12333">Ξεκλείδωμα</string>
   <string id="12334">Επανατοποθέτηση κλειδώματος</string>
@@ -899,9 +884,6 @@
   <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
   <string id="12378">Χρονικό διάστημα προβολής κάθε εικόνας</string>
   <string id="12379">Εφέ προσαρμογης αναλογιών σήματος (pan &amp; zoom)</string>
-  <string id="12380">Αναπαραγωγή NTSC βίντεο σε PAL</string>
-  <string id="12381">Αναπαραγωγή PAL βίντεο σε NTSC</string>
-  <string id="12382">Αναπαραγωγή NTSC βίντεο σε PAL60</string>
   <string id="12383">Κανονικό ρολόι</string>
   <string id="12384">Ψηφιακό ρολόι</string>
   <string id="12385">Μέρα/Μήνας</string>
@@ -920,8 +902,6 @@
   <string id="13003">- Καθυστέρηση</string>
   <string id="13004">- Ελάχιστη διάρκεια αρχείου</string>
   <string id="13005">Παύση λειτουργίας</string>
-  <string id="13006">Εκκινητής</string>
-  <string id="13007">Χρήση προσαρμοσμένης διαδρομής εκκινητή</string>
   <string id="13008">Λειτουργία τερματισμού</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
@@ -967,26 +947,10 @@
   <string id="13145">Εάν χρησιμοποιείτε τώρα τη συσκευή (Apple Remote) για να</string>
   <string id="13146">ελέγξετε το XBMC, η αλλαγή της ρύθμισης αυτής θα επηρεάσει</string>
   <string id="13147">την ικανότητα ελέγχου του. Θέλετε να συνεχίσετε;</string>
-  <string id="13150">Κλειδί</string>
-  <string id="13151">Θερμοκρασία</string>
-  <string id="13152">Μοντέλο</string>
-  <string id="13153">Έκδοση υλικού</string>
-  <string id="13154">Μοντέλο</string>
-  <string id="13155">Σειριακός αριθμός</string>
-  <string id="13156">Έκδοση υλικού</string>
-  <string id="13157">Κωδικός πρόσβασης</string>
-  <string id="13158">Κατάσταση</string>
   <string id="13159">Μάσκα Subnet</string>
   <string id="13160">Πύλη</string>
   <string id="13161">Πρωτεύον DNS</string>
   <string id="13162">Η αναγνώριση απέτυχε</string>
-  <string id="13163">Χειριστήριο</string>
-  <string id="13164">Πληκτρολόγιο</string>
-  <string id="13165">Ποντίκι</string>
-  <string id="13166">Μικρόφωνο</string>
-  <string id="13167">Ειδική μνήμη</string>
-  <string id="13168">Τηλεχειριστήριο</string>
-  <string id="13169">Ελεγκτής εισόδου</string>
   <string id="13170">Ποτέ</string>
   <string id="13171">Αμέσως</string>
   <string id="13172">Μετά από %i δευτ.</string>
@@ -1143,6 +1107,7 @@
   <string id="13428">Αποδοχή επιτάχυνσης υλικού (CrystalHD)</string>
   <string id="13429">Αποδοχή επιτάχυνσης υλικού (VDADecoder)</string>
   <string id="13430">Αποδοχή επιτάχυνσης υλικού (OpenMax)</string>
+  <string id="13431">Σκιάσεις εικονοστοιχείου</string>
   <string id="13500">Μέθοδος συγχρονισμού A/V</string>
   <string id="13501">Χρονισμός ήχου</string>
   <string id="13502">Χρονισµός βίντεο (εις βάρος του ήχου)</string>
@@ -1406,6 +1371,11 @@
   <string id="16316">Αυτόματη</string>
   <string id="16317">Χρονική (κατά το ήμισυ)</string>
   <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
+  <string id="16319">DXVA</string>
+  <string id="16400">Μετα-επεξεργασία βίντεο</string>
+  <string id="16401">Ανενεργή</string>
+  <string id="16402">Ενεργή για τυπική ευκρίνεια (SD)</string>
+  <string id="16403">Πάντα ενεργή</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
@@ -1600,14 +1570,12 @@
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
   <string id="20303">Θέλετε να παραβλεφθεί και να συνεχίσετε;</string>
   <string id="20304">Ροή τίτλων ειδήσεων (RSS)</string>
-  <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
   <string id="20307">Δευτερεύον DNS</string>
   <string id="20308">DHCP διακομιστή:</string>
   <string id="20309">Δημιουργία νέου φακέλου</string>
   <string id="20310">Dim LCD κατα την αναπαραγωγή</string>
   <string id="20311">Άγνωστο ή πάνω στην μητρική (προστατεύεται)</string>
   <string id="20312">Dim LCD σε παύση</string>
-  <string id="20313">Αλλαγή οπίσθιας λυχνίας σε παύση</string>
   <string id="20314">Βίντεο - Συλλογή</string>
   <string id="20316">Ταξ. κατά: ID</string>
   <string id="20324">Αναπαραγωγή κομματιού...</string>
@@ -1731,9 +1699,11 @@
   <string id="20446">Βρέθηκαν τοπικά αποθηκευμένες πληροφορίες.</string>
   <string id="20447">Να αγνοηθούν και να ανανεωθούν από το internet;</string>
   <string id="20448">Αδυναμία λήψης πληροφοριών </string>
-  <string id="20449">Ίσως ο διακομιστής να είναι πλέον μη διαθέσιμος.</string>
+  <string id="20449">Αδυναμία σύνδεσης με τον απομακρυσμένο διακομιστή</string>
   <string id="20450">Επιθυμείτε, να συνεχίσετε  την αναζήτηση;</string>
   <string id="20451">Χώρες</string>
+  <string id="20452">επεισόδιο</string>
+  <string id="20453">επεισόδια</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
@@ -1831,7 +1801,8 @@
   <string id="21449">Το τηλεχειριστήριο στέλνει εντολές πληκτρολογίου </string>
   <string id="21450">- Επεξεργασία</string>
   <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
-  <string id="21452">Λήψη περισσότερων</string>
+  <string id="21452">Λήψη περισσότερων...</string>
+  <string id="21453">Σύστημα αρχείων ρίζας</string>
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
@@ -1907,7 +1878,7 @@
   <string id="21899">Ετικέτα</string>
   <string id="21900">Γέννηση/Δημιουργία</string>
   <string id="22000">Ενημέρωση της συλλογής κατά την εκκίνηση</string>
-  <string id="22001">Ενημέρωση της συλλογής στο παρασκήνιο</string>
+  <string id="22001">Απόκρυψη εξέλιξης ενημερώσεων συλλογής</string>
   <string id="22002">- Κατάληξη DNS</string>
   <string id="22004">Καθυστέρηση κατά: %2.3fs</string>
   <string id="22005">Προβάδισμα κατά: %2.3fs</string>
@@ -1944,6 +1915,11 @@
   <string id="22041">άσπρο/κόκκινο</string>
   <string id="22042">άσπρο/μπλε</string>
   <string id="22043">μαύρο/άσπρο</string>
+  <string id="22079">Προεπιλεγμένη ενέργεια</string>
+  <string id="22080">Επιλογή</string>
+  <string id="22081">Προβολή πληροφοριών</string>
+  <string id="22082">Περισσότερα...</string>
+  <string id="22083">Αναπαραγωγή όλων</string>
   <string id="23049">Μη διαθέσιμο Teletext </string>
   <string id="23050">Ενεργοποίηση Teletext</string>
   <string id="23051">Μέρος %i</string>
@@ -1987,6 +1963,8 @@
   <string id="24039">Απενεργοποιημένα πρόσθετα</string>
   <string id="24040">(Απαλοιφή της τρέχουσας ρύθμισης)</string>
   <string id="24041">Εγκατάσταση από αρχείο zip</string>
+  <string id="24042">Λήψη %i%%</string>
+  <string id="24043">Διαθέσιμες ενημερώσεις</string>
   <string id="24050">Διαθέσιμα πρόσθετα</string>
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>
@@ -2003,8 +1981,8 @@
   <string id="24067">Γίνεται λήψη πρόσθετων</string>
   <string id="24068">Διαθέσιμη ενημέρωση</string>
   <string id="24069">Ενημέρωση</string>
-  <string id="24070">Αδυναμία χρήσης πρόσθετου</string>
-  <string id="24071">Παρουσιάστηκε άγνωστο σφάλμα</string>
+  <string id="24070">Αδυναμία χρήσης πρόσθετου.</string>
+  <string id="24071">Παρουσιάστηκε άγνωστο σφάλμα.</string>
   <string id="24072">Απαιτούνται ρυθμίσεις</string>
   <string id="24073">Δεν ήταν δυνατή η σύνδεση</string>
   <string id="24074">Απαιτείται επανεκκίνηση</string>
@@ -2012,6 +1990,9 @@
   <string id="24080">Νέα προσπάθεια επανασύνδεσης;</string>
   <string id="24089">Επανεκκινήσεις πρόσθετου</string>
   <string id="24090">Κλείδωμα διαχειριστή πρόσθετων</string>
+  <string id="24096">Το πρόσθετο έχει επισημανθεί ως κατεστραμμένο στο αποθετήριο.</string>
+  <string id="24097">Επιθυμητέ να απενεργοποιηθεί από το σύστημά σας;</string>
+  <string id="24098">Κατεστραμμένο</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>

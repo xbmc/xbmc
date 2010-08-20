@@ -930,8 +930,9 @@ int CXbmcHttp::xbmcQueryMusicDataBase(int numParas, CStdString paras[])
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
     {
+      CStdString sql = musicdatabase.PrepareSQL(paras[0]);
       CStdString result;
-      if (musicdatabase.GetArbitraryQuery(paras[0], openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
+      if (musicdatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
         return SetResponse(result);
       else
         return SetResponse(openTag+"Error:"+result);
@@ -953,7 +954,8 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
   if (videodatabase.Open())
   {
     CStdString result;
-    if (videodatabase.GetArbitraryQuery(paras[0], openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
+    CStdString sql = videodatabase.PrepareSQL(paras[0]);
+    if (videodatabase.GetArbitraryQuery(sql, openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, result))
       return SetResponse(result);
     else
       return SetResponse(openTag+"Error:"+result);
@@ -975,7 +977,8 @@ int CXbmcHttp::xbmcExecVideoDataBase(int numParas, CStdString paras[])
     if (videodatabase.Open())
     {
       CStdString result;
-      if (videodatabase.ArbitraryExec(paras[0]))
+      CStdString sql = videodatabase.PrepareSQL(paras[0]);
+      if (videodatabase.ArbitraryExec(sql))
         return SetResponse(openTag+"SQL Exec Done");
       else
         return SetResponse(openTag+"Error:SQL Exec Failed");
@@ -997,7 +1000,8 @@ int CXbmcHttp::xbmcExecMusicDataBase(int numParas, CStdString paras[])
     if (musicdatabase.Open())
     {
       CStdString result;
-      if (musicdatabase.ArbitraryExec(paras[0]))
+      CStdString sql = musicdatabase.PrepareSQL(paras[0]);
+      if (musicdatabase.ArbitraryExec(sql))
         return SetResponse(openTag+"SQL Exec Done");
       else
         return SetResponse(openTag+"Error:SQL Exec Failed");
@@ -1360,7 +1364,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   }
   else
   {
-    output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
+    CURL url(fileItem.m_strPath);
+    CStdString strPath(url.GetWithoutUserDetails());
+    CUtil::URLDecode(strPath);
+    output = openTag + "Filename:" + strPath;  // currently playing item filename
     if (g_application.IsPlaying())
       if (!g_application.m_pPlayer->IsPaused())
         output+=closeTag+openTag+"PlayStatus:Playing";
@@ -2070,15 +2077,14 @@ void CXbmcHttp::ResetKey()
 
 int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
 {
-  int buttonCode=0;
+  uint32_t buttonCode=0;
   uint8_t leftTrigger=0, rightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameters");
-    
   else
   {
-    buttonCode=(int) strtol(paras[0], NULL, 0);
+    buttonCode=(uint32_t) strtol(paras[0], NULL, 0);
     if (numParas>1) {
       leftTrigger=(uint8_t) atoi(paras[1]) ;
       if (numParas>2) {

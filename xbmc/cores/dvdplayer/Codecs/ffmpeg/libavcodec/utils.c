@@ -25,9 +25,6 @@
  * utils.
  */
 
-/* needed for mkstemp() */
-#define _XOPEN_SOURCE 600
-
 #include "libavutil/avstring.h"
 #include "libavutil/integer.h"
 #include "libavutil/crc.h"
@@ -37,15 +34,11 @@
 #include "opt.h"
 #include "imgconvert.h"
 #include "audioconvert.h"
-#include "libxvid_internal.h"
 #include "internal.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <float.h>
-#if !HAVE_MKSTEMP
-#include <fcntl.h>
-#endif
 
 static int volatile entangled_thread_counter=0;
 int (*ff_lockmgr_cb)(void **mutex, enum AVLockOp op);
@@ -513,6 +506,13 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
     }
     avctx->frame_number = 0;
     if(avctx->codec->init){
+        if(avctx->codec_type == AVMEDIA_TYPE_VIDEO &&
+           avctx->codec->max_lowres < avctx->lowres){
+            av_log(avctx, AV_LOG_ERROR, "The maximum value for lowres supported by the decoder is %d\n",
+                   avctx->codec->max_lowres);
+            goto free_and_end;
+        }
+
         ret = avctx->codec->init(avctx);
         if (ret < 0) {
             goto free_and_end;
@@ -687,6 +687,26 @@ int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub,
     if (*got_sub_ptr)
         avctx->frame_number++;
     return ret;
+}
+
+void avsubtitle_free(AVSubtitle *sub)
+{
+    int i;
+
+    for (i = 0; i < sub->num_rects; i++)
+    {
+        av_freep(&sub->rects[i]->pict.data[0]);
+        av_freep(&sub->rects[i]->pict.data[1]);
+        av_freep(&sub->rects[i]->pict.data[2]);
+        av_freep(&sub->rects[i]->pict.data[3]);
+        av_freep(&sub->rects[i]->text);
+        av_freep(&sub->rects[i]->ass);
+        av_freep(&sub->rects[i]);
+    }
+
+    av_freep(&sub->rects);
+
+    memset(sub, 0, sizeof(AVSubtitle));
 }
 
 av_cold int avcodec_close(AVCodecContext *avctx)
@@ -1070,42 +1090,6 @@ unsigned int av_xiphlacing(unsigned char *s, unsigned int v)
     *s = v;
     n++;
     return n;
-}
-
-/* Wrapper to work around the lack of mkstemp() on mingw/cygin.
- * Also, tries to create file in /tmp first, if possible.
- * *prefix can be a character constant; *filename will be allocated internally.
- * Returns file descriptor of opened file (or -1 on error)
- * and opened file name in **filename. */
-int av_tempfile(char *prefix, char **filename) {
-    int fd=-1;
-#if !HAVE_MKSTEMP
-    *filename = tempnam(".", prefix);
-#else
-    size_t len = strlen(prefix) + 12; /* room for "/tmp/" and "XXXXXX\0" */
-    *filename = av_malloc(len);
-#endif
-    /* -----common section-----*/
-    if (*filename == NULL) {
-        av_log(NULL, AV_LOG_ERROR, "ff_tempfile: Cannot allocate file name\n");
-        return -1;
-    }
-#if !HAVE_MKSTEMP
-    fd = open(*filename, O_RDWR | O_BINARY | O_CREAT, 0444);
-#else
-    snprintf(*filename, len, "/tmp/%sXXXXXX", prefix);
-    fd = mkstemp(*filename);
-    if (fd < 0) {
-        snprintf(*filename, len, "./%sXXXXXX", prefix);
-        fd = mkstemp(*filename);
-    }
-#endif
-    /* -----common section-----*/
-    if (fd < 0) {
-        av_log(NULL, AV_LOG_ERROR, "ff_tempfile: Cannot open temporary file %s\n", *filename);
-        return -1;
-    }
-    return fd; /* success */
 }
 
 typedef struct {

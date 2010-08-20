@@ -48,4 +48,4 @@ if __name__ == '__main__':
 				output = runSilent("amixer sset " + aMixer[nameStart:] + " " + gVolumeLevel + "% unmute")
 			if output.find("pswitch") > 0:
 				output = runSilent("amixer sset " + aMixer[nameStart:] + " unmute")
-	# runSilent("alsactl store")
+	runSilent("amixer sset Capture nocap")

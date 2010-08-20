@@ -37,9 +37,6 @@
 
 #pragma pack(1)
 
-#undef ALIGN
-#define ALIGN sizeof(int)         ///< Windows GDI expects all int-aligned
-
 /*!
  \ingroup textures
  \brief

@@ -468,8 +468,6 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
 
 void CDVDVideoCodecLibMpeg2::Reset()
 {
-  CLog::Log(LOGDEBUG, "(%s)", __FUNCTION__);
-
   /* we can't do a full reset here as then libmpeg2 doesn't search for all *
    * start codes, but doesn't have enough state information to continue    *
    * decoding. m_pHandle->sequence.width should be set to -1 on full reset */

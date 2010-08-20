@@ -18,5 +18,10 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-git clone git://live.debian.net/git/live-helper.git
+git clone git://live.debian.net/git/live-build.git 
+if [ "$?" -ne "0" ]; then
+	exit 1
+fi
 
+# Saved, to avoid cloning for multiple builds
+tar cf live-build.tar live-build  > /dev/null 2>&1

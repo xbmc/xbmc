@@ -29,14 +29,21 @@
 #define ID3v2_HEADER_SIZE 10
 
 /**
- * Detects ID3v2 Header.
- * @buf must be ID3v2_HEADER_SIZE byte long
+ * Default magic bytes for ID3v2 header: "ID3"
  */
-int ff_id3v2_match(const uint8_t *buf);
+#define ID3v2_DEFAULT_MAGIC "ID3"
 
 /**
- * Gets the length of an ID3v2 tag.
- * @buf must be ID3v2_HEADER_SIZE bytes long and point to the start of an
+ * Detect ID3v2 Header.
+ * @param buf   must be ID3v2_HEADER_SIZE byte long
+ * @param magic magic bytes to identify the header, machine byte order.
+ * If in doubt, use ID3v2_DEFAULT_MAGIC.
+ */
+int ff_id3v2_match(const uint8_t *buf, const char *magic);
+
+/**
+ * Get the length of an ID3v2 tag.
+ * @param buf must be ID3v2_HEADER_SIZE bytes long and point to the start of an
  * already detected ID3v2 tag
  */
 int ff_id3v2_tag_len(const uint8_t *buf);
@@ -50,7 +57,7 @@ void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t flags)
 /**
  * Read an ID3v2 tag
  */
-void ff_id3v2_read(AVFormatContext *s);
+void ff_id3v2_read(AVFormatContext *s, const char *magic);
 
 extern const AVMetadataConv ff_id3v2_metadata_conv[];
 

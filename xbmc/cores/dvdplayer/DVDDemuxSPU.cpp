@@ -58,8 +58,13 @@ CDVDDemuxSPU::~CDVDDemuxSPU()
 void CDVDDemuxSPU::Reset()
 {
   FlushCurrentPacket();
-  m_bHasClut = false;
-  memset(m_clut, 0, sizeof(m_clut));
+
+  // We can't reset this during playback, cause we don't always
+  // get a new clut from libdvdnav leading to invalid colors
+  // so let's just never reset it. It will only be reset
+  // when dvdplayer is destructed and constructed
+  // m_bHasClut = false;
+  // memset(m_clut, 0, sizeof(m_clut));
 }
 
 void CDVDDemuxSPU::FlushCurrentPacket()

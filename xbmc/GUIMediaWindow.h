@@ -53,6 +53,12 @@ protected:
   void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
+
+  /* \brief React to a "Select" action on an item in a view.
+   \param item selected item.
+   \return true if the action is handled, false otherwise.
+   */
+  virtual bool OnSelect(int item);
   virtual bool OnPopupMenu(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);

@@ -337,6 +337,16 @@
       <B>PreviousMenu</B>
     </gamepad>
   </Settings>
+  <AddonInformation>
+    <gamepad>
+      <b>Close</b>
+    </gamepad>
+  </AddonInformation>
+  <AddonSettings>
+    <gamepad>
+      <b>Close</b>
+    </gamepad>
+  </AddonSettings>
   <MyPicturesSettings>
     <gamepad>
       <B>PreviousMenu</B>

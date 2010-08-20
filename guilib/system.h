@@ -95,9 +95,6 @@
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
-#define USE_LIBA52_DECODER
-#define USE_LIBDTS_DECODER
-#define HAS_AC3_CDDA_CODEC
 #define HAS_LIBRTMP
 #endif
 
@@ -112,7 +109,6 @@
 #define HAS_SDL_AUDIO
 #define HAS_SDL_OPENGL
 #define HAS_SDL_WIN_EVENTS
-#define HAS_LIBBDNAV
 #endif
 
 /*****************
@@ -142,7 +138,6 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
-#define HAS_LIBBDNAV
 #endif
 
 #ifdef HAVE_LIBSSH
@@ -223,6 +218,7 @@
 #undef HAS_GL
 #define HAS_GLES 1
 #endif
+
 
 #ifdef HAS_GL
 #ifdef _WIN32

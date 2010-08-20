@@ -49,6 +49,15 @@ enum RTSPTransport {
     RTSP_TRANSPORT_NB
 };
 
+/**
+ * Transport mode for the RTSP data. This may be plain, or
+ * tunneled, which is done over HTTP.
+ */
+enum RTSPControlTransport {
+    RTSP_MODE_PLAIN,   /**< Normal RTSP */
+    RTSP_MODE_TUNNEL   /**< RTSP over HTTP (tunneling) */
+};
+
 #define RTSP_DEFAULT_PORT   554
 #define RTSP_MAX_TRANSPORTS 8
 #define RTSP_TCP_MAX_PACKET_SIZE 1472
@@ -181,7 +190,7 @@ enum RTSPServerType {
  * @todo Use ByteIOContext instead of URLContext
  */
 typedef struct RTSPState {
-    URLContext *rtsp_hd; /* RTSP TCP connexion handle */
+    URLContext *rtsp_hd; /* RTSP TCP connection handle */
 
     /** number of items in the 'rtsp_streams' variable */
     int nb_rtsp_streams;
@@ -282,6 +291,9 @@ typedef struct RTSPState {
     /** Additional output handle, used when input and output are done
      * separately, eg for HTTP tunneling. */
     URLContext *rtsp_hd_out;
+
+    /** RTSP transport mode, such as plain or tunneled. */
+    enum RTSPControlTransport control_transport;
 } RTSPState;
 
 /**
@@ -310,11 +322,6 @@ typedef struct RTSPStream {
     int sdp_ttl;              /**< IP Time-To-Live (from SDP content) */
     int sdp_payload_type;     /**< payload type */
     //@}
-
-    /** rtp payload parsing infos from SDP (i.e. mapping between private
-     * payload IDs and media-types (string), so that we can derive what
-     * type of payload we're dealing with (and how to parse it). */
-    RTPPayloadData rtp_payload_data;
 
     /** The following are used for dynamic protocols (rtp_*.c/rdt.c) */
     //@{

@@ -311,10 +311,10 @@ public:
    Sets the playcount and last played date to a given value
    \param item CFileItem to set the playcount for
    \param count The playcount to set.
-   \param date The date the file was last watched. If empty, we use the current date time (the default)
-   \sa GetPlayCount, IncrementPlayCount
+   \param date The date the file was last viewed (does not denote the video was watched to completion).  If empty we current datetime (if count > 0) or never viewed (if count = 0).
+   \sa GetPlayCount, IncrementPlayCount, UpdateLastPlayed
    */
-  void SetPlayCount(const CFileItem &item, int count, const CStdString &lastWatched = "");
+  void SetPlayCount(const CFileItem &item, int count, const CStdString &date = "");
 
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
@@ -329,6 +329,13 @@ public:
    \sa SetPlayCount, IncrementPlayCount
    */
   int GetPlayCount(const CFileItem &item);
+
+  /*! \brief Update the last played time of an item
+   Updates the last played date
+   \param item CFileItem to update the last played time for
+   \sa GetPlayCount, SetPlayCount, IncrementPlayCount
+   */
+  void UpdateLastPlayed(const CFileItem &item);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
@@ -349,7 +356,6 @@ public:
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo=-1);
   bool GetStreamDetailsForFileId(CStreamDetails& details, int idFile) const;
 
-  int GetFileId(const CStdString& strFilenameAndPath);
   int GetPathId(const CStdString& strPath);
   int GetTvShowId(const CStdString& strPath);
   int GetEpisodeId(const CStdString& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
@@ -489,8 +495,20 @@ public:
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
-  int AddFile(const CStdString& strFileName);
+  /*! \brief Add a file to the database, if necessary
+   If the file is already in the database, we simply return it's id.
+   \param url - full path of the file to add.
+   \return id of the file, -1 if it could not be added.
+   */
+  int AddFile(const CStdString& url);
+
+  /*! \brief Add a file to the database, if necessary
+   Works for both videodb:// items and normal fileitems
+   \param item CFileItem to add.
+   \return id of the file, -1 if it could not be added.
+   */
   int AddFile(const CFileItem& item);
+
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
@@ -517,9 +535,15 @@ protected:
   /*! \brief Get the id of this fileitem
    Works for both videodb:// items and normal fileitems
    \param item CFileItem to grab the fileid of
-   \return id of the file, -1 if it is not in the db
+   \return id of the file, -1 if it is not in the db.
    */
   int GetFileId(const CFileItem &item);
+
+  /*! \brief Get the id of a file from path
+   \param url full path to the file
+   \return id of the file, -1 if it is not in the db.
+   */
+  int GetFileId(const CStdString& url);
 
   int AddPath(const CStdString& strPath);
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);

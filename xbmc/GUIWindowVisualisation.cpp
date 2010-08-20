@@ -21,8 +21,6 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
-#include "addons/Visualisation.h"
-#include "addons/AddonManager.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
@@ -34,7 +32,6 @@
 #include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
-using namespace ADDON;
 
 #define START_FADE_LENGTH  2.0f // 2 seconds on startup
 
@@ -49,19 +46,17 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  VIS_ACTION visAction = VIS_ACTION_NONE;
+  bool passToVis = false;
   switch (action.GetID())
   {
   case ACTION_VIS_PRESET_NEXT:
-    visAction = VIS_ACTION_NEXT_PRESET; break;
   case ACTION_VIS_PRESET_PREV:
-    visAction = VIS_ACTION_PREV_PRESET; break;
   case ACTION_VIS_PRESET_RANDOM:
-    visAction = VIS_ACTION_RANDOM_PRESET; break;
   case ACTION_VIS_RATE_PRESET_PLUS:
-    visAction = VIS_ACTION_RATE_PRESET_PLUS; break;
   case ACTION_VIS_RATE_PRESET_MINUS:
-    visAction = VIS_ACTION_RATE_PRESET_MINUS; break;
+    passToVis = true;
+    break;
+
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
@@ -85,6 +80,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         m_lockedTimer.StartZero();
         g_infoManager.SetShowCodec(true);
       }
+      passToVis = true;
     }
     break;
   case ACTION_VIS_PRESET_SHOW:
@@ -122,8 +118,12 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     break;*/
   }
 
-  if (visAction != VIS_ACTION_NONE && m_addon)
-    return m_addon->OnAction(visAction);
+  if (passToVis)
+  {
+    CGUIControl *control = (CGUIControl *)GetControl(CONTROL_VIS);
+    if (control)
+      return control->OnAction(action);
+  }
 
   return CGUIWindow::OnAction(action);
 }
@@ -133,31 +133,18 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_GET_VISUALISATION:
-    {
-      if (m_addon)
-        message.SetPointer(m_addon.get());
-      return m_addon;
-    }
-    break;
   case GUI_MSG_VISUALISATION_RELOAD:
+  case GUI_MSG_PLAYBACK_STARTED:
     {
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        pVisControl->FreeResources(true);
+      CGUIControl *control = (CGUIControl *)GetControl(CONTROL_VIS);
+      if (control)
+        return control->OnMessage(message);
     }
     break;
   case GUI_MSG_VISUALISATION_ACTION:
   {
     CAction action(message.GetParam1());
     return OnAction(action);
-  }
-  case GUI_MSG_PLAYBACK_STARTED:
-  {
-    if (IsActive() && m_addon)
-    {
-      m_addon->UpdateTrack();
-    }
-    break;
   }
   case GUI_MSG_WINDOW_DEINIT:
     {
@@ -180,12 +167,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
-      AddonPtr viz;
-      if (CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
-        m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
-      else
-        m_addon.reset();
-
       // hide or show the preset button(s)
       g_infoManager.SetShowCodec(m_bShowPreset);
       g_infoManager.SetShowInfo(true);  // always show the info initially.
@@ -206,25 +187,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIWindow::OnMessage(message);
-}
-
-void CGUIWindowVisualisation::OnWindowLoaded()
-{
-  if (m_addon)
-  {
-    CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-    if (pVisControl)
-      pVisControl->LoadAddon(m_addon);
-  }
-}
-
-bool CGUIWindowVisualisation::UpdateTrack()
-{
-  if (m_addon)
-  {
-    return m_addon->UpdateTrack();
-  }
-  return false;
 }
 
 EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)

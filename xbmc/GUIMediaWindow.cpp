@@ -59,6 +59,7 @@
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
+#include "utils/Builtins.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -283,7 +284,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (iItem < 0) break;
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
-          OnClick(iItem);
+          OnSelect(iItem);
         }
         else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
@@ -366,7 +367,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         CFileItemPtr newItem = boost::static_pointer_cast<CFileItem>(message.GetItem());
         if (IsActive())
-          m_vecItems->UpdateItem(newItem.get());
+        {
+          if (m_vecItems->UpdateItem(newItem.get()) && message.GetParam2() == 1)
+          { // need the list updated as well
+            UpdateFileList();
+          }
+        }
         else if (newItem)
         { // need to remove the disc cache
           CFileItemList items;
@@ -639,7 +645,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && (items.IsEmpty() || !m_guiState->HideParentDirItems()) && !items.m_strPath.IsEmpty())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.m_strPath.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;
@@ -733,7 +739,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
-    pItem->SetThumbnailImage("DefaultAddSource.png");
+    pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     m_vecItems->Add(pItem);
@@ -811,6 +817,18 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
   {
     items.ClearItems();
     GetFilteredItems(filter, items);
+  }
+
+  // The idea here is to ensure we have something to focus if our file list
+  // is empty.  As such, this check MUST be last and ignore the hide parent
+  // fileitems settings.
+  if (items.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath=m_history.GetParentPath();
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.AddFront(pItem, 0);
   }
 }
 
@@ -913,6 +931,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
         Update(m_vecItems->m_strPath);
       return true;
     }
+    else if (pItem->m_strPath.Left(14).Equals("addons://more/"))
+    {
+      CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.addon." + pItem->m_strPath.Mid(14) + ",return)");
+      return true;
+    }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
     bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
@@ -981,6 +1004,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
   }
 
   return false;
+}
+
+bool CGUIMediaWindow::OnSelect(int item)
+{
+  return OnClick(item);
 }
 
 // \brief Checks if there is a disc in the dvd drive and whether the
@@ -1310,31 +1338,14 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(true);
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-    if (!pMenu) return false;
-    // load our menu
-    pMenu->Initialize();
-
-    // add the buttons and execute it
-    for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
-      pMenu->AddButton((*it).second);
-
-    // position it correctly
-    pMenu->PositionAtCurrentFocus();
-
-    pMenu->DoModal();
-
-    // translate our button press
-    CONTEXT_BUTTON btn = CONTEXT_BUTTON_CANCELLED;
-    if (pMenu->GetButton() > 0 && pMenu->GetButton() <= (int)buttons.size())
-      btn = buttons[pMenu->GetButton() - 1].first;
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
 
     // deselect our item
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(false);
 
-    if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(iItem, btn);
+    if (choice >= 0)
+      return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
   }
   return false;
 }

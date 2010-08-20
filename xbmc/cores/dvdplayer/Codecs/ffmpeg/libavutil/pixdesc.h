@@ -93,11 +93,11 @@ typedef struct AVPixFmtDescriptor{
 extern const AVPixFmtDescriptor av_pix_fmt_descriptors[];
 
 /**
- * Reads a line from an image, and writes the values of the
+ * Read a line from an image, and write the values of the
  * pixel format component c to dst.
  *
  * @param data the array containing the pointers to the planes of the image
- * @param linesizes the array containing the linesizes of the image
+ * @param linesize the array containing the linesizes of the image
  * @param desc the pixel format descriptor for the image
  * @param x the horizontal coordinate of the first pixel to read
  * @param y the vertical coordinate of the first pixel to read
@@ -108,28 +108,28 @@ extern const AVPixFmtDescriptor av_pix_fmt_descriptors[];
  * component c in data[1] to dst, rather than the palette indexes in
  * data[0]. The behavior is undefined if the format is not paletted.
  */
-void read_line(uint16_t *dst, const uint8_t *data[4], const int linesize[4],
-               const AVPixFmtDescriptor *desc, int x, int y, int c, int w, int read_pal_component);
+void av_read_image_line(uint16_t *dst, const uint8_t *data[4], const int linesize[4],
+                        const AVPixFmtDescriptor *desc, int x, int y, int c, int w, int read_pal_component);
 
 /**
- * Writes the values from src to the pixel format component c of an
+ * Write the values from src to the pixel format component c of an
  * image line.
  *
  * @param src array containing the values to write
  * @param data the array containing the pointers to the planes of the
  * image to write into. It is supposed to be zeroed.
- * @param linesizes the array containing the linesizes of the image
+ * @param linesize the array containing the linesizes of the image
  * @param desc the pixel format descriptor for the image
  * @param x the horizontal coordinate of the first pixel to write
  * @param y the vertical coordinate of the first pixel to write
  * @param w the width of the line to write, that is the number of
  * values to write to the image line
  */
-void write_line(const uint16_t *src, uint8_t *data[4], const int linesize[4],
-                const AVPixFmtDescriptor *desc, int x, int y, int c, int w);
+void av_write_image_line(const uint16_t *src, uint8_t *data[4], const int linesize[4],
+                         const AVPixFmtDescriptor *desc, int x, int y, int c, int w);
 
 /**
- * Returns the pixel format corresponding to name.
+ * Return the pixel format corresponding to name.
  *
  * If there is no pixel format with name name, then looks for a
  * pixel format with the name corresponding to the native endian
@@ -142,7 +142,7 @@ void write_line(const uint16_t *src, uint8_t *data[4], const int linesize[4],
 enum PixelFormat av_get_pix_fmt(const char *name);
 
 /**
- * Returns the number of bits per pixel used by the pixel format
+ * Return the number of bits per pixel used by the pixel format
  * described by pixdesc.
  *
  * The returned number of bits refers to the number of bits actually

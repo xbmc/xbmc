@@ -137,9 +137,7 @@ extern "C"
   FUNCTION(PyErr_Occurred)
   FUNCTION8(PyRun_SimpleFile)
   FUNCTION4(PySys_SetPath)
-#ifdef _LINUX
   FUNCTION(Py_GetPath)
-#endif
   FUNCTION4(PyThreadState_Delete)
   FUNCTION4(PyThreadState_Clear)
 
@@ -197,9 +195,11 @@ extern "C"
     return ret;
   }*/
 #ifndef _LINUX
-  FUNCTION4(PyUnicodeUCS2_AsUnicode)
+  FUNCTION4(PyUnicodeUCS2_AsUTF8String)
+  FUNCTION12(PyUnicodeUCS2_DecodeUTF8)
 #else
-  FUNCTION4(PyUnicodeUCS4_AsUnicode)
+  FUNCTION4(PyUnicodeUCS4_AsUTF8String)
+  FUNCTION12(PyUnicodeUCS4_DecodeUTF8)
 #endif
   FUNCTION(Py_MakePendingCalls)
   FUNCTION(PyEval_SaveThread)
@@ -306,9 +306,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyErr_Occurred)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFile)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetPath)) &&
-#ifdef _LINUX
       dll.ResolveExport(DLL_FUNCTION(Py_GetPath)) &&
-#endif
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Delete)) &&
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Clear)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(Py_BuildValue)) &&
@@ -324,9 +322,11 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
 #ifndef _LINUX
-      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUTF8String)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_DecodeUTF8)) &&
 #else
-      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUnicode)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUTF8String)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_DecodeUTF8)) &&
 #endif
       dll.ResolveExport(DLL_FUNCTION(Py_MakePendingCalls)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_SaveThread)) &&

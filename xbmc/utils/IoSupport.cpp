@@ -29,6 +29,7 @@
 #ifdef _WIN32
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
+#include "CharsetConverter.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)
 #include <linux/limits.h>
@@ -632,9 +633,12 @@ VOID CIoSupport::GetXbePath(char* szDest)
   sprintf(szDest, "%c:\\%s", cDriveLetter, szTemp);
 
 #elif WIN32
-  char szAppPath[MAX_PATH] = "";
-  ::GetModuleFileName(0, szAppPath, sizeof(szAppPath) - 1);
-  strncpy(szDest,szAppPath,sizeof(szAppPath));
+  wchar_t szAppPathW[MAX_PATH] = L"";
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  CStdStringW strPathW = szAppPathW;
+  CStdString strPath;
+  g_charsetConverter.wToUTF8(strPathW,strPath);
+  strncpy(szDest,strPath.c_str(),strPath.length()+1);
 #elif __APPLE__
   int      result = -1;
   char     given_path[2*MAXPATHLEN];

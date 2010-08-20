@@ -98,11 +98,12 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpa
   m_item = item;
 
   m_path = item.m_strPath;
-  if (item.IsStack())
-    m_path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     m_path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (CUtil::IsStack(m_path))
+    m_path = CStackDirectory::GetFirstStackedFile(m_path);
 }
 
 CThumbExtractor::~CThumbExtractor()
@@ -149,6 +150,7 @@ bool CThumbExtractor::DoWork()
   }
   else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
+    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_path.c_str());
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
@@ -257,7 +259,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->m_bIsFolder &&
        pItem->HasVideoInfoTag() &&
        g_guiSettings.GetBool("myvideos.extractflags") &&
-       !pItem->GetVideoInfoTag()->HasStreamDetails())
+       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
+         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
   {
     CThumbExtractor* extract = new CThumbExtractor(*pItem,pItem->m_strPath,false);
     AddJob(extract);

@@ -157,6 +157,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
   m_hUTex    = -1;
   m_hVTex    = -1;
   m_hStretch = -1;
+  m_hStep    = -1;
 
 #ifdef HAS_GL
   if(rect)
@@ -175,6 +176,15 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
   else
     m_defines += "#define XBMC_STRETCH 0\n";
 
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YV12)
+    m_defines += "#define XBMC_YV12\n";
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_NV12)
+    m_defines += "#define XBMC_NV12\n";
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2)
+    m_defines += "#define XBMC_YUY2\n";
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+    m_defines += "#define XBMC_UYVY\n";
+
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 #elif HAS_GLES == 2
   m_hVertex = -1;
@@ -187,6 +197,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
 
   VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
 #endif
+
+  CLog::Log(LOGDEBUG, "GL: BaseYUV2RGBGLSLShader: defines:\n%s", m_defines.c_str());
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
@@ -205,6 +217,7 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hVTex    = glGetUniformLocation(ProgramHandle(), "m_sampV");
   m_hMatrix  = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
   m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hStep    = glGetUniformLocation(ProgramHandle(), "m_step");
   VerifyGLState();
 }
 
@@ -215,6 +228,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1i(m_hUTex, 1);
   glUniform1i(m_hVTex, 2);
   glUniform1f(m_hStretch, m_stretch);
+  glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
   GLfloat matrix[4][4];
   CalculateYUVMatrixGL(matrix, m_flags, m_black, m_contrast);
@@ -310,11 +324,28 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
 {
   m_black      = 0.0f;
   m_contrast   = 1.0f;
-  if(rect)
-    PixelShader()->LoadSource("yuv2rgb_basic_rect.arb");
-  else
-    PixelShader()->LoadSource("yuv2rgb_basic_2d.arb");
 
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2)
+  {
+    if(rect)
+      PixelShader()->LoadSource("yuv2rgb_basic_rect_YUY2.arb");
+    else
+      PixelShader()->LoadSource("yuv2rgb_basic_2d_YUY2.arb");
+  }
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+  {
+    if(rect)
+      PixelShader()->LoadSource("yuv2rgb_basic_rect_UYVY.arb");
+    else
+      PixelShader()->LoadSource("yuv2rgb_basic_2d_UYVY.arb");
+  }
+  else
+  {
+    if(rect)
+      PixelShader()->LoadSource("yuv2rgb_basic_rect.arb");
+    else
+      PixelShader()->LoadSource("yuv2rgb_basic_2d.arb");
+  }
 }
 
 void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
@@ -332,6 +363,10 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
                                , matrix[1][i]
                                , matrix[2][i]
                                , matrix[3][i]);
+
+  glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, 4,
+                               1.0 / m_width, 1.0 / m_height,
+                               m_width, m_height);
   return true;
 }
 #endif

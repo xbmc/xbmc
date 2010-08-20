@@ -90,7 +90,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
     m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
   else
     m_strThumbnailImage.clear();
-
+  m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
 
@@ -300,6 +300,7 @@ void CFileItem::Reset()
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_bSelected = false;
+  m_bIsAlbum = false;
   m_strDVDLabel.Empty();
   m_strTitle.Empty();
   m_strPath.Empty();
@@ -540,20 +541,7 @@ bool CFileItem::IsPicture() const
   if( m_mimetype.Left(6).Equals("image/") )
     return true;
 
-  CStdString extension;
-  CUtil::GetExtension(m_strPath, extension);
-
-  if (extension.IsEmpty())
-    return false;
-
-  extension.ToLower();
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
-    return true;
-
-  if (extension == ".tbn" || extension == ".dds")
-    return true;
-
-  return false;
+  return CUtil::IsPicture(m_strPath);
 }
 
 bool CFileItem::IsLyrics() const
@@ -621,13 +609,6 @@ bool CFileItem::IsXBE() const
 bool CFileItem::IsType(const char *ext) const
 {
   return CUtil::GetExtension(m_strPath).Equals(ext, false);
-}
-
-bool CFileItem::IsDefaultXBE() const
-{
-  CStdString filename = CUtil::GetFileName(m_strPath);
-  if (filename.Equals("default.xbe")) return true;
-  return false;
 }
 
 bool CFileItem::IsShortCut() const
@@ -700,6 +681,11 @@ bool CFileItem::IsStack() const
 bool CFileItem::IsPlugin() const
 {
   return CUtil::IsPlugin(m_strPath);
+}
+
+bool CFileItem::IsAddonsPath() const
+{
+  return CUtil::IsAddonsPath(m_strPath);
 }
 
 bool CFileItem::IsMultiPath() const
@@ -1102,6 +1088,11 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   return false;
 }
 
+bool CFileItem::IsAlbum() const
+{
+  return m_bIsAlbum;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList
@@ -1449,6 +1440,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SIZE:
     FillSortFields(SSortFileItem::BySize);
     break;
+  case SORT_METHOD_BITRATE:
+    FillSortFields(SSortFileItem::ByBitrate);
+    break;      
   case SORT_METHOD_DRIVE_TYPE:
     FillSortFields(SSortFileItem::ByDriveType);
     break;
@@ -1965,17 +1959,12 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
-#ifdef HAS_LIBBDNAV
+#ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
-            CUtil::AddFileToFolder(dvdPath, "PLAYLIST/00000.mpls", path);
-            dvdPath.Empty();
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
             if (CFile::Exists(path))
-            {
               dvdPath = path;
-              dvdPath.Replace("00000.mpls","main.mpls");
-            }
           }
 #endif
           if (!dvdPath.IsEmpty())
@@ -2377,6 +2366,8 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
    || IsInternetStream()
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
+   || IsAddonsPath()
    || IsParentFolder()
    || IsMusicDb())
     return "";
@@ -2521,6 +2512,8 @@ CStdString CFileItem::GetUserVideoThumb() const
    || IsInternetStream()
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsPlugin()
+   || IsAddonsPath()
    || IsParentFolder()
    || IsLiveTV())
     return "";
@@ -2689,6 +2682,7 @@ CStdString CFileItem::GetLocalFanart() const
    || CUtil::IsUPnP(strFile)
    || IsLiveTV()
    || IsPlugin()
+   || IsAddonsPath()
    || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.IsEmpty())
     return "";
@@ -2869,12 +2863,13 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
     std::swap(m_items[item1], m_items[item2]);
 }
 
-void CFileItemList::UpdateItem(const CFileItem *item)
+bool CFileItemList::UpdateItem(const CFileItem *item)
 {
-  if (!item) return;
+  if (!item) return false;
   CFileItemPtr oldItem = Get(item->m_strPath);
   if (oldItem)
     *oldItem = *item;
+  return oldItem;
 }
 
 void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)

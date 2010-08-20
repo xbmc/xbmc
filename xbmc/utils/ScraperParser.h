@@ -65,7 +65,10 @@ private:
   void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
   void Clean(CStdString& strDirty);
-  char* RemoveWhiteSpace(const char *string);
+  /*! \brief Remove spaces, tabs, and newlines from a string
+   \param string the string in question, which will be modified.
+   */
+  void RemoveWhiteSpace(CStdString &string);
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
   void InsertToken(CStdString& strOutput, int buf, const char* token);

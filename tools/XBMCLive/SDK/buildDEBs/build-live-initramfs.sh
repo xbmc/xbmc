@@ -21,7 +21,7 @@
 
 THISDIR=$(pwd)
 
-if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
+if ! ls live-initramfs_*.deb > /dev/null 2>&1 ; then
 	echo "Making live-initramfs..."
 
 	#if you use git <= 1.6, then use: git clone git://live.debian.net/git/live-boot.git && git checkout -b debian-old-1.0 origin/debian-old-1.0
@@ -42,9 +42,9 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 		cd ..
 
 		# Saved, to avoid cloning for multiple builds
-		tar cvf live-boot.tar live-boot  > /dev/null 2>&1
+		tar cf live-boot.tar live-boot  > /dev/null 2>&1
 	else
-		tar xvf live-boot.tar  > /dev/null 2>&1
+		tar xf live-boot.tar  > /dev/null 2>&1
 	fi
 
 	#

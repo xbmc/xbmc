@@ -97,7 +97,7 @@ struct _env
   char* value;
 };
 
-#define EMU_MAX_ENVIRONMENT_ITEMS 50
+#define EMU_MAX_ENVIRONMENT_ITEMS 100
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;
 char **dll__environ = dll__environ_imp;
@@ -111,20 +111,24 @@ extern "C" void __stdcall init_emu_environ()
   InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
-  // libdvdnav
-  dll_putenv("DVDREAD_NOKEYS=1");
-  //dll_putenv("DVDREAD_VERBOSE=1");
-  //dll_putenv("DVDREAD_USE_DIRECT=1");
-
-  // libdvdcss
-  dll_putenv("DVDCSS_METHOD=key");
-  dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
-
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
 #elif defined(_WIN32)
+  // fill our array with the windows system vars
+  LPTSTR lpszVariable; 
+  LPTCH lpvEnv;
+  lpvEnv = GetEnvironmentStrings();
+  if (lpvEnv != NULL)
+  {
+    lpszVariable = (LPTSTR) lpvEnv;
+    while (*lpszVariable)
+    {
+      dll_putenv(lpszVariable);
+      lpszVariable += lstrlen(lpszVariable) + 1;
+    }
+    FreeEnvironmentStrings(lpvEnv);
+  }
   dll_putenv("OS=win32");
 #elif defined(__APPLE__)
   dll_putenv("OS=darwin");
@@ -145,6 +149,16 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
   dll_putenv("TEMP=special://temp/temp"); // for python tempdir
+
+  // libdvdnav
+  dll_putenv("DVDREAD_NOKEYS=1");
+  //dll_putenv("DVDREAD_VERBOSE=1");
+  //dll_putenv("DVDREAD_USE_DIRECT=1");
+
+  // libdvdcss
+  dll_putenv("DVDCSS_METHOD=key");
+  dll_putenv("DVDCSS_VERBOSE=3");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
 }
 
 extern "C" void __stdcall update_emu_environ()
@@ -159,6 +173,19 @@ extern "C" void __stdcall update_emu_environ()
     // Should we check for valid strings here? should HTTPS_PROXY use https://?
     dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
     dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+#ifdef _WIN32
+    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+#endif
+    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    {
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+#ifdef _WIN32
+      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
+      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+#endif
+    }
   }
   else
   {
@@ -182,6 +209,38 @@ static int convert_fmode(const char* mode)
     iMode |= _O_WRONLY  | O_CREAT;
   return iMode;
 }
+
+#ifdef _WIN32
+static void to_finddata64i32(_wfinddata64i32_t *wdata, _finddata64i32_t *data)
+{
+  CStdString strname;
+  g_charsetConverter.wToUTF8(wdata->name, strname);
+  size_t size = sizeof(data->name) / sizeof(char);
+  strncpy(data->name, strname.c_str(), size);
+  if (size)
+    data->name[size - 1] = '\0';
+  data->attrib = wdata->attrib;
+  data->time_create = wdata->time_create;
+  data->time_access = wdata->time_access;
+  data->time_write = wdata->time_write;
+  data->size = wdata->size;
+}
+
+static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
+{
+  CStdStringW strwname;
+  g_charsetConverter.utf8ToW(data->name, strwname, false);
+  size_t size = sizeof(wdata->name) / sizeof(wchar_t);
+  wcsncpy(wdata->name, strwname.c_str(), size);
+  if (size)
+    wdata->name[size - 1] = '\0';
+  wdata->attrib = data->attrib;
+  wdata->time_create = data->time_create;
+  wdata->time_access = data->time_access;
+  wdata->time_write = data->time_write;
+  wdata->size = data->size;
+}
+#endif
 
 extern "C"
 {
@@ -714,7 +773,13 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(CUtil::ValidatePath(_P(str)), data);
+      struct _wfinddata64i32_t wdata;
+      CStdStringW strwfile;
+      g_charsetConverter.utf8ToW(CUtil::ValidatePath(_P(str)), strwfile, false);
+      intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -791,7 +856,14 @@ extern "C"
       }
     }
     if (found >= MAX_OPEN_DIRS)
-      return _findnext64i32(f, data); // local dir
+    {
+      struct _wfinddata64i32_t wdata;
+      to_wfinddata64i32(data, &wdata);
+      intptr_t ret = _wfindnext64i32(f, &wdata); // local dir
+      if (ret != -1)
+        to_finddata64i32(&wdata, data);
+      return ret;
+    }
 
     // we have a valid data struture. get next item!
     int iItem = vecDirsOpen[found].curr_index;
@@ -1774,15 +1846,13 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      if (pFile->GetLength() <= LONG_MAX)
-        buffer->st_size = (_off_t)pFile->GetLength();
-      else
+      struct __stat64 tStat = {};
+      if (pFile->Stat(&tStat) == 0)
       {
-        buffer->st_size = 0;
-        CLog::Log(LOGWARNING, "WARNING: File is larger than _fstat64i32 can handle, file size will be reported as 0 bytes");
+        CUtil::Stat64ToStat64i32(buffer, &tStat);
+        return 0;
       }
-      buffer->st_mode = _S_IFREG;
-      return 0;
+      return -1;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1947,15 +2017,6 @@ extern "C"
         }
       }
     }
-#ifdef _WIN32
-    // if value not found try the windows system env
-    if(value == NULL)
-    {
-      char ctemp[32768];
-      if(GetEnvironmentVariable(szKey,ctemp,32767) != 0)
-        value = ctemp;
-    }
-#endif
 
     LeaveCriticalSection(&dll_cs_environ);
 

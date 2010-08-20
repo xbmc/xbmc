@@ -210,6 +210,14 @@ char* CLibcdio::GetDeviceFileName()
 {
   CSingleLock lock(*this);
 
+  // if we don't have a DVD device initially present (Darwin or a USB DVD drive), 
+  // we have to keep checking in case one appears.
+  if (s_defaultDevice && strlen(s_defaultDevice) == 0)
+  {
+    free(s_defaultDevice);
+    s_defaultDevice = NULL;
+  }
+
   if (s_defaultDevice == NULL)
   {
     if (getenv("XBMC_DVD_DEVICE") != NULL)
@@ -223,7 +231,7 @@ char* CLibcdio::GetDeviceFileName()
         ::cdio_destroy(p_cdio);
       }
       else
-        s_defaultDevice = "";
+        s_defaultDevice = strdup("");
     }
   }
   return s_defaultDevice;

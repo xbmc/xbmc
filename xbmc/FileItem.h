@@ -96,7 +96,7 @@ public:
   bool IsPythonScript() const;
   bool IsXBE() const;
   bool IsPlugin() const;
-  bool IsDefaultXBE() const;
+  bool IsAddonsPath() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
@@ -250,6 +250,8 @@ public:
   const CStdString& GetExtraInfo() const { return m_extrainfo; };
 
   bool IsSamePath(const CFileItem *item) const;
+
+  bool IsAlbum() const;
 private:
   // Gets the previously cached thumb file (with existence checks)
   CStdString GetPreviouslyCachedMusicThumb() const;
@@ -281,6 +283,7 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
+  bool m_bIsAlbum;
 };
 
 /*!
@@ -414,7 +417,11 @@ public:
 
   void Swap(unsigned int item1, unsigned int item2);
 
-  void UpdateItem(const CFileItem *item);
+  /*! \brief Update an item in the item list
+   \param item the new item, which we match based on path to an existing item in the list
+   \return true if the item exists in the list (and was thus updated), false otherwise.
+   */
+  bool UpdateItem(const CFileItem *item);
 
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };

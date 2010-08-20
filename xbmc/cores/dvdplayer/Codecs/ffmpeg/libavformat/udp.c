@@ -256,7 +256,7 @@ static int udp_port(struct sockaddr_storage *addr, int addr_len)
  *         'pkt_size=n'  : set max packet size
  *         'reuse=1'     : enable reusing the socket
  *
- * @param s1 media file context
+ * @param h media file context
  * @param uri of the remote server
  * @return zero if no error.
  */
@@ -266,7 +266,7 @@ int udp_set_remote_url(URLContext *h, const char *uri)
     char hostname[256];
     int port;
 
-    ff_url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, NULL, 0, uri);
+    av_url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, NULL, 0, uri);
 
     /* set the destination address */
     s->dest_addr_len = udp_set_url(&s->dest_addr, hostname, port);
@@ -279,8 +279,8 @@ int udp_set_remote_url(URLContext *h, const char *uri)
 }
 
 /**
- * Return the local port used by the UDP connexion
- * @param s1 media file context
+ * Return the local port used by the UDP connection
+ * @param h media file context
  * @return the local port number
  */
 int udp_get_local_port(URLContext *h)
@@ -347,9 +347,9 @@ static int udp_open(URLContext *h, const char *uri, int flags)
     }
 
     /* fill the dest addr */
-    ff_url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, NULL, 0, uri);
+    av_url_split(NULL, 0, NULL, 0, hostname, sizeof(hostname), &port, NULL, 0, uri);
 
-    /* XXX: fix ff_url_split */
+    /* XXX: fix av_url_split */
     if (hostname[0] == '\0' || hostname[0] == '?') {
         /* only accepts null hostname if input */
         if (flags & URL_WRONLY)

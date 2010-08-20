@@ -157,6 +157,7 @@
 					<itemgap>0</itemgap>
 					<control type="radiobutton" id="7">
 						<description>Stack Toggle</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>346</label>
 					</control>
@@ -171,6 +172,7 @@
 					</control>
 					<control type="radiobutton" id="201">
 						<description>Toggle Fanart</description>
+						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>31307</label>
 						<onclick>Skin.ToggleSetting(VideoFilesFanart)</onclick>

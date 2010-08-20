@@ -60,7 +60,7 @@
 
   <regions>
     <region name="USA">
-      <dateshort>MM/DD/YYYYY</dateshort>
+      <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>F</tempunit>
@@ -86,7 +86,7 @@
     </region>
 
     <region name="Canada">
-      <dateshort>MM/DD/YYYYY</dateshort>
+      <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>

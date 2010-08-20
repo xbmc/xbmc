@@ -171,7 +171,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 #if defined(HAVE_LIBVDADECODER)
-  if (g_sysinfo.HasVDADecoder())
+  if (hint.width > 720 && g_sysinfo.HasVDADecoder())
   {
     if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
     {
@@ -182,13 +182,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
-  if (g_guiSettings.GetBool("videoplayer.usechd") && CCrystalHD::GetInstance()->DevicePresent() && !hint.software )
+  if (hint.width > 720 && CCrystalHD::GetInstance()->DevicePresent())
   {
-    if (hint.width <= 720 && (hint.codec == CODEC_ID_MPEG2VIDEO))
-    {
-      if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
-    }
-    else
+    if (g_guiSettings.GetBool("videoplayer.usechd") && !hint.software)
     {
       if (hint.codec == CODEC_ID_VC1 || hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO)
       {

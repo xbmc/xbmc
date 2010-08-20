@@ -46,13 +46,15 @@ float CScrollInfo::GetPixelsPerFrame()
   return pixelSpeed * m_averageFrameTime;
 }
 
-CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor, color_t shadowColor, float lineSpacing, CGUIFontTTFBase *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor,
+		   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font)
 {
   m_strFontName = strFontName;
   m_style = style & 3;
   m_textColor = textColor;
   m_shadowColor = shadowColor;
   m_lineSpacing = lineSpacing;
+  m_origHeight = origHeight;
   m_font = font;
 
   if (m_font)
@@ -258,6 +260,12 @@ float CGUIFont::GetLineHeight() const
 {
   if (!m_font) return 0;
   return m_font->GetLineHeight(m_lineSpacing) * g_graphicsContext.GetGUIScaleY();
+}
+
+float CGUIFont::GetScaleFactor() const
+{
+  if (!m_font) return 1.0f;
+  return m_font->GetFontHeight() / m_origHeight;
 }
 
 void CGUIFont::Begin()

@@ -867,35 +867,12 @@ void CGUIDialogFileBrowser::OnEditMediaSource(CFileItem* pItem)
 
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 {
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu)
-    return false;
+  CContextButtons choices;
+  choices.Add(1, m_addSourceType.IsEmpty() ? 20133 : 21364);
+  choices.Add(2, m_addSourceType.IsEmpty() ? 20134 : 21365);
 
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-
-  pMenu->Initialize();
-
-  int iEditLabel = 20133;
-  int iRemoveLabel = 20134;
-  if (!m_addSourceType.IsEmpty())
-  {
-    iEditLabel = 21364;
-    iRemoveLabel = 21365;
-  }
-  int btn_Edit = pMenu->AddButton(iEditLabel);
-  int btn_Remove = pMenu->AddButton(iRemoveLabel);
-
-  pMenu->OffsetPosition(posX, posY);
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid == btn_Edit)
+  int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (btnid == 1)
   {
     if (m_addNetworkShareEnabled)
     {
@@ -928,7 +905,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
       OnEditMediaSource(item.get());
     }
   }
-  if (btnid == btn_Remove)
+  if (btnid == 2)
   {
     if (m_addNetworkShareEnabled)
     {

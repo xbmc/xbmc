@@ -187,6 +187,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadYUV422PackedTexture(int index);
+  void DeleteYUV422PackedTexture(int index);
+  bool CreateYUV422PackedTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -234,6 +238,10 @@ protected:
 
     unsigned texwidth;
     unsigned texheight;
+
+    //pixels per texel
+    unsigned pixpertex_x;
+    unsigned pixpertex_y;
 
     unsigned flipindex;
   };
@@ -291,6 +299,7 @@ protected:
   bool m_pboused;
 
   bool  m_nonLinStretch;
+  bool  m_nonLinStretchGui;
   float m_pixelRatio;
 };
 

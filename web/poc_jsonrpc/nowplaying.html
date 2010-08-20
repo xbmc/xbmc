@@ -7,7 +7,7 @@
 function CallMethod(method)
 {
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "' + method + '", "params": { "fields": ["title", "plot"] }, "id": 1}');
   window.location.reload( false );
 }
@@ -15,7 +15,7 @@ function CallMethod(method)
 function CallPlay(player, playlistItem)
 {
   var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "' + player + 'Playlist.Play", "params": ' + playlistItem + ', "id": 1}');
 }
 
@@ -40,7 +40,7 @@ function refresh()
 <script type="text/javascript">
 setTimeout( "refresh()", 5*1000 );
 var http_request = new XMLHttpRequest();
-http_request.open( "POST", "jsonrpc", false );
+http_request.open( "POST", "/jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}');
 
 var players = JSON.parse(http_request.responseText)["result"];
@@ -50,7 +50,7 @@ if (players["video"] || players["audio"]) {
     player = "Audio";
 
   http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
+  http_request.open( "POST", "/jsonrpc", false );
   http_request.send('{"jsonrpc": "2.0", "method": "' + player + 'Playlist.GetItems", "params": { "fields": ["title", "plot"] }, "id": 1}');
 
   var the_object = JSON.parse(http_request.responseText);
@@ -59,7 +59,7 @@ if (players["video"] || players["audio"]) {
   var array = result["items"];
 
   if (activeItem >= 0) {
-    var imgSrc = array[activeItem]["thumbnail"] ? ('vfs/' + escape(array[activeItem]["thumbnail"])) : "images/DefaultAlbumCover.png";
+    var imgSrc = array[activeItem]["thumbnail"] ? ('/vfs/' + escape(array[activeItem]["thumbnail"])) : "images/DefaultAlbumCover.png";
     document.write('<img src="' + imgSrc + '"></img>');
 
     document.write('<br></br>');

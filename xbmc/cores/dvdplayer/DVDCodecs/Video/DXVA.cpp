@@ -30,6 +30,7 @@
 
 #include "DXVA.h"
 #include "WindowingFactory.h"
+#include "../../../VideoRenderers/WinRenderer.h"
 #include "Settings.h"
 #include "boost/shared_ptr.hpp"
 #include "AutoPtrHandle.h"
@@ -837,41 +838,9 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
   else if(value < def)
     return DXVA2FloatToFixed( DXVA2FixedToFloat(range.DefaultValue)
                             + (DXVA2FixedToFloat(range.MinValue) - DXVA2FixedToFloat(range.DefaultValue)) 
-                            * (value - def) / (max - def) );
+                            * (value - def) / (min - def) );
   else
     return range.DefaultValue;
-}
-
-void CProcessor::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
-{
-  if(dst.left < 0)
-  {
-    src.left -= dst.left 
-              * (src.right - src.left) 
-              / (dst.right - dst.left);
-    dst.left  = 0;
-  }
-  if(dst.top < 0)
-  {
-    src.top -= dst.top 
-             * (src.bottom - src.top) 
-             / (dst.bottom - dst.top);
-    dst.top  = 0;
-  }
-  if(dst.right > (LONG)desc.Width)
-  {
-    src.right -= (dst.right - desc.Width)
-               * (src.right - src.left) 
-               / (dst.right - dst.left);
-    dst.right  = desc.Width;
-  }
-  if(dst.bottom > (LONG)desc.Height)
-  {
-    src.bottom -= (dst.bottom - desc.Height)
-                * (src.bottom - src.top) 
-                / (dst.bottom - dst.top);
-    dst.bottom  = desc.Height;
-  }
 }
 
 bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time)
@@ -918,7 +887,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
     vs.DstRect = dst;
     if(vs.End == 0)
       vs.End = vs.Start + 2;
-    CropSource(vs.SrcRect, vs.DstRect, desc);
+    CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
   }
 
   if(time >= samp[valid-1].End)
@@ -929,7 +898,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   
   if(time < samp[0].Start)
   {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %%l64d is before first sample %l64d", time, samp[0].Start);
+    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is before first sample %l64d", time, samp[0].Start);
     time = samp[0].Start;
   }  
 

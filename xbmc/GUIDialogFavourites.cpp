@@ -110,40 +110,31 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (pMenu)
+  // highlight the item
+  (*m_favourites)[item]->Select(true);
+
+  CContextButtons choices;
+  if (m_favourites->Size() > 1)
   {
-    // highlight the item
-    (*m_favourites)[item]->Select(true);
-
-    // initialize the positioning
-    CPoint pos;
-    const CGUIControl *pList = GetControl(FAVOURITES_LIST);
-    if (pList)
-      pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
-    pMenu->Initialize();
-
-    int btn_MoveUp = m_favourites->Size() > 1 ? pMenu->AddButton(13332) : 0;
-    int btn_MoveDown = m_favourites->Size() > 1 ? pMenu->AddButton(13333) : 0;
-    int btn_Remove = pMenu->AddButton(15015);
-    int btn_Rename = pMenu->AddButton(118);
-
-    pMenu->OffsetPosition(pos.x, pos.y);
-    pMenu->DoModal(GetID());
-    int button = pMenu->GetButton();
-
-    // unhighlight the item
-    (*m_favourites)[item]->Select(false);
-
-    if (button == btn_MoveUp)
-      OnMoveItem(item, -1);
-    else if (button == btn_MoveDown)
-      OnMoveItem(item, 1);
-    else if (button == btn_Remove)
-      OnDelete(item);
-    else if (button == btn_Rename)
-      OnRename(item);
+    choices.Add(1, 13332);
+    choices.Add(2, 13333);
   }
+  choices.Add(3, 15015);
+  choices.Add(4, 118);
+  
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+
+  // unhighlight the item
+  (*m_favourites)[item]->Select(false);
+
+  if (button == 1)
+    OnMoveItem(item, -1);
+  else if (button == 2)
+    OnMoveItem(item, 1);
+  else if (button == 3)
+    OnDelete(item);
+  else if (button == 4)
+    OnRename(item);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)

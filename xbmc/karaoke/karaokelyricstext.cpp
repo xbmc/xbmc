@@ -144,6 +144,8 @@ bool CKaraokeLyricsText::InitGraphics()
   CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
                   m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD );
+  CGUIFont *karaokeBorder = g_fontManager.LoadTTF("__karaokeborder__", fontPath,
+                            m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, true );
 
   if ( !m_karaokeFont )
   {
@@ -151,8 +153,8 @@ bool CKaraokeLyricsText::InitGraphics()
     return false;
   }
 
-  m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true );
-  m_preambleLayout = new CGUITextLayout( m_karaokeFont, true );
+  m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true, 0, karaokeBorder );
+  m_preambleLayout = new CGUITextLayout( m_karaokeFont, true, 0, karaokeBorder );
 
   if ( !m_karaokeLayout || !m_preambleLayout )
   {
@@ -186,6 +188,7 @@ void CKaraokeLyricsText::Shutdown()
   if ( m_karaokeLayout )
   {
     g_fontManager.Unload("__karaoke__");
+    g_fontManager.Unload("__karaokeborder__");
     delete m_karaokeLayout;
     m_karaokeLayout = NULL;
   }
@@ -381,13 +384,13 @@ void CKaraokeLyricsText::Render()
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
-  m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, 3, XBFONT_CENTER_X, maxWidth);
+  m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, XBFONT_CENTER_X, maxWidth);
 
   if ( !m_currentPreamble.IsEmpty() )
   {
     float pretextWidth, pretextHeight;
     m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
-    m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, m_colorLyricsOutline, 3, XBFONT_LEFT, maxWidth);
+    m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, m_colorLyricsOutline, XBFONT_LEFT, maxWidth);
   }
 }
 

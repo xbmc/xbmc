@@ -67,7 +67,7 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(Home)</mytv>
+      <mytv>XBMC.ActivateWindow(VideoLibrary,TvShows)</mytv>
       <red>XBMC.ActivateWindow(Home)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
@@ -95,12 +95,16 @@
   <MyFiles>
     <remote>
       <clear>Delete</clear>
+      <zero>Highlight</zero>
+      <star>Move</star>
+      <hash>Rename</hash>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
     <remote>
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
+      <zero>Delete</zero>
     </remote>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -139,14 +143,22 @@
       <back>SmallStepBack</back>
       <menu>OSD</menu>
       <start>OSD</start>
+      <select>AspectRatio</select>
       <title>CodecInfo</title>
       <info>Info</info>
-      <select>AspectRatio</select>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
+      <star>ShowSubtitles</star>
       <language>AudioNextLanguage</language>
+      <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
+  <VideoTimeSeek>
+    <remote>
+      <select>Select</select>
+      <enter>Select</enter>
+    </remote>
+  </VideoTimeSeek>
   <FullscreenInfo>
     <remote>
       <title>CodecInfo</title>
@@ -360,6 +372,16 @@
     <remote>
     </remote>
   </AddonBrowser>
+  <AddonInformation>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonInformation>
+  <AddonSettings>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </AddonSettings>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>
@@ -423,10 +445,12 @@
   <MusicInformation>
     <remote>
       <back>Close</back>
+      <info>Close</info>
     </remote>
   </MusicInformation>
   <MovieInformation>
     <remote>
+      <info>Close</info>
       <back>Close</back>
     </remote>
   </MovieInformation>
