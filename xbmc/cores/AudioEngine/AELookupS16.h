@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AELOOKUPS16_H
-#define AELOOKUPS16_H
 
 /* calc: float = (16bit / 32784.5f) - 1.0 */
 static float AELookupS16toFloat[65536] = {
@@ -16410,4 +16408,3 @@ static float AELookupS16toFloat[65536] = {
    0.9999084472656250000000000f,  0.9999389648437500000000000f,  0.9999694824218750000000000f,  1.0000000000000000000000000f
 };
 
-#endif

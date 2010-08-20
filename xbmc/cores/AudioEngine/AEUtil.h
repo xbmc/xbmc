@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -19,9 +20,6 @@
  *
  */
 
-#ifndef AEUTIL_H
-#define AEUTIL_H
-
 #include "AEAudioFormat.h"
 #include "StdString.h"
 
@@ -38,4 +36,3 @@ public:
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 };
 
-#endif

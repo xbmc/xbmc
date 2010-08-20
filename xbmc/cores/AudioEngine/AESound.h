@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AESOUND_H
-#define AESOUND_H
 
 #include "StdString.h"
 #include "utils/CriticalSection.h"
@@ -55,6 +53,4 @@ private:
   unsigned int     m_frameCount;
   float            m_volume;
 };
-
-#endif
 

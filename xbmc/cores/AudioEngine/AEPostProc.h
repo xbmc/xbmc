@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -19,9 +20,6 @@
  *
  */
 
-#ifndef AEPOSTPROC_H
-#define AEPOSTPROC_H
-
 #include "AEStream.h"
 
 class CAEStream;
@@ -35,4 +33,3 @@ public:
   virtual const char* GetName() = 0;
 };
 
-#endif

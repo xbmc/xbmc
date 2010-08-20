@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AEPPANIMATIONFADE_H
-#define AEPPANIMATIONFADE_H
 
 #include "AudioEngine/AEPostProc.h"
 #include "IAudioCallback.h"
@@ -58,4 +56,3 @@ private:
   void         *m_cbArg;    /* the argument to pass to the callback function */
 };
 
-#endif
