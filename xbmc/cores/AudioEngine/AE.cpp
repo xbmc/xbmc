@@ -466,7 +466,6 @@ inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
 }
 #endif
 
-/* ==== MAIN PROCESSING LOOP ==== */
 void CAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
@@ -476,206 +475,211 @@ void CAE::Run()
   CLog::Log(LOGINFO, "CAE::Run - Thread Started");
   while(m_running)
   {
-    list<CAEStream*>::iterator itt;
-    list<SoundState>::iterator sitt;
-    CAEStream *stream;
-    unsigned int div;
-    unsigned int i;
+    unsigned int channelCount, mixed;
 
-/* ============== OUTPUT STAGE ============= */
-
-    /* we need the sink */
     CSingleLock sinkLock(m_critSectionSink);
-
-    /* we dont care if it has been re-opened here */
-    m_reOpened = false;
-
-    /*
-       take a copy of the channel count so we dont crash during
-       the loop if it changes on us
-    */
-    unsigned int ourChannelCount = m_channelCount;
-
-    /* the size of these is dependant on the sink's channels */
-    DECLARE_ALIGNED(16, float, out[m_channelCount         ]);
-    DECLARE_ALIGNED(16, float, dst[m_format.m_channelCount]);
-
-    /* this normally only loops once */
-    while(m_bufferSize >= m_format.m_frameSize)
-    {
-        /* this call must block! */
-        int wrote = m_sink->AddPackets(m_buffer, m_bufferSize);
-        if (!wrote) continue;
-
-	int left = m_bufferSize - wrote;
-        memmove(&m_buffer[0], &m_buffer[wrote], left);
-        m_bufferSize -= wrote;
-    }
-
-    memset(out, 0, sizeof(out));
-    div = 1;
-
+      m_reOpened = false;
+      RunOutputStage();
+      /* copy this value so we can unlock the sink */
+      channelCount = m_channelCount;
     sinkLock.Leave();
 
-/* ============== AESound MIXER STAGE ============= */
-    CSingleLock lock(m_critSection);
+    CSingleLock mixLock(m_critSection);
+      DECLARE_ALIGNED(16, float, out[channelCount]);
+      memset(out, 0, sizeof(out));
 
-    /* mix in any sounds */
-    for(sitt = m_playing_sounds.begin(); sitt != m_playing_sounds.end(); )
+      mixed =
+        RunSoundStage (channelCount, out) +
+        RunStreamStage(channelCount, out);
+
+      RunNormalizeStage(channelCount, out, mixed);
+      RunVizStage      (channelCount, out);
+      RunDeAmpStage    (channelCount, out);
+    mixLock.Leave();
+
+    sinkLock.Enter();
+      RunBufferStage(out);
+    sinkLock.Leave();
+  }
+}
+
+inline void CAE::RunOutputStage()
+{
+  /* this normally only loops once */
+  while(m_bufferSize >= m_format.m_frameSize)
+  {
+    /* this call must block! */
+    int wrote = m_sink->AddPackets(m_buffer, m_bufferSize);
+    if (!wrote) continue;
+
+    int left = m_bufferSize - wrote;
+    memmove(&m_buffer[0], &m_buffer[wrote], left);
+    m_bufferSize -= wrote;
+  }
+}
+
+inline unsigned int CAE::RunSoundStage(unsigned int channelCount, float *out)
+{
+  unsigned int mixed = 0;
+  list<SoundState>::iterator itt;
+
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  {
+    SoundState *ss = itt;
+
+    /* no more frames, so remove it from the list */
+    if (ss->frames == 0)
     {
-      /* no more frames, so remove it from the list */
-      if ((*sitt).frames == 0)
-      {
-        sitt = m_playing_sounds.erase(sitt);
-        continue;
-      }
-
-      float *frame = (*sitt).samples;
-      float volume = (*sitt).owner->GetVolume();
-      (*sitt).samples += ourChannelCount;
-      --(*sitt).frames;
-
-      #ifdef __SSE__
-      if (ourChannelCount > 1)
-        CAE::SSEMulAddArray(out, frame, volume, ourChannelCount);
-      else
-      #endif
-      for(i = 0; i < ourChannelCount; ++i)
-        out[i] += frame[i] * volume;
-
-      ++div;
-      ++sitt;
+      itt = m_playing_sounds.erase(itt);
+      continue;
     }
 
-/* ============== AEStream MIXER STAGE ============= */
+    float *frame = ss->samples;
+    float volume = ss->owner->GetVolume();
+    ss->samples += channelCount;
+    --ss->frames;
 
-    /* mix in any running streams */
-    for(itt = m_streams.begin(); itt != m_streams.end();)
+    #ifdef __SSE__
+    if (channelCount > 1)
+      CAE::SSEMulAddArray(out, frame, volume, channelCount);
+    else
+    #endif
+    for(unsigned int i = 0; i < channelCount; ++i)
+      out[i] += frame[i] * volume;
+
+    ++mixed;
+    ++itt;
+  }
+
+  return mixed;
+}
+
+inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
+{
+  unsigned int mixed = 0;
+  list<CAEStream*>::iterator itt;
+
+  /* mix in any running streams */
+  for(itt = m_streams.begin(); itt != m_streams.end();)
+  {
+    CAEStream *stream = *itt;
+
+    /* delete streams that are flagged for deletion */
+    if (stream->m_delete)
     {
-      stream = *itt;
+      itt = m_streams.erase(itt);
+      delete stream;
+      continue;
+    }
 
-      /* delete streams that are flagged for deletion */
-      if (stream->m_delete)
+    /* dont process streams that are paused */
+    if (stream->IsPaused()) {
+      ++itt;
+      continue;
+    }
+
+    float *frame = stream->GetFrame();
+    if (!frame)
+    {
+      /* if the stream is drained and is set to free on drain */
+      if (stream->IsDraining() && stream->IsFreeOnDrain())
       {
         itt = m_streams.erase(itt);
         delete stream;
         continue;
       }
 
-      /* dont process streams that are paused */
-      if (stream->IsPaused()) {
-        ++itt;
-        continue;
-      }
-
-      float *frame = stream->GetFrame();
-      if (!frame)
-      {
-        /* if the stream is drained and is set to free on drain */
-        if (stream->IsDraining() && stream->IsFreeOnDrain())
-        {
-          itt = m_streams.erase(itt);
-          delete stream;
-          continue;
-        }
-
-        ++itt;
-        continue;
-      }
-
-      float volume = stream->GetVolume();
-      #ifdef __SSE__
-      if (ourChannelCount > 1)
-        CAE::SSEMulAddArray(out, frame, volume, ourChannelCount);
-      else
-      #endif
-      {
-        for(i = 0; i < ourChannelCount; ++i)
-          out[i] += frame[i] * volume;
-      }
-
-      ++div;
       ++itt;
-    }
-    lock.Leave();
-
-/* ============== NORMALIZATION STAGE ============= */
-
-    if (div > 1)
-    {
-      #ifdef __SSE__
-      if (ourChannelCount > 1)
-        CAE::SSEMulArray(out, 1.0f / div, ourChannelCount);
-      else
-      #endif
-      {
-        float mul = 1.0f / div;
-        for(i = 0; i < ourChannelCount; ++i)
-          out[i] *= mul;
-      }
-    }
-
-/* ============== VIS STAGE =============*/
-
-    /* if we have an audio callback, use it */
-    if (m_audioCallback)
-    {
-      /* add the frame to the visBuffer */
-      memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(out));
-      m_visBufferSize += ourChannelCount;
-
-      /* if the buffer full, flush it through */
-      if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
-      {
-        m_audioCallback->OnAudioData(m_visBuffer, AUDIO_BUFFER_SIZE);
-        m_visBufferSize = 0;
-      }
-    }
-
-/* ============== VOLUME STAGE ============= */
-    /* if muted just zero the data and continue */
-    if (g_settings.m_bMute)
-    {
-      memset(&m_buffer[m_bufferSize], 0, sizeof(out));
-      m_bufferSize += sizeof(out);
       continue;
     }
 
-    if (m_volume != 1.0f)
-    {
-      #ifdef __SSE__
-      if (ourChannelCount > 1)
-        CAE::SSEMulArray(out, m_volume, ourChannelCount);
-      else
-      #endif
-      {
-        for(i = 0; i < ourChannelCount; ++i)
-          out[i] *= m_volume;
-      }
-    }
-
-/* ============== REMAP AND BUFFER STAGE ============= */
-    sinkLock.Enter();
-    /* if the config has changed while in the loop, we need to assume the data is stuffed */
-    if (m_reOpened)
-    {
-      m_reOpened = false;
-      continue;
-    }
-
-    /* remap the frame before we buffer it */
-    m_remap.Remap(out, dst, 1);
-
-    /* do we need to convert */
-    if (m_convertFn)
-      m_bufferSize += m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferSize]);
+    float volume = stream->GetVolume();
+    #ifdef __SSE__
+    if (channelCount > 1)
+      CAE::SSEMulAddArray(out, frame, volume, channelCount);
     else
+    #endif
     {
-      memcpy(&m_buffer[m_bufferSize], dst, sizeof(dst));
-      m_bufferSize += sizeof(dst);
+      for(unsigned int i = 0; i < channelCount; ++i)
+        out[i] += frame[i] * volume;
     }
+
+    ++mixed;
+    ++itt;
   }
 
-  CLog::Log(LOGINFO, "CAE::Run - Thread Terminating");
+  return mixed;
+}
+
+inline void CAE::RunNormalizeStage(unsigned int channelCount, float *out, unsigned int mixed)
+{
+  if (mixed <= 0) return;
+
+  float mul = 1.0f / mixed;
+  #ifdef __SSE__
+  if (channelCount > 1)
+    CAE::SSEMulArray(out, mul, channelCount);
+  else
+  #endif
+  {
+    for(unsigned int i = 0; i < channelCount; ++i)
+      out[i] *= mul;
+  }
+}
+
+inline void CAE::RunVizStage(unsigned int channelCount, float *out)
+{
+  /* if we have an audio callback, use it */
+  if (!m_audioCallback) return;
+
+  /* add the frame to the visBuffer */
+  memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(float) * channelCount);
+  m_visBufferSize += channelCount;
+
+  /* if the buffer full, flush it through */
+  if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
+  {
+    m_audioCallback->OnAudioData(m_visBuffer, AUDIO_BUFFER_SIZE);
+    m_visBufferSize = 0;
+  }
+}
+
+inline void CAE::RunDeAmpStage(unsigned int channelCount, float *out)
+{
+  if (g_settings.m_bMute || m_volume == 1.0f) return;
+
+  #ifdef __SSE__
+  if (channelCount > 1)
+    CAE::SSEMulArray(out, m_volume, channelCount);
+  else
+  #endif
+  {
+    for(unsigned int i = 0; i < channelCount; ++i)
+      out[i] *= m_volume;
+  }
+}
+
+inline void CAE::RunBufferStage(float *out)
+{
+  /* if muted just zero the data and continue */
+  if (g_settings.m_bMute)
+  {
+    memset(&m_buffer[m_bufferSize], 0, sizeof(out));
+    m_bufferSize += sizeof(out);
+    return;
+  }
+
+  /* remap the frame before we buffer it */
+  DECLARE_ALIGNED(16, float, dst[m_format.m_channelCount]);
+  m_remap.Remap(out, dst, 1);
+
+  /* do we need to convert */
+  if (m_convertFn)
+    m_bufferSize += m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferSize]);
+  else
+  {
+    memcpy(&m_buffer[m_bufferSize], dst, sizeof(dst));
+    m_bufferSize += sizeof(dst);
+  }
 }
 
