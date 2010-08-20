@@ -91,6 +91,12 @@ public:
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
   void UnRegisterAudioCallback();
+
+#ifdef __SSE__
+  inline static void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
+  inline static void SSEMulArray   (float *data, const float mul, uint32_t count);
+#endif
+
 private:
   /* these are private as the class is a singleton */
   CAE();
@@ -145,11 +151,14 @@ private:
   CAERemap                  m_remap;
   IAudioCallback           *m_audioCallback;
 
-
-#ifdef __SSE__
-  static inline void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
-  static inline void SSEMulArray   (float *data, const float mul, uint32_t count);
-#endif
+  /* thread run stages */
+  void         RunOutputStage   ();
+  unsigned int RunSoundStage    (unsigned int channelCount, float *out);
+  unsigned int RunStreamStage   (unsigned int channelCount, float *out);
+  void         RunNormalizeStage(unsigned int channelCount, float *out, unsigned int mixed);
+  void         RunVizStage      (unsigned int channelCount, float *out);
+  void         RunDeAmpStage    (unsigned int channelCount, float *out);
+  void         RunBufferStage   (float *out);
 };
 
 /* global instance */
