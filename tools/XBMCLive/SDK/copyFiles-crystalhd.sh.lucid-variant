@@ -27,7 +27,7 @@ mkdir -p $WORKPATH/buildLive/Files/chroot_local-includes/root &> /dev/null
 
 if ! ls $WORKPATH/crystalhd.tar > /dev/null 2>&1; then
 	cd $WORKPATH
-	svn checkout http://crystalhd-for-osx.googlecode.com/svn/tags/crystalhd-for-osx-1.0.3/crystalhd
+	svn checkout http://crystalhd-for-osx.googlecode.com/svn/tags/crystalhd-for-osx-2.0.0/crystalhd
 	if [ "$?" -ne "0" ]; then
 		echo "Error retrieving CrystalHD drivers, exiting..."
 		exit 1
