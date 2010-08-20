@@ -336,7 +336,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_ACTIVATE:
       {
         bool active = g_application.m_AppActive;
-        if (HIWORD(wParam))
+        if (LOWORD(wParam) == WA_INACTIVE)
         {
           g_application.m_AppActive = false;
         }
@@ -350,7 +350,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           }
         }
         if (g_application.m_AppActive != active)
+        {
           g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+          g_Keyboard.ResetState();//lost focus, unstick any keys
+        }
         CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       }
       break;
