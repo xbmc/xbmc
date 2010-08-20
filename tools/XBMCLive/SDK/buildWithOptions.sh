@@ -24,7 +24,7 @@ SDK_BUILDHOOKS=""
 
 # getopt-parse.bash
 
-TEMP=$(getopt -o snp:ulkgiv:h: --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2,intel-only,variant:,hook: -- "$@")
+TEMP=$(getopt -o snp:ulkgiv:h:x --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2,intel-only,variant:,hook:,x-swat -- "$@")
 eval set -- "$TEMP"
 
 while true
@@ -82,6 +82,11 @@ do
 		echo "Enable option: Custom hook $HOOKNAME"
 		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS $HOOKNAME"
 		shift 2
+		;;
+	-x|--x-swat)
+		echo "Enable option: Use x-swat repository (Ubuntu-X team Updates)"
+		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS ./buildHook-xswat.sh"
+		shift
 		;;
 	-p|--proxy)
 		echo "Enable option: Use APT proxy"
