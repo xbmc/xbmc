@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AELOOKUPU8_H
-#define AELOOKUPU8_H
 
 /* calc: float = (N / 255.0f) * 2.0f - 1.0f */
 static float AELookupU8toFloat[256] = {
@@ -90,4 +88,3 @@ static float AELookupU8toFloat[256] = {
    0.9764705896377563476562500f,  0.9843137264251708984375000f,  0.9921568632125854492187500f,  1.0000000000000000000000000f,
 };
 
-#endif

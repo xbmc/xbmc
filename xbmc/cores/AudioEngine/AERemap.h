@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AEREMAP_H
-#define AEREMAP_H
 
 #include "AEAudioFormat.h"
 
@@ -54,4 +52,3 @@ private:
   void ResolveMix(const AEChannel from, const AEChLayout to);
 };
 
-#endif

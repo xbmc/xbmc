@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -19,9 +20,6 @@
  *
  */
 
-#ifndef AE_H
-#define AE_H
-
 #include <list>
 #include <map>
 
@@ -34,22 +32,16 @@
 #include "AESound.h"
 #include "AEConvert.h"
 #include "AERemap.h"
+#include "AESink.h"
 
 #include "cores/IAudioCallback.h"
 #include "addons/Visualisation.h"
-#include "cores/AudioRenderers/IAudioRenderer.h"
 
-enum AEState
-{
-  AE_STATE_INVALID, /* the AE has not been initialized */
-  AE_STATE_READY,   /* the AE is initialized and ready to run */
-  AE_STATE_RUN,     /* the AE is running */
-  AE_STATE_STOP,    /* the AE is stopping, next state will be READY */
-  AE_STATE_SHUTDOWN /* the AE is shutting down, next state will be INVALID */
-};
-
+/* forward declarations */
 class CAEStream;
 class CAESound;
+class IAESink;
+
 class CAE : public IRunnable
 {
 public:
@@ -61,7 +53,6 @@ public:
     return *instance;
   }
 
-  enum AEState GetState();
   virtual void Run();
   void         Stop();
   float        GetDelay();
@@ -126,7 +117,8 @@ private:
   unsigned int              m_frameSize;
 
   /* the sink, its format information, and conversion function */
-  IAudioRenderer           *m_sink;
+  CThread                  *m_sinkThread;
+  IAESink                  *m_sink;
   AEAudioFormat		    m_format;
   CAEConvert::AEConvertFrFn m_convertFn;
 
@@ -164,4 +156,3 @@ private:
 /* global instance */
 static CAE &AE = CAE::GetInstance();
 
-#endif

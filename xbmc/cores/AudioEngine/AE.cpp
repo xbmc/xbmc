@@ -19,10 +19,12 @@
  *
  */
 
+#include "system.h"
 #include "utils/TimeUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "GUISettings.h"
+#include "Settings.h"
 
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
@@ -32,7 +34,8 @@
 
 #include "AE.h"
 #include "AEUtil.h"
-#include "AudioRenderers/ALSADirectSound.h"
+#include "AESink.h"
+#include "Sinks/AESinkALSA.h"
 
 #ifdef __SSE__
 #include <xmmintrin.h>
@@ -114,9 +117,14 @@ bool CAE::OpenSink()
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
   CLog::Log(LOGDEBUG, "CAE::Initialize: Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
 
+  AEAudioFormat desiredFormat;
+  desiredFormat.m_channelLayout = m_chLayout;
+  desiredFormat.m_sampleRate    = sampleRate;
+  desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
+
   /* create the new sink */
-  m_sink = new CALSADirectSound();
-  if (!m_sink->Initialize(NULL, "default", m_chLayout, sampleRate, 32, false, false, m_passthrough))
+  m_sink = new CAESinkALSA();
+  if (!m_sink->Initialize(desiredFormat))
   {
     delete m_sink;
     m_sink = NULL;
@@ -133,6 +141,10 @@ bool CAE::OpenSink()
 
   /* initialize the final stage remapper */
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
+
+  /* start the sink thread */
+  m_sinkThread = new CThread(m_sink);
+  m_sinkThread->Create();
 
   /* if we did not re-open, we are finished */
   if (!reopen)
@@ -172,10 +184,17 @@ void CAE::Deinitialize()
 
   if (m_sink)
   {
-    m_sink->Stop();
+    /* shutdown the sink */
+    m_sink->Stop();    
+    m_sinkThread->StopThread(true);
+
+    /* deinitialize it */
     m_sink->Deinitialize();
+
     delete m_sink;
-    m_sink = NULL;
+    delete m_sinkThread;
+    m_sink       = NULL;
+    m_sinkThread = NULL;
   }
 
   _aligned_free(m_buffer);
@@ -509,7 +528,6 @@ inline void CAE::RunOutputStage()
   /* this normally only loops once */
   while(m_bufferSize >= m_format.m_frameSize)
   {
-    /* this call must block! */
     int wrote = m_sink->AddPackets(m_buffer, m_bufferSize);
     if (!wrote) continue;
 
@@ -526,7 +544,7 @@ inline unsigned int CAE::RunSoundStage(unsigned int channelCount, float *out)
 
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
-    SoundState *ss = itt;
+    SoundState *ss = &(*itt);
 
     /* no more frames, so remove it from the list */
     if (ss->frames == 0)

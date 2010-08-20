@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AEAUDIOFORMAT_H
-#define AEAUDIOFORMAT_H
 
 enum AEChannel
 {
@@ -78,4 +76,3 @@ typedef struct {
   unsigned int       m_frameSize    ;
 } AEAudioFormat;
 
-#endif

@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef AESTREAM_H
-#define AESTREAM_H
 
 #include <samplerate.h>
 #include <list>
@@ -126,4 +124,3 @@ private:
   void         *m_cbDataArg , *m_cbDrainArg;
 };
 
-#endif

@@ -1,6 +1,7 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,31 +20,23 @@
  *
  */
 
-#ifndef AEFILTER_H
-#define AEFILTER_H
+#include "utils/Thread.h"
+#include "AEAudioFormat.h"
+#include <stdint.h>
 
-/*
-  Implements a Kaiser-Bessel Window FIR Filter
-  http://arc.id.au/FilterDesign.html
-*/
-
-#include "FilterButterworth24db.h"
-
-class CAEFilter
+class IAESink : public IRunnable
 {
-private:
-  static float Ino(float x);
 public:
-  typedef struct
-  {
-    bool lpf;
-    CFilterButterworth24db f;
-    float v, s;
-  } FInfo;
+  virtual const char *GetName() = 0;
 
-  static FInfo* InitializeLPF(unsigned int cutoff, unsigned int sampleRate);
-  static FInfo* InitializeHPF(unsigned int cutoff, unsigned int sampleRate);
-  static void   Filter(FInfo *info, float *data, unsigned int samples);
+  IAESink() {};
+  virtual ~IAESink() {};
+  virtual bool Initialize  (AEAudioFormat format) = 0;
+  virtual void Deinitialize() = 0;
+
+  virtual void          Stop          () = 0;
+  virtual AEAudioFormat GetAudioFormat() = 0;
+  virtual unsigned int  GetDelay      () = 0;
+  virtual unsigned int  AddPackets    (uint8_t *data, unsigned int samples) = 0;
 };
 
-#endif
