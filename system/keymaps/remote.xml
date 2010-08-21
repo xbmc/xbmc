@@ -323,6 +323,7 @@
       <seven>Number7</seven>
       <eight>Number8</eight>
       <nine>Number9</nine>
+      <enter>Enter</enter>
       <pageminus>CursorLeft</pageminus>
       <pageplus>CursorRight</pageplus>
     </remote>
@@ -355,6 +356,7 @@
       <seven>Number7</seven>
       <eight>Number8</eight>
       <nine>Number9</nine>
+      <enter>Enter</enter>
       <back>BackSpace</back>
     </remote>
   </NumericInput>
