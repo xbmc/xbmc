@@ -5,11 +5,12 @@ INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplay
 SRCS = \
 	AE.cpp \
 	AEConvert.cpp \
-	AEFilter.cpp \
 	AERemap.cpp \
 	AEStream.cpp \
 	AESound.cpp \
 	AEUtil.cpp \
+	Sinks/AESinkALSA.cpp \
+	Packetizers/AEPacketizerIEC958.cpp \
 	PostProc/AEPPAnimationFade.cpp
 
 LIB=audioengine.a
