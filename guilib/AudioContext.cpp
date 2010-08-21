@@ -76,6 +76,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   /* if device is the same, no need to bother */
 #ifdef _WIN32
 
+  HRESULT hr;
   int iPos = strAudioDev.Find(':');
   if(iPos != CStdString::npos)
     strAudioDev.erase(0, iPos+1);
@@ -109,8 +110,9 @@ void CAudioContext::SetActiveDevice(int iDevice)
 
 #ifdef HAS_AUDIO
   memset(&g_digitaldevice, 0, sizeof(GUID));
-  if (FAILED(DirectSoundEnumerate(DSEnumCallback, this)))
-    CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
+  hr = DirectSoundEnumerate(DSEnumCallback, this);
+  if (FAILED(hr))
+    CLog::Log(LOGERROR, "%s - failed to enumerate output devices (0x%08X)", __FUNCTION__, hr);
 
   if (iDevice==DIRECTSOUND_DEVICE
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
@@ -119,6 +121,9 @@ void CAudioContext::SetActiveDevice(int iDevice)
 #ifdef _WIN32
     CWDSound p_dsound;
     std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+    if (deviceList.size() == 0)
+      CLog::Log(LOGDEBUG, "%s - no output devices found.", __FUNCTION__);
+
     std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
     for (int i=0; iter != deviceList.end(); i++)
     {
@@ -133,6 +138,8 @@ void CAudioContext::SetActiveDevice(int iDevice)
 
       ++iter;
     }
+    if (guid == NULL)
+      CLog::Log(LOGDEBUG, "%s - (default playback device).", __FUNCTION__);
 #else
     if(iDevice == DIRECTSOUND_DEVICE_DIGITAL
     && ( g_digitaldevice.Data1 || g_digitaldevice.Data2
@@ -141,14 +148,16 @@ void CAudioContext::SetActiveDevice(int iDevice)
 #endif
 
     // Create DirectSound
-    if (FAILED(DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL )))
+    hr = DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL );
+    if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, "DirectSoundCreate() Failed");
+      CLog::Log(LOGERROR, "DirectSoundCreate() Failed (0x%08X)", hr);
       return;
     }
-    if (FAILED(m_pDirectSoundDevice->SetCooperativeLevel(g_hWnd, DSSCL_PRIORITY)))
+    hr = m_pDirectSoundDevice->SetCooperativeLevel(g_hWnd, DSSCL_PRIORITY);
+    if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, "DirectSoundDevice::SetCooperativeLevel() Failed");
+      CLog::Log(LOGERROR, "DirectSoundDevice::SetCooperativeLevel() Failed (0x%08X)", hr);
       return;
     }
   }
