@@ -1178,15 +1178,6 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
 bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
 {
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
 
   // party mode
   if (g_partyModeManager.IsEnabled() && !pItem->IsLastFM())
