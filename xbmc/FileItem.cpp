@@ -1085,6 +1085,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     dbItem.m_lStartOffset = item->m_lStartOffset;
     return IsSamePath(&dbItem);
   }
+  if (HasProperty("original_listitem_url"))
+    return (GetProperty("original_listitem_url") == item->m_strPath);
   return false;
 }
 
