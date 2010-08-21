@@ -1599,7 +1599,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
 
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
   // if its a folder, build a temp playlist
-  if (pItem->m_bIsFolder)
+  if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
     // take a copy so we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));

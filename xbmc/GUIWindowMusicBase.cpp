@@ -1091,7 +1091,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   }
 #endif
   // if its a folder, build a playlist
-  if (pItem->m_bIsFolder || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if ((pItem->m_bIsFolder && !pItem->IsPlugin()) || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
