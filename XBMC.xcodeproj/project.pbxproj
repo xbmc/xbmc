@@ -1856,8 +1856,6 @@
 		F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
 		F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
-		F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
-		F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
 		F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
 		F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -3826,8 +3824,6 @@
 		F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthroughFFmpeg.h; sourceTree = "<group>"; };
 		F5F245EC1112C9AB009126C6 /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
 		F5F245ED1112C9AB009126C6 /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
-		F5F24D481120994F009126C6 /* PCMLimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMLimiter.cpp; sourceTree = "<group>"; };
-		F5F24D491120994F009126C6 /* PCMLimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMLimiter.h; sourceTree = "<group>"; };
 		F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDAudioEncoderFFmpeg.cpp; path = Encoders/DVDAudioEncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F5F24E8411232488009126C6 /* IDVDAudioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IDVDAudioEncoder.h; path = Encoders/IDVDAudioEncoder.h; sourceTree = "<group>"; };
 		F5F24E8511232488009126C6 /* DVDAudioEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDAudioEncoderFFmpeg.h; path = Encoders/DVDAudioEncoderFFmpeg.h; sourceTree = "<group>"; };
@@ -6766,8 +6762,6 @@
 				7CAA25341085963B0096DE39 /* PasswordManager.h */,
 				E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */,
 				E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */,
-				F5F24D481120994F009126C6 /* PCMLimiter.cpp */,
-				F5F24D491120994F009126C6 /* PCMLimiter.h */,
 				18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */,
 				18CCEAED1112F5B800615FC6 /* PCMRemap.h */,
 				E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */,
@@ -8081,7 +8075,6 @@
 				F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
-				F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */,
 				F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC7112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
@@ -8951,7 +8944,6 @@
 				F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
 				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
-				F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */,
 				F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC8112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
