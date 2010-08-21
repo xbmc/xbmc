@@ -36,7 +36,7 @@ public:
 
   virtual void          Stop          () = 0;
   virtual AEAudioFormat GetAudioFormat() = 0;
-  virtual unsigned int  GetDelay      () = 0;
+  virtual float         GetDelay      () = 0;
   virtual unsigned int  AddPackets    (uint8_t *data, unsigned int samples) = 0;
 };
 

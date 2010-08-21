@@ -26,6 +26,9 @@
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 
+#include "utils/CriticalSection.h"
+#include "utils/Semaphore.hpp"
+
 class CAESinkALSA : public IAESink
 {
 public:
@@ -40,11 +43,20 @@ public:
   virtual void          Run           ();
   virtual void          Stop          ();
   virtual AEAudioFormat GetAudioFormat();
-  virtual unsigned int  GetDelay      ();
+  virtual float         GetDelay      ();
   virtual unsigned int  AddPackets    (uint8_t *data, unsigned int samples);
 private:
-  AEAudioFormat  m_format;
-  snd_pcm_t     *m_pcm;
+  AEAudioFormat     m_format;
+  snd_pcm_t        *m_pcm;
+  bool              m_running;
+  CCriticalSection  m_runLock;
+
+  CCriticalSection  m_bufferLock;
+  CSemaphore        m_bufferWait;
+  uint8_t          *m_buffer;
+  unsigned int      m_bufferSamples;
+
+  snd_pcm_format_t AEFormatToALSAFormat(const enum AEDataFormat format);
 
   bool InitializeHW(AEAudioFormat &format);
   bool InitializeSW(AEAudioFormat &format);
