@@ -250,21 +250,9 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("video"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-  else
-  {
-    AddFileToDatabase(pItem.get());
+  AddFileToDatabase(pItem.get());
 
-    return CGUIWindowVideoBase::OnPlayMedia(iItem);
-  }
+  return CGUIWindowVideoBase::OnPlayMedia(iItem);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)

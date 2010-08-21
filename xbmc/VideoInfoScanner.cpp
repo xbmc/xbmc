@@ -451,7 +451,7 @@ namespace VIDEO
       long lResult = AddVideo(pItem.get(), info2->Content());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), bDirNames, fetchEpisodes, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal, pDlgProgress);
       if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)

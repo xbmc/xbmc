@@ -596,7 +596,7 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_INVALID;
 
-  memset(lpTimeZoneInformation, 0, sizeof(LPTIME_ZONE_INFORMATION));
+  memset(lpTimeZoneInformation, 0, sizeof(TIME_ZONE_INFORMATION));
 
 #ifdef __APPLE__
   struct timezone tz;

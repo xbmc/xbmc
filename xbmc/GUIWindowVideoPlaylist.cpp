@@ -76,6 +76,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
+      m_vecItems->RemoveDiscCache(GetID());
       UpdateButtons();
       Update(m_vecItems->m_strPath);
 
