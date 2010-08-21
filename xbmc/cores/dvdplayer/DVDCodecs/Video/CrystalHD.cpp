@@ -1400,12 +1400,7 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  if (m_has_bcm70015)
-  {
-    m_wait_timeout = 1;
-    m_dll->DtsFlushInput(m_device, 0);
-  }
-  else
+  if (!m_has_bcm70015)
   {
     // Calling for non-error flush, Flushes all the decoder
     //  buffers, input, decoded and to be decoded. 
