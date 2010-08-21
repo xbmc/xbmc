@@ -2423,8 +2423,13 @@ CStdString CFileItem::GetCachedVideoThumb() const
 {
   if (IsStack())
     return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
-  else if (IsVideoDb() && HasVideoInfoTag() && !m_bIsFolder)
-    return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoThumbFolder(),true);
+  else if (IsVideoDb() && HasVideoInfoTag())
+  {
+    if (m_bIsFolder && !GetVideoInfoTag()->m_strPath.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
+    else 
+      return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
+  }
   else
     return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
