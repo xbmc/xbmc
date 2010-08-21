@@ -87,7 +87,10 @@ void CStreamDetailAudio::Serialize(CArchive& ar)
 
 int CStreamDetailAudio::GetCodecPriority() const
 {
+  // technically, eac3, dtsma, and flac are equivalently good (they're all lossless)
   if (m_strCodec == "flac")
+    return 5;
+  if (m_strCodec == "dtsma")
     return 4;
   if (m_strCodec == "eac3")
     return 3;
