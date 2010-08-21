@@ -301,7 +301,7 @@ namespace PYXBMC
 
   // Player_OnPlayBackResumed
   PyDoc_STRVAR(onPlayBackResumed__doc__,
-    "onPlayBackPaused() -- onPlayBackResumed method.\n"
+    "onPlayBackResumed() -- onPlayBackResumed method.\n"
     "\n"
     "Will be called when user resumes a paused file");
 
