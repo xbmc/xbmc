@@ -52,40 +52,42 @@ using namespace OVERLAY;
 static void LoadTexture(GLenum target
                       , GLsizei width, GLsizei height, GLsizei stride
                       , GLfloat* u, GLfloat* v
-                      , GLenum format, const GLvoid* pixels)
+                      , GLenum internalFormat, GLenum externalFormat, const GLvoid* pixels)
 {
   int width2  = NP2(width);
   int height2 = NP2(height);
 
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  if(format == GL_RGBA)
+  if(externalFormat == GL_RGBA
+  || externalFormat == GL_BGRA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
-  else if(format == GL_RGB)
+  else if(externalFormat == GL_RGB
+       || externalFormat == GL_BGR)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
 #endif
 
-  glTexImage2D   (target, 0, format
+  glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
-                , format, GL_UNSIGNED_BYTE, NULL);
+                , externalFormat, GL_UNSIGNED_BYTE, NULL);
 
   glTexSubImage2D(target, 0
                 , 0, 0, width, height
-                , format, GL_UNSIGNED_BYTE
+                , externalFormat, GL_UNSIGNED_BYTE
                 , pixels);
 
   if(height < height2)
     glTexSubImage2D( target, 0
                    , 0, height, width, 1
-                   , format, GL_UNSIGNED_BYTE
+                   , externalFormat, GL_UNSIGNED_BYTE
                    , (unsigned char*)pixels + stride * (height-1));
 
   if(width  < width2)
     glTexSubImage2D( target, 0
                    , width, 0, 1, height
-                   , format, GL_UNSIGNED_BYTE
+                   , externalFormat, GL_UNSIGNED_BYTE
                    , (unsigned char*)pixels + stride - 1);
 
 #ifndef HAS_GLES
@@ -123,6 +125,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+            , GL_BGRA
             , rgba);
   free(rgba);
 
@@ -196,6 +199,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+            , GL_BGRA
             , rgba + min_x + min_y * o->width);
 
   free(rgba);
@@ -252,6 +256,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
             , quads.size_y
             , quads.size_x
             , &m_u, &m_v
+            , GL_ALPHA
             , GL_ALPHA
             , quads.data);
 
