@@ -141,13 +141,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
       color[2] = t[3]; // Cb
 #else
       color[0] = t[2]; // Y
-#ifdef HAS_DX
       color[1] = t[0]; // Cr
       color[2] = t[1]; // Cb
-#else
-      color[1] = t[1]; // Cr
-      color[2] = t[0]; // Cb
-#endif
 #endif
     }
     m_dvdspus.m_bHasClut = true;
