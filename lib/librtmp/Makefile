@@ -29,6 +29,7 @@ ifeq ($(OSTYPE),Darwin)
   endif
 else
   SYS=posix
+  prefix=/usr
 endif
 
 LIBRTMP = librtmp/librtmp/librtmp.so
