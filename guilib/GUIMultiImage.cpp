@@ -92,7 +92,11 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
   // alloc as this can free our resources
   if (!m_texturePath.IsConstant())
   {
-    CStdString texturePath(m_texturePath.GetLabel(m_parentID));
+    CStdString texturePath;
+    if (item)
+      texturePath = m_texturePath.GetItemLabel(item, true);
+    else
+      texturePath = m_texturePath.GetLabel(m_parentID);
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       // a new path - set our current path and tell ourselves to load our directory
