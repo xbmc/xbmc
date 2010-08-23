@@ -49,6 +49,7 @@ CAE::CAE():
   m_sink         (NULL ),
   m_passthrough  (false),
   m_buffer       (NULL ),
+  m_vizBufferSamples(0    ),
   m_audioCallback(NULL )
 {
 }
@@ -66,7 +67,7 @@ CAE::~CAE()
   }
 }
 
-bool CAE::OpenSink()
+bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
 {
   /* lock the sink so the thread gets held up */
   CSingleLock sinkLock(m_critSectionSink);
@@ -86,8 +87,8 @@ bool CAE::OpenSink()
     case 8: stdChLayout = AE_CH_LAYOUT_7_0; break;
     case 9: stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
-  /* choose a sample rate based on the oldest stream, or if non, 44100hz */
-  unsigned int sampleRate = 44100;
+
+  /* choose a sample rate based on the oldest stream or if none, the requested sample rate */
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
 
@@ -112,12 +113,8 @@ bool CAE::OpenSink()
   if (m_sink)
   {
     m_sink->Deinitialize();
-    m_sinkThread->StopThread(true);
-
     delete m_sink;
-    delete m_sinkThread;
-    m_sink       = NULL;
-    m_sinkThread = NULL;
+    m_sink = NULL;
 
     _aligned_free(m_buffer);
     m_buffer = NULL;
@@ -152,16 +149,11 @@ bool CAE::OpenSink()
   m_format        = desiredFormat;
   m_frameSize     = sizeof(float) * m_channelCount;
   m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer        = (uint8_t*)_aligned_malloc(m_format.m_frameSize * m_format.m_frames * 2, 16);
-  m_bufferFrames  = 0;
-  m_visBufferSize = 0;
+  m_buffer        = (float*)_aligned_malloc(m_format.m_frames * m_format.m_channelCount * sizeof(float), 16);
+  m_bufferSamples = 0;
 
   /* initialize the final stage remapper */
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
-
-  /* start the sink thread */
-  m_sinkThread = new CThread(m_sink);
-  m_sinkThread->Create();
 
   /* if we did not re-open, we are finished */
   if (!reopen) return true;
@@ -180,6 +172,7 @@ bool CAE::OpenSink()
   /* re-init the callback */
   if (m_audioCallback)
   {
+    m_vizBufferSamples = 0;
     m_audioCallback->OnDeinitialize();
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
   }
@@ -202,12 +195,8 @@ void CAE::Deinitialize()
   {
     /* shutdown the sink */
     m_sink->Deinitialize();
-    m_sinkThread->StopThread(true);
-
     delete m_sink;
-    delete m_sinkThread;
-    m_sink       = NULL;
-    m_sinkThread = NULL;
+    m_sink = NULL;
   }
 
   _aligned_free(m_buffer);
@@ -232,12 +221,11 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   );
 
   CSingleLock lock(m_critSection);
+  if (m_streams.size() == 0)
+    OpenSink(sampleRate);
+
   CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
   m_streams.push_back(stream);
-
-  /* if we are the only stream, try to re-open the sink to what we want */
-  if (m_streams.size() == 1)
-    OpenSink();
 
   return stream;
 }
@@ -271,9 +259,9 @@ CAESound *CAE::GetSound(CStdString file)
 void CAE::PlaySound(CAESound *sound)
 {
    SoundState ss = {
-      owner  : sound,
-      samples: sound->GetSamples(),
-      frames : sound->GetFrameCount()
+      owner      : sound,
+      samples    : sound->GetSamples(),
+      sampleCount: sound->GetSampleCount()
    };
    CSingleLock lock(m_critSection);
    OpenSink();
@@ -334,6 +322,7 @@ void CAE::GarbageCollect()
 void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_critSection);
+  m_vizBufferSamples = 0;
   m_audioCallback = pCallback;
   if (m_audioCallback)
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
@@ -343,7 +332,7 @@ void CAE::UnRegisterAudioCallback()
 {
   CSingleLock lock(m_critSection);
   m_audioCallback = NULL;
-  m_visBufferSize = 0;
+  m_vizBufferSamples = 0;
 }
 
 void CAE::StopSound(CAESound *sound)
@@ -383,7 +372,7 @@ float CAE::GetDelay()
   if (!m_running) return 0.0f;
 
   CSingleLock sinkLock(m_critSectionSink);
-  return m_sink->GetDelay() + ((float)(m_bufferFrames / m_frameSize) / m_format.m_sampleRate);
+  return m_sink->GetDelay() + ((float)m_bufferSamples / m_format.m_sampleRate);
 }
 
 float CAE::GetVolume()
@@ -520,13 +509,8 @@ void CAE::Run()
       DECLARE_ALIGNED(16, float, out[channelCount]);
       memset(out, 0, sizeof(out));
 
-      mixed =
-        RunSoundStage (channelCount, out) +
-        RunStreamStage(channelCount, out);
-
+      mixed = RunStreamStage(channelCount, out);
       RunNormalizeStage(channelCount, out, mixed);
-      RunVizStage      (channelCount, out);
-      RunDeAmpStage    (channelCount, out);
     mixLock.Leave();
 
     sinkLock.Enter();
@@ -536,23 +520,8 @@ void CAE::Run()
   }
 }
 
-inline void CAE::RunOutputStage()
+inline void CAE::MixSounds(unsigned int samples)
 {
-  /* this normally only loops once */
-  while(m_bufferFrames >= m_format.m_frames)
-  {
-    int wroteFrames = m_sink->AddPackets(m_buffer, m_format.m_frames);
-
-    int wroteBytes  = wroteFrames * m_format.m_frameSize;
-    int bytesLeft   = (m_bufferFrames - wroteFrames) * m_format.m_frameSize;
-    memmove(&m_buffer[0], &m_buffer[wroteBytes], bytesLeft);
-    m_bufferFrames -= wroteFrames;
-  }
-}
-
-inline unsigned int CAE::RunSoundStage(unsigned int channelCount, float *out)
-{
-  unsigned int mixed = 0;
   list<SoundState>::iterator itt;
 
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
@@ -560,30 +529,82 @@ inline unsigned int CAE::RunSoundStage(unsigned int channelCount, float *out)
     SoundState *ss = &(*itt);
 
     /* no more frames, so remove it from the list */
-    if (ss->frames == 0)
+    if (ss->sampleCount == 0)
     {
       itt = m_playing_sounds.erase(itt);
       continue;
     }
 
-    float *frame = ss->samples;
-    float volume = ss->owner->GetVolume();
-    ss->samples += channelCount;
-    --ss->frames;
+    float volume = ss->owner->GetVolume();// * 0.5f; /* 0.5 to normalize */
+    unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
     #ifdef __SSE__
-    if (channelCount > 1)
-      CAE::SSEMulAddArray(out, frame, volume, channelCount);
-    else
+      CAE::SSEMulAddArray(m_buffer, ss->samples, volume, mixSamples);
+      CAE::SSEMulArray   (m_buffer, 0.5f, mixSamples);
+    #else
+      for(unsigned int i = 0; i < mixSamples; ++i)
+        m_buffer[i] = (m_buffer[i] + (frame[i] * volume)) * 0.5f;
     #endif
-    for(unsigned int i = 0; i < channelCount; ++i)
-      out[i] += frame[i] * volume;
 
-    ++mixed;
+    ss->sampleCount -= mixSamples;
+    ss->samples     += mixSamples;
+
     ++itt;
   }
+}
 
-  return mixed;
+inline void CAE::RunOutputStage()
+{
+  unsigned int samples         = m_format.m_frames * m_channelCount;
+  unsigned int remappedSamples = m_format.m_frames * m_format.m_channelCount;
+
+  /* this normally only loops once */
+  while(m_bufferSamples >= samples)
+  {
+    /* if we have an audio callback, use it */
+    if (m_audioCallback)
+    {
+      unsigned int room = AUDIO_BUFFER_SIZE - m_vizBufferSamples;
+      unsigned int copy = room > samples ? samples : room;
+      memcpy(m_vizBuffer + m_vizBufferSamples, m_buffer, copy * sizeof(float));
+      m_vizBufferSamples += copy;
+
+      if (m_vizBufferSamples == AUDIO_BUFFER_SIZE)
+      {
+        m_audioCallback->OnAudioData(m_vizBuffer, AUDIO_BUFFER_SIZE);
+        m_vizBufferSamples = 0;
+      }
+    }
+
+    /* mix in gui sounds */
+    MixSounds(samples);
+
+    /* handle deamplification */
+    #ifdef __SSE__
+      CAE::SSEMulArray(m_buffer, m_volume, samples);
+    #else
+      for(unsigned int i = 0; i < samples; ++i)
+        out[i] *= m_volume;
+    #endif
+
+    float remapped[remappedSamples];
+    m_remap.Remap(m_buffer, remapped, m_format.m_frames);
+
+    int wroteFrames;
+    if (m_convertFn)
+    {
+      DECLARE_ALIGNED(16, uint8_t, converted[samples]);
+      m_convertFn(m_buffer, samples, converted);
+      wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+    }
+    else
+      wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
+
+    int wroteSamples = wroteFrames * m_channelCount;
+    int bytesLeft    = (m_bufferSamples - wroteSamples) * m_format.m_frameSize;
+    memmove(&m_buffer[0], &m_buffer[wroteSamples], bytesLeft);
+    m_bufferSamples -= wroteSamples;
+  }
 }
 
 inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
@@ -659,59 +680,10 @@ inline void CAE::RunNormalizeStage(unsigned int channelCount, float *out, unsign
   }
 }
 
-inline void CAE::RunVizStage(unsigned int channelCount, float *out)
-{
-  /* if we have an audio callback, use it */
-  if (!m_audioCallback) return;
-
-  /* add the frame to the visBuffer */
-  memcpy(&m_visBuffer[m_visBufferSize], out, sizeof(float) * channelCount);
-  m_visBufferSize += channelCount;
-
-  /* if the buffer full, flush it through */
-  if (m_visBufferSize >= AUDIO_BUFFER_SIZE)
-  {
-    m_audioCallback->OnAudioData(m_visBuffer, AUDIO_BUFFER_SIZE);
-    m_visBufferSize = 0;
-  }
-}
-
-inline void CAE::RunDeAmpStage(unsigned int channelCount, float *out)
-{
-  if (g_settings.m_bMute || m_volume == 1.0f) return;
-
-  #ifdef __SSE__
-  if (channelCount > 1)
-    CAE::SSEMulArray(out, m_volume, channelCount);
-  else
-  #endif
-  {
-    for(unsigned int i = 0; i < channelCount; ++i)
-      out[i] *= m_volume;
-  }
-}
-
 inline void CAE::RunBufferStage(float *out)
 {
-  uint8_t *outPos = &m_buffer[m_bufferFrames * m_format.m_frameSize];
-
-  /* if muted just zero the data and continue */
-  if (g_settings.m_bMute)
-  {
-    memset(outPos, 0, m_format.m_frameSize);
-    ++m_bufferFrames;
-    return;
-  }
-
-  if (m_convertFn)
-  {
-    DECLARE_ALIGNED(16, float, remapped[m_format.m_channelCount]);
-    m_remap.Remap  (out, remapped, 1);
-    m_convertFn    (remapped, m_format.m_channelCount, outPos);
-  }
-  else
-    m_remap.Remap(out, (float*)outPos, 1);
-
-  ++m_bufferFrames;
+  float *outPos = &m_buffer[m_bufferSamples];
+  memcpy(outPos, out, sizeof(float) * m_channelCount);
+  m_bufferSamples += m_channelCount;
 }
 

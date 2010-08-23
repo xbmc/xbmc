@@ -33,10 +33,7 @@ static enum AEChannel ALSAChannelMap[9] =
 
 CAESinkALSA::CAESinkALSA() :
   m_channelLayout(NULL ),
-  m_pcm          (NULL ),
-  m_running      (false),
-  m_bufferWait   (1    ),
-  m_buffer       (NULL )
+  m_pcm          (NULL )
 {
   /* ensure that ALSA has been initialized */
   if(!snd_config)
@@ -123,7 +120,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   snd_config_copy(&config, snd_config);
   int error;
 
-  error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
+  error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
   if (error < 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - snd_pcm_open_lconf(%d)", error);
@@ -137,13 +134,10 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   if (!InitializeHW(format)) return false;
   if (!InitializeSW(format)) return false;
 
-  m_buffer        = new uint8_t[format.m_frameSize * format.m_frames];
   m_bufferSamples = 0;
-
   snd_pcm_prepare(m_pcm);
 
   m_format  = format;
-  m_running = true;
   return true;
 }
 
@@ -220,13 +214,13 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   }
 
   unsigned int      sampleRate = format.m_sampleRate;
-  snd_pcm_uframes_t frames     = 512;
-  snd_pcm_uframes_t bufferSize;
+  unsigned int      frames     = 32;
+  snd_pcm_uframes_t frameSize  = ((CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount) * frames;
 
   snd_pcm_hw_params_set_rate_near       (m_pcm, hw_params, &sampleRate          , NULL);
   snd_pcm_hw_params_set_channels        (m_pcm, hw_params, format.m_channelCount      );
-  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params, &frames             , NULL );
-  snd_pcm_hw_params_get_buffer_size     (hw_params, &bufferSize);
+  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params, &frameSize           , NULL);
+  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params, &frames              , NULL);
 
   /* set the parameters */
   if (snd_pcm_hw_params(m_pcm, hw_params) < 0)
@@ -282,77 +276,39 @@ void CAESinkALSA::Deinitialize()
 
   delete[] m_channelLayout;
   m_channelLayout = NULL;
-
-  delete[] m_buffer;
-  m_buffer = NULL;
-}
-
-void CAESinkALSA::Run()
-{
-  CLog::Log(LOGDEBUG, "CAESinkALSA::Run - Thread Started");
-  CSingleLock runLock(m_runLock);
-
-  while(m_running)
-  {
-    CSingleLock bufferLock(m_bufferLock);
-    if (m_bufferSamples == 0)
-    {
-      /* underrun */
-      bufferLock  .Leave();
-      m_bufferWait.Post ();
-      Sleep(10);
-      continue;
-    }
-
-    /* take a copy of the buffer so we can unlock and allow AE to prepare another */  
-    unsigned int samples = m_bufferSamples;
-    uint8_t      buffer[m_format.m_frameSize * samples];
-    memcpy(buffer, m_buffer, sizeof(buffer));
-    m_bufferSamples = 0;
-    bufferLock  .Leave();
-    m_bufferWait.Post ();
-
-     if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
-      snd_pcm_start(m_pcm);
-   
-    if (snd_pcm_writei(m_pcm, (void*)buffer, samples) == -EPIPE)
-      snd_pcm_prepare(m_pcm);
-  }
-
-  CLog::Log(LOGDEBUG, "CAESinkALSA::Run - Thread Stopped");
 }
 
 void CAESinkALSA::Stop()
 {
-  m_running = false;
-  m_bufferWait.Post();
   CSingleLock runLock(m_runLock);
+  if (!m_pcm) return;
+  snd_pcm_drop(m_pcm);
 }
 
 float CAESinkALSA::GetDelay()
 {
   if (!m_pcm) return 0;
-  CSingleLock bufferLock(m_bufferLock);
-
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
-  return (float)(frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
+  float delay = (float)(frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
+  return delay;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int samples)
 {
-  CSingleLock bufferLock(m_bufferLock);
-  /* if the buffer is full still, wait for it to be emptied */
-  if (m_bufferSamples > 0)
-  {
-    bufferLock  .Leave();
-    m_bufferWait.Wait ();
-    bufferLock  .Enter();
-  }
+  CSingleLock runLock(m_runLock);
+  if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
+    snd_pcm_start(m_pcm);
 
-  if (!m_buffer) return 0;
-  memcpy(m_buffer, data, samples * m_format.m_frameSize);
   m_bufferSamples = samples;
+  snd_pcm_wait(m_pcm, 10);
+  if (snd_pcm_writei(m_pcm, (void*)data, samples) == -EPIPE)
+  {
+    printf("Underrun\n");
+    snd_pcm_prepare(m_pcm);
+  }
+  m_bufferSamples = 0;
+
   return samples;
 }
 

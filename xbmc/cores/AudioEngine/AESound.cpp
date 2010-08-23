@@ -48,6 +48,7 @@ CAESound::CAESound(const CStdString &filename) :
   m_channelCount(0    ),
   m_samples     (NULL ),
   m_frameCount  (0    ),
+  m_sampleCount (0    ),
   m_volume      (1.0f )
 {
   m_filename = filename;
@@ -103,7 +104,6 @@ bool CAESound::Initialize()
   uint32_t byteRate;
   uint16_t blockAlign;
   uint16_t bitsPerSample;
-  unsigned int samples = 0;
 
   WAVE_CHUNK chunk;
   while(file->Read(&chunk, sizeof(chunk)) == sizeof(chunk)) {
@@ -158,9 +158,9 @@ bool CAESound::Initialize()
     else if (isPCM && !isDATA && memcmp(chunk.chunk_id, "data", 4) == 0)
     {
        unsigned int bytesPerSample = bitsPerSample >> 3;
-       samples      = chunk.chunksize / bytesPerSample;
-       m_frameCount = samples / m_channelCount;
-       isDATA       = m_frameCount > 0;
+       m_sampleCount = chunk.chunksize / bytesPerSample;
+       m_frameCount  = m_sampleCount / m_channelCount;
+       isDATA        = m_frameCount > 0;
 
        /* get the conversion function */
        CAEConvert::AEConvertToFn convertFn;
@@ -168,8 +168,8 @@ bool CAESound::Initialize()
 
        /* read in each sample */
        unsigned int s;
-       m_samples = (float*)_aligned_malloc(sizeof(float) * samples, 16);
-       for(s = 0; s < samples; ++s)
+       m_samples = (float*)_aligned_malloc(sizeof(float) * m_sampleCount, 16);
+       for(s = 0; s < m_sampleCount; ++s)
        {
          DECLARE_ALIGNED(16, uint8_t, raw[bytesPerSample]);
          if (file->Read(raw, bytesPerSample) != bytesPerSample)
@@ -218,7 +218,7 @@ bool CAESound::Initialize()
     }
   }
 
-  if (!isRIFF || !isWAVE || !isFMT || !isPCM || !isDATA || samples == 0)
+  if (!isRIFF || !isWAVE || !isFMT || !isPCM || !isDATA || m_sampleCount == 0)
   {
     CLog::Log(LOGERROR, "CAESound::Initialize - Invalid, or un-supported WAV file: %s", m_filename.c_str());
     file->Close();
@@ -233,7 +233,7 @@ bool CAESound::Initialize()
   /* if we got here, the file was valid and we have the data but it may need re-sampling still */
   if (sampleRate != AE.GetSampleRate())
   {
-    unsigned int space = (unsigned int)((((float)samples / (float)sampleRate) * (float)AE.GetSampleRate()) * 2.0f);
+    unsigned int space = (unsigned int)((((float)m_sampleCount / (float)sampleRate) * (float)AE.GetSampleRate()) * 2.0f);
     SRC_DATA data;
     data.data_in       = m_samples;
     data.input_frames  = m_frameCount;
@@ -251,8 +251,9 @@ bool CAESound::Initialize()
 
     /* reassign m_samples */
     _aligned_free(m_samples);
-    m_samples    = data.data_out;
-    m_frameCount = data.output_frames_gen;
+    m_samples     = data.data_out;
+    m_frameCount  = data.output_frames_gen;
+    m_sampleCount = data.output_frames_gen * m_channelCount;
   }
 
   CLog::Log(LOGINFO, "CAESound::Initialize - Sound Loaded: %s", m_filename.c_str());

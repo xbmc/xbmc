@@ -96,7 +96,7 @@ private:
   /* these are only callable by the application */
   friend class CApplication;
   bool Initialize();
-  bool OpenSink();
+  bool OpenSink(unsigned int sampleRate = 44100);
   void Deinitialize();
 
   /* this is called by streams on dtor, you should never need to call this directly */
@@ -117,7 +117,6 @@ private:
   unsigned int              m_frameSize;
 
   /* the sink, its format information, and conversion function */
-  CThread                  *m_sinkThread;
   IAESink                  *m_sink;
   AEAudioFormat		    m_format;
   CAEConvert::AEConvertFrFn m_convertFn;
@@ -126,7 +125,7 @@ private:
   typedef struct {
     CAESound     *owner;
     float        *samples;
-    unsigned int  frames;
+    unsigned int  sampleCount;
   } SoundState;
   std::list<SoundState>     m_playing_sounds;
 
@@ -134,22 +133,20 @@ private:
   bool                                  m_passthrough;
   std::list<CAEStream*>                 m_streams;
   std::map<const CStdString, CAESound*> m_sounds;
-  uint8_t                              *m_buffer;
-  unsigned int                          m_bufferFrames;
-  float                                 m_visBuffer[AUDIO_BUFFER_SIZE * 2];
-  unsigned int                          m_visBufferSize;
+  float                                *m_buffer;
+  unsigned int                          m_bufferSamples;
+  float                                 m_vizBuffer[AUDIO_BUFFER_SIZE];
+  unsigned int                          m_vizBufferSamples;
 
   /* the channel remapper and audioCallback */
   CAERemap                  m_remap;
   IAudioCallback           *m_audioCallback;
 
   /* thread run stages */
+  void         MixSounds        (unsigned int samples);
   void         RunOutputStage   ();
-  unsigned int RunSoundStage    (unsigned int channelCount, float *out);
   unsigned int RunStreamStage   (unsigned int channelCount, float *out);
   void         RunNormalizeStage(unsigned int channelCount, float *out, unsigned int mixed);
-  void         RunVizStage      (unsigned int channelCount, float *out);
-  void         RunDeAmpStage    (unsigned int channelCount, float *out);
   void         RunBufferStage   (float *out);
 };
 

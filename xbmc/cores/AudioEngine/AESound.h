@@ -33,10 +33,10 @@ public:
   void   Stop();
   bool   IsPlaying();
 
-  void         SetVolume    (float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
-  float        GetVolume    ()             { return m_volume     ; }
-  unsigned int GetFrameCount()             { return m_frameCount ; }
-  float*       GetSamples   ();
+  void         SetVolume     (float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
+  float        GetVolume     ()             { return m_volume      ; }
+  unsigned int GetSampleCount()             { return m_sampleCount ; }
+  float*       GetSamples    ();
 private:
   /* only the AE can create these objects */
   friend class CAE;
@@ -51,6 +51,7 @@ private:
   unsigned int     m_channelCount;
   float           *m_samples;
   unsigned int     m_frameCount;
+  unsigned int     m_sampleCount;
   float            m_volume;
 };
 
