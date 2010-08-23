@@ -605,14 +605,6 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (!pItem->m_strPath.Equals("newsmartplaylist://video"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
-  else if (m_vecItems->m_strPath.Equals("plugin://video/"))
-  {
-    CStdString path;
-    CUtil::GetDirectory(pItem->m_strPath,path);
-    path.Replace("plugin://","special://home/plugins/");
-    CFileItemPtr item2 = CFileItemPtr(new CFileItem(path,true));
-    CFileUtils::DeleteItem(item2);
-  }
   else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
            pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
   {

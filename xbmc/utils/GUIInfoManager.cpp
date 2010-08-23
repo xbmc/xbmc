@@ -1529,7 +1529,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+    {
+      AddonPtr addon;
+      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+      if (CAddonMgr::Get().GetAddon(strLabel,addon) && addon)
+        strLabel = addon->Name();
+    }
     break;
   case FANART_COLOR1:
     {

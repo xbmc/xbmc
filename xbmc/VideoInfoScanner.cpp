@@ -282,7 +282,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name, content))
+      if (RetrieveVideoInfo(items, settings.parent_name_root, content))
       {
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
@@ -451,7 +451,7 @@ namespace VIDEO
       long lResult = AddVideo(pItem.get(), info2->Content());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), bDirNames, fetchEpisodes, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal, pDlgProgress);
       if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
@@ -1258,7 +1258,8 @@ namespace VIDEO
         }
       }
     }
-    if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
+    // folders (or stacked dvds) can take any nfo file if there's a unique one
+    if (item->m_bIsFolder || item->IsDVDFile(false, true) || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1517,6 +1518,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
+    if (g_advancedSettings.m_bVideoScannerIgnoreErrors)
+      return true;
+
     if (pDialog)
     {
       CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);

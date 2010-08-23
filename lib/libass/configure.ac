@@ -1,6 +1,6 @@
-AC_INIT(libass, 0.9.9)
+AC_INIT(libass, 0.9.11)
 AM_INIT_AUTOMAKE
-AC_CONFIG_MACRO_DIR([shave])
+AC_CONFIG_MACRO_DIR([m4])
 # Disable C++/Fortran checks
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])
@@ -88,10 +88,7 @@ fi
 AC_SUBST([PKG_REQUIRES])
 
 # Setup output beautifier.
-SHAVE_INIT([shave], [enable])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-# More sensible compile flags
-CFLAGS="$CFLAGS -Wall"
-
-AC_CONFIG_FILES([Makefile libass/Makefile test/Makefile libass.pc shave/shave shave/shave-libtool])
+AC_CONFIG_FILES([Makefile libass/Makefile test/Makefile libass.pc])
 AC_OUTPUT

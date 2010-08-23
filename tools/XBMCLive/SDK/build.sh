@@ -145,6 +145,9 @@ if [ -n "$SDK_BUILDHOOKS" ]; then
 	for hook in $SDK_BUILDHOOKS; do
 		if [ -x $hook ]; then
 			$hook
+			if [ "$?" -ne "0" ]; then
+				exit 1
+			fi
 		fi
 	done
 fi

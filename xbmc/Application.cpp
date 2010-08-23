@@ -2759,6 +2759,16 @@ bool CApplication::ProcessGamepad(float frameTime)
   int position;
   if (g_Joystick.GetHat(bid, position))
   {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (WakeUpScreenSaverAndDPMS())
+    {
+      g_Joystick.Reset();
+      return true;
+    }
+
     int actionID;
     CStdString actionName;
     bool fullrange;

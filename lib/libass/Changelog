@@ -1,3 +1,20 @@
+libass (0.9.11)
+ * Fix serious memory leaks
+ * Reduce frame/drawing initialization overhead
+
+libass (0.9.10)
+ * Basic (incorrect, but working) support for @font vertical text layout
+ * Fix multiple faces per font attachment
+ * charmap selection fixes
+ * Add ass_flush_events API function
+ * Improve fullname font matching
+ * Better PAR correction if text transforms are used
+ * Calculate drawing bounding box like VSFilter
+ * Performance improvements
+   * Cache vector clip masks
+   * Avoid unnecessary glyph copies
+ * Various rendering fixes
+
 libass (0.9.9)
  * Parse numbers in a locale-independent way
  * Remove support for freetype < 2.2.1, fontconfig < 2.4.1; this especially

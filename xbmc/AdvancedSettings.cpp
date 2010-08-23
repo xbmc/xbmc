@@ -206,6 +206,7 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryImportWatchedState = false;
+  m_bVideoScannerIgnoreErrors = false;
 
   m_bUseEvilB = true;
 
@@ -446,6 +447,13 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
   }
+
+  pElement = pRootElement->FirstChildElement("videoscanner");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
+  }
+
   // Backward-compatibility of ExternalPlayer config
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)

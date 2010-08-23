@@ -170,7 +170,7 @@ void _PyXBMC_ClearPendingCalls(PyThreadState* state)
   CSingleLock lock(g_critSectionPyCall);
   for(CallQueue::iterator it = g_callQueue.begin(); it!= g_callQueue.end();)
   {
-    if((it->state = state))
+    if(it->state == state)
       it = g_callQueue.erase(it);
     else
       it++;

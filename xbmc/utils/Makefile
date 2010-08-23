@@ -69,8 +69,7 @@ SRCS=AlarmClock.cpp \
      RingBuffer.cpp \
      FileOperationJob.cpp \
      FileUtils.cpp \
-     Variant.cpp \
-     PCMLimiter.cpp
+     Variant.cpp
 
 LIB=utils.a
 

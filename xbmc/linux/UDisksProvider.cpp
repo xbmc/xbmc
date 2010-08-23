@@ -271,6 +271,8 @@ bool CUDisksProvider::HasUDisks()
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+  if (!con)
+    return false;
 
   message.Send(con, &error);
 

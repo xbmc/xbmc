@@ -246,6 +246,12 @@
 						</focusedlayout>
 						<content>
 							<item>
+								<label>$LOCALIZE[20376]:</label>
+								<label2>$INFO[ListItem.OriginalTitle]</label2>
+								<onclick>-</onclick>
+								<visible>!IsEmpty(ListItem.OriginalTitle) + !stringcompare(ListItem.OriginalTitle,Listitem.Title)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[20339]:</label>
 								<label2>$INFO[ListItem.Director]</label2>
 								<onclick>-</onclick>

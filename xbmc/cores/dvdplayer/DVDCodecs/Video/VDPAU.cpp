@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
+#include "MathUtils.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU::Desc decoder_profiles[] = {
@@ -318,15 +319,15 @@ bool CVDPAU::MakePixmap(int width, int height)
   if (g_graphicsContext.GetWidth() < width || g_graphicsContext.GetHeight() < height || upScale)
   {
     //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
-    if (height * g_graphicsContext.GetWidth() / width <= g_graphicsContext.GetHeight())
+    if ((double)height * g_graphicsContext.GetWidth() / width <= (double)g_graphicsContext.GetHeight())
     {
       OutWidth = g_graphicsContext.GetWidth();
-      OutHeight = height * g_graphicsContext.GetWidth() / width;
+      OutHeight = MathUtils::round_int((double)height * g_graphicsContext.GetWidth() / width);
     }
     else //scale height to the desktop size if the aspect ratio is smaller than the desktop
     {
       OutHeight = g_graphicsContext.GetHeight();
-      OutWidth = width * g_graphicsContext.GetHeight() / height;
+      OutWidth = MathUtils::round_int((double)width * g_graphicsContext.GetHeight() / height);
     }
   }
   else

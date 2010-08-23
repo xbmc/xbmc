@@ -318,7 +318,7 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   
-  double subLastPts;
+  double m_subLastPts;
   
   struct SDVDInfo
   {

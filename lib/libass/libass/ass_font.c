@@ -27,6 +27,9 @@
 #include FT_GLYPH_H
 #include FT_TRUETYPE_TABLES_H
 #include FT_OUTLINE_H
+#ifndef _WIN32
+#include <strings.h>
+#endif
 
 #include "ass.h"
 #include "ass_library.h"
@@ -36,13 +39,18 @@
 #include "ass_fontconfig.h"
 #include "ass_utils.h"
 
+#define VERTICAL_LOWER_BOUND 0x02f1
+
 /**
- * Select Microfost Unicode CharMap, if the font has one.
+ * Select a good charmap, prefer Microsoft Unicode charmaps.
  * Otherwise, let FreeType decide.
  */
 static void charmap_magic(ASS_Library *library, FT_Face face)
 {
     int i;
+    int ms_cmap = -1;
+
+    // Search for a Microsoft Unicode cmap
     for (i = 0; i < face->num_charmaps; ++i) {
         FT_CharMap cmap = face->charmaps[i];
         unsigned pid = cmap->platform_id;
@@ -52,7 +60,15 @@ static void charmap_magic(ASS_Library *library, FT_Face face)
                 || eid == 10 /*full unicode */ )) {
             FT_Set_Charmap(face, cmap);
             return;
-        }
+        } else if (pid == 3 && ms_cmap < 0)
+            ms_cmap = i;
+    }
+
+    // Try the first Microsoft cmap if no Microsoft Unicode cmap was found
+    if (ms_cmap >= 0) {
+        FT_CharMap cmap = face->charmaps[ms_cmap];
+        FT_Set_Charmap(face, cmap);
+        return;
     }
 
     if (!face->charmap) {
@@ -65,17 +81,6 @@ static void charmap_magic(ASS_Library *library, FT_Face face)
         FT_Set_Charmap(face, face->charmaps[0]);
         return;
     }
-}
-
-static void update_transform(ASS_Font *font)
-{
-    int i;
-    FT_Matrix m;
-    m.xx = double_to_d16(font->scale_x);
-    m.yy = double_to_d16(font->scale_y);
-    m.xy = m.yx = 0;
-    for (i = 0; i < font->n_faces; ++i)
-        FT_Set_Transform(font->faces[i], &m, &font->v);
 }
 
 /**
@@ -139,7 +144,7 @@ static int add_face(void *fc_priv, ASS_Font *font, uint32_t ch)
             FT_New_Memory_Face(font->ftlibrary,
                                (unsigned char *) font->library->
                                fontdata[mem_idx].data,
-                               font->library->fontdata[mem_idx].size, 0,
+                               font->library->fontdata[mem_idx].size, index,
                                &face);
         if (error) {
             ass_msg(font->library, MSGL_WARN,
@@ -160,7 +165,6 @@ static int add_face(void *fc_priv, ASS_Font *font, uint32_t ch)
     buggy_font_workaround(face);
 
     font->faces[font->n_faces++] = face;
-    update_transform(font);
     face_set_size(face, font->size);
     free(path);
     return font->n_faces - 1;
@@ -188,6 +192,7 @@ ASS_Font *ass_font_new(void *font_cache, ASS_Library *library,
     font.desc.treat_family_as_pattern = desc->treat_family_as_pattern;
     font.desc.bold = desc->bold;
     font.desc.italic = desc->italic;
+    font.desc.vertical = desc->vertical;
 
     font.scale_x = font.scale_y = 1.;
     font.v.x = font.v.y = 0;
@@ -213,7 +218,6 @@ void ass_font_set_transform(ASS_Font *font, double scale_x,
         font->v.x = v->x;
         font->v.y = v->y;
     }
-    update_transform(font);
 }
 
 static void face_set_size(FT_Face face, double size)
@@ -275,6 +279,9 @@ void ass_font_get_asc_desc(ASS_Font *font, uint32_t ch, int *asc,
             } else {
                 *asc = FT_MulFix(face->ascender, y_scale);
                 *desc = FT_MulFix(-face->descender, y_scale);
+            }
+            if (font->desc.vertical && ch >= VERTICAL_LOWER_BOUND) {
+                *asc = FT_MulFix(face->max_advance_width, y_scale);
             }
             return;
         }
@@ -420,6 +427,9 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
     FT_Glyph glyph;
     FT_Face face = 0;
     int flags = 0;
+    int vertical = font->desc.vertical;
+    FT_Matrix scale;
+    FT_Outline *outl;
 
     if (ch < 0x20)
         return 0;
@@ -447,6 +457,15 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
         if (face_idx >= 0) {
             face = font->faces[face_idx];
             index = FT_Get_Char_Index(face, ch);
+            if (index == 0 && face->num_charmaps > 0) {
+                FT_CharMap cur;
+                ass_msg(font->library, MSGL_WARN,
+                    "Glyph 0x%X not found, falling back to first charmap", ch);
+                cur = face->charmap;
+                FT_Set_Charmap(face, face->charmaps[0]);
+                index = FT_Get_Char_Index(face, ch);
+                FT_Set_Charmap(face, cur);
+            }
             if (index == 0) {
                 ass_msg(font->library, MSGL_ERR,
                         "Glyph 0x%X not found in font for (%s, %d, %d)",
@@ -457,22 +476,23 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
     }
 #endif
 
+    flags = FT_LOAD_NO_BITMAP | FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH
+            | FT_LOAD_IGNORE_TRANSFORM;
     switch (hinting) {
     case ASS_HINTING_NONE:
-        flags = FT_LOAD_NO_HINTING;
+        flags |= FT_LOAD_NO_HINTING;
         break;
     case ASS_HINTING_LIGHT:
-        flags = FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT;
+        flags |= FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT;
         break;
     case ASS_HINTING_NORMAL:
-        flags = FT_LOAD_FORCE_AUTOHINT;
+        flags |= FT_LOAD_FORCE_AUTOHINT;
         break;
     case ASS_HINTING_NATIVE:
-        flags = 0;
         break;
     }
 
-    error = FT_Load_Glyph(face, index, FT_LOAD_NO_BITMAP | flags);
+    error = FT_Load_Glyph(face, index, flags);
     if (error) {
         ass_msg(font->library, MSGL_WARN, "Error loading glyph, index %d",
                 index);
@@ -494,6 +514,27 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
         return 0;
     }
 
+    // Rotate glyph, if needed
+    if (vertical && ch >= VERTICAL_LOWER_BOUND) {
+        FT_Matrix m = { 0, double_to_d16(-1.0), double_to_d16(1.0), 0 };
+        FT_Outline_Transform(&((FT_OutlineGlyph) glyph)->outline, &m);
+        FT_Outline_Translate(&((FT_OutlineGlyph) glyph)->outline,
+                             face->glyph->metrics.vertAdvance,
+                             0);
+        glyph->advance.x = face->glyph->linearVertAdvance;
+    }
+
+    // Apply scaling and shift
+    scale.xx = double_to_d16(font->scale_x);
+    scale.xy = 0;
+    scale.yx = 0;
+    scale.yy = double_to_d16(font->scale_y);
+
+    outl = &((FT_OutlineGlyph) glyph)->outline;
+    FT_Outline_Transform(outl, &scale);
+    FT_Outline_Translate(outl, font->v.x, font->v.y);
+    glyph->advance.x *= font->scale_x;
+
     ass_strike_outline_glyph(face, font, glyph, deco & DECO_UNDERLINE,
                              deco & DECO_STRIKETHROUGH);
 
@@ -507,6 +548,9 @@ FT_Vector ass_font_get_kerning(ASS_Font *font, uint32_t c1, uint32_t c2)
 {
     FT_Vector v = { 0, 0 };
     int i;
+
+    if (font->desc.vertical)
+        return v;
 
     for (i = 0; i < font->n_faces; ++i) {
         FT_Face face = font->faces[i];
@@ -532,7 +576,136 @@ void ass_font_free(ASS_Font *font)
     for (i = 0; i < font->n_faces; ++i)
         if (font->faces[i])
             FT_Done_Face(font->faces[i]);
-    if (font->desc.family)
-        free(font->desc.family);
+    free(font->desc.family);
     free(font);
 }
+
+/**
+ * \brief Calculate the cbox of a series of points
+ */
+static void
+get_contour_cbox(FT_BBox *box, FT_Vector *points, int start, int end)
+{
+    int i;
+    box->xMin = box->yMin = INT_MAX;
+    box->xMax = box->yMax = INT_MIN;
+
+    for (i = start; i <= end; i++) {
+        box->xMin = (points[i].x < box->xMin) ? points[i].x : box->xMin;
+        box->xMax = (points[i].x > box->xMax) ? points[i].x : box->xMax;
+        box->yMin = (points[i].y < box->yMin) ? points[i].y : box->yMin;
+        box->yMax = (points[i].y > box->yMax) ? points[i].y : box->yMax;
+    }
+}
+
+/**
+ * \brief Determine winding direction of a contour
+ * \return direction; 0 = clockwise
+ */
+static int get_contour_direction(FT_Vector *points, int start, int end)
+{
+    int i;
+    long long sum = 0;
+    int x = points[start].x;
+    int y = points[start].y;
+    for (i = start + 1; i <= end; i++) {
+        sum += x * (points[i].y - y) - y * (points[i].x - x);
+        x = points[i].x;
+        y = points[i].y;
+    }
+    sum += x * (points[start].y - y) - y * (points[start].x - x);
+    return sum > 0;
+}
+
+/**
+ * \brief Fix-up stroker result for huge borders by removing inside contours
+ * that would reverse in size
+ */
+void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
+{
+    int nc = glyph->outline.n_contours;
+    int begin, stop;
+    char modified = 0;
+    char *valid_cont = malloc(nc);
+    int start = 0;
+    int end = -1;
+    FT_BBox *boxes = malloc(nc * sizeof(FT_BBox));
+    int i, j;
+    int inside_direction;
+
+    inside_direction = FT_Outline_Get_Orientation(&glyph->outline) ==
+        FT_ORIENTATION_TRUETYPE;
+
+    // create a list of cboxes of the contours
+    for (i = 0; i < nc; i++) {
+        start = end + 1;
+        end = glyph->outline.contours[i];
+        get_contour_cbox(&boxes[i], glyph->outline.points, start, end);
+    }
+
+    // for each contour, check direction and whether it's "outside"
+    // or contained in another contour
+    end = -1;
+    for (i = 0; i < nc; i++) {
+        int dir;
+        start = end + 1;
+        end = glyph->outline.contours[i];
+        dir = get_contour_direction(glyph->outline.points, start, end);
+        valid_cont[i] = 1;
+        if (dir == inside_direction) {
+            for (j = 0; j < nc; j++) {
+                if (i == j)
+                    continue;
+                if (boxes[i].xMin >= boxes[j].xMin &&
+                    boxes[i].xMax <= boxes[j].xMax &&
+                    boxes[i].yMin >= boxes[j].yMin &&
+                    boxes[i].yMax <= boxes[j].yMax)
+                    goto check_inside;
+            }
+            /* "inside" contour but we can't find anything it could be
+             * inside of - assume the font is buggy and it should be
+             * an "outside" contour, and reverse it */
+            for (j = 0; j < (end + 1 - start) / 2; j++) {
+                FT_Vector temp = glyph->outline.points[start + j];
+                char temp2 = glyph->outline.tags[start + j];
+                glyph->outline.points[start + j] = glyph->outline.points[end - j];
+                glyph->outline.points[end - j] = temp;
+                glyph->outline.tags[start + j] = glyph->outline.tags[end - j];
+                glyph->outline.tags[end - j] = temp2;
+            }
+            dir ^= 1;
+        }
+        check_inside:
+        if (dir == inside_direction) {
+            FT_BBox box;
+            int width;
+            int height;
+            get_contour_cbox(&box, glyph->outline.points, start, end);
+            width = box.xMax - box.xMin;
+            height = box.yMax - box.yMin;
+            if (width < border_x * 2 || height < border_y * 2) {
+                valid_cont[i] = 0;
+                modified = 1;
+            }
+        }
+    }
+
+    // zero-out contours that can be removed; much simpler than copying
+    if (modified) {
+        for (i = 0; i < nc; i++) {
+            if (valid_cont[i])
+                continue;
+            begin = (i == 0) ? 0 : glyph->outline.contours[i - 1] + 1;
+            stop = glyph->outline.contours[i];
+            for (j = begin; j <= stop; j++) {
+                glyph->outline.points[j].x = 0;
+                glyph->outline.points[j].y = 0;
+                glyph->outline.tags[j] = 0;
+            }
+        }
+    }
+
+    free(boxes);
+    free(valid_cont);
+}
+

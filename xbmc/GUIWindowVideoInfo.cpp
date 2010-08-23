@@ -319,6 +319,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
                                m_movieItem->GetVideoInfoTag()->m_iDbId,
                                VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
             database.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
           }
         }
       }
