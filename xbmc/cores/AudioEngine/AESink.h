@@ -25,7 +25,7 @@
 #include "StdString.h"
 #include <stdint.h>
 
-class IAESink : public IRunnable
+class IAESink
 {
 public:
   /* return the name of this sync for logging */
@@ -62,15 +62,8 @@ public:
   virtual float GetDelay() = 0;
 
   /*
-    This method must buffer packets to be sent out, the format of data and MUST
-    block when the buffer is full. Be very careful about synchronization here.
+    Adds packets to be sent out, must block after at-least one block is being rendered
   */
   virtual unsigned int AddPackets(uint8_t *data, unsigned int samples) = 0;
-
-  /*
-    This is the THREAD that sends out the buffered data, and MUST unblock AddPackets
-    when there is a free buffer. Be very careful about synchronization here.
-  */
-  virtual void Run() = 0;
 };
 
