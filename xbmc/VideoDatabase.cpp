@@ -6383,13 +6383,25 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     CLog::Log(LOGDEBUG, "%s Cleaning tvshow table", __FUNCTION__);
     sql = "delete from tvshow where idShow not in (select idShow from tvshowlinkpath)";
     m_pDS->exec(sql.c_str());
-    sql = "DELETE tvshow.* FROM tvshow "
-            "JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow "
-            "JOIN path ON path.idPath=tvshowlinkpath.idPath "
-          "WHERE "
-            "tvshow.idShow NOT IN ( SELECT idShow from tvshowlinkepisode ) AND "
-            "path.strContent=''";
-    m_pDS->exec(sql.c_str());
+
+    CStdString showsToDelete;
+    sql = "select tvshow.idShow from tvshow "
+            "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
+            "join path on path.idPath=tvshowlinkpath.idPath "
+          "where tvshow.idShow not in (select idShow from tvshowlinkepisode) "
+            "and path.strContent == ''";
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      showsToDelete += m_pDS->fv(0).get_asString() + ",";
+      m_pDS->next();
+    }
+    m_pDS->close();
+    if (!showsToDelete.IsEmpty())
+    {
+      sql = "delete from tvshow where idShow in (" + showsToDelete.TrimRight(",") + ")";
+      m_pDS->exec(sql.c_str());
+    }
 
     CLog::Log(LOGDEBUG, "%s Cleaning actorlinktvshow table", __FUNCTION__);
     sql = "delete from actorlinktvshow where idShow not in (select idShow from tvshow)";
