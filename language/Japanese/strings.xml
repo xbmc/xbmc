@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: kyouhei-->
-<!--Email: twitter: @kyouhei-->
-<!--Date of translation: 01/24/2010-->
+<!--Email: Twitter: @kyouhei-->
+<!--Date of translation: 08/21/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 26891-->
 <strings>
   <string id="0">プログラム</string>
   <string id="1">ピクチャ</string>
@@ -149,6 +148,7 @@
   <string id="221">ネットワークに接続されていません</string>
   <string id="222">中止</string>
   <string id="224">表示時間</string>
+  <string id="226">テストパターン</string>
   <string id="227">Lookup audio CDs on freedb</string>
   <string id="228">プレイリストのランダム再生</string>
   <string id="229">HDD停止までの時間(分)</string>
@@ -208,13 +208,13 @@
   <string id="291">ビデオ</string>
   <string id="292">オーディオ</string>
   <string id="293">Browse for Subtitles</string>
-  <string id="294">ﾌﾞｯｸﾏｰｸの作成</string>
-  <string id="296">ﾌﾞｯｸﾏｰｸの削除</string>
+  <string id="294">ブックマークの作成</string>
+  <string id="296">ブックマークの削除</string>
   <string id="297">音声遅延</string>
   <string id="298">Bookmarks</string>
-  <string id="303">字幕遅延</string>
+  <string id="303">遅延</string>
   <string id="304">言語</string>
-  <string id="305">字幕有効</string>
+  <string id="305">有効</string>
   <string id="306">非インターリーブ</string>
   <string id="307">- 自動ポスト処理</string>
   <string id="308">- 垂直方向ﾌﾞﾛｯｸ軽減ﾌｨﾙﾀ</string>
@@ -242,7 +242,7 @@
   <string id="330">しばらくお待ち下さい...</string>
   <string id="331">データベースの圧縮中...</string>
   <string id="332">データベースを圧縮できません</string>
-  <string id="333">データベースを消去しますか？</string>
+  <string id="333">ライブラリを消去しますか？</string>
   <string id="334">データベースの更新</string>
   <string id="335">実行</string>
   <string id="336">フレームレートの調整</string>
@@ -315,7 +315,7 @@
   <string id="407">From</string>
   <string id="408">at</string>
   <string id="409">Defaults</string>
-  <string id="410">Weather.comへ接続中</string>
+  <string id="410">天気予報サービスに接続中</string>
   <string id="411">天気を取得中:</string>
   <string id="412">天気を取得できません</string>
   <string id="413">マニュアル</string>
@@ -332,8 +332,8 @@
   <string id="428">正しいCD/DVDを入れて下さい</string>
   <string id="429">次のCD/DVDを挿入して下さい</string>
   <string id="430">ソート: DVD#</string>
-  <string id="431">ｷｬｯｼｭしない</string>
-  <string id="432">Remove Movie from library</string>
+  <string id="431">キャッシュしない</string>
+  <string id="432">ライブラリから映画を削除</string>
   <string id="433">Really remove '%s'?</string>
   <string id="437">Removable Disk</string>
   <string id="438">ファイルを開く</string>
@@ -343,16 +343,16 @@
   <string id="442">LAN</string>
   <string id="443">インターネット</string>
   <string id="444">ビデオ</string>
-  <string id="445">ｵｰﾃﾞｨｵ</string>
+  <string id="445">オーディオ</string>
   <string id="446">DVD</string>
   <string id="447">自動再生</string>
   <string id="448">LCD</string>
   <string id="449">LCD有効</string>
   <string id="450">文字数</string>
-  <string id="451">１行目のアドレス</string>
-  <string id="452">２行目のアドレス</string>
-  <string id="453">３行目のアドレス</string>
-  <string id="454">４行目のアドレス</string>
+  <string id="451">1行目のアドレス</string>
+  <string id="452">2行目のアドレス</string>
+  <string id="453">3行目のアドレス</string>
+  <string id="454">4行目のアドレス</string>
   <string id="455">行数</string>
   <string id="456">モード</string>
   <string id="457">スイッチビュー</string>
@@ -362,7 +362,7 @@
   <string id="462">字幕</string>
   <string id="463">バックライト</string>
   <string id="464">明るさ</string>
-  <string id="465">ｺﾝﾄﾗｽﾄ</string>
+  <string id="465">コントラスト</string>
   <string id="466">ガンマ</string>
   <string id="467">タイプ</string>
   <string id="468">OSD位置の調節</string>
@@ -391,7 +391,7 @@
   <string id="496">設定</string>
   <string id="497">拡張子を隠す</string>
   <string id="498">ソート: タイプ</string>
-  <string id="499">www.allmusic.comに接続できません</string>
+  <string id="499">オンラインサービスに接続できません</string>
   <string id="500">アルバム情報の取得に失敗しました</string>
   <string id="501">アルバム名を探しています...</string>
   <string id="502">開</string>
@@ -412,13 +412,13 @@
   <string id="521">コンピレーション</string>
   <string id="522">このソースを削除</string>
   <string id="523">Switch Media</string>
-  <string id="524">Select Playlist</string>
-  <string id="525">New Playlist...</string>
-  <string id="526">Add To Playlist</string>
-  <string id="527">Manually Add To Library</string>
-  <string id="528">Enter Title</string>
+  <string id="524">プレイリスト選択</string>
+  <string id="525">新規プレイリスト...</string>
+  <string id="526">プレイリストに追加</string>
+  <string id="527">手動でライブラリに追加</string>
+  <string id="528">タイトルを入力</string>
   <string id="529">Error: Duplicate title</string>
-  <string id="530">Select Genre</string>
+  <string id="530">ジャンルを選択</string>
   <string id="531">New Genre</string>
   <string id="532">Manual Addition</string>
   <string id="533">Enter Genre</string>
@@ -527,8 +527,10 @@
   <string id="658">詳細情報</string>
   <string id="660">Volume Amplification</string>
   <string id="661">Choose Export Folder</string>
-  <string id="700">データベースの整理</string>
-  <string id="701">データベースから古い曲を削除します</string>
+  <string id="662">このファイルは存在しません。</string>
+  <string id="663">ライブラリから削除しますか？</string>
+  <string id="700">ライブラリの整理</string>
+  <string id="701">ライブラリから古い曲を削除します</string>
   <string id="702">このパスは以前にスキャンしました</string>
   <string id="705">ネットワーク</string>
   <string id="706">- HTTPプロキシ ホスト</string>
@@ -551,10 +553,10 @@
   <string id="727">Webサーバー</string>
   <string id="728">FTPサーバー</string>
   <string id="729">インターネット タイム</string>
-  <string id="730">- Webサーバー ポート</string>
+  <string id="730">- ポート</string>
   <string id="731">- タイムサーバー ホスト</string>
   <string id="732">設定の保存</string>
-  <string id="733">- Webサーバー ﾊﾟｽﾜｰﾄﾞ</string>
+  <string id="733">- パスワード</string>
   <string id="734">No Pass</string>
   <string id="735">文字コード</string>
   <string id="736">- スタイル:</string>
@@ -591,15 +593,17 @@
   <string id="772">ｵｰﾃﾞｨｵ ﾊｰﾄﾞｳｪｱ</string>
   <string id="773">シーク中</string>
   <string id="774">スライドショーフォルダ</string>
-  <string id="791">Enable Event Server</string>
-  <string id="792">Event Server Port</string>
-  <string id="793">Event Server Port Range</string>
-  <string id="794">Allow other computers to connect</string>
+  <string id="791">システム上のプログラムによるXBMCの制御を許可</string>
+  <string id="792">ポート</string>
+  <string id="793">ポートレンジ</string>
+  <string id="794">別のシステム上のプログラムによるXBMCの制御を許可</string>
   <string id="795">Initial Repeat Delay (ms)</string>
   <string id="796">Continuous Repeat Delay (ms)</string>
   <string id="797">Maximum Number of Clients</string>
-  <string id="1000">ｽｸﾘｰﾝｾｰﾊﾞｰプレビュー</string>
-  <string id="1001">Unable to connect</string>
+  <string id="798">インターネット接続</string>
+  <string id="850">誤ったポート番号が入力されました</string>
+  <string id="1000">- プレビュー</string>
+  <string id="1001">接続できません</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>
   <string id="1003">This could be due to the network not being connected.</string>
   <string id="1004">Would you like to add it anyway?</string>
@@ -644,13 +648,13 @@
   <string id="1044">Set Plugin Thumb</string>
   <string id="1045">Plugin Settings</string>
   <string id="1050">シングル</string>
-  <string id="1200">SMB ｼｪｱ</string>
-  <string id="1202">SMB ﾜｰｸｸﾞﾙｰﾌﾟ</string>
+  <string id="1200">SMB シェア</string>
+  <string id="1202">SMB ワークグループ</string>
   <string id="1203">SMB ﾕｰｻﾞｰﾈｰﾑ</string>
   <string id="1204">SMB ﾊﾟｽﾜｰﾄﾞ</string>
   <string id="1207">SMB WINS-ｻｰﾊﾞ</string>
   <string id="1208">Mount SMB Shares</string>
-  <string id="1210">移動</string>
+  <string id="1210">削除</string>
   <string id="1211">ﾐｭｰｼﾞｯｸ</string>
   <string id="1212">ﾋﾞﾃﾞｵ</string>
   <string id="1213">ﾋﾟｸﾁｬｰ</string>
@@ -728,18 +732,19 @@
   <string id="10018">設定 - ﾈｯﾄﾜｰｸ</string>
   <string id="10019">設定 - 外観</string>
   <string id="10020">スクリプト</string>
+  <string id="10021">Webブラウザ</string>
   <string id="10028">ビデオ/プレイリスト</string>
   <string id="10034">設定 - ﾌﾟﾛﾌｨｰﾙ</string>
   <string id="10100">はい/いいえ ダイアログ</string>
   <string id="10101">進行ダイアログ</string>
-  <string id="10210">Looking for subtitles...</string>
+  <string id="10210">字幕を検索しています...</string>
   <string id="10211">Caching subtitles...</string>
   <string id="10212">terminating</string>
-  <string id="10213">buffering</string>
+  <string id="10213">バッファ中</string>
   <string id="10214">Opening stream</string>
   <string id="10500">ミュージック/プレイリスト</string>
   <string id="10501">ミュージック/ファイルリスト</string>
-  <string id="10502">ミュージック/アルバム</string>
+  <string id="10502">ミュージック/ライブラリ</string>
   <string id="10503">Playlist Editor</string>
   <string id="10504">Top 100 曲</string>
   <string id="10505">Top 100 アルバム</string>
@@ -775,7 +780,7 @@
   <string id="12019">Yes</string>
   <string id="12020">Ask</string>
   <string id="12021">Start from beginning</string>
-  <string id="12022">Resume from %s</string>
+  <string id="12022">%s から再開</string>
   <string id="12023">Validating existing trainers...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -855,11 +860,14 @@
   <string id="13011">Suspend</string>
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
+  <string id="13021">リムーバブルHDDをマウントしました</string>
+  <string id="13023">デバイスが正しく外されました</string>
   <string id="13100">フリッカーフィルタ</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled During Video Playback</string>
   <string id="13108">Always Enabled</string>
+  <string id="13111">この解像度を保持しますか？</string>
   <string id="13140">Active Connections Detected!</string>
   <string id="13141">If you proceed, you might not be able to control XBMC</string>
   <string id="13142">any longer. Are you sure you to stop the Event Server?</string>
@@ -902,14 +910,13 @@
   <string id="13210">%im 分後にアラーム開始</string>
   <string id="13211">アラーム!</string>
   <string id="13212">%im%is でキャンセル</string>
-  <string id="13249">RARファイルから字幕を探す</string>
-  <string id="13250">Browse for subtitle...</string>
+  <string id="13249">RARファイル内から字幕を探す</string>
+  <string id="13250">字幕をブラウズする...</string>
   <string id="13251">Move Item</string>
   <string id="13252">Move Item Here</string>
   <string id="13253">Cancel Move</string>
   <string id="13270">Hardware:</string>
   <string id="13271">CPU Usage:</string>
-  <string id="13274">Xbox is Connected, but no DNS is available.</string>
   <string id="13275">Hard Disk</string>
   <string id="13276">DVD-ROM</string>
   <string id="13277">Storage</string>
@@ -930,14 +937,11 @@
   <string id="13293">Video &amp; XBE Region:</string>
   <string id="13294">DVD Region:</string>
   <string id="13295">インターネット:</string>
-  <string id="13296">Xbox is Connected</string>
-  <string id="13297">Xbox is not Connected. Check Network Settings.</string>
-  <string id="13298">XBLIVE Key:</string>
   <string id="13299">- 目標温度</string>
   <string id="13300">- ファンスピード</string>
   <string id="13301">自動温度コントロール</string>
   <string id="13302">ﾌｧﾝｽﾋﾟｰﾄﾞ コントロール</string>
-  <string id="13303">スキンフォント</string>
+  <string id="13303">- フォント</string>
   <string id="13304">Flipping双方向ストリングスを有効</string>
   <string id="13305">RSS Feedsを有効</string>
   <string id="13306">親フォルダーの項目を隠す</string>
@@ -1019,8 +1023,8 @@
   <string id="13396">オーディオ･字幕 設定</string>
   <string id="13397">字幕有効</string>
   <string id="13398">ショートカット</string>
-  <string id="13399">トークンをソート対象から外す</string>
-  <string id="13400">クロスフェード ｱﾙﾊﾞﾑﾄﾗｯｸ</string>
+  <string id="13399">冠詞(theなど)をソート対象から外す</string>
+  <string id="13400">アルバム内クロスフェード</string>
   <string id="13401">Browse for %s</string>
   <string id="13402">Show track position</string>
   <string id="13403">Clear Default</string>
@@ -1035,7 +1039,6 @@
   <string id="13413">Downloading</string>
   <string id="13414">コンピレーションのみに登場するアーティストを含める</string>
   <string id="13600">Apple Remote</string>
-  <string id="13602">Always Running</string>
   <string id="13603">Sequence Delay Time</string>
   <string id="13610">Disabled</string>
   <string id="13611">Standard</string>
@@ -1116,21 +1119,21 @@
   <string id="15016">Games</string>
   <string id="15019">追加</string>
   <string id="15052">Password</string>
-  <string id="15100">ライブラリー</string>
+  <string id="15100">ライブラリ</string>
   <string id="15101">データベース</string>
   <string id="15102">* 全てのアルバム</string>
   <string id="15103">* 全てのアーティスト</string>
   <string id="15104">* 全ての曲</string>
   <string id="15105">* 全てのジャンル</string>
   <string id="15107">バッファリング...</string>
-  <string id="15108">ﾅﾋﾞｹﾞｰｼｮﾝ ｻｳﾝﾄﾞ</string>
+  <string id="15108">ナビゲーションサウンド</string>
   <string id="15109">スキン デフォルト</string>
   <string id="15111">スキンテーマ</string>
   <string id="15112">Default Theme</string>
   <string id="15200">Last.FM</string>
   <string id="15201">Submit songs to Last.FM</string>
-  <string id="15202">Last.FM Username</string>
-  <string id="15203">Last.FM Password</string>
+  <string id="15202">Last.FMユーザ名</string>
+  <string id="15203">Last.FMパスワード</string>
   <string id="15204">操作不可: 停止中...</string>
   <string id="15205">XBMCを更新してください</string>
   <string id="15206">Bad authorisation: Check username and password</string>
@@ -1144,6 +1147,8 @@
   <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
   <string id="15216">Play in Party Mode</string>
+  <string id="15218">Libre.fmユーザ名</string>
+  <string id="15219">Libre.fmパスワード</string>
   <string id="15250">Submit Last.FM Radio to Last.FM</string>
   <string id="15251">Connecting to Last.FM...</string>
   <string id="15252">Selecting station...</string>
@@ -1194,13 +1199,12 @@
   <string id="15297">Do you want to remove this track from your loved tracks?</string>
   <string id="15298">Do you want to un-ban this track?</string>
   <string id="15300">パスが見つかりません or 無効です</string>
-  <string id="15301">ﾈｯﾄﾜｰｸｻｰﾊﾞｰに接続できません</string>
-  <string id="15302">ｻｰﾊﾞｰが見つかりません</string>
-  <string id="15303">ﾜｰｸｸﾞﾙｰﾌﾟが見つかりません</string>
+  <string id="15301">サーバーに接続できません</string>
+  <string id="15302">サーバーが見つかりません</string>
+  <string id="15303">ワークグループが見つかりません</string>
   <string id="15310">Opening multi-path source</string>
-  <string id="15311">プレイリスト指定:</string>
-  <string id="16000">一般設定</string>
-  <string id="16002">CDDB 検索</string>
+  <string id="16000">一般</string>
+  <string id="16002">インターネット検索</string>
   <string id="16003">プレイヤー</string>
   <string id="16004">Play media from disc</string>
   <string id="16008">Enter New Title</string>
@@ -1248,12 +1252,10 @@
   <string id="16204">Failed to move atleast one file</string>
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
-  <string id="20000">CDDA Rip Folder</string>
   <string id="20001">外部DVDプレイヤを使用</string>
   <string id="20002">外部DVDプレイヤ指定</string>
-  <string id="20003">チートフォルダ設定</string>
   <string id="20004">スクリーンショットフォルダ設定</string>
-  <string id="20006">Playlists Folder</string>
+  <string id="20006">プレイリストフォルダ設定</string>
   <string id="20007">Recordings</string>
   <string id="20008">Screenshots</string>
   <string id="20009">Use XBMC</string>
@@ -1424,7 +1426,6 @@
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
-  <string id="20192">Fetch Album Information when adding to Library</string>
   <string id="20194">Default Scraper</string>
   <string id="20195">Change Scraper</string>
   <string id="20196">Export Music Library</string>
@@ -1442,7 +1443,6 @@
   </string>
   <string id="20304">
   </string>
-  <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
   <string id="20307">セカンダリDNS</string>
   <string id="20308">DHCPサーバ:</string>
   <string id="20309">Make New Folder</string>
@@ -1476,7 +1476,6 @@
   <string id="20338">Movie</string>
   <string id="20339">監督</string>
   <string id="20340">Do you want to remove all items within</string>
-  <string id="20341">this path from the library?</string>
   <string id="20342">Movies</string>
   <string id="20343">テレビ番組</string>
   <string id="20344">This directory contains</string>
@@ -1497,8 +1496,8 @@
   <string id="20359">Episode</string>
   <string id="20360">Episodes</string>
   <string id="20361">Loading Episode details</string>
-  <string id="20362">Remove Episode from library</string>
-  <string id="20363">Remove TV Show from library</string>
+  <string id="20362">エピソードをライブラリから削除</string>
+  <string id="20363">TV番組をライブラリから削除</string>
   <string id="20364">TV Show</string>
   <string id="20365">Episode Plot</string>
   <string id="20366">* All Seasons</string>
@@ -1509,25 +1508,25 @@
   <string id="20371">Set Season Thumb</string>
   <string id="20372">Season Image</string>
   <string id="20373">Season</string>
-  <string id="20374">Downloading Movie information</string>
+  <string id="20374">映画情報を取得中</string>
   <string id="20375">Unassign Content</string>
   <string id="20377">TV番組情報を更新</string>
-  <string id="20378">Refresh info for all episodes?</string>
+  <string id="20378">全てのエピソード情報を更新しますか？</string>
   <string id="20379">Selected folder contains a single TV Show</string>
   <string id="20380">Exclude selected folder from scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatically grab season thumbs</string>
   <string id="20383">Selected folder contains a single Video</string>
-  <string id="20384">Link to TV Show</string>
-  <string id="20385">Remove Link to TV Show</string>
+  <string id="20384">TV番組とリンクを設定</string>
+  <string id="20385">TV番組とのリンクを解除</string>
   <string id="20386">最近追加された映画</string>
   <string id="20387">最近追加されたエピソード</string>
   <string id="20388">スタジオ</string>
-  <string id="20389">ミュージックビデオ</string>
-  <string id="20390">最近追加されたミュージックビデオ</string>
-  <string id="20391">Music Video</string>
-  <string id="20392">Remove Music Video from library</string>
-  <string id="20393">Music Video Information</string>
+  <string id="20389">クリップ</string>
+  <string id="20390">最近追加されたクリップ</string>
+  <string id="20391">クリップ</string>
+  <string id="20392">クリップをライブラリから削除</string>
+  <string id="20393">クリップ情報</string>
   <string id="20394">Loading Music Video information</string>
   <string id="20395">Mixed</string>
   <string id="20396">Go To Albums by Artist</string>
@@ -1536,6 +1535,7 @@
   <string id="20399">Go To Music Videos from Album</string>
   <string id="20400">Go To Music Videos by Artist</string>
   <string id="20401">Play Music Video</string>
+  <string id="20402">ライブラリ追加時に俳優のサムネイルを取得する</string>
   <string id="20403">Set Actor Thumb</string>
   <string id="20405">Remove Episode Bookmark</string>
   <string id="20406">Set Episode Bookmark</string>
@@ -1548,7 +1548,7 @@
   <string id="20413">Get FanArt</string>
   <string id="20414">Show Fanart in Video and Music Libraries</string>
   <string id="20415">新しいコンテンツをスキャン中</string>
-  <string id="20416">First Aired</string>
+  <string id="20416">初回放映</string>
   <string id="20417">Writer</string>
   <string id="20418">Clean File and Folder Names</string>
   <string id="20420">Never</string>
@@ -1576,13 +1576,12 @@
   <string id="21360">UPnPサーバ有効</string>
   <string id="21364">Edit Media Share</string>
   <string id="21365">Remove Media Share</string>
-  <string id="21366">字幕ディレクトリ設定</string>
+  <string id="21366">字幕フォルダ設定</string>
   <string id="21367">Movie &amp; Alternate Subtitle Directory</string>
-  <string id="21369">Enable Mouse</string>
+  <string id="21369">マウス有効</string>
   <string id="21370">再生時もﾅﾋﾞｹﾞｰｼｮﾝｻｳﾝﾄﾞを有効</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD Player Region</string>
-  <string id="21373">Video Hardware</string>
   <string id="21374">アスペクト比</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>
@@ -1717,8 +1716,8 @@
   <string id="21898">Years Active</string>
   <string id="21899">Label</string>
   <string id="21900">Born/Formed</string>
-  <string id="22000">Update library on startup</string>
-  <string id="22001">Always update library in background</string>
+  <string id="22000">開始時にライブラリを更新</string>
+  <string id="22001">常にライブラリの更新状況を表示しない</string>
   <string id="22002">- DNS Suffix</string>
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
@@ -1739,6 +1738,7 @@
   <string id="22020">Guide</string>
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY Keyboard</string>
+  <string id="29802">パススルーオーディオ使用中</string>
   <string id="29999">Apply Flicker Filter Setting to Games</string>
   <string id="33061">メニュー</string>
 </strings>
