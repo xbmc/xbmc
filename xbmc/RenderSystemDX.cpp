@@ -479,6 +479,19 @@ bool CRenderSystemDX::CreateDevice()
   if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT_NPOT");
 
+  // nVidia quirk: some NPOT DXT textures of the GUI display with corruption
+  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex for example)
+  // most likely xbmc bug, but no hw to repro & fix properly.
+  // affects lots of hw generations - 6xxx, 7xxx, GT220, ION1
+  // see ticket #9269
+  if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
+  && m_defaultD3DPool  == D3DPOOL_DEFAULT
+  && AIdentifier.VendorId == 4318)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
+    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+  }
+
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;
