@@ -235,21 +235,24 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   if (!m_face)
     return false;
 
+  // grab the maximum cell height and width
+  unsigned int m_cellWidth = m_face->bbox.xMax - m_face->bbox.xMin;
+  m_cellHeight = std::max<unsigned int>(m_face->bbox.yMax - m_face->bbox.yMin, m_face->ascender - m_face->descender);
+  m_cellBaseLine = std::max<unsigned int>(m_face->bbox.yMax, m_face->ascender);
+
   if (border)
   {
     m_stroker = g_freeTypeLibrary.GetStroker();
 
     FT_Pos strength = FT_MulFix( m_face->units_per_EM, m_face->size->metrics.y_scale) / 12;
-    if (strength < 128) strength = 128;
+    if (strength < 128)
+      strength = 128;
+    m_cellHeight += 2*strength;
 
     if (m_stroker)
       FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
   }
 
-  // grab the maximum cell height and width
-  unsigned int m_cellWidth = m_face->bbox.xMax - m_face->bbox.xMin;
-  m_cellHeight = m_face->bbox.yMax - m_face->bbox.yMin;
-  m_cellBaseLine = m_face->bbox.yMax;
 
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
   unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
