@@ -120,18 +120,28 @@ bool CFileHD::Exists(const CURL& url)
 
 int CFileHD::Stat(struct __stat64* buffer)
 {
-  int fd;
 #ifdef _LINUX
-  fd = (*m_hFile).fd;
+  return _fstat64((*m_hFile).fd, buffer);
 #else
-  fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
+  // Duplicate the handle, as retrieving and closing a matching crt handle closes the crt handle AND the original Windows handle.
+  HANDLE hFileDup;
+  if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    return -1;
+  }
+
+  int fd;
+  fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
   if (fd == -1)
   {
     CLog::Log(LOGERROR, "Stat: fd == -1");
     return -1;
   }
+  int result = _fstat64(fd, buffer);
+  _close(fd);
+  return result;
 #endif
-  return _fstat64(fd, buffer);
 }
 
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
