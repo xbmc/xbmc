@@ -3773,6 +3773,12 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     return;
 
+  if (m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+  {
+    // Delete the bookmark
+    m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+  }
+  
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
