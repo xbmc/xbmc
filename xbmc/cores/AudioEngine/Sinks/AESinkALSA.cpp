@@ -31,14 +31,12 @@
 CAESinkALSA::CAESinkALSA() :
   m_pcm       (NULL ),
   m_running   (false),
-  m_bufferWait(1)
+  m_bufferWait(1    ),
+  m_buffer    (NULL )
 {
   /* ensure that ALSA has been initialized */
   if(!snd_config)
     snd_config_update();
-
-  m_buffer[0] = NULL;
-  m_buffer[1] = NULL;
 }
 
 CAESinkALSA::~CAESinkALSA()
@@ -73,7 +71,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat format)
   snd_config_t     *config;
 
   format.m_frameSamples = 512;
-  format.m_frames       = 16;
+  format.m_frames       = 32;
 
   if (pcm_device == "default")
     switch(m_format.m_channelCount)
@@ -102,11 +100,10 @@ bool CAESinkALSA::Initialize(AEAudioFormat format)
   if (!InitializeHW(format)) return false;
   if (!InitializeSW(format)) return false;
 
-  m_buffer        = new uint8_t[format.m_frameSize];
+  m_buffer        = new uint8_t[format.m_frameSize * format.m_frames];
   m_bufferSamples = 0;
 
   snd_pcm_prepare(m_pcm);
-  snd_pcm_start(m_pcm);
 
   m_format  = format;
   m_running = true;
@@ -174,14 +171,12 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   }
 
   unsigned int      sampleRate = format.m_sampleRate;
-  snd_pcm_uframes_t periodSize = 512;
-  unsigned int      periods    = 64;
+  snd_pcm_uframes_t frames     = 32;
   snd_pcm_uframes_t bufferSize;
 
   snd_pcm_hw_params_set_rate_near       (m_pcm, hw_params, &sampleRate          , NULL);
-  snd_pcm_hw_params_set_channels        (m_pcm, hw_params, format.m_channelCount       );
-  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params, &periodSize          , NULL);
-  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params, &periods             , NULL);
+  snd_pcm_hw_params_set_channels        (m_pcm, hw_params, format.m_channelCount      );
+  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params, &frames             , NULL );
   snd_pcm_hw_params_get_buffer_size     (hw_params, &bufferSize);
 
   /* set the parameters */
@@ -194,9 +189,9 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
 
   /* set the format paremeters */
   format.m_sampleRate   = sampleRate;
-  format.m_frames       = periods;
-  format.m_frameSize    = periodSize;
-  format.m_frameSamples = snd_pcm_bytes_to_frames(m_pcm, periodSize);
+  format.m_frames       = frames;
+  format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
+  format.m_frameSamples = frames * format.m_channelCount;
 
   snd_pcm_hw_params_free(hw_params);
   return true;
@@ -209,11 +204,11 @@ bool CAESinkALSA::InitializeSW(AEAudioFormat &format)
 
   snd_pcm_sw_params_malloc(&sw_params);
 
-  snd_pcm_sw_params_current                (m_pcm, sw_params);
-  snd_pcm_sw_params_set_start_threshold    (m_pcm, sw_params, INT_MAX);
-  snd_pcm_sw_params_set_silence_threshold  (m_pcm, sw_params, 0);
-  snd_pcm_sw_params_get_boundary           (sw_params, &boundary);
-  snd_pcm_sw_params_set_silence_size       (m_pcm, sw_params, boundary);
+  snd_pcm_sw_params_current              (m_pcm, sw_params);
+  snd_pcm_sw_params_set_start_threshold  (m_pcm, sw_params, INT_MAX);
+  snd_pcm_sw_params_set_silence_threshold(m_pcm, sw_params, 0);
+  snd_pcm_sw_params_get_boundary         (sw_params, &boundary);
+  snd_pcm_sw_params_set_silence_size     (m_pcm, sw_params, boundary);
 
   if (snd_pcm_sw_params(m_pcm, sw_params) < 0)
   {
@@ -233,6 +228,7 @@ void CAESinkALSA::Deinitialize()
   {
     snd_pcm_drop (m_pcm);
     snd_pcm_close(m_pcm);
+    m_pcm = NULL;
   }
 
   delete[] m_buffer;
@@ -243,21 +239,34 @@ void CAESinkALSA::Run()
 {
   CLog::Log(LOGDEBUG, "CAESinkALSA::Run - Thread Started");
   CSingleLock runLock(m_runLock);
+
   while(m_running)
   {
     CSingleLock bufferLock(m_bufferLock);
     if (m_bufferSamples == 0)
     {
-      /* wait for a buffer */
-      bufferLock.Leave();
-      m_bufferWait.Wait();
+      /* underrun */
+      bufferLock  .Leave();
+      m_bufferWait.Post ();
+      Sleep(10);
       continue;
     }
 
-    CLog::Log(LOGDEBUG, "CAESinkALSA::Run - Write");
-    snd_pcm_writei(m_pcm, (void*)m_buffer, m_bufferSamples);
+    /* take a copy of the buffer so we can unlock and allow AE to prepare another */  
+    unsigned int samples = m_bufferSamples;
+    uint8_t      buffer[m_format.m_frameSize * samples];
+    memcpy(buffer, m_buffer, sizeof(buffer));
     m_bufferSamples = 0;
+    bufferLock  .Leave();
+    m_bufferWait.Post ();
+
+     if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
+      snd_pcm_start(m_pcm);
+   
+    if (snd_pcm_writei(m_pcm, (void*)buffer, samples) == -EPIPE)
+      snd_pcm_prepare(m_pcm);
   }
+
   CLog::Log(LOGDEBUG, "CAESinkALSA::Run - Thread Stopped");
 }
 
@@ -280,21 +289,24 @@ float CAESinkALSA::GetDelay()
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
 
-  return frames / m_format.m_sampleRate;
+  CSingleLock bufferLock(m_bufferLock);
+  return (frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int samples)
 {
-  /* wait for a free buffer */ 
   CSingleLock bufferLock(m_bufferLock);
+  /* if the buffer is full still, wait for it to be emptied */
+  if (m_bufferSamples > 0)
+  {
+    bufferLock  .Leave();
+    m_bufferWait.Wait ();
+    bufferLock  .Enter();
+  }
 
-  /* fill the buffer */
-  CLog::Log(LOGDEBUG, "Add %d\n", samples);
-  memcpy(m_buffer, data, samples / m_format.m_channelCount);
+  if (!m_buffer) return 0;
+  memcpy(m_buffer, data, samples * m_format.m_frameSize);
   m_bufferSamples = samples;
-
-  /* notify the thread */
-  m_bufferWait.Post();
   return samples;
 }
 

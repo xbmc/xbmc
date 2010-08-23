@@ -135,7 +135,7 @@ private:
   std::list<CAEStream*>                 m_streams;
   std::map<const CStdString, CAESound*> m_sounds;
   uint8_t                              *m_buffer;
-  unsigned int                          m_bufferSize;
+  unsigned int                          m_bufferFrames;
   float                                 m_visBuffer[AUDIO_BUFFER_SIZE * 2];
   unsigned int                          m_visBufferSize;
 
