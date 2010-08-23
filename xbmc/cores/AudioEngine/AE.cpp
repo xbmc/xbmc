@@ -102,10 +102,14 @@ bool CAE::OpenSink()
   bool reopen = false;
   if (m_sink)
   {
-    m_sink->Stop();
     m_sink->Deinitialize();
+    m_sinkThread->StopThread(true);
+
     delete m_sink;
-    m_sink = NULL;
+    delete m_sinkThread;
+    m_sink       = NULL;
+    m_sinkThread = NULL;
+
     _aligned_free(m_buffer);
     m_buffer = NULL;
     reopen = true;
@@ -135,8 +139,8 @@ bool CAE::OpenSink()
   m_format        = m_sink->GetAudioFormat();
   m_frameSize     = sizeof(float) * m_channelCount;
   m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer        = (uint8_t*)_aligned_malloc(m_format.m_frameSize * 2, 16);
-  m_bufferSize    = 0;
+  m_buffer        = (uint8_t*)_aligned_malloc(m_format.m_frameSize * m_format.m_frames * 2, 16);
+  m_bufferFrames  = 0;
   m_visBufferSize = 0;
 
   /* initialize the final stage remapper */
@@ -185,11 +189,8 @@ void CAE::Deinitialize()
   if (m_sink)
   {
     /* shutdown the sink */
-    m_sink->Stop();    
-    m_sinkThread->StopThread(true);
-
-    /* deinitialize it */
     m_sink->Deinitialize();
+    m_sinkThread->StopThread(true);
 
     delete m_sink;
     delete m_sinkThread;
@@ -370,7 +371,7 @@ float CAE::GetDelay()
   if (!m_running) return 0.0f;
 
   CSingleLock sinkLock(m_critSectionSink);
-  return m_sink->GetDelay() + m_bufferSize / m_frameSize / m_format.m_sampleRate;
+  return m_sink->GetDelay() + m_bufferFrames / m_frameSize / m_format.m_sampleRate;
 }
 
 float CAE::GetVolume()
@@ -526,14 +527,14 @@ void CAE::Run()
 inline void CAE::RunOutputStage()
 {
   /* this normally only loops once */
-  while(m_bufferSize >= m_format.m_frameSize)
+  while(m_bufferFrames >= m_format.m_frames)
   {
-    int wrote = m_sink->AddPackets(m_buffer, m_bufferSize);
-    if (!wrote) continue;
+    int wroteFrames = m_sink->AddPackets(m_buffer, m_format.m_frames);
 
-    int left = m_bufferSize - wrote;
-    memmove(&m_buffer[0], &m_buffer[wrote], left);
-    m_bufferSize -= wrote;
+    int wroteBytes  = wroteFrames * m_format.m_frameSize;
+    int bytesLeft   = (m_bufferFrames - wroteFrames) * m_format.m_frameSize;
+    memmove(&m_buffer[0], &m_buffer[wroteBytes], bytesLeft);
+    m_bufferFrames -= wroteFrames;
   }
 }
 
@@ -683,8 +684,8 @@ inline void CAE::RunBufferStage(float *out)
   /* if muted just zero the data and continue */
   if (g_settings.m_bMute)
   {
-    memset(&m_buffer[m_bufferSize], 0, sizeof(out));
-    m_bufferSize += sizeof(out);
+    memset(&m_buffer[m_bufferFrames * m_format.m_frameSize], 0, m_format.m_frameSize);
+    ++m_bufferFrames;
     return;
   }
 
@@ -694,11 +695,14 @@ inline void CAE::RunBufferStage(float *out)
 
   /* do we need to convert */
   if (m_convertFn)
-    m_bufferSize += m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferSize]);
+  {
+    m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferFrames * m_format.m_frameSize]);
+    ++m_bufferFrames;
+  }
   else
   {
-    memcpy(&m_buffer[m_bufferSize], dst, sizeof(dst));
-    m_bufferSize += sizeof(dst);
+    memcpy(&m_buffer[m_bufferFrames * m_format.m_frameSize], dst, m_format.m_frameSize);
+    ++m_bufferFrames;
   }
 }
 
