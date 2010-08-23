@@ -317,7 +317,8 @@ int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, 
         nextTagPosition += ( metaSize + 4 );
 
         // Ok.. we've got some metadata to process. Go to it.
-        ParseTag( metaKey, metaData, metaSize - 20, tag );
+        if (metaSize - 20 > 0)
+          ParseTag( metaKey, metaData, metaSize - 20, tag );
       }
     }
     else
