@@ -2447,6 +2447,7 @@ CStdString CFileItem::GetCachedEpisodeThumb() const
 void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
+  if (HasThumbnail()) return;
   CStdString cachedThumb(GetCachedVideoThumb());
   if (HasVideoInfoTag() && !m_bIsFolder  &&
       GetVideoInfoTag()->m_iEpisode > -1 &&
