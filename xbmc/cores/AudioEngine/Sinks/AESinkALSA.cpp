@@ -285,12 +285,11 @@ AEAudioFormat CAESinkALSA::GetAudioFormat()
 float CAESinkALSA::GetDelay()
 {
   if (!m_pcm) return 0;
+  CSingleLock bufferLock(m_bufferLock);
 
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
-
-  CSingleLock bufferLock(m_bufferLock);
-  return (frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
+  return (float)(frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int samples)
