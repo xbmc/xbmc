@@ -6389,7 +6389,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
             "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
             "join path on path.idPath=tvshowlinkpath.idPath "
           "where tvshow.idShow not in (select idShow from tvshowlinkepisode) "
-            "and path.strContent == ''";
+            "and path.strContent=''";
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
