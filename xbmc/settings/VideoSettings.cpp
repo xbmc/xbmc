@@ -48,6 +48,7 @@ CVideoSettings::CVideoSettings()
   m_Gamma = 20.0f;
   m_Sharpness = 0.0f;
   m_NoiseReduction = 0;
+  m_PostProcess = false;
   m_VolumeAmplification = 0;
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;
@@ -77,6 +78,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_Gamma != right.m_Gamma) return true;
   if (m_Sharpness != right.m_Sharpness) return true;
   if (m_NoiseReduction != right.m_NoiseReduction) return true;
+  if (m_PostProcess != right.m_PostProcess) return true;
   if (m_VolumeAmplification != right.m_VolumeAmplification) return true;
   if (m_AudioDelay != right.m_AudioDelay) return true;
   if (m_OutputToAllSpeakers != right.m_OutputToAllSpeakers) return true;

@@ -284,7 +284,6 @@ void CDVDPlayerVideo::Process()
 
   DVDVideoPicture picture;
   CPulldownCorrection pulldown;
-  int postprocess_mode = g_guiSettings.GetInt("videoplayer.postprocess");
   CDVDVideoPPFFmpeg mPostProcess("");
   CStdString sPostProcessType;
 
@@ -573,9 +572,7 @@ void CDVDPlayerVideo::Process()
               sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
             }
 
-            if ((postprocess_mode == VIDEO_POSTPROCESS_ALWAYS) ||
-                ((postprocess_mode == VIDEO_POSTPROCESS_SD_CONTENT) &&
-                 (picture.iWidth <= 720)))
+            if (g_settings.m_currentVideoSettings.m_PostProcess)
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
