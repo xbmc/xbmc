@@ -48,7 +48,7 @@ for (var property in array) {
   document.write('<tr class="' + (property % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
 
   document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["movieid"] + ')>');
-  var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultVideo.png";
+  var imgSrc = item["thumbnail"] ? ('/vfs/' + escape(item["thumbnail"])) : "images/DefaultVideo.png";
   document.write('<img src="' + imgSrc + '" class="cover"></img>');
   document.write('</td><td class="info">');
   document.write('</a>');
