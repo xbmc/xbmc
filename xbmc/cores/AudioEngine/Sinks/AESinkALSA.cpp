@@ -49,21 +49,24 @@ bool CAESinkALSA::Initialize(AEAudioFormat format)
   static enum AEChannel ALSAChannelMap[9] =
     {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
-  int i, c;
-
-  format.m_channelCount = 0;
-  for(c = 0; c < 8; ++c)
-    for(i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
-      if (format.m_channelLayout[i] == ALSAChannelMap[c])
-      {
-        format.m_channelCount = c + 1;
-        break;
-      }
-
-  if (format.m_channelCount == 0)
+  if (format.m_dataFormat == AE_FMT_IEC958)
+    format.m_channelCount = 2;
+  else
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
-    return false;
+    format.m_channelCount = 0;
+    for(int c = 0; c < 8; ++c)
+      for(int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
+        if (format.m_channelLayout[i] == ALSAChannelMap[c])
+        {
+          format.m_channelCount = c + 1;
+          break;
+        }
+
+    if (format.m_channelCount == 0)
+    {
+      CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
+      return false;
+    }
   }
 
   format.m_channelLayout      = ALSAChannelMap;
