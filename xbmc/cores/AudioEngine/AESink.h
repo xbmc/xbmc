@@ -22,6 +22,7 @@
 
 #include "utils/Thread.h"
 #include "AEAudioFormat.h"
+#include "StdString.h"
 #include <stdint.h>
 
 class IAESink : public IRunnable
@@ -31,12 +32,12 @@ public:
 
   IAESink() {};
   virtual ~IAESink() {};
-  virtual bool Initialize  (AEAudioFormat format) = 0;
+  virtual bool Initialize  (AEAudioFormat &format, CStdString &device) = 0;
   virtual void Deinitialize() = 0;
+  virtual bool IsCompatible(const AEAudioFormat format, const CStdString device) = 0;
 
-  virtual void          Stop          () = 0;
-  virtual AEAudioFormat GetAudioFormat() = 0;
-  virtual float         GetDelay      () = 0;
-  virtual unsigned int  AddPackets    (uint8_t *data, unsigned int samples) = 0;
+  virtual void         Stop          () = 0;
+  virtual float        GetDelay      () = 0;
+  virtual unsigned int AddPackets    (uint8_t *data, unsigned int samples) = 0;
 };
 

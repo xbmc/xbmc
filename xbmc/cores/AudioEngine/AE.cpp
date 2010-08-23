@@ -91,8 +91,17 @@ bool CAE::OpenSink()
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
 
+  CStdString device = g_guiSettings.GetString("audiooutput.audiodevice");
+
+  /* setup the desired format */
+  AEAudioFormat desiredFormat;
+  desiredFormat.m_channelLayout = CAEUtil::GetStdChLayout  (stdChLayout);
+  desiredFormat.m_channelCount  = CAEUtil::GetChLayoutCount(desiredFormat.m_channelLayout);
+  desiredFormat.m_sampleRate    = sampleRate;
+  desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
+
   /* if the sink is already open and it is compatible we dont need to do anything */
-  if (m_sink && sampleRate == m_format.m_sampleRate && stdChLayout == m_stdChLayout)
+  if (m_sink && m_sink->IsCompatible(desiredFormat, device))
     return true;
 
   /* let the thread know we have re-opened the sink */
@@ -117,26 +126,30 @@ bool CAE::OpenSink()
 
   /* set the local members */
   m_stdChLayout  = stdChLayout;
-  m_chLayout     = CAEUtil::GetStdChLayout(m_stdChLayout);
+  m_chLayout     = CAEUtil::GetStdChLayout(stdChLayout);
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGDEBUG, "CAE::Initialize: Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
-
-  AEAudioFormat desiredFormat;
-  desiredFormat.m_channelLayout = m_chLayout;
-  desiredFormat.m_sampleRate    = sampleRate;
-  desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
+  CLog::Log(LOGDEBUG, "CAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
 
   /* create the new sink */
   m_sink = new CAESinkALSA();
-  if (!m_sink->Initialize(desiredFormat))
+  if (!m_sink->Initialize(desiredFormat, device))
   {
     delete m_sink;
     m_sink = NULL;
     return false;
   }
 
-  /* get the sink's audio format details */
-  m_format        = m_sink->GetAudioFormat();
+  CLog::Log(LOGINFO, "CAE::Initialize - %s Initialized:", m_sink->GetName());
+  CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
+  CLog::Log(LOGINFO, "  Sample Rate   : %d", desiredFormat.m_sampleRate);
+  CLog::Log(LOGINFO, "  Channel Count : %d", desiredFormat.m_channelCount);
+  CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(desiredFormat.m_channelLayout).c_str());
+  CLog::Log(LOGINFO, "  Frames        : %d", desiredFormat.m_frames);
+  CLog::Log(LOGINFO, "  Frame Samples : %d", desiredFormat.m_frameSamples);
+  CLog::Log(LOGINFO, "  Frame Size    : %d", desiredFormat.m_frameSize);
+
+  /* get the sink's audio format details as it may have changed them according to what it supports */
+  m_format        = desiredFormat;
   m_frameSize     = sizeof(float) * m_channelCount;
   m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
   m_buffer        = (uint8_t*)_aligned_malloc(m_format.m_frameSize * m_format.m_frames * 2, 16);
@@ -151,8 +164,7 @@ bool CAE::OpenSink()
   m_sinkThread->Create();
 
   /* if we did not re-open, we are finished */
-  if (!reopen)
-    return true;
+  if (!reopen) return true;
 
   /* re-init sounds */
   m_playing_sounds.clear();
@@ -371,7 +383,7 @@ float CAE::GetDelay()
   if (!m_running) return 0.0f;
 
   CSingleLock sinkLock(m_critSectionSink);
-  return m_sink->GetDelay() + m_bufferFrames / m_frameSize / m_format.m_sampleRate;
+  return m_sink->GetDelay() + ((float)(m_bufferFrames / m_frameSize) / m_format.m_sampleRate);
 }
 
 float CAE::GetVolume()
@@ -681,28 +693,25 @@ inline void CAE::RunDeAmpStage(unsigned int channelCount, float *out)
 
 inline void CAE::RunBufferStage(float *out)
 {
+  uint8_t *outPos = &m_buffer[m_bufferFrames * m_format.m_frameSize];
+
   /* if muted just zero the data and continue */
   if (g_settings.m_bMute)
   {
-    memset(&m_buffer[m_bufferFrames * m_format.m_frameSize], 0, m_format.m_frameSize);
+    memset(outPos, 0, m_format.m_frameSize);
     ++m_bufferFrames;
     return;
   }
 
-  /* remap the frame before we buffer it */
-  DECLARE_ALIGNED(16, float, dst[m_format.m_channelCount]);
-  m_remap.Remap(out, dst, 1);
-
-  /* do we need to convert */
   if (m_convertFn)
   {
-    m_convertFn(dst, m_format.m_channelCount, &m_buffer[m_bufferFrames * m_format.m_frameSize]);
-    ++m_bufferFrames;
+    DECLARE_ALIGNED(16, float, remapped[m_format.m_channelCount]);
+    m_remap.Remap  (out, remapped, 1);
+    m_convertFn    (remapped, m_format.m_channelCount, outPos);
   }
   else
-  {
-    memcpy(&m_buffer[m_bufferFrames * m_format.m_frameSize], dst, m_format.m_frameSize);
-    ++m_bufferFrames;
-  }
+    m_remap.Remap(out, (float*)outPos, 1);
+
+  ++m_bufferFrames;
 }
 
