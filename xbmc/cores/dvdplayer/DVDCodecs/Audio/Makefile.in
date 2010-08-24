@@ -1,4 +1,4 @@
-INCLUDES=-I../../../../.. -I. -I../../ -I../../.. -I../../../../ -I../../../../linux -I../../../../../guilib
+INCLUDES=-I../../../../.. -I. -I../../ -I../../.. -I../../../../ -I../../../../linux -I../../../../../guilib -I../../../AudioEngine
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   INCLUDES+=-I../../Codecs/ffmpeg
 endif
@@ -10,8 +10,8 @@ SRCS=	DVDAudioCodecFFmpeg.cpp \
 	DVDAudioCodecLibFaad.cpp \
 	DVDAudioCodecLibMad.cpp \
 	DVDAudioCodecLPcm.cpp \
-	DVDAudioCodecPcm.cpp
-	#DVDAudioCodecPassthrough.cpp \
+	DVDAudioCodecPcm.cpp \
+	DVDAudioCodecPassthrough.cpp
         #DVDAudioCodecPassthroughFFmpeg.cpp \
 	#Encoders/DVDAudioEncoderFFmpeg.cpp
 

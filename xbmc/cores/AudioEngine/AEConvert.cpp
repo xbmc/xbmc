@@ -39,10 +39,11 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
   switch(dataFormat)
   {
-    case AE_FMT_U8   : return &U8_Float;
-    case AE_FMT_S16LE: return &S16LE_Float;
-    case AE_FMT_S16BE: return &S16BE_Float;
-    case AE_FMT_S24BE: return &S24BE_Float;
+    case AE_FMT_U8    : return &U8_Float;
+    case AE_FMT_S16LE : return &S16LE_Float;
+    case AE_FMT_S16BE : return &S16BE_Float;
+    case AE_FMT_S24BE : return &S24BE_Float;
+    case AE_FMT_IEC958: return &IEC958_Float;
     default:
       return NULL;
   }
@@ -52,10 +53,11 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 {
   switch(dataFormat)
   {
-    case AE_FMT_U8   : return &Float_U8;
-    case AE_FMT_S8   : return &Float_S8;
-    case AE_FMT_S16LE: return &Float_S16LE;
-    case AE_FMT_S16BE: return &Float_S16BE;
+    case AE_FMT_U8    : return &Float_U8;
+    case AE_FMT_S8    : return &Float_S8;
+    case AE_FMT_S16LE : return &Float_S16LE;
+    case AE_FMT_S16BE : return &Float_S16BE;
+    case AE_FMT_IEC958: return &Float_IEC958;
     default:
       return NULL;
   }
@@ -121,6 +123,15 @@ unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, 
   }
 
   return viable;
+}
+
+unsigned int CAEConvert::IEC958_Float(uint8_t *data, const unsigned int samples, float *dest)
+{
+  uint16_t *src = (uint16_t*)data;
+  for(unsigned int i = 0; i < samples; ++i, ++src, ++dest)
+    *dest = (float)*src;
+
+  return samples;
 }
 
 unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8_t *dest)
@@ -409,6 +420,15 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
     #endif
   }
   #endif
+
+  return samples << 1;
+}
+
+unsigned int CAEConvert::Float_IEC958(float *data, const unsigned int samples, uint8_t *dest)
+{
+  uint16_t *dst = (uint16_t*)dest;
+  for(unsigned int i = 0; i < samples; ++i, ++data, ++dst)
+    *dst = *data;
 
   return samples << 1;
 }

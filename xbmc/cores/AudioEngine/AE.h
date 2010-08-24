@@ -130,6 +130,7 @@ private:
   std::list<SoundState>     m_playing_sounds;
 
   /* the streams, sounds, output buffer and output buffer fill size */
+  bool                                  m_rawPassthrough;
   bool                                  m_passthrough;
   std::list<CAEStream*>                 m_streams;
   std::map<const CStdString, CAESound*> m_sounds;

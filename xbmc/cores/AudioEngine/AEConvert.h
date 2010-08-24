@@ -29,15 +29,17 @@ class CAEConvert{
 private:
   inline static void Pack24Bit(int32_t sample, uint8_t *dest);
 
-  static unsigned int U8_Float   (uint8_t *data, const unsigned int samples, float   *dest);
-  static unsigned int S16LE_Float(uint8_t *data, const unsigned int samples, float   *dest);
-  static unsigned int S16BE_Float(uint8_t *data, const unsigned int samples, float   *dest);
-  static unsigned int S24BE_Float(uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int U8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int S16LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int S16BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int S24BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int IEC958_Float(uint8_t *data, const unsigned int samples, float   *dest);
 
-  static unsigned int Float_U8   (float   *data, const unsigned int samples, uint8_t *dest);
-  static unsigned int Float_S8   (float   *data, const unsigned int samples, uint8_t *dest);
-  static unsigned int Float_S16LE(float   *data, const unsigned int samples, uint8_t *dest);
-  static unsigned int Float_S16BE(float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_U8    (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S8    (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S16LE (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S16BE (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_IEC958(float   *data, const unsigned int samples, uint8_t *dest);
 public:
   typedef unsigned int (*AEConvertToFn)(uint8_t *data, const unsigned int samples, float   *dest);
   typedef unsigned int (*AEConvertFrFn)(float   *data, const unsigned int samples, uint8_t *dest);

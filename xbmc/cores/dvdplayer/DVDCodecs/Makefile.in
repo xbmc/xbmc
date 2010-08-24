@@ -6,6 +6,7 @@ INCLUDES=-I$(abs_top_srcdir) \
 	 -I$(abs_top_srcdir)/xbmc/linux \
 	 -I$(abs_top_srcdir)/xbmc \
 	 -I$(abs_top_srcdir)/guilib \
+	 -I$(abs_top_srcdir)/xbmc/cores/AudioEngine
 
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   INCLUDES+=-I$(abs_top_srcdir)/xbmc/cores/dvdplayer/Codecs/ffmpeg

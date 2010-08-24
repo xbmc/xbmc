@@ -101,7 +101,16 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
   if (dataFormat < 0 || dataFormat >= AE_FMT_MAX)
     return 0;
 
-  static const unsigned int formats[AE_FMT_MAX] = {8, 8, 16, 16, 24, 32};
+  static const unsigned int formats[AE_FMT_MAX] =
+  {
+    8,  /* S8     */
+    8,  /* U8     */
+    16, /* S16LE  */
+    16, /* S16BE  */
+    24, /* S24BE  */
+    32, /* FLOAT  */
+    16  /* IEC958 */
+  };
   return formats[dataFormat];
 }
 

@@ -26,7 +26,8 @@
 class IAEPacketizer
 {
 public:
-  virtual const char *GetName() = 0;
+  virtual const char*  GetName() = 0;
+  virtual unsigned int GetPacketSize() = 0;
 
   IAEPacketizer() {};
   virtual ~IAEPacketizer() {};
@@ -34,7 +35,9 @@ public:
   virtual void Deinitialize() = 0;
   virtual void Reset() = 0;
 
-  virtual int AddData(uint8_t *data, unsigned int size) = 0;
-  virtual int GetData(uint8_t **data) = 0;
+  virtual int  AddData  (uint8_t *data, unsigned int size) = 0;
+  virtual bool HasPacket() = 0;
+  virtual int  GetPacket(uint8_t **data) = 0;
+  virtual unsigned int GetSampleRate() = 0;
 };
 
