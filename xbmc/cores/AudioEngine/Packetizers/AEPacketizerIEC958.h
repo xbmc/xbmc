@@ -88,6 +88,7 @@ private:
   SPDIFSyncFunc m_syncFunc;
   SPDIFPackFunc m_packFunc;
   unsigned int  m_sampleRate;
+  unsigned int  m_dtsBlocks;
 
   void SwapPacket();
   void PackAC3(uint8_t *data, unsigned int fsize);

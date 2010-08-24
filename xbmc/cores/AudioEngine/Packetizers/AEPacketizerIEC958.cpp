@@ -21,8 +21,9 @@
 
 #include "AEPacketizerIEC958.h"
 
-static const uint16_t AC3Bitrates[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
-static const uint16_t AC3FSCod   [] = {48000, 44100, 32000, 0};
+static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
+static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
+static const uint32_t DTSSampleRates[] = {0, 8000, 16000, 32000, 64000, 128000, 11025, 22050, 44100, 88200, 176400, 12000, 24000, 48000, 96000, 192000};
 
 enum IEC958DataType
 {
@@ -151,7 +152,7 @@ void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
 {
   m_packetData.m_syncwords[0] = 0xF872;
   m_packetData.m_syncwords[1] = 0x4E1F;
-  switch(fsize)
+  switch(m_dtsBlocks)
   {
     case  512: m_packetData.m_type = IEC958_TYPE_DTS1; break;
     case 1024: m_packetData.m_type = IEC958_TYPE_DTS2; break;
@@ -295,11 +296,54 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
 
   for(skip = 0; size - skip > 8; ++skip, ++data)
   {
-    /* 16bit le */ if (data[0] == 0x7F && data[1] == 0xFE && data[2] == 0x80 && data[3] == 0x01                                               ) littleEndian = true ; else
-    /* 14bit le */ if (data[0] == 0x1F && data[1] == 0xFF && data[2] == 0xE8 && data[3] == 0x00 && data[4] == 0x07 && (data[5] & 0xF0) == 0xF0) littleEndian = true ; else
-    /* 16bit be */ if (data[1] == 0x7F && data[0] == 0xFE && data[3] == 0x80 && data[2] == 0x01                                               ) littleEndian = false; else
-    /* 14bit be */ if (data[1] == 0x1F && data[0] == 0xFF && data[3] == 0xE8 && data[2] == 0x00 && data[5] == 0x07 && (data[4] & 0xF0) == 0xF0) littleEndian = false; else
-      continue;
+    unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
+    bool match = true;
+    unsigned int blocks;
+    switch(header)
+    {
+      /* 14bit BE */
+      case 0x1FFFE800:
+        if (data[4] != 0x07 || data[5] != 0xf0)
+        {
+          match = false;
+          break;
+        }
+        blocks = ((data[5] & 0x7) << 4) | ((data[6] & 0x3f) >> 2);
+        m_sampleRate = DTSSampleRates[(data[8] >> 2) & 0xf];
+        break;
+
+      /* 14bit LE */
+      case 0xFF1F00E8:
+        if (data[5] != 0x07 || data[4] != 0xf0)
+        {
+          match = false;
+          break;
+        }
+        blocks = ((data[4] & 0x7) << 4) | ((data[7] & 0x3f) >> 2);
+        m_sampleRate = DTSSampleRates[(data[9] >> 2) & 0xf];
+        break;
+
+      /* 16bit BE */
+      case 0x7FFE8001:
+        littleEndian = false;
+        blocks = (data[4] >> 2) & 0x7f;
+        m_sampleRate = DTSSampleRates[(data[8] >> 2) & 0xf];
+        break;
+
+      /* 16bit LE */
+      case 0xFE7F0180:
+        littleEndian = true;
+        blocks = (data[4] >> 2) & 0x7f;
+        m_sampleRate = DTSSampleRates[(data[9] >> 2) & 0xf];
+        break;
+
+
+      default:
+        match = false;
+        break;      
+    }
+
+    if (!match) continue;
 
     if (littleEndian)
     {
@@ -308,7 +352,7 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
         continue;
 
       /* get the frame size */
-      *fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1;
+      *fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1; 
    }
    else
    {
@@ -324,10 +368,11 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
     if (*fsize < 96 || *fsize > 16384)
       continue;
 
-    m_syncFunc = &CAEPacketizerIEC958::SyncDTS;
-    m_packFunc = &CAEPacketizerIEC958::PackDTS;
-    m_dataType = STREAM_FMT_DTS;
-    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncDTS - DTS stream detected");
+    m_dtsBlocks = (blocks + 1) << 5;
+    m_syncFunc  = &CAEPacketizerIEC958::SyncDTS;
+    m_packFunc  = &CAEPacketizerIEC958::PackDTS;
+    m_dataType  = STREAM_FMT_DTS;
+    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncDTS - DTS stream detected (%d blocks, %dHz)", m_dtsBlocks, m_sampleRate);
     return skip;
   }
 
