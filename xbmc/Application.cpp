@@ -4756,7 +4756,7 @@ void CApplication::ProcessSlow()
   }
 #endif
   
-  if (!IsPlayingVideo())
+  if (!IsPlayingVideo() && g_sysinfo.HasInternet())
     ADDON::CAddonMgr::Get().UpdateRepos();
 
 #if defined(__arm__)
