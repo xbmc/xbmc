@@ -4488,6 +4488,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           return true;
         }
       }
+      
+      // In case playback ended due to user eg. skipping over the end, clear
+      // our resume bookmark here
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+      }
 
       // reset the current playing file
       m_itemCurrentFile->Reset();
