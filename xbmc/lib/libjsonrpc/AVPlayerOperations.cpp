@@ -24,9 +24,22 @@
 #include "Builtins.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
+#include "PartyModeManager.h"
 
 using namespace Json;
 using namespace JSONRPC;
+
+JSON_STATUS CAVPlayerOperations::State(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!IsCorrectPlayer(method))
+    return FailedToExecute;
+
+  result["playing"] = g_application.IsPlaying();
+  result["paused"] = g_application.IsPaused();
+  result["partymode"] = g_partyModeManager.IsEnabled();
+
+  return OK;
+}
 
 JSON_STATUS CAVPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
@@ -136,6 +149,8 @@ JSON_STATUS CAVPlayerOperations::GetTime(const CStdString &method, ITransportLay
 
   result["time"] = (int)g_application.GetTime();
   result["total"] = (int)g_application.GetTotalTime();
+  result["playing"] = g_application.IsPlaying();
+  result["paused"] = g_application.IsPaused();
   return OK;
 }
 
@@ -146,6 +161,8 @@ JSON_STATUS CAVPlayerOperations::GetTimeMS(const CStdString &method, ITransportL
 
   result["time"] = (int)(g_application.GetTime() * 1000.0);
   result["total"] = (int)(g_application.GetTotalTime() * 1000.0);
+  result["playing"] = g_application.IsPlaying();
+  result["paused"] = g_application.IsPaused();
   return OK;
 }
 

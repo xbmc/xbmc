@@ -77,8 +77,11 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
   HandleFileItemList(NULL, true, "items", list, parameterObject, result);
 
   if (g_playlistPlayer.GetCurrentPlaylist() == GetPlaylist(method))
+  {
     result["current"] = g_playlistPlayer.GetCurrentSong();
-
+    result["playing"] = g_application.IsPlaying();
+    result["paused"] = g_application.IsPaused();
+  }
   return OK;
 }
 
