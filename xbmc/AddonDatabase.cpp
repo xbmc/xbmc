@@ -393,7 +393,7 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
 
 CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
 {
-  CDateTime date = CDateTime::GetCurrentDateTime();
+  CDateTime date;
   try
   {
     if (NULL == m_pDB.get()) return date;
