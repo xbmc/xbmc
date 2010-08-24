@@ -175,6 +175,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
       pItem->SetProperty("Addon.UpdateAvail","true");
     }
+    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     items.Add(pItem);
   }
 }
