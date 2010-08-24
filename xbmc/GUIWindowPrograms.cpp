@@ -252,6 +252,16 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
 
+  // don't allow the view state to change these
+  if (strDirectory.Left(9).Equals("addons://"))
+  {
+    for (int i=0;i<items.Size();++i)
+    {
+      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version"));
+      items[i]->SetLabelPreformated(true);
+    }
+  }
+
   return true;
 }
 
