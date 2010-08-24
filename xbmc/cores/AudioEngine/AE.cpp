@@ -26,6 +26,8 @@
 #include "GUISettings.h"
 #include "Settings.h"
 
+#include <string.h>
+
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
 #else
@@ -44,13 +46,14 @@
 using namespace std;
 
 CAE::CAE():
-  m_running      (false),
-  m_reOpened     (false),
-  m_sink         (NULL ),
-  m_passthrough  (false),
-  m_buffer       (NULL ),
+  m_running         (false),
+  m_reOpened        (false),
+  m_sink            (NULL ),
+  m_rawPassthrough  (false),
+  m_passthrough     (false),
+  m_buffer          (NULL ),
   m_vizBufferSamples(0    ),
-  m_audioCallback(NULL )
+  m_audioCallback   (NULL )
 {
 }
 
@@ -89,17 +92,35 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   }
 
   /* choose a sample rate based on the oldest stream or if none, the requested sample rate */
-  if (!m_streams.empty())
+  if (!m_rawPassthrough && !m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
 
-  CStdString device = g_guiSettings.GetString("audiooutput.audiodevice");
+  CStdString device;
+  if (m_passthrough || m_rawPassthrough)
+  {
+    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
+    if (device == "custom")
+      device = g_guiSettings.GetString("audiooutput.custompassthrough");
+
+    // some platforms (osx) do not have a separate passthroughdevice setting.
+    if (device.IsEmpty())
+      device = g_guiSettings.GetString("audiooutput.audiodevice");
+  }
+  else
+  {
+    device = g_guiSettings.GetString("audiooutput.audiodevice");
+    if (device.Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.customdevice");
+  }
+
+  if (device.IsEmpty()) device = "default";
 
   /* setup the desired format */
   AEAudioFormat desiredFormat;
   desiredFormat.m_channelLayout = CAEUtil::GetStdChLayout  (stdChLayout);
   desiredFormat.m_channelCount  = CAEUtil::GetChLayoutCount(desiredFormat.m_channelLayout);
   desiredFormat.m_sampleRate    = sampleRate;
-  desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
+  desiredFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_IEC958 : AE_FMT_FLOAT;
 
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
@@ -155,8 +176,8 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   /* initialize the final stage remapper */
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
 
-  /* if we did not re-open, we are finished */
-  if (!reopen) return true;
+  /* if we did not re-open or we are in raw passthrough, we are finished */
+  if (!reopen || m_rawPassthrough) return true;
 
   /* re-init sounds */
   m_playing_sounds.clear();
@@ -213,19 +234,29 @@ void CAE::Stop()
 
 CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain/* = false */, bool ownsPostProc/* = false */)
 {
-  CLog::Log(LOGINFO, "CAE::GetStream - %d, %u, %u, %s",
-    CAEUtil::DataFormatToBits(dataFormat),
+  CLog::Log(LOGINFO, "CAE::GetStream - %s, %u, %u, %s",
+    CAEUtil::DataFormatToStr(dataFormat),
     sampleRate,
     channelCount,
     CAEUtil::GetChLayoutStr(channelLayout).c_str()
   );
 
+  CAEStream *stream;
   CSingleLock lock(m_critSection);
-  if (m_streams.size() == 0)
+  if (dataFormat == AE_FMT_IEC958)
+  {
+    m_rawPassthrough = true;
     OpenSink(sampleRate);
-
-  CAEStream *stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
-  m_streams.push_back(stream);
+    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
+    m_streams.push_front(stream);
+  }
+  else
+  {
+    if (m_streams.size() == 0)
+      OpenSink(sampleRate);
+    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
+    m_streams.push_back(stream);
+  }
 
   return stream;
 }
@@ -555,46 +586,50 @@ inline void CAE::MixSounds(unsigned int samples)
 
 inline void CAE::RunOutputStage()
 {
-  unsigned int samples         = m_format.m_frames * m_channelCount;
-  unsigned int remappedSamples = m_format.m_frames * m_format.m_channelCount;
+  unsigned int samples  = m_format.m_frames * m_channelCount;
+  unsigned int rSamples = m_format.m_frames * m_format.m_channelCount;
 
   /* this normally only loops once */
   while(m_bufferSamples >= samples)
   {
-    /* if we have an audio callback, use it */
-    if (m_audioCallback)
+    /* if we are in raw passthrough we dont touch the samples */
+    if (!m_rawPassthrough)
     {
-      unsigned int room = AUDIO_BUFFER_SIZE - m_vizBufferSamples;
-      unsigned int copy = room > samples ? samples : room;
-      memcpy(m_vizBuffer + m_vizBufferSamples, m_buffer, copy * sizeof(float));
-      m_vizBufferSamples += copy;
-
-      if (m_vizBufferSamples == AUDIO_BUFFER_SIZE)
+      /* if we have an audio callback, use it */
+      if (m_audioCallback)
       {
-        m_audioCallback->OnAudioData(m_vizBuffer, AUDIO_BUFFER_SIZE);
-        m_vizBufferSamples = 0;
+        unsigned int room = AUDIO_BUFFER_SIZE - m_vizBufferSamples;
+        unsigned int copy = room > samples ? samples : room;
+        memcpy(m_vizBuffer + m_vizBufferSamples, m_buffer, copy * sizeof(float));
+        m_vizBufferSamples += copy;
+
+        if (m_vizBufferSamples == AUDIO_BUFFER_SIZE)
+        {
+          m_audioCallback->OnAudioData(m_vizBuffer, AUDIO_BUFFER_SIZE);
+          m_vizBufferSamples = 0;
+        }
       }
+
+      /* mix in gui sounds */
+      MixSounds(samples);
+
+      /* handle deamplification */
+      #ifdef __SSE__
+        CAE::SSEMulArray(m_buffer, m_volume, samples);
+      #else
+        for(unsigned int i = 0; i < samples; ++i)
+          out[i] *= m_volume;
+      #endif
     }
 
-    /* mix in gui sounds */
-    MixSounds(samples);
-
-    /* handle deamplification */
-    #ifdef __SSE__
-      CAE::SSEMulArray(m_buffer, m_volume, samples);
-    #else
-      for(unsigned int i = 0; i < samples; ++i)
-        out[i] *= m_volume;
-    #endif
-
-    float remapped[remappedSamples];
+    float remapped[rSamples];
     m_remap.Remap(m_buffer, remapped, m_format.m_frames);
 
     int wroteFrames;
     if (m_convertFn)
     {
-      DECLARE_ALIGNED(16, uint8_t, converted[samples]);
-      m_convertFn(m_buffer, samples, converted);
+      DECLARE_ALIGNED(16, uint8_t, converted[m_format.m_frames * m_format.m_frameSize]);
+      m_convertFn(m_buffer, rSamples, converted);
       wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
     }
     else
@@ -609,6 +644,16 @@ inline void CAE::RunOutputStage()
 
 inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
 {
+  if (m_rawPassthrough)
+  {
+    if (m_streams.size() == 0) return 0;
+    CAEStream *stream = m_streams.front();
+    float *frame = stream->GetFrame();
+    if (!frame) return 0;
+    memcpy(out, frame, channelCount * sizeof(float));
+    return 1;
+  }
+
   unsigned int mixed = 0;
   list<CAEStream*>::iterator itt;
 

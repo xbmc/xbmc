@@ -21,6 +21,7 @@
  */
 
 #include "AEPacketizer.h"
+#include "utils/EndianSwap.h"
 #include <stdint.h>
 #include <list>
 
@@ -30,20 +31,29 @@
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 
-#define MAX_IEC958_PACKET 6114
+#ifdef __GNUC__
+  #define S_PACK __attribute__((__packed__))
+  #define E_PACK
+#else
+  #define S_PACK __pragma(pack(push, 1))
+  #define E_PACK __pragma(pack(pop))
+#endif
+
+#define MAX_IEC958_PACKET 6144
 
 class CAEPacketizerIEC958 : public IAEPacketizer
 {
 public:
   typedef enum
   {
-    SPDIF_FMT_INVALID = -1,
-    SPDIF_FMT_AC3,
-    SPDIF_FMT_DTS,
-    SPDIF_FMT_AAC
+    STREAM_FMT_INVALID = -1,
+    STREAM_FMT_AC3,
+    STREAM_FMT_DTS,
+    STREAM_FMT_AAC
   } SPDIFFormat;
 
-  virtual const char *GetName() { return "IEC958"; }
+  virtual const char  *GetName      () { return "IEC958"; }
+  virtual unsigned int GetPacketSize() { return MAX_IEC958_PACKET; }
 
   CAEPacketizerIEC958();
   virtual ~CAEPacketizerIEC958();
@@ -51,11 +61,23 @@ public:
   virtual void Deinitialize();
   virtual void Reset();
 
-  virtual int AddData(uint8_t *data, unsigned int size);
-  virtual int GetData(uint8_t **data);
+  virtual int  AddData  (uint8_t *data, unsigned int size);
+  virtual bool HasPacket();
+  virtual int  GetPacket(uint8_t **data);
+  virtual unsigned int GetSampleRate() { return m_sampleRate; }
 private:
+  S_PACK
+  struct IEC958Packet
+  {
+    uint16_t m_syncwords[2];
+    uint16_t m_type;
+    uint16_t m_length;
+    uint8_t  m_data[MAX_IEC958_PACKET - 8];
+  };
+  E_PACK
+
   DllAvUtil m_dllAvUtil;
-  DECLARE_ALIGNED(16, uint8_t, m_packetData[MAX_IEC958_PACKET]);
+  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData);
   unsigned int m_packetSize;
   bool         m_hasPacket;
 
@@ -65,7 +87,9 @@ private:
   SPDIFFormat   m_dataType;
   SPDIFSyncFunc m_syncFunc;
   SPDIFPackFunc m_packFunc;
+  unsigned int  m_sampleRate;
 
+  void SwapPacket();
   void PackAC3(uint8_t *data, unsigned int fsize);
   void PackDTS(uint8_t *data, unsigned int fsize);
   void PackAAC(uint8_t *data, unsigned int fsize);

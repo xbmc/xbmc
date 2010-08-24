@@ -83,16 +83,20 @@ inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdStri
       else if (format.m_sampleRate ==  32000) device += ",AES3=0x3";
       else device += ",AES3=0x1";
     }
+
     return device;
   }
+
+  if (device == "hdmi")
+    return "plug:hdmi";
 
   if (device == "default")
     switch(format.m_channelCount)
     {
-      case 8: device = "plug:surround71"; break;
-      case 6: device = "plug:surround51"; break;
-      case 5: device = "plug:surround50"; break;
-      case 4: device = "plug:surround40"; break;
+      case 8: return "plug:surround71";
+      case 6: return "plug:surround51";
+      case 5: return "plug:surround50";
+      case 4: return "plug:surround40";
     }
 
   return device;
@@ -162,7 +166,7 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
     case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;
     case AE_FMT_S16BE : return SND_PCM_FORMAT_S16_BE;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
-    case AE_FMT_IEC958: return SND_PCM_FORMAT_S16_BE;
+    case AE_FMT_IEC958: return SND_PCM_FORMAT_S16_LE;
 
     default:
       return SND_PCM_FORMAT_UNKNOWN;
@@ -214,7 +218,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   }
 
   unsigned int      sampleRate = format.m_sampleRate;
-  unsigned int      frames     = 32;
+  unsigned int      frames     = 32;//format.m_dataFormat == AE_FMT_IEC958 ? 1536 : 32;
   snd_pcm_uframes_t frameSize  = ((CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount) * frames;
 
   snd_pcm_hw_params_set_rate_near       (m_pcm, hw_params, &sampleRate          , NULL);
@@ -301,7 +305,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int samples)
     snd_pcm_start(m_pcm);
 
   m_bufferSamples = samples;
-  snd_pcm_wait(m_pcm, 10);
+  snd_pcm_wait(m_pcm, 1);
   if (snd_pcm_writei(m_pcm, (void*)data, samples) == -EPIPE)
   {
     printf("Underrun\n");

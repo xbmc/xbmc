@@ -120,7 +120,7 @@ void CAEStream::Initialize()
   m_packet.data       = NULL;
 
   m_frameBuffer   = (uint8_t*)_aligned_malloc(m_format.m_frameSize, 16);
-  m_resample      = m_initSampleRate != AE.GetSampleRate();
+  m_resample      = m_initSampleRate != AE.GetSampleRate() && m_initDataFormat != AE_FMT_IEC958;
   m_convert       = m_initDataFormat != AE_FMT_FLOAT;
 
   /* if we need to convert, set it up */
@@ -129,7 +129,7 @@ void CAEStream::Initialize()
     /* get the conversion function and allocate a buffer for the data */
     CLog::Log(LOGDEBUG, "CAEStream::CAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_initDataFormat));
     m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
-    if (m_convertFn) m_convertBuffer = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
+    if (m_convertFn) m_convertBuffer = (float*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
     else             m_valid         = false;
   }
   else
