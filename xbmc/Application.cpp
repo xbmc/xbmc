@@ -3773,12 +3773,6 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     return;
 
-  if (m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
-  {
-    // Delete the bookmark
-    m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-  }
-  
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4476,6 +4470,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
           return true;
         }
+      }
+      
+      // In case playback ended due to user eg. skipping over the end, clear
+      // our resume bookmark here
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
       }
 
       // reset the current playing file
