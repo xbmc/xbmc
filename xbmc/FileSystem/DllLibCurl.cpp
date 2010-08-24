@@ -39,28 +39,26 @@ DllLibCurlGlobal g_curlInterface;
 bool DllLibCurlGlobal::Load()
 {
   CSingleLock lock(m_critSection);
-  if(++g_curlReferences > 1)
-    return true;
-
-  /* checkidle will remove this */
-  if(g_curlReferences == 1)
+  if(g_curlReferences > 0)
+  {
     g_curlReferences++;
+    return true;
+  }
 
   /* we handle this ourself */
   DllDynamic::EnableDelayedUnload(false);
   if (!DllDynamic::Load())
-  {
-    g_curlReferences = 0;
     return false;
-  }
 
   if (global_init(CURL_GLOBAL_ALL))
   {
     DllDynamic::Unload();
     CLog::Log(LOGERROR, "Error initializing libcurl");
-    g_curlReferences = 0;
     return false;
   }
+
+  /* check idle will clean up the last one */
+  g_curlReferences = 2;
 
   return true;
 }
@@ -86,6 +84,10 @@ void DllLibCurlGlobal::Unload()
 
 void DllLibCurlGlobal::CheckIdle()
 {
+  /* avoid locking section here, to avoid stalling gfx thread on loads*/
+  if(g_curlReferences == 0)
+    return;
+
   CSingleLock lock(m_critSection);
   /* 20 seconds idle time before closing handle */
   const unsigned int idletime = 30000;
