@@ -35,7 +35,7 @@ using namespace std;
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
-    return FailedToExecute;
+    g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
 
   if (parameterObject.isInt())
     g_application.getApplicationMessenger().PlayListPlayerPlay(parameterObject.asInt());
