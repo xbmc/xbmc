@@ -32,7 +32,7 @@ using namespace JSONRPC;
 JSON_STATUS CAVPlayerOperations::State(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
-    return FailedToExecute;
+    g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
 
   result["playing"] = g_application.IsPlaying();
   result["paused"] = g_application.IsPaused();
