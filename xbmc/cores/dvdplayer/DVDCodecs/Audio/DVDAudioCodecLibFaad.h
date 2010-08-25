@@ -20,7 +20,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include "system.h"
+#ifdef USE_LIBFAAD_DECODER
 #include "DVDAudioCodec.h"
 #include "DllLibFaad.h"
 
@@ -70,3 +71,5 @@ private:
 
   DllLibFaad m_dll;
 };
+
+#endif
