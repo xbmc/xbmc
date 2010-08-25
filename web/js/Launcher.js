@@ -66,7 +66,7 @@ var Launcher = {
 			if (s.src.match(js)) {
 				var path = s.src.replace(js, ''),
 				includes = s.src.match(/\?.*load=([a-z,]*)/);
-				$.each((includes ? includes[1] : 'Core,MediaLibrary,NowPlayingManager').split(','), function(i, include) { 
+				$.each((includes ? includes[1] : 'jquery.lazyload,Core,MediaLibrary,NowPlayingManager').split(','), function(i, include) { 
 					Launcher.load(path + include + '.js') 
 				});
 			}

@@ -339,9 +339,9 @@ bool CWebServer::Start(const char *ip, int port)
   if (!m_running)
   {
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+    m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     if (!m_daemon) //try IPv4
-      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+      m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
@@ -358,7 +358,8 @@ bool CWebServer::Stop()
     MHD_stop_daemon(m_daemon);
     m_running = false;
     CLog::Log(LOGNOTICE, "WebServer: Stopped the webserver");
-  }
+  } else 
+    CLog::Log(LOGNOTICE, "WebServer: Stopped failed because its not running");
 
   return !m_running;
 }

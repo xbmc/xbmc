@@ -35,7 +35,7 @@ MediaLibrary.prototype = {
 		musicLibraryOpen: function(event) {
 			$('#musicLibrary').addClass('selected');
 			$('#videoLibrary').removeClass('selected');
-			jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "end": 60, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result && data.result.albums) {
 					$('#content').html('');
 					$.each($(data.result.albums), jQuery.proxy(function(i, item) {
@@ -54,6 +54,7 @@ MediaLibrary.prototype = {
 									  .bind('click', {albumId: item.albumid}, jQuery.proxy(this.displayAlbumDetails, this));
 						$('#content').append(floatableAlbum);
 					}, this));
+					$('img').lazyload();
 				}
 			}, this), 'json');
 		},
