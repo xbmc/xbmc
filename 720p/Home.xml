@@ -1015,6 +1015,73 @@
 					</content>
 				</control>
 			</control>
+      <control type="group" id="303">
+				<include>HomeSubSubMenuGroupDims</include>
+				<animation effect="fade" time="500" delay="100">Focus</animation>
+				<animation effect="fade" time="200">Unfocus</animation>
+				<visible allowhiddenfocus="true">Control.HasFocus(507)</visible>
+				<include>HomeSubMenuBackground</include>
+				<control type="list" id="507">
+					<description>Plug-ins Sub Side Menu</description>
+					<onup>507</onup>
+					<ondown>507</ondown>
+					<onleft>300</onleft>
+					<onright>507</onright>
+					<scrolltime>200</scrolltime>
+					<visible allowhiddenfocus="true">Control.HasFocus(507)</visible>
+					<include>HomeSideMenuDims</include>
+					<include>HomeSlideLeft</include>
+					<itemlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,68" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(507).OnNext + Container(507).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(507).OnNext + !Container(507).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-68" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(507).OnPrevious + Container(507).Position(2)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(507).OnPrevious + !Container(507).Position(2)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(507).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(507).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="8">
+							<description>Video Plug-ins Button</description>
+							<label> $LOCALIZE[31001] </label>
+							<onclick>Plex.ActivateWindow(24)</onclick>
+							<visible>!Skin.HasSetting(HideVideos)</visible>
+						</item>
+						<item id="7">
+							<description>Music Plug-ins Button</description>
+							<label> $LOCALIZE[31002] </label>
+							<onclick>Plex.ActivateWindow(5)</onclick>
+							<visible>!Skin.HasSetting(HideMusic)</visible>
+						</item>
+						<item id="1">
+							<description>Picture Plug-ins Button</description>
+							<label> $LOCALIZE[31003] </label>
+							<onclick>Plex.ActivateWindow(2)</onclick>
+							<visible>!Skin.HasSetting(HidePictures)</visible>
+						</item>
+					</content>
+				</control>
+			</control>
+      
 		</control>
 		<control type="group">
 			<animation effect="slide" end="-440,0" time="0" condition="!Skin.HasSetting(HomeBladeCentre)">Conditional</animation>
@@ -1170,27 +1237,33 @@
 						<visible>!Skin.HasSetting(HideFavourites)</visible>
 					</item>
 					<item id="12">
-						<description>App Store Menu</description>
+						<description>Plex Online Menu</description>
 						<label> $LOCALIZE[31952] </label>
 						<onclick>Plex.ActivateWindow(1,plex://localhost/system/plexonline,return)</onclick>
 						<visible>!Skin.HasSetting(HideAppStore)</visible>
 					</item>
+ 					<item id="1">
+						<description>Plug-ins Menu</description>
+						<label> $LOCALIZE[31970] </label>
+						<onclick>SetFocus(507)</onclick>
+						<visible>![[Skin.HasSetting(HideVideos) + Skin.HasSetting(HideMusic)] | [Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | [Skin.HasSetting(HidePictures) + Skin.HasSetting(HideMusic)]]</visible>
+					</item>
 					<item id="1">
 						<description>My Videos Button</description>
 						<label> $LOCALIZE[31971] </label>
-						<visible>!Skin.HasSetting(HideVideos)</visible>
+						<visible>[!Skin.HasSetting(HideVideos)] + Skin.HasSetting(HideMusic) + Skin.HasSetting(HidePictures)</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
 					</item>
 					<item id="2">
 						<description>My Music Button</description>
 						<label> $LOCALIZE[31972] </label>
-						<visible>!Skin.HasSetting(HideMusic)</visible>
+						<visible>[!Skin.HasSetting(HideMusic)] + Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)</visible>
 						<onclick>XBMC.ActivateWindow(5)</onclick>
 					</item>
 					<item id="3">
 						<description>My Pics Button</description>
 						<label> $LOCALIZE[31973] </label>
-						<visible>!Skin.HasSetting(HidePictures)</visible>
+						<visible>[!Skin.HasSetting(HidePictures)] + Skin.HasSetting(HideMusic) + Skin.HasSetting(HideVideos)</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>
 					<item id="4">
