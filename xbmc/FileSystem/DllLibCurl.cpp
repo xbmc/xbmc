@@ -31,6 +31,7 @@ using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
+static unsigned int g_curlTimeout = 0;
 DllLibCurlGlobal g_curlInterface;
 
 
@@ -38,22 +39,26 @@ DllLibCurlGlobal g_curlInterface;
 bool DllLibCurlGlobal::Load()
 {
   CSingleLock lock(m_critSection);
-  if(++g_curlReferences > 1)
-    return true;
-
-  if (!DllDynamic::Load())
+  if(g_curlReferences > 0)
   {
-    g_curlReferences = 0;
-    return false;
+    g_curlReferences++;
+    return true;
   }
+
+  /* we handle this ourself */
+  DllDynamic::EnableDelayedUnload(false);
+  if (!DllDynamic::Load())
+    return false;
 
   if (global_init(CURL_GLOBAL_ALL))
   {
     DllDynamic::Unload();
     CLog::Log(LOGERROR, "Error initializing libcurl");
-    g_curlReferences = 0;
     return false;
   }
+
+  /* check idle will clean up the last one */
+  g_curlReferences = 2;
 
   return true;
 }
@@ -71,10 +76,18 @@ void DllLibCurlGlobal::Unload()
 
     DllDynamic::Unload();
   }
+
+  /* CheckIdle will clear this one up */
+  if(g_curlReferences == 1)
+    g_curlTimeout = CTimeUtils::GetTimeMS();
 }
 
 void DllLibCurlGlobal::CheckIdle()
 {
+  /* avoid locking section here, to avoid stalling gfx thread on loads*/
+  if(g_curlReferences == 0)
+    return;
+
   CSingleLock lock(m_critSection);
   /* 20 seconds idle time before closing handle */
   const unsigned int idletime = 30000;
@@ -100,6 +113,10 @@ void DllLibCurlGlobal::CheckIdle()
     }
     it++;
   }
+
+  /* check if we should unload the dll */
+  if(g_curlReferences == 1 && CTimeUtils::GetTimeMS() > g_curlTimeout + idletime)
+    Unload();
 }
 
 void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)
