@@ -1330,14 +1330,14 @@
 						</control>
 					</control>
 					<control type="image">
-						<posx>235</posx>
-						<posy>68</posy>
+						<posx>215</posx>
+						<posy>34</posy>
 						<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
-						<height>40</height>
+						<height>95</height>
 						<width min="1" max="95">auto</width>
 						<info>Listitem.Property(mediaTag::contentRating)</info>
 						<aspectratio>keep</aspectratio>
-						<align>left</align>
+						<alignx>left</alignx>
 					</control>
 					<control type="image">
 						<posx>330</posx>
@@ -1347,14 +1347,14 @@
 						<width>95</width>
 						<info>Listitem.Property(mediaTag::studio)</info>
 						<aspectratio>keep</aspectratio>
-						<align>left</align>
+						<alignx>left</alignx>
 					</control>
 
 					<control type="textbox">
 						<description>Plot/Details</description>
 						<posy>151</posy>
 						<width>PanelStreamDetailTextWidth</width>
-						<height>864</height>
+						<height>300</height>
 						<info>ListItem.Plot</info>
 					</control>
 					<control type="group">
