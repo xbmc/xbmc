@@ -3665,10 +3665,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetTitle();
     break;
   case LISTITEM_ORIGINALTITLE:
     if (item->HasVideoInfoTag())
