@@ -564,6 +564,20 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         m_viewControl.SetSelectedItem(itemNumber);
         return true;
       }
+
+      // music videos - albums
+      if (item->m_strPath.Left(14).Equals("videodb://3/5/"))
+      {
+        long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
+        if (idAlbum == -1)
+          return false;
+        item->m_strPath.Format("musicdb://3/%ld/", idAlbum);
+        CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+        Update(m_vecItems->m_strPath);
+        m_viewControl.SetSelectedItem(itemNumber);
+        return true;
+      }
+
       CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
       if (pWindow)
       {
