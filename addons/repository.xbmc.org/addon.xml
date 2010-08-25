@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
 		version="1.0.0"
@@ -11,6 +11,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Install Add-ons from XBMC.org</summary>
+		<summary lang="de">Installiere Add-ons von XBMC.org</summary>
 		<summary lang="es">Instalar Addons desde XBMC.org</summary>
 		<summary lang="fr">Installe les Add-ons depuis XBMC.org</summary>
 		<summary lang="hu">Kiegészítők letöltése az XBMC.org-ról</summary>
@@ -19,6 +20,7 @@
 		<summary lang="pt">Install Add-ons from XBMC.org</summary>
 		<summary lang="zh">从XBMC.org安装扩展功能</summary>
 		<description lang="en">Download and install add-ons from the Official XBMC.org addon repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All addons on this repository have under gone basic testing, if you find a broken or not working addon please report it to Team XBMC so we can take any action needed.</description>
+		<description lang="de">Download und installiere Add-Ons aus dem offiziellen XBMC.org Add-On Repository.[CR]  Durch die Nutzung des offiziellen Repository hat man Zugriff auf das große Datei Mirror System welches schnelle Downloads aus der Nähr bereit stellt.[CR]  Alle Add-Ons im Repository wurden getestet, sollte dennoch ein Add-On Fehler haben oder gar nicht funktionieren, sollte dieser Fehler an das Team XBMC gemeldet werden, damit die nötigen Schritte getroffen werden können</description>
 		<description lang="es">Descarga e instala Addons desde el repositorio oficial de XBMC.[CR]  Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a ti.[CR]  Todos los Addons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algun addon que no funcione, por favor informa de ello al equipo de XBMC para que se pueda arreglar el fallo.</description>
 		<description lang="fr">Télécharge et installe les add-ons depuis le dépôt officiel de XBMC.org.[CR]  En utilisant le dépôt officiel, vous bénéficierez de notre service de fichiers miroir afin de télécharger plus rapidement depuis une région proche de vous.[CR]  Tous les add-ons de ce dépôt n'ont subi que des tests basiques, si vous trouvez un add-on corrompu ou inutilisable, informez la Team XBMC afin de prendre les mesures nécessaires.</description>
 		<description lang="hu">Kiegészítők letöltése és telepítése a hivatalos XBMC.org tárolóhelyről.[CR] A hivatalos tárolóhely használatával kihasználhatod szerteágazó tükör-kiszolgáló hálózatunkat, ami segít a gyorsabb letöltésben egy hozzád közelebb eső körzet használatával.[CR]  Minden kiegészítő ezen a tárolóhelyen átment egy alaptesztelésen. Ha mégis hibás vagy nem működő kiegészítőt találsz, kérünk jelezd az XBMC csapatnak, hogy megtegyük a szükséges lépseket.</description>
