@@ -587,6 +587,7 @@
 		</control>
 		<!-- THE FANART BACKGROUND -->
 		<control type="group">
+			<visible>!Player.HasVideo</visible>
 			<control type="largeimage">
 				<visible>Container(300).HasFocus(1000)</visible>
 				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
