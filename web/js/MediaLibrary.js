@@ -42,11 +42,15 @@ MediaLibrary.prototype = {
 						var floatableAlbum = $('<div>');
 						var path = item.thumbnail ? ('/vfs/' + item.thumbnail) : DEFAULT_ALBUM_COVER;
 						var title = item.album_title;
+						var artist = item.album_artist;
 						if (title.length > 18 && !(title.length <= 21)) {
 							title = item.album_title.substring(0, 18) + '...';
 						}
+						if (artist.length > 20 && !(artist.length <= 22)) {
+							artist = item.album_artist.substring(0, 20) + '...';
+						}
 						floatableAlbum.addClass('floatableAlbum')
-									  .html('<div class="imgWrapper"><img src="' + path + '" alt="" /></div><p class="album" title="' + item.album_title + '">' + title + '</p><p class="artist">' + item.album_artist + '</p>')
+									  .html('<div class="imgWrapper"><img src="' + path + '" alt="" /></div><p class="album" title="' + item.album_title + '">' + title + '</p><p class="artist" title="' + item.album_artist + '">' + artist + '</p>')
 									  .bind('click', {albumId: item.albumid}, jQuery.proxy(this.displayAlbumDetails, this));
 						$('#content').append(floatableAlbum);
 					}, this));
