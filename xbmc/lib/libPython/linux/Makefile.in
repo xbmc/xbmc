@@ -101,11 +101,9 @@ $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
 else
-$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF)
-	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--no-as-needed -l$(PYVERSION) \
-		`cat wrapper_python.def` wrapper_python.o \
-		`cat ../../../cores/DllLoader/exports/wrapper.def` \
-		../../../cores/DllLoader/exports/wrapper.o
+$(SLIB): $(PYWRAP)
+	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--no-as-needed $(PYWRAP) \
+		-l$(PYVERSION)
 endif
 
 $(ZIP): $(PYC) $(PYO)

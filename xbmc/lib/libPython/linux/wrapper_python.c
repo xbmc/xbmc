@@ -19,104 +19,122 @@
  *
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <stdarg.h>
 #include <string.h>
-#include <utime.h>
-#include <fcntl.h>
+#include <pthread.h>
+#include <dlfcn.h>
+#include <limits.h>
 
-char* xbp_getcwd(char *buf, int size);
-int xbp_chdir(const char *dirname);
-int xbp_access(const char *path, int mode);
-int xbp_unlink(const char *filename);
-int xbp_chmod(const char *filename, int pmode);
-int xbp_rmdir(const char *dirname);
-int xbp_utime(const char *filename, struct utimbuf *times);
-int xbp_rename(const char *oldname, const char *newname);
-int xbp_mkdir(const char *dirname);
-int xbp_open(const char *filename, int oflag, int pmode);
-int xbp_lstat(const char * path, struct stat * buf);
-#ifndef __APPLE__
-int xbp_lstat64(const char * path, struct stat64 * buf);
-#endif
-void *xbp_dlopen(const char *filename, int flag);
-int xbp_dlclose(void *handle);
-void *xbp_dlsym(void *handle, const char *symbol);
-
-#define PYTHON_WRAP(func) __wrap_##func
-
-int PYTHON_WRAP(access)(const char* path, int mode)
-{
-  return xbp_access(path, mode);
-}
-
-char* PYTHON_WRAP(getcwd)(char *buf, int size)
-{
-  return xbp_getcwd(buf, size);
-}
-
-int PYTHON_WRAP(chdir)(const char *dirname)
-{
-  return xbp_chdir(dirname);
-}
-
-int PYTHON_WRAP(unlink)(const char *filename)
-{
-  return xbp_unlink(filename);
-}
-
-int PYTHON_WRAP(chmod)(const char *filename, int pmode)
-{
-  return xbp_chmod(filename, pmode);
-}
-
-int PYTHON_WRAP(rmdir)(const char *dirname)
-{
-  return xbp_rmdir(dirname);
-}
-
-int PYTHON_WRAP(utime)(const char *filename, struct utimbuf *times)
-{
-  return xbp_utime(filename, times);
-}
-
-int PYTHON_WRAP(rename)(const char *oldname, const char *newname)
-{
-  return xbp_rename(oldname, newname);
-}
-
-int PYTHON_WRAP(mkdir)(const char *dirname)
-{
-  return xbp_mkdir(dirname);
-}
-
-int PYTHON_WRAP(lstat)(const char * path, struct stat * buf)
-{
-  return xbp_lstat(path, buf);
-}
-#ifndef __APPLE__
-int PYTHON_WRAP(lstat64)(const char * path, struct stat64 * buf)
-{
-  return xbp_lstat64(path, buf);
-}
+/* The names of libc libraries for different systems */
+#if defined(_WIN32)
+#  define C_LIB "msvcr90.dll"
+#elif defined(__APPLE__)
+#  define C_LIB "libc.dylib"
+#else
+#  define C_LIB "libc.so.6"
 #endif
 
-void *PYTHON_WRAP(dlopen)(const char *filename, int flag)
+/* These are attributes that enable xbmc_libc_init to be automatically called
+ * before entering main() or during library initilization.
+ * Idea for the MSVC declaration is from
+ * http://cgit.freedesktop.org/mesa/mesa/tree/src/gallium/auxiliary/util/u_init.h
+ */
+#if defined(_MSC_VER)
+#  define XBMC_LIBC_INIT \
+   static void __cdecl xbmc_libc_init(void); \
+   __declspec(allocate(".CRT$XCU")) void (__cdecl* xbmc_libc_init__xcu)(void) = xbmc_libc_init; \
+   static void __cdecl xbmc_libc_init(void)
+#elif defined(__GNUC__)
+#  define XBMC_LIBC_INIT __attribute__((constructor)) static void xbmc_libc_init(void)
+#else
+#  define XBMC_LIBC_INIT void xbmc_libc_init(void)
+#endif
+
+/* Global dlopen handle */
+static void *dlopen_handle;
+
+/* Global dlsym handles */
+static char *(*libc_getcwd)(char*,size_t);
+static int (*libc_chdir)(const char*);
+static FILE *(*libc_fopen64)(const char*, const char*);
+
+/* Function prototypes of overridden libc functions */
+char *getcwd(char *buf, size_t size);
+int chdir(const char *path);
+
+/* Function to initialize dlopen and dlsym handles. It should be called before
+ * using any overridden libc function.
+ */
+XBMC_LIBC_INIT
 {
-  return xbp_dlopen(filename,flag);
+  dlopen_handle = dlopen(C_LIB, RTLD_LOCAL | RTLD_LAZY);
+  libc_getcwd = dlsym(dlopen_handle, "getcwd");
+  libc_chdir = dlsym(dlopen_handle, "chdir");
+  libc_fopen64 = dlsym(dlopen_handle, "fopen64");
 }
 
-int PYTHON_WRAP(dlclose)(void *handle)
+#ifdef __APPLE__
+/* Use pthread's built-in support for TLS, it's more portable. */
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tWorkingDir = 0;
+
+/* Called once and only once. */
+static void MakeTlsKeys()
 {
-  return xbp_dlclose(handle);
+  pthread_key_create(&tWorkingDir, free);
 }
 
-void *PYTHON_WRAP(dlsym)(void *handle, const char *symbol)
+#define xbp_cw_dir (char*)pthread_getspecific(tWorkingDir)
+
+#else
+__thread char xbp_cw_dir[PATH_MAX] = "";
+#endif
+
+/* Overridden functions */
+char *getcwd(char *buf, size_t size)
 {
-  return xbp_dlsym(handle, symbol);
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+  if (xbp_cw_dir == 0)
+  {
+    printf("Initializing Python path...\n");
+    char* path = (char* )malloc(PATH_MAX);
+    strcpy(path, _P("special://xbmc/system/python").c_str());
+    pthread_setspecific(tWorkingDir, (void*)path);
+  }
+#endif
+
+  if (buf == NULL) buf = (char *)malloc(size);
+  strcpy(buf, xbp_cw_dir);
+  return buf;
 }
 
+int chdir(const char *dirname)
+{
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+
+  if (xbp_cw_dir == 0)
+  {
+    char* path = (char* )malloc(PATH_MAX);
+    strcpy(path, _P("special://xbmc/system/python").c_str());
+    pthread_setspecific(tWorkingDir, (void*)path);
+  }
+#endif
+
+  if (strlen(dirname) > PATH_MAX) return -1;
+  strcpy(xbp_cw_dir, dirname);
+  return 0;
+}
+
+FILE* fopen64(const char *filename, const char *mode)
+{
+#ifdef __APPLE__
+  return fopen(filename, mode);
+#else
+  return (*libc_fopen64)(filename, mode);
+#endif
+}
