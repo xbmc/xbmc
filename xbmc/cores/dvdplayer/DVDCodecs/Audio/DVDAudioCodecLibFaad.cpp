@@ -20,6 +20,8 @@
  */
 
 #include "DVDAudioCodecLibFaad.h"
+#ifdef USE_LIBFAAD_DECODER
+
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
 #include "utils/log.h"
@@ -260,3 +262,5 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
   return false;
 }
+
+#endif
