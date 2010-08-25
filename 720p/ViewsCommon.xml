@@ -1840,7 +1840,7 @@
 						<control type="label">
 							<posx>105</posx>
 							<posy>200</posy>
-							<width>210</width>
+							<width>180</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<scroll>false</scroll>
@@ -1863,7 +1863,7 @@
 						<control type="label">
 							<posx>105</posx>
 							<posy>200</posy>
-							<width>210</width>
+							<width>180</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<scroll>false</scroll>
