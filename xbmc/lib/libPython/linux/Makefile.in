@@ -95,11 +95,9 @@ ifneq (@USE_EXTERNAL_PYTHON@,1)
 endif
 
 ifneq (@USE_EXTERNAL_PYTHON@,1)
-$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
-	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
-		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
-		`cat ../../../cores/DllLoader/exports/wrapper.def` \
-		../../../cores/DllLoader/exports/wrapper.o
+$(SLIB): $(PYWRAP) ../Python/libpython2.4.a
+	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive $(PYWRAP) \
+		../Python/libpython2.4.a -Wl,--no-whole-archive
 else
 $(SLIB): $(PYWRAP)
 	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--no-as-needed $(PYWRAP) \
