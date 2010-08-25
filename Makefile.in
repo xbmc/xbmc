@@ -553,7 +553,7 @@ install-livedatas:
 
 install-web:
 	@mkdir -p $(DESTDIR)$(datarootdir)/xbmc/web
-	@cp -r web/poc_jsonrpc/* $(DESTDIR)$(datarootdir)/xbmc/web
+	@cp -r web/* $(DESTDIR)$(datarootdir)/xbmc/web
 	@find $(DESTDIR)$(datarootdir)/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:

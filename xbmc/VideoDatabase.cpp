@@ -3298,6 +3298,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 41)
     {
+      m_pDS->exec("DELETE FROM streamdetails"); //Roll the stream details as changed from minutes to seconds
+    }
+    if (iVersion < 42)
+    {
       m_pDS->exec("ALTER table settings add PostProcess bool");
     }
   }

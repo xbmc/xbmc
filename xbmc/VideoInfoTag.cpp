@@ -183,7 +183,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
       XMLUtils::SetFloat(&stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
       XMLUtils::SetInt(&stream, "width", m_streamDetails.GetVideoWidth(iStream));
       XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
-      XMLUtils::SetInt(&stream, "duration", m_streamDetails.GetVideoDuration(iStream));
+      XMLUtils::SetInt(&stream, "duration", m_streamDetails.GetVideoDuration(iStream) / 60);
       streamdetails.InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetAudioStreamCount(); iStream++)
@@ -515,11 +515,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
       while ((nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail)))
       {
         CStreamDetailVideo *p = new CStreamDetailVideo();
+        int duration = p->m_iDuration / 60;
         XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
         XMLUtils::GetFloat(nodeDetail, "aspect", p->m_fAspect);
         XMLUtils::GetInt(nodeDetail, "width", p->m_iWidth);
         XMLUtils::GetInt(nodeDetail, "height", p->m_iHeight);
-        XMLUtils::GetInt(nodeDetail, "duration", p->m_iDuration);
+        XMLUtils::GetInt(nodeDetail, "duration", duration);
         p->m_strCodec.MakeLower();
         m_streamDetails.AddStream(p);
       }
@@ -562,4 +563,9 @@ bool CVideoInfoTag::IsEmpty() const
   return (m_strTitle.IsEmpty() &&
           m_strFile.IsEmpty() &&
           m_strPath.IsEmpty());
+}
+
+int CVideoInfoTag::GetDuration() const
+{
+  return m_streamDetails.GetVideoDuration(0);
 }

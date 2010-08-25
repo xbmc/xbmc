@@ -48,6 +48,7 @@ public:
   const CStdString GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
+  int GetDuration() const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
