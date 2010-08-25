@@ -35,29 +35,13 @@
 #  define C_LIB "libc.so.6"
 #endif
 
-/* These are attributes that enable xbmc_libc_init to be automatically called
- * before entering main() or during library initilization.
- * Idea for the MSVC declaration is from
- * http://cgit.freedesktop.org/mesa/mesa/tree/src/gallium/auxiliary/util/u_init.h
- */
-#if defined(_MSC_VER)
-#  define XBMC_LIBC_INIT \
-   static void __cdecl xbmc_libc_init(void); \
-   __declspec(allocate(".CRT$XCU")) void (__cdecl* xbmc_libc_init__xcu)(void) = xbmc_libc_init; \
-   static void __cdecl xbmc_libc_init(void)
-#elif defined(__GNUC__)
-#  define XBMC_LIBC_INIT __attribute__((constructor)) static void xbmc_libc_init(void)
-#else
-#  define XBMC_LIBC_INIT void xbmc_libc_init(void)
-#endif
-
 /* Global dlopen handle */
-static void *dlopen_handle;
+void *dlopen_handle;
 
 /* Global dlsym handles */
-static char *(*libc_getcwd)(char*,size_t);
-static int (*libc_chdir)(const char*);
-static FILE *(*libc_fopen64)(const char*, const char*);
+char *(*libc_getcwd)(char*,size_t);
+int (*libc_chdir)(const char*);
+FILE *(*libc_fopen64)(const char*, const char*);
 
 /* Function prototypes of overridden libc functions */
 char *getcwd(char *buf, size_t size);
@@ -66,7 +50,7 @@ int chdir(const char *path);
 /* Function to initialize dlopen and dlsym handles. It should be called before
  * using any overridden libc function.
  */
-XBMC_LIBC_INIT
+void xbmc_libc_init(void)
 {
   dlopen_handle = dlopen(C_LIB, RTLD_LOCAL | RTLD_LAZY);
   libc_getcwd = dlsym(dlopen_handle, "getcwd");

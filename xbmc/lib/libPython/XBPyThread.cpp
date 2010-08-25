@@ -210,7 +210,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  xbp_chdir(scriptDir.c_str());
+  chdir(scriptDir.c_str());
 
   if (!stopping)
   {
