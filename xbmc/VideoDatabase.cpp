@@ -2963,7 +2963,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
                 "ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,"
                 "Sharpness,NoiseReduction,NonLinStretch,PostProcess) "
               "VALUES ";
-      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%f,%i)",
+      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%f,%i,%i)",
                            idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                            setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn, setting.m_Brightness,
                            setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_OutputToAllSpeakers,
