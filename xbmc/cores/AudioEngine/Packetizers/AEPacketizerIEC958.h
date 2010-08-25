@@ -44,13 +44,17 @@
 class CAEPacketizerIEC958 : public IAEPacketizer
 {
 public:
-  typedef enum
+  enum IEC958DataType
   {
-    STREAM_FMT_INVALID = -1,
-    STREAM_FMT_AC3,
-    STREAM_FMT_DTS,
-    STREAM_FMT_AAC
-  } SPDIFFormat;
+    IEC958_TYPE_NULL   = 0x00,
+    IEC958_TYPE_AC3    = 0x01,
+    IEC958_TYPE_DTS1   = 0x0B, /*  512 samples */
+    IEC958_TYPE_DTS2   = 0x0C, /* 1024 samples */
+    IEC958_TYPE_DTS3   = 0x0D, /* 2048 samples */
+    IEC958_TYPE_DTSHD  = 0x11,
+    IEC958_TYPE_EAC3   = 0x15,
+    IEC958_TYPE_TRUEHD = 0x16
+  };
 
   virtual const char  *GetName      () { return "IEC958"; }
   virtual unsigned int GetPacketSize() { return MAX_IEC958_PACKET; }
@@ -69,7 +73,7 @@ private:
   S_PACK
   struct IEC958Packet
   {
-    uint16_t m_syncwords[2];
+    uint32_t m_preamble;
     uint16_t m_type;
     uint16_t m_length;
     uint8_t  m_data[MAX_IEC958_PACKET - 8];
@@ -84,20 +88,19 @@ private:
   typedef unsigned int (CAEPacketizerIEC958::*SPDIFSyncFunc)(uint8_t *data, unsigned int size, unsigned int *fsize);
   typedef void (CAEPacketizerIEC958::*SPDIFPackFunc)(uint8_t *data, unsigned int fsize);
 
-  SPDIFFormat   m_dataType;
-  SPDIFSyncFunc m_syncFunc;
-  SPDIFPackFunc m_packFunc;
-  unsigned int  m_sampleRate;
-  unsigned int  m_dtsBlocks;
+  bool           m_hasSync;
+  IEC958DataType m_dataType;
+  SPDIFSyncFunc  m_syncFunc;
+  SPDIFPackFunc  m_packFunc;
+  unsigned int   m_sampleRate;
+  bool           m_dataIsLE;
 
-  void SwapPacket();
+  void SwapPacket(const bool swapData);
   void PackAC3(uint8_t *data, unsigned int fsize);
   void PackDTS(uint8_t *data, unsigned int fsize);
-  void PackAAC(uint8_t *data, unsigned int fsize);
 
   unsigned int DetectType(uint8_t *data, unsigned int size, unsigned int *fsize);
   unsigned int SyncAC3(uint8_t *data, unsigned int size, unsigned int *fsize);
   unsigned int SyncDTS(uint8_t *data, unsigned int size, unsigned int *fsize);
-  unsigned int SyncAAC(uint8_t *data, unsigned int size, unsigned int *fsize);
 };
 

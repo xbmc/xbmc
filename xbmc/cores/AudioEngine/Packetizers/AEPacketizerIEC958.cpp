@@ -21,34 +21,48 @@
 
 #include "AEPacketizerIEC958.h"
 
+#define IEC958_PREAMBLE   0xF8724E1F
+#define DTS_PREAMBLE_14BE 0x1FFFE800
+#define DTS_PREAMBLE_14LE 0xFF1F00E8
+#define DTS_PREAMBLE_16BE 0x7FFE8001
+#define DTS_PREAMBLE_16LE 0xFE7F0180
+#define DTS_SRATE_COUNT   16
+
 static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
-static const uint32_t DTSSampleRates[] = {0, 8000, 16000, 32000, 64000, 128000, 11025, 22050, 44100, 88200, 176400, 12000, 24000, 48000, 96000, 192000};
 
-enum IEC958DataType
+static const uint32_t DTSSampleRates[DTS_SRATE_COUNT] =
 {
-  IEC958_TYPE_NULL   = 0x00,
-  IEC958_TYPE_AC3    = 0x01,
-  IEC958_TYPE_DTS1   = 0x0B, /*  512 samples */
-  IEC958_TYPE_DTS2   = 0x0C, /* 1024 samples */
-  IEC958_TYPE_DTS3   = 0x0D, /* 2048 samples */
-  IEC958_TYPE_DTSHD  = 0x11,
-  IEC958_TYPE_EAC3   = 0x15,
-  IEC958_TYPE_TRUEHD = 0x16
+  0,
+  8000,
+  16000,
+  32000,
+  64000,
+  128000,
+  11025,
+  22050,
+  44100,
+  88200,
+  176400,
+  12000,
+  24000,
+  48000,
+  96000,
+  192000
 };
 
 CAEPacketizerIEC958::CAEPacketizerIEC958() :
   m_packetSize(0),
   m_hasPacket (false),
-  m_dataType  (STREAM_FMT_INVALID),
+  m_hasSync   (false),
+  m_dataType  (IEC958_TYPE_NULL),
   m_syncFunc  (&CAEPacketizerIEC958::DetectType),
   m_packFunc  (NULL ),
   m_sampleRate(48000)
 {
   m_dllAvUtil.Load();
 
-  m_packetData.m_syncwords[0] = 0xF872;
-  m_packetData.m_syncwords[1] = 0x4E1F;
+  m_packetData.m_preamble     = IEC958_PREAMBLE;
   m_packetData.m_type         = IEC958_TYPE_NULL;
   m_packetData.m_length       = 0;
   bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
@@ -73,15 +87,16 @@ void CAEPacketizerIEC958::Deinitialize()
 void CAEPacketizerIEC958::Reset()
 {
   m_hasPacket  = false;
+  m_hasSync    = false;
   m_packetSize = 0;
-  m_dataType   = STREAM_FMT_INVALID;
+  m_dataType   = IEC958_TYPE_NULL;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
 
-  m_packetData.m_syncwords[0] = 0xF872;
-  m_packetData.m_syncwords[1] = 0x4E1F;
+  m_packetData.m_preamble     = IEC958_PREAMBLE;
   m_packetData.m_type         = IEC958_TYPE_NULL;
   m_packetData.m_length       = 0;
   bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
+  SwapPacket(false);
 }
 
 int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
@@ -111,12 +126,11 @@ int CAEPacketizerIEC958::GetPacket(uint8_t **data)
   /* if we dont have a packet, return a null packet */
   if (!m_hasPacket && m_packetData.m_type != IEC958_TYPE_NULL)
   {
-    m_packetData.m_syncwords[0] = 0xF872;
-    m_packetData.m_syncwords[1] = 0x4E1F;
-    m_packetData.m_type   = IEC958_TYPE_NULL;
-    m_packetData.m_length = 0;
+    m_packetData.m_preamble = IEC958_PREAMBLE;
+    m_packetData.m_type     = IEC958_TYPE_NULL;
+    m_packetData.m_length   = 0;
     bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
-    SwapPacket();
+    SwapPacket(false);
   }
   else
     m_hasPacket = false;
@@ -125,53 +139,45 @@ int CAEPacketizerIEC958::GetPacket(uint8_t **data)
   return sizeof(m_packetData);
 }
 
-inline void CAEPacketizerIEC958::SwapPacket()
+inline void CAEPacketizerIEC958::SwapPacket(const bool swapData)
 {
 #ifndef __BIG_ENDIAN__
-  uint16_t *pos = (uint16_t*)&m_packetData;
-  for(unsigned int i = 0; i < sizeof(m_packetData); i += 2, ++pos)
-    *pos = Endian_Swap16(*pos);
+  m_packetData.m_preamble = Endian_Swap32(m_packetData.m_preamble);
+  m_packetData.m_type     = Endian_Swap16(m_packetData.m_type    );
+  m_packetData.m_length   = Endian_Swap16(m_packetData.m_length  );
+  if (swapData)
+  {
+    uint16_t *pos = (uint16_t*)m_packetData.m_data;
+    for(unsigned int i = 0; i < sizeof(m_packetData.m_data); i += 2, ++pos)
+      *pos = Endian_Swap16(*pos);
+  }
 #endif
 }
 
 /* PACK FUNCTIONS */
 void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
 {
-  m_packetData.m_syncwords[0] = 0xF872;
-  m_packetData.m_syncwords[1] = 0x4E1F;
-  m_packetData.m_type   = IEC958_TYPE_AC3;
-  m_packetData.m_length = fsize;
+  m_packetData.m_preamble = IEC958_PREAMBLE;
+  m_packetData.m_type     = m_dataType;
+  m_packetData.m_length   = fsize;
   memcpy(m_packetData.m_data, data, fsize);
   bzero (m_packetData.m_data + fsize, sizeof(m_packetData.m_data) - fsize);
 
-  SwapPacket();
-  m_hasPacket  = true;
+  SwapPacket(true);
+  m_hasPacket = true;
 }
 
 void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
 {
-  m_packetData.m_syncwords[0] = 0xF872;
-  m_packetData.m_syncwords[1] = 0x4E1F;
-  switch(m_dtsBlocks)
-  {
-    case  512: m_packetData.m_type = IEC958_TYPE_DTS1; break;
-    case 1024: m_packetData.m_type = IEC958_TYPE_DTS2; break;
-    case 2048: m_packetData.m_type = IEC958_TYPE_DTS3; break;
-    default:
-      /* invalid frame size */
-      return;
-  }
-
-  m_packetData.m_length = fsize;
+  m_packetData.m_preamble = IEC958_PREAMBLE;
+  m_packetData.m_type     = m_dataType;
+  m_packetData.m_length   = fsize;
   memcpy(m_packetData.m_data, data, fsize);
   bzero (m_packetData.m_data + fsize, sizeof(m_packetData.m_data) - fsize);
 
-  SwapPacket();
+  /* swap the data too if the stream is BE */
+  SwapPacket(!m_dataIsLE);
   m_hasPacket  = true;
-}
-
-void CAEPacketizerIEC958::PackAAC(uint8_t *data, unsigned int fsize)
-{
 }
 
 /* SYNC FUNCTIONS */
@@ -191,31 +197,23 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
     if (size > 6 && data[0] == 0x0b && data[1] == 0x77)
     {
       unsigned int skip = SyncAC3(data, size, fsize);
-      if (m_dataType == STREAM_FMT_AC3)
+      if (m_hasSync)
         return skipped + skip;
     }
 
     /* if it could be DTS */
     if (size > 8)
     {
-       if (
-         (data[0] == 0x7F && data[1] == 0xFE && data[2] == 0x80 && data[3] == 0x01) ||
-         (data[0] == 0x1F && data[1] == 0xFF && data[2] == 0xE8 && data[3] == 0x00 && data[4] == 0x07 && (data[5] & 0xF0) == 0xF0) ||
-         (data[1] == 0x7F && data[0] == 0xFE && data[3] == 0x80 && data[2] == 0x01) ||
-         (data[1] == 0x1F && data[0] == 0xFF && data[3] == 0xE8 && data[2] == 0x00 && data[5] == 0x07 && (data[4] & 0xF0) == 0xF0))
+      unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
+      if (header == DTS_PREAMBLE_14LE ||
+          header == DTS_PREAMBLE_14BE ||
+          header == DTS_PREAMBLE_16LE || 
+          header == DTS_PREAMBLE_16BE)
       {
         unsigned int skip = SyncDTS(data, size, fsize);
-        if (m_dataType == STREAM_FMT_DTS)
+        if (m_hasSync)
           return skipped + skip;
       }
-    }
-
-    /* if it could be AAC */
-    if (size > 5 && data[0] == 0xFF && (data[1] & 0xF0) == 0xF0)
-    {
-      unsigned int skip = SyncAAC(data, size, fsize);
-      if (m_dataType == STREAM_FMT_AAC)
-        return skipped + skip;
     }
 
     /* move along one byte */
@@ -261,7 +259,7 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
     m_sampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */
-    if (m_dataType == STREAM_FMT_AC3 && skip == 0)
+    if (m_dataType == IEC958_TYPE_AC3 && skip == 0)
       return 0;
 
     unsigned int crc_size;
@@ -275,16 +273,18 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
         continue;
 
     /* if we get here, we can sync */
+    m_hasSync  = true;
     m_syncFunc = &CAEPacketizerIEC958::SyncAC3;
     m_packFunc = &CAEPacketizerIEC958::PackAC3;
-    m_dataType = STREAM_FMT_AC3;
+    m_dataType = IEC958_TYPE_AC3;
     CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
     return skip;
   }
 
   /* if we get here, the entire packet is invalid and we have lost sync */
+  m_hasSync    = false;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_dataType   = STREAM_FMT_INVALID;
+  m_dataType   = IEC958_TYPE_NULL;
   m_packetSize = 0;
   return size;
 }
@@ -292,49 +292,54 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
 unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsigned int *fsize)
 {
   unsigned int skip;
-  bool littleEndian;
 
   for(skip = 0; size - skip > 8; ++skip, ++data)
   {
     unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
     bool match = true;
     unsigned int blocks;
+    unsigned int srate_code;
+
     switch(header)
     {
       /* 14bit BE */
-      case 0x1FFFE800:
+      case DTS_PREAMBLE_14BE:
         if (data[4] != 0x07 || data[5] != 0xf0)
         {
           match = false;
           break;
         }
         blocks = ((data[5] & 0x7) << 4) | ((data[6] & 0x3f) >> 2);
-        m_sampleRate = DTSSampleRates[(data[8] >> 2) & 0xf];
+        srate_code = (data[8] >> 2) & 0xf;
+        m_dataIsLE = false;
         break;
 
       /* 14bit LE */
-      case 0xFF1F00E8:
+      case DTS_PREAMBLE_14LE:
         if (data[5] != 0x07 || data[4] != 0xf0)
         {
           match = false;
           break;
         }
         blocks = ((data[4] & 0x7) << 4) | ((data[7] & 0x3f) >> 2);
-        m_sampleRate = DTSSampleRates[(data[9] >> 2) & 0xf];
+        srate_code = (data[9] >> 2) & 0xf;
+        m_dataIsLE = true;
         break;
 
       /* 16bit BE */
-      case 0x7FFE8001:
-        littleEndian = false;
+      case DTS_PREAMBLE_16BE:
+        m_dataIsLE = false;
         blocks = (data[4] >> 2) & 0x7f;
-        m_sampleRate = DTSSampleRates[(data[8] >> 2) & 0xf];
+        srate_code = (data[8] >> 2) & 0xf;
+        m_dataIsLE = false;
         break;
 
       /* 16bit LE */
-      case 0xFE7F0180:
-        littleEndian = true;
+      case DTS_PREAMBLE_16LE:
+        m_dataIsLE = true;
         blocks = (data[4] >> 2) & 0x7f;
-        m_sampleRate = DTSSampleRates[(data[9] >> 2) & 0xf];
+        srate_code = (data[9] >> 2) & 0xf;
+        m_dataIsLE = true;
         break;
 
 
@@ -343,9 +348,9 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
         break;      
     }
 
-    if (!match) continue;
+    if (!match || srate_code == 0 || srate_code >= DTS_SRATE_COUNT) continue;
 
-    if (littleEndian)
+    if (m_dataIsLE)
     {
       /* if it is not a termination frame, check the next 6 bits are set */
       if ((data[4] & 0x80) == 0x80 && (data[4] & 0x7C) != 0x7C)
@@ -368,43 +373,31 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
     if (*fsize < 96 || *fsize > 16384)
       continue;
 
-    m_dtsBlocks = (blocks + 1) << 5;
-    m_syncFunc  = &CAEPacketizerIEC958::SyncDTS;
-    m_packFunc  = &CAEPacketizerIEC958::PackDTS;
-    m_dataType  = STREAM_FMT_DTS;
-    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncDTS - DTS stream detected (%d blocks, %dHz)", m_dtsBlocks, m_sampleRate);
+    bool invalid = false;
+    switch((blocks + 1) << 5)
+    {
+      case 512 : m_dataType = IEC958_TYPE_DTS1;
+      case 1024: m_dataType = IEC958_TYPE_DTS2;
+      case 2048: m_dataType = IEC958_TYPE_DTS3;
+      default:
+        invalid = true;
+        continue;
+    }
+    if (invalid)
+      continue;
+
+    m_hasSync    = true;
+    m_syncFunc   = &CAEPacketizerIEC958::SyncDTS;
+    m_packFunc   = &CAEPacketizerIEC958::PackDTS;
+    m_sampleRate = DTSSampleRates[srate_code];
+    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
     return skip;
   }
 
   /* lost sync */
+  m_hasSync    = false;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_dataType   = STREAM_FMT_INVALID;
-  m_packetSize = 0;
-  return size;
-}
-
-unsigned int CAEPacketizerIEC958::SyncAAC(uint8_t *data, unsigned int size, unsigned int *fsize)
-{
-  unsigned int skip;
-  for(skip = 0; size - skip > 5; ++skip, ++data)
-  {
-    if (data[0] != 0xFF || (data[1] & 0xF0) != 0xF0)
-      continue;
-
-    *fsize = (data[3] & 0x03) << 11 | data[4] << 3 | (data[5] & 0xE0) >> 5;
-    if (*fsize < 7)
-      continue;
-
-    m_syncFunc = &CAEPacketizerIEC958::SyncAAC;
-    m_packFunc = &CAEPacketizerIEC958::PackAAC;
-    m_dataType = STREAM_FMT_AAC;
-    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncAAC - AAC stream detected");
-    return skip;
-  }
-
-  /* lost sync */
-  m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_dataType   = STREAM_FMT_INVALID;
+  m_dataType   = IEC958_TYPE_NULL;
   m_packetSize = 0;
   return size;
 }
