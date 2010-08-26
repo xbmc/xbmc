@@ -1961,17 +1961,12 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
-#ifdef HAS_LIBBDNAV
+#ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
-            CUtil::AddFileToFolder(dvdPath, "PLAYLIST/00000.mpls", path);
-            dvdPath.Empty();
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
             if (CFile::Exists(path))
-            {
               dvdPath = path;
-              dvdPath.Replace("00000.mpls","main.mpls");
-            }
           }
 #endif
           if (!dvdPath.IsEmpty())

@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP -I../../../lib -I../Codecs/libbdnav/src/
+INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP -I../../../lib
 CXXFLAGS += -D__STDC_FORMAT_MACROS \
           -DENABLE_DVDINPUTSTREAM_STACK \
 
@@ -14,8 +14,8 @@ SRCS=	DVDFactoryInputStream.cpp \
 	DVDInputStreamRTMP.cpp \
 	DVDInputStreamStack.cpp \
 	DVDInputStreamHTSP.cpp \
-        DVDInputStreamMMS.cpp \
-        DVDInputStreamMPLS.cpp \
+	DVDInputStreamMMS.cpp \
+	DVDInputStreamBluray.cpp \
 
 LIB=	DVDInputStreams.a
 
