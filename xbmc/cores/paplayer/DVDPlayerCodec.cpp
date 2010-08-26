@@ -236,28 +236,38 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   m_decoded = NULL;
   m_nDecodedLen = 0;
 
-  if (m_pPacket && m_audioPos >= m_pPacket->iSize)
+  // dvdplayer returns a read error on a single invalid packet, while
+  // in paplayer READ_ERROR is a fatal error.
+  // Therefore skip over invalid packets here.
+  int decodeLen = -1;
+  for (int tries = 0; decodeLen < 0 && tries < 2; ++tries)
   {
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-    m_audioPos = 0;
-    m_pPacket = NULL;
-  }
-
-  if (m_pPacket == NULL)
-  {
-    do
+    if (m_pPacket && m_audioPos >= m_pPacket->iSize)
     {
-      m_pPacket = m_pDemuxer->Read();
-    } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
-
-    if (!m_pPacket)
-    {
-      return READ_EOF;
+      CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
+      m_audioPos = 0;
+      m_pPacket = NULL;
     }
-    m_audioPos = 0;
-  }
 
-  int decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos);
+    if (m_pPacket == NULL)
+    {
+      do
+      {
+        m_pPacket = m_pDemuxer->Read();
+      } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
+
+      if (!m_pPacket)
+      {
+        return READ_EOF;
+      }
+      m_audioPos = 0;
+    }
+
+    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos);
+
+    if (decodeLen < 0)
+      m_audioPos = m_pPacket->iSize; // skip packet
+  }
 
   if (decodeLen < 0)
   {
