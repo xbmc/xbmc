@@ -1217,17 +1217,6 @@ namespace VIDEO
           return nfoFile;
       }
 
-      // already an .nfo file?
-      if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-        nfoFile = item->m_strPath;
-      // no, create .nfo file
-      else
-        nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
-
-      // test file existence
-      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
-        nfoFile.Empty();
-
       // try looking for .nfo file for a stacked item
       if (item->IsStack())
       {
@@ -1245,6 +1234,19 @@ namespace VIDEO
           nfoFile = GetnfoFile(&item2, bGrabAny);
         }
       }
+      else
+      {
+         // already an .nfo file?
+        if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+          nfoFile = item->m_strPath;
+        // no, create .nfo file
+        else
+          nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
+      }
+
+      // test file existence
+      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
+        nfoFile.Empty();
 
       if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
       {
