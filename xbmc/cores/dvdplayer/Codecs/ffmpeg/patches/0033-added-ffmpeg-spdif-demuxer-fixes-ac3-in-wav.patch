@@ -1,0 +1,312 @@
+From 9ce6f874f085c318a88d73f89c2d3804dd064ce6 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Thu, 26 Aug 2010 21:49:03 +0300
+Subject: [PATCH] added: ffmpeg spdif demuxer (fixes ac3-in-wav)
+
+This is a patch on its way to ffmpeg upstream after some cleanups, but
+it does work already.
+---
+ .../cores/dvdplayer/Codecs/ffmpeg/doc/general.texi |    2 +-
+ .../dvdplayer/Codecs/ffmpeg/libavformat/Makefile   |    1 +
+ .../Codecs/ffmpeg/libavformat/allformats.c         |    2 +-
+ .../dvdplayer/Codecs/ffmpeg/libavformat/spdif.c    |  229 +++++++++++++++++++-
+ 4 files changed, 231 insertions(+), 3 deletions(-)
+
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi b/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
+index d7f85e8..0154b79 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/general.texi
+@@ -102,7 +102,7 @@ library:
+ @item id Quake II CIN video     @tab   @tab X
+ @item id RoQ                    @tab X @tab X
+     @tab Used in Quake III, Jedi Knight 2, other computer games.
+-@item IEC61937 encapsulation @tab X @tab
++@item IEC61937 encapsulation @tab X @tab X
+ @item IFF                       @tab   @tab X
+     @tab Interchange File Format
+ @item Interplay MVE             @tab   @tab X
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/Makefile b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/Makefile
+index 36669bd..489c9ce 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/Makefile
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/Makefile
+@@ -238,6 +238,7 @@ OBJS-$(CONFIG_SMACKER_DEMUXER)           += smacker.o
+ OBJS-$(CONFIG_SOL_DEMUXER)               += sol.o raw.o
+ OBJS-$(CONFIG_SOX_DEMUXER)               += soxdec.o raw.o
+ OBJS-$(CONFIG_SOX_MUXER)                 += soxenc.o
++OBJS-$(CONFIG_SPDIF_DEMUXER)             += spdif.o
+ OBJS-$(CONFIG_SPDIF_MUXER)               += spdif.o
+ OBJS-$(CONFIG_STR_DEMUXER)               += psxstr.o
+ OBJS-$(CONFIG_SWF_DEMUXER)               += swfdec.o
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c
+index 94ab78c..30469f4 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c
+@@ -187,7 +187,7 @@ void av_register_all(void)
+     REGISTER_DEMUXER  (SMACKER, smacker);
+     REGISTER_DEMUXER  (SOL, sol);
+     REGISTER_MUXDEMUX (SOX, sox);
+-    REGISTER_MUXER    (SPDIF, spdif);
++    REGISTER_MUXDEMUX (SPDIF, spdif);
+     REGISTER_DEMUXER  (STR, str);
+     REGISTER_MUXDEMUX (SWF, swf);
+     REGISTER_MUXER    (TG2, tg2);
+diff --git a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/spdif.c b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/spdif.c
+index 473e325..98184d6 100644
+--- a/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/spdif.c
++++ b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/spdif.c
+@@ -1,6 +1,7 @@
+ /*
+- * IEC958 muxer
++ * IEC958 muxer and demuxer
+  * Copyright (c) 2009 Bartlomiej Wolowiec
++ * Copyright (c) 2010 Anssi Hannula <anssi.hannula@iki.fi>
+  *
+  * This file is part of FFmpeg.
+  *
+@@ -23,6 +24,7 @@
+  * @file
+  * IEC-61937 encapsulation of various formats, used by S/PDIF
+  * @author Bartlomiej Wolowiec
++ * @author Anssi Hannula
+  */
+ 
+ /*
+@@ -303,6 +305,7 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
+     return 0;
+ }
+ 
++#if CONFIG_SPDIF_MUXER
+ AVOutputFormat spdif_muxer = {
+     "spdif",
+     NULL_IF_CONFIG_SMALL("IEC958 - S/PDIF (IEC-61937)"),
+@@ -315,3 +318,227 @@ AVOutputFormat spdif_muxer = {
+     spdif_write_packet,
+     spdif_write_trailer,
+ };
++#endif
++
++
++static int spdif_get_offset_and_codec(AVFormatContext *s,
++                                      enum IEC958DataType data_type,
++                                      const char *buf, int *offset,
++                                      enum CodecID *codec)
++{
++    AACADTSHeaderInfo aac_hdr;
++    GetBitContext gbc;
++
++    switch (data_type & 0xff) {
++    case IEC958_AC3:
++        *offset = AC3_FRAME_SIZE << 2;
++        *codec = CODEC_ID_AC3;
++        break;
++    case IEC958_MPEG1_LAYER1:
++        *offset = mpeg_pkt_offset[1][0];
++        *codec = CODEC_ID_MP1;
++        break;
++    case IEC958_MPEG1_LAYER23:
++        *offset = mpeg_pkt_offset[1][0];
++        *codec = CODEC_ID_MP3;
++        break;
++    case IEC958_MPEG2_EXT:
++        *offset = 4608;
++        *codec = CODEC_ID_MP3;
++        break;
++    case IEC958_MPEG2_AAC:
++        init_get_bits(&gbc, buf, AAC_ADTS_HEADER_SIZE * 8);
++        if (ff_aac_parse_header(&gbc, &aac_hdr)) {
++            if (s) /* be silent during a probe */
++                av_log(s, AV_LOG_ERROR, "Invalid AAC packet in S/PDIF\n");
++            return AVERROR(EINVAL);
++        }
++        *offset = aac_hdr.samples << 2;
++        *codec = CODEC_ID_AAC;
++        break;
++    case IEC958_MPEG2_LAYER1_LSF:
++        *offset = mpeg_pkt_offset[0][0];
++        *codec = CODEC_ID_MP1;
++        break;
++    case IEC958_MPEG2_LAYER2_LSF:
++        *offset = mpeg_pkt_offset[0][1];
++        *codec = CODEC_ID_MP2;
++        break;
++    case IEC958_MPEG2_LAYER3_LSF:
++        *offset = mpeg_pkt_offset[0][2];
++        *codec = CODEC_ID_MP3;
++        break;
++    case IEC958_DTS1:
++        *offset = 2048;
++        *codec = CODEC_ID_DTS;
++        break;
++    case IEC958_DTS2:
++        *offset = 4096;
++        *codec = CODEC_ID_DTS;
++        break;
++    case IEC958_DTS3:
++        *offset = 8192;
++        *codec = CODEC_ID_DTS;
++        break;
++    default:
++        if (s) { /* be silent during a probe */
++            av_log(s, AV_LOG_WARNING, "Data type 0x%04x", data_type);
++            av_log_missing_feature(s, " in S/PDIF is", 1);
++        }
++        return AVERROR(ENOSYS);
++    }
++    return 0;
++}
++
++/* Largest offset between bursts we currently handle, i.e. AAC with
++   aac_hdr.samples = 4096 */
++#define SPDIF_MAX_OFFSET 16384
++
++static int spdif_probe(AVProbeData *p)
++{
++    const uint8_t *buf = p->buf;
++    /* probe for 64 bytes to find initial sync word */
++    const uint8_t *probe_end = p->buf + FFMIN(SPDIF_MAX_OFFSET, p->buf_size - 1);
++    const uint8_t *expected_code = buf + 7;
++    uint32_t state = 0;
++    int sync_codes = 0;
++    int consecutive_codes = 0;
++    int offset;
++    enum CodecID codec;
++
++    for (; buf < probe_end; buf++) {
++        state = (state << 8) | *buf;
++
++        if (state == (AV_BSWAP16C(SYNCWORD1) << 16 | AV_BSWAP16C(SYNCWORD2))
++                && buf[1] < 0x37) {
++            sync_codes++;
++
++            if (buf == expected_code) {
++                if (++consecutive_codes >= 3)
++                    return AVPROBE_SCORE_MAX;
++            } else
++                consecutive_codes = 0;
++
++            if (buf + 4 + AAC_ADTS_HEADER_SIZE > p->buf + p->buf_size)
++                break;
++
++            /* continue probing to find more sync codes */
++            probe_end = FFMIN(buf + SPDIF_MAX_OFFSET, p->buf + p->buf_size - 1);
++
++            /* try to skip directly to the next sync code */
++            if (!spdif_get_offset_and_codec(NULL, (buf[2] << 8) | buf[1],
++                                            &buf[5], &offset, &codec)) {
++                if (buf + offset >= p->buf + p->buf_size)
++                    break;
++                expected_code = buf + offset;
++                buf = expected_code - 7;
++            }
++        }
++    }
++
++    if (!sync_codes)
++        return 0;
++
++    if (p->buf_size / sync_codes > SPDIF_MAX_OFFSET)
++        return 1; /* unusually few sync codes were found */
++
++    if (sync_codes >= 6)
++        /* expected amount of sync codes but with unexpected offsets */
++        return AVPROBE_SCORE_MAX / 2;
++
++    if (sync_codes == consecutive_codes + 1 &&
++        !memcmp(p->buf + 8, "WAVE", 4) && !memcmp(p->buf, "RIFF", 4))
++        /* all sync codes (except first one as it was only after WAV headers)
++           were consecutive, but the buffer was too small;
++           also, this looks like a WAV file, so we need to delay wav demuxer
++           from grabbing this file until we get a big enough buffer to see if
++           there are more consecutive codes (we want to be selected for
++           (ac3-in-)spdif-in-wav as chained demuxers are not yet supported),
++           therefore return the same score as wav demuxer to make it a tie */
++        return AVPROBE_SCORE_MAX - 1;
++
++    /* sync codes were found but the buffer was too small */
++    return AVPROBE_SCORE_MAX / 8;
++}
++
++static int spdif_read_header(AVFormatContext *s, AVFormatParameters *ap)
++{
++    s->ctx_flags |= AVFMTCTX_NOHEADER;
++    return 0;
++}
++
++static int spdif_read_packet(AVFormatContext *s, AVPacket *pkt)
++{
++    ByteIOContext *pb = s->pb;
++    enum IEC958DataType data_type;
++    enum CodecID codec_id;
++    uint32_t state = 0;
++    int pkt_size_bits, offset, ret;
++
++    while (state != (AV_BSWAP16C(SYNCWORD1) << 16 | AV_BSWAP16C(SYNCWORD2))) {
++        state = (state << 8) | get_byte(pb);
++        if (url_feof(pb))
++            return AVERROR_EOF;
++    }
++
++    data_type = get_le16(pb);
++    pkt_size_bits = get_le16(pb);
++
++    if (pkt_size_bits % 16)
++        av_log_ask_for_sample(s, "Packet does not end to a 16-bit boundary.");
++
++    ret = av_new_packet(pkt, FFALIGN(pkt_size_bits, 16) >> 3);
++    if (ret)
++        return ret;
++
++    pkt->pos = url_ftell(pb) - BURST_HEADER_SIZE;
++
++    if (get_buffer(pb, pkt->data, pkt->size) < pkt->size) {
++        av_free_packet(pkt);
++        return AVERROR(EIO);
++    }
++    bswap_buf16((uint16_t *)pkt->data, (uint16_t *)pkt->data, pkt->size >> 1);
++
++    ret = spdif_get_offset_and_codec(s, data_type, pkt->data,
++                                     &offset, &codec_id);
++    if (ret) {
++        av_free_packet(pkt);
++        return ret;
++    }
++
++    /* skip over the padding to the beginning of the next frame */
++    url_fskip(pb, offset - pkt->size - BURST_HEADER_SIZE);
++
++    if (!s->nb_streams) {
++        /* first packet, create a stream */
++        AVStream *st = av_new_stream(s, 0);
++        if (!st) {
++            av_free_packet(pkt);
++            return AVERROR(ENOMEM);
++        }
++        st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
++        st->codec->codec_id = codec_id;
++    } else if (codec_id != s->streams[0]->codec->codec_id) {
++        av_log_ask_for_sample(s, "Codec changed in S/PDIF stream.");
++        return AVERROR(ENOSYS);
++    }
++
++    if (!s->bit_rate && s->streams[0]->codec->sample_rate)
++        /* stream bitrate matches 16-bit stereo PCM bitrate for currently
++           supported codecs */
++        s->bit_rate = 2 * 16 * s->streams[0]->codec->sample_rate;
++
++    return 0;
++}
++
++#if CONFIG_SPDIF_DEMUXER
++AVInputFormat spdif_demuxer = {
++    "spdif",
++    NULL_IF_CONFIG_SMALL("IEC958 - S/PDIF (IEC-61937)"),
++    0,
++    spdif_probe,
++    spdif_read_header,
++    spdif_read_packet,
++    .flags = AVFMT_GENERIC_INDEX,
++};
++#endif
+-- 
+1.7.2
+
