@@ -578,12 +578,15 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return true;
       }
 
-      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-      if (pWindow)
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty())
       {
-        ADDON::ScraperPtr info;
-        pWindow->OnInfo(item.get(),info);
-        Update(m_vecItems->m_strPath);
+        CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+        if (pWindow)
+        {
+          ADDON::ScraperPtr info;
+          pWindow->OnInfo(item.get(),info);
+          Update(m_vecItems->m_strPath);
+        }
       }
       return true;
     }
