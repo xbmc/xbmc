@@ -25,6 +25,7 @@
 #include "addons/AddonManager.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
+#include "URIUtils.h"
 #include "XMLUtils.h"
 #include "GUIPassword.h"
 #include "FileSystem/StackDirectory.h"
@@ -6637,6 +6638,11 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         else
         {
           CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
+
+          if (item.IsDiskFile())
+          {
+            nfoFile = CURIUtils::GetParentFolderURI(nfoFile, true);
+          }
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {

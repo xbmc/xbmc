@@ -1257,6 +1257,13 @@ namespace VIDEO
           return GetnfoFile(&item2, bGrabAny);
         }
       }
+
+      if (item->IsDiskFile())
+      {
+        CFileItem parentDirectory;
+        parentDirectory.m_strPath = CUtil::GetParentPath(item->m_strPath);
+        return GetnfoFile(&parentDirectory, bGrabAny);
+      }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
     if (item->m_bIsFolder || item->IsDVDFile(false, true) || (bGrabAny && nfoFile.IsEmpty()))

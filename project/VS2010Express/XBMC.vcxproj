@@ -979,6 +979,7 @@
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_reader.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_value.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp" />
+    <ClCompile Include="..\..\xbmc\URIUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
@@ -1757,6 +1758,7 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\TCPServer.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\VideoLibrary.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\XBMCOperations.h" />
+    <ClInclude Include="..\..\xbmc\URIUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico" />
