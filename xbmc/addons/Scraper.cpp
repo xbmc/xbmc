@@ -107,9 +107,9 @@ CScraper::CScraper(const cp_extension_t *ext) :
 {
   if (ext)
   {
-    m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
-    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
-    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "cachepersistence");
+    m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
+    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings").Equals("true");
+    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
     if (!persistence.IsEmpty())
       m_persistence.SetFromTimeString(persistence);
   }
