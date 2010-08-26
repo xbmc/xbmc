@@ -12,6 +12,7 @@
     <platform>all</platform>
     <minversion>20000</minversion>
     <summary lang="en">AllMusic Music Scraper Library</summary>
+    <summary lang="de">Musik-Scraper für AllMusic.com</summary>
     <summary lang="es">Descarga información de Allmusic</summary>
     <summary lang="fr">Scraper AllMusic pour la musique</summary>
     <summary lang="hu">AllMusic zenei adat leolvasó</summary>
@@ -20,6 +21,7 @@
     <summary lang="pt">Scraper de música AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器代码库</summary>
     <description lang="en">Download Music information from www.allmusic.com</description>
+    <description lang="de">Downloade Musik Informationen von www.allmusic.com</description>
     <description lang="es">Descarga información musical de www.allmusic.com</description>
     <description lang="fr">Télécharger les infos musicales depuis www.allmusic.com</description>
     <description lang="hu">Zene információk letöltése a www.allmusic.com webhelyről</description>

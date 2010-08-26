@@ -11,6 +11,7 @@
              library="mtv.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">MTV Music Video Scraper</summary>
+    <summary lang="de">MTV Scraper für Musikvideos</summary>
     <summary lang="es">Scraper de Videoclips de MTV</summary>
     <summary lang="fr">Scraper MTV pour vidéo-clips</summary>
     <summary lang="hu">MTV videóklip leolvasó</summary>
@@ -21,6 +22,7 @@
     <summary lang="se">MTV Musikvideoskrapa</summary>
     <summary lang="zh">MTV音乐电视刮削器</summary>
     <description lang="en">Download Music Video information</description>
+    <description lang="de">Downloade Informationen zu Musikvideos von www.mtv.com</description>
     <description lang="es">Descarga Información de Videoclips de www.mtv.com</description>
     <description lang="fr">Télécharge les infos des vidéo-clips</description>
     <description lang="hu">Zenei videóklip információk letöltése</description>
