@@ -31,7 +31,7 @@
 
 #include "AudioDecoder.h"
 
-DVDPlayerCodec::DVDPlayerCodec(CodecID codec)
+DVDPlayerCodec::DVDPlayerCodec()
 {
   m_CodecName = "DVDPlayer";
   m_pDemuxer = NULL;
@@ -41,7 +41,6 @@ DVDPlayerCodec::DVDPlayerCodec(CodecID codec)
   m_pPacket = NULL;
   m_decoded = NULL;;
   m_nDecodedLen = 0;
-  m_codec = codec;
 }
 
 DVDPlayerCodec::~DVDPlayerCodec()
@@ -130,12 +129,6 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   CDVDStreamInfo hint(*pStream, true);
-  if (m_codec) {
-    hint.codec = m_codec;
-    hint.channels = 0;
-    hint.samplerate = 0;
-    hint.bitspersample = 0;
-  }
 
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint);
   if (!m_pAudioCodec)
