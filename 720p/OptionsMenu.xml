@@ -429,7 +429,13 @@
         <control type="label" id="9115">
           <description>Plugin Stream view button</description>
           <label>$LOCALIZE[31722]</label>
-          <visible>Control.IsVisible(59)</visible>
+          <visible>Control.IsVisible(59) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists)</visible>
+          <include>OMViewLabelItem</include>
+        </control>
+        <control type="label" id="9115">
+          <description>Plugin Stream view button</description>
+          <label>$LOCALIZE[31715]</label>
+          <visible>Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
           <include>OMViewLabelItem</include>
         </control>
       </control>
@@ -564,14 +570,22 @@
 
         <control type="button" id="957">
           <description>Panel Stream view button</description>
-          <visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+          <visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
           <label>$LOCALIZE[31715]</label>
           <onclick>Container.SetViewMode(52)</onclick>
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
         <control type="button" id="958">
+          <description>Panel Stream view button</description>
+          <visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
+          <label>$LOCALIZE[31715]</label>
+          <onclick>Container.SetViewMode(59)</onclick>
+          <onclick>SetFocus(50)</onclick>
+          <include>OMButtonItem</include>
+        </control>
+
+        <control type="button" id="959">
           <description>Wall Stream view button</description>
           <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
           <label>$LOCALIZE[31714]</label>
@@ -580,7 +594,7 @@
           <include>OMButtonItem</include>
         </control>
 
-		<control type="button" id="959">
+		<control type="button" id="960">
           <description>Plugin Stream view button</description>
           <visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
           <label>$LOCALIZE[31722]</label>
