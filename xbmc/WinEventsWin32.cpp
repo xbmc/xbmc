@@ -334,9 +334,15 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
       break;
     case WM_ACTIVATE:
+      // If we have lost the focus reset the keyboard
+      if (LOWORD(wParam) == WA_INACTIVE)
+      {
+        g_Keyboard.ResetState();
+      }
+      // Check if the window is minimized
       {
         bool active = g_application.m_AppActive;
-        if (LOWORD(wParam) == WA_INACTIVE)
+        if (HIWORD(wParam))
         {
           g_application.m_AppActive = false;
         }
@@ -350,10 +356,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           }
         }
         if (g_application.m_AppActive != active)
-        {
           g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
-          g_Keyboard.ResetState();//lost focus, unstick any keys
-        }
         CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       }
       break;
