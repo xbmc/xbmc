@@ -87,6 +87,8 @@ override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
+	$(MAKE) -C lib/addons/script.module.pil
+	$(MAKE) -C lib/addons/script.module.pysqlite
 	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
 		WII_EXTRA_OPTS=-DCWIID_OLD
