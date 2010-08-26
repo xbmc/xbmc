@@ -34,3 +34,19 @@ String.prototype.startsWith = function(prefix) {
 String.prototype.endsWith = function(suffix) {
 	return this.match(suffix + "$") == suffix;
 }
+
+function durationToString(duration) {
+	if (!duration) {
+		return '00:00';
+	}
+	minutes = Math.floor(duration / 60);
+	hours = Math.floor(minutes / 60);
+	minutes = minutes % 60;
+	seconds = duration % 60;
+	var result = '';
+	if (hours) {
+		result += (hours < 10 ? '0' + hours : hours) + ':';
+	}
+	result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+	return result;
+}

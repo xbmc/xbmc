@@ -169,7 +169,7 @@ NowPlayingManager.prototype = {
 							var activeItem;
 							$.each($(data.result.items), jQuery.proxy(function(i, item) {
 								var li = $('<li>');
-								var code = '<span class="duration">' + this.durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
+								var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
 								if (i == data.result.current) {
 									activeItem = item;
 									activeItem.seq = i;
@@ -289,7 +289,7 @@ NowPlayingManager.prototype = {
 					$('#audioAlbumTitle').hide();
 				}
 				$('#audioArtistTitle').html(this.activePlaylistItem.artist);
-				$('#audioDuration').html(this.durationToString(this.trackBaseTime) + ' / ' + this.durationToString(this.activePlaylistItem.duration));
+				$('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.activePlaylistItem.duration));
 				var buttonWidth = $('#progressBar .progressIndicator').width();
 				var progressBarWidth = (this.trackBaseTime / this.activePlaylistItem.duration) * 100;
 				var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -335,7 +335,7 @@ NowPlayingManager.prototype = {
 					extra = this.activePlaylistItem.season + 'x' + this.activePlaylistItem.episode + ' ';
 				}
 				$('#videoTitle').html(extra + this.activePlaylistItem.title);
-				$('#videoDuration').html(this.durationToString(this.trackBaseTime) + ' / ' + this.durationToString(this.activePlaylistItem.duration));
+				$('#videoDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.activePlaylistItem.duration));
 				var buttonWidth = $('#progressBar .progressIndicator').width();
 				var progressBarWidth = (this.trackBaseTime / this.activePlaylistItem.duration) * 100;
 				var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -350,21 +350,6 @@ NowPlayingManager.prototype = {
 		},
 		stopRefreshTime: function() {
 			this.autoRefreshData = false;
-		},
-		durationToString: function(duration) {
-			if (!duration) {
-				return '00:00';
-			}
-			minutes = Math.floor(duration / 60);
-			hours = Math.floor(minutes / 60);
-			minutes = minutes % 60;
-			seconds = duration % 60;
-			var result = '';
-			if (hours) {
-				result += (hours < 10 ? '0' + hours : hours) + ':';
-			}
-			result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
-			return result;
 		},
 		comparePlaylistItems: function(item1, item2) {
 			if (!item1 || !item2) {
@@ -413,7 +398,7 @@ NowPlayingManager.prototype = {
 								if (item.season && item.episode) {
 									extra = item.season + 'x' + item.episode + ' ';
 								}
-								var code = '<span class="duration">' + this.durationToString(item.duration) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
+								var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
 								if (i == data.result.current) {
 									activeItem = item;
 									activeItem.seq = i;

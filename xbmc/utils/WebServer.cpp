@@ -338,7 +338,8 @@ bool CWebServer::Start(const char *ip, int port)
 {
   if (!m_running)
   {
-    // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
+    // MHD_USE_THREAD_PER_CONNECTION = one thread per connection
+    // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time
     m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     if (!m_daemon) //try IPv4
       m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);

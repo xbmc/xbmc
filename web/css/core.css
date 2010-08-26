@@ -314,4 +314,7 @@ body {
 #content {
 	overflow-x: hidden;
 	overflow-y: auto;
+	position: absolute;
+	top: 150px;
+	bottom: 0;
 	}
