@@ -37,13 +37,22 @@ MediaLibrary.prototype = {
 			$('#videoLibrary').removeClass('selected');
 			jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "end": 60, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result && data.result.albums) {
-					$('#content').html('');
+					var libraryContainer = $('#libraryContainer');
+					if (!libraryContainer || libraryContainer.length == 0) {
+						libraryContainer = $('<div>');
+						libraryContainer.attr('id', 'libraryContainer')
+										.addClass('contentContainer')
+										.css('z-index', 100);
+						$('#content').append(libraryContainer);
+					} else {
+						libraryContainer.html('');
+					}
 					$.each($(data.result.albums), jQuery.proxy(function(i, item) {
 						var floatableAlbum = this.generateAlbumThumb(item.thumbnail, item.album_title, item.album_artist);
 						floatableAlbum.bind('click', {album: item, }, jQuery.proxy(this.displayAlbumDetails, this));
-						$('#content').append(floatableAlbum);
+						libraryContainer.append(floatableAlbum);
 					}, this));
-					$('img').lazyload();
+					//$('#libraryContainer img').lazyload();
 				}
 			}, this), 'json');
 		},
@@ -64,22 +73,41 @@ MediaLibrary.prototype = {
 		},
 		displayAlbumDetails: function(event) {
 			jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "tracknumber", "discnumber", "duration", "year"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
-				$('#content').html('<table><tr><th>Artwork</th><th>&nbsp;</th><th>Name</th><th>Time</th><th>Artist</th><th>Genre</th></tr><tbody id="resultSet"></tbody></table>');
+				$('#content').html('<table class="albumView"><tr><th>Artwork</th><th>&nbsp;</th><th>Name</th><th>Time</th><th>Artist</th><th>Genre</th></tr><tbody id="resultSet"></tbody></table>');
 				var albumThumbnail = event.data.album.thumbnail;
 				var albumTitle = event.data.album.album_title||'Unknown';
 				var albumArtist = event.data.album.album_artist||'Unknown';
 				var trackCount = data.result.total;
-				var trackListing = '';
 				$.each($(data.result.songs), jQuery.proxy(function(i, item) {
-					var extra = '';
+					var trackRow = $('<tr>');
 					if (i == 0) {
-						extra = '<td rowspan="' + trackCount + '" id="albumThumb"></td>';
+						var albumTD = $('<td>');
+						albumTD.attr('rowspan', trackCount).attr('id', 'albumThumb');
+						trackRow.append(albumTD);
 					}
-					trackListing += '<tr>' + extra + '<td>' + item.tracknumber + '</td><td>' + item.title + '</td><td>' + durationToString(item.duration) + '</td><td>' + item.artist + '</td><td>' + item.genre + '</td></tr>';
+					var trackNumberTD = $('<td>');
+					trackNumberTD.html(item.tracknumber).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+					trackRow.append(trackNumberTD);
+					var trackTitleTD = $('<td>');
+					trackTitleTD.html(item.title).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+					trackRow.append(trackTitleTD);
+					var trackDurationTD = $('<td>');
+					trackDurationTD.html(durationToString(item.duration)).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+					trackRow.append(trackDurationTD);
+					var trackArtistTD = $('<td>');
+					trackArtistTD.html(item.artist).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+					trackRow.append(trackArtistTD);
+					var trackGenreTD = $('<td>');
+					trackGenreTD.html(item.genre).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+					trackRow.append(trackGenreTD);
+					$('#resultSet').append(trackRow);
 				}, this));
-				$('#resultSet').html(trackListing);
 				$('#albumThumb').append(this.generateAlbumThumb(albumThumbnail, albumTitle, albumArtist));
-				console.log(data);
+			}, this));
+		},
+		playTrack: function(event) {
+			jQuery.post(JSON_RPC + '?PlaySong', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', jQuery.proxy(function(data) {
+
 			}, this));
 		},
 		videoLibraryOpen: function() {

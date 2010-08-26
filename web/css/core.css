@@ -277,6 +277,9 @@ body {
 	width: 130px;
 	height: 150px;
 	padding: 10px;
+	}
+
+#libraryContainer .floatableAlbum {
 	cursor: pointer;
 	}
 
@@ -311,10 +314,15 @@ body {
 	padding: 0;
 	}
 
-#content {
+.contentContainer {
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: absolute;
 	top: 150px;
 	bottom: 0;
+	background: #fff;
+	}
+
+.albumView .track {
+	cursor: pointer;
 	}
