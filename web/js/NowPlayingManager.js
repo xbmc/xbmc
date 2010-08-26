@@ -106,6 +106,11 @@ NowPlayingManager.prototype = {
 					if (data && data.result) {
 						this.playing = data.result.playing;
 						this.paused = data.result.paused;
+						if (this.playing) {
+							this.showPauseButton();
+						} else {
+							this.showPlayButton();
+						}
 					}
 				}, this), 'json');
 			}
