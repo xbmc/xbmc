@@ -344,7 +344,32 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
-      iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      if (m_pInput->GetContent() == "audio/x-spdif-compressed")
+      {
+        // check for spdif and dts only
+        // This is used with wav files and audio CDs that may contain
+        // a DTS or AC3 track padded for S/PDIF playback. If neither of those
+        // is present, we return an error allowing fallback to PCM audio.
+        // AC3 is always wrapped in iec61937 (ffmpeg "spdif"), while DTS
+        // may be just padded.
+        iformat = m_dllAvFormat.av_find_input_format("spdif");
+        if (!iformat || iformat->read_probe(&pd) <= AVPROBE_SCORE_MAX / 4)
+        {
+          // not spdif or no spdif demuxer, try dts
+          iformat = m_dllAvFormat.av_find_input_format("dts");
+          if (!iformat || iformat->read_probe(&pd) <= AVPROBE_SCORE_MAX / 4)
+          {
+            // not dts either, return false for fallback
+            CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
+            return false;
+          }
+        }
+      }
+      else
+      {
+        // check for all formats
+        iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      }
 
       if(!iformat)
       {
