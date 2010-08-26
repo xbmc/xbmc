@@ -259,7 +259,8 @@
 	<string id="31982">Show Plot in Video OSD</string>
 	<string id="31983">Show Picture Descriptions in Slideshow</string>
 	<string id="31984">Show Now Playing Information in Visualisations</string>
-
+	<string id="31985">Show Separate Menu Items for Plug-in Sections</string>
+	  
 	<string id="31999">End Time</string>
 	
 </strings>

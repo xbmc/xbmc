@@ -135,7 +135,7 @@
   <include name="HomeSubSubMenuGroupDims">
     <posx>534</posx>
     <posy>331</posy>
-    <animation effect="slide" tween="back" end="220,0" time="400" delay="300" condition="ControlGroup(302).HasFocus()">Conditional</animation>
+    <animation effect="slide" tween="back" end="220,0" time="400" delay="300" condition="ControlGroup(302).HasFocus() | ControlGroup(303).HasFocus()">Conditional</animation>
   </include>
 
   <include name="HomeWeatherSummaryPos">

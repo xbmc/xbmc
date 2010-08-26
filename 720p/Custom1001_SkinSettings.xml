@@ -156,6 +156,14 @@
           <onclick>Skin.ToggleSetting(HidePictures)</onclick>
           <selected>!Skin.HasSetting(HidePictures)</selected>
         </control>
+        
+        <control type="radiobutton" id="242">
+          <description>Show separate items for plug-in sections</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31985]</label>
+          <onclick>Skin.ToggleSetting(CollapsePluginMenuItems)</onclick>
+          <selected>!Skin.HasSetting(CollapsePluginMenuItems)</selected>
+        </control>
 
         <control type="radiobutton" id="245">
           <description>Show Applications Menu</description>
