@@ -64,7 +64,7 @@ apokeysnd.o: apokeysnd.c
 	$(CC) -I. -O2 -o $@ -c apokeysnd.c
 
 ../../../../system/players/paplayer/xbmc_asap-i486-linux.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
-	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
+	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o $(COMMON_O)
 
 players.h: files2anylang.pl $(PLAYERS_OBX)
 	$(PERL) files2anylang.pl $(PLAYERS_OBX) >$@

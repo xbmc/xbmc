@@ -16,9 +16,7 @@ $(SLIB): libid3tag/.libs/libid3tag.dylib
 	chmod +x $@
 else
 $(SLIB): libid3tag/.libs/libid3tag.so
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -fPIC -o $@ libid3tag/.libs/*.o \
-		`cat ../../cores/DllLoader/exports/wrapper.def` \
-		../../cores/DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -fPIC -o $@ libid3tag/.libs/*.o
 endif
 
 ifeq ($(findstring osx,$(ARCH)), osx)
