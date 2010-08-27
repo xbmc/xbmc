@@ -376,6 +376,12 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         //libdvdnav never sets logical, why.. don't know..
         event->logical = GetActiveSubtitleStream();
 
+        if(event->logical<0 && GetSubTitleStreamCount()>0)
+        {
+          /* this will not take effect in this event */
+          CLog::Log(LOGINFO, "%s - none or invalid subtitle stream selected, defaulting to first", __FUNCTION__);
+          SetActiveSubtitleStream(0);
+        }
         m_bCheckButtons = true;
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
       }
