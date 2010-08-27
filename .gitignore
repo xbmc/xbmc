@@ -496,7 +496,6 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/
 /xbmc/cores/dvdplayer/Codecs/libdvd/Makefile
-/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h.in~
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/includes/
 /xbmc/cores/dvdplayer/Codecs/libdvd/includes/dv
@@ -590,21 +589,6 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/INSTALL
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/autom4te.cache
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h.in~
-
-# /xbmc/cores/dvdplayer/Codecs/libbdnav/
-/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h
-/xbmc/cores/dvdplayer/Codecs/libbdnav/Makefile
-/xbmc/cores/dvdplayer/Codecs/libbdnav/Makefile.in
-/xbmc/cores/dvdplayer/Codecs/libbdnav/aclocal.m4
-/xbmc/cores/dvdplayer/Codecs/libbdnav/autom4te.cache/
-/xbmc/cores/dvdplayer/Codecs/libbdnav/build-aux/
-/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h.in
-/xbmc/cores/dvdplayer/Codecs/libbdnav/configure
-/xbmc/cores/dvdplayer/Codecs/libbdnav/libtool
-/xbmc/cores/dvdplayer/Codecs/libbdnav/m4/*
-/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/Makefile
-/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/Makefile.in
-/xbmc/cores/dvdplayer/Codecs/libbdnav/stamp-h1
 
 # /xbmc/cores/dvdplayer/Codecs/libdts/
 /xbmc/cores/dvdplayer/Codecs/libdts/config.log

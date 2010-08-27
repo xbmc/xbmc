@@ -1005,8 +1005,6 @@
 		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
-		F591FAA910D5703D001DF66A /* libbdnav.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F591FAA810D5703D001DF66A /* libbdnav.a */; };
-		F591FAAA10D5703D001DF66A /* libbdnav.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F591FAA810D5703D001DF66A /* libbdnav.a */; };
 		F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
 		F592568910FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */; };
 		F595994510E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */; };
@@ -3683,7 +3681,6 @@
 		F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSpecialProtocol.h; path = xbmc/FileSystem/FileSpecialProtocol.h; sourceTree = SOURCE_ROOT; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPDirectory.h; path = xbmc/FileSystem/HTTPDirectory.h; sourceTree = SOURCE_ROOT; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
-		F591FAA810D5703D001DF66A /* libbdnav.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbdnav.a; path = xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a; sourceTree = "<group>"; };
 		F592568610FBF2E100D2C91D /* ConvolutionKernels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvolutionKernels.h; sourceTree = "<group>"; };
 		F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvolutionKernels.cpp; sourceTree = "<group>"; };
 		F595994310E9F322004B58B3 /* DVDVideoCodecCrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecCrystalHD.h; sourceTree = "<group>"; };
@@ -3893,7 +3890,6 @@
 				F5E560711077003E006E788A /* libSDL_mixer-x86-osx.a in Frameworks */,
 				60CF88BF10CB49F3000921B6 /* libcmyth.a in Frameworks */,
 				60CF88C110CB4A16000921B6 /* librefmem.a in Frameworks */,
-				F591FAA910D5703D001DF66A /* libbdnav.a in Frameworks */,
 				F5F23EBC1104245F009126C6 /* libSDL-x86-osx.a in Frameworks */,
 				F5DC87FC110A460000EE1B15 /* libpcrecpp.dylib in Frameworks */,
 				F5DC8809110A495600EE1B15 /* libcrypto.dylib in Frameworks */,
@@ -3956,7 +3952,6 @@
 				F5E55C871075B610006E788A /* libmad.dylib in Frameworks */,
 				F5FDE83510CC706F006A3E83 /* libcmyth.a in Frameworks */,
 				F5FDE83610CC7076006A3E83 /* librefmem.a in Frameworks */,
-				F591FAAA10D5703D001DF66A /* libbdnav.a in Frameworks */,
 				F5DC87FD110A460000EE1B15 /* libpcrecpp.dylib in Frameworks */,
 				F5DC880A110A495600EE1B15 /* libcrypto.dylib in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
@@ -6878,7 +6873,6 @@
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
-				F591FAA810D5703D001DF66A /* libbdnav.a */,
 				60CF88BE10CB49F3000921B6 /* libcmyth.a */,
 				60CF88C010CB4A16000921B6 /* librefmem.a */,
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
@@ -9027,7 +9021,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9049,7 +9042,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9107,7 +9099,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9129,7 +9120,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9244,7 +9234,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9267,7 +9256,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9326,7 +9314,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9349,7 +9336,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
