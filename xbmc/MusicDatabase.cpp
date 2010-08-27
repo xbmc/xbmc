@@ -2813,8 +2813,15 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist)
+bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end)
 {
+  //Create limit
+  CStdString limit = "";
+  if (start >= 0 && end >= 0)
+  {
+    limit.Format(" limit %i,%i", start, end);
+  }
+
   // where clause
   CStdString strWhere;
   if (idGenre!=-1)
@@ -2830,7 +2837,7 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                             "join exgenresong on song.idSong=exgenresong.idSong "
                           "where exgenresong.idGenre=%i"
                           ")"
-                        ") "
+                        ") " + limit
                         , idGenre, idGenre);
   }
 
@@ -2862,15 +2869,15 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                               "select exartistalbum.idAlbum from exartistalbum " // All albums where extra album artists fit
                               "where exartistalbum.idArtist=%i"
                             ")"
-                          ") "
+                          ") " + limit
                           , idArtist, idArtist, idArtist, idArtist);
   }
   else
   { // no artist given, so exclude any single albums (aka empty tagged albums)
     if (strWhere.IsEmpty())
-      strWhere += "where albumview.strAlbum <> ''";
+      strWhere += "where albumview.strAlbum <> ''" + limit;
     else
-      strWhere += "and albumview.strAlbum <> ''";
+      strWhere += "and albumview.strAlbum <> ''" + limit;
   }
 
   bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
