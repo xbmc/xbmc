@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
  libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
  libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl
 Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
