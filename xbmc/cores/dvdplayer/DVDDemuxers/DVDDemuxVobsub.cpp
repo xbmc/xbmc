@@ -31,22 +31,6 @@
 
 using namespace std;
 
-void CDVDDemuxVobsub::CStream::SetDiscard(AVDiscard discard)
-{
-  if(discard == AVDISCARD_NONE && m_discard != AVDISCARD_NONE)
-  {
-    // if we stop discarding something, make sure
-    // last available item is first to come out
-    while(m_parent->m_Timestamp != m_parent->m_Timestamps.begin())
-    {
-      if(m_parent->m_Timestamp->id == iId)
-        break;
-      m_parent->m_Timestamp--;
-    }
-  }
-  m_discard = discard;
-}
-
 CDVDDemuxVobsub::CDVDDemuxVobsub()
 {
 }

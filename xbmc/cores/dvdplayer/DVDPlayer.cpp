@@ -2515,8 +2515,9 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     double pts = m_dvdPlayerVideo.GetCurrentPts();
     if(pts == DVD_NOPTS_VALUE)
       pts = m_CurrentVideo.dts;
-    if(pts != DVD_NOPTS_VALUE)
-      m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
+    if(pts == DVD_NOPTS_VALUE)
+      pts = 0;
+    m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
 
     hint.Assign(*pStream, true);
   }
