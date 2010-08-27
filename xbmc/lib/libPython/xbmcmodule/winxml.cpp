@@ -90,7 +90,7 @@ namespace PYXBMC
     if (pyRes) PyXBMCGetUnicodeString(resolution, pyRes);
 
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-    RESOLUTION res;
+    RESOLUTION res = RES_INVALID;
     CStdString strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
 
     if (!XFILE::CFile::Exists(strSkinPath))
