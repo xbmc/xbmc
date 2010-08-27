@@ -3328,6 +3328,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\URIUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\URIUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\VideoDatabase.cpp"
 					>
 				</File>
