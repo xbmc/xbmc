@@ -115,6 +115,8 @@ preparesrc()
   fi
   cd $DESTSRC
   ./bootstrap
+  make -C lib/addons/script.module.pil Imaging-1.1.7.tar.gz
+  make -C lib/addons/script.module.pysqlite pysqlite-2.5.6.tar.gz
   cd $OLDPWD
   if [ -z $UPDPPA ]; then
     echo "Copying to .orig folder"
