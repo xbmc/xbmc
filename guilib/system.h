@@ -96,6 +96,7 @@
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
+#define HAVE_LIBBLURAY
 #endif
 
 /*****************

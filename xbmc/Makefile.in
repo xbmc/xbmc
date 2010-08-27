@@ -220,6 +220,7 @@ SRCS=Application.cpp \
      TextureCache.cpp \
      TextureDatabase.cpp \
      AddonDatabase.cpp \
+     URIUtils.cpp \
 
 LIB=xbmc.a
 

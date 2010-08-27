@@ -338,4 +338,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
     g_settings.m_fPixelRatio = 1.0;
     g_settings.m_fZoomAmount = 1.0;
   }
+
+  g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
+  g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
+  g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
 }

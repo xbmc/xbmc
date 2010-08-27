@@ -629,6 +629,14 @@ bool CFileItem::IsDVDImage() const
   return false;
 }
 
+bool CFileItem::IsDiskFile() const
+{
+  bool found = IsDVDFile(false, true);
+  if (found)
+    return true;
+  return IsBDFile();
+}
+
 bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 {
   CStdString strFileName = CUtil::GetFileName(m_strPath);
@@ -644,6 +652,12 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   }
 
   return false;
+}
+
+bool CFileItem::IsBDFile() const
+{
+  CStdString strFileName = CUtil::GetFileName(m_strPath);
+  return (strFileName.Equals("index.bdmv"));
 }
 
 bool CFileItem::IsRAR() const

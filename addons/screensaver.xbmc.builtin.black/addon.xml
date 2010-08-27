@@ -6,6 +6,7 @@
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Screensaver that turns your screen black</summary>
+    <summary lang="de">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
     <summary lang="fi">Tyhjä ruutu</summary>
     <summary lang="fr">Un économiseur qui rend votre écran noir</summary>
     <summary lang="hu">Képernyővédő ami elfeketíti a képernyőt</summary>
@@ -14,6 +15,7 @@
     <summary lang="pt">Protecção que torna o seu ecrã preto.</summary>
     <summary lang="zh">黑屏屏幕保护程序</summary>
     <description lang="en">Black is a simple screensaver that will turn your screen black.</description>
+    <description lang="de">Black ist ein einfacher Bildschirmschoner, welcher den Bildschirm schwarz abdunkelt</description>
     <description lang="fi">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
     <description lang="fr">Black est un simple économiseur qui passe votre écran en noir.</description>
     <description lang="hu">A Black egy egyszerű képernyővédő ami feketévé változtatja a képernyőt.</description>
