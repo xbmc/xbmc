@@ -27,6 +27,7 @@
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
 #include "DllImageLib.h"
+#include "utils/FileUtils.h"
 #include "utils/log.h"
 
 using namespace XFILE;
@@ -65,11 +66,29 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
       return false;
     }
 
-    if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+    bool isTemp = false;
+    CStdString tsrc;
+    CFileUtils::GetLocalPath(sourceUrl, tsrc);
+    if (tsrc.IsEmpty())
+    {
+      CFileUtils::TmpCache(sourceUrl, tsrc);
+      if (tsrc.IsEmpty())
+      {
+        CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+        return false;
+      }
+      isTemp = true;
+    }
+
+    if (!dll.CreateThumbnail(tsrc.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+      if (isTemp)
+        CFileUtils::Delete(tsrc);
       return false;
     }
+    if (isTemp)
+      CFileUtils::Delete(tsrc);
     return true;
   }
   else
@@ -131,12 +150,30 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
 {
   DllImageLib dll;
   if (!dll.Load()) return false;
-  int ret = dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality, mirror);
+  bool isTemp = false;
+  CStdString tsrc;
+  CFileUtils::GetLocalPath(srcFile, tsrc);
+  if (tsrc.IsEmpty())
+  {
+    CFileUtils::TmpCache(srcFile, tsrc);
+    if (tsrc.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "%s: Error converting image %s", __FUNCTION__, srcFile.c_str());
+      return false;
+    }
+    isTemp = true;
+  }
+
+  int ret = dll.ConvertFile(tsrc.c_str(), destFile.c_str(), rotateDegrees, width, height, quality, mirror);
   if (ret)
   {
     CLog::Log(LOGERROR, "%s: Error %i converting image %s", __FUNCTION__, ret, srcFile.c_str());
+    if (isTemp)
+      CFileUtils::Delete(tsrc);
     return ret;
   }
+  if (isTemp)
+    CFileUtils::Delete(tsrc);
   return ret;
 }
 
