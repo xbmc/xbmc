@@ -404,6 +404,19 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
     vtag->m_strRuntime = text;
 }
 
+static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+{
+  CStdString text = element->GetText();
+  if     (name == "xmllink")
+  {
+    SResource res;
+    res.tag  = "svtplay:xmllink";
+    res.path = text;
+    res.mime = "application/rss+xml";
+    resources.push_back(res);
+  }
+}
+
 static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root)
 {
   for (TiXmlElement* child = root->FirstChildElement(); child; child = child->NextSiblingElement())
@@ -427,6 +440,8 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
       ParseItemBoxee  (item, resources, child, name, xmlns);
     else if (xmlns == "zn")
       ParseItemZink   (item, resources, child, name, xmlns);
+    else if (xmlns == "svtplay")
+      ParseItemSVT    (item, resources, child, name, xmlns);
     else
       ParseItemRSS    (item, resources, child, name, xmlns);
   }
@@ -447,7 +462,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
   SResources resources;
   ParseItem(item, resources, root);
 
-  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "rss:link", "rss:guid", NULL };
+  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:xmllink", "rss:link", "rss:guid", NULL };
 
   CStdString mime;
   if     (FindMime(resources, "video/"))
