@@ -104,8 +104,7 @@ namespace PYXBMC
       pKeyboard->SetAutoClose(autoClose);
 
     // do modal of dialog
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    PyXBMCWaitForThreadMessage(TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow());
 
     Py_INCREF(Py_None);
     return Py_None;
