@@ -40,6 +40,7 @@ void CGUISettingsSliderControl::Render()
   // make sure the button has focus if it should have...
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
+  m_buttonControl.SetEnabled(m_enabled);
   m_buttonControl.Render();
   CGUISliderControl::Render();
 
