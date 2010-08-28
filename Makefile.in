@@ -8,7 +8,8 @@ BIN_DIRS=	\
 	xbmc/cdrip \
 	xbmc/cores \
 	xbmc/cores/DllLoader \
-	xbmc/cores/DllLoader/overrides \
+	xbmc/cores/DllLoader/exports \
+	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
 	xbmc/cores/dvdplayer/DVDCodecs \
 	xbmc/cores/dvdplayer/DVDCodecs/Audio \
@@ -146,7 +147,7 @@ all : Makefile externals xbmc.bin xbmc-xrandr skins
 
 include Makefile.include
 
-.PHONY : dllloader overrides visualizations screensavers eventclients papcodecs \
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
 	dvdpcodecs imagelib codecs externals force skins
 
 # hack targets to keep build system up to date
@@ -184,8 +185,10 @@ xbmc/cores/cores.a: force
 	$(MAKE) -C xbmc/cores
 xbmc/cores/DllLoader/dllloader.a: force
 	$(MAKE) -C xbmc/cores/DllLoader/
-xbmc/cores/DllLoader/overrides/overrides.a: force
-	$(MAKE) -C xbmc/cores/DllLoader/overrides
+xbmc/cores/DllLoader/exports/exports.a: force
+	$(MAKE) -C xbmc/cores/DllLoader/exports
+xbmc/cores/DllLoader/exports/util/exports_utils.a: force
+	$(MAKE) -C xbmc/cores/DllLoader/exports/util
 xbmc/cores/dvdplayer/DVDPlayer.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer
 xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a: force
@@ -295,11 +298,13 @@ lib/xbmc-dll-symbols/dll-symbols.a: force
 lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
 	$(MAKE) -C lib/libmicrohttpd
 
-overrides:
-	$(MAKE) xbmc/cores/DllLoader/overrides/overrides.a
-dllloader: overrides
+exports:
+	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
+	$(MAKE) xbmc/cores/DllLoader/exports/util/exports_utils.a
+	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
+dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
-visualizations: overrides
+visualizations: exports
 ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
@@ -313,7 +318,7 @@ ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(AR
 endif
 endif
 endif
-screensavers: overrides
+screensavers: exports
 ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
@@ -461,7 +466,8 @@ DYNOBJSXBMC= \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
-	xbmc/cores/DllLoader/overrides/overrides.a
+	xbmc/cores/DllLoader/exports/util/exports_utils.a \
+	xbmc/cores/DllLoader/exports/exports.a
 
 ifeq (arm, $(ARCH))
 # Force external python2.5 for now!
