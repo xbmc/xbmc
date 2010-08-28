@@ -2782,6 +2782,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strMPAARating = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
   details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString();
+  details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
 
   GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
 
@@ -3678,6 +3679,13 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
+        {
+          // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
+          // only if the number of videos watched is equal to the total number (i.e. every video watched)
+          pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInt() == m_pDS->fv(2).get_asInt()) ? 1 : 0;
+          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+        }
         bool thumb=false,fanart=false;
         if (CFile::Exists(pItem->GetCachedVideoThumb()))
         {
@@ -3704,13 +3712,6 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
               pItem->SetProperty("fanart_image",item.GetCachedFanart());
             m_pDS2->close();
           }
-        }
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
-        {
-          // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
-          // only if the number of videos watched is equal to the total number (i.e. every video watched)
-          pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInt() == m_pDS->fv(2).get_asInt()) ? 1 : 0;
-          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
         }
         items.Add(pItem);
         m_pDS->next();
