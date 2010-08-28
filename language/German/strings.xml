@@ -234,7 +234,7 @@
   <string id="287">Untertitel</string>
   <string id="288">Schriftart</string>
   <string id="289">- Schriftgröße</string>
-  <string id="290">Dynamische kompression</string>
+  <string id="290">Dynamische Kompression</string>
   <string id="291">Videos</string>
   <string id="292">Audio</string>
   <string id="293">Nach Untertitel durchsuchen</string>
@@ -854,7 +854,7 @@
   <string id="10210">Suche nach Untertiteln...</string>
   <string id="10211">Zwischenspeichern der Untertitel...</string>
   <string id="10212">Abbruch</string>
-  <string id="10213">buffering</string>
+  <string id="10213">Zwischenspeichern...</string>
   <string id="10214">Öffne Stream</string>
 
   <string id="10500">Musik/Playlisten</string>
@@ -1795,7 +1795,7 @@
   <string id="20373">Staffel</string>
   <string id="20374">Film-Informationen werden geladen...</string>
   <string id="20375">Inhalt zurücksetzen</string>
-
+  <string id="20376">Originaltitel</string>
   <string id="20377">TV-Serien-Informationen aktualisieren</string>
   <string id="20378">Die Informationen für alle Episoden aktualisieren?</string>
   <string id="20379">Ordner beinhaltet eine einzige TV-Serie</string>

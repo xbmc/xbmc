@@ -1530,10 +1530,10 @@
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
 
-  <string id="16400">Video post-processing</string>
-  <string id="16401">Disabled</string>
-  <string id="16402">Enabled for SD content</string>
-  <string id="16403">Always enabled</string>
+  <string id="16400">Post-processing</string>
+  <string id="16401"></string>
+  <string id="16402"></string>
+  <string id="16403"></string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -1819,7 +1819,7 @@
   <string id="20373">Season</string>
   <string id="20374">Downloading movie information</string>
   <string id="20375">Unassign content</string>
-
+  <string id="20376">Original title</string>
   <string id="20377">Refresh TV show information</string>
   <string id="20378">Refresh info for all episodes?</string>
   <string id="20379">Selected folder contains a single TV show</string>

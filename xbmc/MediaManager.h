@@ -72,6 +72,7 @@ public:
   bool RemoveCdInfo(const CStdString& devicePath="");
 #endif
   CStdString GetDiskLabel(const CStdString& devicePath="");
+  CStdString GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
 
   bool Eject(CStdString mountpath);

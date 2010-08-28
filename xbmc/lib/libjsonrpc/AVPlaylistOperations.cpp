@@ -35,7 +35,7 @@ using namespace std;
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
-    return FailedToExecute;
+    g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
 
   if (parameterObject.isInt())
     g_application.getApplicationMessenger().PlayListPlayerPlay(parameterObject.asInt());
@@ -70,7 +70,6 @@ JSON_STATUS CAVPlaylistOperations::SkipNext(const CStdString &method, ITransport
 
 JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-// TODO Terribly unsafe really
   CFileItemList list;
 
   g_application.getApplicationMessenger().PlayListPlayerGetItems(GetPlaylist(method), list);
@@ -78,8 +77,11 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
   HandleFileItemList(NULL, true, "items", list, parameterObject, result);
 
   if (g_playlistPlayer.GetCurrentPlaylist() == GetPlaylist(method))
+  {
     result["current"] = g_playlistPlayer.GetCurrentSong();
-
+    result["playing"] = g_application.IsPlaying();
+    result["paused"] = g_application.IsPaused();
+  }
   return OK;
 }
 

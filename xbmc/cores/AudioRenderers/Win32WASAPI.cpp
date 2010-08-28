@@ -257,7 +257,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   // now create the stream buffer
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI endpoint device.")
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI endpoint device. %i", hr)
 
   hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
   m_uiBufferLen *= m_uiBytesPerFrame;
@@ -423,6 +423,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
   unsigned int uiBytesToWrite, uiSrcBytesToWrite;
   BYTE* pBuffer = NULL;
+  HRESULT hr;
 
   UpdateCacheStatus();
 
@@ -437,18 +438,23 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
     return 0;
 
   // Get the buffer
-  m_pRenderClient->GetBuffer(uiBytesToWrite/m_uiBytesPerFrame, &pBuffer);
+  if (SUCCEEDED(hr = m_pRenderClient->GetBuffer(uiBytesToWrite/m_uiBytesPerFrame, &pBuffer)))
+  {
+    // Write data into the buffer
+    AddDataToBuffer((unsigned char*)data, uiSrcBytesToWrite, pBuffer);
 
-  // Write data into the buffer
-  AddDataToBuffer((unsigned char*)data, uiSrcBytesToWrite, pBuffer);
+    //Adjust the volume if necessary.
+    if(!m_bPassthrough)
+      m_pcmAmplifier.DeAmplify((short*)pBuffer, uiBytesToWrite / 2);
 
-  //Adjust the volume if necessary.
-  if(!m_bPassthrough)
-    m_pcmAmplifier.DeAmplify((short*)pBuffer, uiBytesToWrite / 2);
-
-  // Release the buffer
-  m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags);
-
+    // Release the buffer
+    if (FAILED(hr=m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags)))
+      CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%i)", hr);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%i)", hr);
+  }
   m_CacheLen += uiBytesToWrite;
 
   CheckPlayStatus();

@@ -861,7 +861,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder)
+  if (!item->m_bIsFolder && item->m_strPath != "add")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1324,16 +1324,6 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
 
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("video"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
   {
@@ -1500,6 +1490,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     for (int i=0;i<items.Size();++i)
     {
       CFileItemPtr pItem=items[i];
+
       if (pItem->IsVideoDb())
       {
         if (pItem->HasVideoInfoTag() &&
@@ -1507,6 +1498,10 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
              (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
           continue;
       }
+
+      // Clear resume bookmark
+      if (bMark)
+        database.ClearBookMarksOfFile(pItem->m_strPath, CBookmark::RESUME);
 
       database.SetPlayCount(*pItem, bMark ? 1 : 0);
     }
@@ -1604,7 +1599,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem)
 
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
   // if its a folder, build a temp playlist
-  if (pItem->m_bIsFolder)
+  if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
     // take a copy so we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -1684,6 +1679,20 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
   if (!items.m_strPath.Equals("plugin://video/"))
     items.SetCachedVideoThumbs();
+
+  if (items.GetContent() != "episodes")
+  { // we don't set cached fanart for episodes, as this requires a db fetch per episode
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if (!item->HasProperty("fanart_image"))
+      {
+        CStdString art = item->GetCachedFanart();
+        if (CFile::Exists(art))
+          item->SetProperty("fanart_image", art);
+      }
+    }
+  }
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)

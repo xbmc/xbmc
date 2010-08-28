@@ -6,6 +6,7 @@
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Screensaver that displays an image slideshow</summary>
+    <summary lang="de">Bildschirmschoner, welcher eine Bilder-Slideshow anzeigt</summary>
     <summary lang="fi">Diaesitys</summary>
     <summary lang="fr">Economiseur affichant un diaporama</summary>
     <summary lang="hu">Képernyővédő ami diavetítést csinál</summary>
@@ -14,6 +15,7 @@
     <summary lang="pt">Protecção de ecrã que mostra uma apresentação de fotografias</summary>
     <summary lang="zh">幻灯片屏幕保护程序</summary>
     <description lang="en">The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
+    <description lang="de">Der Slideshow-Bildschirmschoner zeigt eine Bilder-Slideshow mit verschiedenen Übergangseffekten. Er kann so konfiguriert werden, dass Musik oder Video Fanarts aus der Bibliothek, oder Bilder eines bestimmten Ordners angezeigt werden.  </description>
     <description lang="fi">Slideshow-näytönsäästäjä näyttää diaesityksen käyttäen erilaisia siirtymätehosteita. Sen voi asettaa näyttämään musiikki- tai videokirjastojen fanitaidetta tai valitusta kuvakansiosta.</description>
     <description lang="fr">L'économiseur Diaporama affichera un diaporama en utilisant divers effets de transition. Il peut afficher votre collection de fanarts vidéos ou musicaux, ou un dossier d'images en particulier.</description>
     <description lang="hu">A Slideshow képernyővédő diavetítés-szerűen képeket mutat egymás után különböző váltási effektussal. Beállítható úgy hogy a médiatárból mutasson zenei-, vagy film fanartképeket, vagy egy egyedi mappából mutassa azokat.</description>

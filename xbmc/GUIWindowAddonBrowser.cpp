@@ -467,6 +467,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   if (type == ADDON_UNKNOWN || !dialog)
     return 0;
 
+  int selectedIdx = 0;
   ADDON::VECADDONS addons;
   CAddonMgr::Get().GetAddons(type, addons);
   dialog->SetHeading(TranslateType(type, true));
@@ -483,8 +484,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
     items.Add(item);
   }
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
+  {
+    if (addonID.Equals(((AddonPtr)*i)->ID()))
+      selectedIdx = items.Size();
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
+  }
   dialog->SetItems(&items);
+  dialog->SetSelected(selectedIdx);
   dialog->DoModal();
   if (dialog->IsButtonPressed())
   { // switch to the addons browser.

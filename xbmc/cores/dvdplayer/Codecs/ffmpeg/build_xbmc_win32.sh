@@ -28,7 +28,8 @@ OPTIONS="
 --enable-muxer=spdif \
 --enable-muxer=adts \
 --enable-encoder=ac3 \
---enable-encoder=aac"
+--enable-encoder=aac \
+--enable-runtime-cpudetect"
 
 ./configure --extra-cflags="-fno-common -I../libfaad2/include -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
  

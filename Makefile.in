@@ -102,6 +102,9 @@ LIB_DIRS=\
 	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/jsoncpp/src/lib_json
+ifeq ($(findstring osx,$(ARCH)), osx)
+LIB_DIRS+=lib/libmicrohttpd
+endif
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -516,8 +519,8 @@ endif
 install-arch:
 	@# Arch dependent files
 	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
-	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/script.module.pil
-	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/script.module.pysqlite
+	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
+	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
@@ -538,7 +541,7 @@ install-datas: install-scripts
 	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
 	@install -D -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
 	@install -D -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
-	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q $(datadir)/icons/hicolor || :
+	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
 install-livedatas:
 	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."

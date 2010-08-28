@@ -366,9 +366,21 @@ bool CConvolutionShader::Create(ESCALINGMETHOD method)
       return false;
   }
 
+  if (!KernelTexFormat())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the kernel.");
+    return false;
+  }
+
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
 
-  if(!LoadEffect(effectString, NULL))
+  DefinesMap defines;
+  if (m_floattex)
+    defines["HAS_FLOAT_TEXTURE"] = "";
+  if (m_rgba)
+    defines["HAS_RGBA"] = "";
+
+  if(!LoadEffect(effectString, &defines))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
     return false;
@@ -391,31 +403,70 @@ void CConvolutionShader::Render(CD3DTexture &sourceTexture,
   Execute();
 }
 
+bool CConvolutionShader::KernelTexFormat()
+{
+  if (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, 0))
+  {
+    m_format = D3DFMT_A16B16G16R16F;
+    m_floattex = true;
+    m_rgba = true;
+  }
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, 0))
+  {
+    m_format = D3DFMT_A8B8G8R8;
+    m_floattex = false;
+    m_rgba = true;
+  }
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, 0))
+  {
+    m_format = D3DFMT_A8R8G8B8;
+    m_floattex = false;
+    m_rgba = false;
+  }
+  else
+    return false;
+
+  return true;
+}
+
 bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 {
   CConvolutionKernel kern(method, 256);
 
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_A16B16G16R16F, g_Windowing.DefaultD3DPool()))
+  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_format, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
     return false;
   }
 
-  float *kernelVals = kern.GetFloatPixels();
-  D3DXFLOAT16* float16Vals = new D3DXFLOAT16[kern.GetSize()*4];
+  void *kernelVals;
+  int kernelValsSize;
 
-  for(int i = 0; i < kern.GetSize()*4; i++)
-    float16Vals[i] = kernelVals[i];
+  if (m_floattex)
+  {
+    float *rawVals = kern.GetFloatPixels();
+    D3DXFLOAT16* float16Vals = new D3DXFLOAT16[kern.GetSize()*4];
+
+    for(int i = 0; i < kern.GetSize()*4; i++)
+      float16Vals[i] = rawVals[i];
+    kernelVals = float16Vals;
+    kernelValsSize = sizeof(D3DXFLOAT16)*kern.GetSize()*4;
+  }
+  else
+  {
+    kernelVals = kern.GetUint8Pixels();
+    kernelValsSize = sizeof(uint8_t)*kern.GetSize()*4;
+  }
 
   D3DLOCKED_RECT lr;
   if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
     CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
-  memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*kern.GetSize()*4);
+  memcpy(lr.pBits, kernelVals, kernelValsSize);
   if (!m_HQKernelTexture.UnlockRect(0))
     CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
 
-
-  delete[] float16Vals;
+  if (m_floattex)
+    delete[] kernelVals;
 
   return true;
 }

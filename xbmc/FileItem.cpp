@@ -90,7 +90,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
     m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
   else
     m_strThumbnailImage.clear();
-
+  m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
 
@@ -300,6 +300,7 @@ void CFileItem::Reset()
   FreeIcons();
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_bSelected = false;
+  m_bIsAlbum = false;
   m_strDVDLabel.Empty();
   m_strTitle.Empty();
   m_strPath.Empty();
@@ -628,6 +629,14 @@ bool CFileItem::IsDVDImage() const
   return false;
 }
 
+bool CFileItem::IsDiskFile() const
+{
+  bool found = IsDVDFile(false, true);
+  if (found)
+    return true;
+  return IsBDFile();
+}
+
 bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 {
   CStdString strFileName = CUtil::GetFileName(m_strPath);
@@ -643,6 +652,12 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   }
 
   return false;
+}
+
+bool CFileItem::IsBDFile() const
+{
+  CStdString strFileName = CUtil::GetFileName(m_strPath);
+  return (strFileName.Equals("index.bdmv"));
 }
 
 bool CFileItem::IsRAR() const
@@ -1084,7 +1099,14 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     dbItem.m_lStartOffset = item->m_lStartOffset;
     return IsSamePath(&dbItem);
   }
+  if (HasProperty("original_listitem_url"))
+    return (GetProperty("original_listitem_url") == item->m_strPath);
   return false;
+}
+
+bool CFileItem::IsAlbum() const
+{
+  return m_bIsAlbum;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1516,6 +1538,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_FULLPATH:
     FillSortFields(SSortFileItem::ByFullPath);
+    break;
+  case SORT_METHOD_LASTPLAYED:
+    FillSortFields(SSortFileItem::ByLastPlayed);
     break;
   default:
     break;
@@ -2417,10 +2442,14 @@ CStdString CFileItem::GetCachedVideoThumb() const
 {
   if (IsStack())
     return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
-  else if (IsVideoDb() && HasVideoInfoTag() && !m_bIsFolder)
-    return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoThumbFolder(),true);
-  else
-    return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
+  else if (IsVideoDb() && HasVideoInfoTag())
+  {
+    if (m_bIsFolder && !GetVideoInfoTag()->m_strPath.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
+    else if (!GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
+  }
+  return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedEpisodeThumb() const
@@ -2434,6 +2463,7 @@ CStdString CFileItem::GetCachedEpisodeThumb() const
 void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
+  if (HasThumbnail()) return;
   CStdString cachedThumb(GetCachedVideoThumb());
   if (HasVideoInfoTag() && !m_bIsFolder  &&
       GetVideoInfoTag()->m_iEpisode > -1 &&

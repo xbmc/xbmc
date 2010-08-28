@@ -38,6 +38,9 @@
 #include "ass_library.h"
 #include "ass_drawing.h"
 
+#define GLYPH_CACHE_MAX 1000
+#define BITMAP_CACHE_MAX_SIZE 30 * 1048576
+
 typedef struct {
     double xMin;
     double xMax;
@@ -258,5 +261,6 @@ typedef struct {
 } Segment;
 
 void reset_render_context(ASS_Renderer *render_priv);
+void ass_free_images(ASS_Image *img);
 
 #endif /* LIBASS_RENDER_H */

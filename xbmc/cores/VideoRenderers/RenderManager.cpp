@@ -142,8 +142,6 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
 
   double frametime = g_VideoReferenceClock.GetSpeed() / fps;
 
-  presenttime     += m_presentcorr * frametime;
-
   double clock     = CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase()) / CDVDClock::GetTimeBase();
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
@@ -161,7 +159,21 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(error < 0)
     error /= 2.0 * (0.0 + target);
 
-  m_presentcorr = wrap(m_presentcorr + error * 0.02, target - 1.0, target);
+  //save error in the buffer
+  m_errorindex = (m_errorindex + 1) % ERRORBUFFSIZE;
+  m_errorbuff[m_errorindex] = error;
+
+  //get the average error from the buffer
+  double avgerror = 0.0;
+  for (int i = 0; i < ERRORBUFFSIZE; i++)
+    avgerror += m_errorbuff[i];
+
+  avgerror /= ERRORBUFFSIZE;
+
+  //integral correction, clamp to -0.5:0.5 range
+  m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.5), -0.5);
+  //adjust the clockspeed slightly to minimize the error
+  g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
@@ -272,6 +284,8 @@ unsigned int CXBMCRenderManager::PreInit()
 
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
+  m_errorindex  = 0;
+  memset(m_errorbuff, 0, sizeof(m_errorbuff));
 
   m_bIsStarted = false;
   m_bPauseDrawing = false;

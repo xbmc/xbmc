@@ -348,6 +348,8 @@ int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons,
     if (idRepo > -1)
       DeleteRepository(idRepo);
 
+    BeginTransaction();
+
     CDateTime time = CDateTime::GetCurrentDateTime();
     sql = PrepareSQL("insert into repo (id,addonID,checksum,lastcheck) values (NULL,'%s','%s','%s')",id.c_str(),checksum.c_str(),time.GetAsDBDateTime().c_str());
     m_pDS->exec(sql.c_str());
@@ -355,11 +357,13 @@ int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons,
     for (unsigned int i=0;i<addons.size();++i)
       AddAddon(addons[i],idRepo);
 
+    CommitTransaction();
     return idRepo;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
+    RollbackTransaction();
   }
   return -1;
 }
@@ -389,7 +393,7 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
 
 CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
 {
-  CDateTime date = CDateTime::GetCurrentDateTime();
+  CDateTime date;
   try
   {
     if (NULL == m_pDB.get()) return date;

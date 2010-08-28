@@ -282,7 +282,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name_root,content))
+      if (RetrieveVideoInfo(items, settings.parent_name_root, content))
       {
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
@@ -451,7 +451,7 @@ namespace VIDEO
       long lResult = AddVideo(pItem.get(), info2->Content());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), bDirNames, fetchEpisodes, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal, pDlgProgress);
       if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
@@ -1217,17 +1217,6 @@ namespace VIDEO
           return nfoFile;
       }
 
-      // already an .nfo file?
-      if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-        nfoFile = item->m_strPath;
-      // no, create .nfo file
-      else
-        nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
-
-      // test file existence
-      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
-        nfoFile.Empty();
-
       // try looking for .nfo file for a stacked item
       if (item->IsStack())
       {
@@ -1245,6 +1234,19 @@ namespace VIDEO
           nfoFile = GetnfoFile(&item2, bGrabAny);
         }
       }
+      else
+      {
+        // already an .nfo file?
+        if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+          nfoFile = item->m_strPath;
+        // no, create .nfo file
+        else
+          nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
+      }
+
+      // test file existence
+      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
+        nfoFile.Empty();
 
       if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
       {
@@ -1257,8 +1259,16 @@ namespace VIDEO
           return GetnfoFile(&item2, bGrabAny);
         }
       }
+
+      if (item->IsDiskFile())
+      {
+        CFileItem parentDirectory;
+        parentDirectory.m_strPath = CUtil::GetParentPath(item->m_strPath);
+        return GetnfoFile(&parentDirectory, bGrabAny);
+      }
     }
-    if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
+    // folders (or stacked dvds) can take any nfo file if there's a unique one
+    if (item->m_bIsFolder || item->IsDVDFile(false, true) || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1521,6 +1531,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
+    if (g_advancedSettings.m_bVideoScannerIgnoreErrors)
+      return true;
+
     if (pDialog)
     {
       CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);

@@ -260,6 +260,7 @@
 #include "MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
+#include "utils/AlarmClock.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -2802,6 +2803,16 @@ bool CApplication::ProcessGamepad(float frameTime)
   int position;
   if (g_Joystick.GetHat(bid, position))
   {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (WakeUpScreenSaverAndDPMS())
+    {
+      g_Joystick.Reset();
+      return true;
+    }
+
     int actionID;
     CStdString actionName;
     bool fullrange;
@@ -3234,6 +3245,8 @@ void CApplication::Stop()
   {
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
+
+    g_alarmClock.StopThread();
 
 #ifdef HAS_HTTPAPI
     if (m_pXbmcHttp)
@@ -3740,7 +3753,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         // Save information about the stream if we currently have no data
-        if (!details->HasStreamDetails())
+        if (!details->HasStreamDetails() ||
+             details->m_streamDetails.GetVideoDuration() <= 0)
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
           {
@@ -4483,6 +4497,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
           return true;
         }
+      }
+      
+      // In case playback ended due to user eg. skipping over the end, clear
+      // our resume bookmark here
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
       }
 
       // reset the current playing file

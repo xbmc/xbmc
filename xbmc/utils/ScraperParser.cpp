@@ -27,6 +27,7 @@
 #include "addons/Scraper.h"
 #include "Util.h"
 #include "log.h"
+#include "CharsetConverter.h"
 
 #include <sstream>
 #include <cstring>
@@ -442,12 +443,15 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!FIXCHARS!!!",i+14)) != -1)
     {
       strBuffer = strDirty.substr(i+14,i2-i-14);
-      CStdString strConverted;
-      HTML::CHTMLUtil::ConvertHTMLToAnsi(strBuffer,strConverted);
-      RemoveWhiteSpace(strConverted);
+      CStdStringW wbuffer;
+      g_charsetConverter.toW(strBuffer,wbuffer,GetSearchStringEncoding());
+      CStdStringW wConverted;
+      HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
+      g_charsetConverter.fromW(wConverted,strBuffer,GetSearchStringEncoding());
+      RemoveWhiteSpace(strBuffer);
       strDirty.erase(i,i2-i+14);
-      strDirty.Insert(i,strConverted);
-      i += strConverted.size();
+      strDirty.Insert(i,strBuffer);
+      i += strBuffer.size();
     }
     else
       break;

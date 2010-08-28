@@ -227,7 +227,17 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
         share.strPath = "cdda://local/";
       }
       else
+      {
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        if (!share.strPath.length()) // unmounted CD
+        {
+          if (g_mediaManager.GetDiscPath() == "iso9660://")
+            share.strPath = "iso9660://";
+          else
+            // share is unmounted and not iso9660, discard it
+            shares.erase(shares.begin() + i--);
+        }
+      }
     }
   }
 #endif

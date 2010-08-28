@@ -51,7 +51,7 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
   --disable-vdadecoder --disable-openmax --disable-tegra --disable-profiling \
   --enable-joystick --enable-xrandr --enable-goom --disable-ccache \
   --enable-pulse --enable-rtmp --enable-ffmpeg-libvorbis --disable-mid \
-  --enable-hal --enable-avahi --disable-non-free --disable-asap-codec \
+  --enable-hal --enable-avahi --disable-asap-codec \
   --enable-webserver --disable-libdts --disable-liba52 \
   $(XBMC_CONFIG_EXTRA_OPTIONS) \
   $(DISTRO_SPECIFIC_OPTIONS) \
@@ -61,8 +61,11 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 # Input files used for generating other files
 INPUT_FILES = debian/control.in
 
+# Use --parallel option only if debhelper supports it
+DH_PARALLEL_OPT=$(shell dh_testdir --parallel 2>/dev/null && echo "--parallel")
+
 %:
-	dh $@ --parallel
+	dh $@ $(DH_PARALLEL_OPT)
 
 # Target for generating control files
 .PHONY: debian/var_info
@@ -84,6 +87,8 @@ override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
+	$(MAKE) -C lib/addons/script.module.pil
+	$(MAKE) -C lib/addons/script.module.pysqlite
 	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
 		WII_EXTRA_OPTS=-DCWIID_OLD

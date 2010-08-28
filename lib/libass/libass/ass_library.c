@@ -18,6 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include "config.h"
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,8 +59,7 @@ void ass_library_done(ASS_Library *priv)
 
 void ass_set_fonts_dir(ASS_Library *priv, const char *fonts_dir)
 {
-    if (priv->fonts_dir)
-        free(priv->fonts_dir);
+    free(priv->fonts_dir);
 
     priv->fonts_dir = fonts_dir ? strdup(fonts_dir) : 0;
 }
@@ -77,8 +78,8 @@ void ass_set_style_overrides(ASS_Library *priv, char **list)
     if (priv->style_overrides) {
         for (p = priv->style_overrides; *p; ++p)
             free(*p);
-        free(priv->style_overrides);
     }
+    free(priv->style_overrides);
 
     if (!list)
         return;

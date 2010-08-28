@@ -68,7 +68,6 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
-#include "addons/Skin.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
 #include "SingleLock.h"
@@ -1530,7 +1529,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+    {
+      AddonPtr addon;
+      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+      if (CAddonMgr::Get().GetAddon(strLabel,addon) && addon)
+        strLabel = addon->Name();
+    }
     break;
   case FANART_COLOR1:
     {
@@ -2101,7 +2105,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
           // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
           // useful for Player.Time* members without adding a separate set of members returning time in seconds
-          if ( value.find_first_of( ':' ) )
+          if ( value.find_first_of( ':' ) != value.npos )
             bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();
@@ -3660,10 +3664,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetTitle();
     break;
   case LISTITEM_ORIGINALTITLE:
     if (item->HasVideoInfoTag())
@@ -3838,11 +3842,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         strThumb = "";
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
-      {
         strThumb = item->GetIconImage();
-        if (g_SkinInfo->GetVersion() <= 2.10)
-          strThumb.Insert(strThumb.Find("."), "Big");
-      }
       return strThumb;
     }
   case LISTITEM_OVERLAY:

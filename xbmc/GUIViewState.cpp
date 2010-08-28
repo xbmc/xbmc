@@ -55,7 +55,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == 0)
     return GetViewState(g_windowManager.GetActiveWindow(),items);
 
-  const CURL& url=items.GetAsUrl();
+  const CURL url=items.GetAsUrl();
 
   if (items.HasSortDetails())
     return new CGUIViewStateFromItems(items);
@@ -366,6 +366,7 @@ void CGUIViewState::AddLiveTVSources()
       CMediaSource source;
       source.strPath = (*it).strPath;
       source.strName = (*it).strName;
+      source.vecPaths = (*it).vecPaths;
       source.m_strThumbnailImage = "";
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
       m_sources.push_back(source);

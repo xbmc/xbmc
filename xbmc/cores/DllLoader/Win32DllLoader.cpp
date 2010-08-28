@@ -128,8 +128,8 @@ Export win32_exports[] =
   { "_iob",                       -1, (void*)&_iob,                         NULL },
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
-  //{ "getenv",                     -1, (void*)dll_getenv,                    NULL },
-  //{ "_environ",                   -1, (void*)&dll__environ,                 NULL },
+  { "getenv",                     -1, (void*)dll_getenv,                    NULL },
+  { "_environ",                   -1, (void*)&dll__environ,                 NULL },
   { "_open_osfhandle",            -1, (void*)dll_open_osfhandle,            NULL },
 
   { NULL,                          -1, NULL,                                NULL }
@@ -168,8 +168,8 @@ Export win32_python_exports[] =
   // special workaround just for python
   { "_chdir",                               -1, (void*)xbp_chdir,                               NULL },
   { "_getcwd",                              -1, (void*)xbp_getcwd,                               NULL },
-  //{ "_putenv",                              -1, (void*)dll_putenv,                              NULL },
-  //{ "__p__environ",               -1, (void*)dll___p__environ,              NULL },
+  { "_putenv",                              -1, (void*)dll_putenv,                              NULL },
+  { "__p__environ",               -1, (void*)dll___p__environ,              NULL },
   { NULL,                          -1, NULL,                                NULL }
 };
 
@@ -368,10 +368,14 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   CStdString dllPath;
   g_charsetConverter.wToUTF8(filepathW, dllPath);
 
-  // compare this filepath with our home directory
-  CStdString homePath = _P("special://xbmc");
+  // compare this filepath with some special directories
+  CStdString xbmcPath = _P("special://xbmc");
+  CStdString homePath = _P("special://home");
   CStdString tempPath = _P("special://temp");
-  return ((strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));}
+  return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.GetLength()) == 0) ||
+    (strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) ||
+    (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));
+}
 
 void Win32DllLoader::RestoreImports()
 {

@@ -53,7 +53,8 @@ Command CJSONRPC::m_commands[] = {
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers,                 Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
-  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "AudioPlayer.State",                            CAVPlayerOperations::State,                          Response,     ReadData,        "Returns Current Playback state"},
+  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback, returns new state" },
   { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
   { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
   { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
@@ -75,7 +76,8 @@ Command CJSONRPC::m_commands[] = {
   { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
 
 // Video player
-  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "VideoPlayer.State",                            CAVPlayerOperations::State,                          Response,     ReadData,        "Returns Current Playback state"},
+  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback, returns new state" },
   { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
   { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
   { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
@@ -150,7 +152,7 @@ Command CJSONRPC::m_commands[] = {
 
 // Music library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
-  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre, Fields: album_description, album_theme, album_mood, album_style, album_type, album_label, album_artist, album_genre, album_rating, album_title" },
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },

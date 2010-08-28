@@ -48,6 +48,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StSoundLibrary</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StSoundLibrary</TargetName>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,13 +87,14 @@
       </Command>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copy output</Message>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)</Outputs>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,13 +134,14 @@
       </Command>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Message>Copy output</Message>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)..\..\system\players\paplayer\$(TargetFileName)</Outputs>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>

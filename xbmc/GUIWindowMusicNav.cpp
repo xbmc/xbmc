@@ -551,23 +551,42 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (!item->IsVideoDb())
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
+
+      // music videos - artists
       if (item->m_strPath.Left(14).Equals("videodb://3/4/"))
       {
         long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        item->m_strPath.Format("musicdb://2/%ld/", m_musicdatabase.GetArtistByName(item->GetLabel()));
+        item->m_strPath.Format("musicdb://2/%ld/", idArtist);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
         Update(m_vecItems->m_strPath);
         m_viewControl.SetSelectedItem(itemNumber);
         return true;
       }
-      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
-      if (pWindow)
+
+      // music videos - albums
+      if (item->m_strPath.Left(14).Equals("videodb://3/5/"))
       {
-        ADDON::ScraperPtr info;
-        pWindow->OnInfo(item.get(),info);
+        long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
+        if (idAlbum == -1)
+          return false;
+        item->m_strPath.Format("musicdb://3/%ld/", idAlbum);
+        CGUIWindowMusicBase::OnContextButton(itemNumber,button);
         Update(m_vecItems->m_strPath);
+        m_viewControl.SetSelectedItem(itemNumber);
+        return true;
+      }
+
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty())
+      {
+        CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+        if (pWindow)
+        {
+          ADDON::ScraperPtr info;
+          pWindow->OnInfo(item.get(),info);
+          Update(m_vecItems->m_strPath);
+        }
       }
       return true;
     }

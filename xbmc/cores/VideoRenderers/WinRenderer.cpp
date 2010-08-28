@@ -71,7 +71,7 @@ CWinRenderer::CWinRenderer()
   m_renderMethod = RENDER_PS;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
-  m_StretchRectFilter = D3DTEXF_POINT;
+  m_TextureFilter = D3DTEXF_POINT;
 
   m_bUseHQScaler = false;
   m_bFilterInitialized = false;
@@ -139,7 +139,7 @@ void CWinRenderer::SelectRenderMethod()
           }
           else
           {
-            CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D setup is most likely incomplete");
+            CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
             g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
             shader->Release();
           }
@@ -152,6 +152,7 @@ void CWinRenderer::SelectRenderMethod()
       // drop through to software
       case RENDER_METHOD_SOFTWARE:
       default:
+        // So we'll do the color conversion in software.
         m_renderMethod = RENDER_SW;
         break;
     }
@@ -442,15 +443,23 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
 {
   // Initialize a render target for intermediate rendering - same size as the video source
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  D3DFORMAT format = D3DFMT_X8R8G8B8;
+  DWORD usage = D3DUSAGE_RENDERTARGET;
 
-  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
+  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) format = D3DFMT_A2B10G10R10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    format = D3DFMT_A8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    format = D3DFMT_A8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8R8G8B8, usage))    format = D3DFMT_X8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    format = D3DFMT_X8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      format = D3DFMT_R8G8B8;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": format %i", format);
+
+  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, usage, format, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
-    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
-      return false;
-    }
+    CLog::Log(LOGERROR, __FUNCTION__": render target creation failed. Going back to bilinear scaling.", format);
+    return false;
   }
 
   //Pixel shaders need a matching depth-stencil surface.
@@ -477,13 +486,13 @@ void CWinRenderer::SelectSWVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     if (Supports(VS_SCALINGMETHOD_LINEAR))
     {
-      m_StretchRectFilter = D3DTEXF_LINEAR;
+      m_TextureFilter = D3DTEXF_LINEAR;
       break;
     }
     // fall through for fallback
   case VS_SCALINGMETHOD_NEAREST:
   default:
-    m_StretchRectFilter = D3DTEXF_POINT;
+    m_TextureFilter = D3DTEXF_POINT;
     break;
   }
 }
@@ -523,12 +532,15 @@ void CWinRenderer::SelectPSVideoFilter()
     break;
   }
 
-  // Scaler auto + SD -> Lanczos3 optim. Otherwise bilinear.
-  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth < 1280)
+  // Scaler auto + SD + capable HW -> Lanczos3 optim. Otherwise bilinear.
+  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO
+  && m_sourceWidth < 1280
+  && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
   {
     m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     m_bUseHQScaler = true;
   }
+
 }
 
 void CWinRenderer::UpdatePSVideoFilter()
@@ -554,7 +566,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
     SAFE_RELEASE(m_scalerShader)
-    m_bUseHQScaler = true;
+    m_bUseHQScaler = false;
   }
 
   SAFE_RELEASE(m_colorShader)
@@ -718,6 +730,26 @@ void CWinRenderer::RenderSW(DWORD flags)
   if ((m_destRect.x1 < 0 && m_destRect.x2 < 0) || (m_destRect.y1 < 0 && m_destRect.y2 < 0))
     return;
 
+  ScaleFixedPipeline();
+}
+
+/*
+Code kept for reference, as a basis to re-enable StretchRect and 
+do the color conversion with it.
+See IDirect3D9::CheckDeviceFormat() for support of non-standard fourcc textures
+and IDirect3D9::CheckDeviceFormatConversion for color conversion support
+
+void CWinRenderer::ScaleStretchRect()
+{
+  // Test HW scaler support. StretchRect is slightly faster than drawing a quad.
+  // If linear filtering is not supported, drop back to quads, as most HW has linear filtering for quads.
+  //if(m_deviceCaps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES
+  //&& m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
+  //&& m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+  //{
+  //  m_StretchRectSupported = true;
+  //}
+
   RECT srcRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
   IDirect3DSurface9* source;
   if(!m_SWTarget.GetSurfaceLevel(0, &source))
@@ -725,7 +757,7 @@ void CWinRenderer::RenderSW(DWORD flags)
 
   RECT dstRect = { m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2 };
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
 
   D3DSURFACE_DESC desc;
@@ -735,17 +767,107 @@ void CWinRenderer::RenderSW(DWORD flags)
   // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
   CropSource(srcRect, dstRect, desc);
 
+  HRESULT hr;
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if(FAILED(pD3DDevice->StretchRect(source, &srcRect, target, &dstRect, m_StretchRectFilter)))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - unable to StretchRect");
-    if (!(m_deviceCaps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES))
-      CLog::Log(LOGDEBUG, __FUNCTION__" - missing D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES");
-  }
+  if(FAILED(hr = pD3DDevice->StretchRect(source, &srcRect, target, &dstRect, m_TextureFilter)))
+    CLog::Log(LOGERROR, __FUNCTION__" - StretchRect failed (0x%08X)", hr);
 
   target->Release();
   source->Release();
+}
+*/
+
+void CWinRenderer::ScaleFixedPipeline()
+{
+  HRESULT hr;
+  IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
+  D3DSURFACE_DESC srcDesc;
+  if (FAILED(hr = m_SWTarget.Get()->GetLevelDesc(0, &srcDesc)))
+    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. (0x%08X)", hr);
+
+  float srcWidth  = (float)srcDesc.Width;
+  float srcHeight = (float)srcDesc.Height;
+
+  bool cbcontrol          = (g_settings.m_currentVideoSettings.m_Contrast != 50.0f || g_settings.m_currentVideoSettings.m_Brightness != 50.0f);
+  unsigned int contrast   = (unsigned int)(g_settings.m_currentVideoSettings.m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
+  unsigned int brightness = (unsigned int)(g_settings.m_currentVideoSettings.m_Brightness * .01f * 255.0f);
+
+  D3DCOLOR diffuse  = D3DCOLOR_ARGB(255, contrast, contrast, contrast);
+  D3DCOLOR specular = D3DCOLOR_ARGB(255, brightness, brightness, brightness);
+
+  struct VERTEX
+  {
+    FLOAT x,y,z,rhw;
+    D3DCOLOR diffuse;
+    D3DCOLOR specular;
+    FLOAT tu, tv;
+  };
+
+  VERTEX vertex[] =
+  {
+    {m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
+    {m_destRect.x2, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
+    {m_destRect.x1, m_destRect.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
+  };
+
+  // Compensate for D3D coordinates system
+  for(int i = 0; i < sizeof(vertex)/sizeof(vertex[0]); i++)
+  {
+    vertex[i].x -= 0.5f;
+    vertex[i].y -= 0.5f;
+  };
+
+  pD3DDev->SetTexture(0, m_SWTarget.Get());
+
+  if (!cbcontrol)
+  {
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  }
+  else
+  {
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE2X );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_SPECULAR );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    hr = pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
+
+    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    hr = pD3DDev->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  }
+
+  hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+
+  hr = pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
+  hr = pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
+  hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  hr = pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+
+  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
+
+  if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
+    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. (0x%08X)", hr);
+
+  pD3DDev->SetTexture(0, NULL);
 }
 
 void CWinRenderer::RenderPS(DWORD flags)
@@ -822,9 +944,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
 
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get back buffer");
+    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target");
     return;
   }
 
@@ -929,14 +1051,12 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CWinRenderer::Supports(ERENDERFEATURE feature)
 {
-  if (m_renderMethod == RENDER_DXVA || m_renderMethod == RENDER_PS)
-  {
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return true;
 
   if(feature == RENDERFEATURE_CONTRAST)
     return true;
-  }
+
   return false;
 }
 
@@ -969,14 +1089,13 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   }
   else if(m_renderMethod == RENDER_SW)
   {
-    if(method == VS_SCALINGMETHOD_NEAREST
-    || method == VS_SCALINGMETHOD_AUTO )
+    if(method == VS_SCALINGMETHOD_AUTO
+    || method == VS_SCALINGMETHOD_NEAREST)
     return true;
-
     if(method == VS_SCALINGMETHOD_LINEAR
-    && m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
-	  && m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-	    return true;
+    && m_deviceCaps.TextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
+    && m_deviceCaps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+      return true;
   }
   return false;
 }
@@ -993,6 +1112,11 @@ bool YUVBuffer::Create(unsigned int width, unsigned int height)
   m_width = width;
   m_height = height;
 
+  // Create the buffers in system memory and copy to D3DPOOL_DEFAULT:
+  // - helps with lost devices. A buffer can be locked for dvdplayer without interfering.
+  // - Dynamic + D3DPOOL_DEFAULT caused trouble for Intel i3 and some IGP. Bad sync/locking in the driver  I suppose
+  // and Present failed every second time for the second video played.
+  // - this is what D3D9 does behind the scenes anyway
   if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
     || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
     || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))

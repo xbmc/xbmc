@@ -439,7 +439,7 @@ void CGUITextureBase::CalculateSize()
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
   if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
-    g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
+    g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
   else if (m_isAllocated == NORMAL && m_texture.size())
     g_TextureManager.ReleaseTexture(m_info.filename);
 

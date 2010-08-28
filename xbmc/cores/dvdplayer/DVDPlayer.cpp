@@ -279,7 +279,8 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
-
+  m_subLastPts = DVD_NOPTS_VALUE;
+  
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -1609,7 +1610,7 @@ void CDVDPlayer::OnExit()
     }
     if (m_CurrentSubtitle.id >= 0)
     {
-      CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
+      CLog::Log(LOGNOTICE, "DVDPlayer: closing subtitle stream");
       CloseSubtitleStream(!m_bAbortRequest);
     }
     if (m_CurrentTeletext.id >= 0)
@@ -2514,8 +2515,9 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     double pts = m_dvdPlayerVideo.GetCurrentPts();
     if(pts == DVD_NOPTS_VALUE)
       pts = m_CurrentVideo.dts;
-    if(pts != DVD_NOPTS_VALUE)
-      m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
+    if(pts == DVD_NOPTS_VALUE)
+      pts = 0;
+    m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
 
     hint.Assign(*pStream, true);
   }
@@ -2631,6 +2633,9 @@ bool CDVDPlayer::CloseAudioStream(bool bWaitForBuffers)
 
   CLog::Log(LOGNOTICE, "Closing audio stream");
 
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
+
   m_dvdPlayerAudio.CloseStream(bWaitForBuffers);
 
   m_CurrentAudio.Clear();
@@ -2643,6 +2648,9 @@ bool CDVDPlayer::CloseVideoStream(bool bWaitForBuffers)
     return false;
 
   CLog::Log(LOGNOTICE, "Closing video stream");
+
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
 
   m_dvdPlayerVideo.CloseStream(bWaitForBuffers);
 
@@ -2669,6 +2677,9 @@ bool CDVDPlayer::CloseTeletextStream(bool bWaitForBuffers)
     return false;
 
   CLog::Log(LOGNOTICE, "Closing teletext stream");
+
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
 
   m_dvdPlayerTeletext.CloseStream(bWaitForBuffers);
 
@@ -3164,6 +3175,12 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
+  // In case our video stalled, we must stall the subs too
+  if (m_dvdPlayerVideo.IsStalled())
+    pts = m_subLastPts;
+  else
+    m_subLastPts = pts;
+    
   return m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
 }
 

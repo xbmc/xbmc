@@ -93,9 +93,7 @@ public:
    */
   static RESOLUTION TranslateResolution(const CStdString &res, RESOLUTION def);
 
-  void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
-  bool ResolveConstant(const CStdString &constant, float &value) const;
-  bool ResolveConstant(const CStdString &constant, unsigned int &value) const;
+  void ResolveIncludes(TiXmlElement *node);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };
 

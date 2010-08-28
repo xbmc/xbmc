@@ -838,7 +838,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
   else if(value < def)
     return DXVA2FloatToFixed( DXVA2FixedToFloat(range.DefaultValue)
                             + (DXVA2FixedToFloat(range.MinValue) - DXVA2FixedToFloat(range.DefaultValue)) 
-                            * (value - def) / (max - def) );
+                            * (value - def) / (min - def) );
   else
     return range.DefaultValue;
 }
@@ -898,7 +898,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   
   if(time < samp[0].Start)
   {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %%l64d is before first sample %l64d", time, samp[0].Start);
+    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is before first sample %l64d", time, samp[0].Start);
     time = samp[0].Start;
   }  
 

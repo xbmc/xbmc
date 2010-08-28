@@ -14,6 +14,29 @@ tolower(){
   echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
 
+# check for library basenames
+AC_DEFUN([XB_FIND_SONAME],
+[
+  AC_MSG_CHECKING([for lib$2 soname])
+  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
+    while read output; do objdump -p $output | \
+      grep "SONAME" | \
+      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ -z "$$1_SONAME" ]]; then
+    AC_MSG_RESULT([no])
+    if test -z "$3" || test "x${$3}" = "xyes"; then
+      AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+    else
+      AC_MSG_WARN([Unable to determine soname of lib$2 library])
+      $3=no
+      AC_MSG_WARN([lib$2 support disabled])
+    fi
+  else
+    AC_MSG_RESULT([$$1_SONAME])
+    AC_SUBST($1_SONAME)
+  fi
+])
+
 # General message strings
 configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
@@ -304,6 +327,7 @@ AC_PROG_CXX
 CXXFLAGS="$PASSED_CXXFLAGS $DEFAULT_COMPILE_FLAGS"
 PASSED_CFLAGS=$CFLAGS # Hack to override autoconf default values
 AC_PROG_CC
+AC_PROG_LIBTOOL
 CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
 AC_PROG_AWK
 AC_PROG_LN_S
@@ -491,7 +515,7 @@ else
   fi
 fi
 
-# platform independent libraries
+# platform common libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
@@ -567,7 +591,9 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    LIBS="$LIBS $LIBBLURAY_LIBS";
+    if test "$host_vendor" != "apple"; then
+      XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
+    fi;
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
   ],[
@@ -644,29 +670,6 @@ HOST_NOT_APPLE=1
 if [[ "$host_vendor" = "apple" ]]; then
   HOST_NOT_APPLE=0
 fi
-
-# check for library basenames
-AC_DEFUN([XB_FIND_SONAME],
-[
-  AC_MSG_CHECKING([for lib$2 soname])
-  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
-    while read output; do objdump -p $output | \
-      grep "SONAME" | \
-      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
-  if [[ -z "$$1_SONAME" ]]; then
-    AC_MSG_RESULT([no])
-    if test -z "$3" || test "x${$3}" = "xyes"; then
-    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
-  else
-      AC_MSG_WARN([Unable to determine soname of lib$2 library])
-      $3=no
-      AC_MSG_WARN([lib$2 support disabled])
-    fi
-  else
-    AC_MSG_RESULT([$$1_SONAME])
-    AC_SUBST($1_SONAME)
-  fi
-])
 
 if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([CURL],        [curl])
@@ -1001,7 +1004,7 @@ if test "x$use_crystalhd" != "xno"; then
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
-      fi
+    fi
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
@@ -1624,6 +1627,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
+    CFLAGS="" \
     ./configure \
       --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
@@ -1652,7 +1656,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `case $host_cpu in powerpc*|arm*|amd64*|x86_64*|ia64*) echo --enable-pic ;; esac` \
+      --enable-runtime-cpudetect \
+      `case $host_cpu in i?86*) echo --disable-pic ;; *) echo --enable-pic ;; esac` \
       --cc="$CC" &&
       sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
       sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
@@ -1936,7 +1941,7 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static --with-libgcrypt-prefix=/dev/null
   fi
 ], [$HOST_NOT_APPLE])
 

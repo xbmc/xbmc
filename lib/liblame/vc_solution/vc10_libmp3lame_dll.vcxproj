@@ -64,7 +64,8 @@
     </CustomBuildAfterTargets>
     <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">
     </CustomBuildAfterTargets>
-    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    </CustomBuildAfterTargets>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libmp3lame</TargetName>
@@ -95,8 +96,9 @@
     </Link>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)..\..\system\cdrip\lame_enc.dll</Outputs>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
       <Message>Copy Output</Message>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">
@@ -125,8 +127,9 @@
     </Link>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)..\..\system\cdrip\lame_enc.dll</Outputs>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
       <Message>Copy Output</Message>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -154,8 +157,9 @@
     </Link>
     <CustomBuildStep>
       <Outputs>$(SolutionDir)..\..\system\cdrip\lame_enc.dll</Outputs>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\cdrip\lame_enc.dll"</Command>
       <Message>Copy Output</Message>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -639,7 +639,7 @@ void CGUIDialogAddonSettings::CreateControls()
         {
           for (unsigned int i = 0; i < 24; i++)
           {
-            CDateTime time(0, 0, 0, i, 0, 0);
+            CDateTime time(2000, 1, 1, i, 0, 0);
             valuesVec.push_back(g_infoManager.LocalizeTime(time, TIME_FORMAT_HH_MM_XX));
           }
         }

@@ -17,7 +17,7 @@ else
 PYTHON=$(PYTHONDIR)/python
 endif
 
-DESTDIR=$(abs_top_srcdir)/addons/script.module.pysqlite/lib/pysqlite2
+DESTDIR=$(abs_top_srcdir)/addons/script.module.pysqlite/lib/
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE) $(DESTDIR)
 

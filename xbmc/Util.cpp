@@ -873,6 +873,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
   if(IsDAAP(strPath))
     return true;
+  
+  if(IsPlugin(strPath))
+    return false;
 
   if(IsTuxBox(strPath))
     return true;
@@ -940,12 +943,16 @@ bool CUtil::IsHD(const CStdString& strFileName)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
 #if defined(_WIN32)
+  if(strFile.Mid(1) != ":\\"
+  && strFile.Mid(1) != ":")
+    return false;
+
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
@@ -1592,7 +1599,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
     CStdString filename = GetFileName(items[i]->m_strPath);
     strLExt = filename.Right(filename.size()-8);
-    vecExtensionsCached.push_back(strLExt);
+    if (filename.Left(8).Equals("subtitle"))
+      vecExtensionsCached.push_back(strLExt);
     if (CUtil::GetExtension(filename).Equals(".smi"))
     {
       //Cache multi-language sami subtitle

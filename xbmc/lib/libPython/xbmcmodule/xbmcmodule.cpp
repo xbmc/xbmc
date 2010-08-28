@@ -745,12 +745,6 @@ namespace PYXBMC
     if (CUtil::IsDOSPath(strText))
       strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
 
-    if (CUtil::IsPlugin(strText))
-    {
-      strPath = strText;
-      strPath.Replace("plugin://","special://home/plugins/");
-    }
-
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
@@ -1100,7 +1094,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
-    PyModule_AddObject(pXbmcModule, "abortRequested", PyBool_FromLong(0));
+    PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
   }
 }
 

@@ -82,9 +82,10 @@
       </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
       <Message>Copy Output</Message>
       <Outputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Outputs>
+      <Inputs>$(TargetPath)</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -118,10 +119,9 @@
       </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
       <Message>Copy Output</Message>
-      <Inputs>
-      </Inputs>
+      <Inputs>$(TargetPath)</Inputs>
       <Outputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\libass\ass_library.c" />
     <ClCompile Include="..\..\libass\ass_parse.c" />
     <ClCompile Include="..\..\libass\ass_render.c" />
+    <ClCompile Include="..\..\libass\ass_render_api.c" />
     <ClCompile Include="..\..\libass\ass_strtod.c" />
     <ClCompile Include="..\..\libass\ass_utils.c" />
   </ItemGroup>

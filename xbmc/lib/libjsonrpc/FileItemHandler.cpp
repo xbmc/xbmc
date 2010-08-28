@@ -70,6 +70,18 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["playcount"] = videoInfo->m_playCount;
   if (field.Equals("rating"))
     result["rating"] = (double)videoInfo->m_fRating;
+  if (field.Equals("writer") && !videoInfo->m_strWritingCredits.IsEmpty())
+    result["writer"] = videoInfo->m_strWritingCredits.c_str();
+  if (field.Equals("studio") && !videoInfo->m_strStudio.IsEmpty())
+    result["studio"] = videoInfo->m_strStudio.c_str();
+  if (field.Equals("mpaa") && !videoInfo->m_strMPAARating.IsEmpty())
+    result["mpaa"] = videoInfo->m_strMPAARating.c_str();
+  if (field.Equals("premiered") && !videoInfo->m_strPremiered.IsEmpty())
+    result["premiered"] = videoInfo->m_strPremiered.c_str();
+  if (field.Equals("album") && !videoInfo->m_strAlbum.IsEmpty())
+    result["album"] = videoInfo->m_strAlbum.c_str();
+  if (field.Equals("artist") && !videoInfo->m_strArtist.IsEmpty())
+    result["artist"] = videoInfo->m_strArtist.c_str();
 }
 
 void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CStdString &field, Value &result)
@@ -98,8 +110,6 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["year"] = (int)musicInfo->GetYear();
 
 //  void GetReleaseDate(SYSTEMTIME& dateTime) const;
-  if (field.Equals("albumartist") && !musicInfo->GetYearString().IsEmpty())
-    result["albumartist"] =  musicInfo->GetYearString().c_str();
 
   if (field.Equals("musicbrainztrackid") && !musicInfo->GetMusicBrainzTrackID().IsEmpty())
     result["musicbrainztrackid"] =  musicInfo->GetMusicBrainzTrackID().c_str();
@@ -176,6 +186,13 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
         FillVideoDetails(item->GetVideoInfoTag(), field, object);
       if (item->HasMusicInfoTag())
         FillMusicDetails(item->GetMusicInfoTag(), field, object);
+      if (item->IsAlbum() && item->HasProperty(field))
+      {
+        if (field == "album_rating")
+          object[field] = item->GetPropertyInt(field);
+        else
+          object[field] = item->GetProperty(field);
+      }
     }
 
     object["label"] = item->GetLabel().c_str();
@@ -266,6 +283,8 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = ignorethe ? SORT_METHOD_STUDIO_IGNORE_THE : SORT_METHOD_STUDIO;
   else if (method.Equals("fullpath"))
     sortmethod = SORT_METHOD_FULLPATH;
+  else if (method.Equals("lastplayed"))
+    sortmethod = SORT_METHOD_LASTPLAYED;
   else if (method.Equals("unsorted"))
     sortmethod = SORT_METHOD_UNSORTED;
   else if (method.Equals("max"))

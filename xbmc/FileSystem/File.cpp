@@ -100,6 +100,7 @@ CFile::CFile()
   m_pFile = NULL;
   m_pBuffer = NULL;
   m_flags = 0;
+  m_bitStreamStats = NULL;
 }
 
 //*********************************************************************************************
@@ -109,6 +110,8 @@ CFile::~CFile()
     SAFE_DELETE(m_pFile);
   if (m_pBuffer)
     SAFE_DELETE(m_pBuffer);
+  if (m_bitStreamStats)
+    SAFE_DELETE(m_bitStreamStats);
 }
 
 //*********************************************************************************************
@@ -349,7 +352,12 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
       }
     }
 
-    m_bitStreamStats.Start();
+    if (m_flags & READ_BITRATE)
+    {
+      m_bitStreamStats = new BitstreamStats();
+      m_bitStreamStats->Start();
+    }
+
     return true;
   }
 #ifndef _LINUX
@@ -365,30 +373,6 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
-
-void CFile::Attach(IFile *pFile, unsigned int flags) {
-  m_pFile = pFile;
-  m_flags = flags;
-  if (m_flags & READ_BUFFERED)
-  {
-    if (m_pFile->GetChunkSize())
-    {
-      m_pBuffer = new CFileStreamBuffer(0);
-      m_pBuffer->Attach(m_pFile);
-    }
-  }
-}
-
-IFile* CFile::Detach() {
-  // TODO - currently the buffered reading is broken if in use, it should be
-  //        moved to a IFile instead, then it will work just fine
-
-  IFile* file = m_pFile;
-  m_pFile = NULL;
-  m_flags = 0;
-  return file;
-}
-
 
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
@@ -497,15 +481,15 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
       unsigned int nBytes = m_pBuffer->sgetn(
         (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
-      if (nBytes>0)
-        m_bitStreamStats.AddSampleBytes(nBytes);
+      if (m_bitStreamStats && nBytes>0)
+        m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
     }
     else
     {
       unsigned int nBytes = m_pBuffer->sgetn((char*)lpBuf, uiBufSize);
-      if (nBytes>0)
-        m_bitStreamStats.AddSampleBytes(nBytes);
+      if (m_bitStreamStats && nBytes>0)
+        m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
     }
   }
@@ -515,8 +499,8 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
     if(m_flags & READ_TRUNCATED)
     {
       unsigned int nBytes = m_pFile->Read(lpBuf, uiBufSize);
-      if (nBytes>0)
-        m_bitStreamStats.AddSampleBytes(nBytes);
+      if (m_bitStreamStats && nBytes>0)
+        m_bitStreamStats->AddSampleBytes(nBytes);
       return nBytes;
     }
     else
@@ -530,8 +514,8 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 
         done+=curr;
       }
-      if (done > 0)
-        m_bitStreamStats.AddSampleBytes(done);
+      if (m_bitStreamStats && done > 0)
+        m_bitStreamStats->AddSampleBytes(done);
       return done;
     }
   }
@@ -800,7 +784,8 @@ bool CFile::Delete(const CStdString& strFileName)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
+  if (Exists(strFileName))
+    CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
 

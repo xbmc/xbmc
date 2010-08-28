@@ -34,8 +34,8 @@
 #else
 #include <io.h>
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #endif
+#include "utils/log.h"
 
 
 using namespace XFILE;
@@ -99,7 +99,7 @@ bool CFileHD::Open(const CURL& url)
   if (!m_hFile.isValid()) return false;
 
   m_i64FilePos = 0;
-  Seek(0, SEEK_SET);
+  m_i64FileLen = 0;
 
   return true;
 }
@@ -120,18 +120,28 @@ bool CFileHD::Exists(const CURL& url)
 
 int CFileHD::Stat(struct __stat64* buffer)
 {
-  int fd;
 #ifdef _LINUX
-  fd = (*m_hFile).fd;
+  return _fstat64((*m_hFile).fd, buffer);
 #else
-  fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
+  // Duplicate the handle, as retrieving and closing a matching crt handle closes the crt handle AND the original Windows handle.
+  HANDLE hFileDup;
+  if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    return -1;
+  }
+
+  int fd;
+  fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
   if (fd == -1)
   {
     CLog::Log(LOGERROR, "Stat: fd == -1");
     return -1;
   }
+  int result = _fstat64(fd, buffer);
+  _close(fd);
+  return result;
 #endif
-  return _fstat64(fd, buffer);
 }
 
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
@@ -227,22 +237,14 @@ int64_t CFileHD::Seek(int64_t iFilePosition, int iWhence)
   lPos.QuadPart = iFilePosition;
   int bSuccess;
 
-  int64_t length = GetLength();
-
   switch (iWhence)
   {
   case SEEK_SET:
-    if (iFilePosition <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
     break;
 
   case SEEK_CUR:
-    if ((GetPosition()+iFilePosition) <= length || length == 0)
-      bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
-    else
-      bSuccess = false;
+    bSuccess = SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
     break;
 
   case SEEK_END:
@@ -264,9 +266,15 @@ int64_t CFileHD::Seek(int64_t iFilePosition, int iWhence)
 //*********************************************************************************************
 int64_t CFileHD::GetLength()
 {
-  LARGE_INTEGER i64Size;
-  GetFileSizeEx((HANDLE)m_hFile, &i64Size);
-  return i64Size.QuadPart;
+  if(m_i64FileLen <= m_i64FilePos || m_i64FileLen == 0)
+  {
+    LARGE_INTEGER i64Size;
+    if(GetFileSizeEx((HANDLE)m_hFile, &i64Size))
+      m_i64FileLen = i64Size.QuadPart;
+    else
+      CLog::Log(LOGERROR, "CFileHD::GetLength - GetFileSizeEx failed with error %d", GetLastError());
+  }
+  return m_i64FileLen;
 }
 
 //*********************************************************************************************

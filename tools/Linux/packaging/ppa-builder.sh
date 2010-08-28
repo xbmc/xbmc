@@ -115,6 +115,10 @@ preparesrc()
   fi
   cd $DESTSRC
   ./bootstrap
+
+  curl -Ls --output lib/addons/script.module.pil/Imaging-1.1.7.tar.gz http://www.effbot.org/downloads/Imaging-1.1.7.tar.gz
+  curl -Ls --output lib/addons/script.module.pysqlite/pysqlite-2.5.6.tar.gz http://pysqlite.googlecode.com/files/pysqlite-2.5.6.tar.gz
+
   cd $OLDPWD
   if [ -z $UPDPPA ]; then
     echo "Copying to .orig folder"

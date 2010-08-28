@@ -97,7 +97,7 @@ struct _env
   char* value;
 };
 
-#define EMU_MAX_ENVIRONMENT_ITEMS 50
+#define EMU_MAX_ENVIRONMENT_ITEMS 100
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;
 char **dll__environ = dll__environ_imp;
@@ -111,19 +111,25 @@ extern "C" void __stdcall init_emu_environ()
   InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
-  // libdvdnav
-  dll_putenv("DVDREAD_NOKEYS=1");
-  //dll_putenv("DVDREAD_VERBOSE=1");
-  //dll_putenv("DVDREAD_USE_DIRECT=1");
-
-  // libdvdcss
-  dll_putenv("DVDCSS_METHOD=key");
-  dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
-
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
+#elif defined(_WIN32)
+  // fill our array with the windows system vars
+  LPTSTR lpszVariable; 
+  LPTCH lpvEnv;
+  lpvEnv = GetEnvironmentStrings();
+  if (lpvEnv != NULL)
+  {
+    lpszVariable = (LPTSTR) lpvEnv;
+    while (*lpszVariable)
+    {
+      dll_putenv(lpszVariable);
+      lpszVariable += lstrlen(lpszVariable) + 1;
+    }
+    FreeEnvironmentStrings(lpvEnv);
+  }
+  dll_putenv("OS=win32");
 #elif defined(__APPLE__)
   dll_putenv("OS=darwin");
 #elif defined(_LINUX)
@@ -143,6 +149,16 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
   dll_putenv("TEMP=special://temp/temp"); // for python tempdir
+
+  // libdvdnav
+  dll_putenv("DVDREAD_NOKEYS=1");
+  //dll_putenv("DVDREAD_VERBOSE=1");
+  //dll_putenv("DVDREAD_USE_DIRECT=1");
+
+  // libdvdcss
+  dll_putenv("DVDCSS_METHOD=key");
+  dll_putenv("DVDCSS_VERBOSE=3");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
 }
 
 extern "C" void __stdcall update_emu_environ()
@@ -2001,15 +2017,6 @@ extern "C"
         }
       }
     }
-#ifdef _WIN32
-    // if value not found try the windows system env
-    if(value == NULL)
-    {
-      char ctemp[32768];
-      if(GetEnvironmentVariable(szKey,ctemp,32767) != 0)
-        value = ctemp;
-    }
-#endif
 
     LeaveCriticalSection(&dll_cs_environ);
 

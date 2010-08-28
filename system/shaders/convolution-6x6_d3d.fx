@@ -57,7 +57,18 @@ struct PS_OUTPUT
 
 half3 weight(float pos)
 {
-  return tex1D(KernelSampler, pos).rgb;
+  half3 w;
+#ifdef HAS_RGBA
+  w = tex1D(KernelSampler, pos).rgb;
+#else
+  w = tex1D(KernelSampler, pos).bgr;
+#endif
+
+#ifdef HAS_FLOAT_TEXTURE
+  return w;
+#else
+  return w * 2.0 - 1.0;
+#endif
 }
 
 half3 pixel(float xpos, float ypos)

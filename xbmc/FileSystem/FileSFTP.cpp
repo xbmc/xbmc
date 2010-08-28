@@ -222,11 +222,11 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
   }
 }
 
-void CSFTPSession::Seek(sftp_file handle, uint64_t position)
+int CSFTPSession::Seek(sftp_file handle, uint64_t position)
 {
   CSingleLock lock(m_critSect);
   m_LastActive = CTimeUtils::GetTimeMS();
-  sftp_seek64(handle, position);
+  return sftp_seek64(handle, position);
 }
 
 int CSFTPSession::Read(sftp_file handle, void *buffer, size_t length)
@@ -416,10 +416,12 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, const
 void CSFTPSessionManager::ClearOutIdleSessions()
 {
   CSingleLock lock(m_critSect);
-  for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end(); ++iter)
+  for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end();)
   {
     if (iter->second->IsIdle())
-      sessions.erase(iter);
+      sessions.erase(iter++);
+    else
+      iter++;
   }
 }
 
@@ -486,8 +488,10 @@ int64_t CFileSFTP::Seek(int64_t iFilePosition, int iWhence)
     else if (iWhence == SEEK_END)
       position = GetLength() + iFilePosition;
 
-    m_session->Seek(m_sftp_handle, position);
-    return GetPosition();
+    if (m_session->Seek(m_sftp_handle, position) == 0)
+      return GetPosition();
+    else
+      return -1;
   }
   else
   {

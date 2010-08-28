@@ -28,6 +28,8 @@
 #include <inttypes.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <cerrno>
+#include <cstring>
 #include "XBTF.h"
 #include "XBTFWriter.h"
 #include "SDL_anigif.h"
@@ -108,6 +110,8 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
   struct stat stat_p;
   DIR *dirp = opendir(fullPath.c_str());
 
+  if (dirp)
+  {
   while ((dp = readdir(dirp)) != NULL)
   {
     if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) 
@@ -147,6 +151,9 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
   }
 
   closedir(dirp);
+  }
+  else
+    printf("Error opening %s (%s)\n", fullPath.c_str(), strerror(errno));
 }
 
 void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)

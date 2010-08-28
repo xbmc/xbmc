@@ -32,7 +32,7 @@
 class DVDPlayerCodec : public ICodec
 {
 public:
-  DVDPlayerCodec(CodecID codec = CODEC_ID_NONE);
+  DVDPlayerCodec();
   virtual ~DVDPlayerCodec();
 
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
@@ -58,8 +58,6 @@ private:
 
   BYTE *m_decoded;
   int  m_nDecodedLen;
-  
-  CodecID m_codec;
 };
 
 #endif

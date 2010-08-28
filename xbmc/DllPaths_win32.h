@@ -78,5 +78,8 @@
 #define DLL_PATH_VORBIS_ENC    "special://xbmcbin/system/cdrip/vorbisenc.dll"
 #define DLL_PATH_VORBIS        "special://xbmcbin/system/cdrip/vorbis.dll"
 
+/* libbluray */
+#define DLL_PATH_LIBBLURAY     "special://xbmcbin/system/players/dvdplayer/libbluray.dll"
+
 #endif
 

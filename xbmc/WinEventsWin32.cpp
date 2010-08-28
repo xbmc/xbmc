@@ -248,10 +248,11 @@ static int XBMC_MapVirtualKey(int scancode, int vkey)
 }
 
 static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym, int pressed)
-{
+{ uint16_t mod;
+  uint8_t keystate[256];
+
   /* Set the keysym information */
   keysym->scancode = (unsigned char) scancode;
-  keysym->mod = XBMCKMOD_NONE;
   keysym->unicode = 0;
 
   if ((vkey == VK_RETURN) && (scancode & 0x100))
@@ -264,12 +265,12 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
     keysym->sym = VK_keymap[XBMC_MapVirtualKey(scancode, vkey)];
   }
 
-  if ( pressed && XBMC_TranslateUNICODE ) {
+  // Attempt to convert the keypress to a UNICODE character
+  GetKeyboardState(keystate);
 
-    uint8_t   keystate[256];
-    uint16_t  wchars[2];
+  if ( pressed && XBMC_TranslateUNICODE )
+  { uint16_t  wchars[2];
 
-    GetKeyboardState(keystate);
     /* Numlock isn't taken into account in ToUnicode,
     * so we handle it as a special case here */
     if ((keystate[VK_NUMLOCK] & 1) && vkey >= VK_NUMPAD0 && vkey <= VK_NUMPAD9)
@@ -281,6 +282,29 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
       keysym->unicode = wchars[0];
     }
   }
+
+  // Set the modifier bitmap
+
+  mod = (uint16_t) XBMCKMOD_NONE;
+  if (keystate[VK_LSHIFT]   & 0x80) mod |= XBMCKMOD_LSHIFT;
+  if (keystate[VK_RSHIFT]   & 0x80) mod |= XBMCKMOD_RSHIFT;
+  if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
+  if (keystate[VK_RCONTROL] & 0x80) mod |= XBMCKMOD_RCTRL;
+  if (keystate[VK_LMENU]    & 0x80) mod |= XBMCKMOD_LALT;
+  if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
+  if (keystate[VK_LWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
+  if (keystate[VK_RWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
+  keysym->mod = (XBMCMod) mod;
+
+/* Ignore these modifiers for now; we may handle these in the future.
+	XBMCKMOD_LMETA = 0x0400
+	XBMCKMOD_RMETA = 0x0800
+	XBMCKMOD_NUM   = 0x1000
+	XBMCKMOD_CAPS  = 0x2000
+	XBMCKMOD_MODE  = 0x4000
+*/  
+
+  // Return the updated keysym
   return(keysym);
 }
 

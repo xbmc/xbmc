@@ -645,7 +645,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && (items.IsEmpty() || !m_guiState->HideParentDirItems()) && !items.m_strPath.IsEmpty())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.m_strPath.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;
@@ -818,6 +818,18 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
     items.ClearItems();
     GetFilteredItems(filter, items);
   }
+
+  // The idea here is to ensure we have something to focus if our file list
+  // is empty.  As such, this check MUST be last and ignore the hide parent
+  // fileitems settings.
+  if (items.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath=m_history.GetParentPath();
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.AddFront(pItem, 0);
+  }
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -831,6 +843,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
   if (pItem->IsParentFolder())
   {
     GoParentFolder();
+    return true;
+  }
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    OnContextButton(0, CONTEXT_BUTTON_ADD_SOURCE);
     return true;
   }
 
@@ -931,17 +948,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
     {
-      // TODO: music videos!
-      if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
-      {
-        if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
-        {
-          Update("");
-          return true;
-        }
-        return false;
-      }
-
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
       if (iPlaylist != PLAYLIST_NONE)

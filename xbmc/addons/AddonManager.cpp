@@ -175,7 +175,6 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 
 CAddonMgr::CAddonMgr()
 {
-  m_watch.StartZero();
 }
 
 CAddonMgr::~CAddonMgr()
@@ -503,7 +502,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 void CAddonMgr::UpdateRepos()
 {
   CSingleLock lock(m_critSection);
-  if (m_watch.GetElapsedSeconds() < 600)
+  if (m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
     return;
   m_watch.StartZero();
   VECADDONS addons;
@@ -512,7 +511,7 @@ void CAddonMgr::UpdateRepos()
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
     CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
-    if (lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    if (!lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
       CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);

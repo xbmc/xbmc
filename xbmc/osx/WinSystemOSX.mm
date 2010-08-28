@@ -505,7 +505,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       windowedFullScreenwindow = NULL;
       
       // Unblank.
-      if (blankOtherDisplays)
+      // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
+      //if (blankOtherDisplays)
         UnblankDisplays();
     }
     else

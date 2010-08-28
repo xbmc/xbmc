@@ -28,7 +28,7 @@ void CStreamDetail::Serialize(CArchive &ar)
 }
 
 CStreamDetailVideo::CStreamDetailVideo() :
-  CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0)
+  CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0), m_iDuration(0)
 {
 }
 
@@ -87,7 +87,12 @@ void CStreamDetailAudio::Serialize(CArchive& ar)
 
 int CStreamDetailAudio::GetCodecPriority() const
 {
+  // technically, truehd, dtsma, and flac are equivalently good (they're all lossless)
   if (m_strCodec == "flac")
+    return 6;
+  if (m_strCodec == "dtsma")
+    return 5;
+  if (m_strCodec == "truehd")
     return 4;
   if (m_strCodec == "eac3")
     return 3;

@@ -285,16 +285,6 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   CStdString strPicture = pItem->m_strPath;
 
-  if (pItem->m_strPath == "add") // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("pictures"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();

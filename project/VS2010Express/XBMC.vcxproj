@@ -98,7 +98,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -142,7 +142,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;HAS_DS_PLAYER;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -192,7 +192,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;HAS_DS_PLAYER;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -240,7 +240,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\lib\libcurl-mingw32\include;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -297,6 +297,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp" />
     <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
@@ -362,12 +363,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLiba52.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibDts.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibFaad.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibMad.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp" />
@@ -1045,6 +1043,7 @@
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_reader.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_value.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp" />
+    <ClCompile Include="..\..\xbmc\URIUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
@@ -1065,6 +1064,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
@@ -1135,12 +1135,9 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibMad.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecFFmpeg.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLiba52.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibDts.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibFaad.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLibMad.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h" />
@@ -1893,6 +1890,7 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\TCPServer.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\VideoLibrary.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\XBMCOperations.h" />
+    <ClInclude Include="..\..\xbmc\URIUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\system\players\dsplayer\filtersconfig.xml">

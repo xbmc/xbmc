@@ -281,6 +281,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libass\ass_render_api.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libass\ass_strtod.c"
 				>
 			</File>

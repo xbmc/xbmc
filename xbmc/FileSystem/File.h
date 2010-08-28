@@ -57,6 +57,9 @@ public:
 /* open without caching. regardless to file type. */
 #define READ_NO_CACHE  0x08
 
+/* calcuate bitrate for file while reading */
+#define READ_BITRATE   0x10
+
 class CFileStreamBuffer;
 class ICacheInterface;
 
@@ -78,14 +81,12 @@ public:
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
-  BitstreamStats GetBitstreamStats() { return m_bitStreamStats; }
+  BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 
   ICacheInterface* GetCache() {if (m_pFile) return m_pFile->GetCache(); return NULL;}
   int IoControl(int request, void* param) { if (m_pFile) return m_pFile->IoControl(request, param); return -1; }
 
   IFile *GetImplemenation() { return m_pFile; }
-  IFile *Detach();
-  void   Attach(IFile *pFile, unsigned int flags = 0);
 
   static bool Exists(const CStdString& strFileName, bool bUseCache = true);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
@@ -99,7 +100,7 @@ private:
   unsigned int m_flags;
   IFile* m_pFile;
   CFileStreamBuffer* m_pBuffer;
-  BitstreamStats m_bitStreamStats;
+  BitstreamStats* m_bitStreamStats;
 };
 
 // streambuf for file io, only supports buffered input currently

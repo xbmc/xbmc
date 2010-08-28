@@ -72,6 +72,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
+#define VIDEO_SETTINGS_POSTPROCESS        22
 #ifdef HAS_DS_PLAYER
 #define VIDEO_SETTINGS_DS_STATS           22
 #define VIDEO_SETTINGS_SHADERS            23
@@ -174,6 +175,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   }
   AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
+  AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
 
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
@@ -221,9 +223,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
   {
     g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-    g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
-    g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
-    g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
     UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);

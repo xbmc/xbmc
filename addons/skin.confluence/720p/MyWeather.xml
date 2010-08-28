@@ -73,9 +73,9 @@
 				</control>
 				<control type="label">
 					<description>current temp Value</description>
-					<posx>165</posx>
+					<posx>195</posx>
 					<posy>175</posy>
-					<width>160</width>
+					<width>180</width>
 					<height>40</height>
 					<font>WeatherTemp</font>
 					<align>right</align>
@@ -86,7 +86,7 @@
 				</control>
 				<control type="label">
 					<description>current temp Value Units</description>
-					<posx>170</posx>
+					<posx>190</posx>
 					<posy>185</posy>
 					<width>100</width>
 					<height>40</height>

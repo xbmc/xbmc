@@ -192,7 +192,20 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+{
+  // Verify the compatibility
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         m_devType,
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_SURFACE,
+                                         depthFormat);
+
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
 {
   // Verify that the depth format exists
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
@@ -208,7 +221,7 @@ BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFo
   hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
                                       m_devType,
                                       AdapterFormat,
-                                      BackBufferFormat,
+                                      RenderTargetFormat,
                                       DepthFormat);
 
   return SUCCEEDED(hr);
@@ -510,6 +523,19 @@ bool CRenderSystemDX::CreateDevice()
   if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT_NPOT");
 
+  // nVidia quirk: some NPOT DXT textures of the GUI display with corruption
+  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex for example)
+  // most likely xbmc bug, but no hw to repro & fix properly.
+  // affects lots of hw generations - 6xxx, 7xxx, GT220, ION1
+  // see ticket #9269
+  if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
+  && m_defaultD3DPool  == D3DPOOL_DEFAULT
+  && AIdentifier.VendorId == 4318)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
+    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+  }
+
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;
@@ -687,6 +713,12 @@ bool CRenderSystemDX::BeginRender()
       CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
+
+  IDirect3DSurface9 *pBackBuffer;
+  m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
+  pBackBuffer->Release();
+
   m_inScene = true;
   return true;
 }

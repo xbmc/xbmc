@@ -212,6 +212,7 @@ protected:
   void         RenderPS(DWORD flags);
   void         Stage1(DWORD flags);
   void         Stage2(DWORD flags);
+  void         ScaleFixedPipeline();
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void         DeleteYV12Texture(int index);
@@ -243,7 +244,7 @@ protected:
   struct SwsContext   *m_sw_scale_ctx;
 
   // Software rendering
-  D3DTEXTUREFILTERTYPE m_StretchRectFilter;
+  D3DTEXTUREFILTERTYPE m_TextureFilter;
   CD3DTexture          m_SWTarget;
 
   // PS rendering
