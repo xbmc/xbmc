@@ -192,7 +192,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     if (isTemp)
-      CFileUtils::Delete(tsrc);
+      CFileUtils::Delete(texturePath);
     return false;
   }
 
