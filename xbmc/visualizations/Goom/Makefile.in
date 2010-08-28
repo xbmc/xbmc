@@ -13,7 +13,9 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 		goom2k4-0/src/.libs/libgoom2.a $(CXXFLAGS) -o $(SLIB) $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(LDFLAGS) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS)
+	$(CXX) $(LDFLAGS) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS) \
+		`cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o
 endif
 	@find visualization.goom -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*\.pvr|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" ../../../addons/"{}" \; -printf " -- %-75.75f\r"
 	@find visualization.goom -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis\.vis" -iregex ".*\.vis" -exec install -D "{}" ../../../addons/"{}" \; -printf " -- %-75.75f\r"

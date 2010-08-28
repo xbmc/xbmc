@@ -20,7 +20,9 @@ $(SLIB): ../libass/.libs/libass.dylib
 	$(MAKE) -C ..
 else
 $(SLIB): ../libass/.libs/libass.so
-	$(CXX) $(LDFLAGS) -shared -fPIC -o $(SLIB) ../libass/.libs/*.o
+	$(CXX) $(LDFLAGS) -shared -fPIC -o $(SLIB) ../libass/.libs/*.o \
+	  `cat ../../../xbmc/cores/DllLoader/exports/wrapper.def` \
+	  ../../../xbmc/cores/DllLoader/exports/wrapper.o
 
 ../libass/.libs/libass.so: compile
 	$(MAKE) -C ..

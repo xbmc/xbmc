@@ -28,7 +28,8 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -shared -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -shared -o $@ `cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o
 endif
 	
 hdhomerun_dll : $(OBJS)
