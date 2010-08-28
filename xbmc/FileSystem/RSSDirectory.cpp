@@ -432,6 +432,16 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
   }
 }
 
+static bool FindMime(SResources resources, CStdString mime)
+{
+  for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+  {
+    if(it->mime.Left(mime.length()).Equals(mime))
+      return true;
+  }
+  return false;
+}
+
 static void ParseItem(CFileItem* item, TiXmlElement* root)
 {
   SResources resources;
@@ -439,11 +449,24 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
 
   const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "rss:link", "rss:guid", NULL };
 
+  CStdString mime;
+  if     (FindMime(resources, "video/"))
+    mime = "video/";
+  else if(FindMime(resources, "audio/"))
+    mime = "audio/";
+  else if(FindMime(resources, "application/rss"))
+    mime = "application/rss";
+  else if(FindMime(resources, "image/"))
+    mime = "image/";
+
   SResources::iterator best = resources.end();
   for(const char** type = prio; *type && best == resources.end(); type++)
   {
     for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
     {
+      if(it->mime.Left(mime.length()) != mime)
+        continue;
+
       if(it->tag == *type)
       {
         if(best == resources.end())
@@ -464,6 +487,11 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
     item->SetMimeType(best->mime);
     item->m_strPath = best->path;
     item->m_dwSize  = best->size;
+
+    /* handling of mimetypes fo directories are sub optimal at best */
+    if(best->mime == "application/rss+xml" && item->m_strPath.Left(7).Equals("http://"))
+      item->m_strPath.replace(0, 7, "rss://");
+
     if(item->m_strPath.Left(6).Equals("rss://"))
       item->m_bIsFolder = true;
     else
