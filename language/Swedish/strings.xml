@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
 <!--Based on english strings version 204-->
 
@@ -37,7 +37,7 @@
   <string id="31033">Senast uppdaterad</string>
   <string id="31034">Version</string>
   <string id="31035">Ledigt minne</string>
-  <string id="31036">IP adress</string>
+  <string id="31036">IP-adress</string>
   <string id="31037">Hårddiskutrymme</string>
   <string id="31038">Välj din</string>
   <string id="31039">Favorit</string>
@@ -162,7 +162,7 @@
 	<string id="31691">Använd låga överlägg för TV-serier onslagsvisning</string>
 	<string id="31692">Dölj info i väggströmsvisning</string>
         <string id="31693">Dölj miniatyrer i Valmeny</string>
-        <string id="31694">Visa Spelas nu till vänster</string>
+        <string id="31694">Visa Spelas Nu till vänster</string>
         <string id="31695">Visa AM/PM i klocka</string>
 
 <!--  Options Menu  -->
@@ -186,17 +186,18 @@
  
 <!--  Credits  -->
   <string id="31800">Förtjänst</string>
-  <string id="31801">Välkommen till</string>
-  <string id="31802">din media....på [COLOR Highlighted]ditt[/COLOR] sätt</string>
-  <string id="31803"></string>
-  <string id="31804">MediaStream är ett nytt gränssnitt för det populära multimediaklara XBMC. Skapat av det nyskapade "Team RazorFish", försöker det att kombinera form och funktion, genom att kombinera stil med innehåll.  Designat och optimerat för 'High-Def' generationen, försöker detta gränssnitt att förmedla en ny upplevelse till den alla redan populära plattformen.</string>
-  <string id="31805">Notera</string>
-  <string id="31806">Försäkra dig om att du har den allra senaste versionen av XBMC. Vi rekommenderar den senaste SVN versionen av XBMC, och ber dig att alltid ladda ner det fullständiga skalpaketet.</string>
-  <string id="31807">Skalförtjänst</string>
-  <string id="31808">Hela projektet var ett samarbete mellan många begåvade individer.  Följande har bidragit: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Ett speciellt tack till emilio (a.k.a thedeViL), förutom honom hade detta projekt aldrig existerat.  Självklart ett tack till er, XBMC gemenskapen... utan er hade det inte funnits någon anledning att göra det vi gör... fortsätta rocka, ni är bäst!!!</string>
-  <string id="31809">Speciellt tack till: hela teamet bakom XBMC, supportrar på både xbmc och xbox-scene forumen</string>
-  <string id="31810">Klicka "OK" för att fortsätta och börja använda vårat skal</string>
-  <string id="31811">Notera: Detta är den enda gången som du ser detta meddelande efter du klickat på "OK"</string>
+
+  
+  <string id="31851">Plex bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. Plex can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of Plex is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins.</string>
+  <string id="31852">At Plex, we would like to thank the following projects, without whom none of this would be possible:</string>
+  <string id="31853">XBMC: The most important one, for supplying us with a great foundation to build on.</string>
+  <string id="31854">Team RazorFish: The talented team who created the beautiful MediaStream skin.</string>
+  <string id="31855">FFmpeg: Without this, there would be no decoding of video inside Plex. A critical component, to be sure.</string>
+  <string id="31856">SQLite: The media database is stored using this excellent, industry standard free database.</string>
+  <string id="31857">CxImage: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc.</string>
+  <string id="31858">FreeType: This code is responsible for the beautiful rendering of fonts within the application.</string>
+  <string id="31859">Python: The media center embeds the Python interpreter to provide powerful scripting functionality.</string>
+  <string id="31860">Besök http://www.plexapp.com/credits.php för länkar och ytterligare information</string>
 
 <!--  Profiles  -->
   <string id="31900">Logga in som</string>
@@ -208,10 +209,29 @@
 <!-- Plex additions -->
   <string id="31950">Gå till dina</string>
   <string id="31951">Gå till</string>
-  <string id="31952">App Store</string>
+  <string id="31952">Plex Online</string>
   <string id="31953">Få</string>
   <string id="31954">Hjälp</string>
   <string id="31955">Inställningar</string>
   <string id="31956">Visa</string>
+  
+  <string id="31960">Somna in</string>
+  <string id="31961">Stäng av</string>
+  <string id="31962">Power Menu</string>
+  <string id="31963">Skärmar</string>
+	<string id="31964">Släck skärm</string>
+  
+  <string id="31970">Plug-ins</string>
+	<string id="31971">Video-pluginer</string>
+	<string id="31972">Musik-pluginer</string>
+	<string id="31973">Bild-pluginer</string>
+	
+	<string id="31981">Visa förhandsvisning i listvyerna</string>
+	<string id="31982">Visa Handling i Video OSD</string>
+	<string id="31983">Visa Bildbeskrivningar under Bildspel</string>
+	<string id="31984">Visa Nu Spelas-information under bildeffekter</string>
+	<string id="31985">Visa Separata Menyknappar för Plugin-sektioner</string>
+	  
+	<string id="31999">Slutar</string>
 
 </strings>
