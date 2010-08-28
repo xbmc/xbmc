@@ -173,8 +173,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
   unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
-
   bool isTemp = false;
+
   CStdString tsrc;
   CFileUtils::GetLocalPath(texturePath, tsrc);
   if (tsrc.IsEmpty())
