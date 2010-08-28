@@ -8,6 +8,8 @@
 #include "FileOperationJob.h"
 #include "Util.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include <vector>
 
 using namespace XFILE;
@@ -71,4 +73,61 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
     return CFile::Rename(strFileAndPath, strPath);
   }
   return false;
+}
+
+/* Function here simply calls CFile::Delete(). The purpose for this is to
+ * avoid an include of "File.h" for various source files.
+ */
+bool CFileUtils::Delete(const CStdString& strFileName)
+{
+  return CFile::Delete(strFileName);
+}
+
+/* Function to copy files to the local filesystem.
+ *
+ * Like CFile::Cache, except the destination file is a temporary file that is
+ * created, whose path is returned, and in which the file must be explicitely
+ * deleted.
+ */
+bool CFileUtils::TmpCache(const CStdString& strFileName, CStdString& strTempName, XFILE::IFileCallback* pCallback, void* pContext)
+{
+  char str[L_tmpnam];
+  strTempName.assign(tmpnam_r(str));
+
+  if (open(strTempName.c_str(), O_CREAT | O_EXCL) < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Failed to create temporary file", __FUNCTION__);
+    strTempName = "";
+    return false;
+  }
+
+  if (!CFile::Cache(strFileName, strTempName, pCallback, pContext))
+  {
+    CLog::Log(LOGERROR, "%s - Failed to create temporary copy of %s", __FUNCTION__, strFileName.c_str());
+    strTempName = "";
+    return false;
+  }
+
+  return true;
+}
+
+/* Function that returns translated path of files on local filesystem. Will
+ * return an empty string for files not in the local filesystem.
+ */
+bool CFileUtils::GetLocalPath(const CStdString& strFileName, CStdString& strLocalPath)
+{
+  CURL url(strFileName);
+  CStdString strProtocol = url.GetProtocol();
+
+  if (strProtocol == "special")
+    strLocalPath = _P(strFileName);
+  else if (strProtocol == "file" || strProtocol.IsEmpty())
+    strLocalPath = strFileName;
+  else
+  {
+    strLocalPath = "";
+    return false;
+  }
+
+  return true;
 }

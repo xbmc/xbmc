@@ -23,6 +23,7 @@
 #include "Picture.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/FileUtils.h"
 #include "DllImageLib.h"
 #include "DDSImage.h"
 #include "Util.h"
@@ -172,10 +173,26 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
   unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  bool isTemp = false;
 
-  if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
+  CStdString tsrc;
+  CFileUtils::GetLocalPath(texturePath, tsrc);
+  if (tsrc.IsEmpty())
+  {
+    CFileUtils::TmpCache(texturePath, tsrc);
+    if (tsrc.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "Texture manager unable to cache file: %s", texturePath.c_str());
+      return false;
+    }
+    isTemp = true;
+  }
+
+  if(!dll.LoadImage(tsrc.c_str(), width, height, &image))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    if (isTemp)
+      CFileUtils::Delete(texturePath);
     return false;
   }
 
@@ -209,6 +226,9 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   dll.ReleaseImage(&image);
 
   ClampToEdge();
+
+  if (isTemp)
+    CFileUtils::Delete(tsrc);
 
   return true;
 }
