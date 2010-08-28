@@ -2446,11 +2446,10 @@ CStdString CFileItem::GetCachedVideoThumb() const
   {
     if (m_bIsFolder && !GetVideoInfoTag()->m_strPath.IsEmpty())
       return GetCachedThumb(GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
-    else 
+    else if (!GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
       return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
   }
-  else
-    return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
+  return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedEpisodeThumb() const
