@@ -175,7 +175,8 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     if(text.IsEmpty())
       return;
 
-    vtag->m_strTitle = text;
+    if(text.length() > item->m_strTitle.length())
+      item->m_strTitle = text;
   }
   else if(name == "description")
   {
@@ -276,7 +277,10 @@ static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* i
 {
   CStdString text = item_child->GetText();
   if (name == "title")
-    item->m_strTitle = text;
+  {
+    if(text.length() > item->m_strTitle.length())
+      item->m_strTitle = text;
+  }
   else if (name == "pubDate")
   {
     CDateTime pubDate(ParseDate(text));
