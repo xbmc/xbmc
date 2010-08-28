@@ -133,6 +133,10 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
 
     ParseItem(item, item_child);
   }
+  else if(name == "group")
+  {
+    ParseItem(item, item_child);
+  }
   else if(name == "thumbnail")
   {
     if(item_child->GetText() && IsPathToThumbnail(item_child->GetText()))
