@@ -598,7 +598,7 @@
 	</include>
 	<include name="HomeBackgroundFade">
 		<animation effect="fade" end="100" time="600">Visible</animation>
-		<animation effect="fade" end="0" time="600">Hidden</animation>
+		<animation effect="fade" end="0" time="600" delay="600">Hidden</animation>
 	</include>
 	<include name="HomeWeatherBGFade">
 		<animation effect="fade" start="0" end="100" time="600" condition="!Window.Previous(MyWeather)">WindowOpen</animation>
