@@ -6903,10 +6903,9 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
             strSeasonThumb = "season-specials.tbn";
           else
             strSeasonThumb.Format("season%02i.tbn",iSeason);
-          CUtil::GetParentPath(saveItem.GetFolderThumb(), strParent);
-          
+
           CStdString cachedThumb(items[i]->GetCachedSeasonThumb());
-          CStdString savedThumb(CUtil::AddFileToFolder(strParent, strSeasonThumb));
+          CStdString savedThumb(saveItem.GetFolderThumb(strSeasonThumb));
 
           if (CFile::Exists(cachedThumb, false) && (overwrite || !CFile::Exists(savedThumb, false)))
             if (!CFile::Cache(cachedThumb, savedThumb))
