@@ -518,10 +518,6 @@ bool CApplication::Create()
   g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
 
-  // Init our DllLoaders emu env
-  init_emu_environ();
-
-
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -593,8 +589,6 @@ bool CApplication::Create()
   CDirectory::Create(g_settings.GetUserDataFolder());
   CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
-
-  update_emu_environ();//apply the GUI settings
 
   // initialize our charset converter
   g_charsetConverter.reset();

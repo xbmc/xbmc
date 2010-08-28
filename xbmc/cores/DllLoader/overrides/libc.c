@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
 #include <dlfcn.h>
 #include <limits.h>
 
@@ -32,6 +31,16 @@
 #  define C_LIB "libc.dylib"
 #else
 #  define C_LIB "libc.so.6"
+#endif
+
+#if defined(_MSC_VER)
+#  define THREAD __declspec(thread)
+#else
+#  define THREAD __thread
+#endif
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
 #endif
 
 /* Global dlopen handle */
@@ -45,6 +54,9 @@ int (*libc_chdir)(const char*);
 char *getcwd(char *buf, size_t size);
 int chdir(const char *path);
 
+/* Thread local storage of current working directory */
+THREAD char xbp_cw_dir[PATH_MAX] = "";
+
 /* Function to initialize dlopen and dlsym handles. It should be called before
  * using any overridden libc function.
  */
@@ -54,23 +66,6 @@ void xbmc_libc_init(void)
   libc_getcwd = dlsym(dlopen_handle, "getcwd");
   libc_chdir = dlsym(dlopen_handle, "chdir");
 }
-
-#ifdef __APPLE__
-/* Use pthread's built-in support for TLS, it's more portable. */
-static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
-static pthread_key_t  tWorkingDir = 0;
-
-/* Called once and only once. */
-static void MakeTlsKeys()
-{
-  pthread_key_create(&tWorkingDir, free);
-}
-
-#define xbp_cw_dir (char*)pthread_getspecific(tWorkingDir)
-
-#else
-__thread char xbp_cw_dir[PATH_MAX] = "";
-#endif
 
 /* Overridden functions */
 char *getcwd(char *buf, size_t size)
