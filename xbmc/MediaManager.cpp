@@ -430,6 +430,16 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
 }
+
+CStdString CMediaManager::GetDiscPath()
+{
+#ifdef _WIN32
+  return "";
+#else
+  // iso9660://, cdda://local/ or D:\ depending on disc type
+  return MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
+#endif
+}
 #endif
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
