@@ -327,4 +327,8 @@ body {
 
 .albumView .track {
 	cursor: pointer;
+	line-height: 10px;
+	font-size: 14px;
+	padding: 1px 0;
 	}
+

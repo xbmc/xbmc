@@ -2816,7 +2816,7 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
 bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist, int start, int end)
 {
   //Create limit
-  CStdString limit = "";
+  CStdString limit;
   if (start >= 0 && end >= 0)
   {
     limit.Format(" limit %i,%i", start, end);

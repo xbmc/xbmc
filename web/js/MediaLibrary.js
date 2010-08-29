@@ -93,7 +93,7 @@ MediaLibrary.prototype = {
 						var trackRow = $('<tr>');
 						if (i == 0) {
 							var albumTD = $('<td>');
-							albumTD.attr('rowspan', trackCount).addClass('albumThumb');
+							albumTD.attr('rowspan', ++trackCount).addClass('albumThumb');
 							trackRow.append(albumTD);
 						}
 						var trackNumberTD = $('<td>');
@@ -113,6 +113,25 @@ MediaLibrary.prototype = {
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
+					if (trackCount > 0) {
+						var trackRow = $('<tr>');
+						var trackNumberTD = $('<td>');
+						trackNumberTD.addClass('fillerTrack').html('&nbsp');
+						trackRow.append(trackNumberTD);
+						var trackTitleTD = $('<td>');
+						trackTitleTD.addClass('fillerTrack').html('&nbsp');
+						trackRow.append(trackTitleTD);
+						var trackDurationTD = $('<td>');
+						trackDurationTD.addClass('fillerTrack').html('&nbsp');
+						trackRow.append(trackDurationTD);
+						var trackArtistTD = $('<td>');
+						trackArtistTD.addClass('fillerTrack').html('&nbsp');
+						trackRow.append(trackArtistTD);
+						var trackGenreTD = $('<td>');
+						trackGenreTD.addClass('fillerTrack').html('&nbsp');
+						trackRow.append(trackGenreTD);
+						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
+					}
 					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(this.generateAlbumThumb(albumThumbnail, albumTitle, albumArtist));
 					$('.contentContainer').css('z-index', 1);
 				}, this), 'json');
