@@ -188,7 +188,7 @@ void XBPyThread::Process()
   script += PY_PATH_SEP;
   script += "\".join(sys.path)";
   PyRun_SimpleString(script.c_str());
-  Module = PyImport_AddModule("__main__");
+  Module = PyImport_AddModule((char*)"__main__");
   Dict = PyModule_GetDict(Module);
   Val = PyDict_GetItemString(Dict, "pythonpath");
 
