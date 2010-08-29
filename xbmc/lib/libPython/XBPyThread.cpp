@@ -180,8 +180,20 @@ void XBPyThread::Process()
     path += PY_PATH_SEP + _P(addons[i]->LibPath());
 
   // and add on whatever our default path is
+  // NOTE: Py_GetPath() doesn't get all paths, so retrieve path directly from
+  // Python 'sys' module instead.
+  PyObject *Module, *Dict, *Val;
+  CStdString script = "import sys\n";
+  script += "pythonpath = \"";
+  script += PY_PATH_SEP;
+  script += "\".join(sys.path)";
+  PyRun_SimpleString(script.c_str());
+  Module = PyImport_AddModule("__main__");
+  Dict = PyModule_GetDict(Module);
+  Val = PyDict_GetItemString(Dict, "pythonpath");
+
   path += PY_PATH_SEP;
-  path += Py_GetPath();
+  path += PyString_AsString(Val);
 
   // set current directory and python's path.
   if (m_argv != NULL)
