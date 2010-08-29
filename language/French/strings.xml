@@ -48,6 +48,7 @@
   <string id="31044">Par</string>
   <string id="31045">Nouveautés</string>
   <string id="31046">le chemin du script Lyrics</string>
+  <string id="31047">Indisponible</string>
   <string id="31050">Élément</string>
 
 <!--  Programs  --> 
@@ -70,7 +71,7 @@
   <string id="31072">Redémarrer</string>
   <string id="31073">Relancer Plex</string>
   <string id="31074">Dashboard</string>
-    <string id="31075">Rafraîchir le Skin</string>
+  <string id="31075">Rafraîchir le Skin</string>
 
 <!--  Video  -->
   <string id="31111">Films</string>
@@ -84,12 +85,26 @@
   <string id="31119">Résumé</string>
   <string id="31120">Note</string>
   <string id="31121">Détails du Film</string>
-  <string id="31122">Sortie le</string>
+  <string id="31122">Diffusé le</string>
   <string id="31123">MPAA</string>
   <string id="31124">Eps.</string>
-  <string id="31125">Theater Times</string>
+  <string id="31125">Sortie cinéma</string>
   <string id="31126">Détails Série TV</string>
   <string id="31127">Détails Episode</string>
+  <string id="31128">Banière</string>
+  <string id="31129">Note</string>
+  <string id="31130">Note IMDb</string>
+  <string id="31131">Genre</string>
+  <string id="31132">Durée</string>
+  <string id="31133">Sous-titres</string>
+  <string id="31134">Distribution</string>
+  <string id="31135">Réalisateur</string>
+  <string id="31136">Scénariste</string>
+  <string id="31137">Épisodes</string>
+  <string id="31138">Vus</string>
+  <string id="31139">Non vus</string>
+  <string id="31140">Première diffusion</string>
+  <string id="31141">Saison</string>
 
 <!--  Music  --> 
   <string id="31220">Lecture en cours</string>
@@ -98,7 +113,7 @@
   <string id="31223">Paroles</string>
   <string id="31224">Ouvrir le MENU options</string>
   <string id="31225">Note</string>
-  <string id="31226">Change</string>
+  <string id="31226">Modifier</string>
   <string id="31227">Vos sélections</string>
   <string id="31228">Paroles</string>
 
@@ -144,7 +159,7 @@
   <string id="31673">Vues Media</string>
   <string id="31674">Cacher les Fanarts</string>
   <string id="31675">de la vue Films</string>
-  <string id="31676">de la vue Media Détails</string>
+  <string id="31676">de la vue Aperçu Media</string>
   <string id="31677">dans les listes Séries-TV</string>
   <string id="31678">Vignette Saison</string>
   <string id="31679">Cacher les détails dans la vue Panneau</string>
@@ -158,38 +173,40 @@
   <string id="31687">de la vue Video</string>
   <string id="31688">de la vue Musique</string>
   <string id="31689">de la vue Images</string>
-  <string id="31690">Cacher les icônes</string>
-  <string id="31691">Utiliser un Overlay légé pour le Coverflow Série TV</string>
+  <string id="31690">Cacher l'icône Vignette manquante</string>
+  <string id="31691">Utiliser un Overlay léger pour le Coverflow Série TV</string>
   <string id="31692">Cacher les infos dans la vue Wall Stream</string>
   <string id="31693">Cacher les vignettes du menu Options</string>
   <string id="31694">Afficher le cadre Lecture en cours sur la gauche</string>
   <string id="31695">Afficher AM/PM sur l'horloge</string>
-  <string id="31697">Cacher la déscription des photos pendant le diaporama</string>
+  <string id="31697">Cacher la description des photos pendant le diaporama</string>
   
 <!--  Options Menu  -->
-  <string id="31701">Setup</string>
+  <string id="31701">Réglages</string>
   <string id="31702">Showcase</string>
   <string id="31703">Saisons</string>
   <string id="31704">Photo</string>
-  <string id="31705">Convex</string>
+  <string id="31705">Convexe</string>
   <string id="31706">Vignette Épisode</string>
-  <string id="31707">Media Détails</string>
-  <string id="31708">Media Liste</string>
+  <string id="31707">Aperçu des Medias</string>
+  <string id="31708">Liste des Media</string>
   <string id="31709">Concave</string>
   <string id="31710">Afficher</string>
-  <string id="31711">Info Liste</string>
+  <string id="31711">Liste Info</string>
   <string id="31712">Diapositives</string>
   <string id="31713">Options</string>
-  <string id="31714">Wall Stream</string>
+  <string id="31714">Mur</string>
   <string id="31715">Panneau</string>
   <string id="31716">Coverflow</string>
   <string id="31717">Menu Options</string>
   <string id="31720">Grille</string>
+  <string id="31721">Liste d'épisodes</string>
+  <string id="31722">Plug-ins</string>
 
 <!--  Credits  -->
-  <string id="31800">Credits</string>
+  <string id="31800">Crédits</string>
   <string id="31801">Bienvenue sur</string>
-  <string id="31802">vos médias....[COLOR Highlighted]votre[/COLOR] voie</string>
+  <string id="31802">vos médias....[COLOR Highlighted]votre[/COLOR] choix</string>
   <string id="31803"></string>
   <string id="31804">MediaStream est une nouvelle interface utilisateur pour le projet multimédia XBMC. Créée par l’équipe nouvellement formé "RazorFish", elle est le fruit d’une combinaison entre la fonctionnalité et la forme, la fusion du style et de la substance. Dessinée et optimisée pour la génération "haute définition", cette interface  a pour but de vous apporter une nouvelle expérience sur cette plateforme déjà très populaire.</string>
   <string id="31805">Note</string>
@@ -200,16 +217,29 @@
   <string id="31810">Cliquez sur "OK" pour continuer et commencer à utiliser notre thème.</string>
   <string id="31811">Note : Vous ne verrez plus ce message les prochaines fois, après avoir cliqué sur "OK"</string>
 
+
+ <string id="31851">Plex comble le fossé entre votre Mac et votre home cinéma, au travers d'une interface visuellement attirante fournissant un accès instantané à vos médias. Plex peut afficher une large gamme de formats vidéos, audio et d'images ainsi que du streaming online audio et vidéo. La puissance réelle de Plex réside dans ses fonctions de librairie: organisez vos médias en diverses librairies, récupérez automatiquement les méta-données depuis Internet et affichez votre librairie depuis l'une des étonnantes skins.</string>
+  <string id="31852">Dans l'équipe Plex, nous voudrions remercier les projets suivants, sans lesquels rien n'aurait pu être possible:</string>
+  <string id="31853">XBMC: le plus important, qui nous a fourni une énorme base de développement.</string>
+  <string id="31854">Team RazorFish: l'équipe talentueuse qui a créé la superbe skin MediaStream.</string>
+  <string id="31855">FFmpeg: sans cela, il n'y aurait pas de décodage vidéo dans Plex. Pour sûr un composant critique.</string>
+  <string id="31856">SQLite: la base de données multimédia est stockée dans ce système de base de données gratuit de niveau industriel.</string>
+  <string id="31857">CxImage: le socle de code responsable de l'affichage des images et des photos. Il utilise une multitude d'autres librairies telles que libPNG, libJPEG, etc.</string>
+  <string id="31858">FreeType: ce code est responsable du magnifique rendu des polices de caractères dans l'application.</string>
+  <string id="31859">Python: le centre multimédia intègre un interpréteur Python pour fournir de puissantes fonctionalités de scripts.</string>
+  <string id="31860">Visitez http://www.plexapp.com/credits.php pour les liens et d'autres informations.</string>
+
 <!--  Profiles  -->
   <string id="31900">Connexion</string>
   <string id="31901">Modifier votre</string>
   <string id="31902">Profil</string>
-  <string id="31903">Profil nom</string>
-  <string id="31904">Profile image</string>
+  <string id="31903">Nom du profil</string>
+  <string id="31904">Image du profil</string>
+
   <!-- Plex additions -->
   <string id="31950">Afficher vos</string>
   <string id="31951">Ouvrir</string>
-  <string id="31952">App Store</string>
+  <string id="31952">Plex Online</string>
   <string id="31953">Ouvrir</string>
   <string id="31954">Aide</string>
   <string id="31955">Préférences</string>
@@ -217,6 +247,20 @@
 
   <string id="31960">Mettre en veille</string>
   <string id="31961">Éteindre</string>
-  <string id="31962">Menu Power</string>
-  <string id="31963">affichages</string> 
+  <string id="31962">le menu Mise en route</string>
+  <string id="31963">affiche</string> 
+  <string id="31964">Mettre l'écran en veille</string>
+
+  <string id="31970">Plug-ins</string>
+  <string id="31971">Plug-ins Vidéo</string>
+  <string id="31972">Plug-ins Musique</string>
+  <string id="31973">Plug-ins Images</string>
+	
+  <string id="31981">Afficher les vignettes dans la vue Liste</string>
+  <string id="31982">Afficher le résumé dans l'OSD Video</string>
+  <string id="31983">Afficher la description des photos pendant le diaporama</string>
+  <string id="31984">Afficher le cadre Lecture en cours dans les Visualisations</string>
+  <string id="31985">Entrées séparées du menu pour les sections Plug-ins</string>
+  
+  <string id="31999">Heure de fin</string>
  </strings>
