@@ -321,7 +321,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       // check for old profile settings
       CProfile profile;
       g_settings.AddProfile(profile);
-      bool bExists = CFile::Exists(CUtil::AddFileToFolder("special:://masterprofile/",
+      bool bExists = CFile::Exists(CUtil::AddFileToFolder("special://masterprofile/",
                                                           dialog->m_strDirectory+"/guisettings.xml"));
 
       if (bExists)
