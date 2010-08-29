@@ -106,6 +106,8 @@ public:
    */
   void GetSkinPaths(std::vector<CStdString> &paths) const;
 
+  bool IsInUse() const;
+
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
 protected:

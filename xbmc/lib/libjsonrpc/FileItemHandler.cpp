@@ -136,9 +136,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
   unsigned int size  = (unsigned int)items.Size();
-  unsigned int start = param.get("start", 0).asUInt();
-  unsigned int end   = param.get("end", size).asUInt();
-  end = end > size ? size : end;
+  unsigned int start = (unsigned int)std::max(0,param.get("start", 0).asInt());
+  unsigned int end   = std::min(size,param.get("end", size).asUInt());
 
   Sort(items, param);
 

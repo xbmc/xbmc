@@ -300,4 +300,10 @@ int CSkinInfo::GetFirstWindow() const
   return startWindow;
 }
 
+bool CSkinInfo::IsInUse() const
+{
+  // Could extend this to prompt for reverting to the standard skin perhaps
+  return g_guiSettings.GetString("lookandfeel.skin") == ID();
+}
+
 } /*namespace ADDON*/
