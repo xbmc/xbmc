@@ -974,6 +974,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
       }
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);

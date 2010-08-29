@@ -115,7 +115,8 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (m_iTotalTracks > 0)  // Set the end time of the last track
         m_Track[m_iTotalTracks - 1].iEndTime = time;
 
-      m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
+      if (m_iTotalTracks >= 0)
+        m_Track[m_iTotalTracks].iStartTime = time; // start time of the next track
     }
     else if (strLine.Left(5) == "TITLE")
     {

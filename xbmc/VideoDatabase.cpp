@@ -3181,15 +3181,14 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   }
 }
 
-bool CVideoDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
+bool CVideoDatabase::ScraperInUse(const CStdString &scraperID) const
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    if (!scraper) return false;
 
-    CStdString sql = PrepareSQL("select count(1) from path where strScraper='%s'",scraper->ID().c_str());
+    CStdString sql = PrepareSQL("select count(1) from path where strScraper='%s'", scraperID.c_str());
     if (!m_pDS->query(sql.c_str()) || m_pDS->num_rows() == 0)
       return false;
     bool found = m_pDS->fv(0).get_asInt() > 0;
@@ -3198,7 +3197,7 @@ bool CVideoDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraper->ID().c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraperID.c_str());
   }
   return false;
 }
@@ -5332,7 +5331,7 @@ void CVideoDatabase::GetMovieActorsByName(const CStdString& strSearch, CFileItem
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=PrepareSQL("select actors.idactor,actors.strActor,path.strPath from actorlinkmovie,actors,movie,files,path where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idMovie=movie.idMovie and files.idFile=movie.idFile and files.idPath=path.idPath and actors.strActor like '%%%s%%'",strSearch.c_str());
     else
-      strSQL=PrepareSQL("select actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idMovie=movie.idMovie and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select distinct actors.idactor,actors.strActor from actorlinkmovie,actors,movie where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idMovie=movie.idMovie and actors.strActor like '%%%s%%'",strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
@@ -5372,7 +5371,7 @@ void CVideoDatabase::GetTvShowsActorsByName(const CStdString& strSearch, CFileIt
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
       strSQL=PrepareSQL("select actors.idActor,actors.strActor,path.strPath from actorlinktvshow,actors,tvshow,path,tvshowlinkpath where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idShow=tvshow.idShow and tvshowlinkpath.idPath=tvshow.idShow and tvshowlinkpath.idPath=path.idPath and actors.strActor like '%%%s%%'",strSearch.c_str());
     else
-      strSQL=PrepareSQL("select actors.idactor,actors.strActor from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idShow=tvshow.idShow and actors.strActor like '%%%s%%'",strSearch.c_str());
+      strSQL=PrepareSQL("select distinct actors.idactor,actors.strActor from actorlinktvshow,actors,tvshow where actors.idActor=actorlinktvshow.idActor and actorlinktvshow.idShow=tvshow.idShow and actors.strActor like '%%%s%%'",strSearch.c_str());
     m_pDS->query( strSQL.c_str() );
 
     while (!m_pDS->eof())
