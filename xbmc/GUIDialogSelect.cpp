@@ -224,4 +224,7 @@ void CGUIDialogSelect::OnInitWindow()
     g_windowManager.SendMessage(msg2);
   }
   CGUIDialogBoxBase::OnInitWindow();
+
+  if (m_iSelected >= 0)
+    m_viewControl.SetSelectedItem(m_iSelected);
 }

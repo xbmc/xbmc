@@ -2105,7 +2105,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
           // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
           // useful for Player.Time* members without adding a separate set of members returning time in seconds
-          if ( value.find_first_of( ':' ) )
+          if ( value.find_first_of( ':' ) != value.npos )
             bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();

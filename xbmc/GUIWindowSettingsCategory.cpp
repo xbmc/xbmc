@@ -1057,7 +1057,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
-    CStdString addonID;
+    CStdString addonID = setting->GetData();
     if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ) == 1)
       setting->SetData(addonID);
     else
