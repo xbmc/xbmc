@@ -80,6 +80,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>libass.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
@@ -117,6 +118,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>libass.def</ModuleDefinitionFile>
     </Link>
     <CustomBuildStep>
       <Command>copy /B /Y "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
@@ -171,6 +173,9 @@
       <Project>{7a74ed4b-2bf5-47d7-b43e-c80f714417fb}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libass.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
