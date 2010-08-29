@@ -458,8 +458,14 @@ void CDVDPlayerVideo::Process()
 #ifdef PROFILE
       bRequestDrop = false;
 #else
-      if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
-      if (m_speed < 0)                  bRequestDrop = false;
+      if (m_messageQueue.GetDataSize() == 0
+      ||  m_iNrOfPicturesNotToSkip > 0
+      ||  m_speed < 0)
+      {
+        bRequestDrop = false;
+        m_iDroppedRequest = 0;
+        m_iLateFrames     = 0;
+      }
 #endif
 
       // if player want's us to drop this packet, do so nomatter what
