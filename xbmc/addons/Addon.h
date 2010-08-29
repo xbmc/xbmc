@@ -153,6 +153,7 @@ public:
   const CStdString ID() const { return m_props.id; }
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
+  virtual bool IsInUse() const { return false; };
   const AddonVersion Version();
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }

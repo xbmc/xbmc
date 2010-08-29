@@ -87,6 +87,9 @@ namespace ADDON
                                 XFILE::CFileCurl& http,
                                 const std::vector<CStdString>* extras=NULL);
     CScraperParser& GetParser() { return m_parser; }
+
+    bool IsInUse() const;
+
   private:
     CScraper(const CScraper&, const AddonPtr&);
 
