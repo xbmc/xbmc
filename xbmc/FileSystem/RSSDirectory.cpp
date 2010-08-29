@@ -503,6 +503,9 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
     item->m_strPath = best->path;
     item->m_dwSize  = best->size;
 
+    if(best->duration)
+      item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
+
     /* handling of mimetypes fo directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && item->m_strPath.Left(7).Equals("http://"))
       item->m_strPath.replace(0, 7, "rss://");
