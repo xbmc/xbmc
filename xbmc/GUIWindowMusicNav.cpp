@@ -528,6 +528,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (inPlaylists && !CUtil::GetFileName(item->m_strPath).Equals("PartyMode.xsp")
                     && (item->IsPlayList() || item->IsSmartPlayList()))
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+
+    if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
   // noncontextual buttons
 

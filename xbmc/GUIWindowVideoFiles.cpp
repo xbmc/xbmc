@@ -489,6 +489,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
           buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
       }
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   else
