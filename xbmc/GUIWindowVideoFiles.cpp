@@ -204,7 +204,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath())
+  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() || items.IsInternetStream())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
