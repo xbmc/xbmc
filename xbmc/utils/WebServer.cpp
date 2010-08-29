@@ -249,7 +249,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
-  if (file->Open(strURL))
+  if (file->Open(strURL, READ_CACHED))
   {
     struct MHD_Response *response;
     response = MHD_create_response_from_callback ( file->GetLength(),
