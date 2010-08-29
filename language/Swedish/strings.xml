@@ -2,6 +2,7 @@
 <!--$Revision$-->
 <!--Based on english strings version 204-->
 
+
 <strings>
   <string id="31000">Bläddra</string>
   <string id="31001">Filmer</string>
@@ -45,10 +46,15 @@
   <string id="31041">Redigerare</string>
   <string id="31042">Bild</string>
   <string id="31043">Kontrollera</string>
+  
   <string id="31044">av</string>
+  
   <string id="31045">Nyligen tillagda</string>
+  
   <string id="31046">sökväg till sångtextskript</string>
+  <string id="31047">Ej tillgänglig</string>
   <string id="31050">Objekt</string>
+  
 
 <!--  Programs  -->
   <string id="31051">Spel</string>
@@ -90,7 +96,22 @@
   <string id="31125">Biografvisningar</string>
   <string id="31126">TV-serie detaljer</string>
   <string id="31127">Avsnittsdetaljer</string>
-
+  <string id="31128">Banner</string>
+  <string id="31129">Betyg</string>
+  <string id="31130">IMDb-betyg</string>
+  <string id="31131">Genre</string>
+  <string id="31132">Längd</string>
+  <string id="31133">Undertexter</string>
+  <string id="31134">Medverkande</string>
+  <string id="31135">Regissör</string>
+  <string id="31136">Manus</string>
+  <string id="31137">Avsnitt</string>
+  <string id="31138">Sett</string>
+  <string id="31139">Osett</string>
+  <string id="31140">Sändes första gången</string>
+  <string id="31141">Säsong</string>
+  
+  
 <!--  Music  -->
   <string id="31220">Spelas nu</string>
   <string id="31221">Föregående spår</string>
@@ -150,21 +171,22 @@
   <string id="31679">Dölj fokusdetaljer i panelström</string>
   <string id="31680">Dölj miniatyrer i listvisning</string>
   <string id="31681">i filläget</string>
- 	<string id="31682">på TV-vägg</string>
- 	<string id="31683">med TV-visning</string>
+  <string id="31682">på TV-vägg</string>
+  <string id="31683">med TV-visning</string>
   <string id="31684">Dölj egna bakgrunder</string>
-	<string id="31685">Visa animerad</string>
-	<string id="31686">Visa horisontell musikvisual.</string>
-	<string id="31687">med Videovisningsläge</string>
-	<string id="31688">med Musikvisningsläge</string>
-	<string id="31689">med Bildvisningsläge</string>
-	<string id="31690">Dölj Ingen ikon miniatyr</string>
-	<string id="31691">Använd låga överlägg för TV-serier onslagsvisning</string>
-	<string id="31692">Dölj info i väggströmsvisning</string>
-        <string id="31693">Dölj miniatyrer i Valmeny</string>
-        <string id="31694">Visa Spelas Nu till vänster</string>
-        <string id="31695">Visa AM/PM i klocka</string>
-
+  <string id="31685">Visa animerad</string>
+  <string id="31686">Visa horisontell musikvisual.</string>
+  <string id="31687">med Videovisningsläge</string>
+  <string id="31688">med Musikvisningsläge</string>
+  <string id="31689">med Bildvisningsläge</string>
+  <string id="31690">Dölj Ingen ikon miniatyr</string>
+  <string id="31691">Använd låga överlägg för TV-serier onslagsvisning</string>
+  <string id="31692">Dölj info i väggströmsvisning</string>
+  <string id="31693">Dölj miniatyrer i Valmeny</string>
+  <string id="31694">Visa Spelas Nu till vänster</string>
+  <string id="31695">Visa AM/PM i klocka</string>
+  <string id="31697">Dölj Bildbeskrivning i bildspel</string>
+        
 <!--  Options Menu  -->
   <string id="31701">Ställ in</string>
   <string id="31702">Utställning</string>
@@ -183,20 +205,33 @@
   <string id="31715">Panelström</string>
   <string id="31716">Omslagsflöde</string>
   <string id="31717">Valmeny</string>
+  <string id="31720">Rutnät</string>
+  <string id="31721">Avsnittslista</string>
+  <string id="31722">Pluginström</string>
  
 <!--  Credits  -->
-  <string id="31800">Förtjänst</string>
-
+  <string id="31800">Plexutvecklarna tackar</string>
+  <string id="31801">Välkommen till</string>
+  <string id="31802">ditt media....[COLOR Highlighted]på ditt[/COLOR] sätt</string>
+  <string id="31803"></string>
+  <string id="31804">MediaStream är ett nytt användargränssnitt för Plex. Skapat av "Team RazorFish", detta nya gränssnitt kombinerar funktionalitet med form, och smälter samman stil med substans.  Designad och optimerad för HD-generationen så ger detta gränssnitt en ny upplevelse till den redan populära plattformen.</string>
+  <string id="31805">Note</string>
+  <string id="31806">Please ensure that you have the very latest build of XBMC.  We recommend the latest SVN build of XBMC, and would ask that you always download the full skin package.</string>
+  <string id="31807">Skin Credits</string>
+  <string id="31808">The entire project was a collaborative effort between many talented individuals.  These are as follows: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Special thanks goes to emilio (a.k.a. thedeViL), without whom this project would never have happened.  Of course all thanks go to you, the XBMC community... without you there would be no reason to do what we do... keep rocking guys, you're the best!!!</string>
+  <string id="31809">Special Thanks: entire XBMC team, supporters at the xbmc and xbox-scene forums</string>
+  <string id="31810">Klicka "OK" för att använda skalet</string>
+  <string id="31811">Note: This is the only time you will see this message once you hit "OK"</string>
   
-  <string id="31851">Plex bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. Plex can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of Plex is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins.</string>
-  <string id="31852">At Plex, we would like to thank the following projects, without whom none of this would be possible:</string>
-  <string id="31853">XBMC: The most important one, for supplying us with a great foundation to build on.</string>
-  <string id="31854">Team RazorFish: The talented team who created the beautiful MediaStream skin.</string>
-  <string id="31855">FFmpeg: Without this, there would be no decoding of video inside Plex. A critical component, to be sure.</string>
-  <string id="31856">SQLite: The media database is stored using this excellent, industry standard free database.</string>
-  <string id="31857">CxImage: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc.</string>
-  <string id="31858">FreeType: This code is responsible for the beautiful rendering of fonts within the application.</string>
-  <string id="31859">Python: The media center embeds the Python interpreter to provide powerful scripting functionality.</string>
+  <string id="31851">Plex överbrygger gapet mellan din Mac och din hemmabio genom ett visuellt tilldragande användargränssnitt som ger direkt åtkomst till dina media-filer. Plex kan spela upp ett brett spektrum av video, ljud och foto-format, men även strömmande ljud och bild från internet. Plex riktiga kraft ligger i biblioteksfunktionerna: Organisera dina media-filer, hämta metadata automatiskt från internet och visa upp ditt bibliotek via ett av de snygga skalen (skins) som erbjuds.</string>
+  <string id="31852">Plexutvecklarna vill tacka fäljande projekt, utan dessa skulle vi inte kunna finnas:</string>
+  <string id="31853">XBMC: Det viktigaste projektet, som gett oss en bra grund att bygga Plex på.</string>
+  <string id="31854">Team RazorFish: Den talangfulla gruppen som skapat det vackra skalet MediaStream.</string>
+  <string id="31855">FFmpeg: Utan detta skulle vi inte kunna avkoda video i Plex. En kritisk komponent, utan överdrift.</string>
+  <string id="31856">SQLite: Mediadatabasen lagras genom att använda denna fantastiska databas.</string>
+  <string id="31857">CxImage: Arbetshästskoden som är ansvarig för laddandet av bilder. Den använder många olika bibliotek såsom libPNG, libJPEG, etc.</string>
+  <string id="31858">FreeType: Denna kod är ansvarig för den vackra renderingen av fonter i applikationen.</string>
+  <string id="31859">Python: Mediacentret bäddar in Python-tolken för att ge oss en kraftfull skriptfunktionalitet.</string>
   <string id="31860">Besök http://www.plexapp.com/credits.php för länkar och ytterligare information</string>
 
 <!--  Profiles  -->
@@ -205,32 +240,41 @@
   <string id="31902">Profil</string>
   <string id="31903">Profilnamn</string>
   <string id="31904">Profilbild</string>
-
-<!-- Plex additions -->
+  
+  <!-- Plex additions -->
+  
   <string id="31950">Gå till dina</string>
+  
   <string id="31951">Gå till</string>
+  
   <string id="31952">Plex Online</string>
+  
   <string id="31953">Få</string>
+  
   <string id="31954">Hjälp</string>
+  
   <string id="31955">Inställningar</string>
+  
   <string id="31956">Visa</string>
+  
+  
   
   <string id="31960">Somna in</string>
   <string id="31961">Stäng av</string>
-  <string id="31962">Power Menu</string>
-  <string id="31963">Skärmar</string>
-	<string id="31964">Släck skärm</string>
+  <string id="31962">Avstängningsmeny</string>
+  <string id="31963">visar</string>
+  <string id="31964">Släck skärm</string>
   
-  <string id="31970">Plug-ins</string>
-	<string id="31971">Video-pluginer</string>
-	<string id="31972">Musik-pluginer</string>
-	<string id="31973">Bild-pluginer</string>
-	
-	<string id="31981">Visa förhandsvisning i listvyerna</string>
-	<string id="31982">Visa Handling i Video OSD</string>
-	<string id="31983">Visa Bildbeskrivningar under Bildspel</string>
-	<string id="31984">Visa Nu Spelas-information under bildeffekter</string>
-	<string id="31985">Visa Separata Menyknappar för Plugin-sektioner</string>
+  <string id="31970">Plugins</string>
+  <string id="31971">Video-plugins</string>
+  <string id="31972">Musik-plugins</string>
+  <string id="31973">Bild-plugins</string>
+  
+  <string id="31981">Visa förhandsvisning i listvyerna</string>
+  <string id="31982">Visa Handling i OSD</string>
+  <string id="31983">Visa Bildbeskrivningar under bildspel</string>
+  <string id="31984">Visa "Nu Spelas"-information under bildeffekter</string>
+  <string id="31985">Visa separata menyobjekt för plugin-sektioner</string>
 	  
 	<string id="31999">Slutar</string>
 
