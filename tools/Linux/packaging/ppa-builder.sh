@@ -29,7 +29,7 @@ XBMCPPA=xbmc-svn
 # SVN before releasing version NN is: NN~svnXXXX
 # SVN after releasing version NN is: NN+svnXXXX
 SVN_RELEASE_SEP="~"
-HVERSION=10.08
+HVERSION=10.00
 
 # Packagers should have these two vars in their environment
 # export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
