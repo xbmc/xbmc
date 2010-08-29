@@ -13,7 +13,7 @@ echo %%f %%g
     echo Already have %%f
   )
 
-  copy /b %%f %TMP_PATH%
+  copy /b "%%f" "%TMP_PATH%"
 )
 
 echo Extracting...
