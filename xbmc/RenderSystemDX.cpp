@@ -183,7 +183,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
-bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+bool CRenderSystemDX::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage)
 {
   // Verify the compatibility
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
@@ -191,27 +191,34 @@ bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
                                          m_D3DPP.BackBufferFormat,
                                          usage,
                                          D3DRTYPE_SURFACE,
-                                         depthFormat);
+                                         surfFormat);
 
   return (SUCCEEDED(hr)) ? true : false;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT texFormat, DWORD usage)
 {
-  // Verify that the depth format exists
+  // Verify the compatibility
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
                                          m_devType,
-                                         AdapterFormat,
-                                         D3DUSAGE_DEPTHSTENCIL,
-                                         D3DRTYPE_SURFACE,
-                                         DepthFormat);
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_TEXTURE,
+                                         texFormat);
 
-  if(FAILED(hr)) return FALSE;
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat)
+{
+  // Verify that the depth format exists
+  if (!IsSurfaceFormatOk(DepthFormat, D3DUSAGE_DEPTHSTENCIL))
+    return false;
 
   // Verify that the depth format is compatible
-  hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
+  HRESULT hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
                                       m_devType,
-                                      AdapterFormat,
+                                      m_D3DPP.BackBufferFormat,
                                       RenderTargetFormat,
                                       DepthFormat);
 
@@ -251,12 +258,12 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleQuality = 0;
 
   D3DFORMAT zFormat = D3DFMT_D16;
-  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
-  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
-  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
-  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
-  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
-  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
+  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
 
   m_D3DPP.EnableAutoDepthStencil = TRUE;
   m_D3DPP.AutoDepthStencilFormat = zFormat;
@@ -447,15 +454,10 @@ bool CRenderSystemDX::CreateDevice()
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
-  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
-                                           m_devType,
-                                           m_D3DPP.BackBufferFormat,
-                                           m_defaultD3DUsage,
-                                           D3DRTYPE_TEXTURE,
-                                           D3DFMT_DXT5 )))
-  {
+  if(IsTextureFormatOk(D3DFMT_DXT1, m_defaultD3DUsage)
+  && IsTextureFormatOk(D3DFMT_DXT3, m_defaultD3DUsage)
+  && IsTextureFormatOk(D3DFMT_DXT5, m_defaultD3DUsage))
     m_renderCaps |= RENDER_CAPS_DXT;
-  }
 
   if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
   { // we're allowed NPOT textures
