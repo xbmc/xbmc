@@ -558,6 +558,7 @@
 				<onleft>50</onleft>
 				<onright>9009</onright>
      			<showonepage>true</showonepage>
+				<visible>!IsEmpty(ListItem.Title)</visible>
 			</control>
 		</control>
 		<control type="group">
@@ -577,7 +578,6 @@
 						<posx>38</posx>
 						<width>230</width>
 						<height>366</height>
-						<texture>amt-blank-poster.png</texture>
 						<info>ListItem.Icon</info>
 						<aspectratio align="left" aligny="top">keep</aspectratio>
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
@@ -590,7 +590,6 @@
 						<posy>64</posy>
 						<width>370</width>
 						<height>210</height>
-						<texture>amt-blank-poster.png</texture>
 						<info>ListItem.Icon</info>
 						<aspectratio align="left" aligny="top">keep</aspectratio>
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
@@ -614,7 +613,7 @@
 					<control type="label">
 						<posx>0</posx>
 						<posy>30</posy>
-						<description>Subtitle</description>
+						<description>Year</description>
 						<width>InfoListTitleWidth</width>
 						<font>MediumTitleFont</font>
 						<label>$INFO[ListItem.Year]</label>
@@ -650,7 +649,7 @@
 						<label>$LOCALIZE[563]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>!Container.Content(plugincontent)</visible>
+						<visible>!Container.Content(plugincontent) + ![IsEmpty(ListItem.Property(userRating)) + IsEmpty(ListItem.Property(rating))]</visible>
 					</control>
 					<control type="image">
 						<description>Star Rating</description>
@@ -698,7 +697,7 @@
 						<label>$LOCALIZE[345]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>![Container.Content(plugincontent) | Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(albums) | Container.Content(artists) | Container.Content(songs)] + !IsEmpty(ListItem.Title)</visible>
 					</control>
 					<control type="label">
 						<description>Year</description>
@@ -738,7 +737,7 @@
 						<label>$LOCALIZE[31132]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>![Container.Content(plugincontent) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)]</visible>
+						<visible>![Container.Content(plugincontent) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(albums) | Container.Content(songs)] + !IsEmpty(ListItem.Title)</visible>
 					</control>
 					<control type="label">
 						<description>Duration</description>
@@ -785,7 +784,7 @@
 						<posx>66</posx>
 						<posy>123</posy>
 						<width>180</width>
-							<info>ListItem.Property(codec)</info>
+						<info>ListItem.Property(codec)</info>
 						<align>left</align>
 						<visible>Container.Content(songs)</visible>
 					</control>
