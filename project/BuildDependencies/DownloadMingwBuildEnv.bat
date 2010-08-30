@@ -36,9 +36,19 @@ CALL get_mingw_env.bat
 
 cd %CUR_PATH%
 
+rem update fstab to install path
 SET FSTAB=%MINGW_INSTALL_PATH%
 SET FSTAB=%FSTAB:\=/%
 SET FSTAB=%FSTAB:"=%
 ECHO %FSTAB% /mingw>>"%MSYS_INSTALL_PATH%\etc\fstab"
 
+rem patch mingw headers to compile ffmpeg
+xcopy mingw_support\postinstall\* "%MSYS_INSTALL_PATH%\postinstall\" /E /Q /I /Y
+cd "%MSYS_INSTALL_PATH%\postinstall"
+CALL pi_patches.bat
+
+cd %CUR_PATH%
+
 rmdir %TMP_PATH% /S /Q
+
+pause

@@ -17,5 +17,6 @@ tar-1.23-1-msys-1.0.13-bin.tar.lzma						http://downloads.sourceforge.net/projec
 gzip-1.3.12-2-msys-1.0.13-bin.tar.lzma					http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/gzip/gzip-1.3.12-2/
 gawk-3.1.7-2-msys-1.0.13-bin.tar.lzma					http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/gawk/gawk-3.1.7-2/
 xz-4.999.9beta_20100401-1-msys-1.0.13-bin.tar.gz		http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/xz/xz-4.999.9beta_20100401-1/
+patch-2.6.1-1-msys-1.0.13-bin.tar.lzma					http://downloads.sourceforge.net/project/mingw/MSYS/patch/patch-2.6.1-1/
 ; to get pr.exe
 coreutils-5.97-MSYS-1.0.11-snapshot.tar.bz2				http://www.finalmediaplayer.com/downloads/3rdparty/

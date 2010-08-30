@@ -1,0 +1,11 @@
+--- /mingw/include/stdio.h.orig	2010-06-27 14:30:24.000000000 -0300
++++ /mingw/include/stdio.h	2010-06-27 14:32:24.000000000 -0300
+@@ -186,6 +186,8 @@
+ _CRTIMP int __cdecl __MINGW_NOTHROW	rmtmp(void);
+ _CRTIMP int __cdecl __MINGW_NOTHROW	unlink (const char*);
+ #endif
++#else
++_CRTIMP char* __cdecl __MINGW_NOTHROW   tempnam (const char*, const char*);
+ #endif /* __STRICT_ANSI__ */
+ 
+ _CRTIMP int __cdecl __MINGW_NOTHROW	setvbuf (FILE*, char*, int, size_t);
