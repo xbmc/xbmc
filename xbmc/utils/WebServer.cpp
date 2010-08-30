@@ -28,6 +28,7 @@
 #include "../Util.h"
 #include "log.h"
 #include "SingleLock.h"
+#include "DateTime.h"
 #ifdef _WIN32
 #pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
 #endif
@@ -262,6 +263,10 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
     if (mime)
       MHD_add_response_header(response, "Content-Type", mime);
+
+    CDateTime expiryTime = CDateTime::GetCurrentDateTime();
+    expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
     ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
     MHD_destroy_response(response);
