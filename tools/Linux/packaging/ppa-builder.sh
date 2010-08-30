@@ -141,9 +141,9 @@ builddeb()
     urgency=low
   fi
   if [ $UPDPPA ]; then
-    PKG_VERSION=1:${HVERSION}-$1$REVISION
+    PKG_VERSION=2:${HVERSION}-$1$REVISION
   else
-    PKG_VERSION=1:${VERSION}-$1${MINOR}
+    PKG_VERSION=2:${VERSION}-$1${MINOR}
   fi
   dch --force-distribution -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1 
   echo "$REVISION" > debian/svnrevision
