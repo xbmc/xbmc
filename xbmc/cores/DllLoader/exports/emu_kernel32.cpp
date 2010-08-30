@@ -757,23 +757,68 @@ extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD
 
 extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR* lpFilePart)
 {
+#ifdef _WIN32
   if (!lpFileName) return 0;
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "GetFullPathNameA('%s',%d,%p,%p)\n", lpFileName, nBufferLength, lpBuffer, lpFilePart);
-#endif
-  if (strrchr(lpFileName, '\\'))
-    lpFilePart = (LPSTR*)strrchr((const char *)lpFileName, '\\');
-  else
-    lpFilePart = (LPTSTR *)lpFileName;
-
-  unsigned int length = strlen(lpFileName);
-  if (nBufferLength < (length + 1))
+  if(strstr(lpFileName, "://"))
   {
-    return length + 1;
-  } else {
-    strcpy(lpBuffer, lpFileName);
-    return length;
+    unsigned int length = strlen(lpFileName);
+    if (nBufferLength < (length + 1))
+      return length + 1;
+    else
+    {
+      strcpy(lpBuffer, lpFileName);
+      if(lpFilePart)
+      {
+        char* s1 = strrchr(lpBuffer, '\\');
+        char* s2 = strrchr(lpBuffer, '/');
+        if(s2 && s1 > s2)
+          *lpFilePart = s1 + 1;
+        else if(s1 && s2 > s1)
+          *lpFilePart = s2 + 1;
+        else
+          *lpFilePart = lpBuffer;
+      }
+      return length;
+    }
   }
+  return GetFullPathNameA(lpFileName, nBufferLength, lpBuffer, lpFilePart);
+#else
+  not_implement("kernel32.dll fake function GetFullPathNameW called\n"); //warning
+  return 0;
+#endif
+}
+
+extern "C" DWORD WINAPI dllGetFullPathNameW(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer, LPWSTR* lpFilePart)
+{
+#ifdef _WIN32
+  if (!lpFileName) return 0;
+  if(wcsstr(lpFileName, L"://"))
+  {
+    size_t length = wcslen(lpFileName);
+    if (nBufferLength < (length + 1))
+      return length + 1;
+    else
+    {
+      wcscpy(lpBuffer, lpFileName);
+      if(lpFilePart)
+      {
+        wchar_t* s1 = wcsrchr(lpBuffer, '\\');
+        wchar_t* s2 = wcsrchr(lpBuffer, '/');
+        if(s2 && s1 > s2)
+          *lpFilePart = s1 + 1;
+        else if(s1 && s2 > s1)
+          *lpFilePart = s2 + 1;
+        else
+          *lpFilePart = lpBuffer;
+      }
+      return length;
+    }
+  }
+  return GetFullPathNameW(lpFileName, nBufferLength, lpBuffer, lpFilePart);
+#else
+  not_implement("kernel32.dll fake function GetFullPathNameW called\n"); //warning
+  return 0;
+#endif
 }
 
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
