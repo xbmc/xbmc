@@ -503,6 +503,9 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
     item->m_strPath = best->path;
     item->m_dwSize  = best->size;
 
+    if(best->duration)
+      item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
+
     /* handling of mimetypes fo directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && item->m_strPath.Left(7).Equals("http://"))
       item->m_strPath.replace(0, 7, "rss://");
@@ -595,6 +598,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     if (!item->m_strPath.IsEmpty())
       items.Add(item);
   }
+
+  items.AddSortMethod(SORT_METHOD_UNSORTED , 231, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
+  items.AddSortMethod(SORT_METHOD_LABEL    , 551, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
+  items.AddSortMethod(SORT_METHOD_SIZE     , 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
+  items.AddSortMethod(SORT_METHOD_DATE     , 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
   m_items = items;
   m_path  = strPath;
