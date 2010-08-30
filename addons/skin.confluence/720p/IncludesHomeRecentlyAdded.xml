@@ -37,7 +37,7 @@
 					<description>Main Icon -3</description>
 					<posx>165</posx>
 					<posy>60</posy>
-					<width>120</width>
+					<width>75</width>
 					<height>110</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture background="true">$INFO[Window.Property(LatestMovie.4.Thumb)]</texture>
@@ -46,9 +46,9 @@
 				</control>
 				<control type="image">
 					<description>Main Icon -2</description>
-					<posx>120</posx>
+					<posx>130</posx>
 					<posy>50</posy>
-					<width>120</width>
+					<width>86</width>
 					<height>130</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture background="true">$INFO[Window.Property(LatestMovie.3.Thumb)]</texture>
@@ -57,9 +57,9 @@
 				</control>
 				<control type="image">
 					<description>Main Icon -1</description>
-					<posx>70</posx>
+					<posx>80</posx>
 					<posy>40</posy>
-					<width>120</width>
+					<width>100</width>
 					<height>150</height>
 					<aspectratio align="left">keep</aspectratio>
 					<texture background="true">$INFO[Window.Property(LatestMovie.2.Thumb)]</texture>
