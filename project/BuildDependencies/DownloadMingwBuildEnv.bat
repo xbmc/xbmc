@@ -49,6 +49,20 @@ CALL pi_patches.bat
 
 cd %CUR_PATH%
 
-rmdir %TMP_PATH% /S /Q
+rem insert call to vcvars32.bat in msys.bat
+SET NET90VARS="%VS90COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+SET NET100VARS="%VS100COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+cd %MSYS_INSTALL_PATH%
+Move msys.bat msys.bat_dist
+IF EXIST %NET90VARS% (
+	ECHO CALL %NET90VARS%>>msys.bat
+) ELSE IF EXIST %NET100VARS% (
+	ECHO CALL %NET100VARS%>>msys.bat
+)
+TYPE msys.bat_dist>>msys.bat
+
+cd %CUR_PATH%
+
+IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
 
 pause
