@@ -124,14 +124,12 @@ NowPlayingManager.prototype = {
 			$('#pbPlay').show();
 		},
 		displayAudioNowPlaying: function() {
-			$('#nowPlayingPanel').show();
 			if (!this.autoRefreshAudioPlaylist) {
 				this.autoRefreshAudioPlaylist = true;
 				this.updateAudioPlaylist();
 			}
 		},
 		displayVideoNowPlaying: function() {
-			$('#nowPlayingPanel').show();
 			if (!this.autoRefreshVideoPlaylist) {
 				this.autoRefreshVideoPlaylist = true;
 				this.updateVideoPlaylist();
@@ -207,6 +205,7 @@ NowPlayingManager.prototype = {
 							this.activePlaylist = data.result.items;
 							$('#videoDescription').hide();
 							$('#audioDescription').show();
+							$('#nowPlayingPanel').show();
 						}
 					} else {
 						this.activePlaylist = null;
@@ -435,6 +434,7 @@ NowPlayingManager.prototype = {
 							this.activePlaylist = data.result.items;
 							$('#videoDescription').show();
 							$('#audioDescription').hide();
+							$('#nowPlayingPanel').show();
 						}
 					} else {
 						this.activePlaylist = null;
