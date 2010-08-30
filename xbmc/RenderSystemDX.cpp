@@ -367,55 +367,60 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
+  D3DCAPS9 caps;
+  memset(&caps, 0, sizeof(caps));
+  m_pD3D->GetDeviceCaps(m_adapter, m_devType, &caps);
+
+  DWORD VertexProcessingFlags = 0;
+  if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+  {
+    /* Activate when the state management of the fixed pipeline is in order,
+      to get a bit more performance
+    if (caps.DevCaps & D3DDEVCAPS_PUREDEVICE)
+      VertexProcessingFlags = D3DCREATE_PUREDEVICE;
+    */
+    VertexProcessingFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using hardware vertex processing");
+  }
+  else
+  {
+    VertexProcessingFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using software vertex processing");
+  }
+
   if (m_useD3D9Ex)
   {
     hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, m_devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-
+      VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
     if (FAILED(hr))
     {
-      CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
+      CLog::Log(LOGWARNING, __FUNCTION__" - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
       hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-        if( FAILED( hr ) )
-        {
-          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-        }
-        if(FAILED( hr ) )
-          return false;
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        return false;
       }
     }
   }
   else
   {
-
     hr = m_pD3D->CreateDevice(m_adapter, m_devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-
+      VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
     if (FAILED(hr))
     {
+      CLog::Log(LOGWARNING, __FUNCTION__" - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
       hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-        if( FAILED( hr ) )
-        {
-          hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-        }
-        if(FAILED( hr ) )
-          return false;
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        return false;
       }
     }
   }
@@ -433,7 +438,6 @@ bool CRenderSystemDX::CreateDevice()
             m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
 
   // get our render capabilities
-  D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
