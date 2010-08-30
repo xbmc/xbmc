@@ -2,7 +2,9 @@
   #include "config.h"
 #endif
 #if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
+  #if (defined HAVE_LIBPYTHON2_7)
+    #include <python2.7/pyconfig.h>
+  #elif (defined HAVE_LIBPYTHON2_6)
     #include <python2.6/pyconfig.h>
   #elif (defined HAVE_LIBPYTHON2_5)
     #include <python2.5/pyconfig.h>

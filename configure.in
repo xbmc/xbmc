@@ -901,7 +901,11 @@ fi
 
 # External Python
 if test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.6], [main],
+  AC_CHECK_LIB([python2.7], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_7], [1],
+    [Define to 1 if you have the 'python2.7' library.])
+    USE_PYTHON2_7=1],
+  [AC_CHECK_LIB([python2.6], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
     [Define to 1 if you have the 'python2.6' library.])
     USE_PYTHON2_6=1],
@@ -913,9 +917,10 @@ if test "$use_external_python" = "yes"; then
     [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
     [Define to 1 if you have the 'python2.4' library.])
     USE_PYTHON2_4=1],
-  [AC_MSG_ERROR($missing_library)] )] )] )
+  [AC_MSG_ERROR($missing_library)] )] )] )] )
 
   AC_MSG_NOTICE($external_python_enabled)
+  test "$USE_PYTHON2_7" && AC_MSG_NOTICE([Using Python 2.7])
   test "$USE_PYTHON2_6" && AC_MSG_NOTICE([Using Python 2.6])
   test "$USE_PYTHON2_5" && AC_MSG_NOTICE([Using Python 2.5])
   test "$USE_PYTHON2_4" && AC_MSG_NOTICE([Using Python 2.4])
@@ -1471,6 +1476,7 @@ AC_SUBST(USE_INTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
+AC_SUBST(USE_PYTHON2_7)
 AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
