@@ -221,7 +221,7 @@ namespace VIDEO
       CStdString fastHash = GetFastHash(strDirectory);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", strDirectory.c_str());
         hash = fastHash;
         bSkip = true;
       }
@@ -240,8 +240,14 @@ namespace VIDEO
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", strDirectory.c_str(), dbHash.c_str(), hash.c_str());
         }
         else
-        { // they're the same
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+        { // they're the same or the hash is empty (dir empty/dir not retrievable)
+          if (hash.IsEmpty() && !dbHash.IsEmpty())
+          {
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
+            m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+          }
+          else
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
           bSkip = true;
           if (m_pObserver)
             m_pObserver->OnDirectoryScanned(strDirectory);
