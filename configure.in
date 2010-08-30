@@ -307,9 +307,12 @@ AC_ARG_ENABLE([external-libdts],
   [use_external_libdts=$enableval],
   [use_external_libdts=$use_external_libraries])
 
-if test "x$host_vendor" != "xapple"; then
-  use_external_python="yes"
-fi
+AC_ARG_ENABLE([external-python],
+  [AS_HELP_STRING([--enable-external-python],
+  [enable use of external python library (default is no) 'Linux only'])],
+  [use_external_python=$enableval],
+  [use_external_python=$use_external_libraries])
+
 use_external_libass="yes"
 ### End of external library options
 DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT"
