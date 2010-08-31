@@ -1,9 +1,0 @@
-<!-- misc. strings -->
-<!ENTITY bz-url "http://www.bzip.org">
-<!ENTITY bz-email "jseward@bzip.org">
-<!ENTITY bz-lifespan "1996-2007">
-
-<!ENTITY bz-version "1.0.5">
-<!ENTITY bz-date "10 December 2007">
-
-<!ENTITY manual-title "bzip2 Manual">
