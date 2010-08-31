@@ -438,6 +438,7 @@ bool CRenderSystemDX::CreateDevice()
             m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
 
   // get our render capabilities
+  // re-read caps, there may be changes depending on the vertex processing type
   m_pD3DDevice->GetDeviceCaps(&caps);
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
