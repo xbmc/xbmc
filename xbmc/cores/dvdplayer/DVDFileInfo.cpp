@@ -405,9 +405,9 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &det
         }
       }
 
-      // finally, calculate minutes
+      // finally, calculate seconds
       if (p->m_iDuration > 0)
-        p->m_iDuration = p->m_iDuration / 1000 / 60;
+        p->m_iDuration = p->m_iDuration / 1000;
 
       details.AddStream(p);
       retVal = true;
