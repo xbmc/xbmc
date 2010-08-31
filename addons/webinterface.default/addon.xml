@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="webinterface.default"
+  version="1.0.0"
+  name="Default"
+  provider-name="Malard, Team XBMC">
+  <requires>
+    <import addon="xbmc.gui" version="2.11"/>
+  </requires>
+  <extension
+    point="xbmc.gui.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Default web interface by Malard. (XBMC's default web interface)</summary>
+    <description lang="en">Blablabla look good, blablabla, work everywhere</description>
+    <platform>all</platform>
+  </extension>
+</addon>
