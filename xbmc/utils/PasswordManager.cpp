@@ -24,7 +24,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "XMLUtils.h"
-#include "SingleLock.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 
