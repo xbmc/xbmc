@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "XMLUtils.h"
+#include "SingleLock.h"
 
 using namespace std;
 
@@ -40,6 +41,8 @@ CPasswordManager::CPasswordManager()
 
 bool CPasswordManager::AuthenticateURL(CURL &url)
 {
+  CSingleLock lock(m_critSection);
+
   if (!m_loaded)
     Load();
   CStdString lookup(GetLookupPath(url));
@@ -60,6 +63,8 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
 
 bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
+  CSingleLock lock(m_critSection);
+
   CStdString passcode;
   CStdString username = url.GetUserName();
   CStdString path = GetLookupPath(url);
