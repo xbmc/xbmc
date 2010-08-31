@@ -57,7 +57,8 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["showtitle"] = videoInfo->m_strShowTitle.c_str();
   if (field.Equals("firstaired") && !videoInfo->m_strFirstAired.IsEmpty())
     result["firstaired"] = videoInfo->m_strFirstAired.c_str();
-
+  if (field.Equals("duration"))
+    result["duration"] = videoInfo->m_streamDetails.GetVideoDuration();
   if (field.Equals("season") && videoInfo->m_iSeason > 0)
     result["season"] = videoInfo->m_iSeason;
   if (field.Equals("episode") && videoInfo->m_iEpisode > 0)
