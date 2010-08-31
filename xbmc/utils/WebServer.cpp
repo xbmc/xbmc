@@ -29,6 +29,8 @@
 #include "log.h"
 #include "SingleLock.h"
 #include "DateTime.h"
+#include "addons/AddonManager.h"
+
 #ifdef _WIN32
 #pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
 #endif
@@ -39,6 +41,7 @@
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 #define DEFAULT_PAGE        "index.html"
 
+using namespace ADDON;
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
@@ -143,8 +146,11 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 #ifdef HAS_WEB_INTERFACE
   if (strURL.Equals("/"))
     strURL.Format("/%s", DEFAULT_PAGE);
-    
-  strURL.Format("special://xbmc/web%s", strURL.c_str());
+
+  AddonPtr addon;
+  CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE,addon);
+  if (addon)
+    strURL = CUtil::AddFileToFolder(addon->Path(),strURL);
   if (CDirectory::Exists(strURL))
   {
     if (strURL.Right(1).Equals("/"))
