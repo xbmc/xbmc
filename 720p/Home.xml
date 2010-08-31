@@ -1007,12 +1007,13 @@
 							<description>Network Settings Button</description>
 							<label> $LOCALIZE[31602] </label>
 							<onclick>XBMC.ActivateWindow(18)</onclick>
-						</item>-->
+						</item>
 						<item id="7">
 							<description>Developer Settings Button</description>
 							<label> Developer </label>
 							<onclick>XBMC.ActivateWindow(1002)</onclick>
 						</item>
+						-->
 					</content>
 				</control>
 			</control>
