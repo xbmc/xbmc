@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 07/23/2010-->
+<!--Date of translation: 08/30/2010-->
 <!--$Revision$-->
 <!--Based on english strings version 32080-->
 <strings>
@@ -1913,7 +1913,7 @@
   <string id="24023">Wtyczka wyłączona</string>
   <string id="24027">Pogoda</string>
   <string id="24028">Weather.com (standard)</string>
-  <string id="24030">Ta wtyczka nie może być skonfigurowania</string>
+  <string id="24030">Ta wtyczka nie może być skonfigurowana</string>
   <string id="24031">Błąd wczytywania ustawień</string>
   <string id="24032">Wszystkie wtyczki</string>
   <string id="24033">Pobierz wtyczki</string>
@@ -1929,7 +1929,7 @@
   <string id="24043">Dostępne aktualizacje</string>
   <string id="24050">Dostępne wtyczki</string>
   <string id="24051">Wersja:</string>
-  <string id="24052">Zrzeczenie się</string>
+  <string id="24052">Uwagi</string>
   <string id="24053">Licencja:</string>
   <string id="24054">Lista zmian</string>
   <string id="24059">Czy chcesz włączyć tę wtyczkę?</string>
