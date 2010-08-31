@@ -471,9 +471,37 @@ void SqliteDataset::fill_fields() {
 
 int SqliteDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
+  string qry = sql;
   int res;
   exec_res.clear();
-  if((res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str())) == SQLITE_OK)
+
+  // Strip size constraints from indexes (not supported in sqlite)
+  //
+  // Example:
+  //   before: CREATE UNIQUE INDEX ixPath ON path ( strPath(255) )
+  //   after:  CREATE UNIQUE INDEX ixPath ON path ( strPath )
+  //
+  // NOTE: unexpected results occur if brackets are not matched
+  if ( qry.find("CREATE UNIQUE INDEX") != string::npos )
+  {
+    size_t pos = 0;
+    size_t pos2 = 0;
+
+    if ( (pos = qry.find("(")) != string::npos )
+    {
+      pos++;
+      while ( (pos = qry.find("(", pos)) != string::npos )
+      {
+        if ( (pos2 = qry.find(")", pos)) != string::npos )
+        {
+          qry.replace(pos, pos2-pos+1, "");
+          pos = pos2;
+        }
+      }
+    }
+  }
+
+  if((res = db->setErr(sqlite3_exec(handle(),qry.c_str(),&callback,&exec_res,&errmsg),qry.c_str())) == SQLITE_OK)
     return res;
   else
     {

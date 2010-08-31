@@ -192,7 +192,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
-bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
+bool CRenderSystemDX::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage)
 {
   // Verify the compatibility
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
@@ -200,27 +200,34 @@ bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT depthFormat, DWORD usage)
                                          m_D3DPP.BackBufferFormat,
                                          usage,
                                          D3DRTYPE_SURFACE,
-                                         depthFormat);
+                                         surfFormat);
 
   return (SUCCEEDED(hr)) ? true : false;
 }
 
-BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat)
+bool CRenderSystemDX::IsTextureFormatOk(D3DFORMAT texFormat, DWORD usage)
 {
-  // Verify that the depth format exists
+  // Verify the compatibility
   HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
                                          m_devType,
-                                         AdapterFormat,
-                                         D3DUSAGE_DEPTHSTENCIL,
-                                         D3DRTYPE_SURFACE,
-                                         DepthFormat);
+                                         m_D3DPP.BackBufferFormat,
+                                         usage,
+                                         D3DRTYPE_TEXTURE,
+                                         texFormat);
 
-  if(FAILED(hr)) return FALSE;
+  return (SUCCEEDED(hr)) ? true : false;
+}
+
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat)
+{
+  // Verify that the depth format exists
+  if (!IsSurfaceFormatOk(DepthFormat, D3DUSAGE_DEPTHSTENCIL))
+    return false;
 
   // Verify that the depth format is compatible
-  hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
+  HRESULT hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
                                       m_devType,
-                                      AdapterFormat,
+                                      m_D3DPP.BackBufferFormat,
                                       RenderTargetFormat,
                                       DepthFormat);
 
@@ -273,12 +280,12 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleQuality = 0;
 
   D3DFORMAT zFormat = D3DFMT_D16;
-  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
-  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
-  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
-  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
-  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
-  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
+  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
 
 #ifdef HAS_DS_PLAYER
   if (m_useD3D9Ex)
@@ -398,55 +405,60 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
+  D3DCAPS9 caps;
+  memset(&caps, 0, sizeof(caps));
+  m_pD3D->GetDeviceCaps(m_adapter, m_devType, &caps);
+
+  DWORD VertexProcessingFlags = 0;
+  if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+  {
+    /* Activate when the state management of the fixed pipeline is in order,
+      to get a bit more performance
+    if (caps.DevCaps & D3DDEVCAPS_PUREDEVICE)
+      VertexProcessingFlags = D3DCREATE_PUREDEVICE;
+    */
+    VertexProcessingFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using hardware vertex processing");
+  }
+  else
+  {
+    VertexProcessingFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using software vertex processing");
+  }
+
   if (m_useD3D9Ex)
   {
     hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, m_devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-
+      VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
     if (FAILED(hr))
     {
-      CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
+      CLog::Log(LOGWARNING, __FUNCTION__" - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
       hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-        if( FAILED( hr ) )
-        {
-          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, m_devType, m_hFocusWnd,
-            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
-        }
-        if(FAILED( hr ) )
-          return false;
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        return false;
       }
     }
   }
   else
   {
-
     hr = m_pD3D->CreateDevice(m_adapter, m_devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-
+      VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
     if (FAILED(hr))
     {
+      CLog::Log(LOGWARNING, __FUNCTION__" - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
       hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-        if( FAILED( hr ) )
-        {
-          hr = m_pD3D->CreateDevice( m_adapter, m_devType, m_hFocusWnd,
-            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-        }
-        if(FAILED( hr ) )
-          return false;
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        return false;
       }
     }
   }
@@ -470,7 +482,7 @@ bool CRenderSystemDX::CreateDevice()
             m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
 
   // get our render capabilities
-  D3DCAPS9 caps;
+  // re-read caps, there may be changes depending on the vertex processing type
   m_pD3DDevice->GetDeviceCaps(&caps);
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
@@ -491,15 +503,10 @@ bool CRenderSystemDX::CreateDevice()
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
-  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
-                                           m_devType,
-                                           m_D3DPP.BackBufferFormat,
-                                           m_defaultD3DUsage,
-                                           D3DRTYPE_TEXTURE,
-                                           D3DFMT_DXT5 )))
-  {
+  if(IsTextureFormatOk(D3DFMT_DXT1, m_defaultD3DUsage)
+  && IsTextureFormatOk(D3DFMT_DXT3, m_defaultD3DUsage)
+  && IsTextureFormatOk(D3DFMT_DXT5, m_defaultD3DUsage))
     m_renderCaps |= RENDER_CAPS_DXT;
-  }
 
   if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
   { // we're allowed NPOT textures

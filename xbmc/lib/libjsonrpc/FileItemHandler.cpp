@@ -135,10 +135,11 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
-  unsigned int size  = (unsigned int)items.Size();
-  unsigned int start = param.get("start", 0).asUInt();
-  unsigned int end   = param.get("end", size).asUInt();
-  end = end > size ? size : end;
+  int size  = items.Size();
+  int start = param.get("start", 0).asInt(); 
+  int end   = param.get("end", size).asInt(); 
+  end = end < 0 ? 0 : end > size ? size : end;
+  start = start < 0 ? 0 : start > end ? end : start;
 
   Sort(items, param);
 
@@ -172,6 +173,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
+    if (!item->GetCachedFanart().IsEmpty())
+      object["fanart"] = item->GetCachedFanart().c_str();
 
     const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 

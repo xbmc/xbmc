@@ -30,6 +30,8 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "XMLUtils.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #include <sstream>
 
 using namespace std;
@@ -309,6 +311,23 @@ bool CScraper::Load()
   }
 
   return result;
+}
+
+bool CScraper::IsInUse() const
+{
+  if (Supports(CONTENT_ALBUMS) || Supports(CONTENT_ARTISTS))
+  { // music scraper
+    CMusicDatabase db;
+    if (db.Open() && db.ScraperInUse(ID()))
+      return true;
+  }
+  else
+  { // video scraper
+    CVideoDatabase db;
+    if (db.Open() && db.ScraperInUse(ID()))
+      return true;
+  }
+  return false;
 }
 
 }; /* namespace ADDON */

@@ -363,10 +363,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   nr.lpRemoteName = (char*)strUNC.c_str();
 
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
-  if (CPasswordManager::GetInstance().AuthenticateURL(urlIn))
-  {
-    // noop
-  }
+  CPasswordManager::GetInstance().AuthenticateURL(urlIn);
 
   CStdString strAuth = URLEncode(urlIn);
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 08/19/2010 -->
-<!-- Based on english strings version r32890 -->
+<!-- Date of translation: 08/30/2010 -->
+<!-- Based on english strings version r33294 -->
 <!-- Portuguese strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 <strings>
   <string id="0">Programas</string>
@@ -728,7 +728,7 @@
   <string id="1042">Recolhidos %i itens de %i</string>
   <string id="1043">Add-ons de Programas</string>
   <string id="1044">Definir miniatura para plugin</string>
-  <string id="1045">Definições do plugin</string>
+  <string id="1045">Definições do add-on</string>
   <string id="1046">Pontos de acesso</string>
   <string id="1047">Outro...</string>
   <string id="1048">- Utilizador</string>
@@ -1514,10 +1514,10 @@
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
 
-  <string id="16400">Pós-processamento de vídeo</string>
-  <string id="16401">Desligado</string>
-  <string id="16402">Ligado para conteúdo SD</string>
-  <string id="16403">Sempre ligado</string>
+  <string id="16400">Pós-processamento</string>
+  <string id="16401"></string>
+  <string id="16402"></string>
+  <string id="16403"></string>
 
   <string id="17500">Temporizador do ecrã acabou</string>
 

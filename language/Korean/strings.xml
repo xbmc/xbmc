@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 08/19/2010-->
+<!--Date of translation: 08/26/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1360,10 +1360,10 @@
   <string id="16317">시간적 (반)</string>
   <string id="16318">시간적/공간적 (반)</string>
   <string id="16319">DXVA</string>
-  <string id="16400">비디오 후처리</string>
-  <string id="16401">사용안함</string>
-  <string id="16402">SD 컨텐츠 사용함</string>
-  <string id="16403">항상 사용함</string>
+  <string id="16400">후처리</string>
+  <string id="16401"></string>
+  <string id="16402"></string>
+  <string id="16403"></string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1948,7 +1948,7 @@
   <string id="24033">추가기능 가져오기</string>
   <string id="24034">업데이트 확인</string>
   <string id="24035">강제 새로고침</string>
-  <string id="24036">로그 변경</string>
+  <string id="24036">변경 로그</string>
   <string id="24037">제거</string>
   <string id="24038">설치</string>
   <string id="24039">사용되지않는 추가기능</string>
@@ -1964,7 +1964,7 @@
   <string id="24059">이 추가기능을 사용함으로 하시겠습니까?</string>
   <string id="24060">이 추가기능을 사용안함으로 하시겠습니까?</string>
   <string id="24061">추가기능 업데이트 사용가능!</string>
-  <string id="24062">사용되는 추가기능</string>
+  <string id="24062">사용하는 추가기능</string>
   <string id="24063">자동 업데이트</string>
   <string id="24064">추가기능 사용됨</string>
   <string id="24065">추가기능 업데이트됨</string>

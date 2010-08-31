@@ -35,6 +35,33 @@ using namespace XFILE;
 using namespace std;
 using namespace MUSIC_INFO;
 
+namespace {
+
+  struct SResource
+  {
+    SResource()
+      : width(0)
+      , height(0)
+      , bitrate(0)
+      , duration(0)
+      , size(0)
+    {}
+
+    CStdString tag;
+    CStdString path;
+    CStdString mime;
+    CStdString lang;
+    int        width;
+    int        height;
+    int        bitrate;
+    int        duration;
+    int64_t    size;
+  };
+
+  typedef std::vector<SResource> SResources;
+
+}
+
 CRSSDirectory::CRSSDirectory()
 {
   SetCacheDirectory(DIR_CACHE_ONCE);
@@ -101,37 +128,36 @@ static time_t ParseDate(const CStdString & strDate)
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);
 }
-static void ParseItem(CFileItem* item, TiXmlElement* root);
+static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root);
 
-static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = item_child->GetText();
 
   if(name == "content")
   {
-    const char* url  = item_child->Attribute("url");
-    const char* type = item_child->Attribute("type");
-    const char* dur  = item_child->Attribute("duration");
+    SResource res;
+    res.tag = "media:content";
+    res.mime    = item_child->Attribute("type");
+    res.path    = item_child->Attribute("url");
+    if(item_child->Attribute("width"))
+      res.width    = atoi(item_child->Attribute("width"));
+    if(item_child->Attribute("height"))
+      res.height   = atoi(item_child->Attribute("height"));
+    if(item_child->Attribute("bitrate"))
+      res.bitrate  = atoi(item_child->Attribute("bitrate"));
+    if(item_child->Attribute("duration"))
+      res.duration = atoi(item_child->Attribute("duration"));
+    if(item_child->Attribute("fileSize"))
+      res.size     = _atoi64(item_child->Attribute("fileSize"));
 
-    if (url && item->m_strPath == "" && IsPathToMedia(url))
-      item->m_strPath = url;
-
-    if (type)
-    {
-      CStdString strType(type);
-      item->SetMimeType(strType);
-      if (url && item->m_strPath.IsEmpty() &&
-        (strType.Left(6).Equals("video/") ||
-         strType.Left(6).Equals("audio/")
-        ))
-        item->m_strPath = url;
-    }
-
-    if(dur)
-      vtag->m_strRuntime = StringUtils::SecondsToTimeString(atoi(dur));
-
-    ParseItem(item, item_child);
+    resources.push_back(res);
+    ParseItem(item, resources, item_child);
+  }
+  else if(name == "group")
+  {
+    ParseItem(item, resources, item_child);
   }
   else if(name == "thumbnail")
   {
@@ -149,7 +175,8 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
     if(text.IsEmpty())
       return;
 
-    vtag->m_strTitle = text;
+    if(text.length() > item->m_strTitle.length())
+      item->m_strTitle = text;
   }
   else if(name == "description")
   {
@@ -221,7 +248,7 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
 
 }
 
-static void ParseItemItunes(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = item_child->GetText();
@@ -246,11 +273,14 @@ static void ParseItemItunes(CFileItem* item, TiXmlElement* item_child, const CSt
     item->SetProperty("keywords", text);
 }
 
-static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
   CStdString text = item_child->GetText();
   if (name == "title")
-    item->m_strTitle = text;
+  {
+    if(text.length() > item->m_strTitle.length())
+      item->m_strTitle = text;
+  }
   else if (name == "pubDate")
   {
     CDateTime pubDate(ParseDate(text));
@@ -258,35 +288,27 @@ static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdSt
   }
   else if (name == "link")
   {
-    string strPrefix = text.substr(0, text.find_first_of(":"));
-    if (strPrefix == "rss")
-    {
-      // If this is an rss item, we treat it as another level in the directory
-      item->m_bIsFolder = true;
-      item->m_strPath = text;
-    }
-    else if (item->m_strPath == "" && IsPathToMedia(text))
-      item->m_strPath = text;
+    SResource res;
+    res.tag  = "rss:link";
+    res.path = text;
+    resources.push_back(res);
   }
   else if(name == "enclosure")
   {
-    const char * url = item_child->Attribute("url");
-    if (url && item->m_strPath.IsEmpty() && IsPathToMedia(url))
-      item->m_strPath = url;
-    const char * content_type = item_child->Attribute("type");
-    if (content_type)
-    {
-      item->SetMimeType(content_type);
-      CStdString strContentType(content_type);
-      if (url && item->m_strPath.IsEmpty() &&
-        (strContentType.Left(6).Equals("video/") ||
-         strContentType.Left(6).Equals("audio/")
-        ))
-        item->m_strPath = url;
-    }
-    const char * len = item_child->Attribute("length");
-    if (len)
-      item->m_dwSize = _atoi64(len);
+    const char * url  = item_child->Attribute("url");
+    const char * type = item_child->Attribute("type");
+    const char * len  = item_child->Attribute("length");
+
+    SResource res;
+    res.tag = "rss:enclosure";
+    if(url)
+      res.path = url;
+    if(type)
+      res.mime = type;
+    if(len)
+      res.size = _atoi64(len);
+
+    resources.push_back(res);
   }
   else if(name == "description")
   {
@@ -296,12 +318,17 @@ static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdSt
   }
   else if(name == "guid")
   {
-    if (item->m_strPath.IsEmpty() && IsPathToMedia(text))
-      item->m_strPath = text;
+    if(IsPathToMedia(text))
+    {
+      SResource res;
+      res.tag  = "rss:guid";
+      res.path = text;
+      resources.push_back(res);
+    }
   }
 }
 
-static void ParseItemVoddler(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -310,12 +337,11 @@ static void ParseItemVoddler(CFileItem* item, TiXmlElement* element, const CStdS
   {
     vtag->m_strTrailer = text;
 
-    CStdString type = element->Attribute("type");
-    if(item->m_strPath.IsEmpty())
-    {
-      item->m_strPath = text;
-      item->SetMimeType(type);
-    }
+    SResource res;
+    res.tag  = "voddler:trailer";
+    res.mime = element->Attribute("type");
+    res.path = text;
+    resources.push_back(res);
   }
   else if(name == "year")
     vtag->m_iYear = atoi(text);
@@ -333,7 +359,7 @@ static void ParseItemVoddler(CFileItem* item, TiXmlElement* element, const CStdS
   }
 }
 
-static void ParseItemBoxee(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -358,7 +384,7 @@ static void ParseItemBoxee(CFileItem* item, TiXmlElement* element, const CStdStr
     item->SetProperty("boxee:releasedate", text);
 }
 
-static void ParseItemZink(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -378,7 +404,20 @@ static void ParseItemZink(CFileItem* item, TiXmlElement* element, const CStdStri
     vtag->m_strRuntime = text;
 }
 
-static void ParseItem(CFileItem* item, TiXmlElement* root)
+static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+{
+  CStdString text = element->GetText();
+  if     (name == "xmllink")
+  {
+    SResource res;
+    res.tag  = "svtplay:xmllink";
+    res.path = text;
+    res.mime = "application/rss+xml";
+    resources.push_back(res);
+  }
+}
+
+static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root)
 {
   for (TiXmlElement* child = root->FirstChildElement(); child; child = child->NextSiblingElement())
   {
@@ -392,17 +431,89 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
     }
 
     if      (xmlns == "media")
-      ParseItemMRSS   (item, child, name, xmlns);
+      ParseItemMRSS   (item, resources, child, name, xmlns);
     else if (xmlns == "itunes")
-      ParseItemItunes (item, child, name, xmlns);
+      ParseItemItunes (item, resources, child, name, xmlns);
     else if (xmlns == "voddler")
-      ParseItemVoddler(item, child, name, xmlns);
+      ParseItemVoddler(item, resources, child, name, xmlns);
     else if (xmlns == "boxee")
-      ParseItemBoxee  (item, child, name, xmlns);
+      ParseItemBoxee  (item, resources, child, name, xmlns);
     else if (xmlns == "zn")
-      ParseItemZink   (item, child, name, xmlns);
+      ParseItemZink   (item, resources, child, name, xmlns);
+    else if (xmlns == "svtplay")
+      ParseItemSVT    (item, resources, child, name, xmlns);
     else
-      ParseItemRSS    (item, child, name, xmlns);
+      ParseItemRSS    (item, resources, child, name, xmlns);
+  }
+}
+
+static bool FindMime(SResources resources, CStdString mime)
+{
+  for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+  {
+    if(it->mime.Left(mime.length()).Equals(mime))
+      return true;
+  }
+  return false;
+}
+
+static void ParseItem(CFileItem* item, TiXmlElement* root)
+{
+  SResources resources;
+  ParseItem(item, resources, root);
+
+  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:xmllink", "rss:link", "rss:guid", NULL };
+
+  CStdString mime;
+  if     (FindMime(resources, "video/"))
+    mime = "video/";
+  else if(FindMime(resources, "audio/"))
+    mime = "audio/";
+  else if(FindMime(resources, "application/rss"))
+    mime = "application/rss";
+  else if(FindMime(resources, "image/"))
+    mime = "image/";
+
+  SResources::iterator best = resources.end();
+  for(const char** type = prio; *type && best == resources.end(); type++)
+  {
+    for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
+    {
+      if(it->mime.Left(mime.length()) != mime)
+        continue;
+
+      if(it->tag == *type)
+      {
+        if(best == resources.end())
+          best = it;
+        else if(it->width && it->height || best->width && best->height)
+        {
+          if(it->width*it->height > best->width*best->height)
+            best = it;
+        }
+        else if(it->bitrate > best->bitrate)
+          best = it;
+      }
+    }
+  }
+
+  if(best != resources.end())
+  {
+    item->SetMimeType(best->mime);
+    item->m_strPath = best->path;
+    item->m_dwSize  = best->size;
+
+    if(best->duration)
+      item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
+
+    /* handling of mimetypes fo directories are sub optimal at best */
+    if(best->mime == "application/rss+xml" && item->m_strPath.Left(7).Equals("http://"))
+      item->m_strPath.replace(0, 7, "rss://");
+
+    if(item->m_strPath.Left(6).Equals("rss://"))
+      item->m_bIsFolder = true;
+    else
+      item->m_bIsFolder = false;
   }
 
   if(!item->m_strTitle.IsEmpty())
@@ -487,6 +598,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     if (!item->m_strPath.IsEmpty())
       items.Add(item);
   }
+
+  items.AddSortMethod(SORT_METHOD_UNSORTED , 231, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
+  items.AddSortMethod(SORT_METHOD_LABEL    , 551, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty
+  items.AddSortMethod(SORT_METHOD_SIZE     , 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
+  items.AddSortMethod(SORT_METHOD_DATE     , 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
   m_items = items;
   m_path  = strPath;

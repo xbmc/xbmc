@@ -585,7 +585,7 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
   }
 }
 

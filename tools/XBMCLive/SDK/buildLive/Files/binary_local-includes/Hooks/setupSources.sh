@@ -58,5 +58,5 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/sources.xml ] ; then
     </pictures>
 </sources>
 EOF
-
+fi
 chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
