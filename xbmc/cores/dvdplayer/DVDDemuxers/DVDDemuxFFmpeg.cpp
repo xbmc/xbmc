@@ -289,7 +289,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     m_timeout = 0;
     unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
-    m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
@@ -329,11 +328,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      if(m_ioContext->is_streamed)
-        pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-      else
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
       if (pd.buf_size <= 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
