@@ -949,10 +949,10 @@
 						</control>
 						<control type="image">
 							<include>HomeSideMenuFOBGImage</include>
-							<animation effect="slide" start="0,288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + Container(506).Position(0)">focus</animation>
+							<animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + Container(506).Position(0)">focus</animation>
 							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + !Container(506).Position(0)">focus</animation>
-							<animation effect="slide" start="0,-288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + Container(506).Position(7)">focus</animation>
-							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + !Container(506).Position(7)">focus</animation>
+							<animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + Container(506).Position(6)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + !Container(506).Position(6)">focus</animation>
 						</control>
 						<control type="label">
 							<include>HomeSideMenuFOBGLabel</include>
