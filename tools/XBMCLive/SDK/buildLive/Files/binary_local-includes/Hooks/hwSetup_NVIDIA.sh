@@ -19,4 +19,17 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ] ; then
 EOF
 fi
 
+#
+# Always sync to vblank
+#
+if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
+	cat > /home/$xbmcUser/.xbmc/userdata/guisettings.xml << 'EOF'
+<settings>
+    <videoscreen>
+        <vsync>2</vsync>
+    </videoscreen>
+</settings>
+EOF
+fi
+
 chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
