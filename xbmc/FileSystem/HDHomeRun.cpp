@@ -228,7 +228,7 @@ bool CFileHomeRun::Open(const CURL &url)
 
 unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
 {
-  unsigned int datasize;
+  size_t datasize;
   // for now, let it it time out after 5 seconds,
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
@@ -236,12 +236,12 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   unsigned int timestamp = CTimeUtils::GetTimeMS() + 5000;
   while(1)
   {
-    datasize = (unsigned int)min((unsigned int) uiBufSize,UINT_MAX);
+    datasize = (size_t) uiBufSize;
     uint8_t* ptr = m_dll.device_stream_recv(m_device, datasize, &datasize);
     if(ptr)
     {
       memcpy(lpBuf, ptr, datasize);
-      return datasize;
+      return (unsigned int)datasize;
     }
 
     if(CTimeUtils::GetTimeMS() > timestamp)
@@ -249,7 +249,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
 
     Sleep(64);
   }
-  return datasize;
+  return (unsigned int)datasize;
 }
 
 void CFileHomeRun::Close()
