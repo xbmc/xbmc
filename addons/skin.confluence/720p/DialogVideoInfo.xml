@@ -1,5 +1,5 @@
 <window id="2003">
-	<defaultcontrol always="true">5</defaultcontrol>
+	<defaultcontrol always="true">8</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="group">
@@ -1084,11 +1084,6 @@
 					<onright>9000</onright>
 					<onup>50</onup>
 					<ondown>49</ondown>
-					<control type="button" id="5">
-						<description>Cast/Review</description>
-						<include>ButtonInfoDialogsCommonValues</include>
-						<label>206</label>
-					</control>
 					<control type="togglebutton" id="8">
 						<description>Play/browse to Show</description>
 						<include>ButtonInfoDialogsCommonValues</include>
@@ -1097,6 +1092,11 @@
 						<alttexturenofocus border="2">button-nofocus.png</alttexturenofocus>
 						<altlabel>1024</altlabel>
 						<usealttexture>Container.Content(TVShows)</usealttexture>
+					</control>
+					<control type="button" id="5">
+						<description>Cast/Review</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>206</label>
 					</control>
 					<control type="button" id="6">
 						<description>Refresh</description>

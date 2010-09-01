@@ -2515,8 +2515,9 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     double pts = m_dvdPlayerVideo.GetCurrentPts();
     if(pts == DVD_NOPTS_VALUE)
       pts = m_CurrentVideo.dts;
-    if(pts != DVD_NOPTS_VALUE)
-      m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
+    if(pts == DVD_NOPTS_VALUE)
+      pts = 0;
+    m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE));
 
     hint.Assign(*pStream, true);
   }
@@ -3477,10 +3478,10 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
   if (m_pDemuxer)
   {
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
-    if (result) // this is more correct (dvds in particular)
+    if (result && ((CStreamDetailVideo*)details.GetStreamCount(CStreamDetail::VIDEO) > 0)) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
-      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime()/60;
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime();
     }
     return result;
   }

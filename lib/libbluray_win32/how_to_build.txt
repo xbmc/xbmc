@@ -1,0 +1,11 @@
+since somehow the compilation went not straight forward for me I wrote down this memo.
+either its my setup (win7 X64) or the lib still needs some love and will compile fine in later revisions
+
+- git clone git://git.videolan.org/libbluray.git (currently using Commit:674b3886e4a507c14da1856c57cc0629f979a09d, revision 674b38)
+- run autoreconf -vif in any Linux env (or mingw if it doesn't crash for you)
+- we need configure m4/ and build-aux/ to compile it under mingw
+- run configure under mingw
+- look in src/.libs for a dll
+- if there isn't any (as with my setup), run 
+  gcc -shared -std=c99 -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112L -D_REENTRANT -Wall -Wdisabled-optimization -Wpointer
+  -arith -Wredundant-decls -Wcast-qual -Wwrite-strings -Wundef -Wextra -Winline -O3 -fomit-frame-pointer -o libbluray.dll *.o

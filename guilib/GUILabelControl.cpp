@@ -91,6 +91,8 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
                  label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (color_t)m_label.GetLabelInfo().disabledColor, label.Mid(m_endHighlight));
     label = colorLabel;
   }
+  else if (m_bHasPath)
+    label = ShortenPath(label);
 
   m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   m_label.SetText(label);
@@ -112,11 +114,7 @@ bool CGUILabelControl::CanFocus() const
 
 void CGUILabelControl::SetLabel(const string &strLabel)
 {
-  // shorten the path label
-  if ( m_bHasPath )
-    m_infoLabel.SetLabel(ShortenPath(strLabel), "");
-  else // parse the label for info tags
-    m_infoLabel.SetLabel(strLabel, "");
+  m_infoLabel.SetLabel(strLabel, "");
   if (m_iCursorPos > (int)strLabel.size())
     m_iCursorPos = strLabel.size();
 }

@@ -22,6 +22,7 @@
 
 #include "StdString.h"
 #include <map>
+#include "utils/CriticalSection.h"
 
 class CURL;
 
@@ -86,4 +87,6 @@ private:
   std::map<CStdString, CStdString>  m_temporaryCache;
   std::map<CStdString, CStdString>  m_permanentCache;
   bool m_loaded;
+
+  CCriticalSection m_critSection;
 };

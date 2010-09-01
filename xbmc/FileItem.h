@@ -100,7 +100,9 @@ public:
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
+  bool IsDiskFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
+  bool IsBDFile() const;
   bool IsRAR() const;
   bool IsZIP() const;
   bool IsCBZ() const;

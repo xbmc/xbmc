@@ -2105,7 +2105,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
           // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
           // useful for Player.Time* members without adding a separate set of members returning time in seconds
-          if ( value.find_first_of( ':' ) )
+          if ( value.find_first_of( ':' ) != value.npos )
             bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();
@@ -2527,7 +2527,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(info.GetData1()).m_fPct);
     return strCpu;
   }
-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DISC_NUMBER)
+  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
     return GetMusicPlaylistInfo(info);
   else if (info.m_info == CONTAINER_PROPERTY)
   {
@@ -2993,6 +2993,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_GENRE:
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
+  case MUSICPLAYER_LYRICS: 
+    if (tag.GetLyrics().size()) { return tag.GetLyrics(); } 
+   	break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -3664,10 +3667,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetTitle();
     break;
   case LISTITEM_ORIGINALTITLE:
     if (item->HasVideoInfoTag())
@@ -3778,7 +3781,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }

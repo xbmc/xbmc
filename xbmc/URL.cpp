@@ -122,17 +122,12 @@ void CURL::Parse(const CStdString& strURL1)
           break;
         }
         else
-        {
-          //CLog::Log(LOGDEBUG, "%s - Url has no protocol %s, empty CURL created", __FUNCTION__, strURL.c_str());
-          return;
-        }
-#else
+#endif
         {
           /* set filename and update extension*/
           SetFileName(strURL);
           return ;
         }
-#endif
       }
       iPos += extLen + 1;
       CStdString archiveName = strURL.Left(iPos);

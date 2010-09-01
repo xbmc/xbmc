@@ -532,12 +532,15 @@ void CWinRenderer::SelectPSVideoFilter()
     break;
   }
 
-  // Scaler auto + SD -> Lanczos3 optim. Otherwise bilinear.
-  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth < 1280)
+  // Scaler auto + SD + capable HW -> Lanczos3 optim. Otherwise bilinear.
+  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO
+  && m_sourceWidth < 1280
+  && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
   {
     m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     m_bUseHQScaler = true;
   }
+
 }
 
 void CWinRenderer::UpdatePSVideoFilter()

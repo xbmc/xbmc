@@ -51,7 +51,7 @@ namespace PYXBMC
   PyObject* Player_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     Player *self;
-    int playerCore;
+    int playerCore=EPC_NONE;
 
     self = (Player*)type->tp_alloc(type, 0);
     if (!self) return NULL;

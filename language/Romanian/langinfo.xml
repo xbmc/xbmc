@@ -1,8 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <language>
   <charsets>
-    <gui>CP1250</gui>
-    <subtitle>CP1250</subtitle>
+    <gui>UTF-8</gui>
+    <subtitle>ISO-8859-2</subtitle>
   </charsets>
 
   <dvd>
@@ -12,12 +13,26 @@
   </dvd>
 
   <regions>
-    <region>
+    <region name="România">
       <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>D MMMM YYYY</datelong>
-      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <datelong>DDDD, D MMMM, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
+      <timezone>GMT+2</timezone>
+    </region>
+    
+    <region name="Rp. Moldova">
+	  <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM, YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>EET</timezone>
     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+  </sorttokens>
 </language>

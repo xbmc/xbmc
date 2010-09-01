@@ -47,6 +47,7 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
 {
   CStdStringA strUTF8;
   strUTF8.assign(line, len);
+  strUTF8.Trim();
 
   int pos = 0;
   int del_start = 0;

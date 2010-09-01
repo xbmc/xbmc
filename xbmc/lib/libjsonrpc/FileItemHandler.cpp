@@ -57,7 +57,8 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["showtitle"] = videoInfo->m_strShowTitle.c_str();
   if (field.Equals("firstaired") && !videoInfo->m_strFirstAired.IsEmpty())
     result["firstaired"] = videoInfo->m_strFirstAired.c_str();
-
+  if (field.Equals("duration"))
+    result["duration"] = videoInfo->m_streamDetails.GetVideoDuration();
   if (field.Equals("season") && videoInfo->m_iSeason > 0)
     result["season"] = videoInfo->m_iSeason;
   if (field.Equals("episode") && videoInfo->m_iEpisode > 0)
@@ -70,6 +71,18 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CS
     result["playcount"] = videoInfo->m_playCount;
   if (field.Equals("rating"))
     result["rating"] = (double)videoInfo->m_fRating;
+  if (field.Equals("writer") && !videoInfo->m_strWritingCredits.IsEmpty())
+    result["writer"] = videoInfo->m_strWritingCredits.c_str();
+  if (field.Equals("studio") && !videoInfo->m_strStudio.IsEmpty())
+    result["studio"] = videoInfo->m_strStudio.c_str();
+  if (field.Equals("mpaa") && !videoInfo->m_strMPAARating.IsEmpty())
+    result["mpaa"] = videoInfo->m_strMPAARating.c_str();
+  if (field.Equals("premiered") && !videoInfo->m_strPremiered.IsEmpty())
+    result["premiered"] = videoInfo->m_strPremiered.c_str();
+  if (field.Equals("album") && !videoInfo->m_strAlbum.IsEmpty())
+    result["album"] = videoInfo->m_strAlbum.c_str();
+  if (field.Equals("artist") && !videoInfo->m_strArtist.IsEmpty())
+    result["artist"] = videoInfo->m_strArtist.c_str();
 }
 
 void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CStdString &field, Value &result)
@@ -123,10 +136,11 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
-  unsigned int size  = (unsigned int)items.Size();
-  unsigned int start = param.get("start", 0).asUInt();
-  unsigned int end   = param.get("end", size).asUInt();
-  end = end > size ? size : end;
+  int size  = items.Size();
+  int start = param.get("start", 0).asInt(); 
+  int end   = param.get("end", size).asInt(); 
+  end = end < 0 ? 0 : end > size ? size : end;
+  start = start < 0 ? 0 : start > end ? end : start;
 
   Sort(items, param);
 
@@ -160,6 +174,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
+    if (!item->GetCachedFanart().IsEmpty())
+      object["fanart"] = item->GetCachedFanart().c_str();
 
     const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 
@@ -271,6 +287,8 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = ignorethe ? SORT_METHOD_STUDIO_IGNORE_THE : SORT_METHOD_STUDIO;
   else if (method.Equals("fullpath"))
     sortmethod = SORT_METHOD_FULLPATH;
+  else if (method.Equals("lastplayed"))
+    sortmethod = SORT_METHOD_LASTPLAYED;
   else if (method.Equals("unsorted"))
     sortmethod = SORT_METHOD_UNSORTED;
   else if (method.Equals("max"))

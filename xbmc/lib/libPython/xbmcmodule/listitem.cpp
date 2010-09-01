@@ -649,6 +649,10 @@ namespace PYXBMC
       // we store it in item.m_lStartOffset instead
       self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
     }
+    else if (lowerKey.CompareNoCase("mimetype") == 0)
+    { // special case for mime type - don't actually stored in a property,
+      self->item->SetMimeType(uText);
+    }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyXBMCGUIUnlock();

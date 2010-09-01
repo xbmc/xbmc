@@ -61,9 +61,9 @@ void WSAAPI freeaddrinfo(
 #endif
 
 
-#if defined(DLL_IMPORT)
+#if defined(DLL_EXPORT)
 #define LIBTYPE __declspec( dllexport )
-#elif  defined(DLL_EXPORT)
+#elif  defined(DLL_IMPORT)
 #define LIBTYPE __declspec( dllimport )
 #else
 #define LIBTYPE

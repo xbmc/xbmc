@@ -331,7 +331,7 @@
   <string id="385">Beau</string>
   <string id="386">Dégagé</string>
   <string id="387">Nuages</string>
-  <string id="388">Matinal</string>
+  <string id="388">Matinal(es)</string>
   <string id="389">Averses</string>
   <string id="390">Rafales</string>
   <string id="391">Faible</string>
@@ -1509,7 +1509,7 @@
   <string id="16205">La suppression a échouée</string>
   <string id="16206">Un ou plusieurs fichiers n’ont pas été supprimés</string>
   
-  <string id="16300">Méthode d'alignement vidéo</string>
+  <string id="16300">Méthode de mise à l'échelle</string>
   <string id="16301">La plus proche</string>
   <string id="16302">Bilinéaire</string>
   <string id="16303">Bicubique</string>
@@ -1870,8 +1870,8 @@
   <string id="20423">A une bande-annonce</string>
   <string id="20424">Faux</string>
   <string id="20425">Diaporama Fanart</string>
-  <string id="20426">Exporter vers un seul fichier ou séparé</string>
-  <string id="20427">les fichiers par entrée ?</string>
+  <string id="20426">Exporter vers un seul fichier ou</string>
+  <string id="20427">séparer les fichiers par entrée ?</string>
   <string id="20428">Un fichier</string>
   <string id="20429">Séparé</string>
   <string id="20430">Exporter les vignettes et les fanarts ?</string>

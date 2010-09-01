@@ -732,7 +732,7 @@
   <string id="1042">Retrieved %i of %i items</string>
   <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
-  <string id="1045">Plugin settings</string>
+  <string id="1045">Addon settings</string>
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
   <string id="1048">- Username</string>
@@ -1530,10 +1530,10 @@
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
 
-  <string id="16400">Video post-processing</string>
-  <string id="16401">Disabled</string>
-  <string id="16402">Enabled for SD content</string>
-  <string id="16403">Always enabled</string>
+  <string id="16400">Post-processing</string>
+  <string id="16401"></string>
+  <string id="16402"></string>
+  <string id="16403"></string>
 
   <string id="17500">Display sleep timeout</string>
 

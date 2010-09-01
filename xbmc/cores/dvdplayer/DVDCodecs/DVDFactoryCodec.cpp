@@ -42,7 +42,9 @@
   #include "Audio/DVDAudioCodecLibDts.h"
 #endif
 #include "Audio/DVDAudioCodecLibMad.h"
-#include "Audio/DVDAudioCodecLibFaad.h"
+#ifdef USE_LIBFAAD_DECODER
+  #include "Audio/DVDAudioCodecLibFaad.h"
+#endif
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
@@ -254,6 +256,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       if( pCodec ) return pCodec;
       break;
     }
+#ifdef USE_LIBFAAD_DECODER
   case CODEC_ID_AAC:
   //case CODEC_ID_MPEG4AAC:
     {
@@ -261,6 +264,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       if( pCodec ) return pCodec;
       break;
     }
+#endif
   case CODEC_ID_PCM_S32LE:
   case CODEC_ID_PCM_S32BE:
   case CODEC_ID_PCM_U32LE:

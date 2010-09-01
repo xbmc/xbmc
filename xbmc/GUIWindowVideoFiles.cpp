@@ -204,7 +204,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath())
+  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() || items.IsInternetStream())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -489,6 +489,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
           buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
       }
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   else

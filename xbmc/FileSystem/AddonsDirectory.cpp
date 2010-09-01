@@ -147,7 +147,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
     }
   }
-  if (path.GetHostName().Equals("repos"))
+  if (path.GetHostName().Equals("repos") && items.Size() > 1)
   {
     CFileItemPtr item(new CFileItem("addons://all/",true));
     item->SetLabel(g_localizeStrings.Get(24032));
@@ -175,6 +175,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
       pItem->SetProperty("Addon.UpdateAvail","true");
     }
+    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     items.Add(pItem);
   }
 }

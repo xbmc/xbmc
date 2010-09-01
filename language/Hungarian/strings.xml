@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 31/07/2010-->
-<!--Based on English r32080-->
+<!--Date of translation: 22/08/2010-->
+<!--Based on English r32890-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -86,7 +86,7 @@
   <string id="124">Kijelölt mappák és fájlok áthelyezése?</string>
   <string id="125">Kijelölt mappák és fájlok törlése? Nem visszaállítható!</string>
   <string id="126">Állapot</string>
-  <string id="127">Objektum</string>
+  <string id="127">Elem</string>
   <string id="128">Általános</string>
   <string id="129">Diavetítés</string>
   <string id="130">Rendszerinfó</string>
@@ -1182,7 +1182,7 @@
   <string id="13360">Automatikus bélyegkép generálás</string>
   <string id="13361">Hang engedélyezése</string>
   <string id="13375">Eszköz engedélyezése</string>
-  <string id="13376">Hangerő</string>
+  <string id="13376">Kötet</string>
   <string id="13377">Alapértelmezett nézet</string>
   <string id="13378">Alapértelmezett fényerő</string>
   <string id="13379">Alapértelmezett kontraszt</string>
@@ -1823,7 +1823,7 @@
   <string id="20373">Évad</string>
   <string id="20374">Film információ letöltése</string>
   <string id="20375">Tartalom hozzárendelés megszüntetése</string>
-
+  <string id="20376">Eredeti cím</string>
   <string id="20377">TV műsor információ frissítése</string>
   <string id="20378">Minden epizód frissítése?</string>
   <string id="20379">A kiválasztott mappa egyetlen TV műsort tartalmaz</string>
@@ -2055,7 +2055,7 @@
   <string id="21869">Készítő</string>
   <string id="21870">Forrás</string>
   <string id="21871">Szerzői jogi megjegyzés</string>
-  <string id="21872">Objektum neve</string>
+  <string id="21872">Elem neve</string>
   <string id="21873">Város</string>
   <string id="21874">Állam</string>
   <string id="21875">Ország</string>

@@ -699,6 +699,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "pixelratio", m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "volumeamplification", m_defaultVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MAXIMUM * 0.01f);
     GetFloat(pElement, "noisereduction", m_defaultVideoSettings.m_NoiseReduction, 0.0f, 0.0f, 1.0f);
+    XMLUtils::GetBoolean(pElement, "postprocess", m_defaultVideoSettings.m_PostProcess);
     GetFloat(pElement, "sharpness", m_defaultVideoSettings.m_Sharpness, 0.0f, -1.0f, 1.0f);
     XMLUtils::GetBoolean(pElement, "outputtoallspeakers", m_defaultVideoSettings.m_OutputToAllSpeakers);
     XMLUtils::GetBoolean(pElement, "showsubtitles", m_defaultVideoSettings.m_SubtitleOn);
@@ -859,6 +860,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "interlacemethod", m_defaultVideoSettings.m_InterlaceMethod);
   XMLUtils::SetInt(pNode, "scalingmethod", m_defaultVideoSettings.m_ScalingMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", m_defaultVideoSettings.m_NoiseReduction);
+  XMLUtils::SetBoolean(pNode, "postprocess", m_defaultVideoSettings.m_PostProcess);
   XMLUtils::SetFloat(pNode, "sharpness", m_defaultVideoSettings.m_Sharpness);
   XMLUtils::SetInt(pNode, "viewmode", m_defaultVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", m_defaultVideoSettings.m_CustomZoomAmount);

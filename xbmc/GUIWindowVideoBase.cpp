@@ -951,16 +951,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
           m_database.HasTvShowInfo(strDir)           ||
           m_database.HasEpisodeInfo(item->m_strPath)))
     {
-      // hack
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog && pDialog->IsScanning())
-        return true;
-
-      CStdString strOldPath = item->m_strPath;
-      item->m_strPath = strDir;
-      OnAssignContent(iItem,1, scraper, settings);
-      item->m_strPath = strOldPath;
-      return true;
+      return false;
     }
 
     if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
@@ -1327,8 +1318,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
   {
-    item = CFileItem(*pItem->GetVideoInfoTag());
-    item.m_lStartOffset = pItem->m_lStartOffset;
+    item.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
     item.SetProperty("original_listitem_url", pItem->m_strPath);
   }
 
@@ -1679,6 +1669,20 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
   if (!items.m_strPath.Equals("plugin://video/"))
     items.SetCachedVideoThumbs();
+
+  if (items.GetContent() != "episodes")
+  { // we don't set cached fanart for episodes, as this requires a db fetch per episode
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if (!item->HasProperty("fanart_image"))
+      {
+        CStdString art = item->GetCachedFanart();
+        if (CFile::Exists(art))
+          item->SetProperty("fanart_image", art);
+      }
+    }
+  }
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
