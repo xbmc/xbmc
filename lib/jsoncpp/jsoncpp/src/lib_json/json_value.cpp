@@ -1047,8 +1047,8 @@ Value::isValidIndex( UInt index ) const
 const Value &
 Value::operator[]( const char *key ) const
 {
-   JSON_ASSERT( type_ == nullValue  ||  type_ == objectValue );
-   if ( type_ == nullValue )
+   JSON_ASSERT( type_ == nullValue  ||  type_ == objectValue || type_ == arrayValue );
+   if ( type_ == nullValue || type_ == arrayValue)
       return null;
 #ifndef JSON_VALUE_USE_INTERNAL_MAP
    CZString actualKey( key, CZString::noDuplication );
