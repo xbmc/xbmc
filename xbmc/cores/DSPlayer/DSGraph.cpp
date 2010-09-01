@@ -107,22 +107,30 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     return hr;
   /* Usually the call coming from IMediaSeeking is done on renderers and is passed upstream
      In every case i seen so far its much better to directly query the IMediaSeeking from the splitter
-	 directly which avoid confusion when the codecs dont pass the call correctly upstream*/
-  BeginEnumFilters(pFilterGraph, pEF, pBF)
+     directly which avoid confusion when the codecs dont pass the call correctly upstream
+  */
+  /* blinkseb: Unfortunatly, this does _not_ work. Haali always returns 0, and mkvsource's time is
+    translated by about 30 seconds */
+  /*BeginEnumFilters(pFilterGraph, pEF, pBF)
   {
-	  if (DShowUtil::IsSplitter(pBF))
-	    hr = pBF->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+    if (DShowUtil::IsSplitter(pBF))
+      hr = pBF->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
   }
   EndEnumFilters
   if (!m_pMediaSeeking)
-    hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+    hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);*/
+
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaControl), (void**)&m_pMediaControl);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaEvent), (void**)&m_pMediaEvent);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pBasicAudio), (void**)&m_pBasicAudio);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pBasicVideo), (void**)&m_pBasicVideo);
   hr = pFilterGraph->QueryInterface(__uuidof(m_pVideoWindow), (void**)&m_pVideoWindow);
+
+  // Be sure we are using TIME_FORMAT_MEDIA_TIME
   hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
+
   if (m_pVideoWindow)
   {
     //HRESULT hr;
@@ -189,6 +197,13 @@ void CDSGraph::CloseFile()
 
 void CDSGraph::UpdateTime()
 {
+  // Not sure if it's needed
+  /*if (m_threadID != GetCurrentThreadId())
+  {
+    PostMessage( new CDSMsg(CDSMsg::PLAYER_UPDATE_TIME));
+    return;
+  }*/
+
   CSingleLock lock(m_ObjectLock);
 
   if (!m_pMediaSeeking)
@@ -624,7 +639,7 @@ void CDSGraph::SeekInMilliSec(double position)
   Seek(MSEC_TO_DS_TIME(position));
 }
 
-void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePositioning*/)
+void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePositioning*/, bool showPopup /*= true*/)
 {
   if (m_threadID != GetCurrentThreadId())
   {
@@ -632,7 +647,9 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     return;
   }
 
-  g_infoManager.SetDisplayAfterSeek(100000);
+  if (showPopup)
+    g_infoManager.SetDisplayAfterSeek(100000);
+
   if ( !m_pMediaSeeking )
     return;
 
@@ -650,7 +667,8 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
   }
   // set flag to indicate we have finished a seeking request
   g_infoManager.m_performingSeek = false;
-  g_infoManager.SetDisplayAfterSeek();
+  if (showPopup)
+    g_infoManager.SetDisplayAfterSeek();
 }
 
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
@@ -803,12 +821,19 @@ bool CDSGraph::CanSeek()
 void CDSGraph::ProcessThreadMessages()
 {
   MSG _msg;
-  if (PeekMessage(&_msg, (HWND) -1, 0, 0, PM_REMOVE) &&
+  BOOL bRet;
+  while ((bRet = GetMessage(&_msg, (HWND) -1, 0, 0) != 0) &&
     _msg.message == WM_GRAPHMESSAGE)
   {
-
     CDSMsg* msg = reinterpret_cast<CDSMsg *>( _msg.lParam );
     CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
+
+    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    {
+      msg->Set();
+      msg->Release();
+      break;
+    }
 
     if ( msg->IsType(CDSMsg::GENERAL_SET_WINDOW_POS) )
     {
@@ -817,7 +842,7 @@ void CDSGraph::ProcessThreadMessages()
     else if ( msg->IsType(CDSMsg::PLAYER_SEEK_TIME) )
     {
       CDSMsgPlayerSeekTime* speMsg = reinterpret_cast<CDSMsgPlayerSeekTime *>( msg );
-      Seek(speMsg->GetTime(), speMsg->GetFlags());
+      Seek(speMsg->GetTime(), speMsg->GetFlags(), speMsg->ShowPopup());
     }
     else if ( msg->IsType(CDSMsg::PLAYER_SEEK) )
     {
@@ -842,6 +867,10 @@ void CDSGraph::ProcessThreadMessages()
     {
       CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>( msg );
       Play(speMsg->m_value);
+    }
+    else if ( msg->IsType(CDSMsg::PLAYER_UPDATE_TIME) )
+    {
+      UpdateTime();
     }
 
     /*DVD COMMANDS*/

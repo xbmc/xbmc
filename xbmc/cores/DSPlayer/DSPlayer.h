@@ -59,6 +59,26 @@ enum DSPLAYER_STATE
   DSPLAYER_ERROR
 };
 
+class CDSPlayer;
+class CGraphManagementThread : public CThread
+{
+private:
+  bool          m_bSpeedChanged;
+  double        m_clockStart;
+  bool          m_bDoNotUseDSFF;
+  double        m_currentRate;
+  CDSPlayer*    m_pPlayer;
+public:
+  CGraphManagementThread(CDSPlayer * pPlayer);
+
+  void SetSpeedChanged(bool value) { m_bSpeedChanged = value; }
+  void SetCurrentRate(double rate) { m_currentRate = rate; }
+  double GetCurrentRate() const { return m_currentRate; }
+protected:
+  void OnStartup();
+  void Process();
+};
+
 class CDSPlayer : public IPlayer, public CThread
 {
 public:
@@ -71,7 +91,7 @@ public:
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual bool IsCaching() const { return false; };
-  virtual bool IsPaused() const { return (m_currentRate == 0) && g_dsGraph->IsPaused(); };
+  virtual bool IsPaused() const { return (m_pGraphThread.GetCurrentRate() == 0) && g_dsGraph->IsPaused(); };
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
   virtual bool HasMenu() { return g_dsGraph->IsDvd(); };
@@ -131,6 +151,8 @@ public:
   virtual HRESULT HandleGraphEvent() { return g_dsGraph->HandleGraphEvent(); }
   virtual void HandleStart();
   virtual void Stop();
+  CDVDClock&  GetClock() { return m_pClock; }
+  IPlayerCallback& GetPlayerCallback() { return m_callback; }
 
   static DSPLAYER_STATE PlayerState;
   static CFileItem currentFileItem;
@@ -141,12 +163,8 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  
-  int  m_currentRate;
-  bool m_bSpeedChanged;
-  bool m_bDoNotUseDSFF;
-  double m_clockStart;
 
+  CGraphManagementThread m_pGraphThread;
   CDVDClock m_pClock;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;

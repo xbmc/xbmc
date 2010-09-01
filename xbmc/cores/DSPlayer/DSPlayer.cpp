@@ -49,8 +49,8 @@ CFileItem CDSPlayer::currentFileItem;
 CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
-    : IPlayer(callback), CThread(), m_hReadyEvent(true), m_bSpeedChanged(false),
-    m_bDoNotUseDSFF(false)
+    : IPlayer(callback), CThread(), m_hReadyEvent(true),
+    m_pGraphThread(this)
 {
   // Change DVD Clock, time base
   CDVDClock::SetTimeBase((int64_t) DS_TIME_BASE);
@@ -64,7 +64,9 @@ CDSPlayer::~CDSPlayer()
   if (PlayerState != DSPLAYER_CLOSED)
     CloseFile();
 
+  CDSGraph::StopThread();
   StopThread();
+  m_pGraphThread.StopThread();
 
   delete g_dsGraph;
   g_dsGraph = NULL;
@@ -91,7 +93,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   currentFileItem = file;
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
-  m_currentRate = 1;
+  m_pGraphThread.SetCurrentRate(1);
   
   m_hReadyEvent.Reset();
   Create();
@@ -148,6 +150,11 @@ bool CDSPlayer::CloseFile()
   
   PlayerState = DSPLAYER_CLOSED;
 
+  // Stop threads
+  CDSGraph::StopThread();
+  m_pGraphThread.StopThread();
+  StopThread();
+
   return true;
 }
 
@@ -187,13 +194,14 @@ void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 void CDSPlayer::OnStartup()
 {
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
-  CThread::SetName("CDSPlayer");
+  CThread::SetName("CDSPlayer graph thread messages");
 
   START_PERFORMANCE_COUNTER
   if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
     PlayerState = DSPLAYER_ERROR;
   END_PERFORMANCE_COUNTER
 
+  m_pGraphThread.Create();
   m_hReadyEvent.Set(); // Start playback
 
   if (PlayerState == DSPLAYER_ERROR)
@@ -223,125 +231,21 @@ void CDSPlayer::OnExit()
 void CDSPlayer::HandleStart()
 {
   if (m_PlayerOptions.starttime > 0)
-    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime)) , false );
+    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime, 1U, false)) , false );
+  else
+    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(0, 1U, false) , false );
 }
 
 void CDSPlayer::Process()
 {
-
-#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSED) \
-  break;
-  
-  HRESULT hr = S_OK;
 
   // Create the messages queue
   MSG msg;
   PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
 
   while (!m_bStop && PlayerState != DSPLAYER_CLOSED)
-  {
-    CHECK_PLAYER_STATE
-
     // Process thread message
     g_dsGraph->ProcessThreadMessages();
-
-    if (m_bSpeedChanged)
-    {
-      m_pClock.SetSpeed(m_currentRate * 1000);
-      m_clockStart = m_pClock.GetClock();
-      m_bSpeedChanged = false;
-
-      if (m_currentRate == 1)
-        g_dsGraph->Play();
-      else if (((m_currentRate < 1) || (m_bDoNotUseDSFF && (m_currentRate > 1)))
-        && (!g_dsGraph->IsPaused()))
-        g_dsGraph->Pause(); // Pause only if not using SetRate
-
-      // Fast forward. DirectShow does all the hard work for us.
-      if (m_currentRate >= 1)
-      {
-        HRESULT hr = S_OK;
-        Com::SmartQIPtr<IMediaSeeking> pSeeking = g_dsGraph->pFilterGraph;
-        if (pSeeking)
-        {
-          if (m_currentRate == 1)
-            pSeeking->SetRate(m_currentRate);
-          else if (!m_bDoNotUseDSFF)
-          {
-            HRESULT hr = pSeeking->SetRate(m_currentRate);
-            if (FAILED(hr))
-            {
-              m_bDoNotUseDSFF = true;
-              pSeeking->SetRate(1);
-              m_bSpeedChanged = true;
-            }
-          }
-        }
-      }
-    }
-
-    CHECK_PLAYER_STATE
-
-    g_dsGraph->HandleGraphEvent();
-
-    CHECK_PLAYER_STATE
-
-    g_dsGraph->UpdateTime();
-
-    CHECK_PLAYER_STATE
-
-    // Handle Rewind
-    if ((m_currentRate < 0) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
-    {
-      double clock = m_pClock.GetClock() - m_clockStart; // Time elapsed since the rate change
-      // Only seek if elapsed time is greater than 250 ms
-      if (abs(DS_TIME_TO_MSEC(clock)) >= 250)
-      {
-        //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
-
-        // New position
-        uint64_t newPos = g_dsGraph->GetTime() + (uint64_t) clock;
-        //CLog::Log(LOGDEBUG, "New position : %f", DS_TIME_TO_SEC(newPos));
-
-        // Check boundaries
-        if (newPos <= 0)
-        {
-          newPos = 0;
-          m_currentRate = 1;
-          m_callback.OnPlayBackSpeedChanged(1);
-          m_bSpeedChanged = true;
-        } else if (newPos >= g_dsGraph->GetTotalTime())
-        {
-          CloseFile();
-          break;
-        }
-
-        g_dsGraph->Seek(newPos);
-
-        m_clockStart = m_pClock.GetClock();
-      }
-    }
-
-    CHECK_PLAYER_STATE
-
-    if (m_currentRate == 1)
-    {
-      CChaptersManager::Get()->UpdateChapters();
-      if (CGraphFilters::Get()->IsDVD())
-        CStreamsManager::Get()->UpdateDVDStream();
-    }
-    //Handle fastforward stuff
-   
-    Sleep(50);
-    CHECK_PLAYER_STATE
-
-    if (g_dsGraph->FileReachedEnd())
-    { 
-      CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
-      CloseFile();
-      break;
-    }
-  }  
 }
 
 void CDSPlayer::Stop()
@@ -351,15 +255,15 @@ void CDSPlayer::Stop()
 
 void CDSPlayer::Pause()
 {
-  m_bSpeedChanged = true;
+  m_pGraphThread.SetSpeedChanged(true);
   if ( PlayerState == DSPLAYER_PAUSED )
   {
-    m_currentRate = 1;
+    m_pGraphThread.SetCurrentRate(1);
     m_callback.OnPlayBackResumed();    
   } 
   else
   {
-    m_currentRate = 0;
+    m_pGraphThread.SetCurrentRate(0);
     m_callback.OnPlayBackPaused();
   }
   g_dsGraph->Pause();
@@ -369,8 +273,8 @@ void CDSPlayer::ToFFRW(int iSpeed)
   if (iSpeed != 1)
     g_infoManager.SetDisplayAfterSeek();
 
-  m_currentRate = iSpeed;
-  m_bSpeedChanged = true;
+  m_pGraphThread.SetCurrentRate(iSpeed);
+  m_pGraphThread.SetSpeedChanged(true);
 }
 
 void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
@@ -497,4 +401,115 @@ void CDSPlayer::SeekTime(__int64 iTime)
   m_callback.OnPlayBackSeek((int) iTime, seekOffset);
 }
 
+CGraphManagementThread::CGraphManagementThread(CDSPlayer * pPlayer)
+  : m_pPlayer(pPlayer), m_bSpeedChanged(false), m_bDoNotUseDSFF(false)
+{
+}
+
+void CGraphManagementThread::OnStartup()
+{
+  CThread::SetName("DSPlayer graph management thread");
+}
+
+void CGraphManagementThread::Process()
+{
+
+  while (! this->m_bStop)
+  {
+
+    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      break;
+    if (m_bSpeedChanged)
+    {
+      m_pPlayer->GetClock().SetSpeed(m_currentRate * 1000);
+      m_clockStart = m_pPlayer->GetClock().GetClock();
+      m_bSpeedChanged = false;
+
+      if (m_currentRate == 1)
+        g_dsGraph->Play();
+      else if (((m_currentRate < 1) || (m_bDoNotUseDSFF && (m_currentRate > 1)))
+        && (!g_dsGraph->IsPaused()))
+        g_dsGraph->Pause(); // Pause only if not using SetRate
+
+      // Fast forward. DirectShow does all the hard work for us.
+      if (m_currentRate >= 1)
+      {
+        HRESULT hr = S_OK;
+        Com::SmartQIPtr<IMediaSeeking> pSeeking = g_dsGraph->pFilterGraph;
+        if (pSeeking)
+        {
+          if (m_currentRate == 1)
+            pSeeking->SetRate(m_currentRate);
+          else if (!m_bDoNotUseDSFF)
+          {
+            HRESULT hr = pSeeking->SetRate(m_currentRate);
+            if (FAILED(hr))
+            {
+              m_bDoNotUseDSFF = true;
+              pSeeking->SetRate(1);
+              m_bSpeedChanged = true;
+            }
+          }
+        }
+      }
+    }
+    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      break;
+    // Handle Rewind
+    if ((m_currentRate < 0) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
+    {
+      double clock = m_pPlayer->GetClock().GetClock() - m_clockStart; // Time elapsed since the rate change
+      // Only seek if elapsed time is greater than 250 ms
+      if (abs(DS_TIME_TO_MSEC(clock)) >= 250)
+      {
+        //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
+
+        // New position
+        uint64_t newPos = g_dsGraph->GetTime() + (uint64_t) clock;
+        //CLog::Log(LOGDEBUG, "New position : %f", DS_TIME_TO_SEC(newPos));
+
+        // Check boundaries
+        if (newPos <= 0)
+        {
+          newPos = 0;
+          m_currentRate = 1;
+          m_pPlayer->GetPlayerCallback().OnPlayBackSpeedChanged(1);
+          m_bSpeedChanged = true;
+        } else if (newPos >= g_dsGraph->GetTotalTime())
+        {
+          m_pPlayer->CloseFile();
+          break;
+        }
+
+        g_dsGraph->Seek(newPos);
+
+        m_clockStart = m_pPlayer->GetClock().GetClock();
+      }
+    }
+    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      break;
+    if (m_currentRate == 1)
+    {
+      CChaptersManager::Get()->UpdateChapters();
+      if (CGraphFilters::Get()->IsDVD())
+        CStreamsManager::Get()->UpdateDVDStream();
+    }
+
+    // Handle rare graph event
+    g_dsGraph->HandleGraphEvent();
+
+    // Update displayed time
+    g_dsGraph->UpdateTime();
+
+    Sleep(250);
+    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      break;
+    if (g_dsGraph->FileReachedEnd())
+    { 
+      CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
+      m_pPlayer->CloseFile();
+      break;
+    }
+  }
+}
 #endif

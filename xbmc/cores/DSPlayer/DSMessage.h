@@ -45,6 +45,7 @@ public:
     PLAYER_PLAY,
     PLAYER_PAUSE,
     PLAYER_STOP,
+    PLAYER_UPDATE_TIME,
 
     // TODO: DVD needs some refactoring
     PLAYER_DVD_MOUSE_MOVE,
@@ -141,8 +142,8 @@ typedef CDSMsgType<double> CDSMsgDouble;
 class CDSMsgPlayerSeekTime: public CDSMsg
 {
 public:
-  CDSMsgPlayerSeekTime(uint64_t time, uint32_t flags = AM_SEEKING_AbsolutePositioning)
-    : CDSMsg(PLAYER_SEEK_TIME), m_time(time), m_flags(flags)
+  CDSMsgPlayerSeekTime(uint64_t time, uint32_t flags = AM_SEEKING_AbsolutePositioning, bool showPopup = true)
+    : CDSMsg(PLAYER_SEEK_TIME), m_time(time), m_flags(flags), m_showPopup(showPopup)
   {
   }
 
@@ -156,9 +157,15 @@ public:
     return m_flags;
   }
 
+  bool ShowPopup() const
+  {
+    return m_showPopup;
+  }
+
 private:
   uint64_t m_time;
   uint32_t m_flags;
+  bool m_showPopup;
 };
 
 class CDSMsgPlayerSeek: public CDSMsg

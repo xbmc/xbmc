@@ -86,6 +86,14 @@ public:
       msg->Release();
     }
   }
+  static void StopThread()
+  {
+    if (m_threadID == 0)
+      return;
+
+    PostThreadMessage(m_threadID, WM_QUIT, 0, 0);
+    m_threadID = 0;
+  }
   void ProcessThreadMessages();
 
   /** Determine if the graph can seek
@@ -119,8 +127,9 @@ public:
   /** Performs a Seek
    * @param[in] position Where to seek (DS_TIME_BASE unit)
    * @param[in] flags DirectShow IMediaSeeking::SetPositions flags
+   * @param[in] showPopup Do we show a seeking popup?
    */
-  virtual void Seek(uint64_t position, uint32_t flags = AM_SEEKING_AbsolutePositioning);
+  virtual void Seek(uint64_t position, uint32_t flags = AM_SEEKING_AbsolutePositioning, bool showPopup = true);
   virtual void SeekPercentage(float iPercent);
   /// Play the graph
   virtual void Play(bool force = false);
