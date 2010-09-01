@@ -97,19 +97,19 @@ MediaLibrary.prototype = {
 							trackRow.append(albumTD);
 						}
 						var trackNumberTD = $('<td>');
-						trackNumberTD.html(item.tracknumber).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+						trackNumberTD.html(item.tracknumber).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackNumberTD);
 						var trackTitleTD = $('<td>');
-						trackTitleTD.html(item.title).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+						trackTitleTD.html(item.title).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackTitleTD);
 						var trackDurationTD = $('<td>');
-						trackDurationTD.html(durationToString(item.duration)).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+						trackDurationTD.html(durationToString(item.duration)).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackDurationTD);
 						var trackArtistTD = $('<td>');
-						trackArtistTD.html(item.artist).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+						trackArtistTD.html(item.artist).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackArtistTD);
 						var trackGenreTD = $('<td>');
-						trackGenreTD.html(item.genre).addClass('track').bind('click', { song: item }, jQuery.proxy(this.playTrack, this));
+						trackGenreTD.html(item.genre).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
@@ -141,9 +141,17 @@ MediaLibrary.prototype = {
 			}
 		},
 		playTrack: function(event) {
-			jQuery.post(JSON_RPC + '?PlaySong', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', jQuery.proxy(function(data) {
-
+			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
+				//check that clear worked.
+				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "albumid": ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
+					//play specific song in playlist
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', function() {}, 'json');
+				}, this), 'json');
 			}, this), 'json');
+
+			//jQuery.post(JSON_RPC + '?PlaySong', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', jQuery.proxy(function(data) {
+
+			//}, this), 'json');
 		},
 		videoLibraryOpen: function() {
 			$('#musicLibrary').removeClass('selected');

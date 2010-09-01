@@ -119,6 +119,7 @@ body {
 	width: 416px;
 	float: right;
 	cursor: pointer;
+	z-index: 1000;
 	}
 
 #nowPlayingPlaylist {
