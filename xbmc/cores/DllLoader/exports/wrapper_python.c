@@ -19,106 +19,19 @@
  *
  */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <dlfcn.h>
-#include <limits.h>
+#include <stdio.h>
 
-/* The names of libc libraries for different systems */
-#if defined(_WIN32)
-#  define C_LIB "msvcr90.dll"
-#elif defined(__APPLE__)
-#  define C_LIB "libc.dylib"
-#else
-#  define C_LIB "libc.so.6"
-#endif
-
-/* Global dlopen handle */
-void *dlopen_handle;
-
-/* Global dlsym handles */
-char *(*libc_getcwd)(char*,size_t);
-int (*libc_chdir)(const char*);
-FILE *(*libc_fopen64)(const char*, const char*);
-
-/* Function prototypes of overridden libc functions */
-char *getcwd(char *buf, size_t size);
-int chdir(const char *path);
-
-/* Function to initialize dlopen and dlsym handles. It should be called before
- * using any overridden libc function.
- */
-void xbmc_libc_init(void)
-{
-  dlopen_handle = dlopen(C_LIB, RTLD_LOCAL | RTLD_LAZY);
-  libc_getcwd = dlsym(dlopen_handle, "getcwd");
-  libc_chdir = dlsym(dlopen_handle, "chdir");
-  libc_fopen64 = dlsym(dlopen_handle, "fopen64");
-}
-
-#ifdef __APPLE__
-/* Use pthread's built-in support for TLS, it's more portable. */
-static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
-static pthread_key_t  tWorkingDir = 0;
-
-/* Called once and only once. */
-static void MakeTlsKeys()
-{
-  pthread_key_create(&tWorkingDir, free);
-}
-
-#define xbp_cw_dir (char*)pthread_getspecific(tWorkingDir)
-
-#else
-__thread char xbp_cw_dir[PATH_MAX] = "";
-#endif
+char *dll_getcwd(char *buf, size_t size);
+int dll_chdir(const char *dirname);
 
 /* Overridden functions */
 char *getcwd(char *buf, size_t size)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-  if (xbp_cw_dir == 0)
-  {
-    printf("Initializing Python path...\n");
-    char* path = (char* )malloc(PATH_MAX);
-    strcpy(path, _P("special://xbmc/system/python").c_str());
-    pthread_setspecific(tWorkingDir, (void*)path);
-  }
-#endif
-
-  if (buf == NULL) buf = (char *)malloc(size);
-  strcpy(buf, xbp_cw_dir);
-  return buf;
+  return dll_getcwd(buf, size);
 }
 
 int chdir(const char *dirname)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-
-  if (xbp_cw_dir == 0)
-  {
-    char* path = (char* )malloc(PATH_MAX);
-    strcpy(path, _P("special://xbmc/system/python").c_str());
-    pthread_setspecific(tWorkingDir, (void*)path);
-  }
-#endif
-
-  if (strlen(dirname) > PATH_MAX) return -1;
-  strcpy(xbp_cw_dir, dirname);
-  return 0;
-}
-
-FILE* fopen64(const char *filename, const char *mode)
-{
-#ifdef __APPLE__
-  return fopen(filename, mode);
-#else
-  return (*libc_fopen64)(filename, mode);
-#endif
+  return dll_chdir(dirname);
 }

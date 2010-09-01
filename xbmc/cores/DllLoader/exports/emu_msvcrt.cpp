@@ -161,6 +161,23 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
 }
 
+#ifdef __APPLE__
+/* Use pthread's built-in support for TLS, it's more portable. */
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tWorkingDir = 0;
+
+/* Called once and only once. */
+static void MakeTlsKeys()
+{
+  pthread_key_create(&tWorkingDir, free);
+}
+
+#define xbp_cw_dir (char*)pthread_getspecific(tWorkingDir)
+
+#else
+__thread char xbp_cw_dir[PATH_MAX] = "";
+#endif
+
 extern "C" void __stdcall update_emu_environ()
 {
   // Use a proxy, if the GUI was configured as such
@@ -1909,10 +1926,23 @@ extern "C"
 #endif
   }
 
-  char* dll_getcwd(char *buffer, int maxlen)
+  char *dll_getcwd(char *buf, size_t size)
   {
-    not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"special://xbmc/";
+#ifdef __APPLE__
+    // Initialize thread local storage and local thread pointer.
+    pthread_once(&keyOnce, MakeTlsKeys);
+    if (xbp_cw_dir == 0)
+    {
+      printf("Initializing Python path...\n");
+      char* path = (char* )malloc(PATH_MAX);
+      strcpy(path, _P("special://xbmc/system/python").c_str());
+      pthread_setspecific(tWorkingDir, (void*)path);
+    }
+#endif
+
+    if (buf == NULL) buf = (char *)malloc(size);
+    strcpy(buf, xbp_cw_dir);
+    return buf;
   }
 
   int dll_putenv(const char* envstring)
@@ -2214,6 +2244,25 @@ extern "C"
 #else
     return -1;
 #endif
+  }
+
+  int dll_chdir(const char *dirname)
+  {
+#ifdef __APPLE__
+    // Initialize thread local storage and local thread pointer.
+    pthread_once(&keyOnce, MakeTlsKeys);
+
+    if (xbp_cw_dir == 0)
+    {
+      char* path = (char* )malloc(PATH_MAX);
+      strcpy(path, _P("special://xbmc/system/python").c_str());
+      pthread_setspecific(tWorkingDir, (void*)path);
+    }
+#endif
+
+    if (strlen(dirname) > PATH_MAX) return -1;
+    strcpy(xbp_cw_dir, dirname);
+    return 0;
   }
 
 }
