@@ -30,6 +30,7 @@
 #include "PlayList.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "MusicInfoTag.h"
 
 using namespace PLAYLIST;
 
@@ -201,6 +202,26 @@ void CPlayListPlayer::Play()
   if (playlist.size() <= 0) return;
 
   Play(0);
+}
+
+void CPlayListPlayer::PlaySongId(int songId)
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return;
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0) 
+    Play();
+
+  for (int i = 0; i < playlist.size(); i++)
+  {
+    if (playlist[i]->HasMusicInfoTag() && playlist[i]->GetMusicInfoTag()->GetDatabaseId() == songId)
+    {
+      Play(i);
+      return;
+    }
+  }
+  Play();
 }
 
 void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)

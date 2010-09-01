@@ -58,7 +58,7 @@ public:
    \sa PlayNext
    */
   void PlayPrevious();
-
+  void PlaySongId(int songId);
   void Play();
 
   /*! \brief Start playing a particular entry in the current playlist

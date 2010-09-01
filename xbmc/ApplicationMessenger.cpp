@@ -471,7 +471,13 @@ case TMSG_POWERDOWN:
         g_playlistPlayer.Play(pMsg->dwParam1);
       else
         g_playlistPlayer.Play();
+      break;
 
+    case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
+      if (pMsg->dwParam1 != (DWORD) -1)
+        g_playlistPlayer.PlaySongId(pMsg->dwParam1);
+      else
+        g_playlistPlayer.Play();
       break;
 
     case TMSG_PLAYLISTPLAYER_NEXT:
@@ -758,6 +764,12 @@ void CApplicationMessenger::PlayListPlayerPlay()
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, iSong};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
   SendMessage(tMsg, true);
 }
 
