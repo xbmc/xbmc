@@ -37,6 +37,7 @@
 #include "AE.h"
 #include "AEUtil.h"
 #include "AESink.h"
+#include "Packetizers/AEPacketizerIEC958.h"
 #include "Sinks/AESinkALSA.h"
 
 #ifdef __SSE__
@@ -48,6 +49,7 @@ using namespace std;
 CAE::CAE():
   m_running         (false),
   m_reOpened        (false),
+  m_packetizer      (NULL ),
   m_sink            (NULL ),
   m_rawPassthrough  (false),
   m_passthrough     (false),
@@ -120,7 +122,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   desiredFormat.m_channelLayout = CAEUtil::GetStdChLayout  (stdChLayout);
   desiredFormat.m_channelCount  = CAEUtil::GetChLayoutCount(desiredFormat.m_channelLayout);
   desiredFormat.m_sampleRate    = sampleRate;
-  desiredFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_IEC958 : AE_FMT_FLOAT;
+  desiredFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_RAW : AE_FMT_FLOAT;
 
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
@@ -170,7 +172,10 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   m_format        = desiredFormat;
   m_frameSize     = sizeof(float) * m_channelCount;
   m_convertFn     = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_buffer        = (float*)_aligned_malloc(m_format.m_frames * m_format.m_channelCount * sizeof(float), 16);
+  if (m_rawPassthrough)
+    m_buffer = _aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16); 
+  else
+    m_buffer = _aligned_malloc(m_format.m_frames * m_format.m_channelCount * sizeof(float), 16);
   m_bufferSamples = 0;
 
   /* initialize the final stage remapper */
@@ -204,7 +209,8 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
 bool CAE::Initialize()
 {
   /* get the current volume level */
-  m_volume = g_settings.m_fVolumeLevel;
+  m_volume     = g_settings.m_fVolumeLevel;
+  m_packetizer = new CAEPacketizerIEC958();
   return OpenSink();
 }
 
@@ -222,6 +228,9 @@ void CAE::Deinitialize()
 
   _aligned_free(m_buffer);
   m_buffer = NULL;
+
+  delete m_packetizer;
+  m_packetizer = NULL;
 }
 
 void CAE::Stop()
@@ -243,7 +252,7 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
 
   CAEStream *stream;
   CSingleLock lock(m_critSection);
-  if (dataFormat == AE_FMT_IEC958)
+  if (dataFormat == AE_FMT_RAW)
   {
     m_rawPassthrough = true;
     OpenSink(sampleRate);
@@ -390,7 +399,7 @@ void CAE::RemoveStream(CAEStream *stream)
 {
   CSingleLock lock(m_critSection);
   m_streams.remove(stream);
-  if (stream->GetDataFormat() == AE_FMT_IEC958)
+  if (stream->GetDataFormat() == AE_FMT_RAW)
   {
     m_passthrough = false;
     OpenSink();
@@ -541,7 +550,8 @@ void CAE::Run()
       memset(out, 0, sizeof(out));
 
       mixed = RunStreamStage(channelCount, out);
-      RunNormalizeStage(channelCount, out, mixed);
+      if (!m_rawPassthrough)
+        RunNormalizeStage(channelCount, out, mixed);
     mixLock.Leave();
 
     sinkLock.Enter();
@@ -569,12 +579,13 @@ inline void CAE::MixSounds(unsigned int samples)
     float volume = ss->owner->GetVolume();// * 0.5f; /* 0.5 to normalize */
     unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
+    float *floatBuffer = (float*)m_buffer;
     #ifdef __SSE__
-      CAE::SSEMulAddArray(m_buffer, ss->samples, volume, mixSamples);
-      CAE::SSEMulArray   (m_buffer, 0.5f, mixSamples);
+      CAE::SSEMulAddArray(floatBuffer, ss->samples, volume, mixSamples);
+      CAE::SSEMulArray   (floatBuffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
-        m_buffer[i] = (m_buffer[i] + (ss->samples[i] * volume)) * 0.5f;
+        floatBuffer[i] = (floatBuffer[i] + (ss->samples[i] * volume)) * 0.5f;
     #endif
 
     ss->sampleCount -= mixSamples;
@@ -586,26 +597,35 @@ inline void CAE::MixSounds(unsigned int samples)
 
 inline void CAE::RunOutputStage()
 {
-  unsigned int samples  = m_format.m_frames * m_channelCount;
+  unsigned int samples;
+  if (m_format.m_dataFormat == AE_FMT_RAW)
+    samples = m_format.m_frames * m_format.m_frameSize;
+  else
+    samples = m_format.m_frames * m_channelCount;
+
   unsigned int rSamples = m_format.m_frames * m_format.m_channelCount;
 
   /* this normally only loops once */
   while(m_bufferSamples >= samples)
   {
+    int wroteFrames;
+
     /* if we are in raw passthrough we dont touch the samples */
     if (!m_rawPassthrough)
     {
+      float *floatBuffer = (float*)m_buffer;
+
       /* if we have an audio callback, use it */
       if (m_audioCallback)
       {
-        unsigned int room = AUDIO_BUFFER_SIZE - m_vizBufferSamples;
+        unsigned int room = 512 - m_vizBufferSamples;
         unsigned int copy = room > samples ? samples : room;
         memcpy(m_vizBuffer + m_vizBufferSamples, m_buffer, copy * sizeof(float));
         m_vizBufferSamples += copy;
 
-        if (m_vizBufferSamples == AUDIO_BUFFER_SIZE)
+        if (m_vizBufferSamples == 512)
         {
-          m_audioCallback->OnAudioData(m_vizBuffer, AUDIO_BUFFER_SIZE);
+          m_audioCallback->OnAudioData(m_vizBuffer, 512);
           m_vizBufferSamples = 0;
         }
       }
@@ -615,30 +635,55 @@ inline void CAE::RunOutputStage()
 
       /* handle deamplification */
       #ifdef __SSE__
-        CAE::SSEMulArray(m_buffer, m_volume, samples);
+        CAE::SSEMulArray(floatBuffer, m_volume, samples);
       #else
         for(unsigned int i = 0; i < samples; ++i)
-          m_buffer[i] *= m_volume;
+          floatBuffer[i] *= m_volume;
       #endif
-    }
+  
+      float remapped[rSamples];
+      m_remap.Remap(floatBuffer, remapped, m_format.m_frames);
+  
+      if (m_convertFn)
+      {
+        DECLARE_ALIGNED(16, uint8_t, converted[m_format.m_frames * m_format.m_frameSize]);
+        m_convertFn(remapped, rSamples, converted);
+        wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+      }
+      else
+        wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
 
-    float remapped[rSamples];
-    m_remap.Remap(m_buffer, remapped, m_format.m_frames);
-
-    int wroteFrames;
-    if (m_convertFn)
-    {
-      DECLARE_ALIGNED(16, uint8_t, converted[m_format.m_frames * m_format.m_frameSize]);
-      m_convertFn(m_buffer, rSamples, converted);
-      wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+      int wroteSamples = wroteFrames * m_channelCount;
+      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_format.m_frameSize;
+      memmove(floatBuffer, floatBuffer + wroteSamples, bytesLeft);
+      m_bufferSamples -= wroteSamples;
     }
     else
-      wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
+    {
+      /* RAW output */
+      uint8_t *rawBuffer = (uint8_t*)m_buffer;
+  
+      int wroteSamples = m_packetizer->AddData(rawBuffer, m_format.m_frames * m_format.m_frameSize);
+      int bytesLeft    = m_bufferSamples - wroteSamples;
+      memmove(rawBuffer, rawBuffer + wroteSamples, bytesLeft);
+      m_bufferSamples -= wroteSamples;
 
-    int wroteSamples = wroteFrames * m_channelCount;
-    int bytesLeft    = (m_bufferSamples - wroteSamples) * m_format.m_frameSize;
-    memmove(&m_buffer[0], &m_buffer[wroteSamples], bytesLeft);
-    m_bufferSamples -= wroteSamples;
+      if (m_packetizer->HasPacket())
+      {
+        uint8_t *packet;
+        unsigned int size = m_packetizer->GetPacket(&packet);
+        m_sink->AddPackets(packet, size / m_format.m_frameSize);
+        m_packetizer->DropPacket();
+      }
+
+#if 0
+      wroteFrames        = m_sink->AddPackets(rawBuffer, m_format.m_frames);
+      int wroteSamples   = wroteFrames * m_format.m_frameSize;
+      int bytesLeft      = m_bufferSamples - wroteSamples;
+      memmove(rawBuffer, rawBuffer + wroteSamples, bytesLeft);
+      m_bufferSamples -= wroteSamples;
+#endif
+    }
   }
 }
 
@@ -646,11 +691,11 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
 {
   if (m_rawPassthrough)
   {
-    if (m_streams.size() == 0) return 0;
+    if (m_streams.empty()) return 0;
     CAEStream *stream = m_streams.front();
-    float *frame = stream->GetFrame();
+    uint8_t *frame = stream->GetFrame();
     if (!frame) return 0;
-    memcpy(out, frame, channelCount * sizeof(float));
+    memcpy(out, frame, channelCount);
     return 1;
   }
 
@@ -676,7 +721,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
       continue;
     }
 
-    float *frame = stream->GetFrame();
+    float *frame = (float*)stream->GetFrame();
     if (!frame)
     {
       /* if the stream is drained and is set to free on drain */
@@ -691,7 +736,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
       continue;
     }
 
-    float volume = stream->GetVolume();
+    float volume = stream->GetVolume() + stream->GetReplayGain();
     #ifdef __SSE__
     if (channelCount > 1)
       CAE::SSEMulAddArray(out, frame, volume, channelCount);
@@ -727,8 +772,16 @@ inline void CAE::RunNormalizeStage(unsigned int channelCount, float *out, unsign
 
 inline void CAE::RunBufferStage(float *out)
 {
-  float *outPos = &m_buffer[m_bufferSamples];
-  memcpy(outPos, out, sizeof(float) * m_channelCount);
+  if (m_rawPassthrough)
+  {
+    uint8_t *rawBuffer = (uint8_t*)m_buffer;
+    memcpy(rawBuffer + m_bufferSamples, out, m_channelCount);
+  }
+  else
+  {
+    float *floatBuffer = (float*)m_buffer;
+    memcpy(floatBuffer + m_bufferSamples, out, sizeof(float) * m_channelCount);
+  }
   m_bufferSamples += m_channelCount;
 }
 

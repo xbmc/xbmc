@@ -38,6 +38,7 @@ public:
   virtual int  AddData  (uint8_t *data, unsigned int size) = 0;
   virtual bool HasPacket() = 0;
   virtual int  GetPacket(uint8_t **data) = 0;
+  virtual void DropPacket() = 0;
   virtual unsigned int GetSampleRate() = 0;
 };
 

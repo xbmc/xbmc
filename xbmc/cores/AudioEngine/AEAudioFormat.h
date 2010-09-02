@@ -23,6 +23,7 @@
 enum AEChannel
 {
   AE_CH_NULL = -1,
+  AE_CH_RAW ,
 
   AE_CH_FL  , AE_CH_FR , AE_CH_FC , AE_CH_LFE, AE_CH_BL , AE_CH_BR , AE_CH_FLOC,
   AE_CH_FROC, AE_CH_BC , AE_CH_SL , AE_CH_SR , AE_CH_TFL, AE_CH_TFR, AE_CH_TFC ,
@@ -49,18 +50,24 @@ enum AEStdChLayout
   AE_CH_LAYOUT_MAX
 };
 
+/* NE = Native Endian */
 enum AEDataFormat
 {
   AE_FMT_INVALID = -1,
   AE_FMT_U8,
   AE_FMT_S8,
+  AE_FMT_S16NE,
   AE_FMT_S16BE,
   AE_FMT_S16LE,
   AE_FMT_S24BE,
+  AE_FMT_S32NE,
+  AE_FMT_S32LE,
+  AE_FMT_S32BE,
   AE_FMT_FLOAT,
+  AE_FMT_DOUBLE,
 
-  /* passthrough gets exclusive access */
-  AE_FMT_IEC958,
+  /* for passthrough streams and the like */
+  AE_FMT_RAW,
 
   AE_FMT_MAX
 };

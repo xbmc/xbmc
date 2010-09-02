@@ -80,48 +80,60 @@ void CAEStream::Initialize()
     }
   }
 
-  m_bytesPerFrame          = (CAEUtil::DataFormatToBits(m_initDataFormat) >> 3) * m_initChannelCount;
-  m_aeChannelCount         = AE.GetChannelCount();
-  m_aePacketSamples        = AE.GetFrames() * m_aeChannelCount;
-  m_waterLevel             = AE.GetSampleRate() >> 2;
-
-  /* if no layout provided, guess one */
-  if (m_initChannelLayout == NULL) {
-    static AEChannel guess[2][3] = {
-      {AE_CH_FC, AE_CH_NULL},
-      {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
-    };
+  if (m_initDataFormat == AE_FMT_RAW)
+  {
+    static AEChannel RAWLayout[2] = {AE_CH_RAW, AE_CH_NULL};
+    m_initChannelLayout = RAWLayout;
+    m_initChannelCount  = 1;
+  }
+  else
+  {
+    /* if no layout provided, guess one */
+    if (m_initChannelLayout == NULL) {
+      static AEChannel guess[2][3] = {
+        {AE_CH_FC, AE_CH_NULL},
+        {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
+      };
     
-    if (m_initChannelCount > 0 && m_initChannelCount <= 2)
-      m_initChannelLayout = guess[m_initChannelCount-1];
-    else {
-      m_valid = false;
-      return;
+      if (m_initChannelCount > 0 && m_initChannelCount <= 2)
+        m_initChannelLayout = guess[m_initChannelCount-1];
+      else {
+        m_valid = false;
+        return;
+      }
     }
   }
-  
+
+  m_aeChannelCount  = AE.GetChannelCount();
+  m_aePacketSamples = AE.GetFrames() * m_aeChannelCount;
+  m_waterLevel      = AE.GetSampleRate() >> 1;
+
+  m_bytesPerFrame          = (CAEUtil::DataFormatToBits(m_initDataFormat) >> 3) * m_initChannelCount;
   m_format.m_dataFormat    = m_initDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
-  m_format.m_channelCount  = m_initChannelCount;
+  m_format.m_channelCount  = m_initDataFormat == AE_FMT_RAW ? m_aeChannelCount : m_initChannelCount;
   m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = AE.GetFrames();
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
   m_format.m_frameSize     = m_format.m_frames * m_bytesPerFrame;
 
-  if (!m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false))
+  if (m_initDataFormat != AE_FMT_RAW && !m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false))
   {
     m_valid = false;
     return;
   }
 
   m_newPacket.samples = 0;
-  m_newPacket.data    = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
+  if (m_initDataFormat == AE_FMT_RAW)
+    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples, 16);
+  else
+    m_newPacket.data = (uint8_t*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
   m_packet.samples    = 0;
   m_packet.data       = NULL;
 
   m_frameBuffer   = (uint8_t*)_aligned_malloc(m_format.m_frameSize, 16);
-  m_resample      = m_initSampleRate != AE.GetSampleRate() && m_initDataFormat != AE_FMT_IEC958;
-  m_convert       = m_initDataFormat != AE_FMT_FLOAT;
+  m_resample      = m_initSampleRate != AE.GetSampleRate() && m_initDataFormat != AE_FMT_RAW;
+  m_convert       = m_initDataFormat != AE_FMT_FLOAT       && m_initDataFormat != AE_FMT_RAW;
 
   /* if we need to convert, set it up */
   if (m_convert)
@@ -149,18 +161,21 @@ void CAEStream::Initialize()
   }
 
   /* re-initialize post-proc objects */
-  list<IAEPostProc*>::iterator pitt;
-  for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
+  if (m_initDataFormat != AE_FMT_RAW)
   {
-    IAEPostProc *pp = *pitt;
-    if (!pp->Initialize(this))
+    list<IAEPostProc*>::iterator pitt;
+    for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
     {
-      CLog::Log(LOGERROR, "CAEStream::CAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
-      pitt = m_postProc.erase(pitt);
-      continue;
-    }
+      IAEPostProc *pp = *pitt;
+      if (!pp->Initialize(this))
+      {
+        CLog::Log(LOGERROR, "CAEStream::CAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
+        pitt = m_postProc.erase(pitt);
+        continue;
+      }
 
-    ++pitt;
+      ++pitt;
+    }
   }
 
   m_valid = true;
@@ -278,44 +293,63 @@ unsigned int CAEStream::ProcessFrameBuffer()
   }
 
   /* buffer the data */
-  samples = frames * m_format.m_channelCount;
+  samples           = frames * m_initChannelCount;
   m_framesBuffered += frames;
 
   while(samples)
   {
     unsigned int room = m_format.m_frameSamples - m_newPacket.samples;
-    unsigned int copy = room > samples ? samples : room;
+    unsigned int copy = std::min(room, samples);
 
-    memcpy(&m_newPacket.data[m_newPacket.samples], data, copy * sizeof(float));
-    data                += copy;
+    if (m_initDataFormat == AE_FMT_RAW)
+    {
+      memcpy(m_newPacket.data + m_newPacket.samples, data, copy);
+      data += copy;
+    }
+    else
+    {
+      memcpy(m_newPacket.data + (m_newPacket.samples * sizeof(float)), data, copy * sizeof(float));
+      data += copy * sizeof(float);
+    }
+
     m_newPacket.samples += copy;
     samples             -= copy;
 
     /* if we have a full block of data */
     if (m_newPacket.samples == m_format.m_frameSamples)
     {
-      /* post-process the packet */
-      list<IAEPostProc*>::iterator pitt;
-      for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
-        (*pitt)->Process(m_newPacket.data, m_format.m_frames);
+      if (m_initDataFormat == AE_FMT_RAW)
+      {
+        m_outBuffer.push_back(m_newPacket);
+        m_newPacket.samples = 0;
+        m_newPacket.data    = (uint8_t*)_aligned_malloc(m_format.m_frameSamples, 16);
+      }
+      else
+      {
+        PPacket pkt;
+        pkt.samples = m_aePacketSamples;
+        pkt.data    = (uint8_t*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
 
-      PPacket pkt;
-      pkt.samples = m_aePacketSamples;
-      pkt.data    = (float*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
+        /* post-process the packet */
+        list<IAEPostProc*>::iterator pitt;
+        for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
+          (*pitt)->Process((float*)m_newPacket.data, m_format.m_frames);
 
-      /* downmix/remap the data */
-      m_remap.Remap(m_newPacket.data, pkt.data, m_format.m_frames);
+        /* downmix/remap the data */
+        pkt.data = (uint8_t*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
+        m_remap.Remap((float*)m_newPacket.data, (float*)pkt.data, m_format.m_frames);
 
-      /* add the packet to the output */
-      m_outBuffer.push_back(pkt);
-      m_newPacket.samples = 0;
+        /* add the packet to the output */
+        m_outBuffer.push_back(pkt);
+        m_newPacket.samples = 0;
+      }
     }
   }
 
   return consumed;
 }
 
-float* CAEStream::GetFrame()
+uint8_t* CAEStream::GetFrame()
 {
   CSingleLock lock(m_critSection);
   if (m_delete) return NULL;
@@ -359,11 +393,18 @@ float* CAEStream::GetFrame()
   }
   
   /* fetch one frame of data */
-  float *ret        = m_packetPos;
+  uint8_t *ret      = (uint8_t*)m_packetPos;
   m_packet.samples -= m_aeChannelCount;
-  m_packetPos      += m_aeChannelCount;
-
-  --m_framesBuffered;
+  if (m_initDataFormat == AE_FMT_RAW)
+  {
+    m_packetPos      += m_aeChannelCount;
+    m_framesBuffered -= m_aeChannelCount;
+  }
+  else
+  {
+    m_packetPos += m_aeChannelCount * sizeof(float);
+    --m_framesBuffered;
+  }
 
   /* if we are draining */
   if (m_draining)

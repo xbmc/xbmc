@@ -225,8 +225,9 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     return false;
   }
 
-  unsigned int channels, sampleRate, bitsPerSample;
-  si->m_decoder.GetDataFormat(&channels, &sampleRate, &bitsPerSample);
+  unsigned int channels, sampleRate;
+  enum AEDataFormat dataFormat;
+  si->m_decoder.GetDataFormat(&channels, &sampleRate, &dataFormat);
 
   si->m_player    = this;
   si->m_sent      = 0;
@@ -234,7 +235,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_triggered = false;
 
   si->m_stream = AE.GetStream(
-    AE_FMT_FLOAT,
+    dataFormat,
     sampleRate,
     channels,
     NULL, /* FIXME: channelLayout */
@@ -252,6 +253,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_stream->Pause();
   si->m_stream->SetDataCallback (StaticStreamOnData , si);
   si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
+  si->m_stream->SetReplayGain   (si->m_decoder.GetReplayGain());
 
   unsigned int crossFade = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
   unsigned int cacheTime = (crossFade * 1000) + TIME_TO_CACHE_NEXT_FILE;

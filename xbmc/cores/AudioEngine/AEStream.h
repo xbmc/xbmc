@@ -44,7 +44,7 @@ public:
 
   unsigned int GetFrameSize() {return m_format.m_frameSize;}
   unsigned int AddData(void *data, unsigned int size);
-  float* GetFrame();
+  uint8_t* GetFrame();
   float GetDelay();
 
   bool IsPaused     () { return m_paused;      }
@@ -56,8 +56,10 @@ public:
   void Drain   ();
   void Flush   ();
 
-  float GetVolume()             { return m_volume;   }
-  void  SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
+  float GetVolume    ()             { return m_volume;   }
+  float GetReplayGain()             { return m_rgain ;   }
+  void  SetVolume    (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
+  void  SetReplayGain(float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
   void  SetDynamicRangeCompression(int drc);
 
   void AppendPostProc (IAEPostProc *pp);
@@ -83,8 +85,8 @@ private:
   
   typedef struct
   {
-    unsigned int samples;
-    float        *data;
+    unsigned int  samples;
+    uint8_t      *data;
   } PPacket;
 
   AEAudioFormat m_format;
@@ -96,6 +98,7 @@ private:
   bool                    m_delete;        /* true if CAE is to free this object */
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
+  float                   m_rgain;         /* replay gain level */
   bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
   std::list<IAEPostProc*> m_postProc;      /* post processing objects */
   bool                    m_ownsPostProc;  /* true if the stream should free post-proc filters */
@@ -115,7 +118,7 @@ private:
   unsigned int       ProcessFrameBuffer();
   PPacket            m_newPacket;
   PPacket            m_packet;
-  float             *m_packetPos;
+  uint8_t           *m_packetPos;
   bool               m_paused;
   bool               m_draining;
 

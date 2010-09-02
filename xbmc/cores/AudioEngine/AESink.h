@@ -64,6 +64,6 @@ public:
   /*
     Adds packets to be sent out, must block after at-least one block is being rendered
   */
-  virtual unsigned int AddPackets(uint8_t *data, unsigned int samples) = 0;
+  virtual unsigned int AddPackets(uint8_t *data, unsigned int frames) = 0;
 };
 

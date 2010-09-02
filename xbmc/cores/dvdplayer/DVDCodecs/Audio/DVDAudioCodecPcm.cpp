@@ -316,7 +316,7 @@ int CDVDAudioCodecPcm::GetSampleRate()
   return m_iSourceSampleRate;
 }
 
-int CDVDAudioCodecPcm::GetBitsPerSample()
+enum AEDataFormat CDVDAudioCodecPcm::GetDataFormat()
 {
-  return 16;
+  return AE_FMT_S16NE;
 }

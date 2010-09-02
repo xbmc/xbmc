@@ -32,10 +32,10 @@
 #include "AESound.h"
 #include "AEConvert.h"
 #include "AERemap.h"
+#include "AEPacketizer.h"
 #include "AESink.h"
 
 #include "cores/IAudioCallback.h"
-#include "addons/Visualisation.h"
 
 /* forward declarations */
 class CAEStream;
@@ -79,6 +79,7 @@ public:
   AEChLayout          GetChannelLayout() {return m_chLayout              ;}
   unsigned int        GetFrames       () {return m_format.m_frames       ;}
   unsigned int        GetFrameSize    () {return m_frameSize             ;}
+  IAEPacketizer      *GetPacketizer   () {return m_packetizer            ;}
 
   void RegisterAudioCallback(IAudioCallback* pCallback);
   void UnRegisterAudioCallback();
@@ -117,6 +118,7 @@ private:
   unsigned int              m_frameSize;
 
   /* the sink, its format information, and conversion function */
+  IAEPacketizer            *m_packetizer;
   IAESink                  *m_sink;
   AEAudioFormat		    m_format;
   CAEConvert::AEConvertFrFn m_convertFn;
@@ -134,9 +136,10 @@ private:
   bool                                  m_passthrough;
   std::list<CAEStream*>                 m_streams;
   std::map<const CStdString, CAESound*> m_sounds;
-  float                                *m_buffer;
+  /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
+  void                                 *m_buffer;
   unsigned int                          m_bufferSamples;
-  float                                 m_vizBuffer[AUDIO_BUFFER_SIZE];
+  float                                 m_vizBuffer[512];
   unsigned int                          m_vizBufferSamples;
 
   /* the channel remapper and audioCallback */

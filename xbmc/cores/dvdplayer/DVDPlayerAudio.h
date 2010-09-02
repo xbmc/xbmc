@@ -56,11 +56,12 @@ typedef struct stDVDAudioFrame
   double duration;
   unsigned int size;
 
-  int         channel_count;
-  AEChLayout  channel_layout;
-  int         bits_per_sample;
-  int         sample_rate;
-  bool        passthrough;
+  int               channel_count;
+  AEChLayout        channel_layout;
+  enum AEDataFormat data_format;
+  int               bits_per_sample;
+  int               sample_rate;
+  bool              passthrough;
 } DVDAudioFrame;
 
 class CPTSOutputQueue

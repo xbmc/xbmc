@@ -25,7 +25,7 @@
 #include "DllLibMad.h"
 
 #define MAD_INPUT_SIZE (8 * 1024)
-#define MAD_DECODED_SIZE (16 * MAD_INPUT_SIZE)
+#define MAD_DECODED_SIZE (sizeof(float) * MAD_INPUT_SIZE)
 
 class CDVDAudioCodecLibMad : public CDVDAudioCodec
 {
@@ -38,11 +38,11 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual AEChLayout GetChannelMap();
-  virtual int GetChannels()        { return m_iSourceChannels; }
-  virtual int GetSampleRate()      { return m_iSourceSampleRate; }
-  virtual int GetBitsPerSample()   { return 16; }
-  virtual const char* GetName()    { return "libmad"; }
-  virtual int GetBufferSize()      { return m_iInputBufferSize; }
+  virtual int GetChannels()                 { return m_iSourceChannels;   }
+  virtual int GetSampleRate()               { return m_iSourceSampleRate; }
+  virtual enum AEDataFormat GetDataFormat() { return AE_FMT_FLOAT;        }
+  virtual const char* GetName()             { return "libmad";            }
+  virtual int GetBufferSize()               { return m_iInputBufferSize;  }
 
 private:
 
