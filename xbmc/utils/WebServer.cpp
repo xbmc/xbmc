@@ -30,6 +30,7 @@
 #include "SingleLock.h"
 #include "DateTime.h"
 #include "addons/AddonManager.h"
+#include <sys\timeb.h>
 
 #ifdef _WIN32
 #pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
@@ -263,7 +264,6 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
                                                    2048,
                                                    &CWebServer::ContentReaderCallback, file,
                                                    &CWebServer::ContentReaderFreeCallback);
-
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
@@ -275,6 +275,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
 
     ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+
     MHD_destroy_response(response);
   }
   else
@@ -283,7 +284,6 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
     return CreateErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
   }
-
   return ret;
 }
 
@@ -350,10 +350,10 @@ bool CWebServer::Start(const char *ip, int port)
   if (!m_running)
   {
     // MHD_USE_THREAD_PER_CONNECTION = one thread per connection
-    // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time
-    m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+    // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time [unless you set the thread pool size]
+    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_THREAD_POOL_SIZE, 100, MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_END);
     if (!m_daemon) //try IPv4
-      m_daemon = MHD_start_daemon(MHD_USE_THREAD_PER_CONNECTION, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_THREAD_POOL_SIZE, 100, MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_END);
     m_running = m_daemon != NULL;
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
