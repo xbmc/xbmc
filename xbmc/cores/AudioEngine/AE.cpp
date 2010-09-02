@@ -574,7 +574,7 @@ inline void CAE::MixSounds(unsigned int samples)
       CAE::SSEMulArray   (m_buffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
-        m_buffer[i] = (m_buffer[i] + (frame[i] * volume)) * 0.5f;
+        m_buffer[i] = (m_buffer[i] + (ss->samples[i] * volume)) * 0.5f;
     #endif
 
     ss->sampleCount -= mixSamples;
@@ -618,7 +618,7 @@ inline void CAE::RunOutputStage()
         CAE::SSEMulArray(m_buffer, m_volume, samples);
       #else
         for(unsigned int i = 0; i < samples; ++i)
-          out[i] *= m_volume;
+          m_buffer[i] *= m_volume;
       #endif
     }
 
