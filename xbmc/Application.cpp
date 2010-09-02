@@ -2810,11 +2810,7 @@ bool CApplication::ProcessRemote(float frameTime)
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   if (g_RemoteControl.GetButton())
   {
-    // time depends on whether the movement is repeated (held down) or not.
-    // If it is, we use the FPS timer to get a repeatable speed.
-    // If it isn't, we use 20 to get repeatable jumps.
-    float time = (g_RemoteControl.IsHolding()) ? frameTime : 0.020f;
-    CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
+    CKey key(g_RemoteControl.GetButton(), g_RemoteControl.GetHoldTime());
     g_RemoteControl.Reset();
     return OnKey(key);
   }
