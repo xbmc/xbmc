@@ -476,7 +476,7 @@ void COverlayImageDX::Render(SRenderState &state)
   device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
   device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
 
-  device->SetTexture( 0, m_texture.Get() );
+  device->SetTexture( 0, NULL );
   device->SetTransform(D3DTS_WORLD, &orig);
 }
 
