@@ -28,6 +28,12 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 
+#define ALSA_DEBUG_DUMP
+
+#ifdef ALSA_DEBUG_DUMP
+static int fd;
+#endif
+
 static enum AEChannel ALSAChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
@@ -38,16 +44,24 @@ CAESinkALSA::CAESinkALSA() :
   /* ensure that ALSA has been initialized */
   if(!snd_config)
     snd_config_update();
+
+  #ifdef ALSA_DEBUG_DUMP
+  fd = open("/tmp/dump.alsa", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+  #endif
 }
 
 CAESinkALSA::~CAESinkALSA()
 {
   Deinitialize();
+
+  #ifdef ALSA_DEBUG_DUMP
+  close(fd);
+  #endif
 }
 
 inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 {
-  if (format.m_dataFormat == AE_FMT_IEC958)
+  if (format.m_dataFormat == AE_FMT_RAW)
     return 2;
   else
   {
@@ -66,7 +80,7 @@ inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 
 inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString device)
 {
-  if (format.m_dataFormat == AE_FMT_IEC958)
+  if (format.m_dataFormat == AE_FMT_RAW)
   {
     if (device == "default")
       device = "iec958";
@@ -138,7 +152,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   if (!InitializeHW(format)) return false;
   if (!InitializeSW(format)) return false;
 
-  m_bufferSamples = 0;
+  m_bufferFrames = 0;
   snd_pcm_prepare(m_pcm);
 
   m_format  = format;
@@ -163,10 +177,14 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
   {
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
+    case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
     case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;
     case AE_FMT_S16BE : return SND_PCM_FORMAT_S16_BE;
+    case AE_FMT_S32NE : return SND_PCM_FORMAT_S32;
+    case AE_FMT_S32LE : return SND_PCM_FORMAT_S32_LE;
+    case AE_FMT_S32BE : return SND_PCM_FORMAT_S32_BE;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
-    case AE_FMT_IEC958: return SND_PCM_FORMAT_S16_LE;
+    case AE_FMT_RAW   : return SND_PCM_FORMAT_S16_LE;
 
     default:
       return SND_PCM_FORMAT_UNKNOWN;
@@ -234,12 +252,12 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     return false;
   }
 
-  /* set the format paremeters */
+  /* set the format parameters */
   format.m_sampleRate   = sampleRate;
   format.m_frames       = frames;
   format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
   format.m_frameSamples = frames * format.m_channelCount;
-
+ 
   snd_pcm_hw_params_free(hw_params);
   return true;
 }
@@ -294,25 +312,29 @@ float CAESinkALSA::GetDelay()
   if (!m_pcm) return 0;
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
-  float delay = (float)(frames + (m_bufferSamples / m_format.m_channelCount)) / m_format.m_sampleRate;
+  float delay = (float)(frames + m_bufferFrames) / m_format.m_sampleRate;
   return delay;
 }
 
-unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int samples)
+unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
 {
   CSingleLock runLock(m_runLock);
   if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
     snd_pcm_start(m_pcm);
 
-  m_bufferSamples = samples;
+  m_bufferFrames = frames;
   snd_pcm_wait(m_pcm, 1);
-  if (snd_pcm_writei(m_pcm, (void*)data, samples) == -EPIPE)
+  if (snd_pcm_writei(m_pcm, (void*)data, frames) == -EPIPE)
   {
     printf("Underrun\n");
     snd_pcm_prepare(m_pcm);
   }
-  m_bufferSamples = 0;
+  m_bufferFrames = 0;
 
-  return samples;
+  #ifdef ALSA_DEBUG_DUMP
+  write(fd, data, frames * m_format.m_frameSize);
+  #endif
+
+  return frames;
 }
 

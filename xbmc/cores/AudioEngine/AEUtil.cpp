@@ -38,6 +38,7 @@ const char* CAEUtil::GetChName(const AEChannel ch)
 
   static const char* channels[AE_CH_MAX] =
   {
+    "RAW" ,
     "FL"  , "FR" , "FC" , "LFE", "BL" , "BR" , "FLOC",
     "FROC", "BC" , "SL" , "SR" , "TFL", "TFR", "TFC" ,
     "TC"  , "TBL", "TBR", "TBC"
@@ -103,28 +104,21 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
 
   static const unsigned int formats[AE_FMT_MAX] =
   {
-    8,  /* S8     */
-    8,  /* U8     */
-    16, /* S16LE  */
-    16, /* S16BE  */
-    24, /* S24BE  */
-    32, /* FLOAT  */
-    16  /* IEC958 */
+    8,                   /* U8     */
+    8,                   /* S8     */
+    16,                  /* S16NE  */
+    16,                  /* S16BE  */
+    16,                  /* S16LE  */
+    24,                  /* S24BE  */
+    32,                  /* S32NE  */
+    32,                  /* S32LE  */
+    32,                  /* S32BE  */
+    sizeof(float ) << 3, /* FLOAT  */
+    sizeof(double) << 3, /* DOUBLE */
+    8                    /* RAW    */
   };
+
   return formats[dataFormat];
-}
-
-const enum AEDataFormat CAEUtil::BitsToDataFormat(const unsigned int bits)
-{
-  /* FIXME: BE/LE detection */
-  switch(bits) {
-    case  8: return AE_FMT_U8;
-    case 16: return AE_FMT_S16LE;
-    case 24: return AE_FMT_S24BE;
-    case 32: return AE_FMT_FLOAT;
-  }
-
-  return AE_FMT_INVALID;
 }
 
 const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
@@ -136,11 +130,16 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   {
     "AE_FMT_U8",
     "AE_FMT_S8",
+    "AE_FMT_S16NE",
     "AE_FMT_S16BE",
     "AE_FMT_S16LE",
     "AE_FMT_S24BE",
+    "AE_FMT_S32NE",
+    "AE_FMT_S32LE",
+    "AE_FMT_S32BE",
     "AE_FMT_FLOAT",
-    "AE_FMT_IEC958"
+    "AE_FMT_DOUBLE",
+    "AE_FMT_RAW"
   };
 
   return formats[dataFormat];

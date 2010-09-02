@@ -33,25 +33,26 @@ static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
 
 static const uint32_t DTSSampleRates[DTS_SRATE_COUNT] =
 {
-  0,
-  8000,
-  16000,
-  32000,
-  64000,
+  0     ,
+  8000  ,
+  16000 ,
+  32000 ,
+  64000 ,
   128000,
-  11025,
-  22050,
-  44100,
-  88200,
+  11025 ,
+  22050 ,
+  44100 ,
+  88200 ,
   176400,
-  12000,
-  24000,
-  48000,
-  96000,
+  12000 ,
+  24000 ,
+  48000 ,
+  96000 ,
   192000
 };
 
 CAEPacketizerIEC958::CAEPacketizerIEC958() :
+  m_bufferSize(0),
   m_packetSize(0),
   m_hasPacket (false),
   m_hasSync   (false),
@@ -86,9 +87,10 @@ void CAEPacketizerIEC958::Deinitialize()
 
 void CAEPacketizerIEC958::Reset()
 {
+  m_bufferSize = 0;
+  m_packetSize = 0;
   m_hasPacket  = false;
   m_hasSync    = false;
-  m_packetSize = 0;
   m_dataType   = IEC958_TYPE_NULL;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
 
@@ -101,19 +103,47 @@ void CAEPacketizerIEC958::Reset()
 
 int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
 {
-  if (m_hasPacket) return 0;
-  unsigned int fsize;
-  unsigned int offset = (this->*m_syncFunc)(data, size, &fsize);
-  size -= offset;
-  data += offset;
+  if (m_hasPacket || size == 0) return 0;
 
-  /* we need the complete frame to pack it */
-  if (size < fsize)
-    return offset;
+  unsigned int room = sizeof(m_buffer) - m_bufferSize;
+  unsigned int copy = std::min(room, size);
 
-  /* pack the frame and return the data used */
-  ((this)->*m_packFunc)(data, fsize);
-  return offset + size;
+  memcpy(m_buffer + m_bufferSize, data, copy);
+  m_bufferSize += copy;
+
+  if (m_bufferSize == sizeof(m_buffer))
+  {
+    unsigned int fsize;
+    bool had = m_hasSync;
+    unsigned int offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
+    if (!m_hasSync)
+    {
+      if (had)
+        printf("%d\n", offset);
+      unsigned int left = m_bufferSize - offset;
+      memmove(m_buffer, m_buffer + offset, left);
+      m_bufferSize = left;
+      return copy;
+    }
+
+    /* align the data with the packet */
+    if (offset > 0)
+    {
+      memmove(m_buffer, m_buffer + offset, m_bufferSize - offset);
+      m_bufferSize -= offset;
+    }
+
+    /* we need the complete frame to pack it */
+    if (m_bufferSize < fsize)
+      return copy;
+
+    /* pack the frame */
+    ((this)->*m_packFunc)(m_buffer, fsize);
+    memmove(m_buffer, m_buffer + fsize, m_bufferSize - fsize);
+    m_bufferSize -= fsize;
+  }
+
+  return copy;
 }
 
 bool CAEPacketizerIEC958::HasPacket()
@@ -132,11 +162,14 @@ int CAEPacketizerIEC958::GetPacket(uint8_t **data)
     bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
     SwapPacket(false);
   }
-  else
-    m_hasPacket = false;
 
   *data = (uint8_t*)&m_packetData;
   return sizeof(m_packetData);
+}
+
+void CAEPacketizerIEC958::DropPacket()
+{
+  m_hasPacket = false;
 }
 
 inline void CAEPacketizerIEC958::SwapPacket(const bool swapData)
@@ -190,7 +223,8 @@ void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
 */
 unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, unsigned int *fsize)
 {
-  unsigned int skipped = 0;
+  unsigned int skipped  = 0;
+  unsigned int possible = 0;
 
   while(size > 0) {
     /* if it could be AC3 */
@@ -199,6 +233,8 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
       unsigned int skip = SyncAC3(data, size, fsize);
       if (m_hasSync)
         return skipped + skip;
+      else
+        possible = skipped;
     }
 
     /* if it could be DTS */
@@ -213,6 +249,8 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
         unsigned int skip = SyncDTS(data, size, fsize);
         if (m_hasSync)
           return skipped + skip;
+        else
+          possible = skipped;
       }
     }
 
@@ -222,18 +260,19 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
     ++data;
   }
 
-  return skipped;
+  return possible ? possible : skipped;
 }
 
 unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsigned int *fsize)
 {
   unsigned int skip = 0;
+
   for(skip = 0; size - skip > 6; ++skip, ++data)
   {
     /* search for an ac3 sync word */
     if(data[0] != 0x0b || data[1] != 0x77)
       continue;
- 
+
     uint8_t fscod      = data[4] >> 6;
     uint8_t frmsizecod = data[4] & 0x3F;
     uint8_t bsid       = data[5] >> 3;

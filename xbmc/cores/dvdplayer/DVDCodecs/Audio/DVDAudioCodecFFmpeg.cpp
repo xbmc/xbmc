@@ -178,14 +178,15 @@ int CDVDAudioCodecFFmpeg::GetSampleRate()
   return 0;
 }
 
-int CDVDAudioCodecFFmpeg::GetBitsPerSample()
+enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
 {
   switch(m_pCodecContext->sample_fmt)
   {
-    case SAMPLE_FMT_U8 : return  8;
-    case SAMPLE_FMT_S16: return 16;
-    case SAMPLE_FMT_S32: return 32;
-    case SAMPLE_FMT_FLT: return 32;
+    case SAMPLE_FMT_U8 : return AE_FMT_U8;
+    case SAMPLE_FMT_S16: return AE_FMT_S16NE;
+    case SAMPLE_FMT_S32: return AE_FMT_S32NE;
+    case SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
+    case SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
     default:
       assert(false);
   }

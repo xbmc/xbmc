@@ -68,8 +68,6 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
   Destroy();
 
   CSingleLock lock(m_critSection);
-  // create our pcm buffer
-  m_pcmBuffer.Create(2 * INTERNAL_BUFFER_LENGTH);
 
   // reset our playback timing variables
   m_eof = false;
@@ -92,11 +90,10 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
     Destroy();
     return false;
   }
-  m_blockSize = m_codec->m_Channels * m_codec->m_BitsPerSample / 8;
-  
-  // set total time from the given tag
-  if (file.HasMusicInfoTag() && file.GetMusicInfoTag()->GetDuration())
-    m_codec->SetTotalTime(file.GetMusicInfoTag()->GetDuration());
+  m_blockSize = m_codec->m_Channels * (m_codec->m_BitsPerSample >> 3);
+
+  /* allocate the pcmBuffer for 2 seconds of audio */
+  m_pcmBuffer.Create(2 * m_blockSize * m_codec->m_SampleRate);
 
   if (seekOffset)
     m_codec->Seek(seekOffset);
@@ -106,14 +103,14 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
   return true;
 }
 
-void CAudioDecoder::GetDataFormat(unsigned int *channels, unsigned int *samplerate, unsigned int *bitspersample)
+void CAudioDecoder::GetDataFormat(unsigned int *channels, unsigned int *samplerate, enum AEDataFormat *dataFormat)
 {
   if (!m_codec)
     return;
 
-  if (channels) *channels = m_codec->m_Channels;
+  if (channels  ) *channels = m_codec->m_Channels;
   if (samplerate) *samplerate = m_codec->m_SampleRate;
-  if (bitspersample) *bitspersample = m_codec->m_BitsPerSample;
+  if (dataFormat) *dataFormat = m_codec->m_DataFormat;
 }
 
 __int64 CAudioDecoder::Seek(__int64 time)
@@ -140,7 +137,7 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
-  return m_pcmBuffer.getMaxReadSize() / sizeof(float);
+  return m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3);
 }
 
 void *CAudioDecoder::GetData(unsigned int size)
@@ -153,21 +150,21 @@ void *CAudioDecoder::GetData(unsigned int size)
   // first copy anything from our gapless buffer
   if (m_gaplessBufferSize > size)
   {
-    memcpy(m_outputBuffer, m_gaplessBuffer, size*sizeof(float));
-    memcpy(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size)*sizeof(float));
+    memcpy(m_outputBuffer, m_gaplessBuffer, size * (m_codec->m_BitsPerSample >> 3));
+    memcpy(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size) * (m_codec->m_BitsPerSample >> 3));
     m_gaplessBufferSize -= size;
     return m_outputBuffer;
   }
   if (m_gaplessBufferSize)
-    memcpy(m_outputBuffer, m_gaplessBuffer, m_gaplessBufferSize*sizeof(float));
+    memcpy(m_outputBuffer, m_gaplessBuffer, m_gaplessBufferSize * (m_codec->m_BitsPerSample >> 3));
 
-  if (m_pcmBuffer.ReadData( (char *)(m_outputBuffer + m_gaplessBufferSize), (size - m_gaplessBufferSize) * sizeof(float)))
+  if (m_pcmBuffer.ReadData( (char *)(m_outputBuffer + m_gaplessBufferSize), (size - m_gaplessBufferSize) * (m_codec->m_BitsPerSample >> 3)))
   {
     m_gaplessBufferSize = 0;
     // check for end of file + end of buffer
-    if ( m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < (int) (OUTPUT_SAMPLES * sizeof(float)))
+    if (m_status == STATUS_ENDING && (int)m_pcmBuffer.getMaxReadSize() < (OUTPUT_SAMPLES * (m_codec->m_BitsPerSample >> 3)))
     {
-      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %lu samples left", (unsigned long)(m_pcmBuffer.getMaxReadSize() / sizeof(float)));
+      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %lu samples left", (unsigned long)(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3)));
       m_status = STATUS_ENDED;
     }
     return m_outputBuffer;
@@ -184,7 +181,7 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
     return;
   }
   m_gaplessBufferSize = std::min<unsigned int>(PACKET_SIZE, size);
-  memcpy(m_gaplessBuffer, data, m_gaplessBufferSize*sizeof(float));
+  memcpy(m_gaplessBuffer, data, m_gaplessBufferSize * (m_codec->m_BitsPerSample >> 3));
   if (m_gaplessBufferSize != size)
     CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_gaplessBufferSize);
 }
@@ -202,27 +199,18 @@ int CAudioDecoder::ReadSamples(int numsamples)
   CSingleLock lock(m_critSection);
 
   // Read in more data
-  int maxsize = std::min<int>(INPUT_SAMPLES,
-                  (m_pcmBuffer.getMaxWriteSize() / (int)(sizeof (float))));
+  int maxsize = std::min<int>(INPUT_SAMPLES, m_pcmBuffer.getMaxWriteSize() / (m_codec->m_BitsPerSample >> 3));
   numsamples = std::min<int>(numsamples, maxsize);
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )
   {
     int actualsamples = 0;
-    // if our codec sends floating point, then read it
-    int result = READ_ERROR;
-    if (m_codec->HasFloatData())
-      result = m_codec->ReadSamples(m_inputBuffer, numsamples, &actualsamples);
-    else
-      result = ReadPCMSamples(m_inputBuffer, numsamples, &actualsamples);
+    int result = m_codec->ReadSamples(m_inputBuffer, numsamples, &actualsamples);
 
     if ( result != READ_ERROR && actualsamples )
     {
-      // do any post processing of the audio (eg replaygain etc.)
-      ProcessAudio(m_inputBuffer, actualsamples);
-
       // move it into our buffer
-      m_pcmBuffer.WriteData((char *)m_inputBuffer, actualsamples * sizeof(float));
+      m_pcmBuffer.WriteData((char *)m_inputBuffer, actualsamples * (m_codec->m_BitsPerSample >> 3));
 
       // update status
       if (m_status == STATUS_QUEUING && m_pcmBuffer.getMaxReadSize() > m_pcmBuffer.getSize() * 0.9)
@@ -258,24 +246,12 @@ int CAudioDecoder::ReadSamples(int numsamples)
   return RET_SLEEP; // nothing to do
 }
 
-void CAudioDecoder::ProcessAudio(float *data, int numsamples)
-{
-  if (g_guiSettings.m_replayGain.iType != REPLAY_GAIN_NONE)
-  {
-    float gainFactor = GetReplayGain();
-    for (int i = 0; i < numsamples; i++)
-    {
-      data[i] *= gainFactor;
-      // check the range (is this needed here?)
-      if (data[i] > 1.0f) data[i] = 1.0f;
-      if (data[i] < -1.0f) data[i] = -1.0f;
-    }
-  }
-}
-
 float CAudioDecoder::GetReplayGain()
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
+  if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_NONE)
+    return 0.0f;
+
   // Compute amount of gain
   float replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;
   float peak = 0.0f;
@@ -316,33 +292,12 @@ float CAudioDecoder::GetReplayGain()
   return replaygain;
 }
 
-int CAudioDecoder::ReadPCMSamples(float *buffer, int numsamples, int *actualsamples)
+int CAudioDecoder::ReadPCMSamples(int numsamples, int *actualsamples)
 {
   // convert samples to bytes
-  numsamples *= (m_codec->m_BitsPerSample / 8);
+  numsamples *= (m_codec->m_BitsPerSample >> 3);
 
   // read in our PCM data
-  int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples, actualsamples);
-
-  // convert to floats (-1 ... 1) range
-  int i;
-  switch (m_codec->m_BitsPerSample)
-  {
-  case 8:
-    for (i = 0; i < *actualsamples; i++)
-      m_inputBuffer[i] = 1.0f / 0x7f * (m_pcmInputBuffer[i] - 128);
-    break;
-  case 16:
-    *actualsamples /= 2;
-    for (i = 0; i < *actualsamples; i++)
-      m_inputBuffer[i] = 1.0f / 0x7fff * ((short *)m_pcmInputBuffer)[i];
-    break;
-  case 24:
-    *actualsamples /= 3;
-    for (i = 0; i < *actualsamples; i++)
-      m_inputBuffer[i] = 1.0f / 0x7fffff * (((int)m_pcmInputBuffer[3*i] << 0) | ((int)m_pcmInputBuffer[3*i+1] << 8) | (((int)((char *)m_pcmInputBuffer)[3*i+2]) << 16));
-    break;
-  }
-  return result;
+  return m_codec->ReadPCM(m_pcmInputBuffer, numsamples, actualsamples);
 }
 

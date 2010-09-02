@@ -68,19 +68,17 @@ public:
   int GetStatus() { return m_status; };
   void SetStatus(int status) { m_status = status; };
 
-  void GetDataFormat(unsigned int *channels, unsigned int *samplerate, unsigned int *bitspersample);
+  void GetDataFormat(unsigned int *channels, unsigned int *samplerate, enum AEDataFormat *dataFormat);
   unsigned int GetChannels() { if (m_codec) return m_codec->m_Channels; else return 0; };
   // Data management
   unsigned int GetDataSize();
   void *GetData(unsigned int size);
   void PrefixData(void *data, unsigned int size);
   ICodec *GetCodec() const { return m_codec; }
+  float GetReplayGain();
 
 private:
-  void ProcessAudio(float *data, int numsamples);
-  // ReadPCMSamples() - helper to convert PCM (short/byte) to float
-  int ReadPCMSamples(float *buffer, int numsamples, int *actualsamples);
-  float GetReplayGain();
+  int ReadPCMSamples(int numsamples, int *actualsamples);
 
   // block size (number of bytes per sample * number of channels)
   int m_blockSize;

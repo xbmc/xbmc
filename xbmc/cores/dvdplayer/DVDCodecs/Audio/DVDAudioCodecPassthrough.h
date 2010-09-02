@@ -23,7 +23,7 @@
 
 #include "system.h"
 #include "DVDAudioCodec.h"
-#include "Packetizers/AEPacketizerIEC958.h"
+#include "AE.h"
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
@@ -36,13 +36,14 @@ public:
   virtual int  Decode(BYTE* pData, int iSize);
   virtual int  GetData(BYTE** dst);
   virtual void Reset();
-  virtual int  GetChannels() { return 2; }
-  virtual AEChLayout GetChannelMap() { static enum AEChannel map[3] = {AE_CH_FL, AE_CH_FR, AE_CH_NULL}; return map; }
-  virtual int  GetSampleRate   () { return m_packetizer.GetSampleRate(); }
-  virtual int  GetBitsPerSample() { return 16;            }
-  virtual bool NeedPassthrough () { return true;          }
-  virtual const char* GetName  () { return "passthrough"; }
+  virtual int  GetChannels               () { return 2; }
+  virtual AEChLayout GetChannelMap       () { static enum AEChannel map[] = {AE_CH_RAW, AE_CH_NULL}; return map; }
+  virtual int  GetSampleRate             () { return AE.GetPacketizer()->GetSampleRate(); }
+  virtual enum AEDataFormat GetDataFormat() { return AE_FMT_RAW; }
+  virtual bool NeedPassthrough           () { return true;          }
+  virtual const char* GetName            () { return "passthrough"; }
 private:
-  CAEPacketizerIEC958 m_packetizer;
+  uint8_t      m_buffer[8192];
+  unsigned int m_bufferSize;
 };
 

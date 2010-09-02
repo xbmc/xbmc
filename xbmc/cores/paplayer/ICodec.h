@@ -24,6 +24,7 @@
 #include "ReplayGain.h"
 #include "StdString.h"
 #include "FileSystem/File.h"
+#include "AudioEngine/AEAudioFormat.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -103,6 +104,7 @@ public:
   __int64 m_TotalTime;  // time in ms
   int m_SampleRate;
   int m_BitsPerSample;
+  enum AEDataFormat m_DataFormat;
   int m_Channels;
   int m_Bitrate;
   CStdString m_CodecName;

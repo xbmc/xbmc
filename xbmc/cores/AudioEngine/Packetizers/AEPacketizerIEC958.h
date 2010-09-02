@@ -68,6 +68,7 @@ public:
   virtual int  AddData  (uint8_t *data, unsigned int size);
   virtual bool HasPacket();
   virtual int  GetPacket(uint8_t **data);
+  virtual void DropPacket();
   virtual unsigned int GetSampleRate() { return m_sampleRate; }
 private:
   S_PACK
@@ -82,6 +83,8 @@ private:
 
   DllAvUtil m_dllAvUtil;
   DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData);
+  uint8_t      m_buffer[MAX_IEC958_PACKET];
+  unsigned int m_bufferSize;
   unsigned int m_packetSize;
   bool         m_hasPacket;
 

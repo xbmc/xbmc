@@ -86,9 +86,9 @@ public:
   virtual int GetSampleRate() = 0;
 
   /*
-   * returns the bitspersample for the decoded audio stream (eg 16 bits)
+   * returns the data format for the decoded audio stream (eg AE_FMT_S16LE)
    */
-  virtual int GetBitsPerSample() = 0;
+  virtual enum AEDataFormat GetDataFormat() = 0;
 
   /*
    * returns if the codec requests to use passtrough

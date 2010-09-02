@@ -26,8 +26,8 @@
 #include "Settings.h"
 #include "utils/log.h"
 
-
-CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void)
+CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
+  m_bufferSize(0)
 {
 }
 
@@ -49,6 +49,8 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
     bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
   }
 
+  m_bufferSize = 0;
+
   if ((hints.codec == CODEC_ID_AC3 && bSupportsAC3Out) || (hints.codec == CODEC_ID_DTS && bSupportsDTSOut))
     return true;
 
@@ -61,18 +63,24 @@ void CDVDAudioCodecPassthrough::Dispose()
 
 int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
 {
-  if (m_packetizer.HasPacket()) return 0;
-  int offset = m_packetizer.AddData(pData, iSize);
-  return offset;
+  if (iSize <= 0) return 0;
+  unsigned int room = sizeof(m_buffer) - m_bufferSize;
+  unsigned int copy = std::min(room, (unsigned int)iSize);
+  memcpy(m_buffer + m_bufferSize, pData, copy);
+  m_bufferSize += copy;
+  return copy;
 }
 
 int CDVDAudioCodecPassthrough::GetData(BYTE** dst)
 {
-  return m_packetizer.GetPacket(dst);
+  int size     = m_bufferSize;
+  *dst         = m_buffer;
+  m_bufferSize = 0;
+  return size;
 }
 
 void CDVDAudioCodecPassthrough::Reset()
 {
-  m_packetizer.Reset();
+  m_bufferSize = 0;
 }
 

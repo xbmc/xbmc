@@ -164,7 +164,17 @@ bool CAESound::Initialize()
 
        /* get the conversion function */
        CAEConvert::AEConvertToFn convertFn;
-       convertFn = CAEConvert::ToFloat(CAEUtil::BitsToDataFormat(bitsPerSample));
+       switch(bitsPerSample)
+       {
+         case 8 : convertFn = CAEConvert::ToFloat(AE_FMT_U8   ); break;
+         case 16: convertFn = CAEConvert::ToFloat(AE_FMT_S16LE); break;
+         case 32: convertFn = CAEConvert::ToFloat(AE_FMT_S32LE); break;
+         default:
+           CLog::Log(LOGERROR, "CAESound::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
+           file->Close();
+           delete file;
+           return false;
+       }
 
        /* read in each sample */
        unsigned int s;

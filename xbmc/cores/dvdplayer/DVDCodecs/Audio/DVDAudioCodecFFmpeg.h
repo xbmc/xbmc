@@ -38,7 +38,7 @@ public:
   virtual int GetChannels();
   virtual AEChLayout GetChannelMap();
   virtual int GetSampleRate();
-  virtual int GetBitsPerSample();
+  virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
 

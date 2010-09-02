@@ -284,7 +284,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
   if (bPassthrough) {
-    m_format.m_dataFormat = AE_FMT_IEC958;
+    m_format.m_dataFormat = AE_FMT_RAW;
   }
   else
   {
