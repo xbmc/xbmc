@@ -38,7 +38,6 @@ CAudioDecoder::CAudioDecoder()
   m_status = STATUS_NO_FILE;
   m_canPlay = false;
 
-  m_gaplessBufferSize = 0;
   m_blockSize = 4;
 }
 
@@ -53,7 +52,6 @@ void CAudioDecoder::Destroy()
   m_status = STATUS_NO_FILE;
 
   m_pcmBuffer.Destroy();
-  m_gaplessBufferSize = 0;
 
   if ( m_codec )
     delete m_codec;
@@ -146,20 +144,9 @@ void *CAudioDecoder::GetData(unsigned int size)
     CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, OUTPUT_SAMPLES);
     size = OUTPUT_SAMPLES;
   }
-  // first copy anything from our gapless buffer
-  if (m_gaplessBufferSize > size)
-  {
-    memcpy(m_outputBuffer, m_gaplessBuffer, size * (m_codec->m_BitsPerSample >> 3));
-    memcpy(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size) * (m_codec->m_BitsPerSample >> 3));
-    m_gaplessBufferSize -= size;
-    return m_outputBuffer;
-  }
-  if (m_gaplessBufferSize)
-    memcpy(m_outputBuffer, m_gaplessBuffer, m_gaplessBufferSize * (m_codec->m_BitsPerSample >> 3));
 
-  if (m_pcmBuffer.ReadData( (char *)(m_outputBuffer + m_gaplessBufferSize), (size - m_gaplessBufferSize) * (m_codec->m_BitsPerSample >> 3)))
+  if (m_pcmBuffer.ReadData( (char *)(m_outputBuffer), size * (m_codec->m_BitsPerSample >> 3)))
   {
-    m_gaplessBufferSize = 0;
     // check for end of file + end of buffer
     if (m_status == STATUS_ENDING && (int)m_pcmBuffer.getMaxReadSize() < (OUTPUT_SAMPLES * (m_codec->m_BitsPerSample >> 3)))
     {
@@ -168,21 +155,8 @@ void *CAudioDecoder::GetData(unsigned int size)
     }
     return m_outputBuffer;
   }
-  CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", size - m_gaplessBufferSize);
+  CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", size);
   return NULL;
-}
-
-void CAudioDecoder::PrefixData(void *data, unsigned int size)
-{
-  if (!data)
-  {
-    CLog::Log(LOGERROR, "CAudioDecoder::PrefixData() failed - null data pointer");
-    return;
-  }
-  m_gaplessBufferSize = std::min<unsigned int>(PACKET_SIZE, size);
-  memcpy(m_gaplessBuffer, data, m_gaplessBufferSize * (m_codec->m_BitsPerSample >> 3));
-  if (m_gaplessBufferSize != size)
-    CLog::Log(LOGWARNING, "CAudioDecoder::PrefixData - losing %i bytes of audio data in track transistion", size - m_gaplessBufferSize);
 }
 
 int CAudioDecoder::ReadSamples(int numsamples)
