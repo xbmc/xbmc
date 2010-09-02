@@ -92,9 +92,9 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
         buffer_size += 256;
         delete[] buffer;
     }
-    
+
     unsigned char *entries;
-    for (entries = buffer; entries < buffer+config.ifc_len;) {
+    for (entries = (unsigned char*)config.ifc_req; entries < (unsigned char*)config.ifc_req+config.ifc_len;) {
         struct ifreq* entry = (struct ifreq*)entries;
         // point to the next entry
         entries += IFREQ_SIZE(entry);
