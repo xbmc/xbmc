@@ -291,30 +291,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
 
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->is_streamed = 1;
-    }
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-    {
-      m_ioContext->is_streamed = 1;
-    }
-    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-
-      // this actually speeds up channel changes by almost a second
-      // however, it alsa makes player not buffer anything, this
-      // leads to buffer underruns in audio renderer
-      //if(context->is_streamed)
-      //  streaminfo = false;
-    }
-    else
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-    }
 
     if( iformat == NULL )
     {
