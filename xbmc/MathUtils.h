@@ -59,7 +59,6 @@ namespace MathUtils
     #else
       int32_t i;
       __asm__ __volatile__ (
-        "fld %1\n"
         "fadd %%st\n"
         "fadd %%st(1)\n"
         "fistpl %0\n"
