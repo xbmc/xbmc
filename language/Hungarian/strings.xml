@@ -58,6 +58,24 @@
   <string id="61">Nov</string>
   <string id="62">Dec</string>
 
+  <string id="71">É</string>
+  <string id="72">ÉÉK</string>
+  <string id="73">ÉK</string>
+  <string id="74">KÉK</string>
+  <string id="75">K</string>
+  <string id="76">KDK</string>
+  <string id="77">DK</string>
+  <string id="78">DDK</string>
+  <string id="79">D</string>
+  <string id="80">DDNY</string>
+  <string id="81">DNY</string>
+  <string id="82">NYDNY</string>
+  <string id="83">NY</string>
+  <string id="84">NYÉNY</string>
+  <string id="85">ÉNY</string>
+  <string id="86">ÉÉNY</string>
+  <string id="87">VÁLT</string>
+
   <string id="98">Nézet: Auto</string>
   <string id="99">Nézet: Auto nagy</string>
   <string id="100">Nézet: Ikon</string>
@@ -194,10 +212,12 @@
   <string id="237">Kicsinyítés</string>
   <string id="238">Nagyítás</string>
   <string id="239">Lejátszáslista törlése kilépéskor</string>
-  <string id="240">Megjelenítési mód</string>
+  <string id="240">Megjelenítés típusa</string>
   <string id="241">Teljes képernyő #%d</string>
-  <string id="242">Ablakban</string>
+  <string id="242">Ablak mód</string>
   <string id="243">Képfrissítési frekvencia</string>
+  <string id="244">Teljes képernyő</string>
+  <string id="245">Méretezés: (%i,%i)->(%i,%i) (Nagyítás: x%2.2f) Arány:%2.2f:1 (Képpontarány: %2.2f:1)</string>
 
   <string id="247">Programok</string>
   <string id="248">Nyelv</string>
@@ -354,8 +374,8 @@
   <string id="404">Szél</string>
   <string id="405">Harmatpont</string>
   <string id="406">Páratartalom</string>
-  <string id="407">irány:</string>
-  <string id="408">seb.:</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Alapértelmezett</string>
   <string id="410">Időjárás-szolgáltató keresése</string>
   <string id="411">Időjárás lekérdezése:</string>
@@ -381,6 +401,7 @@
   <string id="431">Nincs gyorsítótár</string>
   <string id="432">Film eltávolítása a médiatárból</string>
   <string id="433">Biztos el akarod távolítani a '%s'-t?</string>
+  <string id="434">irány: %s, seb.: %i %s</string> <!--Szélirány: <irány:>, <sebesség> <egység>-->
 
   <string id="437">Cserélhető lemez</string>
   <string id="438">Fájl megnyitása</string>
@@ -820,6 +841,9 @@
   <string id="1418">viharok</string>
   <string id="1419">viharos esőzések</string>
   <string id="1420">enyhe</string>
+  <string id="1421">nagyon magas</string>
+  <string id="1422">szeles</string>
+  <string id="1423">köd</string>
 
   <!-- 1450-ig időjárás fordítására fenntartva -->
 
@@ -1084,6 +1108,8 @@
   <string id="13210">Elindítva, ébresztés %i perc múlva</string>
   <string id="13211">Ébresztés!</string>
   <string id="13212">Megszakítva, %i perc %i mp volt még hátra</string>
+  <string id="13213">%2.0fperc</string> <!--perc (maradt hátra)-->
+  <string id="13214">%2.0fmp</string> <!--másodperc (maradt hátra)-->
 
   <string id="13249">Feliratok keresése RAR fájlokban</string>
   <string id="13250">Felirat keresése...</string>
@@ -2090,7 +2116,7 @@
   <string id="22000">Médiatár frissítése induláskor</string>
   <string id="22001">Médiatár frissítési állapotának elrejtése</string>
   <string id="22002">- DNS utótag</string>
-
+  <string id="22003">%2.3fmp</string>
   <string id="22004">Késleltet: %2.3fmp</string>
   <string id="22005">Előrehoz: %2.3fmp</string>
   <string id="22006">Felirat csúsztatás</string>

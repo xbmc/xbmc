@@ -423,7 +423,7 @@ CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float inter
 {
   CStdString text;
   if (fabs(value) < 0.5f*interval)
-    text = "0.000s";
+    text.Format(g_localizeStrings.Get(22003).c_str(), 0);
   else if (value < 0)
     text.Format(g_localizeStrings.Get(22004).c_str(), fabs(value));
   else

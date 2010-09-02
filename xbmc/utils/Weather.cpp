@@ -82,10 +82,15 @@ using namespace XFILE;
 #define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
 
 #define MAX_LOCATION   3
-#define LOCALIZED_TOKEN_FIRSTID   370
-#define LOCALIZED_TOKEN_LASTID   395
-#define LOCALIZED_TOKEN_FIRSTID2 1396
+#define LOCALIZED_TOKEN_FIRSTID    370
+#define LOCALIZED_TOKEN_LASTID     395
+#define LOCALIZED_TOKEN_FIRSTID2  1396
 #define LOCALIZED_TOKEN_LASTID2   1450
+#define LOCALIZED_TOKEN_FIRSTID3    11
+#define LOCALIZED_TOKEN_LASTID3     17
+#define LOCALIZED_TOKEN_FIRSTID4    71
+#define LOCALIZED_TOKEN_LASTID4     89
+
 /*
 FIXME'S
 >strings are not centered
@@ -351,18 +356,14 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
       iTmpInt = ConvertSpeed(iTmpInt);    //convert speed if needed
       GetString(pNestElement, "t", iTmpStr, "N");  //current wind direction
 
-      //From <dir eg NW> at <speed> km/h   g_localizeStrings.Get(407)
-      //This is a bit untidy, but i'm fed up with localization and string formats :)
-      CStdString szWindFrom = g_localizeStrings.Get(407);
-      CStdString szWindAt = g_localizeStrings.Get(408);
       CStdString szCalm = g_localizeStrings.Get(1410);
-
-      if (iTmpStr ==  "CALM")
+      if (iTmpStr ==  "CALM") {
         m_info.currentWind = szCalm;
-      else
-        m_info.currentWind.Format("%s %s %s %i %s",
-              szWindFrom.c_str(), iTmpStr,
-              szWindAt.c_str(), iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
+      } else {
+        LocalizeOverviewToken(iTmpStr);
+        m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
+            iTmpStr, iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
+      }
     }
 
     GetInteger(pElement, "hmid", iTmpInt);    //current humidity
@@ -394,7 +395,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
         if (attr)
         {
           m_info.forecast[i].m_day = attr;
-          LocalizeDay(m_info.forecast[i].m_day);
+          LocalizeOverviewToken(m_info.forecast[i].m_day);
         }
 
         GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
@@ -440,28 +441,6 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
   return true;
 }
 
-//convert weather.com day strings into localized string id's
-void CWeatherJob::LocalizeDay(CStdString &day)
-{
-  if (day == "Monday")   //monday is localized string 11
-    day = g_localizeStrings.Get(11);
-  else if (day == "Tuesday")
-    day = g_localizeStrings.Get(12);
-  else if (day == "Wednesday")
-    day = g_localizeStrings.Get(13);
-  else if (day == "Thursday")
-    day = g_localizeStrings.Get(14);
-  else if (day == "Friday")
-    day = g_localizeStrings.Get(15);
-  else if (day == "Saturday")
-    day = g_localizeStrings.Get(16);
-  else if (day == "Sunday")
-    day = g_localizeStrings.Get(17);
-  else
-    day = "";
-}
-
-
 void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
@@ -492,7 +471,9 @@ void CWeatherJob::LoadLocalizedToken()
       {
         int id = atoi(attrId);
         if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
-            (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2))
+            (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
+            (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
+            (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
         {
           CStdString utf8Label;
           if (strEncoding.IsEmpty()) // Is language file utf8?
