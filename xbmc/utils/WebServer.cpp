@@ -344,10 +344,15 @@ bool CWebServer::Start(const char *ip, int port)
 {
   if (!m_running)
   {
+    // set MHD_OPTION_CONNECTION_TIMEOUT to 24 hours, connection gets closed when it has been idle for that long
+    // timeout is 0 by default, which in libmicrohttpd 0.4.2 means let select wait forever
+    // and in 0.4.4 means let select return immediately, so that's very useful
+    unsigned int timeout = 60 * 60 * 24;
+
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_END);
     if (!m_daemon) //try IPv4
-      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_END);
     m_running = m_daemon != NULL;
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
