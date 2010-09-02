@@ -179,16 +179,17 @@ NowPlayingManager.prototype = {
 									li.addClass('activeItem');
 								}
 								if (i == (data.result.current + 1)) {
-									$('#nextTrack').html(code);
-									$('#nextTrack').show();
+									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
 							if (data.result.total > 1) {
+								if (data.result.total-1 == activeItem.seq) {
+									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
+								}
 								$('#nextText').show();
-								$('#nowPlayingPlaylist').html('')
-														.append(ul);
+								$('#nowPlayingPlaylist').html('').append(ul);
 							} else {
 								$('#nextText').hide();
 								$('#nowPlayingPlaylist').hide();
@@ -409,15 +410,17 @@ NowPlayingManager.prototype = {
 									li.addClass('activeItem');
 								}
 								if (i == (data.result.current + 1)) {
-									$('#nextTrack').html(code);
+									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
 							if (data.result.total > 1) {
 								$('#nextText').show();
-								$('#nowPlayingPlaylist').html('')
-														.append(ul);
+								if (data.result.total == activeItem.seq) {
+									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
+								}
+								$('#nowPlayingPlaylist').html('').append(ul);
 							} else {
 								$('#nextText').hide();
 								$('#nowPlayingPlaylist').hide();
