@@ -139,6 +139,11 @@
       <issplitter>false</issplitter>
       <osdname>File Source (Async.)</osdname>
     </filter>
+    <filter name="lavf" type="source">
+      <path>LAVFDShowSplitter.ax</path>
+      <guid>{B98D13E7-55DB-4385-A33D-09FD1BA26338}</guid>
+      <osdname>LAVF DShow</osdname>
+    </filter>
     
     <!-- Splitters -->
     <filter name="avisplitter" type="splitter">
