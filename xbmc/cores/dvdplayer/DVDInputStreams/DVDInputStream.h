@@ -96,7 +96,7 @@ public:
   virtual bool NextStream() { return false; }
   virtual void Abort() {}
 
-  int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_FILE; }
+  int GetBlockSize() { return 0; }
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;
   virtual int GetCurrentGroupId() { return 0; }

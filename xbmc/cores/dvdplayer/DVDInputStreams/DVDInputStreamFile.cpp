@@ -122,4 +122,11 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
   return m_pFile->GetBitstreamStats();
 }
 
+int CDVDInputStreamFile::GetBlockSize()
+{
+  if(m_pFile)
+    return m_pFile->GetChunkSize();
+  else
+    return 0;
+}
 
