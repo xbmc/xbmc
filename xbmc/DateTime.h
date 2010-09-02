@@ -176,7 +176,7 @@ public:
   void GetAsTm(tm& time) const;
   void GetAsTimeStamp(FILETIME& time) const;
 
-  CDateTime CDateTime::GetAsUTCDateTime() const;
+  CDateTime GetAsUTCDateTime() const;
   CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
   CStdString GetAsLocalizedDate(bool longDate=false) const;
