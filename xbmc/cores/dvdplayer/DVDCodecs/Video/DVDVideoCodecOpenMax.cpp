@@ -103,8 +103,11 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     unsigned int chroma_pixels = luma_pixels/4;
 
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-    //m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
+#ifndef USE_EGL_IMAGE
+    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
+#else
     m_videobuffer.format = DVDVideoPicture::FMT_OMXEGL;
+#endif
     m_videobuffer.color_range  = 0;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
@@ -113,6 +116,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     m_videobuffer.iDisplayWidth  = hints.width;
     m_videobuffer.iDisplayHeight = hints.height;
 
+#ifndef USE_EGL_IMAGE
     m_videobuffer.iLineSize[0] = hints.width;   //Y
     m_videobuffer.iLineSize[1] = hints.width/2; //U
     m_videobuffer.iLineSize[2] = hints.width/2; //V
@@ -127,7 +131,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     memset(m_videobuffer.data[0], 0, luma_pixels);
     memset(m_videobuffer.data[1], 0, chroma_pixels);
     memset(m_videobuffer.data[2], 0, chroma_pixels);
-
+#endif
     return true;
   }
 
@@ -144,9 +148,11 @@ void CDVDVideoCodecOpenMax::Dispose()
   }
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
   {
+#ifndef USE_EGL_IMAGE
     _aligned_free(m_videobuffer.data[0]);
     _aligned_free(m_videobuffer.data[1]);
     _aligned_free(m_videobuffer.data[2]);
+#endif
     m_videobuffer.iFlags = 0;
   }
   if (m_convert_bitstream)

@@ -41,8 +41,6 @@
 #include <OMX_Index.h>
 #include <OMX_Image.h>
 
-#define USE_EGL_IMAGE
-
 #define CLASSNAME "COpenMax"
 // EGL extension functions
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;

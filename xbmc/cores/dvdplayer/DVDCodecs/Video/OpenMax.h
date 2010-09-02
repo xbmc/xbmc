@@ -22,6 +22,8 @@
 
 #if defined(HAVE_LIBOPENMAX)
 
+#define USE_EGL_IMAGE
+
 #include "OpenMax.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
