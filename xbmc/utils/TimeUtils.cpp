@@ -34,6 +34,9 @@
 #include <time.h>
 #elif defined(_WIN32)
 #include <windows.h>
+#ifdef HAS_DS_PLAYER
+#include "Streams.h"
+#endif
 #endif
 
 int64_t CurrentHostCounter(void)
@@ -114,7 +117,7 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
   return result;
 }
 #ifdef HAS_DS_PLAYER
-uint64_t CTimeUtils::GetPerfCounter()
+int64_t CTimeUtils::GetPerfCounter()
 {
   LARGE_INTEGER i64Ticks100ns;
   LARGE_INTEGER llPerfFrequency;
@@ -123,7 +126,7 @@ uint64_t CTimeUtils::GetPerfCounter()
   if (llPerfFrequency.QuadPart != 0)
   {
     QueryPerformanceCounter (&i64Ticks100ns);
-    return (i64Ticks100ns.QuadPart * 10000000) / llPerfFrequency.QuadPart;
+    return llMulDiv(i64Ticks100ns.QuadPart, 10000000, llPerfFrequency.QuadPart, 0);
   }
   else
   {
