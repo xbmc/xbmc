@@ -124,6 +124,7 @@
       <button id="4">SkipPrevious</button>
       <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="6">Info</button>
+      <button id="8">XBMC.ActivateWindow(music)</button>
       <button id="10">IncreaseRating</button>
       <button id="11">DecreaseRating</button>
     </joystick>
@@ -263,6 +264,11 @@
       <button id="6">Close</button>
     </joystick>
   </PictureInfo>
+  <AddonBrowser>
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </AddonBrowser>
   <AddonInformation>
     <joystick name="WiiRemote">
       <button id="6">Close</button>
