@@ -1236,10 +1236,17 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%ix%i %s %02.2f Hz.",
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode.c_str(),GetFPS());
+    if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
+      strLabel.Format("%ix%i@%.2fHz - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
+        g_localizeStrings.Get(244), GetFPS());
+    else
+      strLabel.Format("%ix%i - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
 
@@ -1388,9 +1395,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     {
       double fTime = g_alarmClock.GetRemaining("shutdowntimer");
       if (fTime > 60.f)
-        strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format(g_localizeStrings.Get(13213).c_str(),g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
+        strLabel.Format(g_localizeStrings.Get(13214).c_str(),g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
