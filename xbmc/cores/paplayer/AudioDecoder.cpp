@@ -90,7 +90,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
     Destroy();
     return false;
   }
-  m_blockSize = m_codec->m_Channels * (m_codec->m_BitsPerSample >> 3);
+  m_blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->m_Channels;
 
   /* allocate the pcmBuffer for 2 seconds of audio */
   m_pcmBuffer.Create(2 * m_blockSize * m_codec->m_SampleRate);
@@ -204,13 +204,13 @@ int CAudioDecoder::ReadSamples(int numsamples)
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )
   {
-    int actualsamples = 0;
-    int result = m_codec->ReadSamples(m_inputBuffer, numsamples, &actualsamples);
+    int samples = 0;
+    int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_BitsPerSample >> 3), &samples);
 
-    if ( result != READ_ERROR && actualsamples )
+    if ( result != READ_ERROR && samples)
     {
       // move it into our buffer
-      m_pcmBuffer.WriteData((char *)m_inputBuffer, actualsamples * (m_codec->m_BitsPerSample >> 3));
+      m_pcmBuffer.WriteData((char *)m_pcmInputBuffer, samples);
 
       // update status
       if (m_status == STATUS_QUEUING && m_pcmBuffer.getMaxReadSize() > m_pcmBuffer.getSize() * 0.9)
@@ -290,14 +290,5 @@ float CAudioDecoder::GetReplayGain()
       replaygain = 1.0f / fabs(peak);
   }
   return replaygain;
-}
-
-int CAudioDecoder::ReadPCMSamples(int numsamples, int *actualsamples)
-{
-  // convert samples to bytes
-  numsamples *= (m_codec->m_BitsPerSample >> 3);
-
-  // read in our PCM data
-  return m_codec->ReadPCM(m_pcmInputBuffer, numsamples, actualsamples);
 }
 

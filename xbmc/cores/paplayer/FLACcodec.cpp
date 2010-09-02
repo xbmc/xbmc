@@ -30,6 +30,7 @@ FLACCodec::FLACCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_TotalTime=0;
   m_Bitrate = 0;
   m_CodecName = "FLAC";
@@ -87,7 +88,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   //  These are filled by the metadata callback
-  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0)
+  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0 || m_DataFormat == AE_FMT_INVALID)
   {
     CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu, MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
     FreeDecoder();
@@ -263,7 +264,7 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
   if (!pThis)
     return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
 
-  const int bytes_per_sample = frame->header.bits_per_sample/8;
+  const int bytes_per_sample = frame->header.bits_per_sample >> 3;
   BYTE* outptr = pThis->m_pBuffer+pThis->m_BufferSize;
   FLAC__int16* outptr16 = (FLAC__int16 *) outptr;
   FLAC__int32* outptr32 = (FLAC__int32 *) outptr;
@@ -316,6 +317,12 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, cons
     pThis->m_SampleRate    = metadata->data.stream_info.sample_rate;
     pThis->m_Channels      = metadata->data.stream_info.channels;
     pThis->m_BitsPerSample = metadata->data.stream_info.bits_per_sample;
+    switch(pThis->m_BitsPerSample)
+    {
+      case  8: pThis->m_DataFormat = AE_FMT_U8;    break;
+      case 16: pThis->m_DataFormat = AE_FMT_S16NE; break;
+      case 32: pThis->m_DataFormat = AE_FMT_FLOAT; break;
+    }
     pThis->m_TotalTime     = (__int64)metadata->data.stream_info.total_samples * 1000 / metadata->data.stream_info.sample_rate;
     pThis->m_MaxFrameSize  = metadata->data.stream_info.max_blocksize*(pThis->m_BitsPerSample/8)*pThis->m_Channels;
   }

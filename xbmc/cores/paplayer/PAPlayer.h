@@ -104,13 +104,14 @@ private:
 
   typedef struct
   {
-    CAudioDecoder       m_decoder;      /* the decoder instance */
-    PAPlayer           *m_player;       /* the PAPlayer instance */
-    CAEStream          *m_stream;       /* the audio stream */
-    unsigned int        m_sent;         /* frames sent */
-    unsigned int        m_change;       /* frame to start xfade at */
-    unsigned int        m_prepare;      /* frame to prepare next file at */
-    bool                m_triggered;    /* if the queue callback has been called */
+    CAudioDecoder       m_decoder;        /* the decoder instance */
+    PAPlayer           *m_player;         /* the PAPlayer instance */
+    CAEStream          *m_stream;         /* the audio stream */
+    unsigned int        m_sent;           /* frames sent */
+    unsigned int        m_change;         /* frame to start xfade at */
+    unsigned int        m_prepare;        /* frame to prepare next file at */
+    bool                m_triggered;      /* if the queue callback has been called */
+    unsigned int        m_bytesPerSample; /* bytes per audio sample */
   } StreamInfo;
 
   std::list<StreamInfo*>  m_streams;    /* queued streams */

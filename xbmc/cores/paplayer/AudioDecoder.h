@@ -78,8 +78,6 @@ public:
   float GetReplayGain();
 
 private:
-  int ReadPCMSamples(int numsamples, int *actualsamples);
-
   // block size (number of bytes per sample * number of channels)
   int m_blockSize;
   // pcm buffer

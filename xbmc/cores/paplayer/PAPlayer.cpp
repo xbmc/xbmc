@@ -36,6 +36,8 @@
 
 #include "utils/SingleLock.h"
 
+#include "AudioEngine/AEUtil.h"
+
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds */
 #define FAST_XFADE_TIME         2000 /* 2 seconds */
 
@@ -137,7 +139,7 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
     if (samples == 0) break;
 
     void *data = si->m_decoder.GetData(samples);
-    si->m_stream->AddData(data, samples * sizeof(float));
+    si->m_stream->AddData(data, samples * si->m_bytesPerSample);
     si->m_sent += samples;
     needed     -= samples;
   }
@@ -226,10 +228,11 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   enum AEDataFormat dataFormat;
   si->m_decoder.GetDataFormat(&channels, &sampleRate, &dataFormat);
 
-  si->m_player    = this;
-  si->m_sent      = 0;
-  si->m_change    = 0;
-  si->m_triggered = false;
+  si->m_player         = this;
+  si->m_sent           = 0;
+  si->m_change         = 0;
+  si->m_triggered      = false;
+  si->m_bytesPerSample = CAEUtil::DataFormatToBits(dataFormat) >> 3;
 
   si->m_stream = AE.GetStream(
     dataFormat,

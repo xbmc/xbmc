@@ -33,7 +33,11 @@ using namespace MUSIC_INFO;
 #define DECODING_SUCCESS   0
 #define DECODING_CALLAGAIN 1
 
-#define BITSPERSAMPLE  32
+#define SAMPLESPERFRAME   1152
+#define CHANNELSPERSAMPLE 2
+#define BITSPERSAMPLE     32
+#define OUTPUTFRAMESIZE   (SAMPLESPERFRAME * CHANNELSPERSAMPLE * (BITSPERSAMPLE >> 3))
+
 #define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
 
 MP3Codec::MP3Codec()
@@ -56,7 +60,7 @@ MP3Codec::MP3Codec()
   memset(&m_Formatdata,0,sizeof(m_Formatdata));
 
   // create our output buffer
-  m_OutputBufferSize = 1152*4*8;        // enough for 4 frames
+  m_OutputBufferSize = OUTPUTFRAMESIZE * 4;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
   m_OutputBufferPos = 0;
   m_Decoding = false;
@@ -158,7 +162,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   m_eof = false;
-  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < 1152*8)) // eof can be set from outside (when stopping playback)
+  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < OUTPUTFRAMESIZE)) // eof can be set from outside (when stopping playback)
   {
     result = Read(8192, true);
     if (result == DECODING_ERROR)
@@ -347,8 +351,8 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   // we leave some data in our output buffer to allow us to remove samples
   // at the end of the track for gapless playback
   int amounttomove = 0;
-  if (m_OutputBufferPos > 1152 * 4 * 2)
-    amounttomove = m_OutputBufferPos - 1152 * 4 * 2;
+  if (m_OutputBufferPos > OUTPUTFRAMESIZE)
+    amounttomove = m_OutputBufferPos - OUTPUTFRAMESIZE;
   if (m_eof && !m_Decoding)
     amounttomove = m_OutputBufferPos;
   if (amounttomove > size) amounttomove = size;
