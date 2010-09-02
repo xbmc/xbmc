@@ -4086,12 +4086,13 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
-    // turn off visualisation window when stopping
-    if (iWin == WINDOW_VISUALISATION)
-      g_windowManager.PreviousWindow();
-
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
+    // turn off visualisation window when stopping
+    if (iWin == WINDOW_VISUALISATION
+    ||  iWin == WINDOW_FULLSCREEN_VIDEO)
+      g_windowManager.PreviousWindow();
 
     g_partyModeManager.Disable();
   }
