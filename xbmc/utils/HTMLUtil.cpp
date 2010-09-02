@@ -250,7 +250,7 @@ static const HTMLMapping mappings[] =
    {L"&uacute;",  0x00FA},
    {L"&ucirc;",   0x00FB},
    {L"&uuml;",    0x00FC},
-   {L"Ugrave;",   0x00D9},
+   {L"&Ugrave;",  0x00D9},
    {L"&Uacute;",  0x00DA},
    {L"&Ucirc;",   0x00DB},
    {L"&Uuml;",    0x00DC},
