@@ -276,7 +276,7 @@ int MP3Codec::Read(int size, bool init)
           switch(m_BitsPerSample)
           {
             case  8: m_DataFormat = AE_FMT_S8;    break;
-            case 16: m_DataFormat = AE_FMT_S16BE; break;
+            case 16: m_DataFormat = AE_FMT_S16NE; break;
             case 32: m_DataFormat = AE_FMT_FLOAT; break;
             default:
               m_DataFormat = AE_FMT_INVALID;
