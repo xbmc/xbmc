@@ -190,5 +190,11 @@ bool CDVDInputStreamTV::Record(bool bOnOff)
   return false;
 }
 
-
+int CDVDInputStreamTV::GetBlockSize()
+{
+  if(m_pFile)
+    return m_pFile->GetChunkSize();
+  else
+    return 0;
+}
 

@@ -102,6 +102,7 @@ namespace XFILE
       virtual bool          Open(const CURL& url);
       virtual void          Close();
       virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
+      virtual int           GetChunkSize();
     private:
       struct hdhomerun_device_t* m_device;
       DllHdHomeRun m_dll;

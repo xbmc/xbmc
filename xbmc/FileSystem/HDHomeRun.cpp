@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "HDHomeRun.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace std;
@@ -229,6 +230,10 @@ bool CFileHomeRun::Open(const CURL &url)
 unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
 {
   size_t datasize;
+
+  if(uiBufSize < VIDEO_DATA_PACKET_SIZE)
+    CLog::Log(LOGWARNING, "CFileHomeRun::Read - buffer size too small, will most likely fail");
+
   // for now, let it it time out after 5 seconds,
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
@@ -260,4 +265,9 @@ void CFileHomeRun::Close()
     m_dll.device_destroy(m_device);
     m_device = NULL;
   }
+}
+
+int CFileHomeRun::GetChunkSize()
+{
+  return VIDEO_DATA_PACKET_SIZE;
 }
