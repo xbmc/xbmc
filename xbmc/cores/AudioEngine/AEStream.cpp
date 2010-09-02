@@ -246,14 +246,17 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
   while(size)
   {
     size_t room = m_format.m_frameSize - m_frameBufferSize;
-    size_t copy = size > room ? room : size;
+    size_t copy = std::min((size_t)size, room);
     if (copy == 0)
       return ptr - (uint8_t*)data;
 
-    memcpy(&m_frameBuffer[m_frameBufferSize], ptr, copy);
+    memcpy(m_frameBuffer + m_frameBufferSize, ptr, copy);
     size              -= copy;
     m_frameBufferSize += copy;
     ptr               += copy;
+
+    if (m_frameBufferSize < m_format.m_frameSize)
+      continue;
 
     unsigned int consumed = ProcessFrameBuffer();
     if (consumed)
@@ -308,8 +311,9 @@ unsigned int CAEStream::ProcessFrameBuffer()
     }
     else
     {
-      memcpy(m_newPacket.data + (m_newPacket.samples * sizeof(float)), data, copy * sizeof(float));
-      data += copy * sizeof(float);
+      int size = copy * sizeof(float);
+      memcpy((float*)m_newPacket.data + m_newPacket.samples, data, size);
+      data += size;
     }
 
     m_newPacket.samples += copy;
@@ -326,17 +330,16 @@ unsigned int CAEStream::ProcessFrameBuffer()
       }
       else
       {
-        PPacket pkt;
-        pkt.samples = m_aePacketSamples;
-        pkt.data    = (uint8_t*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
-
         /* post-process the packet */
         list<IAEPostProc*>::iterator pitt;
         for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
           (*pitt)->Process((float*)m_newPacket.data, m_format.m_frames);
 
         /* downmix/remap the data */
+        PPacket pkt;
+        pkt.samples = m_aePacketSamples;
         pkt.data = (uint8_t*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
+
         m_remap.Remap((float*)m_newPacket.data, (float*)pkt.data, m_format.m_frames);
 
         /* add the packet to the output */

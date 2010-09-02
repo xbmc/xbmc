@@ -156,9 +156,9 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     }
   }
   
-  if ( m_TotalTime && (length-id3v2Size > 0) )
+  if ( m_TotalTime && (length - id3v2Size > 0) )
   {
-    m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
+    m_Bitrate = (int)(((length - id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
   }
 
   m_eof = false;
@@ -173,6 +173,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
       m_Bitrate = m_Formatdata[4];
   } ;
+
   return true;
 
 error:
@@ -202,13 +203,6 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
   m_file.Seek(m_lastByteOffset, SEEK_SET);
   FlushDecoder();
   return iSeekTime;
-}
-
-int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
-{
-  int result = ReadPCM((BYTE *)pBuffer, numsamples * sizeof(float), actualsamples);
-  *actualsamples /= sizeof(float);
-  return result;
 }
 
 int MP3Codec::Read(int size, bool init)
@@ -282,7 +276,7 @@ int MP3Codec::Read(int size, bool init)
           switch(m_BitsPerSample)
           {
             case  8: m_DataFormat = AE_FMT_S8;    break;
-            case 16: m_DataFormat = AE_FMT_S16NE; break;
+            case 16: m_DataFormat = AE_FMT_S16BE; break;
             case 32: m_DataFormat = AE_FMT_FLOAT; break;
             default:
               m_DataFormat = AE_FMT_INVALID;
@@ -347,25 +341,23 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (Read(size) == DECODING_ERROR)
     return READ_ERROR;
 
-  // check whether we can move data out of our output buffer
-  // we leave some data in our output buffer to allow us to remove samples
-  // at the end of the track for gapless playback
-  int amounttomove = 0;
-  if (m_OutputBufferPos > OUTPUTFRAMESIZE)
-    amounttomove = m_OutputBufferPos - OUTPUTFRAMESIZE;
+  int move;
   if (m_eof && !m_Decoding)
-    amounttomove = m_OutputBufferPos;
-  if (amounttomove > size) amounttomove = size;
-  if (amounttomove)
-  {
-    memcpy(pBuffer, m_OutputBuffer, amounttomove);
-    m_OutputBufferPos -= amounttomove;
-    memmove(m_OutputBuffer, m_OutputBuffer + amounttomove, m_OutputBufferPos);
-    *actualsize = amounttomove;
-  }
+    move = m_OutputBufferPos;
+  else
+    move = m_OutputBufferPos - OUTPUTFRAMESIZE;
+
+  move = std::min(move, size);
+  memcpy(pBuffer, m_OutputBuffer, move);
+
+  m_OutputBufferPos -= move;
+  memmove(m_OutputBuffer, m_OutputBuffer + move, m_OutputBufferPos);
+  *actualsize = move;
+
   // only return READ_EOF when we've reached the end of the mp3 file, we've finished decoding, and our output buffer is depleated.
   if (m_eof && !m_Decoding && !m_OutputBufferPos)
     return READ_EOF;
+
   return READ_SUCCESS;
 }
 
@@ -384,9 +376,7 @@ bool MP3Codec::CanSeek()
   return true;
 }
 
-int MP3Codec::Decode(
-  int         *out_len // out_len is read and written to
-) {
+int MP3Codec::Decode(int *out_len) {
   if (!m_HaveData)
   {
     if (!m_dll.IsLoaded())
@@ -410,9 +400,9 @@ int MP3Codec::Decode(
       int skip;
       skip = 2;
       do
-	  {
-        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) 
-		{
+      {
+        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0)
+        {
           if (--skip == 0)
             m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
         }
@@ -521,7 +511,7 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
 
   m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
   
-  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)BITSPERSAMPLE/8;
+  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)(BITSPERSAMPLE >> 3);
   mxhouse->frame_cnt++;
   m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
   float *data_f = (float *)mxhouse->output_ptr;
