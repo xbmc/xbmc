@@ -890,6 +890,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(!IsRemote(strPath))
     return false;
 
+  if(IsPlugin(strPath))
+    return false;
+
   CStdString host = url.GetHostName();
   if(host.length() == 0)
     return false;
