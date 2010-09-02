@@ -279,6 +279,149 @@ done:
   m_bChangingStream = false;
 }
 
+void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
+{
+  DWORD nStreams = 0, flags = 0, group = 0;
+  WCHAR* wname = NULL;
+  SStreamInfos* infos = NULL;
+  LCID lcid;
+  IUnknown *pObj = NULL, *pUnk = NULL;
+  int j = 0;
+
+  m_pIAMStreamSelect->Count(&nStreams);
+
+  AM_MEDIA_TYPE * mediaType = NULL;
+  for(unsigned int i = 0; i < nStreams; i++)
+  {
+    m_pIAMStreamSelect->Info(i, &mediaType, &flags, &lcid, &group, &wname, &pObj, &pUnk);
+
+    if (mediaType->majortype == MEDIATYPE_Video)
+      infos = &m_videoStream;
+    else if (mediaType->majortype == MEDIATYPE_Audio)
+      infos = new SAudioStreamInfos();
+    else if (mediaType->majortype == MEDIATYPE_Subtitle)
+      infos = new SSubtitleStreamInfos();
+    else
+      continue;
+
+    infos->IAMStreamSelect_Index = i;
+
+    g_charsetConverter.wToUTF8(wname, infos->displayname);
+    CoTaskMemFree(wname);
+
+    infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
+    if (flags & AMSTREAMSELECTINFO_ENABLED)
+      infos->connected = true;
+
+    GetStreamInfos(mediaType, infos);
+
+    if (mediaType->majortype == MEDIATYPE_Audio)
+    {
+      /* Audio stream */
+      if (infos->displayname.find("Undetermined") != std::string::npos )
+        infos->displayname.Format("A: Audio %02d", i + 1);
+
+      m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
+      CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
+    } else if (mediaType->majortype == MEDIATYPE_Subtitle)
+    {
+      SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
+      CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
+    }
+
+    DeleteMediaType(mediaType);
+  }
+}
+
+void CStreamsManager::LoadStreamsInternal()
+{
+  // Enumerate output pins
+  PIN_DIRECTION dir;
+  int i = 0, j = 0;
+  CStdStringW pinNameW;
+  CStdString pinName;
+  SStreamInfos *infos = NULL;
+  bool audioPinAlreadyConnected = false;//, subtitlePinAlreadyConnected = FALSE;
+
+  // If we're playing a DVD, the bottom method doesn't work
+  if (CGraphFilters::Get()->IsDVD())
+  { // The playback need to be started in order to get informations
+    return;
+  }
+
+  int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
+  DShowUtil::CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
+  CLog::Log(LOGDEBUG, "%s The splitter has %d output pins", __FUNCTION__, nOut);
+
+  BeginEnumPins(m_pSplitter, pEP, pPin)
+  {
+    if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
+    {
+
+      pinNameW = DShowUtil::GetPinName(pPin);
+      g_charsetConverter.wToUTF8(pinNameW, pinName);
+      CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
+
+      BeginEnumMediaTypes(pPin, pET, pMediaType)
+      {
+
+        CLog::Log(LOGDEBUG, "%s \tOutput pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
+        CLog::Log(LOGDEBUG, "%s \tOutput pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
+        CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
+
+        if (pMediaType->majortype == MEDIATYPE_Video)
+          infos = &m_videoStream;
+        else if (pMediaType->majortype == MEDIATYPE_Audio)
+          infos = new SAudioStreamInfos();
+        else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+          infos = new SSubtitleStreamInfos();
+        else
+          continue;
+
+        if (infos->displayname.empty())
+          infos->displayname = pinName;
+        GetStreamInfos(pMediaType, infos);
+
+        infos->pObj = pPin;
+        pPin->ConnectedTo(&infos->pUnk);
+
+        if (pMediaType->majortype == MEDIATYPE_Audio)
+        {
+          if (infos->displayname.find("Undetermined") != std::string::npos )
+            infos->displayname.Format("Audio %02d", i + 1);
+
+          if (i == 0)
+            infos->flags = AMSTREAMSELECTINFO_ENABLED;
+          if (infos->pUnk)
+            infos->connected = true;
+
+          m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
+          CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
+          i++;
+            
+        } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+        {
+          if (infos->displayname.find("Undetermined") != std::string::npos )
+            infos->displayname.Format("Subtitle %02d", j + 1);
+
+          if (j == 0)
+            infos->flags = AMSTREAMSELECTINFO_ENABLED;
+          if (infos->pUnk)
+            infos->connected = true;
+
+          SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
+          CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
+          j++;
+        }
+
+        break; // if the pin has multiple output type, get only the first one
+      }
+      EndEnumMediaTypes(pMediaType)
+    }
+  }
+  EndEnumPins
+}
+
 void CStreamsManager::LoadStreams()
 {
   if (! m_init)
@@ -289,191 +432,15 @@ void CStreamsManager::LoadStreams()
 
   CLog::Log(LOGDEBUG, "%s Looking for audio streams in %s splitter", __FUNCTION__, splitterName.c_str());
 
-  /* Regex to rename audio stream */
-  std::vector<boost::shared_ptr<CRegExp>> regex;
-
-  boost::shared_ptr<CRegExp> reg(new CRegExp(true));
-  reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
-  regex.push_back(reg);
-
-  reg.reset(new CRegExp(true));
-  reg->RegComp(".* - (.*),.*\\(.*\\)"); // mpeg source audio / subtitle
-  regex.push_back(reg);
-
-  /* Does the splitter support IAMStreamSelect ?*/
+  // Does the splitter support IAMStreamSelect?
   m_pIAMStreamSelect = NULL;
   HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **) &m_pIAMStreamSelect);
   if (SUCCEEDED(hr))
   {
-    /* Yes */
     CLog::Log(LOGDEBUG, "%s Get IAMStreamSelect interface from %s", __FUNCTION__, splitterName.c_str());
-
-    DWORD nStreams = 0, flags = 0, group = 0;
-    WCHAR* wname = NULL;
-    SStreamInfos* infos = NULL;
-    LCID lcid;
-    IUnknown *pObj = NULL, *pUnk = NULL;
-    int j = 0;
-
-    m_pIAMStreamSelect->Count(&nStreams);
-
-    AM_MEDIA_TYPE * mediaType = NULL;
-    for(unsigned int i = 0; i < nStreams; i++)
-    {
-      m_pIAMStreamSelect->Info(i, &mediaType, &flags, &lcid, &group, &wname, &pObj, &pUnk);
-
-      if (mediaType->majortype == MEDIATYPE_Video)
-        infos = &m_videoStream;
-      else if (mediaType->majortype == MEDIATYPE_Audio)
-        infos = new SAudioStreamInfos();
-      else if (mediaType->majortype == MEDIATYPE_Subtitle)
-        infos = new SSubtitleStreamInfos();
-      else
-        continue;
-
-      infos->IAMStreamSelect_Index = i;
-
-      g_charsetConverter.wToUTF8(wname, infos->displayname);
-      CoTaskMemFree(wname);
-
-      infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
-      if (flags & AMSTREAMSELECTINFO_ENABLED)
-        infos->connected = true;
-
-      /* Apply regex */
-      for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
-      {
-        if ( (*it)->RegFind(infos->displayname) > -1 )
-        {
-          infos->displayname = (*it)->GetMatch(1);
-          break;
-        }
-      }
-
-      GetStreamInfos(mediaType, infos);
-
-      if (mediaType->majortype == MEDIATYPE_Audio)
-      {
-        /* Audio stream */
-        if (infos->displayname.find("Undetermined") != std::string::npos )
-          infos->displayname.Format("A: Audio %02d", i + 1);
-
-        m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
-        CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
-      } else if (mediaType->majortype == MEDIATYPE_Subtitle)
-      {
-        SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
-        CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
-      }
-
-      DeleteMediaType(mediaType);
-    }
-  } 
-  else 
-  {
-    /* No */  
-  
-    // Enumerate output pins
-    PIN_DIRECTION dir;
-    int i = 0, j = 0;
-    CStdStringW pinNameW;
-    CStdString pinName;
-    SStreamInfos *infos = NULL;
-    bool audioPinAlreadyConnected = false;//, subtitlePinAlreadyConnected = FALSE;
-
-    // If we're playing a DVD, the bottom method doesn't work
-    if (CGraphFilters::Get()->IsDVD())
-    { // The playback need to be started in order to get informations
-      return;
-    }
-
-    int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
-    DShowUtil::CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
-    CLog::Log(LOGDEBUG, "%s The splitter has %d output pins", __FUNCTION__, nOut);
-
-    BeginEnumPins(m_pSplitter, pEP, pPin)
-    {
-      if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
-      {
-
-        pinNameW = DShowUtil::GetPinName(pPin);
-        g_charsetConverter.wToUTF8(pinNameW, pinName);
-        CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
-
-        BeginEnumMediaTypes(pPin, pET, pMediaType)
-        {
-
-          CLog::Log(LOGDEBUG, "%s \tOutput pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
-          CLog::Log(LOGDEBUG, "%s \tOutput pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
-          CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
-
-          if (pMediaType->majortype == MEDIATYPE_Video)
-            infos = &m_videoStream;
-          else if (pMediaType->majortype == MEDIATYPE_Audio)
-            infos = new SAudioStreamInfos();
-          else if (pMediaType->majortype == MEDIATYPE_Subtitle)
-            infos = new SSubtitleStreamInfos();
-          else
-            continue;
-
-          GetStreamInfos(pMediaType, infos);
-          if (infos->displayname.empty())
-          {
-            infos->displayname = pinName;
-          }
-
-          /* Apply regex */
-          for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
-          {
-            if ( (*it)->RegFind(infos->displayname) > -1 )
-            {
-              infos->displayname = (*it)->GetMatch(1);
-              break;
-            }
-          }
-
-          infos->pObj = pPin;
-          pPin->ConnectedTo(&infos->pUnk);
-
-          if (pMediaType->majortype == MEDIATYPE_Audio)
-          {
-            if (infos->displayname.find("Undetermined") != std::string::npos )
-              infos->displayname.Format("Audio %02d", i + 1);
-
-            if (i == 0)
-              infos->flags = AMSTREAMSELECTINFO_ENABLED;
-            if (infos->pUnk)
-              infos->connected = true;
-
-            m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
-            CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
-            i++;
-            
-          } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
-          {
-            if (infos->displayname.find("Undetermined") != std::string::npos )
-              infos->displayname.Format("Subtitle %02d", j + 1);
-
-            if (j == 0)
-              infos->flags = AMSTREAMSELECTINFO_ENABLED;
-            if (infos->pUnk)
-              infos->connected = true;
-
-            SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
-            CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
-            j++;
-          }
-
-          break; // if the pin has multiple output type, get only the first one
-        }
-        EndEnumMediaTypes(pMediaType)
-      }
-    }
-    EndEnumPins
-  }
-
-  ///* Delete regex */
-  regex.clear();
+    LoadIAMStreamSelectStreamsInternal();
+  } else
+    LoadStreamsInternal();
 
   SubtitleManager->Initialize();
   if (! SubtitleManager->Ready())
@@ -482,7 +449,7 @@ void CStreamsManager::LoadStreams()
     SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
     return;
-  } 
+  }
   
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
@@ -711,6 +678,28 @@ SAudioStreamInfos * CStreamsManager::GetAudioStreamInfos( unsigned int iIndex /*
 
 void CStreamsManager::FormatStreamName( SStreamInfos& s )
 {
+  std::vector<boost::shared_ptr<CRegExp>> regex;
+
+  boost::shared_ptr<CRegExp> reg(new CRegExp(true));
+  reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
+  regex.push_back(reg);
+
+  reg.reset(new CRegExp(true));
+  reg->RegComp(".* - (.*),.*\\(.*\\)"); // mpeg source audio / subtitle
+  regex.push_back(reg);
+
+  for (std::vector<boost::shared_ptr<CRegExp>>::iterator
+    it = regex.begin(); it != regex.end(); ++it)
+  {
+    if ( (*it)->RegFind(s.displayname) > -1 )
+    {
+      s.displayname = (*it)->GetMatch(1);
+      break;
+    }
+  }
+
+  regex.clear();
+
   // First, if lcid isn't 0, try GetLocalInfo
   if (s.lcid)
   {

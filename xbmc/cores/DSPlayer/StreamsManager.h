@@ -277,6 +277,9 @@ private:
   ~CStreamsManager(void);
   static CStreamsManager *m_pSingleton;
 
+  void LoadStreamsInternal();
+  void LoadIAMStreamSelectStreamsInternal();
+
   void FormatStreamName(SStreamInfos& s);
   void ExtractCodecInfos(SStreamInfos& s, CStdString& codecInfos);
   CStdString ISOToLanguage(CStdString code);
@@ -287,7 +290,7 @@ private:
   Com::SmartPtr<IBaseFilter> m_pSplitter;
 
   bool m_init;
-  bool m_bChangingStream;
+  volatile bool m_bChangingStream;
 
   SVideoStreamInfos m_videoStream;
   CCriticalSection m_lock;
