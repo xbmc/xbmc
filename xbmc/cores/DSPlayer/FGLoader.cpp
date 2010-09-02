@@ -187,16 +187,26 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   CStdStringW strFileW;
   g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
-  if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
-    CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
-  else
+  try // Load() may crash on bad designed codec. Prevent XBMC to hang
   {
-    CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
+    if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
+      CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
+    else
+    {
+      CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
 
-    if (filter->GetType() == CFGFilter::INTERNAL)
-      delete filter;
+      if (filter->GetType() == CFGFilter::INTERNAL)
+        delete filter;
 
-    return E_FAIL;
+      return E_FAIL;
+    }
+  } catch (...) {
+    CLog::Log(LOGERROR, "%s An exception has been thrown by the codec...", __FUNCTION__);
+
+      if (filter->GetType() == CFGFilter::INTERNAL)
+        delete filter;
+
+      return E_FAIL;
   }
 
   bool isSplitterToo = DShowUtil::IsSplitter(pBF);
