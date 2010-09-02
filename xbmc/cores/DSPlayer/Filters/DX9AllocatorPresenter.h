@@ -182,8 +182,8 @@ public:
     bool WaitForVBlankRange(int &_RasterStart, int _RasterEnd, bool _bWaitIfInside, bool _bNeedAccurate, bool _bMeasure, bool &_bTakenLock);
     bool WaitForVBlank(bool &_Waited, bool &_bTakenLock);
     int GetVBlackPos();
-    void CalculateJitter(LONGLONG PerformanceCounter);
-    virtual void OnVBlankFinished(bool fAll, LONGLONG PerformanceCounter){}
+    void CalculateJitter(int64_t PerformanceCounter);
+    virtual void OnVBlankFinished(bool fAll, int64_t PerformanceCounter){}
 
     HRESULT DrawRect(DWORD _Color, DWORD _Alpha, const Com::SmartRect &_Rect);
     HRESULT TextureCopy(Com::SmartPtr<IDirect3DTexture9> pTexture);

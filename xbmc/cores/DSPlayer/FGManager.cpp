@@ -358,8 +358,9 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   hr = ConnectFilter(CGraphFilters::Get()->Splitter.pBF , NULL);
   //In some case its going to failed because the source filter is not the splitter
   if (hr == S_FALSE)
-    hr = ConnectFilter(CGraphFilters::Get()->Source.pBF , NULL);
+    hr = ConnectFilter(CGraphFilters::Get()->Source.pBF, NULL);
   END_PERFORMANCE_COUNTER
+
   if (hr != S_OK)
   {
     if (FAILED(hr = RecoverFromGraphError(pFileItem)))

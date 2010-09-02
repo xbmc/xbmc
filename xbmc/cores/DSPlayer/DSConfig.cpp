@@ -56,11 +56,10 @@ HRESULT CDSConfig::ConfigureFilters()
   BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     LoadPropertiesPage(pBF);
-
   }
   EndEnumFilters
-  CreatePropertiesXml();
 
+  CreatePropertiesXml();
   return hr;
 }
 

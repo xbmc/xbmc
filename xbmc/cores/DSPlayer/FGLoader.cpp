@@ -364,13 +364,14 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   if (!pFileItem.IsInternetStream() && !CFilterCoreFactory::SomethingMatch(pFileItem))
   {
 
-    CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check dsfilterconfig.xml", __FUNCTION__, CURL(pFileItem.m_strPath).GetFileType().c_str());
+    CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check mediasconfig.xml",
+      __FUNCTION__, CURL(pFileItem.m_strPath).GetFileType().c_str());
     CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (dialog)
     {
       dialog->SetHeading("Extension not found");
       dialog->SetLine(0, "Impossible to play the media file : the media");
-      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't declared in dsfilterconfig.xml.");
+      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't declared in mediasconfig.xml.");
       dialog->SetLine(2, "");
       CDSPlayer::errorWindow = dialog;
     }
@@ -486,7 +487,6 @@ HRESULT CFGLoader::LoadConfig()
   LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
 
   // Second, medias rules
-
   LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
   LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
 
