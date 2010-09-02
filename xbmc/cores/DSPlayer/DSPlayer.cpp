@@ -65,8 +65,8 @@ CDSPlayer::~CDSPlayer()
     CloseFile();
 
   CDSGraph::StopThread();
-  StopThread();
-  m_pGraphThread.StopThread();
+  StopThread(false);
+  m_pGraphThread.StopThread(false);
 
   delete g_dsGraph;
   g_dsGraph = NULL;

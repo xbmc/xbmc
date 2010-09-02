@@ -576,7 +576,10 @@ static bool OpenSubViewer(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet
 {
   STSStyle def;
   CStdStringW font, color, size;
-  bool fBold, fItalic, fStriked, fUnderline;
+  bool fBold = false;
+  bool fItalic = false;
+  bool fStriked = false;
+  bool fUnderline = false;
 
   CStdStringW buff;
   while(file->ReadString(buff))
@@ -643,14 +646,14 @@ static bool OpenSubViewer(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet
       str.Replace(L"[br]", L"\\N");
 
       CStdStringW prefix;
-      if(!font.IsEmpty()) prefix += L"\\fn" + font;
-      if(!color.IsEmpty()) prefix += L"\\c" + color;
-      if(!size.IsEmpty()) prefix += L"\\fs" + size;
+      if(!font.empty()) prefix += L"\\fn" + font;
+      if(!color.empty()) prefix += L"\\c" + color;
+      if(!size.empty()) prefix += L"\\fs" + size;
       if(fBold) prefix += L"\\b1";
       if(fItalic) prefix += L"\\i1";
       if(fStriked) prefix += L"\\s1";
       if(fUnderline) prefix += L"\\u1";
-      if(!prefix.IsEmpty()) str = L"{" + prefix + L"}" + str;
+      if(!prefix.empty()) str = L"{" + prefix + L"}" + str;
 
       ret.Add(str,
         file->IsUnicode(),
@@ -854,7 +857,7 @@ static bool OpenMicroDVD(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet)
 
   CStdString style(_T("Default"));
 
-  CStdStringW buff;;
+  CStdStringW buff;
   while(file->ReadString(buff))
   {
     buff.Trim();
@@ -863,7 +866,12 @@ static bool OpenMicroDVD(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet)
     int start, end;
     int c = swscanf(buff, L"{%d}{%d}", &start, &end);
 
-    if(c != 2) {c = swscanf(buff, L"{%d}{}", &start)+1; end = start + 60; fCheck = true;}
+    if(c != 2)
+    {
+      c = swscanf(buff, L"{%d}{}", &start) + 1;
+      end = start + 60;
+      fCheck = true;
+    }
 
     if(c != 2)
     {
@@ -1497,7 +1505,7 @@ static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int C
       try 
       {
         CStdString StyleName;
-        int alpha;
+        int alpha = 0;
 
         StyleName = WToT(GetStr(buff));
         style->fontName = WToT(GetStr(buff));
@@ -1525,8 +1533,16 @@ static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int C
 
         if(sver <= 4)  style->colors[2] = style->colors[3]; // style->colors[2] is used for drawing the outline
         if(sver <= 4)  alpha = max(min(alpha, 0xff), 0);
-        if(sver <= 4)  {for(int i = 0; i < 3; i++) style->alpha[i] = alpha; style->alpha[3] = 0x80;}
-        if(sver >= 5)  for(int i = 0; i < 4; i++) {style->alpha[i] = (BYTE)(style->colors[i]>>24); style->colors[i] &= 0xffffff;}
+        if(sver <= 4)
+        {
+          for(ptrdiff_t i = 0; i < 3; i++) style->alpha[i] = alpha;
+          style->alpha[3] = 0x80;
+        }
+        if(sver >= 5)	for(ptrdiff_t i = 0; i < 4; i++)
+        {
+          style->alpha[i] = (BYTE)(style->colors[i] >> 24);
+          style->colors[i] &= 0xffffff;
+        }
         if(sver >= 5)  style->fontScaleX = max(style->fontScaleX, 0);
         if(sver >= 5)  style->fontScaleY = max(style->fontScaleY, 0);
 #ifndef _VSMOD // patch f002. negative fontspacing at style
@@ -1538,7 +1554,7 @@ static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int C
         style->outlineWidthY = max(style->outlineWidthY, 0);
         style->shadowDepthX = max(style->shadowDepthX, 0);
         style->shadowDepthY = max(style->shadowDepthY, 0);
-                if(sver <= 4)  style->scrAlignment = (style->scrAlignment & 4) ? ((style->scrAlignment & 3) + 6) // top
+        if(sver <= 4)  style->scrAlignment = (style->scrAlignment & 4) ? ((style->scrAlignment & 3) + 6) // top
                                                           : (style->scrAlignment & 8) ? ((style->scrAlignment & 3) + 3) // mid
                                                           : (style->scrAlignment & 3); // bottom
         
@@ -1564,11 +1580,11 @@ static bool OpenSubStationAlpha(CTextFile* file, CSimpleTextSubtitle& ret, int C
         CStdString Style, Actor, Effect;
         Com::SmartRect marginRect;
 
-                if(version <= 4)
-                {
-                    GetStr(buff, '=');    /* Marked = */
-                    GetInt(buff);
-                }
+        if(version <= 4)
+        {
+          GetStr(buff, '=');    /* Marked = */
+          GetInt(buff);
+        }
         if(version >= 5)layer = GetInt(buff);
         hh1 = GetInt(buff, ':');
         mm1 = GetInt(buff, ':');
@@ -1647,8 +1663,15 @@ static bool OpenXombieSub(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet
     }
     else if(entry == L"screenhorizontal")
     {
-      try {ret.m_dstScreenSize.cx = GetInt(buff);}
-      catch(...) {ret.m_dstScreenSize = Com::SmartSize(0, 0); return(false);}
+      try
+      {
+        ret.m_dstScreenSize.cx = GetInt(buff);
+      }
+      catch(...)
+      {
+        ret.m_dstScreenSize = Com::SmartSize(0, 0);
+        return(false);
+      }
 
       if(ret.m_dstScreenSize.cy <= 0)
       {
@@ -1659,8 +1682,15 @@ static bool OpenXombieSub(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet
     }
     else if(entry == L"screenvertical")
     {
-      try {ret.m_dstScreenSize.cy = GetInt(buff);}
-      catch(...) {ret.m_dstScreenSize = Com::SmartSize(0, 0); return(false);}
+      try
+      {
+        ret.m_dstScreenSize.cy = GetInt(buff);
+      }
+      catch(...)
+      {
+        ret.m_dstScreenSize = Com::SmartSize(0, 0);
+        return(false);
+      }
 
       if(ret.m_dstScreenSize.cx <= 0)
       {
@@ -1932,7 +1962,6 @@ void CSimpleTextSubtitle::assign(CSimpleTextSubtitle& sts)
   m_fUsingAutoGeneratedDefaultStyle = sts.m_fUsingAutoGeneratedDefaultStyle;
   CopyStyles(sts.m_styles);
   m_segments.assign(sts.m_segments.begin(), sts.m_segments.end());
-  
   __super::assign(sts.begin(), sts.end());
 }
 
@@ -2000,11 +2029,11 @@ void CSimpleTextSubtitle::Empty()
   m_segments.clear();
   clear();
 #ifdef _VSMOD // indexing
-    if(ind_size>0)
-    {
-        delete ind_time;
-        delete ind_pos;
-    }
+  if(ind_size>0)
+  {
+    delete ind_time;
+    delete ind_pos;
+  }
 #endif
 }
 

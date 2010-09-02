@@ -28,7 +28,7 @@ TCHAR* exttypestr[] =
 {
   _T("srt"), _T("sub"), _T("smi"), _T("psb"), 
   _T("ssa"), _T("ass"), _T("idx"), _T("usf"), 
-  _T("xss"), _T("txt"), _T("ssf"), _T("rt")
+  _T("xss"), _T("txt"), _T("ssf"), _T("rt"), _T("sup")
 };
 
 static TCHAR* ext[3][countof(exttypestr)] = 
@@ -36,17 +36,17 @@ static TCHAR* ext[3][countof(exttypestr)] =
   {
     _T(".srt"), _T(".sub"), _T(".smi"), _T(".psb"), 
     _T(".ssa"), _T(".ass"), _T(".idx"), _T(".usf"), 
-    _T(".xss"), _T(".txt"), _T(".ssf"), _T(".rt")
+    _T(".xss"), _T(".txt"), _T(".ssf"), _T(".rt"), _T(".sup")
   },
   {
     _T(".*.srt"), _T(".*.sub"), _T(".*.smi"), _T(".*.psb"), 
     _T(".*.ssa"), _T(".*.ass"), _T(".*.dummyidx"), _T(".*.usf"), 
-    _T(".*.xss"), _T(".*.txt"), _T(".*.ssf"), _T(".*.rt")
+    _T(".*.xss"), _T(".*.txt"), _T(".*.ssf"), _T(".*.rt"), _T(".*.sup")
   }, 
   {
     _T("-*.srt"), _T("-*.sub"), _T("-*.smi"), _T("-*.psb"), 
     _T("-*.ssa"), _T("-*.ass"), _T("-*.dummyidx"), _T("-*.usf"), 
-    _T("-*.xss"), _T("-*.txt"), _T("-*.ssf"), _T("-*.rt")
+    _T("-*.xss"), _T("-*.txt"), _T("-*.ssf"), _T("-*.rt"), _T("-*.sup")
   }, 
 };
 

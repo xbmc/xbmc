@@ -456,6 +456,8 @@ std::vector<COutline*>* CVobSubImage::GetOutlineList(Com::SmartPoint& topleft)
     }
   }
 
+  if (p)
+    delete[] p;
   return(ol);
 }
 

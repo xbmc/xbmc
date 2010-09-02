@@ -279,7 +279,7 @@ bool Rasterizer::EndPath(HDC hdc)
     mpPathTypes = (BYTE*)malloc(sizeof(BYTE) * mPathPoints);
     mpPathPoints = (POINT*)malloc(sizeof(POINT) * mPathPoints);
 
-    if(mPathPoints == GetPath(hdc, mpPathPoints, mpPathTypes, mPathPoints))
+    if(mPathPoints == (size_t)GetPath(hdc, mpPathPoints, mpPathTypes, mPathPoints))
       return true;
   }
 
@@ -506,7 +506,8 @@ bool Rasterizer::ScanConvert()
     std::vector<int>::iterator itX1 = heap.begin();
     std::vector<int>::iterator itX2 = heap.end(); // begin() + heap.size();
 
-    size_t x1, x2;
+    size_t x1 = 0;
+    size_t x2;
 
     for(; itX1 != itX2; ++itX1)
     {
@@ -1161,7 +1162,6 @@ void Rasterizer::Draw_noAlpha_spFF_Body_sse2(RasterizerNfo& rnfo)
   int h = rnfo.h;
   int color = rnfo.color;
 
-  const DWORD* sw = rnfo.sw;
   byte* s = rnfo.s;
   DWORD* dst = rnfo.dst;
   // The <<6 is due to pixmix expecting the alpha parameter to be
@@ -1181,7 +1181,6 @@ void Rasterizer::Draw_noAlpha_spFF_noBody_sse2(RasterizerNfo& rnfo)
   int h = rnfo.h;
   int color = rnfo.color;
 
-  const DWORD* sw = rnfo.sw;
   byte* src = rnfo.src;
   DWORD* dst = rnfo.dst;
   // src contains two different bitmaps, interlaced per pixel.
@@ -2013,6 +2012,8 @@ Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte*
 #if 0
 void Rasterizer::FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nHeight, DWORD lColor)
 {
+  DWORD alpha = (lColor >> 24) & 0xff;
+  lColor = (255 - alpha) << 24 | lColor & 0xffffff;
   // Warning : lColor is AARRGGBB (same format as DirectX D3DCOLOR_ARGB)
   for (int wy=y; wy<y+nHeight; wy++)
   {

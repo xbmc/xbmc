@@ -601,8 +601,6 @@ STDMETHODIMP CMemSubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
       dst.pitchUV = dst.pitch/2;
     }
 
-    int sizep4 = dst.pitchUV*dst.h/2;
-
     BYTE* ss[2];
     ss[0] = (BYTE*)src.bits + src.pitch*rs.top + rs.left*4;
     ss[1] = ss[0] + 4;

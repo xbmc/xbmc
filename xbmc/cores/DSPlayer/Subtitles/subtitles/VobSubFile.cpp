@@ -1153,9 +1153,23 @@ int CVobSubFile::GetFrameIdxByTimeStamp(__int64 time)
     int mid = (i + j) >> 1;
     int midstart = (int)sp[mid].start;
 
-    if(time == midstart) {ret = mid; break;}
-    else if(time < midstart) {ret = -1; if(j == mid) mid--; j = mid;}
-    else if(time > midstart) {ret = mid; if(i == mid) mid++; i = mid;}
+    if(time == midstart)
+    {
+      ret = mid;
+      break;
+    }
+    else if(time < midstart)
+    {
+      ret = -1;
+      if(j == mid) mid--;
+      j = mid;
+    }
+    else if(time > midstart)
+    {
+      ret = mid;
+      if(i == mid) mid++;
+      i = mid;
+    }
   }
 
   return(ret);
@@ -1361,10 +1375,24 @@ static void StretchBlt(SubPicDesc& spd, Com::SmartRect dstrect, CVobSubImage& sr
     srcdx = (sw << 16) / dw >> 1, 
     srcdy = (sh << 16) / dh >> 1;
 
-  if(dstrect.left < 0) {srcx = -dstrect.left * (srcdx<<1); dstrect.left = 0;}
-  if(dstrect.top < 0) {srcy = -dstrect.top * (srcdy<<1); dstrect.top = 0;}
-  if(dstrect.right > spd.w) {dstrect.right = spd.w;}
-  if(dstrect.bottom > spd.h) {dstrect.bottom = spd.h;}
+  if(dstrect.left < 0)
+  {
+    srcx = -dstrect.left * (srcdx << 1);
+    dstrect.left = 0;
+  }
+  if(dstrect.top < 0)
+  {
+    srcy = -dstrect.top * (srcdy << 1);
+    dstrect.top = 0;
+  }
+  if(dstrect.right > spd.w)
+  {
+    dstrect.right = spd.w;
+  }
+  if(dstrect.bottom > spd.h)
+  {
+    dstrect.bottom = spd.h;
+  }
 
   if((dstrect & Com::SmartRect(0, 0, spd.w, spd.h)).IsRectEmpty()) return;
 
@@ -1453,9 +1481,18 @@ void CVobSubSettings::GetDestrect(Com::SmartRect& r)
   {
     switch(m_alignhor)
     {
-    case 0: r.left = 0; r.right = w; break; // left
-    case 1: r.left = -(w>>1); r.right = -(w>>1) + w; break; // center
-    case 2: r.left = -w; r.right = 0; break; // right
+    case 0:
+      r.left = 0;
+      r.right = w;
+      break; // left
+    case 1:
+      r.left = -(w >> 1);
+      r.right = -(w >> 1) + w;
+      break; // center
+    case 2:
+      r.left = -w;
+      r.right = 0;
+      break; // right
     default:
       r.left = MulDiv(m_img.rect.left, m_scale_x, 100);
       r.right = MulDiv(m_img.rect.right, m_scale_x, 100);
@@ -1464,9 +1501,18 @@ void CVobSubSettings::GetDestrect(Com::SmartRect& r)
     
     switch(m_alignver)
     {
-    case 0: r.top = 0; r.bottom = h; break; // top
-    case 1: r.top = -(h>>1); r.bottom = -(h>>1) + h; break; // center
-    case 2: r.top = -h; r.bottom = 0; break; // bottom
+    case 0:
+      r.top = 0;
+      r.bottom = h;
+      break; // top
+    case 1:
+      r.top = -(h >> 1);
+      r.bottom = -(h >> 1) + h;
+      break; // center
+    case 2:
+      r.top = -h;
+      r.bottom = 0;
+      break; // bottom
     default:
       r.top = MulDiv(m_img.rect.top, m_scale_y, 100);
       r.bottom = MulDiv(m_img.rect.bottom, m_scale_y, 100);

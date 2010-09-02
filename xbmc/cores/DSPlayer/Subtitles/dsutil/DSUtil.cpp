@@ -761,3 +761,13 @@ DWORD YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb)
 
   return D3DCOLOR_ARGB (A, (BYTE)fabs(rp), (BYTE)fabs(gp), (BYTE)fabs(bp));
 }
+
+void memsetw(void* dst, unsigned short c, size_t nbytes)
+{
+  memsetd(dst, c << 16 | c, nbytes);
+
+  size_t n = nbytes / 2;
+  size_t o = (n / 2) * 2;
+  if ((n - o) == 1)
+    ((WORD*)dst)[o] = c;
+}

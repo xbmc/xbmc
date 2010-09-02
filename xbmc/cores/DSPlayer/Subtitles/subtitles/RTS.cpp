@@ -397,6 +397,7 @@ void CWord::Transform_SSE2( Com::SmartPoint &org )
     {
       switch(mPathPointsM4)
       {
+      default:
       case 0: continue;
       case 1:
         __pointx = _mm_set_ps(mpPathPoints[4 * i + 0].x, 0, 0, 0);
@@ -506,9 +507,8 @@ void CWord::Transform_SSE2( Com::SmartPoint &org )
     __m128 __tmpy;
     if(m_style.fontShiftY!=0)
     {
-      __m128 __tmpy = _mm_mul_ps(__yshift, __pointx);
+      __tmpy = _mm_mul_ps(__yshift, __pointx);
       __tmpy = _mm_add_ps(__tmpy, __pointy);
-
     }
     else
     {
@@ -599,8 +599,6 @@ CText::CText(STSStyle& style, CStdStringW str, int ktype, int kstart, int kend)
 #endif
   if(m_style.fontSpacing || (long)GetVersion() < 0)
   {
-    bool bFirstPath = true;
-
     for(LPCWSTR s = m_str; *s; s++)
     {
       Com::SmartSize extent;
@@ -620,7 +618,7 @@ CText::CText(STSStyle& style, CStdStringW str, int ktype, int kstart, int kend)
   }
   else
   {
-  Com::SmartSize extent;
+    Com::SmartSize extent;
     if(!GetTextExtentPoint32W(g_hDC, m_str, wcslen(str), &extent))
     {
        SelectFont(g_hDC, hOldFont);
@@ -719,15 +717,11 @@ CWord* CPolygon::Copy()
 
 bool CPolygon::Append(CWord* w)
 {
-  int width = m_width;
-
   CPolygon* p = dynamic_cast<CPolygon*>(w);
   if(!p) return(false);
 
   // TODO
   return(false);
-
-  return(true);
 }
 
 bool CPolygon::GetLONG(CStdStringW& str, LONG& ret)
@@ -787,6 +781,7 @@ bool CPolygon::ParseStr()
       }
       break;
     case 'l':
+      if (m_pathPointsOrg.size() < 1) break;
       while(GetPOINT(s, p))
       {
         m_pathTypesOrg.push_back(PT_LINETO);
@@ -806,6 +801,7 @@ bool CPolygon::ParseStr()
       m_pathPointsOrg.resize(j);
       break;
     case 's':
+      if (m_pathPointsOrg.size() < 1) break;
       j = lastsplinestart = m_pathTypesOrg.size();
       i = 3;
       while(i-- && GetPOINT(s, p))
@@ -822,11 +818,11 @@ bool CPolygon::ParseStr()
       }
       // no break here
     case 'p':
+      if (m_pathPointsOrg.size() < 3) break;
       while(GetPOINT(s, p))
       {
         m_pathTypesOrg.push_back(PT_BSPLINEPATCHTO);
         m_pathPointsOrg.push_back(p);
-        j++;
       }
       break;
     case 'c':
@@ -909,7 +905,12 @@ CClipper::CClipper(CStdStringW str, Com::SmartSize size, double scalex, double s
   m_size.cx = m_size.cy = 0;
   m_pAlphaMask = NULL;
 
-  if(size.cx < 0 || size.cy < 0 || !(m_pAlphaMask = DNew BYTE[size.cx*size.cy])) return;
+  if(size.cx < 0 || size.cy < 0)
+    return;
+
+  m_pAlphaMask = DNew BYTE[size.cx*size.cy];
+  if (!m_pAlphaMask)
+    return;
 
   m_size = size;
   m_inverse = inverse;
@@ -2649,7 +2650,7 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
       {
         if(Effect* e = new Effect)
         {
-          e->param[0] = 1; // радиальный мов
+          e->param[0] = 1;
           e->param[1] = (int)(sub->m_scalex*wcstod(params[0], NULL)*8); // x1
           e->param[2] = (int)(sub->m_scaley*wcstod(params[1], NULL)*8); // y1
           e->param[3] = (int)(sub->m_scalex*wcstod(params[2], NULL)*8); // x2
@@ -2762,7 +2763,7 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
         if(Effect* e = DNew Effect)
         {
 #ifdef _VSMOD // patch m005. add some move types
-          e->param[0] = 0; // обычный мов
+          e->param[0] = 0;
           e->param[1] = (int)(sub->m_scalex*wcstod(params[0], NULL)*8);
           e->param[2] = (int)(sub->m_scaley*wcstod(params[1], NULL)*8);
           e->param[3] = (int)(sub->m_scalex*wcstod(params[2], NULL)*8);
@@ -3380,7 +3381,6 @@ STDMETHODIMP_(REFERENCE_TIME) CRenderedTextSubtitle::GetStop(int pos, double fps
 
 STDMETHODIMP_(bool) CRenderedTextSubtitle::IsAnimated(int pos)
 {
-  // TODO
   return(true);
 }
 

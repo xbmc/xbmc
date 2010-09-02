@@ -109,8 +109,22 @@ STDMETHODIMP CDX9SubPic::CopyTo(ISubPic* pSubPic)
   if(!m_pSurface || FAILED(m_pSurface->GetDevice(&pD3DDev)) || !pD3DDev)
     return E_FAIL;
 
-  hr = pD3DDev->UpdateTexture((IDirect3DTexture9*)GetObject(), (IDirect3DTexture9*)pSubPic->GetObject());
-//  ASSERT (SUCCEEDED (hr));
+  IDirect3DTexture9* pSrcTex = (IDirect3DTexture9*)GetObject();
+  Com::SmartPtr<IDirect3DSurface9> pSrcSurf;
+  pSrcTex->GetSurfaceLevel(0, &pSrcSurf);
+  D3DSURFACE_DESC srcDesc;
+  pSrcSurf->GetDesc(&srcDesc);
+
+  IDirect3DTexture9* pDstTex = (IDirect3DTexture9*)pSubPic->GetObject();
+  Com::SmartPtr<IDirect3DSurface9> pDstSurf;
+  pDstTex->GetSurfaceLevel(0, &pDstSurf);
+  D3DSURFACE_DESC dstDesc;
+  pDstSurf->GetDesc(&dstDesc);
+
+  RECT r;
+  SetRect(&r, 0, 0, min(srcDesc.Width, dstDesc.Width), min(srcDesc.Height, dstDesc.Height));
+  POINT p = { 0, 0 };
+  hr = pD3DDev->UpdateSurface(pSrcSurf, &r, pDstSurf, &p);
 
   return SUCCEEDED(hr) ? S_OK : E_FAIL;
 }
@@ -135,9 +149,7 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
     {
       while(h-- > 0)
       {
-        WORD* start = (WORD*)ptr;
-        WORD* end = start + m_rcDirty.Width();
-        while(start < end) *start++ = (WORD)color;
+        memsetw(ptr, color, 2 * m_rcDirty.Width());
         ptr += spd.pitch;
       }
     }
@@ -145,9 +157,7 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
     {
       while(h-- > 0)
       {
-        DWORD* start = (DWORD*)ptr;
-        DWORD* end = start + m_rcDirty.Width();
-        while(start < end) *start++ = color;
+        memsetd(ptr, color, 4 * m_rcDirty.Width());
         ptr += spd.pitch;
       }
     }
@@ -199,12 +209,15 @@ STDMETHODIMP CDX9SubPic::Unlock(RECT* pDirtyRect)
   if(pDirtyRect)
   {
     m_rcDirty = *pDirtyRect;
-    m_rcDirty.InflateRect(1, 1);
-    m_rcDirty.left &= ~127;
-    m_rcDirty.top &= ~63;
-    m_rcDirty.right = (m_rcDirty.right + 127) & ~127;
-    m_rcDirty.bottom = (m_rcDirty.bottom + 63) & ~63;
-    m_rcDirty &= Com::SmartRect(Com::SmartPoint(0, 0), m_size);
+    if (!((Com::SmartRect*)pDirtyRect)->IsRectEmpty())
+    {
+      m_rcDirty.InflateRect(1, 1);
+      m_rcDirty.left &= ~127;
+      m_rcDirty.top &= ~63;
+      m_rcDirty.right = (m_rcDirty.right + 127) & ~127;
+      m_rcDirty.bottom = (m_rcDirty.bottom + 63) & ~63;
+      m_rcDirty &= Com::SmartRect(Com::SmartPoint(0, 0), m_size);
+    }
   }
   else
   {
@@ -212,7 +225,7 @@ STDMETHODIMP CDX9SubPic::Unlock(RECT* pDirtyRect)
   }
 
   Com::SmartPtr<IDirect3DTexture9> pTexture = (IDirect3DTexture9*)GetObject();
-  if (pTexture)
+  if (pTexture && !((Com::SmartRect*)pDirtyRect)->IsRectEmpty())
     pTexture->AddDirtyRect(&m_rcDirty);
 
   return S_OK;
@@ -303,7 +316,7 @@ STDMETHODIMP CDX9SubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
     return S_OK;
   } while(0);
 
-    return E_FAIL;
+  return E_FAIL;
 }
 
 STDMETHODIMP CDX9SubPic::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture )

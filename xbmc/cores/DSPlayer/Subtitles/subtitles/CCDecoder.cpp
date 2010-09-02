@@ -315,10 +315,6 @@ void CCDecoder::DecodeCC(BYTE* buff, int len, __int64 time)
 
         MoveCursor(col, row);
       }
-      else
-      {
-        int iiii = 0;
-      }
 
       i++;
     }

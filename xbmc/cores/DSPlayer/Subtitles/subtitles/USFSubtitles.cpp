@@ -22,8 +22,7 @@
 #include "StdAfx.h"
 #include "usfsubtitles.h"
 #include <msxml.h>
-
-
+#include "DShowUtil\smartptr.h"
 
 #define DeclareNameAndValue(pNode, name, val) \
     _bstr_t foo; \
@@ -33,7 +32,7 @@
     pNode->get_nodeValue(&val); \
 
 #define BeginEnumAttribs(pNode, pChild, name, value) \
-  {IXMLDOMNamedNodeMap* pAttribs; \
+  {Com::SmartPtr<IXMLDOMNamedNodeMap> pAttribs; \
   if(SUCCEEDED(pNode->get_attributes(&pAttribs)) && pAttribs != NULL) \
     { \
     IXMLDOMNodePtr pChild; \
@@ -66,7 +65,7 @@ static CStdStringW GetXML(IXMLDOMNodePtr pNode)
   str.Replace('\n', ' ');
   for(int i = 0; (i = str.Find(L" ", i)) >= 0; )
   {
-    for(++i; i < str.GetLength() && (str[i] == '\n' || str[i] == ' ');)
+		for(++i; i < str.GetLength() && (str[i] == ' ');)
       str.Delete(i);
   }
   return(str);

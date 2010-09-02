@@ -36,6 +36,7 @@ extern bool IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly = false);
 extern IPin* GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir = PINDIR_INPUT);
 extern CStdStringW GetPinName(IPin* pPin);
 extern void memsetd(void* dst, unsigned int c, int nbytes);
+extern void memsetw(void* dst, unsigned short c, size_t nbytes);
 extern CStdStringW UTF8To16(LPCSTR utf8);
 extern CStdString ISO6392ToLanguage(LPCSTR code);
 extern LCID    ISO6391ToLcid(LPCSTR code);

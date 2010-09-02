@@ -41,7 +41,7 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings setti
     }
   }
 
-  g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_settings.textureSize.cx, m_settings.textureSize.cy, m_settings.bufferAhead, m_settings.forcePowerOfTwoTextures);
+  g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_settings.textureSize.cx, m_settings.textureSize.cy,    m_settings.bufferAhead, m_settings.forcePowerOfTwoTextures);
   m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_settings.textureSize, m_settings.forcePowerOfTwoTextures));
   hr = S_OK;
   if (m_settings.bufferAhead > 0)

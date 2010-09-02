@@ -88,9 +88,8 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
 		CGolombBuffer	GBuffer (m_pRLEData, m_nRLEDataSize);
 		BYTE			bTemp;
 		BYTE			bSwitch;
-		bool			bEndOfLine = false;
 
-		BYTE			nPaletteIndex;
+		BYTE			nPaletteIndex = 0;
 		SHORT			nCount;
 		SHORT			nX	= 0;
 		SHORT			nY	= 0;
