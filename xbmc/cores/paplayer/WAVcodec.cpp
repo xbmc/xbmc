@@ -103,7 +103,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       {
         case 8 : m_DataFormat = AE_FMT_U8   ; break;
         case 16: m_DataFormat = AE_FMT_S16LE; break;
-        case 24: m_DataFormat = AE_FMT_S24BE; break;
+        case 24: m_DataFormat = AE_FMT_S24NE; break;
         case 32: m_DataFormat = AE_FMT_FLOAT; break;
       }
 

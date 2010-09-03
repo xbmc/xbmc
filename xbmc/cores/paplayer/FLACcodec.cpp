@@ -321,6 +321,7 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, cons
     {
       case  8: pThis->m_DataFormat = AE_FMT_U8;    break;
       case 16: pThis->m_DataFormat = AE_FMT_S16NE; break;
+      case 24: pThis->m_DataFormat = AE_FMT_S24NE; break;
       case 32: pThis->m_DataFormat = AE_FMT_FLOAT; break;
     }
     pThis->m_TotalTime     = (__int64)metadata->data.stream_info.total_samples * 1000 / metadata->data.stream_info.sample_rate;

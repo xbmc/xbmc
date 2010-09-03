@@ -33,6 +33,7 @@ private:
   static unsigned int S8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S16LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S16BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int S24LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S24BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S32LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S32BE_Float (uint8_t *data, const unsigned int samples, float   *dest);
