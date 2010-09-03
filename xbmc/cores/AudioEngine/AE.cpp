@@ -140,7 +140,6 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   m_reOpened = true;
 
   /* we are going to open, so close the old sink if it was open */
-  bool reopen = false;
   if (m_sink)
   {
     m_sink->Deinitialize();
@@ -149,7 +148,6 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
 
     _aligned_free(m_buffer);
     m_buffer = NULL;
-    reopen = true;
   }
 
   /* set the local members */
@@ -163,10 +161,11 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   if (!m_sink->Initialize(desiredFormat, device))
   {
     /* we failed, set the data format to defaults so the thread does not block */
-    desiredFormat.m_dataFormat   = AE_FMT_FLOAT;
-    desiredFormat.m_frames       = (sampleRate / 1000) * DELAY_FRAME_TIME;
-    desiredFormat.m_frameSamples = m_format.m_frames * m_format.m_channelCount;
-    desiredFormat.m_frameSize    = m_format.m_frameSamples * sizeof(float);
+    desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
+    desiredFormat.m_frames        = (sampleRate / 1000) * DELAY_FRAME_TIME;
+    desiredFormat.m_frameSamples  = m_format.m_frames * m_format.m_channelCount;
+    desiredFormat.m_frameSize     = m_format.m_frameSamples * sizeof(float);
+    desiredFormat.m_channelLayout = m_chLayout;
 
     delete m_sink;
     m_sink = NULL;
@@ -198,7 +197,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
 
   /* if we did not re-open or we are in raw passthrough, we are finished */
-  if (!reopen || m_rawPassthrough) return true;
+  if (m_rawPassthrough) return true;
 
   /* re-init sounds */
   m_playing_sounds.clear();
