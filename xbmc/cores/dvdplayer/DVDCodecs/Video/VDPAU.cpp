@@ -616,7 +616,7 @@ void CVDPAU::SetDeinterlacing()
 
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
-    VdpBool enabled[]={1,1,0};
+    VdpBool enabled[]={1,1,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
