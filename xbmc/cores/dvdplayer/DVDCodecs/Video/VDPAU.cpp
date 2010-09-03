@@ -1317,6 +1317,18 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   return true;
 }
 
+void CVDPAU::Reset()
+{
+  // invalidate surfaces and picture queue when seeking
+  ClearUsedForRender(&past[0]);
+  ClearUsedForRender(&past[1]);
+  ClearUsedForRender(&current);
+  ClearUsedForRender(&future);
+
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
+}
+
 void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);

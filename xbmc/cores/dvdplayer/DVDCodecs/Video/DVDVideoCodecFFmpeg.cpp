@@ -498,6 +498,9 @@ void CDVDVideoCodecFFmpeg::Reset()
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
+  if (m_pHardware)
+    m_pHardware->Reset();
+
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];

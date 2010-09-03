@@ -66,6 +66,7 @@ public:
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual void Reset();
   virtual void Close();
 
   virtual int  Check(AVCodecContext* avctx) 

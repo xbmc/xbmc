@@ -41,6 +41,7 @@ public:
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
+    virtual void Reset     () {}
     virtual const std::string Name() = 0;
     virtual CCriticalSection* Section() { return NULL; }
     virtual long              Release();
