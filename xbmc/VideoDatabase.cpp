@@ -108,7 +108,7 @@ bool CVideoDatabase::CreateTables()
                 "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
                 "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float, NonLinStretch bool)\n");
+                "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
 
     CLog::Log(LOGINFO, "create stacktimes table");
@@ -3294,6 +3294,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       m_pDS->exec("DELETE FROM streamdetails");
       m_pDS->exec("ALTER table streamdetails add iVideoDuration integer");
+    }
+    if (iVersion < 41)
+    {
+      m_pDS->exec("ALTER table settings add PostProcess bool");
     }
   }
   catch (...)
