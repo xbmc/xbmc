@@ -3547,12 +3547,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
-    CFileItem item_new;
+    CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
-    {
-      item_new.SetProperty("original_listitem_url", item.HasProperty("original_listitem_url") ? item.GetProperty("original_listitem_url") : item.m_strPath);
       return PlayFile(item_new, false);
-    }
     return false;
   }
 
