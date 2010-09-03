@@ -29,6 +29,7 @@
   <string id="31030">Пълен лист</string>
   <string id="31031">Малки картинки</string>
   <string id="31032">Изображение въртене</string>
+  <string id="31033">Инфо</string>
 
   <!-- Extra labels -->
   <string id="31040">Възпроизвежда</string>
@@ -50,13 +51,14 @@
   <string id="31058">Системна музика</string>
   <string id="31059">Текущ плейлист</string>
   <string id="31060">Изберете място, от което искате да възпроизвеждате.</string>
+  <string id="31061">Текущо избрани</string>
   
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Настройки на начален екран</string>
   <string id="31102">Фон</string>
   <string id="31103">Покажи "На Пауза" в слайдшоу на снимки</string>
-  <string id="31104"></string>
+  <string id="31104">Възпроизведи трейлърите в прозорец [COLOR=grey3](Само диалог за видео инфо)[/COLOR]</string>
   <string id="31105">Показвай заглавия във фоновото сканиране</string>
   <string id="31106">Разни опции</string>
   <string id="31107"></string>
@@ -68,7 +70,7 @@
   <string id="31113">Една картина</string>
   <string id="31114">Много картини</string>
   <string id="31115">Потребителски</string>
-  <string id="31116">Скриптове</string>
+  <string id="31116"></string>
   <string id="31117">Покажи Наскоро добавени видео</string>
   <string id="31118">Подменю Начална страница</string>
   <string id="31119">Включи протребителски Скрипт Бутон</string>
@@ -79,22 +81,22 @@
   <string id="31124">Покажи фон "Възпроизвеждам" Видео</string>
   <string id="31125">Покажи фон "Възпроизвеждам" Визуализация</string>
 
-  <string id="31126">Включи лирика в музиката OSD</string>
-  <string id="31127">ПЪТ ДО СКРИПТ ЛИРИКА</string>
-  <string id="31128">XBMC лирики</string>
+  <string id="31126">Включи текст на песен в музиката OSD</string>
+  <string id="31127">ПЪТ ДО ТЕСКТ НА ПЕСЕН ДОБАВКА</string>
+  <string id="31128">ТЕСКТ НА ПЕСЕН</string>
+  <string id="31129">Включи сваляне на субтитри във Видео OSD</string>
+  <string id="31130">ПЪТ ДО ДОБАВКА СУБТИТРИ</string>
+
+  <string id="31140">Музика OSD</string>
+  <string id="31141">Видео OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Преки пътища</string>
   <string id="31201">Категории</string>
   <string id="31202">Покажи ролите</string>
   <string id="31203">Избери песен</string>
-  <string id="31204">Section Links</string>
-  <string id="31205">Източник на лирика</string>
-
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Радар &amp; Прогноза</string>
-  <string id="31251">Прогноза</string>
-  <string id="31252">TWC Скрипт</string>
+  <string id="31204">Секзия връзки</string>
+  <string id="31205">Източник на текст на песен</string>
 
   <!-- Extra labels -->
   <string id="31300">Текуща температура</string>
@@ -127,6 +129,16 @@
   <string id="31327">Резолюция</string>
   <string id="31328">Наскоро Добавени</string>
   <string id="31329">[B]ТАЙМЕР УСТАНОВЕН![/B] [COLOR=grey2] - АВТОМАТИЧНО ИЗКЛЮЧВАНЕ[/COLOR]</string>
+  <string id="31330">Натисни бутон за възпроизвеждане[CR][CR]Трейлър</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Пауза</string>
+  <string id="31352">Стоп</string>
+  <string id="31353">Превъртане напред</string>
+  <string id="31354">Превъртане назад</string>
+  <string id="31355">Меню филм</string>
+  <string id="31356">Свали субтитри</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]КОНФИГУРАЦИЯ НАСТРОЙКИ НА ОБЛИКА[/B][CR][CR]Промяна на кожа · Избор на език и регион · Промяна на файловите опции[CR]Настройки на скрийнсейвър</string>

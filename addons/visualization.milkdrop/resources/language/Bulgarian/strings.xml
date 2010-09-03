@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Автоматично време за смесване</string>
+    <string id="30001">Време между предварително настроени</string>
+    <string id="30002">Допълнително случайно вреве</string>
+    <string id="30003">Включи анизотропно филтриране</string>
+    <string id="30004">Включи Hard Cuts</string>
+    <string id="30005">Прагове на усилване за Hard Cuts</string>
+    <string id="30006">Средно време между Hard Cuts</string>
+    <string id="30007">Максимално опресняване</string>
+    <string id="30008">Включи стерео 3D</string>
+    <string id="30009">Предварително настроен пакет</string>
+</strings>
