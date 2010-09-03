@@ -1,10 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ydatografida-->
-<!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/26/2010-->
+<!--Date of translation: 09/03/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 32185-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -54,6 +51,23 @@
   <string id="60">Οκτ</string>
   <string id="61">Νοε</string>
   <string id="62">Δεκ</string>
+  <string id="71">Β</string>
+  <string id="72">ΒΒΑ</string>
+  <string id="73">ΒΑ</string>
+  <string id="74">ΑΒΑ</string>
+  <string id="75">Α</string>
+  <string id="76">ΑΝΑ</string>
+  <string id="77">ΝΑ</string>
+  <string id="78">ΝΝΑ</string>
+  <string id="79">Ν</string>
+  <string id="80">ΝΝΔ</string>
+  <string id="81">ΝΔ</string>
+  <string id="82">ΔΝΔ</string>
+  <string id="83">Δ</string>
+  <string id="84">ΔΒΔ</string>
+  <string id="85">ΒΔ</string>
+  <string id="86">ΒΒΔ</string>
+  <string id="87">ΔΙΑΦ</string>
   <string id="98">Προβολή: Αυτόματη</string>
   <string id="99">Προβολή: Εικόνες</string>
   <string id="100">Προβολή: Εικονίδια</string>
@@ -185,6 +199,8 @@
   <string id="241">Πλήρης οθόνη #%d</string>
   <string id="242">Σε παράθυρο</string>
   <string id="243">Ανανέωση βαθμολογίας</string>
+  <string id="244">Πλήρης οθόνη</string>
+  <string id="245">Ταξινόμηση: (%i,%i)-&gt;(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
   <string id="247">Scripts</string>
   <string id="248">Γλώσσα</string>
   <string id="249">Μουσική</string>
@@ -324,9 +340,9 @@
   <string id="388">τις πρώτες πρωινές ώρες</string>
   <string id="389">Μπόρα</string>
   <string id="390">Σύντομες ελαφρές χιονοπτώσεις</string>
-  <string id="391">Ελάχιστη</string>
-  <string id="392">Μέση</string>
-  <string id="393">Μέγιστη</string>
+  <string id="391">Ελαχ.</string>
+  <string id="392">Μεσ.</string>
+  <string id="393">Μεγ.</string>
   <string id="394">Ομίχλη</string>
   <string id="395">Καταχνιά</string>
   <string id="396">Επιλογή τοποθεσίας</string>
@@ -366,6 +382,7 @@
   <string id="431">Δεν υπάρχει ελεύθερη λανθάνουσα μνήμη</string>
   <string id="432">Διαγραφή ταινίας από τη συλλογή</string>
   <string id="433">Να διαγραφεί '%s';</string>
+  <string id="434">Από %s με ένταση %i %s</string>
   <string id="437">Αφαιρούμενος δίσκος</string>
   <string id="438">Άνοιγμα αρχείου</string>
   <string id="439">Λανθάνουσα μνήμη</string>
@@ -769,6 +786,9 @@
   <string id="1418">Καταιγίδες (με κεραυνούς) </string>
   <string id="1419">Μπόρες (με κεραυνούς)</string>
   <string id="1420">Μέση</string>
+  <string id="1421">Πολύ υψηλή</string>
+  <string id="1422">Θυελλώδης</string>
+  <string id="1423">Ομίχλη</string>
   <string id="1450">Σε κατάσταση ύπνωσης κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="2100">Αποτυχία script! : %s</string>
@@ -966,6 +986,8 @@
   <string id="13210">Εκκίνηση ξυπνητηριού σε %im</string>
   <string id="13211">Συναγερμός!</string>
   <string id="13212">Ακυρώθηκε %im%is απέμειναν</string>
+  <string id="13213">%2.0fm</string>
+  <string id="13214">%2.0fs</string>
   <string id="13249">Αναζήτηση υποτίτλων στα RARs</string>
   <string id="13250">Αναζήτηση για υπότιτλο...</string>
   <string id="13251">Μετακίνηση αντικειμένου</string>
@@ -1565,6 +1587,8 @@
   <string id="20253">Διακομιστής WebDAV (HTTP)</string>
   <string id="20254">Διακομιστής WebDAV (HTTPS)</string>
   <string id="20255">Πρώτη σύνδεση, επεξεργαστείτε το προφίλ σας</string>
+  <string id="20256">HTS Tvheadend client</string>
+  <string id="20257">VDR Streamdev client</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
@@ -1629,6 +1653,7 @@
   <string id="20373">Κύκλος</string>
   <string id="20374">Λήψη πληροφοριών για την ταινία</string>
   <string id="20375">Εκχώρηση περιεχόμενου</string>
+  <string id="20376">Πρωτότυπος τίτλος</string>
   <string id="20377">Ανανέωση πληροφοριών τηλεοπτικής σειράς</string>
   <string id="20378">Ανανέωση πληροφοριών για όλα τα επεισόδια;</string>
   <string id="20379">Ο επιλεγμένος φάκελος περιέχει μία ενιαία τηλεοπτική σειρά</string>
@@ -1866,7 +1891,7 @@
   <string id="21887">Βιογραφικό</string>
   <string id="21888">Δισκογραφία</string>
   <string id="21889">Αναζήτηση καλλιτέχνη</string>
-  <string id="21890">Επιλογή καλλιτέ��νη</string>
+  <string id="21890">Επιλογή καλλιτέxνη</string>
   <string id="21891">Πληροφορίες καλλιτέχνη</string>
   <string id="21892">Όργανα</string>
   <string id="21893">Γέννηση</string>
@@ -1880,6 +1905,7 @@
   <string id="22000">Ενημέρωση της συλλογής κατά την εκκίνηση</string>
   <string id="22001">Απόκρυψη εξέλιξης ενημερώσεων συλλογής</string>
   <string id="22002">- Κατάληξη DNS</string>
+  <string id="22003">%2.3fs</string>
   <string id="22004">Καθυστέρηση κατά: %2.3fs</string>
   <string id="22005">Προβάδισμα κατά: %2.3fs</string>
   <string id="22006">Μετατόπιση υπότιτλων</string>
@@ -2017,7 +2043,7 @@
   <string id="33019">Αύριο το βράδυ</string>
   <string id="33020">Kατάσταση καιρού</string>
   <string id="33021">Υετός</string>
-  <string id="33022">Υετός</string>
+  <string id="33022">Βροχή</string>
   <string id="33023">Υγρασία</string>
   <string id="33024">Αίσθηση</string>
   <string id="33025">Παρατηρούμενη</string>

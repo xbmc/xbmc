@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Режим</string>
+    <string id="30001">Запълнено</string>
+    <string id="30002">Рамка</string>
+    <string id="30003">Точки</string>
+    <string id="30004">Височина бар</string>
+    <string id="30005">Малък</string>
+    <string id="30006">По подразбиране</string>
+    <string id="30007">Голям</string>
+    <string id="30008">Много голям</string>
+    <string id="30009">Скорост</string>
+    <string id="30010">Много бавно</string>
+    <string id="30011">Бавно</string>
+    <string id="30012">По подразбиране</string>
+    <string id="30013">Бързо</string>
+    <string id="30014">Много бързо</string>
+</strings>
