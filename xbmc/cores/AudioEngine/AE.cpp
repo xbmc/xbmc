@@ -81,16 +81,17 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_2_0;
   switch(g_guiSettings.GetInt("audiooutput.channellayout")) {
     default:
-    case 0: stdChLayout = AE_CH_LAYOUT_2_0; break;
-    case 1: stdChLayout = AE_CH_LAYOUT_2_1; break;
-    case 2: stdChLayout = AE_CH_LAYOUT_3_0; break;
-    case 3: stdChLayout = AE_CH_LAYOUT_3_1; break;
-    case 4: stdChLayout = AE_CH_LAYOUT_4_0; break;
-    case 5: stdChLayout = AE_CH_LAYOUT_4_1; break;
-    case 6: stdChLayout = AE_CH_LAYOUT_5_0; break;
-    case 7: stdChLayout = AE_CH_LAYOUT_5_1; break;
-    case 8: stdChLayout = AE_CH_LAYOUT_7_0; break;
-    case 9: stdChLayout = AE_CH_LAYOUT_7_1; break;
+    case  0: stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
+    case  1: stdChLayout = AE_CH_LAYOUT_2_0; break;
+    case  2: stdChLayout = AE_CH_LAYOUT_2_1; break;
+    case  3: stdChLayout = AE_CH_LAYOUT_3_0; break;
+    case  4: stdChLayout = AE_CH_LAYOUT_3_1; break;
+    case  5: stdChLayout = AE_CH_LAYOUT_4_0; break;
+    case  6: stdChLayout = AE_CH_LAYOUT_4_1; break;
+    case  7: stdChLayout = AE_CH_LAYOUT_5_0; break;
+    case  8: stdChLayout = AE_CH_LAYOUT_5_1; break;
+    case  9: stdChLayout = AE_CH_LAYOUT_7_0; break;
+    case 10: stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 
   /* choose a sample rate based on the oldest stream or if none, the requested sample rate */
@@ -162,6 +163,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   CLog::Log(LOGINFO, "CAE::Initialize - %s Initialized:", m_sink->GetName());
   CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
   CLog::Log(LOGINFO, "  Sample Rate   : %d", desiredFormat.m_sampleRate);
+  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(desiredFormat.m_dataFormat));
   CLog::Log(LOGINFO, "  Channel Count : %d", desiredFormat.m_channelCount);
   CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(desiredFormat.m_channelLayout).c_str());
   CLog::Log(LOGINFO, "  Frames        : %d", desiredFormat.m_frames);
@@ -540,9 +542,12 @@ void CAE::Run()
 
     CSingleLock sinkLock(m_critSectionSink);
       m_reOpened = false;
-      RunOutputStage();
-      /* copy this value so we can unlock the sink */
-      channelCount = m_channelCount;
+      if (m_sink)
+      {
+        RunOutputStage();
+        /* copy this value so we can unlock the sink */
+        channelCount = m_channelCount;
+      }
     sinkLock.Leave();
 
     CSingleLock mixLock(m_critSection);
@@ -555,7 +560,7 @@ void CAE::Run()
     mixLock.Leave();
 
     sinkLock.Enter();
-    if (!m_reOpened)
+    if (!m_reOpened && m_sink)
       RunBufferStage(out);
     sinkLock.Leave();
   }
