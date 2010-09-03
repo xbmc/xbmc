@@ -51,7 +51,7 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
   --disable-vdadecoder --disable-openmax --disable-tegra --disable-profiling \
   --enable-joystick --enable-xrandr --enable-goom --disable-ccache \
   --enable-pulse --enable-rtmp --enable-ffmpeg-libvorbis --disable-mid \
-  --enable-hal --enable-avahi --disable-non-free --disable-asap-codec \
+  --enable-hal --enable-avahi --disable-asap-codec \
   --enable-webserver --disable-libdts --disable-liba52 \
   $(XBMC_CONFIG_EXTRA_OPTIONS) \
   $(DISTRO_SPECIFIC_OPTIONS) \
@@ -87,6 +87,8 @@ override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
+	$(MAKE) -C lib/addons/script.module.pil
+	$(MAKE) -C lib/addons/script.module.pysqlite
 	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
 		WII_EXTRA_OPTS=-DCWIID_OLD

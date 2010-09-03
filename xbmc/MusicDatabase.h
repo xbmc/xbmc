@@ -192,10 +192,10 @@ public:
   bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type);
 
   /*! \brief Check whether a given scraper is in use.
-   \param scraper the scraper to check for.
+   \param scraperID the scraper to check for.
    \return true if the scraper is in use, false otherwise.
    */
-  bool ScraperInUse(const ADDON::ScraperPtr &scraper) const;
+  bool ScraperInUse(const CStdString &scraperID) const;
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);

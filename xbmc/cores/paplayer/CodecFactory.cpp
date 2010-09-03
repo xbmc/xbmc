@@ -168,13 +168,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-#else
-    codec = new DVDPlayerCodec(CODEC_ID_DTS);
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
 #endif
 #ifdef USE_LIBA52_DECODER
     codec = new AC3Codec();
@@ -183,13 +176,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-#else
-    codec = new DVDPlayerCodec(CODEC_ID_AC3);
-    if (codec->Init(strFile, filecache))
+#endif
+#if !defined(USE_LIBDTS_DECODER) || !defined(USE_LIBA52_DECODER)
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType("audio/x-spdif-compressed");
+    if (dvdcodec->Init(strFile, filecache))
     {
-      return codec;
+      return dvdcodec;
     }
-    delete codec;
+    delete dvdcodec;
 #endif
     codec = new ADPCMCodec();
     if (codec->Init(strFile, filecache))
@@ -207,20 +202,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
+#if defined(USE_LIBDTS_DECODER) || defined(HAS_AC3_CDDA_CODEC)
     ICodec* codec;
+#endif
 #ifdef USE_LIBDTS_DECODER
     //lets see what it contains...
     //this kinda sucks 'cause if it's plain cdda the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
     //would be better if the papcodecs could work with bitstreams instead of filenames.
     codec = new DTSCDDACodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
-#else
-    codec = new DVDPlayerCodec(CODEC_ID_DTS);
     if (codec->Init(strFile, filecache))
     {
       return codec;
@@ -234,13 +224,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-#else
-    codec = new DVDPlayerCodec(CODEC_ID_AC3);
-    if (codec->Init(strFile, filecache))
+#endif
+#if !defined(USE_LIBDTS_DECODER) || !defined(HAS_AC3_CDDA_CODEC)
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType("audio/x-spdif-compressed");
+    if (dvdcodec->Init(strFile, filecache))
     {
-      return codec;
+      return dvdcodec;
     }
-    delete codec;
+    delete dvdcodec;
 #endif
   }
   else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))

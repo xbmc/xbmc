@@ -48,6 +48,7 @@ make
 popd 
 
 cp crystalhd/firmware/fwbin/70012/*.bin /lib/firmware
+cp crystalhd/firmware/fwbin/70015/*.bin /lib/firmware
 
 mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* /usr/lib
 
@@ -76,6 +77,7 @@ cd $modulesdir
 mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
+rm /tmp/crystalhd.ko 
 depmod $kernelVersion
 popd
 

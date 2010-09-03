@@ -1,0 +1,2 @@
+; filename                        source of the file
+bzip2-1.0.4-lib.zip          http://www.winkde.org/pub/kde/ports/win32/repository-4.4/gnuwin32/

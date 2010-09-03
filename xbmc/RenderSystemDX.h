@@ -46,7 +46,8 @@ public:
   virtual bool PresentRender();
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
-  virtual bool IsTextureFormatOk(D3DFORMAT DepthFormat, DWORD usage);
+  virtual bool IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
+  virtual bool IsTextureFormatOk(D3DFORMAT texFormat, DWORD usage);
 
   virtual void SetVSync(bool vsync);
 
@@ -103,7 +104,7 @@ protected:
   void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
-  BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT RenderTargetFormat);
+  BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat);
 
   LPDIRECT3D9                 m_pD3D;
 

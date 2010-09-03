@@ -219,7 +219,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     return false;
   }
 
-  // Build the channel map, we dont need to use PCMRemap, pulse does it for us :)
+  // Build the channel map, we dont need to remap, but we still need PCMRemap to handle mono to dual mono stereo
   map.channels = iChannels;
   if (outLayout)
   {
@@ -499,7 +499,7 @@ unsigned int CPulseAudioDirectSound::GetSpace()
   pa_threaded_mainloop_lock(m_MainLoop);
   l = pa_stream_writable_size(m_Stream);
   pa_threaded_mainloop_unlock(m_MainLoop);
-  return l;
+  return (l / m_uiChannels) * m_uiDataChannels;
 }
 
 unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int len)
@@ -508,21 +508,31 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
     return len;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  int length = std::min((int)GetSpace(), (int)((len / m_uiDataChannels) * m_uiChannels));
-  int rtn;
+
+  len = (len / m_uiDataChannels) * m_uiChannels;
+  int length = std::min((int)pa_stream_writable_size(m_Stream), (int)len);
+  int frames = length / m_uiChannels / (m_uiBitsPerSample >> 3);
+  if (frames == 0)
+  {
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    return 0;
+  }
 
   if (m_remap.CanRemap())
   {
     /* remap the data to the correct channels */
     uint8_t outData[length];
-    m_remap.Remap((void *)data, outData, length / (m_uiBitsPerSample / 8) / m_uiChannels);
-    rtn = pa_stream_write(m_Stream, outData, length, NULL, 0, PA_SEEK_RELATIVE);
+    m_remap.Remap((void *)data, outData, frames);
+    if (pa_stream_write(m_Stream, outData, length, NULL, 0, PA_SEEK_RELATIVE) < 0)
+      CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
+
   }
   else
-    rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
+    if (pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE) < 0)
+      CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
 
 
-  if (rtn < length && m_bRecentlyFlushed)
+  if (m_bRecentlyFlushed)
     m_bRecentlyFlushed = false;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -530,7 +540,7 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
   if (m_bAutoResume)
     m_bAutoResume = !Resume();
 
-  return ((length - rtn) / m_uiChannels) * m_uiDataChannels;
+  return (length / m_uiChannels) * m_uiDataChannels;
 }
 
 float CPulseAudioDirectSound::GetCacheTime()

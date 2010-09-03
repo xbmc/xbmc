@@ -36,7 +36,7 @@ public:
   virtual bool IsEOF();
   virtual __int64 GetLength();
   virtual BitstreamStats GetBitstreamStats() const ;
-
+  virtual int GetBlockSize();
 protected:
   XFILE::CFile* m_pFile;
   bool m_eof;

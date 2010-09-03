@@ -285,16 +285,6 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   CStdString strPicture = pItem->m_strPath;
 
-  if (pItem->m_strPath == "add") // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("pictures"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
@@ -415,6 +405,10 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
       }
+
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
       buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }

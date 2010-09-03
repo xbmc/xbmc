@@ -55,7 +55,7 @@ private:
     CStream(CDVDDemuxVobsub* parent)
       : m_parent(parent)
     {}
-    virtual void      SetDiscard(AVDiscard discard);
+    virtual void      SetDiscard(AVDiscard discard) { m_discard = discard; }
     virtual AVDiscard GetDiscard()                  { return m_discard; }
 
     AVDiscard        m_discard;

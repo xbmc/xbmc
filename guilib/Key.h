@@ -385,6 +385,7 @@
 #define WINDOW_VIDEO_MENU                 12902
 #define WINDOW_MUSIC_OVERLAY              12903
 #define WINDOW_VIDEO_OVERLAY              12904
+#define WINDOW_VIDEO_TIME_SEEK            12905 // virtual window for time seeking during fullscreen video
 
 #define WINDOW_START                      12998 // first window to load
 #define WINDOW_STARTUP_ANIM               12999 // for startup animations
@@ -503,6 +504,7 @@ class CKey
 public:
   CKey(void);
   CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+  CKey(uint32_t buttonCode, unsigned int held);
   CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
   CKey(const CKey& key);
 

@@ -241,7 +241,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set acceleration
-  m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
+  m_pCodecContext->dsp_mask = 0;//FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
 
   // advanced setting override for skip loop filter (see avcodec.h for valid options)
   // TODO: allow per video setting?
@@ -498,6 +498,9 @@ void CDVDVideoCodecFFmpeg::Reset()
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
+  if (m_pHardware)
+    m_pHardware->Reset();
+
   if (m_pConvertFrame)
   {
     delete[] m_pConvertFrame->data[0];
@@ -506,7 +509,7 @@ void CDVDVideoCodecFFmpeg::Reset()
   }
 }
 
-bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
+bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 {
   GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
 
@@ -524,23 +527,20 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
-  // if we have a converted frame, use that
-  AVFrame *frame = m_pFrame;
-
-  if (!frame)
+  if (!m_pFrame)
     return false;
 
-  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
+  pDvdVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  pDvdVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
+  pDvdVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
 
-  pDvdVideoPicture->qscale_table = frame->qscale_table;
-  pDvdVideoPicture->qscale_stride = frame->qstride;
+  pDvdVideoPicture->qscale_table = m_pFrame->qscale_table;
+  pDvdVideoPicture->qscale_stride = m_pFrame->qstride;
 
-  switch (frame->qscale_type) {
+  switch (m_pFrame->qscale_type) {
   case FF_QSCALE_TYPE_MPEG1:
     pDvdVideoPicture->qscale_type = DVP_QSCALE_MPEG1;
     break;
@@ -556,16 +556,24 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->dts = m_dts;
   m_dts = DVD_NOPTS_VALUE;
-  if (frame->reordered_opaque)
-    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
+  if (m_pFrame->reordered_opaque)
+    pDvdVideoPicture->pts = pts_itod(m_pFrame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   if(!m_started)
     pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
+  return true;
+}
+
+bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
+{
   if(m_pHardware)
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
+
+  if(!GetPictureCommon(pDvdVideoPicture))
+    return false;
 
   if(m_pConvertFrame)
   {
@@ -577,9 +585,9 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
   {
     for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->data[i]      = frame->data[i];
+      pDvdVideoPicture->data[i]      = m_pFrame->data[i];
     for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+      pDvdVideoPicture->iLineSize[i] = m_pFrame->linesize[i];
   }
 
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;

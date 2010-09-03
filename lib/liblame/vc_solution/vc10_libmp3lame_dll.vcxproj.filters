@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="encoder sources">
+      <UniqueIdentifier>{f59da2c9-918f-4177-b896-dc1200ca64d2}</UniqueIdentifier>
+      <Extensions>*.c</Extensions>
+    </Filter>
+    <Filter Include="encoder header">
+      <UniqueIdentifier>{7f9075c3-663f-4a6f-809d-5436ff384e83}</UniqueIdentifier>
+      <Extensions>.h</Extensions>
+    </Filter>
+    <Filter Include="Asm">
+      <UniqueIdentifier>{a89cc61d-9d8f-4b01-8007-642fbe5f36d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="decoder sources">
+      <UniqueIdentifier>{0bd59b38-3274-4c00-a447-6b63c7fa939b}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+    <Filter Include="decoder header">
+      <UniqueIdentifier>{dd2fb416-1c6c-48ee-8a3e-9a354ab74e64}</UniqueIdentifier>
+      <Extensions>.h</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libmp3lame\bitstream.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\encoder.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\fft.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\gain_analysis.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\id3tag.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\lame.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\mpglib_interface.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\newmdct.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\presets.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\psymodel.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\quantize.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\quantize_pvt.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\reservoir.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\set_get.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\tables.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\takehiro.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\util.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\vbrquantize.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\VbrTag.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\version.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libmp3lame\vector\xmm_quantize_sub.c">
+      <Filter>encoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\common.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\dct64_i386.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\decode_i386.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\interface.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\layer1.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\layer2.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\layer3.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mpglib\tabinit.c">
+      <Filter>decoder sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\lame.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <NASM Include="..\libmp3lame\i386\choose_table.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\cpu_feat.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\fft.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\fft3dn.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\fftfpu.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\fftsse.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\ffttbl.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+    <NASM Include="..\libmp3lame\i386\scalar.nas">
+      <Filter>Asm</Filter>
+    </NASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\libmp3lame\lame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="..\libmp3lame\bitstream.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\encoder.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\fft.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\gain_analysis.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\id3tag.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\l3side.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\lame-analysis.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\lame_global_flags.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\vector\lame_intrin.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\lameerror.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\machine.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\newmdct.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\psymodel.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\quantize.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\quantize_pvt.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\reservoir.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\set_get.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\tables.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\util.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\vbrquantize.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\VbrTag.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\libmp3lame\version.h">
+      <Filter>encoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\common.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\dct64_i386.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\decode_i386.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\huffman.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\interface.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\layer1.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\layer2.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\layer3.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\mpg123.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\mpglib.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\mpglib\tabinit.h">
+      <Filter>decoder header</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="..\include\lame.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\configMS.h" />
+  </ItemGroup>
+</Project>

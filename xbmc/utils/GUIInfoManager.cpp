@@ -1236,10 +1236,17 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%ix%i %s %02.2f Hz.",
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode.c_str(),GetFPS());
+    if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
+      strLabel.Format("%ix%i@%.2fHz - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
+        g_localizeStrings.Get(244), GetFPS());
+    else
+      strLabel.Format("%ix%i - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
 
@@ -1388,9 +1395,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     {
       double fTime = g_alarmClock.GetRemaining("shutdowntimer");
       if (fTime > 60.f)
-        strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format(g_localizeStrings.Get(13213).c_str(),g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
+        strLabel.Format(g_localizeStrings.Get(13214).c_str(),g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -1529,7 +1536,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+    {
+      AddonPtr addon;
+      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
+      if (CAddonMgr::Get().GetAddon(strLabel,addon) && addon)
+        strLabel = addon->Name();
+    }
     break;
   case FANART_COLOR1:
     {
@@ -2100,7 +2112,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
           // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
           // useful for Player.Time* members without adding a separate set of members returning time in seconds
-          if ( value.find_first_of( ':' ) )
+          if ( value.find_first_of( ':' ) != value.npos )
             bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();
@@ -2522,7 +2534,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(info.GetData1()).m_fPct);
     return strCpu;
   }
-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_DISC_NUMBER)
+  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
     return GetMusicPlaylistInfo(info);
   else if (info.m_info == CONTAINER_PROPERTY)
   {
@@ -2988,6 +3000,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_GENRE:
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
+  case MUSICPLAYER_LYRICS: 
+    if (tag.GetLyrics().size()) { return tag.GetLyrics(); } 
+   	break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -3088,12 +3103,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
-        CStdString strYear;
+        if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+          return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
         if (!m_currentFile->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strPremiered;
-        else if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strFirstAired;
-        return strYear;
+          return m_currentFile->GetVideoInfoTag()->m_strPremiered;
       }
       break;
     case VIDEOPLAYER_PLOT:
@@ -3659,10 +3672,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    if (item->HasMusicInfoTag())
+      return item->GetMusicInfoTag()->GetTitle();
     break;
   case LISTITEM_ORIGINALTITLE:
     if (item->HasVideoInfoTag())
@@ -3709,12 +3722,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
-      CStdString strResult;
+      if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+        return item->GetVideoInfoTag()->m_strFirstAired;
       if (!item->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strPremiered;
-      else if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strFirstAired;
-      return strResult;
+        return item->GetVideoInfoTag()->m_strPremiered;
     }
     break;
   case LISTITEM_GENRE:
@@ -3773,7 +3784,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }

@@ -254,6 +254,7 @@
 #include "MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
+#include "utils/AlarmClock.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -2775,6 +2776,16 @@ bool CApplication::ProcessGamepad(float frameTime)
   int position;
   if (g_Joystick.GetHat(bid, position))
   {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (WakeUpScreenSaverAndDPMS())
+    {
+      g_Joystick.Reset();
+      return true;
+    }
+
     int actionID;
     CStdString actionName;
     bool fullrange;
@@ -2799,11 +2810,7 @@ bool CApplication::ProcessRemote(float frameTime)
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   if (g_RemoteControl.GetButton())
   {
-    // time depends on whether the movement is repeated (held down) or not.
-    // If it is, we use the FPS timer to get a repeatable speed.
-    // If it isn't, we use 20 to get repeatable jumps.
-    float time = (g_RemoteControl.IsHolding()) ? frameTime : 0.020f;
-    CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
+    CKey key(g_RemoteControl.GetButton(), g_RemoteControl.GetHoldTime());
     g_RemoteControl.Reset();
     return OnKey(key);
   }
@@ -3208,6 +3215,8 @@ void CApplication::Stop()
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
+    g_alarmClock.StopThread();
+
 #ifdef HAS_HTTPAPI
     if (m_pXbmcHttp)
     {
@@ -3508,12 +3517,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
-    CFileItem item_new;
+    CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
-    {
-      item_new.SetProperty("original_listitem_url", item.HasProperty("original_listitem_url") ? item.GetProperty("original_listitem_url") : item.m_strPath);
       return PlayFile(item_new, false);
-    }
     return false;
   }
 
@@ -3713,7 +3719,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         // Save information about the stream if we currently have no data
-        if (!details->HasStreamDetails())
+        if (!details->HasStreamDetails() ||
+             details->m_streamDetails.GetVideoDuration() <= 0)
         {
           if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
           {
@@ -4079,12 +4086,13 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
-    // turn off visualisation window when stopping
-    if (iWin == WINDOW_VISUALISATION)
-      g_windowManager.PreviousWindow();
-
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
+    // turn off visualisation window when stopping
+    if (iWin == WINDOW_VISUALISATION
+    ||  iWin == WINDOW_FULLSCREEN_VIDEO)
+      g_windowManager.PreviousWindow();
 
     g_partyModeManager.Disable();
   }
@@ -4456,6 +4464,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
           return true;
         }
+      }
+      
+      // In case playback ended due to user eg. skipping over the end, clear
+      // our resume bookmark here
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
       }
 
       // reset the current playing file

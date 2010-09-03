@@ -276,7 +276,6 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
 {
   if (!m_pStruct)
     return ;
-  if (Initialized())
 
   // FIXME: iAudioDataLength should never be less than 0
   if (iAudioDataLength<0)
@@ -457,6 +456,23 @@ CStdString CVisualisation::GetFriendlyName(const CStdString& strVisz,
 bool CVisualisation::IsLocked()
 {
   return false;
+}
+
+void CVisualisation::Destroy()
+{
+  // Free what was allocated in method CVisualisation::Create
+  if (m_pInfo)
+  {
+    free((void *) m_pInfo->name);
+    free((void *) m_pInfo->presets);
+    free((void *) m_pInfo->profile);
+    free((void *) m_pInfo->submodule);
+
+    delete m_pInfo;
+    m_pInfo = NULL;
+  }
+
+  CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Destroy();
 }
 
 unsigned CVisualisation::GetPreset()

@@ -35,7 +35,7 @@ public:
   void Reset();
   void Update();
   WORD GetButton();
-  bool IsHolding();
+  unsigned int GetHoldTime() const;
   bool IsInitialized() {return m_bInitialized;}
 
   //lirc stuff, not implemented
@@ -48,7 +48,6 @@ protected:
 
 private:
   WORD  m_button;
-  bool  m_isHolding;
   bool  m_bInitialized;
   SOCKET m_socket;
   bool m_isConnecting;

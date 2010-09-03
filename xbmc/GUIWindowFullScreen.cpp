@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "DateTime.h"
+#include "ButtonTranslator.h"
 
 #include <stdio.h>
 
@@ -159,6 +160,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
+  if (m_timeCodePosition > 0 && action.GetButtonCode())
+  { // check whether we have a mapping in our virtual videotimeseek "window" and have a select action
+    CKey key(action.GetButtonCode());
+    CAction timeSeek = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_TIME_SEEK, key, false);
+    if (timeSeek.GetID() == ACTION_SELECT_ITEM)
+    {
+      SeekToTimeCodeStamp(SEEK_ABSOLUTE);
+      return true;
+    }
+  }
+
   switch (action.GetID())
   {
   case ACTION_SHOW_OSD:
@@ -175,7 +187,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
-  case ACTION_SELECT_ITEM:
   case ACTION_PLAYER_PLAY:
   case ACTION_PAUSE:
     if (m_timeCodePosition > 0)
@@ -704,7 +715,7 @@ void CGUIWindowFullScreen::FrameMove()
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
     {
       CStdString strSizing;
-      strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)",
+      strSizing.Format(g_localizeStrings.Get(245),
                        (int)SrcRect.Width(), (int)SrcRect.Height(),
                        (int)DestRect.Width(), (int)DestRect.Height(), g_settings.m_fZoomAmount, fAR*g_settings.m_fPixelRatio, g_settings.m_fPixelRatio);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
@@ -715,10 +726,16 @@ void CGUIWindowFullScreen::FrameMove()
     int iResolution = g_graphicsContext.GetVideoResolution();
     {
       CStdString strStatus;
-      strStatus.Format("%s %ix%i@%.2fHz %s",
-        g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
-        g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
-        g_settings.m_ResInfo[iResolution].strMode.c_str());
+      if (g_settings.m_ResInfo[iResolution].bFullScreen)
+        strStatus.Format("%s %ix%i@%.2fHz - %s",
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
+          g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
+          g_localizeStrings.Get(244));
+      else
+        strStatus.Format("%s %ix%i - %s",
+          g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
+          g_settings.m_ResInfo[iResolution].iHeight, g_localizeStrings.Get(242));
+
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
       OnMessage(msg);

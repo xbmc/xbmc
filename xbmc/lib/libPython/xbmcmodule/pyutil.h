@@ -57,6 +57,7 @@ namespace PYXBMC
   bool  PyXBMCWindowIsNull(void* pWindow);
 
   void  PyXBMCInitializeTypeObject(PyTypeObject* type_object);
+  void  PyXBMCWaitForThreadMessage(int message, int param1, int param2);
 }
 
 // Python doesn't play nice with PyXBMC_AddPendingCall

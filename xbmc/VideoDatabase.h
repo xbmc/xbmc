@@ -414,10 +414,10 @@ public:
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
   
   /*! \brief Check whether a given scraper is in use.
-   \param scraper the scraper to check for.
+   \param scraperID the scraper to check for.
    \return true if the scraper is in use, false otherwise.
    */
-  bool ScraperInUse(const ADDON::ScraperPtr &scraper) const;
+  bool ScraperInUse(const CStdString &scraperID) const;
   
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
@@ -602,7 +602,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 40; };
+  virtual int GetMinVersion() const { return 42; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

@@ -72,6 +72,7 @@ namespace ADDON
     bool GetPresetList(std::vector<CStdString>& vecpresets);
     bool GetSubModuleList(std::vector<CStdString>& vecmodules);
     static CStdString GetFriendlyName(const CStdString& vis, const CStdString& module);
+    void Destroy();
 
   private:
     void CreateBuffers();

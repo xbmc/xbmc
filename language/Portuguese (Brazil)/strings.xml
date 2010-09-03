@@ -1820,7 +1820,7 @@
   <string id="20373">Temporada</string>
   <string id="20374">Baixando informação do filme</string>
   <string id="20375">Desmarcar conteúdo</string>
-
+  <string id="20376">Título original</string>
   <string id="20377">Atualizar informações de seriado</string>
   <string id="20378">Recarregar informações para todos os episódios?</string>
   <string id="20379">Pasta contém um único seriado</string>
@@ -2084,7 +2084,7 @@
 
 
   <string id="22000">Atualizar coleção ao iniciar</string>
-  <string id="22001">Sempre atualizar coleção em segundo plano</string>
+  <string id="22001">Ocultar progresso de atualizações de coleção</string>
   <string id="22002">- Sufixo de DNS</string>
 
   <string id="22004">Postergado em: %2.3fs</string>

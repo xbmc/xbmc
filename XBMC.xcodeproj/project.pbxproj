@@ -1828,6 +1828,8 @@
 		F5E5697410803FC3006E788A /* fastmemcpy.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E5697210803FC3006E788A /* fastmemcpy.c */; };
 		F5E56BA61082A675006E788A /* PosixMountProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56BA51082A675006E788A /* PosixMountProvider.cpp */; };
 		F5E56BA71082A675006E788A /* PosixMountProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56BA51082A675006E788A /* PosixMountProvider.cpp */; };
+		F5E728A51227112500B152C1 /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E728A41227112500B152C1 /* URIUtils.cpp */; };
+		F5E728A61227112500B152C1 /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E728A41227112500B152C1 /* URIUtils.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -1856,8 +1858,6 @@
 		F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
 		F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
-		F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
-		F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
 		F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
 		F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -3801,6 +3801,8 @@
 		F5E5697210803FC3006E788A /* fastmemcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fastmemcpy.c; sourceTree = "<group>"; };
 		F5E56BA41082A675006E788A /* PosixMountProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixMountProvider.h; sourceTree = "<group>"; };
 		F5E56BA51082A675006E788A /* PosixMountProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixMountProvider.cpp; sourceTree = "<group>"; };
+		F5E728A31227112500B152C1 /* URIUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URIUtils.h; sourceTree = "<group>"; };
+		F5E728A41227112500B152C1 /* URIUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = URIUtils.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -3826,8 +3828,6 @@
 		F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthroughFFmpeg.h; sourceTree = "<group>"; };
 		F5F245EC1112C9AB009126C6 /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
 		F5F245ED1112C9AB009126C6 /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
-		F5F24D481120994F009126C6 /* PCMLimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMLimiter.cpp; sourceTree = "<group>"; };
-		F5F24D491120994F009126C6 /* PCMLimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMLimiter.h; sourceTree = "<group>"; };
 		F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDAudioEncoderFFmpeg.cpp; path = Encoders/DVDAudioEncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F5F24E8411232488009126C6 /* IDVDAudioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IDVDAudioEncoder.h; path = Encoders/IDVDAudioEncoder.h; sourceTree = "<group>"; };
 		F5F24E8511232488009126C6 /* DVDAudioEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDAudioEncoderFFmpeg.h; path = Encoders/DVDAudioEncoderFFmpeg.h; sourceTree = "<group>"; };
@@ -4869,6 +4869,8 @@
 				E38E1DF60D25F9FD00618676 /* screensavers */,
 				E38E1E1C0D25F9FD00618676 /* UPnP.cpp */,
 				E38E1E1D0D25F9FD00618676 /* UPnP.h */,
+				F5E728A41227112500B152C1 /* URIUtils.cpp */,
+				F5E728A31227112500B152C1 /* URIUtils.h */,
 				E38E1E1E0D25F9FD00618676 /* URL.cpp */,
 				E38E1E1F0D25F9FD00618676 /* URL.h */,
 				E38E1E200D25F9FD00618676 /* Util.cpp */,
@@ -6766,8 +6768,6 @@
 				7CAA25341085963B0096DE39 /* PasswordManager.h */,
 				E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */,
 				E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */,
-				F5F24D481120994F009126C6 /* PCMLimiter.cpp */,
-				F5F24D491120994F009126C6 /* PCMLimiter.h */,
 				18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */,
 				18CCEAED1112F5B800615FC6 /* PCMRemap.h */,
 				E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */,
@@ -8081,7 +8081,6 @@
 				F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
-				F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */,
 				F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC7112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
@@ -8122,6 +8121,7 @@
 				F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
 				F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
 				F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
+				F5E728A51227112500B152C1 /* URIUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8951,7 +8951,6 @@
 				F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
 				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
-				F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */,
 				F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC8112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
@@ -8992,6 +8991,7 @@
 				F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
 				F5BDB81B1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
 				F5BDB821120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
+				F5E728A61227112500B152C1 /* URIUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9047,7 +9047,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9069,7 +9068,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9127,7 +9125,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9149,7 +9146,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9264,7 +9260,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9287,7 +9282,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,
@@ -9346,7 +9340,6 @@
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
 					xbmc/lib/libPython/Python/Include,
@@ -9369,7 +9362,6 @@
 					xbmc/lib/libsquish,
 					xbmc/lib/libjsonrpc,
 					xbmc/lib/libhttpapi,
-					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
 					lib/jsoncpp/jsoncpp/src/lib_json,
 					lib/libmicrohttpd/src/daemon/.libs,

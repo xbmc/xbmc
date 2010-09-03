@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "CriticalSection.h"
 #include "SingleLock.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -89,6 +90,14 @@ namespace PYXBMC
       iPyXBMCGUILockRef--;
       if (iPyXBMCGUILockRef == 0) g_graphicsContext.Unlock();
     }
+  }
+
+  void PyXBMCWaitForThreadMessage(int message, int param1, int param2)
+  {
+    Py_BEGIN_ALLOW_THREADS
+    ThreadMessage tMsg = {message, param1, param2};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    Py_END_ALLOW_THREADS
   }
 
   static char defaultImage[1024];
@@ -170,7 +179,7 @@ void _PyXBMC_ClearPendingCalls(PyThreadState* state)
   CSingleLock lock(g_critSectionPyCall);
   for(CallQueue::iterator it = g_callQueue.begin(); it!= g_callQueue.end();)
   {
-    if((it->state = state))
+    if(it->state == state)
       it = g_callQueue.erase(it);
     else
       it++;

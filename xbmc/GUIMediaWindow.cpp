@@ -845,6 +845,11 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
+  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  {
+    OnContextButton(0, CONTEXT_BUTTON_ADD_SOURCE);
+    return true;
+  }
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
@@ -943,17 +948,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
     {
-      // TODO: music videos!
-      if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
-      {
-        if (CGUIDialogMediaSource::ShowAndAddMediaSource("music"))
-        {
-          Update("");
-          return true;
-        }
-        return false;
-      }
-
       //play and add current directory to temporary playlist
       int iPlaylist=m_guiState->GetPlaylist();
       if (iPlaylist != PLAYLIST_NONE)

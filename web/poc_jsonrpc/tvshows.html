@@ -35,7 +35,7 @@ var array = result["tvshows"];
 for (var property in array) {
   var item = array[property];
   document.write('<a href="tvshowseasons.html?tvshowid=' + item["tvshowid"] + '">');
-  var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/nocover.jpg";
+  var imgSrc = item["thumbnail"] ? ('/vfs/' + escape(item["thumbnail"])) : "images/nocover.jpg";
   document.write('<img src="' + imgSrc + '"></img>');
   document.write('</a>');
   document.write('<br>');

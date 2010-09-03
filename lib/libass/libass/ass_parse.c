@@ -68,9 +68,15 @@ void update_font(ASS_Renderer *render_priv)
 {
     unsigned val;
     ASS_FontDesc desc;
-    desc.family = strdup(render_priv->state.family);
-    desc.treat_family_as_pattern =
-        render_priv->state.treat_family_as_pattern;
+    desc.treat_family_as_pattern = render_priv->state.treat_family_as_pattern;
+
+    if (render_priv->state.family[0] == '@') {
+        desc.vertical = 1;
+        desc.family = strdup(render_priv->state.family + 1);
+    } else {
+        desc.vertical = 0;
+        desc.family = strdup(render_priv->state.family);
+    }
 
     val = render_priv->state.bold;
     // 0 = normal, 1 = bold, >1 = exact weight
@@ -208,12 +214,14 @@ static char *parse_vector_clip(ASS_Renderer *render_priv, char *p)
 {
     int scale = 1;
     int res = 0;
-    ASS_Drawing *drawing;
+    ASS_Drawing *drawing = render_priv->state.clip_drawing;
 
+    if (drawing && drawing->glyph)
+        FT_Done_Glyph((FT_Glyph) drawing->glyph);
+    ass_drawing_free(drawing);
     render_priv->state.clip_drawing = ass_drawing_new(
         render_priv->fontconfig_priv,
         render_priv->state.font,
-        render_priv->settings.hinting,
         render_priv->ftlibrary);
     drawing = render_priv->state.clip_drawing;
     skipopt('(');
@@ -227,20 +235,6 @@ static char *parse_vector_clip(ASS_Renderer *render_priv, char *p)
     while (*p != ')' && *p != '}' && p != 0)
         ass_drawing_add_char(drawing, *p++);
     skipopt(')');
-    if (ass_drawing_parse(drawing, 1)) {
-        // We need to translate the clip according to screen borders
-        if (render_priv->settings.left_margin != 0 ||
-            render_priv->settings.top_margin != 0) {
-            FT_Vector trans = {
-                trans.x = int_to_d6(render_priv->settings.left_margin),
-                trans.y = -int_to_d6(render_priv->settings.top_margin),
-            };
-            FT_Outline_Translate(&drawing->glyph->outline, trans.x, trans.y);
-        }
-        ass_msg(render_priv->library, MSGL_DBG2,
-                "Parsed vector clip: scale %d, scales (%f, %f) string [%s]\n",
-                scale, drawing->scale_x, drawing->scale_y, drawing->text);
-    }
 
     return p;
 }
@@ -461,8 +455,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
             family[p - start] = '\0';
         } else
             family = strdup(render_priv->state.style->FontName);
-        if (render_priv->state.family)
-            free(render_priv->state.family);
+        free(render_priv->state.family);
         render_priv->state.family = family;
         update_font(render_priv);
     } else if (mystrcmp(&p, "alpha")) {
@@ -836,7 +829,7 @@ void apply_transition_effects(ASS_Renderer *render_priv, ASS_Event *event)
     } else if (strncmp(event->Effect, "Scroll down;", 12) == 0) {
         render_priv->state.scroll_direction = SCROLL_TB;
     } else {
-        ass_msg(render_priv->library, MSGL_V,
+        ass_msg(render_priv->library, MSGL_DBG2,
                 "Unknown transition effect: '%s'", event->Effect);
         return;
     }
@@ -894,7 +887,7 @@ unsigned get_next_char(ASS_Renderer *render_priv, char **str)
                     break;
             } else if (*p != '\\')
                 ass_msg(render_priv->library, MSGL_V,
-                        "Unable to parse: '%s'", p);
+                        "Unable to parse: '%.30s'", p);
             if (*p == 0)
                 break;
         }
@@ -918,6 +911,14 @@ unsigned get_next_char(ASS_Renderer *render_priv, char **str)
             p += 2;
             *str = p;
             return NBSP;
+        } else if (p[1] == '{') {
+            p += 2;
+            *str = p;
+            return '{';
+        } else if (p[1] == '}') {
+            p += 2;
+            *str = p;
+            return '}';
         }
     }
     chr = ass_utf8_get_char((char **) &p);

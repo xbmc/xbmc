@@ -974,6 +974,9 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
+    // Always sort by label
+    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed

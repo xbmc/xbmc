@@ -99,6 +99,7 @@ public:
   float m_Contrast;
   float m_Gamma;
   float m_NoiseReduction;
+  bool m_PostProcess;
   float m_Sharpness;
   float m_AudioDelay;
   int m_ResumeTime;

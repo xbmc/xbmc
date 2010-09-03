@@ -68,7 +68,6 @@ void CRemoteControl::Close()
 
 void CRemoteControl::Reset()
 {
-  m_isHolding = false;
   m_button = 0;
 }
 
@@ -445,9 +444,9 @@ WORD CRemoteControl::GetButton()
   return m_button;
 }
 
-bool CRemoteControl::IsHolding()
+unsigned int CRemoteControl::GetHoldTime() const
 {
-  return m_isHolding;
+  return 0;
 }
 
 void CRemoteControl::setUsed(bool value)

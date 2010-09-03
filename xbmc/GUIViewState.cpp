@@ -366,6 +366,7 @@ void CGUIViewState::AddLiveTVSources()
       CMediaSource source;
       source.strPath = (*it).strPath;
       source.strName = (*it).strName;
+      source.vecPaths = (*it).vecPaths;
       source.m_strThumbnailImage = "";
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
       m_sources.push_back(source);

@@ -393,7 +393,10 @@ void CCharsetConverter::fromW(const CStdStringW& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,sizeof(wchar_t),WCHAR_CHARSET,enc,strSource,strDest);
+  CStdString strEnc = enc;
+  if (strEnc.Right(8) != "//IGNORE")
+    strEnc.append("//IGNORE");
+  convert(iconvString,sizeof(wchar_t),WCHAR_CHARSET,strEnc,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -402,7 +405,7 @@ void CCharsetConverter::toW(const CStdStringA& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
+  convert(iconvString,sizeof(wchar_t),enc,"UTF-16LE//IGNORE",strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -472,7 +475,7 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
   }
 }
 

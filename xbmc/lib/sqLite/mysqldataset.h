@@ -24,11 +24,7 @@
 
 #include <stdio.h>
 #include "dataset.h"
-#ifdef _WIN32
-#include "../../../lib/libmysql_win32/include/mysql.h"
-#else
 #include "mysql/mysql.h"
-#endif
 
 namespace dbiplus {
 /***************** Class MysqlDatabase definition ******************
@@ -80,8 +76,7 @@ public:
   virtual void rollback_transaction();
 
 /* virtual methods for formatting */
-  virtual char *vprepare(const char *format, va_list args);
-  virtual void vprepare_free(void *p);
+  virtual std::string vprepare(const char *format, va_list args);
 
   bool in_transaction() {return _in_transaction;};
   int query_with_reconnect(const char* query);

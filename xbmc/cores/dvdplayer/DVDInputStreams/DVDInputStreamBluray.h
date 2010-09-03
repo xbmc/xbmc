@@ -43,7 +43,8 @@ public:
   virtual bool Pause(double dTime) { return false; };
   virtual bool IsEOF();
   virtual __int64 GetLength();
-  
+  virtual int GetBlockSize() { return 6144; }
+
   int GetChapter();
   int GetChapterCount();
   void GetChapterName(std::string& name) {};

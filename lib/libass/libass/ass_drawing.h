@@ -57,7 +57,9 @@ typedef struct {
     int hash;           // hash value (for caching)
 
     // private
-    FT_Library ftlibrary;   // FT library instance, needed for font ops
+    FT_Library ftlibrary;   // needed for font ops
+    ASS_Font *font;         // dito
+    void *fontconfig_priv;  // dito
     ASS_Library *library;
     int size;           // current buffer size
     ASS_DrawingToken *tokens;    // tokenized drawing
@@ -65,10 +67,11 @@ typedef struct {
     int max_contours;
     double point_scale_x;
     double point_scale_y;
+    FT_BBox cbox;   // bounding box, or let's say... VSFilter's idea of it
 } ASS_Drawing;
 
 ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
-                             ASS_Hinting hint, FT_Library lib);
+                             FT_Library lib);
 void ass_drawing_free(ASS_Drawing* drawing);
 void ass_drawing_add_char(ASS_Drawing* drawing, char symbol);
 void ass_drawing_hash(ASS_Drawing* drawing);

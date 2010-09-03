@@ -204,7 +204,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath())
+  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() || items.IsInternetStream())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -250,21 +250,9 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("video"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-  else
-  {
-    AddFileToDatabase(pItem.get());
+  AddFileToDatabase(pItem.get());
 
-    return CGUIWindowVideoBase::OnPlayMedia(iItem);
-  }
+  return CGUIWindowVideoBase::OnPlayMedia(iItem);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
@@ -501,6 +489,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         else
           buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
       }
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   else

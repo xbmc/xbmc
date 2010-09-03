@@ -1837,7 +1837,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       m_pDS->close();
       return true;
     }
-    CStdString strSongsToDelete = "(";
+    CStdString strSongsToDelete = "";
     while (!m_pDS->eof())
     { // get the full song path
       CStdString strFileName;
@@ -1862,18 +1862,21 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       m_pDS->next();
     }
     m_pDS->close();
-    strSongsToDelete.TrimRight(",");
-    strSongsToDelete += ")";
-    // ok, now delete these songs + all references to them from the exartistsong and exgenresong tables
-    strSQL = "delete from song where idSong in " + strSongsToDelete;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exartistsong where idSong in " + strSongsToDelete;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from exgenresong where idSong in " + strSongsToDelete;
-    m_pDS->exec(strSQL.c_str());
-    strSQL = "delete from karaokedata where idSong in " + strSongsToDelete;
-    m_pDS->exec(strSQL.c_str());
-    m_pDS->close();
+
+    if ( ! strSongsToDelete.IsEmpty() )
+    {
+      strSongsToDelete = "(" + strSongsToDelete.TrimRight(",") + ")";
+      // ok, now delete these songs + all references to them from the exartistsong and exgenresong tables
+      strSQL = "delete from song where idSong in " + strSongsToDelete;
+      m_pDS->exec(strSQL.c_str());
+      strSQL = "delete from exartistsong where idSong in " + strSongsToDelete;
+      m_pDS->exec(strSQL.c_str());
+      strSQL = "delete from exgenresong where idSong in " + strSongsToDelete;
+      m_pDS->exec(strSQL.c_str());
+      strSQL = "delete from karaokedata where idSong in " + strSongsToDelete;
+      m_pDS->exec(strSQL.c_str());
+      m_pDS->close();
+    }
     return true;
   }
   catch (...)
@@ -1986,7 +1989,7 @@ bool CMusicDatabase::CleanupPaths()
       return true;
     }
     // and construct a list to delete
-    CStdString deleteSQL = "delete from path where idPath in (";
+    CStdString deleteSQL;
     while (!m_pDS->eof())
     {
       // anything that isn't a parent path of a song path is to be deleted
@@ -1997,10 +2000,13 @@ bool CMusicDatabase::CleanupPaths()
       m_pDS->next();
     }
     m_pDS->close();
-    deleteSQL.TrimRight(',');
-    deleteSQL += ")";
-    // do the deletion, and drop our temp table
-    m_pDS->exec(deleteSQL.c_str());
+
+    if ( ! deleteSQL.IsEmpty() )
+    {
+      deleteSQL = "DELETE FROM path WHERE idPath IN (" + deleteSQL.TrimRight(',') + ")";
+      // do the deletion, and drop our temp table
+      m_pDS->exec(deleteSQL.c_str());
+    }
     m_pDS->exec("drop table songpaths");
     return true;
   }
@@ -3968,10 +3974,9 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone(addon));
           if (!info)
             return false;
+          // store this path's settings
+          info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
         }
-
-        // store this path's settings
-        info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
       }
       else
       { // use default scraper of the requested type
@@ -4005,15 +4010,14 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
   return false;
 }
 
-bool CMusicDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
+bool CMusicDatabase::ScraperInUse(const CStdString &scraperID) const
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    if (!scraper) return false;
 
-    CStdString sql = PrepareSQL("select count(1) from content where strScraperPath='%s'",scraper->ID().c_str());
+    CStdString sql = PrepareSQL("select count(1) from content where strScraperPath='%s'",scraperID.c_str());
     if (!m_pDS->query(sql.c_str()) || m_pDS->num_rows() == 0)
       return false;
     bool found = m_pDS->fv(0).get_asInt() > 0;
@@ -4022,7 +4026,7 @@ bool CMusicDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraper->ID().c_str());
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraperID.c_str());
   }
   return false;
 }

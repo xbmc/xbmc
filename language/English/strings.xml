@@ -53,6 +53,24 @@
   <string id="60">Oct</string>
   <string id="61">Nov</string>
   <string id="62">Dec</string>
+  
+  <string id="71">N</string>
+  <string id="72">NNE</string>
+  <string id="73">NE</string>
+  <string id="74">ENE</string>
+  <string id="75">E</string>
+  <string id="76">ESE</string>
+  <string id="77">SE</string>
+  <string id="78">SSE</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
 
   <string id="98">View: Auto</string>
   <string id="99">View: Auto big</string>
@@ -194,6 +212,8 @@
   <string id="241">Full Screen #%d</string>
   <string id="242">Windowed</string>
   <string id="243">Refresh Rate</string>
+  <string id="244">Full screen</string>
+  <string id="245">Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
 
   <string id="247">Scripts</string>
   <string id="248">Language</string>
@@ -350,8 +370,8 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
-  <string id="407">From</string>
-  <string id="408">at</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>
   <string id="411">Getting weather for:</string>
@@ -377,6 +397,7 @@
   <string id="431">No cache</string>
   <string id="432">Remove movie from library</string>
   <string id="433">Really remove '%s'?</string>
+  <string id="434">From %s at %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Removable disk</string>
   <string id="438">Opening file</string>
@@ -732,7 +753,7 @@
   <string id="1042">Retrieved %i of %i items</string>
   <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
-  <string id="1045">Plugin settings</string>
+  <string id="1045">Addon settings</string>
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
   <string id="1048">- Username</string>
@@ -816,6 +837,9 @@
   <string id="1418">T-Storms</string>
   <string id="1419">T-Showers</string>
   <string id="1420">Moderate</string>
+  <string id="1421">Very High</string>
+  <string id="1422">Windy</string>
+  <string id="1423">Mist</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1080,6 +1104,8 @@
   <string id="13210">Started, alarm in %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Canceled with %im%is left</string>
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Search for subtitles in RARs</string>
   <string id="13250">Browse for subtitle...</string>
@@ -1530,10 +1556,10 @@
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
 
-  <string id="16400">Video post-processing</string>
-  <string id="16401">Disabled</string>
-  <string id="16402">Enabled for SD content</string>
-  <string id="16403">Always enabled</string>
+  <string id="16400">Post-processing</string>
+  <string id="16401"></string>
+  <string id="16402"></string>
+  <string id="16403"></string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -1819,7 +1845,7 @@
   <string id="20373">Season</string>
   <string id="20374">Downloading movie information</string>
   <string id="20375">Unassign content</string>
-
+  <string id="20376">Original title</string>
   <string id="20377">Refresh TV show information</string>
   <string id="20378">Refresh info for all episodes?</string>
   <string id="20379">Selected folder contains a single TV show</string>
@@ -2087,6 +2113,7 @@
   <string id="22001">Hide progress of library updates</string>
   <string id="22002">- DNS suffix</string>
 
+  <string id="22003">%2.3fs</string>
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle offset</string>

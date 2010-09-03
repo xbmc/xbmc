@@ -54,6 +54,24 @@
   <string id="61">Nov</string>
   <string id="62">Dec</string>
   
+  <string id="71">N</string>
+  <string id="72">NNE</string>
+  <string id="73">NE</string>
+  <string id="74">ENE</string>
+  <string id="75">E</string>
+  <string id="76">ESE</string>
+  <string id="77">SE</string>
+  <string id="78">SSE</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
+  
   <string id="98">Vue : Auto</string>
   <string id="99">Vue : Auto Grand</string>
   <string id="100">Vue : Icônes</string>
@@ -194,6 +212,8 @@
   <string id="241">Plein Ecran #%d</string>
   <string id="242">Fenêtré</string>
   <string id="243">Taux de rafraîchissement</string>
+  <string id="244">Plein écran</string>
+  <string id="245">Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
   
   <string id="247">Scripts</string>
   <string id="248">Langue</string>
@@ -331,7 +351,7 @@
   <string id="385">Beau</string>
   <string id="386">Dégagé</string>
   <string id="387">Nuages</string>
-  <string id="388">Matinal</string>
+  <string id="388">Matinal(es)</string>
   <string id="389">Averses</string>
   <string id="390">Rafales</string>
   <string id="391">Faible</string>
@@ -350,8 +370,8 @@
   <string id="404">Vent</string>
   <string id="405">Point de rosée</string>
   <string id="406">Humidité</string>
-  <string id="407">Du</string>
-  <string id="408">à</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Défauts</string>
   <string id="410">Accès aux services météo</string>
   <string id="411">Obtenir la météo pour :</string>
@@ -377,6 +397,7 @@
   <string id="431">Pas de cache</string>
   <string id="432">Retirer le film de la médiathèque</string>
   <string id="433">Êtes-vous sûr(e) de retirer '%s' ?</string>
+  <string id="434">Direction : %s, Vitesse :  %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
   
   <string id="437">Disque amovible</string>
   <string id="438">Ouverture du fichier</string>
@@ -815,7 +836,10 @@
   <string id="1417">Grains</string>
   <string id="1418">Orages électriques</string>
   <string id="1419">Orages</string>
-  <string id="1420">Modéré</string>  
+  <string id="1420">Modéré</string>
+  <string id="1421">Très Fort</string>
+  <string id="1422">Venteux</string>
+  <string id="1423">Brouillard</string>  
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1080,6 +1104,8 @@
   <string id="13210">Démarré, alarme dans %im</string>
   <string id="13211">Alarme !</string>
   <string id="13212">Annulé avec %im%is restantes</string>
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
   
   <string id="13249">Recherche les sous-titres dans les RARs</string>
   <string id="13250">Recherche d'un sous-titre...</string>
@@ -1509,7 +1535,7 @@
   <string id="16205">La suppression a échouée</string>
   <string id="16206">Un ou plusieurs fichiers n’ont pas été supprimés</string>
   
-  <string id="16300">Méthode d'alignement vidéo</string>
+  <string id="16300">Méthode de mise à l'échelle</string>
   <string id="16301">La plus proche</string>
   <string id="16302">Bilinéaire</string>
   <string id="16303">Bicubique</string>
@@ -1743,7 +1769,6 @@
   <string id="20256">Client HTS Tvheadend</string>
   <string id="20257">Client VDR Streamdev</string>
    
-
   <string id="20300">Dossier Server Web (HTTP)</string>
   <string id="20301">Dossier Server Web (HTTPS)</string>
   <string id="20302">Impossible d'écrire dans le dossier</string>
@@ -1820,7 +1845,7 @@
   <string id="20373">Saison</string>
   <string id="20374">Téléchargement des infos vidéo</string>
   <string id="20375">Catégorie non assignée</string>
-  
+  <string id="20376">Titre original</string>
   <string id="20377">Rafraîchir info séries TV</string>
   <string id="20378">Rafraichir les infos de tous les épisodes ?</string>
   <string id="20379">Dossier sélectionné contient une seule Série TV</string>
@@ -1870,8 +1895,8 @@
   <string id="20423">A une bande-annonce</string>
   <string id="20424">Faux</string>
   <string id="20425">Diaporama Fanart</string>
-  <string id="20426">Exporter vers un seul fichier ou séparé</string>
-  <string id="20427">les fichiers par entrée ?</string>
+  <string id="20426">Exporter vers un seul fichier ou</string>
+  <string id="20427">séparer les fichiers par entrée ?</string>
   <string id="20428">Un fichier</string>
   <string id="20429">Séparé</string>
   <string id="20430">Exporter les vignettes et les fanarts ?</string>
@@ -2088,6 +2113,7 @@
   <string id="22001">Masquer l'avancement lors de la màj de la mediathèque</string>
   <string id="22002">- Suffixe DNS</string>
   
+  <string id="22003">%2.3fs</string>  
   <string id="22004">Retarder de : %2.3fs</string>
   <string id="22005">Avancer de : %2.3fs</string>
   <string id="22006">Décalage sous-titres</string>
@@ -2210,7 +2236,6 @@
   <string id="24075">Désactiver</string>
   <string id="24080">Tenter la reconnexion ?</string>
   <string id="24089">Redémarrage de l'Add-on</string>
-  
   <string id="24090">Vérouiller le gestionnaire d'Add-on</string>
   
   <string id="24091"></string>

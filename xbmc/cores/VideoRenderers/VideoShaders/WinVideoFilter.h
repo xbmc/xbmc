@@ -119,6 +119,7 @@ public:
                                CRect destRect);
 
 protected:
+  virtual bool KernelTexFormat();
   virtual bool CreateHQKernel(ESCALINGMETHOD method);
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
@@ -128,6 +129,9 @@ protected:
 
 private:
   CD3DTexture   m_HQKernelTexture;
+  D3DFORMAT     m_format;
+  bool          m_floattex;
+  bool          m_rgba;
   unsigned int  m_sourceWidth, m_sourceHeight;
   CRect         m_sourceRect, m_destRect;
 

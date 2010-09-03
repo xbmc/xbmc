@@ -289,34 +289,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     m_timeout = 0;
     unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
-    m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+    m_ioContext->max_packet_size = m_pInput->GetBlockSize();
+    if(m_ioContext->max_packet_size)
+      m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      m_ioContext->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->is_streamed = 1;
-    }
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-    {
-      m_ioContext->max_packet_size = 6144;
-      m_ioContext->is_streamed = 1;
-    }
-    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-
-      // this actually speeds up channel changes by almost a second
-      // however, it alsa makes player not buffer anything, this
-      // leads to buffer underruns in audio renderer
-      //if(context->is_streamed)
-      //  streaminfo = false;
-    }
-    else
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-    }
 
     if( iformat == NULL )
     {
@@ -329,11 +307,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      if(m_ioContext->is_streamed)
-        pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-      else
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
       if (pd.buf_size <= 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
@@ -344,7 +318,32 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
-      iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      if (m_pInput->GetContent() == "audio/x-spdif-compressed")
+      {
+        // check for spdif and dts only
+        // This is used with wav files and audio CDs that may contain
+        // a DTS or AC3 track padded for S/PDIF playback. If neither of those
+        // is present, we return an error allowing fallback to PCM audio.
+        // AC3 is always wrapped in iec61937 (ffmpeg "spdif"), while DTS
+        // may be just padded.
+        iformat = m_dllAvFormat.av_find_input_format("spdif");
+        if (!iformat || iformat->read_probe(&pd) <= AVPROBE_SCORE_MAX / 4)
+        {
+          // not spdif or no spdif demuxer, try dts
+          iformat = m_dllAvFormat.av_find_input_format("dts");
+          if (!iformat || iformat->read_probe(&pd) <= AVPROBE_SCORE_MAX / 4)
+          {
+            // not dts either, return false for fallback
+            CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
+            return false;
+          }
+        }
+      }
+      else
+      {
+        // check for all formats
+        iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+      }
 
       if(!iformat)
       {

@@ -202,6 +202,7 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   for (unsigned int i = 0; i < m_fadingTextures.size(); i++)
     delete m_fadingTextures[i];
   m_fadingTextures.clear();
+  m_currentTexture.Empty();
 }
 
 void CGUIImage::FreeResources(bool immediately)

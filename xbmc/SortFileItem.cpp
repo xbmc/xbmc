@@ -136,6 +136,18 @@ void SSortFileItem::ByFullPath(CFileItemPtr &item)
   item->SetSortLabel(label);
 }
 
+void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  if (item->HasVideoInfoTag())
+    item->SetSortLabel(item->GetVideoInfoTag()->m_lastPlayed);
+  else if (item->HasMusicInfoTag()) // TODO: No last played info in the fileitem for music
+    item->SetSortLabel(item->GetMusicInfoTag()->GetTitle());
+  else
+    item->SetSortLabel(item->GetLabel());
+}
+
 void SSortFileItem::ByDate(CFileItemPtr &item)
 {
   if (!item) return;

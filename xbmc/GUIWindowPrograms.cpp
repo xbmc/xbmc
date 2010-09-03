@@ -150,6 +150,10 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
         }
       }
+
+      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+        buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
     }
   }
@@ -231,16 +235,6 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
-  {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("programs"))
-    {
-      Update("");
-      return true;
-    }
-    return false;
-  }
-
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
@@ -259,95 +253,18 @@ int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  bool bFlattened=false;
-  if (CUtil::IsDVD(strDirectory))
+  if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
+    return false;
+
+  // don't allow the view state to change these
+  if (strDirectory.Left(9).Equals("addons://"))
   {
-    CStdString strPath;
-    CUtil::AddFileToFolder(strDirectory,"default.xbe",strPath);
-    if (CFile::Exists(strPath)) // flatten dvd
+    for (int i=0;i<items.Size();++i)
     {
-      CFileItemPtr item(new CFileItem("default.xbe"));
-      item->m_strPath = strPath;
-      items.Add(item);
-      items.m_strPath=strDirectory;
-      bFlattened = true;
+      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version"));
+      items[i]->SetLabelPreformated(true);
     }
   }
-  if (!bFlattened)
-    if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
-      return false;
-
-  if (items.IsVirtualDirectoryRoot())
-    return true;
-
-  // flatten any folders
-  m_database.BeginTransaction();
-  unsigned int tick=CTimeUtils::GetTimeMS();
-  bool bProgressVisible = false;
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CStdString shortcutPath;
-    CFileItemPtr item = items[i];
-    if (!bProgressVisible && CTimeUtils::GetTimeMS()-tick>1500 && m_dlgProgress)
-    { // tag loading takes more then 1.5 secs, show a progress dialog
-      m_dlgProgress->SetHeading(189);
-      m_dlgProgress->SetLine(0, 20120);
-      m_dlgProgress->SetLine(1,"");
-      m_dlgProgress->SetLine(2, item->GetLabel());
-      m_dlgProgress->StartModal();
-      bProgressVisible = true;
-    }
-    if (bProgressVisible)
-    {
-      m_dlgProgress->SetLine(2,item->GetLabel());
-      m_dlgProgress->Progress();
-    }
-
-    if (item->m_bIsFolder && !item->IsParentFolder())
-    { // folder item - let's check for a default.xbe file, and flatten if we have one
-      CStdString defaultXBE;
-      CUtil::AddFileToFolder(item->m_strPath, "default.xbe", defaultXBE);
-      if (CFile::Exists(defaultXBE))
-      { // yes, format the item up
-        item->m_strPath = defaultXBE;
-        item->m_bIsFolder = false;
-      }
-    }
-    else if (item->IsShortCut())
-    { // resolve the shortcut to set it's description etc.
-      // and save the old shortcut path (so we can reassign it later)
-      CShortcut cut;
-      if (cut.Create(item->m_strPath))
-      {
-        shortcutPath = item->m_strPath;
-        item->m_strPath = cut.m_strPath;
-        item->SetThumbnailImage(cut.m_strThumb);
-
-        LABEL_MASKS labelMasks;
-        m_guiState->GetSortMethodLabelMasks(labelMasks);
-        CLabelFormatter formatter("", labelMasks.m_strLabel2File);
-        if (!cut.m_strLabel.IsEmpty())
-        {
-          item->SetLabel(cut.m_strLabel);
-          struct __stat64 stat;
-          if (CFile::Stat(item->m_strPath,&stat) == 0)
-            item->m_dwSize = stat.st_size;
-
-          formatter.FormatLabel2(item.get());
-          item->SetLabelPreformated(true);
-        }
-      }
-    }
-    if (!shortcutPath.IsEmpty())
-      item->m_strPath = shortcutPath;
-  }
-  m_database.CommitTransaction();
-
-  // set the folder thumb
-  CProgramThumbLoader::FillThumb(items);
-
-  if (bProgressVisible)
-    m_dlgProgress->Close();
 
   return true;
 }

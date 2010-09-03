@@ -1,3 +1,12 @@
+[B]1.1.3[/B]
+- fixed missing imdb id (#2)
+
+[B]1.1.2[/B]
+- fixed missing imdb id
+
+[B]1.1.1[/B]
+- no writers due to API changes
+
 [B]1.1.0[/B]
 - added multi-language support
 

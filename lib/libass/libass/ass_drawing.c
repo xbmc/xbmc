@@ -34,13 +34,13 @@
  * \brief Get and prepare a FreeType glyph
  */
 static void drawing_make_glyph(ASS_Drawing *drawing, void *fontconfig_priv,
-                               ASS_Font *font, ASS_Hinting hint)
+                               ASS_Font *font)
 {
     FT_OutlineGlyph glyph;
 
     // This is hacky...
     glyph = (FT_OutlineGlyph) ass_font_get_glyph(fontconfig_priv, font,
-                                                 (uint32_t) ' ', hint, 0);
+                                                 (uint32_t) ' ', 0, 0);
     if (glyph) {
         FT_Outline_Done(drawing->ftlibrary, &glyph->outline);
         FT_Outline_New(drawing->ftlibrary, GLYPH_INITIAL_POINTS,
@@ -112,23 +112,11 @@ static void drawing_prepare(ASS_Drawing *drawing)
 static void drawing_finish(ASS_Drawing *drawing, int raw_mode)
 {
     int i, offset;
-    FT_BBox bbox;
+    FT_BBox bbox = drawing->cbox;
     FT_Outline *ol = &drawing->glyph->outline;
 
     // Close the last contour
     drawing_close_shape(drawing);
-
-#if 0
-    // Dump points
-    for (i = 0; i < ol->n_points; i++) {
-        printf("point (%d, %d)\n", (int) ol->points[i].x,
-               (int) ol->points[i].y);
-    }
-
-    // Dump contours
-    for (i = 0; i < ol->n_contours; i++)
-        printf("contour %d\n", ol->contours[i]);
-#endif
 
     ass_msg(drawing->library, MSGL_V,
             "Parsed drawing with %d points and %d contours", ol->n_points,
@@ -137,7 +125,6 @@ static void drawing_finish(ASS_Drawing *drawing, int raw_mode)
     if (raw_mode)
         return;
 
-    FT_Outline_Get_CBox(&drawing->glyph->outline, &bbox);
     drawing->glyph->root.advance.x = d6_to_d16(bbox.xMax - bbox.xMin);
 
     drawing->desc = double_to_d6(-drawing->pbo * drawing->scale_y);
@@ -231,15 +218,6 @@ static ASS_DrawingToken *drawing_tokenize(char *str)
         p++;
     }
 
-#if 0
-    // Check tokens
-    ASS_DrawingToken *t = root;
-    while(t) {
-        printf("token %d point (%d, %d)\n", t->type, t->point.x, t->point.y);
-        t = t->next;
-    }
-#endif
-
     return root;
 }
 
@@ -256,6 +234,19 @@ static void drawing_free_tokens(ASS_DrawingToken *token)
 }
 
 /*
+ * \brief Update drawing cbox
+ */
+static inline void update_cbox(ASS_Drawing *drawing, FT_Vector *point)
+{
+    FT_BBox *box = &drawing->cbox;
+
+    box->xMin = FFMIN(box->xMin, point->x);
+    box->xMax = FFMAX(box->xMax, point->x);
+    box->yMin = FFMIN(box->yMin, point->y);
+    box->yMax = FFMAX(box->yMax, point->y);
+}
+
+/*
  * \brief Translate and scale a point coordinate according to baseline
  * offset and scale.
  */
@@ -263,6 +254,8 @@ static inline void translate_point(ASS_Drawing *drawing, FT_Vector *point)
 {
     point->x = drawing->point_scale_x * point->x;
     point->y = drawing->point_scale_y * -point->y;
+
+    update_cbox(drawing, point);
 }
 
 /*
@@ -363,19 +356,19 @@ static void drawing_evaluate_curve(ASS_Drawing *drawing,
  * \brief Create and initialize a new drawing and return it
  */
 ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
-                             ASS_Hinting hint, FT_Library lib)
+                             FT_Library lib)
 {
     ASS_Drawing *drawing;
 
     drawing = calloc(1, sizeof(*drawing));
     drawing->text = calloc(1, DRAWING_INITIAL_SIZE);
     drawing->size = DRAWING_INITIAL_SIZE;
-
+    drawing->cbox.xMin = drawing->cbox.yMin = INT_MAX;
+    drawing->cbox.xMax = drawing->cbox.yMax = INT_MIN;
+    drawing->fontconfig_priv = fontconfig_priv;
+    drawing->font = font;
     drawing->ftlibrary = lib;
-    if (font) {
-        drawing->library = font->library;
-        drawing_make_glyph(drawing, fontconfig_priv, font, hint);
-    }
+    drawing->library = font->library;
 
     drawing->scale_x = 1.;
     drawing->scale_y = 1.;
@@ -391,8 +384,6 @@ ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
 void ass_drawing_free(ASS_Drawing* drawing)
 {
     if (drawing) {
-        if (drawing->glyph)
-            FT_Done_Glyph((FT_Glyph) drawing->glyph);
         free(drawing->text);
     }
     free(drawing);
@@ -430,6 +421,8 @@ FT_OutlineGlyph *ass_drawing_parse(ASS_Drawing *drawing, int raw_mode)
     ASS_DrawingToken *token;
     FT_Vector pen = {0, 0};
 
+    if (drawing->font)
+        drawing_make_glyph(drawing, drawing->fontconfig_priv, drawing->font);
     if (!drawing->glyph)
         return NULL;
 

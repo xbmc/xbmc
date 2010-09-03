@@ -527,15 +527,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13120), VS_SCALINGMETHOD_VDPAU_HARDWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("videoplayer.postprocess"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(16401), VIDEO_POSTPROCESS_DISABLED);
-      pControl->AddLabel(g_localizeStrings.Get(16402), VIDEO_POSTPROCESS_SD_CONTENT);
-      pControl->AddLabel(g_localizeStrings.Get(16403), VIDEO_POSTPROCESS_ALWAYS);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1066,7 +1057,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
-    CStdString addonID;
+    CStdString addonID = setting->GetData();
     if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ) == 1)
       setting->SetData(addonID);
     else

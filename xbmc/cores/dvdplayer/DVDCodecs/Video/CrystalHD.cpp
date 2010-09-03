@@ -1044,7 +1044,7 @@ CCrystalHD::CCrystalHD() :
   {
     delete m_dll;
     m_dll = NULL;
-    CLog::Log(LOGINFO, "%s: broadcom crystal hd not found", __MODULE_NAME__);
+    CLog::Log(LOGDEBUG, "%s: broadcom crystal hd not found", __MODULE_NAME__);
   }
 }
 
@@ -1069,14 +1069,14 @@ bool CCrystalHD::DevicePresent(void)
 
 bool CCrystalHD::Wake(void)
 {
-  CLog::Log(LOGINFO, "%s: resume", __MODULE_NAME__);
+  CLog::Log(LOGDEBUG, "%s: resume", __MODULE_NAME__);
   //GetInstance();
   return true;
 }
 
 bool CCrystalHD::Sleep(void)
 {
-  CLog::Log(LOGINFO, "%s: suspend", __MODULE_NAME__);
+  CLog::Log(LOGDEBUG, "%s: suspend", __MODULE_NAME__);
   //RemoveInstance();
   return true;
 }
@@ -1115,19 +1115,19 @@ void CCrystalHD::OpenDevice()
   {
     m_device = NULL;
     if( res == BCM::BC_STS_DEC_EXIST_OPEN )
-      CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: device owned by another application", __MODULE_NAME__);
     else
-      CLog::Log(LOGERROR, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
+      CLog::Log(LOGDEBUG, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
   }
   else
   {
     #if (HAVE_LIBCRYSTALHD == 2)
       if (m_new_lib)
-        CLog::Log(LOGINFO, "%s(new API): device opened", __MODULE_NAME__);
+        CLog::Log(LOGDEBUG, "%s(new API): device opened", __MODULE_NAME__);
       else
-        CLog::Log(LOGINFO, "%s(old API): device opened", __MODULE_NAME__);
+        CLog::Log(LOGDEBUG, "%s(old API): device opened", __MODULE_NAME__);
     #else
-      CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: device opened", __MODULE_NAME__);
     #endif
   }
 }
@@ -1138,7 +1138,7 @@ void CCrystalHD::CloseDevice()
   {
     m_dll->DtsDeviceClose(m_device);
     m_device = NULL;
-    CLog::Log(LOGINFO, "%s: device closed", __MODULE_NAME__);
+    CLog::Log(LOGDEBUG, "%s: device closed", __MODULE_NAME__);
   }
 }
 
@@ -1279,7 +1279,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
       {
-        CLog::Log(LOGDEBUG, "%s: set input format failed", __MODULE_NAME__);
+        CLog::Log(LOGERROR, "%s: set input format failed", __MODULE_NAME__);
         break;
       }
 
@@ -1289,7 +1289,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE420); 
       if (res != BCM::BC_STS_SUCCESS)
       { 
-        CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__); 
+        CLog::Log(LOGERROR, "%s: set color space failed", __MODULE_NAME__); 
         break; 
       }
 /*
@@ -1313,7 +1313,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
       if (res != BCM::BC_STS_SUCCESS)
       {
-        CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
+        CLog::Log(LOGERROR, "%s: set video params failed", __MODULE_NAME__);
         break;
       }
     }
@@ -1321,14 +1321,14 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
     res = m_dll->DtsStartDecoder(m_device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGDEBUG, "%s: start decoder failed", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
 
     res = m_dll->DtsStartCapture(m_device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGDEBUG, "%s: start capture failed", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
 
@@ -1346,8 +1346,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
     m_last_pict_num = 0;
     m_last_demuxer_pts = DVD_NOPTS_VALUE;
     m_last_decoder_pts = DVD_NOPTS_VALUE;
-
-    CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
 
   return m_decoder_open;
@@ -1394,18 +1392,11 @@ void CCrystalHD::CloseDecoder(void)
     m_dll->DtsCloseDecoder(m_device);
   }
   m_decoder_open = false;
-
-  CLog::Log(LOGDEBUG, "%s: codec closed", __MODULE_NAME__);
 }
 
 void CCrystalHD::Reset(void)
 {
-  if (m_has_bcm70015)
-  {
-    m_wait_timeout = 1;
-    m_dll->DtsFlushInput(m_device, 0);
-  }
-  else
+  if (!m_has_bcm70015)
   {
     // Calling for non-error flush, Flushes all the decoder
     //  buffers, input, decoded and to be decoded. 
@@ -1422,8 +1413,6 @@ void CCrystalHD::Reset(void)
     ::Sleep(1);
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
   }
-
-  CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double pts)

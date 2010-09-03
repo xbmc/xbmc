@@ -40,9 +40,8 @@ CRemoteControl::CRemoteControl()
   m_fd = -1;
   m_file = NULL;
   m_bInitialized = false;
-  m_skipHold = false;
   m_button = 0;
-  m_isHolding = false;
+  m_holdTime = 0;
   m_used = true;
   m_deviceName = LIRC_DEVICE;
   m_inotify_fd = -1;
@@ -75,8 +74,8 @@ void CRemoteControl::setUsed(bool value)
 
 void CRemoteControl::Reset()
 {
-  m_isHolding = false;
   m_button = 0;
+  m_holdTime = 0;
 }
 
 void CRemoteControl::Disconnect()
@@ -279,21 +278,21 @@ void CRemoteControl::Update()
 
     m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, buttonName);
 
+    int repeat = atol(repeatStr);
     if (strcmp(repeatStr, "00") == 0)
     {
       CLog::Log(LOGDEBUG, "LIRC: %s - NEW at %d:%s (%s)", __FUNCTION__, now, m_buf, buttonName);
       m_firstClickTime = now;
-      m_isHolding = false;
-      m_skipHold = true;
+      m_holdTime = 0;
       return;
     }
-    else if (now - m_firstClickTime >= (uint32_t) g_advancedSettings.m_remoteRepeat && !m_skipHold)
+    else if (repeat > g_advancedSettings.m_remoteDelay)
     {
-      m_isHolding = true;
+      m_holdTime = now - m_firstClickTime;
     }
     else
     {
-      m_isHolding = false;
+      m_holdTime = 0;
       m_button = 0;
     }
   }
@@ -319,8 +318,6 @@ void CRemoteControl::Update()
 
   if (feof(m_file) != 0)
     Disconnect();
-
-  m_skipHold = false;
 }
 
 WORD CRemoteControl::GetButton()
@@ -328,9 +325,9 @@ WORD CRemoteControl::GetButton()
   return m_button;
 }
 
-bool CRemoteControl::IsHolding()
+unsigned int CRemoteControl::GetHoldTime() const
 {
-  return m_isHolding;
+  return m_holdTime;
 }
 
 void CRemoteControl::AddSendCommand(const CStdString& command)

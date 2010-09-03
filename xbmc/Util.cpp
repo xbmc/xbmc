@@ -890,6 +890,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(!IsRemote(strPath))
     return false;
 
+  if(IsPlugin(strPath))
+    return false;
+
   CStdString host = url.GetHostName();
   if(host.length() == 0)
     return false;
@@ -1599,7 +1602,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
     CStdString filename = GetFileName(items[i]->m_strPath);
     strLExt = filename.Right(filename.size()-8);
-    vecExtensionsCached.push_back(strLExt);
+    if (filename.Left(8).Equals("subtitle"))
+      vecExtensionsCached.push_back(strLExt);
     if (CUtil::GetExtension(filename).Equals(".smi"))
     {
       //Cache multi-language sami subtitle

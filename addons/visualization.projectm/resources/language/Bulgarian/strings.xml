@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Качество на рендер</string>
+    <string id="30001">Ниско</string>
+    <string id="30002">Средно</string>
+    <string id="30003">Високо</string>
+    <string id="30004">Максимално</string>
+    <string id="30005">Режим Разбъркано</string>
+    <string id="30006">Гладка настройка на продължителност</string>
+    <string id="30007">Настройка на продължителност</string>
+    <string id="30008">Чувствителност Ритъм</string>
+</strings>

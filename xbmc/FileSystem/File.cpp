@@ -374,30 +374,6 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   return false;
 }
 
-void CFile::Attach(IFile *pFile, unsigned int flags) {
-  m_pFile = pFile;
-  m_flags = flags;
-  if (m_flags & READ_BUFFERED)
-  {
-    if (m_pFile->GetChunkSize())
-    {
-      m_pBuffer = new CFileStreamBuffer(0);
-      m_pBuffer->Attach(m_pFile);
-    }
-  }
-}
-
-IFile* CFile::Detach() {
-  // TODO - currently the buffered reading is broken if in use, it should be
-  //        moved to a IFile instead, then it will work just fine
-
-  IFile* file = m_pFile;
-  m_pFile = NULL;
-  m_flags = 0;
-  return file;
-}
-
-
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try
@@ -808,7 +784,8 @@ bool CFile::Delete(const CStdString& strFileName)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
+  if (Exists(strFileName))
+    CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
 

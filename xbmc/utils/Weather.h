@@ -104,7 +104,6 @@ private:
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
-  void LocalizeDay(CStdString &day);
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
   std::map<CStdString, int> m_localizedTokens;

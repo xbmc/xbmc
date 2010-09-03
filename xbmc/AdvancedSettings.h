@@ -156,7 +156,7 @@ class CAdvancedSettings
     SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
-    int m_remoteRepeat;
+    int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
     bool m_playlistAsFolders;
@@ -197,6 +197,8 @@ class CAdvancedSettings
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
+
+    bool m_bVideoScannerIgnoreErrors;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language

@@ -317,15 +317,13 @@ void SqliteDatabase::rollback_transaction() {
 
 // methods for formatting
 // ---------------------------------------------
-void SqliteDatabase::vprepare_free(void *p)
-{
-    sqlite3_free(p);
-}
-
-char *SqliteDatabase::vprepare(const char *format, va_list args)
+string SqliteDatabase::vprepare(const char *format, va_list args)
 {
   string strFormat = format;
+  string strResult = "";
+  char *p;
   size_t pos;
+
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
   pos = 0;
@@ -338,7 +336,14 @@ char *SqliteDatabase::vprepare(const char *format, va_list args)
   while ( (pos = strFormat.find("%I64", pos)) != string::npos )
     strFormat.replace(pos++, 4, "%ll");
 
-  return sqlite3_vmprintf(strFormat.c_str(), args);
+  p = sqlite3_vmprintf(strFormat.c_str(), args);
+  if ( p )
+  {
+    strResult = p;
+    sqlite3_free(p);
+  }
+
+  return strResult;
 }
 
 
@@ -466,9 +471,37 @@ void SqliteDataset::fill_fields() {
 
 int SqliteDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
+  string qry = sql;
   int res;
   exec_res.clear();
-  if((res = db->setErr(sqlite3_exec(handle(),sql.c_str(),&callback,&exec_res,&errmsg),sql.c_str())) == SQLITE_OK)
+
+  // Strip size constraints from indexes (not supported in sqlite)
+  //
+  // Example:
+  //   before: CREATE UNIQUE INDEX ixPath ON path ( strPath(255) )
+  //   after:  CREATE UNIQUE INDEX ixPath ON path ( strPath )
+  //
+  // NOTE: unexpected results occur if brackets are not matched
+  if ( qry.find("CREATE UNIQUE INDEX") != string::npos )
+  {
+    size_t pos = 0;
+    size_t pos2 = 0;
+
+    if ( (pos = qry.find("(")) != string::npos )
+    {
+      pos++;
+      while ( (pos = qry.find("(", pos)) != string::npos )
+      {
+        if ( (pos2 = qry.find(")", pos)) != string::npos )
+        {
+          qry.replace(pos, pos2-pos+1, "");
+          pos = pos2;
+        }
+      }
+    }
+  }
+
+  if((res = db->setErr(sqlite3_exec(handle(),qry.c_str(),&callback,&exec_res,&errmsg),qry.c_str())) == SQLITE_OK)
     return res;
   else
     {

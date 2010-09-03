@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
+#include "MathUtils.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU::Desc decoder_profiles[] = {
@@ -318,15 +319,15 @@ bool CVDPAU::MakePixmap(int width, int height)
   if (g_graphicsContext.GetWidth() < width || g_graphicsContext.GetHeight() < height || upScale)
   {
     //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
-    if (height * g_graphicsContext.GetWidth() / width <= g_graphicsContext.GetHeight())
+    if ((double)height * g_graphicsContext.GetWidth() / width <= (double)g_graphicsContext.GetHeight())
     {
       OutWidth = g_graphicsContext.GetWidth();
-      OutHeight = height * g_graphicsContext.GetWidth() / width;
+      OutHeight = MathUtils::round_int((double)height * g_graphicsContext.GetWidth() / width);
     }
     else //scale height to the desktop size if the aspect ratio is smaller than the desktop
     {
       OutHeight = g_graphicsContext.GetHeight();
-      OutWidth = width * g_graphicsContext.GetHeight() / height;
+      OutWidth = MathUtils::round_int((double)width * g_graphicsContext.GetHeight() / height);
     }
   }
   else
@@ -615,7 +616,7 @@ void CVDPAU::SetDeinterlacing()
 
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
-    VdpBool enabled[]={1,1,0};
+    VdpBool enabled[]={1,1,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
@@ -627,12 +628,12 @@ void CVDPAU::SetDeinterlacing()
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
        ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
   {
-    VdpBool enabled[]={0,1,0};
+    VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
   {
-    VdpBool enabled[]={0,0,1};
+    VdpBool enabled[]={1,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else
@@ -803,6 +804,8 @@ void CVDPAU::FiniVDPAUOutput()
     free(m_videoSurfaces[i]);
   }
   m_videoSurfaces.clear();
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
 }
 
 
@@ -854,7 +857,7 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   vid_width = avctx->width;
   vid_height = avctx->height;
 
-  past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
+  past[1] = past[0] = current = future = NULL;
   CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
   CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
@@ -983,7 +986,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
   {
-    if(!(vdp->m_videoSurfaces[i]->state & FF_VDPAU_STATE_USED_FOR_REFERENCE))
+    if(!(vdp->m_videoSurfaces[i]->state & (FF_VDPAU_STATE_USED_FOR_REFERENCE | FF_VDPAU_STATE_USED_FOR_RENDER)))
     {
       render = vdp->m_videoSurfaces[i];
       render->state = 0;
@@ -1145,11 +1148,31 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if(!render)
       return VC_ERROR;
 
+    render->state |= FF_VDPAU_STATE_USED_FOR_RENDER;
+
+    ClearUsedForRender(&past[0]);
     past[0] = past[1];
     past[1] = current;
-    current = render->surface;
+    current = future;
+    future = render;
 
-    if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
+    DVDVideoPicture DVDPic;
+    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&DVDPic);
+    m_DVDVideoPics.push(DVDPic);
+
+    int pics = m_DVDVideoPics.size();
+    if (pics < 2)
+        return VC_BUFFER;
+    else if (pics > 2)
+    {
+      // this should not normally happen
+      CLog::Log(LOGERROR, "CVDPAU::Decode - invalid number of pictures in queue");
+      while (pics-- != 2)
+        m_DVDVideoPics.pop();
+    }
+
+    if((method == VS_INTERLACEMETHOD_AUTO &&
+                  m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
     ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
@@ -1164,7 +1187,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       else
         m_mixerstep = 1;
 
-      if(pFrame->top_field_first)
+      if(m_DVDVideoPics.front().iFlags & DVP_FLAG_TOP_FIELD_FIRST)
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
@@ -1180,7 +1203,11 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   { // no new frame given, output second field of old frame
 
     if(avctx->hurry_up)
+    {
+      ClearUsedForRender(&past[1]);
+      m_DVDVideoPics.pop();
       return VC_BUFFER;
+    }
 
     m_mixerstep = 2;
     if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
@@ -1199,23 +1226,29 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
   {
-    past_surfaces[1] = past[0];
-    past_surfaces[0] = past[1];
-    futu_surfaces[0] = VDP_INVALID_HANDLE;
+    if (past[0])
+      past_surfaces[1] = past[0]->surface;
+    if (past[1])
+      past_surfaces[0] = past[1]->surface;
+    futu_surfaces[0] = future->surface;
   }
   else
   {
     if(m_mixerstep == 1)
     { // first field
-      past_surfaces[1] = past[1];
-      past_surfaces[0] = past[1];
-      futu_surfaces[0] = current;
+      if (past[1])
+      {
+        past_surfaces[1] = past[1]->surface;
+        past_surfaces[0] = past[1]->surface;
+      }
+      futu_surfaces[0] = current->surface;
     }
     else
     { // second field
-      past_surfaces[1] = past[1];
-      past_surfaces[0] = current;
-      futu_surfaces[0] = VDP_INVALID_HANDLE;
+      if (past[1])
+        past_surfaces[1] = past[1]->surface;
+      past_surfaces[0] = current->surface;
+      futu_surfaces[0] = future->surface;
     }
   }
 
@@ -1227,7 +1260,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
                                   m_mixerfield,
                                   2,
                                   past_surfaces,
-                                  current,
+                                  current->surface,
                                   1,
                                   futu_surfaces,
                                   NULL,
@@ -1242,20 +1275,32 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 
   if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    ClearUsedForRender(&past[0]);
     return VC_BUFFER | VC_PICTURE;
+  }
   else
   {
     if(m_mixerstep == 1)
       return VC_PICTURE;
     else
+    {
+      ClearUsedForRender(&past[1]);
       return VC_BUFFER | VC_PICTURE;
+    }
   }
 }
 
 bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  *picture = m_DVDVideoPics.front();
+  // if this is the first field of an interlaced frame, we'll need
+  // this same picture for the second field later
+  if (m_mixerstep != 1)
+    m_DVDVideoPics.pop();
+
   picture->format = DVDVideoPicture::FMT_VDPAU;
-  picture->iFlags = 0;
+  picture->iFlags &= DVP_FLAG_DROPPED;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;
   picture->vdpau = this;
@@ -1270,6 +1315,18 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
     }
   }
   return true;
+}
+
+void CVDPAU::Reset()
+{
+  // invalidate surfaces and picture queue when seeking
+  ClearUsedForRender(&past[0]);
+  ClearUsedForRender(&past[1]);
+  ClearUsedForRender(&current);
+  ClearUsedForRender(&future);
+
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
 }
 
 void CVDPAU::Present()

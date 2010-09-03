@@ -1,4 +1,4 @@
-xbmc (2:10.0~svn32696~deb1-1) experimental; urgency=low
+xbmc (2:10.0~svn32746~deb1-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)

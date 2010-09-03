@@ -129,6 +129,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
+          m_isoReader.Reset();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           g_windowManager.SendThreadMessage( msg );
           waitLock.Leave();
@@ -140,6 +142,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // drive is not ready (closing, opening)
+          m_isoReader.Reset();
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
           // better delete old CD Information
@@ -160,6 +164,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // nothing in there...
+          m_isoReader.Reset();
+          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
@@ -231,6 +237,39 @@ void CDetectDVDMedia::DetectMediaType()
             m_pCdInfo->GetTrackCount(),
             m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount() );
+
+  // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
+  if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
+  {
+    strNewUrl = "iso9660://";
+    m_isoReader.Scan();
+  }
+  else
+  {
+    if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
+      strNewUrl = "D:\\";
+    else if (m_pCdInfo->IsAudio(1))
+    {
+      strNewUrl = "cdda://local/";
+      bCDDA = true;
+    }
+    else
+      strNewUrl = "D:\\";
+  }
+
+  if (m_pCdInfo->IsISOUDF(1))
+  {
+    if (!g_advancedSettings.m_detectAsUdf)
+    {
+      strNewUrl = "iso9660://";
+      m_isoReader.Scan();
+    }
+    else
+    {
+      strNewUrl = "D:\\";
+    }
+  }
+
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
   if (m_pCdInfo->IsValidFs())

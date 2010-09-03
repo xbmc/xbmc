@@ -221,7 +221,7 @@ namespace VIDEO
       CStdString fastHash = GetFastHash(strDirectory);
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change (fasthash)", strDirectory.c_str());
         hash = fastHash;
         bSkip = true;
       }
@@ -240,8 +240,14 @@ namespace VIDEO
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", strDirectory.c_str(), dbHash.c_str(), hash.c_str());
         }
         else
-        { // they're the same
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+        { // they're the same or the hash is empty (dir empty/dir not retrievable)
+          if (hash.IsEmpty() && !dbHash.IsEmpty())
+          {
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
+            m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+          }
+          else
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
           bSkip = true;
           if (m_pObserver)
             m_pObserver->OnDirectoryScanned(strDirectory);
@@ -282,7 +288,7 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name, content))
+      if (RetrieveVideoInfo(items, settings.parent_name_root, content))
       {
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
@@ -451,7 +457,7 @@ namespace VIDEO
       long lResult = AddVideo(pItem.get(), info2->Content());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), bDirNames, fetchEpisodes, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal, pDlgProgress);
       if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
@@ -1217,17 +1223,6 @@ namespace VIDEO
           return nfoFile;
       }
 
-      // already an .nfo file?
-      if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
-        nfoFile = item->m_strPath;
-      // no, create .nfo file
-      else
-        nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
-
-      // test file existence
-      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
-        nfoFile.Empty();
-
       // try looking for .nfo file for a stacked item
       if (item->IsStack())
       {
@@ -1245,6 +1240,19 @@ namespace VIDEO
           nfoFile = GetnfoFile(&item2, bGrabAny);
         }
       }
+      else
+      {
+        // already an .nfo file?
+        if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
+          nfoFile = item->m_strPath;
+        // no, create .nfo file
+        else
+          nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
+      }
+
+      // test file existence
+      if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
+        nfoFile.Empty();
 
       if (nfoFile.IsEmpty()) // final attempt - strip off any cd1 folders
       {
@@ -1257,8 +1265,16 @@ namespace VIDEO
           return GetnfoFile(&item2, bGrabAny);
         }
       }
+
+      if (item->IsDiskFile())
+      {
+        CFileItem parentDirectory;
+        parentDirectory.m_strPath = CUtil::GetParentPath(item->m_strPath);
+        return GetnfoFile(&parentDirectory, bGrabAny);
+      }
     }
-    if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
+    // folders (or stacked dvds) can take any nfo file if there's a unique one
+    if (item->m_bIsFolder || item->IsDVDFile(false, true) || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1517,6 +1533,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
+    if (g_advancedSettings.m_bVideoScannerIgnoreErrors)
+      return true;
+
     if (pDialog)
     {
       CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 07/23/2010-->
+<!--Date of translation: 09/02/2010-->
 <!--$Revision$-->
 <!--Based on english strings version 32080-->
 <strings>
@@ -182,6 +182,8 @@
   <string id="241">Pełny ekran #%d</string>
   <string id="242">Tryb okienkowy</string>
   <string id="243">Częstotliwość odświeżania</string>
+  <string id="244">Pełny ekran</string>
+  <string id="245">Rozmiar: (%i,%i)-&gt;(%i,%i) (Powiększenie x%2.2f) AR:%2.2f:1 (Piksele: %2.2f:1)</string>
   <string id="247">Skrypty</string>
   <string id="248">Język</string>
   <string id="249">Muzyka</string>
@@ -758,6 +760,9 @@
   <string id="1418">burze z piorunami</string>
   <string id="1419">deszcze z piorunami</string>
   <string id="1420">Umiarkowanie</string>
+  <string id="1421">B.wysoka</string>
+  <string id="1422">Wietrznie</string>
+  <string id="1423">Mgła</string>
   <string id="1450">Wygaś monitor podczas bezczynności</string>
   <string id="2050">Czas trwania</string>
   <string id="2100">Błąd skryptu! : %s</string>
@@ -924,6 +929,7 @@
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU poziom upscalingu HQ</string>
   <string id="13130">Wygaszaj inne ekrany</string>
   <string id="13131">Wyłączone</string>
   <string id="13132">Wygaszaj ekrany</string>
@@ -953,6 +959,8 @@
   <string id="13210">Rozpoczęto, alarm za %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Anulowano na %im%is do końca</string>
+  <string id="13213">%2.0fm</string>
+  <string id="13214">%2.0fs</string>
   <string id="13249">Szukaj napisów w archiwach (RAR)</string>
   <string id="13250">Wskaż napisy...</string>
   <string id="13251">Przenieś</string>
@@ -993,6 +1001,7 @@
   <string id="13313">Restart</string>
   <string id="13314">Płynne przejścia między utworami</string>
   <string id="13315">Odśwież miniatury</string>
+  <string id="13316">Miniatury rekursywnie</string>
   <string id="13317">Rozpocznij pokaz</string>
   <string id="13318">uwzględniając podkatalogi</string>
   <string id="13319">Wybieraj losowo</string>
@@ -1188,6 +1197,7 @@
   <string id="14089">Czcionka używana do napisów</string>
   <string id="14090">Język</string>
   <string id="14091">Zestaw znaków</string>
+  <string id="14092">Debugowanie</string>
   <string id="14093">Ochrona</string>
   <string id="14094">Urządzenia wejściowe</string>
   <string id="14095">Oszczędzanie energii</string>
@@ -1453,6 +1463,7 @@
   <string id="20119">Ustawić teraz?</string>
   <string id="20120">Wczytuję informacje o programie</string>
   <string id="20121">Imprezujemy!</string>
+  <string id="20122">Prawda</string>
   <string id="20123">Robię drinki</string>
   <string id="20124">Napełniam szklaneczki</string>
   <string id="20125">Zalogowano jako</string>
@@ -1599,6 +1610,7 @@
   <string id="20373">Sezon</string>
   <string id="20374">Pobieram informacje o filmie</string>
   <string id="20375">Nieokreślona zawartość</string>
+  <string id="20376">Tytuł oryginalny</string>
   <string id="20377">Odśwież informację o serialu</string>
   <string id="20378">Odświeżyć dane dla wszystkich odcinków?</string>
   <string id="20379">Wybrany katalog zawiera jeden serial</string>
@@ -1644,10 +1656,12 @@
   <string id="20421">dla jednosezonowych seriali</string>
   <string id="20422">zawsze</string>
   <string id="20423">ma zwiastun</string>
+  <string id="20424">Fałsz</string>
   <string id="20425">Pokaz slajdów z fanartami</string>
   <string id="20426">Eksportować do pojedynczego pliku</string>
   <string id="20427">czy rozdzielić pliki?</string>
   <string id="20428">Jeden plik</string>
+  <string id="20429">Oddziel</string>
   <string id="20430">Eksportować miniatury i fanart?</string>
   <string id="20431">Nadpisać istniejące pliki?</string>
   <string id="20432">Pomijaj ten katalog podczas aktualizacji biblioteki</string>
@@ -1842,10 +1856,11 @@
   <string id="22000">Aktualizuj bibliotekę na starcie</string>
   <string id="22001">Ukryj postęp aktualizacji biblioteki</string>
   <string id="22002">- DNS suffix</string>
+  <string id="22003">%2.3fs</string>
   <string id="22004">Opóźnij o: %2.3fs</string>
-  <string id="22005">Przyśpiesz o: %2.3fs</string>
+  <string id="22005">Przyspiesz o: %2.3fs</string>
   <string id="22006">Przesunięcie napisów</string>
-  <string id="22007">OpenGL vendor:</string>
+  <string id="22007">OpenGL dostawca:</string>
   <string id="22008">OpenGL renderer:</string>
   <string id="22009">OpenGL wersja:</string>
   <string id="22010">Temperatura GPU:</string>
@@ -1913,7 +1928,7 @@
   <string id="24023">Wtyczka wyłączona</string>
   <string id="24027">Pogoda</string>
   <string id="24028">Weather.com (standard)</string>
-  <string id="24030">Ta wtyczka nie może być skonfigurowania</string>
+  <string id="24030">Ta wtyczka nie może być skonfigurowana</string>
   <string id="24031">Błąd wczytywania ustawień</string>
   <string id="24032">Wszystkie wtyczki</string>
   <string id="24033">Pobierz wtyczki</string>
@@ -1929,7 +1944,7 @@
   <string id="24043">Dostępne aktualizacje</string>
   <string id="24050">Dostępne wtyczki</string>
   <string id="24051">Wersja:</string>
-  <string id="24052">Zrzeczenie się</string>
+  <string id="24052">Uwagi</string>
   <string id="24053">Licencja:</string>
   <string id="24054">Lista zmian</string>
   <string id="24059">Czy chcesz włączyć tę wtyczkę?</string>

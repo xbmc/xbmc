@@ -90,7 +90,7 @@ namespace PYXBMC
     if (pyRes) PyXBMCGetUnicodeString(resolution, pyRes);
 
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-    RESOLUTION res;
+    RESOLUTION res = RES_INVALID;
     CStdString strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
 
     if (!XFILE::CFile::Exists(strSkinPath))
@@ -139,17 +139,17 @@ namespace PYXBMC
   PyDoc_STRVAR(windowXMLDialog__doc__,
     "WindowXMLDialog class.\n"
     "\n"
-    "WindowXMLDialog(self, xmlFilename, scriptPath[, defaultSkin, forceFallback) -- Create a new WindowXMLDialog script.\n"
+    "WindowXMLDialog(self, xmlFilename, scriptPath[, defaultSkin, defaultRes]) -- Create a new WindowXMLDialog script.\n"
     "\n"
     "xmlFilename     : string - the name of the xml file to look for.\n"
     "scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg os.getcwd())\n"
     "defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n"
-    "forceFallback   : [opt] boolean - if true then it will look only in the defaultSkin folder. (default=False)\n"
+    "defaultRes      : [opt] string - default skins resolution. (default='720p')\n"
     "\n"
-    "*Note, skin folder structure is eg(resources/skins/Default/PAL)\n"
+    "*Note, skin folder structure is eg(resources/skins/Default/720p)\n"
     "\n"
     "example:\n"
-    " - ui = GUI('script-Lyrics-main.xml', os.getcwd(), 'LCARS', True)\n"
+    " - ui = GUI('script-Lyrics-main.xml', os.getcwd(), 'LCARS', 'PAL')\n"
     "   ui.doModal()\n"
     "   del ui\n");
 
