@@ -100,6 +100,9 @@ private:
   bool OpenSink(unsigned int sampleRate = 44100);
   void Deinitialize();
 
+  unsigned int m_delayFrames;
+  void DelayFrames();
+
   /* this is called by streams on dtor, you should never need to call this directly */
   friend class CAEStream;
   void RemoveStream(CAEStream *stream);

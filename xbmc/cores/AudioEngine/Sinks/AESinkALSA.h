@@ -52,7 +52,7 @@ private:
   CStdString        m_device;
   snd_pcm_t        *m_pcm;
   CCriticalSection  m_runLock;
-  unsigned int      m_bufferFrames;
+  int               m_timeout;
 
   snd_pcm_format_t AEFormatToALSAFormat(const enum AEDataFormat format);
 

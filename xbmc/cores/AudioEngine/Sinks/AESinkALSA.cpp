@@ -28,8 +28,9 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 
-#define ALSA_DEBUG_DUMP
+#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
 
+//#define ALSA_DEBUG_DUMP
 #ifdef ALSA_DEBUG_DUMP
 static int fd;
 #endif
@@ -138,7 +139,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   snd_config_copy(&config, snd_config);
   int error;
 
-  error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+  error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, config);
   if (error < 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - snd_pcm_open_lconf(%d)", error);
@@ -152,8 +153,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   if (!InitializeHW(format)) return false;
   if (!InitializeSW(format)) return false;
 
-  m_bufferFrames = 0;
-  snd_pcm_prepare(m_pcm);
+  snd_pcm_nonblock(m_pcm, 1);
+  snd_pcm_prepare (m_pcm);
 
   m_format  = format;
   return true;
@@ -237,30 +238,62 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     }
   }
 
-  unsigned int      sampleRate = format.m_sampleRate;
-  unsigned int      frames     = 32;
-  snd_pcm_uframes_t frameSize  = ((CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount) * frames;
+  snd_pcm_hw_params_t *hw_params_copy;
+  snd_pcm_hw_params_malloc(&hw_params_copy);
 
-  snd_pcm_hw_params_set_rate_near       (m_pcm, hw_params, &sampleRate          , NULL);
-  snd_pcm_hw_params_set_channels        (m_pcm, hw_params, format.m_channelCount      );
-  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params, &frameSize           , NULL);
-  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params, &frames              , NULL);
+  unsigned int sampleRate = format.m_sampleRate;
+  snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate          , NULL);
+  snd_pcm_hw_params_set_channels (m_pcm, hw_params, format.m_channelCount      );
 
-  /* set the parameters */
-  if (snd_pcm_hw_params(m_pcm, hw_params) < 0)
-  {
-    CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Failed to set the parameters");
-    snd_pcm_hw_params_free(hw_params);
-    return false;
-  }
+  unsigned int frames          = (sampleRate / 1000) * 10;
+  unsigned int periods         = 4;
+  snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
+  snd_pcm_uframes_t bufferSize = periodSize * periods;
+
+  /* try to set the buffer size then the period size */
+  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+  snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
+  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
+  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
+
+  /* try to set the period size then the buffer size */
+  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
+  snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
+  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
+
+  /* try to just set the buffer size */
+  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+  snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
+  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
+
+  /* try to just set the period size */
+  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
+  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
+
+  CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Failed to set the parameters");
+  snd_pcm_hw_params_free(hw_params_copy);
+  snd_pcm_hw_params_free(hw_params     );
+  return false;
+
+success:
+  snd_pcm_hw_params_get_period_size(hw_params_copy, &periodSize, NULL);
+  snd_pcm_hw_params_get_buffer_size(hw_params_copy, &bufferSize);
 
   /* set the format parameters */
   format.m_sampleRate   = sampleRate;
-  format.m_frames       = frames;
+  format.m_frames       = snd_pcm_bytes_to_frames(m_pcm, periodSize);
   format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
-  format.m_frameSamples = frames * format.m_channelCount;
- 
-  snd_pcm_hw_params_free(hw_params);
+  format.m_frameSamples = format.m_frames * format.m_channelCount;
+  m_timeout             = -1;//((float)format.m_frames / sampleRate * 1000.0f) * 2;
+
+  snd_pcm_hw_params_free(hw_params_copy);
+  snd_pcm_hw_params_free(hw_params    );
   return true;
 }
 
@@ -276,6 +309,7 @@ bool CAESinkALSA::InitializeSW(AEAudioFormat &format)
   snd_pcm_sw_params_set_silence_threshold(m_pcm, sw_params, 0);
   snd_pcm_sw_params_get_boundary         (sw_params, &boundary);
   snd_pcm_sw_params_set_silence_size     (m_pcm, sw_params, boundary);
+  snd_pcm_sw_params_set_avail_min        (m_pcm, sw_params, format.m_frames);
 
   if (snd_pcm_sw_params(m_pcm, sw_params) < 0)
   {
@@ -311,32 +345,46 @@ void CAESinkALSA::Stop()
 
 float CAESinkALSA::GetDelay()
 {
+  CSingleLock runLock(m_runLock);
   if (!m_pcm) return 0;
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
-  float delay = (float)(frames + m_bufferFrames) / m_format.m_sampleRate;
+  float delay = (float)frames / m_format.m_sampleRate;
   return delay;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
 {
   CSingleLock runLock(m_runLock);
+  if (!m_pcm) return 0;
+
   if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
     snd_pcm_start(m_pcm);
 
-  m_bufferFrames = frames;
-  snd_pcm_wait(m_pcm, 1);
-  if (snd_pcm_writei(m_pcm, (void*)data, frames) == -EPIPE)
+  if (snd_pcm_wait(m_pcm, m_timeout) == 0)
   {
-    printf("Underrun\n");
-    snd_pcm_prepare(m_pcm);
+    CLog::Log(LOGERROR, "CAESinkALSA::AddPackets - Timeout waiting for space");
+    return 0;
   }
-  m_bufferFrames = 0;
+
+  unsigned int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+  if (ret < 0)
+  {
+    if (ret == -EPIPE)
+    {
+      CLog::Log(LOGERROR, "CAESinkALSA::AddPackets - Underrun");
+      if (snd_pcm_prepare(m_pcm) < 0)
+        return 0;
+    }
+
+    CLog::Log(LOGERROR, "CAESinkALSA::AddPackets - snd_pcm_writei returned %d", ret);
+    return 0;
+  }
 
   #ifdef ALSA_DEBUG_DUMP
   write(fd, data, frames * m_format.m_frameSize);
   #endif
 
-  return frames;
+  return ret;
 }
 
