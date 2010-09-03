@@ -23,6 +23,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "MathUtils.h"
 #include "GUISettings.h"
 #include "Settings.h"
 
@@ -43,6 +44,12 @@
 #ifdef __SSE__
 #include <xmmintrin.h>
 #endif
+
+/*
+  frame delay time in milliseconds when there is no sink
+  must NOT be less then 4
+*/
+#define DELAY_FRAME_TIME 20
 
 using namespace std;
 
@@ -155,20 +162,27 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
   m_sink = new CAESinkALSA();
   if (!m_sink->Initialize(desiredFormat, device))
   {
+    /* we failed, set the data format to defaults so the thread does not block */
+    desiredFormat.m_dataFormat   = AE_FMT_FLOAT;
+    desiredFormat.m_frames       = (sampleRate / 1000) * DELAY_FRAME_TIME;
+    desiredFormat.m_frameSamples = m_format.m_frames * m_format.m_channelCount;
+    desiredFormat.m_frameSize    = m_format.m_frameSamples * sizeof(float);
+
     delete m_sink;
     m_sink = NULL;
-    return false;
   }
-
-  CLog::Log(LOGINFO, "CAE::Initialize - %s Initialized:", m_sink->GetName());
-  CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
-  CLog::Log(LOGINFO, "  Sample Rate   : %d", desiredFormat.m_sampleRate);
-  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(desiredFormat.m_dataFormat));
-  CLog::Log(LOGINFO, "  Channel Count : %d", desiredFormat.m_channelCount);
-  CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(desiredFormat.m_channelLayout).c_str());
-  CLog::Log(LOGINFO, "  Frames        : %d", desiredFormat.m_frames);
-  CLog::Log(LOGINFO, "  Frame Samples : %d", desiredFormat.m_frameSamples);
-  CLog::Log(LOGINFO, "  Frame Size    : %d", desiredFormat.m_frameSize);
+  else
+  {
+    CLog::Log(LOGINFO, "CAE::Initialize - %s Initialized:", m_sink->GetName());
+    CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
+    CLog::Log(LOGINFO, "  Sample Rate   : %d", desiredFormat.m_sampleRate);
+    CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(desiredFormat.m_dataFormat));
+    CLog::Log(LOGINFO, "  Channel Count : %d", desiredFormat.m_channelCount);
+    CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(desiredFormat.m_channelLayout).c_str());
+    CLog::Log(LOGINFO, "  Frames        : %d", desiredFormat.m_frames);
+    CLog::Log(LOGINFO, "  Frame Samples : %d", desiredFormat.m_frameSamples);
+    CLog::Log(LOGINFO, "  Frame Size    : %d", desiredFormat.m_frameSize);
+  }
 
   /* get the sink's audio format details as it may have changed them according to what it supports */
   m_format        = desiredFormat;
@@ -205,7 +219,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
   }
 
-  return true;
+  return m_sink != NULL;
 }
 
 bool CAE::Initialize()
@@ -233,6 +247,17 @@ void CAE::Deinitialize()
 
   delete m_packetizer;
   m_packetizer = NULL;
+}
+
+/* this is used when there is no sink to prevent us running too fast */
+void CAE::DelayFrames()
+{
+  /*
+    since there is no audio, this does not need to be exact
+    but less then the actual by a little to cope with system
+    overheads otherwise the video output is jerky
+  */
+  Sleep(DELAY_FRAME_TIME - 4);
 }
 
 void CAE::Stop()
@@ -413,8 +438,10 @@ float CAE::GetDelay()
   CSingleLock lock(m_critSection);
   if (!m_running) return 0.0f;
 
+  float delay = 0.0f;
   CSingleLock sinkLock(m_critSectionSink);
-  return m_sink->GetDelay() + ((float)m_bufferSamples / m_format.m_sampleRate);
+  if (m_sink) delay = m_sink->GetDelay();
+  return delay + ((float)m_bufferSamples / m_format.m_sampleRate);
 }
 
 float CAE::GetVolume()
@@ -542,12 +569,9 @@ void CAE::Run()
 
     CSingleLock sinkLock(m_critSectionSink);
       m_reOpened = false;
-      if (m_sink)
-      {
-        RunOutputStage();
-        /* copy this value so we can unlock the sink */
-        channelCount = m_channelCount;
-      }
+      RunOutputStage();
+      /* copy this value so we can unlock the sink */
+      channelCount = m_channelCount;
     sinkLock.Leave();
 
     CSingleLock mixLock(m_critSection);
@@ -560,7 +584,7 @@ void CAE::Run()
     mixLock.Leave();
 
     sinkLock.Enter();
-    if (!m_reOpened && m_sink)
+    if (!m_reOpened)
       RunBufferStage(out);
     sinkLock.Leave();
   }
@@ -653,10 +677,24 @@ inline void CAE::RunOutputStage()
       {
         DECLARE_ALIGNED(16, uint8_t, converted[m_format.m_frames * m_format.m_frameSize]);
         m_convertFn(remapped, rSamples, converted);
-        wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+        if (m_sink)
+          wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+        else
+        {
+          wroteFrames = m_format.m_frames;
+          DelayFrames();
+        }
       }
       else
-        wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
+      {
+        if (m_sink)
+          wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
+        else
+        {
+          wroteFrames = m_format.m_frames;
+          DelayFrames();
+        }
+      }
 
       int wroteSamples = wroteFrames * m_channelCount;
       int bytesLeft    = (m_bufferSamples - wroteSamples) * m_format.m_frameSize;
@@ -677,7 +715,8 @@ inline void CAE::RunOutputStage()
       {
         uint8_t *packet;
         unsigned int size = m_packetizer->GetPacket(&packet);
-        m_sink->AddPackets(packet, size / m_format.m_frameSize);
+        if (m_sink)
+          m_sink->AddPackets(packet, size / m_format.m_frameSize);
         m_packetizer->DropPacket();
       }
     }
