@@ -905,7 +905,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
     CLog::Log(LOGERROR, "GL: Falling back to Software YUV2RGB");
     m_renderMethod = RENDER_SW;
   }
-/*
+
   // determine whether GPU supports NPOT textures
   if (!g_Windowing.IsExtSupported("GL_TEXTURE_NPOT"))
   {
@@ -915,7 +915,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   }
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
-*/
+
   // setup default YV12 texture handlers
   m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
   m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
