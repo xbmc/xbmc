@@ -212,16 +212,18 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   {
     /* if the chosen format is not supported, try each one in decending order */
     CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
-    for(int i = AE_FMT_MAX; i > AE_FMT_INVALID; --i)
+    for(enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
-      fmt = AEFormatToALSAFormat((enum AEDataFormat)i);
+      if (i == AE_FMT_RAW || i == AE_FMT_MAX) continue;
+      fmt = AEFormatToALSAFormat(i);
+
       if (fmt == SND_PCM_FORMAT_UNKNOWN || snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
       {
         fmt = SND_PCM_FORMAT_UNKNOWN;
         continue;
       }
 
-      format.m_dataFormat = (enum AEDataFormat)i;
+      format.m_dataFormat = i;
       CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Using data format %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
       break;
     }
@@ -236,7 +238,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   }
 
   unsigned int      sampleRate = format.m_sampleRate;
-  unsigned int      frames     = 32;//format.m_dataFormat == AE_FMT_IEC958 ? 1536 : 32;
+  unsigned int      frames     = 32;
   snd_pcm_uframes_t frameSize  = ((CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount) * frames;
 
   snd_pcm_hw_params_set_rate_near       (m_pcm, hw_params, &sampleRate          , NULL);
