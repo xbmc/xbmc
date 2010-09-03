@@ -633,7 +633,7 @@ void CVDPAU::SetDeinterlacing()
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
   {
-    VdpBool enabled[]={0,0,1};
+    VdpBool enabled[]={1,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else
