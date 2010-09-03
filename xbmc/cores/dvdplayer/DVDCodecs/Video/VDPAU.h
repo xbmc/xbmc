@@ -30,6 +30,7 @@
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include <queue>
 #include "utils/CriticalSection.h"
 #include "settings/VideoSettings.h"
 namespace Surface { class CSurface; }
@@ -119,6 +120,7 @@ public:
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
   bool       upScale;
+  std::queue<DVDVideoPicture> m_DVDVideoPics;
 
   static inline void ClearUsedForRender(vdpau_render_state **st)
   {
