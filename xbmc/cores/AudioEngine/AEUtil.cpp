@@ -21,6 +21,7 @@
 
 #include "StdString.h"
 #include "AEUtil.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -62,12 +63,35 @@ CStdString CAEUtil::GetChLayoutStr(const AEChLayout src)
   return s;
 }
 
+const AEChLayout CAEUtil::GuessChLayout(const unsigned int channels)
+{
+  CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - This method should really never be used, please fix the code that called this");
+  if (channels < 1 || channels > 8)
+    return NULL;
+
+  AEStdChLayout layout;
+  switch(channels)
+  {
+    case 1: layout = AE_CH_LAYOUT_1_0; break;
+    case 2: layout = AE_CH_LAYOUT_2_0; break;
+    case 3: layout = AE_CH_LAYOUT_3_0; break;
+    case 4: layout = AE_CH_LAYOUT_4_0; break;
+    case 5: layout = AE_CH_LAYOUT_5_0; break;
+    case 6: layout = AE_CH_LAYOUT_5_1; break;
+    case 7: layout = AE_CH_LAYOUT_7_0; break;
+    case 8: layout = AE_CH_LAYOUT_7_1; break;
+  }
+
+  return GetStdChLayout(layout);
+}
+
 const AEChLayout CAEUtil::GetStdChLayout(const enum AEStdChLayout layout)
 {
   if (layout < 0 || layout >= AE_CH_LAYOUT_MAX)
     return NULL;
 
   static enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
+    {AE_CH_FC, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_LFE, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_NULL},
@@ -90,6 +114,7 @@ const char* CAEUtil::GetStdChLayoutName(const enum AEStdChLayout layout)
 
   static const char* layouts[AE_CH_LAYOUT_MAX] = 
   {
+    "1.0",
     "2.0", "2.1", "3.0", "3.1", "4.0",
     "4.1", "5.0", "5.1", "7.0", "7.1"
   };

@@ -675,14 +675,6 @@ inline void CAE::RunOutputStage()
         m_sink->AddPackets(packet, size / m_format.m_frameSize);
         m_packetizer->DropPacket();
       }
-
-#if 0
-      wroteFrames        = m_sink->AddPackets(rawBuffer, m_format.m_frames);
-      int wroteSamples   = wroteFrames * m_format.m_frameSize;
-      int bytesLeft      = m_bufferSamples - wroteSamples;
-      memmove(rawBuffer, rawBuffer + wroteSamples, bytesLeft);
-      m_bufferSamples -= wroteSamples;
-#endif
     }
   }
 }

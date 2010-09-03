@@ -1868,7 +1868,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("audiooutput.channellayout"))
+  else if (strSetting.Equals("audiooutput.channellayout") ||
+           strSetting.Equals("audiooutput.dontnormalizelevels") ||
+           strSetting.Equals("audiooutput.mode") ||
+           strSetting.Equals("audiooutput.ac3passthrough") ||
+           strSetting.Equals("audiooutput.dtspassthrough"))
   {
     g_application.RestartAE();
   }
