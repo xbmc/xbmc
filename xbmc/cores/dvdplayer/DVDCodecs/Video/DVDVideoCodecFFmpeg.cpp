@@ -506,7 +506,7 @@ void CDVDVideoCodecFFmpeg::Reset()
   }
 }
 
-bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
+bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 {
   GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
 
@@ -564,8 +564,16 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(!m_started)
     pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
+  return true;
+}
+
+bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
+{
   if(m_pHardware)
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
+
+  if(!GetPictureCommon(pDvdVideoPicture))
+    return false;
 
   if(m_pConvertFrame)
   {
@@ -577,9 +585,9 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
   {
     for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->data[i]      = frame->data[i];
+      pDvdVideoPicture->data[i]      = m_pFrame->data[i];
     for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+      pDvdVideoPicture->iLineSize[i] = m_pFrame->linesize[i];
   }
 
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;

@@ -1273,6 +1273,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
 bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
+
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags &= DVP_FLAG_DROPPED;
   picture->iWidth = OutWidth;
