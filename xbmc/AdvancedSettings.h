@@ -156,7 +156,7 @@ class CAdvancedSettings
     SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
-    int m_remoteRepeat;
+    int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
     bool m_playlistAsFolders;

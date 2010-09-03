@@ -58,6 +58,20 @@ CKey::CKey(const CKey& key)
   *this = key;
 }
 
+CKey::CKey(uint32_t buttonCode, unsigned int held)
+{
+  m_buttonCode = buttonCode;
+  m_leftTrigger = 0;
+  m_rightTrigger = 0;
+  m_leftThumbX = 0.0f;
+  m_leftThumbY = 0.0f;
+  m_rightThumbX = 0.0f;
+  m_rightThumbY = 0.0f;
+  m_repeat = 0.0f;
+  m_fromHttpApi = false;
+  m_held = held;
+}
+
 uint32_t CKey::GetButtonCode() const // for backwards compatibility only
 {
   return m_buttonCode;
