@@ -736,7 +736,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, float *out)
       continue;
     }
 
-    float volume = stream->GetVolume() + stream->GetReplayGain();
+    float volume = stream->GetVolume() * stream->GetReplayGain();
     #ifdef __SSE__
     if (channelCount > 1)
       CAE::SSEMulAddArray(out, frame, volume, channelCount);
