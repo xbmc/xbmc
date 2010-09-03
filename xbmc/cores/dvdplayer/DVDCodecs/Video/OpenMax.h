@@ -141,6 +141,7 @@ protected:
   pthread_mutex_t   m_omx_ready_mutex;
   std::queue<OpenMaxBuffer*> m_omx_output_ready;
   std::vector<OpenMaxBuffer*> m_omx_output_buffers;
+  OpenMaxBuffer     *m_lastBuffer;
   bool              m_omx_output_eos;
   int               m_omx_output_port;
   //sem_t             *m_omx_flush_output;

@@ -479,13 +479,11 @@ void COpenMax::Reset(void)
 
 bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  static OpenMaxBuffer *lastBuffer = 0;
-
   if (!m_omx_output_ready.empty())
   {
-    if (lastBuffer)
+    if (m_lastBuffer)
     {
-      OMX_BUFFERHEADERTYPE *omx_buffer = lastBuffer->omx_buffer;
+      OMX_BUFFERHEADERTYPE *omx_buffer = m_lastBuffer->omx_buffer;
       bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
       if (!done)
       {
@@ -495,12 +493,12 @@ bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
             CLASSNAME, __func__, omx_err);
       }
-      lastBuffer = 0;
+      m_lastBuffer = NULL;
     }
     // fetch a output buffer and pop it off the ready list
     pthread_mutex_lock(&m_omx_ready_mutex);
     OpenMaxBuffer *buffer = m_omx_output_ready.front();
-    lastBuffer = buffer;
+    m_lastBuffer = buffer;
     OMX_BUFFERHEADERTYPE *omx_buffer = buffer->omx_buffer;
     m_omx_output_ready.pop();
     pthread_mutex_unlock(&m_omx_ready_mutex);
@@ -922,6 +920,7 @@ OMX_ERRORTYPE COpenMax::AllocOMXInputBuffers(void)
     m_omx_input_avaliable.push(buffer);
   }
   m_omx_input_eos = false;
+  m_lastBuffer = NULL;
 
   return(omx_err);
 }
