@@ -32,6 +32,7 @@
 #include "DDSImage.h"
 #include "Picture.h"
 #include "TextureManager.h"
+#include "SpecialProtocol.h"
 
 using namespace XFILE;
 
@@ -156,6 +157,12 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
   CStdString basePath(g_settings.GetThumbnailsFolder());
   if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
     return true;
+  if (basePath.Left(8).Equals("special:"))
+  {
+    basePath = CSpecialProtocol::TranslatePath(basePath);
+    if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
+      return true;
+  }
   return false;
 }
 
