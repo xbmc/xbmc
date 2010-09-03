@@ -120,6 +120,8 @@ inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdStri
 bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
 {
   format.m_channelCount = GetChannelCount(format);
+  memcpy(&m_initFormat, &format, sizeof(AEAudioFormat));
+
   if (format.m_channelCount == 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
@@ -164,10 +166,11 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const CStdString devi
 {
   AEAudioFormat tmp  = format;
   tmp.m_channelCount = GetChannelCount(format);
+
   return (
-    tmp.m_sampleRate   == m_format.m_sampleRate   &&
-    tmp.m_dataFormat   == m_format.m_dataFormat   &&
-    tmp.m_channelCount == m_format.m_channelCount &&
+    tmp.m_sampleRate   == m_initFormat.m_sampleRate   &&
+    tmp.m_dataFormat   == m_initFormat.m_dataFormat   &&
+    tmp.m_channelCount == m_initFormat.m_channelCount &&
     GetDeviceUse(tmp, device) == m_device
   );
 }
@@ -179,11 +182,7 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
     case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
-    case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;
-    case AE_FMT_S16BE : return SND_PCM_FORMAT_S16_BE;
     case AE_FMT_S32NE : return SND_PCM_FORMAT_S32;
-    case AE_FMT_S32LE : return SND_PCM_FORMAT_S32_LE;
-    case AE_FMT_S32BE : return SND_PCM_FORMAT_S32_BE;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
     case AE_FMT_RAW   : return SND_PCM_FORMAT_S16_LE;
 
@@ -224,6 +223,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
         continue;
       }
 
+      /* record that the format fell back to X */
       format.m_dataFormat = i;
       CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Using data format %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
       break;
@@ -245,7 +245,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate          , NULL);
   snd_pcm_hw_params_set_channels (m_pcm, hw_params, format.m_channelCount      );
 
-  unsigned int frames          = (sampleRate / 1000) * 10;
+  unsigned int frames          = (sampleRate / 1000);
   unsigned int periods         = 4;
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
   snd_pcm_uframes_t bufferSize = periodSize * periods;
@@ -367,7 +367,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
     return 0;
   }
 
-  unsigned int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
+  int ret = snd_pcm_writei(m_pcm, (void*)data, frames);
   if (ret < 0)
   {
     if (ret == -EPIPE)

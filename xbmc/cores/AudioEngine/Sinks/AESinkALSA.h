@@ -47,6 +47,7 @@ private:
   unsigned int GetChannelCount(const AEAudioFormat format);
   CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device);
 
+  AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
   enum AEChannel   *m_channelLayout;
   CStdString        m_device;
