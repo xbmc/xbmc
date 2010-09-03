@@ -3101,12 +3101,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
-        CStdString strYear;
+        if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+          return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
         if (!m_currentFile->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strPremiered;
-        else if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strFirstAired;
-        return strYear;
+          return m_currentFile->GetVideoInfoTag()->m_strPremiered;
       }
       break;
     case VIDEOPLAYER_PLOT:
@@ -3722,12 +3720,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
-      CStdString strResult;
+      if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+        return item->GetVideoInfoTag()->m_strFirstAired;
       if (!item->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strPremiered;
-      else if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strFirstAired;
-      return strResult;
+        return item->GetVideoInfoTag()->m_strPremiered;
     }
     break;
   case LISTITEM_GENRE:
