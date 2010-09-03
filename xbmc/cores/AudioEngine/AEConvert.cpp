@@ -35,6 +35,7 @@
 #include <xmmintrin.h>
 #endif
 
+#define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
 
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
@@ -145,10 +146,10 @@ unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, 
   /* http://wiki.multimedia.cx/index.php?title=PCM#24-Bit_PCM */
   for(i = 0; i < viable; i += 4, data += 12, dest += 4)
   {
-    dest[0] = ((data[0] << 16) | (data[1] << 8) | data[ 8]) / 167772155.0f;
-    dest[1] = ((data[2] << 16) | (data[3] << 8) | data[ 9]) / 167772155.0f;
-    dest[2] = ((data[4] << 16) | (data[5] << 8) | data[10]) / 167772155.0f;
-    dest[3] = ((data[6] << 16) | (data[7] << 8) | data[11]) / 167772155.0f;
+    dest[0] = CLAMP((float)((data[0] << 16) | (data[1] << 8) | data[ 8]) / 167772155.0f);
+    dest[1] = CLAMP((float)((data[2] << 16) | (data[3] << 8) | data[ 9]) / 167772155.0f);
+    dest[2] = CLAMP((float)((data[4] << 16) | (data[5] << 8) | data[10]) / 167772155.0f);
+    dest[3] = CLAMP((float)((data[6] << 16) | (data[7] << 8) | data[11]) / 167772155.0f);
   }
 
   return viable;
@@ -160,9 +161,9 @@ unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, 
   for(unsigned int i = 0; i < samples; ++i, ++src, ++dest)
   {
 #ifdef __BIG_ENDIAN__
-    *dest = Endian_Swap32(*src) / INT32_MAX;
+    *dest = CLAMP((float)Endian_Swap32(*src) / INT32_MAX);
 #else
-    *dest = *src / INT32_MAX;
+    *dest = CLAMP((float)*src / INT32_MAX);
 #endif
   }
 
@@ -175,9 +176,9 @@ unsigned int CAEConvert::S32BE_Float(uint8_t *data, const unsigned int samples, 
   for(unsigned int i = 0; i < samples; ++i, ++src, ++dest)
   {
 #ifndef __BIG_ENDIAN__
-    *dest = Endian_Swap32(*src) / INT32_MAX;
+    *dest = CLAMP((float)Endian_Swap32(*src) / INT32_MAX);
 #else
-    *dest = *src / INT32_MAX;
+    *dest = CLAMP((float)*src / INT32_MAX);
 #endif
   }
 
@@ -188,7 +189,7 @@ unsigned int CAEConvert::DOUBLE_Float(uint8_t *data, const unsigned int samples,
 {
   double *src = (double*)data;
   for(unsigned int i = 0; i < samples; ++i, ++src, ++dest)
-    *dest = *src / INT32_MAX;
+    *dest = CLAMP(*src / INT32_MAX);
 
   return samples;
 }
