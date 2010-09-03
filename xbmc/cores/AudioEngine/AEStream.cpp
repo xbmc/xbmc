@@ -121,7 +121,8 @@ void CAEStream::Initialize()
   if (m_initDataFormat == AE_FMT_RAW)
     m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples, 16);
   else
-    m_newPacket.data = (uint8_t*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples, 16);
+    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
+
   m_packet.samples    = 0;
   m_packet.data       = NULL;
 
@@ -148,7 +149,7 @@ void CAEStream::Initialize()
     m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_ssrcData.input_frames  = m_format.m_frames;
-    m_ssrcData.data_out      = (float*)_aligned_malloc(sizeof(float) * m_format.m_frameSamples * 2, 16);
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * 2 * sizeof(float), 16);
     m_ssrcData.output_frames = m_format.m_frames * 2;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.end_of_input  = 0;
@@ -249,9 +250,6 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
     m_frameBufferSize += copy;
     ptr               += copy;
 
-    if (m_frameBufferSize < m_format.m_frameSize)
-      continue;
-
     unsigned int consumed = ProcessFrameBuffer();
     if (consumed)
     {
@@ -265,8 +263,8 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
 
 unsigned int CAEStream::ProcessFrameBuffer()
 {
-  float	      *data;
-  unsigned int frames, samples, consumed;
+  uint8_t     *data;
+  unsigned int frames, consumed;
 
   /* convert the data if we need to */
   if (m_convert)
@@ -276,7 +274,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
   if (m_resample) {
     m_ssrcData.input_frames = m_frameBufferSize / m_bytesPerFrame;
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
-    data     = m_ssrcData.data_out;
+    data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
     consumed = m_ssrcData.input_frames_used * m_bytesPerFrame;
     if (!frames)
@@ -284,13 +282,13 @@ unsigned int CAEStream::ProcessFrameBuffer()
   }
   else
   {
-    data     = m_convertBuffer;
+    data     = (uint8_t*)m_convertBuffer;
     frames   = m_frameBufferSize / m_bytesPerFrame;
     consumed = m_frameBufferSize;
   }
 
   /* buffer the data */
-  samples           = frames * m_initChannelCount;
+  unsigned int samples = frames * m_format.m_channelCount;
   m_framesBuffered += frames;
 
   while(samples)
@@ -305,7 +303,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
     }
     else
     {
-      int size = copy * sizeof(float);
+      unsigned int size = copy * sizeof(float);
       memcpy((float*)m_newPacket.data + m_newPacket.samples, data, size);
       data += size;
     }
@@ -332,8 +330,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
         /* downmix/remap the data */
         PPacket pkt;
         pkt.samples = m_aePacketSamples;
-        pkt.data = (uint8_t*)_aligned_malloc(sizeof(float) * m_aePacketSamples, 16);
-
+        pkt.data    = (uint8_t*)_aligned_malloc(m_aePacketSamples * sizeof(float), 16);
         m_remap.Remap((float*)m_newPacket.data, (float*)pkt.data, m_format.m_frames);
 
         /* add the packet to the output */
