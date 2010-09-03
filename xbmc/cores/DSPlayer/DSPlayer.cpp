@@ -152,8 +152,8 @@ bool CDSPlayer::CloseFile()
 
   // Stop threads
   CDSGraph::StopThread();
-  m_pGraphThread.StopThread();
-  StopThread();
+  m_pGraphThread.StopThread(false);
+  StopThread(false);
 
   return true;
 }
