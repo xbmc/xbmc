@@ -46,9 +46,11 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 #ifdef __BIG_ENDIAN__
     case AE_FMT_S16NE : return &S16BE_Float;
     case AE_FMT_S32NE : return &S32BE_Float;
+    case AE_FMT_S24NE : return &S24BE_Float;
 #else
     case AE_FMT_S16NE : return &S16LE_Float;
     case AE_FMT_S32NE : return &S32LE_Float;
+    case AE_FMT_S24NE : return &S24LE_Float;
 #endif
     case AE_FMT_S16LE : return &S16LE_Float;
     case AE_FMT_S16BE : return &S16BE_Float;
@@ -138,8 +140,29 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
   return samples;
 }
 
+unsigned int CAEConvert::S24LE_Float(uint8_t *data, const unsigned int samples, float *dest)
+{
+  unsigned int viable = (samples / 3) * 3;
+  for(unsigned int i = 0; i < viable; ++i, ++dest, data += 3)
+  {
+    /* fixme: ENDIAN */
+    int s = (data[2] << 24) | (data[1] << 16) | (data[0] << 8);
+    *dest = (float)s / (float)(INT_MAX - 256);
+  }
+  return viable;
+}
+
 unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
+  unsigned int viable = (samples / 3) * 3;
+  for(unsigned int i = 0; i < viable; ++i, ++dest, data += 3)
+  {
+    /* fixme: ENDIAN */
+    int s = (data[2] << 24) | (data[1] << 16) | (data[0] << 8);
+    *dest = (float)s / (float)(INT_MAX - 256);
+  }
+  return viable;
+#if 0
   unsigned int i;
   unsigned int viable = samples / 12;
 
@@ -153,6 +176,7 @@ unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, 
   }
 
   return viable;
+#endif
 }
 
 unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, float *dest)
