@@ -145,7 +145,8 @@ extern "C"
   void dllperror(const char* s);
   char* dllstrerror(int iErr);
   int dll_mkdir(const char* dir);
-  char* dll_getcwd(char *buffer, int maxlen);
+  char *dll_getcwd(char *buf, size_t size);
+  int dll_chdir(const char *dirname);
   int dll_putenv(const char* envstring);
   int dll_ctype(int i);
   int dll_system(const char *command);

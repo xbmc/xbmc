@@ -225,6 +225,7 @@ char* CLibcdio::GetDeviceFileName()
     else
     {
       CdIo_t *p_cdio = ::cdio_open(NULL, DRIVER_UNKNOWN);
+
       if (p_cdio != NULL)
       {
         s_defaultDevice = strdup(::cdio_get_arg(p_cdio, "source"));

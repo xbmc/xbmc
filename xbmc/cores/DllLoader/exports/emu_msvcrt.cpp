@@ -61,6 +61,7 @@
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
 #endif
+#include "libc_overrides.h"
 
 using namespace std;
 using namespace XFILE;
@@ -241,6 +242,22 @@ static void to_wfinddata64i32(_finddata64i32_t *data, _wfinddata64i32_t *wdata)
   wdata->size = data->size;
 }
 #endif
+
+//
+// Use pthread's built-in support for TLS, it's more portable.
+//
+static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
+static pthread_key_t  tWorkingDir = 0;
+
+//
+// Called once and only once.
+//
+static void MakeTlsKeys()
+{
+  pthread_key_create(&tWorkingDir, free);
+}
+
+#define xbp_cw_dir (char*)pthread_getspecific(tWorkingDir)
 
 extern "C"
 {
@@ -1909,10 +1926,22 @@ extern "C"
 #endif
   }
 
-  char* dll_getcwd(char *buffer, int maxlen)
+  char *dll_getcwd(char *buf, size_t size)
   {
-    not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"special://xbmc/";
+    if (xbp_cw_dir == 0)
+    {
+      // Initialize thread local storage and local thread pointer.
+      pthread_once(&keyOnce, MakeTlsKeys);
+      char *path = (char*)malloc(MAX_PATH);
+      xbmc_libc_interpose(XBMC_LIBC_GETCWD, 0);
+      strcpy(path, getcwd(path, MAX_PATH));
+      xbmc_libc_interpose(XBMC_LIBC_GETCWD, 1);
+      pthread_setspecific(tWorkingDir, (void*)path);
+    }
+
+    if (buf == NULL) buf = (char *)malloc(size);
+    strcpy(buf, xbp_cw_dir);
+    return buf;
   }
 
   int dll_putenv(const char* envstring)
@@ -2214,6 +2243,20 @@ extern "C"
 #else
     return -1;
 #endif
+  }
+
+  int dll_chdir(const char *dirname)
+  {
+    if (xbp_cw_dir == 0)
+    {
+      char buf[MAX_PATH];
+      dll_getcwd(buf, sizeof(buf));
+    }
+
+    if (strlen(dirname) > MAX_PATH) return -1;
+    strcpy(xbp_cw_dir, dirname);
+
+    return 0;
   }
 
 }

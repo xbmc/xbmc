@@ -301,7 +301,11 @@ lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
 	$(MAKE) xbmc/cores/DllLoader/exports/util/exports_utils.a
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
+else
+	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def libc_overrides.o libc_overrides_nlf.o
+endif
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports

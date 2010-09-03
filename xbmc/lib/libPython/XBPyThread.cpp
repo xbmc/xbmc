@@ -72,7 +72,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 extern "C"
 {
-  int xbp_chdir(const char *dirname);
+  int dll_chdir(const char *dirname);
   char* dll_getenv(const char* szKey);
 }
 
@@ -210,7 +210,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  xbp_chdir(scriptDir.c_str());
+  dll_chdir(scriptDir.c_str());
 
   if (!stopping)
   {

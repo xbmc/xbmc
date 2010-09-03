@@ -44,6 +44,16 @@
 #include "common/LIRC.h"
 #endif
 
+/* We use this to initilize overridden libc functions before anything else */
+extern "C" void xbmc_libc_init(void);
+struct xbmc_libc_init_gconstr_t
+{
+  xbmc_libc_init_gconstr_t()
+  {
+    xbmc_libc_init();
+  }
+} xbmc_libc_init_gconstr;
+
 CSystemGlobals g_SystemGlobals;
 
 int main(int argc, char* argv[])

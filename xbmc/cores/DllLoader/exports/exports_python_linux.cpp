@@ -34,29 +34,10 @@
 #endif
 #include "../DllLoaderContainer.h"
 
-#ifdef __APPLE__
-//
-// Use pthread's built-in support for TLS, it's more portable.
-//
-static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
-static pthread_key_t  tWorkingDir = 0;
-
-//
-// Called once and only once.
-//
-static void MakeTlsKeys()
-{
-  pthread_key_create(&tWorkingDir, free);
-}
-
-#define xbp_cw_dir (char* )pthread_getspecific(tWorkingDir)
-
-#else
-__thread char xbp_cw_dir[MAX_PATH] = "";
-#endif
-
 extern "C"
 {
+char *dll_getcwd(char *buf, size_t size);
+int dll_chdir(const char *dirname);
 
 void *xbp_dlopen(const char *filename, int flag)
 {
@@ -103,51 +84,14 @@ void *xbp_dlsym(void *handle, const char *symbol)
   return NULL;
 }
 
-char* xbp_getcwd(char *buf, int size)
+char *xbp_getcwd(char *buf, size_t size)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-  if (xbp_cw_dir == 0)
-  {
-    printf("Initializing Python path...\n");
-    char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, _P("special://xbmc/system/python").c_str());
-    pthread_setspecific(tWorkingDir, (void*)path);
-  }
-#endif
-
-  if (buf == NULL) buf = (char *)malloc(size);
-  strcpy(buf, xbp_cw_dir);
-  return buf;
+  return dll_getcwd(buf, size);
 }
 
 int xbp_chdir(const char *dirname)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-
-  if (xbp_cw_dir == 0)
-  {
-    char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, _P("special://xbmc/system/python").c_str());
-    pthread_setspecific(tWorkingDir, (void*)path);
-  }
-#endif
-
-  if (strlen(dirname) > MAX_PATH) return -1;
-  strcpy(xbp_cw_dir, dirname);
-
-#if (defined USE_EXTERNAL_PYTHON)
-  /* TODO: Need to figure out how to make system level Python make call to
-   * XBMC's chdir instead of non-threadsafe system chdir
-   */
-  CStdString strName = _P(dirname);
-  return chdir(strName.c_str());
-#else
-  return 0;
-#endif
+  return dll_chdir(dirname);
 }
 
 int xbp_unlink(const char *filename)

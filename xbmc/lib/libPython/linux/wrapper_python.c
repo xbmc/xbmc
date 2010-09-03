@@ -29,7 +29,7 @@
 #include <utime.h>
 #include <fcntl.h>
 
-char* xbp_getcwd(char *buf, int size);
+char *xbp_getcwd(char *buf, size_t size);
 int xbp_chdir(const char *dirname);
 int xbp_access(const char *path, int mode);
 int xbp_unlink(const char *filename);
@@ -54,7 +54,7 @@ int PYTHON_WRAP(access)(const char* path, int mode)
   return xbp_access(path, mode);
 }
 
-char* PYTHON_WRAP(getcwd)(char *buf, int size)
+char *PYTHON_WRAP(getcwd)(char *buf, size_t size)
 {
   return xbp_getcwd(buf, size);
 }
@@ -119,4 +119,3 @@ void *PYTHON_WRAP(dlsym)(void *handle, const char *symbol)
 {
   return xbp_dlsym(handle, symbol);
 }
-
