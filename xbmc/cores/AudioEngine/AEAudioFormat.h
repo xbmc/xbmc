@@ -36,7 +36,8 @@ typedef enum AEChannel* AEChLayout;
 
 enum AEStdChLayout
 {
-  AE_CH_LAYOUT_2_0 = 0,
+  AE_CH_LAYOUT_1_0 = 0,
+  AE_CH_LAYOUT_2_0,
   AE_CH_LAYOUT_2_1,
   AE_CH_LAYOUT_3_0,
   AE_CH_LAYOUT_3_1,

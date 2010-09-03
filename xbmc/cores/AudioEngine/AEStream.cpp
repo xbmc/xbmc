@@ -88,19 +88,12 @@ void CAEStream::Initialize()
   }
   else
   {
-    /* if no layout provided, guess one */
-    if (m_initChannelLayout == NULL) {
-      static AEChannel guess[2][3] = {
-        {AE_CH_FC, AE_CH_NULL},
-        {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
-      };
-    
-      if (m_initChannelCount > 0 && m_initChannelCount <= 2)
-        m_initChannelLayout = guess[m_initChannelCount-1];
-      else {
-        m_valid = false;
-        return;
-      }
+    /* no channel layout provided, so guess */
+    m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
+    if (!m_initChannelLayout)
+    {
+      m_valid = false;
+      return;
     }
   }
 
