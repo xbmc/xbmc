@@ -488,12 +488,6 @@ void CGraphManagementThread::Process()
     }
     if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
       break;
-    if (m_currentRate == 1)
-    {
-      CChaptersManager::Get()->UpdateChapters();
-      if (CGraphFilters::Get()->IsDVD())
-        CStreamsManager::Get()->UpdateDVDStream();
-    }
 
     // Handle rare graph event
     g_dsGraph->HandleGraphEvent();

@@ -229,11 +229,15 @@ void CDSGraph::UpdateTime()
 
   //On dvd playback the current time is received in the handlegraphevent
   if ( m_VideoInfo.isDVD )
-    return; 
+  {
+    CStreamsManager::Get()->UpdateDVDStream();
+    return;
+  }
 
   if (( m_State.time_total != 0 && m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
+  CChaptersManager::Get()->UpdateChapters();
 }
 
 void CDSGraph::UpdateDvdState()

@@ -38,7 +38,8 @@
 struct SChapterInfos
 {
   CStdString name; ///< Chapter's name
-  double time; ///< Chapter's start time (in ms)
+  uint64_t starttime; ///< Chapter's start time (in ms)
+  uint64_t endtime; ///< Chapter's end time (in ms)
 };
 
 /** DSPlayer Chapters Manager.
