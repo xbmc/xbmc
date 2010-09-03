@@ -73,6 +73,7 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = (__int64)(m_dll.ModPlug_GetLength(m_module));
 
   return true;

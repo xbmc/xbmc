@@ -49,7 +49,6 @@ WAVCodec::WAVCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_DataFormat = AE_FMT_INVALID;
-  m_bHasFloat = false;
   m_iDataStart=0;
   m_iDataLen=0;
   m_Bitrate = 0;
@@ -105,7 +104,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
         case 8 : m_DataFormat = AE_FMT_U8   ; break;
         case 16: m_DataFormat = AE_FMT_S16LE; break;
         case 24: m_DataFormat = AE_FMT_S24BE; break;
-        case 32: m_DataFormat = AE_FMT_S32LE; break;
+        case 32: m_DataFormat = AE_FMT_FLOAT; break;
       }
 
       CLog::Log(LOGINFO, "WAVCodec::Init - Sample Rate: %d, Bits Per Sample: %d, Channels: %d", m_SampleRate, m_BitsPerSample, m_Channels);
@@ -124,7 +123,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
         case WAVE_FORMAT_PCM:
           CLog::Log(LOGINFO, "WAVCodec::Init - WAVE_FORMAT_PCM detected");
           m_ChannelMask = 0;
-          m_bHasFloat = false;
         break;
 
         case WAVE_FORMAT_IEEE_FLOAT:
@@ -136,7 +134,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
           }
 
           m_ChannelMask = 0;
-          m_bHasFloat = true;
         break;
 
         case WAVE_FORMAT_EXTENSIBLE:
@@ -154,7 +151,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
           if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_PCM, sizeof(GUID)) == 0)
           {
             CLog::Log(LOGINFO, "WAVCodec::Init - SubFormat KSDATAFORMAT_SUBTYPE_PCM Detected");
-            m_bHasFloat = false;
           }
           else if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(GUID)) == 0)
           {
@@ -162,9 +158,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
             if (wfx.Format.wBitsPerSample != 32)
             {
               CLog::Log(LOGERROR, "WAVCodec::Init - Only 32bit Float is supported");
-              return false;
             }
-            m_bHasFloat = true;
           }
           else
           {

@@ -125,6 +125,11 @@ bool AIFFCodec::Init(const CStdString &strFile, unsigned int filecache)
       //  Get file info
       m_Channels = common.numChannels;
       m_BitsPerSample = (common.sampleSize + 7) & (~7);  // rounded to 8 bits
+      switch(m_BitsPerSample)
+      {
+        case  8: m_DataFormat = AE_FMT_U8;    break;
+        case 16: m_DataFormat = AE_FMT_S16NE; break;
+      }
       m_NumSamples = common.numSampleFrames;
       m_SampleRate = ConvertSampleRate(common.sampleRate);
     }

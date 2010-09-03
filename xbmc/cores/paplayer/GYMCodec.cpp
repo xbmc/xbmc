@@ -54,6 +54,7 @@ bool GYMCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = m_dll.GetLength(m_gym);
   m_szBuffer = new char[m_iBufferSize];
   m_iDataPos = 0;

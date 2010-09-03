@@ -30,6 +30,7 @@ WAVPackCodec::WAVPackCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_Bitrate = 0;
   m_CodecName = "WAVPack";
 
@@ -81,6 +82,13 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_BitsPerSample = m_dll.WavpackGetBitsPerSample(m_Handle);
   m_TotalTime = (__int64)(m_dll.WavpackGetNumSamples(m_Handle) * 1000.0 / m_SampleRate);
   m_Bitrate = (int)m_dll.WavpackGetAverageBitrate(m_Handle, TRUE);
+
+  switch (m_BitsPerSample)
+  {
+    case  8: m_DataFormat = AE_FMT_U8   ; break;
+    case 16: m_DataFormat = AE_FMT_S16NE; break;
+    case 32: m_DataFormat = AE_FMT_FLOAT; break;
+  }
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {

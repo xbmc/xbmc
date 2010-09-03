@@ -78,6 +78,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   CMusicInfoTagLoaderSid tagLoader;
   CMusicInfoTag tag;
   CFileItem item(strFile);
