@@ -126,6 +126,25 @@ namespace
     else
         return result.SubString(delimiter.GetLength());
   }
+
+  enum EClientQuirks
+  {
+    ECLIENTQUIRKS_ONLYSTORAGEFOLDER = 0x01
+  };
+
+  static EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
+  {
+    unsigned int quirks = 0;
+    const NPT_String* user_agent = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT); 
+    const NPT_String* server     = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_SERVER);  
+    if ( user_agent && ( user_agent->Find("XBox", 0, true) >= 0 
+                      || user_agent->Find("Xenon", 0, true) >= 0 )
+      || server && server->Find("Xbox", 0, true) >= 0) {
+        quirks |= ECLIENTQUIRKS_ONLYSTORAGEFOLDER;
+    }
+
+    return (EClientQuirks)quirks;
+  }
 }
 
 
@@ -498,6 +517,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
     CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.m_strPath);
 
+    EClientQuirks quirks = GetClientQuirks(context);
+
     // get list of ip addresses
     NPT_List<NPT_IpAddress> ips;
     NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
@@ -641,16 +662,20 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             }
         } else if (item.IsVideoDb()) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            switch(node) {
-                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
-                  container->m_ObjectClass.type += ".storageFolder";//".genre.movieGenre"; //360 wants object.container.storageFolder
-                  break;
-                case VIDEODATABASEDIRECTORY::NODE_TYPE_MOVIES_OVERVIEW:
-                  container->m_ObjectClass.type += ".storageFolder";
-                  break;
-                default:
-                  container->m_ObjectClass.type += ".storageFolder";
-                  break;
+            if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
+                container->m_ObjectClass.type += ".storageFolder";
+            } else {
+                switch(node) {
+                    case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                      container->m_ObjectClass.type += ".genre.movieGenre";
+                      break;
+                    case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+                      container->m_ObjectClass.type += ".person";
+                      break;
+                    default:
+                      container->m_ObjectClass.type += ".storageFolder";
+                      break;
+                }
             }
         } else if (item.IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
