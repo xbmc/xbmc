@@ -157,7 +157,11 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+#ifdef HAS_GLES
             , GL_RGBA
+#else
+            , GL_BGRA
+#endif
             , rgba);
   free(rgba);
 
@@ -231,7 +235,11 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+#ifdef HAS_GLES
             , GL_RGBA
+#else
+            , GL_BGRA
+#endif
             , rgba + min_x + min_y * o->width);
 
   free(rgba);
