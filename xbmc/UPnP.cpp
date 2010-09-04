@@ -129,18 +129,34 @@ namespace
 
   enum EClientQuirks
   {
+    /* Client requires folder's to be marked as storageFolers as verndor type (360)*/
     ECLIENTQUIRKS_ONLYSTORAGEFOLDER = 0x01
+
+    /* Client can't handle subtypes for videoItems (360) */
+  , ECLIENTQUIRKS_BASICVIDEOCLASS = 0x02
+
+    /* Client requires album to be set to [Unknown Series] to show title (WMP) */
+  , ECLIENTQUIRKS_UNKNOWNSERIES = 0x04
   };
 
   static EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
   {
     unsigned int quirks = 0;
     const NPT_String* user_agent = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT); 
-    const NPT_String* server     = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_SERVER);  
-    if ( user_agent && ( user_agent->Find("XBox", 0, true) >= 0 
-                      || user_agent->Find("Xenon", 0, true) >= 0 )
-      || server && server->Find("Xbox", 0, true) >= 0) {
-        quirks |= ECLIENTQUIRKS_ONLYSTORAGEFOLDER;
+    const NPT_String* server     = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_SERVER);
+
+    if (user_agent) {
+        if (user_agent->Find("XBox", 0, true) >= 0 || 
+            user_agent->Find("Xenon", 0, true) >= 0)
+            quirks |= ECLIENTQUIRKS_ONLYSTORAGEFOLDER | ECLIENTQUIRKS_BASICVIDEOCLASS;
+
+        if (user_agent->Find("Windows-Media-Player", 0, true) >= 0)
+            quirks |= ECLIENTQUIRKS_UNKNOWNSERIES;
+
+    }
+    if (server) {
+        if (server->Find("Xbox", 0, true) >= 0)
+            quirks |= ECLIENTQUIRKS_ONLYSTORAGEFOLDER | ECLIENTQUIRKS_BASICVIDEOCLASS;
     }
 
     return (EClientQuirks)quirks;
@@ -235,12 +251,14 @@ public:
     // class methods
     static NPT_Result PopulateObjectFromTag(CMusicInfoTag&         tag,
                                             PLT_MediaObject&       object,
-                                            NPT_String*            file_path = NULL,
-                                            PLT_MediaItemResource* resource = NULL);
+                                            NPT_String*            file_path,
+                                            PLT_MediaItemResource* resource,
+                                            EClientQuirks          quirks);
     static NPT_Result PopulateObjectFromTag(CVideoInfoTag&         tag,
                                             PLT_MediaObject&       object,
-                                            NPT_String*            file_path = NULL,
-                                            PLT_MediaItemResource* resource = NULL);
+                                            NPT_String*            file_path,
+                                            PLT_MediaItemResource* resource,
+                                            EClientQuirks          quirks);
     static PLT_MediaObject* BuildObject(const CFileItem&              item,
                                         NPT_String&                   file_path,
                                         bool                          with_count,
@@ -391,7 +409,8 @@ NPT_Result
 CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
                                    PLT_MediaObject&       object,
                                    NPT_String*            file_path, /* = NULL */
-                                   PLT_MediaItemResource* resource   /* = NULL */)
+                                   PLT_MediaItemResource* resource,  /* = NULL */
+                                   EClientQuirks          quirks)
 {
     // some usefull buffers
     CStdStringArray strings;
@@ -432,7 +451,8 @@ NPT_Result
 CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
                                    PLT_MediaObject&       object,
                                    NPT_String*            file_path, /* = NULL */
-                                   PLT_MediaItemResource* resource   /* = NULL */)
+                                   PLT_MediaItemResource* resource,  /* = NULL */
+                                   EClientQuirks          quirks)
 {
     // some usefull buffers
     CStdStringArray strings;
@@ -457,11 +477,14 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
-          object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
+          object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
+
+    if(quirks & ECLIENTQUIRKS_BASICVIDEOCLASS)
+        object.m_ObjectClass.type = "object.item.videoItem";
 
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
@@ -475,7 +498,6 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
-    object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
     object.m_People.director = tag.m_strDirector;
     object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
 
@@ -540,15 +562,17 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
             if (item.HasMusicInfoTag()) {
                 CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
-                PopulateObjectFromTag(*tag, *object, &file_path, &resource);
+                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks);
             }
         } else if (item.IsVideoDb() || item.IsVideo()) {
             object->m_ObjectClass.type = "object.item.videoItem";
-            object->m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+
+            if(quirks & ECLIENTQUIRKS_UNKNOWNSERIES)
+                object->m_Affiliation.album = "[Unknown Series]";
 
             if (item.HasVideoInfoTag()) {
                 CVideoInfoTag *tag = (CVideoInfoTag*)item.GetVideoInfoTag();
-                PopulateObjectFromTag(*tag, *object, &file_path, &resource);
+                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks);
             }
         } else if (item.IsPicture()) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
