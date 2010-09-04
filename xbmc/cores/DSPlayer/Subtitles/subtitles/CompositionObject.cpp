@@ -83,7 +83,7 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
 {
   if (m_pRLEData)
   {
-    CGolombBuffer  GBuffer(m_pRLEData, m_nRLEDataSize);
+    CGolombBuffer GBuffer(m_pRLEData, m_nRLEDataSize);
     BYTE      bTemp;
     BYTE      bSwitch;
 
@@ -107,14 +107,14 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
         {
           if (!(bSwitch & 0x40))
           {
-            nCount    = bSwitch & 0x3F;
+            nCount = bSwitch & 0x3F;
             if (nCount > 0)
-              nPaletteIndex  = 0;
+              nPaletteIndex = 0;
           }
           else
           {
             nCount = (bSwitch & 0x3F) << 8 | (SHORT)GBuffer.ReadByte();
-            nPaletteIndex  = 0;
+            nPaletteIndex = 0;
           }
         }
         else
@@ -135,7 +135,7 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
       if (nCount > 0)
       {
         if (nPaletteIndex != 0xFF)    // Fully transparent (§9.14.4.2.2.1.1)
-          FillSolidRect (spd, nX, nY, nCount, 1, m_Colors[nPaletteIndex]);
+          FillSolidRect(spd, nX, nY, nCount, 1, m_Colors[nPaletteIndex]);
         nX += nCount;
       }
       else

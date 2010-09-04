@@ -167,7 +167,7 @@ HRESULT CHdmvSub::ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE
           
             if (m_pCurrentObject)
             {
-              if (! m_bGotObjectData)
+              if (! m_bGotObjectData && !(m_pObjects.size() == 0))
               {
                 // Sometimes, teh segment does not contain OBJECT data. Just use the data of the previous object
                 CompositionObject* pObject = m_pObjects.back();
