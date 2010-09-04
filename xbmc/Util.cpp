@@ -1093,9 +1093,9 @@ bool CUtil::IsFTP(const CStdString& strFile)
          url.GetTranslatedProtocol() == "ftps";
 }
 
-bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = false */)
+bool CUtil::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
-  CURL url(strFile);
+  
   CStdString strProtocol = url.GetProtocol();
   
   if (strProtocol.IsEmpty())
@@ -1103,10 +1103,7 @@ bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = f
 
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
-  {
-    CStdString strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-    return IsInternetStream(strFile2);
-  }
+    return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
   CStdString strProtocol2 = url.GetTranslatedProtocol();
 
