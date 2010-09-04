@@ -50,6 +50,36 @@ private:
     NPT_String m_Protocol;
 };
 
+static CStdString GetContentMapping(NPT_String& objectClass)
+{
+    struct SClassMapping
+    {
+        const char* ObjectClass;
+        const char* Content;
+    };
+    static const SClassMapping mapping[] = {
+          { "object.item.videoItem.videoBroadcast", "tvshows"      }
+        , { "object.item.videoItem.musicVideoClip", "musicvideos"  }
+        , { "object.item.videoItem"               , "movies"       }
+        , { "object.item.audioItem.musicTrack"    , "music"        }
+        , { "object.item.audioItem"               , "music"        }
+        , { "object.item.imageItem.photo"         , "photos"       }
+        , { "object.item.imageItem"               , "photos"       }
+        , { "object.container.album"              , "albums"       }
+        , { "object.container.person"             , "artists"      }
+        , { NULL                                  , NULL           }
+    };
+    for(const SClassMapping* map = mapping; map->ObjectClass; map++)
+    {
+        if(objectClass.StartsWith(map->ObjectClass, true))
+        {
+          return map->Content;
+          break;
+        }
+    }
+    return "unknown";
+}
+
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
@@ -80,6 +110,8 @@ CUPnPDirectory::GetFriendlyName(const char* url)
 
     return (const char*)device->GetFriendlyName();
 }
+
+
 
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetDirectory
@@ -163,6 +195,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         // if object_id is empty use "0" for root
         object_id = object_id.IsEmpty()?"0":object_id;
 
+        // remember a count of object classes
+        std::map<NPT_String, int> classes;
+
         // just a guess as to what types of files we want
         bool video = true;
         bool audio = true;
@@ -238,6 +273,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     continue;
                 }
             }
+
+            // keep count of classes
+            classes[(*entry)->m_ObjectClass.type]++;
 
             CFileItemPtr pItem(new CFileItem((const char*)(*entry)->m_Title));
             pItem->SetLabelPreformated(true);
@@ -322,6 +360,18 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             ++entry;
         }
+
+        NPT_String max_string = "";
+        int        max_count  = 0;
+        for(std::map<NPT_String, int>::iterator it = classes.begin(); it != classes.end(); it++)
+        {
+          if(it->second > max_count)
+          {
+            max_string = it->first;
+            max_count  = it->second;
+          }
+        }
+        items.SetContent(GetContentMapping(max_string));
     }
 
 cleanup:
