@@ -49,7 +49,7 @@
                              OS X:  ~/
                              Win32: ~/Application Data/XBMC/cache
 */
-
+class CURL;
 class CSpecialProtocol
 {
 public:
@@ -65,6 +65,7 @@ public:
   static void LogPaths();
 
   static CStdString TranslatePath(const CStdString &path);
+  static CStdString TranslatePath(const CURL &url);
   static CStdString TranslatePathConvertCase(const CStdString& path);
   static CStdString ReplaceOldPath(const CStdString &oldPath, int pathVersion);
   static const int path_version = 1;
