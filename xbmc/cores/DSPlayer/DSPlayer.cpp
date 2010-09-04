@@ -231,7 +231,7 @@ void CDSPlayer::OnExit()
 void CDSPlayer::HandleStart()
 {
   if (m_PlayerOptions.starttime > 0)
-    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime, 1U, false)) , false );
+    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime), 1U, false) , false );
   else
     CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(0, 1U, false) , false );
 }

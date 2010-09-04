@@ -43,6 +43,9 @@ struct SubPicDesc
 // ISubPic
 //
 
+#define TRACE odprintf
+extern void __cdecl odprintf(const wchar_t *format, ...);
+
 interface __declspec(uuid("449E11F3-52D1-4a27-AA61-E2733AC92CC0"))
 ISubPic : public IUnknown
 {

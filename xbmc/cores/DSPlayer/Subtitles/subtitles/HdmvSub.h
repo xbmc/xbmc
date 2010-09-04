@@ -34,15 +34,15 @@ public:
 
   enum HDMV_SEGMENT_TYPE
   {
-    NO_SEGMENT      = 0xFFFF,
-    PALETTE        = 0x14,
-    OBJECT        = 0x15,
-    PRESENTATION_SEG  = 0x16,
-    WINDOW_DEF      = 0x17,
-    INTERACTIVE_SEG    = 0x18,
-    END_OF_DISPLAY    = 0x80,
-    HDMV_SUB1      = 0x81,
-    HDMV_SUB2      = 0x82
+    NO_SEGMENT          = 0xFFFF,
+    PALETTE             = 0x14,
+    OBJECT              = 0x15,
+    PRESENTATION_SEG    = 0x16,
+    WINDOW_DEF          = 0x17,
+    INTERACTIVE_SEG     = 0x18,
+    END_OF_DISPLAY      = 0x80,
+    HDMV_SUB1           = 0x81,
+    HDMV_SUB2           = 0x82
   };
 
   
@@ -50,33 +50,34 @@ public:
   {
     SHORT    nVideoWidth;
     SHORT    nVideoHeight;
-    BYTE    bFrameRate;    // <= Frame rate here!
+    BYTE     bFrameRate;    // <= Frame rate here!
   };
 
   struct COMPOSITION_DESCRIPTOR
   {
     SHORT    nNumber;
-    BYTE    bState;
+    BYTE     bState;
   };
 
   struct SEQUENCE_DESCRIPTOR
   {
     BYTE    bFirstIn  : 1;
-    BYTE    bLastIn    : 1;
+    BYTE    bLastIn   : 1;
     BYTE    bReserved : 8;
   };
 
-  CHdmvSub();
+  CHdmvSub(bool fromFile = false);
   ~CHdmvSub();
 
   HRESULT      ParseSample (IMediaSample* pSample);
+  HRESULT      ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE* pData, long size );
 
 
   int    GetStartPosition(REFERENCE_TIME rt, double fps);
   int    GetNext(int pos) { return ((pos >=  m_pObjects.size()) ? NULL : ++pos); };
 
 
-  virtual REFERENCE_TIME	GetStart(int nPos)	
+  virtual REFERENCE_TIME GetStart(int nPos)
   {
     std::list<CompositionObject*>::iterator it = m_pObjects.begin();
     std::advance(it, nPos - 1);
@@ -97,21 +98,24 @@ public:
 
 private :
 
-  HDMV_SEGMENT_TYPE  m_nCurSegment;
-  BYTE*              m_pSegBuffer;
-  int                m_nTotalSegBuffer;
-  int                m_nSegBufferPos;
-  int                m_nSegSize;
+  HDMV_SEGMENT_TYPE             m_nCurSegment;
+  BYTE*                         m_pSegBuffer;
+  int                           m_nTotalSegBuffer;
+  int                           m_nSegBufferPos;
+  int                           m_nSegSize;
+  bool                          m_bGotObjectData;
+  bool                          m_bGotPaletteData;
+  bool                          m_bFromFile;
 
-  VIDEO_DESCRIPTOR        m_VideoDescriptor;
+  VIDEO_DESCRIPTOR              m_VideoDescriptor;
 
-  CompositionObject*        m_pCurrentObject;
-  std::list<CompositionObject*>  m_pObjects;
+  CompositionObject*            m_pCurrentObject;
+  std::list<CompositionObject*> m_pObjects;
 
-  HDMV_PALETTE*          m_pDefaultPalette;
-  int                m_nDefaultPaletteNbEntry;
+  HDMV_PALETTE*                 m_pDefaultPalette;
+  int                           m_nDefaultPaletteNbEntry;
 
-  int                m_nColorNumber;
+  int                           m_nColorNumber;
 
 
   int         ParsePresentationSegment(CGolombBuffer* pGBuffer);

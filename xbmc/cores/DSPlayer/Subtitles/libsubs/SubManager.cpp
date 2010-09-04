@@ -6,6 +6,7 @@
 #include <moreuuids.h>
 #include "..\subtitles\VobSubFile.h"
 #include "..\subtitles\RTS.h"
+#include "..\subtitles\RenderedHdmvSubtitle.h"
 #include "..\DSUtil\NullRenderers.h"
 #include "TextPassThruFilter.h"
 #include "..\ILog.h"
@@ -315,6 +316,14 @@ HRESULT CSubManager::LoadExternalSubtitle( const wchar_t* subPath, ISubStream** 
       std::auto_ptr<CVobSubFile> pVSF(new CVobSubFile(&m_csSubLock));
       if(CStdString(GetExtension(path).MakeLower()) == _T("idx") && pVSF.get() && pVSF->Open(path) && pVSF->GetStreamCount() > 0)
         pSubStream = pVSF.release();
+    }
+
+    if (!pSubStream)
+    {
+      std::auto_ptr<CRenderedHdmvSubtitleFile> pPGS(new CRenderedHdmvSubtitleFile(&m_csSubLock, ST_HDMV));
+      if ((CStdString(GetExtension(path).MakeLower()) == _T("pgs") || CStdString(GetExtension(path).MakeLower()) == _T("sup"))
+        && pPGS.get() && pPGS->Open(path))
+        pSubStream = pPGS.release();
     }
 
     if(!pSubStream)

@@ -117,20 +117,6 @@ CStdStringW UTF8To16(LPCSTR utf8)
   return str;
 }
 
-CStdString ReftimeToString(const REFERENCE_TIME& rtVal)
-{
-  CStdString    strTemp;
-  
-  LONGLONG  llTotalMs =  (rtVal / 10000000 / 1000);
-  int      lHour    = (int)(llTotalMs  / (1000*60*60));
-  int      lMinute    = (llTotalMs / (1000*60)) % 60;
-  int      lSecond    = (llTotalMs /  1000) % 60;
-  int      lMillisec = llTotalMs  %  1000;
-
-  strTemp.Format (_T("%02d:%02d:%02d,%03d"), lHour, lMinute, lSecond, lMillisec);
-  return strTemp;
-}
-
 static struct {LPCSTR name, iso6392, iso6391; LCID lcid;} s_isolangs[] =  // TODO : fill LCID !!!
 {
   {"Abkhazian", "abk", "ab"},

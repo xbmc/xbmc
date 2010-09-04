@@ -26,7 +26,7 @@
 #include "Rasterizer.h"
 #include "..\SubPic\ISubPic.h"
 #include "HdmvSub.h"
-
+#include <sstream>
 
 class __declspec(uuid("FCA68599-C83E-4ea5-94A3-C2E1B0E326B9"))
 CRenderedHdmvSubtitle : public ISubPicProviderImpl, public ISubStream
@@ -36,7 +36,7 @@ public:
   ~CRenderedHdmvSubtitle(void);
 
   DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // ISubPicProvider
   STDMETHODIMP_(int) GetStartPosition(REFERENCE_TIME rt, double fps);
@@ -58,13 +58,56 @@ public:
   STDMETHODIMP Reload();
 
   HRESULT ParseSample (IMediaSample* pSample);
-  HRESULT  NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+  HRESULT NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
 
 private :
   CStdString      m_name;
-  LCID      m_lcid;
+  LCID            m_lcid;
   REFERENCE_TIME  m_rtStart;
 
-  CBaseSub*		m_pSub;
-  CCritSec    m_csCritSec;
+  CBaseSub*       m_pSub;
+  CCritSec        m_csCritSec;
+};
+
+[uuid("2A5ACA12-7679-4DF2-96C1-5A9DE55D3717")]
+class CRenderedHdmvSubtitleFile : public ISubPicProviderImpl, public ISubStream
+{
+public:
+  CRenderedHdmvSubtitleFile(CCritSec* pLock, SUBTITLE_TYPE nType);
+  ~CRenderedHdmvSubtitleFile(void);
+  bool Open(CStdString fn);
+
+  DECLARE_IUNKNOWN
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+
+  // ISubPicProvider
+  STDMETHODIMP_(int) GetStartPosition(REFERENCE_TIME rt, double fps);
+  STDMETHODIMP_(int) GetNext(int pos);
+  STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
+  STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
+  STDMETHODIMP_(bool) IsAnimated(int pos);
+  STDMETHODIMP Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox);
+  STDMETHODIMP GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VirtualSize, POINT& VirtualTopLeft);
+
+  // IPersist
+  STDMETHODIMP GetClassID(CLSID* pClassID);
+
+  // ISubStream
+  STDMETHODIMP_(int) GetStreamCount();
+  STDMETHODIMP GetStreamInfo(int i, WCHAR** ppName, LCID* pLCID);
+  STDMETHODIMP_(int) GetStream();
+  STDMETHODIMP SetStream(int iStream);
+  STDMETHODIMP Reload();
+
+  HRESULT ParseSample (IMediaSample* pSample);
+  HRESULT NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+
+private :
+  CStdString      m_name;
+  LCID            m_lcid;
+  REFERENCE_TIME  m_rtStart;
+
+  std::stringstream   m_pMemBuffer;
+  CBaseSub*           m_pSub;
+  CCritSec            m_csCritSec;
 };

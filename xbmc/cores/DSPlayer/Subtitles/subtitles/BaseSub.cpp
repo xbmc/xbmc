@@ -23,6 +23,20 @@
 #include "stdafx.h"
 #include "BaseSub.h"
 
+CStdStringW ReftimeToString(const REFERENCE_TIME& rtVal)
+{
+  CStdStringW strTemp;
+  
+  LONGLONG  llTotalMs  = (rtVal / 10000);
+  int       lHour      = (int)(llTotalMs  / (1000*60*60));
+  int       lMinute    = (llTotalMs / (1000*60)) % 60;
+  int       lSecond    = (llTotalMs /  1000) % 60;
+  int       lMillisec  = llTotalMs  %  1000;
+
+  strTemp.Format (_T("%02d:%02d:%02d,%03d"), lHour, lMinute, lSecond, lMillisec);
+  return strTemp;
+}
+
 CBaseSub::CBaseSub(SUBTITLE_TYPE nType)
   : m_nType(nType)
 {

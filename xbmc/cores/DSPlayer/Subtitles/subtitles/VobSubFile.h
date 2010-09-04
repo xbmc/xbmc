@@ -130,7 +130,7 @@ public:
   }
 
   DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // ISubPicProvider
   STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
@@ -166,11 +166,11 @@ public:
 
   void Open(CStdString name, BYTE* pData, int len);
 
-    void Add(REFERENCE_TIME tStart, REFERENCE_TIME tStop, BYTE* pData, int len);
+  void Add(REFERENCE_TIME tStart, REFERENCE_TIME tStop, BYTE* pData, int len);
   void RemoveAll();
 
   DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // ISubPicProvider
   STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);

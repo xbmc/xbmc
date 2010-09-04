@@ -31,7 +31,6 @@
 // Debug output
 
 #define DSubPicTraceLevel 0
-#define TRACE odprintf
 void __cdecl odprintf(const wchar_t *format, ...)
 {
   wchar_t  buf[4096], *p = buf;

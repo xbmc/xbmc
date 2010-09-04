@@ -25,8 +25,6 @@
 #include "DVBSub.h"
 #include "../DSUtil/GolombBuffer.h"
 
-#define TRACE
-
 #if (1)    // Set to 1 to activate DVB subtitles traces
   #define TRACE_DVB    TRACE
 #else
@@ -122,7 +120,7 @@ HRESULT CDVBSub::AddToBuffer(BYTE* pData, int nSize)
       if (m_nBufferWritePos+nSize > 20*BUFFER_CHUNK_GROW)
       {
         // Too big to be a DVB sub !
-        TRACE_DVB ("DVB - Too much data receive...\n");
+        TRACE_DVB (L"DVB - Too much data receive...\n");
         ASSERT (FALSE);
 
         Reset();
@@ -256,24 +254,24 @@ HRESULT CDVBSub::ParseSample (IMediaSample* pSample)
             {
               m_pCurrentPage = pPage;
               m_pCurrentPage->rtStart = m_rtStart;
-              TRACE_DVB ("DVB - Page started  %S\n", ReftimeToString(m_rtStart));
+              TRACE_DVB (L"DVB - Page started  %s\n", ReftimeToString(m_rtStart).c_str());
               m_rtStart = INVALID_TIME;
             }
             else
-              TRACE_DVB ("DVB - Page update\n");
+              TRACE_DVB (L"DVB - Page update\n");
           }
           break;
         case REGION :
           ParseRegion(gb, wSegLength);
-          TRACE_DVB ("DVB - Region\n");
+          TRACE_DVB (L"DVB - Region\n");
           break;
         case CLUT :
           ParseClut(gb, wSegLength);
-          TRACE_DVB ("DVB - Clut \n");
+          TRACE_DVB (L"DVB - Clut \n");
           break;
         case OBJECT :
           ParseObject(gb, wSegLength);
-          TRACE_DVB ("DVB - Object\n");
+          TRACE_DVB (L"DVB - Object\n");
           break;
         case DISPLAY :
           ParseDisplay(gb, wSegLength);
@@ -282,7 +280,7 @@ HRESULT CDVBSub::ParseSample (IMediaSample* pSample)
           if (m_pCurrentPage.get() != NULL && m_rtStart != INVALID_TIME)
           {
             m_pCurrentPage->rtStop = m_rtStart;
-            TRACE_DVB ("DVB - End display %S - %S\n", ReftimeToString(m_pCurrentPage->rtStart), ReftimeToString(m_pCurrentPage->rtStop));
+            TRACE_DVB (L"DVB - End display %s - %s\n", ReftimeToString(m_pCurrentPage->rtStart).c_str(), ReftimeToString(m_pCurrentPage->rtStop).c_str());
             m_Pages.push_back (m_pCurrentPage.release());
           }
           break;
@@ -362,7 +360,7 @@ int CDVBSub::GetStartPosition(REFERENCE_TIME rt, double fps)
     if (pPage->rtStop < rt)
     {
       if (!pPage->Rendered)
-        TRACE_DVB ("DVB - remove unrendered object, %S - %S\n", ReftimeToString(pPage->rtStart), ReftimeToString(pPage->rtStop));
+        TRACE_DVB (L"DVB - remove unrendered object, %s - %s\n", ReftimeToString(pPage->rtStart).c_str(), ReftimeToString(pPage->rtStop).c_str());
 
       //TRACE_HDMVSUB ("CHdmvSub:HDMV remove object %d  %S => %S (rt=%S)\n", pPage->GetRLEDataSize(), 
       //         ReftimeToString (pPage->rtStart), ReftimeToString(pPage->rtStop), ReftimeToString(rt));

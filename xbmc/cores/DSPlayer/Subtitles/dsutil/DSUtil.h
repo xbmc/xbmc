@@ -41,7 +41,6 @@ extern CStdStringW UTF8To16(LPCSTR utf8);
 extern CStdString ISO6392ToLanguage(LPCSTR code);
 extern LCID    ISO6391ToLcid(LPCSTR code);
 extern LCID    ISO6392ToLcid(LPCSTR code);
-extern CStdString ReftimeToString(const REFERENCE_TIME& rtVal);
 extern COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
 extern COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
 extern DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);

@@ -31,6 +31,8 @@ enum SUBTITLE_TYPE
   ST_HDMV
 };
 
+CStdStringW ReftimeToString(const REFERENCE_TIME& rtVal);
+
 class CBaseSub
 {
 public:
@@ -41,6 +43,7 @@ public:
   virtual ~CBaseSub();
 
   virtual HRESULT ParseSample (IMediaSample* pSample) = NULL;
+  virtual HRESULT ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE* pData, long size ) { return E_NOTIMPL; }
   virtual void Reset() = NULL;
   virtual int GetStartPosition(REFERENCE_TIME rt, double fps) = NULL;
   virtual int GetNext(int pos) = NULL;

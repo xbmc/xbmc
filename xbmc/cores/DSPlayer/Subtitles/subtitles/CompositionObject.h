@@ -41,10 +41,10 @@ class CompositionObject : Rasterizer
 {
 public :
   SHORT        m_object_id_ref;
-  BYTE        m_window_id_ref;
-  bool        m_object_cropped_flag;
-  bool        m_forced_on_flag;
-  BYTE        m_version_number;
+  BYTE         m_window_id_ref;
+  bool         m_object_cropped_flag;
+  bool         m_forced_on_flag;
+  BYTE         m_version_number;
 
   SHORT        m_horizontal_position;
   SHORT        m_vertical_position;
@@ -72,6 +72,7 @@ public :
   void        SetPalette (int nNbEntry, HDMV_PALETTE* pPalette, bool bIsHD);
   void        SetPalette (int nNbEntry, DWORD* dwColors);
   bool        HavePalette() { return m_nColorNumber>0; };
+  void        Copy(CompositionObject* pObject, bool copyPalette = true);
 
 private :
   BYTE*    m_pRLEData;
