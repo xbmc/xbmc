@@ -141,6 +141,9 @@ namespace
 
   static EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
   {
+    if(context == NULL)
+        return 0;
+
     unsigned int quirks = 0;
     const NPT_String* user_agent = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT); 
     const NPT_String* server     = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_SERVER);
