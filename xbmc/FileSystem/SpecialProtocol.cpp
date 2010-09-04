@@ -87,6 +87,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   if (!url.GetProtocol().Equals("special"))
   {
 #if defined(_LINUX) && defined(_DEBUG)
+    CStdString path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
       CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
