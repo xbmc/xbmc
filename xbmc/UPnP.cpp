@@ -119,7 +119,7 @@ namespace
     NPT_String result;
 
     for(NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++ )
-        result += (*it) + delimiter;
+        result += delimiter + (*it);
 
     if(result.IsEmpty())
         return "";
@@ -2214,7 +2214,7 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
-    if(object.m_Recorded.program_title.IsEmpty())
+    if(!object.m_Recorded.program_title.IsEmpty())
     {
         int episode;
         int season;

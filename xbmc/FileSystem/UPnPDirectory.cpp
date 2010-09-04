@@ -241,6 +241,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             CFileItemPtr pItem(new CFileItem((const char*)(*entry)->m_Title));
             pItem->SetLabelPreformated(true);
+            pItem->m_strTitle = (const char*)(*entry)->m_Title;
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
             // if it's a container, format a string as upnp://uuid/object_id
