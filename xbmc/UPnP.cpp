@@ -129,8 +129,10 @@ namespace
 
   enum EClientQuirks
   {
+    ECLIENTQUIRKS_NONE = 0x0
+
     /* Client requires folder's to be marked as storageFolers as verndor type (360)*/
-    ECLIENTQUIRKS_ONLYSTORAGEFOLDER = 0x01
+  , ECLIENTQUIRKS_ONLYSTORAGEFOLDER = 0x01
 
     /* Client can't handle subtypes for videoItems (360) */
   , ECLIENTQUIRKS_BASICVIDEOCLASS = 0x02
@@ -142,7 +144,7 @@ namespace
   static EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
   {
     if(context == NULL)
-        return 0;
+        return ECLIENTQUIRKS_NONE;
 
     unsigned int quirks = 0;
     const NPT_String* user_agent = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT); 
