@@ -354,6 +354,8 @@ public:
   SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
   void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
+
+  void SelectBestSubtitle();
 private:
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);

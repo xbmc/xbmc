@@ -462,9 +462,7 @@ void CStreamsManager::LoadStreams()
     SubtitleManager->AddSubtitle(*it);
   }
   g_settings.m_currentVideoSettings.m_SubtitleCached = true;
-
-  // TODO: Select subtitle based on user pref
-  SubtitleManager->SetSubtitle(0);
+  SubtitleManager->SelectBestSubtitle();
 
   SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
 }
@@ -898,7 +896,7 @@ int CSubtitleManager::GetSubtitle()
   for (std::vector<SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
     it != m_subtitleStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
+    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED )
       return i;
   }
 
@@ -1349,6 +1347,14 @@ SExternalSubtitleInfos* CSubtitleManager::GetExternalSubtitleStreamInfos( unsign
 void CSubtitleManager::DeleteSubtitleManager( ISubManager * pManager, DllLibSubs dll )
 {
   dll.DeleteSubtitleManager(pManager);
+}
+
+void CSubtitleManager::SelectBestSubtitle()
+{
+  // If the splitter has not chosen a subtitle stream,
+  // select the first one.
+  if ( GetSubtitle() == -1 )
+    SetSubtitle(0);
 }
 
 #endif
