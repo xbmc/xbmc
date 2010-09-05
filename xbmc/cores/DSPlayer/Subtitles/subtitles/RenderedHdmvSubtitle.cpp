@@ -196,7 +196,8 @@ CRenderedHdmvSubtitleFile::CRenderedHdmvSubtitleFile(CCritSec* pLock, SUBTITLE_T
     ASSERT (FALSE);
     m_pSub = NULL;
   }
-  m_rtStart = 0;
+  m_lastParseTimeTo = 0;
+  m_lastParseTimeFrom = 0;
 }
 
 CRenderedHdmvSubtitleFile::~CRenderedHdmvSubtitleFile(void)
@@ -222,25 +223,29 @@ STDMETHODIMP CRenderedHdmvSubtitleFile::NonDelegatingQueryInterface(REFIID riid,
 STDMETHODIMP_(int) CRenderedHdmvSubtitleFile::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return	m_pSub->GetStartPosition(rt - m_rtStart, fps);
+
+  // Preload 10 sec
+  ParseData(rt, rt + 10e7);
+
+  return m_pSub->GetStartPosition(rt, fps);
 }
 
 STDMETHODIMP_(int) CRenderedHdmvSubtitleFile::GetNext(int pos)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return m_pSub->GetNext (pos);
+  return m_pSub->GetNext(pos);
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CRenderedHdmvSubtitleFile::GetStart(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return m_pSub->GetStart(pos) + m_rtStart;
+  return m_pSub->GetStart(pos);
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CRenderedHdmvSubtitleFile::GetStop(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return m_pSub->GetStop(pos) + m_rtStart;
+  return m_pSub->GetStop(pos);
 }
 
 STDMETHODIMP_(bool) CRenderedHdmvSubtitleFile::IsAnimated(int pos)
@@ -251,7 +256,7 @@ STDMETHODIMP_(bool) CRenderedHdmvSubtitleFile::IsAnimated(int pos)
 STDMETHODIMP CRenderedHdmvSubtitleFile::Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  m_pSub->Render (spd, rt - m_rtStart, bbox);
+  m_pSub->Render (spd, rt, bbox);
 
   return S_OK;
 }
@@ -321,6 +326,71 @@ HRESULT CRenderedHdmvSubtitleFile::ParseSample (IMediaSample* pSample)
   return hr;
 }
 
+HRESULT CRenderedHdmvSubtitleFile::ParseData( REFERENCE_TIME rtFrom, REFERENCE_TIME rtTo )
+{
+  // If rtFrom < m_lastParseTimeFrom, it's probably a seek, reparse
+  if ((rtFrom < m_lastParseTimeTo) && (rtFrom > m_lastParseTimeFrom))
+    return S_OK;
+
+  m_lastParseTimeFrom = rtFrom;
+  m_lastParseTimeTo = rtTo;
+  m_pMemBuffer.seekg(0);
+  m_pSub->Reset();
+
+  while (! m_pMemBuffer.eof() && ! (m_pMemBuffer.tellg() > m_totalSize))
+  {
+
+    BYTE pData[4];
+    uint16_t header = 0;
+    REFERENCE_TIME rtStart = 0, rtStop = 0;
+    m_pMemBuffer.read((char *) &header, 2);
+    if (m_pMemBuffer.eof())
+      return S_OK;
+
+    if (header != 0x4750)
+      return E_FAIL;
+
+    m_pMemBuffer.read((char *) pData, 4);
+    rtStart = (pData[3] + ((int64_t)pData[2] << 8) + ((int64_t)pData[1] << 0x10) + ((int64_t)pData[0] << 0x18)) / 90;
+
+    m_pMemBuffer.read((char *) pData, 4);
+    rtStop = (pData[3] + ((int64_t)pData[2] << 8) + ((int64_t)pData[1] << 0x10) + ((int64_t)pData[0] << 0x18)) / 90;
+    //TRACE(L"Found PGS data: from %10I64dms to %10I64dms", rtStart, rtStop);
+
+    rtStart *= 10000;
+    rtStop *= 10000;
+    if (rtStop == 0)
+      rtStop = rtStart;
+
+    m_pMemBuffer.read((char *) pData, 3);
+    // pData[0] : segment type
+    size_t datalen = pData[2] + (((uint32_t)pData[1]) << 8);
+
+    if (rtStart <= rtFrom)
+    {
+      // Skip
+      m_pMemBuffer.seekg(datalen, std::ios::cur);
+      continue;
+    } else if (rtStop > rtTo) {
+      return S_OK;
+    }
+
+    BYTE * pBuffer = new BYTE[datalen + 3];
+    memcpy(pBuffer, pData, 3);
+    m_pMemBuffer.read((char *) &pBuffer[3], datalen);
+
+    if (FAILED(m_pSub->ParseData(rtStart, rtStop, pBuffer, datalen + 3)))
+    {
+      delete[] pBuffer;
+      return E_FAIL;
+    }
+
+    delete[] pBuffer;
+  }
+
+  return S_OK;
+}
+
 bool CRenderedHdmvSubtitleFile::Open(CStdString fn)
 {
   ATL::CFile f;
@@ -342,60 +412,11 @@ bool CRenderedHdmvSubtitleFile::Open(CStdString fn)
   }
 
   m_pMemBuffer.seekg(0, std::ios_base::end);
-  uint64_t totalLen = m_pMemBuffer.tellg();
+  m_totalSize = m_pMemBuffer.tellg();
   m_pMemBuffer.seekg(0);
 
-  while (! m_pMemBuffer.eof() && ! (m_pMemBuffer.tellg() > totalLen))
-  {
-
-    BYTE pData[4];
-    uint16_t header = 0;
-    REFERENCE_TIME rtStart = 0, rtStop = 0;
-    m_pMemBuffer.read((char *) &header, 2);
-    if (m_pMemBuffer.eof())
-      return true;
-
-    if (header != 0x4750)
-      return false;
-
-    m_pMemBuffer.read((char *) pData, 4);
-    rtStart = (pData[3] + ((int64_t)pData[2] << 8) + ((int64_t)pData[1] << 0x10) + ((int64_t)pData[0] << 0x18)) / 90;
-
-    m_pMemBuffer.read((char *) pData, 4);
-    rtStop = (pData[3] + ((int64_t)pData[2] << 8) + ((int64_t)pData[1] << 0x10) + ((int64_t)pData[0] << 0x18)) / 90;
-    //TRACE(L"Found PGS data: from %10I64dms to %10I64dms", rtStart, rtStop);
-
-    rtStart *= 10000;
-    rtStop *= 10000;
-    if (rtStop == 0)
-      rtStop = rtStart;
-
-    m_pMemBuffer.read((char *) pData, 3);
-    // pData[0] : segment type
-    size_t datalen = pData[2] + (((uint32_t)pData[1]) << 8);
-
-    BYTE * pBuffer = new BYTE[datalen + 3];
-    memcpy(pBuffer, pData, 3);
-    m_pMemBuffer.read((char *) &pBuffer[3], datalen);
-
-    if (FAILED(m_pSub->ParseData(rtStart, rtStop, pBuffer, datalen + 3)))
-    {
-      delete[] pBuffer;
-      return false;
-    }
-
-    delete[] pBuffer;
-  }
+  
 
   return true;
-}
-
-HRESULT CRenderedHdmvSubtitleFile::NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate)
-{
-  CAutoLock cAutoLock(&m_csCritSec);
-
-  m_pSub->Reset();
-  m_rtStart = tStart;
-  return S_OK;
 }
 

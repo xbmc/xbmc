@@ -54,7 +54,7 @@ CHdmvSub::~CHdmvSub()
     m_pSubs.pop_back();
   }
 
-  while (! m_pObjectsCache.size())
+  while (! m_pObjectsCache.empty())
   {
     delete m_pObjectsCache.back();
     m_pObjectsCache.pop_back();
@@ -508,6 +508,17 @@ void CHdmvSub::Reset()
     delete m_pSubs.back();
     m_pSubs.pop_back();
   }
+
+  while (! m_pObjectsCache.empty())
+  {
+    delete m_pObjectsCache.back();
+    m_pObjectsCache.pop_back();
+  }
+
+  delete m_pCurrentSub;
+  m_pCurrentSub = NULL;
+
+  m_nCurSegment = NO_SEGMENT;
 }
 
 CHdmvSub::PGSSubs* CHdmvSub::FindSub(REFERENCE_TIME rt)

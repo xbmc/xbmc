@@ -99,13 +99,15 @@ public:
   STDMETHODIMP SetStream(int iStream);
   STDMETHODIMP Reload();
 
+  HRESULT ParseData ( REFERENCE_TIME rtFrom, REFERENCE_TIME rtTo );
   HRESULT ParseSample (IMediaSample* pSample);
-  HRESULT NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
 
 private :
   CStdString      m_name;
   LCID            m_lcid;
-  REFERENCE_TIME  m_rtStart;
+  uint64_t        m_totalSize;
+  REFERENCE_TIME  m_lastParseTimeTo;
+  REFERENCE_TIME  m_lastParseTimeFrom;
 
   std::stringstream   m_pMemBuffer;
   CBaseSub*           m_pSub;
