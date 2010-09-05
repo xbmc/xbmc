@@ -221,35 +221,29 @@ void CHdmvSub::ParseWindow(CGolombBuffer* pGBuffer, USHORT nSize)
     return;
 
   int numWindows = pGBuffer->ReadByte();
- //if (!m_pCurrentObject->m_bReady)
-
-  /*for (int i = 0; i < numWindows && i < MAX_WINDOWS; i++)
+ 
+  for (int i = 0; i < numWindows; i++)
   {
-    BYTE window_id = pGBuffer->ReadByte();
-    for (int j = 0; j < m_pCurrentSub->; j++)
-    {
-      if (m_pCurrentObject->m_objects[j].m_window_id_ref == window_id)
-      {
-        int horizontal_position   = pGBuffer->ReadShort();
-        int vertical_position     = pGBuffer->ReadShort();
-        int width                 = pGBuffer->ReadShort();
-        int height                = pGBuffer->ReadShort();
+    BYTE window_id            = pGBuffer->ReadByte();
+    
+    int horizontal_position   = pGBuffer->ReadShort();
+    int vertical_position     = pGBuffer->ReadShort();
+    int width                 = pGBuffer->ReadShort();
+    int height                = pGBuffer->ReadShort();
 
-        TRACE_HDMVSUB (L"CHdmvSub:Window[id: %d]  size: %dx%d pos: %dx%d", window_id, width, height, horizontal_position, vertical_position);
+    TRACE_HDMVSUB (L"CHdmvSub:Window[id: %d]  size: %dx%d pos: %dx%d", window_id, width, height, horizontal_position, vertical_position);
 
-        if (m_pCurrentObject->m_objects[j].m_horizontal_position == 0)
-          m_pCurrentObject->m_objects[j].m_horizontal_position = horizontal_position;
-        if (m_pCurrentObject->m_objects[j].m_vertical_position == 0)
-          m_pCurrentObject->m_objects[j].m_vertical_position = vertical_position;
-        if (m_pCurrentObject->m_objects[j].m_width == 0)
-          m_pCurrentObject->m_objects[j].m_width = width;
-        if (m_pCurrentObject->m_objects[j].m_height == 0)
-          m_pCurrentObject->m_objects[j].m_height = height;
+    /*if (m_pCurrentObject->m_objects[j].m_horizontal_position == 0)
+      m_pCurrentObject->m_objects[j].m_horizontal_position = horizontal_position;
+    if (m_pCurrentObject->m_objects[j].m_vertical_position == 0)
+      m_pCurrentObject->m_objects[j].m_vertical_position = vertical_position;
+    if (m_pCurrentObject->m_objects[j].m_width == 0)
+      m_pCurrentObject->m_objects[j].m_width = width;
+    if (m_pCurrentObject->m_objects[j].m_height == 0)
+      m_pCurrentObject->m_objects[j].m_height = height;*/
 
-        break;
-      }
-    }
-  }*/
+    break;
+  }
 }
 
 int CHdmvSub::ParsePresentationSegment(CGolombBuffer* pGBuffer, REFERENCE_TIME rtStart)
@@ -356,7 +350,7 @@ void CHdmvSub::ParseObject(CGolombBuffer* pGBuffer, USHORT nUnitSize)  // #498
 
     pObject->SetRLEData (pGBuffer->GetBufferPos(), nUnitSize-11, object_data_length-4);
 
-    TRACE_HDMVSUB (L"CHdmvSub:NewObject  id=%d  size=%ld, total obj=%d", object_id, object_data_length, m_pSubs.size());
+    TRACE_HDMVSUB (L"CHdmvSub:NewObject  id=%d  size=%ld, total obj=%d, drawing size=%dx%d", object_id, object_data_length, m_pSubs.size(), pObject->m_width, pObject->m_height);
   }
   else
     pObject->AppendRLEData (pGBuffer->GetBufferPos(), nUnitSize-4);
@@ -390,9 +384,9 @@ void CHdmvSub::ParseCompositionObject(CGolombBuffer* pGBuffer, PGSSubs* pSubs, B
     pCompositionObject->m_forced_on_flag    = !!(bTemp & 0x40);
     pCompositionObject->m_horizontal_position  = pGBuffer->ReadShort();
     pCompositionObject->m_vertical_position    = pGBuffer->ReadShort();
-    TRACE_HDMVSUB(L"ParseCompositionObject object_id_ref: %d  window_id_ref: %d  object_cropped: %d  forced: %d",
+    TRACE_HDMVSUB(L"ParseCompositionObject object_id_ref: %d  window_id_ref: %d  horz pos: %d  vert pos: %d",
       pCompositionObject->m_object_id_ref, pCompositionObject->m_window_id_ref,
-      pCompositionObject->m_object_cropped_flag, pCompositionObject->m_forced_on_flag);
+      pCompositionObject->m_horizontal_position, pCompositionObject->m_vertical_position);
 
     if (pCompositionObject->m_object_cropped_flag)
     {
@@ -466,17 +460,18 @@ HRESULT CHdmvSub::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize
   std::list<PGSSubs *>::iterator it = m_pSubs.begin();
   std::advance(it, pos - 1);
   PGSSubs* pObject = *it;
-  MaxTextureSize.cx = 0; MaxTextureSize.cy = 0;
   VideoSize.cx = 0; VideoSize.cy = 0;
   if (pObject)
   {
-    MaxTextureSize.cx = pObject->m_videoDescriptor.nVideoWidth;
-    MaxTextureSize.cy = pObject->m_videoDescriptor.nVideoHeight;
+    Com::SmartRect pRect;
+    GetDrawingRect(pObject, pRect);
+
+    MaxTextureSize = pRect.Size();
+    VideoTopLeft = pRect.TopLeft();
 
     VideoSize.cx = pObject->m_videoDescriptor.nVideoWidth;
     VideoSize.cy = pObject->m_videoDescriptor.nVideoHeight;
-    
-    GetTopLeft(pObject, VideoTopLeft);
+
     return S_OK;
   }
 
@@ -484,21 +479,24 @@ HRESULT CHdmvSub::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize
   return E_INVALIDARG;
 }
 
-void CHdmvSub::GetTopLeft(PGSSubs* pSub, POINT& point)
+void CHdmvSub::GetDrawingRect(PGSSubs* pSub, Com::SmartRect& pRect)
 {
-  point.x = -1; point.y = -1;
+  pRect.SetRectEmpty();
   for (int i = 0; i < pSub->m_numObjects; i++)
   {
-    if (point.x < 0)
-      point.x = pSub->m_objects[i]->m_horizontal_position;
-    else
-      point.x = min(pSub->m_objects[i]->m_horizontal_position, point.x);
-
-    if (point.y < 0)
-      point.y = pSub->m_objects[i]->m_vertical_position;
-    else
-      point.y = min(pSub->m_objects[i]->m_vertical_position, point.y);
+    Com::SmartPoint pos(pSub->m_objects[i]->m_horizontal_position, pSub->m_objects[i]->m_vertical_position);
+    Com::SmartSize size(pSub->m_objects[i]->GetObjectData()->m_width, pSub->m_objects[i]->GetObjectData()->m_height);
+    Com::SmartRect rect(pos, size);
+    pRect.UnionRect(pRect, rect);
   }
+}
+
+void CHdmvSub::GetTopLeft(PGSSubs* pSub, POINT& point)
+{
+  Com::SmartRect rect;
+  GetDrawingRect(pSub, rect);
+
+  point = rect.TopLeft();
 }
 
 void CHdmvSub::Reset()

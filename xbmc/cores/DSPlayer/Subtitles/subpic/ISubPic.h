@@ -183,10 +183,7 @@ ISubPicAllocator : public IUnknown
 
 class ISubPicAllocatorImpl : public CUnknown, public ISubPicAllocator
 {
-  Com::SmartPtr<ISubPic> m_pStatic;
-
 private:
-  Com::SmartSize m_cursize;
   Com::SmartRect m_curvidrect;
   bool m_fDynamicWriteOnly;
 
@@ -195,6 +192,8 @@ private:
 
 protected:
   bool m_fPow2Textures;
+  Com::SmartPtr<ISubPic> m_pStatic;
+  Com::SmartSize m_cursize;
 
 public:
   ISubPicAllocatorImpl(SIZE cursize, bool fDynamicWriteOnly, bool fPow2Textures);

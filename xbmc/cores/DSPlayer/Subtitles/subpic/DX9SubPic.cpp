@@ -384,6 +384,9 @@ void CDX9SubPicAllocator::ClearCache()
     }
     m_AllocatedSurfaces.clear();
     m_FreeSurfaces.clear();
+    
+    FreeTextures();
+    m_pStatic = NULL; 
   }
 }
 
@@ -403,6 +406,10 @@ STDMETHODIMP CDX9SubPicAllocator::ChangeDevice(IUnknown* pDev)
 
 STDMETHODIMP CDX9SubPicAllocator::SetMaxTextureSize(SIZE MaxTextureSize)
 {
+  if ((m_maxsize == MaxTextureSize)
+    && (m_cursize == MaxTextureSize))
+    return S_OK;
+
   ClearCache();
   m_maxsize  = MaxTextureSize;
   SetCurSize(MaxTextureSize);

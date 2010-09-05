@@ -170,6 +170,7 @@ private :
   int                           m_nColorNumber;
 
   void        GetTopLeft(PGSSubs* pSub, POINT& point);
+  void        GetDrawingRect(PGSSubs* pSub, Com::SmartRect& pRect);
 
   int         ParsePresentationSegment(CGolombBuffer* pGBuffer, REFERENCE_TIME rtStart);
   void        ParsePalette(CGolombBuffer* pGBuffer, USHORT nSize);
