@@ -115,10 +115,6 @@ class DllLibOpenMax : public DllDynamic, DllLibOpenMaxInterface
 #define OMX_MPEG2V_DECODER      "OMX.Nvidia.mpeg2v.decode"
 #define OMX_VC1_DECODER         "OMX.Nvidia.vc1.decode"
 
-// quick and dirty scalers to calc image buffer sizes
-#define FACTORFORMAT422 2
-#define FACTORFORMAT420 1.5
-
 #define OMX_INIT_STRUCTURE(a) \
   memset(&(a), 0, sizeof(a)); \
   (a).nSize = sizeof(a); \
@@ -141,8 +137,8 @@ COpenMax::COpenMax()
   m_omx_decoder = NULL;
   m_portChanging = false;
 
-  pthread_mutex_init(&m_omx_ready_mutex, NULL);
-  pthread_mutex_init(&m_omx_avaliable_mutex, NULL);
+  pthread_mutex_init(&m_omx_input_mutex, NULL);
+  pthread_mutex_init(&m_omx_output_mutex, NULL);
 
   m_omx_decoder_state_change = (sem_t*)malloc(sizeof(sem_t));
   sem_init(m_omx_decoder_state_change, 0, 0);
@@ -161,8 +157,8 @@ COpenMax::~COpenMax()
   #endif
   if (m_is_open)
     Close();
-  pthread_mutex_destroy(&m_omx_ready_mutex);
-  pthread_mutex_destroy(&m_omx_avaliable_mutex);
+  pthread_mutex_destroy(&m_omx_input_mutex);
+  pthread_mutex_destroy(&m_omx_output_mutex);
   sem_destroy(m_omx_decoder_state_change);
   free(m_omx_decoder_state_change);
   /*
@@ -303,10 +299,8 @@ bool COpenMax::Open(CDVDStreamInfo &hints)
     return false;
   }
   // Alloc buffers for the omx output port.
-#ifdef USE_EGL_IMAGE
   m_egl_display = g_Windowing.GetEGLDisplay();
   m_egl_context = g_Windowing.GetEGLContext();
-#endif
   omx_err = AllocOMXOutputBuffers();
   if (omx_err)
   {
@@ -352,7 +346,7 @@ void COpenMax::SetDropState(bool bDrop)
     OMX_ERRORTYPE omx_err;
 
     // blow all but the last ready video frame
-    pthread_mutex_lock(&m_omx_ready_mutex);
+    pthread_mutex_lock(&m_omx_output_mutex);
     while (m_omx_output_ready.size() > 1)
     {
       m_dts_queue.pop();
@@ -364,7 +358,7 @@ void COpenMax::SetDropState(bool bDrop)
         CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
           CLASSNAME, __func__, omx_err);
     }
-    pthread_mutex_unlock(&m_omx_ready_mutex);
+    pthread_mutex_unlock(&m_omx_output_mutex);
 
     #if defined(OMX_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "%s::%s - m_drop_state(%d)\n",
@@ -401,10 +395,10 @@ int COpenMax::Decode(BYTE* pData, int iSize, double dts, double pts)
       demux_packet = m_demux_queue.front();
       m_demux_queue.pop();
       // need to lock here to retreve an input buffer and pop the queue
-      pthread_mutex_lock(&m_omx_avaliable_mutex);
+      pthread_mutex_lock(&m_omx_input_mutex);
       omx_buffer = m_omx_input_avaliable.front();
       m_omx_input_avaliable.pop();
-      pthread_mutex_unlock(&m_omx_avaliable_mutex);
+      pthread_mutex_unlock(&m_omx_input_mutex);
 
       // delete the previous demuxer buffer
       delete [] omx_buffer->pBuffer;
@@ -479,29 +473,34 @@ void COpenMax::Reset(void)
 
 bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
+  while (m_omx_output_busy.size() > 1)
+  {
+    // fetch a output buffer and pop it off the busy list
+    pthread_mutex_lock(&m_omx_output_mutex);
+    OpenMaxBuffer *buffer = m_omx_output_busy.front();
+    m_omx_output_busy.pop();
+    pthread_mutex_unlock(&m_omx_output_mutex);
+
+    bool done = buffer->omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
+    if (!done)
+    {
+      // return the omx buffer back to OpenMax to fill.
+      OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, buffer->omx_buffer);
+      if (omx_err)
+        CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
+          CLASSNAME, __func__, omx_err);
+    }
+  }
+
   if (!m_omx_output_ready.empty())
   {
-    if (m_lastBuffer)
-    {
-      OMX_BUFFERHEADERTYPE *omx_buffer = m_lastBuffer->omx_buffer;
-      bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
-      if (!done)
-      {
-        // return the omx buffer back to OpenMax to fill.
-        OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
-        if (omx_err)
-          CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
-            CLASSNAME, __func__, omx_err);
-      }
-      m_lastBuffer = NULL;
-    }
+    OpenMaxBuffer *buffer;
     // fetch a output buffer and pop it off the ready list
-    pthread_mutex_lock(&m_omx_ready_mutex);
-    OpenMaxBuffer *buffer = m_omx_output_ready.front();
-    m_lastBuffer = buffer;
-    OMX_BUFFERHEADERTYPE *omx_buffer = buffer->omx_buffer;
+    pthread_mutex_lock(&m_omx_output_mutex);
+    buffer = m_omx_output_ready.front();
     m_omx_output_ready.pop();
-    pthread_mutex_unlock(&m_omx_ready_mutex);
+    m_omx_output_busy.push(buffer);
+    pthread_mutex_unlock(&m_omx_output_mutex);
 
     pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
@@ -509,51 +508,13 @@ bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->openMax = this;
     pDvdVideoPicture->openMaxBuffer = buffer;
 
-    if (1 || omx_buffer->nFilledLen > 0) // OMXEGL has filledlength == 0 always
+    if (!m_dts_queue.empty())
     {
-      if (!m_dts_queue.empty())
-      {
-        pDvdVideoPicture->dts = m_dts_queue.front();
-        m_dts_queue.pop();
-      }
-      // nTimeStamp is in microseconds
-      pDvdVideoPicture->pts = (double)omx_buffer->nTimeStamp / 1000.0;
-
-      // not sure yet about yv12 buffer layout coming from OpenMax decoder
-      OMX_U32 filled_size = (m_decoded_width * m_decoded_height) * FACTORFORMAT420;
-      if (filled_size == omx_buffer->nFilledLen)
-      {
-#ifndef USE_EGL_IMAGE
-        int luma_pixels = m_decoded_width * m_decoded_height;
-        int chroma_pixels = luma_pixels/4;
-        uint8_t *image_buffer = omx_buffer->pBuffer;
-        memcpy(pDvdVideoPicture->data[0], image_buffer, luma_pixels);
-        image_buffer += luma_pixels;
-        memcpy(pDvdVideoPicture->data[1], image_buffer, chroma_pixels);
-        image_buffer += chroma_pixels;
-        memcpy(pDvdVideoPicture->data[2], image_buffer, chroma_pixels);
-#endif
-      }
-      #if defined(OMX_DEBUG_VERBOSE)
-      else
-      {
-        CLog::Log(LOGDEBUG,
-          "%s::%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%lu)\n",
-          CLASSNAME, __func__, omx_buffer->nAllocLen, omx_buffer->nFilledLen, filled_size);
-      }
-      #endif
+      pDvdVideoPicture->dts = m_dts_queue.front();
+      m_dts_queue.pop();
     }
-#if 0
-    bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
-    if (!done)
-    {
-      // return the omx buffer back to OpenMax to fill.
-      OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
-      if (omx_err)
-        CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
-          CLASSNAME, __func__, omx_err);
-    }
-#endif
+    // nTimeStamp is in microseconds
+    pDvdVideoPicture->pts = (double)buffer->omx_buffer->nTimeStamp / 1000.0;
   }
   #if defined(OMX_DEBUG_VERBOSE)
   else
@@ -567,22 +528,6 @@ bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
 
   return VC_PICTURE | VC_BUFFER;
-}
-
-void COpenMax::ReleaseOpenMaxBuffer(OpenMaxBuffer *openMaxBuffer)
-{
-#if 0
-  printf("Release Picture %p\n", openMaxBuffer);
-  bool done = openMaxBuffer->omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
-  if (!done)
-  {
-    // return the omx buffer back to OpenMax to fill.
-    OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, openMaxBuffer->omx_buffer);
-    if (omx_err)
-      CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
-        CLASSNAME, __func__, omx_err);
-  }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -804,10 +749,10 @@ OMX_ERRORTYPE COpenMax::DecoderEmptyBufferDone(
   #endif
 */
   // queue free input buffer to avaliable list.
-  pthread_mutex_lock(&ctx->m_omx_avaliable_mutex);
+  pthread_mutex_lock(&ctx->m_omx_input_mutex);
   ctx->m_omx_input_avaliable.push(pBuffer);
   ctx->m_input_consumed_event.Set();
-  pthread_mutex_unlock(&ctx->m_omx_avaliable_mutex);
+  pthread_mutex_unlock(&ctx->m_omx_input_mutex);
 
   return OMX_ErrorNone;
 }
@@ -829,9 +774,9 @@ OMX_ERRORTYPE COpenMax::DecoderFillBufferDone(
   if (!ctx->m_portChanging)
   {
     // queue output omx buffer to ready list.
-    pthread_mutex_lock(&ctx->m_omx_ready_mutex);
+    pthread_mutex_lock(&ctx->m_omx_output_mutex);
     ctx->m_omx_output_ready.push(buffer);
-    pthread_mutex_unlock(&ctx->m_omx_ready_mutex);
+    pthread_mutex_unlock(&ctx->m_omx_output_mutex);
   }
 
   return OMX_ErrorNone;
@@ -920,7 +865,6 @@ OMX_ERRORTYPE COpenMax::AllocOMXInputBuffers(void)
     m_omx_input_avaliable.push(buffer);
   }
   m_omx_input_eos = false;
-  m_lastBuffer = NULL;
 
   return(omx_err);
 }
@@ -973,10 +917,11 @@ void COpenMax::CallbackFreeOMXEGLTextures(void *userdata)
 
 OMX_ERRORTYPE COpenMax::AllocOMXOutputBuffers(void)
 {
-#ifdef USE_EGL_IMAGE
+  OMX_ERRORTYPE omx_err;
+
   if ( g_application.IsCurrentThread() )
   {
-    return AllocOMXOutputEGLTextures();
+    omx_err = AllocOMXOutputEGLTextures();
   }
   else
   {
@@ -990,97 +935,17 @@ OMX_ERRORTYPE COpenMax::AllocOMXOutputBuffers(void)
 
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-    return omx_err;
+    omx_err = OMX_ErrorNone;
   }
-#else
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-  int buffer_size;
 
-  OpenMaxBuffer *buffer = 0;
-
-  // Obtain the information about the output port.
-  OMX_PARAM_PORTDEFINITIONTYPE port_format;
-  OMX_INIT_STRUCTURE(port_format);
-  port_format.nPortIndex = m_omx_output_port;
-  omx_err = OMX_GetParameter(m_omx_decoder, OMX_IndexParamPortDefinition, &port_format);
-
-  #if defined(OMX_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, 
-    "%s::%s (1) - oport(%d), nFrameWidth(%lu), nFrameHeight(%lu), nStride(%lx), nBufferCountMin(%lu), nBufferSize(%lu)\n",
-    CLASSNAME, __func__, m_omx_output_port, 
-    port_format.format.video.nFrameWidth, port_format.format.video.nFrameHeight,port_format.format.video.nStride,
-    port_format.nBufferCountMin, port_format.nBufferSize);
-  #endif
-
-  buffer_size = m_decoded_width * m_decoded_height;
-  if (port_format.format.video.eColorFormat == OMX_COLOR_FormatCbYCrY)
-    buffer_size *= FACTORFORMAT422;
-  else if (port_format.format.video.eColorFormat == OMX_COLOR_FormatYUV420Planar)
-    buffer_size *= FACTORFORMAT420;
- 
-  for (size_t i = 0; i < port_format.nBufferCountMin; i++)
-  {
-    buffer = new OpenMaxBuffer;
-    omx_err = OMX_AllocateBuffer(m_omx_decoder, &buffer->omx_buffer, m_omx_output_port, buffer, buffer_size);
-    if (omx_err)
-    {
-      CLog::Log(LOGERROR, "%s::%s - OMX_AllocateBuffer failed with omx_err(0x%x)\n",
-      CLASSNAME, __func__, omx_err);
-      return(omx_err);
-    }
-    m_omx_output_buffers.push_back(buffer);
-  }
-  m_omx_output_eos = false;
-
-  return(omx_err);
-#endif
+  return omx_err;
 }
 
 OMX_ERRORTYPE COpenMax::FreeOMXOutputBuffers(bool wait)
 {
-#ifdef USE_EGL_IMAGE
-  return FreeOMXOutputEGLTextures(wait);
+  OMX_ERRORTYPE omx_err = FreeOMXOutputEGLTextures(wait);
 
-  ThreadMessageCallback callbackData;
-  callbackData.callback = &CallbackFreeOMXEGLTextures;
-  callbackData.userptr = (void *)this;
-
-  ThreadMessage tMsg;
-  tMsg.dwMessage = TMSG_CALLBACK;
-  tMsg.lpVoid = (void*)&callbackData;
-
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   return omx_err;
-
-#else
-  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  /*
-  omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_output_port, 0);
-  if (omx_err)
-    CLog::Log(LOGERROR, "%s::%s - OMX_CommandFlush failed with omx_err(0x%x)\n",
-      CLASSNAME, __func__, omx_err);
-  else if (wait)
-    sem_wait(m_omx_flush_output);
-  */
-
-  // free omx output port buffers.
-  for (size_t i = 0; i < m_omx_output_buffers.size(); i++)
-  {
-    omx_err = OMX_FreeBuffer(m_omx_decoder, m_omx_output_port, m_omx_output_buffers[i]->omx_buffer);
-    delete m_omx_output_buffers[i];
-  }
-  m_omx_output_buffers.clear();
-
-  // empty available output buffer queue. not decoding so don't need lock/unlock.
-  while (!m_omx_output_ready.empty())
-    m_omx_output_ready.pop();
-
-  return(omx_err);
-#endif
 }
 
 OMX_ERRORTYPE COpenMax::AllocOMXOutputEGLTextures(void)
@@ -1164,6 +1029,8 @@ OMX_ERRORTYPE COpenMax::AllocOMXOutputEGLTextures(void)
       CLASSNAME, __func__, egl_buffer->egl_image, egl_buffer->width, egl_buffer->height);
   }
   m_omx_output_eos = false;
+  while (!m_omx_output_busy.empty())
+    m_omx_output_busy.pop();
   while (!m_omx_output_ready.empty())
     m_omx_output_ready.pop();
 
@@ -1180,12 +1047,9 @@ OMX_ERRORTYPE COpenMax::FreeOMXOutputEGLTextures(bool wait)
     GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
   }
 
-  //for (size_t i = 0; i < m_omx_egl_output_buffers.size(); i++)
   for (size_t i = 0; i < m_omx_output_buffers.size(); i++)
   {
-    //egl_buffer = m_omx_egl_output_buffers[i];
     egl_buffer = m_omx_output_buffers[i];
-
     // tell decoder output port to stop using the EGLImage
     omx_err = OMX_FreeBuffer(m_omx_decoder, m_omx_output_port, egl_buffer->omx_buffer);
     // destroy egl_image
@@ -1194,7 +1058,6 @@ OMX_ERRORTYPE COpenMax::FreeOMXOutputEGLTextures(bool wait)
     glDeleteTextures(1, &egl_buffer->texture_id);
     delete egl_buffer;
   }
-  //m_omx_egl_output_buffers.clear();
   m_omx_output_buffers.clear();
 
   return omx_err;

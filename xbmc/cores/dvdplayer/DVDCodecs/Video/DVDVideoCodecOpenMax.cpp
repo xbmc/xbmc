@@ -99,15 +99,10 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     // allocate a YV12 DVDVideoPicture buffer.
     // first make sure all properties are reset.
     memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
-    unsigned int luma_pixels = hints.width * hints.height;
-    unsigned int chroma_pixels = luma_pixels/4;
 
+    m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-#ifndef USE_EGL_IMAGE
-    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
-#else
     m_videobuffer.format = DVDVideoPicture::FMT_OMXEGL;
-#endif
     m_videobuffer.color_range  = 0;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
@@ -115,23 +110,6 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     m_videobuffer.iHeight = hints.height;
     m_videobuffer.iDisplayWidth  = hints.width;
     m_videobuffer.iDisplayHeight = hints.height;
-
-#ifndef USE_EGL_IMAGE
-    m_videobuffer.iLineSize[0] = hints.width;   //Y
-    m_videobuffer.iLineSize[1] = hints.width/2; //U
-    m_videobuffer.iLineSize[2] = hints.width/2; //V
-    m_videobuffer.iLineSize[3] = 0;
-
-    m_videobuffer.data[0] = (BYTE*)_aligned_malloc(luma_pixels, 16);  //Y
-    m_videobuffer.data[1] = (BYTE*)_aligned_malloc(chroma_pixels, 16);//U
-    m_videobuffer.data[2] = (BYTE*)_aligned_malloc(chroma_pixels, 16);//V
-    m_videobuffer.data[3] = NULL;
-
-    // set all data to 0 for less artifacts.. hmm.. what is black in YUV??
-    memset(m_videobuffer.data[0], 0, luma_pixels);
-    memset(m_videobuffer.data[1], 0, chroma_pixels);
-    memset(m_videobuffer.data[2], 0, chroma_pixels);
-#endif
     return true;
   }
 
@@ -147,14 +125,8 @@ void CDVDVideoCodecOpenMax::Dispose()
     m_omx_decoder = NULL;
   }
   if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
-  {
-#ifndef USE_EGL_IMAGE
-    _aligned_free(m_videobuffer.data[0]);
-    _aligned_free(m_videobuffer.data[1]);
-    _aligned_free(m_videobuffer.data[2]);
-#endif
     m_videobuffer.iFlags = 0;
-  }
+
   if (m_convert_bitstream)
   {
     if (m_sps_pps_context.sps_pps_data)

@@ -22,8 +22,6 @@
 
 #if defined(HAVE_LIBOPENMAX)
 
-#define USE_EGL_IMAGE
-
 #include "OpenMax.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
@@ -79,7 +77,6 @@ public:
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   void SetDropState(bool bDrop);
   
-  void ReleaseOpenMaxBuffer(OpenMaxBuffer *openMaxBuffer);
 protected:
   enum OMX_CLIENT_STATE {
       DEAD,
@@ -129,7 +126,7 @@ protected:
   std::queue<omx_demux_packet> m_demux_queue;
 
   // OpenMax input buffers (demuxer packets)
-  pthread_mutex_t   m_omx_avaliable_mutex;
+  pthread_mutex_t   m_omx_input_mutex;
   std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   bool              m_omx_input_eos;
@@ -138,10 +135,10 @@ protected:
   CEvent            m_input_consumed_event;
 
   // OpenMax output buffers (video frames)
-  pthread_mutex_t   m_omx_ready_mutex;
+  pthread_mutex_t   m_omx_output_mutex;
+  std::queue<OpenMaxBuffer*> m_omx_output_busy;
   std::queue<OpenMaxBuffer*> m_omx_output_ready;
   std::vector<OpenMaxBuffer*> m_omx_output_buffers;
-  OpenMaxBuffer     *m_lastBuffer;
   bool              m_omx_output_eos;
   int               m_omx_output_port;
   //sem_t             *m_omx_flush_output;
