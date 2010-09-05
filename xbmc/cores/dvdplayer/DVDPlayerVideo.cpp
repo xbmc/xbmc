@@ -543,7 +543,7 @@ void CDVDPlayerVideo::Process()
 
             picture.iGroupId = pPacket->iGroupId;
 
-            if(picture.iDuration == 0)
+            if(picture.iDuration < 1.0 / DVD_TIME_BASE)
               picture.iDuration = frametime;
 
             if(bPacketDrop)
