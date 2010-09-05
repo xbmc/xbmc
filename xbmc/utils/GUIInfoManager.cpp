@@ -3784,7 +3784,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
