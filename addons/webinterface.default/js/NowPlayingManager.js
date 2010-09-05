@@ -35,7 +35,7 @@ NowPlayingManager.prototype = {
 			$(window).bind('click', jQuery.proxy(this.hidePlaylist, this));
 		},
 		updateState: function() {
-			jQuery.post(JSON_RPC, '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?UpdateState', '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result) {
 					if (data.result.audio) {
 						this.activePlayer = 'Audio';
@@ -185,7 +185,7 @@ NowPlayingManager.prototype = {
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
 							if (data.result.total > 1) {
-								if (data.result.total-1 == activeItem.seq) {
+								if (activeItem && data.result.total-1 == activeItem.seq) {
 									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
 								}
 								$('#nextText').show();
@@ -256,10 +256,10 @@ NowPlayingManager.prototype = {
 							this.refreshVideoData();
 						}
 					}
-					if (this.autoRefreshData && !this.activeItemTimer) {
-						this.activeItemTimer = 1;
-						setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
-					}
+				}
+				if (this.autoRefreshData && !this.activeItemTimer) {
+					this.activeItemTimer = 1;
+					setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
 				}
 			}, this), 'json');
 		},
@@ -417,7 +417,7 @@ NowPlayingManager.prototype = {
 							}, this));
 							if (data.result.total > 1) {
 								$('#nextText').show();
-								if (data.result.total == activeItem.seq) {
+								if (activeItem && data.result.total == activeItem.seq) {
 									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
 								}
 								$('#nowPlayingPlaylist').html('').append(ul);
