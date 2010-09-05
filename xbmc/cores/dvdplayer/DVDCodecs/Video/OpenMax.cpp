@@ -33,6 +33,7 @@
 #include "WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
@@ -432,10 +433,10 @@ int COpenMax::Decode(BYTE* pData, int iSize, double dts, double pts)
       // if m_omx_input_avaliable and/or demux_queue are now empty,
       // wait up to 100ms for OpenMax to consume a demux packet
       if (m_omx_input_avaliable.empty() || m_demux_queue.empty())
-        m_input_consumed_event.WaitMSec(100);
+        m_input_consumed_event.WaitMSec(20);
     }
     if (m_omx_input_avaliable.empty() && !m_demux_queue.empty())
-      m_input_consumed_event.WaitMSec(100);
+      m_input_consumed_event.WaitMSec(20);
 
     #if defined(OMX_DEBUG_VERBOSE)
     if (m_omx_input_avaliable.empty())
@@ -527,7 +528,7 @@ bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
 
-  return VC_PICTURE | VC_BUFFER;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
