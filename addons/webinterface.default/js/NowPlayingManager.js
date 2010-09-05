@@ -166,8 +166,8 @@ NowPlayingManager.prototype = {
 				data: '{"jsonrpc": "2.0", "method": "AudioPlaylist.GetItems", "params": { "fields": ["title", "album", "artist", "duration"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
 					if (data && data.result && data.result.items && data.result.total > 0) {
-						//Compare new playlist to active playlist, only redraw if a change is noticed.
-						if (this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.current))) {
+						//Compare new playlist to active playlist, only redraw if a change is noticed
+						if (!this.activePlaylistItem || this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.current))) {
 							var ul = $('<ul>');
 							var activeItem;
 							$.each($(data.result.items), jQuery.proxy(function(i, item) {
@@ -227,12 +227,10 @@ NowPlayingManager.prototype = {
 			});
 		},
 		stopAudioPlaylistUpdate: function() {
-			this.stopRefreshTime();
 			this.autoRefreshAudioPlaylist = false;
 			this.updateActiveItemDurationRunOnce = false;
 		},
 		stopVideoPlaylistUpdate: function() {
-			this.stopRefreshTime();
 			this.autoRefreshVideoPlaylist = false;
 			this.updateActiveItemDurationRunOnce = false;
 		},
