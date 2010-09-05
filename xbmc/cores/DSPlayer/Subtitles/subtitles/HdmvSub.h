@@ -45,7 +45,33 @@ public:
     HDMV_SUB2           = 0x82
   };
 
-  
+  static CStdStringW SegmentToString(HDMV_SEGMENT_TYPE segType)
+  {
+    switch (segType)
+    {
+    case NO_SEGMENT:
+      return "NO_SEGMENT";
+    case PALETTE:
+      return "PALETTE";
+    case OBJECT:
+      return "OBJECT";
+    case PRESENTATION_SEG:
+      return "PRESENTATION_SEG";
+    case WINDOW_DEF:
+      return "WINDOW_DEF";
+    case INTERACTIVE_SEG:
+      return "INTERACTIVE_SEG";
+    case END_OF_DISPLAY:
+      return "END_OF_DISPLAY";
+    case HDMV_SUB1:
+      return "HDMV_SUB1";
+    case HDMV_SUB2:
+      return "HDMV_SUB2";
+    default:
+      return "Unknown";
+    }
+  }
+
   struct VIDEO_DESCRIPTOR
   {
     SHORT    nVideoWidth;
@@ -66,6 +92,35 @@ public:
     BYTE    bReserved : 8;
   };
 
+  struct PGSSubs
+  {
+    REFERENCE_TIME                   m_rtStart;
+    REFERENCE_TIME                   m_rtStop;
+    int                              m_numObjects;
+    std::vector<CompositionObject*>  m_objects;
+
+    VIDEO_DESCRIPTOR m_videoDescriptor;
+    COMPOSITION_DESCRIPTOR m_compositionDescriptor;
+    SEQUENCE_DESCRIPTOR m_sequenceDescriptor;
+
+    PGSSubs()
+    {
+      m_rtStart = 0;
+      m_rtStop = INVALID_TIME;
+      m_numObjects = 0;
+
+      memset (&m_videoDescriptor, 0, sizeof(VIDEO_DESCRIPTOR));
+      memset (&m_compositionDescriptor, 0, sizeof(COMPOSITION_DESCRIPTOR));
+    }
+
+    ~PGSSubs()
+    {
+      for (std::vector<CompositionObject*>::iterator it = m_objects.begin();
+        it != m_objects.end(); ++it)
+        (*it)->SetObjectData(NULL);
+    }
+  };
+
   CHdmvSub(bool fromFile = false);
   ~CHdmvSub();
 
@@ -74,22 +129,22 @@ public:
 
 
   int    GetStartPosition(REFERENCE_TIME rt, double fps);
-  int    GetNext(int pos) { return ((pos >=  m_pObjects.size()) ? NULL : ++pos); };
+  int    GetNext(int pos) { return ((pos >=  m_pSubs.size()) ? NULL : ++pos); };
 
 
   virtual REFERENCE_TIME GetStart(int nPos)
   {
-    std::list<CompositionObject*>::iterator it = m_pObjects.begin();
+    std::list<PGSSubs*>::iterator it = m_pSubs.begin();
     std::advance(it, nPos - 1);
-    CompositionObject*  pObject = *it;
-    return pObject!=NULL ? pObject->m_rtStart : INVALID_TIME; 
+    PGSSubs* pObject = *it;
+    return pObject != NULL ? pObject->m_rtStart : INVALID_TIME; 
   };
   virtual REFERENCE_TIME  GetStop(int nPos)  
   { 
-    std::list<CompositionObject*>::iterator it = m_pObjects.begin();
+    std::list<PGSSubs*>::iterator it = m_pSubs.begin();
     std::advance(it, nPos - 1);
-    CompositionObject*  pObject = *(it);
-    return pObject!=NULL ? pObject->m_rtStop : INVALID_TIME; 
+    PGSSubs*  pObject = *(it);
+    return pObject != NULL ? pObject->m_rtStop : INVALID_TIME; 
   };
 
   void      Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox);
@@ -103,30 +158,41 @@ private :
   int                           m_nTotalSegBuffer;
   int                           m_nSegBufferPos;
   int                           m_nSegSize;
-  bool                          m_bGotObjectData;
-  bool                          m_bGotPaletteData;
   bool                          m_bFromFile;
 
-  VIDEO_DESCRIPTOR              m_VideoDescriptor;
-
-  CompositionObject*            m_pCurrentObject;
-  std::list<CompositionObject*> m_pObjects;
+  PGSSubs*                          m_pCurrentSub;
+  std::list<PGSSubs*>               m_pSubs;
+  std::list<CompositionObjectData*> m_pObjectsCache;
 
   HDMV_PALETTE*                 m_pDefaultPalette;
   int                           m_nDefaultPaletteNbEntry;
 
   int                           m_nColorNumber;
 
+  void        GetTopLeft(PGSSubs* pSub, POINT& point);
 
-  int         ParsePresentationSegment(CGolombBuffer* pGBuffer);
+  int         ParsePresentationSegment(CGolombBuffer* pGBuffer, REFERENCE_TIME rtStart);
   void        ParsePalette(CGolombBuffer* pGBuffer, USHORT nSize);
   void        ParseObject(CGolombBuffer* pGBuffer, USHORT nUnitSize);
+  void        ParseWindow(CGolombBuffer* pGBuffer, USHORT nSize);
 
   void        ParseVideoDescriptor(CGolombBuffer* pGBuffer, VIDEO_DESCRIPTOR* pVideoDescriptor);
   void        ParseCompositionDescriptor(CGolombBuffer* pGBuffer, COMPOSITION_DESCRIPTOR* pCompositionDescriptor);
-  void        ParseCompositionObject(CGolombBuffer* pGBuffer, CompositionObject* pCompositionObject);
+  void        ParseCompositionObject(CGolombBuffer* pGBuffer, PGSSubs* pCompositionObject, BYTE numWindows);
 
   void        AllocSegment(int nSize);
 
-  CompositionObject*  FindObject(REFERENCE_TIME rt);
+  PGSSubs*    FindSub(REFERENCE_TIME rt);
+
+  CompositionObjectData* FindObject(int id)
+  {
+    for (std::list<CompositionObjectData*>::iterator it = m_pObjectsCache.begin();
+      it != m_pObjectsCache.end(); ++it)
+    {
+      if ((*it)->m_object_id == id)
+        return (*it);
+    }
+
+    return NULL;
+  }
 };

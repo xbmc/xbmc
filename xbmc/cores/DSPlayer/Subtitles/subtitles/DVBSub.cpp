@@ -315,8 +315,8 @@ void CDVBSub::Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox)
           SHORT    nX, nY;
           nX = pRegion->HorizAddr + pRegion->Objects[j].object_horizontal_position;
           nY = pRegion->VertAddr  + pRegion->Objects[j].object_vertical_position;
-          pObject->m_width  = pRegion->width;
-          pObject->m_height = pRegion->height;
+          pObject->GetObjectData()->m_width  = pRegion->width;
+          pObject->GetObjectData()->m_height = pRegion->height;
           pObject->SetPalette(pRegion->Clut.Size, pRegion->Clut.Palette, false);
           pObject->RenderDvb(spd, nX, nY);
         }
@@ -561,9 +561,12 @@ HRESULT CDVBSub::ParseObject(CGolombBuffer& gb, WORD wSegLength)
   if (m_pCurrentPage.get() && wSegLength > 2)
   {
     CompositionObject*  pObject = DNew CompositionObject();
+    CompositionObjectData* pData = DNew CompositionObjectData();
     BYTE        object_coding_method;
 
-    pObject->m_object_id_ref  = gb.ReadShort();
+    pObject->SetObjectData(pData);
+
+    pObject->m_object_id_ref = pData->m_object_id = gb.ReadShort();
     pObject->m_version_number  = (BYTE)gb.BitRead(4);
     
     object_coding_method = (BYTE)gb.BitRead(2);  // object_coding_method
@@ -572,7 +575,7 @@ HRESULT CDVBSub::ParseObject(CGolombBuffer& gb, WORD wSegLength)
 
     if (object_coding_method == 0x00)
     {
-      pObject->SetRLEData (gb.GetBufferPos(), wSegLength-3, wSegLength-3);
+      pData->SetRLEData (gb.GetBufferPos(), wSegLength-3, wSegLength-3);
       gb.SkipBytes(wSegLength-3);
       m_pCurrentPage->Objects.push_back (pObject);
       hr = S_OK;

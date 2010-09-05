@@ -28,16 +28,23 @@ CompositionObject::CompositionObject()
 {
   m_rtStart         = 0;
   m_rtStop          = 0;
-  m_pRLEData        = NULL;
-  m_nRLEDataSize    = 0;
-  m_nRLEPos         = 0;
   m_nColorNumber    = 0;
+  m_cropping_height = 0;
+  m_cropping_width  = 0;
+  m_cropping_horizontal_position = 0;
+  m_cropping_vertical_position   = 0;
+  m_horizontal_position          = 0;
+  m_vertical_position            = 0;
+  m_object_id_ref   = 0;
+  m_object_cropped_flag = false;
+  m_forced_on_flag      = false;
+  m_version_number      = 0;
+  m_pData               = NULL;
   memsetd (m_Colors, 0xFF000000, sizeof(m_Colors));
 }
 
 CompositionObject::~CompositionObject()
 {
-  delete[] m_pRLEData;
 }
 
 void CompositionObject::SetPalette (int nNbEntry, HDMV_PALETTE* pPalette, bool bIsHD)
@@ -58,7 +65,7 @@ void CompositionObject::SetPalette (int nNbEntry, HDMV_PALETTE* pPalette, bool b
 }
 
 
-void CompositionObject::SetRLEData(BYTE* pBuffer, int nSize, int nTotalSize)
+void CompositionObjectData::SetRLEData(BYTE* pBuffer, int nSize, int nTotalSize)
 {
   delete[] m_pRLEData;
   m_pRLEData      = DNew BYTE[nTotalSize];
@@ -68,7 +75,7 @@ void CompositionObject::SetRLEData(BYTE* pBuffer, int nSize, int nTotalSize)
   memcpy (m_pRLEData, pBuffer, nSize);
 }
 
-void CompositionObject::AppendRLEData(BYTE* pBuffer, int nSize)
+void CompositionObjectData::AppendRLEData(BYTE* pBuffer, int nSize)
 {
   ASSERT (m_nRLEPos+nSize <= m_nRLEDataSize);
   if (m_nRLEPos+nSize <= m_nRLEDataSize)
@@ -78,21 +85,39 @@ void CompositionObject::AppendRLEData(BYTE* pBuffer, int nSize)
   }
 }
 
-
-void CompositionObject::RenderHdmv(SubPicDesc& spd)
+void CompositionObjectData::Copy(CompositionObjectData* pData)
 {
-  if (m_pRLEData)
+  if (! pData)
+    return;
+
+  m_nRLEDataSize    = pData->m_nRLEDataSize;
+  m_nRLEPos         = pData->m_nRLEPos;
+  m_object_id       = pData->m_object_id;
+  m_version_number  = pData->m_version_number;
+
+  m_width           = pData->m_width;
+  m_height          = pData->m_height;
+
+  delete[] m_pRLEData;
+  m_pRLEData        = DNew BYTE[m_nRLEDataSize];
+  memcpy(m_pRLEData, pData->m_pRLEData, m_nRLEDataSize);
+}
+
+
+void CompositionObject::RenderHdmv(SubPicDesc& spd, SHORT x, SHORT y)
+{
+  if (GetObjectData())
   {
-    CGolombBuffer GBuffer(m_pRLEData, m_nRLEDataSize);
+    CGolombBuffer GBuffer(GetObjectData()->GetRLEData(), GetObjectData()->GetRLEDataSize());
     BYTE      bTemp;
     BYTE      bSwitch;
 
     BYTE      nPaletteIndex = 0;
     SHORT     nCount;
-    SHORT     nX  = 0;
-    SHORT     nY  = 0;
+    SHORT     nX  = x;
+    SHORT     nY  = y;
 
-    while ((nY < m_height) && !GBuffer.IsEOF())
+    while ((nY < GetObjectData()->m_height) && !GBuffer.IsEOF())
     {
       bTemp = GBuffer.ReadByte();
       if (bTemp != 0)
@@ -141,7 +166,7 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
       else
       {
         nY++;
-        nX = 0;
+        nX = x;
       }
     }
   }
@@ -150,13 +175,13 @@ void CompositionObject::RenderHdmv(SubPicDesc& spd)
 
 void CompositionObject::RenderDvb(SubPicDesc& spd, SHORT nX, SHORT nY)
 {
-  if (m_pRLEData)
+  if (GetObjectData())
   {
-    CGolombBuffer  gb (m_pRLEData, m_nRLEDataSize);
+    CGolombBuffer  gb (GetObjectData()->GetRLEData(), GetObjectData()->GetRLEDataSize());
     SHORT      sTopFieldLength;
     SHORT      sBottomFieldLength;
 
-    sTopFieldLength    = gb.ReadShort();
+    sTopFieldLength     = gb.ReadShort();
     sBottomFieldLength  = gb.ReadShort();
 
     DvbRenderField (spd, gb, nX, nY,   sTopFieldLength);
@@ -260,7 +285,7 @@ void CompositionObject::Dvb2PixelsCodeString(SubPicDesc& spd, CGolombBuffer& gb,
       }
     }
 
-    if (nX+nCount > m_width) 
+    if (nX+nCount > GetObjectData()->m_width) 
     {
       ASSERT (FALSE);
       break;
@@ -333,7 +358,7 @@ void CompositionObject::Dvb4PixelsCodeString(SubPicDesc& spd, CGolombBuffer& gb,
       }
     }
 
-    if (nX+nCount > m_width) 
+    if (nX+nCount > GetObjectData()->m_width) 
     {
       ASSERT (FALSE);
       break;
@@ -381,7 +406,7 @@ void CompositionObject::Dvb8PixelsCodeString(SubPicDesc& spd, CGolombBuffer& gb,
       }
     }
 
-    if (nX+nCount > m_width) 
+    if (nX+nCount > GetObjectData()->m_width) 
     {
       ASSERT (FALSE);
       break;
@@ -395,38 +420,4 @@ void CompositionObject::Dvb8PixelsCodeString(SubPicDesc& spd, CGolombBuffer& gb,
   }
 
   gb.BitByteAlign();
-}
-
-void CompositionObject::Copy(CompositionObject* pObject, bool copyPalette /*= true*/)
-{
-  if (! pObject)
-    return;
-
-  // Don't copy rtStart or rtStop
-  m_object_id_ref = pObject->m_object_id_ref;
-  m_window_id_ref = pObject->m_window_id_ref;
-  m_object_cropped_flag = pObject->m_object_cropped_flag;
-  m_forced_on_flag = pObject->m_forced_on_flag;
-  m_version_number = m_version_number;
-
-  m_horizontal_position = pObject->m_horizontal_position;
-  m_vertical_position = pObject->m_vertical_position;
-  m_width = pObject->m_width;
-  m_height = pObject->m_height;
-
-  m_cropping_horizontal_position = pObject->m_cropping_horizontal_position;
-  m_cropping_vertical_position = pObject->m_cropping_horizontal_position;
-  m_cropping_width = pObject->m_cropping_width;
-  m_cropping_height = pObject->m_cropping_height;
-  
-  m_nRLEDataSize = pObject->m_nRLEDataSize;
-  m_nRLEPos = pObject->m_nRLEPos;
-  m_nColorNumber = pObject->m_nColorNumber;
-
-  delete[] m_pRLEData;
-  m_pRLEData = new BYTE[m_nRLEDataSize];
-  memcpy(m_pRLEData, pObject->m_pRLEData, m_nRLEDataSize);
-
-  if (copyPalette)
-    memcpy(m_Colors, pObject->m_Colors, sizeof(DWORD) * 256);
 }

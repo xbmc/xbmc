@@ -1353,8 +1353,14 @@ void CSubtitleManager::SelectBestSubtitle()
 {
   // If the splitter has not chosen a subtitle stream,
   // select the first one.
-  if ( GetSubtitle() == -1 )
+  int iIndex = -1;
+  if ( (iIndex = GetSubtitle()) == -1 )
     SetSubtitle(0);
+  else
+  {
+    if (! m_subtitleStreams[iIndex]->connected)
+      SetSubtitle(iIndex);
+  }
 }
 
 #endif
