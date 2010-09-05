@@ -49,8 +49,8 @@ MediaLibrary.prototype = {
 						libraryContainer.html('');
 					}
 					$.each($(data.result.albums), jQuery.proxy(function(i, item) {
-						var floatableAlbum = this.generateAlbumThumb(item.thumbnail, item.album_title, item.album_artist);
-						floatableAlbum.bind('click', {album: item, }, jQuery.proxy(this.displayAlbumDetails, this));
+						var floatableAlbum = this.generateThumb('album', item.thumbnail, item.album_title, item.album_artist);
+						floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
 						libraryContainer.append(floatableAlbum);
 					}, this));
 					//$('#libraryContainer img').lazyload();
@@ -59,7 +59,7 @@ MediaLibrary.prototype = {
 				libraryContainer.css('z-index', 100);
 			}
 		},
-		generateAlbumThumb: function(thumbnail, album_title, album_artist) {
+		generateThumb: function(type, thumbnail, album_title, album_artist) {
 			var floatableAlbum = $('<div>');
 			var path = thumbnail ? ('/vfs/' + thumbnail) : DEFAULT_ALBUM_COVER;
 			var title = album_title;
@@ -70,12 +70,13 @@ MediaLibrary.prototype = {
 			if (artist.length > 20 && !(artist.length <= 22)) {
 				artist = album_artist.substring(0, 20) + '...';
 			}
-			floatableAlbum.addClass('floatableAlbum')
+			var className = type == 'movie' ? 'floatableMovieCover' : 'floatableAlbum';
+
+			floatableAlbum.addClass(className)
 						  .html('<div class="imgWrapper"><img src="' + path + '" alt="" /></div><p class="album" title="' + album_title + '">' + title + '</p><p class="artist" title="' + album_artist + '">' + artist + '</p>');
-			return floatableAlbum
+			return floatableAlbum;
 		},
 		displayAlbumDetails: function(event) {
-			
 			var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
 				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "tracknumber", "discnumber", "duration", "year"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
@@ -140,6 +141,9 @@ MediaLibrary.prototype = {
 				$('#albumDetails' + event.data.album.albumid).css('z-index', 100);
 			}
 		},
+		displayMovieDetails: function(event) {
+
+		},
 		playTrack: function(event) {
 			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
 				//check that clear worked.
@@ -148,14 +152,32 @@ MediaLibrary.prototype = {
 					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
-
-			//jQuery.post(JSON_RPC + '?PlaySong', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', jQuery.proxy(function(data) {
-
-			//}, this), 'json');
 		},
 		videoLibraryOpen: function() {
 			$('#musicLibrary').removeClass('selected');
 			$('#videoLibrary').addClass('selected');
-			$('#content').html('');
+			$('.contentContainer').css('z-index', 1);
+			var libraryContainer = $('#videoLibraryContainer');
+			if (!libraryContainer || libraryContainer.length == 0) {
+				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "start": 0, "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating"] }, "id": 1}', jQuery.proxy(function(data) {
+					if (data && data.result && data.result.movies) {
+							libraryContainer = $('<div>');
+							libraryContainer.css('z-index', 100)
+											.attr('id', 'videoLibraryContainer')
+											.addClass('contentContainer');
+							$('#content').append(libraryContainer);
+					} else {
+						libraryContainer.html('');
+					}
+					$.each($(data.result.movies), jQuery.proxy(function(i, item) {
+						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title, "");
+						floatableAlbum.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
+						libraryContainer.append(floatableMovieCover);
+					}, this));
+					//$('#libraryContainer img').lazyload();
+				}, this), 'json');
+			} else {
+				libraryContainer.css('z-index', 100);
+			}
 		}
 	}

@@ -280,22 +280,41 @@ body {
 	padding: 10px;
 	}
 
-#libraryContainer .floatableAlbum {
+.floatableMovieCover {
+	float: left;
+	width: 130px;
+	height: 200px;
+	padding: 10px;
+	}
+
+#libraryContainer .floatableAlbum,
+#videoLibraryContainer .floatableMovieCover {
 	cursor: pointer;
 	}
 
-.floatableAlbum div.imgWrapper {
+.floatableAlbum div.imgWrapper,
+.floatableMovieCover div.imgWrapper {
 	width: 130px;
 	height: 130px;
 	display: table-cell;
 	vertical-align: middle;
 	}
 
-.floatableAlbum img {
+.floatableMovieCover div.imgWrapper {
+	height: 200px;
+	}
+
+.floatableAlbum img,
+.floatableMovieCover img {
 	width: 130px;
 	}
 
-.floatableAlbum p.album {
+.floatableMovieCover img {
+	height: 180px;
+	}
+
+.floatableAlbum p.album,
+.floatableMovieCover p.album {
 	font-size: 12px;
 	font-weight: 700;
 	color: #000;
@@ -307,7 +326,8 @@ body {
 	overflow: hidden;
 	}
 
-.floatableAlbum p.artist {
+.floatableAlbum p.artist,
+.floatableMovieCover p.artist {
 	font-size: 11px;
 	color: #777;
 	text-align: center;
