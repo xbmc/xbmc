@@ -256,7 +256,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
-  CLog::Log(LOGNOTICE, "Download Started At: %i", CTimeUtils::GetTimeMS());
+
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;

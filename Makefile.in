@@ -551,11 +551,6 @@ install-livedatas:
 	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
 	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
 
-install-web:
-	@mkdir -p $(DESTDIR)$(datarootdir)/xbmc/web
-	@cp -r web/* $(DESTDIR)$(datarootdir)/xbmc/web
-	@find $(DESTDIR)$(datarootdir)/xbmc/web -depth -name .svn -exec rm -rf {} \;
-
 uninstall:
 	@echo "Removing XBMC..."
 	@rm -rf $(DESTDIR)$(libdir)/xbmc
