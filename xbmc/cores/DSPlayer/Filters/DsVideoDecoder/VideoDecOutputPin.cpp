@@ -27,7 +27,7 @@
 #include "VideoDecOutputPin.h"
 #include "VideoDecDXVAAllocator.h"
 #include "XBMCVideoDecFilter.h"
-#include "dshowutil/dshowutil.h"
+#include "DSUtil/DSUtil.h"
 
 CVideoDecOutputPin::CVideoDecOutputPin(TCHAR* pObjectName, CBaseVideoFilter* pFilter, HRESULT* phr, LPCWSTR pName)
 				  : CBaseVideoOutputPin(pObjectName, pFilter, phr, pName)

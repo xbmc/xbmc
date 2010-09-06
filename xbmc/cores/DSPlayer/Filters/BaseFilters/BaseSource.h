@@ -26,7 +26,7 @@
 #endif
 
 #include "streams.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 
 template<class TStream>
 class CBaseSource

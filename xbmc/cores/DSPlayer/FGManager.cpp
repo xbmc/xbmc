@@ -31,8 +31,9 @@
 #include "WinSystemWin32.h" //g_hwnd
 #include "WindowingFactory.h"
 #include "CharsetConverter.h"
-#include "DShowUtil/dshowutil.h"
-#include "DShowUtil/DshowCommon.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/DShowCommon.h"
+#include "DSUtil/SmartPtr.h"
 #include "SystemInfo.h" //g_sysinfo
 #include "GUISettings.h"//g_guiSettings
 
@@ -56,7 +57,6 @@
 #include "GUIDialogYesNo.h"
 //END XML CONFIG HEADERS
 
-#include "DShowUtil/smartptr.h"
 #include "DSPlayer.h"
 #include "FilterCoreFactory/FilterCoreFactory.h"
 
@@ -109,9 +109,9 @@ HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
 void CFGManager::CStreamPath::Append(IBaseFilter* pBF, IPin* pPin)
 {
   path_t p;
-  p.clsid = DShowUtil::GetCLSID(pBF);
-  p.filter = DShowUtil::GetFilterName(pBF);
-  p.pin = DShowUtil::GetPinName(pPin);
+  p.clsid = GetCLSID(pBF);
+  p.filter = GetFilterName(pBF);
+  p.pin = GetPinName(pPin);
   push_back(p);
 }
 
@@ -203,14 +203,14 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 
   CSingleLock CSingleLock(*this);
 
-  Com::SmartPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinIn);
-  CLSID clsid = DShowUtil::GetCLSID(pBF);
+  Com::SmartPtr<IBaseFilter> pBF = GetFilterFromPin(pPinIn);
+  CLSID clsid = GetCLSID(pBF);
 
   // TODO: GetUpStreamFilter goes up on the first input pin only
-  for(Com::SmartPtr<IBaseFilter> pBFUS = DShowUtil::GetFilterFromPin(pPinOut); pBFUS; pBFUS = DShowUtil::GetUpStreamFilter(pBFUS))
+  for(Com::SmartPtr<IBaseFilter> pBFUS = GetFilterFromPin(pPinOut); pBFUS; pBFUS = GetUpStreamFilter(pBFUS))
   {
     if(pBFUS == pBF) return VFW_E_CIRCULAR_GRAPH;
-    if(DShowUtil::GetCLSID(pBFUS) == clsid) return VFW_E_CANNOT_CONNECT;
+    if(GetCLSID(pBFUS) == clsid) return VFW_E_CANNOT_CONNECT;
   }
 
   
@@ -220,13 +220,13 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 #ifdef _DSPLAYER_DEBUG
   CStdString filterNameIn, filterNameOut;
   CStdString pinNameIn, pinNameOut;
-  Com::SmartPtr<IBaseFilter> pBFOut = DShowUtil::GetFilterFromPin(pPinOut);
+  Com::SmartPtr<IBaseFilter> pBFOut = GetFilterFromPin(pPinOut);
   CStdString strPinType;
-  strPinType = DShowUtil::GetPinMainTypeString(pPinOut);
-  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBFOut), filterNameOut);
-  g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinOut), pinNameOut);
-  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterNameIn);
-  g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinIn), pinNameIn);
+  strPinType = GetPinMainTypeString(pPinOut);
+  g_charsetConverter.wToUTF8(GetFilterName(pBFOut), filterNameOut);
+  g_charsetConverter.wToUTF8(GetPinName(pPinOut), pinNameOut);
+  g_charsetConverter.wToUTF8(GetFilterName(pBF), filterNameIn);
+  g_charsetConverter.wToUTF8(GetPinName(pPinIn), pinNameIn);
 
   CLog::Log(LOGDEBUG, "%s: %s connecting %s.%s.Type:%s pin to %s.%s", __FUNCTION__,
                                                                     (SUCCEEDED(hr) ? "Succeeded": "Failed"),
@@ -300,8 +300,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     std::vector<IBaseFilter *> pBFS;
     BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
     {
-      if(pPinIn && DShowUtil::GetFilterFromPin(pPinIn) == pBF 
-        || DShowUtil::GetFilterFromPin(pPinOut) == pBF)
+      if(pPinIn && GetFilterFromPin(pPinIn) == pBF 
+        || GetFilterFromPin(pPinOut) == pBF)
         continue;
 
       pBFS.push_back(pBF);
@@ -314,7 +314,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
       if(SUCCEEDED(hr = ConnectFilterDirect(pPinOut, pBF, NULL)))
       {
-        if(! DShowUtil::IsStreamEnd(pBF)) fDeadEnd = false;
+        if(! IsStreamEnd(pBF)) fDeadEnd = false;
 
         if(SUCCEEDED(hr = ConnectFilter(pBF, pPinIn)))
           return hr;
@@ -463,7 +463,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
   BeginEnumPins(pBF, pEP, pPin)
   {
-    if(DShowUtil::GetPinName(pPin)[0] != '~'
+    if(GetPinName(pPin)[0] != '~'
     && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
     && S_OK != IsPinConnected(pPin))
     {
@@ -535,7 +535,7 @@ HRESULT CFGManager::ConnectFilter(IPin* pPinOut, IBaseFilter* pBF)
   BeginEnumPins(pBF, pEP, pPin)
   {
     PIN_DIRECTION dir;
-    if(DShowUtil::GetPinName(pPin)[0] != '~'
+    if(GetPinName(pPin)[0] != '~'
     && SUCCEEDED(hr = pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
     && SUCCEEDED(hr = Connect(pPinOut, pPin)))
     {
@@ -561,7 +561,7 @@ HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const A
 
   BeginEnumPins(pBF, pEP, pPin)
   {
-    if(DShowUtil::GetPinName(pPin)[0] != '~'
+    if(GetPinName(pPin)[0] != '~'
       && S_OK == IsPinDirection(pPin, PINDIR_INPUT)
       && S_OK != IsPinConnected(pPin)
       && SUCCEEDED(hr = ConnectDirect(pPinOut, pPin, pmt)))
@@ -573,7 +573,7 @@ HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const A
   return VFW_E_CANNOT_CONNECT;
 }
 
-HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
+/*HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
 {
   CSingleLock CSingleLock(*this);
 
@@ -593,7 +593,7 @@ HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
     if(S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
     && SUCCEEDED(pPin->ConnectedTo(&pPinTo)) && pPinTo)
     {
-      if(IBaseFilter* pBF = DShowUtil::GetFilterFromPin(pPinTo))
+      if(IBaseFilter* pBF = GetFilterFromPin(pPinTo))
       {
         NukeDownstream(pBF);
         Disconnect(pPinTo);
@@ -608,7 +608,7 @@ HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
   }
 
   return S_OK;
-}
+}*/
 
 HRESULT CFGManager::AddToROT()
 {
@@ -692,7 +692,7 @@ void CFGManager::LogFilterGraph(void)
   CLog::Log(LOGDEBUG, "Starting filters listing ...");
   BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
-    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), buffer);
+    g_charsetConverter.wToUTF8(GetFilterName(pBF), buffer);
     CLog::Log(LOGDEBUG, "%s", buffer.c_str());
   }
   EndEnumFilters
@@ -712,35 +712,35 @@ void CFGManager::InitManager()
   
 // "Subtitle Mixer" makes an access violation around the 
 // 11-12th media type when enumerating them on its output.
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
 
 // DiracSplitter.ax is crashing MPC-HC when opening invalid files...
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
 
 // ISCR suxx
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
 
 // Samsung's "mpeg-4 demultiplexor" can even open matroska files, amazing...
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
 
 // LG Video Renderer (lgvid.ax) just crashes when trying to connect it
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
 
 // palm demuxer crashes (even crashes graphedit when dropping an .ac3 onto it)
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
 
 // mainconcept color space converter
-  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
 
   //Block if vmr9 is used
   if (g_sysinfo.IsVistaOrHigher())
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+      m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
   else
     if (!g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+      m_transform.push_back(new CFGFilterRegistry(GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
 
     
   
@@ -815,13 +815,13 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
       if (pMT->majortype == MEDIATYPE_Video)
       {
         nVideoPin++;
-        if (DShowUtil::IsPinConnected(pPin))
+        if (IsPinConnected(pPin))
           nConnectedVideoPin++;
       }
       if (pMT->majortype == MEDIATYPE_Audio)
       {
         nAudioPin++;
-        if (DShowUtil::IsPinConnected(pPin))
+        if (IsPinConnected(pPin))
           nConnectedAudioPin++;
       }
       break;
@@ -905,8 +905,8 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
     if (!videoError)
     {
       IBaseFilter *pBFV = CGraphFilters::Get()->VideoRenderer.pBF;
-      Com::SmartPtr<IPin> pPinV = DShowUtil::GetFirstPin(pBFV, PINDIR_INPUT);
-      if (DShowUtil::IsPinConnected(pPinV))
+      Com::SmartPtr<IPin> pPinV = GetFirstPin(pBFV, PINDIR_INPUT);
+      if (IsPinConnected(pPinV))
       {
         CLog::Log(LOGINFO, "%s There were some errors in your rendering chain. Filters have been changed.", __FUNCTION__);
       }

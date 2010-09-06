@@ -25,7 +25,7 @@
 #pragma error "DSPlayer's header file included without HAS_DS_PLAYER defined"
 #endif
 
-#include "dshowutil/dshowutil.h"
+#include "DSUtil/SmartPtr.h"
 
 // IAMExtendedSeeking
 #include <qnetwork.h>

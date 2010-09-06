@@ -26,7 +26,7 @@
 
 #include "XBMCVideoDecFilter.h"
 #include <math.h>
-#include "DShowUtil/dshowutil.h"
+#include "DSUtil/DSUtil.h"
 #include "Cspinfo.h"
 #include <mmreg.h>
 #include "evr.h"
@@ -38,8 +38,7 @@
 #include "VideoDecOutputPin.h"
 #include "utils/CPUInfo.h"
 
-#include "DShowUtil/DShowUtil.h"
-#include "DShowUtil/MediaTypes.h"
+#include "DSUtil/MediaTypes.h"
 
 #include <moreuuids.h>
 #include "DIRECTSHOW.h"
@@ -608,7 +607,7 @@ HRESULT CXBMCVideoDecFilter::CompleteConnect(PIN_DIRECTION direction, IPin* pRec
      
     }
 
-    CLSID  ClsidSourceFilter = DShowUtil::GetCLSID(m_pInput->GetConnected());
+    CLSID  ClsidSourceFilter = GetCLSID(m_pInput->GetConnected());
     //if((ClsidSourceFilter == __uuidof(CMpegSourceFilter)) || (ClsidSourceFilter == __uuidof(CMpegSplitterFilter)))
     //  m_bReorderBFrame = false;
   }
@@ -748,7 +747,7 @@ void CXBMCVideoDecFilter::InitSwscale()
     swscaleTable[6] = coeffs.RGB_add1;
 
     BITMAPINFOHEADER bihOut;
-    DShowUtil::ExtractBIH(&m_pOutput->CurrentMediaType(), &bihOut);
+    ExtractBIH(&m_pOutput->CurrentMediaType(), &bihOut);
 
     m_nOutCsp    = GetCspFromMediaType(m_pOutput->CurrentMediaType().subtype);
     //Dvdplayer use SWS_FAST_BILINEAR

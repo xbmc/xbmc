@@ -28,7 +28,7 @@
 #if !defined(_LINUX) && !defined(HAS_GL) && defined(HAS_DS_PLAYER)
 
 #include "WinBaseRenderer.h"
-#include "../dsplayer/dshowutil/smartptr.h"
+#include "../DSPlayer/DSUtil/SmartPtr.h"
 #include "CriticalSection.h"
 
 class CBaseTexture;

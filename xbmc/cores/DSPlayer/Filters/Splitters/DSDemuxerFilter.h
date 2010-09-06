@@ -28,7 +28,7 @@
 #include "PacketQueue.h"
 #include "DVDPlayer/DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
 
 

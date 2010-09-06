@@ -2488,14 +2488,6 @@
 					Name="FilterCoreFactory"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.cpp"
 						>
 					</File>
@@ -2521,86 +2513,6 @@
 					</File>
 					<File
 						RelativePath="..\..\system\players\dsplayer\mediasconfig.xml"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="DShowUtil"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
 						>
 					</File>
 				</Filter>
@@ -2685,6 +2597,46 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\PixelShaderList.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Utils"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h"
 						>
 					</File>
 				</Filter>

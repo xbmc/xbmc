@@ -28,6 +28,7 @@
 #include "XMLUtils.h"
 #include "SingleLock.h"
 #include "Util.h"
+#include "utils\log.h"
 
 CPixelShaderList::~CPixelShaderList()
 {

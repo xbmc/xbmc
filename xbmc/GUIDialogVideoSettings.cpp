@@ -40,7 +40,7 @@ using namespace std;
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/DSConfig.h"
 #include "cores/DSPlayer/Filters/RendererSettings.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #include "CharsetConverter.h"
 #include "LocalizeStrings.h"
 #endif

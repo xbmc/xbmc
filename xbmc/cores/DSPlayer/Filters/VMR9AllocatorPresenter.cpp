@@ -26,9 +26,9 @@
 
 
 #include "VMR9AllocatorPresenter.h"
-#include "IPinHook.h"
-#include "MacrovisionKicker.h"
-#include "DShowUtil/DShowUtil.h"
+#include "Utils/IPinHook.h"
+#include "Utils/MacrovisionKicker.h"
+#include "DSUtil/DSUtil.h"
 #include "SystemInfo.h"
 #include "MpConfig.h"
 #include "WindowingFactory.h"
@@ -394,7 +394,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
     Com::SmartQIPtr<IBaseFilter> pBF = pUnk;
 
-    Com::SmartPtr<IPin> pPin = DShowUtil::GetFirstPin(pBF);
+    Com::SmartPtr<IPin> pPin = GetFirstPin(pBF);
     Com::SmartQIPtr<IMemInputPin> pMemInputPin = pPin;
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
 
@@ -607,7 +607,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
       SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
       SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
     {
-      DShowUtil::ExtractAvgTimePerFrame (&mt, m_rtTimePerFrame);
+      ExtractAvgTimePerFrame (&mt, m_rtTimePerFrame);
 
       Com::SmartSize NativeVideoSize = m_NativeVideoSize;
       Com::SmartSize AspectRatio = m_AspectRatio;

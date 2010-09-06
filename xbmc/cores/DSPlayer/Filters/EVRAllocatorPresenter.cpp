@@ -27,10 +27,10 @@
 #include "EVRAllocatorPresenter.h"
 #include <algorithm>
 #include <Mferror.h>
-#include "IPinHook.h"
-#include "MacrovisionKicker.h"
-#include "DShowUtil/DShowUtil.h"
-#include "DShowUtil/smartlist.h"
+#include "Utils/IPinHook.h"
+#include "Utils/MacrovisionKicker.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include "Utils/TimeUtils.h"
 #include "Application.h"
 #include "WindowingFactory.h"
@@ -529,8 +529,8 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     if(SUCCEEDED(hr)) hr = pMFVR->InitializeRenderer (NULL, pVP);
 
 #if 1
-    Com::SmartPtr<IPin>      pPin = DShowUtil::GetFirstPin(pBF);
-    Com::SmartQIPtr<IMemInputPin> pMemInputPin = pPin;
+    Com::SmartPtr<IPin>           pPin          = GetFirstPin(pBF);
+    Com::SmartQIPtr<IMemInputPin> pMemInputPin  = pPin;
     
     // No NewSegment : no chocolate :o)
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
@@ -996,7 +996,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   hr = InitializeDevice (pAMMedia);
   if (SUCCEEDED (hr))
   {
-    strTemp = DShowUtil::GetMediaTypeName (pAMMedia->subtype);
+    strTemp = GetMediaTypeName (pAMMedia->subtype);
     strTemp.Replace ("MEDIASUBTYPE_", "");
     m_strStatsMsg[MSG_MIXEROUT].Format ("Mixer output : %s", strTemp);
   }
@@ -1648,7 +1648,7 @@ void CEVRAllocatorPresenter::GetMixerThread()
             SUCCEEDED (m_pOuterEVR->FindPin(L"EVR Input0", &pPin)) &&
             SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
           {
-            DShowUtil::ExtractAvgTimePerFrame (&mt, m_rtTimePerFrame);
+            ExtractAvgTimePerFrame (&mt, m_rtTimePerFrame);
 
             m_bInterlaced = ExtractInterlaced(&mt);
 

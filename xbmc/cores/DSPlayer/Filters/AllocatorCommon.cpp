@@ -24,7 +24,7 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #include "AllocatorCommon.h"
 #include "VMR9AllocatorPresenter.h"
 #include "EVRAllocatorPresenter.h"

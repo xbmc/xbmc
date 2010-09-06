@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CoordGeom.h"
-#include "DShowUtil/SmartPtr.h"
+#include "..\DSUtil\SmartPtr.h"
 #include <list>
 #pragma pack(push, 1)
 #include <D3D9.h>

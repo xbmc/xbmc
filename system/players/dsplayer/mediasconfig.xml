@@ -59,7 +59,7 @@
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="mkv">
-      <source filter="mkvsource" />
+      <source filter="haali" />
       <splitter filter="mkvsplitter" />
       <video filter="mpcvideodec" />
       <!-- You can do like that to specifie a DXVA only filters.

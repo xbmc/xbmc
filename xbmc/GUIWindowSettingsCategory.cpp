@@ -93,7 +93,7 @@
 #include "WIN32Util.h"
 #include "cores/AudioRenderers/AudioRendererFactory.h"
 #ifdef HAS_DS_PLAYER
-#include "WinDirectshowEnumerator.h"
+#include "Utils/AudioEnumerator.h"
 #endif
 #include "GUIDialogSelect.h"
 #endif
@@ -2968,8 +2968,9 @@ void CGUIWindowSettingsCategory::FillInDirectShowAudioRenderers(CSetting* pSetti
   //in case dsplayer didnt do it yet
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-  CDirectShowEnumerator p_dsound;
-  std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
+  CAudioEnumerator p_dsound;
+  std::vector<DSFilterInfo> deviceList;
+  p_dsound.GetAudioRenderers(deviceList);
   std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
   for (int i=0; iter != deviceList.end(); i++)
   {

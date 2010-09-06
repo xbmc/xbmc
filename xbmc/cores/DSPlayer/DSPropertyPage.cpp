@@ -29,7 +29,7 @@
 
 #include "DSPropertyPage.h"
 #include "Utils/log.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #include "WindowingFactory.h"
 #include "CharsetConverter.h"
 #include "GraphicContext.h"
@@ -139,7 +139,7 @@ void CDSPropertyPage::Process()
     
     pProp->GetPages(&pPages);
 
-    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, DShowUtil::GetFilterName(m_pBF).c_str(),
+    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, GetFilterName(m_pBF).c_str(),
       1, (LPUNKNOWN *) &m_pBF, pPages.cElems, 
       pPages.pElems, 0, 0, 0);
 
@@ -164,7 +164,7 @@ void CDSPropertyPage::Process()
     propSheet.hwndParent = g_Windowing.GetHwnd();
     
     CStdString filterName;
-    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pBF), filterName);
+    g_charsetConverter.wToUTF8(GetFilterName(m_pBF), filterName);
     propSheet.pszCaption = filterName.c_str();
     
     hpsp = (HPROPSHEETPAGE *) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
@@ -187,7 +187,7 @@ void CDSPropertyPage::Process()
     for(unsigned int page = 0; page < pPages.cElems;  page++)
     {
       opf[page].pps = new CDSPlayerPropertyPageSite(LANG_NEUTRAL);
-      hr = DShowUtil::LoadExternalPropertyPage(m_pBF, pPages.pElems[page], &opf[page].propPage);
+      hr = LoadExternalPropertyPage(m_pBF, pPages.pElems[page], &opf[page].propPage);
       if (FAILED(hr))
         continue;
 

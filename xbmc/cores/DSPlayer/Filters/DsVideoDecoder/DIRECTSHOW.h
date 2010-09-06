@@ -23,7 +23,7 @@
 #include "libavcodec/dxva2.h"
 #include <dxva.h>
 #include <dxva2api.h>
-#include "DshowUtil/DshowUtil.h"
+#include "DSUtil/DSUtil.h"
 
 #include <videoacc.h>
 #include "DVDPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"

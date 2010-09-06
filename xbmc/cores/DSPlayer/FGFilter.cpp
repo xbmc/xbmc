@@ -25,7 +25,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "FGFilter.h"
-#include "dshowutil/dshowutil.h"
+#include "DSUtil/SmartPtr.h"
 
 
 #include "Filters/VMR9AllocatorPresenter.h"
@@ -36,8 +36,6 @@
 #include "XMLUtils.h"
 #include "File.h"
 #include "SpecialProtocol.h"
-
-#include "DShowUtil/smartptr.h"
 
 #include "Dmodshow.h"
 #include "Dmoreg.h"
@@ -155,7 +153,7 @@ CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid)
   m_pMoniker = NULL;
   if(m_clsid == GUID_NULL) return;
 
-  CStdString guid = DShowUtil::CStringFromGUID(m_clsid);
+  CStdString guid = StringFromGUID(m_clsid);
  
 }
 
@@ -168,7 +166,7 @@ HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)
   if(m_pMoniker)
   {
     if(SUCCEEDED(hr = m_pMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**)ppBF)))
-      m_clsid = DShowUtil::GetCLSID(*ppBF);
+      m_clsid = ::GetCLSID(*ppBF);
   }
   else if(m_clsid != GUID_NULL)
     hr = CoCreateInstance(m_clsid, NULL, CLSCTX_ALL, IID_IBaseFilter, (void**)ppBF);
@@ -324,7 +322,7 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
 
   CStdString guid = "";
   XMLUtils::GetString(pFilter, "guid", guid);
-  const CLSID clsid = DShowUtil::GUIDFromCString(guid);
+  const CLSID clsid = GUIDFromString(guid);
 
   CStdString osdname = "";
   XMLUtils::GetString(pFilter, "osdname", osdname);
@@ -335,7 +333,7 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   CStdString strDmoGuid = "";
   if (XMLUtils::GetString(pFilter, "guid_category_dmo", strDmoGuid))
   {
-    const CLSID dmoclsid = DShowUtil::GUIDFromCString(strDmoGuid);
+    const CLSID dmoclsid = GUIDFromString(strDmoGuid);
     m_catDMO = dmoclsid;
   }
 
@@ -359,7 +357,7 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   if (! m_filterFound)
   {
     // Look in the registry
-    m_path = DShowUtil::GetFilterPath(clsid);
+    m_path = GetFilterPath(clsid);
   }
 
   // Call super constructor
@@ -389,11 +387,11 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   }
   else
   {
-    hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
+    hr = LoadExternalFilter(m_path, m_clsid, ppBF);
     if (FAILED(hr))
     {
       CLog::Log(LOGINFO, "%s Failed to load external filter (clsid:%s path:%s). Trying with CoCreateInstance", __FUNCTION__,
-        DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+        StringFromGUID(m_clsid).c_str(), m_path.c_str());
 
       /* If LoadExternalFilter failed, maybe we will have more chance
        * using CoCreateInstance directly. Will only works if the filter
@@ -412,10 +410,10 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 
   if (FAILED(hr))
     CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__,
-      DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+      StringFromGUID(m_clsid).c_str(), m_path.c_str());
   else
     CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__,
-      DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+      StringFromGUID(m_clsid).c_str(), m_path.c_str());
 
   return hr;
 }

@@ -25,7 +25,9 @@
 
 #pragma once
 //#include "streams.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/Geometry.h"
+#include "DSUtil/SmartPtr.h"
 #include <dxva.h>
 #include <dxva2api.h>
 #include "mfidl.h"

@@ -24,7 +24,8 @@
 
 #pragma once
 
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include <d3dx9.h>
 #include <Videoacc.h>    // DXVA1
 #include <dxva.h>
@@ -69,6 +70,12 @@ typedef struct
   REFERENCE_TIME  rtStop;
   int        nBuffPos;
 } BUFFER_TIME;
+
+#ifdef NDEBUG
+#define CheckPointerDbg(p, ret, theerrmsg) { if((p) == NULL) { CLog::Log(LOGERROR,"%s %s", __FUNCTION__, theerrmsg); return (ret);} }
+#else
+#define CheckPointerDbg(p, ret, theerrmsg) { CheckPointer(p, ret); }
+#endif
 
 [uuid("911DBD22-BA44-45ad-8E25-D62F1CB0A436")]
 class CXBMCVideoDecFilter 

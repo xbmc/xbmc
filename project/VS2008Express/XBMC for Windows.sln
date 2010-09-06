@@ -125,12 +125,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "subtitles", "..\..\xbmc\cor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libssf", "..\..\xbmc\cores\DSPlayer\Subtitles\subtitles\libssf\libssf.vcproj", "{DD9D2D92-2241-408A-859E-B85D444B7E3C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsutil", "..\..\xbmc\cores\DSPlayer\Subtitles\dsutil\dsutil.vcproj", "{FC70988B-1AE5-4381-866D-4F405E28AC42}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D514EA4D-EAFB-47A9-A437-A582CA571251} = {D514EA4D-EAFB-47A9-A437-A582CA571251}
-		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsubs_dll", "..\..\xbmc\cores\DSPlayer\Subtitles\libsubs\libsubs.vcproj", "{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D514EA4D-EAFB-47A9-A437-A582CA571251} = {D514EA4D-EAFB-47A9-A437-A582CA571251}
@@ -220,6 +214,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libbz2", "..\..\lib\bzip2\libbz2.vcproj", "{BE0618A0-8043-433D-8F65-869267318CF7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\xbmc\lib\libhdhomerun\hdhomerun\hdhomerun.vcproj", "{1E2FB608-3DD2-4021-A598-90008FA6DE85}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsutil", "..\..\xbmc\cores\DSPlayer\DSUtil\dsutil.vcproj", "{FC70988B-1AE5-4381-866D-4F405E28AC42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -555,12 +551,6 @@ Global
 		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
 		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
 		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
-		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
 		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
@@ -760,6 +750,14 @@ Global
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (OpenGL)|Win32.Build.0 = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (OpenGL)|Win32.Build.0 = Release Unicode|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

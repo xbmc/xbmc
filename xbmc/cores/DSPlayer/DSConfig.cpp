@@ -22,11 +22,11 @@
 #ifdef HAS_DS_PLAYER
 
 #include "dsconfig.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #include "CharsetConverter.h"
 #include "XMLUtils.h"
 
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/SmartPtr.h"
 
 using namespace std;
 
@@ -102,7 +102,7 @@ void CDSConfig::CreatePropertiesXml()
   
   for (std::vector<IBaseFilter *>::const_iterator it = m_pPropertiesFilters.begin() ; it != m_pPropertiesFilters.end(); it++)
   {
-    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(*it), pStrName);
+    g_charsetConverter.wToUTF8(GetFilterName(*it), pStrName);
     TiXmlElement newFilterElement("string");
     
     //Set the id of the lang
@@ -132,6 +132,7 @@ CStdString CDSConfig::GetDXVAMode()
 {
   return m_pStrDXVA;
 }
+
 void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
 {
   // IPinHook is calling the SetDxvaGuid once
@@ -139,7 +140,7 @@ void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
   if (dxvaguid == GUID_NULL)
     m_pStrDXVA = "";
   else
-    m_pStrDXVA.Format("%s",DShowUtil::GetDXVAMode(&dxvaguid));
+    m_pStrDXVA.Format("%s", ::GetDXVAMode(&dxvaguid));
 }
 
 #endif

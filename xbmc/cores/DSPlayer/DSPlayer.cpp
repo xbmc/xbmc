@@ -22,8 +22,8 @@
 #ifdef HAS_DS_PLAYER
 
 #include "DSPlayer.h"
-#include "dshowutil/dshowutil.h" // unload loaded filters
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/DSUtil.h" // unload loaded filters
+#include "DSUtil/SmartPtr.h"
 #include "Filters/RendererSettings.h"
 
 #include "winsystemwin32.h" //Important needed to get the right hwnd
@@ -74,7 +74,7 @@ CDSPlayer::~CDSPlayer()
   // Save Shader settings
   g_dsSettings.pixelShaderList->SaveXML();
 
-  DShowUtil::UnloadExternalObjects();
+  UnloadExternalObjects();
   CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);
 
   CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);

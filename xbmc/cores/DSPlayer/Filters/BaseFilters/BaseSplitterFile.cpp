@@ -22,7 +22,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "BaseSplitterFile.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 
 //
 // CBaseSplitterFile

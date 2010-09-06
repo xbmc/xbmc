@@ -142,7 +142,7 @@ public:
   HRESULT ConnectFilter(IBaseFilter* pBF, IPin* pPinIn);
   HRESULT ConnectFilter(IPin* pPinOut, IBaseFilter* pBF);
   HRESULT ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt);
-  HRESULT NukeDownstream(IUnknown* pUnk);
+  //HRESULT NukeDownstream(IUnknown* pUnk);
   HRESULT AddToROT();
   HRESULT RemoveFromROT();
   HRESULT RenderFileXbmc(const CFileItem& pFileItem);

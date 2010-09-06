@@ -25,14 +25,14 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "dshowutil/dshowutil.h"
-#include "DShowUtil/DshowCommon.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/DShowCommon.h"
+#include "DSUtil/MediaTypeEx.h"
 #include <initguid.h>
 #include "moreuuids.h"
 #include <dmodshow.h>
 #include <D3d9.h>
 
-#include "DShowUtil/MediaTypeEx.h"
 #include "Filters/ffdshow_constants.h"
 #include "DSGraph.h"
 #include "log.h"

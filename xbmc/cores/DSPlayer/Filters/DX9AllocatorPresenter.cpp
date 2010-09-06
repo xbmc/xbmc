@@ -27,8 +27,8 @@
 #include "DX9AllocatorPresenter.h"
 #include <initguid.h>
 #include "Subtitles/SubPic/DX9SubPic.h"
-#include "IPinHook.h"
-#include "DShowUtil/DShowUtil.h"
+#include "Utils/IPinHook.h"
+#include "DSUtil/DSUtil.h"
 #include "StreamsManager.h"
 #include "Utils/TimeUtils.h"
 #include "Log.h"

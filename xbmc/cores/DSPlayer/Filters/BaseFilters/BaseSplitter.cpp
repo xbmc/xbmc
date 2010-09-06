@@ -21,7 +21,7 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 #include <initguid.h>
 #include <moreuuids.h>
 
@@ -431,7 +431,7 @@ bool CBaseSplitterOutputPin::IsActive()
     //Com::SmartQIPtr<IStreamSwitcherInputPin> pSSIP;
     if(FAILED(pPin->ConnectedTo(&pPinTo)))// && (pSSIP = pPinTo) && !pSSIP->IsActive())
       return(false);
-    pPin = DShowUtil::GetFirstPin(DShowUtil::GetFilterFromPin(pPinTo), PINDIR_OUTPUT);
+    pPin = GetFirstPin(GetFilterFromPin(pPinTo), PINDIR_OUTPUT);
   }
   while(pPin);
 
@@ -623,9 +623,9 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
   {
     pTmp = NULL;
 
-    Com::SmartPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinTo);
+    Com::SmartPtr<IBaseFilter> pBF = GetFilterFromPin(pPinTo);
 
-    if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
+    if(GetCLSID(pBF) == GUIDFromString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
       DsPacketStruct* p = new DsPacketStruct;
       p->TrackNumber = (DWORD)-1;
@@ -637,7 +637,7 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
       break;
     }
 
-    pPinTo = DShowUtil::GetFirstPin(pBF, PINDIR_OUTPUT);
+    pPinTo = GetFirstPin(pBF, PINDIR_OUTPUT);
   }
 }
 
@@ -1247,7 +1247,7 @@ STDMETHODIMP CBaseSplitterFilter::Load(LPCOLESTR pszFileNameNew, const AM_MEDIA_
   Com::SmartPtr<IAsyncReader> pAsyncReader;
   list<CHdmvClipInfo::PlaylistItem> Items;
   CStdString strThatFile;
-  strThatFile = DShowUtil::WToA(pszFileNameNew);
+  strThatFile = WToA(pszFileNameNew);
   
   pAsyncReader = (IAsyncReader*)new CXBMCFileStream(strThatFile, hr);
 
@@ -1279,7 +1279,7 @@ LPCTSTR CBaseSplitterFilter::GetPartFilename(IAsyncReader* pAsyncReader)
 {
   
   Com::SmartQIPtr<IFileHandle>  pFH = pAsyncReader;
-  CStdString pFHW = DShowUtil::WToA(pFH->GetFileName());
+  CStdString pFHW = WToA(pFH->GetFileName());
   LPCTSTR ptFn = LPCTSTR(pFHW.c_str());
   return ptFn;
 }

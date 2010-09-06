@@ -28,7 +28,7 @@
 #include "filtercorefactory\filtercorefactory.h"
 #include "DSPlayer.h"
 #include "FGFilter.h"
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/SmartPtr.h"
 #include "WindowingFactory.h"
 #include "LangInfo.h"
 #include "GUISettings.h"
@@ -159,7 +159,7 @@ void CStreamsManager::SetAudioStream(int iStream)
           goto standardway; // Same filter
 
         // Where this audio decoder is connected ?
-        Com::SmartPtr<IPin> audioDecoderOutputPin = DShowUtil::GetFirstPin(CFGLoader::Filters.Audio.pBF, PINDIR_OUTPUT); // first output pin of audio decoder
+        Com::SmartPtr<IPin> audioDecoderOutputPin = GetFirstPin(CFGLoader::Filters.Audio.pBF, PINDIR_OUTPUT); // first output pin of audio decoder
         Com::SmartPtr<IPin> audioDecoderConnectedToPin = NULL;
         hr = audioDecoderOutputPin->ConnectedTo(&audioDecoderConnectedToPin);
 
@@ -196,11 +196,11 @@ void CStreamsManager::SetAudioStream(int iStream)
         }
 
         // Make connections
-        m_audioStreams[enableIndex]->pUnk = DShowUtil::GetFirstPin(CFGLoader::Filters.Audio.pBF);
+        m_audioStreams[enableIndex]->pUnk = GetFirstPin(CFGLoader::Filters.Audio.pBF);
         hr = m_pGraphBuilder->ConnectDirect(m_audioStreams[enableIndex]->pObj, m_audioStreams[enableIndex]->pUnk, NULL);
 
         Com::SmartPtr<IPin> pin = NULL;
-        pin = DShowUtil::GetFirstPin(CFGLoader::Filters.Audio.pBF, PINDIR_OUTPUT);
+        pin = GetFirstPin(CFGLoader::Filters.Audio.pBF, PINDIR_OUTPUT);
         hr = m_pGraphBuilder->ConnectDirect(pin, audioDecoderConnectedToPin, NULL);
 
         m_audioStreams[disableIndex]->flags = 0;
@@ -350,7 +350,7 @@ void CStreamsManager::LoadStreamsInternal()
   }
 
   int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
-  DShowUtil::CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
+  CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
   CLog::Log(LOGDEBUG, "%s The splitter has %d output pins", __FUNCTION__, nOut);
 
   BeginEnumPins(m_pSplitter, pEP, pPin)
@@ -358,7 +358,7 @@ void CStreamsManager::LoadStreamsInternal()
     if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
     {
 
-      pinNameW = DShowUtil::GetPinName(pPin);
+      pinNameW = GetPinName(pPin);
       g_charsetConverter.wToUTF8(pinNameW, pinName);
       CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
 
@@ -428,7 +428,7 @@ void CStreamsManager::LoadStreams()
     return;
 
   CStdString splitterName;
-  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pSplitter), splitterName);
+  g_charsetConverter.wToUTF8(GetFilterName(m_pSplitter), splitterName);
 
   CLog::Log(LOGDEBUG, "%s Looking for audio streams in %s splitter", __FUNCTION__, splitterName.c_str());
 
@@ -628,7 +628,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       infos->offset = i->dwOffset;
       infos->trackname = i->TrackName;
       if (! infos->lcid)
-        infos->lcid = DShowUtil::ISO6392ToLcid(i->IsoLang);
+        infos->lcid = ISO6392ToLcid(i->IsoLang);
     }
     infos->subtype = pMediaType->subtype;
   }
@@ -1093,9 +1093,9 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
 
   if (! s->isolang.empty())
   {
-    s->lcid = DShowUtil::ISO6392ToLcid(s->isolang);
+    s->lcid = ISO6392ToLcid(s->isolang);
     if (! s->lcid)
-      s->lcid = DShowUtil::ISO6391ToLcid(s->isolang);
+      s->lcid = ISO6391ToLcid(s->isolang);
 
     m_pStreamManager->FormatStreamName(*s.get());
   } 
@@ -1203,9 +1203,9 @@ IPin *CSubtitleManager::GetFirstSubtitlePin( void )
 CStdString CStreamsManager::ISOToLanguage( CStdString code )
 {
   if (code.length() == 2)
-    return DShowUtil::ISO6391ToLanguage(code);
+    return ISO6391ToLanguage(code);
   else
-    return DShowUtil::ISO6392ToLanguage(code);
+    return ISO6392ToLanguage(code);
 }
 
 void CStreamsManager::LoadDVDStreams()

@@ -40,17 +40,13 @@
 
 #include "FgManager.h"
 #include "qnetwork.h"
-
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/SmartPtr.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
-
 #include "GUIWindowManager.h"
-
 #include "GUIUserMessages.h"
-
-#include "DshowUtil/MediaTypeEx.h"
-
+#include "DSUtil/MediaTypeEx.h"
 #include "timeutils.h"
+
 enum 
 {
   WM_GRAPHNOTIFY = WM_APP+1,
@@ -113,7 +109,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     translated by about 30 seconds */
   /*BeginEnumFilters(pFilterGraph, pEF, pBF)
   {
-    if (DShowUtil::IsSplitter(pBF))
+    if (IsSplitter(pBF))
       hr = pBF->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
   }
   EndEnumFilters
@@ -259,7 +255,7 @@ void CDSGraph::UpdateTotalTime()
     ULONG ulFlags;
     if(SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetTotalTitleTime(&tcDur, &ulFlags)))
     {
-      rtDur = DShowUtil::HMSF2RT(tcDur);
+      rtDur = HMSF2RT(tcDur);
       m_State.time_total = rtDur;
     }
   }
@@ -375,7 +371,7 @@ HRESULT CDSGraph::HandleGraphEvent()
         : evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
         : 25.0;
 
-        m_State.time = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);;
+        m_State.time = HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);;
 
         break;
         }
@@ -589,7 +585,7 @@ HRESULT CDSGraph::UnloadGraph()
   BeginEnumFilters(pFilterGraph, pEM, pBF)
   {
     CStdString filterName;
-    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
+    g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
 
     try
     {
@@ -666,7 +662,7 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     if (!CGraphFilters::Get()->DVD.dvdControl)
       return;
 
-    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(position);
+    DVD_HMSF_TIMECODE tc = RT2HMSF(position);
     CGraphFilters::Get()->DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
   }
   // set flag to indicate we have finished a seeking request

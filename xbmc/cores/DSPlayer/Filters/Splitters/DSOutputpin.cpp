@@ -213,9 +213,9 @@ DWORD CDSOutputPin::ThreadProc()
 {
   switch (m_hints.type)
   {
-    case STREAM_VIDEO: DShowUtil::setThreadName(DWORD(-1),"DSVideoOutputPin"); break;
-    case STREAM_AUDIO: DShowUtil::setThreadName(DWORD(-1),"DSAudioOutputPin"); break;
-    case STREAM_SUBTITLE: DShowUtil::setThreadName(DWORD(-1),"DSSubtitleOutputPin"); break;
+    case STREAM_VIDEO: setThreadName(DWORD(-1),"DSVideoOutputPin"); break;
+    case STREAM_AUDIO: setThreadName(DWORD(-1),"DSAudioOutputPin"); break;
+    case STREAM_SUBTITLE: setThreadName(DWORD(-1),"DSSubtitleOutputPin"); break;
   }
 
   m_hrDeliver = S_OK;

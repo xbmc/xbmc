@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "TextFile.h"
+#include "..\dsutil\DSUtil.h"
 //#include "utils\DownloadQueueManager.h"
 
 CTextFile::CTextFile(enc e)
@@ -161,8 +162,6 @@ ULONGLONG CTextFile::Seek(LONGLONG lOff, UINT nFrom)
 void CTextFile::WriteString(LPCSTR lpsz/*CStdStringA str*/)
 {
   CStdStringA str(lpsz);
-  CStdString foo;
-  CStdStringW fooW;
 
   if(m_encoding == ASCII)
   {
@@ -468,22 +467,6 @@ void CWebTextFile::OnFileComplete( TICKET aTicket, CStdStringA& aFilePath, INT a
 }
 */
 ///////////////////////////////////////////////////////////////
-
-CStdStringW AToW(CStdStringA str)
-{
-  CStdStringW ret;
-  for(int i = 0, j = str.GetLength(); i < j; i++)
-    ret += (WCHAR)(BYTE)str[i];
-  return(ret);
-}
-
-CStdStringA WToA(CStdStringW str)
-{
-  CStdStringA ret;
-  for(int i = 0, j = str.GetLength(); i < j; i++)
-    ret += (CHAR)(WORD)str[i];
-  return(ret);
-}
 
 CStdString AToT(CStdStringA str)
 {

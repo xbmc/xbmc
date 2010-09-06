@@ -31,9 +31,9 @@
 #include "IBufferInfo.h"
 #include "IBitRateInfo.h"
 #include "BaseSplitterFileEx.h"
-#include "Subtitles/DSUtil/HdmvClipInfo.h"
-#include "Subtitles/DSUtil/DSMPropertyBag.h"
-#include "Subtitles/DSUtil/FontInstaller.h"
+#include "DSUtil/HdmvClipInfo.h"
+#include "DSUtil/DSMPropertyBag.h"
+#include "DSUtil/FontInstaller.h"
 #include "Filters/XBMCFileReader.h"
 
 

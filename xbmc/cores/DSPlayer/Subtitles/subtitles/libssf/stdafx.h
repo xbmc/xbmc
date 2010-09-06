@@ -25,7 +25,6 @@
 //
 
 #pragma once
-#include "..\..\DSUtil\SharedInclude.h"
 
 // Modify the following defines if you have to target a platform prior to the ones specified below.
 // Refer to MSDN for the latest info on corresponding values for different platforms.
@@ -64,11 +63,10 @@
 #include "StdString.h"
 #include "..\..\dsutil\DSUtil.h"
 #include "..\..\dsutil\vd.h"
+#include "..\..\DSUtil\Geometry.h"
 
 #include <xmmintrin.h>
 #include <emmintrin.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-#include "DShowUtil/DSGeometry.h"

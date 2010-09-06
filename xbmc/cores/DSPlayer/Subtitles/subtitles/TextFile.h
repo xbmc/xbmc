@@ -79,9 +79,7 @@ public:
   void Close();
 };
 
-extern CStdStringW AToW(CStdStringA str);
-extern CStdStringA WToA(CStdStringW str);
-extern CStdString AToT(CStdStringA str);
-extern CStdString WToT(CStdStringW str);
+extern CStdString  AToT(CStdStringA str);
+extern CStdString  WToT(CStdStringW str);
 extern CStdStringA TToA(CStdString str);
 extern CStdStringW TToW(CStdString str);

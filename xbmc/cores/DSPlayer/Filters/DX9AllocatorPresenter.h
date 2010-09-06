@@ -33,7 +33,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "D3DResource.h"
 #include "IPaintCallback.h"
-#include "DShowUtil/smartlist.h"
+#include "Utils/smartlist.h"
 #include "utils/Event.h"
 #include "DSGraph.h"
 #include "..\ExternalPixelShader.h"

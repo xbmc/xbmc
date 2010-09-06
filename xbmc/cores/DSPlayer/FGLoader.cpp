@@ -24,8 +24,8 @@
 #include "FGLoader.h"
 #include "DSPlayer.h"
 #include "streamsmanager.h"
-#include "dshowutil/dshowutil.h"
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 
 #include "charsetconverter.h"
 #include "Log.h"
@@ -42,7 +42,7 @@
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
 
-#include "WINDirectShowEnumerator.h"
+#include "Utils/AudioEnumerator.h"
 
 using namespace std;
 
@@ -209,7 +209,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
       return E_FAIL;
   }
 
-  bool isSplitterToo = DShowUtil::IsSplitter(pBF);
+  bool isSplitterToo = IsSplitter(pBF);
 
   pFS.Release();
   pBF.FullRelease();
@@ -269,8 +269,9 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
       CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default one", __FUNCTION__);
   }
 
-  CDirectShowEnumerator p_dsound;
-  std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
+  CAudioEnumerator p_dsound;
+  std::vector<DSFilterInfo> deviceList;
+  p_dsound.GetAudioRenderers(deviceList);
 
   //see if there a config first 
   for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
@@ -286,11 +287,11 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   }
   if (currentName.IsEmpty())
   {
-    currentGuid = DShowUtil::CStringFromGUID(CLSID_DSoundRender);
+    currentGuid = StringFromGUID(CLSID_DSoundRender);
     currentName.Format("Default DirectSound Device");
   }
 
-  pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
+  pFGF = new CFGFilterRegistry(GUIDFromString(currentGuid));
   hr = pFGF->Create(&CGraphFilters::Get()->AudioRenderer.pBF);
   delete pFGF;
 
@@ -301,9 +302,9 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   }
 
   CGraphFilters::Get()->AudioRenderer.osdname = currentName;
-  CGraphFilters::Get()->AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
+  CGraphFilters::Get()->AudioRenderer.guid = GUIDFromString(currentGuid);
 
-  hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
+  hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->AudioRenderer.pBF, AnsiToUTF16(currentName));
 
   if (SUCCEEDED(hr))
     CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str());
@@ -394,9 +395,17 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   InsertAudioRenderer(filter); // First added, last connected
   InsertVideoRenderer();
 
-  CHECK_HR_RETURN(CFilterCoreFactory::GetSourceFilter(pFileItem, filter), "Failed to get the source filter")
+  if (FAILED(CFilterCoreFactory::GetSourceFilter(pFileItem, filter)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" Failed to get the source filter");
+    return E_FAIL;
+  }
   
-  CHECK_HR_RETURN(InsertSourceFilter(pFileItem, filter), "Failed to insert source filter")
+  if (FAILED(InsertSourceFilter(pFileItem, filter)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" Failed to insert the source filter");
+    return E_FAIL;
+  }
 
   if (! CGraphFilters::Get()->Splitter.pBF)
   {

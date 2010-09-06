@@ -25,7 +25,6 @@
 //
 
 #pragma once
-#include "..\DSUtil\SharedInclude.h"
 
 #define WIN32_LEAN_AND_MEAN    // Exclude rarely-used stuff from Windows headers
 //#define _ATL_CStdString_EXPLICIT_CONSTRUCTORS  // some CStdString constructors will be explicit
@@ -46,6 +45,5 @@
 #include <streams.h>
 #include "StdString.h"
 #include "..\DSUtil\DSUtil.h"
-
-#include "DSGeometry.h"
+#include "..\DSUtil\Geometry.h"
 

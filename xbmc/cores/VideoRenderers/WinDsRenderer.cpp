@@ -31,7 +31,7 @@
 #include "utils/log.h"
 #include "FileSystem/File.h"
 #include "MathUtils.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include "StreamsManager.h"
 #include "Filters\DX9AllocatorPresenter.h"
 #include "IPaintCallback.h"

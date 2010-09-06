@@ -26,7 +26,7 @@
 #include "XBMCFileReader.h"
 #include "utils/log.h"
 #include "SingleLock.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 
 
 CXBMCFileStream::CXBMCFileStream(CStdString filepath, HRESULT& hr)

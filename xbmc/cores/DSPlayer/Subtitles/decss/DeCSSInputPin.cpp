@@ -30,7 +30,8 @@
 #include <ks.h>
 #include <ksmedia.h>
 #include "DeCSSInputPin.h"
-#include "dshowutil/dshowutil.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include "CSSauth.h"
 #include "CSSscramble.h"
 

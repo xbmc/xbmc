@@ -45,7 +45,5 @@
 #include <streams.h>
 #include "StdString.h"
 #include "..\DSUtil\DSUtil.h"
-
-#include "smartptr.h"
-
-#include "DSGeometry.h"
+#include "..\DSUtil\smartptr.h"
+#include "..\DSUtil\Geometry.h"

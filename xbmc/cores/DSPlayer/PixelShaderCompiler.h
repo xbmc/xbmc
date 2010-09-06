@@ -29,7 +29,8 @@
 #endif
 
 #include <d3dx9shader.h>
-#include "DShowUtil/SmartPtr.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include "CriticalSection.h"
 #include "SingleLock.h"
 

@@ -32,7 +32,7 @@
 #include <mfapi.h>  // API Media Foundation
 #include <evr9.h>
 #include <queue>
-#include "dshowutil/smartlist.h"
+#include "Utils/SmartList.h"
 
   // dxva.dll
   typedef HRESULT (__stdcall *PTR_DXVA2CreateDirect3DDeviceManager9)(UINT* pResetToken, IDirect3DDeviceManager9** ppDeviceManager);

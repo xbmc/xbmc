@@ -24,7 +24,8 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "DShowUtil\smartptr.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/SmartPtr.h"
 #include "streams.h"
 
 /// Informations about a filter

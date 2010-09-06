@@ -28,6 +28,7 @@
 #include "PixelShaderCompiler.h"
 #include "WindowingFactory.h"
 #include "Log.h"
+#include "DSUtil/SmartPtr.h"
 
 CPixelShaderCompiler::CPixelShaderCompiler(bool fStaySilent)
   : m_pD3DXCompileShader(NULL)

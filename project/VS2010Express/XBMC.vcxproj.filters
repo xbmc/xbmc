@@ -91,9 +91,6 @@
     <Filter Include="cores\dsplayer\FilterCoreFactory">
       <UniqueIdentifier>{d9143a34-a011-4191-aee6-6ac98d2921b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dsplayer\DShowUtil">
-      <UniqueIdentifier>{0bc479dd-e4f3-46b2-b30c-d53bdbbaf116}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{895cfb92-e8d3-4dac-a24a-7593cd4bc8e9}</UniqueIdentifier>
     </Filter>
@@ -222,6 +219,9 @@
     </Filter>
     <Filter Include="cores\dsplayer\Filters\Splitters\XBMC">
       <UniqueIdentifier>{6fc8b9b7-76d6-460c-8da3-bc93d3164535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Utils">
+      <UniqueIdentifier>{ae3ea2fa-9a58-4792-ad16-181ab61ed237}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -729,38 +729,11 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp">
       <Filter>cores\dsplayer\Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.cpp">
-      <Filter>cores\dsplayer\FilterCoreFactory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.cpp">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\IPinHook.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINDirectShowEnumerator.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\Application.cpp">
       <Filter>Source Files</Filter>
@@ -2322,6 +2295,18 @@
     <ClCompile Include="..\..\xbmc\URIUtils.cpp">
       <Filter>Source Files\Database</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2993,9 +2978,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h">
       <Filter>cores\dsplayer\Interfaces\ffdshow</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.h">
-      <Filter>cores\dsplayer\FilterCoreFactory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.h">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
     </ClInclude>
@@ -3004,39 +2986,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\IPinHook.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINDirectShowEnumerator.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Application.h">
       <Filter>Source Files</Filter>
@@ -4858,6 +4807,21 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\URIUtils.h">
       <Filter>Source Files\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h">
+      <Filter>cores\dsplayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h">
+      <Filter>cores\dsplayer\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,8 +25,10 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "DShowUtil/DShowUtil.h"
-#include "DShowUtil/DSGeometry.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/Geometry.h"
+#include "DSUtil/SmartPtr.h"
+
 #include <algorithm>
 
 #define DEFAULT_CACHE_LENGTH 64*1024	// Beliyaal: Changed the default cache length to allow Bluray playback over network

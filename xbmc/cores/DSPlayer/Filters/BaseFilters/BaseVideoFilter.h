@@ -26,7 +26,8 @@
 #endif
 
 #include "streams.h"
-#include "DShowUtil/DSGeometry.h"
+#include "DSUtil/Geometry.h"
+#include "DSUtil/SmartPtr.h"
 
 typedef struct
 {

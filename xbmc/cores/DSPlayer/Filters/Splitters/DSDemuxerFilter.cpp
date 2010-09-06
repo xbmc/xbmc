@@ -148,8 +148,7 @@ STDMETHODIMP CDSDemuxerFilter::CreateOutputs()
 {
   CAutoLock lock(this);
 
-  m_pFileNameA = DShowUtil::WToA(CStdStringW(m_fileName.c_str()));
-
+  m_pFileNameA = WToA(CStdStringW(m_fileName.c_str()));
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, m_pFileNameA, "");
   if (!m_pInputStream)
@@ -734,14 +733,14 @@ STDMETHODIMP CDSDemuxerFilter::Info(long lIndex, AM_MEDIA_TYPE **ppmt, DWORD *pd
           std::string codecInfo;
           pStream->GetStreamInfo(codecInfo);
           CStdStringW codecInfoW(codecInfo.c_str());
-          CStdString language = DShowUtil::ISO6392ToLanguage(pStream->language);
+          CStdString language = ISO6392ToLanguage(pStream->language);
           // TODO: make this nicer
           if (!language.IsEmpty())
             str.Format(L"%s - %s (%04x)", codecInfoW, language, s.pid); 
           else
             str.Format(L"%s (%04x)", codecInfoW, s.pid);
 
-          if(plcid) *plcid = DShowUtil::ISO6392ToLcid(pStream->language);
+          if(plcid) *plcid = ISO6392ToLcid(pStream->language);
 
         *ppszName = (WCHAR*)CoTaskMemAlloc((str.GetLength()+1)*sizeof(WCHAR));
         if(*ppszName == NULL) return E_OUTOFMEMORY;

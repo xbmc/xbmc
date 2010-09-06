@@ -23,8 +23,8 @@
 
 #include "BaseSplitterFileEx.h"
 #include <mmreg.h>
-#include "DShowUtil/DShowUtil.h"
-#include "../../Subtitles/DSUtil/GolombBuffer.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/GolombBuffer.h"
 #include <initguid.h>
 #include <moreuuids.h>
 
@@ -571,7 +571,7 @@ bool CBaseSplitterFileEx::Read(aachdr& h, int len, CMediaType* pmt)
 	wfe->nSamplesPerSec = freq[h.freq];
 	wfe->nBlockAlign = h.aac_frame_length;
 	wfe->nAvgBytesPerSec = h.nBytesPerSec;
-  wfe->cbSize = DShowUtil::MakeAACInitData((BYTE*)(wfe+1), h.profile, wfe->nSamplesPerSec, wfe->nChannels);
+  wfe->cbSize = MakeAACInitData((BYTE*)(wfe+1), h.profile, wfe->nSamplesPerSec, wfe->nChannels);
 
 	pmt->majortype = MEDIATYPE_Audio;
 	pmt->subtype = MEDIASUBTYPE_AAC;
@@ -1643,7 +1643,7 @@ bool CBaseSplitterFileEx::Read(dvbsub& h, int len, CMediaType* pmt)
 		static const SUBTITLEINFO SubFormat = { 0, "", L"" };
 
 		pmt->majortype		= MEDIATYPE_Subtitle;
-    GUID dvbguid = DShowUtil::GUIDFromCString("{34FFCBC3-D5B3-4171-9002-D4C60301697F}");
+    GUID dvbguid = GUIDFromString("{34FFCBC3-D5B3-4171-9002-D4C60301697F}");
 		pmt->subtype		= dvbguid;//MEDIASUBTYPE_DVB_SUBTITLES;
 		pmt->formattype		= FORMAT_None;
 		pmt->SetFormat ((BYTE*)&SubFormat, sizeof(SUBTITLEINFO));

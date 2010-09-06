@@ -27,7 +27,7 @@
 #include "DSGuidHelper.h"
 #include "MMReg.h"
 #include "moreuuids.h"
-#include "DShowUtil/DShowUtil.h"
+#include "DSUtil/DSUtil.h"
 
 extern "C"
 {
@@ -233,8 +233,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, const char* containerForma
       wfe->nBlockAlign = avstream->pts_wrap_bits;//not sure but seems to work for all the sample i have
 
       wfe->nAvgBytesPerSec = 1546;//To fix
-      wfe->cbSize = DShowUtil::MakeAACInitData((BYTE*)(wfe+1), 1, wfe->nSamplesPerSec, wfe->nChannels);//to fix get the profile correctly
-      //DShowUtil::MakeAACInitData((BYTE*)(wfe+1), h.profile, wfe->nSamplesPerSec, wfe->nChannels);
+      wfe->cbSize = MakeAACInitData((BYTE*)(wfe+1), 1, wfe->nSamplesPerSec, wfe->nChannels);//to fix get the profile correctly
+      //MakeAACInitData((BYTE*)(wfe+1), h.profile, wfe->nSamplesPerSec, wfe->nChannels);
       mtype.SetFormatType(&FORMAT_WaveFormatEx);
       mtype.SetFormat((BYTE*)wfe, sizeof(WAVEFORMATEX)+wfe->cbSize);
       return;

@@ -22,7 +22,7 @@
 #include "StdAfx.h"
 #include "usfsubtitles.h"
 #include <msxml.h>
-#include "DShowUtil\smartptr.h"
+#include "..\DSUtil\smartptr.h"
 
 #define DeclareNameAndValue(pNode, name, val) \
     _bstr_t foo; \

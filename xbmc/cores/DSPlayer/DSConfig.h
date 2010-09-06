@@ -27,7 +27,7 @@
 
 #include "DSPropertyPage.h"
 #include "DSGraph.h"
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/SmartPtr.h"
 
 class CDSGraph;
 class CDSPropertyPage;

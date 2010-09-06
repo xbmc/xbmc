@@ -23,9 +23,9 @@
 
 #include <mmintrin.h>
 #include "BaseVideoFilter.h"
-#include "DShowUtil/DShowUtil.h"
-#include "DShowUtil/DSGeometry.h"
-#include "DShowUtil/MediaTypes.h"
+#include "DSUtil/DSUtil.h"
+#include "DSUtil/Geometry.h"
+#include "DSUtil/MediaTypes.h"
 
 #include <initguid.h>
 #include <moreuuids.h>
@@ -135,7 +135,7 @@ HRESULT CBaseVideoFilter::GetDeliveryBuffer(int w, int h, IMediaSample** ppOut)
 
 	// FIXME: hell knows why but without this the overlay mixer starts very skippy
 	// (don't enable this for other renderers, the old for example will go crazy if you do)
-  if(DShowUtil::GetCLSID(m_pOutput->GetConnected()) == CLSID_OverlayMixer)
+  if(GetCLSID(m_pOutput->GetConnected()) == CLSID_OverlayMixer)
 		(*ppOut)->SetDiscontinuity(TRUE);
 
 	return S_OK;
@@ -149,7 +149,7 @@ HRESULT CBaseVideoFilter::ReconnectOutput(int w, int h, bool bSendSample, int re
 	if(f_need_set_aspect)
 	{
 		int wout = 0, hout = 0, arxout = 0, aryout = 0;
-		DShowUtil::ExtractDim(&mt, wout, hout, arxout, aryout);
+		ExtractDim(&mt, wout, hout, arxout, aryout);
 		if(arxout != m_arx || aryout != m_ary)
 		{
 			CStdString debug_s;
@@ -174,7 +174,7 @@ HRESULT CBaseVideoFilter::ReconnectOutput(int w, int h, bool bSendSample, int re
 
 	if(m_update_aspect || fForceReconnection || m_w != m_wout || m_h != m_hout || m_arx != m_arxout || m_ary != m_aryout)
 	{
-		if(DShowUtil::GetCLSID(m_pOutput->GetConnected()) == CLSID_VideoRenderer)
+		if(GetCLSID(m_pOutput->GetConnected()) == CLSID_VideoRenderer)
 		{
 			NotifyEvent(EC_ERRORABORT, 0, 0);
 			return E_FAIL;
@@ -277,7 +277,7 @@ HRESULT CBaseVideoFilter::CopyBuffer(BYTE* pOut, BYTE* pIn, int w, int h, int pi
 HRESULT CBaseVideoFilter::CopyBuffer(BYTE* pOut, BYTE** ppIn, int w, int h, int pitchIn, const GUID& subtype, bool fInterlaced)
 {
 	BITMAPINFOHEADER bihOut;
-	DShowUtil::ExtractBIH(&m_pOutput->CurrentMediaType(), &bihOut);
+	ExtractBIH(&m_pOutput->CurrentMediaType(), &bihOut);
 
 	int pitchOut = 0;
 
@@ -381,7 +381,7 @@ HRESULT CBaseVideoFilter::CopyBuffer(BYTE* pOut, BYTE** ppIn, int w, int h, int 
 HRESULT CBaseVideoFilter::CheckInputType(const CMediaType* mtIn)
 {
 	BITMAPINFOHEADER bih;
-	DShowUtil::ExtractBIH(mtIn, &bih);
+	ExtractBIH(mtIn, &bih);
 
 	return mtIn->majortype == MEDIATYPE_Video 
 		&& (mtIn->subtype == MEDIASUBTYPE_YV12 
@@ -448,7 +448,7 @@ HRESULT CBaseVideoFilter::CheckTransform(const CMediaType* mtIn, const CMediaTyp
 HRESULT CBaseVideoFilter::CheckOutputType(const CMediaType& mtOut)
 {
 	int wout = 0, hout = 0, arxout = 0, aryout = 0;
-	return DShowUtil::ExtractDim(&mtOut, wout, hout, arxout, aryout)
+	return ExtractDim(&mtOut, wout, hout, arxout, aryout)
 		&& m_h == abs((int)hout)
 		&& mtOut.subtype != MEDIASUBTYPE_ARGB32
 		? S_OK
@@ -460,7 +460,7 @@ HRESULT CBaseVideoFilter::DecideBufferSize(IMemAllocator* pAllocator, ALLOCATOR_
 	if(m_pInput->IsConnected() == FALSE) return E_UNEXPECTED;
 
 	BITMAPINFOHEADER bih;
-	DShowUtil::ExtractBIH(&m_pOutput->CurrentMediaType(), &bih);
+	ExtractBIH(&m_pOutput->CurrentMediaType(), &bih);
 
 	long cBuffers = m_pOutput->CurrentMediaType().formattype == FORMAT_VideoInfo ? 1 : m_cBuffers;
 
@@ -519,8 +519,8 @@ HRESULT CBaseVideoFilter::GetMediaType(int iPosition, CMediaType* pmt)
 	bool fFoundDVDNavigator = false;
 	Com::SmartPtr<IBaseFilter> pBF = this;
 	Com::SmartPtr<IPin> pPin = m_pInput;
-	for(; !fFoundDVDNavigator && (pBF = DShowUtil::GetUpStreamFilter(pBF, pPin)); pPin = DShowUtil::GetFirstPin(pBF))
-        fFoundDVDNavigator = DShowUtil::GetCLSID(pBF) == CLSID_DVDNavigator;
+	for(; !fFoundDVDNavigator && (pBF = GetUpStreamFilter(pBF, pPin)); pPin = GetFirstPin(pBF))
+        fFoundDVDNavigator = GetCLSID(pBF) == CLSID_DVDNavigator;
 
 	if(fFoundDVDNavigator || m_pInput->CurrentMediaType().formattype == FORMAT_VideoInfo2)
 		iPosition = iPosition*2;
@@ -606,7 +606,7 @@ HRESULT CBaseVideoFilter::SetMediaType(PIN_DIRECTION dir, const CMediaType* pmt)
 	if(dir == PINDIR_INPUT)
 	{
 		m_w = m_h = m_arx = m_ary = 0;
-		DShowUtil::ExtractDim(pmt, m_w, m_h, m_arx, m_ary);
+		ExtractDim(pmt, m_w, m_h, m_arx, m_ary);
 		m_win = m_w;
 		m_hin = m_h;
 		m_arxin = m_arx;
@@ -622,7 +622,7 @@ HRESULT CBaseVideoFilter::SetMediaType(PIN_DIRECTION dir, const CMediaType* pmt)
 	else if(dir == PINDIR_OUTPUT)
 	{
 		int wout = 0, hout = 0, arxout = 0, aryout = 0;
-		DShowUtil::ExtractDim(pmt, wout, hout, arxout, aryout);
+		ExtractDim(pmt, wout, hout, arxout, aryout);
 		if(m_w == wout && m_h == hout && m_arx == arxout && m_ary == aryout)
 		{
 			m_wout = wout;
@@ -717,7 +717,7 @@ STDMETHODIMP CBaseVideoInputPin::ReceiveConnection(IPin* pConnector, const AM_ME
 			return E_FAIL;
 
 		BITMAPINFOHEADER bih;
-		if(DShowUtil::ExtractBIH(pmt, &bih) && bih.biSizeImage)
+		if(ExtractBIH(pmt, &bih) && bih.biSizeImage)
 			props.cbBuffer = bih.biSizeImage;
 
 		if(FAILED(pMemAllocator->SetProperties(&props, &actual))

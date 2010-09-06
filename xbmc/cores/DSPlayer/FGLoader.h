@@ -27,7 +27,7 @@
 #include "GraphFilters.h"
 #include "FgFilter.h"
 #include "FileItem.h"
-#include "DShowUtil/smartptr.h"
+#include "DSUtil/SmartPtr.h"
 
 enum ESettingsType
 {
