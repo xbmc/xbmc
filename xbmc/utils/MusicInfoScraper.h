@@ -41,7 +41,7 @@ public:
   void FindArtistInfo(const CStdString& strArtist);
   void LoadArtistInfo(int iArtist);
   bool Completed();
-  bool Successfull();
+  bool Succeeded();
   void Cancel();
   bool IsCanceled();
   int GetAlbumCount() const;
@@ -81,7 +81,7 @@ protected:
   CStdString m_strArtist;
   int m_iAlbum;
   int m_iArtist;
-  bool m_bSuccessfull;
+  bool m_bSucceeded;
   bool m_bCanceled;
   XFILE::CFileCurl m_http;
   ADDON::ScraperPtr m_scraper;

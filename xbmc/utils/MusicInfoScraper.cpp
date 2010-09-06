@@ -35,7 +35,7 @@ using namespace std;
 
 CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper)
 {
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   m_bCanceled=false;
   m_iAlbum=-1;
   m_iArtist=-1;
@@ -71,7 +71,7 @@ void CMusicInfoScraper::FindAlbumInfo(const CStdString& strAlbum, const CStdStri
 {
   m_strAlbum=strAlbum;
   m_strArtist=strArtist;
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   StopThread();
   Create();
 }
@@ -79,7 +79,7 @@ void CMusicInfoScraper::FindAlbumInfo(const CStdString& strAlbum, const CStdStri
 void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
 {
   m_strArtist=strArtist;
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   StopThread();
   Create();
 }
@@ -171,7 +171,7 @@ void CMusicInfoScraper::FindAlbumInfo()
   }
 
   if (m_vecAlbums.size()>0)
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 
   return;
 }
@@ -248,7 +248,7 @@ void CMusicInfoScraper::FindArtistInfo()
   }
 
   if (m_vecArtists.size()>0)
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 
   return;
 }
@@ -277,7 +277,7 @@ void CMusicInfoScraper::LoadAlbumInfo()
   CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
   album.GetAlbum().strArtist.Empty();
   if (album.Load(m_http,m_scraper))
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 }
 
 void CMusicInfoScraper::LoadArtistInfo()
@@ -288,7 +288,7 @@ void CMusicInfoScraper::LoadArtistInfo()
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
   artist.GetArtist().strArtist.Empty();
   if (artist.Load(m_http,m_scraper))
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 }
 
 bool CMusicInfoScraper::Completed()
@@ -296,9 +296,9 @@ bool CMusicInfoScraper::Completed()
   return WaitForThreadExit(10);
 }
 
-bool CMusicInfoScraper::Successfull()
+bool CMusicInfoScraper::Succeeded()
 {
-  return !m_bCanceled && m_bSuccessfull;
+  return !m_bCanceled && m_bSucceeded;
 }
 
 void CMusicInfoScraper::Cancel()
@@ -315,7 +315,7 @@ bool CMusicInfoScraper::IsCanceled()
 
 void CMusicInfoScraper::OnStartup()
 {
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   m_bCanceled=false;
 }
 

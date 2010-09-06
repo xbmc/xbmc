@@ -2279,7 +2279,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
       //wait a max of 20s
       while (!scraper.Completed() && cnt++<200)
         Sleep(100);
-      if (scraper.Successfull())
+      if (scraper.Succeeded())
       {
         // did we find at least 1 album?
         int iAlbumCount=scraper.GetAlbumCount();
