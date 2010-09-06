@@ -538,9 +538,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    stringstream stream;
-    stream << *epguide;
-    m_strEpisodeGuide = stream.str();
+    // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
+    if (epguide->FirstChild() && strnicmp("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
+      m_strEpisodeGuide = epguide->FirstChild()->Value();
+    else
+    {
+      stringstream stream;
+      stream << *epguide;
+      m_strEpisodeGuide = stream.str();
+    }
   }
 
   // fanart
