@@ -1157,6 +1157,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     future = render;
 
     DVDVideoPicture DVDPic;
+    memset(&DVDPic, 0, sizeof(DVDVideoPicture));
     ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&DVDPic);
     m_DVDVideoPics.push(DVDPic);
 
