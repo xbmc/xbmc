@@ -223,7 +223,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
-    if (function != "NfoScrape" && function != "NfoUrl")
+    if (function != "NfoUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
     return result;
   }
