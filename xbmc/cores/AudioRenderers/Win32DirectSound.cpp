@@ -440,8 +440,15 @@ unsigned int CWin32DirectSound::GetSpace()
 {
   CSingleLock lock (m_critSection);
   UpdateCacheStatus();
+  unsigned int space = ((m_dwBufferLen - m_CacheLen) / m_uiChannels) * m_uiDataChannels;
 
-  return ((m_dwBufferLen - m_CacheLen) / m_uiChannels) * m_uiDataChannels;
+  // We can never allow the internal buffers to fill up complete
+  // as we get confused between if the buffer is full or empty
+  // so never allow the last chunk to be added
+  if(space > m_dwDataChunkSize)
+    return space - m_dwDataChunkSize;
+  else
+    return 0;
 }
 
 //***********************************************************************************************
@@ -469,7 +476,7 @@ float CWin32DirectSound::GetCacheTime()
 float CWin32DirectSound::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
-  return (float)m_dwBufferLen / (float)m_AvgBytesPerSec;
+  return (float)(m_dwBufferLen - m_dwDataChunkSize) / (float)m_AvgBytesPerSec;
 }
 
 //***********************************************************************************************
