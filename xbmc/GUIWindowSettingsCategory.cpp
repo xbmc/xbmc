@@ -138,23 +138,18 @@ int CALLBACK EnumFontCallback(ENUMLOGFONTEXW *lpelfe, NEWTEXTMETRICEXW *lpntme, 
   if (lpelfe->elfFullName[0] == L'@')
     return 1;
 
-  CStdStringW label;
-  memcpy(label.GetBuffer(128), lpelfe->elfFullName, 64 * sizeof(wchar_t));
-
-  label.resize(wcslen((wchar_t *) lpelfe->elfFullName));
-
   // Excluse Bold, Italic...
   if (lpelfe->elfStyle[0] != 0 && lpelfe->elfStyle[0] != L'R' && lpelfe->elfStyle[0] != L'N')
     return 1;
 
-  CStdString labelA;
-  g_charsetConverter.wToUTF8(label, labelA);
+  CStdString label;
+  g_charsetConverter.wToUTF8(lpelfe->elfFullName, label);
   std::vector<CStdString> *fonts = ((std::vector<CStdString> *) lParam);
 
-  if (std::find(fonts->begin(), fonts->end(), labelA) != fonts->end())
+  if (std::find(fonts->begin(), fonts->end(), label) != fonts->end())
     return 1;
 
-  fonts->push_back(labelA);
+  fonts->push_back(label);
   return 1;
 }
 #endif
