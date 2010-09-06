@@ -67,7 +67,7 @@ CMusicArtistInfo& CMusicInfoScraper::GetArtist(int iArtist)
   return m_vecArtists[iArtist];
 }
 
-void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
+void CMusicInfoScraper::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
 {
   m_strAlbum=strAlbum;
   m_strArtist=strArtist;
@@ -76,7 +76,7 @@ void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdStri
   Create();
 }
 
-void CMusicInfoScraper::FindArtistinfo(const CStdString& strArtist)
+void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
 {
   m_strArtist=strArtist;
   m_bSuccessfull=false;
@@ -85,7 +85,7 @@ void CMusicInfoScraper::FindArtistinfo(const CStdString& strArtist)
 }
 
 
-void CMusicInfoScraper::FindAlbuminfo()
+void CMusicInfoScraper::FindAlbumInfo()
 {
   CStdString strAlbum=m_strAlbum;
   CStdString strHTML;
@@ -176,7 +176,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   return;
 }
 
-void CMusicInfoScraper::FindArtistinfo()
+void CMusicInfoScraper::FindArtistInfo()
 {
   CStdString strArtist=m_strArtist;
   CStdString strHTML;
@@ -189,6 +189,8 @@ void CMusicInfoScraper::FindArtistinfo()
   extras.push_back(m_strArtist);
   g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[0]);
   CUtil::URLEncode(extras[0]);
+  
+  CScraperParser::ClearCache();
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
     __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
@@ -251,7 +253,7 @@ void CMusicInfoScraper::FindArtistinfo()
   return;
 }
 
-void CMusicInfoScraper::LoadAlbuminfo(int iAlbum)
+void CMusicInfoScraper::LoadAlbumInfo(int iAlbum)
 {
   m_iAlbum=iAlbum;
   m_iArtist=-1;
@@ -259,7 +261,7 @@ void CMusicInfoScraper::LoadAlbuminfo(int iAlbum)
   Create();
 }
 
-void CMusicInfoScraper::LoadArtistinfo(int iArtist)
+void CMusicInfoScraper::LoadArtistInfo(int iArtist)
 {
   m_iAlbum=-1;
   m_iArtist=iArtist;
@@ -267,7 +269,7 @@ void CMusicInfoScraper::LoadArtistinfo(int iArtist)
   Create();
 }
 
-void CMusicInfoScraper::LoadAlbuminfo()
+void CMusicInfoScraper::LoadAlbumInfo()
 {
   if (m_iAlbum<0 || m_iAlbum>=(int)m_vecAlbums.size())
     return;
@@ -278,7 +280,7 @@ void CMusicInfoScraper::LoadAlbuminfo()
     m_bSuccessfull=true;
 }
 
-void CMusicInfoScraper::LoadArtistinfo()
+void CMusicInfoScraper::LoadArtistInfo()
 {
   if (m_iArtist<0 || m_iArtist>=(int)m_vecArtists.size())
     return;
@@ -323,23 +325,23 @@ void CMusicInfoScraper::Process()
   {
     if (m_strAlbum.size())
     {
-      FindAlbuminfo();
+      FindAlbumInfo();
       m_strAlbum.Empty();
       m_strArtist.Empty();
     }
     else if (m_strArtist.size())
     {
-      FindArtistinfo();
+      FindArtistInfo();
       m_strArtist.Empty();
     }
     if (m_iAlbum>-1)
     {
-      LoadAlbuminfo();
+      LoadAlbumInfo();
       m_iAlbum=-1;
     }
     if (m_iArtist>-1)
     {
-      LoadArtistinfo();
+      LoadArtistInfo();
       m_iArtist=-1;
     }
   }

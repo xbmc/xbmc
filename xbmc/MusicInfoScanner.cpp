@@ -863,7 +863,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   }
 
   if (!scraper.GetAlbumCount())
-    scraper.FindAlbuminfo(strAlbum, strArtist);
+    scraper.FindAlbumInfo(strAlbum, strArtist);
 
   while (!scraper.Completed())
   {
@@ -978,7 +978,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     }
   }
 
-  scraper.LoadAlbuminfo(iSelectedAlbum);
+  scraper.LoadAlbumInfo(iSelectedAlbum);
   while (!scraper.Completed())
   {
     if (m_bStop)
@@ -1086,7 +1086,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   if (!scraper.GetArtistCount())
-    scraper.FindArtistinfo(strArtist);
+    scraper.FindArtistInfo(strArtist);
 
   while (!scraper.Completed())
   {
@@ -1162,7 +1162,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
 
   scraper.GetArtist(iSelectedArtist).m_strSearch = strArtist;
   CUtil::URLEncode(scraper.GetArtist(iSelectedArtist).m_strSearch);
-  scraper.LoadArtistinfo(iSelectedArtist);
+  scraper.LoadArtistInfo(iSelectedArtist);
 
   while (!scraper.Completed())
   {

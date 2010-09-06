@@ -2270,12 +2270,12 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
       if (numParas>1)
       {
         artist = paras[1];
-        scraper.FindAlbuminfo(album, artist);
+        scraper.FindAlbumInfo(album, artist);
         if (numParas>2)
           rel = (paras[2]=="1");
       }
       else
-        scraper.FindAlbuminfo(album);
+        scraper.FindAlbumInfo(album);
       //wait a max of 20s
       while (!scraper.Completed() && cnt++<200)
         Sleep(100);
