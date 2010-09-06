@@ -129,24 +129,32 @@ using namespace ADDON;
 #define CONTROL_START_CONTROL           -80
 
 #ifdef HAS_DS_PLAYER
-int CALLBACK EnumFontCallback(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam)
+int CALLBACK EnumFontCallback(ENUMLOGFONTEXW *lpelfe, NEWTEXTMETRICEXW *lpntme, DWORD FontType, LPARAM lParam)
 {
   if (! lParam)
     return 0;
 
-  CStdString label;
-  memcpy(label.GetBuffer(64), lpelfe->elfFullName, 64);
-
-  label.resize(strlen((char *) lpelfe->elfFullName));
-
-  // Excluse Bold, Italic...
-  if (lpelfe->elfStyle[0] != 0 && lpelfe->elfStyle[0] != 'R' && lpelfe->elfStyle[0] != 'N')
+  // Exclude font starting with an @
+  if (lpelfe->elfFullName[0] == L'@')
     return 1;
 
+  CStdStringW label;
+  memcpy(label.GetBuffer(128), lpelfe->elfFullName, 64 * sizeof(wchar_t));
+
+  label.resize(wcslen((wchar_t *) lpelfe->elfFullName));
+
+  // Excluse Bold, Italic...
+  if (lpelfe->elfStyle[0] != 0 && lpelfe->elfStyle[0] != L'R' && lpelfe->elfStyle[0] != L'N')
+    return 1;
+
+  CStdString labelA;
+  g_charsetConverter.wToUTF8(label, labelA);
   std::vector<CStdString> *fonts = ((std::vector<CStdString> *) lParam);
 
-  fonts->push_back(label);
+  if (std::find(fonts->begin(), fonts->end(), labelA) != fonts->end())
+    return 1;
 
+  fonts->push_back(labelA);
   return 1;
 }
 #endif
@@ -1120,13 +1128,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CGUIDialogSelect *dialog = (CGUIDialogSelect *) g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
     HDC dc = GetDC(0);
-    LOGFONT lf; memset(&lf, 0, sizeof(LOGFONT));
-    lf.lfCharSet = g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
+    LOGFONTW lf; memset(&lf, 0, sizeof(LOGFONTW));
+    lf.lfCharSet = DEFAULT_CHARSET; // g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
     lf.lfFaceName[0] = '\0';
 
     std::vector<CStdString> fonts;
-
-    EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC) EnumFontCallback, (LPARAM) &fonts, 0);
+    EnumFontFamiliesExW(dc, &lf, (FONTENUMPROCW) EnumFontCallback, (LPARAM) &fonts, 0);
 
     ReleaseDC(0, dc);
 
