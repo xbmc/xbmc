@@ -190,8 +190,6 @@ void CMusicInfoScraper::FindArtistInfo()
   g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[0]);
   CUtil::URLEncode(extras[0]);
   
-  CScraperParser::ClearCache();
-
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
     __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
     ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
