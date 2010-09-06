@@ -457,6 +457,7 @@ void COpenMax::Reset(void)
   #if defined(OMX_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s\n", CLASSNAME, __func__);
   #endif
+/*
   // only reset OpenMax decoder if it's running
   if (m_omx_decoder_state == OMX_StateExecuting)
   {
@@ -470,6 +471,8 @@ void COpenMax::Reset(void)
 
     omx_err = StartDecoder();
   }
+*/
+  ::Sleep(100);
 }
 
 bool COpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
