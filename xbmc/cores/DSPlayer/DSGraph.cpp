@@ -806,12 +806,17 @@ CStdString CDSGraph::GetVideoInfo()
 
 bool CDSGraph::CanSeek()
 {
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return false;
+
   //Dvd are not using the interface IMediaSeeking for seeking
   //if the filter dont support seeking you would get VFW_E_DVD_OPERATION_INHIBITED on the PlayAtTime
   if (m_VideoInfo.isDVD)
-  {
     return true;
-  }
+  
+  if (! m_pMediaSeeking)
+    return false;
+
   DWORD seekcaps = AM_SEEKING_CanSeekForwards;
   seekcaps |= AM_SEEKING_CanSeekBackwards;
   seekcaps |= AM_SEEKING_CanSeekAbsolute;

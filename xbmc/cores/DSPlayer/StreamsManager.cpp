@@ -38,7 +38,14 @@ CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
 CStreamsManager *CStreamsManager::Get()
 {
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CStreamsManager());
+  if (m_pSingleton)
+    return m_pSingleton;
+
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING
+    || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return NULL;
+
+  return (m_pSingleton = new CStreamsManager());
 }
 
 CStreamsManager::CStreamsManager(void):
@@ -736,6 +743,8 @@ CSubtitleManager::CSubtitleManager(CStreamsManager* pStreamManager):
 
   m_bSubtitlesVisible = g_settings.m_currentVideoSettings.m_SubtitleOn;
   SetSubtitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+
+  m_pManager.reset();
 }
 
 CSubtitleManager::~CSubtitleManager()
@@ -1344,7 +1353,7 @@ SExternalSubtitleInfos* CSubtitleManager::GetExternalSubtitleStreamInfos( unsign
   return reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iIndex]);
 }
 
-void CSubtitleManager::DeleteSubtitleManager( ISubManager * pManager, DllLibSubs dll )
+void CSubtitleManager::DeleteSubtitleManager( ISubManager* pManager, DllLibSubs dll )
 {
   dll.DeleteSubtitleManager(pManager);
 }

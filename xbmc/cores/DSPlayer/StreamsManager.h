@@ -359,7 +359,7 @@ public:
 private:
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);
-  static void DeleteSubtitleManager(ISubManager * pManager, DllLibSubs dll);
+  static void DeleteSubtitleManager(ISubManager* pManager, DllLibSubs dll);
 
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
   DllLibSubs m_dll;

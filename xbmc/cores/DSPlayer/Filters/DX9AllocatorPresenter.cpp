@@ -37,6 +37,7 @@
 #include "FileSystem/File.h"
 #include "PixelShaderList.h"
 #include "Settings.h"
+#include "DSPlayer.h"
 
 #ifndef TRACE
 #define TRACE(x)
@@ -1921,6 +1922,9 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   CAutoSetEvent event(&m_drawingIsDone);
 
   if (!g_renderManager.IsStarted() || m_bPendingResetDevice)
+    return false;
+
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
     return false;
 
   int64_t StartPaint = CTimeUtils::GetPerfCounter();
