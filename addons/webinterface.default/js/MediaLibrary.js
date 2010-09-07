@@ -30,14 +30,17 @@ MediaLibrary.prototype = {
 		},
 		bindControls: function() {
 			$('#musicLibrary').click(jQuery.proxy(this.musicLibraryOpen, this));
-			$('#videoLibrary').click(jQuery.proxy(this.videoLibraryOpen, this));
+			$('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
+			$('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
 		},
 		musicLibraryOpen: function(event) {
 			$('#musicLibrary').addClass('selected');
-			$('#videoLibrary').removeClass('selected');
+			$('#movieLibrary').removeClass('selected');
+			$('#tvshowLibrary').removeClass('selected');
 			$('.contentContainer').css('z-index', 1);
 			var libraryContainer = $('#libraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
+				$('#spinner').show();
 				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 							libraryContainer = $('<div>');
@@ -53,6 +56,7 @@ MediaLibrary.prototype = {
 						floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
 						libraryContainer.append(floatableAlbum);
 					}, this));
+					$('#spinner').hide();
 					//$('#libraryContainer img').lazyload();
 				}, this), 'json');
 			} else {
@@ -70,15 +74,28 @@ MediaLibrary.prototype = {
 			if (artist.length > 20 && !(artist.length <= 22)) {
 				artist = album_artist.substring(0, 20) + '...';
 			}
-			var className = type == 'movie' ? 'floatableMovieCover' : 'floatableAlbum';
-
-			floatableAlbum.addClass(className)
-						  .html('<div class="imgWrapper"><img src="' + path + '" alt="" /></div><p class="album" title="' + album_title + '">' + title + '</p><p class="artist" title="' + album_artist + '">' + artist + '</p>');
+			var className = '';
+			var code = '';
+			switch(type) {
+				case 'album':
+					className = 'floatableAlbum';
+					code = '<p class="album" title="' + album_title + '">' + title + '</p><p class="artist" title="' + album_artist + '">' + artist + '</p>';
+					break;
+				case 'movie':
+					className = 'floatableMovieCover';
+					code = '<p class="album" title="' + album_title + '">' + title + '</p>';
+					break;
+				case 'tvshow':
+					className = 'floatableTVShowCover';
+					break;
+			}
+			floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="" /></div></div>' + code);
 			return floatableAlbum;
 		},
 		displayAlbumDetails: function(event) {
 			var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
+				$('#spinner').show();
 				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "tracknumber", "discnumber", "duration", "year"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					albumDetailsContainer = $('<div>');
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
@@ -133,8 +150,9 @@ MediaLibrary.prototype = {
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}
-					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(this.generateAlbumThumb(albumThumbnail, albumTitle, albumArtist));
+					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(this.generateThumb('album', albumThumbnail, albumTitle, albumArtist));
 					$('.contentContainer').css('z-index', 1);
+					$('#spinner').hide();
 				}, this), 'json');
 			} else {
 				$('.contentContainer').css('z-index', 1);
@@ -142,6 +160,9 @@ MediaLibrary.prototype = {
 			}
 		},
 		displayMovieDetails: function(event) {
+			
+		},
+		displayTVShowDetails: function(event) {
 
 		},
 		playTrack: function(event) {
@@ -153,17 +174,19 @@ MediaLibrary.prototype = {
 				}, this), 'json');
 			}, this), 'json');
 		},
-		videoLibraryOpen: function() {
+		movieLibraryOpen: function() {
 			$('#musicLibrary').removeClass('selected');
-			$('#videoLibrary').addClass('selected');
+			$('#tvshowLibrary').removeClass('selected');
+			$('#movieLibrary').addClass('selected');
 			$('.contentContainer').css('z-index', 1);
-			var libraryContainer = $('#videoLibraryContainer');
+			var libraryContainer = $('#movieLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
+				$('#spinner').show();
 				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "start": 0, "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.movies) {
 							libraryContainer = $('<div>');
 							libraryContainer.css('z-index', 100)
-											.attr('id', 'videoLibraryContainer')
+											.attr('id', 'movieLibraryContainer')
 											.addClass('contentContainer');
 							$('#content').append(libraryContainer);
 					} else {
@@ -171,10 +194,41 @@ MediaLibrary.prototype = {
 					}
 					$.each($(data.result.movies), jQuery.proxy(function(i, item) {
 						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title, "");
-						floatableAlbum.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
+						floatableMovieCover.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
 						libraryContainer.append(floatableMovieCover);
 					}, this));
+					$('#spinner').hide();
 					//$('#libraryContainer img').lazyload();
+				}, this), 'json');
+			} else {
+				libraryContainer.css('z-index', 100);
+			}
+		},
+		tvshowLibraryOpen: function() {
+			$('#musicLibrary').removeClass('selected');
+			$('#tvshowLibrary').addClass('selected');
+			$('#movieLibrary').removeClass('selected');
+			$('.contentContainer').css('z-index', 1);
+			var libraryContainer = $('#tvshowLibraryContainer');
+			if (!libraryContainer || libraryContainer.length == 0) {
+				$('#spinner').show();
+				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "start": 0, "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating"] }, "id": 1}', jQuery.proxy(function(data) {
+					if (data && data.result && data.result.tvshows) {
+							libraryContainer = $('<div>');
+							libraryContainer.css('z-index', 100)
+											.attr('id', 'tvshowLibraryContainer')
+											.addClass('contentContainer');
+							$('#content').append(libraryContainer);
+					} else {
+						libraryContainer.html('');
+					}
+					$.each($(data.result.tvshows), jQuery.proxy(function(i, item) {
+						var floatableTVShowCover = this.generateThumb('tvshow', item.thumbnail, item.title, "");
+						floatableTVShowCover.bind('click', { tvshow: item }, jQuery.proxy(this.displayTVShowDetails, this));
+						libraryContainer.append(floatableTVShowCover);
+					}, this));
+					//$('#libraryContainer img').lazyload();
+					$('#spinner').hide();
 				}, this), 'json');
 			} else {
 				libraryContainer.css('z-index', 100);
