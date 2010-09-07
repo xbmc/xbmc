@@ -179,9 +179,15 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
 
 CStdString CXBMCRenderManager::GetVSyncState()
 {
+  double avgerror = 0.0;
+  for (int i = 0; i < ERRORBUFFSIZE; i++)
+    avgerror += m_errorbuff[i];
+  avgerror /= ERRORBUFFSIZE;
+
   CStdString state;
-  state.Format("sync:%+3d%% error:%2d%%"
+  state.Format("sync:%+3d%% avg:%3d%% error:%2d%%"
               ,     MathUtils::round_int(m_presentcorr * 100)
+              ,     MathUtils::round_int(avgerror      * 100)
               , abs(MathUtils::round_int(m_presenterr  * 100)));
   return state;
 }

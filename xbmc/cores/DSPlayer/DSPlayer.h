@@ -85,8 +85,6 @@ public:
 //IPlayer
   CDSPlayer(IPlayerCallback& callback);
   virtual ~CDSPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
-  virtual void UnRegisterAudioCallback()                        {}
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;

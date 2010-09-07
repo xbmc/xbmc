@@ -43,6 +43,13 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
   m_repeat = repeat;
 }
 
+CKey::CKey(uint32_t buttonCode, unsigned int held)
+{
+  Reset();
+  m_buttonCode = buttonCode;
+  m_held = held;
+}
+
 CKey::CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held)
 {
   Reset();

@@ -186,7 +186,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
   }
 
   int64_t iHistoryStart = m_nStartPosition - m_HistoryBuffer.getMaxReadSize();
-  if (iFilePosition < m_nStartPosition && iFilePosition > iHistoryStart)
+  if (iFilePosition < m_nStartPosition && iFilePosition >= iHistoryStart)
   {
     CRingBuffer saveHist, saveUnRead;
     int64_t nToSkip = iFilePosition - iHistoryStart;

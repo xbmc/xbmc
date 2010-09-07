@@ -843,10 +843,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
              strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||
              strSetting.Equals("audiooutput.dtspassthrough") ||
-             strSetting.Equals("audiooutput.aacpassthrough") ||
-             strSetting.Equals("audiooutput.mp1passthrough") ||
-             strSetting.Equals("audiooutput.mp2passthrough") ||
-             strSetting.Equals("audiooutput.mp3passthrough"))
+             strSetting.Equals("audiooutput.passthroughaac") ||
+             strSetting.Equals("audiooutput.passthroughmp1") ||
+             strSetting.Equals("audiooutput.passthroughmp2") ||
+             strSetting.Equals("audiooutput.passthroughmp3"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));

@@ -149,8 +149,8 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
-  // foo.s01.e01, foo.s01_e01, S01E02 foo
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
+  // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._- ]*[Ee]([0-9]+)([^\\\\/]*)$"));
   // foo.ep01, foo.EP_01
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
@@ -166,7 +166,7 @@ void CAdvancedSettings::Initialize()
 
   m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
 
-  m_remoteRepeat = 480;
+  m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
 
   m_playlistAsFolders = true;
@@ -680,7 +680,7 @@ bool CAdvancedSettings::Load()
     }
   }
 
-  XMLUtils::GetInt(pRootElement, "remoterepeat", m_remoteRepeat, 1, INT_MAX);
+  XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
   XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);

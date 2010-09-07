@@ -537,7 +537,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
           if (iSelectedMovie >= 0)
+          {
             scrUrl = movielist[iSelectedMovie];
+            CLog::Log(LOGDEBUG, "%s: user selected movie '%s' with URL '%s'",
+              __FUNCTION__, scrUrl.strTitle.c_str(), scrUrl.m_url[0].m_url.c_str());
+          }
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();

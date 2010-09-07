@@ -1104,21 +1104,12 @@ extern "C"
     if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
     {
       // it is a emulated file
-      char szString[10];
+      unsigned char buf;
 
-      if (dll_feof(stream))
-      {
+      if (dll_fread(&buf, 1, 1, stream) <= 0)
         return EOF;
-      }
 
-      if (dll_fread(&szString[0], 1, 1, stream) <= 0)
-      {
-        return -1;
-      }
-
-      byte byKar = (byte)szString[0];
-      int iKar = byKar;
-      return iKar;
+      return (int)buf;
     }
     else if (!IS_STD_STREAM(stream))
     {

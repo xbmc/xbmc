@@ -195,7 +195,7 @@ void CGUIScrollBar::UpdateBarSize()
   if (m_orientation == VERTICAL)
   {
     // calculate the height to display the nib at
-    float percent = (float)m_pageSize / m_numItems;
+    float percent = (m_numItems == 0) ? 0 : (float)m_pageSize / m_numItems;
     float nibSize = GetHeight() * percent;
     if (nibSize < m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetHeight()) nibSize = GetHeight();
@@ -220,7 +220,7 @@ void CGUIScrollBar::UpdateBarSize()
   else
   {
     // calculate the height to display the nib at
-    float percent = (float)m_pageSize / m_numItems;
+    float percent = (m_numItems == 0) ? 0 : (float)m_pageSize / m_numItems;
     float nibSize = GetWidth() * percent + 0.5f;
     if (nibSize < m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetWidth()) nibSize = GetWidth();
@@ -231,7 +231,7 @@ void CGUIScrollBar::UpdateBarSize()
     m_guiNibFocus.SetWidth(nibSize);
 
     // and the position
-    percent = (float)m_offset / (m_numItems - m_pageSize);
+    percent = (m_numItems == m_pageSize) ? 0 : (float)m_offset / (m_numItems - m_pageSize);
     float nibPos = (GetWidth() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetWidth() - nibSize) nibPos = GetWidth() - nibSize;

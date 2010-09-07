@@ -649,6 +649,10 @@ namespace PYXBMC
       // we store it in item.m_lStartOffset instead
       self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
     }
+    else if (lowerKey.CompareNoCase("mimetype") == 0)
+    { // special case for mime type - don't actually stored in a property,
+      self->item->SetMimeType(uText);
+    }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyXBMCGUIUnlock();
@@ -824,45 +828,6 @@ namespace PYXBMC
     return Py_None;
   }
 
-  PyDoc_STRVAR(setMimeType__doc__,
-    "setPath(path) -- Sets the listitem's mimetype if known.\n"
-    "\n"
-    "path           : string or unicode - mimetype.\n"
-    "\n"
-    "*If known prehand, this can avoid xbmc doing HEAD requests to http servers to figure out file type.\n"
-    "\n");
-
-  PyObject* ListItem_SetMimeType(ListItem *self, PyObject *args, PyObject *kwds)
-  {
-    if (!self->item) return NULL;
-    PyObject* pType = NULL;
-
-    if (!PyArg_ParseTuple(args, (char*)"O", &pType)) return NULL;
-    static const char *keywords[] = { "mimetype", NULL };
-
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      (char*)"O",
-      (char**)keywords,
-      &pType
-      ))
-    {
-      return NULL;
-    }
-
-    string type;
-    if (pType && !PyXBMCGetUnicodeString(type, pType, 1))
-      return NULL;
-    // set path
-    PyXBMCGUILock();
-    self->item->SetMimeType(type);
-    PyXBMCGUIUnlock();
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   PyMethodDef ListItem_methods[] = {
     {(char*)"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {(char*)"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -877,7 +842,6 @@ namespace PYXBMC
     {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
     {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS|METH_KEYWORDS, addContextMenuItems__doc__},
     {(char*)"setPath" , (PyCFunction)ListItem_SetPath, METH_VARARGS|METH_KEYWORDS, setPath__doc__},
-    {(char*)"setMimeType" , (PyCFunction)ListItem_SetMimeType, METH_VARARGS|METH_KEYWORDS, setMimeType__doc__},
     {NULL, NULL, 0, NULL}
   };
 

@@ -76,6 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="bzip2.lib"
 				OutputFile="../../../../../system/python/DLLs/bz2_d.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -175,6 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="bzip2.lib"
 				OutputFile="../../../../../system/python/DLLs/bz2.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

@@ -289,34 +289,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     m_timeout = 0;
     unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
-    m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+    m_ioContext->max_packet_size = m_pInput->GetBlockSize();
+    if(m_ioContext->max_packet_size)
+      m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      m_ioContext->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->is_streamed = 1;
-    }
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
-    {
-      m_ioContext->max_packet_size = 6144;
-      m_ioContext->is_streamed = 1;
-    }
-    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-
-      // this actually speeds up channel changes by almost a second
-      // however, it alsa makes player not buffer anything, this
-      // leads to buffer underruns in audio renderer
-      //if(context->is_streamed)
-      //  streaminfo = false;
-    }
-    else
-    {
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_ioContext->is_streamed = 1;
-    }
 
     if( iformat == NULL )
     {
@@ -329,11 +307,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      if(m_ioContext->is_streamed)
-        pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-      else
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
-
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
       if (pd.buf_size <= 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());

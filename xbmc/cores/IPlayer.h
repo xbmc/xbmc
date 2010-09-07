@@ -69,8 +69,8 @@ public:
   IPlayer(IPlayerCallback& callback): m_callback(callback){};
   virtual ~IPlayer(){};
   virtual bool Initialize(TiXmlElement* pConfig) { return true; };
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
-  virtual void UnRegisterAudioCallback() = 0;
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
+  virtual void UnRegisterAudioCallback() {};
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}

@@ -507,6 +507,7 @@ class CKey
 public:
   CKey(void);
   CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
+  CKey(uint32_t buttonCode, unsigned int held);
   CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
   CKey(const CKey& key);
 
