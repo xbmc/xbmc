@@ -161,10 +161,7 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    // TODO: Use an Event.
-    // If the user close the file when a stream is changing, we need to wait, and not to return!
-    if (CStreamsManager::Get()->IsChangingStream())
-      return;
+    CStreamsManager::Get()->WaitUntilReady();
 
     Stop(true);
 
@@ -775,6 +772,9 @@ CStdString CDSGraph::GetAudioInfo()
   CStdString audioInfo;
   CStreamsManager *c = CStreamsManager::Get();
 
+  if (! c)
+    return "File closed";
+
   audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
     CGraphFilters::Get()->Audio.osdname,
     c->GetAudioCodecDisplayName(),
@@ -789,6 +789,10 @@ CStdString CDSGraph::GetVideoInfo()
 {
   CStdString videoInfo = "";
   CStreamsManager *c = CStreamsManager::Get();
+
+  if (! c)
+    return "File closed";
+
   videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
     CGraphFilters::Get()->Video.osdname,
     c->GetVideoCodecDisplayName(),

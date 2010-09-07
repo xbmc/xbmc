@@ -225,11 +225,10 @@ public:
    * @remarks If the IAMStreamSelect interface wasn't found, the graph must be stopped and restarted in order to change the audio stream
    */
   void SetAudioStream(int iStream);
-  /** Is the manager changing stream?
-   * @return True if the manager is changing audio stream, false otherwise
-   * @remarks The method is mainly used by CDSGraph when unloading the graph, to prevent object to be released when they're still used.
+  /** Wait until the graph is ready. If a stream is being changed, the
+   * function waits. Otherwise, simply returns.
    */
-  bool IsChangingStream();
+  void WaitUntilReady();
   /// @return The number of audio channels of the current audio stream
   int GetChannels();
   /// @return The number of bits per sample of the current audio stream
@@ -290,11 +289,11 @@ private:
   Com::SmartPtr<IBaseFilter> m_pSplitter;
 
   bool m_init;
-  volatile bool m_bChangingStream;
-
   SVideoStreamInfos m_videoStream;
   CCriticalSection m_lock;
   bool m_dvdStreamLoaded;
+
+  CEvent m_readyEvent;
 };
 
 class CSubtitleManager

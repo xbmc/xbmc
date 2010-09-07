@@ -106,21 +106,39 @@ public:
   virtual bool Closing()                                      { return PlayerState == DSPLAYER_CLOSING; }
 
 //Audio stream selection
-  virtual int  GetAudioStreamCount() { return CStreamsManager::Get()->GetAudioStreamCount(); }
-  virtual int  GetAudioStream() { return CStreamsManager::Get()->GetAudioStream(); }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { CStreamsManager::Get()->GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream) { CStreamsManager::Get()->SetAudioStream(iStream); };
+  virtual int  GetAudioStreamCount() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioStreamCount() : 0; }
+  virtual int  GetAudioStream() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioStream() : 0; }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->GetAudioStreamName(iStream,strStreamName);
+  };
+  virtual void SetAudioStream(int iStream) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SetAudioStream(iStream);
+  };
 
-  virtual int  GetSubtitleCount() { return CStreamsManager::Get()->SubtitleManager->GetSubtitleCount(); }
-  virtual int  GetSubtitle() { return CStreamsManager::Get()->SubtitleManager->GetSubtitle(); }
-  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { CStreamsManager::Get()->SubtitleManager->GetSubtitleName(iStream, strStreamName); }
-  virtual void SetSubtitle(int iStream) { CStreamsManager::Get()->SubtitleManager->SetSubtitle(iStream); }
-  virtual bool GetSubtitleVisible() { return CStreamsManager::Get()->SubtitleManager->GetSubtitleVisible(); }
-  virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::Get()->SubtitleManager->SetSubtitleVisible(bVisible); }
+  virtual int  GetSubtitleCount() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->GetSubtitleCount() : 0; }
+  virtual int  GetSubtitle() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->GetSubtitle() : 0; }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SubtitleManager->GetSubtitleName(iStream, strStreamName);
+  }
+  virtual void SetSubtitle(int iStream) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SubtitleManager->SetSubtitle(iStream);
+  }
+  virtual bool GetSubtitleVisible() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->GetSubtitleVisible() : true; }
+  virtual void SetSubtitleVisible( bool bVisible ) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SubtitleManager->SetSubtitleVisible(bVisible);
+  }
 
-  virtual int AddSubtitle(const CStdString& strSubPath) { return CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath); };
-  virtual void SetSubTitleDelay(float fValue = 0.0f) { CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue); };
-  virtual float GetSubTileDelay(void) { return CStreamsManager::Get()->SubtitleManager->GetSubtitleDelay(); }
+  virtual int AddSubtitle(const CStdString& strSubPath) { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath) : -1; };
+  virtual void SetSubTitleDelay(float fValue = 0.0f) {
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SubtitleManager->SetSubtitleDelay(fValue);
+  };
+  virtual float GetSubTileDelay(void) { return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->GetSubtitleDelay() : 0; }
   // Chapters
 
   virtual int  GetChapterCount() { CSingleLock lock(m_StateSection); return CChaptersManager::Get()->GetChapterCount(); }
@@ -132,12 +150,12 @@ public:
   void GetVideoRect(CRect& SrcRect, CRect& DestRect) { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR) { fAR = g_renderManager.GetAspectRatio(); }
 
-  virtual int GetChannels() { return CStreamsManager::Get()->GetChannels();  };
-  virtual int GetBitsPerSample() { return CStreamsManager::Get()->GetBitsPerSample(); };
-  virtual int GetSampleRate() { return CStreamsManager::Get()->GetSampleRate(); };
-  virtual int GetPictureWidth() { return CStreamsManager::Get()->GetPictureWidth(); }
-  virtual CStdString GetAudioCodecName() { return CStreamsManager::Get()->GetAudioCodecName(); }
-  virtual CStdString GetVideoCodecName() { return CStreamsManager::Get()->GetVideoCodecName(); }
+  virtual int GetChannels() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetChannels() : 0; };
+  virtual int GetBitsPerSample() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetBitsPerSample() : 0; };
+  virtual int GetSampleRate() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetSampleRate() : 0; };
+  virtual int GetPictureWidth() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureWidth() : 0; }
+  virtual CStdString GetAudioCodecName() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecName() : ""; }
+  virtual CStdString GetVideoCodecName() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetVideoCodecName() : ""; }
 
   virtual void SeekTime(__int64 iTime = 0);
   virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }

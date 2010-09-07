@@ -55,21 +55,6 @@ public:
 
 #define NB_JITTER          126
 
-  class CAutoSetEvent
-  {
-  public:
-    CAutoSetEvent(CEvent *event)
-      : m_event(event)
-    {}
-    ~CAutoSetEvent()
-    {
-      if (m_event)
-        m_event->Set();
-    }
-  private:
-    CEvent* m_event;
-  };
-
   class CDX9AllocatorPresenter
     : public ISubPicAllocatorPresenterImpl,
       public ID3DResource,

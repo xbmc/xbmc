@@ -57,4 +57,21 @@ protected:
   HANDLE m_hEvent;
 };
 
+#ifdef HAS_DS_PLAYER
+class CAutoSetEvent
+  {
+  public:
+    CAutoSetEvent(CEvent *event)
+      : m_event(event)
+    {}
+    ~CAutoSetEvent()
+    {
+      if (m_event)
+        m_event->Set();
+    }
+  private:
+    CEvent* m_event;
+  };
+#endif
+
 #endif // !defined(AFX_EVENT_H__724ADE14_0F5C_4836_B995_08FFAA97D6B9__INCLUDED_)

@@ -49,9 +49,10 @@ CStreamsManager *CStreamsManager::Get()
 }
 
 CStreamsManager::CStreamsManager(void):
-  m_pIAMStreamSelect(NULL), m_init(false), m_bChangingStream(false),
+  m_pIAMStreamSelect(NULL), m_init(false), m_readyEvent(true),
   m_dvdStreamLoaded(false)
 {
+  m_readyEvent.Set();
 }
 
 CStreamsManager::~CStreamsManager(void)
@@ -129,7 +130,8 @@ void CStreamsManager::SetAudioStream(int iStream)
     || m_audioStreams[enableIndex]->connected)
     return;
 
-  m_bChangingStream = true;
+  m_readyEvent.Reset();
+  CAutoSetEvent event(&m_readyEvent);
 
   if (m_pIAMStreamSelect)
   {
@@ -282,8 +284,6 @@ done:
     else
       CLog::Log(LOGERROR, "%s Can't change audio stream", __FUNCTION__);
   }
-
-  m_bChangingStream = false;
 }
 
 void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
@@ -496,9 +496,10 @@ void CStreamsManager::Destroy()
   m_pSingleton = NULL;
 }
 
-bool CStreamsManager::IsChangingStream()
+void CStreamsManager::WaitUntilReady()
 {
-  return m_bChangingStream;
+  // If the event has not been Reset(), Wait() will return immediately
+  m_readyEvent.Wait();
 }
 
 int CStreamsManager::GetChannels()
@@ -950,7 +951,9 @@ void CSubtitleManager::SetSubtitle( int iStream )
     return;
   }
 
-  m_pStreamManager->m_bChangingStream = true;
+  m_pStreamManager->m_readyEvent.Reset();
+  CAutoSetEvent event(&m_pStreamManager->m_readyEvent);
+
   bool stopped = false;
   CStdString subtitlePath = "";
   Com::SmartPtr<IPin> newAudioStreamPin;
@@ -961,10 +964,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     DisconnectCurrentSubtitlePins();
 
     if (! m_bSubtitlesVisible)
-    {
-      m_pStreamManager->m_bChangingStream = false;
       return;
-    }
 
     SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[enableIndex]);
 
@@ -973,7 +973,6 @@ void CSubtitleManager::SetSubtitle( int iStream )
     s->flags = AMSTREAMSELECTINFO_ENABLED; // for gui
     s->connected = true;
 
-    m_pStreamManager->m_bChangingStream = false;
     return;
   }
 
@@ -1062,8 +1061,6 @@ done:
         CLog::Log(LOGERROR, "%s Can't change subtitle stream", __FUNCTION__);
     }
   }
-
-  m_pStreamManager->m_bChangingStream = false;
 }
 
 bool CSubtitleManager::GetSubtitleVisible()

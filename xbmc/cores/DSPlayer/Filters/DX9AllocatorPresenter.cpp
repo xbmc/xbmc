@@ -808,7 +808,7 @@ bool CDX9AllocatorPresenter::SettingsNeedResetDevice()
 void CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)
 {
   __super::SetTime(rtNow);
-  if (CStreamsManager::Get()->SubtitleManager)
+  if (CStreamsManager::Get() && CStreamsManager::Get()->SubtitleManager)
     CStreamsManager::Get()->SubtitleManager->SetTime(rtNow);
 }
 
