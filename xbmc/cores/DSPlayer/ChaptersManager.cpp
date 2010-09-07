@@ -74,18 +74,8 @@ void CChaptersManager::GetChapterName(CStdString& strChapterName)
 
 void CChaptersManager::UpdateChapters()
 {
-  // We don't use get_CurrentMarker as it may be broken on splitter size
-  //m_pIAMExtendedSeeking->get_CurrentMarker(&m_currentChapter);
-  if (!m_chapters.empty() && GetChapterCount() > 1)
-  {
-    uint64_t currentTime = (uint64_t) DS_TIME_TO_MSEC(g_dsGraph->GetTime());
-    for (std::map<long, SChapterInfos *>::iterator it = m_chapters.begin();
-      it != m_chapters.end(); ++it)
-    {
-      if (currentTime >= it->second->starttime && currentTime < it->second->endtime)
-        m_currentChapter = it->first;
-    }
-  }
+  if (m_pIAMExtendedSeeking && !m_chapters.empty() && GetChapterCount() > 1)
+    m_pIAMExtendedSeeking->get_CurrentMarker(&m_currentChapter);
 }
 
 bool CChaptersManager::LoadChapters()
@@ -131,13 +121,6 @@ bool CChaptersManager::LoadChapters()
     }
 
     m_currentChapter = 1;
-
-    // Update end time of chapters
-    for (size_t i = 1; i <= m_chapters.size(); i++)
-    {
-      uint64_t endtime = (i < m_chapters.size()) ? m_chapters[i + 1]->starttime : (uint64_t) DS_TIME_TO_MSEC(g_dsGraph->GetTotalTime());
-      m_chapters[i]->endtime = endtime;
-    }
 
     return true;
   } 
