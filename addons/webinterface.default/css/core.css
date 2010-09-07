@@ -96,6 +96,17 @@ div.imgWrapper div.inner {
 	height: 190px;
 	}
 
+#overlay {
+	top: 50px;
+	left: 0;
+	right: 0;
+	bottom: 150px;
+	background: #3f3f3f;
+	position: fixed;
+	opacity: 0.8;
+	z-index: 2000; /* Above contentContainer's */
+	}
+
 .floatableTVShowCover div.imgWrapper,
 .floatableTVShowCover img,
 .floatableTVShowCover div.imgWrapper div.inner {

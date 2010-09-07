@@ -33,10 +33,15 @@ MediaLibrary.prototype = {
 			$('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
 			$('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
 		},
-		musicLibraryOpen: function(event) {
-			$('#musicLibrary').addClass('selected');
+		resetPage: function() {
+			$('#musicLibrary').removeClass('selected');
 			$('#movieLibrary').removeClass('selected');
 			$('#tvshowLibrary').removeClass('selected');
+			$('#overlay').hide();
+		},
+		musicLibraryOpen: function(event) {
+			this.resetPage();
+			$('#musicLibrary').addClass('selected');
 			$('.contentContainer').css('z-index', 1);
 			var libraryContainer = $('#libraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
@@ -160,7 +165,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		displayMovieDetails: function(event) {
-			
+			$('#overlay').show();
 		},
 		displayTVShowDetails: function(event) {
 
@@ -175,8 +180,7 @@ MediaLibrary.prototype = {
 			}, this), 'json');
 		},
 		movieLibraryOpen: function() {
-			$('#musicLibrary').removeClass('selected');
-			$('#tvshowLibrary').removeClass('selected');
+			this.resetPage();
 			$('#movieLibrary').addClass('selected');
 			$('.contentContainer').css('z-index', 1);
 			var libraryContainer = $('#movieLibraryContainer');
@@ -205,9 +209,8 @@ MediaLibrary.prototype = {
 			}
 		},
 		tvshowLibraryOpen: function() {
-			$('#musicLibrary').removeClass('selected');
+			this.resetPage();
 			$('#tvshowLibrary').addClass('selected');
-			$('#movieLibrary').removeClass('selected');
 			$('.contentContainer').css('z-index', 1);
 			var libraryContainer = $('#tvshowLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
