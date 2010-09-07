@@ -20,6 +20,7 @@
     <summary lang="hu">AllMusic előadó információk</summary>
     <summary lang="pl">Informacje o artystach AllMusic</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
+    <summary lang="ru">Информация об исполнителе из AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器</summary>
     <description lang="en">Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
@@ -48,6 +49,10 @@ Alle genres en stijlen worden gedekt, gaande van de meest commerciele tot de mee
     <description lang="pt">Use o AllMusic.com para obter a informação da sua Biblioteca de música. O site allmusic foi criado em 1995 para alimentar a paixão dos fans de música.
 O pessoal da redacção da AMG, em conjunto com centenas de especialistas (todos fanáticos por música à sua maneira), tornaram o allmusic o mais completo site de referência musical do planeta. Continuam dedicados a criar e manter o conhecimento, espírito e conteúdos que fans de música e profissionais da indústria se habituaram a obter da AMG.
 Todos os géneros e estilos de música podem ser encontrados aqui, desde o mais comercial e popular até à música mais rara. Nós revemos e criticamos álbuns e artistas dentro do contexto do seu género - the ópera a rock de garagem, de pop a música country. Isto assegura que fans de qualquer género podem depender de nós para os manter actualizados sobre os seus artistas favoritos bem como de novos sons.</description>
+    <description lang="ru">Используйте AllMusic.com для добавления мета-данных в вашу библиотеку.
+Сайт allmusic был создан в 1995 как место для фанатов музыки, где они могли бы удовлетворять свою страсть.
+Редакторский состав AMG, вместе с сотнями участников-экспертов (каждый по-своему фанат музыки), сделали allmusic самым полным источником информации о музыке на планете. Все они посвятили себя созданию и поддержке полезного, и познавательного, контента который любители музыки, и профессионалы индустрии, ожидают от AMG.
+Здесь представлены все стили и жанры музыки, от самых коммерчески популярных до наиболее неизвестных. Мы критикуем альбомы и исполнителей в контексте их собственного жанра - от оперы и гаражного рока до традиционного кантри. Это обеспечивает то, что фанат любого стиля музыки может полагаться на нас в поддержке актуальности своих познаний о любимом исполнителе и также расширять свои знания.</description>
     <description lang="zh">从AllMusic.com网站获取音乐资料。
 allmusic网站创建于1995年，它是音乐爱好者的乐园。
 AMG的编辑和许多专业撰稿人（都是音乐狂热分子）共同把allmusic建成世界上最全面的音乐资料库。他们致力于创造和维护音乐爱好者和业内专业人士期望从AMG得到的知识和精神产品。

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Режим</string>
+    <string id="30001">Цельный</string>
+    <string id="30002">Скелет</string>
+    <string id="30003">Точки</string>
+    <string id="30004">Высота Бара</string>
+    <string id="30005">Маленький</string>
+    <string id="30006">По-умолчанию</string>
+    <string id="30007">Большой</string>
+    <string id="30008">Очень Большой</string>
+    <string id="30009">Скорость</string>
+    <string id="30010">Очень Медленно</string>
+    <string id="30011">Медленно</string>
+    <string id="30012">По-умолчанию</string>
+    <string id="30013">Быстро</string>
+    <string id="30014">Очень Быстро</string>
+</strings>

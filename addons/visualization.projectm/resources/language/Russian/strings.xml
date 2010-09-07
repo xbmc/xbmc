@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Качество Рендеринга</string>
+    <string id="30001">Низкое</string>
+    <string id="30002">Среднее</string>
+    <string id="30003">Высокое</string>
+    <string id="30004">Максимум</string>
+    <string id="30005">Режим Перемешивания</string>
+    <string id="30006">Время Перехода</string>
+    <string id="30007">Длительность Режима</string>
+    <string id="30008">Чувствительность к Ритму</string>
+</strings>
