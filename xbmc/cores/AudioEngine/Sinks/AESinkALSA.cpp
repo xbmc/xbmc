@@ -247,8 +247,8 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
 
   if (m_passthrough)
   {
-    frames  = 6144 / (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) / format.m_channelCount;
-    periods = 2;
+//    frames  = 6144 / (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) / format.m_channelCount;
+//    periods = 2;
   }
 
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;

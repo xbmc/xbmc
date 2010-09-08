@@ -192,9 +192,10 @@ void CAEStream::Destroy()
 
 CAEStream::~CAEStream()
 {
-  Destroy();
-  AE.RemoveStream(this);
+  /* ensure that destroy was called first */
+  ASSERT(m_delete);
 
+  AE.RemoveStream(this);
   CSingleLock lock(m_critSection);
 
   /* de-init/free post-proc objects */

@@ -83,11 +83,15 @@ private:
   E_PACK
 
   DllAvUtil m_dllAvUtil;
-  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData);
+  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData1);
+  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData2);
+  DECLARE_ALIGNED(16, struct IEC958Packet, m_nullPacket);
+  struct IEC958Packet *m_packetData;
+
   uint8_t      m_buffer[MAX_IEC958_PACKET];
   unsigned int m_bufferSize;
   unsigned int m_packetSize;
-  bool         m_hasPacket;
+  bool         m_hasPacket, m_nextReady;
 
   typedef unsigned int (CAEPacketizerIEC958::*SPDIFSyncFunc)(uint8_t *data, unsigned int size, unsigned int *fsize);
   typedef void (CAEPacketizerIEC958::*SPDIFPackFunc)(uint8_t *data, unsigned int fsize);
@@ -98,6 +102,7 @@ private:
   SPDIFPackFunc  m_packFunc;
   unsigned int   m_sampleRate;
   bool           m_dataIsLE;
+  unsigned int   m_ratio;
 
   void SwapPacket(const bool swapData);
   void PackAC3(uint8_t *data, unsigned int fsize);
