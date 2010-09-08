@@ -103,7 +103,7 @@ private:
   /* these are only callable by the application */
   friend class CApplication;
   bool Initialize();
-  bool OpenSink(unsigned int sampleRate = 44100);
+  bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   void Deinitialize();
 
   unsigned int m_delayFrames;
@@ -159,7 +159,7 @@ private:
   /* thread run stages */
   void         MixSounds        (unsigned int samples);
   void         RunOutputStage   ();
-  unsigned int RunStreamStage   (unsigned int channelCount, void *out);
+  unsigned int RunStreamStage   (unsigned int channelCount, void *out, bool &restart);
   void         RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed);
   void         RunBufferStage   (void *out);
 };
