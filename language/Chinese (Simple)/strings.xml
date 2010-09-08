@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 33294 -->
+<!--Based on english strings version 33412 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -54,6 +54,24 @@
   <string id="60">十月</string>
   <string id="61">十一月</string>
   <string id="62">十二月</string>
+
+  <string id="71">北</string>
+  <string id="72">北东北</string>
+  <string id="73">东北</string>
+  <string id="74">东东北</string>
+  <string id="75">东</string>
+  <string id="76">东东南</string>
+  <string id="77">东南</string>
+  <string id="78">南东南</string>
+  <string id="79">南</string>
+  <string id="80">南西南</string>
+  <string id="81">西南</string>
+  <string id="82">西西南</string>
+  <string id="83">西</string>
+  <string id="84">西西北</string>
+  <string id="85">西北</string>
+  <string id="86">北西北</string>
+  <string id="87">不定</string>
 
   <string id="98">显示：自动</string>
   <string id="99">显示：自动大图标</string>
@@ -195,6 +213,8 @@
   <string id="241">全屏#%d</string>
   <string id="242">窗口</string>
   <string id="243">刷新率</string>
+  <string id="244">全屏</string>
+  <string id="245">屏幕调整：(%i,%i)->(%i,%i) (缩放 x%2.2f) 宽高比：%2.2f:1 (像素比：%2.2f:1)</string>
 
   <string id="247">脚本</string>
   <string id="248">语言</string>
@@ -351,8 +371,8 @@
   <string id="404">风</string>
   <string id="405">露点</string>
   <string id="406">湿度</string>
-  <string id="407">风向</string>
-  <string id="408">风速</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">默认</string> 
   <string id="410">访问天气服务</string>
   <string id="411">取得天气数据：</string>
@@ -378,6 +398,7 @@
   <string id="431">无缓存</string>
   <string id="432">从资料库中移除影片</string>
   <string id="433">确定移除'%s'？</string>
+  <string id="434">风向 %s 风速 %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">移动磁盘</string>
   <string id="438">打开文件</string>
@@ -817,6 +838,9 @@
   <string id="1418">雷雨</string>
   <string id="1419">雷阵雨</string>
   <string id="1420">中等</string>
+  <string id="1421">极高</string>
+  <string id="1422">有风</string>
+  <string id="1423">薄雾</string>
  
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1080,6 +1104,8 @@
   <string id="13210">闹铃启动，倒计时%i分钟。</string>
   <string id="13211">响铃！</string>
   <string id="13212">闹铃取消，剩余%i分%i秒。</string>
+  <string id="13213">%2.0f分</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0f秒</string> <!--seconds (left from countdown)-->
 
   <string id="13249">搜索 RAR 文件中的字幕</string>
   <string id="13250">浏览字幕文件...</string>
@@ -2087,8 +2113,9 @@
   <string id="22001">隐藏资料库更新进度条</string>
   <string id="22002">- DNS 后缀</string>
 
-  <string id="22004">延迟：%2.3fs</string>
-  <string id="22005">提前：%2.3fs</string>
+  <string id="22003">%2.3f秒</string>
+  <string id="22004">延迟：%2.3f秒</string>
+  <string id="22005">提前：%2.3f秒</string>
   <string id="22006">字幕位置</string>
   <string id="22007">OpenGL 提供商：</string>
   <string id="22008">OpenGL 渲染器：</string>

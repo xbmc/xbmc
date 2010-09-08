@@ -13,6 +13,7 @@
     <summary lang="ko">이미지 슬라이드쇼를 보여주는 화면보호기</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający pokaz slajdów</summary>
     <summary lang="pt">Protecção de ecrã que mostra uma apresentação de fotografias</summary>
+    <summary lang="ru">Хранитель экрана показывающий слайдшоу из изображений</summary>
     <summary lang="zh">幻灯片屏幕保护程序</summary>
     <description lang="en">The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
     <description lang="de">Der Slideshow-Bildschirmschoner zeigt eine Bilder-Slideshow mit verschiedenen Übergangseffekten. Er kann so konfiguriert werden, dass Musik oder Video Fanarts aus der Bibliothek, oder Bilder eines bestimmten Ordners angezeigt werden.  </description>
@@ -22,6 +23,7 @@
     <description lang="ko">슬라이드쇼 화면보호기는 다양한 화면 전환효과를 이용해 이미지 슬라이드쇼를 보여줍니다. 설정을 통해 음악, 비디오 팬아트나 사용자 폴더의 사진을 지정할수 있습니다.</description>
     <description lang="pl">Ten wygaszacz ekranu to pokaz slajdów obrazów, przy użyciu różnych efektów przejść. Może być skonfigurowany tak, aby pokazywał fanart filmów, muzyki lub dowolny folder ze zdjęciami.</description>
     <description lang="pt">Protecção de ecrã que lhe mostra fotografias usando vários efeitos de transição. Pode ser configurado para visualizar fanart das bibliotecas de música e vídeo ou uma pasta com as suas imagens.</description>
+    <description lang="ru">Хранитель экрана Slideshow покажет вам слайдшоу из изображений используя различные эффекты переходов. Он может быть настроен для показа фанарта музыки и видео из вашей библиотеки мультимедиа, или папки с изображениям.</description>
     <description lang="zh">幻灯片屏保将使用各种过渡效果以幻灯片形式显示您的图片。你可以设置它显示音乐或视频资料库同人画，或某个文件夹中的图片。</description>
     <platform>all</platform>
   </extension>

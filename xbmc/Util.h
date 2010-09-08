@@ -48,6 +48,7 @@ namespace XFILE
 
 class CFileItem;
 class CFileItemList;
+class CURL;
 
 struct sortstringbyname
 {
@@ -69,7 +70,7 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
+  static void CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
@@ -120,7 +121,7 @@ public:
   static bool IsXBMS(const CStdString& strFile);
   static bool IsURL(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
-  static bool IsInternetStream(const CStdString& strFile, bool bStrictCheck = false);
+  static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);

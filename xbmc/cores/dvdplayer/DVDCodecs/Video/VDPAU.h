@@ -30,6 +30,7 @@
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include <queue>
 #include "utils/CriticalSection.h"
 #include "settings/VideoSettings.h"
 namespace Surface { class CSurface; }
@@ -65,6 +66,7 @@ public:
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual void Reset();
   virtual void Close();
 
   virtual int  Check(AVCodecContext* avctx) 
@@ -119,6 +121,7 @@ public:
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
   bool       upScale;
+  std::queue<DVDVideoPicture> m_DVDVideoPics;
 
   static inline void ClearUsedForRender(vdpau_render_state **st)
   {

@@ -398,7 +398,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
+void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
 {
   strTitleAndYear = strFileName;
 
@@ -890,6 +890,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(!IsRemote(strPath))
     return false;
 
+  if(IsPlugin(strPath))
+    return false;
+
   CStdString host = url.GetHostName();
   if(host.length() == 0)
     return false;
@@ -1090,9 +1093,9 @@ bool CUtil::IsFTP(const CStdString& strFile)
          url.GetTranslatedProtocol() == "ftps";
 }
 
-bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = false */)
+bool CUtil::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
-  CURL url(strFile);
+  
   CStdString strProtocol = url.GetProtocol();
   
   if (strProtocol.IsEmpty())
@@ -1100,10 +1103,7 @@ bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = f
 
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
-  {
-    CStdString strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-    return IsInternetStream(strFile2);
-  }
+    return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
   CStdString strProtocol2 = url.GetTranslatedProtocol();
 

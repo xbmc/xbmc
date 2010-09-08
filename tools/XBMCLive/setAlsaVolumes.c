@@ -20,7 +20,8 @@
  */
 
 /* 
- * Compile with: gcc -lasound -oalsaTest setAlsaVolumes.c
+ * Compile with: gcc -lasound -osetAlsaVolumes setAlsaVolumes.c
+ * (libasound2-dev needed)
  */
 
 #include <stdio.h>

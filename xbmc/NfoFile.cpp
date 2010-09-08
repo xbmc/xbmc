@@ -224,28 +224,6 @@ int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
   CFileCurl http;
   if (strURL.IsEmpty())
   {
-    extras.push_back(m_doc);
-    vector<CStdString> result;
-    if (scraper->GetParser().HasFunction("NfoScrape"))
-      result = scraper->Run("NfoScrape",url,http,&extras);
-    if (!result.empty())
-    {
-      TiXmlDocument doc;
-      doc.Parse(m_strImDbUrl.c_str());
-      if (doc.RootElement() && doc.RootElement()->FirstChildElement())
-      {
-        CVideoInfoTag details;
-        if (GetDetails(details,m_strImDbUrl.c_str()))
-        {
-          Close();
-          m_size = m_strImDbUrl.size();
-          m_doc = new char[m_size+1];
-          m_headofdoc = m_doc;
-          strcpy(m_doc,m_strImDbUrl.c_str());
-          return 0;
-        }
-      }
-    }
     if (!DoScrape(scraper))
       return 2;
     if (m_strImDbUrl.size() > 0)

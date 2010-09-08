@@ -35,7 +35,7 @@ using namespace std;
 
 CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper)
 {
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   m_bCanceled=false;
   m_iAlbum=-1;
   m_iArtist=-1;
@@ -67,25 +67,25 @@ CMusicArtistInfo& CMusicInfoScraper::GetArtist(int iArtist)
   return m_vecArtists[iArtist];
 }
 
-void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
+void CMusicInfoScraper::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist /* = "" */)
 {
   m_strAlbum=strAlbum;
   m_strArtist=strArtist;
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   StopThread();
   Create();
 }
 
-void CMusicInfoScraper::FindArtistinfo(const CStdString& strArtist)
+void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
 {
   m_strArtist=strArtist;
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   StopThread();
   Create();
 }
 
 
-void CMusicInfoScraper::FindAlbuminfo()
+void CMusicInfoScraper::FindAlbumInfo()
 {
   CStdString strAlbum=m_strAlbum;
   CStdString strHTML;
@@ -171,12 +171,12 @@ void CMusicInfoScraper::FindAlbuminfo()
   }
 
   if (m_vecAlbums.size()>0)
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 
   return;
 }
 
-void CMusicInfoScraper::FindArtistinfo()
+void CMusicInfoScraper::FindArtistInfo()
 {
   CStdString strArtist=m_strArtist;
   CStdString strHTML;
@@ -189,7 +189,7 @@ void CMusicInfoScraper::FindArtistinfo()
   extras.push_back(m_strArtist);
   g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[0]);
   CUtil::URLEncode(extras[0]);
-
+  
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
     __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
     ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
@@ -246,12 +246,12 @@ void CMusicInfoScraper::FindArtistinfo()
   }
 
   if (m_vecArtists.size()>0)
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 
   return;
 }
 
-void CMusicInfoScraper::LoadAlbuminfo(int iAlbum)
+void CMusicInfoScraper::LoadAlbumInfo(int iAlbum)
 {
   m_iAlbum=iAlbum;
   m_iArtist=-1;
@@ -259,7 +259,7 @@ void CMusicInfoScraper::LoadAlbuminfo(int iAlbum)
   Create();
 }
 
-void CMusicInfoScraper::LoadArtistinfo(int iArtist)
+void CMusicInfoScraper::LoadArtistInfo(int iArtist)
 {
   m_iAlbum=-1;
   m_iArtist=iArtist;
@@ -267,7 +267,7 @@ void CMusicInfoScraper::LoadArtistinfo(int iArtist)
   Create();
 }
 
-void CMusicInfoScraper::LoadAlbuminfo()
+void CMusicInfoScraper::LoadAlbumInfo()
 {
   if (m_iAlbum<0 || m_iAlbum>=(int)m_vecAlbums.size())
     return;
@@ -275,10 +275,10 @@ void CMusicInfoScraper::LoadAlbuminfo()
   CMusicAlbumInfo& album=m_vecAlbums[m_iAlbum];
   album.GetAlbum().strArtist.Empty();
   if (album.Load(m_http,m_scraper))
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 }
 
-void CMusicInfoScraper::LoadArtistinfo()
+void CMusicInfoScraper::LoadArtistInfo()
 {
   if (m_iArtist<0 || m_iArtist>=(int)m_vecArtists.size())
     return;
@@ -286,7 +286,7 @@ void CMusicInfoScraper::LoadArtistinfo()
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
   artist.GetArtist().strArtist.Empty();
   if (artist.Load(m_http,m_scraper))
-    m_bSuccessfull=true;
+    m_bSucceeded=true;
 }
 
 bool CMusicInfoScraper::Completed()
@@ -294,9 +294,9 @@ bool CMusicInfoScraper::Completed()
   return WaitForThreadExit(10);
 }
 
-bool CMusicInfoScraper::Successfull()
+bool CMusicInfoScraper::Succeeded()
 {
-  return !m_bCanceled && m_bSuccessfull;
+  return !m_bCanceled && m_bSucceeded;
 }
 
 void CMusicInfoScraper::Cancel()
@@ -313,7 +313,7 @@ bool CMusicInfoScraper::IsCanceled()
 
 void CMusicInfoScraper::OnStartup()
 {
-  m_bSuccessfull=false;
+  m_bSucceeded=false;
   m_bCanceled=false;
 }
 
@@ -323,23 +323,23 @@ void CMusicInfoScraper::Process()
   {
     if (m_strAlbum.size())
     {
-      FindAlbuminfo();
+      FindAlbumInfo();
       m_strAlbum.Empty();
       m_strArtist.Empty();
     }
     else if (m_strArtist.size())
     {
-      FindArtistinfo();
+      FindArtistInfo();
       m_strArtist.Empty();
     }
     if (m_iAlbum>-1)
     {
-      LoadAlbuminfo();
+      LoadAlbumInfo();
       m_iAlbum=-1;
     }
     if (m_iArtist>-1)
     {
-      LoadArtistinfo();
+      LoadArtistInfo();
       m_iArtist=-1;
     }
   }

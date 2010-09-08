@@ -344,6 +344,9 @@ bool CWebServer::Start(const char *ip, int port)
 {
   if (!m_running)
   {
+    // WARNING: when using MHD_USE_THREAD_PER_CONNECTION, set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
+    // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
+
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
     m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     if (!m_daemon) //try IPv4

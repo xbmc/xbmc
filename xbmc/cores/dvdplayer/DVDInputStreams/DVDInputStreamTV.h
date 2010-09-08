@@ -45,6 +45,7 @@ public:
   virtual __int64 GetLength();
 
   virtual bool    NextStream();
+  virtual int     GetBlockSize();
 
 
   bool            NextChannel();

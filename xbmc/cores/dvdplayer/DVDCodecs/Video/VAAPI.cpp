@@ -404,6 +404,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   VASurfaceID surface = GetSurfaceID(frame);
 
 

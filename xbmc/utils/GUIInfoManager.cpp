@@ -1236,10 +1236,17 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%ix%i %s %02.2f Hz.",
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode.c_str(),GetFPS());
+    if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
+      strLabel.Format("%ix%i@%.2fHz - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
+        g_localizeStrings.Get(244), GetFPS());
+    else
+      strLabel.Format("%ix%i - %s (%02.2fHz)",
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+        g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+        g_localizeStrings.Get(242), GetFPS());
     return strLabel;
     break;
 
@@ -1388,9 +1395,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     {
       double fTime = g_alarmClock.GetRemaining("shutdowntimer");
       if (fTime > 60.f)
-        strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format(g_localizeStrings.Get(13213).c_str(),g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
+        strLabel.Format(g_localizeStrings.Get(13214).c_str(),g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -3096,12 +3103,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
-        CStdString strYear;
+        if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+          return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
         if (!m_currentFile->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strPremiered;
-        else if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-          strYear = m_currentFile->GetVideoInfoTag()->m_strFirstAired;
-        return strYear;
+          return m_currentFile->GetVideoInfoTag()->m_strPremiered;
       }
       break;
     case VIDEOPLAYER_PLOT:
@@ -3717,12 +3722,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
-      CStdString strResult;
+      if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
+        return item->GetVideoInfoTag()->m_strFirstAired;
       if (!item->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strPremiered;
-      else if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        strResult = item->GetVideoInfoTag()->m_strFirstAired;
-      return strResult;
+        return item->GetVideoInfoTag()->m_strPremiered;
     }
     break;
   case LISTITEM_GENRE:
@@ -3781,7 +3784,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }

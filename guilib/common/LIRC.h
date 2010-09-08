@@ -35,7 +35,10 @@ public:
   void Reset();
   void Update();
   WORD GetButton();
-  bool IsHolding();
+  /*! \brief retrieve the time in milliseconds that the button has been held
+   \return time in milliseconds the button has been down
+   */
+  unsigned int GetHoldTime() const;
   void setDeviceName(const CStdString& value);
   void setUsed(bool value);
   bool IsInUse() const { return m_used; }
@@ -49,11 +52,10 @@ private:
   int     m_lastInitAttempt;
   int     m_initRetryPeriod;
   FILE*   m_file;
-  bool    m_isHolding;
+  unsigned int m_holdTime;
   int32_t m_button;
   char    m_buf[128];
   bool    m_bInitialized;
-  bool    m_skipHold;
   bool    m_used;
   bool    m_bLogConnectFailure;
   uint32_t    m_firstClickTime;

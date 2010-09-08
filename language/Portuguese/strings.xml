@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 08/30/2010 -->
-<!-- Based on english strings version r33294 -->
+<!-- Date of translation: 2010/09/02 -->
+<!-- Based on english strings version r33412 -->
 <!-- Portuguese strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 <strings>
   <string id="0">Programas</string>
@@ -55,6 +55,24 @@
   <string id="60">Outubro</string>
   <string id="61">Novembro</string>
   <string id="62">Dezembro</string>
+
+  <string id="71">N</string>
+  <string id="72">NNE</string>
+  <string id="73">NE</string>
+  <string id="74">ENE</string>
+  <string id="75">E</string>
+  <string id="76">ESE</string>
+  <string id="77">SE</string>
+  <string id="78">SSE</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
 
   <string id="98">Ver: Auto</string>
   <string id="99">Ver: Auto grande</string>
@@ -194,6 +212,8 @@
   <string id="241">Ecrã completo #%d</string>
   <string id="242">Em janela</string>
   <string id="243">Taxa de refrescamento</string>
+  <string id="244">Ecrã completo</string>
+  <string id="245">Tamanho: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
 
   <string id="247">Scripts</string>
   <string id="248">Idioma</string>
@@ -350,8 +370,8 @@
   <string id="404">Vento</string>
   <string id="405">Condensação aos</string>
   <string id="406">Humidade</string>
-  <string id="407">desde</string>
-  <string id="408">até</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Definições padrão</string>
   <string id="410">A aceder a www.weather.com</string>
   <string id="411">Obtendo a previsão do tempo para:</string>
@@ -377,6 +397,7 @@
   <string id="431">Sem cache</string>
   <string id="432">Remover vídeo da Biblioteca</string>
   <string id="433">Tem a certeza que quer apagar '%s'?</string>
+  <string id="434">De %s a %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Disco removível</string>
   <string id="438">A abrir ficheiro</string>
@@ -812,6 +833,9 @@
   <string id="1418">Trovoadas</string>
   <string id="1419">Chuvadas</string>
   <string id="1420">Moderado</string>
+  <string id="1421">Muito alto</string>
+  <string id="1422">Ventoso</string>
+  <string id="1423">Neblina</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1065,14 +1089,18 @@
 
   <string id="13200">Perfis</string>
   <string id="13201">Apagar perfil '%s'?</string>
+
   <string id="13204">Último perfil carregado:</string>
   <string id="13205">Desconhecido</string>
   <string id="13206">Escrever por cima</string>
+
   <string id="13208">Alarme</string>
   <string id="13209">Intervalo de alarme (em minutos)</string>
   <string id="13210">Iniciar alarme em %m</string>
   <string id="13211">Alarme!</string>
   <string id="13212">Cancelar quando faltar %m%is</string>
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Procurar legendas em RARs</string>
   <string id="13250">Procurar legenda ...</string>
@@ -2058,7 +2086,7 @@
   <string id="22000">Actualizar Biblioteca ao iniciar</string>
   <string id="22001">Esconder progresso de actualização da biblioteca</string>
   <string id="22002">- Sufixo de DNS</string>
-
+  <string id="22003">%2.3fs</string>
   <string id="22004">Atrasado por: %2.3fs</string>
   <string id="22005">Adiantado por: %2.3fs</string>
   <string id="22006">Deslocação das legendas</string>

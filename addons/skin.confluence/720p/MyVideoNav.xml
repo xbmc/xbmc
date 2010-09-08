@@ -1,7 +1,7 @@
 <window id="25">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,500,501,508,504,503,505,511</views>
+	<views>50,500,550,501,508,504,503,505,511</views>
 	<controls>
 		<include>CommonVideoBackground</include>
 		<control type="group">
@@ -115,9 +115,9 @@
 				<posy>-5</posy>
 				<width>1280</width>
 				<height>725</height>
-				<texture border="0.5.0.0">ContentPanel4.png</texture>
+				<texture border="0,5,0,0">ContentPanel4.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(504) | Control.IsVisible(511)</visible>
+				<visible>Control.IsVisible(504) | Control.IsVisible(511) | Control.IsVisible(550)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
@@ -149,6 +149,7 @@
 			<include>MediaListView2</include> <!-- view id = 504 -->
 			<include>WideIconView</include> <!-- view id = 505 -->
 			<include>MusicVideoInfoListView</include> <!-- view id = 511 -->
+			<include>AddonInfoListView1</include> <!-- view id = 550 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>BehindDialogFadeOut</include>

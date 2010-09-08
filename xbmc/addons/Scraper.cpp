@@ -211,6 +211,9 @@ void CScraper::ClearCache()
     CDirectory::Create(strCachePath);
 }
 
+// returns a vector of strings: the first is the XML output by the function; the rest
+// is XML output by chained functions, possibly recursively
+// the CFileCurl object is passed in so that URL fetches can be canceled from other threads
 vector<CStdString> CScraper::Run(const CStdString& function,
                                  const CScraperUrl& scrURL,
                                  CFileCurl& http,
@@ -220,7 +223,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
-    if (function != "NfoScrape" && function != "NfoUrl")
+    if (function != "NfoUrl")
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
     return result;
   }
@@ -234,22 +237,24 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
   {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+    CLog::Log(LOGERROR, "%s: Unable to parse XML",__FUNCTION__);
     return result; 
   }
 
   result.push_back(strXML);
-  TiXmlHandle docHandle( &doc );
   TiXmlElement* xchain = doc.RootElement()->FirstChildElement();
+  // skip children of the root element until <url> or <chain>
   while (xchain && strcmp(xchain->Value(),"url") && strcmp(xchain->Value(),"chain"))
       xchain = xchain->NextSiblingElement();
   while (xchain && xchain->FirstChild())
   {
+    // <chain|url function="...">param</>
     const char* szFunction = xchain->Attribute("function");
     if (szFunction)
     {
       CScraperUrl scrURL2;
       vector<CStdString> extras;
+      // for <chain>, pass the contained text as a parameter; for <url>, as URL content
       if (strcmp(xchain->Value(),"chain")==0)
         extras.push_back(xchain->FirstChild()->Value());
       else
@@ -258,6 +263,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
       result.insert(result.end(),result2.begin(),result2.end());
     }
     xchain = xchain->NextSiblingElement();
+    // continue to skip past non-<url> or <chain> elements
     while (xchain && strcmp(xchain->Value(),"url") && strcmp(xchain->Value(),"chain"))
       xchain = xchain->NextSiblingElement();
   }
@@ -270,6 +276,7 @@ CStdString CScraper::InternalRun(const CStdString& function,
                                  CFileCurl& http,
                                  const vector<CStdString>* extras)
 {
+  // walk the list of input URLs and fetch each into parser parameters
   unsigned int i;
   for (i=0;i<scrURL.m_url.size();++i)
   {
@@ -277,6 +284,7 @@ CStdString CScraper::InternalRun(const CStdString& function,
     if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
       return "";
   }
+  // put the 'extra' parameterts into the parser parameter list too
   if (extras)
   {
     for (unsigned int j=0;j<extras->size();++j)

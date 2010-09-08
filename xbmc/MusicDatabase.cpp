@@ -3974,10 +3974,9 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone(addon));
           if (!info)
             return false;
+          // store this path's settings
+          info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
         }
-
-        // store this path's settings
-        info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
       }
       else
       { // use default scraper of the requested type

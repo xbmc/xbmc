@@ -250,7 +250,7 @@ static const HTMLMapping mappings[] =
    {L"&uacute;",  0x00FA},
    {L"&ucirc;",   0x00FB},
    {L"&uuml;",    0x00FC},
-   {L"Ugrave;",   0x00D9},
+   {L"&Ugrave;",  0x00D9},
    {L"&Uacute;",  0x00DA},
    {L"&Ucirc;",   0x00DB},
    {L"&Uuml;",    0x00DC},
@@ -288,11 +288,11 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
     }
 
     int i=iPos;
-    while ( iPos < (int)strHTML.size() && 
-           (base==16?iswxdigit(strHTML[iPos]):iswdigit(strHTML[iPos])))
+    while ( iPos < (int)strStripped.size() && 
+           (base==16?iswxdigit(strStripped[iPos]):iswdigit(strStripped[iPos])))
       iPos++; 
 
-    num = strHTML.Mid(i,iPos-i);
+    num = strStripped.Mid(i,iPos-i);
     wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);
     if (base == 10)
       num.Format(L"&#%s;",num.c_str());

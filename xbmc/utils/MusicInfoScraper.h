@@ -36,12 +36,12 @@ class CMusicInfoScraper : public CThread
 public:
   CMusicInfoScraper(const ADDON::ScraperPtr &scraper);
   virtual ~CMusicInfoScraper(void);
-  void FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist = "");
-  void LoadAlbuminfo(int iAlbum);
-  void FindArtistinfo(const CStdString& strArtist);
-  void LoadArtistinfo(int iArtist);
+  void FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist = "");
+  void LoadAlbumInfo(int iAlbum);
+  void FindArtistInfo(const CStdString& strArtist);
+  void LoadArtistInfo(int iArtist);
   bool Completed();
-  bool Successfull();
+  bool Succeeded();
   void Cancel();
   bool IsCanceled();
   int GetAlbumCount() const;
@@ -69,10 +69,10 @@ public:
    */
   bool CheckValidOrFallback(const CStdString &fallbackScraper);
 protected:
-  void FindAlbuminfo();
-  void LoadAlbuminfo();
-  void FindArtistinfo();
-  void LoadArtistinfo();
+  void FindAlbumInfo();
+  void LoadAlbumInfo();
+  void FindArtistInfo();
+  void LoadArtistInfo();
   virtual void OnStartup();
   virtual void Process();
   std::vector<CMusicAlbumInfo> m_vecAlbums;
@@ -81,7 +81,7 @@ protected:
   CStdString m_strArtist;
   int m_iAlbum;
   int m_iArtist;
-  bool m_bSuccessfull;
+  bool m_bSucceeded;
   bool m_bCanceled;
   XFILE::CFileCurl m_http;
   ADDON::ScraperPtr m_scraper;
