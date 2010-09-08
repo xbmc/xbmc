@@ -40,5 +40,6 @@ public:
   virtual int  GetPacket(uint8_t **data) = 0;
   virtual void DropPacket() = 0;
   virtual unsigned int GetSampleRate() = 0;
+  virtual unsigned int GetBufferSize() = 0;
 };
 

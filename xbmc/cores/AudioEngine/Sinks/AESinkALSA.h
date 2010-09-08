@@ -49,6 +49,7 @@ private:
 
   AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
+  bool              m_passthrough;
   enum AEChannel   *m_channelLayout;
   CStdString        m_device;
   snd_pcm_t        *m_pcm;

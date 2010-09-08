@@ -108,6 +108,7 @@ private:
 
   uint8_t           *m_frameBuffer;
   unsigned int       m_frameBufferSize;
+  unsigned int       m_bytesPerSample;
   unsigned int       m_bytesPerFrame;
   unsigned int       m_aeChannelCount;
   unsigned int       m_aePacketSamples;
