@@ -161,7 +161,8 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    CStreamsManager::Get()->WaitUntilReady();
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->WaitUntilReady();
 
     Stop(true);
 

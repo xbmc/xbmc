@@ -120,8 +120,10 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 }
 bool CDSPlayer::CloseFile()
 {
-  if (PlayerState == DSPLAYER_CLOSED)
+  if (PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_CLOSING)
     return true;
+
+  PlayerState = DSPLAYER_CLOSING;
 
   if (PlayerState == DSPLAYER_ERROR)
   {
@@ -141,8 +143,6 @@ bool CDSPlayer::CloseFile()
       }
     }
   }
-
-  PlayerState = DSPLAYER_CLOSING;
 
   g_dsGraph->CloseFile();
   
@@ -201,11 +201,18 @@ void CDSPlayer::OnStartup()
     PlayerState = DSPLAYER_ERROR;
   END_PERFORMANCE_COUNTER
 
-  m_pGraphThread.Create();
-  m_hReadyEvent.Set(); // Start playback
+  // Start playback
+  // If there's an error, the lock must be released in order to show the error dialog
+  m_hReadyEvent.Set();
 
   if (PlayerState == DSPLAYER_ERROR)
+  {
+    //CloseFile();
+    CThread::StopThread(false);
     return;
+  }
+
+  m_pGraphThread.Create();
 
   HandleStart();
 }

@@ -142,6 +142,25 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
         return E_FAIL;
       }
 
+      // Detect the type of the streaming, in order to choose the right splitter
+      // Often, streaming url does not have an extension ...
+      BeginEnumPins(CGraphFilters::Get()->Source.pBF, pEP, pPin)
+      {
+        PIN_DIRECTION pPinDir;
+        pPin->QueryDirection(& pPinDir);
+        if (pPinDir != PINDIR_OUTPUT)
+          continue;
+
+        BeginEnumMediaTypes(pPin, pEMT, pMT)
+        {
+          CStdString str;
+          g_charsetConverter.wToUTF8(GetMediaTypeName(pMT->subtype), str);
+          CLog::Log(LOGDEBUG, __FUNCTION__" URL output pin media tpye: %s", str.c_str()); 
+        }
+        EndEnumMediaTypes(pMT);
+      }
+      EndEnumPins
+
       CStdString ext = CURL(pFileItem.m_strPath).GetFileType();
       // Handle special case
       if (ext.Equals("dll"))
