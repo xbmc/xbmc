@@ -31,11 +31,6 @@
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 32
 
-//#define ALSA_DEBUG_DUMP
-#ifdef ALSA_DEBUG_DUMP
-static int fd;
-#endif
-
 static enum AEChannel ALSAChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
@@ -46,19 +41,11 @@ CAESinkALSA::CAESinkALSA() :
   /* ensure that ALSA has been initialized */
   if(!snd_config)
     snd_config_update();
-
-  #ifdef ALSA_DEBUG_DUMP
-  fd = open("/tmp/dump.alsa", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-  #endif
 }
 
 CAESinkALSA::~CAESinkALSA()
 {
   Deinitialize();
-
-  #ifdef ALSA_DEBUG_DUMP
-  close(fd);
-  #endif
 }
 
 inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
@@ -136,6 +123,15 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   /* set the channelLayout and the output device */
   format.m_channelLayout = m_channelLayout;
   m_device = device      = GetDeviceUse(format, device);
+
+  /* if we are raw, correct the data format */
+  if (format.m_dataFormat == AE_FMT_RAW)
+  {
+    format.m_dataFormat = AE_FMT_S16NE;
+    m_passthrough       = true;
+  }
+  else
+    m_passthrough = false;
 
   /* get the sound config */
   snd_config_t *config;
@@ -248,6 +244,13 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
 
   unsigned int frames          = (sampleRate / 1000);
   unsigned int periods         = ALSA_PERIODS;
+
+  if (m_passthrough)
+  {
+    frames  = 6144 / (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) / format.m_channelCount;
+    periods = 2;
+  }
+
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
   snd_pcm_uframes_t bufferSize = periodSize * periods;
 
@@ -381,10 +384,6 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
     CLog::Log(LOGERROR, "CAESinkALSA::AddPackets - snd_pcm_writei returned %d", ret);
     return 0;
   }
-
-  #ifdef ALSA_DEBUG_DUMP
-  write(fd, data, frames * m_format.m_frameSize);
-  #endif
 
   return ret;
 }

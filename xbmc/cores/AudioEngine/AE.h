@@ -81,6 +81,12 @@ public:
   unsigned int        GetFrameSize    () {return m_frameSize             ;}
   IAEPacketizer      *GetPacketizer   () {return m_packetizer            ;}
 
+  /* these are for streams that are in RAW mode */
+  enum AEDataFormat   GetSinkDataFormat() {return m_format.m_dataFormat   ;}
+  AEChLayout          GetSinkChLayout  () {return m_format.m_channelLayout;}
+  unsigned int        GetSinkChCount   () {return m_format.m_channelCount ;}
+  unsigned int        GetSinkFrameSize () {return m_format.m_frameSize    ;}
+
   void RegisterAudioCallback(IAudioCallback* pCallback);
   void UnRegisterAudioCallback();
 
@@ -124,6 +130,7 @@ private:
   IAEPacketizer            *m_packetizer;
   IAESink                  *m_sink;
   AEAudioFormat		    m_format;
+  unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
 
   /* currently playing sounds */
@@ -152,9 +159,9 @@ private:
   /* thread run stages */
   void         MixSounds        (unsigned int samples);
   void         RunOutputStage   ();
-  unsigned int RunStreamStage   (unsigned int channelCount, float *out);
-  void         RunNormalizeStage(unsigned int channelCount, float *out, unsigned int mixed);
-  void         RunBufferStage   (float *out);
+  unsigned int RunStreamStage   (unsigned int channelCount, void *out);
+  void         RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed);
+  void         RunBufferStage   (void *out);
 };
 
 /* global instance */

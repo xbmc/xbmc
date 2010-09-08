@@ -81,11 +81,13 @@ void CAEStream::Initialize()
     }
   }
 
+  enum AEDataFormat useDataFormat = m_initDataFormat;
   if (m_initDataFormat == AE_FMT_RAW)
   {
-    static AEChannel RAWLayout[2] = {AE_CH_RAW, AE_CH_NULL};
-    m_initChannelLayout = RAWLayout;
-    m_initChannelCount  = 1;
+    /* we are raw, which means we need to work in the output format */
+    useDataFormat       = AE.GetSinkDataFormat();
+    m_initChannelLayout = AE.GetSinkChLayout  ();
+    m_initChannelCount  = AE.GetSinkChCount   ();
   }
   else
   {
@@ -105,10 +107,12 @@ void CAEStream::Initialize()
   m_aePacketSamples = AE.GetFrames() * m_aeChannelCount;
   m_waterLevel      = AE.GetSampleRate() >> 1;
 
-  m_bytesPerFrame          = (CAEUtil::DataFormatToBits(m_initDataFormat) >> 3) * m_initChannelCount;
-  m_format.m_dataFormat    = m_initDataFormat;
+  m_bytesPerSample         = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
+  m_bytesPerFrame          = m_bytesPerSample * m_initChannelCount;
+
+  m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
-  m_format.m_channelCount  = m_initDataFormat == AE_FMT_RAW ? m_aeChannelCount : m_initChannelCount;
+  m_format.m_channelCount  = m_initChannelCount;
   m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = AE.GetFrames();
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
@@ -120,12 +124,12 @@ void CAEStream::Initialize()
     return;
   }
 
-  m_newPacket.samples = 0;
   if (m_initDataFormat == AE_FMT_RAW)
-    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples, 16);
+    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
   else
     m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
 
+  m_newPacket.samples = 0;
   m_packet.samples    = 0;
   m_packet.data       = NULL;
 
@@ -256,8 +260,8 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
     unsigned int consumed = ProcessFrameBuffer();
     if (consumed)
     {
-      memmove(&m_frameBuffer[consumed], m_frameBuffer, m_frameBufferSize - consumed);
       m_frameBufferSize -= consumed;
+      memmove(m_frameBuffer + consumed, m_frameBuffer, m_frameBufferSize);
     }
   }
 
@@ -274,7 +278,8 @@ unsigned int CAEStream::ProcessFrameBuffer()
     m_convertFn(m_frameBuffer, m_format.m_frameSamples, m_convertBuffer);
 
   /* resample it if we need to */
-  if (m_resample) {
+  if (m_resample)
+  {
     m_ssrcData.input_frames = m_frameBufferSize / m_bytesPerFrame;
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
@@ -301,8 +306,9 @@ unsigned int CAEStream::ProcessFrameBuffer()
 
     if (m_initDataFormat == AE_FMT_RAW)
     {
-      memcpy(m_newPacket.data + m_newPacket.samples, data, copy);
-      data += copy;
+      unsigned int size = copy * m_bytesPerSample;
+      memcpy(m_newPacket.data + (m_newPacket.samples * m_bytesPerSample), data, size);
+      data += size;
     }
     else
     {
@@ -321,7 +327,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
       {
         m_outBuffer.push_back(m_newPacket);
         m_newPacket.samples = 0;
-        m_newPacket.data    = (uint8_t*)_aligned_malloc(m_format.m_frameSamples, 16);
+        m_newPacket.data    = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
       }
       else
       {
@@ -393,15 +399,11 @@ uint8_t* CAEStream::GetFrame()
   uint8_t *ret      = (uint8_t*)m_packetPos;
   m_packet.samples -= m_aeChannelCount;
   if (m_initDataFormat == AE_FMT_RAW)
-  {
-    m_packetPos      += m_aeChannelCount;
-    m_framesBuffered -= m_aeChannelCount;
-  }
+    m_packetPos += m_bytesPerFrame;
   else
-  {
     m_packetPos += m_aeChannelCount * sizeof(float);
-    --m_framesBuffered;
-  }
+
+  --m_framesBuffered;
 
   /* if we are draining */
   if (m_draining)

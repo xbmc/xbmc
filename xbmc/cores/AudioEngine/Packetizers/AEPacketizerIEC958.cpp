@@ -105,45 +105,71 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
 {
   if (m_hasPacket || size == 0) return 0;
 
-  unsigned int room = sizeof(m_buffer) - m_bufferSize;
-  unsigned int copy = std::min(room, size);
+  unsigned int consumed = 0;
+  unsigned int offset   = 0;
+  unsigned int fsize    = 0;
 
-  memcpy(m_buffer + m_bufferSize, data, copy);
-  m_bufferSize += copy;
-
-  if (m_bufferSize == sizeof(m_buffer))
+  /* first try to work on the incoming data */
+  if (m_bufferSize == 0)
   {
-    unsigned int fsize;
-    bool had = m_hasSync;
-    unsigned int offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
-    if (!m_hasSync)
+    offset = (this->*m_syncFunc)(data, size, &fsize);
+    if (m_hasSync)
     {
-      if (had)
-        printf("%d\n", offset);
-      unsigned int left = m_bufferSize - offset;
-      memmove(m_buffer, m_buffer + offset, left);
-      m_bufferSize = left;
-      return copy;
+      ((this)->*m_packFunc)(data, fsize);
+      return offset + fsize;
     }
-
-    /* align the data with the packet */
-    if (offset > 0)
-    {
-      memmove(m_buffer, m_buffer + offset, m_bufferSize - offset);
-      m_bufferSize -= offset;
-    }
-
-    /* we need the complete frame to pack it */
-    if (m_bufferSize < fsize)
-      return copy;
-
-    /* pack the frame */
-    ((this)->*m_packFunc)(m_buffer, fsize);
-    memmove(m_buffer, m_buffer + fsize, m_bufferSize - fsize);
-    m_bufferSize -= fsize;
   }
 
-  return copy;
+  while(true)
+  {
+    /* try to sync on whats already in the buffer */
+    if (m_bufferSize > 0)
+    {
+      offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
+      if (m_hasSync) break;
+      else
+      {
+        if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
+        {
+          m_bufferSize -= offset;
+          memmove(m_buffer, m_buffer + offset, m_bufferSize);
+        }
+
+        /* if there is no data left, return */
+        if (!size) return consumed;
+      }
+    }
+
+    /* failed to sync, so buffer the data as we might not have enough to sync yet */
+    unsigned int room = sizeof(m_buffer) - m_bufferSize;
+    unsigned int copy = std::min(room, size);
+
+    memcpy(m_buffer + m_bufferSize, data, copy);
+    m_bufferSize += copy;
+    consumed     += copy;
+    data         += copy;
+    size         -= copy;
+  }
+
+  /* if we got here, we acquired sync on the buffer */
+
+  /* align the data with the packet */
+  if (offset > 0)
+  {
+    memmove(m_buffer, m_buffer + offset, m_bufferSize - offset);
+    m_bufferSize -= offset;
+  }
+
+  /* we need the complete frame to pack it */
+  if (m_bufferSize < fsize)
+    return consumed;
+
+  /* pack the frame */
+  ((this)->*m_packFunc)(m_buffer, fsize);
+  memmove(m_buffer, m_buffer + fsize, m_bufferSize - fsize);
+  m_bufferSize -= fsize;
+
+  return consumed;
 }
 
 bool CAEPacketizerIEC958::HasPacket()
@@ -170,6 +196,11 @@ int CAEPacketizerIEC958::GetPacket(uint8_t **data)
 void CAEPacketizerIEC958::DropPacket()
 {
   m_hasPacket = false;
+}
+
+unsigned int CAEPacketizerIEC958::GetBufferSize()
+{
+  return m_bufferSize;
 }
 
 inline void CAEPacketizerIEC958::SwapPacket(const bool swapData)

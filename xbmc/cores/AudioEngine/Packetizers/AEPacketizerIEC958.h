@@ -70,6 +70,7 @@ public:
   virtual int  GetPacket(uint8_t **data);
   virtual void DropPacket();
   virtual unsigned int GetSampleRate() { return m_sampleRate; }
+  virtual unsigned int GetBufferSize();
 private:
   S_PACK
   struct IEC958Packet
