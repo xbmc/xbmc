@@ -353,7 +353,16 @@ float CAESinkALSA::GetDelay()
   if (!m_pcm) return 0;
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
-  float delay = (float)frames / m_format.m_sampleRate;
+
+  if (frames < 0)
+  {
+#if SND_LIB_VERSION >= 0x000901 /* snd_pcm_forward() exists since 0.9.0rc8 */
+    snd_pcm_forward(m_pcm, -frames);
+#endif
+    frames = 0;
+  }
+
+  float delay = (double)frames / m_format.m_sampleRate;
   return delay;
 }
 

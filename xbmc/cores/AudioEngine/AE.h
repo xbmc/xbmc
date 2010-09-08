@@ -130,7 +130,6 @@ private:
   IAEPacketizer            *m_packetizer; 
   uint8_t                  *m_packetPos;
   unsigned int              m_packetFrames;
-  bool                      m_dropPacket;
 
   IAESink                  *m_sink;
   AEAudioFormat		    m_format;

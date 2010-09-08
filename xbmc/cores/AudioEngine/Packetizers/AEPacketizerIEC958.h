@@ -68,7 +68,6 @@ public:
   virtual int  AddData  (uint8_t *data, unsigned int size);
   virtual bool HasPacket();
   virtual int  GetPacket(uint8_t **data);
-  virtual void DropPacket();
   virtual unsigned int GetSampleRate() { return m_sampleRate; }
   virtual unsigned int GetBufferSize();
 private:
@@ -83,15 +82,12 @@ private:
   E_PACK
 
   DllAvUtil m_dllAvUtil;
-  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData1);
-  DECLARE_ALIGNED(16, struct IEC958Packet, m_packetData2);
+  std::list<struct IEC958Packet> m_packetBuffer;
   DECLARE_ALIGNED(16, struct IEC958Packet, m_nullPacket);
-  struct IEC958Packet *m_packetData;
 
-  uint8_t      m_buffer[MAX_IEC958_PACKET];
-  unsigned int m_bufferSize;
-  unsigned int m_packetSize;
-  bool         m_hasPacket, m_nextReady;
+  uint8_t             m_buffer[MAX_IEC958_PACKET];
+  unsigned int        m_bufferSize;
+  struct IEC958Packet m_current;
 
   typedef unsigned int (CAEPacketizerIEC958::*SPDIFSyncFunc)(uint8_t *data, unsigned int size, unsigned int *fsize);
   typedef void (CAEPacketizerIEC958::*SPDIFPackFunc)(uint8_t *data, unsigned int fsize);
@@ -104,7 +100,7 @@ private:
   bool           m_dataIsLE;
   unsigned int   m_ratio;
 
-  void SwapPacket(const bool swapData);
+  void SwapPacket(struct IEC958Packet &packet, const bool swapData);
   void PackAC3(uint8_t *data, unsigned int fsize);
   void PackDTS(uint8_t *data, unsigned int fsize);
 
