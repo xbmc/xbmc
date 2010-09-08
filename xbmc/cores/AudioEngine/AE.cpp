@@ -58,7 +58,6 @@ CAE::CAE():
   m_reOpened        (false),
   m_packetizer      (NULL ),
   m_packetFrames    (0    ),
-  m_dropPacket      (false),
   m_sink            (NULL ),
   m_rawPassthrough  (false),
   m_passthrough     (false),
@@ -460,17 +459,23 @@ void CAE::RemoveStream(CAEStream *stream)
 float CAE::GetDelay()
 {
   CSingleLock lock(m_critSection);
-  if (!m_running) return 0.0f;
+  if (!m_running)
+    return 0.0f;
 
   float delay = 0.0f;
   CSingleLock sinkLock(m_critSectionSink);
   if (m_sink) delay = m_sink->GetDelay();
+  sinkLock.Leave();
 
-  unsigned int buffered = m_bufferSamples;
+  unsigned int buffered = m_bufferSamples / m_channelCount;
   if (m_passthrough || m_rawPassthrough)
-    buffered += m_packetizer->GetBufferSize() / m_bytesPerSample;
+  {
+    buffered += m_packetizer->GetBufferSize() / m_format.m_frameSize;
+    buffered += m_packetFrames;
+  }
 
-  return delay + ((float)buffered / (float)m_format.m_sampleRate);
+  delay += ((float)buffered / (float)m_format.m_sampleRate);
+  return delay;
 }
 
 float CAE::GetVolume()
@@ -740,20 +745,26 @@ inline void CAE::RunOutputStage()
 
       /* add as much as we can to the packetizer */
       uint8_t *rawBuffer = (uint8_t*)m_buffer;
-      int wroteBytes  = m_packetizer->AddData(rawBuffer, m_bufferSamples * m_bytesPerSample);
-      int bytesLeft   = (m_bufferSamples * m_bytesPerSample) - wroteBytes;
-      memmove(rawBuffer, rawBuffer + wroteBytes, bytesLeft);
-      m_bufferSamples = bytesLeft / m_bytesPerSample;
+      int wroteBytes = m_packetizer->AddData(rawBuffer, m_bufferSamples * m_bytesPerSample);
+      if (wroteBytes)
+      {
+        int bytesLeft   = (m_bufferSamples * m_bytesPerSample) - wroteBytes;
+        memmove(rawBuffer, rawBuffer + wroteBytes, bytesLeft);
+        m_bufferSamples = bytesLeft / m_bytesPerSample;
+      }
 
       /* if we have no frames left to output */
       if (m_packetFrames == 0)
       {
+//        if (!m_packetizer->HasPacket())
+//          continue;
+
         /* get the next packet */
-        m_dropPacket = m_packetizer->HasPacket();
         unsigned int size = m_packetizer->GetPacket(&m_packetPos);
         m_packetFrames = size / m_format.m_frameSize;
       }
 
+      /* the packetizer will ALWAYS return a packet, even if it is empty */
       unsigned int use = std::min(m_format.m_frames, m_packetFrames);
       unsigned int wrote;
       if (m_sink)
@@ -763,9 +774,6 @@ inline void CAE::RunOutputStage()
 
       m_packetPos    += wrote * m_format.m_frameSize;
       m_packetFrames -= wrote;
-
-      if (m_packetFrames == 0 && m_dropPacket)
-        m_packetizer->DropPacket();
     }
   }
 }
