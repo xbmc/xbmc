@@ -90,11 +90,14 @@ void CAEStream::Initialize()
   else
   {
     /* no channel layout provided, so guess */
-    m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
     if (!m_initChannelLayout)
     {
-      m_valid = false;
-      return;
+      m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
+      if (!m_initChannelLayout)
+      {
+        m_valid = false;
+        return;
+      }
     }
   }
 
