@@ -68,6 +68,15 @@ void CGUITextureGLES::Begin(color_t color)
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
+  // Setup Colors
+  for (int i = 0; i < 4; i++)
+  {
+    m_col[i][0] = (GLubyte)GET_R(color);
+    m_col[i][1] = (GLubyte)GET_G(color);
+    m_col[i][2] = (GLubyte)GET_B(color);
+    m_col[i][3] = (GLubyte)GET_A(color);
+  }
+
   if (m_diffuse.size())
   {
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
@@ -91,14 +100,7 @@ void CGUITextureGLES::Begin(color_t color)
       g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
   }
-  // Setup Colors
-  for (int i = 0; i < 4; i++)
-  {
-    m_col[i][0] = (GLubyte)GET_R(color);
-    m_col[i][1] = (GLubyte)GET_G(color);
-    m_col[i][2] = (GLubyte)GET_B(color);
-    m_col[i][3] = (GLubyte)GET_A(color);
-  }
+
 }
 
 void CGUITextureGLES::End()

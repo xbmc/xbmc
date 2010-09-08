@@ -663,9 +663,9 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   VerifyGLState();
   glEnable(GL_BLEND);
-  glFlush();
 
   g_graphicsContext.EndPaint();
+  glFinish();
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
