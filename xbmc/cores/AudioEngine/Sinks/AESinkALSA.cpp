@@ -165,9 +165,9 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const CStdString devi
   tmp.m_channelCount = GetChannelCount(format);
 
   return (
-    tmp.m_sampleRate   == m_initFormat.m_sampleRate   &&
-    tmp.m_dataFormat   == m_initFormat.m_dataFormat   &&
-    tmp.m_channelCount == m_initFormat.m_channelCount &&
+    tmp.m_sampleRate   == m_initFormat.m_sampleRate    &&
+    tmp.m_dataFormat   == m_initFormat.m_dataFormat    &&
+    tmp.m_channelCount == m_initFormat.m_channelCount  &&
     GetDeviceUse(tmp, device) == m_device
   );
 }

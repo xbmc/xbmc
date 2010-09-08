@@ -79,7 +79,7 @@ CAE::~CAE()
   }
 }
 
-bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
+bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
 {
   /* lock the sink so the thread gets held up */
   CSingleLock sinkLock(m_critSectionSink);
@@ -100,6 +100,11 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/)
     case  9: stdChLayout = AE_CH_LAYOUT_7_0; break;
     case 10: stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
+
+  if (forceRaw)
+    m_rawPassthrough = true;
+  else
+    m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
 
   /* choose a sample rate based on the oldest stream or if none, the requested sample rate */
   if (!m_rawPassthrough && !m_streams.empty())
@@ -282,8 +287,7 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   CSingleLock lock(m_critSection);
   if (dataFormat == AE_FMT_RAW)
   {
-    m_rawPassthrough = true;
-    OpenSink(sampleRate);
+    OpenSink(sampleRate, true);
     stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
     m_streams.push_front(stream);
   }
@@ -425,13 +429,19 @@ bool CAE::IsPlaying(CAESound *sound)
 
 void CAE::RemoveStream(CAEStream *stream)
 {
+  list<CAEStream*>::iterator itt;
   CSingleLock lock(m_critSection);
-  m_streams.remove(stream);
-  if (stream->GetDataFormat() == AE_FMT_RAW)
-  {
-    m_passthrough = false;
-    OpenSink();
-  }
+
+  /* ensure the stream still exists */
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    if (*itt == stream)
+    {
+      m_streams.erase(itt);
+      lock.Leave();
+      OpenSink();
+
+      return;
+    }
 }
 
 float CAE::GetDelay()
@@ -585,8 +595,16 @@ void CAE::Run()
       DECLARE_ALIGNED(16, uint8_t, out[size]);
       memset(out, 0, sizeof(out));
 
-      mixed = RunStreamStage(channelCount, out);
-      if (!m_rawPassthrough)
+      bool restart = false;
+      mixed = RunStreamStage(channelCount, out, restart);
+      if (restart)
+      {
+        mixLock.Leave();
+        OpenSink();
+        continue;
+      }
+
+      if (!m_rawPassthrough && mixed)
         RunNormalizeStage(channelCount, out, mixed);
     mixLock.Leave();
 
@@ -724,14 +742,22 @@ inline void CAE::RunOutputStage()
   }
 }
 
-inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out)
+inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
   if (m_rawPassthrough)
   {
     if (m_streams.empty()) return 0;
     CAEStream *stream = m_streams.front();
+    if (stream->m_delete)
+    {
+      delete stream;
+      restart = true;
+      return 0;
+    }
+
     uint8_t *frame = stream->GetFrame();
     if (!frame) return 0;
+
     memcpy(out, frame, m_format.m_frameSize);
     return 1;
   }
@@ -745,7 +771,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out)
   {
     CAEStream *stream = *itt;
 
-    /* delete streams that are flagged for deletion */
+    /* skip streams that are flagged for deletion */
     if (stream->m_delete)
     {
       itt = m_streams.erase(itt);
@@ -754,7 +780,8 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out)
     }
 
     /* dont process streams that are paused */
-    if (stream->IsPaused()) {
+    if (stream->IsPaused())
+    {
       ++itt;
       continue;
     }

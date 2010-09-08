@@ -70,6 +70,7 @@ public:
   unsigned int      GetChannelCount() { return m_format.m_channelCount; }
   unsigned int      GetSampleRate()   { return m_format.m_sampleRate;   }
   enum AEDataFormat GetDataFormat()   { return m_format.m_dataFormat;   }
+  bool              IsRaw()           { return m_initDataFormat == AE_FMT_RAW; }
 protected:
   friend class CAE;
   CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
