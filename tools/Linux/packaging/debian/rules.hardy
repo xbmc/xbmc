@@ -45,7 +45,7 @@ binary: binary-arch binary-indep
 
 binary-indep:
 	dh binary-indep --until dh_installdirs 
-	$(MAKE) install-web install-datas install-livedatas prefix=$(CURDIR)/debian/tmp/usr/
+	$(MAKE) install-datas install-livedatas prefix=$(CURDIR)/debian/tmp/usr/
 	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications $(CURDIR)/debian/tmp/usr/share/pixmaps
 	cp $(CURDIR)/tools/Linux/xbmc.png $(CURDIR)/debian/tmp/usr/share/pixmaps/
 	cp $(CURDIR)/tools/Linux/xbmc.desktop $(CURDIR)/debian/tmp/usr/share/applications/

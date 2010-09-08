@@ -507,7 +507,7 @@ install-bin: xbmc.bin # developement convenience target
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
-install: install-binaries install-arch install-datas install-web
+install: install-binaries install-arch install-datas
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
