@@ -57,6 +57,8 @@ CAE::CAE():
   m_running         (false),
   m_reOpened        (false),
   m_packetizer      (NULL ),
+  m_packetFrames    (0    ),
+  m_dropPacket      (false),
   m_sink            (NULL ),
   m_rawPassthrough  (false),
   m_passthrough     (false),
@@ -99,6 +101,18 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
     case  8: stdChLayout = AE_CH_LAYOUT_5_1; break;
     case  9: stdChLayout = AE_CH_LAYOUT_7_0; break;
     case 10: stdChLayout = AE_CH_LAYOUT_7_1; break;
+  }
+
+  /* remove any deleted streams */
+  list<CAEStream*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  {
+    if ((*itt)->m_delete)
+    {
+      CAEStream *stream = *itt;
+      itt = m_streams.erase(itt);
+      delete stream;
+    }
   }
 
   if (forceRaw)
@@ -213,7 +227,6 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
     sitt->second->Initialize();
 
   /* re-init streams */
-  list<CAEStream*>::iterator itt;
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     (*itt)->Initialize();
 
@@ -457,7 +470,7 @@ float CAE::GetDelay()
   if (m_passthrough || m_rawPassthrough)
     buffered += m_packetizer->GetBufferSize() / m_bytesPerSample;
 
-  return delay + ((float)buffered / m_format.m_sampleRate);
+  return delay + ((float)buffered / (float)m_format.m_sampleRate);
 }
 
 float CAE::GetVolume()
@@ -724,20 +737,35 @@ inline void CAE::RunOutputStage()
     else
     {
       /* RAW output */
-      uint8_t *rawBuffer = (uint8_t*)m_buffer;
-      int wroteBytes   = m_packetizer->AddData(rawBuffer, m_format.m_frames * m_format.m_frameSize);
-      int bytesLeft    = (m_bufferSamples * m_bytesPerSample) - wroteBytes;
-      memmove(rawBuffer, rawBuffer + wroteBytes, bytesLeft);
-      m_bufferSamples -= wroteBytes / m_bytesPerSample;
 
-      if (m_packetizer->HasPacket())
+      /* add as much as we can to the packetizer */
+      uint8_t *rawBuffer = (uint8_t*)m_buffer;
+      int wroteBytes  = m_packetizer->AddData(rawBuffer, m_bufferSamples * m_bytesPerSample);
+      int bytesLeft   = (m_bufferSamples * m_bytesPerSample) - wroteBytes;
+      memmove(rawBuffer, rawBuffer + wroteBytes, bytesLeft);
+      m_bufferSamples = bytesLeft / m_bytesPerSample;
+
+      /* if we have no frames left to output */
+      if (m_packetFrames == 0)
       {
-        uint8_t *packet;
-        unsigned int size = m_packetizer->GetPacket(&packet);
-        if (m_sink)
-          m_sink->AddPackets(packet, size / m_format.m_frameSize);
-        m_packetizer->DropPacket();
+        /* get the next packet */
+        m_dropPacket = m_packetizer->HasPacket();
+        unsigned int size = m_packetizer->GetPacket(&m_packetPos);
+        m_packetFrames = size / m_format.m_frameSize;
       }
+
+      unsigned int use = std::min(m_format.m_frames, m_packetFrames);
+      unsigned int wrote;
+      if (m_sink)
+        wrote = m_sink->AddPackets(m_packetPos, use);
+      else
+        wrote = use;
+
+      m_packetPos    += wrote * m_format.m_frameSize;
+      m_packetFrames -= wrote;
+
+      if (m_packetFrames == 0 && m_dropPacket)
+        m_packetizer->DropPacket();
     }
   }
 }
@@ -748,9 +776,10 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bo
   {
     if (m_streams.empty()) return 0;
     CAEStream *stream = m_streams.front();
-    if (stream->m_delete)
+    /* if the stream is to be deleted, or is not raw */
+    if (stream->m_delete || !stream->IsRaw())
     {
-      delete stream;
+      /* flag to have the sink re-started */
       restart = true;
       return 0;
     }

@@ -59,14 +59,22 @@ CAEPacketizerIEC958::CAEPacketizerIEC958() :
   m_dataType  (IEC958_TYPE_NULL),
   m_syncFunc  (&CAEPacketizerIEC958::DetectType),
   m_packFunc  (NULL ),
-  m_sampleRate(48000)
+  m_sampleRate(48000),
+  m_ratio     (4)
 {
   m_dllAvUtil.Load();
 
-  m_packetData.m_preamble     = IEC958_PREAMBLE;
-  m_packetData.m_type         = IEC958_TYPE_NULL;
-  m_packetData.m_length       = 0;
-  bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
+  m_nullPacket.m_preamble     = IEC958_PREAMBLE;
+  m_nullPacket.m_type         = IEC958_TYPE_NULL;
+  m_nullPacket.m_length       = 0;
+  bzero(m_nullPacket.m_data, sizeof(m_nullPacket.m_data));
+  m_packetData = &m_nullPacket;
+  SwapPacket(false);
+
+  memcpy(&m_packetData1, &m_nullPacket, sizeof(struct IEC958Packet));
+  memcpy(&m_packetData2, &m_nullPacket, sizeof(struct IEC958Packet));
+
+  m_packetData = &m_packetData1;
 }
 
 CAEPacketizerIEC958::~CAEPacketizerIEC958()
@@ -94,11 +102,9 @@ void CAEPacketizerIEC958::Reset()
   m_dataType   = IEC958_TYPE_NULL;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
 
-  m_packetData.m_preamble     = IEC958_PREAMBLE;
-  m_packetData.m_type         = IEC958_TYPE_NULL;
-  m_packetData.m_length       = 0;
-  bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
-  SwapPacket(false);
+  memcpy(&m_packetData1, &m_nullPacket, sizeof(struct IEC958Packet));
+  memcpy(&m_packetData2, &m_nullPacket, sizeof(struct IEC958Packet));
+  m_packetData = &m_packetData1;
 }
 
 int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
@@ -110,38 +116,23 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
   unsigned int fsize    = 0;
 
   /* first try to work on the incoming data */
-  if (m_bufferSize == 0)
+  if (m_bufferSize == 0 && !m_hasPacket)
   {
     offset = (this->*m_syncFunc)(data, size, &fsize);
-    if (m_hasSync)
+    if (m_hasSync && size >= fsize)
     {
       ((this)->*m_packFunc)(data, fsize);
+      m_hasPacket = true;
       return offset + fsize;
     }
   }
 
-  while(true)
+  unsigned int room = sizeof(m_buffer) - m_bufferSize;
+  while(1)
   {
-    /* try to sync on whats already in the buffer */
-    if (m_bufferSize > 0)
-    {
-      offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
-      if (m_hasSync) break;
-      else
-      {
-        if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
-        {
-          m_bufferSize -= offset;
-          memmove(m_buffer, m_buffer + offset, m_bufferSize);
-        }
+    if (!size)
+      return consumed;
 
-        /* if there is no data left, return */
-        if (!size) return consumed;
-      }
-    }
-
-    /* failed to sync, so buffer the data as we might not have enough to sync yet */
-    unsigned int room = sizeof(m_buffer) - m_bufferSize;
     unsigned int copy = std::min(room, size);
 
     memcpy(m_buffer + m_bufferSize, data, copy);
@@ -149,6 +140,19 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
     consumed     += copy;
     data         += copy;
     size         -= copy;
+    room         -= copy;
+
+    offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
+    if (m_hasSync) break;
+    else
+    {
+      /* if the buffer is full, or the offset < the buffer size */
+      if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
+      {
+        m_bufferSize -= offset;
+        memmove(m_buffer, m_buffer + offset, m_bufferSize);
+      }
+    }
   }
 
   /* if we got here, we acquired sync on the buffer */
@@ -160,6 +164,9 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
     m_bufferSize -= offset;
   }
 
+  /* update the buffer size ratio */
+  m_ratio = sizeof(struct IEC958Packet) / fsize;
+
   /* we need the complete frame to pack it */
   if (m_bufferSize < fsize)
     return consumed;
@@ -168,6 +175,7 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
   ((this)->*m_packFunc)(m_buffer, fsize);
   memmove(m_buffer, m_buffer + fsize, m_bufferSize - fsize);
   m_bufferSize -= fsize;
+  m_hasPacket = true;
 
   return consumed;
 }
@@ -180,17 +188,19 @@ bool CAEPacketizerIEC958::HasPacket()
 int CAEPacketizerIEC958::GetPacket(uint8_t **data)
 {
   /* if we dont have a packet, return a null packet */
-  if (!m_hasPacket && m_packetData.m_type != IEC958_TYPE_NULL)
+  if (!m_hasPacket)
   {
-    m_packetData.m_preamble = IEC958_PREAMBLE;
-    m_packetData.m_type     = IEC958_TYPE_NULL;
-    m_packetData.m_length   = 0;
-    bzero(m_packetData.m_data, sizeof(m_packetData.m_data));
-    SwapPacket(false);
+    *data = (uint8_t*)&m_nullPacket;
+    return sizeof(struct IEC958Packet);
   }
 
-  *data = (uint8_t*)&m_packetData;
-  return sizeof(m_packetData);
+  *data = (uint8_t*)m_packetData;
+  if (m_packetData == &m_packetData1)
+    m_packetData = &m_packetData2;
+  else
+    m_packetData = &m_packetData1;
+
+  return sizeof(struct IEC958Packet);
 }
 
 void CAEPacketizerIEC958::DropPacket()
@@ -200,19 +210,19 @@ void CAEPacketizerIEC958::DropPacket()
 
 unsigned int CAEPacketizerIEC958::GetBufferSize()
 {
-  return m_bufferSize;
+  return m_bufferSize * m_ratio;
 }
 
 inline void CAEPacketizerIEC958::SwapPacket(const bool swapData)
 {
 #ifndef __BIG_ENDIAN__
-  m_packetData.m_preamble = Endian_Swap32(m_packetData.m_preamble);
-  m_packetData.m_type     = Endian_Swap16(m_packetData.m_type    );
-  m_packetData.m_length   = Endian_Swap16(m_packetData.m_length  );
+  m_packetData->m_preamble = Endian_Swap32(m_packetData->m_preamble);
+  m_packetData->m_type     = Endian_Swap16(m_packetData->m_type    );
+  m_packetData->m_length   = Endian_Swap16(m_packetData->m_length  );
   if (swapData)
   {
-    uint16_t *pos = (uint16_t*)m_packetData.m_data;
-    for(unsigned int i = 0; i < sizeof(m_packetData.m_data); i += 2, ++pos)
+    uint16_t *pos = (uint16_t*)m_packetData->m_data;
+    for(unsigned int i = 0; i < sizeof(m_packetData->m_data); i += 2, ++pos)
       *pos = Endian_Swap16(*pos);
   }
 #endif
@@ -221,11 +231,11 @@ inline void CAEPacketizerIEC958::SwapPacket(const bool swapData)
 /* PACK FUNCTIONS */
 void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
 {
-  m_packetData.m_preamble = IEC958_PREAMBLE;
-  m_packetData.m_type     = m_dataType;
-  m_packetData.m_length   = fsize;
-  memcpy(m_packetData.m_data, data, fsize);
-  bzero (m_packetData.m_data + fsize, sizeof(m_packetData.m_data) - fsize);
+  m_packetData->m_preamble = IEC958_PREAMBLE;
+  m_packetData->m_type     = m_dataType;
+  m_packetData->m_length   = fsize;
+  memcpy(m_packetData->m_data, data, fsize);
+  bzero (m_packetData->m_data + fsize, sizeof(m_packetData->m_data) - fsize);
 
   SwapPacket(true);
   m_hasPacket = true;
@@ -233,11 +243,11 @@ void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
 
 void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
 {
-  m_packetData.m_preamble = IEC958_PREAMBLE;
-  m_packetData.m_type     = m_dataType;
-  m_packetData.m_length   = fsize;
-  memcpy(m_packetData.m_data, data, fsize);
-  bzero (m_packetData.m_data + fsize, sizeof(m_packetData.m_data) - fsize);
+  m_packetData->m_preamble = IEC958_PREAMBLE;
+  m_packetData->m_type     = m_dataType;
+  m_packetData->m_length   = fsize;
+  memcpy(m_packetData->m_data, data, fsize);
+  bzero (m_packetData->m_data + fsize, sizeof(m_packetData->m_data) - fsize);
 
   /* swap the data too if the stream is BE */
   SwapPacket(!m_dataIsLE);

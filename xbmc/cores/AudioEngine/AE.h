@@ -127,7 +127,11 @@ private:
   unsigned int              m_frameSize;
 
   /* the sink, its format information, and conversion function */
-  IAEPacketizer            *m_packetizer;
+  IAEPacketizer            *m_packetizer; 
+  uint8_t                  *m_packetPos;
+  unsigned int              m_packetFrames;
+  bool                      m_dropPacket;
+
   IAESink                  *m_sink;
   AEAudioFormat		    m_format;
   unsigned int              m_bytesPerSample;
