@@ -69,12 +69,14 @@ public:
   virtual bool HasPacket();
   virtual int  GetPacket(uint8_t **data);
   virtual unsigned int GetSampleRate() { return m_sampleRate; }
+  virtual unsigned int GetFrameSize () { return m_fsize     ; }
   virtual unsigned int GetBufferSize();
 private:
   S_PACK
   struct IEC958Packet
   {
-    uint32_t m_preamble;
+    uint16_t m_preamble1;
+    uint16_t m_preamble2;
     uint16_t m_type;
     uint16_t m_length;
     uint8_t  m_data[MAX_IEC958_PACKET - 8];
@@ -98,6 +100,7 @@ private:
   SPDIFPackFunc  m_packFunc;
   unsigned int   m_sampleRate;
   bool           m_dataIsLE;
+  unsigned int   m_fsize;
   unsigned int   m_ratio;
 
   void SwapPacket(struct IEC958Packet &packet, const bool swapData);

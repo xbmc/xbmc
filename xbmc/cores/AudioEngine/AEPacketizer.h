@@ -39,6 +39,7 @@ public:
   virtual bool HasPacket() = 0;
   virtual int  GetPacket(uint8_t **data) = 0;
   virtual unsigned int GetSampleRate() = 0;
+  virtual unsigned int GetFrameSize () = 0;
   virtual unsigned int GetBufferSize() = 0;
 };
 

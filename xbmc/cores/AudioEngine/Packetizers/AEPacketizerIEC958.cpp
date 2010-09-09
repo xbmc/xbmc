@@ -21,7 +21,8 @@
 
 #include "AEPacketizerIEC958.h"
 
-#define IEC958_PREAMBLE   0xF8724E1F
+#define IEC958_PREAMBLE1  0xF872
+#define IEC958_PREAMBLE2  0x4E1F
 #define DTS_PREAMBLE_14BE 0x1FFFE800
 #define DTS_PREAMBLE_14LE 0xFF1F00E8
 #define DTS_PREAMBLE_16BE 0x7FFE8001
@@ -58,11 +59,13 @@ CAEPacketizerIEC958::CAEPacketizerIEC958() :
   m_syncFunc  (&CAEPacketizerIEC958::DetectType),
   m_packFunc  (NULL ),
   m_sampleRate(48000),
-  m_ratio     (4)
+  m_fsize     (1536 ),
+  m_ratio     (4    )
 {
   m_dllAvUtil.Load();
 
-  m_nullPacket.m_preamble     = IEC958_PREAMBLE;
+  m_nullPacket.m_preamble1    = IEC958_PREAMBLE1;
+  m_nullPacket.m_preamble2    = IEC958_PREAMBLE2;
   m_nullPacket.m_type         = IEC958_TYPE_NULL;
   m_nullPacket.m_length       = 0;
   bzero(m_nullPacket.m_data, sizeof(m_nullPacket.m_data));
@@ -91,6 +94,9 @@ void CAEPacketizerIEC958::Reset()
   m_hasSync    = false;
   m_dataType   = IEC958_TYPE_NULL;
   m_syncFunc   = &CAEPacketizerIEC958::DetectType;
+  m_sampleRate = 48000;
+  m_fsize      = 1536;
+  m_ratio      = 4;
   m_packetBuffer.clear();
 }
 
@@ -163,6 +169,7 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
 
   /* update the buffer size ratio */
   m_ratio = sizeof(struct IEC958Packet) / fsize;
+  m_fsize = fsize;
 
   /* we need the complete frame to pack it */
   if (m_bufferSize < fsize)
@@ -206,17 +213,12 @@ unsigned int CAEPacketizerIEC958::GetBufferSize()
 
 inline void CAEPacketizerIEC958::SwapPacket(struct IEC958Packet &packet, const bool swapData)
 {
-#ifndef __BIG_ENDIAN__
-  packet.m_preamble = Endian_Swap32(packet.m_preamble);
-  packet.m_type     = Endian_Swap16(packet.m_type    );
-  packet.m_length   = Endian_Swap16(packet.m_length  );
   if (swapData)
   {
     uint16_t *pos = (uint16_t*)packet.m_data;
     for(unsigned int i = 0; i < sizeof(packet.m_data); i += 2, ++pos)
       *pos = Endian_Swap16(*pos);
   }
-#endif
 }
 
 /* PACK FUNCTIONS */
@@ -224,9 +226,10 @@ void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
 {
   struct IEC958Packet packet;
 
-  packet.m_preamble = IEC958_PREAMBLE;
-  packet.m_type     = m_dataType;
-  packet.m_length   = fsize;
+  packet.m_preamble1 = IEC958_PREAMBLE1;
+  packet.m_preamble2 = IEC958_PREAMBLE2;
+  packet.m_type      = m_dataType;
+  packet.m_length    = fsize;
   memcpy(packet.m_data, data, fsize);
   bzero (packet.m_data + fsize, sizeof(packet.m_data) - fsize);
 
@@ -238,9 +241,10 @@ void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
 {
   struct IEC958Packet packet;
 
-  packet.m_preamble = IEC958_PREAMBLE;
-  packet.m_type     = m_dataType;
-  packet.m_length   = fsize;
+  packet.m_preamble1 = IEC958_PREAMBLE1;
+  packet.m_preamble2 = IEC958_PREAMBLE2;
+  packet.m_type      = m_dataType;
+  packet.m_length    = fsize;
   memcpy(packet.m_data, data, fsize);
   bzero (packet.m_data + fsize, sizeof(packet.m_data) - fsize);
 
@@ -321,13 +325,13 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
     ) continue;
 
     /* get the details we need to check crc1 and framesize */
-    uint16_t     bitrate   = AC3Bitrates[frmsizecod >> 1];
+    unsigned int bitRate = AC3Bitrates[frmsizecod >> 1];
     unsigned int framesize = 0;
     switch(fscod)
     {
-      case 0: framesize = bitrate * 2; break;
-      case 1: framesize = (320 * bitrate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
-      case 2: framesize = bitrate * 4; break;
+      case 0: framesize = bitRate * 2; break;
+      case 1: framesize = (320 * bitRate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
+      case 2: framesize = bitRate * 4; break;
     }
 
     *fsize = framesize * 2;
