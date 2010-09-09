@@ -26,7 +26,7 @@ all: $(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS)
 else
@@ -35,7 +35,7 @@ endif
 
 $(PLASMA-OUT): $(PLASMA-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS)
 else
@@ -44,7 +44,7 @@ endif
 
 $(EUPHORIA-OUT): $(EUPHORIA-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS)/src/pngimage.o $(RSXS-OBJS) -lpng
 else
