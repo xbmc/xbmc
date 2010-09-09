@@ -57,7 +57,43 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
-#ifndef HAS_GLES
+#ifdef HAS_GLES
+  /** OpenGL ES does not support strided texture input. Make a copy without stride **/
+  if (stride != width)
+  {
+    int bytesPerPixel;
+    switch (externalFormat)
+    {
+    case GL_RGBA:
+      bytesPerPixel = 4;
+      break;
+    case GL_RGB:
+      bytesPerPixel = 3;
+      break;
+    default:
+      bytesPerPixel = 1;
+    }
+
+    int bytesPerLine = bytesPerPixel * width;
+
+    std::vector<char> pixelVector( width * height * bytesPerLine ); // reserve temporary memory for unstrided image
+    const char *src = reinterpret_cast<const char *>(pixels);
+    char *dst = &pixelVector[0];
+    for (int y = 0;y < height;++y)
+    {
+      memcpy(dst, src, bytesPerLine);
+      src += stride;
+      dst += bytesPerLine;
+    }
+
+    const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    stride = width;
+  }
+  else	// No Stride Needed
+  {
+	const GLvoid *pixelData = pixels;
+  }
+#else
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(externalFormat == GL_RGBA
   || externalFormat == GL_BGRA)
@@ -67,6 +103,8 @@ static void LoadTexture(GLenum target
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+
+  const GLvoid *pixelData = pixels;
 #endif
 
   glTexImage2D   (target, 0, internalFormat
@@ -76,19 +114,19 @@ static void LoadTexture(GLenum target
   glTexSubImage2D(target, 0
                 , 0, 0, width, height
                 , externalFormat, GL_UNSIGNED_BYTE
-                , pixels);
+                , pixelData);
 
   if(height < height2)
     glTexSubImage2D( target, 0
                    , 0, height, width, 1
                    , externalFormat, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixels + stride * (height-1));
+                   , (unsigned char*)pixelData + stride * (height-1));
 
   if(width  < width2)
     glTexSubImage2D( target, 0
                    , width, 0, 1, height
                    , externalFormat, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixels + stride - 1);
+                   , (unsigned char*)pixelData + stride - 1);
 
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -125,7 +163,11 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+#ifdef HAS_GLES
+            , GL_RGBA
+#else
             , GL_BGRA
+#endif
             , rgba);
   free(rgba);
 
@@ -199,7 +241,11 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
             , o->width * 4
             , &m_u, &m_v
             , GL_RGBA
+#ifdef HAS_GLES
+            , GL_RGBA
+#else
             , GL_BGRA
+#endif
             , rgba + min_x + min_y * o->width);
 
   free(rgba);
