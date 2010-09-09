@@ -25,28 +25,39 @@ if [ ! -n "$NvidiaHDMISecondGen" ] && [ ! -n "$NvidiaHDMIFirstGen" ] ; then
         exit 0
 fi
 
-
 HDMICARD=$(aplay -l | grep 'NVIDIA HDMI' | awk -F: '{ print $1 }' | awk '{ print $2 }')
 HDMIDEVICE=$(aplay -l | grep 'NVIDIA HDMI' | awk -F: '{ print $2 }' | awk '{ print $5 }')
 
-DIGITALCONTROL="VT1708S Digital"
+if [ -n "$NvidiaHDMIFirstGen" ] ; then
+	# "VT1708S Digital"
+	# "ALC662 rev1 Digital"
+	# "ALC1200 Digital"
+	# "ALC662 Digital"
+	# "ALC889A Digital"
+	DIGITALCONTROL="VT1708S Digital\|ALC662 rev1 Digital\|ALC1200 Digital\|ALC662 Digital\|ALC889A Digital"
+fi
+
 if [ -n "$NvidiaHDMISecondGen" ] ; then
+	# "ALC888 Digital"
 	DIGITALCONTROL="ALC888 Digital"
 fi
+
 
 #
 # Setup kernel module parameters
 #
 
-if ! grep -i -q snd-hda-intel /etc/modprobe.d/alsa-base.conf ; then
-	if [ $HDMICARD,$HDMIDEVICE == 1,3 ]; then
-		echo 'options snd-hda-intel enable_msi=0 probe_mask=0xffff,0xfff2' >> /etc/modprobe.d/alsa-base.conf
-	elif [ $HDMICARD,$HDMIDEVICE == 0,3 ]; then
-		echo 'options snd-hda-intel enable_msi=0 probe_mask=0xfff2' >> /etc/modprobe.d/alsa-base.conf
-	elif [ $HDMICARD,$HDMIDEVICE == 2,3 ]; then
-		echo 'options snd-hda-intel enable_msi=0 probe_mask=0xffff,0xffff,0xfff2' >> /etc/modprobe.d/alsa-base.conf
-#	else
-#		echo "No matching value detected"
+if [ -n "$NvidiaHDMISecondGen" ] ; then
+	if ! grep -i -q snd-hda-intel /etc/modprobe.d/alsa-base.conf ; then
+		if [ $HDMICARD,$HDMIDEVICE == 1,3 ]; then
+			echo 'options snd-hda-intel enable_msi=0 probe_mask=0xffff,0xfff2' >> /etc/modprobe.d/alsa-base.conf
+		elif [ $HDMICARD,$HDMIDEVICE == 0,3 ]; then
+			echo 'options snd-hda-intel enable_msi=0 probe_mask=0xfff2' >> /etc/modprobe.d/alsa-base.conf
+		elif [ $HDMICARD,$HDMIDEVICE == 2,3 ]; then
+			echo 'options snd-hda-intel enable_msi=0 probe_mask=0xffff,0xffff,0xfff2' >> /etc/modprobe.d/alsa-base.conf
+	#	else
+	#		echo "No matching value detected"
+		fi
 	fi
 fi
 
