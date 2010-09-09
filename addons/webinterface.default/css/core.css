@@ -222,6 +222,18 @@ div.imgWrapper div.inner {
 	opacity: 1;
 	}
 
+/* Effects */
+
+#topScrollFade {
+	position: fixed;
+	top: 51px;
+	height: 33px;
+	z-index: 101;
+	left: 0;
+	right: 0;
+	background: url('/images/top-fade.png') top left repeat-x;
+	}
+
 /* Now Playing */
 
 #footerPopover {
