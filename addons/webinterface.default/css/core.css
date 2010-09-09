@@ -163,6 +163,65 @@ div.imgWrapper div.inner {
 	padding: 1px 0;
 	}
 
+/* Movie Overlay */
+
+.moviePopoverContainer {
+	z-index: 3000; /* Above overlay */
+	border: 1px solid #000;
+	padding: 10px;
+	margin: 10px;
+	position: fixed;
+	background: #3f3f3f;
+	top: 50px;
+	bottom: 150px;
+	left: 10%;
+	right: 10%;
+	opacity: 0.9;
+	}
+
+.moviePopoverContainer .closeButton {
+	float: right;
+	cursor: pointer;
+	}
+
+.moviePopoverContainer .movieCover {
+	height: 100%;
+	padding-right: 20px;
+	float: left;
+	z-index: 3100;
+	}
+
+.moviePopoverContainer .movieTitle {
+	font-size: 24px;
+	font-weight: 700;
+	color: #fff;
+	margin: 0;
+	}
+
+.moviePopoverContainer .runtime,
+.moviePopoverContainer .director,
+.moviePopoverContainer .genre,
+.moviePopoverContainer .plot {
+	color: #fff;
+	}
+
+.movieTitle .year {
+	font-weight: 400;
+	font-size: 18px;
+	}
+
+.playIcon {
+	background: url('/images/play-icon.png') center center no-repeat;
+	position: absolute;
+	z-index: 3500;
+	cursor: pointer;
+	opacity: 0.8;
+	}
+
+.playIcon:hover {
+	opacity: 1;
+	}
+
 /* Now Playing */
 
 #footerPopover {

@@ -32,12 +32,14 @@ MediaLibrary.prototype = {
 			$('#musicLibrary').click(jQuery.proxy(this.musicLibraryOpen, this));
 			$('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
 			$('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
+			$('#overlay').click(jQuery.proxy(this.hideOverlay, this));
+			$(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
 		},
 		resetPage: function() {
 			$('#musicLibrary').removeClass('selected');
 			$('#movieLibrary').removeClass('selected');
 			$('#tvshowLibrary').removeClass('selected');
-			$('#overlay').hide();
+			this.hideOverlay();
 		},
 		musicLibraryOpen: function(event) {
 			this.resetPage();
@@ -68,9 +70,12 @@ MediaLibrary.prototype = {
 				libraryContainer.css('z-index', 100);
 			}
 		},
+		getThumbnailPath: function(thumbnail) {
+			return thumbnail ? ('/vfs/' + thumbnail) : DEFAULT_ALBUM_COVER;
+		},
 		generateThumb: function(type, thumbnail, album_title, album_artist) {
 			var floatableAlbum = $('<div>');
-			var path = thumbnail ? ('/vfs/' + thumbnail) : DEFAULT_ALBUM_COVER;
+			var path = this.getThumbnailPath(thumbnail);
 			var title = album_title;
 			var artist = album_artist;
 			if (title.length > 18 && !(title.length <= 21)) {
@@ -164,8 +169,76 @@ MediaLibrary.prototype = {
 				$('#albumDetails' + event.data.album.albumid).css('z-index', 100);
 			}
 		},
+		hideOverlay: function(event) {
+			if (this.activeCover) {
+				$(this.activeCover).remove();
+				this.activeCover = null;
+			}
+			$('#overlay').hide();
+		},
+		updatePlayButtonLocation: function(event) {
+			var movieContainer = $('.movieCover');
+			if (movieContainer.length > 0) {
+				var playIcon = $('.playIcon');
+				if (playIcon.length > 0) {
+					playIcon.width($(movieContainer[0]).width());
+					playIcon.height($(movieContainer[0]).height());
+				}
+			}
+		},
+		playMovie: function(event) {
+			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "movieid": ' + event.data.movie.movieid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				
+				this.hideOverlay();
+			}, this), 'json');
+		},
 		displayMovieDetails: function(event) {
+			var movieDetails = $('<div>');
+			movieDetails.attr('id', 'movie-' + event.data.movie.movieid);
+			movieDetails.addClass('moviePopoverContainer');
+			var closeButton = $('<img>');
+			closeButton.attr('src', '/images/close-button.png');
+			closeButton.addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this));
+			movieDetails.append(closeButton);
+			var movieCover = $('<img>');
+			movieCover.attr('src', this.getThumbnailPath(event.data.movie.thumbnail)).addClass('movieCover');
+			movieDetails.append(movieCover);
+			var playIcon = $('<div>');
+			playIcon.addClass('playIcon');
+			playIcon.bind('click', {movie: event.data.movie}, jQuery.proxy(this.playMovie, this));
+			movieDetails.append(playIcon);
+			var movieTitle = $('<p>');
+			movieTitle.addClass('movieTitle');
+			var yearText = event.data.movie.year ? ' <span class="year">(' + event.data.movie.year + ')</span>' : '';
+			movieTitle.html(event.data.movie.title + yearText);
+			movieDetails.append(movieTitle);
+			if (event.data.movie.runtime) {
+				var runtime = $('<p>');
+				runtime.addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.movie.runtime + ' minutes');
+				movieDetails.append(runtime);
+			}
+			if (event.data.movie.plot) {
+				var plot = $('<p>');
+				plot.addClass('plot').html(event.data.movie.plot);
+				movieDetails.append(plot);
+			}
+			if (event.data.movie.genre) {
+				var genre = $('<p>');
+				genre.addClass('genre').html('<strong>Genre:</strong> ' + event.data.movie.genre);
+				movieDetails.append(genre);
+			}
+			if (event.data.movie.rating) {
+				//Todo
+			}
+			if (event.data.movie.director) {
+				var director = $('<p>');
+				director.addClass('director').html('<strong>Directed By:</strong> ' + event.data.movie.director);
+				movieDetails.append(director);
+			}
+			this.activeCover = movieDetails;
+			$('body').append(movieDetails);
 			$('#overlay').show();
+			this.updatePlayButtonLocation();
 		},
 		displayTVShowDetails: function(event) {
 
