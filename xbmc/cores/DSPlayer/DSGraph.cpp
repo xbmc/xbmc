@@ -140,10 +140,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   m_VideoInfo.isDVD = CGraphFilters::Get()->IsDVD();
   m_threadID = GetCurrentThreadId();
   
-  // Audio & subtitle streams
-  CStreamsManager::Get()->InitManager();
-  CStreamsManager::Get()->LoadStreams();
-
   // Chapters
   CChaptersManager::Get()->InitManager();
   if (!CChaptersManager::Get()->LoadChapters())

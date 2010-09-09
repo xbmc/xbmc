@@ -22,6 +22,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "StreamsManager.h"
+#include "StreamDetails.h"
 #include "SpecialProtocol.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
 #include "Settings.h"
@@ -33,6 +34,32 @@
 #include "LangInfo.h"
 #include "GUISettings.h"
 #include "Filters\RendererSettings.h"
+
+CDSStreamDetail::CDSStreamDetail()
+  : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
+    group(0), displayname(""), connected(false)
+{
+}
+
+CDSStreamDetailAudio::CDSStreamDetailAudio()
+  : m_strCodecName(""), m_iBitRate(0), m_iSampleRate(0)
+{
+}
+
+CDSStreamDetailVideo::CDSStreamDetailVideo()
+  : m_strCodecName("")
+{
+}
+
+CDSStreamDetailSubtitle::CDSStreamDetailSubtitle(SubtitleType type)
+  : m_subType(type), encoding(""), isolang(""), trackname(""), offset(0), subtype(GUID_NULL)
+{
+}
+
+CDSStreamDetailSubtitleExternal::CDSStreamDetailSubtitleExternal()
+  : CDSStreamDetailSubtitle(EXTERNAL), path(""), substream(NULL)
+{
+}
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -71,7 +98,7 @@ CStreamsManager::~CStreamsManager(void)
 
 }
 
-std::vector<SAudioStreamInfos *>& CStreamsManager::GetAudios()
+std::vector<CDSStreamDetailAudio *>& CStreamsManager::GetAudios()
 {
   return m_audioStreams;
 }
@@ -87,7 +114,7 @@ int CStreamsManager::GetAudioStream()
     return -1;
   
   int i = 0;
-  for (std::vector<SAudioStreamInfos *>::const_iterator it = m_audioStreams.begin();
+  for (std::vector<CDSStreamDetailAudio *>::const_iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it, i++)
   {
     if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
@@ -103,7 +130,7 @@ void CStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
     return;
 
   int i = 0;
-  for (std::vector<SAudioStreamInfos *>::const_iterator it = m_audioStreams.begin();
+  for (std::vector<CDSStreamDetailAudio *>::const_iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it, i++)
   {
     if (i == iStream)
@@ -290,7 +317,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
 {
   DWORD nStreams = 0, flags = 0, group = 0;
   WCHAR* wname = NULL;
-  SStreamInfos* infos = NULL;
+  CDSStreamDetail* infos = NULL;
   LCID lcid;
   IUnknown *pObj = NULL, *pUnk = NULL;
   int j = 0;
@@ -305,9 +332,9 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     if (mediaType->majortype == MEDIATYPE_Video)
       infos = &m_videoStream;
     else if (mediaType->majortype == MEDIATYPE_Audio)
-      infos = new SAudioStreamInfos();
+      infos = new CDSStreamDetailAudio();
     else if (mediaType->majortype == MEDIATYPE_Subtitle)
-      infos = new SSubtitleStreamInfos();
+      infos = new CDSStreamDetailSubtitle();
     else
       continue;
 
@@ -320,7 +347,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     if (flags & AMSTREAMSELECTINFO_ENABLED)
       infos->connected = true;
 
-    GetStreamInfos(mediaType, infos);
+    MediaTypeToStreamDetail(mediaType, (CStreamDetail&)(*infos));
 
     if (mediaType->majortype == MEDIATYPE_Audio)
     {
@@ -328,11 +355,11 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
       if (infos->displayname.find("Undetermined") != std::string::npos )
         infos->displayname.Format("A: Audio %02d", i + 1);
 
-      m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
+      m_audioStreams.push_back(reinterpret_cast<CDSStreamDetailAudio *>(infos));
       CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
     } else if (mediaType->majortype == MEDIATYPE_Subtitle)
     {
-      SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
+      SubtitleManager->GetSubtitles().push_back(reinterpret_cast<CDSStreamDetailSubtitle *>(infos));
       CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
     }
 
@@ -347,7 +374,7 @@ void CStreamsManager::LoadStreamsInternal()
   int i = 0, j = 0;
   CStdStringW pinNameW;
   CStdString pinName;
-  SStreamInfos *infos = NULL;
+  CStreamDetail *infos = NULL;
   bool audioPinAlreadyConnected = false;//, subtitlePinAlreadyConnected = FALSE;
 
   // If we're playing a DVD, the bottom method doesn't work
@@ -360,50 +387,54 @@ void CStreamsManager::LoadStreamsInternal()
   {
     if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
     {
+      g_charsetConverter.wToUTF8(GetPinName(pPin), pinName);
       BeginEnumMediaTypes(pPin, pET, pMediaType)
       {
         if (pMediaType->majortype == MEDIATYPE_Video)
           infos = &m_videoStream;
         else if (pMediaType->majortype == MEDIATYPE_Audio)
-          infos = new SAudioStreamInfos();
+          infos = new CDSStreamDetailAudio();
         else if (pMediaType->majortype == MEDIATYPE_Subtitle)
-          infos = new SSubtitleStreamInfos();
+          infos = new CDSStreamDetailSubtitle();
         else
           continue;
 
-        if (infos->displayname.empty())
-          infos->displayname = pinName;
-        GetStreamInfos(pMediaType, infos);
+        CDSStreamDetail& pS = dynamic_cast<CDSStreamDetail&>(*infos);
 
-        infos->pObj = pPin;
-        pPin->ConnectedTo(&infos->pUnk);
+        if (pS.displayname.empty())
+          pS.displayname = pinName;
+
+        MediaTypeToStreamDetail(pMediaType, *infos);
+
+        pS.pObj = pPin;
+        pPin->ConnectedTo(&pS.pUnk);
 
         if (pMediaType->majortype == MEDIATYPE_Audio)
         {
-          if (infos->displayname.find("Undetermined") != std::string::npos )
-            infos->displayname.Format("Audio %02d", i + 1);
+          if (pS.displayname.find("Undetermined") != std::string::npos )
+            pS.displayname.Format("Audio %02d", i + 1);
 
           if (i == 0)
-            infos->flags = AMSTREAMSELECTINFO_ENABLED;
-          if (infos->pUnk)
-            infos->connected = true;
+            pS.flags = AMSTREAMSELECTINFO_ENABLED;
+          if (pS.pUnk)
+            pS.connected = true;
 
-          m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
-          CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
+          m_audioStreams.push_back(static_cast<CDSStreamDetailAudio *>(infos));
+          CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, pS.displayname.c_str());
           i++;
             
         } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
         {
-          if (infos->displayname.find("Undetermined") != std::string::npos )
-            infos->displayname.Format("Subtitle %02d", j + 1);
+          if (pS.displayname.find("Undetermined") != std::string::npos )
+            pS.displayname.Format("Subtitle %02d", j + 1);
 
           if (j == 0)
-            infos->flags = AMSTREAMSELECTINFO_ENABLED;
-          if (infos->pUnk)
-            infos->connected = true;
+            pS.flags = AMSTREAMSELECTINFO_ENABLED;
+          if (pS.pUnk)
+            pS.connected = true;
 
-          SubtitleManager->GetSubtitles().push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
-          CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
+          SubtitleManager->GetSubtitles().push_back(static_cast<CDSStreamDetailSubtitle *>(infos));
+          CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, pS.displayname.c_str());
           j++;
         }
 
@@ -491,50 +522,81 @@ void CStreamsManager::WaitUntilReady()
 int CStreamsManager::GetChannels()
 {
   int i = GetAudioStream();
-  return (i == -1) ? 0 : m_audioStreams[i]->channels;
+  return (i == -1) ? 0 : m_audioStreams[i]->m_iChannels;
 }
 
 int CStreamsManager::GetBitsPerSample()
 {
   int i = GetAudioStream();
-  return (i == -1) ? 0 : m_audioStreams[i]->bitrate;
+  return (i == -1) ? 0 : m_audioStreams[i]->m_iBitRate;
 }
 
 int CStreamsManager::GetSampleRate()
 {
   int i = GetAudioStream();
-  return (i == -1) ? 0 : m_audioStreams[i]->samplerate;
+  return (i == -1) ? 0 : m_audioStreams[i]->m_iSampleRate;
 }
 
-void CStreamsManager::ExtractCodecInfos(SStreamInfos& s, CStdString& codecInfos)
+void CStreamsManager::ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfos)
 {
+  if (s.m_eType == CStreamDetail::SUBTITLE)
+    return;
+  
   std::vector<CStdString> tokens;
   codecInfos.Tokenize("|", tokens);
 
   if (tokens.empty() || tokens.size() != 2)
   {
-    s.codecname = s.codec = codecInfos;
-    return;
+    switch (s.m_eType)
+    {
+    case CStreamDetail::AUDIO:
+      {
+        CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
+        pS.m_strCodec = pS.m_strCodecName = codecInfos;
+        return;
+      }
+    case CStreamDetail::VIDEO:
+      {
+        CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
+        pS.m_strCodec = pS.m_strCodecName = codecInfos;
+        return;
+      }
+    }
   }
 
-  s.codecname = tokens[0];
-  s.codec = tokens[1];
+  switch (s.m_eType)
+  {
+  case CStreamDetail::AUDIO:
+    {
+      CDSStreamDetailAudio& pS = reinterpret_cast<CDSStreamDetailAudio &>(s);
+      pS.m_strCodecName = tokens[0];
+      pS.m_strCodec = tokens[1];
+      return;
+    }
+  case CStreamDetail::VIDEO:
+    {
+      CDSStreamDetailVideo& pS = reinterpret_cast<CDSStreamDetailVideo &>(s);
+      pS.m_strCodecName = tokens[0];
+      pS.m_strCodec = tokens[1];
+      return;
+    }
+  }
 }
 
-void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s )
+void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStreamDetail& s )
 {
   if (pMediaType->majortype == MEDIATYPE_Audio)
   {
-    SAudioStreamInfos* infos = reinterpret_cast<SAudioStreamInfos *>(s);
+    CDSStreamDetailAudio& infos = static_cast<CDSStreamDetailAudio&>(s);
     if (pMediaType->formattype == FORMAT_WaveFormatEx)
     {
       if (pMediaType->cbFormat >= sizeof(WAVEFORMATEX))
       {
         WAVEFORMATEX *f = reinterpret_cast<WAVEFORMATEX *>(pMediaType->pbFormat);
-        infos->channels = f->nChannels;
-        infos->samplerate = f->nSamplesPerSec;
-        infos->bitrate = f->nAvgBytesPerSec;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag));
+        infos.m_iChannels = f->nChannels;
+        infos.m_iSampleRate = f->nSamplesPerSec;
+        infos.m_iBitRate = f->nAvgBytesPerSec;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag));
       }
     } 
     else if (pMediaType->formattype == FORMAT_VorbisFormat2)
@@ -542,35 +604,35 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       if (pMediaType->cbFormat >= sizeof(VORBISFORMAT2))
       {
         VORBISFORMAT2 *v = reinterpret_cast<VORBISFORMAT2 *>(pMediaType->pbFormat);
-        infos->channels = v->Channels;
-        infos->samplerate = v->SamplesPerSec;
-        infos->bitrate = v->BitsPerSample;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
+        infos.m_iChannels = v->Channels;
+        infos.m_iSampleRate = v->SamplesPerSec;
+        infos.m_iBitRate = v->BitsPerSample;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
     } else if (pMediaType->formattype == FORMAT_VorbisFormat)
     {
       if (pMediaType->cbFormat >= sizeof(VORBISFORMAT))
       {
         VORBISFORMAT *v = reinterpret_cast<VORBISFORMAT *>(pMediaType->pbFormat);
-        infos->channels = v->nChannels;
-        infos->samplerate = v->nSamplesPerSec;
-        infos->bitrate = v->nAvgBitsPerSec;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
+        infos.m_iChannels = v->nChannels;
+        infos.m_iSampleRate = v->nSamplesPerSec;
+        infos.m_iBitRate = v->nAvgBitsPerSec;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
     }
   } 
   else if (pMediaType->majortype == MEDIATYPE_Video)
   {
-    SVideoStreamInfos* infos = reinterpret_cast<SVideoStreamInfos* >(s);
+    CDSStreamDetailVideo& infos = static_cast<CDSStreamDetailVideo&>(s);
 
     if (pMediaType->formattype == FORMAT_VideoInfo)
     {
       if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER))
       {
         VIDEOINFOHEADER *v = reinterpret_cast<VIDEOINFOHEADER *>(pMediaType->pbFormat);
-        infos->width = v->bmiHeader.biWidth;
-        infos->height = v->bmiHeader.biHeight;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc));
+        infos.m_iWidth = v->bmiHeader.biWidth;
+        infos.m_iHeight = v->bmiHeader.biHeight;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos.m_iFourcc));
       }
     } 
     else if (pMediaType->formattype == FORMAT_MPEG2Video)
@@ -578,14 +640,14 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       if (pMediaType->cbFormat >= sizeof(MPEG2VIDEOINFO))
       {
         MPEG2VIDEOINFO *m = reinterpret_cast<MPEG2VIDEOINFO *>(pMediaType->pbFormat);
-        infos->width = m->hdr.bmiHeader.biWidth;
-        infos->height = m->hdr.bmiHeader.biHeight;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc));
-        if (infos->fourcc == 0)
+        infos.m_iWidth = m->hdr.bmiHeader.biWidth;
+        infos.m_iHeight = m->hdr.bmiHeader.biHeight;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos.m_iFourcc));
+        if (infos.m_iFourcc == 0)
         {
-          infos->fourcc = 'MPG2';
-          infos->codecname = "MPEG2 Video";
-          infos->codec = "mpeg2";
+          infos.m_iFourcc = 'MPG2';
+          infos.m_strCodecName = "MPEG2 Video";
+          infos.m_strCodec = "mpeg2";
         }
       }
     } 
@@ -594,9 +656,9 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER2))
       {
         VIDEOINFOHEADER2 *v = reinterpret_cast<VIDEOINFOHEADER2 *>(pMediaType->pbFormat);
-        infos->width = v->bmiHeader.biWidth;
-        infos->height = v->bmiHeader.biHeight;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc));
+        infos.m_iWidth = v->bmiHeader.biWidth;
+        infos.m_iHeight = v->bmiHeader.biHeight;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos.m_iFourcc));
       }
     } 
     else if (pMediaType->formattype == FORMAT_MPEGVideo)
@@ -604,54 +666,56 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       if (pMediaType->cbFormat >= sizeof(MPEG1VIDEOINFO))
       {
         MPEG1VIDEOINFO *m = reinterpret_cast<MPEG1VIDEOINFO *>(pMediaType->pbFormat);
-        infos->width = m->hdr.bmiHeader.biWidth;
-        infos->height = m->hdr.bmiHeader.biHeight;
-        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc));
+        infos.m_iWidth = m->hdr.bmiHeader.biWidth;
+        infos.m_iHeight = m->hdr.bmiHeader.biHeight;
+        ExtractCodecDetail(infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos.m_iFourcc));
       }
     }
+    infos.m_fAspect = (float)infos.m_iWidth / infos.m_iHeight;
   } 
   else if (pMediaType->majortype == MEDIATYPE_Subtitle)
   {
-    SSubtitleStreamInfos* infos = reinterpret_cast<SSubtitleStreamInfos* >(s);
+    CDSStreamDetailSubtitle& infos = static_cast<CDSStreamDetailSubtitle&>(s);
 
     if (pMediaType->formattype == FORMAT_SubtitleInfo
       && pMediaType->cbFormat >= sizeof(SUBTITLEINFO))
     {
       SUBTITLEINFO *i = reinterpret_cast<SUBTITLEINFO *>(pMediaType->pbFormat);
-      infos->isolang = i->IsoLang;
-      infos->offset = i->dwOffset;
-      infos->trackname = i->TrackName;
-      if (! infos->lcid)
-        infos->lcid = ISO6392ToLcid(i->IsoLang);
+      infos.isolang = i->IsoLang;
+      infos.offset = i->dwOffset;
+      infos.trackname = i->TrackName;
+      if (! infos.lcid)
+        infos.lcid = ISO6392ToLcid(i->IsoLang);
     }
-    infos->subtype = pMediaType->subtype;
+
+    infos.subtype = pMediaType->subtype;
   }
 
-  FormatStreamName(*s);
+  FormatStreamName(s);
 }
 
 int CStreamsManager::GetPictureWidth()
 {
-  return m_videoStream.width;
+  return m_videoStream.m_iWidth;
 }
 
 int CStreamsManager::GetPictureHeight()
 {
-  return m_videoStream.height;
+  return m_videoStream.m_iHeight;
 }
 
 CStdString CStreamsManager::GetAudioCodecName()
 {
   int i = GetAudioStream();
-  return (i == -1) ? "" : m_audioStreams[i]->codec;
+  return (i == -1) ? "" : m_audioStreams[i]->m_strCodec;
 }
 
 CStdString CStreamsManager::GetVideoCodecName()
 {
-  return m_videoStream.codec;
+  return m_videoStream.m_strCodec;
 }
 
-SVideoStreamInfos * CStreamsManager::GetVideoStreamInfos( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailVideo * CStreamsManager::GetVideoStreamDetail( unsigned int iIndex /*= 0*/ )
 {
   /* We currently supports only one video stream */
   if (iIndex != 0)
@@ -660,7 +724,7 @@ SVideoStreamInfos * CStreamsManager::GetVideoStreamInfos( unsigned int iIndex /*
   return &m_videoStream;
 }
 
-SAudioStreamInfos * CStreamsManager::GetAudioStreamInfos( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailAudio * CStreamsManager::GetAudioStreamDetail( unsigned int iIndex /*= 0*/ )
 {
   if (iIndex > m_audioStreams.size())
     return NULL;
@@ -668,7 +732,7 @@ SAudioStreamInfos * CStreamsManager::GetAudioStreamInfos( unsigned int iIndex /*
   return m_audioStreams[iIndex];
 }
 
-void CStreamsManager::FormatStreamName( SStreamInfos& s )
+void CStreamsManager::FormatStreamName( CStreamDetail& s )
 {
   std::vector<boost::shared_ptr<CRegExp>> regex;
 
@@ -680,12 +744,14 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
   reg->RegComp(".* - (.*),.*\\(.*\\)"); // mpeg source audio / subtitle
   regex.push_back(reg);
 
+  CDSStreamDetail& pS = dynamic_cast<CDSStreamDetail&> (s);
+
   for (std::vector<boost::shared_ptr<CRegExp>>::iterator
     it = regex.begin(); it != regex.end(); ++it)
   {
-    if ( (*it)->RegFind(s.displayname) > -1 )
+    if ( (*it)->RegFind(pS.displayname) > -1 )
     {
-      s.displayname = (*it)->GetMatch(1);
+      pS.displayname = (*it)->GetMatch(1);
       break;
     }
   }
@@ -693,26 +759,26 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
   regex.clear();
 
   // First, if lcid isn't 0, try GetLocalInfo
-  if (s.lcid)
+  if (pS.lcid)
   {
     CStdStringW _name; int len = 0;
-    if (len = GetLocaleInfoW(s.lcid, LOCALE_SLANGUAGE, _name.GetBuffer(64), 64))
+    if (len = GetLocaleInfoW(pS.lcid, LOCALE_SLANGUAGE, _name.GetBuffer(64), 64))
     {
       _name.resize(len - 1); //get rid of last \0
       CStdString name; g_charsetConverter.wToUTF8(_name, name);
-      if (s.type == SUBTITLE && !((SSubtitleStreamInfos&)s).trackname.empty())
-        s.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
+      if (s.m_eType == CStreamDetail::SUBTITLE && !((CDSStreamDetailSubtitle&) pS).trackname.empty())
+        pS.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&) pS).trackname);
       else
-        s.displayname = name;
+        pS.displayname = name;
     }
   }
 
-  if (s.type == SUBTITLE && s.displayname.empty())
+  if (s.m_eType == CStreamDetail::SUBTITLE && pS.displayname.empty())
   {
-    SSubtitleStreamInfos& c = ((SSubtitleStreamInfos&)s);
+    CDSStreamDetailSubtitle& c = (CDSStreamDetailSubtitle&) pS;
     CStdString name = ISOToLanguage(c.isolang);
     if (!name.empty() && !c.trackname.empty())
-      c.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
+      c.displayname.Format("%s (%s)", name, ((CDSStreamDetailSubtitle&) pS).trackname);
     else if (! c.trackname.empty())
       c.displayname = c.trackname;
     else
@@ -847,8 +913,8 @@ void CSubtitleManager::Unload()
   }
   while (! m_subtitleStreams.empty())
   {
-    if (m_subtitleStreams.back()->external)
-      ((SExternalSubtitleInfos *) m_subtitleStreams.back())->substream.FullRelease();
+    if (m_subtitleStreams.back()->m_subType == EXTERNAL)
+      ((CDSStreamDetailSubtitleExternal *) m_subtitleStreams.back())->substream.FullRelease();
     delete m_subtitleStreams.back();
     m_subtitleStreams.pop_back();
   }
@@ -873,7 +939,7 @@ HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture
   return E_FAIL;
 }
 
-std::vector<SSubtitleStreamInfos *>& CSubtitleManager::GetSubtitles()
+std::vector<CDSStreamDetailSubtitle *>& CSubtitleManager::GetSubtitles()
 {
   return m_subtitleStreams;
 }
@@ -889,7 +955,7 @@ int CSubtitleManager::GetSubtitle()
     return -1;
 
   int i = 0;
-  for (std::vector<SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
+  for (std::vector<CDSStreamDetailSubtitle *>::const_iterator it = m_subtitleStreams.begin();
     it != m_subtitleStreams.end(); ++it, i++)
   {
     if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED )
@@ -905,7 +971,7 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
     return;
 
   int i = 0;
-  for (std::vector<SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
+  for (std::vector<CDSStreamDetailSubtitle *>::const_iterator it = m_subtitleStreams.begin();
     it != m_subtitleStreams.end(); ++it, i++)
   {
     if (i == iStream)
@@ -944,7 +1010,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
   CStdString subtitlePath = "";
   Com::SmartPtr<IPin> newAudioStreamPin;
 
-  if (m_subtitleStreams[enableIndex]->external)
+  if (m_subtitleStreams[enableIndex]->m_subType == EXTERNAL)
   {
     /* External subtitle */
     DisconnectCurrentSubtitlePins();
@@ -952,7 +1018,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     if (! m_bSubtitlesVisible)
       return;
 
-    SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[enableIndex]);
+    CDSStreamDetailSubtitleExternal *s = reinterpret_cast<CDSStreamDetailSubtitleExternal *>(m_subtitleStreams[enableIndex]);
 
     m_pManager->SetSubPicProvider(s->substream);
     
@@ -985,7 +1051,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     stopped = true;
     
     /* Disconnect pins */
-    if (! m_subtitleStreams[disableIndex]->external)
+    if (m_subtitleStreams[disableIndex]->m_subType != EXTERNAL)
     {
       
       oldAudioStreamPin = m_subtitleStreams[disableIndex]->pObj;
@@ -1021,7 +1087,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     if (FAILED(hr))
     {
       /* Reconnect previous working pins */
-      if (! m_subtitleStreams[disableIndex]->external)
+      if (m_subtitleStreams[disableIndex]->m_subType == INTERNAL)
         m_pStreamManager->m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
 
       m_subtitleStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
@@ -1067,12 +1133,11 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   if (! m_pManager)
     return -1;
 
-  std::auto_ptr<SExternalSubtitleInfos> s(new SExternalSubtitleInfos());
+  std::auto_ptr<CDSStreamDetailSubtitleExternal> s(new CDSStreamDetailSubtitleExternal());
 
   if (m_subtitleStreams.empty())
     s->flags = AMSTREAMSELECTINFO_ENABLED;
 
-  s->external = true;
   s->path = CSpecialProtocol::TranslatePath(subFilePath);
   if (! XFILE::CFile::Exists(s->path))
     return -1;
@@ -1089,7 +1154,7 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
     if (! s->lcid)
       s->lcid = ISO6391ToLcid(s->isolang);
 
-    m_pStreamManager->FormatStreamName(*s.get());
+    m_pStreamManager->FormatStreamName( *(s.get()) );
   } 
 
   if (s->displayname.empty())
@@ -1135,7 +1200,7 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
   } 
   else 
   {
-    if (m_subtitleStreams[i]->connected && !m_subtitleStreams[i]->external)
+    if (m_subtitleStreams[i]->connected && m_subtitleStreams[i]->m_subType == INTERNAL)
     {
       Com::SmartPtr<IPin> pin = NULL;
 
@@ -1210,18 +1275,18 @@ void CStreamsManager::LoadDVDStreams()
   HRESULT hr = pDvdI->GetCurrentVideoAttributes(&vid);
   if (SUCCEEDED(hr))
   {
-    m_videoStream.width = vid.ulSourceResolutionX;
-    m_videoStream.height = vid.ulSourceResolutionY;
+    m_videoStream.m_iWidth = vid.ulSourceResolutionX;
+    m_videoStream.m_iHeight = vid.ulSourceResolutionY;
     switch (vid.Compression)
     {
     case DVD_VideoCompression_MPEG1:
-      m_videoStream.codecname = "MPEG1";
+      m_videoStream.m_strCodecName = "MPEG1";
       break;
     case DVD_VideoCompression_MPEG2:
-      m_videoStream.codecname = "MPEG2";
+      m_videoStream.m_strCodecName = "MPEG2";
       break;
     default:
-      m_videoStream.codecname = "Unknown";
+      m_videoStream.m_strCodecName = "Unknown";
     }
   }
 
@@ -1245,13 +1310,13 @@ void CStreamsManager::UpdateDVDStream()
   m_audioStreams.clear();
   for (unsigned int i = 0; i < nbrStreams; i++)
   {
-    std::auto_ptr<SAudioStreamInfos> s(new SAudioStreamInfos());
+    std::auto_ptr<CDSStreamDetailAudio> s(new CDSStreamDetailAudio());
     DVD_AudioAttributes audio;
     hr = CGraphFilters::Get()->DVD.dvdInfo->GetAudioAttributes(i, &audio);
 
-    s->channels = audio.bNumberOfChannels;
-    s->samplerate = audio.dwFrequency;
-    s->bitrate = 0;
+    s->m_iChannels = audio.bNumberOfChannels;
+    s->m_iSampleRate = audio.dwFrequency;
+    s->m_iBitRate = 0;
     s->lcid = audio.Language;
     if (i == currentStream)
     {
@@ -1261,34 +1326,34 @@ void CStreamsManager::UpdateDVDStream()
     switch (audio.AudioFormat)
     {
     case DVD_AudioFormat_AC3:
-      s->codecname = "Dolby AC3";
+      s->m_strCodecName = "Dolby AC3";
       break;
     case DVD_AudioFormat_MPEG1:
-      s->codecname = "MPEG1";
+      s->m_strCodecName = "MPEG1";
       break;
     case DVD_AudioFormat_MPEG1_DRC:
-      s->codecname = "MPEG1 (DCR)";
+      s->m_strCodecName = "MPEG1 (DCR)";
       break;
     case DVD_AudioFormat_MPEG2:
-      s->codecname = "MPEG2";
+      s->m_strCodecName = "MPEG2";
       break;
     case DVD_AudioFormat_MPEG2_DRC:
-      s->codecname = "MPEG2 (DCR)";
+      s->m_strCodecName = "MPEG2 (DCR)";
       break;
     case DVD_AudioFormat_LPCM:
-      s->codecname = "LPCM";
+      s->m_strCodecName = "LPCM";
       break;
     case DVD_AudioFormat_DTS:
-      s->codecname = "DTS";
+      s->m_strCodecName = "DTS";
       break;
     case DVD_AudioFormat_SDDS:
-      s->codecname = "SDDS";
+      s->m_strCodecName = "SDDS";
       break;
     default:
-      s->codecname = "Unknown";
+      s->m_strCodecName = "Unknown";
       break;
     }
-    FormatStreamName((*s));
+    FormatStreamName( *(s.get()) );
 
     m_audioStreams.push_back(s.release());
   }
@@ -1305,35 +1370,35 @@ void CStreamsManager::UpdateDVDStream()
     if (subpic.Type != DVD_SPType_Language)
       continue;
 
-    std::auto_ptr<SSubtitleStreamInfos> s(new SSubtitleStreamInfos());
+    std::auto_ptr<CDSStreamDetailSubtitle> s(new CDSStreamDetailSubtitle());
     s->lcid = subpic.Language;
-    FormatStreamName((*s));
+    FormatStreamName( *(s.get()) );
 
     SubtitleManager->GetSubtitles().push_back(s.release());
   }
 
   m_dvdStreamLoaded = true;
 }
-SSubtitleStreamInfos * CSubtitleManager::GetSubtitleStreamInfos( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailSubtitle * CSubtitleManager::GetSubtitleStreamDetail( unsigned int iIndex /*= 0*/ )
 {
   if (iIndex > m_subtitleStreams.size())
     return NULL;
 
-  if (m_subtitleStreams[iIndex]->external)
+  if (m_subtitleStreams[iIndex]->m_subType != INTERNAL)
     return NULL;
 
   return m_subtitleStreams[iIndex];
 }
 
-SExternalSubtitleInfos* CSubtitleManager::GetExternalSubtitleStreamInfos( unsigned int iIndex /*= 0*/ )
+CDSStreamDetailSubtitleExternal* CSubtitleManager::GetExternalSubtitleStreamDetail( unsigned int iIndex /*= 0*/ )
 {
   if (iIndex > m_subtitleStreams.size())
     return NULL;
 
-  if (!m_subtitleStreams[iIndex]->external)
+  if (m_subtitleStreams[iIndex]->m_subType != EXTERNAL)
     return NULL;
 
-  return reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iIndex]);
+  return reinterpret_cast<CDSStreamDetailSubtitleExternal *>(m_subtitleStreams[iIndex]);
 }
 
 void CSubtitleManager::DeleteSubtitleManager( ISubManager* pManager, DllLibSubs dll )

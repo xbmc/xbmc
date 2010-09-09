@@ -42,157 +42,73 @@
 #include "Subtitles/DllLibSubs.h"
 #include "Subtitles/ILogImpl.h"
 
-enum SStreamType
+#include "StreamDetails.h"
+
+class CDSStreamDetail
 {
-  AUDIO, VIDEO, SUBTITLE
+public:
+  CDSStreamDetail();
+
+  uint32_t                IAMStreamSelect_Index; ///< IAMStreamSelect index of the stream
+  CStdString              displayname; ///< Stream displayname
+  unsigned long           flags; ///< Stream flags. Set to AMSTREAMSELECTINFO_ENABLED if the stream if selected in the GUI, 0 otherwise
+  Com::SmartPtr<IPin>     pObj; ///< Output pin of the splitter
+  Com::SmartPtr<IPin>     pUnk; ///< Not used
+  LCID                    lcid; ///< LCID of stream language
+  DWORD                   group; ///< Currently not used
+  bool                    connected; ///< Is the stream connected
 };
 
-struct SVideoStreamIndexes
-{
-  int iVideoStream;
-  int iAudioStream;
-  int iSubtitleStream;
-
-  SVideoStreamIndexes()
-  {
-    iVideoStream = 0;
-    iAudioStream = 0;
-    iSubtitleStream = 0;
-  }
-
-  SVideoStreamIndexes(int iV, int iA, int iS)
-  {
-    iVideoStream = iV;
-    iAudioStream = iA;
-    iSubtitleStream = iS;
-  }
-};
-
-struct SStreamInfos
-{
-  unsigned int IAMStreamSelect_Index; ///< IAMStreamSelect index of the stream
-  CStdString displayname; ///< Stream displayname
-  CStdString codecname; ///< Stream codec name
-  CStdString codec; ///< Stream codec ID
-  DWORD flags; ///< Stream flags. Set to AMSTREAMSELECTINFO_ENABLED if the stream if selected in the GUI, 0 otherwise
-  Com::SmartPtr<IPin> pObj; ///< Output pin of the splitter
-  Com::SmartPtr<IPin> pUnk; ///< Not used
-  LCID  lcid; ///< LCID of stream language
-  DWORD group; ///< Currently not used
-  SStreamType type; ///< Stream type
-  bool connected; ///< Is the stream connected
-
-  /// Set all structure variable to their default values
-  virtual void Clear()
-  {
-    IAMStreamSelect_Index = 0;
-    flags = 0;
-    pObj = 0;
-    pUnk = 0;
-    lcid = 0;
-    group = 0;
-    displayname = "";
-    codecname = "";
-    connected = false;
-  }
-};
+//  CStdString codecname; ///< Stream codec name
+//  CStdString codec; ///< Stream codec ID
 
 /// Informations about an audio stream
-struct SAudioStreamInfos: SStreamInfos
+class CDSStreamDetailAudio: public CDSStreamDetail, public CStreamDetailAudio
 {
-  unsigned int channels; ///< Number of audio channels
-  unsigned int bitrate; ///< Audio bitrate
-  unsigned int samplerate; ///< Audio samplerate
+public:
+  CDSStreamDetailAudio();
 
-  virtual void Clear()
-  {
-    SStreamInfos::Clear();
-
-    channels = 0;
-    bitrate = 0;
-    samplerate = 0;
-  }
-
-  SAudioStreamInfos()
-  {
-    Clear();
-    type = AUDIO;
-  }
+  CStdString              m_strCodecName;
+  uint32_t                m_iBitRate; ///< Audio bitrate
+  uint32_t                m_iSampleRate; ///< Audio samplerate
 };
 
 /// Informations about a video stream
-struct SVideoStreamInfos: SStreamInfos
+struct CDSStreamDetailVideo: public CDSStreamDetail, public CStreamDetailVideo
 {
-  unsigned int width; ///< Current video width
-  unsigned int height; ///< Current video height
-  DWORD fourcc; ///< Current video fourcc
+public:
+  CStdString              m_strCodecName;
 
-  virtual void Clear()
-  {
-    SStreamInfos::Clear();
-
-    width = 0;
-    height = 0;
-    fourcc = 0;
-  }
-
-  SVideoStreamInfos()
-  {
-    Clear();
-    type = VIDEO;
-  }
+  CDSStreamDetailVideo();
 };
 
 /// Informations about a internal subtitle
-struct SSubtitleStreamInfos: SStreamInfos
+enum SubtitleType {
+  INTERNAL,
+  EXTERNAL
+};
+class CDSStreamDetailSubtitle: public CDSStreamDetail, public CStreamDetailSubtitle
 {
-  CStdString encoding; ///< Subtitle encoding
-  bool external; ///< If True, you can safely cast the structure to a SExternalSubtitleInfos
+public:
+  CDSStreamDetailSubtitle(SubtitleType type = INTERNAL);
 
-  unsigned long offset; ///< Not used
-  CStdString isolang; ///< ISO Code of the subtitle language.
-  CStdString trackname; ///< 
-  GUID subtype; ///< Subtype GUID of the subtitle
-
-  virtual void Clear()
-  {
-    SStreamInfos::Clear();
-
-    encoding = "";
-    external = false;
-    offset = 0;
-    isolang = "";
-    trackname = "";
-    subtype = GUID_NULL;
-  }
-
-  SSubtitleStreamInfos()
-  {
-    Clear();
-    type = SUBTITLE;
-  }
+  CStdString            encoding; ///< Subtitle encoding
+  uint32_t              offset; ///< Not used
+  CStdString            isolang; ///< ISO Code of the subtitle language.
+  CStdString            trackname; ///< 
+  GUID                  subtype;
+  const SubtitleType    m_subType;
 };
 
 /// Informations about an external subtitle
-struct SExternalSubtitleInfos: SSubtitleStreamInfos
+class CDSStreamDetailSubtitleExternal: public CDSStreamDetailSubtitle
 {
-  CStdString path; ///< Subtitle file path
+public:
+
+  CDSStreamDetailSubtitleExternal();
+
+  CStdString            path; ///< Subtitle file path
   Com::SmartPtr<ISubStream> substream;
-
-  virtual void Clear()
-  {
-    SSubtitleStreamInfos::Clear();
-
-    path = "";
-    substream = NULL;
-    external = true;
-  }
-
-  SExternalSubtitleInfos()
-  {
-    Clear();
-    type = SUBTITLE;
-  }
 };
 
 /** @brief DSPlayer Streams Manager.
@@ -209,7 +125,7 @@ public:
   static void Destroy();
 
   /// @return A std::vector of all audio streams found in the media file
-  std::vector<SAudioStreamInfos *>& GetAudios();
+  std::vector<CDSStreamDetailAudio *>& GetAudios();
 
   /// @return Audio streams count
   int  GetAudioStreamCount();
@@ -238,7 +154,7 @@ public:
   /// @return The ID of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
   CStdString GetAudioCodecName();
   /// @return The displayname of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
-  CStdString GetAudioCodecDisplayName() { int i = GetAudioStream(); return (i == -1) ? "" : m_audioStreams[i]->codecname; }
+  CStdString GetAudioCodecDisplayName() { int i = GetAudioStream(); return (i == -1) ? "" : m_audioStreams[i]->m_strCodecName; }
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
   
@@ -252,7 +168,7 @@ public:
   /// @return The ID of the video codec used in the media file (XviD, DivX, h264, ...)
   CStdString GetVideoCodecName();
   /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
-  CStdString GetVideoCodecDisplayName() { return m_videoStream.codecname; }
+  CStdString GetVideoCodecDisplayName() { return m_videoStream.m_strCodecName; }
   
   /** Initialize the manager
    * @return True if the manager is initialized, false otherwise
@@ -262,12 +178,16 @@ public:
    * @param[in] mt Media type informations
    * @param[out] s A filled SStreamInfos structure
    */
-  void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+  static void MediaTypeToStreamDetail(AM_MEDIA_TYPE *mt, CStreamDetail& s);
+  static void FormatStreamName(CStreamDetail& s);
+  static void ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfos);
+  static CStdString ISOToLanguage(CStdString code);
+
   void LoadDVDStreams();
   void UpdateDVDStream();
 
-  SVideoStreamInfos* GetVideoStreamInfos(unsigned int iIndex = 0);
-  SAudioStreamInfos* GetAudioStreamInfos(unsigned int iIndex = 0);
+  CDSStreamDetailVideo* GetVideoStreamDetail(unsigned int iIndex = 0);
+  CDSStreamDetailAudio* GetAudioStreamDetail(unsigned int iIndex = 0);
 
   boost::shared_ptr<CSubtitleManager> SubtitleManager;
 
@@ -279,17 +199,13 @@ private:
   void LoadStreamsInternal();
   void LoadIAMStreamSelectStreamsInternal();
 
-  void FormatStreamName(SStreamInfos& s);
-  void ExtractCodecInfos(SStreamInfos& s, CStdString& codecInfos);
-  CStdString ISOToLanguage(CStdString code);
-  std::vector<SAudioStreamInfos *> m_audioStreams;
-
+  std::vector<CDSStreamDetailAudio *> m_audioStreams;
   Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
   Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
   Com::SmartPtr<IBaseFilter> m_pSplitter;
 
   bool m_init;
-  SVideoStreamInfos m_videoStream;
+  CDSStreamDetailVideo m_videoStream;
   CCriticalSection m_lock;
   bool m_dvdStreamLoaded;
 
@@ -313,7 +229,7 @@ public:
   void StartThread();
 
   /// @return A std::vector of all subtitle streams (internal or external) found in the media file
-  std::vector<SSubtitleStreamInfos *>& GetSubtitles();
+  std::vector<CDSStreamDetailSubtitle *>& GetSubtitles();
   /// @return Subtitles count
   int  GetSubtitleCount();
   /// @return The index of the current subtitle
@@ -349,8 +265,8 @@ public:
 
   void SetTime(REFERENCE_TIME rtNow);
 
-  SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
-  SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
+  CDSStreamDetailSubtitle* GetSubtitleStreamDetail(unsigned int iIndex = 0);
+  CDSStreamDetailSubtitleExternal* GetExternalSubtitleStreamDetail(unsigned int iIndex = 0);
 
   void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
 
@@ -360,7 +276,7 @@ private:
   IPin *GetFirstSubtitlePin(void);
   static void DeleteSubtitleManager(ISubManager* pManager, DllLibSubs dll);
 
-  std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
+  std::vector<CDSStreamDetailSubtitle *> m_subtitleStreams;
   DllLibSubs m_dll;
   boost::shared_ptr<ISubManager> m_pManager;
   boost::shared_ptr<ILogImpl> m_Log;

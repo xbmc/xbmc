@@ -390,8 +390,10 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
     hr = LoadExternalFilter(m_path, m_clsid, ppBF);
     if (FAILED(hr))
     {
+      CStdString guid;
+      g_charsetConverter.wToUTF8(StringFromGUID(m_clsid), guid);
       CLog::Log(LOGINFO, "%s Failed to load external filter (clsid:%s path:%s). Trying with CoCreateInstance", __FUNCTION__,
-        StringFromGUID(m_clsid).c_str(), m_path.c_str());
+        guid.c_str(), m_path.c_str());
 
       /* If LoadExternalFilter failed, maybe we will have more chance
        * using CoCreateInstance directly. Will only works if the filter

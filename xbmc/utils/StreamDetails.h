@@ -34,7 +34,8 @@ public:
     SUBTITLE
   };
 
-  CStreamDetail(StreamType type) : m_eType(type) {};
+  CStreamDetail(StreamType type) : m_eType(type)
+  {};
   virtual void Serialize(CArchive& ar);
   virtual bool IsWorseThan(CStreamDetail *that) { return true; };
 
@@ -57,7 +58,7 @@ public:
   float m_fAspect;
   int m_iDuration;
 #ifdef HAS_DS_PLAYER
-  int m_iFourcc;
+  unsigned long m_iFourcc;
 #endif
   CStdString m_strCodec;
 };

@@ -21,6 +21,9 @@
 
 #include <math.h>
 #include "StreamDetails.h"
+#ifdef HAS_DS_PLAYER
+#include "StreamsManager.h"
+#endif
 
 void CStreamDetail::Serialize(CArchive &ar)
 {
