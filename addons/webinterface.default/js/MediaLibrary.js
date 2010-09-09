@@ -68,7 +68,7 @@ MediaLibrary.prototype = {
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 					libraryContainer.trigger('scroll');
 				}, this), 'json');
-			} else if (libraryContainer.length != 0) {
+			} else {
 				libraryContainer.css('z-index', 100);
 				libraryContainer.trigger('scroll');
 			}
@@ -107,6 +107,7 @@ MediaLibrary.prototype = {
 		},
 		displayAlbumDetails: function(event) {
 			var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
+			$('#topScrollFade').hide();
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
 				$('#spinner').show();
 				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "tracknumber", "discnumber", "duration", "year"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
@@ -169,7 +170,6 @@ MediaLibrary.prototype = {
 				}, this), 'json');
 			} else {
 				$('.contentContainer').css('z-index', 1);
-				$('#topScrollFade').hide();
 				$('#albumDetails' + event.data.album.albumid).css('z-index', 100);
 			}
 		},
@@ -283,7 +283,7 @@ MediaLibrary.prototype = {
 					libraryContainer.trigger('scroll');
 					//$('#libraryContainer img').lazyload();
 				}, this), 'json');
-			} else if (libraryContainer.length != 0) {
+			} else {
 				libraryContainer.css('z-index', 100);
 				libraryContainer.trigger('scroll');
 			}
@@ -315,7 +315,7 @@ MediaLibrary.prototype = {
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 					libraryContainer.trigger('scroll');
 				}, this), 'json');
-			} else if (libraryContainer.length != 0) {
+			} else {
 				libraryContainer.css('z-index', 100);
 				libraryContainer.trigger('scroll');
 			}
