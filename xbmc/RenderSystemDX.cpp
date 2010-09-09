@@ -405,6 +405,8 @@ bool CRenderSystemDX::CreateDevice()
         return false;
       }
     }
+    // Not sure the following actually does something
+    ((IDirect3DDevice9Ex*)m_pD3DDevice)->SetGPUThreadPriority(7);
   }
   else
   {
