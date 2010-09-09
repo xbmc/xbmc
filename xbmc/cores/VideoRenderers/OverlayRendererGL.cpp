@@ -59,6 +59,7 @@ static void LoadTexture(GLenum target
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
+  const GLvoid *pixelData = pixels;
   if (stride != width)
   {
     int bytesPerPixel;
@@ -88,10 +89,6 @@ static void LoadTexture(GLenum target
 
     const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
     stride = width;
-  }
-  else	// No Stride Needed
-  {
-	const GLvoid *pixelData = pixels;
   }
 #else
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
