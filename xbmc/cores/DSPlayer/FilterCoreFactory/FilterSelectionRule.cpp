@@ -55,8 +55,9 @@ void CFilterSelectionRule::Initialize(TiXmlElement* pRule, const CStdString &nod
   m_videoCodec = pRule->Attribute("videocodec");
   m_videoResolution = pRule->Attribute("videoresolution");
   m_videoAspect = pRule->Attribute("videoaspect");
+  m_videoFourcc = pRule->Attribute("fourcc");
 
-  m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 ||
+  m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 || m_videoFourcc.length() > 0 ||
     m_videoCodec.length() > 0 || m_videoResolution.length() > 0 || m_videoAspect.length() > 0;
 
   if (m_bStreamDetails && !g_guiSettings.GetBool("myvideos.extractflags"))
@@ -94,11 +95,11 @@ bool CFilterSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp)
   return regExp.RegFind(str, 0) != -1; // Need more testing
 }
 
-void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva, SVideoStreamIndexes *pStreamIndexes /*= NULL*/)
+void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva)
 {
   //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: considering rule: %s", m_name.c_str());
 
-  if (m_bStreamDetails && (!item.HasVideoInfoTag() && (!pStreamIndexes))) return;
+  if (m_bStreamDetails && (!item.HasVideoInfoTag())) return;
   /*
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
@@ -114,48 +115,26 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
 
   if (m_bStreamDetails)
   {
-    if (!item.GetVideoInfoTag()->HasStreamDetails() && !pStreamIndexes)
+    if (!item.GetVideoInfoTag()->HasStreamDetails())
     {
       CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: cannot check rule: %s, no StreamDetails", m_name.c_str());
       return;
     }
 
-    if (pStreamIndexes)
-    {
-      CStdString codec;
-      SStreamInfos *s = NULL; 
-      
-      if (pStreamIndexes->iAudioStream >= 0 &&
-        (s = CStreamsManager::Get()->GetAudioStreamInfos(pStreamIndexes->iAudioStream)))
-      {
-        codec = s->codecname;
-        if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(codec.ToLower(), regExp)) return;
-      }
+    CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
 
-      if (pStreamIndexes->iVideoStream >= 0 &&
-        (s = CStreamsManager::Get()->GetVideoStreamInfos(pStreamIndexes->iVideoStream)))
-      {
-        codec = s->codecname;
-        if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(codec, regExp)) return;
-        if (CompileRegExp(m_videoResolution, regExp) &&
-          !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(((SVideoStreamInfos *)s)->width,
-          ((SVideoStreamInfos *)s)->height), regExp)) return;
-      }
-    } else {
+    if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(streamDetails.GetAudioCodec(), regExp)) return;
 
-      CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
+    if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
 
-      if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(streamDetails.GetAudioCodec(), regExp)) return;
+    if (CompileRegExp(m_videoFourcc, regExp) && !MatchesRegExp(streamDetails.GetVideoFourcc(), regExp)) return;
 
-      if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
+    if (CompileRegExp(m_videoResolution, regExp) &&
+        !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
+        streamDetails.GetVideoHeight()), regExp)) return;
 
-      if (CompileRegExp(m_videoResolution, regExp) &&
-          !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
-          streamDetails.GetVideoHeight()), regExp)) return;
-    }
-
-    if (item.GetVideoInfoTag()->HasStreamDetails() && CompileRegExp(m_videoAspect, regExp) &&
-        !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(item.GetVideoInfoTag()->m_streamDetails.GetVideoAspect()),  regExp)) return;
+    if (CompileRegExp(m_videoAspect, regExp) && !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(
+      item.GetVideoInfoTag()->m_streamDetails.GetVideoAspect()), regExp)) return;
   }
 
   CURL url(item.m_strPath);
@@ -171,7 +150,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
   //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: matches rule: %s", m_name.c_str());
 
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
-    vecSubRules[i]->GetFilters(item, vecCores, dxva, pStreamIndexes);
+    vecSubRules[i]->GetFilters(item, vecCores, dxva);
   
   if (!m_filterName.empty())
   {

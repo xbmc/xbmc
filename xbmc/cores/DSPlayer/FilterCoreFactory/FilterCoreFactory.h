@@ -57,9 +57,9 @@ public:
 
   static HRESULT GetSourceFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetSplitterFilter(const CFileItem& pFileItem, CStdString& filter);
-  static HRESULT GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter, SVideoStreamIndexes *pStreamIndexes = NULL);
+  static HRESULT GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetVideoFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
-  static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false, SVideoStreamIndexes *pStreamIndexes = NULL);
+  static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
 
   static CFGFilter* GetFilterFromName(const CStdString& filter, bool showError = true);

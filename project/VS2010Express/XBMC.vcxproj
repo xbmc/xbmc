@@ -1056,6 +1056,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h" />

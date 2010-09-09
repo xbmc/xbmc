@@ -143,6 +143,9 @@ public:
     iLevel = 0;
     iProfile = 0;
     type = STREAM_VIDEO;
+#ifdef HAS_DS_PLAYER
+    iCodecTag = 0;
+#endif
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -154,6 +157,9 @@ public:
   bool bVFR;  // variable framerate
   int iLevel; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   int iProfile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
+#ifdef HAS_DS_PLAYER
+  int iCodecTag;
+#endif
   
 };
 

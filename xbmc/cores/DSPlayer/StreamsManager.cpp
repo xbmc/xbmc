@@ -356,26 +356,12 @@ void CStreamsManager::LoadStreamsInternal()
     return;
   }
 
-  int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
-  CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
-  CLog::Log(LOGDEBUG, "%s The splitter has %d output pins", __FUNCTION__, nOut);
-
   BeginEnumPins(m_pSplitter, pEP, pPin)
   {
     if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
     {
-
-      pinNameW = GetPinName(pPin);
-      g_charsetConverter.wToUTF8(pinNameW, pinName);
-      CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
-
       BeginEnumMediaTypes(pPin, pET, pMediaType)
       {
-
-        CLog::Log(LOGDEBUG, "%s \tOutput pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
-        CLog::Log(LOGDEBUG, "%s \tOutput pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
-        CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
-
         if (pMediaType->majortype == MEDIATYPE_Video)
           infos = &m_videoStream;
         else if (pMediaType->majortype == MEDIATYPE_Audio)

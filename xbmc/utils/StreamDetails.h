@@ -56,6 +56,9 @@ public:
   int m_iHeight;
   float m_fAspect;
   int m_iDuration;
+#ifdef HAS_DS_PLAYER
+  int m_iFourcc;
+#endif
   CStdString m_strCodec;
 };
 
@@ -106,6 +109,9 @@ public:
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
   int GetVideoDuration(int idx = 0) const;
+#ifdef HAS_DS_PLAYER
+  CStdString GetVideoFourcc(int idx = 0) const;
+#endif
 
   CStdString GetAudioCodec(int idx = 0) const;
   CStdString GetAudioLanguage(int idx = 0) const;

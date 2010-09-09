@@ -75,9 +75,9 @@ public:
     m_pSplitter->GetFilters(item, vecCores);
   }
 
-  void GetAudioRendererFilters(const CFileItem& item, std::vector<CStdString> &vecCores, SVideoStreamIndexes *pStreamIndexes = NULL)
+  void GetAudioRendererFilters(const CFileItem& item, std::vector<CStdString> &vecCores)
   {
-    m_pAudioRenderer->GetFilters(item, vecCores, false, pStreamIndexes);
+    m_pAudioRenderer->GetFilters(item, vecCores, false);
   }
 
   void GetVideoFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)
@@ -85,9 +85,9 @@ public:
     m_pVideo->GetFilters(item, vecCores, dxva);
   }
 
-  void GetAudioFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false, SVideoStreamIndexes *pStreamIndexes = NULL)
+  void GetAudioFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)
   {
-    m_pAudio->GetFilters(item, vecCores, dxva, pStreamIndexes);
+    m_pAudio->GetFilters(item, vecCores, dxva);
   }
 
   void GetExtraFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)

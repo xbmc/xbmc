@@ -37,7 +37,7 @@ public:
   CFilterSelectionRule(TiXmlElement* rule, const CStdString &nodeName);
   virtual ~CFilterSelectionRule();
 
-  void GetFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false, SVideoStreamIndexes *pStreamIndexes = NULL);
+  void GetFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false);
 
 private:
   int GetTristate(const char* szValue) const;
@@ -55,6 +55,7 @@ private:
   CStdString m_videoCodec;
   CStdString m_videoResolution;
   CStdString m_videoAspect;
+  CStdString m_videoFourcc;
 
   CStdString m_filterName;
   bool m_bStreamDetails;

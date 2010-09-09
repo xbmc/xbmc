@@ -4823,6 +4823,9 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h">
       <Filter>cores\dsplayer\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h">
+      <Filter>cores\dsplayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

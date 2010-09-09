@@ -975,6 +975,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
+#ifdef HAS_DS_PLAYER
+        st->iCodecTag = pStream->codec->codec_tag;
+#endif
 
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
         {
