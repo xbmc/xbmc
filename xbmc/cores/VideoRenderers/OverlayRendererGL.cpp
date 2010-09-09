@@ -87,7 +87,7 @@ static void LoadTexture(GLenum target
       dst += bytesPerLine;
     }
 
-    const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
     stride = width;
   }
 #else
