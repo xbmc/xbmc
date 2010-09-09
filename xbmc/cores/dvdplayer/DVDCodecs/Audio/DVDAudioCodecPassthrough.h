@@ -36,7 +36,7 @@ public:
   virtual int  Decode(BYTE* pData, int iSize);
   virtual int  GetData(BYTE** dst);
   virtual void Reset();
-  virtual int  GetChannels               () { return 2; }
+  virtual int  GetChannels               () { return 1; }
   virtual AEChLayout GetChannelMap       () { static enum AEChannel map[] = {AE_CH_RAW, AE_CH_NULL}; return map; }
   virtual int  GetSampleRate             () { return AE.GetPacketizer()->GetSampleRate(); }
   virtual enum AEDataFormat GetDataFormat() { return AE_FMT_RAW; }

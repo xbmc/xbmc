@@ -74,7 +74,7 @@ public:
   void GarbageCollect();
 
   /* these are for the streams so they can provide compatible data */
-  unsigned int        GetSampleRate   () {return m_format.m_sampleRate   ;}
+  unsigned int        GetSampleRate   ();
   unsigned int        GetChannelCount () {return m_channelCount          ;}
   AEChLayout          GetChannelLayout() {return m_chLayout              ;}
   unsigned int        GetFrames       () {return m_format.m_frames       ;}

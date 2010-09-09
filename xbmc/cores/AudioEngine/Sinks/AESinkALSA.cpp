@@ -29,7 +29,7 @@
 #include "utils/SingleLock.h"
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
-#define ALSA_PERIODS 32
+#define ALSA_PERIODS 64
 
 static enum AEChannel ALSAChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
@@ -76,15 +76,15 @@ inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdStri
 
     if (device == "iec958")
     {
-      device += ":AES0=0x6,AES1=0x82,AES2=0x0";
-           if (format.m_sampleRate == 192000) device += ",AES3=0xe";
-      else if (format.m_sampleRate == 176400) device += ",AES3=0xc";
-      else if (format.m_sampleRate ==  96000) device += ",AES3=0xa";
-      else if (format.m_sampleRate ==  88200) device += ",AES3=0x8";
-      else if (format.m_sampleRate ==  48000) device += ",AES3=0x2";
-      else if (format.m_sampleRate ==  44100) device += ",AES3=0x0";
-      else if (format.m_sampleRate ==  32000) device += ",AES3=0x3";
-      else device += ",AES3=0x1";
+      device += ":AES0=0x06,AES1=0x82,AES2=0x00";
+           if (format.m_sampleRate == 192000) device += ",AES3=0x0e";
+      else if (format.m_sampleRate == 176400) device += ",AES3=0x0c";
+      else if (format.m_sampleRate ==  96000) device += ",AES3=0x0a";
+      else if (format.m_sampleRate ==  88200) device += ",AES3=0x08";
+      else if (format.m_sampleRate ==  48000) device += ",AES3=0x02";
+      else if (format.m_sampleRate ==  44100) device += ",AES3=0x00";
+      else if (format.m_sampleRate ==  32000) device += ",AES3=0x03";
+      else device += ",AES3=0x01";
     }
 
     return device;
@@ -244,12 +244,6 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
 
   unsigned int frames          = (sampleRate / 1000);
   unsigned int periods         = ALSA_PERIODS;
-
-  if (m_passthrough)
-  {
-//    frames  = 6144 / (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) / format.m_channelCount;
-//    periods = 2;
-  }
 
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
   snd_pcm_uframes_t bufferSize = periodSize * periods;

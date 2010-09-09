@@ -103,12 +103,12 @@ void CAEStream::Initialize()
     }
   }
 
+  m_bytesPerSample  = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
+  m_bytesPerFrame   = m_bytesPerSample * m_initChannelCount;
+
   m_aeChannelCount  = AE.GetChannelCount();
   m_aePacketSamples = AE.GetFrames() * m_aeChannelCount;
-  m_waterLevel      = AE.GetSampleRate() >> 1;
-
-  m_bytesPerSample         = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
-  m_bytesPerFrame          = m_bytesPerSample * m_initChannelCount;
+  m_waterLevel      = AE.GetSampleRate() >> 3;
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
@@ -116,7 +116,7 @@ void CAEStream::Initialize()
   m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = AE.GetFrames();
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
-  m_format.m_frameSize     = m_format.m_frames * m_bytesPerFrame;
+  m_format.m_frameSize     = m_bytesPerFrame;
 
   if (m_initDataFormat != AE_FMT_RAW && !m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false))
   {

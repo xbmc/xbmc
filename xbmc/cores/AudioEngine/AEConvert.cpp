@@ -579,7 +579,7 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
-    dst[0] = MathUtils::round_int(data[0] * (INT32_MAX+.5f));
+    dst[0] = MathUtils::round_int(data[0] * (INT32_MAX+0.5f));
     #ifdef __BIG_ENDIAN__
     dst[0] = Endian_Swap32(dst[0]);
     #endif

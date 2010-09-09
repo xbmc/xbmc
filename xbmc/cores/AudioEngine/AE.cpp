@@ -87,7 +87,8 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
 
   /* load the configuration */
   enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_2_0;
-  switch(g_guiSettings.GetInt("audiooutput.channellayout")) {
+  switch(g_guiSettings.GetInt("audiooutput.channellayout"))
+  {
     default:
     case  0: stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
     case  1: stdChLayout = AE_CH_LAYOUT_2_0; break;
@@ -403,6 +404,15 @@ void CAE::GarbageCollect()
   }
 }
 
+unsigned int CAE::GetSampleRate()
+{
+  /* if raw passthrough we need to adjust the sample rate so delays are calculated correctly */
+  if (m_rawPassthrough)
+    return (float)m_format.m_sampleRate / ((float)AE.GetPacketizer()->GetPacketSize() / (float)AE.GetPacketizer()->GetFrameSize());
+
+  return m_format.m_sampleRate;
+}
+
 void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_critSection);
@@ -474,7 +484,7 @@ float CAE::GetDelay()
     buffered += m_packetFrames;
   }
 
-  delay += ((float)buffered / (float)m_format.m_sampleRate);
+  delay += (float)buffered / (float)m_format.m_sampleRate;
   return delay;
 }
 
@@ -756,9 +766,6 @@ inline void CAE::RunOutputStage()
       /* if we have no frames left to output */
       if (m_packetFrames == 0)
       {
-//        if (!m_packetizer->HasPacket())
-//          continue;
-
         /* get the next packet */
         unsigned int size = m_packetizer->GetPacket(&m_packetPos);
         m_packetFrames = size / m_format.m_frameSize;
