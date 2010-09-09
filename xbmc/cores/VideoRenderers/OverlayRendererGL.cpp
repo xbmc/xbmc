@@ -59,34 +59,40 @@ static void LoadTexture(GLenum target
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  int bytesPerPixel;
-  switch (externalFormat)
+  if (stride != width)
   {
-  case GL_RGBA:
-    bytesPerPixel = 4;
-    break;
-  case GL_RGB:
-    bytesPerPixel = 3;
-    break;
-  default:
-    bytesPerPixel = 1;
+    int bytesPerPixel;
+    switch (externalFormat)
+    {
+    case GL_RGBA:
+      bytesPerPixel = 4;
+      break;
+    case GL_RGB:
+      bytesPerPixel = 3;
+      break;
+    default:
+      bytesPerPixel = 1;
+    }
+
+    int bytesPerLine = bytesPerPixel * width;
+
+    std::vector<char> pixelVector( width * height * bytesPerLine ); // reserve temporary memory for unstrided image
+    const char *src = reinterpret_cast<const char *>(pixels);
+    char *dst = &pixelVector[0];
+    for (int y = 0;y < height;++y)
+    {
+      memcpy(dst, src, bytesPerLine);
+      src += stride;
+      dst += bytesPerLine;
+    }
+
+    const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    stride = width;
   }
-
-  int bytesPerLine = bytesPerPixel * width;
-
-  std::vector<char> pixelVector( width * height * bytesPerLine ); // reserve temporary memory for unstrided image
-  const char *src = reinterpret_cast<const char *>(pixels);
-  char *dst = &pixelVector[0];
-  for (int y = 0;y < height;++y)
+  else	// No Stride Needed
   {
-    memcpy(dst, src, bytesPerLine);
-    src += stride;
-    dst += bytesPerLine;
+	const GLvoid *pixelData = pixels;
   }
-
-  const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
-  stride = width;
-
 #else
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(externalFormat == GL_RGBA
