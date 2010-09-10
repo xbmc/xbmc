@@ -395,5 +395,7 @@ void avcodec_register_all(void)
     REGISTER_BSF     (NOISE, noise);
     REGISTER_BSF     (REMOVE_EXTRADATA, remove_extradata);
     REGISTER_BSF     (TEXT2MOVSUB, text2movsub);
+    REGISTER_BSF     (VC1_ASFTORCV, vc1_asftorcv);
+    REGISTER_BSF     (VC1_ASFTOANNEXG, vc1_asftoannexg);
 }
 

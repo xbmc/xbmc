@@ -604,6 +604,9 @@ OBJS-$(CONFIG_MP3_HEADER_DECOMPRESS_BSF)  += mp3_header_decompress_bsf.o \
 OBJS-$(CONFIG_NOISE_BSF)                  += noise_bsf.o
 OBJS-$(CONFIG_REMOVE_EXTRADATA_BSF)       += remove_extradata_bsf.o
 OBJS-$(CONFIG_TEXT2MOVSUB_BSF)            += movsub_bsf.o
+OBJS-$(CONFIG_VC1_ASFTORCV_BSF)           += vc1_asftorcv_bsf.o
+OBJS-$(CONFIG_VC1_ASFTOANNEXG_BSF)        += vc1_asftoannexg_bsf.o vc1.o \
+                                             vc1data.o
 
 # thread libraries
 OBJS-$(HAVE_PTHREADS)                  += pthread.o
