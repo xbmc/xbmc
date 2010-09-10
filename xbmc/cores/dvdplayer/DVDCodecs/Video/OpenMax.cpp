@@ -108,8 +108,8 @@ class DllLibOpenMax : public DllDynamic, DllLibOpenMaxInterface
 // right codec matched to video format.
 #define OMX_H264BASE_DECODER    "OMX.Nvidia.h264.decode"
 // OMX.Nvidia.h264ext.decode segfaults, not sure why.
-//#define OMX_H264MAIN_DECODER  "OMX.Nvidia.h264ext.decode"
-#define OMX_H264MAIN_DECODER    "OMX.Nvidia.h264.decode"
+#define OMX_H264MAIN_DECODER    "OMX.Nvidia.h264ext.decode"
+//#define OMX_H264MAIN_DECODER    "OMX.Nvidia.h264.decode"
 #define OMX_H264HIGH_DECODER    "OMX.Nvidia.h264ext.decode"
 #define OMX_MPEG4_DECODER       "OMX.Nvidia.mp4.decode"
 #define OMX_MPEG4EXT_DECODER    "OMX.Nvidia.mp4ext.decode"
