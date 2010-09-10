@@ -3,15 +3,15 @@
   id="webinterface.default"
   version="1.0.0"
   name="Default"
-  provider-name="Malard, Team XBMC">
+  provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.gui" version="2.11"/>
   </requires>
   <extension
     point="xbmc.gui.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Default web interface by Malard. (XBMC's default web interface)</summary>
-    <description lang="en">Blablabla look good, blablabla, work everywhere</description>
+    <summary lang="en">Team XBMC Web Interface. (XBMC's default web interface)</summary>
+    <description lang="en">Default web interface for XBMC; Designed for devices of all resolutions</description>
     <platform>all</platform>
   </extension>
 </addon>

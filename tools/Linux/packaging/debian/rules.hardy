@@ -51,8 +51,6 @@ binary-indep:
 	cp $(CURDIR)/tools/Linux/xbmc.desktop $(CURDIR)/debian/tmp/usr/share/applications/
 	# xbmc Live files 
 	dh_install -i --sourcedir=$(CURDIR)/debian/tmp -XLICENCE -XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
-	# XBMC WEB POC
-	dh_install -pxbmc-web ../../web/poc_jsonrpc usr/share/xbmc/web
 	dh_installdocs -i
 	dh binary-indep --after dh_installdocs
 
