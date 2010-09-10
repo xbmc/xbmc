@@ -53,15 +53,17 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   m_format = format;
   m_orientation = 0;
 
+  m_textureWidth = m_imageWidth;
+  m_textureHeight = m_imageHeight;
+
+  if (m_format & XB_FMT_DXT_MASK)
+    while (GetPitch() < g_Windowing.GetMinDXTPitch())
+      m_textureWidth += GetBlockSize();
+
   if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
-    m_textureWidth = PadPow2(m_imageWidth);
-    m_textureHeight = PadPow2(m_imageHeight);
-  }
-  else
-  {
-    m_textureWidth = m_imageWidth;
-    m_textureHeight = m_imageHeight;
+    m_textureWidth = PadPow2(m_textureWidth);
+    m_textureHeight = PadPow2(m_textureHeight);
   }
   if (m_format & XB_FMT_DXT_MASK)
   { // DXT textures must be a multiple of 4 in width and height
