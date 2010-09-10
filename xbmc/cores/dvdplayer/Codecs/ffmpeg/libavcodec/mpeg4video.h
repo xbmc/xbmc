@@ -91,6 +91,9 @@ void mpeg4_encode_mb(MpegEncContext *s,
 void mpeg4_pred_ac(MpegEncContext * s, DCTELEM *block, int n,
                    int dir);
 void ff_set_mpeg4_time(MpegEncContext * s);
+void mpeg4_encode_gop_header(MpegEncContext * s);
+void mpeg4_encode_visual_object_header(MpegEncContext * s);
+void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_number);
 void mpeg4_encode_picture_header(MpegEncContext *s, int picture_number);
 
 int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb);

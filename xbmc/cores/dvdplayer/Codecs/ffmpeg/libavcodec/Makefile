@@ -595,6 +595,14 @@ OBJS-$(CONFIG_AAC_ADTSTOASC_BSF)          += aac_adtstoasc_bsf.o aacadtsdec.o \
 OBJS-$(CONFIG_CHOMP_BSF)                  += chomp_bsf.o
 OBJS-$(CONFIG_DUMP_EXTRADATA_BSF)         += dump_extradata_bsf.o
 OBJS-$(CONFIG_H264_MP4TOANNEXB_BSF)       += h264_mp4toannexb_bsf.o
+OBJS-$(CONFIG_MPEG4VIDEO_ES_BSF)          += mpeg4video_es_bsf.o \
+                                             mpeg4videoenc.o ituh263enc.o \
+                                             mpegvideo_enc.o motion_est.o \
+                                             ratecontrol.o mpeg12data.o \
+                                             aandcttab.o jfdctfst.o \
+                                             jfdctint.o faandct.o \
+                                             mpeg4video_parser.o mpegvideo.o \
+                                             error_resilience.o
 OBJS-$(CONFIG_IMX_DUMP_HEADER_BSF)        += imx_dump_header_bsf.o
 OBJS-$(CONFIG_MJPEGA_DUMP_HEADER_BSF)     += mjpega_dump_header_bsf.o
 OBJS-$(CONFIG_MOV2TEXTSUB_BSF)            += movsub_bsf.o

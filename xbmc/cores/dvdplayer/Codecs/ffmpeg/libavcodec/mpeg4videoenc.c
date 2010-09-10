@@ -872,7 +872,7 @@ void ff_set_mpeg4_time(MpegEncContext * s){
     }
 }
 
-static void mpeg4_encode_gop_header(MpegEncContext * s){
+void mpeg4_encode_gop_header(MpegEncContext * s){
     int hours, minutes, seconds;
     int64_t time;
 
@@ -902,7 +902,7 @@ static void mpeg4_encode_gop_header(MpegEncContext * s){
     ff_mpeg4_stuffing(&s->pb);
 }
 
-static void mpeg4_encode_visual_object_header(MpegEncContext * s){
+void mpeg4_encode_visual_object_header(MpegEncContext * s){
     int profile_and_level_indication;
     int vo_ver_id;
 
@@ -947,7 +947,7 @@ static void mpeg4_encode_visual_object_header(MpegEncContext * s){
     ff_mpeg4_stuffing(&s->pb);
 }
 
-static void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_number)
+void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_number)
 {
     int vo_ver_id;
 
