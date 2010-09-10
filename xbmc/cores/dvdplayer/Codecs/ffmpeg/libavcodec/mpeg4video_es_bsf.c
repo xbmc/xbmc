@@ -19,7 +19,7 @@
  */
 
 #include "avcodec.h"
-#include "mpegvideo.h"
+#include "mpeg4video.h"
 
 static int mpeg4video_es_filter(AVBitStreamFilterContext *bsfc,
 				AVCodecContext *avctx, const char *args,
