@@ -725,7 +725,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   }
 
   ClearFileItems();
-  *m_vecItems = items;
+  m_vecItems->Copy(items);
 
   // if we're getting the root source listing
   // make sure the path history is clean

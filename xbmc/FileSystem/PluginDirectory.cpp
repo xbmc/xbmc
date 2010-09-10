@@ -179,7 +179,8 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
   }
 
   CPluginDirectory *dir = globalHandles[handle];
-  CFileItemList pItemList = *items;
+  CFileItemList pItemList;
+  pItemList.Copy(*items);
   dir->m_listItems->Append(pItemList);
   dir->m_totalItems = totalItems;
 
