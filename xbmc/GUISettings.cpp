@@ -658,6 +658,7 @@ void CGUISettings::Initialize()
 #endif
   AddString(srv,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(srv,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddDefaultAddon(srv, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
 #endif
 #ifdef HAS_EVENT_SERVER
   AddSeparator(srv,"services.sep1");
