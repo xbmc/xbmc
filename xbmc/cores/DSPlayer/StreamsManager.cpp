@@ -317,7 +317,7 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
 {
   DWORD nStreams = 0, flags = 0, group = 0;
   WCHAR* wname = NULL;
-  CDSStreamDetail* infos = NULL;
+  CStreamDetail* infos = NULL;
   LCID lcid;
   IUnknown *pObj = NULL, *pUnk = NULL;
   int j = 0;
@@ -338,29 +338,31 @@ void CStreamsManager::LoadIAMStreamSelectStreamsInternal()
     else
       continue;
 
-    infos->IAMStreamSelect_Index = i;
+    CDSStreamDetail& pS = dynamic_cast<CDSStreamDetail&> (*infos);
 
-    g_charsetConverter.wToUTF8(wname, infos->displayname);
+    pS.IAMStreamSelect_Index = i;
+
+    g_charsetConverter.wToUTF8(wname, pS.displayname);
     CoTaskMemFree(wname);
 
-    infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
+    pS.flags = flags; pS.lcid = lcid; pS.group = group; pS.pObj = (IPin *)pObj; pS.pUnk = (IPin *)pUnk;
     if (flags & AMSTREAMSELECTINFO_ENABLED)
-      infos->connected = true;
+      pS.connected = true;
 
     MediaTypeToStreamDetail(mediaType, (CStreamDetail&)(*infos));
 
     if (mediaType->majortype == MEDIATYPE_Audio)
     {
       /* Audio stream */
-      if (infos->displayname.find("Undetermined") != std::string::npos )
-        infos->displayname.Format("A: Audio %02d", i + 1);
+      if (pS.displayname.find("Undetermined") != std::string::npos )
+        pS.displayname.Format("A: Audio %02d", i + 1);
 
-      m_audioStreams.push_back(reinterpret_cast<CDSStreamDetailAudio *>(infos));
-      CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
+      m_audioStreams.push_back(static_cast<CDSStreamDetailAudio *>(infos));
+      CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, pS.displayname.c_str());
     } else if (mediaType->majortype == MEDIATYPE_Subtitle)
     {
-      SubtitleManager->GetSubtitles().push_back(reinterpret_cast<CDSStreamDetailSubtitle *>(infos));
-      CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
+      SubtitleManager->GetSubtitles().push_back(static_cast<CDSStreamDetailSubtitle *>(infos));
+      CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, pS.displayname.c_str());
     }
 
     DeleteMediaType(mediaType);
