@@ -44,33 +44,38 @@
 //
 // For details, see the script.aculo.us web site: http://script.aculo.us/
 
+var DEBUG_MODE = true; /* Set to false to enable cached javascript */
+
 var Launcher = {
 	VERSION: '1.0.0',
 	REQUIRED_JQUERY: '1.4.2',
 	load: function(libraryName) {
-		document.write('<script type="text/javascript" src="' + libraryName + '?' + this.VERSION + '"><\/script>');
+		document.write('<script type="text/javascript" src="' + libraryName + '?' + (DEBUG_MODE ? this.randomValue() : this.VERSION) + '"><\/script>');
 	},
 	init: function() {
-	function convertVersionString(versionString) {
-		var v = versionString.replace(/_.*|\./g, '');
-		v = parseInt(v + (v.length == 4 ? '' : '0'));
-		return versionString.indexOf('_') > -1 ? v-1 : v;
-	}
+		function convertVersionString(versionString) {
+			var v = versionString.replace(/_.*|\./g, '');
+			v = parseInt(v + (v.length == 4 ? '' : '0'));
+			return versionString.indexOf('_') > -1 ? v-1 : v;
+		}
 
-	if(!jQuery || (convertVersionString(jQuery.fn.jquery) < convertVersionString(Launcher.REQUIRED_JQUERY)))
-		throw("XBMC Web Interface requires the jQuery JavaScript framework >= " + Launcher.REQUIRED_JQUERY);
+		if(!jQuery || (convertVersionString(jQuery.fn.jquery) < convertVersionString(Launcher.REQUIRED_JQUERY)))
+			throw("XBMC Web Interface requires the jQuery JavaScript framework >= " + Launcher.REQUIRED_JQUERY);
 
-	var js = /Launcher\.js(\?.*)?$/;
-	$('html').find('script[src]').each(
-		function(i, s) { 
-			if (s.src.match(js)) {
-				var path = s.src.replace(js, ''),
-				includes = s.src.match(/\?.*load=([a-z,]*)/);
-				$.each((includes ? includes[1] : 'jquery.lazyload,Core,MediaLibrary,NowPlayingManager').split(','), function(i, include) { 
-					Launcher.load(path + include + '.js') 
-				});
-			}
-		});
+		var js = /Launcher\.js(\?.*)?$/;
+		$('html').find('script[src]').each(
+			function(i, s) { 
+				if (s.src.match(js)) {
+					var path = s.src.replace(js, ''),
+					includes = s.src.match(/\?.*load=([a-z,]*)/);
+					$.each((includes ? includes[1] : 'jquery.lazyload,Core,MediaLibrary,NowPlayingManager').split(','), function(i, include) { 
+						Launcher.load(path + include + '.js') 
+					});
+				}
+			});
+	},
+	randomValue: function() {
+		return Math.random();
 	}
 }
 

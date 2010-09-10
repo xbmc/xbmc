@@ -6,23 +6,251 @@ body {
 
 #header {
 	position: relative;
-	height: 150px;
-	background: #333;
+	height: 50px;
+	border-bottom: 1px solid #000;
 	}
 
 #header .logo {
+	padding-top: 1px;
+	}
+
+#navigation {
+	float: right;
+	}
+
+#spinner {
+	float: right;
+	padding: 11px 10px;
+	}
+
+#navigation ul {
+	list-style-type: none;
+	border-right: 1px solid #969696;
+	margin: 0;
+	padding: 0;
+	}
+
+#navigation ul li {
+	float: left;
+	color: #000;
+	cursor: pointer;
+	line-height: 50px;
+	margin: 0;
+	padding: 0 24px;
+	border-left: 1px solid #969696;
+	font-family: Verdana, sans-serif;
+	font-size: 18px;
+	font-weight: 700;
+	}
+
+#navigation ul li.selected,
+#navigation ul li:hover {
+	background: url('/images/header-selected-bg.png') repeat-x;
+	color: #fff;
+	}
+
+.floatableAlbum {
+	float: left;
+	width: 130px;
+	height: 150px;
 	padding: 10px;
-	height: 100px;
+	}
+
+.floatableMovieCover {
+	float: left;
+	width: 130px;
+	height: 200px;
+	padding: 10px;
+	}
+
+.floatableTVShowCover {
+	float: left;
+	padding: 10px;
+	width: 379px;
+	height: 70px;
+	}
+
+#libraryContainer .floatableAlbum,
+#movieLibraryContainer .floatableMovieCover,
+#tvshowLibraryContainer .floatableTVShowCover {
+	cursor: pointer;
+	}
+
+.floatableAlbum div.imgWrapper,
+.floatableMovieCover div.imgWrapper,
+.floatableTVShowCover div.imgWrapper {
+	width: 130px;
+	height: 130px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	}
+
+div.imgWrapper div.inner {
+	overflow: hidden;
+	width: 130px;
+	}
+
+.floatableMovieCover div.imgWrapper,
+.floatableMovieCover div.imgWrapper div.inner {
+	height: 190px;
+	}
+
+#overlay {
+	top: 50px;
+	left: 0;
+	right: 0;
+	bottom: 150px;
+	background: #3f3f3f;
+	position: fixed;
+	opacity: 0.8;
+	z-index: 2000; /* Above contentContainer's */
+	}
+
+.floatableTVShowCover div.imgWrapper,
+.floatableTVShowCover img,
+.floatableTVShowCover div.imgWrapper div.inner {
+	height: 70px;
+	width: 379px;
+	}
+
+.floatableAlbum img {
+	width: 130px;
+	}
+
+.floatableMovieCover img {
+	height: 180px;
+	}
+
+.floatableAlbum p.album,
+.floatableMovieCover p.album {
+	font-size: 12px;
+	font-weight: 700;
+	color: #000;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	width: 130px;
+	white-space: nowrap;
+	overflow: hidden;
+	}
+
+.floatableAlbum p.artist,
+.floatableMovieCover p.artist {
+	font-size: 11px;
+	color: #777;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	}
+
+.contentContainer {
+	overflow-x: hidden;
+	overflow-y: auto;
+	position: absolute;
+	top: 51px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #fff;
+	padding-bottom: 150px;
+	}
+
+.albumView .track {
+	cursor: pointer;
+	line-height: 10px;
+	font-size: 14px;
+	padding: 1px 0;
+	}
+
+/* Movie Overlay */
+
+.moviePopoverContainer {
+	z-index: 3000; /* Above overlay */
+	border: 1px solid #000;
+	padding: 10px;
+	margin: 10px;
+	position: fixed;
+	background: #3f3f3f;
+	top: 50px;
+	bottom: 150px;
+	left: 10%;
+	right: 10%;
+	opacity: 0.9;
+	}
+
+.moviePopoverContainer .closeButton {
+	float: right;
+	cursor: pointer;
+	}
+
+.moviePopoverContainer .movieCover {
+	height: 100%;
+	padding-right: 20px;
+	float: left;
+	z-index: 3100;
+	}
+
+.moviePopoverContainer .movieTitle {
+	font-size: 24px;
+	font-weight: 700;
+	color: #fff;
+	margin: 0;
+	}
+
+.moviePopoverContainer .runtime,
+.moviePopoverContainer .director,
+.moviePopoverContainer .genre,
+.moviePopoverContainer .plot {
+	color: #fff;
+	}
+
+.movieTitle .year {
+	font-weight: 400;
+	font-size: 18px;
+	}
+
+.playIcon {
+	background: url('/images/play-icon.png') center center no-repeat;
+	position: absolute;
+	z-index: 3500;
+	cursor: pointer;
+	opacity: 0.8;
+	}
+
+.playIcon:hover {
+	opacity: 1;
+	}
+
+/* Effects */
+
+#topScrollFade {
+	position: fixed;
+	top: 51px;
+	height: 33px;
+	z-index: 101;
+	left: 0;
+	right: 0;
+	background: url('/images/top-fade.png') top left repeat-x;
+	}
+
+/* Now Playing */
+
+#footerPopover {
+	position: fixed;
+	height: 150px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 10000; /* Top most always */
+	background: #333;
+	opacity: 0.98;
 	}
 
 #nowPlayingPanel {
-	background: #333;
-	width: 480px;
 	height: 130px;
+	width: 480px;
 	padding: 10px;
-	position: absolute;
-	top: 0px;
-	right: 0px;
 	}
 
 #audioCoverArt img {
@@ -119,6 +347,7 @@ body {
 	width: 416px;
 	float: right;
 	cursor: pointer;
+	z-index: 1000;
 	}
 
 #nowPlayingPlaylist {
@@ -245,90 +474,3 @@ body {
 #pbNext:hover {
 	background: url('/images/OSDNextTrackFO.png') no-repeat;
 	}
-
-#navigation {
-	position: absolute;
-	top: 100px;
-	left: 0;
-	}
-
-#navigation ul {
-	list-style-type: none;
-	}
-
-#navigation ul li {
-	float: left;
-	background: #ccc;
-	color: #fff;
-	cursor: pointer;
-	border: 2px solid #333;
-	margin: 2px;
-	padding: 4px;
-	}
-
-#navigation ul li.selected,
-#navigation ul li:hover {
-	background: #aaa;
-	color: #333;
-	}
-
-.floatableAlbum {
-	float: left;
-	width: 130px;
-	height: 150px;
-	padding: 10px;
-	}
-
-#libraryContainer .floatableAlbum {
-	cursor: pointer;
-	}
-
-.floatableAlbum div.imgWrapper {
-	width: 130px;
-	height: 130px;
-	display: table-cell;
-	vertical-align: middle;
-	}
-
-.floatableAlbum img {
-	width: 130px;
-	}
-
-.floatableAlbum p.album {
-	font-size: 12px;
-	font-weight: 700;
-	color: #000;
-	text-align: center;
-	margin: 0;
-	padding: 0;
-	width: 130px;
-	white-space: nowrap;
-	overflow: hidden;
-	}
-
-.floatableAlbum p.artist {
-	font-size: 11px;
-	color: #777;
-	text-align: center;
-	margin: 0;
-	padding: 0;
-	}
-
-.contentContainer {
-	overflow-x: hidden;
-	overflow-y: auto;
-	position: absolute;
-	top: 150px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: #fff;
-	}
-
-.albumView .track {
-	cursor: pointer;
-	line-height: 10px;
-	font-size: 14px;
-	padding: 1px 0;
-	}
-

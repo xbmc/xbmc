@@ -302,7 +302,6 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
 
 CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
 {
-  CLog::Log(LOGDEBUG, "JSONRPC: %s", inputString.c_str());
   Value inputroot, outputroot, result;
 
   JSON_STATUS errorCode = OK;

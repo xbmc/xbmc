@@ -9,13 +9,30 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> 
 		<!-- <link href="/images/logo.png" rel="image_src" /> -->
 		<meta name="robots" content="NOINDEX, NOFOLLOW">
-		<link href="/css/core.css" rel="stylesheet" type="text/css">
+		<link href="/css/core.css?1.1.0" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="/js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="/js/Launcher.js?1.0.0"></script>
 	</head>
 	<body>
 		<div id="header">
 			<img src="/images/logo.png" alt="XBMC Logo" class="logo">
+			<div id="navigation">
+				<ul>
+					<li id="remoteControl">Remote</li>
+					<li id="movieLibrary">Movies</li>
+					<li id="tvshowLibrary">TV Shows</li>
+					<li id="musicLibrary">Music</li>
+					<li id="settingsPanel">Settings</li>
+				</ul>
+			</div>
+			<img src="/images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
+		</div>
+		<div id="body">
+			<div id="topScrollFade" style="display: none;"></div>
+			<div id="content"></div>
+			<div id="overlay" style="display: none;"></div>
+		</div>
+		<div id="footerPopover">
 			<div id="nowPlayingPanel" style="display: none;">
 				<div id="nowPlayingContent">
 					<div id="audioDescription">
@@ -48,23 +65,8 @@
 					</div>
 				</div>
 				<span id="nextText">Next:</span>
-				<div id="nextTrack" style="display: none;">
-					
-				</div>
-				<div id="nowPlayingPlaylist" style="display: none;">
-
-				</div>
-			</div>
-		</div>
-		<div id="body">
-			<div id="navigation">
-				<ul>
-					<li id="musicLibrary">Music</li>
-					<li id="videoLibrary">Videos</li>
-				</ul>
-			</div>
-			<div id="content">
-
+				<div id="nextTrack" style="display: none;"></div>
+				<div id="nowPlayingPlaylist" style="display: none;"></div>
 			</div>
 		</div>
 		<script type="text/javascript">
