@@ -237,6 +237,17 @@ CTCPServer::CTCPClient::CTCPClient()
   m_addrlen = sizeof(struct sockaddr);
 }
 
+CTCPServer::CTCPClient::CTCPClient(const CTCPClient& client)
+{
+  Copy(client);
+}
+
+CTCPServer::CTCPClient& CTCPServer::CTCPClient::operator=(const CTCPClient& client)
+{
+  Copy(client);
+  return *this;
+}
+
 int CTCPServer::CTCPClient::GetPermissionFlags()
 {
   return OPERATION_PERMISSION_ALL;
@@ -284,3 +295,15 @@ void CTCPServer::CTCPClient::Disconnect()
     m_socket = -1;
   }
 }
+
+void CTCPServer::CTCPClient::Copy(const CTCPClient& client)
+{
+  m_socket            = client.m_socket;
+  m_cliaddr           = client.m_cliaddr;
+  m_addrlen           = client.m_addrlen;
+  m_announcementflags = client.m_announcementflags;
+  m_beginBrackets     = client.m_beginBrackets;
+  m_endBrackets       = client.m_endBrackets;
+  m_buffer            = client.m_buffer;
+}
+

@@ -178,12 +178,12 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
 
 bool CRenderSystemGLES::IsExtSupported(const char* extension)
 {
-  if (extension == "GL_EXT_framebuffer_object")
+  if (strcmp( extension, "GL_EXT_framebuffer_object" ) == 0)
   {
     // GLES has FBO as a core element, not an extension!
     return true;
   }
-  else if (extension == "GL_TEXTURE_NPOT")
+  else if (strcmp( extension, "GL_TEXTURE_NPOT" ) == 0)
   {
     // GLES supports non-power-of-two textures as standard.
 	return true;
@@ -206,7 +206,7 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
   }
 }
 
-static int64_t abs(int64_t a)
+static int64_t abs64(int64_t a)
 {
   if(a < 0)
     return -a;
@@ -250,7 +250,7 @@ bool CRenderSystemGLES::PresentRender()
     diff = curr - m_iSwapStamp;
     m_iSwapStamp = curr;
 
-    if (abs(diff - m_iSwapRate) < abs(diff))
+    if (abs64(diff - m_iSwapRate) < abs64(diff))
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
   }
   

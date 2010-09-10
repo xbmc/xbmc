@@ -45,13 +45,14 @@ public:
   CCriticalSection();
   virtual ~CCriticalSection();
 
-  CCriticalSection(const CCriticalSection& section);
-  CCriticalSection& operator=(const CCriticalSection& section);
-
   XCriticalSection& getCriticalSection() { return m_criticalSection; }
 
 private:
   XCriticalSection m_criticalSection;
+
+  //don't allow copying a CCriticalSection
+  CCriticalSection(const CCriticalSection& section) {}
+  CCriticalSection& operator=(const CCriticalSection& section) {return *this;}
 };
 
 // The CCritical section overloads.

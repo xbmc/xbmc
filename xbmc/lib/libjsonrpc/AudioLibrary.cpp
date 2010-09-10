@@ -69,9 +69,11 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
 
   int artistID = ParameterAsInt(param, -1, "artistid");
   int genreID  = ParameterAsInt(param, -1, "genreid");
+  int start = ParameterAsInt(param, -1, "start");
+  int end = ParameterAsInt(param, -1, "end");
 
   CFileItemList items;
-  if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
+  if (musicdatabase.GetAlbumsNav("", items, genreID, artistID, start, end))
     HandleFileItemList("albumid", false, "albums", items, param, result);
 
   musicdatabase.Close();

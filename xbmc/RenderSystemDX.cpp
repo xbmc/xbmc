@@ -443,6 +443,8 @@ bool CRenderSystemDX::CreateDevice()
         return false;
       }
     }
+    // Not sure the following actually does something
+    ((IDirect3DDevice9Ex*)m_pD3DDevice)->SetGPUThreadPriority(7);
   }
   else
   {
@@ -541,6 +543,20 @@ bool CRenderSystemDX::CreateDevice()
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
     m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+  }
+
+  // Intel quirk: DXT texture pitch must be > 64
+  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex)
+  // DXT1:   32 pixels wide is the largest non-working texture width
+  // DXT3/5: 16 pixels wide ----------------------------------------
+  // Both equal to a pitch of 64. So far no Intel has DXT NPOT (including i3/i5/i7, so just go with the next higher POT.
+  // See ticket #9578
+//  if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
+//  && m_defaultD3DPool  == D3DPOOL_DEFAULT
+//  && AIdentifier.VendorId == 32902)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
+    m_minDXTPitch = 128;
   }
 
   D3DDISPLAYMODE mode;

@@ -32,18 +32,6 @@ CCriticalSection::~CCriticalSection()
   m_criticalSection.Destroy();
 }
 
-//////////////////////////////////////////////////////////////////////
-CCriticalSection::CCriticalSection(const CCriticalSection& section)
-{
-  *this = section;
-}
-
-CCriticalSection& CCriticalSection::operator=(const CCriticalSection& section)
-{
-  if (this == &section) return * this;
-  return *this;
-}
-
 // The C API.
 void  InitializeCriticalSection(CCriticalSection* section)             { section->getCriticalSection().Initialize(); }
 void  DeleteCriticalSection(CCriticalSection* section)                 { section->getCriticalSection().Destroy(); }

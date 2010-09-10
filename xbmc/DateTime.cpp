@@ -1208,3 +1208,35 @@ CStdString CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withS
 {
   return GetAsLocalizedDate(longDate)+" "+GetAsLocalizedTime("", withSeconds);
 }
+
+CDateTime CDateTime::GetAsUTCDateTime() const
+{
+  TIME_ZONE_INFORMATION tz;
+
+  CDateTime time(m_time);
+  switch(GetTimeZoneInformation(&tz))
+  {
+    case TIME_ZONE_ID_DAYLIGHT:
+        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
+        break;
+    case TIME_ZONE_ID_STANDARD:
+        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
+        break;
+    case TIME_ZONE_ID_UNKNOWN:
+        time += CDateTimeSpan(0, 0, tz.Bias, 0);
+        break;
+  }
+
+  return time;
+}
+
+static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+CStdString CDateTime::GetAsRFC1123DateTime() const
+{
+  CDateTime time(GetAsUTCDateTime()); 
+  CStdString result;
+  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[time.GetDayOfWeek()], time.GetDay(), MONTH_NAMES[time.GetMonth()-1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
+  return result;
+}

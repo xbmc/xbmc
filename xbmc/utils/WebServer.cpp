@@ -28,6 +28,9 @@
 #include "../Util.h"
 #include "log.h"
 #include "SingleLock.h"
+#include "DateTime.h"
+#include "addons/AddonManager.h"
+
 #ifdef _WIN32
 #pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
 #endif
@@ -38,6 +41,7 @@
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 #define DEFAULT_PAGE        "index.html"
 
+using namespace ADDON;
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
@@ -108,8 +112,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       unsigned int *upload_data_size, void **con_cls)
 #endif
 {
-  CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
-
   CWebServer *server = (CWebServer *)cls;
   CStdString strURL = url;
   CStdString originalURL = url;
@@ -132,28 +134,31 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 #endif
 
   if (methodType == GET && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
-      return HttpApi(connection);
+    return HttpApi(connection);
 
   if (strURL.Left(4).Equals("/vfs"))
-    {
-      strURL = strURL.Right(strURL.length() - 5);
-      CUtil::URLDecode(strURL);
-      return CreateFileDownloadResponse(connection, strURL);
-    }
+  {
+    strURL = strURL.Right(strURL.length() - 5);
+    CUtil::URLDecode(strURL);
+    return CreateFileDownloadResponse(connection, strURL);
+  }
 
 #ifdef HAS_WEB_INTERFACE
   if (strURL.Equals("/"))
     strURL.Format("/%s", DEFAULT_PAGE);
-    
-      strURL.Format("special://xbmc/web%s", strURL.c_str());
-      if (CDirectory::Exists(strURL))
+
+  AddonPtr addon;
+  CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE,addon);
+  if (addon)
+    strURL = CUtil::AddFileToFolder(addon->Path(),strURL);
+  if (CDirectory::Exists(strURL))
   {
     if (strURL.Right(1).Equals("/"))
       strURL += DEFAULT_PAGE;
     else
       return CreateRedirect(connection, originalURL += "/");
   }
-      return CreateFileDownloadResponse(connection, strURL);
+  return CreateFileDownloadResponse(connection, strURL);
 
 #endif
 
@@ -204,10 +209,6 @@ int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connectio
   {
     CStdString *jsoncall = (CStdString *)(*con_cls);
 
-    if (jsoncall->size() > 2000)
-      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is longer than 2000 characters, skipping logging it");
-    else
-      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall->c_str());
     CHTTPClient client;
     CStdString jsonresponse = CJSONRPC::MethodCall(*jsoncall, server, &client);
 
@@ -255,13 +256,14 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
-  if (file->Open(strURL))
+
+  if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
     response = MHD_create_response_from_callback ( file->GetLength(),
                                                    2048,
                                                    &CWebServer::ContentReaderCallback, file,
-                                                   &CWebServer::ContentReaderFreeCallback);
+                                                   &CWebServer::ContentReaderFreeCallback); 
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
@@ -269,7 +271,12 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     if (mime)
       MHD_add_response_header(response, "Content-Type", mime);
 
+    CDateTime expiryTime = CDateTime::GetCurrentDateTime();
+    expiryTime += CDateTimeSpan(1, 0, 0, 0);
+    MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
+
     ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+
     MHD_destroy_response(response);
   }
   else
@@ -278,7 +285,6 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
     return CreateErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
   }
-
   return ret;
 }
 
@@ -347,10 +353,12 @@ bool CWebServer::Start(const char *ip, int port)
     // WARNING: when using MHD_USE_THREAD_PER_CONNECTION, set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
     // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
 
-    // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+    unsigned int timeout = 60 * 60 * 24;
+    // MHD_USE_THREAD_PER_CONNECTION = one thread per connection
+    // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time [unless you set the thread pool size]
+    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_THREAD_POOL_SIZE, 8, MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_END);
     if (!m_daemon) //try IPv4
-      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
+      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY, port, NULL, this, &CWebServer::AnswerToConnection, this, MHD_OPTION_THREAD_POOL_SIZE, 8, MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_END);
     m_running = m_daemon != NULL;
     if (m_running)
       CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
@@ -367,7 +375,8 @@ bool CWebServer::Stop()
     MHD_stop_daemon(m_daemon);
     m_running = false;
     CLog::Log(LOGNOTICE, "WebServer: Stopped the webserver");
-  }
+  } else 
+    CLog::Log(LOGNOTICE, "WebServer: Stopped failed because its not running");
 
   return !m_running;
 }
@@ -447,7 +456,7 @@ int CWebServer::GetCapabilities()
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
-  if      (strcmp(ext, ".aif") == 0)   return "audio/aiff";
+  if (strcmp(ext, ".aif") == 0)   return "audio/aiff";
   if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
   if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
   if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";

@@ -4779,12 +4779,6 @@ void CApplication::ProcessSlow()
   
   if (!IsPlayingVideo())
     ADDON::CAddonMgr::Get().UpdateRepos();
-
-#if defined(__arm__)
-  // TODO: gui rendering testing, remove later
-  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
-#endif
-
 }
 
 // Global Idle Time in Seconds

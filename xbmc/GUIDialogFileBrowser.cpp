@@ -367,7 +367,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     }
 
     ClearFileItems();
-    *m_vecItems = items;
+    m_vecItems->Copy(items);
     m_Directory->m_strPath = strDirectory;
     m_strParentPath = strParentPath;
   }

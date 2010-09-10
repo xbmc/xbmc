@@ -100,7 +100,7 @@ public:
       list.Clear();
       return false;
     }
-    list = m_list;
+    list.Copy(m_list);
     return true;
   }
 

@@ -93,12 +93,14 @@ public:
   bool SupportsDXT() const;
   bool SupportsNPOT(bool dxt) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
+  unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
 
 protected:
   bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
   bool                m_bVSync;
   unsigned int        m_maxTextureSize;
+  unsigned int        m_minDXTPitch;
 
   CStdString   m_RenderRenderer;
   CStdString   m_RenderVendor;

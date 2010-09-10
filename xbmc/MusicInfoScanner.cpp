@@ -237,7 +237,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
   if (strDirectory.IsEmpty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetAlbumsNav("musicdb://3/",items,-1,-1);
+    m_musicDatabase.GetAlbumsNav("musicdb://3/",items,-1,-1,-1,-1);
     m_musicDatabase.Close();
   }
   else

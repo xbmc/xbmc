@@ -393,6 +393,22 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
   if(plane.flipindex == flipindex)
     return;
 
+  /** OpenGL ES does not support strided texture input. Make a copy without stride **/
+  if(stride != width)
+  {
+    std::vector<char> pixelVector( width * height * width ); // reserve temporary memory for unstrided image
+    const char *src = reinterpret_cast<const char *>(data);
+    char *dst = &pixelVector[0];
+    for (int y = 0;y < height;++y)
+    {
+      memcpy(dst, src, width);
+      src += stride;
+      dst += width;
+    }
+    const GLvoid *pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    stride = width;
+  }
+
   glBindTexture(GL_TEXTURE_2D, plane.id);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
 
@@ -663,9 +679,9 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   VerifyGLState();
   glEnable(GL_BLEND);
-  glFlush();
 
   g_graphicsContext.EndPaint();
+  glFinish();
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
