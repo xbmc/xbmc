@@ -55,5 +55,7 @@ protected:
   CStdString                m_xbmcConfigFilePath;
   CFGFilterVideoRenderer*   m_pFGF;
 
+private:
+  void      ParseStreamingType(CFileItem& pFileItem, IBaseFilter* pBF);
 };
 

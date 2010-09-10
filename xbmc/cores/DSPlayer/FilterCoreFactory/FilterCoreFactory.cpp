@@ -89,11 +89,11 @@ HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
   return S_OK;
 }
 
-CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( const CFileItem& pFileItem )
+CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( const CFileItem& pFileItem, bool checkUrl /*= false*/ )
 {
   for (ULONG i = 0; i < m_selecRules.size(); i++)
   {
-    if (m_selecRules[i]->Match(pFileItem))
+    if (m_selecRules[i]->Match(pFileItem, checkUrl))
       return m_selecRules[i];
   }
 
@@ -106,19 +106,22 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
 
   /* Special case for internet stream, and rar archive */
   // TODO: handle DVD
-  if (pFileItem.IsInternetStream())
-  {
-    filter = "internal_urlsource";
-    return S_OK;
-  } else if (CUtil::IsInArchive(pFileItem.m_strPath))
+  if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     filter = "internal_archivesource";
     return S_OK;
   }
 
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
+  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem, true);
   if (! pRule)
+  {
+    if (pFileItem.IsInternetStream())
+    {
+      filter = "internal_urlsource";
+      return S_OK;
+    }
     return E_FAIL;
+  }
 
   std::vector<CStdString> foo;
   pRule->GetSourceFilters(pFileItem, foo);

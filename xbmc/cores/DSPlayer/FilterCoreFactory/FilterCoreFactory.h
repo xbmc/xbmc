@@ -93,7 +93,7 @@ private:
   {
     return f->GetInternalName().Equals(s);
   }
-  static CGlobalFilterSelectionRule* GetGlobalFilterSelectionRule(const CFileItem& pFileItem);
+  static CGlobalFilterSelectionRule* GetGlobalFilterSelectionRule(const CFileItem& pFileItem, bool checkUrl = false);
 
   static std::vector<CGlobalFilterSelectionRule *> m_selecRules;
 };

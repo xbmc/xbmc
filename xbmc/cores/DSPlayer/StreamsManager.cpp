@@ -639,7 +639,7 @@ void CStreamsManager::MediaTypeToStreamDetail( AM_MEDIA_TYPE *pMediaType, CStrea
     } 
     else if (pMediaType->formattype == FORMAT_MPEG2Video)
     {
-      if (pMediaType->cbFormat >= sizeof(MPEG2VIDEOINFO))
+      if (pMediaType->cbFormat >= (sizeof(MPEG2VIDEOINFO) - 4))
       {
         MPEG2VIDEOINFO *m = reinterpret_cast<MPEG2VIDEOINFO *>(pMediaType->pbFormat);
         infos.m_iWidth = m->hdr.bmiHeader.biWidth;

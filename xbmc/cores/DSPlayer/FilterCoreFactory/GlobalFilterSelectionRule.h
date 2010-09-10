@@ -35,6 +35,7 @@ class CGlobalFilterSelectionRule
 {
 public:
   CGlobalFilterSelectionRule(TiXmlElement* pRule)
+    : m_url(false)
   {
     Initialize(pRule);
   }
@@ -51,14 +52,16 @@ public:
     //CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__); Log Spam
   }
 
-  bool Match (const CFileItem& pFileItem)
+  bool Match(const CFileItem& pFileItem, bool checkUrl = false)
   {
     CURL url(pFileItem.m_strPath);
     CRegExp regExp;
 
-    if (m_fileTypes.empty())
+    if (m_fileTypes.empty() && m_fileName.empty())
       return false;
 
+    if (!checkUrl && m_url > 0) return false;
+    if (checkUrl && pFileItem.IsInternetStream() && m_url < 1) return false;
     if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return false;
     if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(pFileItem.m_strPath, regExp)) return false;
 
@@ -96,6 +99,7 @@ public:
   }
 
 private:
+  int        m_url;
   CStdString m_name;
   CStdString m_fileName;
   CStdString m_fileTypes;
@@ -130,8 +134,9 @@ private:
     if (!m_name || m_name.IsEmpty())
       m_name = "un-named";
 
+    m_url       = GetTristate(pRule->Attribute("url"));
     m_fileTypes = pRule->Attribute("filetypes");
-    m_fileName = pRule->Attribute("filename");
+    m_fileName  = pRule->Attribute("filename");
 
     // Source rules
     m_pSource = new CFilterSelectionRule(pRule->FirstChildElement("source"), "source");

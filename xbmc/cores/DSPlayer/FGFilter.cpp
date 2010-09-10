@@ -410,12 +410,15 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 
   }
 
+  CStdString guid;
+  g_charsetConverter.wToUTF8(StringFromGUID(m_clsid), guid);
+
   if (FAILED(hr))
     CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__,
-      StringFromGUID(m_clsid).c_str(), m_path.c_str());
+      guid.c_str(), m_path.c_str());
   else
     CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__,
-      StringFromGUID(m_clsid).c_str(), m_path.c_str());
+      guid.c_str(), m_path.c_str());
 
   return hr;
 }

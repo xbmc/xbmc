@@ -89,5 +89,10 @@
       <video filter="realvideodec" />
       <audio filter="realaudiodec" />
     </rule>
+    
+    <!-- New rule for preferred streaming source filter -->   
+    <rule url="true" filetypes=".*">
+      <source filter="internal_ffmpegsource" />
+    </rule>
   </rules>
 </mediasconfig>

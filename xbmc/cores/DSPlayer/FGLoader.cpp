@@ -117,8 +117,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
     return hr;
   }
 
-  /* INTERNET STREAM */
-  if (filterName.Equals("internal_urlsource") || pFileItem.IsInternetStream())
+  if (filterName.Equals("internal_urlsource"))
   {
     //TODO
     //add IAMOpenProgress for requesting the status of stream without this interface the player failed if connection is too slow
@@ -144,33 +143,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
         return E_FAIL;
       }
 
-      // Detect the type of the streaming, in order to choose the right splitter
-      // Often, streaming url does not have an extension ...
-      BeginEnumPins(CGraphFilters::Get()->Source.pBF, pEP, pPin)
-      {
-        PIN_DIRECTION pPinDir;
-        pPin->QueryDirection(& pPinDir);
-        if (pPinDir != PINDIR_OUTPUT)
-          continue;
-
-        BeginEnumMediaTypes(pPin, pEMT, pMT)
-        {
-          CStdString str;
-          g_charsetConverter.wToUTF8(GetMediaTypeName(pMT->subtype), str);
-          CLog::Log(LOGDEBUG, __FUNCTION__" URL output pin media tpye: %s", str.c_str()); 
-        }
-        EndEnumMediaTypes(pMT);
-      }
-      EndEnumPins
-
-      CStdString ext = CURL(pFileItem.m_strPath).GetFileType();
-      // Handle special case
-      if (ext.Equals("dll"))
-      {
-        // For what i've seen, every trailer are in .mov format
-        // Just change the filename
-        pFileItem.m_strPath = "http://dummysite.com/dummyfile.mov";
-      }
+      ParseStreamingType(pFileItem, CGraphFilters::Get()->Source.pBF);
 
       return S_OK;
     }
@@ -180,87 +153,100 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   1/ The source filter is also a splitter. We insert it to the graph as a splitter and load the file
   2/ The source filter is only a source filter. Add it to the graph as a source filter
   */
-  CFGFilter *filter = NULL;
-  if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
-    return E_FAIL;
 
-  // Create the filter
-  Com::SmartPtr<IBaseFilter> pBF = NULL;
-  if (FAILED(filter->Create(&pBF)))
-  {
-    if (filter->GetType() == CFGFilter::INTERNAL)
-      delete filter;
-
-    return E_FAIL;
-  }
+  // TODO: Loading an url must be done!
 
   // If the source filter has more than one ouput pin, it's a splitter too.
   // Only problem, the file must be loaded in the source filter to see the
   // number of output pin
-  CStdString pWinFilePath = pFileItem.m_strPath;
+  CURL url(pFileItem.m_strPath);
+  
+  CStdString pWinFilePath = url.Get();
   if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
     pWinFilePath.Replace("smb://", "\\\\");
   
-  pWinFilePath.Replace("/", "\\");
+  if (! pFileItem.IsInternetStream())
+    pWinFilePath.Replace("/", "\\");
 
-  Com::SmartQIPtr<IFileSourceFilter> pFS = pBF;
-    
   CStdStringW strFileW;
   g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
+  SFilterInfos infos;
   try // Load() may crash on bad designed codec. Prevent XBMC to hang
   {
-    if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
+    if (FAILED(hr = InsertFilter(filterName, infos)))
+    {
+      if (infos.isinternal)
+        delete infos.pData;
+      return E_FAIL;
+    }
+
+    Com::SmartQIPtr<IFileSourceFilter> pFS = infos.pBF;
+    
+    if (SUCCEEDED(pFS->Load(strFileW.c_str(), NULL)))
       CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
     else
     {
       CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
 
-      if (filter->GetType() == CFGFilter::INTERNAL)
-        delete filter;
+      if (infos.isinternal)
+        delete infos.pData;
 
       return E_FAIL;
     }
   } catch (...) {
     CLog::Log(LOGERROR, "%s An exception has been thrown by the codec...", __FUNCTION__);
 
-      if (filter->GetType() == CFGFilter::INTERNAL)
-        delete filter;
+      if (infos.isinternal)
+        delete infos.pData;
 
       return E_FAIL;
   }
 
-  bool isSplitterToo = IsSplitter(pBF);
-
-  pFS.Release();
-  pBF.FullRelease();
-
-  if (filter->GetType() == CFGFilter::INTERNAL)
-    delete filter;
-
-  SFilterInfos& infos = (isSplitterToo) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
-  
+  bool isSplitterToo = IsSplitter(infos.pBF);
   if (isSplitterToo)
   {
     CLog::Log(LOGDEBUG, "%s The source filter is also a splitter.", __FUNCTION__);
-    if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
-    {
-      pFS = infos.pBF;
-      hr = pFS->Load(strFileW.c_str(), NULL);
-      return hr;
-    }
+    CGraphFilters::Get()->Splitter = infos;
+  } else {
+    CGraphFilters::Get()->Source = infos;
   }
-  else
-  if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
-  {
-    pFS = infos.pBF;
 
-    hr = pFS->Load(strFileW.c_str(), NULL);
-    assert(SUCCEEDED(hr));
-  }
+  ParseStreamingType(pFileItem, infos.pBF);
 
   return hr;
 }
+
+void CFGLoader::ParseStreamingType(CFileItem& pFileItem, IBaseFilter* pBF)
+{
+  // Detect the type of the streaming, in order to choose the right splitter
+  // Often, streaming url does not have an extension ...
+  GUID guid;
+  BeginEnumPins(pBF, pEP, pPin)
+  {
+    PIN_DIRECTION pPinDir;
+    pPin->QueryDirection(& pPinDir);
+    if (pPinDir != PINDIR_OUTPUT)
+      continue;
+
+    BeginEnumMediaTypes(pPin, pEMT, pMT)
+    {
+      if (pMT->majortype != MEDIATYPE_Stream)
+        continue;
+
+      CStdString str;
+      g_charsetConverter.wToUTF8(GetMediaTypeName(pMT->subtype), str);
+      CLog::Log(LOGDEBUG, __FUNCTION__" Streaming output pin media tpye: %s", str.c_str());
+      guid = pMT->subtype;
+    }
+    EndEnumMediaTypes(pMT);
+  }
+  EndEnumPins;
+
+  if (guid == MEDIASUBTYPE_MOV)
+    pFileItem.m_strPath = "http://dummysite.com/dummyfile.mov";
+}
+
 HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName)
 {
   HRESULT hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter);
@@ -425,7 +411,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, pFileItem.m_strPath.c_str());
     hasStreamDetails = CDVDFileInfo::GetFileStreamDetails(&pFileItem);
   } else
-    hasStreamDetails = pFileItem.HasVideoInfoTag() && !pFileItem.GetVideoInfoTag()->HasStreamDetails();
+    hasStreamDetails = pFileItem.HasVideoInfoTag() && pFileItem.GetVideoInfoTag()->HasStreamDetails();
 
   if (FAILED(CFilterCoreFactory::GetSourceFilter(pFileItem, filter)))
   {
