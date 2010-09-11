@@ -1,3 +1,6 @@
+[B]1.1.5[/B]
+- Fix decimal separator
+
 [B]1.1.4[/B]
 - Support for <alternative_name> and <original_name> in searches
 
