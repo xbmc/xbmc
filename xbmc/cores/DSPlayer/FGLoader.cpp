@@ -37,7 +37,7 @@
 #include "utils/SystemInfo.h"
 
 #include "filters/XBMCFileSource.h"
-#include "filters/Splitters/DSDemuxerFilter.h"
+#include "filters/Splitters/LAVFDemuxer.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"

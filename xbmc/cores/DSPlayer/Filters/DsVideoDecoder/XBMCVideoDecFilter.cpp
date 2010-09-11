@@ -934,7 +934,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     rtStop = rtStart + (m_rtAvrTimePerFrame);
   
 
-  m_pCodecContext->reordered_opaque  = rtStart;
+  m_pCodecContext->reordered_opaque  = (rtStart/10);
 
   int        got_picture;
   int        used_bytes;
@@ -953,7 +953,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
   // MPEG bitstreams could cause overread and segfault.
   
   memcpy(m_pFFBuffer, pData, nSize);
-  memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
+  memset(m_pFFBuffer+nSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
   
   
 
@@ -1054,13 +1054,12 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
       UpdateAspectRatio();
 
       // Change aspect ratio for DXVA1
-      if ((m_nDXVAMode == MODE_DXVA1) && ReconnectOutput(PictWidthRounded(), PictHeightRounded(), true, PictWidth(), PictHeight()) == S_OK)
+      if (ReconnectOutput(PictWidthRounded(), PictHeightRounded(), true, PictWidth(), PictHeight()) == S_OK)
       {
         m_pDXVADecoder->ConfigureDXVA1();
         CLog::DebugLog("CDXVADecoder->ConfigureDXVA1");
       }
-
-      if (m_pDXVADecoder->GetDeliveryBuffer(rtStart, rtStop,&pOut))
+      if (m_pDXVADecoder->GetDeliveryBuffer(rtStart, rtStop, &pOut))
       {
         //This seem to be work but need to verify if the issyncpoint can help to set the fieldtype
         int field_type,slice_type;
@@ -1074,9 +1073,12 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
           field_type = PICT_FRAME;
         
         m_pDXVADecoder->SetTypeSpecificFlags(pOut, (FF_SLICE_TYPE)slice_type, (FF_FIELD_TYPE)field_type);
-        //TODO add a structure with index, time start and stop to select the right one to display depending on the current time
-        hr = m_pDXVADecoder->GetIAMVideoAccelerator()->DisplayFrame(m_pDXVADecoder->GetCurrentBufferIndex(),pOut);
-
+        // TODO add a structure with index, time start and stop to select the right one to display depending on the current time
+        // This is looking wrong when playing but from what i see it seems to be working.
+        int currentindex = m_pDXVADecoder->GetCDXDecWrapper()->GetCurrentIndex();
+        hr = m_pDXVADecoder->GetIAMVideoAccelerator()->DisplayFrame(currentindex,pOut);
+        if (FAILED(hr))
+          ASSERT(0);
       }
       
       //result = m_pDXVADecoder->Decode(m_pCodecContext, m_pFrame);

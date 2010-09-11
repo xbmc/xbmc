@@ -83,6 +83,8 @@ extern void memsetw(void* dst, unsigned short c, size_t nbytes);
 extern CStdStringW UTF8To16(LPCSTR utf8);
 extern CStdStringA ISO6392ToLanguage(LPCSTR code);
 extern CStdStringA ISO6391ToLanguage(LPCSTR code);
+extern LCID    ProbeLangForLCID(LPCSTR code);
+extern std::string ProbeLangForLanguage(LPCSTR code);
 extern LCID    ISO6391ToLcid(LPCSTR code);
 extern LCID    ISO6392ToLcid(LPCSTR code);
 extern COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
@@ -111,6 +113,7 @@ extern GUID GUIDFromString(CStdStringW str);
 extern HRESULT GUIDFromString(CStdStringW str, GUID& guid);
 extern int MakeAACInitData(BYTE* pData, int profile, int freq, int channels);
 extern const char* GetDXVAMode(const GUID* guidDecoder);
+extern CStdStringA GetDshowError(HRESULT hr);
 
 /*template<class T, typename SEP>
 extern T Explode(T str, std::list<T>& sl, SEP sep, size_t limit = 0);*/

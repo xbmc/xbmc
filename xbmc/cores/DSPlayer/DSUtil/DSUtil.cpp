@@ -30,6 +30,8 @@
 #include <dxva.h>
 #include <dxva2api.h>
 
+#pragma comment(lib, "Quartz.lib")
+
 void setThreadName(DWORD dwThreadID,LPCSTR szThreadName)
 {
 #ifdef _DEBUG
@@ -854,6 +856,16 @@ const char* GetDXVAMode(const GUID* guidDecoder)
   return DXVA2Decoder[nPos].Description;
 }
 
+CStdStringA GetDshowError(HRESULT hr)
+{
+  char szErr[MAX_ERROR_TEXT_LEN];
+  DWORD res = AMGetErrorTextA(hr, szErr, MAX_ERROR_TEXT_LEN);
+  if (res > 0)
+    return CStdString(szErr);
+  return CStdString("");
+
+}
+
 CStdStringW AToW(CStdStringA str)
 {
   CStdStringW ret;
@@ -1402,6 +1414,32 @@ static struct {LPCSTR name, iso6392, iso6391; LCID lcid;} s_isolangs[] =  // TOD
   {"", "", ""},
   {"No subtitles", "---", "", LCID_NOSUBTITLES},
 };
+
+LCID ProbeLangForLCID(LPCSTR code)
+{
+  if (strlen(code) == 3)
+  {
+    return ISO6392ToLcid(code);
+  }
+  else if (strlen(code) >= 2)
+  {
+    return ISO6391ToLcid(code);
+  }
+  return 0;
+}
+
+std::string ProbeLangForLanguage(LPCSTR code)
+{
+  if (strlen(code) == 3)
+  {
+    return ISO6392ToLanguage(code);
+  }
+  else if (strlen(code) >= 2)
+  {
+    return ISO6391ToLanguage(code);
+  }
+  return std::string();
+}
 
 CStdStringA ISO6391ToLanguage(LPCSTR code)
 {

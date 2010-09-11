@@ -33,32 +33,19 @@
  *
  * The application must make it available as AVCodecContext.hwaccel_context.
  */
- 
- enum DxvaDecoderType {
-	DECODER_TYPE_DXVA_1,   ///< IAMVideoAccelerator
-	DECODER_TYPE_DXVA_2    ///< IDirectXVideoDecoder
-};
-
 struct dxva_context {
     /**
-     * for dxva2 decoder.dxvadecoder should be a IDirectXVideoDecoder
+     * DXVA2 decoder object
      */
-     
-	 struct dxva_decoder_context *decoder;
+    IDirectXVideoDecoder *decoder;
 
     /**
-     * DXVA 1 and 2 configuration is actually the same structure on another name
+     * DXVA2 configuration used to create the decoder
      */
-    
     const DXVA2_ConfigPictureDecode *cfg;
 
     /**
-     * for compatibility with dxva1 we need to use it from the context
-     */
-	  DXVA2_DecodeExecuteParams exec;
-	
-	  /**
-     * The amount of the buffer used for the decoding process
+     * The number of surface in the surface array
      */
     unsigned surface_count;
 
@@ -77,19 +64,5 @@ struct dxva_context {
      */
     unsigned report_id;
 };
-
-typedef struct dxva_decoder_context {
-  
-	/*DXVA_1_DECODER or DXVA_2_DECODER*/
-	enum DxvaDecoderType type;
-    void *dxvadecoder;
-    int (*dxva2_decoder_begin_frame)(struct dxva_context *ctx, unsigned index);
-	int (*dxva2_decoder_end_frame)(struct dxva_context *ctx, unsigned index);
-	/*int (*dxva2_decoder_add_execute)(struct dxva_context *ctx, unsigned type, unsigned size, const void *data, unsigned *real_size);*/
-	int (*dxva2_decoder_execute)(struct dxva_context *ctx);/*, DXVA2_DecodeExecuteParams *exec);*/
-	int (*dxva2_decoder_get_buffer)(struct dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size);
-	int (*dxva2_decoder_release_buffer)(struct dxva_context *ctx, unsigned type);
-} dxva_decoder_context;
-/*int (*AddExecuteBuffer)(dxva_directshow_context*, unsigned type, unsigned size, const void *data, unsigned *real_size);*/
 
 #endif /* AVCODEC_DXVA_H */

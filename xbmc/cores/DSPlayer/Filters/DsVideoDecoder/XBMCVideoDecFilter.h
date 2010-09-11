@@ -36,7 +36,7 @@
 
 #include "DIRECTSHOW.h"
 #include "../splitters/DSStreamInfo.h"
-#include "../splitters/DSGuidHelper.h"
+#include "../splitters/LAVFGuidHelper.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -147,6 +147,7 @@ protected:
   Com::SmartPtr<IDirect3DDeviceManager9>    m_pDeviceManager;
   Com::SmartPtr<IDirectXVideoDecoderService>  m_pDecoderService;
   Com::SmartPtr<IDirect3DSurface9>        m_pDecoderRenderTarget;
+  UINT                                    m_dwBufferIndex;
   DXVA2_ConfigPictureDecode        m_DXVA2Config;
   HANDLE                  m_hDevice;
   DXVA2_VideoDesc              m_VideoDesc;
@@ -230,8 +231,8 @@ public:
 
   inline AVCodecContext*    GetAVCtx()      { return m_pCodecContext; }
   inline AVFrame*        GetFrame()      { return m_pFrame; }
-
-  bool            IsDXVASupported();
+  void                   SetCurrentBufferIndex(UINT index) {m_dwBufferIndex = index;}
+  bool                   IsDXVASupported();
   inline bool          IsReorderBFrame() { return m_bReorderBFrame; };
   inline int          GetPCIVendor()  { return m_nPCIVendor; };
   inline REFERENCE_TIME    GetAvrTimePerFrame() { return m_rtAvrTimePerFrame; };

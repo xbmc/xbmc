@@ -144,7 +144,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;HAS_DS_PLAYER;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -2243,43 +2243,127 @@
 							Name="Xbmc"
 							>
 							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerFilter.cpp"
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\BaseDemuxer.cpp"
 								>
 							</File>
 							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSDemuxerFilter.h"
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\BaseDemuxer.h"
 								>
 							</File>
 							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.cpp"
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\ByteParser.cpp"
 								>
 							</File>
 							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSOutputpin.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSOutputpin.h"
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\ByteParser.h"
 								>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.cpp"
 								>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.h"
+								>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\ExtradataParser.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\ExtradataParser.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFDemuxer.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFDemuxer.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFGuidHelper.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFGuidHelper.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFOutputPin.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFOutputPin.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFSplitter.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFSplitter.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFStreamInfo.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFStreamInfo.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFUtils.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\LAVFUtils.h"
 								>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.cpp"
 								>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\PacketQueue.h"
+								>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\StreamInfo.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\StreamInfo.h"
 								>
 							</File>
 						</Filter>
@@ -2365,6 +2449,14 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DSCodecDef.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\dxva2_wrapper.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\dxva2_wrapper.h"
 							>
 						</File>
 						<File

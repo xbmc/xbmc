@@ -358,7 +358,6 @@ HRESULT CVMR9AllocatorPresenter::CreateDevice(CStdString &_Error)
     if(FAILED(hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(m_pD3DDev, hMonitor)))
     {
       _Error += L"m_pIVMRSurfAllocNotify->ChangeD3DDevice failed";
-      return(false);
     }
   }
 
@@ -385,7 +384,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
   do
   {
-    CMacrovisionKicker* pMK = DNew CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
+    CMacrovisionKicker* pMK = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
     Com::SmartPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
 
     COuterVMR9 *pOuter = DNew COuterVMR9(NAME("COuterVMR9"), pUnk, &m_VMR9AlphaBitmap, this);
@@ -559,17 +558,15 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID, DWORD Surfa
 
 STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9* lpIVMRSurfAllocNotify)
 {
-    CAutoLock cAutoLock(this);
+  CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
   m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
 
   HRESULT hr;
-    HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D));
-    if(FAILED(hr = m_pIVMRSurfAllocNotify->SetD3DDevice(m_pD3DDev, hMonitor)))
-    return hr;
-
-    return S_OK;
+  HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D));
+  hr =  m_pIVMRSurfAllocNotify->SetD3DDevice(m_pD3DDev, hMonitor);
+  return hr;
 }
 
 // IVMRImagePresenter9

@@ -24,6 +24,7 @@
 #include <dxva.h>
 #include <dxva2api.h>
 #include "DSUtil/DSUtil.h"
+#include "dxva2_wrapper.h"
 
 #include <videoacc.h>
 #include "DVDPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
@@ -32,6 +33,10 @@
 #include "utils/CriticalSection.h"
 
 
+enum DxvaDecoderType {
+  DECODER_TYPE_DXVA_1,   ///< IAMVideoAccelerator
+  DECODER_TYPE_DXVA_2    ///< IDirectXVideoDecoder
+};
 
 enum PCI_Vendors
 {
@@ -108,6 +113,7 @@ public:
   int   DXVAReleaseBuffer(dxva_context *ctx, unsigned type);
   //Function used from ffmpeg dxva callbacks
   IAMVideoAccelerator* GetIAMVideoAccelerator(){return m_pAMVideoAccelerator;}
+  CDXDecWrapper* GetCDXDecWrapper(){return m_pIDXVideoDecoder;}
   HRESULT FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferIndex);
   DWORD GetCurrentBufferIndex()
   {
@@ -148,6 +154,8 @@ protected:
 
   struct dxva_context*         m_context;
 
+  void                         **m_context_buffer_id;
+  unsigned                     m_context_buffer_count;
   /*std::vector<directshow_dxva_h264*> m_videoBuffer;*/
   CXBMCVideoDecFilter* m_pFilter;
 public:
@@ -159,6 +167,7 @@ private:
 
   DxvaDecoderType						m_nEngine;
   Com::SmartQIPtr<IAMVideoAccelerator> m_pAMVideoAccelerator;
+  CDXDecWrapper* m_pIDXVideoDecoder;
   AMVABUFFERINFO          m_DXVA1BufferInfo[MAX_COM_BUFFER];
   DXVA_BufferDescription       m_DXVA1BufferDesc[MAX_COM_BUFFER];
   

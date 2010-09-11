@@ -124,6 +124,11 @@ public:
   virtual void av_init_packet(AVPacket *pkt)=0;
   virtual int av_new_packet(AVPacket *pkt, int size)=0;
   virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
+  virtual int av_get_bits_per_sample(enum CodecID codec_id)=0;
+  virtual const char *avcodec_get_pix_fmt_name(enum PixelFormat pix_fmt)=0;
+  virtual void avcodec_get_channel_layout_string(char *buf, int buf_size, int nb_channels, int64_t channel_layout)=0;
+  virtual const char *avcodec_get_sample_fmt_name(int sample_fmt)=0;
+  virtual size_t av_get_codec_tag_string(char *buf, size_t buf_size, unsigned int codec_tag)=0;
 #if 0 /*HAS_DS_PLAYER*/
   //H264
   virtual void FFH264DecodeBuffer (AVCodecContext* pAVCtx, BYTE* pBuffer, UINT nSize, int* pFramePOC, int* pOutPOC, int64_t* pOutrtStart)=0;
@@ -251,6 +256,11 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
   DEFINE_METHOD2(int, av_new_packet, (AVPacket *p1, int p2))
   DEFINE_METHOD3(int64_t, avcodec_guess_channel_layout, (int p1, enum CodecID p2, const char *p3))
+  DEFINE_METHOD1(const char*,avcodec_get_pix_fmt_name, (enum PixelFormat p1))
+  DEFINE_METHOD4(void, avcodec_get_channel_layout_string, (char *p1, int p2, int p3, int64_t p4))
+  DEFINE_METHOD1(const char*,avcodec_get_sample_fmt_name, (int p1))
+  DEFINE_METHOD1(int, av_get_bits_per_sample, (enum CodecID p1))
+  DEFINE_METHOD3(size_t, av_get_codec_tag_string, (char *p1, size_t p2, unsigned int p3))
 #if 0 /*HAS_DS_PLAYER*/
   DEFINE_METHOD6(void, FFH264DecodeBuffer, (AVCodecContext *p1, BYTE *p2, UINT p3, int *p4, int *p5, int64_t *p6))
   DEFINE_METHOD6(int, FFH264BuildPicParams, (DXVA_PicParams_H264 *p1, DXVA_Qmatrix_H264 *p2, int *p3, int *p4, AVCodecContext *p5, int p6))
@@ -333,6 +343,11 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_init_packet)
     RESOLVE_METHOD(av_new_packet)
     RESOLVE_METHOD(avcodec_guess_channel_layout)
+    RESOLVE_METHOD(avcodec_get_pix_fmt_name)
+    RESOLVE_METHOD(avcodec_get_channel_layout_string)
+    RESOLVE_METHOD(avcodec_get_sample_fmt_name)
+    RESOLVE_METHOD(av_get_bits_per_sample)
+    RESOLVE_METHOD(av_get_codec_tag_string)
 #if 0 /*HAS_DS_PLAYER*/
     RESOLVE_METHOD(FFH264DecodeBuffer)
     RESOLVE_METHOD(FFH264BuildPicParams)

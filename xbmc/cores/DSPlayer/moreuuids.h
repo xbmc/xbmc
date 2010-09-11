@@ -46,6 +46,11 @@ WAVE_FORMAT_DVD_DTS, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0
 DEFINE_GUID(MEDIASUBTYPE_AAC,
 WAVE_FORMAT_AAC, 0x000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
+#define WAVE_FORMAT_LATM_AAC 0x01FF
+// {000001FF-0000-0010-8000-00AA00389B71}
+DEFINE_GUID(MEDIASUBTYPE_LATM_AAC,
+            WAVE_FORMAT_LATM_AAC, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+
 // ... and also compatible with nero
 // btw, older nero parsers use a lower-case fourcc, newer upper-case (why can't it just offer both?)
 // {4134504D-0000-0010-8000-00AA00389B71}

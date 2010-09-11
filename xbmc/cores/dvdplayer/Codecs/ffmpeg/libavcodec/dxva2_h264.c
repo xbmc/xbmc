@@ -256,9 +256,9 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
     slice->slice_id = h->current_slice - 1;
 }
 
-static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx/*,
+static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
                                              DXVA2_DecodeBufferDesc *bs,
-                                             DXVA2_DecodeBufferDesc *sc*/)
+                                             DXVA2_DecodeBufferDesc *sc)
 {
     const H264Context *h = avctx->priv_data;
     const MpegEncContext *s = &h->s;
@@ -275,10 +275,10 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx/*,
     unsigned i;
 
     /* Create an annex B bitstream buffer with only slice NAL and finalize slice */
-    if (ctx->decoder->dxva2_decoder_get_buffer(ctx, DXVA2_BitStreamDateBufferType,
-                                              (void*)&dxva_data, &dxva_size)<0) 
+    if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder,
+                                               DXVA2_BitStreamDateBufferType,
+                                               &dxva_data, &dxva_size)))
         return -1;
-
     current = dxva_data;
     end = dxva_data + dxva_size;
 
@@ -329,21 +329,16 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx/*,
 
         slice->SliceBytesInBuffer += padding;
     }
-#if 0
-    if (ctx->decoder->dxva2_decoder_release_buffer(ctx, DXVA2_BitStreamDateBufferType)<0)
+    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder,
+                                                  DXVA2_BitStreamDateBufferType)))
         return -1;
-#endif
     if (i < ctx_pic->slice_count)
         return -1;
 
-    /*memset(bs, 0, sizeof(*bs));
+    memset(bs, 0, sizeof(*bs));
     bs->CompressedBufferType = DXVA2_BitStreamDateBufferType;
     bs->DataSize             = current - dxva_data;
-    bs->NumMBsInBuffer       = mb_count;*/
-    ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].CompressedBufferType = DXVA2_BitStreamDateBufferType;
-    ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].DataSize				= current - dxva_data;
-    ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].NumMBsInBuffer		= mb_count;
-    ctx->exec.NumCompBuffers++;
+    bs->NumMBsInBuffer       = mb_count;
 
     if (is_slice_short(ctx)) {
         slice_data = ctx_pic->slice_short;
@@ -353,7 +348,8 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx/*,
         slice_size = ctx_pic->slice_count * sizeof(*ctx_pic->slice_long);
     }
     assert((bs->DataSize & 127) == 0);
-    return ff_dxva2_commit_buffer(avctx, ctx, DXVA2_SliceControlBufferType,
+    return ff_dxva2_commit_buffer(avctx, ctx, sc,
+                                  DXVA2_SliceControlBufferType,
                                   slice_data, slice_size, mb_count);
 }
 
@@ -362,12 +358,10 @@ static int start_frame(AVCodecContext *avctx,
                        av_unused const uint8_t *buffer,
                        av_unused uint32_t size)
 {
-    
     const H264Context *h = avctx->priv_data;
     struct dxva_context *ctx = avctx->hwaccel_context;
     struct dxva2_picture_context *ctx_pic = h->s.current_picture_ptr->hwaccel_picture_private;
 
-    /* av_log(avctx, AV_LOG_ERROR, "start_frame \n"); */
     if (!ctx->decoder || !ctx->cfg || ctx->surface_count <= 0)
         return -1;
     assert(ctx_pic);
@@ -392,7 +386,7 @@ static int decode_slice(AVCodecContext *avctx,
     const Picture *current_picture = h->s.current_picture_ptr;
     struct dxva2_picture_context *ctx_pic = current_picture->hwaccel_picture_private;
     unsigned position;
-    /* av_log(avctx, AV_LOG_ERROR, "decode_slice \n"); */
+
     if (ctx_pic->slice_count >= MAX_SLICES)
         return -1;
 
@@ -420,7 +414,7 @@ static int end_frame(AVCodecContext *avctx)
     MpegEncContext *s = &h->s;
     struct dxva2_picture_context *ctx_pic =
         h->s.current_picture_ptr->hwaccel_picture_private;
-    /* av_log(avctx, AV_LOG_ERROR, "end_frame \n"); */
+
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
         return -1;
     return ff_dxva2_common_end_frame(avctx, s,

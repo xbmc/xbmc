@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2010 Team XBMC
+*      Copyright (C) 2010 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 #include "DVDPlayer/DVDCodecs/DVDCodecs.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
-#include "DSGuidHelper.h"
+#include "LAVFGuidHelper.h"
 #include "MMReg.h"
 #include "moreuuids.h"
 #include "DSUtil/DSUtil.h"
@@ -209,7 +209,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, const char* containerForma
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream *avstream = static_cast<AVStream*>(stream->pPrivate);
     
-   int override_tag = m_dllAvFormat.av_codec_get_tag(mp_codecid_override_taglists, avstream->codec->codec_id);
+   int override_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
    if (override_tag)
      avstream->codec->codec_tag = override_tag;
    else
@@ -283,11 +283,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, const char* containerForma
     PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-    int override_tag = m_dllAvFormat.av_codec_get_tag(mp_codecid_override_taglists, avstream->codec->codec_id);
-    if (override_tag)
-      avstream->codec->codec_tag = override_tag;
-    else
-    avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
+
+    avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id);
 
     mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id, avstream->codec->codec_tag);
 
@@ -303,19 +300,19 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, const char* containerForma
     //mtype.formattype = FORMAT_VideoInfo2;
     if (mtype.formattype == FORMAT_VideoInfo)
     {
-      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateVIH(stream, avstream, &mtype.cbFormat);
+      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateVIH(avstream, &mtype.cbFormat);
     }
     else if (mtype.formattype == FORMAT_VideoInfo2)
     {
-      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateVIH2(stream, avstream, &mtype.cbFormat);
+      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateVIH2(avstream, &mtype.cbFormat);
     }
     else if (mtype.formattype == FORMAT_MPEGVideo)
     {
-      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateMPEG1VI(stream, avstream, &mtype.cbFormat);
+      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateMPEG1VI(avstream, &mtype.cbFormat);
     }
     else if (mtype.formattype == FORMAT_MPEG2Video)
     {
-      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateMPEG2VI(stream, avstream, &mtype.cbFormat, (ContainerFormat == "mpegts"));
+      mtype.pbFormat = (BYTE *)g_GuidHelper.CreateMPEG2VI(avstream, &mtype.cbFormat, (ContainerFormat == "mpegts"));
     }
     avgtimeperframe = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));;
     fpsscale  = stream->iFpsScale;

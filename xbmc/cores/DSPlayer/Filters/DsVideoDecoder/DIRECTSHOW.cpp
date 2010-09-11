@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -127,10 +127,10 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber)
   m_buffer_count = 0;
   m_buffer_age = 0;
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
-  m_context->decoder = (dxva_decoder_context*)calloc(1, sizeof(dxva_decoder_context));
+  //m_context->decoder = (dxva_decoder_context*)calloc(1, sizeof(dxva_decoder_context));
   m_context->cfg = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->exec.pCompressedBuffers = (DXVA2_DecodeBufferDesc*)calloc(6, sizeof(DXVA2_DecodeBufferDesc));
-  m_context->exec.pExtensionData = (DXVA2_DecodeExtensionData*)calloc(6, sizeof(DXVA2_DecodeExtensionData));
+  //m_context->exec.pCompressedBuffers = (DXVA2_DecodeBufferDesc*)calloc(6, sizeof(DXVA2_DecodeBufferDesc));
+  //m_context->exec.pExtensionData = (DXVA2_DecodeExtensionData*)calloc(6, sizeof(DXVA2_DecodeExtensionData));
   m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
 
 	m_pFilter			= pFilter;
@@ -271,16 +271,17 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     
   }
 
-  m_buffer_count = 16;
-  CreateDummySurface();
+  m_buffer_count = m_refs;
   m_pFilter = (CXBMCVideoDecFilter*)avctx->opaque;
 
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
-  
-  m_context->decoder->dxvadecoder = (void*)this;
-  m_context->exec.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];//= m_ExecuteParams;
+  m_context_buffer_count = m_buffer_count;
+  m_context_buffer_id = (void**)calloc(m_context_buffer_count, sizeof(*m_context_buffer_id));
+  m_pIDXVideoDecoder = new CDXDecWrapper(m_pAMVideoAccelerator, m_context_buffer_count, (void**)m_context->surface);//m_context_buffer_id);
+  m_context->decoder = m_pIDXVideoDecoder;
+  /*m_context->exec.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];//= m_ExecuteParams;
   for (int i = 0; i < 6; i++)
     memset (&m_context->exec.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
   
@@ -289,7 +290,7 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   m_context->decoder->dxva2_decoder_end_frame = DXVAEndFrameS;
   m_context->decoder->dxva2_decoder_execute = DXVAExecuteS;
   m_context->decoder->dxva2_decoder_get_buffer = DXVAGetBufferS;
-  m_context->decoder->dxva2_decoder_release_buffer = DXVAReleaseBufferS;
+  m_context->decoder->dxva2_decoder_release_buffer = DXVAReleaseBufferS;*/
 
   
   avctx->hwaccel_context = m_context;
@@ -438,6 +439,7 @@ HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferInde
 
 int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
 {
+#if 0
   /*CSingleLock lock(m_section);*/
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
@@ -463,6 +465,7 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
         DWORD dwBufferIndex;
         m_dwBufferIndex = dwBufferIndex = 0;
         DO_DXVA_PENDING_LOOP (acc->QueryRenderStatus ((DWORD)-1, dwBufferIndex, 0));
+        dec->m_pFilter->SetCurrentBufferIndex(index);
         ASSERT(dwBufferIndex == 0);
         break;
 
@@ -483,13 +486,15 @@ int CDXVADecoder::DXVABeginFrame(dxva_context *ctx, unsigned index)
   }
   if (FAILED(hr))
     return -1;
-  else 
+  else
+#endif
   return 0;
 
 }
 
 int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
 {
+#if 0
   /*CSingleLock lock(m_section);*/
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
@@ -504,6 +509,7 @@ int CDXVADecoder::DXVAEndFrame(dxva_context *ctx, unsigned index)
   if (SUCCEEDED (hr))
     return 0;
   else
+#endif
     return -1;
   
 
@@ -530,6 +536,7 @@ inline DWORD GetDXVA1CompressedType (DWORD dwDXVA2CompressedType)
 }
 int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_data, unsigned *dxva_size)
 {
+#if 0
   //CSingleLock lock(m_section);
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
   IAMVideoAccelerator* acc = dec->GetIAMVideoAccelerator();
@@ -542,11 +549,13 @@ int CDXVADecoder::DXVAGetBuffer(dxva_context *ctx, unsigned type, void **dxva_da
   *dxva_size = dec->GetBufferSize(dxva1type);
   //TODO set dxva_size
   *dxva_data = data;
+#endif
   return 0;
 }
 
 int CDXVADecoder::DXVAExecute(dxva_context *ctx)
 {
+#if 0
   /*CSingleLock lock(m_section);*/
   HRESULT hr = E_INVALIDARG;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
@@ -586,6 +595,7 @@ int CDXVADecoder::DXVAExecute(dxva_context *ctx)
       ASSERT(0);
   }
   ctx->exec.NumCompBuffers = 0;
+#endif
   return 0;
 }
 
@@ -593,6 +603,7 @@ int CDXVADecoder::DXVAExecute(dxva_context *ctx)
 
 int CDXVADecoder::DXVAReleaseBuffer(dxva_context *ctx, unsigned type)
 {
+#if 0
   //CSingleLock lock(m_section);
   HRESULT hr = E_INVALIDARG;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->decoder->dxvadecoder;
@@ -608,6 +619,7 @@ int CDXVADecoder::DXVAReleaseBuffer(dxva_context *ctx, unsigned type)
     else
       return -1;
   }
+#endif
 return 0;
 }
 

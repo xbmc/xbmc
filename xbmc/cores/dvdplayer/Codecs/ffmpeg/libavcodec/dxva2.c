@@ -43,44 +43,38 @@ unsigned ff_dxva2_get_surface_index(const struct dxva_context *ctx,
 
 int ff_dxva2_commit_buffer(AVCodecContext *avctx,
                            struct dxva_context *ctx,
+                           DXVA2_DecodeBufferDesc *dsc,
                            unsigned type, const void *data, unsigned size,
                            unsigned mb_count)
 {
     void     *dxva_data;
     unsigned dxva_size;
     int      result;
-    
-    if (ctx->decoder->dxva2_decoder_get_buffer(ctx, type, &dxva_data, &dxva_size)<0) {
-	    av_log(avctx, AV_LOG_ERROR, "Get buffer for type %d failed\n", type);
+
+    if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder, type,
+                                              &dxva_data, &dxva_size))) {
+        av_log(avctx, AV_LOG_ERROR, "Failed to get a buffer for %d\n", type);
         return -1;
     }
-
     if (size <= dxva_size) {
         memcpy(dxva_data, data, size);
 
-        /*memset(dsc, 0, sizeof(*dsc));
+        memset(dsc, 0, sizeof(*dsc));
         dsc->CompressedBufferType = type;
         dsc->DataSize             = size;
-        dsc->NumMBsInBuffer       = mb_count;*/
-		ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].CompressedBufferType = type;
-        ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].DataSize             = size;
-        ctx->exec.pCompressedBuffers[ctx->exec.NumCompBuffers].NumMBsInBuffer       = mb_count;
-		ctx->exec.NumCompBuffers++;
+        dsc->NumMBsInBuffer       = mb_count;
+
         result = 0;
     } else {
         av_log(avctx, AV_LOG_ERROR, "Buffer for type %d was too small\n", type);
         result = -1;
     }
-/*test moving this to execute  function*/
-#if 0
-	if (ctx->decoder->dxva2_decoder_release_buffer(ctx, type)<0) {
+    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder, type))) {
         av_log(avctx, AV_LOG_ERROR, "Failed to release buffer type %d\n", type);
-		result = -1;
+        result = -1;
     }
-#endif
     return result;
 }
-/*dxva2 decoder function*/
 
 int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
                               const void *pp, unsigned pp_size,
@@ -90,18 +84,19 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
                                                   DXVA2_DecodeBufferDesc *slice))
 {
     struct dxva_context *ctx = avctx->hwaccel_context;
-	unsigned               buffer_count = 0;
+    unsigned               buffer_count = 0;
     DXVA2_DecodeBufferDesc buffer[4];
-    /*DXVA2_DecodeExecuteParams exec;*/
-    int      result, surfaceindex;
-	const Picture *current_picture = s->current_picture_ptr;
-	
-    surfaceindex = ff_dxva2_get_surface_index(ctx, current_picture);
-	if (ctx->decoder->dxva2_decoder_begin_frame(ctx ,surfaceindex) < 0){
-		return -1;
-	}
+    DXVA2_DecodeExecuteParams exec;
+    int      result;
 
-    result = ff_dxva2_commit_buffer(avctx, ctx,
+    if (FAILED(IDirectXVideoDecoder_BeginFrame(ctx->decoder,
+                                               ff_dxva2_get_surface(s->current_picture_ptr),
+                                               NULL))) {
+        av_log(avctx, AV_LOG_ERROR, "Failed to begin frame\n");
+        return -1;
+    }
+
+    result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
                                     DXVA2_PictureParametersBufferType,
                                     pp, pp_size, 0);
     if (result) {
@@ -112,7 +107,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     buffer_count++;
 
     if (qm_size > 0) {
-        result = ff_dxva2_commit_buffer(avctx, ctx,
+        result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
                                         DXVA2_InverseQuantizationMatrixBufferType,
                                         qm, qm_size, 0);
         if (result) {
@@ -137,19 +132,17 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
 
     assert(buffer_count == 1 + (qm_size > 0) + 2);
 
-    /*memset(&exec, 0, sizeof(exec));
+    memset(&exec, 0, sizeof(exec));
     exec.NumCompBuffers      = buffer_count;
     exec.pCompressedBuffers  = buffer;
-    exec.pExtensionData      = NULL;*/
-	
-    /*if (ctx->decoder->dxva2_decoder_execute(ctx , &exec)<0) {*/
-	if (ctx->decoder->dxva2_decoder_execute(ctx)<0) {
-	    av_log(avctx, AV_LOG_ERROR, "Failed on dxva2_decoder_execute\n");
+    exec.pExtensionData      = NULL;
+    if (FAILED(IDirectXVideoDecoder_Execute(ctx->decoder, &exec))) {
+        av_log(avctx, AV_LOG_ERROR, "Failed to execute\n");
         result = -1;
     }
 
 end:
-    if (ctx->decoder->dxva2_decoder_end_frame(ctx ,surfaceindex)<0){
+    if (FAILED(IDirectXVideoDecoder_EndFrame(ctx->decoder, NULL))) {
         av_log(avctx, AV_LOG_ERROR, "Failed to end frame\n");
         result = -1;
     }
@@ -158,3 +151,4 @@ end:
         ff_draw_horiz_band(s, 0, s->avctx->height);
     return result;
 }
+

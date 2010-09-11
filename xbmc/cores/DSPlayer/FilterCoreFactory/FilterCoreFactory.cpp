@@ -25,7 +25,7 @@
 #include "DSPlayer.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
 //#include "filters/Splitters/AviSplitter.h"
-#include "filters/Splitters/DSDemuxerFilter.h"
+#include "filters/Splitters/LAVFSplitter.h"
 //#include "filters/Splitters/MpegSplitter.h"
 #include "filters/XBMCFileSource.h"
 #include "GUISettings.h"
@@ -34,7 +34,7 @@
 InternalFilters internalFilters[] =
 {
   {"internal_videodecoder", "Internal video decoder", &InternalFilterConstructor<CXBMCVideoDecFilter>},
-  {"internal_ffmpegsource", "Internal ffmpeg source", &InternalFilterConstructor<CDSDemuxerFilter>},
+  {"internal_ffmpegsource", "Internal ffmpeg source", &InternalFilterConstructor<CLAVFSplitter>},
   //{"internal_avisource", "Internal avi source", &InternalFilterConstructor<CAviSourceFilter>},
   //{"internal_mpegsource", "Internal mpeg source", &InternalFilterConstructor<CMpegSourceFilter>},
   {"internal_archivesource", "Internal archive source", &InternalFilterConstructor<CXBMCASyncReader>}/*,

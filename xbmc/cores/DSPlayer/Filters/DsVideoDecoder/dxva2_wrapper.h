@@ -40,12 +40,14 @@ public:
   STDMETHODIMP BeginFrame(IDirect3DSurface9 *pRenderTarget, void *pvPVPData);
   STDMETHODIMP EndFrame(HANDLE *pHandleComplete);
   STDMETHODIMP Execute(const DXVA2_DecodeExecuteParams *pExecuteParams);
+  int GetCurrentIndex() { return current_surface_index; }
 protected:
   int GetSurfaceIndex(void *id);
   IAMVideoAccelerator *m_pAMVideoAccelerator;
   int  surface_count;
   void **surface_id;
   int  buffer_info_count;
+  int  current_surface_index;
   AMVACompBufferInfo *buffer_info;
 
 };
