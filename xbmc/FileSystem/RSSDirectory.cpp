@@ -554,7 +554,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   /* check cache */
   if(m_path == strPath)
   {
-    items = m_items;
+    items.Copy(m_items);
     return true;
   }
 
@@ -604,7 +604,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   items.AddSortMethod(SORT_METHOD_SIZE     , 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
   items.AddSortMethod(SORT_METHOD_DATE     , 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
-  m_items = items;
+  m_items.Copy(items);
   m_path  = strPath;
 
   return true;

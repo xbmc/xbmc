@@ -736,7 +736,9 @@ void CApplicationMessenger::MediaPlay(const CFileItem &item)
 void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
-  tMsg.lpVoid = (void *)new CFileItemList(list);
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
   SendMessage(tMsg, true);
@@ -805,7 +807,9 @@ void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItem &ite
 void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItemList &list)
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_ADD};
-  tMsg.lpVoid = (void *)new CFileItemList(list);
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = playlist;
   SendMessage(tMsg, true);
 }
