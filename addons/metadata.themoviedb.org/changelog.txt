@@ -1,3 +1,6 @@
+[B]1.1.4[/B]
+- Support for <alternative_name> and <original_name> in searches
+
 [B]1.1.3[/B]
 - fixed missing imdb id (#2)
 
