@@ -382,12 +382,8 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     {
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
       if (m_allowPrompting)
-      {
-        if (!CPasswordManager::GetInstance().PromptToAuthenticateURL(urlIn))
-          break;
-      }
-      else
-        break;
+        RequiresAuthentication(urlIn.Get());
+      break;
     }
     else if(dwRet == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {

@@ -143,7 +143,9 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      bool result;
+      bool result = false;
+      while (!result)
+      {
       if (g_application.IsCurrentThread() && allowThreads && !CUtil::IsSpecial(strPath))
       {
         CSingleExit ex(g_graphicsContext);
@@ -189,8 +191,11 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
       if (!result)
       {
+        if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+          continue;
         CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
         return false;
+      }
       }
 
       // cache the directory, if necessary
