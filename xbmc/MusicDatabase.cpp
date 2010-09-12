@@ -2358,18 +2358,9 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         pDialogProgress->Close();
         // ..no, an error occured, display it to the user
-        CGUIDialogOK *pDialogOK = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (pDialogOK)
-        {
-          CStdString strErrorText;
-          strErrorText.Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
-
-          pDialogOK->SetHeading(255);
-          pDialogOK->SetLine(0, 257); //ERROR
-          pDialogOK->SetLine(1, strErrorText.c_str() );
-          pDialogOK->SetLine(2, "");
-          pDialogOK->DoModal();
-        }
+        CStdString strErrorText;
+        strErrorText.Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
+        CGUIDialogOK::ShowAndGetInput(255, 257, strErrorText, 0);
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     pDialogProgress->Close();
