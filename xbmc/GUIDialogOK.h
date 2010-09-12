@@ -30,5 +30,5 @@ public:
   CGUIDialogOK(void);
   virtual ~CGUIDialogOK(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(int heading, int line0, int line1, int line2);
+  static void ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2);
 };

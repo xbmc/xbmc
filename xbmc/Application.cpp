@@ -477,6 +477,12 @@ bool CApplication::Create()
   if (!inited)
     inited = InitDirectoriesWin32();
 
+  // copy required files
+  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
@@ -797,11 +803,6 @@ bool CApplication::InitDirectoriesLinux()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -870,12 +871,6 @@ bool CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -933,12 +928,6 @@ bool CApplication::InitDirectoriesWin32()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {

@@ -2328,6 +2328,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\dxva2_wrapper.cpp">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Variant.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4867,6 +4870,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\dxva2_wrapper.h">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Variant.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

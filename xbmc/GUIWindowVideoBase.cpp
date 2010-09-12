@@ -676,18 +676,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           m_database.Close();
           return listNeedsUpdating; // user cancelled
         }
-        OutputDebugString("failed to get details\n");
-        // show dialog...
-        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (pDlgOK)
-        {
-          pDlgOK->SetHeading(195);
-          pDlgOK->SetLine(0, movieName);
-          pDlgOK->SetLine(1, "");
-          pDlgOK->SetLine(2, "");
-          pDlgOK->SetLine(3, "");
-          pDlgOK->DoModal();
-        }
+        CGUIDialogOK::ShowAndGetInput(195, movieName, 0, 0);
         m_database.Close();
         return listNeedsUpdating;
       }
@@ -1773,16 +1762,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Close();
 
   // done...
-  CGUIDialogOK *pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (pDialog)
-  {
-    pDialog->SetHeading(20177); // Done
-    pDialog->SetLine(0, movie.m_strTitle);
-    pDialog->SetLine(1, movie.m_strGenre);
-    pDialog->SetLine(2, movie.m_strIMDBNumber);
-    pDialog->SetLine(3, "");
-    pDialog->DoModal();
-  }
+  CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, movie.m_strGenre, movie.m_strIMDBNumber);
 
   // library view cache needs to be cleared
   CUtil::DeleteVideoDatabaseDirectoryCache();

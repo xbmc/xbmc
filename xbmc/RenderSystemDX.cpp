@@ -551,9 +551,9 @@ bool CRenderSystemDX::CreateDevice()
   // DXT3/5: 16 pixels wide ----------------------------------------
   // Both equal to a pitch of 64. So far no Intel has DXT NPOT (including i3/i5/i7, so just go with the next higher POT.
   // See ticket #9578
-//  if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
-//  && m_defaultD3DPool  == D3DPOOL_DEFAULT
-//  && AIdentifier.VendorId == 32902)
+  if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
+  && m_defaultD3DPool  == D3DPOOL_DEFAULT
+  && AIdentifier.VendorId == 32902)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
     m_minDXTPitch = 128;

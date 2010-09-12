@@ -3819,6 +3819,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Variant.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Variant.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\VideoInfoTag.cpp"
 					>
 				</File>

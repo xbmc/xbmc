@@ -154,17 +154,9 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s - WARNING: Zaping Failed no Zap Point found!", __FUNCTION__);
       CLog::Log(LOGDEBUG, "%s ---------------------------------------------------------", __FUNCTION__);
-      CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dialog)
-      {
-        CStdString strText;
-        strText.Format(g_localizeStrings.Get(21334).c_str(), item.GetLabel());
-        dialog->SetHeading( 21331 );
-        dialog->SetLine( 0, strText);
-        dialog->SetLine( 1, 21333 );
-        dialog->SetLine( 2, "" );
-        dialog->DoModal();
-      }
+      CStdString strText;
+      strText.Format(g_localizeStrings.Get(21334).c_str(), item.GetLabel());
+      CGUIDialogOK::ShowAndGetInput(21331, strText, 21333, 0);
     }
   }
   return false;
