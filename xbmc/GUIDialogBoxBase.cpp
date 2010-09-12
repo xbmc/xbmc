@@ -21,6 +21,7 @@
 
 #include "GUIDialogBoxBase.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 
@@ -54,11 +55,11 @@ bool CGUIDialogBoxBase::IsConfirmed() const
   return m_bConfirmed;
 }
 
-void CGUIDialogBoxBase::SetHeading(const string& strLine)
+void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
 {
   Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  msg.SetLabel(strLine);
+  msg.SetLabel(GetLocalized(heading));
 
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
@@ -66,42 +67,11 @@ void CGUIDialogBoxBase::SetHeading(const string& strLine)
     g_windowManager.SendThreadMessage(msg, GetID());
 }
 
-void CGUIDialogBoxBase::SetHeading(int iString)
-{
-  Initialize();
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
-  if (iString)
-    msg.SetLabel(iString);
-  else
-    msg.SetLabel("");
-
-  if(OwningCriticalSection(g_graphicsContext))
-    OnMessage(msg);
-  else
-    g_windowManager.SendThreadMessage(msg, GetID());
-}
-
-void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
+void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
 {
   Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  msg.SetLabel(strLine);
-
-  if(OwningCriticalSection(g_graphicsContext))
-    OnMessage(msg);
-  else
-    g_windowManager.SendThreadMessage(msg, GetID());
-
-}
-
-void CGUIDialogBoxBase::SetLine(int iLine, int iString)
-{
-  Initialize();
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
-  if (iString)
-    msg.SetLabel(iString);
-  else
-    msg.SetLabel("");
+  msg.SetLabel(GetLocalized(line));
 
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
@@ -109,26 +79,11 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
     g_windowManager.SendThreadMessage(msg, GetID());
 }
 
-void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for no, 1 for yes
+void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
 {
   Initialize();
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 10+iButton);
-  if (iString)
-    msg.SetLabel(iString);
-  else
-    msg.SetLabel("");
-
-  if(OwningCriticalSection(g_graphicsContext))
-    OnMessage(msg);
-  else
-    g_windowManager.SendThreadMessage(msg, GetID());
-}
-
-void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButton == 0 for no, 1 for yes
-{
-  Initialize();
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 10+iButton);
-  msg.SetLabel(strString);
+  msg.SetLabel(GetLocalized(choice));
 
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
@@ -141,4 +96,13 @@ void CGUIDialogBoxBase::OnInitWindow()
   // set focus to default
   m_lastControlID = m_defaultControl;
   CGUIDialog::OnInitWindow();
+}
+
+CStdString CGUIDialogBoxBase::GetLocalized(const CVariant &var) const
+{
+  if (var.isString())
+    return var.asString();
+  else if (var.isInteger() && var.asInteger())
+    return g_localizeStrings.Get(var.asInteger());
+  return "";
 }

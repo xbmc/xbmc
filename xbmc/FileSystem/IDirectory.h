@@ -136,13 +136,6 @@ protected:
    */
   void RequireAuthentication(const CStdString &url);
 
-  /*! \brief Get a localized string from a variant
-   If the varaint is already a string we return directly, else if it's an integer we return the corresponding
-   localized string.
-   \param var the variant to localize.
-   */
-  CStdString GetLocalized(const CVariant &var) const;
-
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
   DIR_CACHE_TYPE m_cacheDirectory;    ///< If !DIR_CACHE_NEVER the directory is cached by g_directoryCache (defaults to DIR_CACHE_ONCE)

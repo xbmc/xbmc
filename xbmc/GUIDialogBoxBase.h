@@ -22,6 +22,7 @@
  */
 
 #include "GUIDialog.h"
+#include "Variant.h"
 
 class CGUIDialogBoxBase :
       public CGUIDialog
@@ -31,13 +32,17 @@ public:
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
-  void SetLine(int iLine, const std::string& strLine);
-  void SetLine(int iLine, int iString);
-  void SetHeading(const std::string& strLine);
-  void SetHeading(int iString);
-  void SetChoice(int iButton, int iString);
-  void SetChoice(int iButton, const std::string& strString);
+  void SetLine(int iLine, const CVariant &line);
+  void SetHeading(const CVariant &heading);
+  void SetChoice(int iButton, const CVariant &choice);
 protected:
+  /*! \brief Get a localized string from a variant
+   If the varaint is already a string we return directly, else if it's an integer we return the corresponding
+   localized string.
+   \param var the variant to localize.
+   */
+  CStdString GetLocalized(const CVariant &var) const;
+
   virtual void OnInitWindow();
   bool m_bConfirmed;
 };

@@ -27,7 +27,6 @@
 #include "GUIDialogKeyboard.h"
 #include "URL.h"
 #include "utils/PasswordManager.h"
-#include "LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -142,7 +141,7 @@ bool IDirectory::ProcessRequirements()
   if (type == "keyboard")
   {
     CStdString input;
-    if (CGUIDialogKeyboard::ShowAndGetInput(input, GetLocalized(m_requirements["heading"]), false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(input, m_requirements["heading"], false))
     {
       m_requirements["input"] = input;
       return true;
@@ -159,15 +158,7 @@ bool IDirectory::ProcessRequirements()
   }
   else if (type == "error")
   {
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-    {
-      dialog->SetHeading(GetLocalized(m_requirements["heading"]));
-      dialog->SetLine(0, GetLocalized(m_requirements["line1"]));
-      dialog->SetLine(1, GetLocalized(m_requirements["line2"]));
-      dialog->SetLine(2, GetLocalized(m_requirements["line3"]));
-      dialog->DoModal();
-    }
+    CGUIDialogOK::ShowAndGetInput(m_requirements["heading"], m_requirements["line1"], m_requirements["line2"], m_requirements["line3"]);
   }
   m_requirements.clear();
   return false;
@@ -201,13 +192,4 @@ void IDirectory::RequireAuthentication(const CStdString &url)
   m_requirements.clear();
   m_requirements["type"] = "authenticate";
   m_requirements["url"] = url;
-}
-
-CStdString IDirectory::GetLocalized(const CVariant &var) const
-{
-  if (var.isString())
-    return var.asString();
-  else if (var.isInteger())
-    return g_localizeStrings.Get(var.asInteger());
-  return "";
 }

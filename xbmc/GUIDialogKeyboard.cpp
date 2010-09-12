@@ -526,7 +526,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CVariant &heading, bool allowEmptyResult, bool hiddenInput /* = false */)
 {
   CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
@@ -536,7 +536,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   // setup keyboard
   pKeyboard->Initialize();
   pKeyboard->CenterWindow();
-  pKeyboard->SetHeading(strHeading);
+  pKeyboard->SetHeading(heading);
   pKeyboard->SetHiddenInput(hiddenInput);
   pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
@@ -562,7 +562,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmpt
 
 // Shows keyboard and prompts for a password.
 // Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
-bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
+bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty)
 {
   return ShowAndGetInput(newPassword, heading, allowEmpty, true);
 }
@@ -571,8 +571,7 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword, const CS
 // Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
 bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
 {
-  CStdString heading = g_localizeStrings.Get(12340);
-  return ShowAndGetNewPassword(newPassword, heading, false);
+  return ShowAndGetNewPassword(newPassword, 12340, false);
 }
 
 // \brief Show keyboard twice to get and confirm a user-entered password string.
@@ -580,7 +579,7 @@ bool CGUIDialogKeyboard::ShowAndGetNewPassword(CStdString& newPassword)
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty)
+bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty)
 {
   // Prompt user for password input
   CStdString userInput = "";
@@ -590,7 +589,7 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   }
   // success - verify the password
   CStdString checkInput = "";
-  if (!ShowAndGetInput(checkInput, g_localizeStrings.Get(12341), allowEmpty, true))
+  if (!ShowAndGetInput(checkInput, 12341, allowEmpty, true))
   { // user cancelled, or invalid input
     return false;
   }
@@ -770,3 +769,10 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
   return ret;
 }
 
+void CGUIDialogKeyboard::SetHeading(const CVariant &heading)
+{
+  if (heading.isString())
+    m_strHeading = heading.asString();
+  else if (heading.isInteger() && heading.asInteger())
+    m_strHeading = g_localizeStrings.Get(heading.asInteger());
+}
