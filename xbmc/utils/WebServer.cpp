@@ -346,43 +346,37 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   delete file;
 }
 
+struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
+{
+  // WARNING: when using MHD_USE_THREAD_PER_CONNECTION, set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
+  // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
+
+  unsigned int timeout = 60 * 60 * 24;
+  // MHD_USE_THREAD_PER_CONNECTION = one thread per connection
+  // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time [unless you set the thread pool size]
+
+  return MHD_start_daemon(flags,
+                          port,
+                          NULL,
+                          NULL,
+                          &CWebServer::AnswerToConnection,
+                          this,
+#if (MHD_VERSION >= 0x00040002)
+                          MHD_OPTION_THREAD_POOL_SIZE, 8,
+#endif
+                          MHD_OPTION_CONNECTION_LIMIT, 512,
+                          MHD_OPTION_CONNECTION_TIMEOUT, timeout,
+                          MHD_OPTION_END);
+}
+
 bool CWebServer::Start(const char *ip, int port)
 {
   if (!m_running)
   {
-    // WARNING: when using MHD_USE_THREAD_PER_CONNECTION, set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
-    // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
-
-    unsigned int timeout = 60 * 60 * 24;
-    // MHD_USE_THREAD_PER_CONNECTION = one thread per connection
-    // MHD_USE_SELECT_INTERNALLY = use main thread for each connection, can only handle one request at a time [unless you set the thread pool size]
-
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6,
-                                port,
-                                NULL,
-                                NULL,
-                                &CWebServer::AnswerToConnection,
-                                this,
-#if (MHD_VERSION >= 0x00040002)
-                                MHD_OPTION_THREAD_POOL_SIZE, 8,
-#endif
-                                MHD_OPTION_CONNECTION_LIMIT, 512,
-                                MHD_OPTION_CONNECTION_TIMEOUT, timeout,
-                                MHD_OPTION_END);
+    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port);
 
     if (!m_daemon) //try IPv4
-      m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY,
-                                  port,
-                                  NULL,
-                                  this,
-                                  &CWebServer::AnswerToConnection,
-                                  this,
-#if (MHD_VERSION >= 0x00040002)
-                                  MHD_OPTION_THREAD_POOL_SIZE, 8,
-#endif
-                                  MHD_OPTION_CONNECTION_LIMIT, 512,
-                                  MHD_OPTION_CONNECTION_TIMEOUT, timeout,
-                                  MHD_OPTION_END);
+      m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
 
     m_running = m_daemon != NULL;
     if (m_running)
