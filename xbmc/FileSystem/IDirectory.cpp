@@ -144,7 +144,7 @@ bool IDirectory::ProcessRequirements()
     CStdString input;
     if (CGUIDialogKeyboard::ShowAndGetInput(input, GetLocalized(m_requirements["heading"]), false))
     {
-      m_requirements["input"] = input.c_str();
+      m_requirements["input"] = input;
       return true;
     }
   }
@@ -200,7 +200,7 @@ void IDirectory::RequireAuthentication(const CStdString &url)
 {
   m_requirements.clear();
   m_requirements["type"] = "authenticate";
-  m_requirements["url"] = url.c_str();
+  m_requirements["url"] = url;
 }
 
 CStdString IDirectory::GetLocalized(const CVariant &var) const

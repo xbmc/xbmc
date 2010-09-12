@@ -76,6 +76,12 @@ CVariant::CVariant(const char *str)
   m_data.string = new string(str);
 }
 
+CVariant::CVariant(const string &str)
+{
+  m_type = VariantTypeString;
+  m_data.string = new string(str);
+}
+
 CVariant::CVariant(const CVariant &variant)
 {
   m_type = variant.m_type;
