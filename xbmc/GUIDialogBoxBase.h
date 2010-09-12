@@ -22,7 +22,7 @@
  */
 
 #include "GUIDialog.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 
 class CGUIDialogBoxBase :
       public CGUIDialog
