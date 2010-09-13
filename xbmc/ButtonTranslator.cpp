@@ -591,8 +591,6 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
   }
-
-  return;
 }
 
 bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
@@ -756,27 +754,15 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   }
 }
 
-enum CButtonTranslator::ButtonDeviceType CButtonTranslator::GetDeviceType(TiXmlNode *pWindow)
+bool CButtonTranslator::HasDeviceType(TiXmlNode *pWindow, CStdString type)
 {
-  TiXmlNode *firstChild = pWindow->FirstChild();
-  if (firstChild != NULL)
-  {
-    const char *value = firstChild->Value();
-    if (value == "gamepad")
-      return Gamepad;
-    if (value == "remote")
-        return Remote;
-    if (value == "universalremote")
-        return UniversalRemote;
-    if (value == "keyboard")
-        return Keyboard;
-  }
-  return Unknown;
+  return pWindow->FirstChild(type) != NULL;
 }
 
 void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
-  if (!pWindow || windowID == WINDOW_INVALID) return;
+  if (!pWindow || windowID == WINDOW_INVALID) 
+    return;
   buttonMap map;
   std::map<int, buttonMap>::iterator it = translatorMap.find(windowID);
   if (it != translatorMap.end())
@@ -785,32 +771,31 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     translatorMap.erase(it);
   }
   TiXmlNode* pDevice;
-  ButtonDeviceType remoteType = GetDeviceType(pWindow);
-  if (remoteType != Unknown)
+
+  const char* types[] = {"gamepad", "remote", "keyboard", "universalremote", NULL};
+  for (int i = 0; types[i]; ++i)
   {
-    pDevice = pWindow->FirstChild();
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
+    CStdString type(types[i]);
+    if (HasDeviceType(pWindow, type))
     {
-      uint32_t buttonCode;
-      switch (remoteType)
+      pDevice = pWindow->FirstChild(type);
+      TiXmlElement *pButton = pDevice->FirstChildElement();
+      while (pButton)
       {
-        case Gamepad:
-          buttonCode = TranslateGamepadString(pButton->Value());
-          break;
-        case Remote:
-          buttonCode = TranslateRemoteString(pButton->Value());
-          break;
-        case UniversalRemote:
-          buttonCode = TranslateUniversalRemoteString(pButton->Value());
-          break;
-        case Keyboard:
-          buttonCode = TranslateKeyboardButton(pButton);
-          break;
+        uint32_t buttonCode;
+        if (type == "gamepad")
+            buttonCode = TranslateGamepadString(pButton->Value());
+        else if (type == "remote")
+            buttonCode = TranslateRemoteString(pButton->Value());
+        else if (type == "universalremote")
+            buttonCode = TranslateUniversalRemoteString(pButton->Value());
+        else if (type == "keyboard")
+            buttonCode = TranslateKeyboardButton(pButton);
+
+        if (buttonCode && pButton->FirstChild())
+          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+        pButton = pButton->NextSiblingElement();
       }
-      if (buttonCode && pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
     }
   }
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
