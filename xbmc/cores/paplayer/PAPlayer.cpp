@@ -155,26 +155,24 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
     float step = (speed > 1 ? 0.5 : 1.0f) * ((float)speed / 2.0f);
     int   bps  = si->m_stream->GetSampleRate() * si->m_stream->GetChannelCount();
     float time = ((float)si->m_sent / (float)bps) + step;
-    if (time < 0.0f)
+    if (time <= 0.0f)
     {
-      pap->m_iSpeed = 1;
+      si->m_snippetEnd = 0;
+      pap->m_iSpeed    = 1;
 
-      lock.Leave();
       pap->m_callback.OnPlayBackSpeedChanged(1);
-      return;
+      time = 0.0f;
     }
-    else
-    {
-      float ttl = (float)si->m_decoder.TotalTime() / 1000.0f;
-      if (time >= ttl)
-        time = ttl;
-      
-      si->m_decoder.Seek(time * 1000.0f);
-      si->m_sent       = time * bps;
 
-      if (speed < 1) speed = -speed;
-      si->m_snippetEnd = si->m_sent + (bps / speed);
-    }
+    float ttl = (float)si->m_decoder.TotalTime() / 1000.0f;
+    if (time >= ttl)
+      time = ttl;
+      
+    si->m_decoder.Seek(time * 1000.0f);
+    si->m_sent       = time * bps;
+
+    if (speed < 1) speed = -speed;
+    si->m_snippetEnd = si->m_sent + (bps / speed);
   }
 
   /* if it is time to prepare the next stream */
@@ -395,6 +393,8 @@ void PAPlayer::ToFFRW(int iSpeed)
   CSingleLock lock(m_critSection);
   m_iSpeed = iSpeed;
   if (!m_current) return;
+
+  m_current->m_snippetEnd = m_current->m_sent;
   m_callback.OnPlayBackSpeedChanged(m_iSpeed);
 }
 
