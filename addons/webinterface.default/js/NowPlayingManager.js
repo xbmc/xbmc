@@ -37,15 +37,17 @@ NowPlayingManager.prototype = {
 		updateState: function() {
 			jQuery.post(JSON_RPC + '?UpdateState', '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result) {
-					if (data.result.audio) {
+					if (data.result.audio && this.activePlayer != 'Audio') {
 						this.activePlayer = 'Audio';
 						this.stopVideoPlaylistUpdate();
 						this.displayAudioNowPlaying();
-					} else if (data.result.video) {
+						this.stopRefreshTime();
+					} else if (data.result.video && this.activePlayer != 'Video') {
 						this.activePlayer = 'Video';
 						this.stopAudioPlaylistUpdate();
 						this.displayVideoNowPlaying();
-					} else {
+						this.stopRefreshTime();
+					} else if (!data.result.audio && !data.result.video) {
 						this.stopRefreshTime();
 					}
 				}
