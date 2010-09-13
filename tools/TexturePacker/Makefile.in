@@ -11,6 +11,7 @@ OBJS = \
 	SDL_anigif.o \
 	XBTFWriter.o \
 	XBMCTex.o \
+	md5.o \
 	../../guilib/XBTF.o
 
 TARGET = TexturePacker

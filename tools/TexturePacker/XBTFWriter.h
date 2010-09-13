@@ -22,6 +22,7 @@
  *
  */
 
+#include <vector>
 #include <string>
 #include <stdio.h>
 #include "XBTF.h"
@@ -33,7 +34,7 @@ public:
   bool Create();
   bool Close();
   bool AppendContent(unsigned char const* data, size_t length);
-  bool UpdateHeader();
+  bool UpdateHeader(const std::vector<unsigned int>& dupes);
 
 private:
   CXBTF& m_xbtf;
