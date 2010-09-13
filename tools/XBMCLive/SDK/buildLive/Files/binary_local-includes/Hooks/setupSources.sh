@@ -26,34 +26,34 @@ if [ ! -d "/home/$xbmcUser/Videos" ]; then
 	chmod 755 /home/$xbmcUser/Videos
 fi
 
-mkdir -p /home/$xbmcUser/.xbmc/userdata
+mkdir -p /home/$xbmcUser/.xbmc/userdata &> /dev/null
 
 if [ ! -f /home/$xbmcUser/.xbmc/userdata/sources.xml ] ; then
-	cat > /home/$xbmcUser/.xbmc/userdata/sources.xml << 'EOF'
+	cat > /home/$xbmcUser/.xbmc/userdata/sources.xml << EOF
 <sources>
     <video>
         <default pathversion="1"></default>
         <source>
             <name>Videos</name>
-            <path pathversion="1">/home/xbmc/Videos/</path>
+            <path pathversion="1">/home/$xbmcUser/Videos/</path>
         </source>
         <source>
             <name>TV Shows</name>
-            <path pathversion="1">/home/xbmc/TV Shows/</path>
+            <path pathversion="1">/home/$xbmcUser/TV Shows/</path>
         </source>
     </video>
     <music>
         <default pathversion="1"></default>
         <source>
             <name>Music</name>
-            <path pathversion="1">/home/xbmc/Music/</path>
+            <path pathversion="1">/home/$xbmcUser/Music/</path>
         </source>
     </music>
     <pictures>
         <default pathversion="1"></default>
         <source>
             <name>Music</name>
-            <path pathversion="1">/home/xbmc/Pictures/</path>
+            <path pathversion="1">/home/$xbmcUser/Pictures/</path>
         </source>
     </pictures>
 </sources>

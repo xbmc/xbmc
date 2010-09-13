@@ -22,6 +22,7 @@
  */
 
 #include "GUIDialog.h"
+#include "utils/Variant.h"
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS };
 
@@ -33,18 +34,18 @@ public:
   virtual ~CGUIDialogKeyboard(void);
 
   virtual void FrameMove();
-  void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
+  void SetHeading(const CVariant& heading);
   void SetText(const CStdString& aTextString);
   CStdString GetText() const;
   bool IsConfirmed() { return m_bIsConfirmed; };
   void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
 
   static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
-  static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput = false);
+  static bool ShowAndGetInput(CStdString& aTextString, const CVariant &heading, bool allowEmptyResult, bool hiddenInput = false);
   static bool ShowAndGetNewPassword(CStdString& strNewPassword);
-  static bool ShowAndGetNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
+  static bool ShowAndGetNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty);
   static bool ShowAndVerifyNewPassword(CStdString& strNewPassword);
-  static bool ShowAndVerifyNewPassword(CStdString& newPassword, const CStdString &heading, bool allowEmpty);
+  static bool ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
   static bool ShowAndGetFilter(CStdString& aTextString, bool searching);
 

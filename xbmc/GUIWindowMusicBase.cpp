@@ -1037,14 +1037,7 @@ void CGUIWindowMusicBase::OnRipCD()
 #endif
     }
     else
-    {
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      pDlgOK->SetHeading(257); // Error
-      pDlgOK->SetLine(0, g_localizeStrings.Get(20099)); //
-      pDlgOK->SetLine(1, ""); //
-      pDlgOK->SetLine(2, "");
-      pDlgOK->DoModal();
-    }
+      CGUIDialogOK::ShowAndGetInput(257, 20099, 0, 0);
   }
 }
 
@@ -1061,14 +1054,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 #endif
     }
     else
-    {
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      pDlgOK->SetHeading(257); // Error
-      pDlgOK->SetLine(0, g_localizeStrings.Get(20099)); //
-      pDlgOK->SetLine(1, ""); //
-      pDlgOK->SetLine(2, "");
-      pDlgOK->DoModal();
-    }
+      CGUIDialogOK::ShowAndGetInput(257, 20099, 0, 0);
   }
 }
 

@@ -469,6 +469,12 @@ bool CApplication::Create()
   if (!inited)
     inited = InitDirectoriesWin32();
 
+  // copy required files
+  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
@@ -628,6 +634,8 @@ bool CApplication::Create()
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   g_Mouse.Initialize();
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+
   g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
@@ -704,8 +712,6 @@ bool CApplication::Create()
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
-
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   CUtil::InitRandomSeed();
 
@@ -787,11 +793,6 @@ bool CApplication::InitDirectoriesLinux()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -860,12 +861,6 @@ bool CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -923,12 +918,6 @@ bool CApplication::InitDirectoriesWin32()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -3243,6 +3232,8 @@ void CApplication::Stop()
     if (videoScan)
       videoScan->StopScanning();
 
+    m_applicationMessenger.Cleanup();
+
     StopServices();
     //Sleep(5000);
 
@@ -3273,7 +3264,6 @@ void CApplication::Stop()
       CZeroconfBrowser::ReleaseInstance();
     }
 #endif
-    m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
 #ifdef HAS_FILESYSTEM_RAR
@@ -4748,12 +4738,6 @@ void CApplication::ProcessSlow()
     ADDON::CAddonMgr::Get().UpdateRepos();
 
   AE.GarbageCollect();
-
-#if defined(__arm__)
-  // TODO: gui rendering testing, remove later
-  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
-#endif
-
 }
 
 // Global Idle Time in Seconds

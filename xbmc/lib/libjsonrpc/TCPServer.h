@@ -37,6 +37,10 @@ namespace JSONRPC
     {
     public:
       CTCPClient();
+      //Copying a CCriticalSection is not allowed, so copy everything but that
+      //when adding a member variable, make sure to copy it in CTCPClient::Copy
+      CTCPClient(const CTCPClient& client);
+      CTCPClient& operator=(const CTCPClient& client);
       virtual int  GetPermissionFlags();
       virtual int  GetAnnouncementFlags();
       virtual bool SetAnnouncementFlags(int flags);
@@ -49,6 +53,7 @@ namespace JSONRPC
       CCriticalSection m_critSection;
 
     private:
+      void Copy(const CTCPClient& client);
       int m_announcementflags;
       int m_beginBrackets, m_endBrackets;
       std::string m_buffer;

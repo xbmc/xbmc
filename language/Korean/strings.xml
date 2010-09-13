@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 08/26/2010-->
+<!--Date of translation: 09/10/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -52,6 +52,23 @@
   <string id="60">10월</string>
   <string id="61">11월</string>
   <string id="62">12월</string>
+  <string id="71">북</string>
+  <string id="72">북북동</string>
+  <string id="73">북동</string>
+  <string id="74">동북동</string>
+  <string id="75">동</string>
+  <string id="76">동남동</string>
+  <string id="77">남동</string>
+  <string id="78">남남동</string>
+  <string id="79">남</string>
+  <string id="80">남남서</string>
+  <string id="81">남서</string>
+  <string id="82">서남서</string>
+  <string id="83">서</string>
+  <string id="84">서북서</string>
+  <string id="85">북서</string>
+  <string id="86">북북서</string>
+  <string id="87">가변</string>
   <string id="98">보기: 자동</string>
   <string id="99">보기: 자동(큰)</string>
   <string id="100">보기: 아이콘</string>
@@ -145,6 +162,7 @@
   <string id="196">영화 선택:</string>
   <string id="197">%s 정보 요청</string>
   <string id="198">영화 상세정보 읽기</string>
+  <string id="199">웹 인터페이스</string>
   <string id="202">태그라인</string>
   <string id="203">줄거리 개요</string>
   <string id="205">투표:</string>
@@ -182,6 +200,8 @@
   <string id="241">전체 화면 #%d</string>
   <string id="242">윈도우</string>
   <string id="243">새로고침 비율</string>
+  <string id="244">전체 화면</string>
+  <string id="245">크기: (%i,%i)-&gt;(%i,%i) (축소확대 x%2.2f) 가로세로비:%2.2f:1 (픽셀: %2.2f:1)</string>
   <string id="247">스크립트</string>
   <string id="248">언어</string>
   <string id="249">음악</string>
@@ -331,8 +351,6 @@
   <string id="404">바람</string>
   <string id="405">이슬점</string>
   <string id="406">습도</string>
-  <string id="407">풍향</string>
-  <string id="408">풍속</string>
   <string id="409">기본</string>
   <string id="410">날씨 서비스 접속</string>
   <string id="411">날씨 가져오기:</string>
@@ -357,6 +375,7 @@
   <string id="431">캐시 없음</string>
   <string id="432">라이브러리에서 영화 제거</string>
   <string id="433"> '%s' 를 제거 하시겠습니까?</string>
+  <string id="434">풍향 %s 풍속 %i %s</string>
   <string id="437">이동식 디스크</string>
   <string id="438">파일 열기</string>
   <string id="439">캐시</string>
@@ -686,7 +705,7 @@
   <string id="1042">%i / %i 항목 검색됨</string>
   <string id="1043">프로그램 추가기능</string>
   <string id="1044">플러그인 미리보기 설정</string>
-  <string id="1045">플러그인 설정</string>
+  <string id="1045">추가기능 설정</string>
   <string id="1046">액세스 포인트</string>
   <string id="1047">기타...</string>
   <string id="1048">- 사용자명</string>
@@ -758,6 +777,9 @@
   <string id="1418">뇌우</string>
   <string id="1419">뇌우</string>
   <string id="1420">온화함</string>
+  <string id="1421">매우 높음</string>
+  <string id="1422">센바람</string>
+  <string id="1423">안개</string>
   <string id="1450">대기일때 화면 끄기</string>
   <string id="2050">상영시간</string>
   <string id="2100">스크립트 실패! : %s</string>
@@ -951,10 +973,12 @@
   <string id="13205">알수없음</string>
   <string id="13206">덮어쓰기</string>
   <string id="13208">알람 시계</string>
-  <string id="13209">알람 간격(분)</string>
-  <string id="13210">%i 분에 알람 시작됨</string>
+  <string id="13209">알람 시계 간격(분)</string>
+  <string id="13210">시작됨, %i분 후 알람</string>
   <string id="13211">알람!</string>
   <string id="13212">%i 분 %i 초를 남겨두고 취소됨</string>
+  <string id="13213">%2.0f분</string>
+  <string id="13214">%2.0f초</string>
   <string id="13249">RAR의 자막 찾기</string>
   <string id="13250">자막 찾기...</string>
   <string id="13251">항목 이동</string>
@@ -1361,9 +1385,6 @@
   <string id="16318">시간적/공간적 (반)</string>
   <string id="16319">DXVA</string>
   <string id="16400">후처리</string>
-  <string id="16401"></string>
-  <string id="16402"></string>
-  <string id="16403"></string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1495,7 +1516,7 @@
   <string id="20143">비밀번호 입력</string>
   <string id="20144">종료 타이머</string>
   <string id="20145">종료 시간(분)</string>
-  <string id="20146">시작됨, %i 분후 종료</string>
+  <string id="20146">시작됨, %i분 후 종료</string>
   <string id="20147">30분후 종료</string>
   <string id="20148">60분후 종료</string>
   <string id="20149">120분후 종료</string>
@@ -1871,8 +1892,9 @@
   <string id="22000">시작때 라이브러리 업데이트</string>
   <string id="22001">라이브러리 업데이트 진행 숨기기</string>
   <string id="22002">- DNS 접미사</string>
-  <string id="22004">%2.3f 초 느리게</string>
-  <string id="22005">%2.3f 초 빠르게</string>
+  <string id="22003">%2.3f초</string>
+  <string id="22004">%2.3f초 느리게</string>
+  <string id="22005">%2.3f초 빠르게</string>
   <string id="22006">자막 오프셋</string>
   <string id="22007">오픈GL 공급자:</string>
   <string id="22008">오픈GL 렌더러:</string>
@@ -2019,7 +2041,7 @@
   <string id="33030">아웃룩</string>
   <string id="33031">커버플로우</string>
   <string id="33032">문자 번역</string>
-  <string id="33033">지도 목록 %s 카테고리</string>
+  <string id="33033">%s 카테고리 지도 목록</string>
   <string id="33034">36 시간</string>
   <string id="33035">지도</string>
   <string id="33036">매시</string>

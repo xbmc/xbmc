@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Malmis-->
-<!--Email: malmis@malmis.com-->
-<!--Date of translation: 04/29/2010-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 09/11/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Ändra din</string>
@@ -48,15 +48,15 @@
   <string id="31104">Spela trailers i ett fönster [COLOR=grey3](Endast i videoinformationsdialogen)[/COLOR]</string>
   <string id="31105">Visa mediatitlar i bakgrundsscannern</string>
   <string id="31106">Övriga alternativ</string>
+  <string id="31107">Dölj flaggläsning från videofilnamn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Dölj huvudmenyknappar</string>
-  <string id="31109">Hemskärmsbakgrunder</string>
-  <string id="31110">Ändra hemknappsbakgrund</string>
+  <string id="31109">Mediabakgrunder</string>
+  <string id="31110">Ändra bakgrund för mediatyp</string>
   <string id="31111">Göm</string>
   <string id="31112">Alternativ</string>
   <string id="31113">Solobild</string>
   <string id="31114">Flerbild</string>
   <string id="31115">Anpassare</string>
-  <string id="31116">Tilläggsskript</string>
   <string id="31117">Visa nyligen tillagda filmer</string>
   <string id="31118">Hemsidans undermeny</string>
   <string id="31119">Aktivera egen skriptknapp</string>
@@ -68,9 +68,9 @@
   <string id="31125">Visa bakgrund "Nu spelas" visualisering</string>
   <string id="31126">Aktivera sångtexter i musik-OSD</string>
   <string id="31127">SÖKVÄG TILL SÅNGTEXTSKRIPT</string>
-  <string id="31128">XBMC Sångtexter</string>
-  <string id="31129">Aktivera undertextnedladdning i video-OSD</string>
-  <string id="31130">SÖKVÄG TILL UNDERTEXTSKRIPT</string>
+  <string id="31128">Sångtexter</string>
+  <string id="31129">Aktivera undertextsnedladdning i video-OSD</string>
+  <string id="31130">SÖKVÄG TILL UNDERTEXT-TILLÄGG</string>
   <string id="31140">Musik-OSD</string>
   <string id="31141">Video-OSD</string>
   <string id="31200">Genvägar</string>
@@ -79,9 +79,6 @@
   <string id="31203">Välj din låt</string>
   <string id="31204">Sektionslänkar</string>
   <string id="31205">Sångtextkälla</string>
-  <string id="31250">Radar &amp; prognos</string>
-  <string id="31251">Prognos</string>
-  <string id="31252">TWC-skript</string>
   <string id="31300">Nuvarande temp</string>
   <string id="31301">Sist uppdaterad</string>
   <string id="31302">Meny</string>
@@ -101,7 +98,7 @@
   <string id="31318">Liten fanart</string>
   <string id="31319">Vald profil</string>
   <string id="31320">Sist inloggad</string>
-  <string id="31321">Karaoke låtväljare</string>
+  <string id="31321">Karaoke-låtväljare</string>
   <string id="31322">Sänt</string>
   <string id="31323">Senaste filmerna</string>
   <string id="31324">Senaste avsnitten</string>
@@ -117,8 +114,6 @@
   <string id="31354">Spola bakåt</string>
   <string id="31355">Filmmeny</string>
   <string id="31356">Ladda ner undertexter</string>
-  <string id="31357">
-  </string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
   <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
@@ -127,6 +122,6 @@
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
   <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås</string>
   <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder</string>
-  <string id="31408">[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade Tillägg - Visa och installera Tillägg från xbmc.com[CR]Ändra inställningar för tillägg</string>
+  <string id="31408">[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg - Visa och installera tillägg från xbmc.org[CR]Ändra inställningar för tillägg</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
 </strings>

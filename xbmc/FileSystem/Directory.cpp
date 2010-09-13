@@ -100,7 +100,7 @@ public:
       list.Clear();
       return false;
     }
-    list = m_list;
+    list.Copy(m_list);
     return true;
   }
 
@@ -143,54 +143,59 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      bool result;
-      if (g_application.IsCurrentThread() && allowThreads && !CUtil::IsSpecial(strPath))
+      bool result = false;
+      while (!result)
       {
-        CSingleExit ex(g_graphicsContext);
-
-        CGetDirectory get(*pDirectory, strPath);
-        if(!get.Wait(TIME_TO_BUSY_DIALOG))
+        if (g_application.IsCurrentThread() && allowThreads && !CUtil::IsSpecial(strPath))
         {
-          CGUIDialogBusy* dialog = NULL;
-          while(!get.Wait(10))
-          {
-            CSingleLock lock(g_graphicsContext);
-            if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS)
-            || g_windowManager.IsWindowVisible(WINDOW_DIALOG_LOCK_SETTINGS))
-            {
-              if(dialog)
-              {
-                dialog->Close();
-                dialog = NULL;
-              }
-              g_windowManager.Process(false);
-            }
-            else
-            {
-              if(dialog == NULL)
-              {
-                dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-                if(dialog)
-                  dialog->Show();
-              }
-              g_windowManager.Process(true);
-            }
-          }
-          if(dialog)
-            dialog->Close();
-        }
-        result = get.GetDirectory(items);
-      }
-      else
-      {
-        items.m_strPath = strPath;
-        result = pDirectory->GetDirectory(strPath, items);
-      }
+          CSingleExit ex(g_graphicsContext);
 
-      if (!result)
-      {
-        CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
-        return false;
+          CGetDirectory get(*pDirectory, strPath);
+          if(!get.Wait(TIME_TO_BUSY_DIALOG))
+          {
+            CGUIDialogBusy* dialog = NULL;
+            while(!get.Wait(10))
+            {
+              CSingleLock lock(g_graphicsContext);
+              if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS)
+              || g_windowManager.IsWindowVisible(WINDOW_DIALOG_LOCK_SETTINGS))
+              {
+                if(dialog)
+                {
+                  dialog->Close();
+                  dialog = NULL;
+                }
+                g_windowManager.Process(false);
+              }
+              else
+              {
+                if(dialog == NULL)
+                {
+                  dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+                  if(dialog)
+                    dialog->Show();
+                }
+                g_windowManager.Process(true);
+              }
+            }
+            if(dialog)
+              dialog->Close();
+          }
+          result = get.GetDirectory(items);
+        }
+        else
+        {
+          items.m_strPath = strPath;
+          result = pDirectory->GetDirectory(strPath, items);
+        }
+
+        if (!result)
+        {
+          if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+            continue;
+          CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
+          return false;
+        }
       }
 
       // cache the directory, if necessary

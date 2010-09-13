@@ -146,15 +146,7 @@ bool CGUIPassword::CheckStartUpLock()
         strLabel.Format("%i %s",iLeft,strLabel1.c_str());
 
         // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
-        CGUIDialogOK *dlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (!dlg)
-          return false;
-
-        dlg->SetHeading( g_localizeStrings.Get(20076) );
-        dlg->SetLine( 0, g_localizeStrings.Get(12367) );
-        dlg->SetLine( 1, g_localizeStrings.Get(12368) );
-        dlg->SetLine( 2, strLabel);
-        dlg->DoModal();
+        CGUIDialogOK::ShowAndGetInput(20076, 12367, 12368, strLabel);
       }
       else
         i=g_passwordManager.iMasterLockRetriesLeft;
@@ -295,15 +287,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CStdString dlgLine1 = "";
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
       dlgLine1.Format("%d %s", g_passwordManager.iMasterLockRetriesLeft, g_localizeStrings.Get(12343));
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK); // Tell user they entered a bad password
-    if (dialog)
-    {
-      dialog->SetHeading(20075);
-      dialog->SetLine(0, 12345);
-      dialog->SetLine(1, dlgLine1);
-      dialog->SetLine(2, 0);
-      dialog->DoModal();
-    }
+    CGUIDialogOK::ShowAndGetInput(20075, 12345, dlgLine1, 0);
   }
   else
     g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries"); // user entered correct mastercode, reset retries to max allowed

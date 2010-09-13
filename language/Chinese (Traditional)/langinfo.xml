@@ -10,12 +10,19 @@
     <subtitle>zh</subtitle>
   </dvd>
   <regions>
-    <region name="台北">
-      <dateshort>YYYY/MM/DD</dateshort>
-      <datelong>YYYY年M月D日 DDDD</datelong>
-      <time symbolAM="上午" symbolPM="下午">xx h:mm</time>
-      <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
-    </region>
+    <region name="台北 (12h)"> 
+      <dateshort>YYYY/MM/DD</dateshort> 
+      <datelong>YYYY年M月D日 DDDD</datelong> 
+      <time symbolAM="上午" symbolPM="下午">xx h:mm:ss</time> 
+      <tempunit>C</tempunit> 
+      <speedunit>kmh</speedunit> 
+    </region> 
+    <region name="台北 (24h)"> 
+      <dateshort>YYYY/MM/DD</dateshort> 
+      <datelong>YYYY年M月D日 DDDD</datelong> 
+      <time symbolAM="" symbolPM="">H:mm:ss</time> 
+      <tempunit>C</tempunit> 
+      <speedunit>kmh</speedunit> 
+    </region> 
   </regions>
 </language>

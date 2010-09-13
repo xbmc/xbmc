@@ -148,7 +148,7 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   result["end"]   = end;
   result["total"] = size;
 
-  for (unsigned int i = start; i < end; i++)
+  for (int i = start; i < end; i++)
   {
     Value object;
     CFileItemPtr item = items.Get(i);

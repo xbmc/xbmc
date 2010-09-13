@@ -511,7 +511,7 @@ install-bin: xbmc.bin # developement convenience target
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
-install: install-binaries install-arch install-datas install-web
+install: install-binaries install-arch install-datas
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
@@ -554,11 +554,6 @@ install-livedatas:
 	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
 	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
 	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
-
-install-web:
-	@mkdir -p $(DESTDIR)$(datarootdir)/xbmc/web
-	@cp -r web/poc_jsonrpc/* $(DESTDIR)$(datarootdir)/xbmc/web
-	@find $(DESTDIR)$(datarootdir)/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:
 	@echo "Removing XBMC..."

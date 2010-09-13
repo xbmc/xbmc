@@ -119,8 +119,8 @@ Section "XBMC" SecXBMC
   
   SetOutPath "$INSTDIR\addons"
   File /r "${xbmc_root}\Xbmc\addons\*.*"
-  SetOutPath "$INSTDIR\web"
-  File /r "${xbmc_root}\Xbmc\web\*.*"
+  ;SetOutPath "$INSTDIR\web"
+  ;File /r "${xbmc_root}\Xbmc\web\*.*"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\XBMC" "" $INSTDIR

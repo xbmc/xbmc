@@ -352,10 +352,9 @@ bool CButtonTranslator::Load()
     CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
 
   if (!success)
-  {
     CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
     // don't return false - it is to only indicate a fatal error (which this is not)
-  }
+
 #endif
 
   // Done!
@@ -502,13 +501,9 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 
   TiXmlElement *pJoy = pJoystick->ToElement();
   if (pJoy && pJoy->Attribute("name"))
-  {
     joyname = pJoy->Attribute("name");
-  }
   else
-  {
     CLog::Log(LOGNOTICE, "No Joystick name specified, loading default map");
-  }
 
   joynames.push_back(joyname);
 
@@ -538,17 +533,11 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           if (pButton->QueryIntAttribute("limit", &limit) == TIXML_SUCCESS)
           {
             if (limit==-1)
-            {
               axisMap[-id] = string(szAction);
-            }
             else if (limit==1)
-            {
               axisMap[id] = string(szAction);
-            }
             else if (limit==0)
-            {
               axisMap[id|0xFFFF0000] = string(szAction);
-            }
             else
             {
               axisMap[id] = string(szAction);
@@ -568,46 +557,29 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
           {
             uint32_t hatID = id|0xFFF00000;
-            if (position.compare("up")==0)
-            {
+            if (position.compare("up") == 0)
               hatMap[(SDL_HAT_UP<<16)|hatID] = string(szAction);
-            }
-            else if (position.compare("down")==0)
-            {
+            else if (position.compare("down") == 0)
               hatMap[(SDL_HAT_DOWN<<16)|hatID] = string(szAction);
-            }
-            else if (position.compare("right")==0)
-            {
+            else if (position.compare("right") == 0)
               hatMap[(SDL_HAT_RIGHT<<16)|hatID] = string(szAction);
-            }
-            else if (position.compare("left")==0)
-            {
+            else if (position.compare("left") == 0)
               hatMap[(SDL_HAT_LEFT<<16)|hatID] = string(szAction);
-            }
             else
-            {
               CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
-            }
           }
         }
         else
-        {
           CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
-        }
       }
       else if (strcmpi(szType, "altname")==0)
-      {
         joynames.push_back(string(szAction));
-      }
       else
-      {
         CLog::Log(LOGERROR, "Error reading joystick map element, Invalid id: %d", id);
-      }
     }
     else
-    {
       CLog::Log(LOGERROR, "Error reading joystick map element, skipping");
-    }
+
     pButton = pButton->NextSiblingElement();
   }
   vector<string>::iterator it = joynames.begin();
@@ -619,8 +591,6 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 //    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
   }
-
-  return;
 }
 
 bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
@@ -632,17 +602,11 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 
   fullrange = false;
   if (inputType == JACTIVE_AXIS)
-  {
     jmap = &m_joystickAxisMap;
-  }
   else if (inputType == JACTIVE_BUTTON)
-  {
     jmap = &m_joystickButtonMap;
-  }
   else if (inputType == JACTIVE_HAT)
-  {
   	jmap = &m_joystickHatMap;
-  }
   else
   {
     CLog::Log(LOGERROR, "Error reading joystick input type");
@@ -718,9 +682,7 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 
   // translated found action
   if (found)
-  {
     return TranslateActionString(strAction.c_str(), action);
-  }
 
   return false;
 }
@@ -792,9 +754,15 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   }
 }
 
+bool CButtonTranslator::HasDeviceType(TiXmlNode *pWindow, CStdString type)
+{
+  return pWindow->FirstChild(type) != NULL;
+}
+
 void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
-  if (!pWindow || windowID == WINDOW_INVALID) return;
+  if (!pWindow || windowID == WINDOW_INVALID) 
+    return;
   buttonMap map;
   std::map<int, buttonMap>::iterator it = translatorMap.find(windowID);
   if (it != translatorMap.end())
@@ -803,48 +771,31 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     translatorMap.erase(it);
   }
   TiXmlNode* pDevice;
-  if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
-  { // map gamepad actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
+
+  const char* types[] = {"gamepad", "remote", "keyboard", "universalremote", NULL};
+  for (int i = 0; types[i]; ++i)
+  {
+    CStdString type(types[i]);
+    if (HasDeviceType(pWindow, type))
     {
-      uint32_t buttonCode = TranslateGamepadString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("remote")) != NULL)
-  { // map remote actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateRemoteString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("universalremote")) != NULL)
-  { // map universal remote actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateUniversalRemoteString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("keyboard")) != NULL)
-  { // map keyboard actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateKeyboardButton(pButton);
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
+      pDevice = pWindow->FirstChild(type);
+      TiXmlElement *pButton = pDevice->FirstChildElement();
+      while (pButton)
+      {
+        uint32_t buttonCode;
+        if (type == "gamepad")
+            buttonCode = TranslateGamepadString(pButton->Value());
+        else if (type == "remote")
+            buttonCode = TranslateRemoteString(pButton->Value());
+        else if (type == "universalremote")
+            buttonCode = TranslateUniversalRemoteString(pButton->Value());
+        else if (type == "keyboard")
+            buttonCode = TranslateKeyboardButton(pButton);
+
+        if (buttonCode && pButton->FirstChild())
+          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+        pButton = pButton->NextSiblingElement();
+      }
     }
   }
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
@@ -868,7 +819,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   action = ACTION_NONE;
   CStdString strAction = szAction;
   strAction.ToLower();
-  if (CBuiltins::HasCommand(strAction)) action = ACTION_BUILT_IN_FUNCTION;
+  if (CBuiltins::HasCommand(strAction)) 
+    action = ACTION_BUILT_IN_FUNCTION;
 
   if (strAction.Equals("noop"))
     return true;
@@ -904,7 +856,8 @@ CStdString CButtonTranslator::TranslateWindow(int windowID)
 int CButtonTranslator::TranslateWindow(const CStdString &window)
 {
   CStdString strWindow(window);
-  if (strWindow.IsEmpty()) return WINDOW_INVALID;
+  if (strWindow.IsEmpty()) 
+    return WINDOW_INVALID;
   strWindow.ToLower();
   // eliminate .xml
   if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
@@ -937,7 +890,8 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
 
 uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
-  if (!szButton) return 0;
+  if (!szButton) 
+    return 0;
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
@@ -975,7 +929,8 @@ uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
 
 uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
 {
-  if (!szButton) return 0;
+  if (!szButton) 
+    return 0;
   uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
@@ -1042,11 +997,13 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
 
 uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 {
-  if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) return 0;
+  if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) 
+    return 0;
   const char *szCode = szButton + 3;
   // Button Code is 255 - OBC (Original Button Code) of the button
   uint32_t buttonCode = 255 - atol(szCode);
-  if (buttonCode > 255) buttonCode = 0;
+  if (buttonCode > 255) 
+    buttonCode = 0;
   return buttonCode;
 }
 
@@ -1161,7 +1118,8 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   uint32_t button_id = 0;
   const char *szButton = pButton->Value();
 
-  if (!szButton) return 0;
+  if (!szButton) 
+    return 0;
   CStdString strKey = szButton;
   if (strKey.Equals("key"))
   {
@@ -1172,9 +1130,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
       CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
   }
   else
-  {
     button_id = TranslateKeyboardString(szButton);
-  }
 
   // Process the ctrl/shift/alt modifiers
   CStdString strMod;
@@ -1218,4 +1174,3 @@ void CButtonTranslator::Clear()
   m_joystickHatMap.clear();
 #endif
 }
-

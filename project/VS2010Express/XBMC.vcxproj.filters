@@ -2112,6 +2112,9 @@
     <ClCompile Include="..\..\xbmc\URIUtils.cpp">
       <Filter>Source Files\Database</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Variant.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
