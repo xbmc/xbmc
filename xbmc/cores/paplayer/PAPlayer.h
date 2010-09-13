@@ -112,6 +112,7 @@ private:
     unsigned int        m_prepare;        /* frame to prepare next file at */
     bool                m_triggered;      /* if the queue callback has been called */
     unsigned int        m_bytesPerSample; /* bytes per audio sample */
+    unsigned int        m_snippetEnd;     /* frame to perform the next FF/RW */
   } StreamInfo;
 
   std::list<StreamInfo*>  m_streams;    /* queued streams */

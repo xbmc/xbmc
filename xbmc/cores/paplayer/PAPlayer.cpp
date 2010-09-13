@@ -50,8 +50,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_current      (NULL    ),
   m_isPaused     (false   ),
   m_iSpeed       (1       ),
-  m_fastOpen     (true    ),
-  m_timeOffset   (0       )
+  m_fastOpen     (true    )
 {
 }
 
@@ -114,8 +113,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int needed)
 {
-  StreamInfo *si = (StreamInfo*)arg;
-  CSingleLock lock(si->m_player->m_critSection);
+  StreamInfo *si  = (StreamInfo*)arg;
+  PAPlayer   *pap = si->m_player;
+
+  CSingleLock lock(pap->m_critSection);
 
   while(si->m_decoder.GetDataSize() == 0)
   {
@@ -125,7 +126,7 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
       if (!si->m_triggered)
       {
         si->m_triggered = true;
-        si->m_player->PlayNextStream();
+        pap->PlayNextStream();
       }
       if (!si->m_stream->IsDraining())
         si->m_stream->Drain();
@@ -145,18 +146,72 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
     needed     -= samples;
   }
 
+  /* handle ff/rw */
+  int speed = pap->m_iSpeed;
+  if (!si->m_triggered && (speed != 1 && si->m_sent >= si->m_snippetEnd))
+  {
+    float step = (speed > 1 ? 0.5 : 1.0f) * ((float)speed / 2.0f);
+    int   bps  = si->m_stream->GetSampleRate() * si->m_stream->GetChannelCount();
+    float time = ((float)si->m_sent / (float)bps) + step;
+    if (time < 0.0f)
+    {
+      pap->m_iSpeed = 1;
+      pap->m_callback.OnPlayBackSpeedChanged(1);
+    }
+    else
+    {
+      float ttl = (float)si->m_decoder.TotalTime() / 1000.0f;
+      if (time >= ttl)
+      {
+        if (si->m_prepare)
+        {
+          si->m_prepare = 0;
+          si->m_triggered = true;
+
+          lock.Leave();
+          pap->m_callback.OnQueueNextItem();
+          pap->PlayNextStream();
+          return;
+        }
+
+        if (!si->m_triggered)
+        {
+          si->m_triggered = true;
+
+          lock.Leave();
+          pap->PlayNextStream();
+          return;
+        }
+      }
+      else
+      {
+        si->m_decoder.Seek(time * 1000.0f);
+        si->m_sent       = time * bps;
+
+        if (speed < 1) speed = -speed;
+        si->m_snippetEnd = si->m_sent + (bps / speed);
+      }
+    }
+  }
+
   /* if it is time to prepare the next stream */
   if (si->m_prepare > 0 && si->m_sent >= si->m_prepare)
   {
-    si->m_player->m_callback.OnQueueNextItem();
     si->m_prepare = 0;
+
+    lock.Leave();
+    pap->m_callback.OnQueueNextItem();
+    return;
   }
 
   /* if it is time to move to the next stream */
   if (!si->m_triggered && si->m_sent >= si->m_change)
   {
     si->m_triggered = true;
-    si->m_player->PlayNextStream();
+
+    lock.Leave();
+    pap->PlayNextStream();
+    return;
   }
 }
 
@@ -234,6 +289,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_change         = 0;
   si->m_triggered      = false;
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(dataFormat) >> 3;
+  si->m_snippetEnd     = 0;
 
   si->m_stream = AE.GetStream(
     dataFormat,
@@ -293,7 +349,8 @@ bool PAPlayer::PlayNextStream()
   {
     m_finishing.push_back(m_current);
     if (!crossFade) {
-      m_current->m_stream->Drain();
+      if (!m_current->m_stream->IsDraining())
+        m_current->m_stream->Drain();
       if (m_fastOpen) m_current->m_stream->Flush();
       m_fastOpen = false;
     }
