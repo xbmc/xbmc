@@ -1403,7 +1403,7 @@ void CLinuxRendererGLES::RenderOpenMax(int renderBuffer, int field)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, textureId);
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGB);
+  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
