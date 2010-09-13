@@ -282,7 +282,8 @@ div.imgWrapper div.inner {
 	color: #777;
 	}
 
-#trackWrap {
+#audioTrackWrap,
+#videoTrackWrap {
 	width: 365px;
 	white-space: nowrap;
 	overflow: hidden;
