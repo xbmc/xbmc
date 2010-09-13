@@ -95,7 +95,7 @@ bool CXBTFWriter::AppendContent(unsigned char const* data, size_t length)
   return true;
 }
 
-bool CXBTFWriter::UpdateHeader()
+bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
 {
   if (m_file == NULL)
   {
@@ -129,8 +129,13 @@ bool CXBTFWriter::UpdateHeader()
     for (size_t j = 0; j < frames.size(); j++)
     {
       CXBTFFrame& frame = frames[j];
-      frame.SetOffset(offset);
-      offset += frame.GetPackedSize();
+      if (dupes[i] != i)
+        frame.SetOffset(files[dupes[i]].GetFrames()[j].GetOffset());
+      else
+      {
+        frame.SetOffset(offset);
+        offset += frame.GetPackedSize();
+      }
 
       WRITE_U32(frame.GetWidth(), m_file);
       WRITE_U32(frame.GetHeight(), m_file);
