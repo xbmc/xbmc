@@ -50,7 +50,9 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_current      (NULL    ),
   m_isPaused     (false   ),
   m_iSpeed       (1       ),
-  m_fastOpen     (true    )
+  m_fastOpen     (true    ),
+  m_queueFailed  (false   ),
+  m_playOnQueue  (false   )
 {
 }
 
@@ -156,41 +158,22 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
     if (time < 0.0f)
     {
       pap->m_iSpeed = 1;
+
+      lock.Leave();
       pap->m_callback.OnPlayBackSpeedChanged(1);
+      return;
     }
     else
     {
       float ttl = (float)si->m_decoder.TotalTime() / 1000.0f;
       if (time >= ttl)
-      {
-        if (si->m_prepare)
-        {
-          si->m_prepare = 0;
-          si->m_triggered = true;
+        time = ttl;
+      
+      si->m_decoder.Seek(time * 1000.0f);
+      si->m_sent       = time * bps;
 
-          lock.Leave();
-          pap->m_callback.OnQueueNextItem();
-          pap->PlayNextStream();
-          return;
-        }
-
-        if (!si->m_triggered)
-        {
-          si->m_triggered = true;
-
-          lock.Leave();
-          pap->PlayNextStream();
-          return;
-        }
-      }
-      else
-      {
-        si->m_decoder.Seek(time * 1000.0f);
-        si->m_sent       = time * bps;
-
-        if (speed < 1) speed = -speed;
-        si->m_snippetEnd = si->m_sent + (bps / speed);
-      }
+      if (speed < 1) speed = -speed;
+      si->m_snippetEnd = si->m_sent + (bps / speed);
     }
   }
 
@@ -198,7 +181,6 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
   if (si->m_prepare > 0 && si->m_sent >= si->m_prepare)
   {
     si->m_prepare = 0;
-
     lock.Leave();
     pap->m_callback.OnQueueNextItem();
     return;
@@ -208,7 +190,6 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
   if (!si->m_triggered && si->m_sent >= si->m_change)
   {
     si->m_triggered = true;
-
     lock.Leave();
     pap->PlayNextStream();
     return;
@@ -265,10 +246,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
 
 void PAPlayer::OnNothingToQueueNotify()
 {
-/*
-  //nothing to queue, stop playing
-  m_bQueueFailed = true;
-*/
+  m_queueFailed = true;
 }
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
@@ -289,7 +267,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_change         = 0;
   si->m_triggered      = false;
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(dataFormat) >> 3;
-  si->m_snippetEnd     = 0;
+  si->m_snippetEnd     = (sampleRate * channels) / (m_iSpeed > 1 ? m_iSpeed : -m_iSpeed);
 
   si->m_stream = AE.GetStream(
     dataFormat,
@@ -324,6 +302,14 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   /* queue the stream */  
   CSingleLock lock(m_critSection);
   m_streams.push_back(si);
+  lock.Leave();
+
+  if (m_playOnQueue)
+  {
+    PlayNextStream();
+    m_playOnQueue = false;
+  }
+
   return true;
 }
 
@@ -332,15 +318,12 @@ bool PAPlayer::PlayNextStream()
   bool         fadeIn    = false;
   unsigned int crossFade = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
 
-  /* if there is no more queued streams then we stop playing */
+  /* if there is no more queued streams then flag to start on queue */
+  CSingleLock lock(m_critSection);
   if (m_streams.empty())
   {
-    if (m_current)
-    {
-      m_finishing.push_back(m_current);
-      m_current->m_stream->Drain();
-      m_current = NULL;
-    }
+    if (!m_queueFailed)
+      m_playOnQueue = true;
     return false;
   }
 

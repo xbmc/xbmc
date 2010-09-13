@@ -121,6 +121,8 @@ private:
   bool                    m_isPaused;
   int                     m_iSpeed;
   bool                    m_fastOpen;
+  bool                    m_queueFailed;
+  bool                    m_playOnQueue;
 
   void FreeStreamInfo(StreamInfo *si);
   bool PlayNextStream();
