@@ -123,7 +123,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));
         newItem->m_strPath = strFileName;
-        if (lDuration)
+        if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
 
