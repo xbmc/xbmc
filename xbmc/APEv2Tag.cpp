@@ -67,7 +67,7 @@ bool CAPEv2Tag::ReadTag(const char* filename)
   {
     // cd number is usually "CD 1/3"
     char *num = apefrm_getstr(tag, (char*)"Media");
-    while (!isdigit(*num) && num != '\0') num++;
+    while (!isdigit(*num) && *num != '\0') num++;
     if (isdigit(*num))
       m_nDiscNum = atoi(num);
   }
