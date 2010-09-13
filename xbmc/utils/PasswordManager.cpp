@@ -24,6 +24,8 @@
 #include "URL.h"
 #include "Settings.h"
 #include "XMLUtils.h"
+#include "utils/log.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 
@@ -99,24 +101,32 @@ void CPasswordManager::Clear()
 void CPasswordManager::Load()
 {
   Clear();
-  TiXmlDocument doc;
-  if (!doc.LoadFile(g_settings.GetUserDataItem("passwords.xml")))
-    return;
-  const TiXmlElement *root = doc.RootElement();
-  if (root->ValueStr() != "passwords")
-    return;
-  // read in our passwords
-  const TiXmlElement *path = root->FirstChildElement("path");
-  while (path)
+  CStdString passwordsFile = g_settings.GetUserDataItem("passwords.xml");
+  if (XFILE::CFile::Exists(passwordsFile))
   {
-    CStdString from, to;
-    if (XMLUtils::GetPath(path, "from", from) && XMLUtils::GetPath(path, "to", to))
+    TiXmlDocument doc;
+    if (!doc.LoadFile(passwordsFile))
     {
-      m_permanentCache[from] = to;
-      m_temporaryCache[from] = to;
-      m_temporaryCache[GetServerLookup(from)] = to;
+      CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s", 
+        __FUNCTION__, passwordsFile.c_str(), doc.ErrorRow(), doc.ErrorDesc());
+      return;
     }
-    path = path->NextSiblingElement("path");
+    const TiXmlElement *root = doc.RootElement();
+    if (root->ValueStr() != "passwords")
+      return;
+    // read in our passwords
+    const TiXmlElement *path = root->FirstChildElement("path");
+    while (path)
+    {
+      CStdString from, to;
+      if (XMLUtils::GetPath(path, "from", from) && XMLUtils::GetPath(path, "to", to))
+      {
+        m_permanentCache[from] = to;
+        m_temporaryCache[from] = to;
+        m_temporaryCache[GetServerLookup(from)] = to;
+      }
+      path = path->NextSiblingElement("path");
+    }
   }
   m_loaded = true;
 }

@@ -3236,6 +3236,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Variant.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\VideoInfoTag.cpp"
 					>
 				</File>
@@ -5978,6 +5982,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Util.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\Variant.h"
 				>
 			</File>
 			<File

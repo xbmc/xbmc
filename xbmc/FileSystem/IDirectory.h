@@ -21,6 +21,7 @@
  */
 
 #include "StdString.h"
+#include "utils/Variant.h"
 
 class CFileItemList;
 
@@ -94,11 +95,60 @@ public:
   void SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory);
   void SetUseFileDirectories(bool useFileDirectories);
   void SetExtFileInfo(bool extFileInfo);
+
+  /*! \brief Process additional requirements before the directory fetch is performed.
+   Some directory fetches may require authentication, keyboard input etc.  The IDirectory subclass
+   should call GetKeyboardInput, SetErrorDialog or RequireAuthentication and then return false 
+   from the GetDirectory method. CDirectory will then prompt for input from the user, before
+   re-calling the GetDirectory method.
+   \sa GetKeyboardInput, SetErrorDialog, RequireAuthentication
+   */
+  bool ProcessRequirements();
+
 protected:
+  /*! \brief Prompt the user for some keyboard input
+   Call this method from the GetDirectory method to retrieve additional input from the user.
+   If this function returns false then no input has been received, and the GetDirectory call
+   should return false.
+   \param heading an integer or string heading for the keyboard dialog
+   \param input [out] the returned input (if available).
+   \return true if keyboard input has been received. False if it hasn't.
+   \sa ProcessRequirements
+   */
+  bool GetKeyboardInput(const CVariant &heading, CStdString &input);
+
+  /*! \brief Show an error dialog on failure of GetDirectory call
+   Call this method from the GetDirectory method to set an error message to be shown to the user
+   \param heading an integer or string heading for the error dialog.
+   \param line1 the first line to be displayed (integer or string).
+   \param line2 the first line to be displayed (integer or string).
+   \param line3 the first line to be displayed (integer or string).
+   \sa ProcessRequirements
+   */
+  void SetErrorDialog(const CVariant &heading, const CVariant &line1, const CVariant &line2 = 0, const CVariant &line3 = 0);
+
+  /*! \brief Prompt the user for authentication of a URL.
+   Call this method from the GetDirectory method when authentication is required from the user, before returning
+   false from the GetDirectory call. The user will be prompted for authentication, and GetDirectory will be
+   re-called.
+   \param url the URL to authenticate.
+   \sa ProcessRequirements
+   */
+  void RequireAuthentication(const CStdString &url);
+
+  /*! \brief Get a localized string from a variant
+   If the varaint is already a string we return directly, else if it's an integer we return the corresponding
+   localized string.
+   \param var the variant to localize.
+   */
+  CStdString GetLocalized(const CVariant &var) const;
+
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
   DIR_CACHE_TYPE m_cacheDirectory;    ///< If !DIR_CACHE_NEVER the directory is cached by g_directoryCache (defaults to DIR_CACHE_ONCE)
   bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
   bool m_extFileInfo;       ///< If true the GetDirectory call can retrieve extra file information (defaults to true)
+
+  CVariant m_requirements;
 };
 }

@@ -264,6 +264,8 @@
 		7CDFC2AD12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDFC2AB12021E9E00E182BC /* AutoPtrHandle.cpp */; };
 		7CDFC2AE12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDFC2AB12021E9E00E182BC /* AutoPtrHandle.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
+		7CF1FD69123E049300B2CBCB /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FD67123E049300B2CBCB /* Variant.cpp */; };
+		7CF1FD6A123E049300B2CBCB /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FD67123E049300B2CBCB /* Variant.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
 		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
 		810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
@@ -2143,6 +2145,8 @@
 		7CDFC2AC12021E9E00E182BC /* AutoPtrHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPtrHandle.h; sourceTree = "<group>"; };
 		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
+		7CF1FD67123E049300B2CBCB /* Variant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variant.cpp; sourceTree = "<group>"; };
+		7CF1FD68123E049300B2CBCB /* Variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variant.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
 		810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythDirectory.cpp; sourceTree = "<group>"; };
@@ -6790,6 +6794,8 @@
 				E38E1E8A0D25F9FD00618676 /* TuxBoxUtil.h */,
 				E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */,
 				E38E1E8C0D25F9FD00618676 /* UdpClient.h */,
+				7CF1FD67123E049300B2CBCB /* Variant.cpp */,
+				7CF1FD68123E049300B2CBCB /* Variant.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
 				E38E1E8E0D25F9FD00618676 /* Weather.h */,
 				F5A7A859112908F00059D6AA /* WebServer.cpp */,
@@ -8099,6 +8105,7 @@
 				7CD9742A11BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */,
 				7CDFC2AE12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */,
 				F5E728D01227527D00B152C1 /* DVDInputStreamBluray.cpp in Sources */,
+				7CF1FD6A123E049300B2CBCB /* Variant.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8966,6 +8973,7 @@
 				7CD2CD0211B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */,
 				7CD9742911BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */,
 				7CDFC2AD12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */,
+				7CF1FD69123E049300B2CBCB /* Variant.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

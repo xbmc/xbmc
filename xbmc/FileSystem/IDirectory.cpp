@@ -22,6 +22,12 @@
 
 #include "IDirectory.h"
 #include "Util.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogKeyboard.h"
+#include "URL.h"
+#include "utils/PasswordManager.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -128,4 +134,80 @@ void IDirectory::SetUseFileDirectories(bool useFileDirectories)
 void IDirectory::SetExtFileInfo(bool extFileInfo)
 {
   m_extFileInfo = extFileInfo;
+}
+
+bool IDirectory::ProcessRequirements()
+{
+  CStdString type = m_requirements["type"].asString();
+  if (type == "keyboard")
+  {
+    CStdString input;
+    if (CGUIDialogKeyboard::ShowAndGetInput(input, GetLocalized(m_requirements["heading"]), false))
+    {
+      m_requirements["input"] = input.c_str();
+      return true;
+    }
+  }
+  else if (type == "authenticate")
+  {
+    CURL url(m_requirements["url"].asString());
+    if (CPasswordManager::GetInstance().PromptToAuthenticateURL(url))
+    {
+      m_requirements.clear();
+      return true;
+    }
+  }
+  else if (type == "error")
+  {
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->SetHeading(GetLocalized(m_requirements["heading"]));
+      dialog->SetLine(0, GetLocalized(m_requirements["line1"]));
+      dialog->SetLine(1, GetLocalized(m_requirements["line2"]));
+      dialog->SetLine(2, GetLocalized(m_requirements["line3"]));
+      dialog->DoModal();
+    }
+  }
+  m_requirements.clear();
+  return false;
+}
+
+bool IDirectory::GetKeyboardInput(const CVariant &heading, CStdString &input)
+{
+  if (!CStdString(m_requirements["input"].asString()).IsEmpty())
+  {
+    input = m_requirements["input"].asString();
+    return true;
+  }
+  m_requirements.clear();
+  m_requirements["type"] = "keyboard";
+  m_requirements["heading"] = heading;
+  return false;
+}
+
+void IDirectory::SetErrorDialog(const CVariant &heading, const CVariant &line1, const CVariant &line2, const CVariant &line3)
+{
+  m_requirements.clear();
+  m_requirements["type"] = "error";
+  m_requirements["heading"] = heading;
+  m_requirements["line1"] = line1;
+  m_requirements["line2"] = line2;
+  m_requirements["line3"] = line3;
+}
+
+void IDirectory::RequireAuthentication(const CStdString &url)
+{
+  m_requirements.clear();
+  m_requirements["type"] = "authenticate";
+  m_requirements["url"] = url.c_str();
+}
+
+CStdString IDirectory::GetLocalized(const CVariant &var) const
+{
+  if (var.isString())
+    return var.asString();
+  else if (var.isInteger())
+    return g_localizeStrings.Get(var.asInteger());
+  return "";
 }

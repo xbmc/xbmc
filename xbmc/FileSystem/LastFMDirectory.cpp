@@ -25,9 +25,7 @@
 #include "MusicInfoTag.h"
 #include "URL.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
-#include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileCurl.h"
@@ -93,7 +91,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   if (!m_dlgProgress->IsCanceled() && m_Error)
   {
     if (m_dlgProgress) m_dlgProgress->Close();
-    CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);
+    SetErrorDialog(257, 15280, 0, 0);
     CLog::Log(LOGERROR, "Unable to retrieve list from last.fm");
     return false;
   }
@@ -102,7 +100,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   if (!m_xmlDoc.LoadFile(m_strDestination))
   {
     if (m_dlgProgress) m_dlgProgress->Close();
-    CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);
+    SetErrorDialog(257, 15280, 0, 0);
     CLog::Log(LOGERROR, "Error parsing file from audioscrobbler web services, Line %d\n%s", m_xmlDoc.ErrorRow(), m_xmlDoc.ErrorDesc());
     return false;
   }
@@ -426,7 +424,7 @@ bool CLastFMDirectory::SearchSimilarArtists(CFileItemList &items)
 {
   CStdString strSearchTerm = "";
 
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, g_localizeStrings.Get(15281), false))
+  if (!GetKeyboardInput(15281, strSearchTerm))
     return false;
 
   m_objname = m_encodedobjname = strSearchTerm;
@@ -441,7 +439,7 @@ bool CLastFMDirectory::SearchSimilarTags(CFileItemList &items)
 {
   CStdString strSearchTerm = "";
 
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, g_localizeStrings.Get(15282), false))
+  if (!GetKeyboardInput(15282, strSearchTerm))
     return false;
 
   m_objname = m_encodedobjname = strSearchTerm;
@@ -614,11 +612,12 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       CUtil::URLDecode(m_encodedobjname);
       AddEntry(15255, "lastfm://xbmc/user/%name%/", "", true, items);
     }
+    return true;
   }
   else
     return false;
 
-  return true;
+  return m_Error;
 }
 
 DIR_CACHE_TYPE CLastFMDirectory::GetCacheType(const CStdString& strPath) const
