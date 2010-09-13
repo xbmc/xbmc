@@ -377,6 +377,7 @@ uint8_t* CAEStream::GetFrame()
           m_cbDrainFunc(this, m_cbDrainArg, 0);
           m_cbDrainFunc = NULL;
         }
+        return NULL;
       }
       else
       {
@@ -385,9 +386,12 @@ uint8_t* CAEStream::GetFrame()
         {
           lock.Leave();
           m_cbDataFunc(this, m_cbDataArg, (m_format.m_frameSize - m_frameBufferSize) / m_bytesPerFrame);
+          if (m_outBuffer.empty())
+            return NULL;
         }
+        else
+          return NULL;
       }
-      return NULL;
     }
 
     /* get the next packet */
