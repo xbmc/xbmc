@@ -32,6 +32,12 @@
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 
+static const char* ShaderNames[SM_ESHADERCOUNT] =
+    {"guishader_frag_default.glsl",
+     "guishader_frag_texture.glsl",
+     "guishader_frag_multi.glsl",
+     "guishader_frag_fonts.glsl",
+     "guishader_frag_texture_noblend.glsl"};
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
@@ -485,23 +491,20 @@ void CRenderSystemGLES::InitialiseGUIShader()
   if (!m_pGUIshader)
   {
     m_pGUIshader = new CGUIShader*[SM_ESHADERCOUNT];
-    for (int i = 0;i < SM_ESHADERCOUNT; i++)
+    for (int i = 0; i < SM_ESHADERCOUNT; i++)
     {
-      char shaderName[512];
-      sprintf( shaderName, "guishader_frag%d.glsl", i );
+      m_pGUIshader[i] = new CGUIShader( ShaderNames[i] );
 
-      m_pGUIshader[i] = new CGUIShader( shaderName );
       if (!m_pGUIshader[i]->CompileAndLink())
       {
         m_pGUIshader[i]->Free();
         delete m_pGUIshader[i];
         m_pGUIshader[i] = NULL;
-        CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+        CLog::Log(LOGERROR, "GUI Shader [%s] - Initialise failed", ShaderNames[i]);
       }
-
       else
       {
-        CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader[i]);
+        CLog::Log(LOGDEBUG, "GUI Shader [%s]- Initialise successful : %p", ShaderNames[i], m_pGUIshader[i]);
       }
     }
   }
@@ -513,23 +516,24 @@ void CRenderSystemGLES::InitialiseGUIShader()
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
 {
-  m_method = (int)method;
+  m_method = method;
   if (m_pGUIshader[m_method])
   {
-    m_pGUIshader[m_method]->Setup(method);
     m_pGUIshader[m_method]->Enable();
   }
-  else {
-    printf("invalid gui shader %d\n", method);
+  else
+  {
+    CLog::Log(LOGERROR, "Invalid GUI Shader selected - [%s]", ShaderNames[(int)method]);
   }
 }
 
 void CRenderSystemGLES::DisableGUIShader()
 {
-  if (m_pGUIshader[m_method]) {
+  if (m_pGUIshader[m_method])
+  {
     m_pGUIshader[m_method]->Disable();
   }
-  m_method = 0;
+  m_method = SM_DEFAULT;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetPos()

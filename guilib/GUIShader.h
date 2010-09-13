@@ -28,18 +28,6 @@
 
 using namespace Shaders;
 
-enum ESHADERMETHOD
-{
-  SM_DEFAULT = 0,
-  SM_TEXTURE = 1,
-  SM_MULTI   = 2,
-  SM_FONTS   = 3,
-  SM_TEXTURE_NOBLEND = 4,
-  SM_TEXTURE_RGB = 5,
-  SM_TEXTURE_RGB_NOBLEND = 6,
-  SM_ESHADERCOUNT
-};
-
 class CGUIShader : public CGLSLShaderProgram
 {
 public:
@@ -47,8 +35,6 @@ public:
   void OnCompiledAndLinked();
   bool OnEnabled();
   void Free();
-
-  void Setup(ESHADERMETHOD method) { m_method = method; }
 
   GLint GetPosLoc()   { return m_hPos;   }
   GLint GetColLoc()   { return m_hCol;   }
@@ -58,7 +44,6 @@ public:
 protected:
   GLint m_hTex0;
   GLint m_hTex1;
-  GLint m_hMethod;
   GLint m_hProj;
   GLint m_hModel;
   GLint m_hPos;
@@ -66,7 +51,6 @@ protected:
   GLint m_hCord0;
   GLint m_hCord1;
 
-  ESHADERMETHOD m_method;
   GLfloat *m_proj;
   GLfloat *m_model;
 };
