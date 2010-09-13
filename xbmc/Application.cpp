@@ -3244,6 +3244,8 @@ void CApplication::Stop()
     if (videoScan)
       videoScan->StopScanning();
 
+    m_applicationMessenger.Cleanup();
+
     StopServices();
     //Sleep(5000);
 
@@ -3274,7 +3276,6 @@ void CApplication::Stop()
       CZeroconfBrowser::ReleaseInstance();
     }
 #endif
-    m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
 #ifdef HAS_FILESYSTEM_RAR
