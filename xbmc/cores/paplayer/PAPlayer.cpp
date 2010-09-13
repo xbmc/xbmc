@@ -218,35 +218,11 @@ void PAPlayer::StaticFadeOnDone(CAEPPAnimationFade *sender, void *arg)
   si->m_stream->Drain();
 }
 
-#if 0
-void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
-{
-  if ((m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade")))
-  {
-    if (
-      m_crossFading &&
-      (
-        file.IsCDDA() ||
-        file.IsLastFM() ||
-        (
-          file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
-          (m_currentFile->GetMusicInfoTag()->GetAlbum() != "") &&
-          (m_currentFile->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
-          (m_currentFile->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
-          (m_currentFile->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
-        )
-      )
-    )
-    {
-      m_crossFading = 0;
-    }
-  }
-}
-#endif
-
 void PAPlayer::OnNothingToQueueNotify()
 {
   m_queueFailed = true;
+  if (m_playOnQueue)
+    m_callback.OnPlayBackStopped();
 }
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
@@ -322,8 +298,10 @@ bool PAPlayer::PlayNextStream()
   CSingleLock lock(m_critSection);
   if (m_streams.empty())
   {
-    if (!m_queueFailed)
-      m_playOnQueue = true;
+    if (!m_queueFailed) m_playOnQueue = true;
+    else
+      m_callback.OnPlayBackStopped();
+
     return false;
   }
 
