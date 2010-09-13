@@ -50,7 +50,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_current      (NULL    ),
   m_isPaused     (false   ),
   m_iSpeed       (1       ),
-  m_fastOpen     (true    )
+  m_fastOpen     (true    ),
+  m_timeOffset   (0       )
 {
 }
 
@@ -118,7 +119,7 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
 
   while(si->m_decoder.GetDataSize() == 0)
   {
-    int status = si->m_decoder.GetStatus();    
+    int status = si->m_decoder.GetStatus();
     if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
     {
       if (!si->m_triggered)
@@ -697,10 +698,20 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
-  if (!CanSeek()) return;
-  int seekOffset = (int)(iTime - GetTime());
+  CSingleLock lock(m_critSection);
+  if (!CanSeek() || !m_current) return;
+
+  int seekOffset  = (int)(iTime - GetTime());
+
+  int seekSamples = ((float)seekOffset / 1000.0f) * ((float)(m_current->m_stream->GetSampleRate() * m_current->m_stream->GetChannelCount()));
+  seekSamples = std::min(-(int)m_current->m_sent, seekSamples);
+
   m_callback.OnPlayBackSeek(iTime, seekOffset);
-  CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * iTime);
+  CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f (%d)", 0.001f * iTime, seekSamples);
+  m_current->m_decoder.Seek(seekOffset);
+  m_current->m_stream->Flush();
+  m_current->m_sent += seekSamples;
+  g_infoManager.m_performingSeek = false;
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
@@ -716,7 +727,7 @@ float PAPlayer::GetPercentage()
   return percent;
 }
 
-#if 0
+/*
 void PAPlayer::HandleSeeking()
 {
   if (m_SeekTime != -1)
@@ -729,7 +740,7 @@ void PAPlayer::HandleSeeking()
   }
   g_infoManager.m_performingSeek = false;
 }
-#endif
+*/
 
 #if 0
 void PAPlayer::FlushStreams()
