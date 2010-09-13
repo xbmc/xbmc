@@ -469,7 +469,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
         CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s %s", __FUNCTION__, GuidNames[pMT->formattype], guid.c_str());
       }
 
-      if (! fourccfinded)
+      if (! fourccfinded && pMT->majortype == MEDIATYPE_Video)
       {
         CDSStreamDetailVideo s;
         CStreamsManager::MediaTypeToStreamDetail(pMT, s);
