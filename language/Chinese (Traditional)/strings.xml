@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: koalahong-->
-<!--Email: weihsiang.hung@gmail.com-->
-<!--Date of translation: 08/12/2010-->
+<!--Date of translation: 09/12/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 32080-->
+<!--Based on english strings version 33656-->
 <strings>
   <string id="0">程式</string>
   <string id="1">圖片</string>
@@ -54,6 +52,23 @@
   <string id="60">10月</string>
   <string id="61">11月</string>
   <string id="62">12月</string>
+  <string id="71">北</string>
+  <string id="72">北北東</string>
+  <string id="73">東北</string>
+  <string id="74">東北東</string>
+  <string id="75">東</string>
+  <string id="76">東南東</string>
+  <string id="77">東南</string>
+  <string id="78">南南東</string>
+  <string id="79">南</string>
+  <string id="80">南南西</string>
+  <string id="81">西南</string>
+  <string id="82">西南西</string>
+  <string id="83">西</string>
+  <string id="84">西北西</string>
+  <string id="85">西北</string>
+  <string id="86">北北西</string>
+  <string id="87">VAR</string>
   <string id="98">顯示：自動</string>
   <string id="99">顯示：自動大圖示</string>
   <string id="100">顯示：圖示</string>
@@ -151,6 +166,7 @@
   <string id="196">選擇影片：</string>
   <string id="197">讀取 %s 資訊</string>
   <string id="198">載入影片詳細資料</string>
+  <string id="199">Web 介面</string>
   <string id="202">標題</string>
   <string id="203">大綱</string>
   <string id="205">得票：</string>
@@ -188,6 +204,8 @@
   <string id="241">全螢幕 #%d</string>
   <string id="242">視窗</string>
   <string id="243">更新頻率</string>
+  <string id="244">全螢幕</string>
+  <string id="245">縮放中：(%i,%i)-&gt;(%i,%i) (縮放 x%2.2f) AR:%2.2f:1 (像素: %2.2f:1)</string>
   <string id="247">腳本</string>
   <string id="248">語言</string>
   <string id="249">音樂</string>
@@ -741,13 +759,13 @@
   <string id="1301">自訂直通輸出設備</string>
   <string id="1396">移動</string>
   <string id="1397">有</string>
-  <string id="1398">冰點</string>
+  <string id="1398">結冰</string>
   <string id="1399">睌間</string>
   <string id="1400">局部</string>
   <string id="1401">雷陣雨</string>
   <string id="1402">雷</string>
-  <string id="1403">陽光</string>
-  <string id="1404">暴</string>
+  <string id="1403">晴</string>
+  <string id="1404">大</string>
   <string id="1405">在</string>
   <string id="1406">這</string>
   <string id="1407">區域性</string>
@@ -756,14 +774,17 @@
   <string id="1410">無風</string>
   <string id="1411">有</string>
   <string id="1412">風</string>
-  <string id="1413">細雨</string>
+  <string id="1413">毛雨</string>
   <string id="1414">雷雨</string>
-  <string id="1415">毛毛雨</string>
+  <string id="1415">毛雨</string>
   <string id="1416">霧</string>
   <string id="1417">花</string>
   <string id="1418">雷雨</string>
   <string id="1419">雷陣雨</string>
   <string id="1420">中等</string>
+  <string id="1421">非常高</string>
+  <string id="1422">風</string>
+  <string id="1423">靄</string>
   <string id="1450">閒置時顯示器休眠</string>
   <string id="2050">視訊時間</string>
   <string id="2100">腳本錯誤！：%s</string>
@@ -961,6 +982,8 @@
   <string id="13210">鬧鈴啟動，倒數計時 %i 分鐘</string>
   <string id="13211">響鈴！</string>
   <string id="13212">鬧鈴取消，剩下 %i 分 %i 秒</string>
+  <string id="13213">%2.0f分</string>
+  <string id="13214">%2.0f秒</string>
   <string id="13249">掃瞄 RAR 檔案中的字幕</string>
   <string id="13250">瀏覽字幕…</string>
   <string id="13251">移動該項目</string>
@@ -1219,7 +1242,7 @@
   <string id="15103">* 所有藝人</string>
   <string id="15104">* 所有歌曲</string>
   <string id="15105">* 所有類別</string>
-  <string id="15107">暫存中…</string>
+  <string id="15107">緩衝中…</string>
   <string id="15108">按鍵音效</string>
   <string id="15109">佈景主題預設</string>
   <string id="15111">- 主題</string>
@@ -1878,6 +1901,7 @@
   <string id="22000">在啟動時更新資料庫</string>
   <string id="22001">總是在幕後更新資料庫</string>
   <string id="22002">- DNS 的尾碼</string>
+  <string id="22003">%2.3f秒</string>
   <string id="22004">延遲：%2.3fs</string>
   <string id="22005">提前：%2.3fs</string>
   <string id="22006">字幕位移</string>
@@ -1921,7 +1945,7 @@
   <string id="23049">只不到 Teletext</string>
   <string id="23050">開啟電傳視訊</string>
   <string id="23051">片段 %i</string>
-  <string id="23052">暫存 %i 位元組</string>
+  <string id="23052">已緩衝 %i Bytes</string>
   <string id="23053">正在停止</string>
   <string id="23054">正在執行</string>
   <string id="23100">外部播放機啟動</string>
