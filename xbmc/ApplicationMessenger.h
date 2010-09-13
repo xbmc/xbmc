@@ -49,6 +49,7 @@ class CGUIDialog;
 #define TMSG_PLAYLISTPLAYER_CLEAR 214
 #define TMSG_PLAYLISTPLAYER_SHUFFLE   215
 #define TMSG_PLAYLISTPLAYER_GET_ITEMS 216
+#define TMSG_PLAYLISTPLAYER_PLAY_SONG_ID 217
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -117,6 +118,7 @@ public:
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
+  void PlayListPlayerPlaySongId(int songId);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayListPlayerAdd(int playlist, const CFileItem &item);

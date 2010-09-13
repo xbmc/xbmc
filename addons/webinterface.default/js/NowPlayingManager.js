@@ -35,7 +35,7 @@ NowPlayingManager.prototype = {
 			$(window).bind('click', jQuery.proxy(this.hidePlaylist, this));
 		},
 		updateState: function() {
-			jQuery.post(JSON_RPC, '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?UpdateState', '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result) {
 					if (data.result.audio) {
 						this.activePlayer = 'Audio';
@@ -166,8 +166,8 @@ NowPlayingManager.prototype = {
 				data: '{"jsonrpc": "2.0", "method": "AudioPlaylist.GetItems", "params": { "fields": ["title", "album", "artist", "duration"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
 					if (data && data.result && data.result.items && data.result.total > 0) {
-						//Compare new playlist to active playlist, only redraw if a change is noticed.
-						if (this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.current))) {
+						//Compare new playlist to active playlist, only redraw if a change is noticed
+						if (!this.activePlaylistItem || this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.current))) {
 							var ul = $('<ul>');
 							var activeItem;
 							$.each($(data.result.items), jQuery.proxy(function(i, item) {
@@ -179,16 +179,17 @@ NowPlayingManager.prototype = {
 									li.addClass('activeItem');
 								}
 								if (i == (data.result.current + 1)) {
-									$('#nextTrack').html(code);
-									$('#nextTrack').show();
+									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
 							if (data.result.total > 1) {
+								if (activeItem && data.result.total-1 == activeItem.seq) {
+									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
+								}
 								$('#nextText').show();
-								$('#nowPlayingPlaylist').html('')
-														.append(ul);
+								$('#nowPlayingPlaylist').html('').append(ul);
 							} else {
 								$('#nextText').hide();
 								$('#nowPlayingPlaylist').hide();
@@ -226,12 +227,10 @@ NowPlayingManager.prototype = {
 			});
 		},
 		stopAudioPlaylistUpdate: function() {
-			this.stopRefreshTime();
 			this.autoRefreshAudioPlaylist = false;
 			this.updateActiveItemDurationRunOnce = false;
 		},
 		stopVideoPlaylistUpdate: function() {
-			this.stopRefreshTime();
 			this.autoRefreshVideoPlaylist = false;
 			this.updateActiveItemDurationRunOnce = false;
 		},
@@ -255,10 +254,10 @@ NowPlayingManager.prototype = {
 							this.refreshVideoData();
 						}
 					}
-					if (this.autoRefreshData && !this.activeItemTimer) {
-						this.activeItemTimer = 1;
-						setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
-					}
+				}
+				if (this.autoRefreshData && !this.activeItemTimer) {
+					this.activeItemTimer = 1;
+					setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
 				}
 			}, this), 'json');
 		},
@@ -409,15 +408,17 @@ NowPlayingManager.prototype = {
 									li.addClass('activeItem');
 								}
 								if (i == (data.result.current + 1)) {
-									$('#nextTrack').html(code);
+									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
 							if (data.result.total > 1) {
 								$('#nextText').show();
-								$('#nowPlayingPlaylist').html('')
-														.append(ul);
+								if (activeItem && data.result.total == activeItem.seq) {
+									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
+								}
+								$('#nowPlayingPlaylist').html('').append(ul);
 							} else {
 								$('#nextText').hide();
 								$('#nowPlayingPlaylist').hide();
