@@ -62,11 +62,12 @@ public:
   float GetAspectRatio() const;
 
 protected:
-  void ChooseBestResolution(float fps);
-  RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, int& weight);
-  void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
-  void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void ManageDisplay();
+  void       ChooseBestResolution(float fps);
+  RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
+  float      RefreshWeight(float refresh, float fps);
+  void       CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
+  void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
+  void       ManageDisplay();
 
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;

@@ -50,25 +50,47 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 #if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
-    int weight;
+    const float maxWeight = 0.0021;
+    float       weight;
+
     m_resolution = FindClosestResolution(fps, 1.0, m_resolution, weight);
 
-    if (MathUtils::round_int(fps) == 24 && weight >= 20) //not a very good match, try a 2:3 cadence instead
+    if (weight >= maxWeight) //not a very good match, try a 2:3 cadence instead
     {
-      CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f, trying 2:3 cadence",
-          g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps);
+      CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f (weight: %.3f), trying 2:3 cadence",
+          g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps, weight);
 
-      m_resolution = FindClosestResolution(fps, 2.0, m_resolution, weight);
+      m_resolution = FindClosestResolution(fps, 2.5, m_resolution, weight);
+
+      if (weight >= maxWeight) //2:3 cadence not a good match, choosing highest refreshrate
+      {
+        CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f with 2:3 cadence (weight: %.3f), choosing highest",
+            g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps, weight);
+
+        for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+        {
+          if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
+           && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
+           && g_settings.m_ResInfo[i].iHeight      == g_settings.m_ResInfo[m_resolution].iHeight
+           && g_settings.m_ResInfo[i].iScreen      == g_settings.m_ResInfo[m_resolution].iScreen)
+          {
+            m_resolution = (RESOLUTION)i;
+          }
+        }
+        weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
+      }
     }
 
-    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
+        g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, weight);
   }
   else
 #endif
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
+    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)",
+        m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
 }
 
-RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, int& weight)
+RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
   // Find closest refresh rate
   for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
@@ -76,26 +98,38 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
     RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
 
+    //discard resolutions that are not the same width and height
+    //or have a too low refreshrate
     if (info.iWidth  != curr.iWidth
     ||  info.iHeight != curr.iHeight
     ||  info.iScreen != curr.iScreen
-    ||  (multiplier > 1.0 && info.fRefreshRate < fps - 0.01f))
+    ||  info.fRefreshRate < (fps * multiplier / 1.001) - 0.001)
       continue;
 
-    // we assume just a tad lower fps since this calculation will discard
-    // any refreshrate that is smaller by just the smallest amount
-    int c_weight = (int)(1000 * fmodf(curr.fRefreshRate * multiplier, fps - 0.01f) / (curr.fRefreshRate * multiplier));
-    int i_weight = (int)(1000 * fmodf(info.fRefreshRate * multiplier, fps - 0.01f) / (info.fRefreshRate * multiplier));
+    int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fps * multiplier) * 1000.0);
+    int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fps * multiplier) * 1000.0);
 
-    // Closer the better, prefer higher refresh rate if the same
+    // Closer the better, prefer lower refresh rate if the same
     if ((i_weight <  c_weight)
-    ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
+    ||  (i_weight == c_weight && info.fRefreshRate < curr.fRefreshRate))
       current = (RESOLUTION)i;
   }
 
-  weight = (int)(1000 * fmodf(g_settings.m_ResInfo[current].fRefreshRate * multiplier, fps - 0.01f) /
-                             (g_settings.m_ResInfo[current].fRefreshRate * multiplier));
+  weight = RefreshWeight(g_settings.m_ResInfo[current].fRefreshRate * multiplier, fps);
+
   return current;
+}
+
+//distance of refresh to the closest multiple of fps (multiple is 1 or higher), as a multiplier of fps
+float CBaseRenderer::RefreshWeight(float refresh, float fps)
+{
+  float div   = refresh / fps;
+  int   round = MathUtils::round_int(div);
+
+  if (round < 1)
+    return (fps - refresh) / fps;
+  else
+    return fabs(div / round - 1.0);
 }
 
 RESOLUTION CBaseRenderer::GetResolution() const
