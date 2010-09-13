@@ -281,19 +281,22 @@ NowPlayingManager.prototype = {
 				this.showPauseButton();
 			}
 			if (this.activePlaylistItem) {
-				var imgPath = DEFAULT_ALBUM_COVER;
-				if (this.activePlaylistItem.thumbnail) {
-					imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+				if (this.activePlaylistItem != this.lastPlaylistItem) {
+					this.lastPlaylistItem = this.activePlaylistItem;
+					var imgPath = DEFAULT_ALBUM_COVER;
+					if (this.activePlaylistItem.thumbnail) {
+						imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+					}
+					$('#audioCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.album + ' cover art">');
+					$('#audioTrackTitle').html('<span title="' + this.activePlaylistItem.title + '">' + this.activePlaylistItem.title + '</span>');
+					if (this.activePlaylistItem.album) {
+						$('#audioAlbumTitle').html('<span title="' + this.activePlaylistItem.album + '">' + this.activePlaylistItem.album + '</span>')
+											 .show();
+					} else {
+						$('#audioAlbumTitle').hide();
+					}
+					$('#audioArtistTitle').html(this.activePlaylistItem.artist);
 				}
-				$('#audioCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.album + ' cover art">');
-				$('#audioTrackTitle').html('<span title="' + this.activePlaylistItem.title + '">' + this.activePlaylistItem.title + '</span>');
-				if (this.activePlaylistItem.album) {
-					$('#audioAlbumTitle').html('<span title="' + this.activePlaylistItem.album + '">' + this.activePlaylistItem.album + '</span>')
-										 .show();
-				} else {
-					$('#audioAlbumTitle').hide();
-				}
-				$('#audioArtistTitle').html(this.activePlaylistItem.artist);
 				$('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.activePlaylistItem.duration));
 				var buttonWidth = $('#progressBar .progressIndicator').width();
 				var progressBarWidth = (this.trackBaseTime / this.activePlaylistItem.duration) * 100;
