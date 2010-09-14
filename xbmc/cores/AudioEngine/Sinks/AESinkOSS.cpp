@@ -83,16 +83,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
         break;
     }
 
-#ifdef SNDCTL_ENGINEINFO
-  oss_audioinfo ai;
-  ai.dev = -1;
-  if (ioctl(m_fd, SNDCTL_ENGINEINFO, &ai) == -1)
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get engine info");
-  else
-  {
-    /* FIXME: select format based on info */
-  }
-#endif
 
 #ifdef SNDCTL_DSP_COOKEDMODE
   int oss_cooked = 1;
@@ -100,18 +90,43 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set cooked mode");
 #endif
 
-  int oss_fmt;
-  switch(format.m_dataFormat)
+  int format_mask;
+  if (ioctl(m_fd, SNDCTL_DSP_GETFMTS, &format_mask) == -1)
   {
-    case AE_FMT_U8   : oss_fmt = AFMT_U8    ; break;
-    case AE_FMT_S8   : oss_fmt = AFMT_S8    ; break;
-    case AE_FMT_S16NE: oss_fmt = AFMT_S16_NE; break;
-    case AE_FMT_S16BE: oss_fmt = AFMT_S16_BE; break;
-    case AE_FMT_S16LE: oss_fmt = AFMT_S16_LE; break;
-    case AE_FMT_RAW  : oss_fmt = AFMT_AC3   ; break;
-    default:
+    close(m_fd);
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to get supported formats");
+    return false;
+  }
+
+  int oss_fmt = 0;
+       if ((format.m_dataFormat == AE_FMT_S16NE) && (format_mask & AFMT_S16_NE)) oss_fmt = AFMT_S16_NE;
+  else if ((format.m_dataFormat == AE_FMT_S16BE) && (format_mask & AFMT_S16_BE)) oss_fmt = AFMT_S16_BE;
+  else if ((format.m_dataFormat == AE_FMT_S16LE) && (format_mask & AFMT_S16_LE)) oss_fmt = AFMT_S16_LE;
+  else if ((format.m_dataFormat == AE_FMT_S8   ) && (format_mask & AFMT_S8    )) oss_fmt = AFMT_S8;
+  else if ((format.m_dataFormat == AE_FMT_U8   ) && (format_mask & AFMT_U8    )) oss_fmt = AFMT_U8;
+  else if ((format.m_dataFormat == AE_FMT_RAW  ) && (format_mask & AFMT_AC3   )) oss_fmt = AFMT_AC3;
+  else if (format.m_dataFormat == AE_FMT_RAW)
+  {
+    close(m_fd);
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to find a suitable RAW output format");
+    return false; 
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "CAESinkOSS::Initialize - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
+
+    /* fallback to the best supported format */
+         if (format_mask & AFMT_S16_NE) {oss_fmt = AFMT_S16_NE; format.m_dataFormat = AE_FMT_S16NE; }
+    else if (format_mask & AFMT_S16_BE) {oss_fmt = AFMT_S16_BE; format.m_dataFormat = AE_FMT_S16BE; }
+    else if (format_mask & AFMT_S16_LE) {oss_fmt = AFMT_S16_LE; format.m_dataFormat = AE_FMT_S16LE; }
+    else if (format_mask & AFMT_S8    ) {oss_fmt = AFMT_S8;     format.m_dataFormat = AE_FMT_S8; }
+    else if (format_mask & AFMT_U8    ) {oss_fmt = AFMT_U8;     format.m_dataFormat = AE_FMT_U8; }
+    else
+    {
+      CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to find a suitable native output format, will try to use AE_FMT_S16NE anyway");
+      oss_fmt             = AFMT_S16_NE;
       format.m_dataFormat = AE_FMT_S16NE;
-      oss_fmt = AFMT_S16_NE;
+    }
   }
 
   if (ioctl(m_fd, SNDCTL_DSP_SETFMT, &oss_fmt) == -1)
