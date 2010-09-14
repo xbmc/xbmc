@@ -12,10 +12,10 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="pt">Interface Web da Team XBMC. (Interface Web padrão do XBMC)</summary>
-	<summary lang="nl">Team XBMC Webinterface. (XBMC's standaard webinterface)</summary>
+    <summary lang="nl">Team XBMC Webinterface. (XBMC's standaard webinterface)</summary>
     <description lang="en">Default web interface for XBMC; Designed for devices of all resolutions</description>
+    <description lang="nl">Standaard XBMC-webinterface; geschikt voor alle resoluties</description>
     <description lang="pt">Interface Web padrão do XBMC. Desenhada para dispositivos com qualquer resolução</description>
-	<description lang="nl">Standaard XBMC-webinterface; geschikt voor alle resoluties</description>
     <platform>all</platform>
   </extension>
 </addon>
