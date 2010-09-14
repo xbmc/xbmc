@@ -62,21 +62,40 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 
       m_resolution = FindClosestResolution(fps, 2.5, m_resolution, weight);
 
-      if (weight >= maxWeight) //2:3 cadence not a good match, choosing highest refreshrate
+      if (weight >= maxWeight) //2:3 cadence not a good match
       {
-        CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f with 2:3 cadence (weight: %.3f), choosing highest",
+        CLog::Log(LOGDEBUG, "Resolution %s (%d) not a very good match for fps %.3f with 2:3 cadence (weight: %.3f), choosing 60 hertz",
             g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps, weight);
 
+        //get the resolution with the refreshrate closest to 60 hertz
         for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
         {
-          if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
-           && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
-           && g_settings.m_ResInfo[i].iHeight      == g_settings.m_ResInfo[m_resolution].iHeight
-           && g_settings.m_ResInfo[i].iScreen      == g_settings.m_ResInfo[m_resolution].iScreen)
+          if (MathUtils::round_int(g_settings.m_ResInfo[i].fRefreshRate) == 60
+           && g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
+           && g_settings.m_ResInfo[i].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
+           && g_settings.m_ResInfo[i].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
           {
-            m_resolution = (RESOLUTION)i;
+            if (fabs(g_settings.m_ResInfo[i].fRefreshRate - 60.0) < fabs(g_settings.m_ResInfo[m_resolution].fRefreshRate - 60.0))
+              m_resolution = (RESOLUTION)i;
           }
         }
+
+        //60 hertz not available, get the highest refreshrate
+        if (MathUtils::round_int(g_settings.m_ResInfo[m_resolution].fRefreshRate) != 60)
+        {
+          CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
+          for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+          {
+            if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
+             && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
+             && g_settings.m_ResInfo[i].iHeight      == g_settings.m_ResInfo[m_resolution].iHeight
+             && g_settings.m_ResInfo[i].iScreen      == g_settings.m_ResInfo[m_resolution].iScreen)
+            {
+              m_resolution = (RESOLUTION)i;
+            }
+          }
+        }
+
         weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
       }
     }
