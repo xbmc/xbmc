@@ -302,6 +302,9 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     list<CSoftAEStream*>::iterator itt;
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
+
+    /* we dont want to re-open the sink for this */
+    return;
   }
   else if (setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
   {

@@ -80,8 +80,18 @@ void CSoftAEStream::InitializeRemap()
   {
     /* re-init the remapper */
     m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
-    /* drop data that was already remapped */
-    InternalFlush();
+
+    /*
+    if the layout has changed we need to drop data that was already remapped
+    CSoftAE always uses StdChLayouts so its safe to just compare the pointers
+    */
+    if (AE.GetChannelLayout() != m_aeChannelLayout)
+    {
+      InternalFlush();
+      m_aeChannelLayout = AE.GetChannelLayout();
+      m_aeChannelCount  = AE.GetChannelCount();
+      m_aePacketSamples = SOFTAE_FRAMES * m_aeChannelCount;
+    }
   }
 }
 
@@ -128,9 +138,10 @@ void CSoftAEStream::Initialize()
   m_bytesPerSample  = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
   m_bytesPerFrame   = m_bytesPerSample * m_initChannelCount;
 
+  m_aeChannelLayout = AE.GetChannelLayout();
   m_aeChannelCount  = AE.GetChannelCount();
   m_aePacketSamples = SOFTAE_FRAMES * m_aeChannelCount;
-  m_waterLevel      = AE.GetSampleRate() >> 3;
+  m_waterLevel      = SOFTAE_FRAMES * 8;
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
@@ -262,8 +273,7 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
   CSingleLock lock(m_critSection);
   if (!m_valid || size == 0 || data == NULL || m_draining) return 0;  
 
-  /* only buffer up to 2x the water level */
-  if (m_framesBuffered >= m_waterLevel << 1)
+  if (m_framesBuffered >= m_waterLevel)
     return 0;
 
   uint8_t *ptr = (uint8_t*)data;

@@ -115,6 +115,7 @@ private:
   unsigned int       m_frameBufferSize;
   unsigned int       m_bytesPerSample;
   unsigned int       m_bytesPerFrame;
+  enum AEChannel    *m_aeChannelLayout;
   unsigned int       m_aeChannelCount;
   unsigned int       m_aePacketSamples;
   SRC_STATE         *m_ssrc;
