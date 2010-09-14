@@ -36,7 +36,11 @@
 #include "AERemap.h"
 #include "AEUtil.h"
 
+#include "SoftAE.h"
 #include "SoftAESound.h"
+
+/* typecast the global AE to CSoftAE */
+#define AE (*((CSoftAE*)&AE))
 
 typedef struct
 {

@@ -68,13 +68,8 @@ public:
   /* free's sounds that have expired */
   virtual void GarbageCollect() = 0;
 
-  /* these are for the streams so they can provide compatible data */
-  virtual unsigned int   GetSampleRate   () = 0;
-  virtual unsigned int   GetChannelCount () = 0;
-  virtual AEChLayout     GetChannelLayout() = 0;
-  virtual unsigned int   GetFrames       () = 0;
-  virtual unsigned int   GetFrameSize    () = 0;
-  virtual IAEPacketizer *GetPacketizer   () = 0;
+  virtual unsigned int   GetSampleRate() = 0;
+  virtual IAEPacketizer *GetPacketizer() = 0;
 
   /* vizualization callback register function */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;

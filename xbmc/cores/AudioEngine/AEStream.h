@@ -36,6 +36,8 @@ class IAEStream
 public:
   typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
 
+
+  /* this should NEVER be called directly, use AE.GetStream */
   IAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) {}
   virtual ~IAEStream() {}
 
