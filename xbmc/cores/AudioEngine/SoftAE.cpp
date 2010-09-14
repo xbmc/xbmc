@@ -92,9 +92,10 @@ CSoftAE::~CSoftAE()
   if (sink->Initialize(tmpFormat, tmpDevice)) \
   { \
     desiredFormat = tmpFormat; \
-    device = tmpDevice; \
+    device        = tmpDevice; \
     return sink; \
   } \
+  sink->Deinitialize(); \
   delete sink; \
 }
 
