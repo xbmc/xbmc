@@ -41,7 +41,9 @@
 #include "AEUtil.h"
 #include "AESink.h"
 #include "Packetizers/AEPacketizerIEC958.h"
+
 #include "Sinks/AESinkALSA.h"
+#include "Sinks/AESinkOSS.h"
 
 #ifdef __SSE__
 #include <xmmintrin.h>
@@ -81,6 +83,44 @@ CSoftAE::~CSoftAE()
     delete s;
   }
 }
+
+#define TRY_SINK(SINK) \
+{ \
+  tmpFormat = desiredFormat; \
+  tmpDevice = device; \
+  IAESink *sink = new CAESink ##SINK();\
+  if (sink->Initialize(tmpFormat, tmpDevice)) \
+  { \
+    desiredFormat = tmpFormat; \
+    device = tmpDevice; \
+    return sink; \
+  } \
+  delete sink; \
+}
+
+IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, CStdString driver, CStdString &device)
+{
+  AEAudioFormat tmpFormat;
+  CStdString    tmpDevice;
+
+  if (driver == "ALSA")
+  {
+    TRY_SINK(ALSA);
+    return NULL;
+  }
+  else
+  if (driver == "OSS")
+  {
+    TRY_SINK(OSS);
+    return NULL;
+  }
+
+  TRY_SINK(ALSA);
+  TRY_SINK(OSS );
+  return NULL;
+}
+
+#undef TRY_SINK
 
 bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
 {
@@ -144,6 +184,15 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       device = g_guiSettings.GetString("audiooutput.customdevice");
   }
 
+  CStdString driver;
+  int pos = device.find_first_of(':');
+  if (pos > 0)
+  {
+    driver = device.substr(0, pos);
+    driver = driver.ToUpper();
+    device = device.substr(pos + 1, device.length() - pos - 1);
+  }
+
   if (device.IsEmpty()) device = "default";
 
   /* setup the desired format */
@@ -155,7 +204,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
-    return true;
+  {
+    if (driver.IsEmpty() || m_sink->GetName() == driver)
+      return true;
+  }
 
   /* let the thread know we have re-opened the sink */
   m_reOpened = true;
@@ -178,8 +230,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
 
   /* create the new sink */
-  m_sink = new CAESinkALSA();
-  if (!m_sink->Initialize(desiredFormat, device))
+  m_sink = GetSink(desiredFormat, driver, device);
+  if (!m_sink)
   {
     /* we failed, set the data format to defaults so the thread does not block */
     desiredFormat.m_dataFormat    = AE_FMT_FLOAT;

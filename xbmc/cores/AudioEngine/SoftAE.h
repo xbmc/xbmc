@@ -100,6 +100,8 @@ private:
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   void Deinitialize();
 
+  IAESink *GetSink(AEAudioFormat &desiredFormat, CStdString driver, CStdString &device);
+
   unsigned int m_delayFrames;
   void DelayFrames();
 

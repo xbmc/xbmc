@@ -108,7 +108,7 @@ inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdStri
 bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
 {
   format.m_channelCount = GetChannelCount(format);
-  memcpy(&m_initFormat, &format, sizeof(AEAudioFormat));
+  m_initFormat = format;
 
   if (format.m_channelCount == 0)
   {
@@ -208,7 +208,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   if (snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
   {
     /* if the chosen format is not supported, try each one in decending order */
-    CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
+    CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
     for(enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
       if (i == AE_FMT_RAW || i == AE_FMT_MAX) continue;
