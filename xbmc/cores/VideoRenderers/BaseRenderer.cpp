@@ -134,7 +134,7 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
       current = (RESOLUTION)i;
   }
 
-  weight = RefreshWeight(g_settings.m_ResInfo[current].fRefreshRate * multiplier, fps);
+  weight = RefreshWeight(g_settings.m_ResInfo[current].fRefreshRate, fps * multiplier);
 
   return current;
 }
