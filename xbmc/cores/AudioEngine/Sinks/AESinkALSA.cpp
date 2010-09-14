@@ -155,7 +155,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   snd_pcm_nonblock(m_pcm, 1);
   snd_pcm_prepare (m_pcm);
 
-  m_format  = format;
+  m_format = format;
   return true;
 }
 

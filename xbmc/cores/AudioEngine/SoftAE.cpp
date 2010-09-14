@@ -88,9 +88,19 @@ CSoftAE::~CSoftAE()
 { \
   tmpFormat = desiredFormat; \
   tmpDevice = device; \
-  IAESink *sink = new CAESink ##SINK();\
+  sink      = new CAESink ##SINK(); \
   if (sink->Initialize(tmpFormat, tmpDevice)) \
   { \
+    if (passthrough) \
+    { \
+      m_passthroughDevice = device; \
+      m_passthroughDriver = sink->GetName(); \
+    } \
+    else \
+    { \
+      m_device = device; \
+      m_driver = sink->GetName(); \
+    } \
     desiredFormat = tmpFormat; \
     device        = tmpDevice; \
     return sink; \
@@ -99,25 +109,20 @@ CSoftAE::~CSoftAE()
   delete sink; \
 }
 
-IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, CStdString driver, CStdString &device)
+IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough)
 {
-  AEAudioFormat tmpFormat;
-  CStdString    tmpDevice;
+  CStdString device = passthrough ? m_passthroughDevice : m_device;
+  CStdString driver = passthrough ? m_passthroughDriver : m_driver;
 
-  if (driver == "ALSA")
-  {
-    TRY_SINK(ALSA);
-    return NULL;
-  }
-  else
-  if (driver == "OSS")
-  {
-    TRY_SINK(OSS);
-    return NULL;
-  }
+  AEAudioFormat  tmpFormat;
+  CStdString     tmpDevice;
+  IAESink       *sink;
 
-  TRY_SINK(ALSA);
-  TRY_SINK(OSS );
+       if (driver == "ALSA") {TRY_SINK(ALSA);}
+  else if (driver == "OSS" ) {TRY_SINK(OSS );}
+
+  if (driver != "ALSA") {TRY_SINK(ALSA);}
+  if (driver != "OSS" ) {TRY_SINK(OSS );}
   return NULL;
 }
 
@@ -167,34 +172,17 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   if (!m_rawPassthrough && !m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
 
-  CStdString device;
+  CStdString device, driver;
   if (m_passthrough || m_rawPassthrough)
   {
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
-    if (device == "custom")
-      device = g_guiSettings.GetString("audiooutput.custompassthrough");
-
-    // some platforms (osx) do not have a separate passthroughdevice setting.
-    if (device.IsEmpty())
-      device = g_guiSettings.GetString("audiooutput.audiodevice");
+    device = m_passthroughDevice;
+    driver = m_passthroughDriver;
   }
   else
   {
-    device = g_guiSettings.GetString("audiooutput.audiodevice");
-    if (device.Equals("custom"))
-      device = g_guiSettings.GetString("audiooutput.customdevice");
+    device = m_device;
+    driver = m_driver;
   }
-
-  CStdString driver;
-  int pos = device.find_first_of(':');
-  if (pos > 0)
-  {
-    driver = device.substr(0, pos);
-    driver = driver.ToUpper();
-    device = device.substr(pos + 1, device.length() - pos - 1);
-  }
-
-  if (device.IsEmpty()) device = "default";
 
   /* setup the desired format */
   AEAudioFormat desiredFormat;
@@ -231,7 +219,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
 
   /* create the new sink */
-  m_sink = GetSink(desiredFormat, driver, device);
+  m_sink = GetSink(desiredFormat, m_passthrough || m_rawPassthrough);
   if (!m_sink)
   {
     /* we failed, set the data format to defaults so the thread does not block */
@@ -301,7 +289,50 @@ bool CSoftAE::Initialize()
   /* get the current volume level */
   m_volume     = g_settings.m_fVolumeLevel;
   m_packetizer = new CAEPacketizerIEC958();
+  OnSettingsChange();
+
   return OpenSink();
+}
+
+void CSoftAE::OnSettingsChange()
+{
+  m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  if (m_passthroughDevice == "custom")
+    m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
+
+  if (m_passthroughDevice.IsEmpty())
+    m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
+
+  m_device = g_guiSettings.GetString("audiooutput.audiodevice");
+  if (m_device == "custom")
+    m_device = g_guiSettings.GetString("audiooutput.customdevice");
+
+  int pos;
+
+  pos = m_passthroughDevice.find_first_of(':');
+  if (pos > 0)
+  {
+    m_passthroughDriver = m_passthroughDevice.substr(0, pos);
+    m_passthroughDriver = m_passthroughDriver.ToUpper();
+    m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
+  }
+  else
+    m_passthroughDriver.Empty();
+
+  pos = m_device.find_first_of(':');
+  if (pos > 0)
+  {
+    m_driver = m_device.substr(0, pos);
+    m_driver = m_driver.ToUpper();
+    m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
+  }
+  else
+    m_driver.Empty();
+
+  if (m_device           .IsEmpty()) m_device            = "default";
+  if (m_passthroughDevice.IsEmpty()) m_passthroughDevice = "default";
+
+  OpenSink();
 }
 
 void CSoftAE::Deinitialize()
