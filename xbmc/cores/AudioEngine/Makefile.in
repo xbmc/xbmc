@@ -7,10 +7,11 @@ SRCS = \
 	SoftAE.cpp \
 	SoftAEStream.cpp \
 	SoftAESound.cpp \
+	Sinks/AESinkALSA.cpp \
+	Sinks/AESinkOSS4.cpp \
 	AEConvert.cpp \
 	AERemap.cpp \
 	AEUtil.cpp \
-	Sinks/AESinkALSA.cpp \
 	Packetizers/AEPacketizerIEC958.cpp \
 	PostProc/AEPPAnimationFade.cpp
 
