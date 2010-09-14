@@ -97,10 +97,13 @@ if ! which lh > /dev/null ; then
 	if [ ! -d live-build ]; then
 		if [ ! -f live-build.tar ]; then
 			git clone git://live.debian.net/git/live-build.git 
+			pushd live-build > /dev/null
                         git checkout -b 2.0_a22-1 debian/2.0_a22-1
-			if [ "$?" -ne "0" ]; then
+                        if [ "$?" -ne "0" ]; then
 				exit 1
 			fi
+                        popd > /dev/null
+
 
 			# Saved, to avoid cloning for multiple builds
 			tar cf live-build.tar live-build  > /dev/null 2>&1
