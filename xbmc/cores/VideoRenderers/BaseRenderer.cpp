@@ -75,36 +75,23 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps)
     if (override.fallback)
       continue; //fallbacks don't matter here
 
-    if ((override.fps > 0.0f && fabs(override.fps - fps) > 0.01) ||
-        (override.fps == 0.0f && (fps < override.fpsmin || fps > override.fpsmax)))
+    if (fps < override.fpsmin || fps > override.fpsmax)
       continue; //fps doesn't match
 
-    for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+    for (size_t j = (int)RES_CUSTOM; j < g_settings.m_ResInfo.size(); j++)
     {
-      if (g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-       && g_settings.m_ResInfo[i].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-       && g_settings.m_ResInfo[i].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+      if (g_settings.m_ResInfo[j].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
+       && g_settings.m_ResInfo[j].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
+       && g_settings.m_ResInfo[j].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
       {
-        if ((override.refresh >  0.0f && fabs(override.refresh - g_settings.m_ResInfo[i].fRefreshRate) <= 0.01) ||
-            (override.refresh == 0.0f && g_settings.m_ResInfo[i].fRefreshRate <= override.refreshmax &&
-             g_settings.m_ResInfo[i].fRefreshRate >= override.refreshmin))
+        if (g_settings.m_ResInfo[j].fRefreshRate <= override.refreshmax
+         && g_settings.m_ResInfo[j].fRefreshRate >= override.refreshmin)
         {
-          m_resolution = (RESOLUTION)i;
+          m_resolution = (RESOLUTION)j;
 
-          CStdString overrideStr;
-
-          if (override.fps > 0.0f)
-            overrideStr.AppendFormat("fps:%.3f ");
-          else
-            overrideStr.AppendFormat("fpsmin:%.3f fpsmax:%.3f ", override.fpsmin, override.fpsmax);
-
-          if (override.refresh > 0.0f)
-            overrideStr.AppendFormat("refresh:%.3f", override.refresh);
-          else
-            overrideStr.AppendFormat("refreshmin:%.3f refreshmax:%.3f", override.refreshmin, override.refreshmax);
-
-          CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from override of fps %.3f (%s)",
-                    g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps, overrideStr.c_str());
+          CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from override of fps %.3f (fpsmin:%.3f fpsmax:%.3f refreshmin:%.3f refreshmax:%.3f)",
+                    g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps,
+                    override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
 
           return true; //fps and refresh match with this override, use this resolution
         }
@@ -120,27 +107,20 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps)
     if (!override.fallback)
       continue; //only consider fallbacks here
 
-    for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+    for (size_t j = (int)RES_CUSTOM; j < g_settings.m_ResInfo.size(); j++)
     {
-      if (g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-       && g_settings.m_ResInfo[i].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-       && g_settings.m_ResInfo[i].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+      if (g_settings.m_ResInfo[j].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
+       && g_settings.m_ResInfo[j].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
+       && g_settings.m_ResInfo[j].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
       {
-        if ((override.refresh >  0.0f && fabs(override.refresh - g_settings.m_ResInfo[i].fRefreshRate) <= 0.01) ||
-            (override.refresh == 0.0f && g_settings.m_ResInfo[i].fRefreshRate <= override.refreshmax &&
-             g_settings.m_ResInfo[i].fRefreshRate >= override.refreshmin))
+        if (g_settings.m_ResInfo[j].fRefreshRate <= override.refreshmax
+         && g_settings.m_ResInfo[j].fRefreshRate >= override.refreshmin)
         {
-          m_resolution = (RESOLUTION)i;
+          m_resolution = (RESOLUTION)j;
 
-          CStdString overrideStr;
-
-          if (override.refresh > 0.0f)
-            overrideStr.AppendFormat("refresh:%.3f", override.refresh);
-          else
-            overrideStr.AppendFormat("refreshmin:%.3f refreshmax:%.3f", override.refreshmin, override.refreshmax);
-
-          CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from fallback (%s)",
-                    g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, overrideStr.c_str());
+          CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from fallback (refreshmin:%.3f refreshmax:%.3f)",
+                    g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution,
+                    override.refreshmin, override.refreshmax);
 
           return true; //refresh matches with this fallback, use this resolution
         }

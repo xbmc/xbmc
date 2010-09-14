@@ -430,7 +430,10 @@ bool CAdvancedSettings::Load()
 
         float fps;
         if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
-          override.fps = fps;
+        {
+          override.fpsmin = fps - 0.01;
+          override.fpsmax = fps + 0.01;
+        }
 
         float fpsmin, fpsmax;
         if (XMLUtils::GetFloat(pRefreshOverride, "fpsmin", fpsmin) &&
@@ -442,7 +445,10 @@ bool CAdvancedSettings::Load()
 
         float refresh;
         if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
-          override.refresh = refresh;
+        {
+          override.refreshmin = refresh - 0.01;
+          override.refreshmax = refresh + 0.01;
+        }
 
         float refreshmin, refreshmax;
         if (XMLUtils::GetFloat(pRefreshOverride, "refreshmin", refreshmin) &&
@@ -452,16 +458,14 @@ bool CAdvancedSettings::Load()
           override.refreshmax = refreshmax;
         }
 
-        bool fpsCorrect     = (override.fps >  0.0f && override.fpsmin == 0.0f && override.fpsmax == 0.0f) ||
-                              (override.fps == 0.0f && override.fpsmin >  0.0f && override.fpsmax >= override.fpsmin);
-        bool refreshCorrect = (override.refresh >  0.0f && override.refreshmin == 0.0f && override.refreshmax == 0.0f) ||
-                              (override.refresh == 0.0f && override.refreshmin >  0.0f && override.refreshmax >= override.refreshmin);
+        bool fpsCorrect     = (override.fpsmin > 0.0f && override.fpsmax >= override.fpsmin);
+        bool refreshCorrect = (override.refreshmin > 0.0f && override.refreshmax >= override.refreshmin);
 
         if (fpsCorrect && refreshCorrect)
           m_videoAdjustRefreshOverrides.push_back(override);
         else
-          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate override, fps:%f fpsmin:%f fpsmax:%f refresh:%f refreshmin:%f refreshmax:%f",
-              override.fps, override.fpsmin, override.fpsmax, override.refresh, override.refreshmin, override.refreshmax);
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate override, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
+              override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
 
         pRefreshOverride = pRefreshOverride->NextSiblingElement("override");
       }
@@ -474,7 +478,10 @@ bool CAdvancedSettings::Load()
 
         float refresh;
         if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
-          fallback.refresh = refresh;
+        {
+          fallback.refreshmin = refresh - 0.01;
+          fallback.refreshmax = refresh + 0.01;
+        }
 
         float refreshmin, refreshmax;
         if (XMLUtils::GetFloat(pRefreshFallback, "refreshmin", refreshmin) &&
@@ -484,14 +491,11 @@ bool CAdvancedSettings::Load()
           fallback.refreshmax = refreshmax;
         }
 
-        bool refreshCorrect = (fallback.refresh >  0.0f && fallback.refreshmin == 0.0f && fallback.refreshmax == 0.0f) ||
-                              (fallback.refresh == 0.0f && fallback.refreshmin >  0.0f && fallback.refreshmax >= fallback.refreshmin);
-
-        if (refreshCorrect)
+        if (fallback.refreshmin > 0.0f && fallback.refreshmax >= fallback.refreshmin)
           m_videoAdjustRefreshOverrides.push_back(fallback);
         else
-          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate fallback, fps:%f fpsmin:%f fpsmax:%f refresh:%f refreshmin:%f refreshmax:%f",
-              fallback.fps, fallback.fpsmin, fallback.fpsmax, fallback.refresh, fallback.refreshmin, fallback.refreshmax);
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate fallback, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
+              fallback.fpsmin, fallback.fpsmax, fallback.refreshmin, fallback.refreshmax);
 
         pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
       }

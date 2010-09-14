@@ -48,11 +48,9 @@ struct TVShowRegexp
 
 struct RefreshOverride
 {
-  float fps;
   float fpsmin;
   float fpsmax;
 
-  float refresh;
   float refreshmin;
   float refreshmax;
 
