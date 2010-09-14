@@ -52,7 +52,7 @@ public:
   virtual ~CSoftAE();
 
   virtual bool  Initialize      ();
-  virtual void  OnSettingsChange() { OpenSink(); };
+  virtual void  OnSettingsChange();
 
   virtual void  Run();
   virtual void  Stop();
@@ -100,7 +100,7 @@ private:
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   void Deinitialize();
 
-  IAESink *GetSink(AEAudioFormat &desiredFormat, CStdString driver, CStdString &device);
+  IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough);
 
   unsigned int m_delayFrames;
   void DelayFrames();
@@ -108,6 +108,9 @@ private:
   /* this is called by streams on dtor, you should never need to call this directly */
   friend class CSoftAEStream;
   void RemoveStream(IAEStream *stream);
+
+  CStdString m_device, m_driver;
+  CStdString m_passthroughDevice, m_passthroughDriver;
 
   /* internal vars */
   bool m_running, m_reOpened;
