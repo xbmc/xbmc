@@ -71,6 +71,10 @@ public:
   unsigned int      GetSampleRate()   { return m_format.m_sampleRate;   }
   enum AEDataFormat GetDataFormat()   { return m_format.m_dataFormat;   }
   bool              IsRaw()           { return m_initDataFormat == AE_FMT_RAW; }
+
+  /* for dynamic sample rate changes (smoothvideo) */
+  double GetResampleRatio();
+  void   SetResampleRatio(double ratio);
 protected:
   friend class CAE;
   CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
