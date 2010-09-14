@@ -83,13 +83,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
         break;
     }
 
-
-#ifdef SNDCTL_DSP_COOKEDMODE
-  int oss_cooked = 1;
-  if (ioctl(m_fd, SNDCTL_DSP_COOKEDMODE, &oss_cooked) == -1)
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set cooked mode");
-#endif
-
   int format_mask;
   if (ioctl(m_fd, SNDCTL_DSP_GETFMTS, &format_mask) == -1)
   {
@@ -98,6 +91,9 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
+#ifdef SNDCTL_DSP_COOKEDMODE
+  bool useCooked = true;
+#endif
   int oss_fmt = 0;
        if ((format.m_dataFormat == AE_FMT_S16NE) && (format_mask & AFMT_S16_NE)) oss_fmt = AFMT_S16_NE;
   else if ((format.m_dataFormat == AE_FMT_S16BE) && (format_mask & AFMT_S16_BE)) oss_fmt = AFMT_S16_BE;
@@ -126,8 +122,21 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
       CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to find a suitable native output format, will try to use AE_FMT_S16NE anyway");
       oss_fmt             = AFMT_S16_NE;
       format.m_dataFormat = AE_FMT_S16NE;
+#ifdef SNDCTL_DSP_COOKEDMODE
+      /* dont use cooked if we did not find a native format, OSS might be able to convert */
+      useCooked           = false;
+#endif
     }
   }
+
+#ifdef SNDCTL_DSP_COOKEDMODE
+  if (useCooked)
+  {
+    int oss_cooked = 1;
+    if (ioctl(m_fd, SNDCTL_DSP_COOKEDMODE, &oss_cooked) == -1)
+      CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set cooked mode");
+  }
+#endif
 
   if (ioctl(m_fd, SNDCTL_DSP_SETFMT, &oss_fmt) == -1)
   {
@@ -136,13 +145,15 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
-  /* try to set the channel mask */
-  ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask);
+  /* try to set the channel mask, not all cards support this */
+  if (ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask) == -1)
+    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the channel mask");
 
   /* get the configured channel mask */
   if (ioctl(m_fd, SNDCTL_DSP_GETCHANNELMASK, &mask) == -1)
   {
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to get the channel mask, assuming stereo");
+    /* as not all cards support this so we just assume stereo if it fails */
+    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get the channel mask, assuming stereo");
     mask = DSP_BIND_FRONT;
   }
 
