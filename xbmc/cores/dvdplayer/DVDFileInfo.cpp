@@ -197,7 +197,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
         } while (abort_index--);
 
-        if (iDecoderState & VC_PICTURE)
+        if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
             int nWidth = g_advancedSettings.m_thumbSize;
