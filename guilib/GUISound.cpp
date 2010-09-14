@@ -25,7 +25,7 @@
 #include "FileSystem/File.h"
 #include "utils/log.h"
 
-#include "cores/AudioEngine/AE.h"
+#include "cores/AudioEngine/AEFactory.h"
 
 CGUISound::CGUISound() :
   m_sound(NULL)

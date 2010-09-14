@@ -20,7 +20,7 @@
  */
 
 #include "AEPPAnimationFade.h"
-#include "AE.h"
+#include "AEFactory.h"
 
 CAEPPAnimationFade::CAEPPAnimationFade(float from, float to, unsigned int duration) :
   m_stream  (NULL),
@@ -35,7 +35,7 @@ CAEPPAnimationFade::~CAEPPAnimationFade()
 {
 }
 
-bool CAEPPAnimationFade::Initialize(CAEStream *stream)
+bool CAEPPAnimationFade::Initialize(IAEStream *stream)
 {
   if (m_stream != stream)
     DeInitialize();

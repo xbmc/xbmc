@@ -27,7 +27,7 @@
 #include "Settings.h"
 #include "WindowingFactory.h"
 #include "Util.h"
-#include "cores/AudioEngine/AE.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/AEConvert.h"
 #ifdef _LINUX
 #include <dlfcn.h>

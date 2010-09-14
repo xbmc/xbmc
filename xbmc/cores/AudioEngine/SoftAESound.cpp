@@ -30,11 +30,13 @@
 
 #include "libavutil/avutil.h" /* DECLARE_ALIGNED */
 
-#include "AE.h"
+#include "AEFactory.h"
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AEUtil.h"
+
+#include "SoftAESound.h"
 
 typedef struct
 {
@@ -42,8 +44,9 @@ typedef struct
   uint32_t chunksize;
 } WAVE_CHUNK;
 
-CAESound::CAESound(const CStdString &filename) :
-  m_refcount    (0    ),
+CSoftAESound::CSoftAESound(const CStdString &filename) :
+  IAESound(filename),
+  m_refcount    (1    ),
   m_valid       (false),
   m_channelCount(0    ),
   m_samples     (NULL ),
@@ -54,12 +57,12 @@ CAESound::CAESound(const CStdString &filename) :
   m_filename = filename;
 }
 
-CAESound::~CAESound()
+CSoftAESound::~CSoftAESound()
 {
   DeInitialize();
 }
 
-void CAESound::DeInitialize()
+void CSoftAESound::DeInitialize()
 {
   CSingleLock lock(m_critSection);
   _aligned_free(m_samples);
@@ -70,11 +73,11 @@ void CAESound::DeInitialize()
   if (m_valid)
   {
     m_valid = false;
-    CLog::Log(LOGINFO, "CAESound::Deinitialize - Sound Unloaded: %s", m_filename.c_str());
+    CLog::Log(LOGINFO, "CSoftAESound::Deinitialize - Sound Unloaded: %s", m_filename.c_str());
   }
 }
 
-bool CAESound::Initialize()
+bool CSoftAESound::Initialize()
 {
   DeInitialize();
   CSingleLock lock(m_critSection);
@@ -82,14 +85,14 @@ bool CAESound::Initialize()
   XFILE::IFile *file = XFILE::CFileFactory::CreateLoader(m_filename);
   if (!file)
   {
-    CLog::Log(LOGERROR, "CAESound::Initialize - Failed to create loader: %s", m_filename.c_str());
+    CLog::Log(LOGERROR, "CSoftAESound::Initialize - Failed to create loader: %s", m_filename.c_str());
     return false;
   }
 
   struct __stat64 st;
   if (!file->Open(m_filename) || file->Stat(&st) < 0)
   {
-    CLog::Log(LOGERROR, "CAESound::Initialize - Failed to stat file: %s", m_filename.c_str());
+    CLog::Log(LOGERROR, "CSoftAESound::Initialize - Failed to stat file: %s", m_filename.c_str());
     delete file;
     return false;
   }
@@ -116,7 +119,7 @@ bool CAESound::Initialize()
       /* sanity check on the chunksize */
       if (chunk.chunksize > st.st_size - 8)
       {
-        CLog::Log(LOGERROR, "CAESound::Initialize - Corrupt WAV header: %s", m_filename.c_str());
+        CLog::Log(LOGERROR, "CSoftAESound::Initialize - Corrupt WAV header: %s", m_filename.c_str());
         file->Close();
         delete file;
         return false;
@@ -170,7 +173,7 @@ bool CAESound::Initialize()
          case 16: convertFn = CAEConvert::ToFloat(AE_FMT_S16LE); break;
          case 32: convertFn = CAEConvert::ToFloat(AE_FMT_S32LE); break;
          default:
-           CLog::Log(LOGERROR, "CAESound::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
+           CLog::Log(LOGERROR, "CSoftAESound::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
            file->Close();
            delete file;
            return false;
@@ -184,7 +187,7 @@ bool CAESound::Initialize()
          DECLARE_ALIGNED(16, uint8_t, raw[bytesPerSample]);
          if (file->Read(raw, bytesPerSample) != bytesPerSample)
          {
-           CLog::Log(LOGERROR, "CAESound::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
+           CLog::Log(LOGERROR, "CSoftAESound::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
            _aligned_free(m_samples);
            m_samples = NULL;
            file->Close();
@@ -205,7 +208,7 @@ bool CAESound::Initialize()
        CAERemap remap;
        if (!remap.Initialize(layouts[m_channelCount - 1], AE.GetChannelLayout(), false))
        {
-         CLog::Log(LOGERROR, "CAESound::Initialize - Failed to initialize the remapper: %s", m_filename.c_str());
+         CLog::Log(LOGERROR, "CSoftAESound::Initialize - Failed to initialize the remapper: %s", m_filename.c_str());
          _aligned_free(m_samples);
          m_samples = NULL;
 
@@ -230,7 +233,7 @@ bool CAESound::Initialize()
 
   if (!isRIFF || !isWAVE || !isFMT || !isPCM || !isDATA || m_sampleCount == 0)
   {
-    CLog::Log(LOGERROR, "CAESound::Initialize - Invalid, or un-supported WAV file: %s", m_filename.c_str());
+    CLog::Log(LOGERROR, "CSoftAESound::Initialize - Invalid, or un-supported WAV file: %s", m_filename.c_str());
     file->Close();
     delete file;
     return false;
@@ -252,7 +255,7 @@ bool CAESound::Initialize()
     data.src_ratio     = (double)AE.GetSampleRate() / (double)sampleRate;
     if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, m_channelCount) != 0)
     {
-      CLog::Log(LOGERROR, "CAESound::Initialize - Failed to resample audio: %s", m_filename.c_str());
+      CLog::Log(LOGERROR, "CSoftAESound::Initialize - Failed to resample audio: %s", m_filename.c_str());
       _aligned_free(data.data_out);
       _aligned_free(m_samples);
       m_samples = NULL;
@@ -266,30 +269,30 @@ bool CAESound::Initialize()
     m_sampleCount = data.output_frames_gen * m_channelCount;
   }
 
-  CLog::Log(LOGINFO, "CAESound::Initialize - Sound Loaded: %s", m_filename.c_str());
+  CLog::Log(LOGINFO, "CSoftAESound::Initialize - Sound Loaded: %s", m_filename.c_str());
   m_valid = true;
   return true;
 }
 
-float* CAESound::GetSamples()
+float* CSoftAESound::GetSamples()
 {
   if (!m_valid || m_samples == NULL) return NULL;
   return m_samples;
 }
 
-bool CAESound::IsPlaying()
+bool CSoftAESound::IsPlaying()
 {
   if (!m_valid) return false;
   return AE.IsPlaying(this);
 }
 
-void CAESound::Play()
+void CSoftAESound::Play()
 {
   if (!m_valid) return;
   AE.PlaySound(this);
 }
 
-void CAESound::Stop()
+void CSoftAESound::Stop()
 {
   if (!m_valid) return;
   AE.StopSound(this);

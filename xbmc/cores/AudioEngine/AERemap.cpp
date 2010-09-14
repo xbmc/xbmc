@@ -21,7 +21,7 @@
 #include <math.h>
 
 #include "AERemap.h"
-#include "AE.h"
+#include "AEFactory.h"
 #include "AEUtil.h"
 #include "utils/log.h"
 #include "GUISettings.h"

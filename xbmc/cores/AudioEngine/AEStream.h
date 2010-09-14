@@ -20,16 +20,8 @@
  *
  */
 
-#include <samplerate.h>
-#include <list>
-
-#include "utils/CriticalSection.h"
-
-#include "AE.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEPostProc.h"
+#include <stdint.h>
 
 /* options to pass to GetStream */
 enum {
@@ -39,105 +31,51 @@ enum {
 };
 
 class IAEPostProc;
-class CAEStream
+class IAEStream
 {
 public:
-  typedef void (AECBFunc)(CAEStream*stream, void *arg, unsigned int samples);
+  typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
 
-  void Initialize();
-  void Destroy();
-  void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
-  void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
+  IAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) {}
+  virtual ~IAEStream() {}
 
-  unsigned int GetFrameSize() {return m_format.m_frameSize;}
-  unsigned int AddData(void *data, unsigned int size);
-  uint8_t* GetFrame();
-  float GetDelay();
+  virtual void Initialize() = 0;
+  virtual void Destroy() = 0;
+  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer < 50% full */
+  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer has been drained */
 
-  bool IsPaused     () { return m_paused;      }
-  bool IsDraining   () { return m_draining;    }
-  bool IsFreeOnDrain() { return m_freeOnDrain; }
+  virtual unsigned int GetFrameSize() = 0;
+  virtual unsigned int AddData(void *data, unsigned int size) = 0;
+  virtual uint8_t* GetFrame() = 0;
+  virtual float GetDelay() = 0;
 
-  void Pause   () {m_paused = true; }
-  void Resume  () {m_paused = false;}
-  void Drain   ();
-  void Flush   ();
+  virtual bool IsPaused     () = 0;
+  virtual bool IsDraining   () = 0;
+  virtual bool IsFreeOnDrain() = 0;
+  virtual bool IsDestroyed  () = 0;
 
-  float GetVolume    ()             { return m_volume;   }
-  float GetReplayGain()             { return m_rgain ;   }
-  void  SetVolume    (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
-  void  SetReplayGain(float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
-  void  SetDynamicRangeCompression(int drc);
+  virtual void Pause   () = 0;
+  virtual void Resume  () = 0;
+  virtual void Drain   () = 0;
+  virtual void Flush   () = 0;
 
-  void AppendPostProc (IAEPostProc *pp);
-  void PrependPostProc(IAEPostProc *pp);
-  void RemovePostProc (IAEPostProc *pp);
+  virtual float GetVolume    () = 0;
+  virtual float GetReplayGain() = 0;
+  virtual void  SetVolume    (float volume) = 0;
+  virtual void  SetReplayGain(float factor) = 0;
 
-  unsigned int      GetFrameSamples() { return m_format.m_frameSamples; }
-  unsigned int      GetChannelCount() { return m_format.m_channelCount; }
-  unsigned int      GetSampleRate()   { return m_format.m_sampleRate;   }
-  enum AEDataFormat GetDataFormat()   { return m_format.m_dataFormat;   }
-  bool              IsRaw()           { return m_initDataFormat == AE_FMT_RAW; }
+  virtual void AppendPostProc (IAEPostProc *pp) = 0;
+  virtual void PrependPostProc(IAEPostProc *pp) = 0;
+  virtual void RemovePostProc (IAEPostProc *pp) = 0;
+
+  virtual unsigned int      GetFrameSamples() = 0;
+  virtual unsigned int      GetChannelCount() = 0;
+  virtual unsigned int      GetSampleRate  () = 0;
+  virtual enum AEDataFormat GetDataFormat  () = 0;
+  virtual bool              IsRaw          () = 0;
 
   /* for dynamic sample rate changes (smoothvideo) */
-  double GetResampleRatio();
-  void   SetResampleRatio(double ratio);
-protected:
-  friend class CAE;
-  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
-  ~CAEStream();
-private:
-  void InternalFlush();
-
-  CCriticalSection  m_critSection;
-  enum AEDataFormat m_initDataFormat;
-  unsigned int      m_initSampleRate;
-  unsigned int      m_initChannelCount;
-  AEChLayout        m_initChannelLayout;
-  
-  typedef struct
-  {
-    unsigned int  samples;
-    uint8_t      *data;
-  } PPacket;
-
-  AEAudioFormat m_format;
-
-  bool                    m_forceResample; /* true if we are to force resample even when the rates match */
-  bool                    m_resample;      /* true if the audio needs to be resampled  */
-  bool                    m_convert;       /* true if the bitspersample needs converting */
-  float                  *m_convertBuffer; /* buffer for converted data */
-  bool                    m_valid;         /* true if the stream is valid */
-  bool                    m_delete;        /* true if CAE is to free this object */
-  CAERemap                m_remap;         /* the remapper */
-  float                   m_volume;        /* the volume level */
-  float                   m_rgain;         /* replay gain level */
-  bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
-  std::list<IAEPostProc*> m_postProc;      /* post processing objects */
-  bool                    m_ownsPostProc;  /* true if the stream should free post-proc filters */
-  unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
-
-  CAEConvert::AEConvertToFn m_convertFn;
-
-  uint8_t           *m_frameBuffer;
-  unsigned int       m_frameBufferSize;
-  unsigned int       m_bytesPerSample;
-  unsigned int       m_bytesPerFrame;
-  unsigned int       m_aeChannelCount;
-  unsigned int       m_aePacketSamples;
-  SRC_STATE         *m_ssrc;
-  SRC_DATA           m_ssrcData;
-  unsigned int       m_framesBuffered;
-  std::list<PPacket> m_outBuffer;
-  unsigned int       ProcessFrameBuffer();
-  PPacket            m_newPacket;
-  PPacket            m_packet;
-  uint8_t           *m_packetPos;
-  bool               m_paused;
-  bool               m_draining;
-
-  /* callback hook for more data */
-  AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;
-  void         *m_cbDataArg , *m_cbDrainArg;
+  virtual double GetResampleRatio() = 0;
+  virtual void   SetResampleRatio(double ratio) = 0;
 };
 

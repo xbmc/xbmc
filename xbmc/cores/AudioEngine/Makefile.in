@@ -3,11 +3,12 @@ ARCH=@ARCH@
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I../dvdplayer/Codecs/ffmpeg -I..
 
 SRCS = \
-	AE.cpp \
+	AEFactory.cpp \
+	SoftAE.cpp \
+	SoftAEStream.cpp \
+	SoftAESound.cpp \
 	AEConvert.cpp \
 	AERemap.cpp \
-	AEStream.cpp \
-	AESound.cpp \
 	AEUtil.cpp \
 	Sinks/AESinkALSA.cpp \
 	Packetizers/AEPacketizerIEC958.cpp \

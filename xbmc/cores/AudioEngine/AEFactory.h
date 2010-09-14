@@ -20,24 +20,17 @@
  *
  */
 
-#include "StdString.h"
+#include "AE.h"
 
-class IAESound
+class IAE;
+class CAEFactory
 {
 public:
-  IAESound(const CStdString &filename) {}
-  virtual ~IAESound() {}
+	static IAE &GetAE();
 
-  virtual void DeInitialize() = 0;
-  virtual bool Initialize() = 0;
-
-  virtual void Play() = 0;
-  virtual void Stop() = 0;
-  virtual bool IsPlaying() = 0;
-
-  virtual void         SetVolume(float volume) = 0;
-  virtual float        GetVolume() = 0;
-  virtual unsigned int GetSampleCount() = 0;
-  virtual float*       GetSamples    () = 0;
+private:
+	static IAE *m_ae;
 };
+
+static IAE &AE = CAEFactory::GetAE();
 

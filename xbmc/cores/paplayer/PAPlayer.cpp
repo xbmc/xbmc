@@ -116,7 +116,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   return PlayNextStream();
 }
 
-void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int needed)
+void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int needed)
 {
   StreamInfo *si  = (StreamInfo*)arg;
   PAPlayer   *pap = si->m_player;
@@ -197,7 +197,7 @@ void PAPlayer::StaticStreamOnData(CAEStream *sender, void *arg, unsigned int nee
   }
 }
 
-void PAPlayer::StaticStreamOnDrain(CAEStream *sender, void *arg, unsigned int unused)
+void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused)
 {
   StreamInfo *si = (StreamInfo*)arg;
   PAPlayer *player = si->m_player;

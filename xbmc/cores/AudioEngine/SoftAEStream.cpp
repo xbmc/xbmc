@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
@@ -28,12 +29,16 @@
   #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
 #endif
 
-#include "AEStream.h"
+#include "AEFactory.h"
 #include "AEUtil.h"
+
+#include "SoftAE.h"
+#include "SoftAEStream.h"
 
 using namespace std;
 
-CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options):
+CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
+  IAEStream(dataFormat, sampleRate, channelCount, channelLayout, options),
   m_convertBuffer  (NULL ),
   m_valid          (false),
   m_delete         (false),
@@ -63,7 +68,7 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   Initialize();
 }
 
-void CAEStream::Initialize()
+void CSoftAEStream::Initialize()
 {
   CSingleLock lock(m_critSection);
   if (m_valid)
@@ -86,9 +91,9 @@ void CAEStream::Initialize()
   if (m_initDataFormat == AE_FMT_RAW)
   {
     /* we are raw, which means we need to work in the output format */
-    useDataFormat       = AE.GetSinkDataFormat();
-    m_initChannelLayout = AE.GetSinkChLayout  ();
-    m_initChannelCount  = AE.GetSinkChCount   ();
+    useDataFormat       = ((CSoftAE*)&AE)->GetSinkDataFormat();
+    m_initChannelLayout = ((CSoftAE*)&AE)->GetSinkChLayout  ();
+    m_initChannelCount  = ((CSoftAE*)&AE)->GetSinkChCount   ();
   }
   else
   {
@@ -142,7 +147,7 @@ void CAEStream::Initialize()
   if (m_convert)
   {
     /* get the conversion function and allocate a buffer for the data */
-    CLog::Log(LOGDEBUG, "CAEStream::CAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_initDataFormat));
+    CLog::Log(LOGDEBUG, "CSoftAEStream::CSoftAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_initDataFormat));
     m_convertFn = CAEConvert::ToFloat(m_initDataFormat);
     if (m_convertFn) m_convertBuffer = (float*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
     else             m_valid         = false;
@@ -172,7 +177,7 @@ void CAEStream::Initialize()
       IAEPostProc *pp = *pitt;
       if (!pp->Initialize(this))
       {
-        CLog::Log(LOGERROR, "CAEStream::CAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
+        CLog::Log(LOGERROR, "CSoftAEStream::CSoftAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
         pitt = m_postProc.erase(pitt);
         continue;
       }
@@ -184,16 +189,16 @@ void CAEStream::Initialize()
   m_valid = true;
 }
 
-void CAEStream::Destroy()
+void CSoftAEStream::Destroy()
 {
   CSingleLock lock(m_critSection);
   m_valid  = false;
   m_delete = true;
 }
 
-CAEStream::~CAEStream()
+CSoftAEStream::~CSoftAEStream()
 {
-  AE.RemoveStream(this);
+  ((CSoftAE*)&AE)->RemoveStream(this);
   CSingleLock lock(m_critSection);
 
   /* de-init/free post-proc objects */
@@ -218,24 +223,24 @@ CAEStream::~CAEStream()
   }
 
   _aligned_free(m_newPacket.data);
-  CLog::Log(LOGDEBUG, "CAEStream::~CAEStream - Destructed");
+  CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 
-void CAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
+void CSoftAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
   CSingleLock lock(m_critSection);
   m_cbDataFunc = cbFunc;
   m_cbDataArg  = arg;
 }
 
-void CAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
+void CSoftAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
   CSingleLock lock(m_critSection);
   m_cbDrainFunc = cbFunc;
   m_cbDrainArg  = arg;
 }
 
-unsigned int CAEStream::AddData(void *data, unsigned int size)
+unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
 {
   CSingleLock lock(m_critSection);
   if (!m_valid || size == 0 || data == NULL || m_draining) return 0;  
@@ -268,7 +273,7 @@ unsigned int CAEStream::AddData(void *data, unsigned int size)
   return ptr - (uint8_t*)data;
 }
 
-unsigned int CAEStream::ProcessFrameBuffer()
+unsigned int CSoftAEStream::ProcessFrameBuffer()
 {
   uint8_t     *data;
   unsigned int frames, consumed;
@@ -352,7 +357,7 @@ unsigned int CAEStream::ProcessFrameBuffer()
   return consumed;
 }
 
-uint8_t* CAEStream::GetFrame()
+uint8_t* CSoftAEStream::GetFrame()
 {
   CSingleLock lock(m_critSection);
   if (m_delete) return NULL;
@@ -433,7 +438,7 @@ uint8_t* CAEStream::GetFrame()
   return ret;
 }
 
-float CAEStream::GetDelay()
+float CSoftAEStream::GetDelay()
 {
   CSingleLock lock(m_critSection);
   if (m_delete) return 0.0f;
@@ -443,19 +448,19 @@ float CAEStream::GetDelay()
   return AE.GetDelay() + (frames / AE.GetSampleRate());
 }
 
-void CAEStream::Drain()
+void CSoftAEStream::Drain()
 {
   CSingleLock lock(m_critSection);
   m_draining = true;
 }
 
-void CAEStream::Flush()
+void CSoftAEStream::Flush()
 {
   CSingleLock lock(m_critSection);
   InternalFlush();
 }
 
-void CAEStream::InternalFlush()
+void CSoftAEStream::InternalFlush()
 {
   /* reset the resampler */
   if (m_resample) {
@@ -491,12 +496,7 @@ void CAEStream::InternalFlush()
   m_framesBuffered  = 0;
 }
 
-void CAEStream::SetDynamicRangeCompression(int drc)
-{
-  //FIXME
-}
-
-void CAEStream::AppendPostProc(IAEPostProc *pp)
+void CSoftAEStream::AppendPostProc(IAEPostProc *pp)
 {
   if (pp->Initialize(this))
   {
@@ -507,7 +507,7 @@ void CAEStream::AppendPostProc(IAEPostProc *pp)
     CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
 }
 
-void CAEStream::PrependPostProc(IAEPostProc *pp)
+void CSoftAEStream::PrependPostProc(IAEPostProc *pp)
 {
   if (pp->Initialize(this))
   {
@@ -518,13 +518,13 @@ void CAEStream::PrependPostProc(IAEPostProc *pp)
     CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
 }
 
-void CAEStream::RemovePostProc(IAEPostProc *pp)
+void CSoftAEStream::RemovePostProc(IAEPostProc *pp)
 {
   CSingleLock lock(m_critSection);
   m_postProc.remove(pp);
 }
 
-double CAEStream::GetResampleRatio()
+double CSoftAEStream::GetResampleRatio()
 {
   if (!m_resample)
     return 1.0f;
@@ -533,7 +533,7 @@ double CAEStream::GetResampleRatio()
   return m_ssrcData.src_ratio;
 }
 
-void CAEStream::SetResampleRatio(double ratio)
+void CSoftAEStream::SetResampleRatio(double ratio)
 {
   if (!m_resample)
     return;

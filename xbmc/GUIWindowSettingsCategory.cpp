@@ -64,7 +64,7 @@
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #include "GUIFontManager.h"
-#include "cores/AudioEngine/AE.h"
+#include "cores/AudioEngine/AEFactory.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
@@ -1852,7 +1852,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
            strSetting.Equals("audiooutput.ac3passthrough") ||
            strSetting.Equals("audiooutput.dtspassthrough"))
   {
-    g_application.RestartAE();
+    AE.OnSettingsChange();
   }
 
   UpdateSettings();
