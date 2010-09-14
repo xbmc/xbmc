@@ -286,6 +286,8 @@
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
 
+#define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

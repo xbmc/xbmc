@@ -2351,7 +2351,17 @@ bool CApplication::OnAction(const CAction &action)
   if (action.IsMouse())
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
 
-  // in normal case
+  // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
+  // playing or ACTION_PLAYER_PLAY if we are not playing.
+  if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
+  {
+    if (IsPlaying())
+      return OnAction(CAction(ACTION_PAUSE));
+    else
+      return OnAction(CAction(ACTION_PLAYER_PLAY));
+  }
+
+// in normal case
   // just pass the action to the current window and let it handle it
   if (g_windowManager.OnAction(action))
   {

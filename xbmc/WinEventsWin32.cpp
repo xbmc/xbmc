@@ -479,8 +479,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       switch (GET_APPCOMMAND_LPARAM(lParam))
       {
         case APPCOMMAND_MEDIA_PLAY:
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
           newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+          break;
+        case APPCOMMAND_MEDIA_PLAY_PAUSE:
+          newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
           break;
         case APPCOMMAND_MEDIA_PAUSE:
           newEvent.appcommand.action = ACTION_PAUSE;
