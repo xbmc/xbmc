@@ -8,7 +8,7 @@ SRCS = \
 	SoftAEStream.cpp \
 	SoftAESound.cpp \
 	Sinks/AESinkALSA.cpp \
-	Sinks/AESinkOSS4.cpp \
+	Sinks/AESinkOSS.cpp \
 	AEConvert.cpp \
 	AERemap.cpp \
 	AEUtil.cpp \
