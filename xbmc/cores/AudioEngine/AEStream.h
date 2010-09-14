@@ -31,6 +31,13 @@
 #include "AERemap.h"
 #include "AEPostProc.h"
 
+/* options to pass to GetStream */
+enum {
+  AESTREAM_FREE_ON_DRAIN  = 0x01, /* auto free the stream when it has drained */
+  AESTREAM_OWNS_POST_PROC = 0x02, /* free postproc filters on stream free */
+  AESTREAM_FORCE_RESAMPLE = 0x04  /* force resample even if rates match */
+};
+
 class IAEPostProc;
 class CAEStream
 {
@@ -77,7 +84,7 @@ public:
   void   SetResampleRatio(double ratio);
 protected:
   friend class CAE;
-  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc);
+  CAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
   ~CAEStream();
 private:
   void InternalFlush();
@@ -96,6 +103,7 @@ private:
 
   AEAudioFormat m_format;
 
+  bool                    m_forceResample; /* true if we are to force resample even when the rates match */
   bool                    m_resample;      /* true if the audio needs to be resampled  */
   bool                    m_convert;       /* true if the bitspersample needs converting */
   float                  *m_convertBuffer; /* buffer for converted data */
