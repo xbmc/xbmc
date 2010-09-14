@@ -154,7 +154,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, g_Windowing.DefaultD3DUsage(), m_fvf, g_Windowing.DefaultD3DPool()))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, g_Windowing.DefaultD3DUsage() | D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
