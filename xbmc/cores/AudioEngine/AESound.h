@@ -25,6 +25,7 @@
 class IAESound
 {
 public:
+  /* this should NEVER be called directly, use AE.GetSound */
   IAESound(const CStdString &filename) {}
   virtual ~IAESound() {}
 

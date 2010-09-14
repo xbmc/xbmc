@@ -35,6 +35,9 @@
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
+/* typecast the global AE to CSoftAE */
+#define AE (*((CSoftAE*)&AE))
+
 using namespace std;
 
 CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
