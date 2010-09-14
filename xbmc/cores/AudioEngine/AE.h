@@ -47,7 +47,7 @@ public:
   virtual ~IAE() {}
 
   virtual bool  Initialize      () = 0;
-  virtual void  OnSettingsChange() = 0;
+  virtual void  OnSettingsChange(CStdString setting) = 0;
 
   virtual void  Run      () = 0;
   virtual void  Stop     () = 0;

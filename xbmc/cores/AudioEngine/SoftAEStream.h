@@ -39,6 +39,7 @@ public:
   virtual ~CSoftAEStream();
 
   virtual void Initialize();
+  virtual void InitializeRemap();
   virtual void Destroy();
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */

@@ -66,10 +66,7 @@ bool PAPlayer::CloseFile()
   CSingleLock lock(m_critSection);
 
   if (m_current)
-  {
     FreeStreamInfo(m_current);
-    m_current = NULL;
-  }
 
   while(!m_streams.empty())
   {
@@ -98,6 +95,10 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
   si->m_decoder.Destroy();
   if (si->m_stream)
     si->m_stream->Destroy();
+
+  if (m_current == si)
+    m_current = NULL;
+
   delete si;
 }
 
@@ -199,10 +200,6 @@ void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int un
   StreamInfo *si = (StreamInfo*)arg;
   PAPlayer *player = si->m_player;
   CSingleLock lock(player->m_critSection);
-
-  if (si == player->m_current)
-    player->m_current = NULL;
-
   player->FreeStreamInfo(si);
 }
 
@@ -306,7 +303,8 @@ bool PAPlayer::PlayNextStream()
   if (m_current)
   {
     m_finishing.push_back(m_current);
-    if (!crossFade) {
+    if (!crossFade)
+    {
       if (!m_current->m_stream->IsDraining())
         m_current->m_stream->Drain();
       if (m_fastOpen) m_current->m_stream->Flush();

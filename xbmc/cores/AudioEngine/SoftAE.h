@@ -52,7 +52,7 @@ public:
   virtual ~CSoftAE();
 
   virtual bool  Initialize      ();
-  virtual void  OnSettingsChange();
+  virtual void  OnSettingsChange(CStdString setting);
 
   virtual void  Run();
   virtual void  Stop();

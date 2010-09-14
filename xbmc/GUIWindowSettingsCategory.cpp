@@ -1871,7 +1871,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
 
-    AE.OnSettingsChange();
+    AE.OnSettingsChange(strSetting);
   }
 
   UpdateSettings();
