@@ -174,6 +174,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
+    if (!item->GetCachedFanart().IsEmpty())
+      object["fanart"] = item->GetCachedFanart().c_str();
 
     const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 
