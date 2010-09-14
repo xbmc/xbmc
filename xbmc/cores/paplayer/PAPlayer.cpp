@@ -248,8 +248,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     sampleRate,
     channels,
     NULL, /* FIXME: channelLayout */
-    true, /* free on drain */
-    true  /* owns post-proc filters */
+    AESTREAM_FREE_ON_DRAIN | AESTREAM_OWNS_POST_PROC
   );
 
   if (!si->m_stream)

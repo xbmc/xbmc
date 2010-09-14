@@ -287,7 +287,7 @@ void CAE::Stop()
   CSingleLock lock(m_runLock);
 }
 
-CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain/* = false */, bool ownsPostProc/* = false */)
+CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
 {
   CLog::Log(LOGINFO, "CAE::GetStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat),
@@ -301,14 +301,14 @@ CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate,
   if (dataFormat == AE_FMT_RAW)
   {
     OpenSink(sampleRate, true);
-    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
+    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
     m_streams.push_front(stream);
   }
   else
   {
     if (m_streams.size() == 0)
       OpenSink(sampleRate);
-    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, freeOnDrain, ownsPostProc);
+    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
     m_streams.push_back(stream);
   }
 

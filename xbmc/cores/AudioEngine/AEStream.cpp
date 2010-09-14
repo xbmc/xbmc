@@ -33,7 +33,7 @@
 
 using namespace std;
 
-CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, bool freeOnDrain, bool ownsPostProc):
+CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options):
   m_convertBuffer  (NULL ),
   m_valid          (false),
   m_delete         (false),
@@ -57,8 +57,9 @@ CAEStream::CAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsi
   m_initSampleRate    = sampleRate;
   m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
-  m_freeOnDrain       = freeOnDrain;
-  m_ownsPostProc      = ownsPostProc;
+  m_freeOnDrain       = options & AESTREAM_FREE_ON_DRAIN;
+  m_ownsPostProc      = options & AESTREAM_OWNS_POST_PROC;
+  m_forceResample     = options & AESTREAM_FORCE_RESAMPLE;
   Initialize();
 }
 
@@ -134,16 +135,8 @@ void CAEStream::Initialize()
   m_packet.data       = NULL;
 
   m_frameBuffer   = (uint8_t*)_aligned_malloc(m_format.m_frameSize, 16);
-  m_resample      = m_initSampleRate != AE.GetSampleRate() && m_initDataFormat != AE_FMT_RAW;
+  m_resample      = (m_forceResample || m_initSampleRate != AE.GetSampleRate()) && m_initDataFormat != AE_FMT_RAW;
   m_convert       = m_initDataFormat != AE_FMT_FLOAT       && m_initDataFormat != AE_FMT_RAW;
-
-  /* force resample if the rate is 0, as it is going to be dynamic */
-  unsigned int initialSR = m_initSampleRate;
-  if (m_initSampleRate == 0)
-  {
-    initialSR  = 48000;
-    m_resample = true;
-  }
 
   /* if we need to convert, set it up */
   if (m_convert)
@@ -166,7 +159,7 @@ void CAEStream::Initialize()
     m_ssrcData.input_frames  = m_format.m_frames;
     m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * 2 * sizeof(float), 16);
     m_ssrcData.output_frames = m_format.m_frames * 2;
-    m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)initialSR;
+    m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.end_of_input  = 0;
   }
 
