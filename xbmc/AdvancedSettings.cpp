@@ -419,6 +419,83 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+
+    TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
+    if (pAdjustRefreshrate)
+    {
+      TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
+      while (pRefreshOverride)
+      {
+        RefreshOverride override = {0};
+
+        float fps;
+        if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
+          override.fps = fps;
+
+        float fpsmin, fpsmax;
+        if (XMLUtils::GetFloat(pRefreshOverride, "fpsmin", fpsmin) &&
+            XMLUtils::GetFloat(pRefreshOverride, "fpsmax", fpsmax))
+        {
+          override.fpsmin = fpsmin;
+          override.fpsmax = fpsmax;
+        }
+
+        float refresh;
+        if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
+          override.refresh = refresh;
+
+        float refreshmin, refreshmax;
+        if (XMLUtils::GetFloat(pRefreshOverride, "refreshmin", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshOverride, "refreshmax", refreshmax))
+        {
+          override.refreshmin = refreshmin;
+          override.refreshmax = refreshmax;
+        }
+
+        bool fpsCorrect     = (override.fps >  0.0f && override.fpsmin == 0.0f && override.fpsmax == 0.0f) ||
+                              (override.fps == 0.0f && override.fpsmin >  0.0f && override.fpsmax >= override.fpsmin);
+        bool refreshCorrect = (override.refresh >  0.0f && override.refreshmin == 0.0f && override.refreshmax == 0.0f) ||
+                              (override.refresh == 0.0f && override.refreshmin >  0.0f && override.refreshmax >= override.refreshmin);
+
+        if (fpsCorrect && refreshCorrect)
+          m_videoAdjustRefreshOverrides.push_back(override);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate override, fps:%f fpsmin:%f fpsmax:%f refresh:%f refreshmin:%f refreshmax:%f",
+              override.fps, override.fpsmin, override.fpsmax, override.refresh, override.refreshmin, override.refreshmax);
+
+        pRefreshOverride = pRefreshOverride->NextSiblingElement("override");
+      }
+
+      TiXmlElement* pRefreshFallback = pAdjustRefreshrate->FirstChildElement("fallback");
+      while (pRefreshFallback)
+      {
+        RefreshOverride fallback = {0};
+        fallback.fallback = true;
+
+        float refresh;
+        if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
+          fallback.refresh = refresh;
+
+        float refreshmin, refreshmax;
+        if (XMLUtils::GetFloat(pRefreshFallback, "refreshmin", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshFallback, "refreshmax", refreshmax))
+        {
+          fallback.refreshmin = refreshmin;
+          fallback.refreshmax = refreshmax;
+        }
+
+        bool refreshCorrect = (fallback.refresh >  0.0f && fallback.refreshmin == 0.0f && fallback.refreshmax == 0.0f) ||
+                              (fallback.refresh == 0.0f && fallback.refreshmin >  0.0f && fallback.refreshmax >= fallback.refreshmin);
+
+        if (refreshCorrect)
+          m_videoAdjustRefreshOverrides.push_back(fallback);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate fallback, fps:%f fpsmin:%f fpsmax:%f refresh:%f refreshmin:%f refreshmax:%f",
+              fallback.fps, fallback.fpsmin, fallback.fpsmax, fallback.refresh, fallback.refreshmin, fallback.refreshmax);
+
+        pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
+      }
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

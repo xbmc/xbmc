@@ -46,6 +46,19 @@ struct TVShowRegexp
   }
 };
 
+struct RefreshOverride
+{
+  float fps;
+  float fpsmin;
+  float fpsmax;
+
+  float refresh;
+  float refreshmin;
+  float refreshmax;
+
+  bool  fallback;
+};
+
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings
@@ -109,6 +122,7 @@ class CAdvancedSettings
     float m_videoNonLinStretchRatio;
     bool  m_videoAllowLanczos3;
     bool  m_videoAllowMpeg4VDPAU;
+    std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
