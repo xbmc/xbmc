@@ -2,6 +2,13 @@ ARCH=@ARCH@
 
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I../dvdplayer/Codecs/ffmpeg -I..
 
+OSSLIBDIR=0
+-include /etc/oss.conf
+ifneq (0,${OSSLIBDIR})
+  INCLUDES+=-I$(OSSLIBDIR)/include
+  CXXFLAGS+=-DOSS4
+endif
+
 SRCS = \
 	AEFactory.cpp \
 	SoftAE.cpp \
