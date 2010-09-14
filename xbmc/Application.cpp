@@ -32,7 +32,7 @@
 #include "Picture.h"
 #include "TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
-#include "cores/AudioEngine/AE.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
 #ifdef HAS_LCD
@@ -4306,12 +4306,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (!m_screenSaver->ID().IsEmpty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
-}
-
-void CApplication::RestartAE()
-{
-  /* we just re-open the sink if we need to */
-  AE.OpenSink();
 }
 
 void CApplication::CheckShutdown()

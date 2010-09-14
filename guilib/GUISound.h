@@ -40,5 +40,5 @@ public:
 
 private:
   CStdString   m_file;
-  CAESound    *m_sound;
+  IAESound    *m_sound;
 };

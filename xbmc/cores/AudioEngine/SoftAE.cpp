@@ -35,7 +35,9 @@
   #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
 #endif
 
-#include "AE.h"
+#include "SoftAE.h"
+#include "SoftAESound.h"
+
 #include "AEUtil.h"
 #include "AESink.h"
 #include "Packetizers/AEPacketizerIEC958.h"
@@ -53,7 +55,7 @@
 
 using namespace std;
 
-CAE::CAE():
+CSoftAE::CSoftAE():
   m_running         (false),
   m_reOpened        (false),
   m_packetizer      (NULL ),
@@ -67,20 +69,20 @@ CAE::CAE():
 {
 }
 
-CAE::~CAE()
+CSoftAE::~CSoftAE()
 {
   Deinitialize();
 
   /* free the streams */
   while(!m_streams.empty())
   {
-    CAEStream *s = m_streams.front();
+    CSoftAEStream *s = m_streams.front();
     /* note: the stream will call RemoveStream via it's dtor */
     delete s;
   }
 }
 
-bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
+bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
 {
   /* lock the sink so the thread gets held up */
   CSingleLock sinkLock(m_critSectionSink);
@@ -104,12 +106,12 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
   }
 
   /* remove any deleted streams */
-  list<CAEStream*>::iterator itt;
+  list<CSoftAEStream*>::iterator itt;
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
-    if ((*itt)->m_delete)
+    if ((*itt)->IsDestroyed())
     {
-      CAEStream *stream = *itt;
+      CSoftAEStream *stream = *itt;
       itt = m_streams.erase(itt);
       delete stream;
     }
@@ -173,7 +175,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
   m_stdChLayout  = stdChLayout;
   m_chLayout     = CAEUtil::GetStdChLayout(stdChLayout);
   m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGDEBUG, "CAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
+  CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
 
   /* create the new sink */
   m_sink = new CAESinkALSA();
@@ -191,7 +193,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
   }
   else
   {
-    CLog::Log(LOGINFO, "CAE::Initialize - %s Initialized:", m_sink->GetName());
+    CLog::Log(LOGINFO, "CSoftAE::Initialize - %s Initialized:", m_sink->GetName());
     CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
     CLog::Log(LOGINFO, "  Sample Rate   : %d", desiredFormat.m_sampleRate);
     CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(desiredFormat.m_dataFormat));
@@ -222,7 +224,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
 
   /* re-init sounds */
   m_playing_sounds.clear();
-  map<const CStdString, CAESound*>::iterator sitt;
+  map<const CStdString, CSoftAESound*>::iterator sitt;
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
     sitt->second->Initialize();
 
@@ -241,7 +243,7 @@ bool CAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false 
   return m_sink != NULL;
 }
 
-bool CAE::Initialize()
+bool CSoftAE::Initialize()
 {
   /* get the current volume level */
   m_volume     = g_settings.m_fVolumeLevel;
@@ -249,7 +251,7 @@ bool CAE::Initialize()
   return OpenSink();
 }
 
-void CAE::Deinitialize()
+void CSoftAE::Deinitialize()
 {
   Stop();
 
@@ -269,7 +271,7 @@ void CAE::Deinitialize()
 }
 
 /* this is used when there is no sink to prevent us running too fast */
-void CAE::DelayFrames()
+void CSoftAE::DelayFrames()
 {
   /*
     since there is no audio, this does not need to be exact
@@ -279,7 +281,7 @@ void CAE::DelayFrames()
   Sleep(DELAY_FRAME_TIME - 4);
 }
 
-void CAE::Stop()
+void CSoftAE::Stop()
 {
   m_running = false;
 
@@ -287,48 +289,48 @@ void CAE::Stop()
   CSingleLock lock(m_runLock);
 }
 
-CAEStream *CAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
+IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
 {
-  CLog::Log(LOGINFO, "CAE::GetStream - %s, %u, %u, %s",
+  CLog::Log(LOGINFO, "CSoftAE::GetStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat),
     sampleRate,
     channelCount,
     CAEUtil::GetChLayoutStr(channelLayout).c_str()
   );
 
-  CAEStream *stream;
+  CSoftAEStream *stream;
   CSingleLock lock(m_critSection);
   if (dataFormat == AE_FMT_RAW)
   {
     OpenSink(sampleRate, true);
-    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
+    stream = new CSoftAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
     m_streams.push_front(stream);
   }
   else
   {
     if (m_streams.size() == 0)
       OpenSink(sampleRate);
-    stream = new CAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
+    stream = new CSoftAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
     m_streams.push_back(stream);
   }
 
   return stream;
 }
 
-CAESound *CAE::GetSound(CStdString file)
+IAESound *CSoftAE::GetSound(CStdString file)
 {
   CSingleLock lock(m_critSection);
-  CAESound *sound;
+  CSoftAESound *sound;
 
   /* see if we have a valid sound */
   if ((sound = m_sounds[file]))
   {
     /* increment the reference count */
-    ++sound->m_refcount;
+    ((CSoftAESound*)sound)->IncRefCount();
     return sound;
   }
 
-  sound = new CAESound(file);
+  sound = new CSoftAESound(file);
   if (!sound->Initialize())
   {
     delete sound;
@@ -336,12 +338,10 @@ CAESound *CAE::GetSound(CStdString file)
   }
 
   m_sounds[file] = sound;
-  sound->m_refcount = 1;
-
   return sound;
 }
 
-void CAE::PlaySound(CAESound *sound)
+void CSoftAE::PlaySound(IAESound *sound)
 {
    SoundState ss = {
       owner      : sound,
@@ -353,19 +353,18 @@ void CAE::PlaySound(CAESound *sound)
    m_playing_sounds.push_back(ss);
 }
 
-void CAE::FreeSound(CAESound *sound)
+void CSoftAE::FreeSound(IAESound *sound)
 {
   CSingleLock lock(m_critSection);
   /* decrement the sound's ref count */
-  --sound->m_refcount;
-  ASSERT(sound->m_refcount >= 0);
+  ((CSoftAESound*)sound)->DecRefCount();
 
   /* if other processes are using the sound, dont remove it */
-  if (sound->m_refcount > 0)
+  if (((CSoftAESound*)sound)->GetRefCount() > 0)
     return;
 
   /* set the timeout to 30 seconds */
-  sound->m_ts = CTimeUtils::GetTimeMS() + 30000;
+  ((CSoftAESound*)sound)->SetTimeout(CTimeUtils::GetTimeMS() + 30000);
 
   /* stop the sound playing */
   list<SoundState>::iterator itt;
@@ -376,19 +375,19 @@ void CAE::FreeSound(CAESound *sound)
   }
 }
 
-void CAE::GarbageCollect()
+void CSoftAE::GarbageCollect()
 {
   CSingleLock lock(m_critSection);
 
   unsigned int ts = CTimeUtils::GetTimeMS();
-  map<const CStdString, CAESound*>::iterator itt;
-  list<map<const CStdString, CAESound*>::iterator> remove;
+  map<const CStdString, CSoftAESound*>::iterator itt;
+  list<map<const CStdString, CSoftAESound*>::iterator> remove;
 
   for(itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
   {
-    CAESound *sound = itt->second;
+    CSoftAESound *sound = itt->second;
     /* free any sounds that are no longer used and are > 30 seconds old */
-    if (sound->m_refcount == 0 && ts > sound->m_ts)
+    if (sound->GetRefCount() == 0 && ts > sound->GetTimeout())
     {
       delete sound;
       remove.push_back(itt);
@@ -404,16 +403,16 @@ void CAE::GarbageCollect()
   }
 }
 
-unsigned int CAE::GetSampleRate()
+unsigned int CSoftAE::GetSampleRate()
 {
   /* if raw passthrough we need to adjust the sample rate so delays are calculated correctly */
   if (m_rawPassthrough)
-    return (float)m_format.m_sampleRate / ((float)AE.GetPacketizer()->GetPacketSize() / (float)AE.GetPacketizer()->GetFrameSize());
+    return (float)m_format.m_sampleRate / ((float)m_packetizer->GetPacketSize() / (float)m_packetizer->GetFrameSize());
 
   return m_format.m_sampleRate;
 }
 
-void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
+void CSoftAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_critSection);
   m_vizBufferSamples = 0;
@@ -422,14 +421,14 @@ void CAE::RegisterAudioCallback(IAudioCallback* pCallback)
     m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
 }
 
-void CAE::UnRegisterAudioCallback()
+void CSoftAE::UnRegisterAudioCallback()
 {
   CSingleLock lock(m_critSection);
   m_audioCallback = NULL;
   m_vizBufferSamples = 0;
 }
 
-void CAE::StopSound(CAESound *sound)
+void CSoftAE::StopSound(IAESound *sound)
 {
   CSingleLock lock(m_critSection);
   list<SoundState>::iterator itt;
@@ -440,7 +439,7 @@ void CAE::StopSound(CAESound *sound)
   }
 }
 
-bool CAE::IsPlaying(CAESound *sound)
+bool CSoftAE::IsPlaying(IAESound *sound)
 {
   CSingleLock lock(m_critSection);
   list<SoundState>::iterator itt;
@@ -449,9 +448,9 @@ bool CAE::IsPlaying(CAESound *sound)
   return false;
 }
 
-void CAE::RemoveStream(CAEStream *stream)
+void CSoftAE::RemoveStream(IAEStream *stream)
 {
-  list<CAEStream*>::iterator itt;
+  list<CSoftAEStream*>::iterator itt;
   CSingleLock lock(m_critSection);
 
   /* ensure the stream still exists */
@@ -466,7 +465,7 @@ void CAE::RemoveStream(CAEStream *stream)
     }
 }
 
-float CAE::GetDelay()
+float CSoftAE::GetDelay()
 {
   CSingleLock lock(m_critSection);
   if (!m_running)
@@ -488,13 +487,13 @@ float CAE::GetDelay()
   return delay;
 }
 
-float CAE::GetVolume()
+float CSoftAE::GetVolume()
 {
   CSingleLock lock(m_critSection);
   return m_volume;
 }
 
-void CAE::SetVolume(float volume)
+void CSoftAE::SetVolume(float volume)
 {
   CSingleLock lock(m_critSection);
   g_settings.m_fVolumeLevel = volume;
@@ -502,7 +501,7 @@ void CAE::SetVolume(float volume)
 }
 
 #ifdef __SSE__
-inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32_t count)
+inline void CSoftAE::SSEMulAddArray(float *data, float *add, const float mul, uint32_t count)
 {
   const __m128 m = _mm_set_ps1(mul);
 
@@ -553,7 +552,7 @@ inline void CAE::SSEMulAddArray(float *data, float *add, const float mul, uint32
   }
 }
 
-inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
+inline void CSoftAE::SSEMulArray(float *data, const float mul, uint32_t count)
 {
   const __m128 m = _mm_set_ps1(mul);
 
@@ -600,13 +599,13 @@ inline void CAE::SSEMulArray(float *data, const float mul, uint32_t count)
 }
 #endif
 
-void CAE::Run()
+void CSoftAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
   CSingleLock runLock(m_runLock);
   m_running = true;
 
-  CLog::Log(LOGINFO, "CAE::Run - Thread Started");
+  CLog::Log(LOGINFO, "CSoftAE::Run - Thread Started");
   while(m_running)
   {
     unsigned int channelCount, mixed;
@@ -643,7 +642,7 @@ void CAE::Run()
   }
 }
 
-inline void CAE::MixSounds(unsigned int samples)
+inline void CSoftAE::MixSounds(unsigned int samples)
 {
   list<SoundState>::iterator itt;
 
@@ -663,8 +662,8 @@ inline void CAE::MixSounds(unsigned int samples)
 
     float *floatBuffer = (float*)m_buffer;
     #ifdef __SSE__
-      CAE::SSEMulAddArray(floatBuffer, ss->samples, volume, mixSamples);
-      CAE::SSEMulArray   (floatBuffer, 0.5f, mixSamples);
+      CSoftAE::SSEMulAddArray(floatBuffer, ss->samples, volume, mixSamples);
+      CSoftAE::SSEMulArray   (floatBuffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
         floatBuffer[i] = (floatBuffer[i] + (ss->samples[i] * volume)) * 0.5f;
@@ -677,7 +676,7 @@ inline void CAE::MixSounds(unsigned int samples)
   }
 }
 
-inline void CAE::RunOutputStage()
+inline void CSoftAE::RunOutputStage()
 {
   unsigned int rSamples = m_format.m_frames * m_format.m_channelCount;
   unsigned int samples  = m_rawPassthrough ? rSamples : m_format.m_frames * m_channelCount;
@@ -712,7 +711,7 @@ inline void CAE::RunOutputStage()
 
       /* handle deamplification */
       #ifdef __SSE__
-        CAE::SSEMulArray(floatBuffer, m_volume, samples);
+        CSoftAE::SSEMulArray(floatBuffer, m_volume, samples);
       #else
         for(unsigned int i = 0; i < samples; ++i)
           floatBuffer[i] *= m_volume;
@@ -785,14 +784,14 @@ inline void CAE::RunOutputStage()
   }
 }
 
-inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
+inline unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
   if (m_rawPassthrough)
   {
     if (m_streams.empty()) return 0;
-    CAEStream *stream = m_streams.front();
+    CSoftAEStream *stream = m_streams.front();
     /* if the stream is to be deleted, or is not raw */
-    if (stream->m_delete || !stream->IsRaw())
+    if (stream->IsDestroyed() || !stream->IsRaw())
     {
       /* flag to have the sink re-started */
       restart = true;
@@ -808,15 +807,15 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bo
 
   float *dst = (float*)out;
   unsigned int mixed = 0;
-  list<CAEStream*>::iterator itt;
+  list<CSoftAEStream*>::iterator itt;
 
   /* mix in any running streams */
   for(itt = m_streams.begin(); itt != m_streams.end();)
   {
-    CAEStream *stream = *itt;
+    CSoftAEStream *stream = *itt;
 
     /* skip streams that are flagged for deletion */
-    if (stream->m_delete)
+    if (stream->IsDestroyed())
     {
       itt = m_streams.erase(itt);
       delete stream;
@@ -848,7 +847,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bo
     float volume = stream->GetVolume() * stream->GetReplayGain();
     #ifdef __SSE__
     if (channelCount > 1)
-      CAE::SSEMulAddArray(dst, frame, volume, channelCount);
+      CSoftAE::SSEMulAddArray(dst, frame, volume, channelCount);
     else
     #endif
     {
@@ -863,7 +862,7 @@ inline unsigned int CAE::RunStreamStage(unsigned int channelCount, void *out, bo
   return mixed;
 }
 
-inline void CAE::RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed)
+inline void CSoftAE::RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed)
 {
   if (mixed <= 0) return;
 
@@ -871,7 +870,7 @@ inline void CAE::RunNormalizeStage(unsigned int channelCount, void *out, unsigne
   float mul = 1.0f / mixed;
   #ifdef __SSE__
   if (channelCount > 1)
-    CAE::SSEMulArray(dst, mul, channelCount);
+    CSoftAE::SSEMulArray(dst, mul, channelCount);
   else
   #endif
   {
@@ -880,7 +879,7 @@ inline void CAE::RunNormalizeStage(unsigned int channelCount, void *out, unsigne
   }
 }
 
-inline void CAE::RunBufferStage(void *out)
+inline void CSoftAE::RunBufferStage(void *out)
 {
   if (m_rawPassthrough)
   {

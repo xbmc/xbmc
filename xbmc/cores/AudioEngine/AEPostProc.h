@@ -22,11 +22,11 @@
 
 #include "AEStream.h"
 
-class CAEStream;
+class IAEStream;
 class IAEPostProc
 {
 public:
-  virtual bool Initialize(CAEStream *stream) = 0;
+  virtual bool Initialize(IAEStream *stream) = 0;
   virtual void DeInitialize() = 0;
   virtual void Flush() = 0;
   virtual void Process(float *data, unsigned int frames) = 0;

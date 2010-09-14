@@ -23,7 +23,7 @@
 
 #include "system.h"
 #include "DVDAudioCodec.h"
-#include "AE.h"
+#include "AEFactory.h"
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {

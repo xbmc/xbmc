@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -19,25 +18,16 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "AEFactory.h"
+#include "SoftAE.h"
 
-#include "StdString.h"
+IAE* CAEFactory::m_ae = NULL;
 
-class IAESound
+IAE& CAEFactory::GetAE()
 {
-public:
-  IAESound(const CStdString &filename) {}
-  virtual ~IAESound() {}
+  if (m_ae) return *m_ae;
 
-  virtual void DeInitialize() = 0;
-  virtual bool Initialize() = 0;
-
-  virtual void Play() = 0;
-  virtual void Stop() = 0;
-  virtual bool IsPlaying() = 0;
-
-  virtual void         SetVolume(float volume) = 0;
-  virtual float        GetVolume() = 0;
-  virtual unsigned int GetSampleCount() = 0;
-  virtual float*       GetSamples    () = 0;
-};
+  m_ae = new CSoftAE();
+  return *m_ae;
+}
 

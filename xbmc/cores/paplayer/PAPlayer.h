@@ -28,7 +28,7 @@
 #include "AudioDecoder.h"
 #include "utils/CriticalSection.h"
 
-#include "AudioEngine/AE.h"
+#include "AudioEngine/AEFactory.h"
 #include "AudioEngine/AEStream.h"
 #include "AudioEngine/PostProc/AEPPAnimationFade.h"
 
@@ -106,7 +106,7 @@ private:
   {
     CAudioDecoder       m_decoder;        /* the decoder instance */
     PAPlayer           *m_player;         /* the PAPlayer instance */
-    CAEStream          *m_stream;         /* the audio stream */
+    IAEStream          *m_stream;         /* the audio stream */
     unsigned int        m_sent;           /* frames sent */
     unsigned int        m_change;         /* frame to start xfade at */
     unsigned int        m_prepare;        /* frame to prepare next file at */
@@ -127,8 +127,8 @@ private:
   void FreeStreamInfo(StreamInfo *si);
   bool PlayNextStream();
 
-  static void StaticStreamOnData (CAEStream *sender, void *arg, unsigned int needed);
-  static void StaticStreamOnDrain(CAEStream *sender, void *arg, unsigned int unused);
+  static void StaticStreamOnData (IAEStream *sender, void *arg, unsigned int needed);
+  static void StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused);
   static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
 };
 

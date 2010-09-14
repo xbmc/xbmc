@@ -20,6 +20,7 @@
  *
  */
 
+#include "AudioEngine/AEStream.h"
 #include "AudioEngine/AEPostProc.h"
 #include "IAudioCallback.h"
 
@@ -29,7 +30,7 @@ public:
   CAEPPAnimationFade(float from, float to, unsigned int duration);
   ~CAEPPAnimationFade();
 
-  virtual bool        Initialize(CAEStream *stream);
+  virtual bool        Initialize(IAEStream *stream);
   virtual void        DeInitialize();
   virtual void        Flush();
   virtual void        Process(float *data, unsigned int frames);
@@ -44,7 +45,7 @@ public:
   void SetDoneCallback(DoneCallback *callback, void *arg) { m_callback = callback; m_cbArg = arg; }
 private:
   unsigned int  m_channelCount; /* the AE channel count */
-  CAEStream    *m_stream;
+  IAEStream    *m_stream;
 
   bool          m_running;  /* if the fade is running */
   float         m_position; /* current fade position */

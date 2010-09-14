@@ -71,7 +71,7 @@ public:
 
   void SetSpeed(int iSpeed);
 
-  CAEStream *m_pAudioStream;
+  IAEStream *m_pAudioStream;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
