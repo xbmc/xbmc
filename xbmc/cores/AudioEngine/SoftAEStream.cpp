@@ -35,6 +35,8 @@
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
+#define SOFTAE_FRAMES 32
+
 /* typecast the global AE to CSoftAE */
 #define AE (*((CSoftAE*)&AE))
 
@@ -71,14 +73,25 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   Initialize();
 }
 
+void CSoftAEStream::InitializeRemap()
+{
+  CSingleLock lock(m_critSection);
+  if (m_initDataFormat != AE_FMT_RAW)
+  {
+    /* re-init the remapper */
+    m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
+    /* drop data that was already remapped */
+    InternalFlush();
+  }
+}
+
 void CSoftAEStream::Initialize()
 {
   CSingleLock lock(m_critSection);
   if (m_valid)
   {
-    Flush();
+    InternalFlush();
     _aligned_free(m_newPacket.data);
-    _aligned_free(m_frameBuffer);
 
     if (m_convert)
       _aligned_free(m_convertBuffer);
@@ -116,14 +129,14 @@ void CSoftAEStream::Initialize()
   m_bytesPerFrame   = m_bytesPerSample * m_initChannelCount;
 
   m_aeChannelCount  = AE.GetChannelCount();
-  m_aePacketSamples = AE.GetFrames() * m_aeChannelCount;
+  m_aePacketSamples = SOFTAE_FRAMES * m_aeChannelCount;
   m_waterLevel      = AE.GetSampleRate() >> 3;
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
   m_format.m_channelCount  = m_initChannelCount;
   m_format.m_channelLayout = m_initChannelLayout;
-  m_format.m_frames        = AE.GetFrames();
+  m_format.m_frames        = SOFTAE_FRAMES;
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
   m_format.m_frameSize     = m_bytesPerFrame;
 
@@ -142,9 +155,11 @@ void CSoftAEStream::Initialize()
   m_packet.samples    = 0;
   m_packet.data       = NULL;
 
-  m_frameBuffer   = (uint8_t*)_aligned_malloc(m_format.m_frameSize, 16);
+  if (!m_frameBuffer)
+    m_frameBuffer = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
+
   m_resample      = (m_forceResample || m_initSampleRate != AE.GetSampleRate()) && m_initDataFormat != AE_FMT_RAW;
-  m_convert       = m_initDataFormat != AE_FMT_FLOAT       && m_initDataFormat != AE_FMT_RAW;
+  m_convert       = m_initDataFormat != AE_FMT_FLOAT && m_initDataFormat != AE_FMT_RAW;
 
   /* if we need to convert, set it up */
   if (m_convert)
@@ -164,7 +179,6 @@ void CSoftAEStream::Initialize()
     int err;
     m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
     m_ssrcData.data_in       = m_convertBuffer;
-    m_ssrcData.input_frames  = m_format.m_frames;
     m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * 2 * sizeof(float), 16);
     m_ssrcData.output_frames = m_format.m_frames * 2;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
@@ -255,7 +269,7 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
   uint8_t *ptr = (uint8_t*)data;
   while(size)
   {
-    size_t room = m_format.m_frameSize - m_frameBufferSize;
+    size_t room = (m_format.m_frames * m_format.m_frameSize) - m_frameBufferSize;
     size_t copy = std::min((size_t)size, room);
     if (copy == 0)
       return ptr - (uint8_t*)data;
@@ -264,6 +278,9 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
     size              -= copy;
     m_frameBufferSize += copy;
     ptr               += copy;
+
+    if (m_frameBufferSize / m_bytesPerSample < m_format.m_frameSamples)
+      continue;
 
     unsigned int consumed = ProcessFrameBuffer();
     if (consumed)
@@ -282,16 +299,23 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   unsigned int frames, consumed;
 
   /* convert the data if we need to */
+  unsigned int samples;
   if (m_convert)
-    m_convertFn(m_frameBuffer, m_format.m_frameSamples, m_convertBuffer);
+    samples = m_convertFn(m_frameBuffer, m_frameBufferSize / m_bytesPerSample, m_convertBuffer);
+  else
+    samples = m_frameBufferSize / m_bytesPerSample;
+
+  if (samples == 0)
+    return 0;
 
   /* resample it if we need to */
   if (m_resample)
   {
-    m_ssrcData.input_frames = m_frameBufferSize / m_bytesPerFrame;
+    m_ssrcData.input_frames = samples / m_format.m_channelCount;
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
+    samples  = frames * m_format.m_channelCount;
     consumed = m_ssrcData.input_frames_used * m_bytesPerFrame;
     if (!frames)
       return consumed;
@@ -299,14 +323,12 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   else
   {
     data     = (uint8_t*)m_convertBuffer;
-    frames   = m_frameBufferSize / m_bytesPerFrame;
-    consumed = m_frameBufferSize;
+    frames   = samples / m_format.m_channelCount;
+    consumed = samples * m_bytesPerSample;
   }
 
   /* buffer the data */
-  unsigned int samples = frames * m_format.m_channelCount;
   m_framesBuffered += frames;
-
   while(samples)
   {
     unsigned int room = m_format.m_frameSamples - m_newPacket.samples;
@@ -391,7 +413,7 @@ uint8_t* CSoftAEStream::GetFrame()
         if (m_cbDataFunc)
         {
           lock.Leave();
-          m_cbDataFunc(this, m_cbDataArg, (m_format.m_frameSize - m_frameBufferSize) / m_bytesPerFrame);
+          m_cbDataFunc(this, m_cbDataArg, ((m_format.m_frames * m_format.m_frameSize) - m_frameBufferSize) / m_bytesPerFrame);
           if (m_outBuffer.empty())
             return NULL;
         }
@@ -461,6 +483,9 @@ void CSoftAEStream::Flush()
 {
   CSingleLock lock(m_critSection);
   InternalFlush();
+
+  /* internal flush does not do this as these samples are still valid if we are re-initializing */
+  m_frameBufferSize = 0;
 }
 
 void CSoftAEStream::InternalFlush()
@@ -479,7 +504,7 @@ void CSoftAEStream::InternalFlush()
     in use by the AE thread, so we just set the packet count to 0, it will
     get freed by the next call to GetFrame or destruction
   */
-  m_packet.samples    = 0;
+  m_packet.samples = 0;
 
   /* clear any other buffered packets */
   while(!m_outBuffer.empty()) {    
@@ -495,8 +520,7 @@ void CSoftAEStream::InternalFlush()
     (*ppi)->Flush();
   
   /* reset our counts */
-  m_frameBufferSize = 0;
-  m_framesBuffered  = 0;
+  m_framesBuffered = 0;
 }
 
 void CSoftAEStream::AppendPostProc(IAEPostProc *pp)

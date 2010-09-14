@@ -289,48 +289,61 @@ bool CSoftAE::Initialize()
   /* get the current volume level */
   m_volume     = g_settings.m_fVolumeLevel;
   m_packetizer = new CAEPacketizerIEC958();
-  OnSettingsChange();
+  OnSettingsChange("");
 
   return OpenSink();
 }
 
-void CSoftAE::OnSettingsChange()
+void CSoftAE::OnSettingsChange(CStdString setting)
 {
-  m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
-  if (m_passthroughDevice == "custom")
-    m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
-
-  if (m_passthroughDevice.IsEmpty())
-    m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
-
-  m_device = g_guiSettings.GetString("audiooutput.audiodevice");
-  if (m_device == "custom")
-    m_device = g_guiSettings.GetString("audiooutput.customdevice");
-
-  int pos;
-
-  pos = m_passthroughDevice.find_first_of(':');
-  if (pos > 0)
+  if (setting == "audiooutput.dontnormalizelevels")
   {
-    m_passthroughDriver = m_passthroughDevice.substr(0, pos);
-    m_passthroughDriver = m_passthroughDriver.ToUpper();
-    m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
+    /* re-init streams reampper */
+    list<CSoftAEStream*>::iterator itt;
+    for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      (*itt)->InitializeRemap();
   }
-  else
-    m_passthroughDriver.Empty();
-
-  pos = m_device.find_first_of(':');
-  if (pos > 0)
+  else if (setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
   {
-    m_driver = m_device.substr(0, pos);
-    m_driver = m_driver.ToUpper();
-    m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
-  }
-  else
-    m_driver.Empty();
+    m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
+    if (m_passthroughDevice == "custom")
+      m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
 
-  if (m_device           .IsEmpty()) m_device            = "default";
-  if (m_passthroughDevice.IsEmpty()) m_passthroughDevice = "default";
+    if (m_passthroughDevice.IsEmpty())
+      m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
+
+    int pos = m_passthroughDevice.find_first_of(':');
+    if (pos > 0)
+    {
+      m_passthroughDriver = m_passthroughDevice.substr(0, pos);
+      m_passthroughDriver = m_passthroughDriver.ToUpper();
+      m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
+    }
+    else
+      m_passthroughDriver.Empty();
+
+    if (m_passthroughDevice.IsEmpty())
+      m_passthroughDevice = "default";
+  }
+  else if (setting == "audiooutput.audiodevice" || setting == "audiooutput.customdevice")
+  {
+    m_device = g_guiSettings.GetString("audiooutput.audiodevice");
+    if (m_device == "custom")
+      m_device = g_guiSettings.GetString("audiooutput.customdevice");
+
+    int pos = m_device.find_first_of(':');
+    if (pos > 0)
+    {
+      m_driver = m_device.substr(0, pos);
+      m_driver = m_driver.ToUpper();
+      m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
+    }
+    else
+      m_driver.Empty();
+
+    if (m_device.IsEmpty())
+      m_device = "default";
+  }
 
   OpenSink();
 }

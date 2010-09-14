@@ -142,26 +142,24 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
 
 unsigned int CAEConvert::S24LE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int viable = (samples / 3) * 3;
-  for(unsigned int i = 0; i < viable; ++i, ++dest, data += 3)
+  for(unsigned int i = 0; i < samples; ++i, ++dest, data += 3)
   {
     /* fixme: ENDIAN */
     int s = (data[2] << 24) | (data[1] << 16) | (data[0] << 8);
     *dest = (float)s / (float)(INT_MAX - 256);
   }
-  return viable;
+  return samples;
 }
 
 unsigned int CAEConvert::S24BE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int viable = (samples / 3) * 3;
-  for(unsigned int i = 0; i < viable; ++i, ++dest, data += 3)
+  for(unsigned int i = 0; i < samples; ++i, ++dest, data += 3)
   {
     /* fixme: ENDIAN */
     int s = (data[2] << 24) | (data[1] << 16) | (data[0] << 8);
     *dest = (float)s / (float)(INT_MAX - 256);
   }
-  return viable;
+  return samples;
 #if 0
   unsigned int i;
   unsigned int viable = samples / 12;
