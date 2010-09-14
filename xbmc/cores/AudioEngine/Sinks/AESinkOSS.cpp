@@ -33,6 +33,9 @@
 
 #define OSS_FRAMES 128
 
+static enum AEChannel OSSChannelMap[7] =
+  {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_NULL};
+
 CAESinkOSS::CAESinkOSS()
 {
 }
@@ -43,23 +46,7 @@ CAESinkOSS::~CAESinkOSS()
 
 CStdString CAESinkOSS::GetDeviceUse(AEAudioFormat format, CStdString device)
 {
-  if (format.m_dataFormat == AE_FMT_RAW)
-  {
-    if (device == "default")
-      return "/dev/dsp_ac3";
-
-    return device;
-  }
-
-  if (device == "default")
-  {
-    if (format.m_channelCount > 2)
-      return "/dev/dsp_multich";
-
-    return "/dev/dsp";
-  }
-
-  return device;
+  return "/dev/dsp";
 }
 
 bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
@@ -73,13 +60,38 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     m_fd = open(device.c_str(), O_WRONLY, 0);
   if (!m_fd) return false;
 
+  int mask = 0;
+  for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
+    switch(format.m_channelLayout[i])
+    {
+      case AE_CH_FL:
+      case AE_CH_FR:
+        mask |= DSP_BIND_FRONT;
+        break;
+
+      case AE_CH_BL:
+      case AE_CH_BR:
+        mask |= DSP_BIND_SURR;
+        break;
+
+      case AE_CH_FC:
+      case AE_CH_LFE:
+        mask |= DSP_BIND_CENTER_LFE;
+        break;
+
+      default:
+        break;
+    }
+
 #ifdef SNDCTL_ENGINEINFO
   oss_audioinfo ai;
   ai.dev = -1;
   if (ioctl(m_fd, SNDCTL_ENGINEINFO, &ai) == -1)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get engine info");
-
-  /* todo: select format based on info */
+  else
+  {
+    /* FIXME: select format based on info */
+  }
 #endif
 
 #ifdef SNDCTL_DSP_COOKEDMODE
@@ -109,6 +121,30 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
+  /* try to set the channel mask */
+  ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask);
+
+  /* get the configured channel mask */
+  if (ioctl(m_fd, SNDCTL_DSP_GETCHANNELMASK, &mask) == -1)
+  {
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to get the channel mask, assuming stereo");
+    mask = DSP_BIND_FRONT;
+  }
+
+  /* fix the channel count */
+  format.m_channelCount =
+    (mask & DSP_BIND_FRONT      ? 2 : 0) +
+    (mask & DSP_BIND_SURR       ? 2 : 0) +
+    (mask & DSP_BIND_CENTER_LFE ? 2 : 0);
+
+  int oss_ch = format.m_channelCount;
+  if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) == -1)
+  {
+    close(m_fd);
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set the number of channels");
+    return false;
+  }
+
   int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount * OSS_FRAMES;
   int pos = 0;
   while((tmp & 0x1) == 0x0)
@@ -121,13 +157,6 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   if (ioctl(m_fd, SNDCTL_DSP_SETFRAGMENT, &oss_frag) == -1)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the fragment size");
 
-  int oss_ch = format.m_channelCount;
-  if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) == -1)
-  {
-    close(m_fd);
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to set the number of channels");
-    return false;
-  }
 
   int oss_sr = format.m_sampleRate;
   if (ioctl(m_fd, SNDCTL_DSP_SPEED, &oss_sr) == -1)
@@ -145,11 +174,15 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
+  m_channelLayout = new enum AEChannel[format.m_channelCount + 1];
+  memcpy(m_channelLayout, OSSChannelMap, format.m_channelCount * sizeof(enum AEChannel));
+  m_channelLayout[format.m_channelCount] = AE_CH_NULL;
 
-  format.m_sampleRate   = oss_sr;
-  format.m_frameSize    = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
-  format.m_frames       = bi.bytes / format.m_frameSize / OSS_FRAMES;
-  format.m_frameSamples = format.m_frames * format.m_channelCount;
+  format.m_sampleRate    = oss_sr;
+  format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
+  format.m_frames        = bi.bytes / format.m_frameSize / OSS_FRAMES;
+  format.m_frameSamples  = format.m_frames * format.m_channelCount;
+  format.m_channelLayout = m_channelLayout;
 
   m_device = device;
   m_format = format;
@@ -159,6 +192,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
 void CAESinkOSS::Deinitialize()
 {
   close(m_fd);
+  delete[] m_channelLayout;
 }
 
 bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const CStdString device)
