@@ -84,17 +84,12 @@ void CURL::Parse(const CStdString& strURL1)
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
 
-  if (!url.GetProtocol().Equals("special"))
-  {
-    return path;
-  }
-  
-  if (strURL.size() > 1 && strURL.Find(':') > 0 && !CUtil::IsURL(strURL))
+  if (strURL.size() > 1 && strURL[1] == ':')
   {
     // form is drive:directoryandfile
-    // Note that drive can be more than one character, like with cdrom: !
-    
+
     // set filename and update extension
+
     SetFileName(strURL);
     return ;
   }
@@ -139,7 +134,11 @@ void CURL::Parse(const CStdString& strURL1)
       struct __stat64 s;
       if (XFILE::CFile::Stat(archiveName, &s) == 0)
       {
+#ifdef _LINUX
+        if (!S_ISDIR(s.st_mode))
+#else
         if (!(s.st_mode & S_IFDIR))
+#endif
         {
           CUtil::URLEncode(archiveName);
           CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
