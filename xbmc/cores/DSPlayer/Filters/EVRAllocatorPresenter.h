@@ -264,6 +264,7 @@
     void                     MoveToScheduledList(IMFSample* pSample, bool _bSorted);
     void                     FlushSamples();
     void                     FlushSamplesInternal();
+    void                     PaintInternal();
 
     // === Media type negociation functions
     HRESULT                  RenegotiateMediaType();
