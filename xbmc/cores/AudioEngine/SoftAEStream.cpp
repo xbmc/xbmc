@@ -355,15 +355,20 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     consumed = m_ssrcData.input_frames_used * m_bytesPerFrame;
     if (!frames)
       return consumed;
+
+    samples = frames * m_format.m_channelCount;
+
+    /* clamp the resamplers output */
+    for(unsigned int i = 0; i < samples; ++i)
+      ((float*)data)[i] = std::min(-1.0f, std::max(1.0f, ((float*)data)[i]));
   }
   else
   {
     data     = (uint8_t*)m_convertBuffer;
     frames   = samples / m_format.m_channelCount;
+    samples  = frames * m_format.m_channelCount;
     consumed = frames * m_bytesPerFrame;
   }
-
-  samples = frames * m_format.m_channelCount;
 
   /* buffer the data */
   m_framesBuffered += frames;
