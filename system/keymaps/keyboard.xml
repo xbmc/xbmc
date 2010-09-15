@@ -498,6 +498,11 @@
       <backspace>Close</backspace>
     </keyboard>
   </AddonSettings>
+  <TextViewer>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </TextViewer>
   <LockSettings>
     <keyboard>
       <escape>Close</escape>

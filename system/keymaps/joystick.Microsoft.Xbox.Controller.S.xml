@@ -416,6 +416,14 @@
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="2">Close</button>
+    </joystick>
+  </TextViewer>
   <MyPicturesSettings>
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>

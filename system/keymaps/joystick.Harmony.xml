@@ -488,4 +488,9 @@
       <!-- Prev		-->      <button id="32">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

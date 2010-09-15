@@ -314,6 +314,11 @@
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="2">Close</button>
+    </joystick>
+  </TextViewer>
   <MyPicturesSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="2">PreviousMenu</button>
