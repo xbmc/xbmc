@@ -38,7 +38,7 @@ public:
   virtual void Reset();
   virtual int  GetChannels               () { return 1; }
   virtual AEChLayout GetChannelMap       () { static enum AEChannel map[] = {AE_CH_RAW, AE_CH_NULL}; return map; }
-  virtual int  GetSampleRate             () { return AE.GetPacketizer()->GetSampleRate(); }
+  virtual int  GetSampleRate             () { return 48000; /*AE.GetPacketizer()->GetSampleRate(); FIXME*/ }
   virtual enum AEDataFormat GetDataFormat() { return AE_FMT_RAW; }
   virtual bool NeedPassthrough           () { return true;          }
   virtual const char* GetName            () { return "passthrough"; }

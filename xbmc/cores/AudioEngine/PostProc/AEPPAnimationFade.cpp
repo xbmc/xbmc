@@ -42,7 +42,7 @@ bool CAEPPAnimationFade::Initialize(IAEStream *stream)
 
   m_stream       = stream;
   m_channelCount = stream->GetChannelCount();
-  m_step         = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * (float)m_duration);
+  m_step         = (m_to - m_from) / ((stream->GetSampleRate() / 1000) * (float)m_duration);
   m_running      = false;
   return true;
 }
@@ -103,6 +103,6 @@ void CAEPPAnimationFade::SetPosition(const float position)
 void CAEPPAnimationFade::SetDuration(const unsigned int duration)
 {
   m_duration = duration;
-  m_step     = (m_to - m_from) / ((AE.GetSampleRate() / 1000) * (float)m_duration);
+  m_step     = (m_to - m_from) / ((m_stream->GetSampleRate() / 1000) * (float)m_duration);
 }
 

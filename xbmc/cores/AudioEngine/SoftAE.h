@@ -97,6 +97,8 @@ public:
 #endif
 
 private:
+  CThread *m_thread;
+
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   void Deinitialize();
 

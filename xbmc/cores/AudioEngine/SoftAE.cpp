@@ -57,6 +57,7 @@
 using namespace std;
 
 CSoftAE::CSoftAE():
+  m_thread          (NULL ),
   m_running         (false),
   m_reOpened        (false),
   m_packetizer      (NULL ),
@@ -258,7 +259,14 @@ bool CSoftAE::Initialize()
   m_packetizer = new CAEPacketizerIEC958();
   OnSettingsChange("");
 
-  return OpenSink();
+  if (OpenSink())
+  {
+    m_thread = new CThread(this);
+    m_thread->Create();
+    return true;
+  }
+
+  return false;
 }
 
 void CSoftAE::OnSettingsChange(CStdString setting)
@@ -322,7 +330,13 @@ void CSoftAE::OnSettingsChange(CStdString setting)
 
 void CSoftAE::Deinitialize()
 {
-  Stop();
+  if (m_thread)
+  {
+    Stop();
+    m_thread->StopThread(true);
+    delete m_thread;
+    m_thread = NULL;
+  }
 
   if (m_sink)
   {

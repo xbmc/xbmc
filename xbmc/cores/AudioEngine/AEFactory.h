@@ -34,10 +34,8 @@ public:
   /* use this to restart the engine (eg, switch from CSoftAE to CPulseAE) */
   static bool Restart();
 private:
-  static CThread *m_aeThread;
-  static bool     m_runnable;
-  static IAE     *m_ae;
-  static bool     m_ready;
+  static IAE *m_ae;
+  static bool m_ready;
 };
 
 static IAE &AE = CAEFactory::GetAE();
