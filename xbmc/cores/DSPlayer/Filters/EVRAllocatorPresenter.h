@@ -212,6 +212,7 @@
 
     CCritSec                 m_SampleQueueLock;
     CCritSec                 m_ImageProcessingLock;
+    CCriticalSection         m_DisplaydSampleQueueLock;
 
     VideoSampleList          m_FreeSamples;
     VideoSampleList          m_ScheduledSamples;

@@ -1919,7 +1919,7 @@ void CDX9AllocatorPresenter::UpdateAlphaBitmap()
 
 STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 {
-  CAutoSetEvent event(&m_drawingIsDone);
+  CAutoSetEvent autoEvent(&m_drawingIsDone);
 
   if (!g_renderManager.IsStarted() || m_bPendingResetDevice)
     return false;

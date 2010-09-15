@@ -63,7 +63,10 @@ class CAutoSetEvent
   public:
     CAutoSetEvent(CEvent *event)
       : m_event(event)
-    {}
+    {
+      if (m_event)
+        m_event->Reset();
+    }
     ~CAutoSetEvent()
     {
       if (m_event)

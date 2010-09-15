@@ -550,7 +550,6 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
 STDMETHODIMP_(bool) CEVRAllocatorPresenter::Paint(bool fAll)
 {
-  
   return __super::Paint (fAll);
 }
 
@@ -1392,6 +1391,7 @@ STDMETHODIMP CEVRAllocatorPresenter::GetVideoWindow(HWND *phwndVideo)
 }
 STDMETHODIMP CEVRAllocatorPresenter::RepaintVideo()
 {
+  assert(false);
   Paint (true);
   return S_OK;
 }
@@ -1881,7 +1881,12 @@ void CEVRAllocatorPresenter::OnVBlankFinished(bool fAll, int64_t PerformanceCoun
     llClockTime = m_StarvationClock;
   }
 
-  IMFSample * currentSample = m_pCurrentDisplaydSampleQueue.front(); m_pCurrentDisplaydSampleQueue.pop();
+  IMFSample * currentSample = NULL;
+  {
+    CSingleLock lock(m_DisplaydSampleQueueLock);
+    assert(m_pCurrentDisplaydSampleQueue.size() == 1);
+    currentSample = m_pCurrentDisplaydSampleQueue.front(); m_pCurrentDisplaydSampleQueue.pop();
+  }
   currentSample->GetSampleDuration(&SampleDuration);
 
   currentSample->GetSampleTime(&nsSampleTime);
@@ -2024,10 +2029,23 @@ void CEVRAllocatorPresenter::RenderThread()
             ++m_OrderedPaint;
             if (!g_bExternalSubtitleTime)
               __super::SetTime (g_tSegmentStart + nsSampleTime);
+            
+            {
+              CSingleLock lock(m_DisplaydSampleQueueLock);
             // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
-            if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
-              m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
-            Paint(true);
+              if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+                m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+            }
+
+            g_application.NewFrame();
+            { m_drawingIsDone.Reset(); m_drawingIsDone.Wait(); }
+
+            {
+              CSingleLock lock(m_DisplaydSampleQueueLock);
+              while (! m_pCurrentDisplaydSampleQueue.empty())
+                    m_pCurrentDisplaydSampleQueue.pop();
+            }
+
             m_nDroppedUpdate = 0;
             CompleteFrameStep (false);
             bStepForward = true;
@@ -2055,12 +2073,21 @@ void CEVRAllocatorPresenter::RenderThread()
               if (!g_bExternalSubtitleTime)
                 __super::SetTime (g_tSegmentStart + nsSampleTime);
               
-              // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
-              if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
-                m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+              {
+                CSingleLock lock(m_DisplaydSampleQueueLock);
+                // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
+                if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+                  m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+              }
 
-               g_application.NewFrame();
-               { m_drawingIsDone.WaitMSec(300); m_drawingIsDone.Reset(); }
+              g_application.NewFrame();
+              { m_drawingIsDone.Reset(); m_drawingIsDone.Wait(); }
+
+              {
+                CSingleLock lock(m_DisplaydSampleQueueLock);
+                while (! m_pCurrentDisplaydSampleQueue.empty())
+                    m_pCurrentDisplaydSampleQueue.pop();
+              }
 
             }
             else
@@ -2188,12 +2215,21 @@ void CEVRAllocatorPresenter::RenderThread()
                 if (!g_bExternalSubtitleTime)
                   __super::SetTime (g_tSegmentStart + nsSampleTime);
 
-                // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
-                if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
-                  m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+                {
+                  CSingleLock lock(m_DisplaydSampleQueueLock);
+                  // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
+                  if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+                    m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+                }
 
                 g_application.NewFrame();
-                { m_drawingIsDone.WaitMSec(300); m_drawingIsDone.Reset(); } // Wait until the drawing is done
+                { m_drawingIsDone.Reset(); m_drawingIsDone.Wait(); } // Wait until the drawing is done
+
+                {
+                  CSingleLock lock(m_DisplaydSampleQueueLock);
+                  while (! m_pCurrentDisplaydSampleQueue.empty())
+                    m_pCurrentDisplaydSampleQueue.pop();
+                }
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;
@@ -2357,8 +2393,11 @@ void CEVRAllocatorPresenter::RemoveAllSamples()
   m_ScheduledSamples.Clear();
   m_FreeSamples.Clear();
 
-  while (!m_pCurrentDisplaydSampleQueue.empty())
-    m_pCurrentDisplaydSampleQueue.pop();
+  {
+    CSingleLock lock(m_DisplaydSampleQueueLock);
+    while (!m_pCurrentDisplaydSampleQueue.empty())
+      m_pCurrentDisplaydSampleQueue.pop();
+  }
 
   m_LastScheduledSampleTime = -1;
   m_LastScheduledUncorrectedSampleTime = -1;
