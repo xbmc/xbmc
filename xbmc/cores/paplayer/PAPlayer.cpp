@@ -102,6 +102,18 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
   delete si;
 }
 
+void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  m_audioCallback = pCallback;
+}
+
+void PAPlayer::UnRegisterAudioCallback()
+{
+  CSingleLock lock(m_critSection);
+  m_audioCallback = NULL;
+}
+
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   m_iSpeed = 1;
@@ -199,6 +211,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
 void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused)
 {
   StreamInfo *si = (StreamInfo*)arg;
+  si->m_stream->UnRegisterAudioCallback();
   PAPlayer *player = si->m_player;
   CSingleLock lock(player->m_critSection);
   player->FreeStreamInfo(si);
@@ -303,6 +316,8 @@ bool PAPlayer::PlayNextStream()
   /* if there is a currently playing stream, stop it */
   if (m_current)
   {
+    m_current->m_stream->UnRegisterAudioCallback();
+
     m_finishing.push_back(m_current);
     if (!crossFade)
     {
@@ -329,6 +344,9 @@ bool PAPlayer::PlayNextStream()
   /* get the next stream */
   m_current = m_streams.front();
   m_streams.pop_front();
+
+  if (m_audioCallback)
+    m_current->m_stream->RegisterAudioCallback(m_audioCallback);
 
   /* if we are crossFading, fade it in */
   if (fadeIn)

@@ -36,7 +36,7 @@ CAERemap::~CAERemap()
 {
 }
 
-bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool finalStage)
+bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool finalStage, bool forceNormalize/* = false */)
 {
   /* build the downmix matrix */
   memset(m_mixInfo, 0, sizeof(m_mixInfo));
@@ -170,8 +170,15 @@ bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool 
   #undef RM
 
   /* normalize the values */
-  bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
-  CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
+  bool dontnormalize;
+  if (forceNormalize)
+    dontnormalize = false;
+  else
+  {
+    dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
+    CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
+  }
+
   if (!dontnormalize)
   {
     float max = 0;

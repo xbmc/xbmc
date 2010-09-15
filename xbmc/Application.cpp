@@ -598,13 +598,8 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
-   /* Initalize the AudioEngine */
-  CLog::Log(LOGINFO, "Starting audio thread");
-  if (AE.Initialize())
-  {
-    m_aeThread = new CThread(&AE);
-    m_aeThread->Create();
-  }
+  /* Start the AudioEngine */
+  CAEFactory::Start();
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
@@ -3205,9 +3200,7 @@ void CApplication::Stop()
     g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 
     // shutdown the AudioEngine
-    AE.Stop();
-    m_aeThread->StopThread(true);
-    delete m_aeThread;
+    CAEFactory::Shutdown();
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))

@@ -78,6 +78,9 @@ public:
   virtual double GetResampleRatio();
   virtual void   SetResampleRatio(double ratio);
 
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
+  virtual void UnRegisterAudioCallback();
+
 private:
   void InternalFlush();
 
@@ -132,5 +135,11 @@ private:
   /* callback hook for more data */
   AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;
   void         *m_cbDataArg , *m_cbDrainArg;
+
+  /* vizualization internals */
+  CAERemap           m_vizRemap;
+  float              m_vizBuffer[512];
+  unsigned int       m_vizBufferSamples;
+  IAudioCallback    *m_audioCallback;
 };
 

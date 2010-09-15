@@ -24,15 +24,12 @@
 #include <map>
 
 #include "system.h"
-#include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
 #include "AEAudioFormat.h"
 #include "AEStream.h"
 #include "AESound.h"
 #include "AEPacketizer.h"
-
-#include "cores/IAudioCallback.h"
 
 typedef std::pair<CStdString, CStdString> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;
@@ -42,18 +39,12 @@ class IAEStream;
 class IAESound;
 class IAEPacketizer;
 
-class IAE : public IRunnable
+class IAE
 {
 public:
-  /* this should NEVER be called directly, use CAEFactory */
-  IAE() {}
-  virtual ~IAE() {}
+  virtual bool Initialize() = 0;
+  virtual void OnSettingsChange(CStdString setting) = 0;
 
-  virtual bool  Initialize      () = 0;
-  virtual void  OnSettingsChange(CStdString setting) = 0;
-
-  virtual void  Run      () = 0;
-  virtual void  Stop     () = 0;
   virtual float GetDelay () = 0;
   virtual float GetVolume() = 0;
   virtual void  SetVolume(float volume) = 0;
@@ -76,9 +67,5 @@ public:
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
 
-  /* vizualization callback register function */
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
-  virtual void UnRegisterAudioCallback() = 0;
-private:
 };
 

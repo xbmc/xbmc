@@ -23,22 +23,10 @@
 #include "AE.h"
 #include "utils/Thread.h"
 
-class IAE;
-class CAEFactory
+class IThreadedAE : public IAE, public IRunnable
 {
 public:
-  static IAE &GetAE();
-  static bool Start();
-  static void Shutdown();
-
-  /* use this to restart the engine (eg, switch from CSoftAE to CPulseAE) */
-  static bool Restart();
-private:
-  static CThread *m_aeThread;
-  static bool     m_runnable;
-  static IAE     *m_ae;
-  static bool     m_ready;
+  virtual void Run () = 0;
+  virtual void Stop() = 0;
 };
-
-static IAE &AE = CAEFactory::GetAE();
 

@@ -354,8 +354,6 @@ protected:
   SDL_cond*  m_frameCond;
 #endif
 
-  CThread *m_aeThread;
-
   void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);

@@ -281,7 +281,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   for(int ch = format.m_channelCount; ch < 9; ++ch)
   {
     oss_ch = ch;
-    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= format.m_channelCount)
+    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelCount)
     {
       found = true;
       break;

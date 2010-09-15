@@ -21,6 +21,7 @@
  */
 
 #include "AEAudioFormat.h"
+#include "cores/IAudioCallback.h"
 #include <stdint.h>
 
 /* options to pass to GetStream */
@@ -79,5 +80,9 @@ public:
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio() = 0;
   virtual void   SetResampleRatio(double ratio) = 0;
+
+  /* vizualization callback register function */
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
+  virtual void UnRegisterAudioCallback() = 0;
 };
 
