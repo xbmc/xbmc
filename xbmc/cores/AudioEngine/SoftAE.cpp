@@ -85,9 +85,9 @@ CSoftAE::~CSoftAE()
   }
 }
 
-IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough)
+IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough, CStdString &device)
 {
-  CStdString device = passthrough ? m_passthroughDevice : m_device;
+  device = passthrough ? m_passthroughDevice : m_device;
   CStdString driver = passthrough ? m_passthroughDriver : m_driver;
 
   IAESink *sink = CAESinkFactory::Create(driver, device, desiredFormat);
@@ -95,15 +95,9 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough)
   if (sink)
   {
     if (passthrough)
-    {
-      m_passthroughDevice = device;
       m_passthroughDriver = sink->GetName();
-    }
     else
-    {
-      m_device = device;
       m_driver = sink->GetName();
-    }
   }
 
   return sink;
@@ -200,7 +194,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
 
   /* create the new sink */
-  m_sink = GetSink(desiredFormat, m_passthrough || m_rawPassthrough);
+  m_sink = GetSink(desiredFormat, m_passthrough || m_rawPassthrough, device);
   if (!m_sink)
   {
     /* we failed, set the data format to defaults so the thread does not block */
@@ -691,10 +685,10 @@ void CSoftAE::Run()
       RunOutputStage();
       /* copy this value so we can unlock the sink */
       channelCount = m_channelCount;
+      size_t size  = m_rawPassthrough ? m_format.m_frameSize : m_frameSize;
     sinkLock.Leave();
 
     CSingleLock mixLock(m_critSection);
-      size_t size = m_rawPassthrough ? m_format.m_frameSize : m_channelCount * sizeof(float);
       if(size > outSize)
       {
         _aligned_free(out);
@@ -824,7 +818,7 @@ inline void CSoftAE::RunOutputStage()
       }
 
       int wroteSamples = wroteFrames * m_channelCount;
-      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_format.m_frameSize;
+      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_frameSize;
       memmove(floatBuffer, floatBuffer + wroteSamples, bytesLeft);
       m_bufferSamples -= wroteSamples;
     }
@@ -969,7 +963,7 @@ inline void CSoftAE::RunBufferStage(void *out)
   else
   {
     float *floatBuffer = (float*)m_buffer;
-    memcpy(floatBuffer + m_bufferSamples, out, m_channelCount * sizeof(float));
+    memcpy(floatBuffer + m_bufferSamples, out, m_frameSize);
   }
   m_bufferSamples += m_channelCount;
 }
