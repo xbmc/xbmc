@@ -753,6 +753,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
         if (procOut.PicInfo.timeStamp && 
+          m_PictureNumber != procOut.PicInfo.picture_number &&
           m_width == (int)procOut.PicInfo.width && 
           m_height == (int)procOut.PicInfo.height)
         {
@@ -900,6 +901,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_timestamp = DVD_NOPTS_VALUE;
         m_color_space = procOut.b422Mode;
         m_color_range = 0;
         m_color_matrix = procOut.PicInfo.colour_primaries;
