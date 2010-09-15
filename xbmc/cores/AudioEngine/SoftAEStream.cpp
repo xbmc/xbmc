@@ -167,7 +167,7 @@ void CSoftAEStream::Initialize()
   m_packet.data       = NULL;
 
   if (!m_frameBuffer)
-    m_frameBuffer = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
+    m_frameBuffer = (uint8_t*)_aligned_malloc(m_format.m_frames * m_bytesPerFrame, 16);
 
   m_resample      = (m_forceResample || m_initSampleRate != AE.GetSampleRate()) && m_initDataFormat != AE_FMT_RAW;
   m_convert       = m_initDataFormat != AE_FMT_FLOAT && m_initDataFormat != AE_FMT_RAW;
@@ -279,17 +279,17 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
   uint8_t *ptr = (uint8_t*)data;
   while(size)
   {
-    size_t room = (m_format.m_frames * m_format.m_frameSize) - m_frameBufferSize;
+    size_t room = (m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize;
     size_t copy = std::min((size_t)size, room);
     if (copy == 0)
-      return ptr - (uint8_t*)data;
+      break;
 
     memcpy(m_frameBuffer + m_frameBufferSize, ptr, copy);
     size              -= copy;
     m_frameBufferSize += copy;
     ptr               += copy;
 
-    if (m_frameBufferSize / m_bytesPerSample < m_format.m_frameSamples)
+    if(m_frameBufferSize / m_bytesPerSample < m_format.m_frameSamples)
       continue;
 
     unsigned int consumed = ProcessFrameBuffer();
@@ -297,6 +297,7 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
     {
       m_frameBufferSize -= consumed;
       memmove(m_frameBuffer + consumed, m_frameBuffer, m_frameBufferSize);
+      continue;
     }
   }
 
@@ -325,7 +326,6 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
-    samples  = frames * m_format.m_channelCount;
     consumed = m_ssrcData.input_frames_used * m_bytesPerFrame;
     if (!frames)
       return consumed;
@@ -334,8 +334,10 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   {
     data     = (uint8_t*)m_convertBuffer;
     frames   = samples / m_format.m_channelCount;
-    consumed = samples * m_bytesPerSample;
+    consumed = frames * m_bytesPerFrame;
   }
+
+  samples = frames * m_format.m_channelCount;
 
   /* buffer the data */
   m_framesBuffered += frames;
@@ -422,8 +424,10 @@ uint8_t* CSoftAEStream::GetFrame()
         /* otherwise ask for more data */
         if (m_cbDataFunc)
         {
+          unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
           lock.Leave();
-          m_cbDataFunc(this, m_cbDataArg, ((m_format.m_frames * m_format.m_frameSize) - m_frameBufferSize) / m_bytesPerFrame);
+          m_cbDataFunc(this, m_cbDataArg, space);
+          lock.Enter();
           if (m_outBuffer.empty())
             return NULL;
         }
@@ -463,10 +467,12 @@ uint8_t* CSoftAEStream::GetFrame()
   else
   {
     /* if the buffer is low, fill up again */ 
-    if(m_cbDataFunc && m_framesBuffered < m_waterLevel)
+    while(m_cbDataFunc && m_framesBuffered < m_waterLevel)
     {
+      unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
       lock.Leave();
-      m_cbDataFunc(this, m_cbDataArg, (m_format.m_frameSize - m_frameBufferSize) / m_bytesPerFrame);
+      m_cbDataFunc(this, m_cbDataArg, space);
+      lock.Enter();
     }
   }
 
