@@ -35,7 +35,7 @@
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
-#define SOFTAE_FRAMES 32
+#define SOFTAE_FRAMES 64
 
 /* typecast the global AE to CSoftAE */
 #define AE (*((CSoftAE*)&AE))

@@ -29,7 +29,7 @@
 #include "utils/SingleLock.h"
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
-#define ALSA_PERIODS 64
+#define ALSA_PERIODS 32
 
 static enum AEChannel ALSAChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
@@ -307,7 +307,7 @@ bool CAESinkALSA::InitializeSW(AEAudioFormat &format)
   snd_pcm_sw_params_set_silence_threshold(m_pcm, sw_params, 0);
   snd_pcm_sw_params_get_boundary         (sw_params, &boundary);
   snd_pcm_sw_params_set_silence_size     (m_pcm, sw_params, boundary);
-  snd_pcm_sw_params_set_avail_min        (m_pcm, sw_params, format.m_frames);
+  snd_pcm_sw_params_set_avail_min        (m_pcm, sw_params, format.m_frames >> 1);
 
   if (snd_pcm_sw_params(m_pcm, sw_params) < 0)
   {
@@ -356,8 +356,7 @@ float CAESinkALSA::GetDelay()
     frames = 0;
   }
 
-  float delay = (double)frames / m_format.m_sampleRate;
-  return delay;
+  return (double)frames / m_format.m_sampleRate;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)

@@ -94,9 +94,9 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough)
 
   IAESink *sink = CAESinkFactory::Create(driver, device, desiredFormat);
 
-  if(sink)
+  if (sink)
   {
-    if(passthrough)
+    if (passthrough)
     {
       m_passthroughDevice = device;
       m_passthroughDriver = sink->GetName();
@@ -289,7 +289,8 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     /* we dont want to re-open the sink for this */
     return;
   }
-  else if (setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
+
+  if (setting.IsEmpty() || setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
   {
     m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
     if (m_passthroughDevice == "custom")
@@ -311,7 +312,8 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     if (m_passthroughDevice.IsEmpty())
       m_passthroughDevice = "default";
   }
-  else if (setting == "audiooutput.audiodevice" || setting == "audiooutput.customdevice")
+
+  if (setting.IsEmpty() || setting == "audiooutput.audiodevice" || setting == "audiooutput.customdevice")
   {
     m_device = g_guiSettings.GetString("audiooutput.audiodevice");
     if (m_device == "custom")
