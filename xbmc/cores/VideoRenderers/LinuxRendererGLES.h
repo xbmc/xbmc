@@ -35,7 +35,7 @@
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-class COpenMax;
+class COpenMaxVideo;
 
 #define NUM_BUFFERS 3
 
@@ -148,7 +148,7 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
 #ifdef HAVE_LIBOPENMAX
-  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
+  virtual void         AddProcessor(COpenMaxVideo* openMax, DVDVideoPicture *picture);
 #endif
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -234,7 +234,7 @@ protected:
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
 #ifdef HAVE_LIBOPENMAX
-    OpenMaxBuffer *openMaxBuffer;
+    OpenMaxVideoBuffer *openMaxBuffer;
 #endif
   };
 

@@ -24,7 +24,7 @@
 
 #include "DVDVideoCodec.h"
 
-class COpenMax;
+class COpenMaxVideo;
 class DllAvUtil;
 class DllAvCodec;
 
@@ -45,7 +45,7 @@ public:
   
 protected:
   const char        *m_pFormatName;
-  COpenMax          *m_omx_decoder;
+  COpenMaxVideo     *m_omx_decoder;
   DVDVideoPicture   m_videobuffer;
 
   // bitstream to bytestream (Annex B) conversion support.

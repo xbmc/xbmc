@@ -41,7 +41,7 @@
 #include "Texture.h"
 #include "../dvdplayer/Codecs/DllSwScale.h"
 #include "../dvdplayer/Codecs/DllAvCodec.h"
-#include "../dvdplayer/DVDCodecs/Video/OpenMax.h"
+#include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 
 using namespace Shaders;
 
@@ -1727,7 +1727,7 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 }
 
 #ifdef HAVE_LIBOPENMAX
-void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *picture)
+void CLinuxRendererGLES::AddProcessor(COpenMaxVideo* openMax, DVDVideoPicture *picture)
 {
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
   buf.openMaxBuffer = picture->openMaxBuffer;

@@ -30,11 +30,13 @@
 #include "GUISettings.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecOpenMax.h"
-#include "OpenMax.h"
+#include "OpenMaxVideo.h"
 #include "utils/log.h"
 #include "Codecs/DllAvCodec.h"
 
-#define CLASSNAME "COpenMax"
+// davilla, is this correct? I would have assumed CDVDVideoCodecOpenMax here
+#define CLASSNAME "COpenMaxVideo"
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecOpenMax::CDVDVideoCodecOpenMax() : CDVDVideoCodec()
@@ -101,7 +103,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       break;
     }
 
-    m_omx_decoder = new COpenMax;
+    m_omx_decoder = new COpenMaxVideo;
     if (!m_omx_decoder->Open(hints))
     {
       CLog::Log(LOGERROR,

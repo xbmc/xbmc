@@ -109,7 +109,7 @@ public:
 #endif
 
 #ifdef HAVE_LIBOPENMAX
-  void AddProcessor(COpenMax *openmax, DVDVideoPicture *picture)
+  void AddProcessor(COpenMaxVideo *openmax, DVDVideoPicture *picture)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
