@@ -32,6 +32,7 @@
 
 #include "DVDClock.h"
 #include "DynamicDll.h"
+#include "SystemInfo.h"
 #include "utils/Atomics.h"
 #include "utils/Thread.h"
 #include "utils/log.h"
@@ -1272,6 +1273,14 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       bcm_input_format.metaDataSz = metaDataSz;
       bcm_input_format.startCodeSz = startCodeSz;
 
+#if defined(__APPLE__)
+      if (g_sysinfo.IsAppleTV() && bcm_input_format.width > 1280)
+      {
+        bcm_input_format.bEnableScaling = true;
+        bcm_input_format.ScalingParams.sWidth = 1280;
+        bcm_input_format.ScalingParams.sHeight = 0;
+      }
+#endif
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
       {
@@ -1288,19 +1297,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         CLog::Log(LOGERROR, "%s: set color space failed", __MODULE_NAME__); 
         break; 
       }
-/*
-      BCM::BC_SCALING_PARAMS bc_scale_params;
-      memset(&bc_scale_params, 0, sizeof(BCM::BC_SCALING_PARAMS));
-      bc_scale_params.sWidth = 600;
-      bc_scale_params.sHeight = 400;
-      //bc_scale_params.DNR = ;
-      res = m_dll->DtsSetScaleParams(m_device, &bc_scale_params);
-      if (res != BCM::BC_STS_SUCCESS)
-      { 
-        CLog::Log(LOGDEBUG, "%s: set scale params failed", __MODULE_NAME__); 
-        break; 
-      }
-*/
     }
     else
 #endif
