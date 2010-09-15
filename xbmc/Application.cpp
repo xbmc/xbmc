@@ -2598,7 +2598,12 @@ bool CApplication::OnAction(const CAction &action)
         // only unmute if volume is to be increased, otherwise leave muted
         if (action.GetID() == ACTION_VOLUME_DOWN)
           return true;
-        SetVolume(1);
+          
+        if (g_settings.m_iPreMuteVolumeLevel == 0)
+          SetVolume(1);
+        else
+          // In muted, unmute
+          Mute();
         return true;
       }
       if (action.GetID() == ACTION_VOLUME_UP)
@@ -4846,9 +4851,10 @@ void CApplication::Mute(void)
     if( g_settings.m_iPreMuteVolumeLevel == 0 )
       SetVolume(100);
     else
+    {
       SetVolume(g_settings.m_iPreMuteVolumeLevel);
-
-    g_settings.m_iPreMuteVolumeLevel = 0;
+      g_settings.m_iPreMuteVolumeLevel = 0;
+    }
   }
   else
   { // mute
