@@ -753,7 +753,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
         if (procOut.PicInfo.timeStamp && 
-          m_PictureNumber != procOut.PicInfo.picture_number &&
+          m_timestamp != procOut.PicInfo.timeStamp &&
           m_width == (int)procOut.PicInfo.width && 
           m_height == (int)procOut.PicInfo.height)
         {
