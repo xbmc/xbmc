@@ -94,6 +94,7 @@ private:
   {
     unsigned int  samples;
     uint8_t      *data;
+    float        *vizData;
   } PPacket;
 
   AEAudioFormat m_format;
@@ -129,6 +130,7 @@ private:
   PPacket            m_newPacket;
   PPacket            m_packet;
   uint8_t           *m_packetPos;
+  float             *m_vizPacketPos;
   bool               m_paused;
   bool               m_draining;
 

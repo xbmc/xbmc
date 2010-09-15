@@ -50,6 +50,7 @@ extern XFILE::CFileShoutcast* m_pShoutCastRipper;
 
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
+  m_audioCallback(NULL    ),
   m_current      (NULL    ),
   m_isPaused     (false   ),
   m_iSpeed       (1       ),
@@ -109,11 +110,19 @@ void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock(m_critSection);
   m_audioCallback = pCallback;
+  if (m_current)
+  {
+    m_current->m_stream->UnRegisterAudioCallback();
+    m_current->m_stream->RegisterAudioCallback(pCallback);
+  }
 }
 
 void PAPlayer::UnRegisterAudioCallback()
 {
   CSingleLock lock(m_critSection);
+  if (m_current)
+    m_current->m_stream->UnRegisterAudioCallback();
+
   m_audioCallback = NULL;
 }
 
