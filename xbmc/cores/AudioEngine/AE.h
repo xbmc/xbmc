@@ -45,7 +45,6 @@ public:
   virtual bool Initialize() = 0;
   virtual void OnSettingsChange(CStdString setting) = 0;
 
-  virtual float GetDelay () = 0;
   virtual float GetVolume() = 0;
   virtual void  SetVolume(float volume) = 0;
 
