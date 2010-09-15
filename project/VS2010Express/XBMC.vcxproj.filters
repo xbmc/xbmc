@@ -4891,6 +4891,9 @@
     <None Include="..\..\system\players\dsplayer\mediasconfig.xml">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
     </None>
+    <None Include="..\..\system\players\dsplayer\Shaders\shaders.xml">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

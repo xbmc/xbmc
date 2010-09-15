@@ -1906,6 +1906,7 @@
     <None Include="..\..\system\players\dsplayer\mediasconfig.xml">
       <SubType>Designer</SubType>
     </None>
+    <None Include="..\..\system\players\dsplayer\Shaders\shaders.xml" />
     <None Include="..\..\xbmc\win32\XBMC.ico" />
   </ItemGroup>
   <ItemGroup>
