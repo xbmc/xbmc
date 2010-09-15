@@ -385,9 +385,9 @@
     </remote>
   </AddonSettings>
   <TextViewer>
-    <keyboard>
+    <remote>
       <back>Close</back>
-    </keyboard>
+    </remote>
   </TextViewer>
   <MyPicturesSettings>
     <remote>
