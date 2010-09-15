@@ -21,13 +21,72 @@
 #include "AEFactory.h"
 #include "SoftAE.h"
 
-IAE* CAEFactory::m_ae = NULL;
+IAE     *CAEFactory::m_ae       = NULL;
+bool     CAEFactory::m_runnable = false;
+CThread *CAEFactory::m_aeThread = NULL;
+bool     CAEFactory::m_ready    = false;
 
 IAE& CAEFactory::GetAE()
 {
-  if (m_ae) return *m_ae;
+  if (m_ae)
+    return *m_ae;
 
-  m_ae = new CSoftAE();
+  /* TODO: CPulseAE */
+
+  /* CSoftAE - this should always be the fallback */
+  m_ae = (IAE*)new CSoftAE();
+  m_runnable = true;
   return *m_ae;
+}
+
+/*
+  We cant just initialize instantly as guisettings need loading first
+  CApplication will call this when its ready 
+*/
+bool CAEFactory::Start()
+{
+  m_ready = true;
+  if (AE.Initialize())
+  {
+    if (m_runnable)
+    {
+      m_aeThread = new CThread((IThreadedAE*)&AE);
+      m_aeThread->Create();
+    }
+    return true;
+  }
+
+  Shutdown();
+  return false;
+}
+
+void CAEFactory::Shutdown()
+{
+  if (!m_ae)
+    return;
+
+  /* if a thread was created the engine is a IThreadedAE */
+  if (m_aeThread)
+  {
+    /* tell the engine to stop and then delete the thread */
+    ((IThreadedAE*)m_ae)->Stop();
+    m_aeThread->StopThread(true);
+    delete m_aeThread;
+    m_aeThread = NULL;
+  }
+
+  /* destruct the engine */
+  delete m_ae;
+  m_ae = NULL;
+}
+
+bool CAEFactory::Restart()
+{
+  Shutdown();
+  GetAE();
+  if (m_ready)
+    return Start();
+
+  return true;
 }
 

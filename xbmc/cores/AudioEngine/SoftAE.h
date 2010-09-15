@@ -27,7 +27,7 @@
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
-#include "AE.h"
+#include "ThreadedAE.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AEPacketizer.h"
@@ -40,11 +40,12 @@
 #include "cores/IAudioCallback.h"
 
 /* forward declarations */
+class IThreadedAE;
 class CSoftAEStream;
 class CSoftAESound;
 class IAESink;
 
-class CSoftAE : public IAE
+class CSoftAE : public IThreadedAE
 {
 public:
   /* this should NEVER be called directly, use CAEFactory */
@@ -89,9 +90,6 @@ public:
   unsigned int        GetSinkFrameSize () {return m_format.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
-
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
 
 #ifdef __SSE__
   inline static void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
@@ -153,16 +151,13 @@ private:
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
   void                                     *m_buffer;
   unsigned int                              m_bufferSamples;
-  float                                     m_vizBuffer[512];
-  unsigned int                              m_vizBufferSamples;
 
-  /* the channel remapper and audioCallback */
+  /* the channel remapper  */
   CAERemap        m_remap;
   float          *m_remapped;
   size_t          m_remappedSize;
   uint8_t        *m_converted;
   size_t          m_convertedSize;
-  IAudioCallback *m_audioCallback;
 
   /* thread run stages */
   void         MixSounds        (unsigned int samples);

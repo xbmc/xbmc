@@ -65,12 +65,10 @@ CSoftAE::CSoftAE():
   m_rawPassthrough  (false),
   m_passthrough     (false),
   m_buffer          (NULL ),
-  m_vizBufferSamples(0    ),
   m_remapped        (NULL ),
   m_remappedSize    (0    ),
   m_converted       (NULL ),
-  m_convertedSize   (0    ),
-  m_audioCallback   (NULL )
+  m_convertedSize   (0    )
 {
 }
 
@@ -255,14 +253,6 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   /* re-init streams */
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     (*itt)->Initialize();
-
-  /* re-init the callback */
-  if (m_audioCallback)
-  {
-    m_vizBufferSamples = 0;
-    m_audioCallback->OnDeinitialize();
-    m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
-  }
 
   return m_sink != NULL;
 }
@@ -508,22 +498,6 @@ unsigned int CSoftAE::GetSampleRate()
     return (float)m_format.m_sampleRate / ((float)m_packetizer->GetPacketSize() / (float)m_packetizer->GetFrameSize());
 
   return m_format.m_sampleRate;
-}
-
-void CSoftAE::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  CSingleLock lock(m_critSection);
-  m_vizBufferSamples = 0;
-  m_audioCallback = pCallback;
-  if (m_audioCallback)
-    m_audioCallback->OnInitialize(m_channelCount, m_format.m_sampleRate, 32);
-}
-
-void CSoftAE::UnRegisterAudioCallback()
-{
-  CSingleLock lock(m_critSection);
-  m_audioCallback = NULL;
-  m_vizBufferSamples = 0;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
@@ -799,21 +773,6 @@ inline void CSoftAE::RunOutputStage()
     if (!m_rawPassthrough)
     {
       float *floatBuffer = (float*)m_buffer;
-
-      /* if we have an audio callback, use it */
-      if (m_audioCallback)
-      {
-        unsigned int room = 512 - m_vizBufferSamples;
-        unsigned int copy = room > samples ? samples : room;
-        memcpy(m_vizBuffer + m_vizBufferSamples, m_buffer, copy * sizeof(float));
-        m_vizBufferSamples += copy;
-
-        if (m_vizBufferSamples == 512)
-        {
-          m_audioCallback->OnAudioData(m_vizBuffer, 512);
-          m_vizBufferSamples = 0;
-        }
-      }
 
       /* mix in gui sounds */
       MixSounds(samples);

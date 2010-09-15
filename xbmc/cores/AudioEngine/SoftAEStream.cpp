@@ -44,22 +44,24 @@ using namespace std;
 
 CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
   IAEStream(dataFormat, sampleRate, channelCount, channelLayout, options),
-  m_convertBuffer  (NULL ),
-  m_valid          (false),
-  m_delete         (false),
-  m_volume         (1.0f ),
-  m_rgain          (1.0f ),
-  m_convertFn      (NULL ),
-  m_frameBuffer    (NULL ),
-  m_frameBufferSize(0    ),
-  m_ssrc           (NULL ),
-  m_framesBuffered (0    ),
-  m_paused         (false),
-  m_draining       (false),
-  m_cbDataFunc     (NULL ),
-  m_cbDrainFunc    (NULL ),
-  m_cbDataArg      (NULL ),
-  m_cbDrainArg     (NULL )
+  m_convertBuffer   (NULL ),
+  m_valid           (false),
+  m_delete          (false),
+  m_volume          (1.0f ),
+  m_rgain           (1.0f ),
+  m_convertFn       (NULL ),
+  m_frameBuffer     (NULL ),
+  m_frameBufferSize (0    ),
+  m_ssrc            (NULL ),
+  m_framesBuffered  (0    ),
+  m_paused          (false),
+  m_draining        (false),
+  m_cbDataFunc      (NULL ),
+  m_cbDrainFunc     (NULL ),
+  m_cbDataArg       (NULL ),
+  m_cbDrainArg      (NULL ),
+  m_vizBufferSamples(0    ),
+  m_audioCallback   (NULL )
 {
   m_ssrcData.data_out = NULL;
 
@@ -70,6 +72,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_freeOnDrain       = options & AESTREAM_FREE_ON_DRAIN;
   m_ownsPostProc      = options & AESTREAM_OWNS_POST_PROC;
   m_forceResample     = options & AESTREAM_FORCE_RESAMPLE;
+
   Initialize();
 }
 
@@ -78,8 +81,9 @@ void CSoftAEStream::InitializeRemap()
   CSingleLock lock(m_critSection);
   if (m_initDataFormat != AE_FMT_RAW)
   {
-    /* re-init the remapper */
-    m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
+    /* re-init the remappers */
+    m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
+    m_vizRemap.Initialize(AE.GetChannelLayout(), CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true);
 
     /*
     if the layout has changed we need to drop data that was already remapped
@@ -151,16 +155,20 @@ void CSoftAEStream::Initialize()
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
   m_format.m_frameSize     = m_bytesPerFrame;
 
-  if (m_initDataFormat != AE_FMT_RAW && !m_remap.Initialize(m_initChannelLayout, AE.GetChannelLayout(), false))
+  if (m_initDataFormat != AE_FMT_RAW)
   {
-    m_valid = false;
-    return;
-  }
+    if (
+      !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout, false) ||
+      !m_vizRemap.Initialize(m_aeChannelLayout  , CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
+    {
+      m_valid = false;
+      return;
+    }
 
-  if (m_initDataFormat == AE_FMT_RAW)
-    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
-  else
     m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frameSamples * sizeof(float), 16);
+  }
+  else
+    m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
 
   m_newPacket.samples = 0;
   m_packet.samples    = 0;
@@ -477,6 +485,19 @@ uint8_t* CSoftAEStream::GetFrame()
       }
   }
 
+  /* we have a frame, if we have a viz we need to hand the data to it */
+  if (m_audioCallback)
+  {
+    /* downmix to 2.0 */
+    m_vizRemap.Remap((float*)ret, m_vizBuffer + m_vizBufferSamples, 1);
+    m_vizBufferSamples += 2;
+    if (m_vizBufferSamples == 512)
+    {
+      m_audioCallback->OnAudioData(m_vizBuffer, 512);
+      m_vizBufferSamples = 0;
+    }
+  }
+
   return ret;
 }
 
@@ -585,5 +606,21 @@ void CSoftAEStream::SetResampleRatio(double ratio)
   CSingleLock lock(m_critSection);
   src_set_ratio(m_ssrc, ratio);
   m_ssrcData.src_ratio = ratio;
+}
+
+void CSoftAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  m_vizBufferSamples = 0;
+  m_audioCallback = pCallback;
+  if (m_audioCallback)
+    m_audioCallback->OnInitialize(2, m_initSampleRate, 32);
+}
+
+void CSoftAEStream::UnRegisterAudioCallback()
+{
+  CSingleLock lock(m_critSection);
+  m_audioCallback = NULL;
+  m_vizBufferSamples = 0;
 }
 

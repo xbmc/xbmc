@@ -28,6 +28,7 @@
 #include "AudioDecoder.h"
 #include "utils/CriticalSection.h"
 
+#include "cores/IAudioCallback.h"
 #include "AudioEngine/AEFactory.h"
 #include "AudioEngine/AEStream.h"
 #include "AudioEngine/PostProc/AEPPAnimationFade.h"
@@ -60,6 +61,8 @@ public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
 
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
+  virtual void UnRegisterAudioCallback();
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file);
   virtual void OnNothingToQueueNotify();

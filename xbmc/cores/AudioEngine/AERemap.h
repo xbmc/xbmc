@@ -27,7 +27,7 @@ public:
   CAERemap();
   ~CAERemap();
 
-  bool Initialize(const AEChLayout input, const AEChLayout output, bool finalStage);
+  bool Initialize(const AEChLayout input, const AEChLayout output, bool finalStage, bool forceNormalize = false);
   void Remap(float *in, float *out, unsigned int frames);
 
 private:
