@@ -268,4 +268,9 @@
       <button id="6">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

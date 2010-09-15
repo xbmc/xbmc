@@ -284,4 +284,9 @@
       <button id="6">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

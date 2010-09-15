@@ -347,6 +347,11 @@
       <b>Close</b>
     </gamepad>
   </AddonSettings>
+  <TextViewer>
+    <gamepad>
+      <b>Close</b>
+    </gamepad>
+  </TextViewer>
   <MyPicturesSettings>
     <gamepad>
       <B>PreviousMenu</B>
