@@ -796,11 +796,12 @@ inline void CSoftAE::RunOutputStage()
   
       if (m_convertFn)
       {
-        if(m_convertedSize < m_format.m_frames * m_format.m_frameSize)
+        unsigned int newSize = m_format.m_frames * m_format.m_frameSize;
+        if(m_convertedSize < newSize)
         {
-          m_convertedSize = m_format.m_frames * m_format.m_frameSize;
           _aligned_free(m_converted);
-          m_converted = (uint8_t *)_aligned_malloc(m_convertedSize, 16);
+          m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
+          m_convertedSize = newSize;
         }
         m_convertFn(m_remapped, rSamples, m_converted);
         if (m_sink)

@@ -54,6 +54,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_frameBufferSize (0    ),
   m_ssrc            (NULL ),
   m_framesBuffered  (0    ),
+  m_vizPacketPos    (NULL ),
   m_paused          (false),
   m_draining        (false),
   m_cbDataFunc      (NULL ),
@@ -83,7 +84,7 @@ void CSoftAEStream::InitializeRemap()
   {
     /* re-init the remappers */
     m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
-    m_vizRemap.Initialize(AE.GetChannelLayout(), CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true);
+    m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true);
 
     /*
     if the layout has changed we need to drop data that was already remapped
@@ -105,7 +106,8 @@ void CSoftAEStream::Initialize()
   if (m_valid)
   {
     InternalFlush();
-    _aligned_free(m_newPacket.data);
+    _aligned_free(m_newPacket.data   );
+    _aligned_free(m_newPacket.vizData);
 
     if (m_convert)
       _aligned_free(m_convertBuffer);
@@ -159,7 +161,7 @@ void CSoftAEStream::Initialize()
   {
     if (
       !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout, false) ||
-      !m_vizRemap.Initialize(m_aeChannelLayout  , CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
+      !m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
     {
       m_valid = false;
       return;
@@ -170,9 +172,11 @@ void CSoftAEStream::Initialize()
   else
     m_newPacket.data = (uint8_t*)_aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16);
 
+  m_newPacket.vizData = NULL;
   m_newPacket.samples = 0;
   m_packet.samples    = 0;
   m_packet.data       = NULL;
+  m_packet.vizData    = NULL;
 
   if (!m_frameBuffer)
     m_frameBuffer = (uint8_t*)_aligned_malloc(m_format.m_frames * m_bytesPerFrame, 16);
@@ -392,6 +396,15 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
         pkt.data    = (uint8_t*)_aligned_malloc(m_aePacketSamples * sizeof(float), 16);
         m_remap.Remap((float*)m_newPacket.data, (float*)pkt.data, m_format.m_frames);
 
+        /* downmix for the viz if we have one */
+        if (m_audioCallback)
+        {
+          pkt.vizData = (float*)_aligned_malloc(m_format.m_frames * 2 * sizeof(float), 16);
+          m_vizRemap.Remap((float*)m_newPacket.data, pkt.vizData, m_format.m_frames);
+        }
+        else
+          pkt.vizData = NULL;
+
         /* add the packet to the output */
         m_outBuffer.push_back(pkt);
         m_newPacket.samples = 0;
@@ -410,8 +423,10 @@ uint8_t* CSoftAEStream::GetFrame()
   /* if the packet is empty, advance to the next one */
   if(!m_packet.samples)
   {
-    _aligned_free(m_packet.data);
-    m_packet.data = NULL;
+    _aligned_free(m_packet.data   );
+    _aligned_free(m_packet.vizData);
+    m_packet.data    = NULL;
+    m_packet.vizData = NULL;
     
     /* no more packets, return null */
     if (m_outBuffer.empty())
@@ -448,16 +463,23 @@ uint8_t* CSoftAEStream::GetFrame()
     m_packet = m_outBuffer.front();
     m_outBuffer.pop_front();
 
-    m_packetPos = m_packet.data;
+    m_packetPos    = m_packet.data;
+    m_vizPacketPos = m_packet.vizData;
   }
   
   /* fetch one frame of data */
   uint8_t *ret      = (uint8_t*)m_packetPos;
+  float   *vizData  = m_vizPacketPos;
+
   m_packet.samples -= m_aeChannelCount;
   if (m_initDataFormat == AE_FMT_RAW)
     m_packetPos += m_bytesPerFrame;
   else
+  {
     m_packetPos += m_aeChannelCount * sizeof(float);
+    if(vizData)
+      m_vizPacketPos += 2;
+  }
 
   --m_framesBuffered;
 
@@ -470,6 +492,7 @@ uint8_t* CSoftAEStream::GetFrame()
       lock.Leave();
       m_cbDrainFunc(this, m_cbDrainArg, 0);
       m_cbDrainFunc = NULL;
+      lock.Enter();
     }
   }
   else
@@ -486,10 +509,9 @@ uint8_t* CSoftAEStream::GetFrame()
   }
 
   /* we have a frame, if we have a viz we need to hand the data to it */
-  if (m_audioCallback)
+  if (m_audioCallback && vizData)
   {
-    /* downmix to 2.0 */
-    m_vizRemap.Remap((float*)ret, m_vizBuffer + m_vizBufferSamples, 1);
+    memcpy(m_vizBuffer + m_vizBufferSamples, vizData, 2 * sizeof(float));
     m_vizBufferSamples += 2;
     if (m_vizBufferSamples == 512)
     {
@@ -549,7 +571,9 @@ void CSoftAEStream::InternalFlush()
     PPacket p = m_outBuffer.front();
     m_outBuffer.pop_front();    
     _aligned_free(p.data);
-    p.data = NULL;    
+    _aligned_free(p.vizData);
+    p.data    = NULL;
+    p.vizData = NULL;
   };
 
   /* flush any post-proc objects */

@@ -41,7 +41,7 @@
 #define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
 
 #ifndef INT24_MAX
-#define INT24_MAX 0x7FFFFF
+#define INT24_MAX (0x7FFFFF)
 #endif
 
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
@@ -512,7 +512,7 @@ unsigned int CAEConvert::Float_S24LE(float *data, const unsigned int samples, ui
   /* work around invalid alignment */
   while((((uintptr_t)data & 0xF) || ((uintptr_t)dest & 0xF)) && count > 0)
   {
-    dst[0] = MathUtils::round_int(data[0] * (INT24_MAX.5f));
+    dst[0] = MathUtils::round_int(data[0] * (INT24_MAX+.5f));
     ++data;
     ++dst;
     --count;
