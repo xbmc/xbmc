@@ -23,7 +23,9 @@
 #include "EndianSwap.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
 #include <memory.h>
 
 #define WRITE_STR(str, size, file) fwrite(str, size, 1, file)
