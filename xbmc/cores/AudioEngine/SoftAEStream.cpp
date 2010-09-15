@@ -467,13 +467,14 @@ uint8_t* CSoftAEStream::GetFrame()
   else
   {
     /* if the buffer is low, fill up again */ 
-    while(m_cbDataFunc && m_framesBuffered < m_waterLevel)
-    {
-      unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-      lock.Leave();
-      m_cbDataFunc(this, m_cbDataArg, space);
-      lock.Enter();
-    }
+    if (m_cbDataFunc)
+      while(!m_draining && m_framesBuffered < m_waterLevel)
+      {
+        unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
+        lock.Leave();
+        m_cbDataFunc(this, m_cbDataArg, space);
+        lock.Enter();
+      }
   }
 
   return ret;
