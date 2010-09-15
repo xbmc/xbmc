@@ -186,13 +186,14 @@ bool CSoftAESound::Initialize()
        /* read in each sample */
        unsigned int s;
        m_samples = (float*)_aligned_malloc(sizeof(float) * m_sampleCount, 16);
+       uint8_t *raw = (uint8_t *)_aligned_malloc(bytesPerSample, 16);
        for(s = 0; s < m_sampleCount; ++s)
        {
-         DECLARE_ALIGNED(16, uint8_t, raw[bytesPerSample]);
          if (file->Read(raw, bytesPerSample) != bytesPerSample)
          {
            CLog::Log(LOGERROR, "CSoftAESound::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
            _aligned_free(m_samples);
+           _aligned_free(raw);
            m_samples = NULL;
            file->Close();
            delete file;
@@ -202,6 +203,7 @@ bool CSoftAESound::Initialize()
          /* convert the sample to float */
          convertFn(raw, 1, &m_samples[s]);
        }
+       _aligned_free(raw);
 
        static AEChannel layouts[][3] = {
          {AE_CH_FC, AE_CH_NULL},

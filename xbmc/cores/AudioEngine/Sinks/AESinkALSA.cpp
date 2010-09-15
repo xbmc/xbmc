@@ -391,3 +391,94 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
   return ret;
 }
 
+void CAESinkALSA::EnumerateDevices (AEDeviceList &devices, bool passthrough)
+{
+  if (!passthrough)
+  {
+    devices.push_back(AEDevice("default", "alsa:default"));
+    devices.push_back(AEDevice("iec958" , "alsa:plug:iec958"));
+    devices.push_back(AEDevice("hdmi"   , "alsa:plug:hdmi"));
+  }
+  else
+  {
+    devices.push_back(AEDevice("iec958" , "alsa:iec958"));
+    devices.push_back(AEDevice("hdmi"   , "alsa:hdmi"));
+  }
+
+  int n_cards = -1;
+  int numberCards = 0;
+  while(snd_card_next( &n_cards ) == 0 && n_cards >= 0)
+    numberCards++;
+
+  if (numberCards <= 1)
+    return;
+
+  snd_ctl_t *handle;
+  snd_ctl_card_info_t *info;
+  snd_ctl_card_info_alloca( &info );
+  CStdString strHwName;
+  n_cards = -1;
+
+  while(snd_card_next( &n_cards ) == 0 && n_cards >= 0)
+  {
+    strHwName.Format("hw:%d", n_cards);
+    if (snd_ctl_open( &handle, strHwName.c_str(), 0 ) == 0)
+    {
+      if (snd_ctl_card_info( handle, info ) == 0)
+      {
+        CStdString strReadableCardName = snd_ctl_card_info_get_name( info );
+        CStdString strCardName = snd_ctl_card_info_get_id( info );
+
+        if (!passthrough)
+          GenSoundLabel(devices, "default", strCardName, strReadableCardName);
+        GenSoundLabel(devices, "iec958", strCardName, strReadableCardName);
+        GenSoundLabel(devices, "hdmi", strCardName, strReadableCardName);
+      }
+      else
+        CLog::Log(LOGERROR,"((ALSAENUM))control hardware info (%i): failed.\n", n_cards );
+      snd_ctl_close( handle );
+    }
+    else
+      CLog::Log(LOGERROR,"((ALSAENUM))control open (%i) failed.\n", n_cards );
+  }
+}
+
+bool CAESinkALSA::SoundDeviceExists(const CStdString& device)
+{
+  void **hints, **n;
+  char *name;
+  bool retval = false;
+
+  if (snd_device_name_hint(-1, "pcm", &hints) == 0)
+  {
+    for (n = hints; *n; n++)
+    {
+      if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
+      {
+        CStdString strName = name;
+        free(name);
+        if (strName.find(device) != CStdString::npos)
+        {
+          retval = true;
+          break;
+        }
+      }
+    }
+    snd_device_name_free_hint(hints);
+  }
+  return retval;
+}
+
+void CAESinkALSA::GenSoundLabel(AEDeviceList& devices, CStdString sink, CStdString card, CStdString readableCard)
+{
+  CStdString deviceString;
+  deviceString.Format("%s:CARD=%s", sink, card.c_str());
+  if (sink.Equals("default") || SoundDeviceExists(deviceString.c_str()))
+  {
+    CStdString finalSink;
+    finalSink.Format("alsa:%s", deviceString.c_str());
+    CStdString label = readableCard + " " + sink;
+    devices.push_back(AEDevice(label, finalSink));
+  }
+}
+

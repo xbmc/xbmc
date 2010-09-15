@@ -40,9 +40,10 @@ public:
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat format, const CStdString device);
 
-  virtual void         Stop          ();
-  virtual float        GetDelay      ();
-  virtual unsigned int AddPackets    (uint8_t *data, unsigned int frames);
+  virtual void         Stop            ();
+  virtual float        GetDelay        ();
+  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
+  static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
   unsigned int GetChannelCount(const AEAudioFormat format);
   CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device);
@@ -60,5 +61,8 @@ private:
 
   bool InitializeHW(AEAudioFormat &format);
   bool InitializeSW(AEAudioFormat &format);
+
+  static bool SoundDeviceExists(const CStdString& device);
+  static void GenSoundLabel(AEDeviceList& devices, CStdString sink, CStdString card, CStdString readableCard);
 };
 

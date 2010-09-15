@@ -55,15 +55,15 @@ CStdString CAESinkOSS::GetDeviceUse(AEAudioFormat format, CStdString device)
 #ifdef OSS4
   if (format.m_dataFormat == AE_FMT_RAW)
   {
-    if (device.find_first_of('/') == -1)
+    if (device.find_first_of('/') != 0)
       return "/dev/dsp_ac3";
     return device;
   }
  
-  if (device.find_first_of('/') == -1)
+  if (device.find_first_of('/') != 0)
     return "/dev/dsp_multich";
 #else
-  if (device.find_first_of('/') == -1)
+  if (device.find_first_of('/') != 0)
     return "/dev/dsp";
 #endif
 
@@ -383,5 +383,9 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames)
   }
 
   return wrote / m_format.m_frameSize;
+}
+
+void CAESinkOSS::EnumerateDevices (AEDeviceList &devices, bool passthrough)
+{
 }
 

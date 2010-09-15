@@ -25,6 +25,8 @@
 #include <cmath>
 #include <stdint.h>
 
+#include "PlatformDefs.h"
+
 #ifdef __SSE2__
 #include <xmmintrin.h>
 #endif
@@ -38,6 +40,8 @@ namespace MathUtils
     if (x <= INT32_MIN) return INT32_MIN;
     if (x >= INT32_MAX) return INT32_MAX;
 
+    const float round_value = 0.5f;
+
     #if defined(__SSE2__)
       return _mm_cvtsd_si32(_mm_set_sd(x));
 
@@ -47,14 +51,14 @@ namespace MathUtils
       {
         fld x
         fadd st, st (0)
-        fadd 0.5f
-        fistpl i
+        fadd round_value
+        fistp i
         sar i, 1
       }
       return i;
 
     #elif defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
-      return floor(x + 0.5f);
+      return floor(x + round_value);
 
     #else
       int32_t i;
@@ -63,7 +67,7 @@ namespace MathUtils
         "fadd %%st(1)\n"
         "fistpl %0\n"
         "sarl $1, %0\n"
-        : "=m"(i) : "u"(0.5f), "t"(x) : "st"
+        : "=m"(i) : "u"(round_value), "t"(x) : "st"
       );
       return i;
 

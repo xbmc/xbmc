@@ -34,6 +34,9 @@
 
 #include "cores/IAudioCallback.h"
 
+typedef std::pair<CStdString, CStdString> AEDevice;
+typedef std::vector<AEDevice> AEDeviceList;
+
 /* forward declarations */
 class IAEStream;
 class IAESound;
@@ -70,6 +73,8 @@ public:
 
   virtual unsigned int   GetSampleRate() = 0;
   virtual IAEPacketizer *GetPacketizer() = 0;
+
+  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
 
   /* vizualization callback register function */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;

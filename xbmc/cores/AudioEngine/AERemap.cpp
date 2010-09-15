@@ -237,7 +237,7 @@ void CAERemap::ResolveMix(const AEChannel from, const AEChLayout to)
          if (toInfo->srcIndex[l].index == fromLvl->index)
          {
            toLvl = &toInfo->srcIndex[l];
-           toLvl->level = (fromLvl->level + toLvl->level) / sqrt(toCh + 1);
+           toLvl->level = (fromLvl->level + toLvl->level) / sqrt((float)toCh + 1.0f);
            break;
          }
 
@@ -246,7 +246,7 @@ void CAERemap::ResolveMix(const AEChannel from, const AEChLayout to)
 
       toLvl = &toInfo->srcIndex[toInfo->srcCount++];
       toLvl->index = fromLvl->index;
-      toLvl->level = fromLvl->level / sqrt(toCh);
+      toLvl->level = fromLvl->level / sqrt((float)toCh);
     }
   }
 

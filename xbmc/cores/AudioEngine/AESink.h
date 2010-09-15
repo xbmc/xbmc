@@ -21,6 +21,7 @@
  */
 
 #include "utils/Thread.h"
+#include "AE.h"
 #include "AEAudioFormat.h"
 #include "StdString.h"
 #include <stdint.h>
