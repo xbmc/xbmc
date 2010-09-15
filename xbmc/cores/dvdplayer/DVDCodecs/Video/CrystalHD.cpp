@@ -389,6 +389,7 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
     {
       double framerate;
 
+      m_framerate_timestamp += duration;
       framerate = DVD_TIME_BASE / duration;
       // qualify framerate, we don't care about absolute value, just
       // want to to verify range. Timestamp could be borked so ignore
@@ -405,7 +406,6 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
         case 30:
         case 25:
         case 24:
-          m_framerate_timestamp += duration;
           m_framerate_cnt++;
           m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
         break;
