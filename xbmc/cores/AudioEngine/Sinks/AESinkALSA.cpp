@@ -286,8 +286,9 @@ success:
   /* set the format parameters */
   format.m_sampleRate   = sampleRate;
   format.m_frames       = snd_pcm_bytes_to_frames(m_pcm, periodSize);
-  format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
   format.m_frameSamples = format.m_frames * format.m_channelCount;
+  format.m_frameSize    = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
+//snd_pcm_frames_to_bytes(m_pcm, 1);
   m_timeout             = -1;//((float)format.m_frames / sampleRate * 1000.0f) * 2;
 
   snd_pcm_hw_params_free(hw_params_copy);
