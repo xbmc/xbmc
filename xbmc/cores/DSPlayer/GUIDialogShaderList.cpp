@@ -40,6 +40,8 @@
 #define CONTROL_BTN_UP              2200
 #define CONTROL_BTN_DOWN            2300
 
+#if 0
+
 CGUIDialogShaderList::CGUIDialogShaderList(void)
     : CGUIDialog(WINDOW_DIALOG_SHADER_LIST, "DialogShaderList.xml")
 {
@@ -230,4 +232,5 @@ void CGUIDialogShaderList::UpdateControls()
   }
 }
 
+#endif
 #endif

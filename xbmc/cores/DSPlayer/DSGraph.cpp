@@ -23,6 +23,8 @@
 
 #include "DSGraph.h"
 #include "DSPlayer.h"
+#include "Filters/RendererSettings.h"
+#include "PixelShaderList.h"
 #include "winsystemwin32.h" //Important needed to get the right hwnd
 #include "WindowingFactory.h" //important needed to get d3d object and device
 #include "Util.h"
@@ -167,6 +169,7 @@ void CDSGraph::CloseFile()
 
     CStreamsManager::Destroy();
     CChaptersManager::Destroy();
+    g_dsSettings.pixelShaderList->DisableAll();
 
     UnloadGraph();
 

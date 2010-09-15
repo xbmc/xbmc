@@ -2012,7 +2012,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
           hr = m_pD3DDev->SetPixelShader(NULL);
         }
 
-        if (!g_dsSettings.pixelShaderList->GetActivatedPixelShaders().empty())
+        if (!g_dsSettings.pixelShaderList->HasEnabledShaders())
         {
           static __int64 counter = 0;
           static long start = clock();
@@ -2035,27 +2035,30 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
           Com::SmartPtr<IDirect3DSurface9> pRT;
           hr = m_pD3DDev->GetRenderTarget(0, &pRT);
-        
-          PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
 
-          for (PixelShaderVector::iterator it = psVec.begin();
-            it != psVec.end(); it++)
           {
-            pVideoTexture = m_pVideoTexture[dst];
+            CSingleLock lock(g_dsSettings.pixelShaderList->m_accessLock);
+            PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
 
-            hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
-            CExternalPixelShader *Shader = *it;
+            for (PixelShaderVector::iterator it = psVec.begin();
+              it != psVec.end(); it++)
+            {
+              pVideoTexture = m_pVideoTexture[dst];
 
-            if (!Shader->m_pPixelShader)
-              Shader->Compile(m_pPSC.get());
+              hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
+              CExternalPixelShader *Shader = *it;
 
-            hr = m_pD3DDev->SetPixelShader(Shader->m_pPixelShader);
+              if (!Shader->m_pPixelShader)
+                Shader->Compile(m_pPSC.get());
 
-            TextureCopy(m_pVideoTexture[src]);
+              hr = m_pD3DDev->SetPixelShader(Shader->m_pPixelShader);
+
+              TextureCopy(m_pVideoTexture[src]);
           
-            src = dst;
-            if(++dst >= m_nNbDXSurface+2) 
-              dst = m_nNbDXSurface;
+              src = dst;
+              if(++dst >= m_nNbDXSurface+2) 
+                dst = m_nNbDXSurface;
+            }
           }
 
           hr = m_pD3DDev->SetRenderTarget(0, pRT);

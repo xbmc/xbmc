@@ -78,8 +78,6 @@ void CPixelShaderList::Load()
 {
   LoadXMLFile(g_settings.GetUserDataItem("dsplayer/shaders.xml"));
   LoadXMLFile("special://xbmc/system/players/dsplayer/shaders/shaders.xml");
-
-  UpdateActivatedList();
 }
 
 bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
@@ -117,13 +115,9 @@ bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
         shaders = shaders->NextSiblingElement("shader");
         continue;
       }
-      if (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameIndex),
-        shader->GetIndex())) != m_pixelShaders.end())
-        CLog::Log(LOGERROR, "%s A pixel shader with the index %d already exists", __FUNCTION__, shader->GetIndex());
-      else
       {
-        CLog::Log(LOGINFO, "Loaded pixel shader \"%s\", id %d, %s", shader->GetName().c_str(),
-          shader->GetId(), shader->IsEnabled() ? "enabled" : "disabled");
+        CLog::Log(LOGINFO, "Loaded pixel shader \"%s\", id %d", shader->GetName().c_str(),
+          shader->GetId());
         m_pixelShaders.push_back(shader.release());
       }
     }
@@ -136,7 +130,6 @@ bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
 
 void CPixelShaderList::UpdateActivatedList()
 {
-  Sort();
   CSingleLock lock(m_accessLock);
 
   m_activatedPixelShaders.clear();
@@ -148,50 +141,28 @@ void CPixelShaderList::UpdateActivatedList()
   }
 }
 
-void CPixelShaderList::MoveUp(uint32_t index)
+void CPixelShaderList::EnableShader(const uint32_t id, bool enabled /*= true*/)
 {
-  if (index > m_pixelShaders.size() || index < 1)
+  CSingleLock lock(m_accessLock);
+
+  PixelShaderVector::iterator it = (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameID),
+    id)));
+  if (it == m_pixelShaders.end())
     return;
 
-  // Swap
-  {
-    CSingleLock lock(m_accessLock);
-    m_pixelShaders[index]->SetIndex(index - 1);
-    m_pixelShaders[index - 1]->SetIndex(index);
-  }
-
-  Sort();
+  std::string status = enabled ? "enabled" : "disabled";
+  CLog::Log(LOGDEBUG, __FUNCTION__" Shader \"%s\" %s", (*it)->GetName().c_str(), status.c_str());
+  (*it)->SetEnabled(enabled);
+  UpdateActivatedList();
 }
 
-void CPixelShaderList::MoveDown(uint32_t index)
+void CPixelShaderList::DisableAll()
 {
-  if (index > m_pixelShaders.size() - 1)
-    return;
+  CSingleLock lock(m_accessLock);
 
-  // Swap
-  {
-    CSingleLock lock(m_accessLock);
-    m_pixelShaders[index]->SetIndex(index + 1);
-    m_pixelShaders[index + 1]->SetIndex(index);
-  }
-
-  Sort();
-}
-
-void CPixelShaderList::Sort()
-{
-  {
-    CSingleLock lock(m_accessLock);
-    std::sort(m_pixelShaders.begin(), m_pixelShaders.end(), SortPixelShader);
-
-    for (uint32_t i = 0; i < m_pixelShaders.size(); i++)
-      m_pixelShaders[i]->SetIndex(i);
-  }
-}
-
-bool HasSameIndex(uint32_t index, CExternalPixelShader* p2)
-{
-  return index == p2->GetIndex();
+  for (PixelShaderVector::iterator it = m_pixelShaders.begin();
+    it != m_pixelShaders.end(); ++it)
+    (*it)->SetEnabled(false);
 }
 
 bool HasSameID(uint32_t id, CExternalPixelShader* p2)

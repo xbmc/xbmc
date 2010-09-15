@@ -29,6 +29,8 @@
 
 class CGUIListGroup;
 
+#if 0
+
 class CGUIDialogShaderList :
       public CGUIDialog
 {
@@ -43,3 +45,5 @@ protected:
 
   CGUIListGroup * m_mainGrp;
 };
+
+#endif

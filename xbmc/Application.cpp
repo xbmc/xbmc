@@ -1065,9 +1065,6 @@ bool CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
-#ifdef HAS_DS_PLAYER
-  g_windowManager.Add(new CGUIDialogShaderList);
-#endif
 
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 

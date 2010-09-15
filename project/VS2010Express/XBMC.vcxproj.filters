@@ -2331,6 +2331,9 @@
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4873,6 +4876,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Variant.h">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h">
+      <Filter>cores\dsplayer\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

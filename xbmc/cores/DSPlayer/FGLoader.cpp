@@ -23,6 +23,8 @@
 
 #include "FGLoader.h"
 #include "DSPlayer.h"
+#include "Filters/RendererSettings.h"
+#include "PixelShaderList.h"
 #include "streamsmanager.h"
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/SmartPtr.h"
@@ -542,6 +544,19 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 
   if ( FAILED(InsertFilter(filter, CGraphFilters::Get()->Audio)))
     goto clean;
+
+  // Shaders
+  {
+    std::vector<uint32_t> shaders;
+    if (SUCCEEDED(CFilterCoreFactory::GetShaders(pFileItem, shaders, CGraphFilters::Get()->IsUsingDXVADecoder())))
+    {
+      for (std::vector<uint32_t>::const_iterator it = shaders.begin();
+        it != shaders.end(); ++it)
+      {
+        g_dsSettings.pixelShaderList->EnableShader(*it);
+      }
+    }
+  }
 
   CLog::Log(LOGDEBUG,"%s All filters added to the graph", __FUNCTION__);
  

@@ -304,6 +304,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
@@ -1075,6 +1076,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h" />

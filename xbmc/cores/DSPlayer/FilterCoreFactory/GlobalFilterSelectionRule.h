@@ -28,6 +28,7 @@
 #include "tinyXML\tinyxml.h"
 #include "log.h"
 #include "FilterSelectionRule.h"
+#include "ShadersSelectionRule.h"
 #include "DllLibCurl.h"
 #include "RegExp.h"
 
@@ -48,6 +49,7 @@ public:
     delete m_pVideo;
     delete m_pExtras;
     delete m_pAudioRenderer;
+    delete m_pShaders;
 
     //CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__); Log Spam
   }
@@ -98,6 +100,11 @@ public:
     m_pExtras->GetFilters(item, vecCores, dxva);
   }
 
+  void GetShaders(const CFileItem& item, std::vector<uint32_t>& shaders, bool dxva = false)
+  {
+    m_pShaders->GetShaders(item, shaders, dxva);
+  }
+
 private:
   int        m_url;
   CStdString m_name;
@@ -109,6 +116,7 @@ private:
   CFilterSelectionRule * m_pAudio;
   CFilterSelectionRule * m_pExtras;
   CFilterSelectionRule * m_pAudioRenderer;
+  CShadersSelectionRule * m_pShaders;
 
   int GetTristate(const char* szValue) const
   {
@@ -155,5 +163,8 @@ private:
 
     // Audio renderer rules
     m_pAudioRenderer = new CFilterSelectionRule(pRule->FirstChildElement("audiorenderer"), "audiorenderer");
+
+    // Shaders
+    m_pShaders = new CShadersSelectionRule(pRule->FirstChildElement("shaders"));
   }
 };

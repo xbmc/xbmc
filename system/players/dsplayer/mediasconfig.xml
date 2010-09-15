@@ -74,6 +74,21 @@
         <extra filter="ac3filter" />
         <extra filter="dcgraphiceq" />
       </extra>-->
+      
+      <!-- Shaders example
+      
+      Must starts with <shaders> and ends with </shaders>
+      
+      Inside, specify your shader like that :
+        <shader id="x" dxva="true" videocodec="h264" audiocodec="mp3" ... />
+        
+      x is the ID of the shader, declared in the /system/DSPlayer/Shaders/shaders.xml file
+      -->
+      <!--
+      <shaders>
+        <shader id="7" />
+      </shaders>
+      -->
     </rule>
     <rule filetypes="wmv">
       <source filter="wmasfreader" />

@@ -212,6 +212,17 @@ HRESULT CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::ve
   return S_OK;
 }
 
+HRESULT CFilterCoreFactory::GetShaders(const CFileItem& pFileItem, std::vector<uint32_t>& shaders, bool dxva /*= false*/)
+{
+  shaders.clear();
+  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
+  if (! pRule)
+    return E_FAIL;
+
+  pRule->GetShaders(pFileItem, shaders, dxva);
+  return S_OK;
+}
+
 CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, bool showError )
 {
   CStdString filter = _filter;

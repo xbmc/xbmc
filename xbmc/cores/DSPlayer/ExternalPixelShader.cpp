@@ -28,18 +28,6 @@
 #include "XMLUtils.h"
 #include "Settings.h"
 
-bool SortPixelShader(CExternalPixelShader* p1, CExternalPixelShader* p2)
-{
-  bool bReturn = false;
-  if ((p1->IsEnabled() && p2->IsEnabled())
-    || (!p1->IsEnabled() && !p2->IsEnabled()))
-    return p1->GetIndex() < p2->GetIndex();
-  else if (p1->IsEnabled() && !p2->IsEnabled())
-    return true;
-  else
-    return false;
-}
- 
 HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
 {
   if (! pCompiler)
@@ -66,7 +54,7 @@ HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
 }
 
 CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
-  : m_id(-1), m_valid(false), m_enabled(false), m_index(0)
+  : m_id(-1), m_valid(false), m_enabled(false)
 {
   m_name = xml->Attribute("name");
   xml->Attribute("id", & m_id);
@@ -76,11 +64,6 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
 
   if (! XMLUtils::GetString(xml, "profile", m_SourceTarget))
     return;
-
-  if (! XMLUtils::GetUInt(xml, "index", m_index))
-    return;
-
-  XMLUtils::GetBoolean(xml, "enabled", m_enabled);
 
   if (! XFILE::CFile::Exists(m_SourceFile))
   {
@@ -107,7 +90,7 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
 }
 
 CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strProfile)
-  : m_id(-1), m_valid(false), m_enabled(false), m_index(0), m_SourceFile(strFile),
+  : m_id(-1), m_valid(false), m_enabled(false), m_SourceFile(strFile),
   m_SourceTarget(strProfile)
 {
   if (! XFILE::CFile::Exists(m_SourceFile))
@@ -173,21 +156,6 @@ TiXmlElement CExternalPixelShader::ToXML()
     text.SetValue( m_SourceTarget );
     profile.InsertEndChild(text);
     shader.InsertEndChild(profile);
-  }
-
-  {
-    TiXmlElement enabled("enabled");
-    text.SetValue( (IsEnabled() ? "true" : "false") );
-    enabled.InsertEndChild(text);
-    shader.InsertEndChild(enabled);
-  }
-
-  {
-    TiXmlElement index("index");
-    CStdString strIndex; strIndex.Format("%d", m_index);
-    text.SetValue( strIndex );
-    index.InsertEndChild(text);
-    shader.InsertEndChild(index);
   }
 
   return shader;

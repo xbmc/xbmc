@@ -39,9 +39,6 @@ public:
   bool IsValid() const { return m_valid; }
   int GetId() const { return m_id; }
 
-  uint32_t GetIndex() const { return m_index; }
-  void SetIndex(const uint32_t index) { m_index = index; }
-
   bool IsEnabled() const { return m_enabled; }
   void SetEnabled(const bool enabled) { m_enabled = enabled; }
 
@@ -59,7 +56,6 @@ private:
   int m_id;
   bool m_valid;
   bool m_enabled;
-  uint32_t m_index;
 };
 
 bool SortPixelShader(CExternalPixelShader* p1, CExternalPixelShader* p2);

@@ -61,6 +61,7 @@ public:
   static HRESULT GetVideoFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
+  static HRESULT GetShaders(const CFileItem& pFileItem, std::vector<uint32_t>& shaders, bool dxva = false);
 
   static CFGFilter* GetFilterFromName(const CStdString& filter, bool showError = true);
 
