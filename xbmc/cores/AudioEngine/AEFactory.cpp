@@ -22,8 +22,6 @@
 #include "SoftAE.h"
 
 IAE     *CAEFactory::m_ae       = NULL;
-bool     CAEFactory::m_runnable = false;
-CThread *CAEFactory::m_aeThread = NULL;
 bool     CAEFactory::m_ready    = false;
 
 IAE& CAEFactory::GetAE()
@@ -35,7 +33,6 @@ IAE& CAEFactory::GetAE()
 
   /* CSoftAE - this should always be the fallback */
   m_ae = (IAE*)new CSoftAE();
-  m_runnable = true;
   return *m_ae;
 }
 
@@ -46,34 +43,19 @@ IAE& CAEFactory::GetAE()
 bool CAEFactory::Start()
 {
   m_ready = true;
-  if (AE.Initialize())
+  if (!AE.Initialize())
   {
-    if (m_runnable)
-    {
-      m_aeThread = new CThread((IThreadedAE*)&AE);
-      m_aeThread->Create();
-    }
-    return true;
+    Shutdown();
+    return false;
   }
 
-  Shutdown();
-  return false;
+  return true;
 }
 
 void CAEFactory::Shutdown()
 {
   if (!m_ae)
     return;
-
-  /* if a thread was created the engine is a IThreadedAE */
-  if (m_aeThread)
-  {
-    /* tell the engine to stop and then delete the thread */
-    ((IThreadedAE*)m_ae)->Stop();
-    m_aeThread->StopThread(true);
-    delete m_aeThread;
-    m_aeThread = NULL;
-  }
 
   /* destruct the engine */
   delete m_ae;

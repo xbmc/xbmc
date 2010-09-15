@@ -62,10 +62,6 @@ public:
   /* free's sounds that have expired */
   virtual void GarbageCollect() = 0;
 
-  virtual unsigned int   GetSampleRate() = 0;
-  virtual IAEPacketizer *GetPacketizer() = 0;
-
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
-
 };
 

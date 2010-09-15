@@ -324,12 +324,26 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   /* convert the data if we need to */
   unsigned int samples;
   if (m_convert)
+  {
+    data    = (uint8_t*)m_convertBuffer;
     samples = m_convertFn(m_frameBuffer, m_frameBufferSize / m_bytesPerSample, m_convertBuffer);
+  }
   else
+  {
+    data    = (uint8_t*)m_frameBuffer;
     samples = m_frameBufferSize / m_bytesPerSample;
+  }
 
   if (samples == 0)
     return 0;
+
+  /* post-process the data */
+  if (m_initDataFormat != AE_FMT_RAW)
+  {
+    list<IAEPostProc*>::iterator pitt;
+    for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
+      (*pitt)->Process((float*)data, samples / m_format.m_channelCount);
+  }
 
   /* resample it if we need to */
   if (m_resample)
@@ -385,11 +399,6 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
       }
       else
       {
-        /* post-process the packet */
-        list<IAEPostProc*>::iterator pitt;
-        for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
-          (*pitt)->Process((float*)m_newPacket.data, m_format.m_frames);
-
         /* downmix/remap the data */
         PPacket pkt;
         pkt.samples = m_aePacketSamples;
