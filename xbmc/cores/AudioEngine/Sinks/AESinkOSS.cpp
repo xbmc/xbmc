@@ -36,7 +36,7 @@
   #include <linux/soundcard.h>
 #endif
 
-#define OSS_FRAMES 128
+#define OSS_FRAMES 256
 
 static enum AEChannel OSSChannelMap[7] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_NULL};
@@ -89,7 +89,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   if (ioctl(m_fd, SNDCTL_DSP_GETFMTS, &format_mask) == -1)
   {
     close(m_fd);
-    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to get supported formats");
+    CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to get supported formats, assuming AFMT_S16_NE");
     return false;
   }
 
@@ -294,6 +294,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   if (!found)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
 
+
   int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount * OSS_FRAMES;
   int pos = 0;
   while((tmp & 0x1) == 0x0)
@@ -305,6 +306,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   int oss_frag = (4 << 16) | pos;
   if (ioctl(m_fd, SNDCTL_DSP_SETFRAGMENT, &oss_frag) == -1)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the fragment size");
+
 
   int oss_sr = format.m_sampleRate;
   if (ioctl(m_fd, SNDCTL_DSP_SPEED, &oss_sr) == -1)
@@ -324,7 +326,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
 
   format.m_sampleRate    = oss_sr;
   format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
-  format.m_frames        = bi.fragsize / format.m_frameSize / OSS_FRAMES;
+  format.m_frames        = bi.fragsize / format.m_frameSize;
   format.m_frameSamples  = format.m_frames * format.m_channelCount;
   format.m_channelLayout = m_channelLayout;
 
