@@ -139,7 +139,8 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
 
   /* convert needed frames to needed samples */
   needed *= sender->GetChannelCount();
-  while(needed > 0) {
+  while(needed > 0)
+  {
     unsigned int samples = std::min(si->m_decoder.GetDataSize(), needed);
     if (samples == 0) break;
 
@@ -153,7 +154,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   int speed = pap->m_iSpeed;
   if (!si->m_triggered && (speed != 1 && si->m_sent >= si->m_snippetEnd))
   {
-    float step = (speed > 1 ? 0.5 : 1.0f) * ((float)speed / 2.0f);
+    float step = (speed > 1 ? 0.5f : 1.0f) * ((float)speed / 2.0f);
     int   bps  = si->m_stream->GetSampleRate() * si->m_stream->GetChannelCount();
     float time = ((float)si->m_sent / (float)bps) + step;
     if (time <= 0.0f)
