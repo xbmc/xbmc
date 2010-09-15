@@ -243,7 +243,6 @@ protected:
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
-  CPictureBuffer      *m_interlace_buf;
   CEvent              m_ready_event;
   DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
@@ -330,8 +329,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0),
-  m_interlace_buf(NULL)
+  m_framerate(0.0)
 {
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
@@ -345,9 +343,6 @@ CMPCOutputThread::~CMPCOutputThread()
   while(m_FreeList.Count())
     delete m_FreeList.Pop();
     
-  if (m_interlace_buf)
-    delete m_interlace_buf;
-
   if (m_sw_scale_ctx)
     m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
   delete m_dllSwScale;
@@ -913,7 +908,6 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
         {
           m_interlace = true;
-          m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_timeout = 2000;
         m_format_valid = true;
