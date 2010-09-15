@@ -51,10 +51,9 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 #if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
-    if (!FindResolutionFromOverride(fps))
-      FindResolutionFromFpsMatch(fps);
-
-    float weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
+    float weight;
+    if (!FindResolutionFromOverride(fps, weight))
+      FindResolutionFromFpsMatch(fps, weight);
 
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
         g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, weight);
@@ -65,7 +64,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
         m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
 }
 
-bool CBaseRenderer::FindResolutionFromOverride(float fps)
+bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight)
 {
   //try to find a refreshrate from the override
   for (int i = 0; i < (int)g_advancedSettings.m_videoAdjustRefreshOverrides.size(); i++)
@@ -92,6 +91,8 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps)
           CLog::Log(LOGDEBUG, "Found Resolution %s (%d) from override of fps %.3f (fpsmin:%.3f fpsmax:%.3f refreshmin:%.3f refreshmax:%.3f)",
                     g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps,
                     override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
+
+          weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
 
           return true; //fps and refresh match with this override, use this resolution
         }
@@ -122,6 +123,8 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps)
                     g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution,
                     override.refreshmin, override.refreshmax);
 
+          weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
+
           return true; //refresh matches with this fallback, use this resolution
         }
       }
@@ -131,10 +134,9 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps)
   return false; //no override found
 }
 
-void CBaseRenderer::FindResolutionFromFpsMatch(float fps)
+void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 {
   const float maxWeight = 0.0021;
-  float       weight;
 
   m_resolution = FindClosestResolution(fps, 1.0, m_resolution, weight);
 
@@ -178,6 +180,8 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps)
           }
         }
       }
+
+      weight = RefreshWeight(g_settings.m_ResInfo[m_resolution].fRefreshRate, fps);
     }
   }
 }
