@@ -79,12 +79,12 @@ CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
   m_delay = delay;
 }
 
-bool CDelayedMessage::DoWork()
+void CDelayedMessage::Process()
 {
   CStopWatch stopwatch;
   stopwatch.Start();
 
-  while(1)
+  while(!m_bStop && !g_application.m_bStop)
   {
     float elapsed = stopwatch.GetElapsedMilliseconds();
 
@@ -96,15 +96,13 @@ bool CDelayedMessage::DoWork()
     else
       sleeptime = (float)m_delay - elapsed;
 
-    if (g_application.m_bStop)
-      return false;
-
     Sleep(sleeptime);
   }
 
-  g_application.getApplicationMessenger().SendMessage(m_msg, false);
+  if (m_bStop || g_application.m_bStop)
+    return;
 
-  return true;
+  g_application.getApplicationMessenger().SendMessage(m_msg, false);
 }
 
 CApplicationMessenger::~CApplicationMessenger()

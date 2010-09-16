@@ -327,7 +327,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     g_application.m_pPlayer->Pause();
     ThreadMessage msg = {TMSG_MEDIA_PAUSE};
     CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
-    CJobManager::GetInstance().AddJob(pauseMessage, NULL);
+    pauseMessage->Create(true);
   }
 
   if (res >= RES_DESKTOP)
