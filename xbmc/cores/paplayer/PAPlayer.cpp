@@ -82,7 +82,7 @@ bool PAPlayer::CloseFile()
   }
 
   m_iSpeed = 1;
-
+  m_callback.OnPlayBackStopped();
   return true;
 }
 
@@ -326,12 +326,12 @@ bool PAPlayer::PlayNextStream()
   if (m_current)
   {
     m_current->m_stream->UnRegisterAudioCallback();
-
     m_finishing.push_back(m_current);
     if (!crossFade)
     {
       if (!m_current->m_stream->IsDraining())
         m_current->m_stream->Drain();
+
       if (m_fastOpen) m_current->m_stream->Flush();
       m_fastOpen = false;
     }

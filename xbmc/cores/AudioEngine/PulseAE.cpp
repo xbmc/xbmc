@@ -1,6 +1,7 @@
 #include "PulseAE.h"
 #include "PulseStream.h"
 #include "PulseSound.h"
+#include "utils/SingleLock.h"
 #include "log.h"
 #include <pulse/pulseaudio.h>
 
@@ -87,8 +88,8 @@ bool CPulseAE::Initialize()
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
     return false;
   }
-  pa_threaded_mainloop_lock(m_MainLoop);
 
+  pa_threaded_mainloop_lock(m_MainLoop);
   if (pa_threaded_mainloop_start(m_MainLoop) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
@@ -131,7 +132,10 @@ void CPulseAE::SetVolume(float volume)
 
 IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  return new CPulseStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelCount, channelLayout, options);
+  CPulseStream *st = new CPulseStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelCount, channelLayout, options);
+  CSingleLock lock(m_lock);
+  m_streams.push_back(st);
+  return st;
 }
 
 IAESound *CPulseAE::GetSound(CStdString file)
@@ -148,6 +152,18 @@ void CPulseAE::FreeSound(IAESound *sound)
 
 void CPulseAE::GarbageCollect()
 {
+  CSingleLock lock(m_lock);
+  std::list<CPulseStream*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end();)
+  {
+    if ((*itt)->IsDestroyed())
+    {
+      delete (*itt);
+      itt = m_streams.erase(itt);
+      continue;
+    }
+    ++itt;
+  }
 }
 
 void CPulseAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
