@@ -248,7 +248,7 @@ void CPulseStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
   m_AudioDrainCallback = cbFunc;
   m_AudioDrainArg = arg;
 }
-#include "system.h"
+
 unsigned int CPulseStream::AddData(void *data, unsigned int size)
 {
   if (!m_Initialized)
@@ -286,6 +286,7 @@ float CPulseStream::GetDelay()
   pa_usec_t latency = 0;
   pa_threaded_mainloop_lock(m_MainLoop);
 
+  WaitForOperation(pa_stream_update_timing_info(m_Stream, NULL, NULL), m_MainLoop, "update_timing_info");
   if (pa_stream_get_latency(m_Stream, &latency, NULL) == PA_ERR_NODATA)
     CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
 
