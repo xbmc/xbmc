@@ -69,14 +69,17 @@ public:
   /* vizualization callback register function */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
+
 private:
   static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata);
   static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata);
   static void StreamStateCallback(pa_stream *s, void *userdata);
+  static void StreamDrainComplete(pa_stream *s, int success, void *userdata);
 
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
   bool Cork(bool cork);
 
+  bool m_Destroyed;
   bool m_Initialized;
   bool m_Paused;
 
@@ -101,5 +104,7 @@ private:
   unsigned int m_options;
   unsigned int m_frameSize;
   unsigned int m_frameSamples;
+
+  bool m_draining;
 };
 
