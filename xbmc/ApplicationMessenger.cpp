@@ -62,7 +62,6 @@
 
 #include "PlayList.h"
 #include "FileItem.h"
-#include "utils/Stopwatch.h"
 
 using namespace std;
 
@@ -81,28 +80,10 @@ CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
 
 void CDelayedMessage::Process()
 {
-  CStopWatch stopwatch;
-  stopwatch.Start();
+  Sleep(m_delay);
 
-  while(!m_bStop && !g_application.m_bStop)
-  {
-    float elapsed = stopwatch.GetElapsedMilliseconds();
-
-    unsigned int sleeptime;
-    if ((float)m_delay - elapsed <= 0.0f)
-      break;
-    else if ((float)m_delay - elapsed > 1000.0f)
-      sleeptime = 1000;
-    else
-      sleeptime = (float)m_delay - elapsed;
-
-    Sleep(sleeptime);
-  }
-
-  if (m_bStop || g_application.m_bStop)
-    return;
-
-  g_application.getApplicationMessenger().SendMessage(m_msg, false);
+  if (!m_bStop)
+    g_application.getApplicationMessenger().SendMessage(m_msg, false);
 }
 
 CApplicationMessenger::~CApplicationMessenger()
