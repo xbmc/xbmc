@@ -32,7 +32,7 @@
 
 #include "DVDClock.h"
 #include "DynamicDll.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 #include "utils/Atomics.h"
 #include "utils/Thread.h"
 #include "utils/log.h"
