@@ -76,58 +76,46 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   {
     case AE_FMT_U8:
       m_SampleSpec.format = PA_SAMPLE_U8;
-      m_bytesPerSample = 1;
       break;
 
     case AE_FMT_S16NE:
       m_SampleSpec.format = PA_SAMPLE_S16NE;
-      m_bytesPerSample = 2;
       break;
     case AE_FMT_S16LE:
       m_SampleSpec.format = PA_SAMPLE_S16LE;
-      m_bytesPerSample = 2;
       break;
     case AE_FMT_S16BE:
       m_SampleSpec.format = PA_SAMPLE_S16BE;
-      m_bytesPerSample = 2;
       break;
 
     case AE_FMT_S24NE:
       m_SampleSpec.format = PA_SAMPLE_S24NE;
-      m_bytesPerSample = 3;
       break;
     case AE_FMT_S24LE:
       m_SampleSpec.format = PA_SAMPLE_S24LE;
-      m_bytesPerSample = 3;
       break;
     case AE_FMT_S24BE:
       m_SampleSpec.format = PA_SAMPLE_S24BE;
-      m_bytesPerSample = 3;
       break;
 
     case AE_FMT_S32NE:
       m_SampleSpec.format = PA_SAMPLE_S32NE;
-      m_bytesPerSample = 4;
       break;
     case AE_FMT_S32LE:
       m_SampleSpec.format = PA_SAMPLE_S32LE;
-      m_bytesPerSample = 4;
       break;
     case AE_FMT_S32BE:
       m_SampleSpec.format = PA_SAMPLE_S32BE;
-      m_bytesPerSample = 4;
       break;
 
     case AE_FMT_FLOAT:
       m_SampleSpec.format = PA_SAMPLE_FLOAT32NE;
-      m_bytesPerSample = 4;
       break;
 
     default:
       CLog::Log(LOGERROR, "PulseAudio: Invalid format %i", format);
       pa_threaded_mainloop_unlock(m_MainLoop);
       m_format = AE_FMT_INVALID;
-      m_bytesPerSample = 1;
       return;
   }
 
@@ -148,18 +136,6 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
 
   if (m_channelLayout)
   {
-
-enum AEChannel
-{
-  AE_CH_NULL = -1,
-  AE_CH_RAW ,
-
-  AE_CH_FL  , AE_CH_FR , AE_CH_FC , AE_CH_LFE, AE_CH_BL , AE_CH_BR , AE_CH_FLOC,
-  AE_CH_FROC, AE_CH_BC , AE_CH_SL , AE_CH_SR , AE_CH_TFL, AE_CH_TFR, AE_CH_TFC ,
-  AE_CH_TC  , AE_CH_TBL, AE_CH_TBR, AE_CH_TBC,
-
-  AE_CH_MAX
-};
     for(int ch = 0; ch < m_channelCount; ++ch)
     {
       switch(m_channelLayout[ch])
@@ -344,8 +320,6 @@ unsigned int CPulseStream::AddData(void *data, unsigned int size)
 
 float CPulseStream::GetDelay()
 {
-  return 0.0f;
-/*
   if (!m_Initialized)
     return 0.0f;
 
@@ -363,7 +337,6 @@ float CPulseStream::GetDelay()
   }
   pa_threaded_mainloop_unlock(m_MainLoop);
   return (float)((float)latency / 1000000.0f);
-*/
 }
 
 bool CPulseStream::IsPaused()
