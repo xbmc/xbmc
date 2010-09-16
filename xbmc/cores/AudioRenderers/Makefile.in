@@ -11,8 +11,7 @@ else
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \
-	ALSADirectSound.cpp \
-	PulseAudioDirectSound.cpp
+	ALSADirectSound.cpp
 endif
 
 LIB=audiorenderers.a

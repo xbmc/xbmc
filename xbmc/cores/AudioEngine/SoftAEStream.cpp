@@ -43,7 +43,6 @@
 using namespace std;
 
 CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
-  IAEStream(dataFormat, sampleRate, channelCount, channelLayout, options),
   m_convertBuffer   (NULL ),
   m_valid           (false),
   m_delete          (false),

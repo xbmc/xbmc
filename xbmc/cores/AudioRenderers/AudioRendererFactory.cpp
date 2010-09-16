@@ -26,10 +26,6 @@
 #include "NullDirectSound.h"
 #include "AudioEngine/AEUtil.h"
 
-#ifdef HAS_PULSEAUDIO
-#include "PulseAudioDirectSound.h"
-#endif
-
 #ifdef _WIN32
 #include "Win32WASAPI.h"
 #include "Win32DirectSound.h"
@@ -133,12 +129,6 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLay
 
   device = deviceString;
 
-/* First pass creation */
-#ifdef HAS_PULSEAUDIO
-  CreateAndReturnOnValidInitialize(CPulseAudioDirectSound);
-#endif
-
-/* incase none in the first pass was able to be created, fall back to os specific */
 #ifdef WIN32
   CreateAndReturnOnValidInitialize(CWin32DirectSound);
 #endif

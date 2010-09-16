@@ -20,6 +20,7 @@
  */
 #include "AEFactory.h"
 #include "SoftAE.h"
+#include "PulseAE.h"
 
 IAE     *CAEFactory::m_ae       = NULL;
 bool     CAEFactory::m_ready    = false;
@@ -29,10 +30,12 @@ IAE& CAEFactory::GetAE()
   if (m_ae)
     return *m_ae;
 
-  /* TODO: CPulseAE */
-
+#ifdef HAS_PULSEAUDIO
+  m_ae = new CPulseAE();
+#endif
   /* CSoftAE - this should always be the fallback */
-  m_ae = (IAE*)new CSoftAE();
+  if (m_ae == NULL)
+    m_ae = (IAE*)new CSoftAE();
   return *m_ae;
 }
 
