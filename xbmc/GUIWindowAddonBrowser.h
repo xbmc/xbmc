@@ -73,10 +73,10 @@ protected:
 
   /*! \brief Check the hash of a downloaded addon with the hash in the repository
    \param addonZip - filename of the zipped addon to check
-   \param jobID - id of the download job (which stores the hash)
+   \param hash - correct hash of the file 
    \return true if the hash matches (or no hash is available on the repo), false otherwise
    */
-  bool CheckHash(const CStdString& addonZip, unsigned int jobID);
+  bool CheckHash(const CStdString& addonZip, const CStdString& hash);
 
   void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);

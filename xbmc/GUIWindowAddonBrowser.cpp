@@ -55,6 +55,16 @@ using namespace ADDON;
 using namespace XFILE;
 using namespace std;
 
+
+struct find_map : public binary_function<CGUIWindowAddonBrowser::JobMap::value_type, unsigned int, bool>
+{
+  bool operator() (CGUIWindowAddonBrowser::JobMap::value_type t, unsigned int id) const
+  {
+    return (t.second.jobID == id);
+  }
+};
+
+
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
@@ -242,45 +252,33 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
 }
 
 bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
-                                       unsigned int jobID)
+                                       const CStdString& hash)
 {
-  CSingleLock lock(m_critSection);
-  JobMap::iterator i;
-  for (i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
+  if (hash.IsEmpty())
+    return true;
+  CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/", zipFile);
+  CStdString md5 = CUtil::GetFileMD5(package);
+  if (!md5.Equals(hash))
   {
-    if (i->second.jobID == jobID)
-    break;
-  }
-  if (i != m_downloadJobs.end() && !i->second.hash.IsEmpty())
-  {
-    CStdString package =
-                CUtil::AddFileToFolder("special://home/addons/packages/",
-                                       zipFile);
-    CStdString md5 = CUtil::GetFileMD5(package);
-    if (!md5.Equals(i->second.hash))
+    CFile::Delete(package);
+    CStdStringArray arr;
+    StringUtils::SplitString(zipFile,"-",arr);
+    AddonPtr addon;
+    CAddonDatabase database;
+    database.Open();
+    database.GetAddon(arr[0],addon);
+    if (addon)
     {
-      CFile::Delete(package);
-      CStdStringArray arr;
-      StringUtils::SplitString(zipFile,"-",arr);
-      AddonPtr addon;
-      CAddonDatabase database;
-      database.Open();
-      database.GetAddon(arr[0],addon);
-      if (addon)
-      {
-        AddonPtr addon2;
-        CAddonMgr::Get().GetAddon(arr[0],addon2);
-        int id = addon2?113:114;
-        g_application.m_guiDialogKaiToast.QueueNotification(
-                                             addon->Icon(),
-                                             addon->Name(),
-                                             g_localizeStrings.Get(id),
-                                             TOAST_DISPLAY_TIME,false);
-      }
-      CLog::Log(LOGERROR,"MD5 mismatch after download %s",
-                zipFile.c_str());
-      return false;
+      AddonPtr addon2;
+      CAddonMgr::Get().GetAddon(arr[0],addon2);
+      g_application.m_guiDialogKaiToast.QueueNotification(
+                                           addon->Icon(),
+                                           addon->Name(),
+                                           g_localizeStrings.Get(addon2 ? 113 : 114),
+                                           TOAST_DISPLAY_TIME, false);
     }
+    CLog::Log(LOGERROR,"MD5 mismatch after download %s", zipFile.c_str());
+    return false;
   }
 
   return true;
@@ -300,7 +298,9 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
         // zip is downloaded - now extract it
         if (CUtil::IsZIP(strFolder))
         {
-          if (!CheckHash(CUtil::GetFileName(strFolder),jobID))
+          CSingleLock lock(m_critSection);
+          JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+          if (i != m_downloadJobs.end() && !CheckHash(CUtil::GetFileName(strFolder), i->second.hash))
             break;
           AddJob(strFolder);
         }
@@ -437,14 +437,9 @@ void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
 void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
 {
   CSingleLock lock(m_critSection);
-  for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
-  {
-    if (i->second.jobID == jobID)
-    {
-      m_downloadJobs.erase(i);
-      return;
-    }
-  }
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
+    m_downloadJobs.erase(i);
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -628,15 +623,12 @@ void CGUIWindowAddonBrowser::OnJobProgress(unsigned int jobID, unsigned int prog
 {
   CSingleLock lock(m_critSection);
   // find this job
-  for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
   {
-    if (i->second.jobID == jobID)
-    {
-      i->second.progress = progress;
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
-      msg.SetStringParam(i->first);
-      g_windowManager.SendThreadMessage(msg);
-      return;
-    }
+    i->second.progress = progress;
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
+    msg.SetStringParam(i->first);
+    g_windowManager.SendThreadMessage(msg);
   }
 }
