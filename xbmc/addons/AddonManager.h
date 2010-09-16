@@ -89,7 +89,7 @@ namespace ADDON
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
      \param enabled Whether to get only enabled or disabled addons
