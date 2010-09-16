@@ -79,7 +79,6 @@ private:
 
   bool m_Initialized;
   bool m_Paused;
-  bool m_inCallback;
 
   pa_stream *m_Stream;
   pa_sample_spec m_SampleSpec;
