@@ -26,10 +26,6 @@
 #include "NullDirectSound.h"
 #include "AudioEngine/AEUtil.h"
 
-#ifdef HAS_PULSEAUDIO
-#include "PulseAudioDirectSound.h"
-#endif
-
 #ifdef _WIN32
 #include "Win32WASAPI.h"
 #include "Win32DirectSound.h"
@@ -132,12 +128,6 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLay
 
   device = deviceString;
 
-/* First pass creation */
-#ifdef HAS_PULSEAUDIO
-  CreateAndReturnOnValidInitialize(CPulseAudioDirectSound);
-#endif
-
-/* incase none in the first pass was able to be created, fall back to os specific */
 #ifdef WIN32
   CreateAndReturnOnValidInitialize(CWin32DirectSound);
 #endif
@@ -155,12 +145,6 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLay
 
 void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
 {
-#ifdef HAS_PULSEAUDIO
-  CPulseAudioDirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
-  if (vAudioSinks.size() > 0)
-    return;
-#endif
-
 #ifdef WIN32
   CWin32DirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
   CWin32WASAPI::EnumerateAudioSinks(vAudioSinks, passthrough);
@@ -175,11 +159,6 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 
 IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsystem, CStdString &renderer)
 {
-#ifdef HAS_PULSEAUDIO
-  if (soundsystem.Equals("pulse"))
-    ReturnNewRenderer(CPulseAudioDirectSound);
-#endif
-
 #ifdef WIN32
   if (soundsystem.Equals("wasapi"))
     ReturnNewRenderer(CWin32WASAPI)
