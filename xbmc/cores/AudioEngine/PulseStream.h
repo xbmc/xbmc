@@ -98,7 +98,6 @@ private:
   enum AEDataFormat m_format;
   unsigned int m_sampleRate;
   unsigned int m_channelCount;
-  unsigned int m_bytesPerSample;
   AEChLayout m_channelLayout;
   unsigned int m_options;
   unsigned int m_frameSize;
