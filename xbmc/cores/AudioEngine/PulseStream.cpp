@@ -331,9 +331,8 @@ void CPulseStream::Drain()
   if (!m_Initialized)
     return;
 
-  printf("drain\n");
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_drain(m_Stream, NULL, this), m_MainLoop, "Drain");
+  WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -342,9 +341,8 @@ void CPulseStream::Flush()
   if (!m_Initialized)
     return;
 
-  printf("flush\n");
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_flush(m_Stream, NULL, this), m_MainLoop, "Flush");
+  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
