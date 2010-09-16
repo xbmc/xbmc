@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 09/03/2010-->
+<!--Translator: Ydatografida-->
+<!--Email: ydatografida@gmail.com-->
+<!--Date of translation: 09/16/2010-->
 <!--$Revision$-->
+<!--Based on english strings version 33881-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -83,6 +86,8 @@
   <string id="110">Δημιουργία μικρογραφιών</string>
   <string id="111">Συντομεύσεις</string>
   <string id="112">Παύση</string>
+  <string id="113">Η ενημέρωση απέτυχε</string>
+  <string id="114">Η εγκατάσταση απέτυχε</string>
   <string id="115">Αντιγραφή</string>
   <string id="116">Μετακίνηση</string>
   <string id="117">Διαγραφή</string>
@@ -162,6 +167,7 @@
   <string id="196">Επιλογή ταινίας:</string>
   <string id="197">Αναζήτηση πληροφοριών %s</string>
   <string id="198">Φόρτωση πληροφοριών ταινίας</string>
+  <string id="199">Διεπαφή ιστού</string>
   <string id="202">Σύνθημα</string>
   <string id="203">Περίληψη πλοκής</string>
   <string id="205">Ψήφοι:</string>
@@ -356,8 +362,6 @@
   <string id="404">Άνεμος</string>
   <string id="405">Σημείο δρόσου</string>
   <string id="406">Υγρασία</string>
-  <string id="407">Από</string>
-  <string id="408">με ένταση</string>
   <string id="409">Προεπιλεγμένα</string>
   <string id="410">Πρόσβαση στο Weather.com</string>
   <string id="411">Πληροφορίες καιρού:</string>
@@ -367,8 +371,8 @@
   <string id="415">Λήψη μικρογραφίας...</string>
   <string id="416">Μη διαθέσιμος πόρος</string>
   <string id="417">Προβολή: Εικόνες</string>
-  <string id="418">Χαμηλή</string>
-  <string id="419">Υψηλή</string>
+  <string id="418">Ελαχ.</string>
+  <string id="419">Μεγ.</string>
   <string id="420">HDMI</string>
   <string id="422">Διαγραφή πληροφοριών άλμπουμ</string>
   <string id="423">Διαγραφή πληροφοριών CD</string>
@@ -1395,9 +1399,6 @@
   <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
   <string id="16319">DXVA</string>
   <string id="16400">Μετα-επεξεργασία βίντεο</string>
-  <string id="16401">Ανενεργή</string>
-  <string id="16402">Ενεργή για τυπική ευκρίνεια (SD)</string>
-  <string id="16403">Πάντα ενεργή</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>

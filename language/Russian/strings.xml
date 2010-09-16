@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: Anton Tarabrin aka TaN-->
 <!--Email: tarabanton@gmail.com-->
-<!--Date of translation: 09/02/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">Программы</string>
@@ -165,6 +163,7 @@
   <string id="196">Выберите фильм:</string>
   <string id="197">Запрос информации от %s</string>
   <string id="198">Загрузка данных о фильме</string>
+  <string id="199">Вэб-интерфейс</string>
   <string id="202">Девиз</string>
   <string id="203">Сюжет</string>
   <string id="205">Голосов:</string>
@@ -305,8 +304,8 @@
   <string id="353">Черный экран</string>
   <string id="354">Следы 'Матрицы'</string>
   <string id="355">Включать заставку через</string>
-  <string id="356">Режим заставки</string>
-  <string id="357">Завершити роботу через</string>
+  <string id="356">Заставка</string>
+  <string id="357">Завершить работу через</string>
   <string id="358">Все альбомы</string>
   <string id="359">Свежие альбомы</string>
   <string id="360">Заставка</string>
@@ -350,13 +349,13 @@
   <string id="399">Единица измерения скорости ветра</string>
   <string id="400">Погода</string>
   <string id="401">Температура</string>
-  <string id="402">Ощущается как</string>
+  <string id="402">Ощущается</string>
   <string id="403">Уровень УФ</string>
   <string id="404">Ветер</string>
   <string id="405">Точка росы</string>
   <string id="406">Влажность</string>
-  <string id="407">--&gt;</string>
-  <string id="408">,  скорость: до</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">По умолчанию</string>
   <string id="410">Подключение к Гидрометеоцентру</string>
   <string id="411">Получение прогноза для:</string>
@@ -366,6 +365,8 @@
   <string id="415">Загрузка эскизов...</string>
   <string id="416">Нет данных</string>
   <string id="417">Вид: Значки крупн.</string>
+  <string id="418">Мин.</string>
+  <string id="419">Макс</string>
   <string id="422">Удалить данные об альбоме</string>
   <string id="423">Удалить данные о CD</string>
   <string id="424">Выбор</string>
@@ -378,7 +379,7 @@
   <string id="431">Не кэшировать</string>
   <string id="432">Удалить фильм из медиатеки</string>
   <string id="433">Действительно удалить '%s'?</string>
-  <string id="434">От %s в %i %s</string>
+  <string id="434">С %s на %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
   <string id="437">Съемный диск</string>
   <string id="438">Открытие файла</string>
   <string id="439">Буферизация</string>
@@ -878,7 +879,7 @@
   <string id="12356">Сменить защиту</string>
   <string id="12357">Защита источника</string>
   <string id="12358">Поле ввода пароля пусто. Повторите ввод.</string>
-  <string id="12360">Главная защита</string>
+  <string id="12360">Общая защита</string>
   <string id="12362">Выключить систему если количество неудачных попыток исчерпано</string>
   <string id="12367">Код защиты неправильный!</string>
   <string id="12368">Введите правильный код защиты!</string>
@@ -911,7 +912,7 @@
   <string id="13009">Выход</string>
   <string id="13010">Спящий режим</string>
   <string id="13011">Ждущий режим</string>
-  <string id="13012">Выход из</string>
+  <string id="13012">Выход</string>
   <string id="13013">Перезагрузка</string>
   <string id="13014">Свернуть</string>
   <string id="13015">Реакция на кнопку питания</string>
@@ -966,6 +967,8 @@
   <string id="13210">Запущен, сработает в %im</string>
   <string id="13211">НАПОМИНАНИЕ!</string>
   <string id="13212">Отменено за %im%is до срабатывания</string>
+  <string id="13213">%2.0fм</string> <!--minutes (left from countdown)--> 
+  <string id="13214">%2.0fс</string> <!--seconds (left from countdown)--> 
   <string id="13249">Искать субтитры в rar-архивах</string>
   <string id="13250">Укажите субтитры...</string>
   <string id="13251">Переместить объект</string>
@@ -1051,7 +1054,7 @@
   <string id="13360">Создавать эскизы</string>
   <string id="13361">Включить микрофон</string>
   <string id="13375">Включить устройство</string>
-  <string id="13376">Том</string>
+  <string id="13376">Громкость</string>
   <string id="13377">Основной режим просмотра</string>
   <string id="13378">Стандартная Яркость</string>
   <string id="13379">Стандартная Контрастность</string>
@@ -1090,7 +1093,7 @@
   <string id="13410">Настройки Last.fm</string>
   <string id="13411">Минимальная скорость вентиляторов</string>
   <string id="13413">Загрузка</string>
-  <string id="13414">Не показывать исполнителей, которые появляются только в сборниках</string>
+  <string id="13414">Не показывать исполнителей, в сборниках</string>
   <string id="13415">Метод обработки</string>
   <string id="13416">Автоопределение</string>
   <string id="13417">Основные шейдеры (ARB)</string>
@@ -1493,8 +1496,8 @@
   <string id="20147">Выключение через 30 мин.</string>
   <string id="20148">Выключение через 1 час</string>
   <string id="20149">Выключение через 2 часа</string>
-  <string id="20150">Особый таймер выключения</string>
-  <string id="20151">Отключить таймер выключения</string>
+  <string id="20150">Выключение через заданное время</string>
+  <string id="20151">Убрать таймер выключения</string>
   <string id="20152">Заблокировать предпочтения для %s</string>
   <string id="20153">Просмотр...</string>
   <string id="20154">Основная информация</string>
@@ -1860,8 +1863,9 @@
   <string id="22000">Обновлять медиатеку при запуске</string>
   <string id="22001">Всегда обновлять медиатеку в фоновом режиме</string>
   <string id="22002">- Суффикс DNS</string>
-  <string id="22004">Задержано на: %2.3fs</string>
-  <string id="22005">Опережает на: %2.3fs</string>
+  <string id="22003">%2.3fс</string>
+  <string id="22004">Задержано на: %2.3fс</string>
+  <string id="22005">Опережает на: %2.3fс</string>
   <string id="22006">Смещение субтитров</string>
   <string id="22007">Производитель OpenGL:</string>
   <string id="22008">Рендерер OpenGL:</string>
