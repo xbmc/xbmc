@@ -162,7 +162,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   needed *= sender->GetChannelCount();
   while(needed > 0)
   {
-    unsigned int samples = std::min(si->m_decoder.GetDataSize(), needed);
+    unsigned int samples = std::min(std::min(si->m_decoder.GetDataSize(), needed), (unsigned int)OUTPUT_SAMPLES);
     if (samples == 0) break;
 
     void *data = si->m_decoder.GetData(samples);

@@ -20,6 +20,7 @@
  */
 
 #include "PulseStream.h"
+#include "AEUtil.h"
 #include "log.h"
 
 static const char *StreamStateToString(pa_stream_state s)
@@ -45,7 +46,6 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
 {
   m_Initialized = false;
   m_Paused = false;
-  m_inCallback = false;
 
   m_Stream = NULL;
   m_AudioCallback = NULL;
@@ -67,50 +67,22 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   printf("Started initializing %i %i\n", sampleRate, channelCount);
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  struct pa_channel_map map;
-
   m_SampleSpec.channels = m_channelCount;
   m_SampleSpec.rate = m_sampleRate;
 
   switch (m_format)
   {
-    case AE_FMT_U8:
-      m_SampleSpec.format = PA_SAMPLE_U8;
-      break;
-
-    case AE_FMT_S16NE:
-      m_SampleSpec.format = PA_SAMPLE_S16NE;
-      break;
-    case AE_FMT_S16LE:
-      m_SampleSpec.format = PA_SAMPLE_S16LE;
-      break;
-    case AE_FMT_S16BE:
-      m_SampleSpec.format = PA_SAMPLE_S16BE;
-      break;
-
-    case AE_FMT_S24NE:
-      m_SampleSpec.format = PA_SAMPLE_S24NE;
-      break;
-    case AE_FMT_S24LE:
-      m_SampleSpec.format = PA_SAMPLE_S24LE;
-      break;
-    case AE_FMT_S24BE:
-      m_SampleSpec.format = PA_SAMPLE_S24BE;
-      break;
-
-    case AE_FMT_S32NE:
-      m_SampleSpec.format = PA_SAMPLE_S32NE;
-      break;
-    case AE_FMT_S32LE:
-      m_SampleSpec.format = PA_SAMPLE_S32LE;
-      break;
-    case AE_FMT_S32BE:
-      m_SampleSpec.format = PA_SAMPLE_S32BE;
-      break;
-
-    case AE_FMT_FLOAT:
-      m_SampleSpec.format = PA_SAMPLE_FLOAT32NE;
-      break;
+    case AE_FMT_U8   : m_SampleSpec.format = PA_SAMPLE_U8; break;
+    case AE_FMT_S16NE: m_SampleSpec.format = PA_SAMPLE_S16NE; break;
+    case AE_FMT_S16LE: m_SampleSpec.format = PA_SAMPLE_S16LE; break;
+    case AE_FMT_S16BE: m_SampleSpec.format = PA_SAMPLE_S16BE; break;
+    case AE_FMT_S24NE: m_SampleSpec.format = PA_SAMPLE_S24NE; break;
+    case AE_FMT_S24LE: m_SampleSpec.format = PA_SAMPLE_S24LE; break;
+    case AE_FMT_S24BE: m_SampleSpec.format = PA_SAMPLE_S24BE; break;
+    case AE_FMT_S32NE: m_SampleSpec.format = PA_SAMPLE_S32NE; break;
+    case AE_FMT_S32LE: m_SampleSpec.format = PA_SAMPLE_S32LE; break;
+    case AE_FMT_S32BE: m_SampleSpec.format = PA_SAMPLE_S32BE; break;
+    case AE_FMT_FLOAT: m_SampleSpec.format = PA_SAMPLE_FLOAT32NE; break;
 
     default:
       CLog::Log(LOGERROR, "PulseAudio: Invalid format %i", format);
@@ -131,39 +103,35 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
 
   m_frameSize = pa_frame_size(&m_SampleSpec);
 
-  // Build the channel map, we dont need to remap, but we still need PCMRemap to handle mono to dual mono stereo
+  struct pa_channel_map map;
   map.channels = m_channelCount;
+  if (!m_channelLayout)
+    m_channelLayout = CAEUtil::GuessChLayout(m_channelCount);
 
-  if (m_channelLayout)
-  {
-    for(int ch = 0; ch < m_channelCount; ++ch)
+  for(unsigned int ch = 0; ch < m_channelCount; ++ch)
+    switch(m_channelLayout[ch])
     {
-      switch(m_channelLayout[ch])
-      {
-        case AE_CH_NULL   : break;
-        case AE_CH_FL     : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
-        case AE_CH_FR     : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
-        case AE_CH_FC     : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
-        case AE_CH_BC     : map.map[ch] = PA_CHANNEL_POSITION_REAR_CENTER          ; break;
-        case AE_CH_BL     : map.map[ch] = PA_CHANNEL_POSITION_REAR_LEFT            ; break;
-        case AE_CH_BR     : map.map[ch] = PA_CHANNEL_POSITION_REAR_RIGHT           ; break;
-        case AE_CH_LFE    : map.map[ch] = PA_CHANNEL_POSITION_LFE                  ; break;
-        case AE_CH_FLOC   : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER ; break;
-        case AE_CH_FROC   : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER; break;
-        case AE_CH_SL     : map.map[ch] = PA_CHANNEL_POSITION_SIDE_LEFT            ; break;
-        case AE_CH_SR     : map.map[ch] = PA_CHANNEL_POSITION_SIDE_RIGHT           ; break;
-        case AE_CH_TC     : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
-        case AE_CH_TFL    : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_LEFT       ; break;
-        case AE_CH_TFR    : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_RIGHT      ; break;
-        case AE_CH_TFC    : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
-        case AE_CH_TBL    : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
-        case AE_CH_TBR    : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
-        case AE_CH_TBC    : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
-      }
+      case AE_CH_NULL: break;
+      case AE_CH_MAX : break;
+      case AE_CH_FL  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
+      case AE_CH_FR  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
+      case AE_CH_FC  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
+      case AE_CH_BC  : map.map[ch] = PA_CHANNEL_POSITION_REAR_CENTER          ; break;
+      case AE_CH_BL  : map.map[ch] = PA_CHANNEL_POSITION_REAR_LEFT            ; break;
+      case AE_CH_BR  : map.map[ch] = PA_CHANNEL_POSITION_REAR_RIGHT           ; break;
+      case AE_CH_LFE : map.map[ch] = PA_CHANNEL_POSITION_LFE                  ; break;
+      case AE_CH_FLOC: map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER ; break;
+      case AE_CH_FROC: map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER; break;
+      case AE_CH_SL  : map.map[ch] = PA_CHANNEL_POSITION_SIDE_LEFT            ; break;
+      case AE_CH_SR  : map.map[ch] = PA_CHANNEL_POSITION_SIDE_RIGHT           ; break;
+      case AE_CH_TC  : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+      case AE_CH_TFL : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_LEFT       ; break;
+      case AE_CH_TFR : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_RIGHT      ; break;
+      case AE_CH_TFC : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+      case AE_CH_TBL : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
+      case AE_CH_TBR : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
+      case AE_CH_TBC : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
     }
-  }
-  else
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 
@@ -273,10 +241,6 @@ void CPulseStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
   m_AudioDataCallback = cbFunc;
   m_AudioDataArg = arg;
-
-  printf("pre SetDataCallback\n");
-  m_AudioDataCallback(this, arg, m_frameSamples);
-  printf("post SetDataCallback\n");
 }
 
 void CPulseStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
@@ -284,29 +248,25 @@ void CPulseStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
   m_AudioDrainCallback = cbFunc;
   m_AudioDrainArg = arg;
 }
-
+#include "system.h"
 unsigned int CPulseStream::AddData(void *data, unsigned int size)
 {
   if (!m_Initialized)
     return size;
 
-  if (!m_inCallback)
+  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_lock(m_MainLoop);
 
   int length = std::min((int)pa_stream_writable_size(m_Stream), (int)size);
-  length = (length / GetFrameSize()) * GetFrameSize();
-
   if (length == 0)
   {
-    if (!m_inCallback)
+    if (!pa_threaded_mainloop_in_thread(m_MainLoop))
       pa_threaded_mainloop_unlock(m_MainLoop);
     return 0;
   }
 
-  printf("AddData\n");
   int written = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
-
-  if (!m_inCallback)
+  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_unlock(m_MainLoop);
 
   if (written < 0)
@@ -314,8 +274,8 @@ unsigned int CPulseStream::AddData(void *data, unsigned int size)
     CLog::Log(LOGERROR, "PulseAudio: AddPackets - pa_stream_write failed\n");
     return 0;
   }
-  else
-    return length;
+
+  return length;
 }
 
 float CPulseStream::GetDelay()
@@ -323,18 +283,12 @@ float CPulseStream::GetDelay()
   if (!m_Initialized)
     return 0.0f;
 
-  pa_usec_t latency = (pa_usec_t) -1;
+  pa_usec_t latency = 0;
   pa_threaded_mainloop_lock(m_MainLoop);
-  while (pa_stream_get_latency(m_Stream, &latency, NULL) < 0)
-  {
-    if (pa_context_errno(m_Context) != PA_ERR_NODATA)
-    {
-      CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
-      break;
-    }
-    // Wait until latency data is available again
-    pa_threaded_mainloop_wait(m_MainLoop);
-  }
+
+  if (pa_stream_get_latency(m_Stream, &latency, NULL) == PA_ERR_NODATA)
+    CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
+
   pa_threaded_mainloop_unlock(m_MainLoop);
   return (float)((float)latency / 1000000.0f);
 }
@@ -362,19 +316,13 @@ bool CPulseStream::IsDestroyed()
 void CPulseStream::Pause()
 {
   if (m_Initialized)
-  {
-    if(!m_Paused)
-      m_Paused = Cork(true);
-  }
+    m_Paused = Cork(true);
 }
 
 void CPulseStream::Resume()
 {
   if (m_Initialized)
-  {
-    if(m_Paused)
-      m_Paused = Cork(false);
-  }
+    m_Paused = Cork(false);
 }
 
 void CPulseStream::Drain()
@@ -382,8 +330,9 @@ void CPulseStream::Drain()
   if (!m_Initialized)
     return;
 
+  printf("drain\n");
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
+  WaitForOperation(pa_stream_drain(m_Stream, NULL, this), m_MainLoop, "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -392,8 +341,9 @@ void CPulseStream::Flush()
   if (!m_Initialized)
     return;
 
+  printf("flush\n");
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
+  WaitForOperation(pa_stream_flush(m_Stream, NULL, this), m_MainLoop, "Flush");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -492,21 +442,11 @@ void CPulseStream::UnRegisterAudioCallback()
 
 void CPulseStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  printf("pre StreamRequestCallback\n");
-
   CPulseStream *stream = (CPulseStream *)userdata;
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
 
   if (stream->m_AudioDataCallback)
-  {
-    stream->m_inCallback = true;
-    printf("pre AudioDataCallback()\n");
-    stream->m_AudioDataCallback(stream, stream->m_AudioDataArg, length);
-    printf("post AudioDataCallback()\n");
-    stream->m_inCallback = false;
-  }
-
-  printf("post StreamRequestCallback\n");
+    stream->m_AudioDataCallback(stream, stream->m_AudioDataArg, length / stream->m_frameSize);
 }
 
 void CPulseStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
@@ -518,7 +458,9 @@ void CPulseStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 void CPulseStream::StreamStateCallback(pa_stream *s, void *userdata)
 {
   CPulseStream *stream = (CPulseStream *)userdata;
-  switch (pa_stream_get_state(s))
+  pa_stream_state_t state = pa_stream_get_state(s);
+
+  switch (state)
   {
     case PA_STREAM_UNCONNECTED:
     case PA_STREAM_CREATING:
@@ -554,10 +496,17 @@ bool CPulseStream::Cork(bool cork)
 {
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  if (!WaitForOperation(pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL), m_MainLoop, cork ? "Pause" : "Resume"))
+  pa_operation *op = pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL);
+  pa_operation_unref(op);
+/*
+  if (!WaitForOperation(op, m_MainLoop, cork ? "Pause" : "Resume"))
     cork = !cork;
-
+*/
+  unsigned int length = pa_stream_writable_size(m_Stream);
   pa_threaded_mainloop_unlock(m_MainLoop);
+
+  if (m_AudioDataCallback && !cork && length)
+    m_AudioDataCallback(this, m_AudioDataArg, length / m_frameSize);
 
   return cork;
 }
