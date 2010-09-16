@@ -105,7 +105,7 @@ namespace ADDON
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void UpdateRepos();
+    void UpdateRepos(bool force=false);
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
