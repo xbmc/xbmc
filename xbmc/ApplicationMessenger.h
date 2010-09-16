@@ -24,6 +24,7 @@
 #include "utils/CriticalSection.h"
 #include "StdString.h"
 #include "Key.h"
+#include "utils/Job.h"
 
 #include <queue>
 
@@ -95,6 +96,17 @@ typedef struct
   LPVOID lpVoid;
 }
 ThreadMessage;
+
+class CDelayedMessage : public CJob
+{
+  public:
+    CDelayedMessage(ThreadMessage& msg, unsigned int delay);
+    virtual bool DoWork();
+
+  private:
+    unsigned int   m_delay;
+    ThreadMessage  m_msg;
+};
 
 class CApplicationMessenger
 {

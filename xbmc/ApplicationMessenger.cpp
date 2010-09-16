@@ -62,8 +62,50 @@
 
 #include "PlayList.h"
 #include "FileItem.h"
+#include "utils/Stopwatch.h"
 
 using namespace std;
+
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+{
+  m_msg.dwMessage  = msg.dwMessage;
+  m_msg.dwParam1   = msg.dwParam1;
+  m_msg.dwParam2   = msg.dwParam2;
+  m_msg.hWaitEvent = msg.hWaitEvent;
+  m_msg.lpVoid     = msg.lpVoid;
+  m_msg.strParam   = msg.strParam;
+  m_msg.params     = msg.params;
+
+  m_delay = delay;
+}
+
+bool CDelayedMessage::DoWork()
+{
+  CStopWatch stopwatch;
+  stopwatch.Start();
+
+  while(1)
+  {
+    float elapsed = stopwatch.GetElapsedMilliseconds();
+
+    unsigned int sleeptime;
+    if ((float)m_delay - elapsed <= 0.0f)
+      break;
+    else if ((float)m_delay - elapsed > 1000.0f)
+      sleeptime = 1000;
+    else
+      sleeptime = (float)m_delay - elapsed;
+
+    if (g_application.m_bStop)
+      return false;
+
+    Sleep(sleeptime);
+  }
+
+  g_application.getApplicationMessenger().SendMessage(m_msg, false);
+
+  return true;
+}
 
 CApplicationMessenger::~CApplicationMessenger()
 {
