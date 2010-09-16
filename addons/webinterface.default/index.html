@@ -9,13 +9,13 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> 
 		<!-- <link href="/images/logo.png" rel="image_src" /> -->
 		<meta name="robots" content="NOINDEX, NOFOLLOW">
-		<link href="/css/core.css?1.1.0" rel="stylesheet" type="text/css">
+		<link href="/css/core.css?1.1.9" rel="stylesheet" type="text/css">
+		<link href="/css/ipad.css?1.0.5" rel="stylesheet" media="only screen and (max-device-width: 1024px)" type="text/css">
 		<script type="text/javascript" src="/js/jquery-1.4.2.js"></script>
 		<script type="text/javascript" src="/js/Launcher.js?1.0.0"></script>
 	</head>
 	<body>
 		<div id="header">
-			<img src="/images/logo.png" alt="XBMC Logo" class="logo">
 			<div id="navigation">
 				<ul>
 					<li id="remoteControl">Remote</li>
@@ -72,6 +72,7 @@
 		<script type="text/javascript">
 			var mediaLibrary = new MediaLibrary();
 			var nowPlayingManager = new NowPlayingManager();
+			applyDeviceFixes();
 		</script>
 	</body>
 </html>

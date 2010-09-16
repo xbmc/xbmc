@@ -259,7 +259,7 @@ NowPlayingManager.prototype = {
 						}
 					}
 				}
-				if (this.autoRefreshData && !this.activeItemTimer) {
+				if ((this.autoRefreshAudioData || this.autoRefreshVideoData) && !this.activeItemTimer) {
 					this.activeItemTimer = 1;
 					setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
 				}
