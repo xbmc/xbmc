@@ -1327,8 +1327,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
   {
-    item = CFileItem(*pItem->GetVideoInfoTag());
-    item.m_lStartOffset = pItem->m_lStartOffset;
+    item.m_strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
     item.SetProperty("original_listitem_url", pItem->m_strPath);
   }
 
