@@ -447,9 +447,11 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
   AddSeparator(ao, "audiooutput.sep3");
 #elif defined(_WIN32)
+  AddSeparator(ao, "audiooutput.sep1");
   if(g_sysinfo.IsVistaOrHigher())
     AddBool(ao, "audiooutput.useexclusivemode", 347, false);
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddString(ao, "audiooutput.passthroughdevice", 546, "Default", SPIN_CONTROL_TEXT);
 #endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);

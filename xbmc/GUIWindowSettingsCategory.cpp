@@ -2848,7 +2848,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 
   int selectedValue = -1;
   AEDeviceList sinkList;
-  AE.EnumerateOutputDevices(sinkList, false);
+  AE.EnumerateOutputDevices(sinkList, Passthrough);
   if (sinkList.size()==0)
   {
     pControl->AddLabel("Error - no devices found", 0);

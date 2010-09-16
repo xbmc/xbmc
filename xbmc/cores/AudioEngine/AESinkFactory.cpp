@@ -83,19 +83,19 @@ IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioF
   return NULL;
 }
 
-void CAESinkFactory::Enumerate(AEDeviceList &devices)
+void CAESinkFactory::Enumerate(AEDeviceList &devices, bool passthrough)
 {
 #ifdef _WIN32
 
   if(g_sysinfo.IsVistaOrHigher())
-    CAESinkWASAPI::EnumerateDevices(devices, false);
+    CAESinkWASAPI::EnumerateDevices(devices, passthrough);
   else
-    CAESinkDirectSound::EnumerateDevices(devices, false);
+    CAESinkDirectSound::EnumerateDevices(devices, passthrough);
     
 #elif defined _LINUX
 
-  CAESinkALSA::EnumerateDevices(devices, false);
-  CAESinkOSS ::EnumerateDevices(devices, false);
+  CAESinkALSA::EnumerateDevices(devices, passthrough);
+  CAESinkOSS ::EnumerateDevices(devices, passthrough);
 
 #elif defined __APPLE__
 

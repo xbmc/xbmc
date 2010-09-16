@@ -365,7 +365,7 @@ void CSoftAE::Deinitialize()
 
 void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-  CAESinkFactory::Enumerate(devices);
+  CAESinkFactory::Enumerate(devices, passthrough);
 }
 
 /* this is used when there is no sink to prevent us running too fast */
