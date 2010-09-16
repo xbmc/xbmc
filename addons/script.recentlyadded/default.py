@@ -4,8 +4,8 @@ from urllib import quote_plus, unquote_plus
 import re
 import sys
 import os
-
-
+import random
+    
 class Main:
     # grab the home window
     WINDOW = Window( 10000 )
@@ -48,7 +48,8 @@ class Main:
         self.TOTALS = params.get( "totals", "" ) == "True"
         self.PLAY_TRAILER = params.get( "trailer", "" ) == "True"
         self.ALARM = int( params.get( "alarm", "0" ) )
-
+        self.RANDOM_ORDER = params.get( "random", "" ) == "True"
+    
     def _set_alarm( self ):
         # only run if user/skinner preference
         if ( not self.ALARM ): return
@@ -105,16 +106,25 @@ class Main:
         totals_xml = xbmc.executehttpapi( "QueryVideoDatabase(%s)" % quote_plus( sql_totals ), )
         mvideos_totals = re.findall( "<field>(.+?)</field>", totals_xml, re.DOTALL )
         # sql statement for tv shows/episodes totals
-        sql_totals = "select count(1), sum(totalCount), sum(watched), sum(watchedCount) from (select tvshow.*, path.strPath as strPath, counts.totalcount as totalCount, counts.watchedcount as watchedCount, counts.totalcount=counts.watchedcount as watched from tvshow join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow join path on path.idpath=tvshowlinkpath.idPath left outer join ( select tvshow.idShow as idShow,count(1) as totalcount, count(files.playCount) as watchedcount from tvshow join tvshowlinkepisode on tvshow.idShow = tvshowlinkepisode.idShow join episode on episode.idEpisode = tvshowlinkepisode.idEpisode join files on files.idFile = episode.idFile group by tvshow.idShow) counts on tvshow.idShow = counts.idShow) as tvshowview"
+        sql_totals = "SELECT tvshow.*, path.strPath AS strPath, counts.totalcount AS totalCount, counts.watchedcount AS watchedCount, counts.totalcount=counts.watchedcount AS watched FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow JOIN path ON path.idpath=tvshowlinkpath.idPath LEFT OUTER join (SELECT tvshow.idShow AS idShow, count(1) AS totalCount, count(files.playCount) AS watchedCount FROM tvshow JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode JOIN files ON files.idFile=episode.idFile GROUP BY tvshow.idShow) counts ON tvshow.idShow=counts.idShow"
         totals_xml = xbmc.executehttpapi( "QueryVideoDatabase(%s)" % quote_plus( sql_totals ), )
-        tvshows_totals = re.findall( "<field>(.+?)</field>", totals_xml, re.DOTALL )
-        # if no tvshows we reset values
-        if ( tvshows_totals[ 0 ] == "0" ):
-            tvshows_totals = ( 0, 0, 0, 0, )
-        # sql statement for tv albums/songs totals
+        # initialize our list
+        tvshows_totals = [ 0 ] * 4
+        records = re.findall( "<record>(.+?)</record>", totals_xml, re.DOTALL )
+        # enumerate thru and total our numbers
+        for record in records:
+            fields = re.findall( "<field>(.*?)</field>", record, re.DOTALL )
+            if ( fields[ 25 ] ):
+                tvshows_totals[ 0 ] += 1
+                tvshows_totals[ 1 ] += int( fields[ 24 ] ) # number of episodes
+                tvshows_totals[ 2 ] += int( fields[ 26 ] ) # watched?
+                tvshows_totals[ 3 ] += int( fields[ 25 ] ) # number of episodes watched
+         # sql statement for tv albums/songs totals
+
         sql_totals = "select count(1), count(distinct strAlbum), count(distinct strArtist) from songview"
         totals_xml = xbmc.executehttpapi( "QueryMusicDatabase(%s)" % quote_plus( sql_totals ), )
         music_totals = re.findall( "<field>(.+?)</field>", totals_xml, re.DOTALL )
+        
         # set properties
         self.WINDOW.setProperty( "Movies.Count" , str( movies_totals[ 0 ] ) or "" )
         self.WINDOW.setProperty( "Movies.Watched" , str( movies_totals[ 1 ] ) or "" )
@@ -129,12 +139,12 @@ class Main:
         self.WINDOW.setProperty( "MusicVideos.Watched" , mvideos_totals[ 1 ] or "" )
         self.WINDOW.setProperty( "MusicVideos.UnWatched" , str( int( mvideos_totals[ 0 ] ) - int( mvideos_totals[ 1 ] ) ) or "" )
         
-        self.WINDOW.setProperty( "TVShows.Count" , tvshows_totals[ 0 ] or "" )
-        self.WINDOW.setProperty( "TVShows.Watched" , tvshows_totals[ 2 ] or "" )
-        self.WINDOW.setProperty( "TVShows.UnWatched" , str( int( tvshows_totals[ 0 ] ) - int( tvshows_totals[ 2 ] ) ) or "" )
-        self.WINDOW.setProperty( "Episodes.Count" , tvshows_totals[ 1 ] or "" )
-        self.WINDOW.setProperty( "Episodes.Watched" , tvshows_totals[ 3 ] or "" )
-        self.WINDOW.setProperty( "Episodes.UnWatched" , str( int( tvshows_totals[ 1 ] ) - int( tvshows_totals[ 3 ] ) ) or "" )
+        self.WINDOW.setProperty( "TVShows.Count" , str( tvshows_totals[ 0 ] ) or "" )
+        self.WINDOW.setProperty( "TVShows.Watched" , str( tvshows_totals[ 2 ] ) or "" )
+        self.WINDOW.setProperty( "TVShows.UnWatched" , str( tvshows_totals[ 0 ] - tvshows_totals[ 2 ] ) or "" )
+        self.WINDOW.setProperty( "Episodes.Count" , str( tvshows_totals[ 1 ] ) or "" )
+        self.WINDOW.setProperty( "Episodes.Watched" , str( tvshows_totals[ 3 ] ) or "" )
+        self.WINDOW.setProperty( "Episodes.UnWatched" , str( tvshows_totals[ 1 ] - tvshows_totals[ 3 ] ) or "" )
         
         self.WINDOW.setProperty( "Music.SongsCount" , music_totals[ 0 ] or "" )
         self.WINDOW.setProperty( "Music.AlbumsCount" , music_totals[ 1 ] or "" )
@@ -144,7 +154,10 @@ class Main:
         # set our unplayed query
         unplayed = ( "", "where playCount isnull ", )[ self.UNPLAYED ]
         # sql statement
-        if ( self.RECENT ):
+        if ( self.RANDOM_ORDER ):
+            # random order
+            sql_movies = "select * from movieview %sorder by RANDOM() limit %d" % ( unplayed, self.LIMIT, )        
+        elif ( self.RECENT ):
             # recently added
             sql_movies = "select * from movieview %sorder by idMovie desc limit %d" % ( unplayed, self.LIMIT, )
         else:
@@ -163,6 +176,7 @@ class Main:
             self.WINDOW.setProperty( "LatestMovie.%d.Title" % ( count + 1, ), fields[ 2 ] )
             self.WINDOW.setProperty( "LatestMovie.%d.Rating" % ( count + 1, ), fields[ 7 ] )
             self.WINDOW.setProperty( "LatestMovie.%d.Year" % ( count + 1, ), fields[ 9 ] )
+            self.WINDOW.setProperty( "LatestMovie.%d.Plot" % ( count + 1, ), fields[ 3 ] )
             self.WINDOW.setProperty( "LatestMovie.%d.RunningTime" % ( count + 1, ), fields[ 13 ] )
             # get cache names of path to use for thumbnail/fanart and play path
             thumb_cache, fanart_cache, play_path = self._get_media( fields[ 25 ], fields[ 24 ] )
@@ -182,7 +196,10 @@ class Main:
         # set our unplayed query
         unplayed = ( "", "where playCount isnull ", )[ self.UNPLAYED ]
         # sql statement
-        if ( self.RECENT ):
+        if ( self.RANDOM_ORDER ):
+            # random order
+            sql_episodes = "select * from episodeview %sorder by RANDOM() limit %d" % ( unplayed, self.LIMIT, )
+        elif ( self.RECENT ):
             # recently added
             sql_episodes = "select * from episodeview %sorder by idepisode desc limit %d" % ( unplayed, self.LIMIT, )
         else:
@@ -201,6 +218,7 @@ class Main:
             self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeTitle" % ( count + 1, ), fields[ 2 ] )
             self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeNo" % ( count + 1, ), "s%02de%02d" % ( int( fields[ 14 ] ), int( fields[ 15 ] ), ) )
             self.WINDOW.setProperty( "LatestEpisode.%d.Rating" % ( count + 1, ), fields[ 5 ] )
+            self.WINDOW.setProperty( "LatestEpisode.%d.Plot" % ( count + 1, ), fields[ 3 ] )
             # get cache names of path to use for thumbnail/fanart and play path
             thumb_cache, fanart_cache, play_path = self._get_media( fields[ 25 ], fields[ 24 ] )
             if ( not os.path.isfile( xbmc.translatePath( "special://profile/Thumbnails/Video/%s/%s" % ( "Fanart", fanart_cache, ) ) ) ):
@@ -252,6 +270,7 @@ class Main:
             self.WINDOW.setProperty( "LatestSong.%d.Year" % ( count + 1, ), fields[ 6 ] )
             self.WINDOW.setProperty( "LatestSong.%d.Artist" % ( count + 1, ), fields[ 24 ] )
             self.WINDOW.setProperty( "LatestSong.%d.Album" % ( count + 1, ), fields[ 21 ] )
+            self.WINDOW.setProperty( "LatestSong.%d.Rating" % ( count + 1, ), fields[ 18 ] )
             path = fields[ 22 ]
             # don't add song for albums list TODO: figure out how toplay albums
             ##if ( not self.ALBUMS ):
