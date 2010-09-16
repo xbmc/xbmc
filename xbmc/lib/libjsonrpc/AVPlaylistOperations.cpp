@@ -44,7 +44,7 @@ JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLaye
   {
     int songId = (parameterObject.isMember("songid") && parameterObject["songid"].isInt()) ? parameterObject["songid"].asInt() : 0;
     if (songId > 0)
-      g_application.getApplicationMessenger().PlayListPlayerPlaySongId(songId, status);
+      status = g_application.getApplicationMessenger().PlayListPlayerPlaySongId(songId);
     else
       g_application.getApplicationMessenger().PlayListPlayerPlay();
   }

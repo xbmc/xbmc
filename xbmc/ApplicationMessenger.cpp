@@ -793,11 +793,13 @@ void CApplicationMessenger::PlayListPlayerPlay(int iSong)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::PlayListPlayerPlaySongId(int songId, bool &returnState)
+bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
+  bool returnState;
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
   tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
+  return returnState;
 }
 
 void CApplicationMessenger::PlayListPlayerNext()

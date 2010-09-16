@@ -118,7 +118,7 @@ public:
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
-  void PlayListPlayerPlaySongId(int songId, bool &returnState);
+  bool PlayListPlayerPlaySongId(int songId);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayListPlayerAdd(int playlist, const CFileItem &item);
