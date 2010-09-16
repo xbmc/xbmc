@@ -71,7 +71,14 @@ protected:
    */
   void SetItemLabel2(CFileItemPtr item);
 
-  void RegisterJob(const CStdString& id, unsigned int jobid);
+  /*! \brief Check the hash of a downloaded addon with the hash in the repository
+   \param addonZip - filename of the zipped addon to check
+   \param jobID - id of the download job (which stores the hash)
+   \return true if the hash matches (or no hash is available on the repo), false otherwise
+   */
+  bool CheckHash(const CStdString& addonZip, unsigned int jobID);
+
+  void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -84,13 +91,15 @@ private:
   class CDownloadJob
   {
   public:
-    CDownloadJob(unsigned int id)
+    CDownloadJob(unsigned int id, const CStdString& thehash)
     {
       jobID = id;
       progress = 0;
+      hash = thehash;
     }
     unsigned int jobID;
     unsigned int progress;
+    CStdString hash;
   };
   typedef std::map<CStdString,CDownloadJob> JobMap;
   JobMap m_downloadJobs;

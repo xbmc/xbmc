@@ -90,6 +90,7 @@
 #endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
+#include "utils/md5.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "Picture.h"
@@ -1305,6 +1306,29 @@ void CUtil::URLEncode(CStdString& strURLData)
     }
   }
   strURLData = strResult;
+}
+
+CStdString CUtil::GetFileMD5(const CStdString& strPath)
+{
+  CFile file;
+  CStdString result;
+  if (file.Open(strPath))
+  {
+    XBMC::XBMC_MD5 md5;
+    char temp[1024];
+    int pos=0;
+    int read=1;
+    while (read > 0 && pos < file.GetLength())
+    {
+      read = file.Read(temp,1024);
+      pos += read;
+      md5.append(temp,read);
+    }
+    md5.getDigest(result);
+    file.Close();
+  }
+
+  return result;
 }
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
