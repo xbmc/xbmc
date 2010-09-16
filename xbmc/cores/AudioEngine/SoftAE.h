@@ -119,6 +119,7 @@ private:
   CCriticalSection m_runLock;         /* released when the thread exits */
   CCriticalSection m_critSection;     /* generic lock */
   CCriticalSection m_critSectionSink; /* sink & configuration lock */
+  CCriticalSection m_soundLock;       /* sound lock */
 
   /* the current configuration */
   float               m_volume;

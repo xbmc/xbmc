@@ -42,10 +42,16 @@ class IAEPacketizer;
 class IAE
 {
 public:
+  /* this is called when it is time to initialize the audio engine */
   virtual bool Initialize() = 0;
-  virtual void OnSettingsChange(CStdString setting) = 0;
 
+  /* implement this to recieve notification of audio settings changes */
+  virtual void OnSettingsChange(CStdString setting) {}
+
+  /* get the playback volume */
   virtual float GetVolume() = 0;
+
+  /* set the playback volume */
   virtual void  SetVolume(float volume) = 0;
 
   /* returns a new stream for data in the specified format */
@@ -53,14 +59,14 @@ public:
 
   /* returns a new sound object */
   virtual IAESound *GetSound(CStdString file) = 0;
-  virtual void FreeSound(IAESound *sound) = 0;
-  virtual void PlaySound(IAESound *sound) = 0;
-  virtual void StopSound(IAESound *sound) = 0;
-  virtual bool IsPlaying(IAESound *sound) = 0;
 
-  /* free's sounds that have expired */
+  /* free a sound object */
+  virtual void FreeSound(IAESound *sound) = 0;
+
+  /* use this to perform periodic garbage collection, like free of sounds when they have expired */
   virtual void GarbageCollect() = 0;
 
+  /* return the output devices that the engine supports */
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
 };
 
