@@ -320,8 +320,6 @@ void CAddonDatabase::DeleteRepository(int idRepo)
 
     CStdString sql = PrepareSQL("delete from repo where id=%i",idRepo);
     m_pDS->exec(sql.c_str());
-    sql = PrepareSQL("delete from broken where addonID in (select addonID from addon join addonlinkrepo on addonlinkrepo.idAddon=addon.id where addonlinkrepo.idRepo=%i)",idRepo);
-    m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addonextra where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
