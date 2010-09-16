@@ -503,10 +503,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   return AddonPtr();
 }
 
-void CAddonMgr::UpdateRepos()
+void CAddonMgr::UpdateRepos(bool force)
 {
   CSingleLock lock(m_critSection);
-  if (m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
+  if (!force && m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
     return;
   m_watch.StartZero();
   VECADDONS addons;
@@ -515,7 +515,7 @@ void CAddonMgr::UpdateRepos()
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
     CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
-    if (!lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
       CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
