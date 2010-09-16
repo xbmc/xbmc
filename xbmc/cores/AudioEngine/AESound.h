@@ -27,18 +27,23 @@ class IAESound
 public:
   /* this should NEVER be called directly, use AE.GetSound */
   IAESound(const CStdString &filename) {}
+
+  /* this should NEVER be called directly, use AE.FreeSound */
   virtual ~IAESound() {}
 
-  virtual void DeInitialize() = 0;
-  virtual bool Initialize() = 0;
-
+  /* play the sound this object represents */
   virtual void Play() = 0;
+
+  /* stop playing the sound this object represents */
   virtual void Stop() = 0;
+
+  /* return true if the sound is currently playing */
   virtual bool IsPlaying() = 0;
 
-  virtual void         SetVolume(float volume) = 0;
-  virtual float        GetVolume() = 0;
-  virtual unsigned int GetSampleCount() = 0;
-  virtual float*       GetSamples    () = 0;
+  /* set the playback volume of this sound */
+  virtual void SetVolume(float volume) = 0;
+
+  /* get the current playback volume of this sound */
+  virtual float GetVolume() = 0;
 };
 

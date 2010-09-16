@@ -240,10 +240,12 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   if (m_rawPassthrough) return true;
 
   /* re-init sounds */
+  CSingleLock soundLock(m_soundLock);
   m_playing_sounds.clear();
   map<const CStdString, CSoftAESound*>::iterator sitt;
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
     sitt->second->Initialize();
+  soundLock.Leave();
 
   /* re-init streams */
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -441,17 +443,24 @@ void CSoftAE::PlaySound(IAESound *sound)
 {
    SoundState ss = {
       sound,
-      sound->GetSamples(),
-      sound->GetSampleCount()
+      ((CSoftAESound*)sound)->GetSamples(),
+      ((CSoftAESound*)sound)->GetSampleCount()
    };
+
+   /* make sure the sink is open */
    CSingleLock lock(m_critSection);
    OpenSink();
+   lock.Leave();
+
+   /* add the sound to the play list */
+   CSingleLock soundLock(m_soundLock);
    m_playing_sounds.push_back(ss);
 }
 
 void CSoftAE::FreeSound(IAESound *sound)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock soundLock(m_soundLock);
+
   /* decrement the sound's ref count */
   ((CSoftAESound*)sound)->DecRefCount();
 
@@ -473,7 +482,7 @@ void CSoftAE::FreeSound(IAESound *sound)
 
 void CSoftAE::GarbageCollect()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_soundLock);
 
   unsigned int ts = CTimeUtils::GetTimeMS();
   map<const CStdString, CSoftAESound*>::iterator itt;
@@ -510,7 +519,7 @@ unsigned int CSoftAE::GetSampleRate()
 
 void CSoftAE::StopSound(IAESound *sound)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_soundLock);
   list<SoundState>::iterator itt;
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
@@ -521,7 +530,7 @@ void CSoftAE::StopSound(IAESound *sound)
 
 bool CSoftAE::IsPlaying(IAESound *sound)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_soundLock);
   list<SoundState>::iterator itt;
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); ++itt)
     if ((*itt).owner == sound) return true;
@@ -737,6 +746,7 @@ inline void CSoftAE::MixSounds(unsigned int samples)
 {
   list<SoundState>::iterator itt;
 
+  CSingleLock lock(m_soundLock);
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
     SoundState *ss = &(*itt);

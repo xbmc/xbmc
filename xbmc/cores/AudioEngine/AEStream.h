@@ -34,54 +34,78 @@ enum {
 class IAEPostProc;
 class IAEStream
 {
-public:
-  typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
-
-
+protected:
+  friend class IAE;
   /* this should NEVER be called directly, use AE.GetStream */
   IAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) {}
   virtual ~IAEStream() {}
 
-  virtual void Initialize() = 0;
+public:
+  typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
+
+  /* use this to destroy & free the stream */
   virtual void Destroy() = 0;
+
+  /* set callbacks for when more data is needed, or when drain has completed */
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer has been drained */
 
-  virtual unsigned int GetFrameSize() = 0;
+  /* add data to the stream */
   virtual unsigned int AddData(void *data, unsigned int size) = 0;
-  virtual uint8_t* GetFrame() = 0;
+
+  /* get the delay till playback of this stream */
   virtual float GetDelay() = 0;
 
-  virtual bool IsPaused     () = 0;
-  virtual bool IsDraining   () = 0;
-  virtual bool IsFreeOnDrain() = 0;
-  virtual bool IsDestroyed  () = 0;
+  /* pause the stream */
+  virtual void Pause() = 0;
 
-  virtual void Pause   () = 0;
+  /* resume the stream */
   virtual void Resume  () = 0;
-  virtual void Drain   () = 0;
-  virtual void Flush   () = 0;
 
-  virtual float GetVolume    () = 0;
-  virtual float GetReplayGain() = 0;
+  /* drain the stream */
+  virtual void Drain() = 0;
+
+  /* returns true if the is stream draining */
+  virtual bool IsDraining() = 0;
+
+  /* flush the stream */
+  virtual void Flush() = 0;
+
+  /* get the streams playback volume */
+  virtual float GetVolume() = 0;
+
+  /* set the streams playback volume */
   virtual void  SetVolume    (float volume) = 0;
+
+  /* get the replay gain of the stream */
+  virtual float GetReplayGain() = 0;
+
+  /* set the replay gain of the stream */
   virtual void  SetReplayGain(float factor) = 0;
 
+  /* append/prepend/remove a post proc filter to/from the stream */
   virtual void AppendPostProc (IAEPostProc *pp) = 0;
   virtual void PrependPostProc(IAEPostProc *pp) = 0;
   virtual void RemovePostProc (IAEPostProc *pp) = 0;
 
-  virtual unsigned int      GetFrameSamples() = 0;
-  virtual unsigned int      GetChannelCount() = 0;
-  virtual unsigned int      GetSampleRate  () = 0;
-  virtual enum AEDataFormat GetDataFormat  () = 0;
-  virtual bool              IsRaw          () = 0;
+  /* returns the size in bytes of one frame */
+  virtual unsigned int GetFrameSize() = 0;
+
+  /* returns the number of channels */
+  virtual unsigned int GetChannelCount() = 0;
+
+  /* returns the stream's sample rate */
+  /* note, this is not updated by Get/Set Resample ratio */
+  virtual unsigned int GetSampleRate() = 0;
+
+  /* returns the data format the stream expects */
+  virtual enum AEDataFormat GetDataFormat() = 0;
 
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio() = 0;
   virtual void   SetResampleRatio(double ratio) = 0;
 
-  /* vizualization callback register function */
+  /* vizualization callback register/unregister function */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual void UnRegisterAudioCallback() = 0;
 };
