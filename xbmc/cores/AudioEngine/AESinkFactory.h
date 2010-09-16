@@ -27,6 +27,6 @@ class CAESinkFactory
 {
 public:
   static IAESink *Create(CStdString &driver, CStdString &device, AEAudioFormat &desiredFormat);
-  static void     Enumerate(AEDeviceList &devices);
+  static void     Enumerate(AEDeviceList &devices, bool passthrough);
 };
 
