@@ -32,6 +32,7 @@
 
 #include "DVDClock.h"
 #include "DynamicDll.h"
+#include "SystemInfo.h"
 #include "utils/Atomics.h"
 #include "utils/Thread.h"
 #include "utils/log.h"
@@ -243,7 +244,6 @@ protected:
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
-  CPictureBuffer      *m_interlace_buf;
   CEvent              m_ready_event;
   DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
@@ -330,8 +330,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0),
-  m_interlace_buf(NULL)
+  m_framerate(0.0)
 {
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
@@ -345,9 +344,6 @@ CMPCOutputThread::~CMPCOutputThread()
   while(m_FreeList.Count())
     delete m_FreeList.Pop();
     
-  if (m_interlace_buf)
-    delete m_interlace_buf;
-
   if (m_sw_scale_ctx)
     m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
   delete m_dllSwScale;
@@ -389,6 +385,7 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
     {
       double framerate;
 
+      m_framerate_timestamp += duration;
       framerate = DVD_TIME_BASE / duration;
       // qualify framerate, we don't care about absolute value, just
       // want to to verify range. Timestamp could be borked so ignore
@@ -405,7 +402,6 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
         case 30:
         case 25:
         case 24:
-          m_framerate_timestamp += duration;
           m_framerate_cnt++;
           m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
         break;
@@ -758,6 +754,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
         if (procOut.PicInfo.timeStamp && 
+          m_timestamp != procOut.PicInfo.timeStamp &&
           m_width == (int)procOut.PicInfo.width && 
           m_height == (int)procOut.PicInfo.height)
         {
@@ -905,6 +902,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_timestamp = DVD_NOPTS_VALUE;
         m_color_space = procOut.b422Mode;
         m_color_range = 0;
         m_color_matrix = procOut.PicInfo.colour_primaries;
@@ -913,7 +911,6 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
         {
           m_interlace = true;
-          m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_timeout = 2000;
         m_format_valid = true;
@@ -1287,6 +1284,14 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       else
         bcm_input_format.MetaDataEnable = FALSE;
 
+#if defined(__APPLE__)
+      if (g_sysinfo.IsAppleTV() && bcm_input_format.width > 1280)
+      {
+        bcm_input_format.bEnableScaling = true;
+        bcm_input_format.ScalingParams.sWidth = 1280;
+        bcm_input_format.ScalingParams.sHeight = 0;
+      }
+#endif
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
       {
@@ -1303,19 +1308,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         CLog::Log(LOGERROR, "%s: set color space failed", __MODULE_NAME__); 
         break; 
       }
-/*
-      BCM::BC_SCALING_PARAMS bc_scale_params;
-      memset(&bc_scale_params, 0, sizeof(BCM::BC_SCALING_PARAMS));
-      bc_scale_params.sWidth = 600;
-      bc_scale_params.sHeight = 400;
-      //bc_scale_params.DNR = ;
-      res = m_dll->DtsSetScaleParams(m_device, &bc_scale_params);
-      if (res != BCM::BC_STS_SUCCESS)
-      { 
-        CLog::Log(LOGDEBUG, "%s: set scale params failed", __MODULE_NAME__); 
-        break; 
-      }
-*/
     }
     else
 #endif
