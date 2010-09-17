@@ -32,7 +32,7 @@
 			<RegExp input="$$4" output="&lt;thumb\1&gt;\2&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&lt;thumb([^&gt;]*)&gt;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/thumb&gt;</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseTMDBFanart>
 	<GetTMDBThumbsByIdChain dest="4">
@@ -68,7 +68,7 @@
 			<RegExp input="$$4" output="&lt;thumb\1&gt;\2&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&lt;thumb([^&gt;]*)&gt;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/thumb&gt;</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseTMDBThumbs>
 </scraperfunctions>

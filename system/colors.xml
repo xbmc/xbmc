@@ -95,6 +95,7 @@
 	<color name="moccasin">ffffe4b5</color>
 	<color name="navajowhite">ffffdead</color>
 	<color name="navy">ff000080</color>
+	<color name="none">00000000</color>
 	<color name="oldlace">fffdf5e6</color>
 	<color name="olive">ff808000</color>
 	<color name="olivedrab">ff6b8e23</color>

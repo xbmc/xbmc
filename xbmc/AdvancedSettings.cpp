@@ -149,8 +149,8 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
-  // foo.s01.e01, foo.s01_e01, S01E02 foo
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
+  // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
   // foo.ep01, foo.EP_01
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
@@ -419,6 +419,87 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+
+    TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
+    if (pAdjustRefreshrate)
+    {
+      TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
+      while (pRefreshOverride)
+      {
+        RefreshOverride override = {0};
+
+        float fps;
+        if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
+        {
+          override.fpsmin = fps - 0.01;
+          override.fpsmax = fps + 0.01;
+        }
+
+        float fpsmin, fpsmax;
+        if (XMLUtils::GetFloat(pRefreshOverride, "fpsmin", fpsmin) &&
+            XMLUtils::GetFloat(pRefreshOverride, "fpsmax", fpsmax))
+        {
+          override.fpsmin = fpsmin;
+          override.fpsmax = fpsmax;
+        }
+
+        float refresh;
+        if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
+        {
+          override.refreshmin = refresh - 0.01;
+          override.refreshmax = refresh + 0.01;
+        }
+
+        float refreshmin, refreshmax;
+        if (XMLUtils::GetFloat(pRefreshOverride, "refreshmin", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshOverride, "refreshmax", refreshmax))
+        {
+          override.refreshmin = refreshmin;
+          override.refreshmax = refreshmax;
+        }
+
+        bool fpsCorrect     = (override.fpsmin > 0.0f && override.fpsmax >= override.fpsmin);
+        bool refreshCorrect = (override.refreshmin > 0.0f && override.refreshmax >= override.refreshmin);
+
+        if (fpsCorrect && refreshCorrect)
+          m_videoAdjustRefreshOverrides.push_back(override);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate override, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
+              override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
+
+        pRefreshOverride = pRefreshOverride->NextSiblingElement("override");
+      }
+
+      TiXmlElement* pRefreshFallback = pAdjustRefreshrate->FirstChildElement("fallback");
+      while (pRefreshFallback)
+      {
+        RefreshOverride fallback = {0};
+        fallback.fallback = true;
+
+        float refresh;
+        if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
+        {
+          fallback.refreshmin = refresh - 0.01;
+          fallback.refreshmax = refresh + 0.01;
+        }
+
+        float refreshmin, refreshmax;
+        if (XMLUtils::GetFloat(pRefreshFallback, "refreshmin", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshFallback, "refreshmax", refreshmax))
+        {
+          fallback.refreshmin = refreshmin;
+          fallback.refreshmax = refreshmax;
+        }
+
+        if (fallback.refreshmin > 0.0f && fallback.refreshmax >= fallback.refreshmin)
+          m_videoAdjustRefreshOverrides.push_back(fallback);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate fallback, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
+              fallback.fpsmin, fallback.fpsmax, fallback.refreshmin, fallback.refreshmax);
+
+        pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
+      }
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

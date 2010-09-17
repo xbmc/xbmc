@@ -435,10 +435,10 @@ void CGUISettings::Initialize()
 
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
-  AddBool(ao, "audiooutput.aacpassthrough", 299, false);
-  AddBool(ao, "audiooutput.mp1passthrough", 300, false);
-  AddBool(ao, "audiooutput.mp2passthrough", 301, false);
-  AddBool(ao, "audiooutput.mp3passthrough", 302, false);
+  AddBool(NULL, "audiooutput.passthroughaac", 299, false);
+  AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
+  AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
+  AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
 
 #ifdef __APPLE__
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
@@ -579,6 +579,7 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0
@@ -657,6 +658,7 @@ void CGUISettings::Initialize()
 #endif
   AddString(srv,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(srv,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddDefaultAddon(srv, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
 #endif
 #ifdef HAS_EVENT_SERVER
   AddSeparator(srv,"services.sep1");
@@ -1088,10 +1090,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.aacpassthrough") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP1 pass through is %s", GetBool("audiooutput.mp1passthrough") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP2 pass through is %s", GetBool("audiooutput.mp2passthrough") ? "enabled" : "disabled");
-  CLog::Log(LOGINFO, "MP3 pass through is %s", GetBool("audiooutput.mp3passthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.passthroughaac") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP1 pass through is %s", GetBool("audiooutput.passthroughmp1") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP2 pass through is %s", GetBool("audiooutput.passthroughmp2") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP3 pass through is %s", GetBool("audiooutput.passthroughmp3") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__

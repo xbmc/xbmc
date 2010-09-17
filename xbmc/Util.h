@@ -48,6 +48,7 @@ namespace XFILE
 
 class CFileItem;
 class CFileItemList;
+class CURL;
 
 struct sortstringbyname
 {
@@ -69,7 +70,7 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
+  static void CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
@@ -114,13 +115,19 @@ public:
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void URLDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
+
+  /*! \brief retrieve MD5sum of a file
+   \param strPath - path to the file to MD5sum
+   \return md5 sum of the file
+   */
+  static CStdString GetFileMD5(const CStdString& strPath);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsXBMS(const CStdString& strFile);
   static bool IsURL(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
-  static bool IsInternetStream(const CStdString& strFile, bool bStrictCheck = false);
+  static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);

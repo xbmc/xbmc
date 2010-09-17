@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc\lib\libsquish"
+				AdditionalIncludeDirectories="..;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc;..\..\..\xbmc\lib\libsquish"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;NO_XBMC_FILESYSTEM"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -116,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc\lib\libsquish"
+				AdditionalIncludeDirectories="..;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc;..\..\..\xbmc\lib\libsquish"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;NO_XBMC_FILESYSTEM"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

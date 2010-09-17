@@ -46,6 +46,7 @@ public:
   CVariant(uint64_t unsignedinteger);
   CVariant(bool boolean);
   CVariant(const char *str);
+  CVariant(const std::string &str);
   CVariant(const CVariant &variant);
 
   ~CVariant();

@@ -24,6 +24,7 @@
 #include "utils/CriticalSection.h"
 #include "StdString.h"
 #include "Key.h"
+#include "utils/Thread.h"
 
 #include <queue>
 
@@ -49,6 +50,7 @@ class CGUIDialog;
 #define TMSG_PLAYLISTPLAYER_CLEAR 214
 #define TMSG_PLAYLISTPLAYER_SHUFFLE   215
 #define TMSG_PLAYLISTPLAYER_GET_ITEMS 216
+#define TMSG_PLAYLISTPLAYER_PLAY_SONG_ID 217
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -95,6 +97,17 @@ typedef struct
 }
 ThreadMessage;
 
+class CDelayedMessage : public CThread
+{
+  public:
+    CDelayedMessage(ThreadMessage& msg, unsigned int delay);
+    virtual void Process();
+
+  private:
+    unsigned int   m_delay;
+    ThreadMessage  m_msg;
+};
+
 class CApplicationMessenger
 {
 
@@ -117,6 +130,7 @@ public:
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
+  bool PlayListPlayerPlaySongId(int songId);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayListPlayerAdd(int playlist, const CFileItem &item);

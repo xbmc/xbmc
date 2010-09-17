@@ -90,6 +90,7 @@
 #endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
+#include "utils/md5.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "Picture.h"
@@ -398,7 +399,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
+void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
 {
   strTitleAndYear = strFileName;
 
@@ -1093,9 +1094,9 @@ bool CUtil::IsFTP(const CStdString& strFile)
          url.GetTranslatedProtocol() == "ftps";
 }
 
-bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = false */)
+bool CUtil::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */)
 {
-  CURL url(strFile);
+  
   CStdString strProtocol = url.GetProtocol();
   
   if (strProtocol.IsEmpty())
@@ -1103,10 +1104,7 @@ bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = f
 
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
-  {
-    CStdString strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-    return IsInternetStream(strFile2);
-  }
+    return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
   CStdString strProtocol2 = url.GetTranslatedProtocol();
 
@@ -1308,6 +1306,29 @@ void CUtil::URLEncode(CStdString& strURLData)
     }
   }
   strURLData = strResult;
+}
+
+CStdString CUtil::GetFileMD5(const CStdString& strPath)
+{
+  CFile file;
+  CStdString result;
+  if (file.Open(strPath))
+  {
+    XBMC::XBMC_MD5 md5;
+    char temp[1024];
+    int pos=0;
+    int read=1;
+    while (read > 0 && pos < file.GetLength())
+    {
+      read = file.Read(temp,1024);
+      pos += read;
+      md5.append(temp,read);
+    }
+    md5.getDigest(result);
+    file.Close();
+  }
+
+  return result;
 }
 
 bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)

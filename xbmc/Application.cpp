@@ -471,6 +471,12 @@ bool CApplication::Create()
   if (!inited)
     inited = InitDirectoriesWin32();
 
+  // copy required files
+  CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+  CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
@@ -627,6 +633,8 @@ bool CApplication::Create()
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   g_Mouse.Initialize();
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+
   g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
@@ -703,8 +711,6 @@ bool CApplication::Create()
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
-
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   CUtil::InitRandomSeed();
 
@@ -786,11 +792,6 @@ bool CApplication::InitDirectoriesLinux()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -859,12 +860,6 @@ bool CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -922,12 +917,6 @@ bool CApplication::InitDirectoriesWin32()
 
     CreateUserDirs();
 
-    // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -2362,7 +2351,17 @@ bool CApplication::OnAction(const CAction &action)
   if (action.IsMouse())
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
 
-  // in normal case
+  // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
+  // playing or ACTION_PLAYER_PLAY if we are not playing.
+  if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
+  {
+    if (IsPlaying())
+      return OnAction(CAction(ACTION_PAUSE));
+    else
+      return OnAction(CAction(ACTION_PLAYER_PLAY));
+  }
+
+// in normal case
   // just pass the action to the current window and let it handle it
   if (g_windowManager.OnAction(action))
   {
@@ -2599,7 +2598,12 @@ bool CApplication::OnAction(const CAction &action)
         // only unmute if volume is to be increased, otherwise leave muted
         if (action.GetID() == ACTION_VOLUME_DOWN)
           return true;
-        Mute();
+          
+        if (g_settings.m_iPreMuteVolumeLevel == 0)
+          SetVolume(1);
+        else
+          // In muted, unmute
+          Mute();
         return true;
       }
       if (action.GetID() == ACTION_VOLUME_UP)
@@ -3255,6 +3259,8 @@ void CApplication::Stop()
     if (videoScan)
       videoScan->StopScanning();
 
+    m_applicationMessenger.Cleanup();
+
     StopServices();
     //Sleep(5000);
 
@@ -3285,7 +3291,6 @@ void CApplication::Stop()
       CZeroconfBrowser::ReleaseInstance();
     }
 #endif
-    m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
 #ifdef HAS_FILESYSTEM_RAR
@@ -4752,12 +4757,6 @@ void CApplication::ProcessSlow()
   
   if (!IsPlayingVideo())
     ADDON::CAddonMgr::Get().UpdateRepos();
-
-#if defined(__arm__)
-  // TODO: gui rendering testing, remove later
-  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
-#endif
-
 }
 
 // Global Idle Time in Seconds
@@ -4848,10 +4847,14 @@ void CApplication::Mute(void)
 {
   if (g_settings.m_bMute)
   { // muted - unmute.
-    // check so we don't get stuck in some muted state
+    // In case our premutevolume is 0, return to 100% volume
     if( g_settings.m_iPreMuteVolumeLevel == 0 )
-      g_settings.m_iPreMuteVolumeLevel = 1;
-    SetVolume(g_settings.m_iPreMuteVolumeLevel);
+      SetVolume(100);
+    else
+    {
+      SetVolume(g_settings.m_iPreMuteVolumeLevel);
+      g_settings.m_iPreMuteVolumeLevel = 0;
+    }
   }
   else
   { // mute

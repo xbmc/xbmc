@@ -34,16 +34,23 @@ using namespace std;
 
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
+  bool status = true;
   if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
     g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
 
   if (parameterObject.isInt())
     g_application.getApplicationMessenger().PlayListPlayerPlay(parameterObject.asInt());
   else
-    g_application.getApplicationMessenger().PlayListPlayerPlay();
-
+  {
+    int songId = (parameterObject.isMember("songid") && parameterObject["songid"].isInt()) ? parameterObject["songid"].asInt() : 0;
+    if (songId > 0)
+      status = g_application.getApplicationMessenger().PlayListPlayerPlaySongId(songId);
+    else
+      g_application.getApplicationMessenger().PlayListPlayerPlay();
+  }
+  result["success"] = status;
   NotifyAll();
-  return ACK;
+  return OK;
 }
 
 JSON_STATUS CAVPlaylistOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)

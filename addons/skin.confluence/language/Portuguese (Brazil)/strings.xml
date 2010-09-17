@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!--Language file for skin\Confluence -->
 <!--Translated: manually -->
-<!--Translator: bugre (werner)-->
-<!--Email: wxxx333@gmail.com-->
+<!--Translator: bugre (werner), Fabiano Santiago (fabianosan) -->
+<!--Email: wxxx333@gmail.com, fabianosan@hotmail.com -->
 <!--Date of translation: 11/23/2009-->
 <!--$Revision$-->
 <!--Based on english strings version 24877 -->
@@ -33,6 +33,7 @@
   <string id="31030">Lista Completa</string>
   <string id="31031">Ícones de imagens</string>
   <string id="31032">Vitrine de Imagens</string>
+  <string id="31033">Info</string>
 
   <!-- Extra labels -->
   <string id="31040">Tocando agora</string>
@@ -157,6 +158,7 @@
   <string id="31405">[B]CONFIGURAR AJUSTES DE REDE[/B][CR][CR]Configurar controle do XBMC através de UPnP e HTTP · Configurar compartilhamento de arquivo · Definir opções de acesso de internet</string>
   <string id="31406">[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas · Configurar saída de áudio · Configurar controles remotos · Definir opções para economia de energia · Habilitar depuração · Configurar bloqueio mestre</string>
   <string id="31407">[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence · Adicionar e remover itens no menu principal(home) · Alterar fundos do skin</string>
+  <string id="31408">[B]CONFIGURAR AJUSTES DE ADD-ONS[/B][CR][CR]Configurar Add-ons existentes · Procurar e instalar novos Add-ons de xbmc.org[CR]Alterar configurações do Add-on</string>
 
   <string id="31420">[B][COLOR=white]XBMC não detectou um disco.[/COLOR][/B][CR][CR]Insira um disco no drive e tente novamente ou Cancele</string>
   <string id="31421">Selecione seu Perfil de usuário XBMC[CR]para conectar e continue</string>

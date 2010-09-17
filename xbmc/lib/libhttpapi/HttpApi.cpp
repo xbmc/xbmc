@@ -29,7 +29,7 @@ CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
   Sleep(0);
   CStdString response = g_application.getApplicationMessenger().GetResponse();
 
-  while (response=="[No response yet]" && cnt++<200)
+  while (response=="[No response yet]" && cnt++<200 && !g_application.m_bStop)
   {
     response=g_application.getApplicationMessenger().GetResponse();
     CLog::Log(LOGDEBUG, "HttpApi: waiting %d", cnt);

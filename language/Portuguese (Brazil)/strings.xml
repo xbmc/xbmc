@@ -58,6 +58,24 @@
   <string id="60">Out</string>
   <string id="61">Nov</string>
   <string id="62">Dez</string>
+  
+  <string id="71">N</string>
+  <string id="72">NNE</string>
+  <string id="73">NO</string>
+  <string id="74">ONO</string>
+  <string id="75">O</string>
+  <string id="76">OSO</string>
+  <string id="77">SO</string>
+  <string id="78">SSO</string>
+  <string id="79">S</string>
+  <string id="80">SSL</string>
+  <string id="81">SL</string>
+  <string id="82">LSL</string>
+  <string id="83">L</string>
+  <string id="84">LNL</string>
+  <string id="85">NL</string>
+  <string id="86">NNL</string>
+  <string id="87">VAR</string>
 
   <string id="98">Ver: Auto</string>
   <string id="99">Ver: Auto grande</string>
@@ -199,6 +217,9 @@
   <string id="241">Tela Cheia #%d</string>
   <string id="242">Janela</string>
   <string id="243">Taxa de Atualização</string>
+  <string id="244">Tela Cheia</string>
+  <string id="245">Dimensionando: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
+
 
   <string id="247">Scripts</string>
   <string id="248">Idioma</string>
@@ -355,7 +376,7 @@
   <string id="404">Vento</string>
   <string id="405">Pt. de orvalho</string>
   <string id="406">Umidade</string>
-  <string id="407">Desde</string>
+  <string id="407">De</string>
   <string id="408">até</string>
   <string id="409">Padrões</string>
   <string id="410">Acessando o serviço de meteorologia</string>
@@ -737,7 +758,7 @@
   <string id="1042">Recuperados %i de %i items</string>
   <string id="1043">Plugins de programas</string>
   <string id="1044">Selecionar ícone de plugin</string>
-  <string id="1045">Opções do plugin</string>
+  <string id="1045">Opções do addon</string>
   <string id="1046">Pontos de acesso (sem fio)</string>
   <string id="1047">Outros...</string>
   <string id="1048">- Usuário</string>
@@ -821,8 +842,9 @@
   <string id="1418">Temporais</string>
   <string id="1419">Temporais</string>
   <string id="1420">Moderado</string>
-
-
+  <string id="1421">Muito Alto</string>
+  <string id="1422">Ventoso</string>
+  <string id="1423">Névoa</string>
 
   <string id="1450">Colocar tela em descanso quando inativo</string>
 
@@ -1081,6 +1103,8 @@
   <string id="13210">Iniciado, alarmar em %im</string>
   <string id="13211">Alarme!</string>
   <string id="13212">Cancelado restando %im%is</string>
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Procurar por legendas em RARs</string>
   <string id="13250">Buscar por legendas...</string>
@@ -2087,7 +2111,8 @@
   <string id="22001">Ocultar progresso de atualizações de coleção</string>
   <string id="22002">- Sufixo de DNS</string>
 
-  <string id="22004">Postergado em: %2.3fs</string>
+  <string id="22003">%2.3fs</string>
+  <string id="22004">Atrasado em: %2.3fs</string>
   <string id="22005">Adiantado em: %2.3fs</string>
   <string id="22006">Posição da legenda</string>
   <string id="22007">Fabricante OpenGL:</string>

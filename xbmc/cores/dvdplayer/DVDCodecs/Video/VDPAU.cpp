@@ -616,7 +616,7 @@ void CVDPAU::SetDeinterlacing()
 
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
-    VdpBool enabled[]={1,1,0};
+    VdpBool enabled[]={1,1,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
@@ -628,12 +628,12 @@ void CVDPAU::SetDeinterlacing()
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
        ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
   {
-    VdpBool enabled[]={0,1,0};
+    VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
   {
-    VdpBool enabled[]={0,0,1};
+    VdpBool enabled[]={1,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else
@@ -804,6 +804,8 @@ void CVDPAU::FiniVDPAUOutput()
     free(m_videoSurfaces[i]);
   }
   m_videoSurfaces.clear();
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
 }
 
 
@@ -1151,9 +1153,27 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     ClearUsedForRender(&past[0]);
     past[0] = past[1];
     past[1] = current;
-    current = render;
+    current = future;
+    future = render;
 
-    if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
+    DVDVideoPicture DVDPic;
+    memset(&DVDPic, 0, sizeof(DVDVideoPicture));
+    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&DVDPic);
+    m_DVDVideoPics.push(DVDPic);
+
+    int pics = m_DVDVideoPics.size();
+    if (pics < 2)
+        return VC_BUFFER;
+    else if (pics > 2)
+    {
+      // this should not normally happen
+      CLog::Log(LOGERROR, "CVDPAU::Decode - invalid number of pictures in queue");
+      while (pics-- != 2)
+        m_DVDVideoPics.pop();
+    }
+
+    if((method == VS_INTERLACEMETHOD_AUTO &&
+                  m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
     ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
@@ -1168,7 +1188,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       else
         m_mixerstep = 1;
 
-      if(pFrame->top_field_first)
+      if(m_DVDVideoPics.front().iFlags & DVP_FLAG_TOP_FIELD_FIRST)
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
@@ -1186,6 +1206,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if(avctx->hurry_up)
     {
       ClearUsedForRender(&past[1]);
+      m_DVDVideoPics.pop();
       return VC_BUFFER;
     }
 
@@ -1210,7 +1231,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       past_surfaces[1] = past[0]->surface;
     if (past[1])
       past_surfaces[0] = past[1]->surface;
-    futu_surfaces[0] = VDP_INVALID_HANDLE;
+    futu_surfaces[0] = future->surface;
   }
   else
   {
@@ -1228,7 +1249,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       if (past[1])
         past_surfaces[1] = past[1]->surface;
       past_surfaces[0] = current->surface;
-      futu_surfaces[0] = VDP_INVALID_HANDLE;
+      futu_surfaces[0] = future->surface;
     }
   }
 
@@ -1273,8 +1294,14 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
 bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  *picture = m_DVDVideoPics.front();
+  // if this is the first field of an interlaced frame, we'll need
+  // this same picture for the second field later
+  if (m_mixerstep != 1)
+    m_DVDVideoPics.pop();
+
   picture->format = DVDVideoPicture::FMT_VDPAU;
-  picture->iFlags = 0;
+  picture->iFlags &= DVP_FLAG_DROPPED;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;
   picture->vdpau = this;
@@ -1289,6 +1316,18 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
     }
   }
   return true;
+}
+
+void CVDPAU::Reset()
+{
+  // invalidate surfaces and picture queue when seeking
+  ClearUsedForRender(&past[0]);
+  ClearUsedForRender(&past[1]);
+  ClearUsedForRender(&current);
+  ClearUsedForRender(&future);
+
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
 }
 
 void CVDPAU::Present()

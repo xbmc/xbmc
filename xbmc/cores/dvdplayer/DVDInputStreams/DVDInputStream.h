@@ -95,8 +95,8 @@ public:
   virtual std::string& GetFileName() { return m_strFileName; }
   virtual bool NextStream() { return false; }
   virtual void Abort() {}
+  virtual int GetBlockSize() { return 0; }
 
-  int GetBlockSize() { return 0; }
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;
   virtual int GetCurrentGroupId() { return 0; }

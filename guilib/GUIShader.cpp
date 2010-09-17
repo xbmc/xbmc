@@ -28,12 +28,11 @@
 #include "MatrixGLES.h"
 #include "utils/log.h"
 
-CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader ? shader : "guishader_frag.glsl" )
+CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader)
 {
   // Initialise values
   m_hTex0   = 0;
   m_hTex1   = 0;
-  m_hMethod = 0;
   m_hProj   = 0;
   m_hModel  = 0;
   m_hPos    = 0;
@@ -41,7 +40,6 @@ CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_ver
   m_hCord0  = 0;
   m_hCord1  = 0;
 
-  m_method = SM_DEFAULT;
   m_proj   = NULL;
   m_model  = NULL;
 }
@@ -53,7 +51,6 @@ void CGUIShader::OnCompiledAndLinked()
   // Variables passed directly to the Fragment shader
   m_hTex0   = glGetUniformLocation(ProgramHandle(), "m_samp0");
   m_hTex1   = glGetUniformLocation(ProgramHandle(), "m_samp1");
-  m_hMethod = glGetUniformLocation(ProgramHandle(), "m_method");
   // Variables passed directly to the Vertex shader
   m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");
@@ -65,14 +62,12 @@ void CGUIShader::OnCompiledAndLinked()
   // it's okay to do this only one time. Textures units never change
   glUniform1i(m_hTex0, 0);
   glUniform1i(m_hTex1, 1);
-
 }
 
 bool CGUIShader::OnEnabled()
 {
   // This is called after glUseProgram()
 
-  glUniform1i(m_hMethod, (int)m_method);
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, g_matrices.GetMatrix(MM_PROJECTION));
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, g_matrices.GetMatrix(MM_MODELVIEW));
 

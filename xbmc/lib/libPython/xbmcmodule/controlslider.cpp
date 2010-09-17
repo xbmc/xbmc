@@ -127,10 +127,28 @@ namespace PYXBMC
     return Py_BuildValue((char*)"f", 0);
   }
 
+  PyDoc_STRVAR(setPercent__doc__,
+    "setPercent(50) -- Sets the percent of the slider.\n"
+    "\n"
+    "example:\n"
+    "self.slider.setPercent(50)\n");
+
+  PyObject* ControlSlider_SetPercent(ControlProgress *self, PyObject *args)
+  {
+    float fPercent = 0;
+    if (!PyArg_ParseTuple(args, (char*)"f", &fPercent)) return NULL;
+        
+    if (self->pGUIControl)
+      ((CGUISliderControl*)self->pGUIControl)->SetPercentage(fPercent);
+        
+    Py_INCREF(Py_None);
+    return Py_None;
+  }  
 	
 	
   PyMethodDef ControlSlider_methods[] = {
     {(char*)"getPercent", (PyCFunction)ControlSlider_GetPercent, METH_VARARGS, getPercent__doc__},
+    {(char*)"setPercent", (PyCFunction)ControlSlider_SetPercent, METH_VARARGS, setPercent__doc__},  
     {NULL, NULL, 0, NULL}
   };
 

@@ -1325,6 +1325,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
           CFileItemPtr item=items.Get(i);
           if (item->HasMusicInfoTag())
             duration += item->GetMusicInfoTag()->GetDuration();
+          else if (item->HasVideoInfoTag())
+            duration += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
         }
         if (duration > 0)
           return StringUtils::SecondsToTimeString(duration);
@@ -3784,7 +3786,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag())
       {
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }

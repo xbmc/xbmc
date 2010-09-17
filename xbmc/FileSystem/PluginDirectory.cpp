@@ -179,7 +179,8 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
   }
 
   CPluginDirectory *dir = globalHandles[handle];
-  CFileItemList pItemList = *items;
+  CFileItemList pItemList;
+  pItemList.Copy(*items);
   dir->m_listItems->Append(pItemList);
   dir->m_totalItems = totalItems;
 
@@ -460,9 +461,12 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 #ifdef HAS_PYTHON
     if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
 #endif
-    { // nope - bail
-      CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
-      m_success = false;
+    { // check whether we exited normally
+      if (WaitForSingleObject(m_fetchComplete, 0) == WAIT_TIMEOUT)
+      { // python didn't return correctly
+        CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
+        m_success = false;
+      }
       break;
     }
 

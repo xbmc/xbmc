@@ -78,11 +78,21 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
 CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
   CURL url(path);
+  // check for special-protocol, if not, return
+  if (!url.GetProtocol().Equals("special"))
+  {
+    return path;
+  }
+  return TranslatePath(url);
+}
 
+CStdString CSpecialProtocol::TranslatePath(const CURL &url)
+{
   // check for special-protocol, if not, return
   if (!url.GetProtocol().Equals("special"))
   {
 #if defined(_LINUX) && defined(_DEBUG)
+    CStdString path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
       CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
@@ -90,7 +100,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     }
 #endif
 
-    return path;
+    return url.Get();
   }
 
   CStdString FullFileName = url.GetFileName();

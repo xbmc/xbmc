@@ -33,7 +33,7 @@ using namespace MUSIC_INFO;
 #define DECODING_SUCCESS   0
 #define DECODING_CALLAGAIN 1
 
-#define BITSPERSAMPLE	32
+#define BITSPERSAMPLE  32
 #define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
 
 MP3Codec::MP3Codec()
@@ -78,12 +78,10 @@ MP3Codec::~MP3Codec()
 {
   DeInit();
 
-  if ( m_InputBuffer )
-    delete[] m_InputBuffer;
+  delete[] m_InputBuffer;
   m_InputBuffer = NULL;
 
-  if ( m_OutputBuffer )
-    delete[] m_OutputBuffer;
+  delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
   
   madx_deinit(&mxhouse);
@@ -397,20 +395,22 @@ int MP3Codec::Decode(
       memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
     }
 
-		m_dll.mad_stream_buffer( &mxhouse.stream, m_InputBuffer, m_InputBufferPos + madguard );
-		mxhouse.stream.error = (mad_error)0;
+    m_dll.mad_stream_buffer( &mxhouse.stream, m_InputBuffer, m_InputBufferPos + madguard );
+    mxhouse.stream.error = (mad_error)0;
     m_dll.mad_stream_sync(&mxhouse.stream);
     if ((mxstat.flushed) && (flushcnt == 2))
     {
       int skip;
       skip = 2;
-      do {
-	      if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) {
-	        if (--skip == 0)
-	          m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
-	      }
-	      else if (!MAD_RECOVERABLE(mxhouse.stream.error))
-	        break;
+      do
+	  {
+        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) 
+		{
+          if (--skip == 0)
+            m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
+        }
+        else if (!MAD_RECOVERABLE(mxhouse.stream.error))
+          break;
       }
       while (skip);
       mxstat.flushed = false;
@@ -461,10 +461,10 @@ void MP3Codec::Flush()
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
-	m_dll.mad_frame_mute(&mxhouse.frame);
-	m_dll.mad_synth_mute(&mxhouse.synth);
-	m_dll.mad_stream_finish(&mxhouse.stream);
-	m_dll.mad_stream_init(&mxhouse.stream);
+  m_dll.mad_frame_mute(&mxhouse.frame);
+  m_dll.mad_synth_mute(&mxhouse.synth);
+  m_dll.mad_stream_finish(&mxhouse.stream);
+  m_dll.mad_stream_init(&mxhouse.stream);
   ZeroMemory(&mxstat, sizeof(madx_stat)); 
   mxstat.flushed = true;
   if (flushcnt < 2) flushcnt++;
@@ -476,73 +476,73 @@ int MP3Codec::madx_init (madx_house *mxhouse )
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
-	// Initialize libmad structures 
-	m_dll.mad_stream_init(&mxhouse->stream);
+  // Initialize libmad structures 
+  m_dll.mad_stream_init(&mxhouse->stream);
   mxhouse->stream.options = MAD_OPTION_IGNORECRC;
-	m_dll.mad_frame_init(&mxhouse->frame);
-	m_dll.mad_synth_init(&mxhouse->synth);
-	mxhouse->timer = m_dll.Get_mad_timer_zero();
+  m_dll.mad_frame_init(&mxhouse->frame);
+  m_dll.mad_synth_init(&mxhouse->synth);
+  mxhouse->timer = m_dll.Get_mad_timer_zero();
 
-	return(1);
+  return(1);
 }
 
 madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite, bool discard)
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
-	mxhouse->output_ptr = m_OutputBuffer + m_OutputBufferPos;
+  mxhouse->output_ptr = m_OutputBuffer + m_OutputBufferPos;
 
-	if( m_dll.mad_frame_decode(&mxhouse->frame, &mxhouse->stream) )
-	{
-		if( !MAD_RECOVERABLE(mxhouse->stream.error) )
-		{
-			if( mxhouse->stream.error == MAD_ERROR_BUFLEN )
-			{		
-				//printf("Need more input (%s)",	mad_stream_errorstr(&mxhouse->stream));
-				mxstat->remaining = mxhouse->stream.bufend - mxhouse->stream.next_frame;
+  if( m_dll.mad_frame_decode(&mxhouse->frame, &mxhouse->stream) )
+  {
+    if( !MAD_RECOVERABLE(mxhouse->stream.error) )
+    {
+      if( mxhouse->stream.error == MAD_ERROR_BUFLEN )
+      {    
+        //printf("Need more input (%s)",  mad_stream_errorstr(&mxhouse->stream));
+        mxstat->remaining = mxhouse->stream.bufend - mxhouse->stream.next_frame;
 
-				return(MORE_INPUT);			
-			}
-			else
-			{
+        return(MORE_INPUT);      
+      }
+      else
+      {
         CLog::Log(LOGERROR, "(MAD)Unrecoverable frame level error (%s).", m_dll.mad_stream_errorstr(&mxhouse->stream));
-				return(ERROR_OCCURED); 
-			}
-		}
+        return(ERROR_OCCURED); 
+      }
+    }
     return(SKIP_FRAME); 
-	}
+  }
 
-	m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
-	
+  m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
+  
   mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)BITSPERSAMPLE/8;
-	mxhouse->frame_cnt++;
-	m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
+  mxhouse->frame_cnt++;
+  m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
   float *data_f = (float *)mxhouse->output_ptr;
   if (!discard)
   {
     for( int i=0; i < mxhouse->synth.pcm.length; i++ )
-	  {
-		  // Left channel
+    {
+      // Left channel
       *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[0][i]);
       mxhouse->output_ptr += sizeof(float);
       // Right channel
-		  if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
+      if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
       {
         *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[1][i]);
         mxhouse->output_ptr += sizeof(float);
       }
-	  }
+    }
     // Tell calling code buffer size
     mxstat->write_size = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
   }
-	return(FLUSH_BUFFER);
+  return(FLUSH_BUFFER);
 }
 
 void MP3Codec::madx_deinit( madx_house *mxhouse )
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
-	mad_synth_finish(&mxhouse->synth);
-	m_dll.mad_frame_finish(&mxhouse->frame);
-	m_dll.mad_stream_finish(&mxhouse->stream);
+  mad_synth_finish(&mxhouse->synth);
+  m_dll.mad_frame_finish(&mxhouse->frame);
+  m_dll.mad_stream_finish(&mxhouse->stream);
 }

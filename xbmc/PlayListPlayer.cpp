@@ -30,6 +30,7 @@
 #include "PlayList.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "MusicInfoTag.h"
 
 using namespace PLAYLIST;
 
@@ -152,7 +153,7 @@ int CPlayListPlayer::GetNextSong()
   return iSong;
 }
 
-void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
+bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
@@ -164,23 +165,23 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     g_windowManager.SendThreadMessage(msg);
     Reset();
     m_iCurrentPlayList = PLAYLIST_NONE;
-    return;
+    return false;
   }
 
   if (bAutoPlay)
     CFileItemPtr item = playlist[iSong];
 
-  Play(iSong, bAutoPlay);
-  //g_partyModeManager.OnSongChange();
+  return Play(iSong, bAutoPlay);
 }
 
-void CPlayListPlayer::PlayPrevious()
+bool CPlayListPlayer::PlayPrevious()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
-    return ;
+    return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) return ;
+  if (playlist.size() <= 0) 
+    return false;
   int iSong = m_iCurrentSong;
 
   if (!RepeatedOne(m_iCurrentPlayList))
@@ -189,29 +190,50 @@ void CPlayListPlayer::PlayPrevious()
   if (iSong < 0)
     iSong = playlist.size() - 1;
 
-  Play(iSong, false, true);
+  return Play(iSong, false, true);
 }
 
-void CPlayListPlayer::Play()
+bool CPlayListPlayer::Play()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
-    return;
+    return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) return;
+  if (playlist.size() <= 0) 
+    return false;
 
-  Play(0);
+  return Play(0);
 }
 
-void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+bool CPlayListPlayer::PlaySongId(int songId)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
-    return ;
+    return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) return ;
-  if (iSong < 0) iSong = 0;
-  if (iSong >= playlist.size()) iSong = playlist.size() - 1;
+  if (playlist.size() <= 0) 
+    return Play();
+
+  for (int i = 0; i < playlist.size(); i++)
+  {
+    if (playlist[i]->HasMusicInfoTag() && playlist[i]->GetMusicInfoTag()->GetDatabaseId() == songId)
+      return Play(i);
+  }
+  return Play();
+}
+
+bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
+{
+  if (m_iCurrentPlayList == PLAYLIST_NONE)
+    return false;
+
+  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  if (playlist.size() <= 0) 
+    return false;
+  if (iSong < 0) 
+    iSong = 0;
+  if (iSong >= playlist.size()) 
+    iSong = playlist.size() - 1;
 
   // check if the item itself is a playlist, and can be expanded
   // only allow a few levels, this could end up in a loop
@@ -253,17 +275,13 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       m_iCurrentPlayList = PLAYLIST_NONE;
       m_iFailedSongs = 0;
       m_failedSongsStart = 0;
-      return;
+      return false;
     }
 
     // how many playable items are in the playlist?
     if (playlist.GetPlayable() > 0)
     {
-      if (bPlayPrevious)
-        PlayPrevious();
-      else
-        PlayNext();
-      return;
+      return bPlayPrevious ? PlayPrevious() : PlayNext();
     }
     // none? then abort playback
     else
@@ -273,7 +291,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       g_windowManager.SendThreadMessage(msg);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
-      return;
+      return false;
     }
   }
 
@@ -286,6 +304,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_failedSongsStart = 0;
   m_bPlaybackStarted = true;
   m_bPlayedFirstFile = true;
+  return true;
 }
 
 void CPlayListPlayer::SetCurrentSong(int iSong)

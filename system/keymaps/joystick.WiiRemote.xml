@@ -264,6 +264,11 @@
       <button id="6">Close</button>
     </joystick>
   </PictureInfo>
+  <MyPictures>
+    <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </MyPictures>
   <AddonBrowser>
     <joystick name="WiiRemote">
       <button id="6">ParentDir</button>
@@ -279,4 +284,9 @@
       <button id="6">Close</button>
     </joystick>
   </AddonSettings>
+  <TextViewer>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </TextViewer>
 </keymap>

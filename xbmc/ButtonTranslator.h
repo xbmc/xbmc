@@ -59,7 +59,7 @@ private:
   CButtonTranslator(const CButtonTranslator&);
   CButtonTranslator const& operator=(CButtonTranslator const&);
   virtual ~CButtonTranslator();
-
+  bool HasDeviceType(TiXmlNode *pWindow, CStdString type);
 public:
   ///access to singleton
   static CButtonTranslator& GetInstance();

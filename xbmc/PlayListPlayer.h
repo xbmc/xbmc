@@ -52,21 +52,21 @@ public:
    \param offset The offset from the current entry (defaults to 1, i.e. the next entry).
    \param autoPlay Whether we should start playing if not already (defaults to false).
    */
-  void PlayNext(int offset = 1, bool autoPlay = false);
+  bool PlayNext(int offset = 1, bool autoPlay = false);
 
   /*! \brief Play the previous entry in the current playlist
    \sa PlayNext
    */
-  void PlayPrevious();
-
-  void Play();
+  bool PlayPrevious();
+  bool PlaySongId(int songId);
+  bool Play();
 
   /*! \brief Start playing a particular entry in the current playlist
    \param index the index of the item to play. This value is modified to ensure it lies within the current playlist.
    \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
    \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
    */
-  void Play(int index, bool replace = false, bool playPreviousOnFail = false);
+  bool Play(int index, bool replace = false, bool playPreviousOnFail = false);
 
   /*! \brief Returns the index of the current item in active playlist.
    \return Current item in the active playlist.

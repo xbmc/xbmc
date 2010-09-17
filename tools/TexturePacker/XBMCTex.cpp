@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <map>
 #include <squish.h>
 #include <string>
 #define __STDC_FORMAT_MACROS
@@ -51,6 +52,13 @@
 #define FLAGS_ALLOW_YCOCG 2
 
 #undef main
+
+extern "C" 
+{
+#include "md5.h"
+}
+
+using namespace std;
 
 const char *GetFormatString(unsigned int format)
 {
@@ -297,7 +305,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   delete[] compressed;
   SDL_FreeSurface(argbImage);
   return frame;
-#else	// For ARM, dont use DXT compression!!!
+#else // For ARM, dont use DXT compression!!!
   CXBTFFrame frame = appendContent(writer, image->w, image->h, argb, image->w * image->h * 4, XB_FMT_A8R8G8B8, flags);
   SDL_FreeSurface(argbImage);
   return frame;
@@ -312,10 +320,38 @@ void Usage()
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 }
 
-int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags)
+static bool checkDupe(struct MD5Context* ctx,
+                      map<string,unsigned int>& hashes,
+                      vector<unsigned int>& dupes, unsigned int pos)
 {
+  char digest[17];
+  MD5Final((unsigned char*)digest,ctx);
+  digest[16] = 0;
+  map<string,unsigned int>::iterator it = hashes.find(digest);
+  if (it != hashes.end())
+  {
+    dupes[pos] = it->second; 
+    return true;
+  }
+
+  hashes.insert(make_pair(digest,pos));
+  dupes[pos] = pos;
+
+  return false;
+}
+
+int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
+{
+  map<string,unsigned int> hashes;
+  vector<unsigned int> dupes;
   CXBTF xbtf;
   CreateSkeletonHeader(xbtf, InputDir);
+  dupes.resize(xbtf.GetFiles().size());
+  if (!dupecheck)
+  {
+    for (unsigned int i=0;i<dupes.size();++i)
+      dupes[i] = i;
+  }
 
   CXBTFWriter writer(xbtf, OutputFile);
   if (!writer.Create())
@@ -327,6 +363,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
   std::vector<CXBTFFile>& files = xbtf.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
+    struct MD5Context ctx;
+    MD5Init(&ctx);
     CXBTFFile& file = files[i];
 
     std::string fullPath = InputDir;
@@ -346,15 +384,30 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         continue;
       }
 
+      bool skip=false;
       printf("%s", output.c_str());
+      if (dupecheck)
+      {
+        MD5Update(&ctx,(const uint8_t*)image->pixels,image->h*image->pitch);
+        if (checkDupe(&ctx,hashes,dupes,i))
+        {
+          printf("duplicate, skipping compression\n");
+          file.GetFrames().insert(file.GetFrames().end(),
+                                  files[dupes[i]].GetFrames().begin(),
+                                  files[dupes[i]].GetFrames().end());
+          skip = true;
+        }
+      }
 
-      CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
+      if (!skip)
+      {
+        CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
 
-      printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
 
-      file.SetLoop(0);
-      file.GetFrames().push_back(frame);
-
+        file.SetLoop(0);
+        file.GetFrames().push_back(frame);
+      }
       SDL_FreeSurface(image);
     }
     else
@@ -364,16 +417,35 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       AG_LoadGIF(fullPath.c_str(), gpAG, gnAG);
 
       printf("%s\n", output.c_str());
-
-      for (int j = 0; j < gnAG; j++)
+      bool skip=false;
+      if (dupecheck)
       {
-        printf("    frame %4i                                ", j);
-        CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
-        frame.SetDuration(gpAG[j].delay);
-        file.GetFrames().push_back(frame);
-        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        for (int j = 0; j < gnAG; j++)
+          MD5Update(&ctx,(const uint8_t*)gpAG[j].surface->pixels,
+                                         gpAG[j].surface->h*
+                                         gpAG[j].surface->pitch);
+
+        if (checkDupe(&ctx,hashes,dupes,i))
+        {
+          printf("duplicate, skipping compression\n");
+          file.GetFrames().insert(file.GetFrames().end(),
+                                  files[dupes[i]].GetFrames().begin(),
+                                  files[dupes[i]].GetFrames().end());
+          skip = true;
+        }
       }
 
+      if (!skip)
+      {
+        for (int j = 0; j < gnAG; j++)
+        {
+          printf("    frame %4i                                ", j);
+          CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
+          frame.SetDuration(gpAG[j].delay);
+          file.GetFrames().push_back(frame);
+          printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        }
+      }
       AG_FreeSurfaces(gpAG, gnAG);
       delete [] gpAG;
 
@@ -381,7 +453,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     }
   }
 
-  if (!writer.UpdateHeader())
+  if (!writer.UpdateHeader(dupes))
   {
     printf("Error writing header to file\n");
     return 1;
@@ -402,6 +474,7 @@ int main(int argc, char* argv[])
     return 1;
 
   bool valid = false;
+  bool dupecheck = false;
   CmdLineArgs args(argc, (const char**)argv);
 
   if (args.size() == 1)
@@ -425,6 +498,8 @@ int main(int argc, char* argv[])
       InputDir = args[++i];
       valid = true;
     }
+    else if (!strcmp(args[i], "-dupecheck"))
+      dupecheck = true;
     else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
     {
       OutputFilename = args[++i];
@@ -452,5 +527,5 @@ int main(int argc, char* argv[])
 
   double maxMSE = 1.5;    // HQ only please
   unsigned int flags = FLAGS_USE_LZO; // TODO: currently no YCoCg (commandline option?)
-  createBundle(InputDir, OutputFilename, maxMSE, flags);
+  createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
 }

@@ -65,6 +65,27 @@
 
 using namespace std;
 
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+{
+  m_msg.dwMessage  = msg.dwMessage;
+  m_msg.dwParam1   = msg.dwParam1;
+  m_msg.dwParam2   = msg.dwParam2;
+  m_msg.hWaitEvent = msg.hWaitEvent;
+  m_msg.lpVoid     = msg.lpVoid;
+  m_msg.strParam   = msg.strParam;
+  m_msg.params     = msg.params;
+
+  m_delay = delay;
+}
+
+void CDelayedMessage::Process()
+{
+  Sleep(m_delay);
+
+  if (!m_bStop)
+    g_application.getApplicationMessenger().SendMessage(m_msg, false);
+}
+
 CApplicationMessenger::~CApplicationMessenger()
 {
   Cleanup();
@@ -72,9 +93,15 @@ CApplicationMessenger::~CApplicationMessenger()
 
 void CApplicationMessenger::Cleanup()
 {
+  CSingleLock lock (m_critSection);
+
   while (m_vecMessages.size() > 0)
   {
     ThreadMessage* pMsg = m_vecMessages.front();
+
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
+
     delete pMsg;
     m_vecMessages.pop();
   }
@@ -82,6 +109,10 @@ void CApplicationMessenger::Cleanup()
   while (m_vecWindowMessages.size() > 0)
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
+
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
+
     delete pMsg;
     m_vecWindowMessages.pop();
   }
@@ -104,6 +135,18 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
     }
   }
 
+  CSingleLock lock (m_critSection);
+
+  if (g_application.m_bStop)
+  {
+    if (message.hWaitEvent)
+    {
+      CloseHandle(message.hWaitEvent);
+      message.hWaitEvent = NULL;
+    }
+    return;
+  }
+
   ThreadMessage* msg = new ThreadMessage();
   msg->dwMessage = message.dwMessage;
   msg->dwParam1 = message.dwParam1;
@@ -113,7 +156,6 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->strParam = message.strParam;
   msg->params = message.params;
 
-  CSingleLock lock (m_critSection);
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL)
     m_vecWindowMessages.push(msg);
   else
@@ -471,7 +513,16 @@ case TMSG_POWERDOWN:
         g_playlistPlayer.Play(pMsg->dwParam1);
       else
         g_playlistPlayer.Play();
+      break;
 
+    case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
+      if (pMsg->dwParam1 != (DWORD) -1)
+      {
+        bool *result = (bool*)pMsg->lpVoid;
+        *result = g_playlistPlayer.PlaySongId(pMsg->dwParam1);
+      }
+      else
+        g_playlistPlayer.Play();
       break;
 
     case TMSG_PLAYLISTPLAYER_NEXT:
@@ -715,7 +766,9 @@ void CApplicationMessenger::MediaPlay(const CFileItem &item)
 void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
-  tMsg.lpVoid = (void *)new CFileItemList(list);
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
   SendMessage(tMsg, true);
@@ -761,6 +814,15 @@ void CApplicationMessenger::PlayListPlayerPlay(int iSong)
   SendMessage(tMsg, true);
 }
 
+bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
+{
+  bool returnState;
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
+  tMsg.lpVoid = (void *)&returnState;
+  SendMessage(tMsg, true);
+  return returnState;
+}
+
 void CApplicationMessenger::PlayListPlayerNext()
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_NEXT};
@@ -784,7 +846,9 @@ void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItem &ite
 void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItemList &list)
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_ADD};
-  tMsg.lpVoid = (void *)new CFileItemList(list);
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = playlist;
   SendMessage(tMsg, true);
 }

@@ -38,7 +38,6 @@
 #include "Util.h"
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogOK.h"
 #include "Application.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
@@ -307,12 +306,8 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 #endif
       {
         if (m_allowPrompting)
-        {
-          if (!CPasswordManager::GetInstance().PromptToAuthenticateURL(urlIn))
-            break;
-        }
-        else
-          break;
+          RequireAuthentication(urlIn.Get());
+        break;
       }
       else
       {
@@ -330,16 +325,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 #endif
 
         if (m_allowPrompting)
-        {
-          CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-          pDialog->SetHeading(257);
-          pDialog->SetLine(0, cError);
-          pDialog->SetLine(1, "");
-          pDialog->SetLine(2, "");
-
-          ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-          g_application.getApplicationMessenger().SendMessage(tMsg, false);
-        }
+          SetErrorDialog(257, cError.c_str());
         break;
       }
     }

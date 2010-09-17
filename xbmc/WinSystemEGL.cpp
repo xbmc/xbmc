@@ -410,9 +410,9 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
 
 void CWinSystemEGL::ShowOSMouse(bool show)
 {
-  // Have to force it to show the cursor, otherwise it hangs!
-  //SDL_ShowCursor(show ? 1 : 0);
-  SDL_ShowCursor(1);
+  SDL_ShowCursor(show ? 1 : 0);
+  // On BB have show the cursor, otherwise it hangs! (FIXME verify it if fixed)
+  //SDL_ShowCursor(1);
 }
 
 void CWinSystemEGL::NotifyAppActiveChange(bool bActivated)

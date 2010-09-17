@@ -537,7 +537,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
           if (iSelectedMovie >= 0)
+          {
             scrUrl = movielist[iSelectedMovie];
+            CLog::Log(LOGDEBUG, "%s: user selected movie '%s' with URL '%s'",
+              __FUNCTION__, scrUrl.strTitle.c_str(), scrUrl.m_url[0].m_url.c_str());
+          }
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();
@@ -672,18 +676,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           m_database.Close();
           return listNeedsUpdating; // user cancelled
         }
-        OutputDebugString("failed to get details\n");
-        // show dialog...
-        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (pDlgOK)
-        {
-          pDlgOK->SetHeading(195);
-          pDlgOK->SetLine(0, movieName);
-          pDlgOK->SetLine(1, "");
-          pDlgOK->SetLine(2, "");
-          pDlgOK->SetLine(3, "");
-          pDlgOK->DoModal();
-        }
+        CGUIDialogOK::ShowAndGetInput(195, movieName, 0, 0);
         m_database.Close();
         return listNeedsUpdating;
       }
@@ -1013,10 +1006,19 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (!item->m_bIsFolder)
   {
     CStdString resumeString = GetResumeString(*item);
-    return OnFileAction(iItem, !resumeString.IsEmpty() ? SELECT_ACTION_CHOOSE : SELECT_ACTION_PLAY);
+    if (!resumeString.IsEmpty())
+    {
+      CContextButtons choices;
+      choices.Add(SELECT_ACTION_RESUME, resumeString);
+      choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return true;
+      return OnFileAction(iItem, value);
+    }
   }
-  
-  return true;
+
+  return OnFileAction(iItem, SELECT_ACTION_PLAY);
 }
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
@@ -1769,16 +1771,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Close();
 
   // done...
-  CGUIDialogOK *pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (pDialog)
-  {
-    pDialog->SetHeading(20177); // Done
-    pDialog->SetLine(0, movie.m_strTitle);
-    pDialog->SetLine(1, movie.m_strGenre);
-    pDialog->SetLine(2, movie.m_strIMDBNumber);
-    pDialog->SetLine(3, "");
-    pDialog->DoModal();
-  }
+  CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, movie.m_strGenre, movie.m_strIMDBNumber);
 
   // library view cache needs to be cleared
   CUtil::DeleteVideoDatabaseDirectoryCache();

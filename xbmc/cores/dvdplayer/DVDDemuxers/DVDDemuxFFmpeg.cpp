@@ -290,6 +290,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
+    if(m_ioContext->max_packet_size)
+      m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->is_streamed = 1;
@@ -399,7 +401,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // we need to know if this is matroska or avi later
-  m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
+  m_bMatroska = strncmp(m_pFormatContext->iformat->name, "matroska", 8) == 0;	// for "matroska.webm"
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
   if (streaminfo)
