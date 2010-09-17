@@ -17,8 +17,9 @@ SRCS = \
         AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
-  PulseAE.cpp \
-  PulseStream.cpp \
+	PulseAE.cpp \
+	PulseStream.cpp \
+	PulseEventThread.cpp \
 	AEConvert.cpp \
 	AERemap.cpp \
 	AEUtil.cpp \
