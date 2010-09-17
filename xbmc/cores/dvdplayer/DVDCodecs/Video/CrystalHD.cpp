@@ -1246,13 +1246,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
 
   do
   {
-    res = m_dll->DtsOpenDecoder(m_device, StreamType);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
-      break;
-    }
-
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_new_lib)
     {
@@ -1288,6 +1281,13 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         break;
       }
 
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
+        break;
+      }
+
       if (m_has_bcm70015)
         res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2); 
       else
@@ -1301,6 +1301,13 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
     else
 #endif
     {
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
+        break;
+      }
+
       uint32_t OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
       res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
       if (res != BCM::BC_STS_SUCCESS)
