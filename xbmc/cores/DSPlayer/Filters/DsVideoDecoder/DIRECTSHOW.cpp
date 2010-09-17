@@ -124,7 +124,6 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, int nPicEntryNumber)
 {
   m_references = 0;
   m_refs = 0;
-  m_buffer_count = 0;
   m_buffer_age = 0;
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   //m_context->decoder = (dxva_decoder_context*)calloc(1, sizeof(dxva_decoder_context));
@@ -231,9 +230,9 @@ CDXVADecoder::~CDXVADecoder()
 void CDXVADecoder::Close()
 {
   CSingleLock lock(m_section);
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  for(unsigned i = 0; i < m_refs; i++)
     m_buffer[i].Clear();
-  m_buffer_count = 0;
+  m_refs = 0;
   lock.Leave();
 }
 
@@ -253,9 +252,10 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   CSingleLock lock(m_section);
   Close();
 
-  if(avctx->refs > m_refs)
-    m_refs = avctx->refs;
-
+  //Dvdplayer use this but it is better?
+  /*if(avctx->refs > m_refs)
+    m_refs = avctx->refs;*/
+  
   if(m_refs == 0)
   {
     if(avctx->codec_id == CODEC_ID_H264)
@@ -271,16 +271,16 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     
   }
 
-  m_buffer_count = m_refs;
   m_pFilter = (CXBMCVideoDecFilter*)avctx->opaque;
-
+  CreateDummySurface();
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
-  m_context_buffer_count = m_buffer_count;
-  m_context_buffer_id = (void**)calloc(m_context_buffer_count, sizeof(*m_context_buffer_id));
-  m_pIDXVideoDecoder = new CDXDecWrapper(m_pAMVideoAccelerator, m_context_buffer_count, (void**)m_context->surface);//m_context_buffer_id);
+  
+  
+  m_pIDXVideoDecoder = new CDXDecWrapper(m_pAMVideoAccelerator, m_refs, (void**)m_context->surface);//m_context_buffer_id);
   m_context->decoder = m_pIDXVideoDecoder;
+  
   /*m_context->exec.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];//= m_ExecuteParams;
   for (int i = 0; i < 6; i++)
     memset (&m_context->exec.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
@@ -299,11 +299,11 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
 void CDXVADecoder::CreateDummySurface()
 {
-  m_context->surface_count = m_refs + 1 + 1 + m_nPicEntryNumber; // refs + 1 decode + 1 libavcodec safety + processor buffer
-  //m_context->surface_count = m_nPicEntryNumber;
+  //m_context->surface_count = m_refs + 1 + 1 + m_nPicEntryNumber; // refs + 1 decode + 1 libavcodec safety + processor buffer
+  m_context->surface_count = m_nPicEntryNumber;
 HRESULT hr;
   
-    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_buffer_count);
+    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_refs);
     for(int i = 0; i < m_context->surface_count; i++)
     {
       
@@ -317,7 +317,7 @@ HRESULT hr;
 
       m_buffer[i].surface = m_context->surface[i];
     }
-     m_context->surface_count = m_buffer_count;
+     
   
 
 }
@@ -365,7 +365,7 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   int           count = 0;
   SVideoBuffer* buf   = NULL;
   /*TODO verify if there any verification to do before touching the buffer*/
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  for(unsigned i = 0; i < m_context->surface_count ; i++)
   {
     if(m_buffer[i].used)
       count++;
@@ -375,7 +375,7 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
         buf = m_buffer+i;
     }
   }
-
+  
   if(count >= m_refs+2)
   {
     m_refs++;
@@ -398,6 +398,7 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     pic->data[i] = NULL;
     pic->linesize[i] = 0;
   }
+
   pic->data[0] = (uint8_t*)buf->surface;
   pic->data[3] = (uint8_t*)buf->surface;
   buf->used = true;
@@ -412,7 +413,7 @@ void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
   /*CLog::DebugLog("%s",__FUNCTION__);*/
   IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  for(unsigned i = 0; i < m_context->surface_count; i++)
   {
     if(m_buffer[i].surface == surface)
     {

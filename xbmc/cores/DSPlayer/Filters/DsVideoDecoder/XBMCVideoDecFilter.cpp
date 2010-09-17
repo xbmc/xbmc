@@ -459,11 +459,12 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
   //m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-      
+  
   if (hint->extrasize > 0)
   {
     m_pCodecContext->extradata_size = hint->extrasize;
     m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hint->extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+
     memcpy(m_pCodecContext->extradata, hint->extradata, hint->extrasize);
   }
   m_rtAvrTimePerFrame = std::max (1i64, hint->avgtimeperframe);
@@ -536,7 +537,7 @@ void CXBMCVideoDecFilter::BuildDXVAOutputFormat()
   m_nVideoOutputCount = (IsDXVASupported() ? ffCodecs[m_nCodecNb].DXVAModeCount() + countof (DXVAFormats) : 0) +
               (m_bUseFFmpeg   ? countof(SoftwareFormats) : 0);
 
-  m_pVideoOutputFormat  = DNew VIDEO_OUTPUT_FORMATS[m_nVideoOutputCount];
+  m_pVideoOutputFormat  = new VIDEO_OUTPUT_FORMATS[m_nVideoOutputCount];
 
   if (IsDXVASupported())
   {

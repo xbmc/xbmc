@@ -106,6 +106,5 @@ class CBaseVideoOutputPin : public CTransformOutputPin
 {
 public:
 	CBaseVideoOutputPin(TCHAR* pObjectName, CBaseVideoFilter* pFilter, HRESULT* phr, LPCWSTR pName);
-
-    HRESULT CheckMediaType(const CMediaType* mtOut);
+  HRESULT CheckMediaType(const CMediaType* mtOut);
 };

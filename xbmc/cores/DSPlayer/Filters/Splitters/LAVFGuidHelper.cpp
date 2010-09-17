@@ -506,8 +506,13 @@ MPEG2VIDEOINFO *CLAVFGuidHelper::CreateMPEG2VI(const AVStream *avstream, ULONG *
         mp2vi->dwProfile = extradata[1];
         mp2vi->dwLevel = extradata[3];
         mp2vi->dwFlags = (extradata[4] & 3) + 1;
+#if 0//THIS NEED TO BE FIXED CURRENTLY THE FIRST CODE IS WORKING WITH XBMC FFMPEG BUT THE SECOND WITH OTHER DIRECTSHOW CODEC
+        memcpy(&mp2vi->dwSequenceHeader[0],(void*)extradata,extra);
+        mp2vi->cbSequenceHeader = extra;
+#else
         mp2vi->cbSequenceHeader = avc_quant(extradata,
                                             (BYTE *)(&mp2vi->dwSequenceHeader[0]), extra);
+#endif
       }
       else
       {

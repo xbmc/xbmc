@@ -87,7 +87,8 @@ public:
   // IKeyFrameInfo
   STDMETHODIMP GetKeyFrameCount(UINT& nKFs);
   STDMETHODIMP GetKeyFrames(const GUID* pFormat, REFERENCE_TIME* pKFs, UINT& nKFs);
-
+  
+  AVFormatContext* GetAVFormatContext() {return m_avFormat;}
 private:
   STDMETHODIMP AddStream(int streamId);
   STDMETHODIMP CreateStreams();

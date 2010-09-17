@@ -58,7 +58,7 @@ STDMETHODIMP CLAVFOutputPin::NonDelegatingQueryInterface(REFIID riid, void** ppv
 {
   CheckPointer(ppv, E_POINTER);
 
-  if (riid == __uuidof(IMediaSeeking))
+  if (riid == __uuidof(IMediaSeeking) || riid == __uuidof(IFileSourceFilter))
   {
     return m_pFilter->QueryInterface(riid, ppv);
   }

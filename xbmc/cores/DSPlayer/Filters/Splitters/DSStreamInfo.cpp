@@ -79,6 +79,7 @@ void CDSStreamInfo::Clear()
 
   level           = 0;
   profile         = 0;
+  dwflags         = 0;
   codec_tag       = 0;
   fpsscale        = 0;
   fpsrate         = 0;
@@ -410,7 +411,6 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
     width = mpg2v->hdr.bmiHeader.biWidth;
     height = abs(mpg2v->hdr.bmiHeader.biHeight);
     codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
-
     if (mpg2v->hdr.bmiHeader.biCompression == NULL)
       codec_tag = pmt.subtype.Data1;
     //for fourcc 'avc1' and 'AVC1'
@@ -424,6 +424,7 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
     }
     profile = mpeg2info->dwProfile;
     level = mpeg2info->dwLevel;
+    dwflags = mpeg2info->dwFlags;
     avgtimeperframe = mpg2v->hdr.AvgTimePerFrame;
     
   }
@@ -438,10 +439,12 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
     avgtimeperframe = 1;
   }
 
+  
   if (size)
   {
     extrasize  = size;
     extradata = malloc(extrasize);
-    memcpy((void*)extradata, data, size);
+    memcpy((void*)extradata, data, extrasize);
+    
   }
 }

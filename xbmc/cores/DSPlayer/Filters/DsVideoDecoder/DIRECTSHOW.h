@@ -147,16 +147,11 @@ protected:
 
   static const unsigned        m_buffer_max = 32;
   SVideoBuffer                 m_buffer[m_buffer_max];
-  unsigned                     m_buffer_count;
   unsigned                     m_buffer_age;
   int                          m_refs;
   CCriticalSection             m_section;
 
   struct dxva_context*         m_context;
-
-  void                         **m_context_buffer_id;
-  unsigned                     m_context_buffer_count;
-  /*std::vector<directshow_dxva_h264*> m_videoBuffer;*/
   CXBMCVideoDecFilter* m_pFilter;
 public:
   void SetTypeSpecificFlags(IMediaSample* pMS,FF_SLICE_TYPE slice_type, FF_FIELD_TYPE field_type);
