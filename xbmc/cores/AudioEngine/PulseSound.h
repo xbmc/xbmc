@@ -30,7 +30,7 @@ public:
   virtual ~CPulseSound() {}
 
   virtual void DeInitialize() {}
-  virtual bool Initialize() {}
+  virtual bool Initialize() { return true; }
 
   virtual void Play() {}
   virtual void Stop() {}
