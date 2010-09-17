@@ -103,7 +103,6 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, SelectionStream& out)
 {
   CSingleLock lock(m_section);
-  int count = -1;
   for(int i=0;i<(int)m_Streams.size();i++)
   {
     if(m_Streams[i].type != type)
