@@ -1022,10 +1022,19 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (!item->m_bIsFolder)
   {
     CStdString resumeString = GetResumeString(*item);
-    return OnFileAction(iItem, !resumeString.IsEmpty() ? SELECT_ACTION_CHOOSE : SELECT_ACTION_PLAY);
+    if (!resumeString.IsEmpty())
+    {
+      CContextButtons choices;
+      choices.Add(SELECT_ACTION_RESUME, resumeString);
+      choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      if (value < 0)
+        return true;
+      return OnFileAction(iItem, value);
+    }
   }
-  
-  return true;
+
+  return OnFileAction(iItem, SELECT_ACTION_PLAY);
 }
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
