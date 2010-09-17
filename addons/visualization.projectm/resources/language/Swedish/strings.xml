@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 09/11/2010-->
+<!--$Revision$-->
+<strings>
+  <string id="30000">Renderingskvalitet</string>
+  <string id="30001">Låg</string>
+  <string id="30002">Mellan</string>
+  <string id="30003">Hög</string>
+  <string id="30004">Maximal</string>
+  <string id="30005">Blandningsläge</string>
+  <string id="30006">Mjukt förvalslängd</string>
+  <string id="30007">Förvalslängd</string>
+  <string id="30008">Taktkänslighet</string>
+</strings>
