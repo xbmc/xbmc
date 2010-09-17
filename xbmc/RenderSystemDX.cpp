@@ -45,7 +45,7 @@ using namespace std;
 
 #ifdef HAS_DS_PLAYER
 // DSPlayer needs to recreate the D3DDevice when the device is lost.
-#define IS_DSPLAYER ( (g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || (g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR) )
+#define IS_DSPLAYER ( (g_renderManager.GetRendererType() == RENDERER_DSHOW) )
 #endif
 
 // Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.

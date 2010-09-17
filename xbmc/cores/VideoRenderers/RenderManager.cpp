@@ -310,7 +310,7 @@ unsigned int CXBMCRenderManager::PreInit()
     if (rendtype == RENDERER_NORMAL)
       m_pRenderer = new CWinRenderer();
     else
-      m_pRenderer = new CDsPixelShaderRenderer(rendtype == RENDERER_DSHOW_EVR ? true : false);
+      m_pRenderer = new CWinDsRenderer();
 
     m_pRendererType = rendtype;
 #else

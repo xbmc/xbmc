@@ -211,17 +211,13 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_pScreenSize(0, 0, 0, 0)
   , m_drawingIsDone()
   , m_bPaintWasCalled(false)
-  , m_MainThreadId(0)
   , m_bNeedCheckSample(true)
   , m_hVSyncThread(NULL)
   , m_hEvtQuit(NULL)
   , m_bscShader("contrast_brightness.psh", "ps_2_0")
 {
   g_Windowing.Register(this);
-  if (m_bIsEVR)
-    g_renderManager.PreInit(RENDERER_DSHOW_EVR);
-  else
-    g_renderManager.PreInit(RENDERER_DSHOW_VMR9);
+  g_renderManager.PreInit(RENDERER_DSHOW);
 
   g_renderManager.RegisterCallback(this);
   m_bIsFullscreen = g_dsSettings.IsD3DFullscreen();
@@ -756,55 +752,6 @@ void CDX9AllocatorPresenter::StopWorkerThreads()
   }
 }
 
-bool CDX9AllocatorPresenter::SettingsNeedResetDevice()
-{
-  //TODO TI-BEN
-  /*CDsSettings s = g_dsSettings;
-  CMPlayerCApp::Settings::CRendererSettingsEVR & New = g_dsSettings.pRendererSettings->
-  CMPlayerCApp::Settings::CRendererSettingsEVR & Current = m_LastRendererSettings;
-
-  bool bRet = false;
-
-  bRet = bRet || New.fVMR9AlterativeVSync != Current.fVMR9AlterativeVSync;
-  bRet = bRet || New.iVMR9VSyncAccurate != Current.iVMR9VSyncAccurate;
-
-  if (m_bIsFullscreen)
-  {
-    bRet = bRet || New.iVMR9FullscreenGUISupport != Current.iVMR9FullscreenGUISupport;
-  }
-  else
-  {
-    if (Current.iVMRDisableDesktopComposition)
-    {
-      if (!m_bDesktopCompositionDisabled)
-      {
-        m_bDesktopCompositionDisabled = true;
-        if (m_pDwmEnableComposition)
-          m_pDwmEnableComposition(0);
-      }
-    }
-    else
-    {
-      if (m_bDesktopCompositionDisabled)
-      {
-        m_bDesktopCompositionDisabled = false;
-        if (m_pDwmEnableComposition)
-          m_pDwmEnableComposition(1);
-      }
-    }
-  }
-
-  if (m_bIsEVR)
-  {
-    bRet = bRet || New.iEVRHighColorResolution != Current.iEVRHighColorResolution;    
-  }
-
-  m_LastRendererSettings = s.m_RenderSettings;
-
-  return bRet;*/
-  return false;
-}
-
 void CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)
 {
   __super::SetTime(rtNow);
@@ -948,7 +895,7 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  for(int i = 0; i < m_nNbDXSurface+3; i++)
+  for(size_t i = 0; i < m_nNbDXSurface + 3; i++)
   {
     m_pVideoTexture[i] = NULL;
     m_pVideoSurface[i] = NULL;
@@ -988,7 +935,7 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
 
     if(g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE2D)
     {
-      for(int i = 0; i < m_nNbDXSurface+3; i++)
+      for(size_t i = 0; i < m_nNbDXSurface + 3; i++)
       {
         m_pVideoTexture[i] = NULL;
       }
@@ -1016,14 +963,14 @@ void CDX9AllocatorPresenter::DeleteSurfaces()
   m_pScreenSizeTemporaryTexture[0].Release();
   m_pScreenSizeTemporaryTexture[1].Release();
 
-  for(int i = 0; i < m_nNbDXSurface+2; i++)
+  for(size_t i = 0; i < m_nNbDXSurface + 2; i++)
   {
     m_pVideoTexture[i].Release();
     m_pVideoSurface[i].Release();
   }
 }
 
-UINT CDX9AllocatorPresenter::GetAdapter(IDirect3D9* pD3D, bool CreateDevice)
+uint32_t CDX9AllocatorPresenter::GetAdapter(IDirect3D9* pD3D, bool CreateDevice)
 {
   if(m_hWnd == NULL || pD3D == NULL)
     return D3DADAPTER_DEFAULT;
@@ -1970,7 +1917,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       {
 
         // Brightness, contrast and saturation
-        int src = m_nCurSurface, dst = m_nNbDXSurface;
+        size_t src = m_nCurSurface, dst = m_nNbDXSurface;
 
         float contrast = 0.f, brightness = 0.f;
         // Map brightness and contrast settings
@@ -2426,7 +2373,7 @@ void CDX9AllocatorPresenter::DrawStats()
 
     if (bDetailedStats > 1)
     {
-      strText.Format("Formats      : Surface %s    Backbuffer %s    Display %s     Device D3DDev      D3DExError: %s", GetD3DFormatStr(m_SurfaceType), GetD3DFormatStr(D3DFMT_X8R8G8B8), GetD3DFormatStr(m_DisplayType), m_D3DDevExError.c_str());
+      strText.Format("Formats      : Surface %s    Backbuffer %s    Display %s     Device D3DDev", GetD3DFormatStr(m_SurfaceType), GetD3DFormatStr(D3DFMT_X8R8G8B8), GetD3DFormatStr(m_DisplayType));
       DrawText(rc, strText, 1);
       OffsetRect (&rc, 0, TextHeight);
 

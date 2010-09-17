@@ -40,12 +40,12 @@ public:
   CWinDsRenderer();
   ~CWinDsRenderer();
 
-  virtual void Update(bool bPauseDrawing);
-  virtual void SetupScreenshot();
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
+  virtual void         Update(bool bPauseDrawing);
+  virtual void         SetupScreenshot();
+  void                 CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return 0; };
   virtual void         ReleaseImage(int source, bool preserve = false) {};
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y) { return 0; };
@@ -63,39 +63,16 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
-  virtual void AutoCrop(bool bCrop);
-  void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void         AutoCrop(bool bCrop);
+  void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 protected:
-  virtual void Render(DWORD flags);
-  
-  bool m_bConfigured;
-  bool m_bIsEvr;
+  virtual void         Render(DWORD flags);
 
-  //dsplayer
-  void RenderDShowBuffer(DWORD flags);
-
-  Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
-  Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
-  IPaintCallback* m_paintCallback;
-  // clear colour for "black" bars
-  DWORD m_clearColour;
-  unsigned int m_flags;
-  Com::SmartRect m_pScreenSize;
+  bool                 m_bConfigured;
+  IPaintCallback*      m_paintCallback;
+  DWORD                m_clearColour;
+  unsigned int         m_flags;
 };
-
-
-
-class CDsPixelShaderRenderer : public CWinDsRenderer
-{
-public:
-  CDsPixelShaderRenderer(bool isevr);
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
-
-protected:
-  virtual void Render(DWORD flags);
-};
-
-
 
 #else
 #include "LinuxRenderer.h"

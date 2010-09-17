@@ -591,8 +591,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 {
   CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
 
-  m_MainThreadId = GetCurrentThreadId();
-
   if (m_rtTimePerFrame == 0 || m_bNeedCheckSample || !g_renderManager.IsConfigured())
   {
     m_bNeedCheckSample = false;

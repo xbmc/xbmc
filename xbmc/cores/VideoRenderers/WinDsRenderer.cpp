@@ -37,8 +37,7 @@
 #include "IPaintCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
-  m_bConfigured(false), m_D3DVideoTexture(NULL), m_D3DMemorySurface(NULL),
-  m_paintCallback(NULL), m_pScreenSize(0, 0, 0, 0)
+  m_bConfigured(false), m_paintCallback(NULL)
 {
 }
 
@@ -64,8 +63,9 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-
   ManageDisplay();
+
+  m_bConfigured = true;
   return true;
 }
 
@@ -114,17 +114,19 @@ unsigned int CWinDsRenderer::PreInit()
 
 void CWinDsRenderer::UnInit()
 {
-  CSingleLock lock(g_graphicsContext);
-  m_D3DMemorySurface = NULL;
-  m_D3DVideoTexture = NULL;
-
   m_bConfigured = false;
 }
 
 void CWinDsRenderer::Render(DWORD flags)
 {
-  if( flags & RENDER_FLAG_NOOSD ) 
-    return;
+  // TODO: Take flags into account
+  /*if( flags & RENDER_FLAG_NOOSD ) 
+    return;*/
+
+  CSingleLock lock(g_graphicsContext);
+
+  if (m_paintCallback)
+    m_paintCallback->OnPaint(m_destRect);
 }
 
 void CWinDsRenderer::AutoCrop(bool bCrop)
@@ -145,16 +147,6 @@ inline void CWinDsRenderer::OnAfterPresent()
 {
   if (m_paintCallback)
     m_paintCallback->OnAfterPresent();
-}
-
-void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
-{
-  CSingleLock lock(g_graphicsContext);
-
-  if (m_paintCallback)
-  {
-    m_paintCallback->OnPaint(m_destRect);
-  }
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
@@ -183,27 +175,6 @@ bool CWinDsRenderer::Supports( ERENDERFEATURE method )
     return true;
 
   return false;
-}
-
-CDsPixelShaderRenderer::CDsPixelShaderRenderer(bool isevr)
-    : CWinDsRenderer()
-{
-  m_bIsEvr = isevr;
-}
-
-bool CDsPixelShaderRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
-{
-  if(!CWinDsRenderer::Configure(width, height, d_width, d_height, fps, flags))
-    return false;
-  m_bConfigured = true;
-  return true;
-}
-
-
-void CDsPixelShaderRenderer::Render(DWORD flags)
-{
-	CWinDsRenderer::Render(flags);
-  CWinDsRenderer::RenderDShowBuffer(flags);
 }
 
 #endif

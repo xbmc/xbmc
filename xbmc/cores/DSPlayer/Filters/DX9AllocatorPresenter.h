@@ -67,115 +67,172 @@ public:
     void            UpdateAlphaBitmap();
 
   protected:
-    Com::SmartSize  m_ScreenSize;
-    Com::SmartRect  m_pScreenSize;
-    UINT  m_RefreshRate;
-
-    // Brightness, saturation & contrast shader
-    CExternalPixelShader m_bscShader;
-
-//    bool  m_fVMRSyncFix;
-    bool  m_bAlternativeVSync;
-    bool  m_bHighColorResolution;
-    bool  m_bCompositionEnabled;
-    bool  m_bIsEVR;
-    int   m_OrderedPaint;
-    int   m_VSyncMode;
-    bool  m_bDesktopCompositionDisabled;
-    bool  m_bIsFullscreen;
-    bool  m_bNeedCheckSample;
-    DWORD m_MainThreadId;
-    //CDsSettings::CRendererSettingsEVR m_LastRendererSettings;
-
-    HMODULE m_hD3D9;
-
-    CCritSec          m_RenderLock;
-
-    Com::SmartPtr<IDirect3D9>      m_pD3D;
-
-    void LockD3DDevice()
-    {
-      if (m_pD3DDev)
-      {
-        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
-
-        if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
-          && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))      
-        {
-          if (pCritSec->DebugInfo->CriticalSection == pCritSec)
-            EnterCriticalSection(pCritSec);
-        }
-      }
-    }
-
-    void UnlockD3DDevice()
-    {
-      if (m_pD3DDev)
-      {
-        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
-
-        if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
-          && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))      
-        {
-          if (pCritSec->DebugInfo->CriticalSection == pCritSec)
-            LeaveCriticalSection(pCritSec);
-        }
-      }
-    }
-    CStdString m_D3DDevExError;
-    IDirect3DDevice9*   m_pD3DDev; // No need to store reference, we want to be able to delete the device anytime
-    Com::SmartPtr<IDirect3DTexture9>    m_pVideoTexture[MAX_PICTURE_SLOTS];
-    Com::SmartPtr<IDirect3DSurface9>    m_pVideoSurface[MAX_PICTURE_SLOTS];
-    Com::SmartPtr<IDirect3DTexture9>    m_pOSDTexture;
-    Com::SmartPtr<IDirect3DSurface9>    m_pOSDSurface;
-    Com::SmartPtr<ID3DXLine>      m_pLine;
-    Com::SmartPtr<ID3DXFont>      m_pFont;
-    Com::SmartPtr<ID3DXSprite>    m_pSprite;
-
-    //std::vector<CExternalPixelShader>  m_pPixelShaders;
-    //std::vector<CExternalPixelShader>  m_pPixelShadersScreenSpace;
+    Com::SmartSize                        m_ScreenSize;
+    Com::SmartRect                        m_pScreenSize;
+    uint32_t                              m_RefreshRate;
+    CExternalPixelShader                  m_bscShader; // Brightness, saturation & contrast shader
+    bool                                  m_bAlternativeVSync;
+    bool                                  m_bHighColorResolution;
+    bool                                  m_bCompositionEnabled;
+    bool                                  m_bIsEVR;
+    int                                   m_OrderedPaint;
+    uint8_t                               m_VSyncMode;
+    bool                                  m_bDesktopCompositionDisabled;
+    bool                                  m_bIsFullscreen;
+    bool                                  m_bNeedCheckSample;
+    HMODULE                               m_hD3D9;
+    CCritSec                              m_RenderLock;
+    Com::SmartPtr<IDirect3D9>             m_pD3D;
+    IDirect3DDevice9*                     m_pD3DDev; // No need to store reference, we want to be able to delete the device anytime
+    Com::SmartPtr<IDirect3DTexture9>      m_pVideoTexture[MAX_PICTURE_SLOTS];
+    Com::SmartPtr<IDirect3DSurface9>      m_pVideoSurface[MAX_PICTURE_SLOTS];
+    Com::SmartPtr<IDirect3DTexture9>      m_pOSDTexture;
+    Com::SmartPtr<IDirect3DSurface9>      m_pOSDSurface;
+    Com::SmartPtr<ID3DXLine>              m_pLine;
+    Com::SmartPtr<ID3DXFont>              m_pFont;
+    Com::SmartPtr<ID3DXSprite>            m_pSprite;
     Com::SmartPtr<IDirect3DPixelShader9>  m_pResizerPixelShader[4]; // bl, bc1, bc2_1, bc2_2
-    Com::SmartPtr<IDirect3DTexture9>  m_pScreenSizeTemporaryTexture[2];
-    D3DFORMAT                 m_SurfaceType;
-    D3DFORMAT                 m_BackbufferType;
-    D3DFORMAT                 m_DisplayType;
-    D3DTEXTUREFILTERTYPE      m_filter;
-    D3DCAPS9                  m_caps;
-    std::auto_ptr<CPixelShaderCompiler> m_pPSC;
-
-    bool SettingsNeedResetDevice();
-
-    STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow);
-    virtual HRESULT CreateDevice(CStdString &_Error);
-    virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
-    virtual void DeleteSurfaces();
+    Com::SmartPtr<IDirect3DTexture9>      m_pScreenSizeTemporaryTexture[2];
+    D3DFORMAT                             m_SurfaceType;
+    D3DFORMAT                             m_DisplayType;
+    D3DTEXTUREFILTERTYPE                  m_filter;
+    D3DCAPS9                              m_caps;
+    std::auto_ptr<CPixelShaderCompiler>   m_pPSC;
 
     // Thread stuff
-    HANDLE      m_hEvtQuit;      // Stop rendering thread event
-    HANDLE      m_hVSyncThread;
-    static DWORD WINAPI VSyncThreadStatic(LPVOID lpParam);
-    void VSyncThread();
-    void StartWorkerThreads();
-    void StopWorkerThreads();
+    HANDLE                                m_hEvtQuit;      // Stop rendering thread event
+    HANDLE                                m_hVSyncThread;
+    float                                 m_bicubicA;
 
-    UINT GetAdapter(IDirect3D9 *pD3D, bool GetAdapter = false);
+    int                                   m_nTearingPos;
+    VMR9AlphaBitmap                       m_VMR9AlphaBitmap;
+    Com::SmartAutoVectorPtr<uint8_t>      m_VMR9AlphaBitmapData;
+    Com::SmartRect                        m_VMR9AlphaBitmapRect;
+    int                                   m_VMR9AlphaBitmapWidthBytes;
+    size_t                                m_nNbDXSurface;          // Total number of DX Surfaces
+    size_t                                m_nVMR9Surfaces;         // Total number of DX Surfaces
+    size_t                                m_iVMR9Surface;
+    size_t                                m_nCurSurface;           // Surface currently displayed
+    size_t                                m_nUsedBuffer;
+    double                                m_fAvrFps;               // Estimate the real FPS
+    double                                m_fJitterStdDev;         // Estimate the Jitter std dev
+    double                                m_fJitterMean;
+    double                                m_fSyncOffsetStdDev;
+    double                                m_fSyncOffsetAvr;
+    double                                m_DetectedRefreshRate;
+    
+    CCritSec                              m_RefreshRateLock;
+    double                                m_DetectedRefreshTime;
+    double                                m_DetectedRefreshTimePrim;
+    double                                m_DetectedScanlineTime;
+    double                                m_DetectedScanlineTimePrim;
+    double                                m_DetectedScanlinesPerFrame;
 
-    float m_bicubicA;
-    HRESULT InitResizers(float bicubicA, bool bNeedScreenSizeTexture);
+    double                                m_ldDetectedRefreshRateList[100];
+    double                                m_ldDetectedScanlineRateList[100];
+    int                                   m_DetectedRefreshRatePos;
+    bool                                  m_bSyncStatsAvailable;
+    int64_t                               m_pllJitter [NB_JITTER];        // Jitter buffer for stats
+    int64_t                               m_pllSyncOffset [NB_JITTER];    // Jitter buffer for stats
+    int64_t                               m_llLastPerf;
+    int64_t                               m_JitterStdDev;
+    int64_t                               m_MaxJitter;
+    int64_t                               m_MinJitter;
+    int64_t                               m_MaxSyncOffset;
+    int64_t                               m_MinSyncOffset;
+    int                                   m_nNextJitter;
+    int                                   m_nNextSyncOffset;
+    int64_t                               m_rtTimePerFrame;
+    double                                m_DetectedFrameRate;
+    double                                m_DetectedFrameTime;
+    double                                m_DetectedFrameTimeStdDev;
+    bool                                  m_DetectedLock;
+    int64_t                               m_DetectedFrameTimeHistory[60];
+    double                                m_DetectedFrameTimeHistoryHistory[500];
+    int                                   m_DetectedFrameTimePos;
+    int                                   m_bInterlaced;
+    double                                m_TextScale;
+    int                                   m_VBlankEndWait;
+    int                                   m_VBlankStartWait;
+    int64_t                               m_VBlankWaitTime;
+    int64_t                               m_VBlankLockTime;
+    int                                   m_VBlankMin;
+    int                                   m_VBlankMinCalc;
+    int                                   m_VBlankMax;
+    int                                   m_VBlankEndPresent;
+    int64_t                               m_VBlankStartMeasureTime;
+    int                                   m_VBlankStartMeasure;
 
-    bool GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bMeasureTime);
-    bool WaitForVBlankRange(int &_RasterStart, int _RasterEnd, bool _bWaitIfInside, bool _bNeedAccurate, bool _bMeasure, bool &_bTakenLock);
-    bool WaitForVBlank(bool &_Waited, bool &_bTakenLock);
-    int GetVBlackPos();
-    void CalculateJitter(int64_t PerformanceCounter);
-    virtual void OnVBlankFinished(bool fAll, int64_t PerformanceCounter){}
+    int64_t                               m_PresentWaitTime;
+    int64_t                               m_PresentWaitTimeMin;
+    int64_t                               m_PresentWaitTimeMax;
 
-    HRESULT DrawRect(DWORD _Color, DWORD _Alpha, const Com::SmartRect &_Rect);
-    HRESULT TextureCopy(Com::SmartPtr<IDirect3DTexture9> pTexture);
-    HRESULT TextureResize(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], D3DTEXTUREFILTERTYPE filter, const Com::SmartRect &SrcRect);
-    HRESULT TextureResizeBilinear(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
-    HRESULT TextureResizeBicubic1pass(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
-    HRESULT TextureResizeBicubic2pass(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
+    int64_t                               m_PaintTime;
+    int64_t                               m_PaintTimeMin;
+    int64_t                               m_PaintTimeMax;
+    int64_t                               m_beforePresentTime;
+
+    int64_t                               m_WaitForGPUTime;
+
+    int64_t                               m_RasterStatusWaitTime;
+    int64_t                               m_RasterStatusWaitTimeMin;
+    int64_t                               m_RasterStatusWaitTimeMax;
+    int64_t                               m_RasterStatusWaitTimeMaxCalc;
+
+    double                                m_ClockDiffCalc;
+    double                                m_ClockDiffPrim;
+    double                                m_ClockDiff;
+
+    double                                m_TimeChangeHistory[100];
+    double                                m_ClockChangeHistory[100];
+    int                                   m_ClockTimeChangeHistoryPos;
+    double                                m_ModeratedTimeSpeed;
+    double                                m_ModeratedTimeSpeedPrim;
+    double                                m_ModeratedTimeSpeedDiff;
+
+    bool                                  m_bCorrectedFrameTime;
+    bool                                  m_bTakenLock;
+    bool                                  m_bPaintWasCalled;
+    int                                   m_FrameTimeCorrection;
+    int64_t                               m_LastFrameDuration;
+    int64_t                               m_LastSampleTime;
+
+    CStdString                            m_strStatsMsg[10];
+    CStdString                            m_D3D9Device;
+
+    static DWORD WINAPI                   VSyncThreadStatic(LPVOID lpParam);
+    void                                  VSyncThread();
+    void                                  StartWorkerThreads();
+    void                                  StopWorkerThreads();
+    STDMETHODIMP_(void)                   SetTime(REFERENCE_TIME rtNow);
+    uint32_t                              GetAdapter(IDirect3D9 *pD3D, bool GetAdapter = false);
+    HRESULT (__stdcall *m_pD3DXCreateSprite)(LPDIRECT3DDEVICE9 pDevice, LPD3DXSPRITE * ppSprite);
+    HRESULT                               InitResizers(float bicubicA, bool bNeedScreenSizeTexture);
+    bool                                  GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bMeasureTime);
+    bool                                  WaitForVBlankRange(int &_RasterStart, int _RasterEnd, bool _bWaitIfInside, bool _bNeedAccurate, bool _bMeasure, bool &_bTakenLock);
+    bool                                  WaitForVBlank(bool &_Waited, bool &_bTakenLock);
+    int                                   GetVBlackPos();
+    void                                  CalculateJitter(int64_t PerformanceCounter);
+
+    HRESULT                               DrawRect(DWORD _Color, DWORD _Alpha, const Com::SmartRect &_Rect);
+    HRESULT                               TextureCopy(Com::SmartPtr<IDirect3DTexture9> pTexture);
+    HRESULT                               TextureResize(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], D3DTEXTUREFILTERTYPE filter, const Com::SmartRect &SrcRect);
+    HRESULT                               TextureResizeBilinear(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
+    HRESULT                               TextureResizeBicubic1pass(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
+    HRESULT                               TextureResizeBicubic2pass(Com::SmartPtr<IDirect3DTexture9> pTexture, Vector dst[4], const Com::SmartRect &SrcRect);
+    HRESULT                               AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
+
+    void                                  DrawText(const RECT &rc, const CStdString &strText, int _Priority);
+    void                                  DrawStats();
+    double                                GetFrameTime();
+    double                                GetFrameRate();
+
+    virtual HRESULT                       CreateDevice(CStdString &_Error);
+    virtual HRESULT                       AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
+    virtual void                          DeleteSurfaces();
+    virtual void                          OnVBlankFinished(bool fAll, int64_t PerformanceCounter) {}
+    virtual void                          BeforeDeviceReset();
+    virtual void                          AfterDeviceReset();
 
     // Casimir666
     typedef HRESULT (WINAPI * D3DXLoadSurfaceFromMemoryPtr)(
@@ -206,51 +263,9 @@ public:
                     LPCWSTR      pFaceName,
                     LPD3DXFONT*    ppFont);
 
-
-    void        DrawText(const RECT &rc, const CStdString &strText, int _Priority);
-    void        DrawStats();
-    HRESULT     AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
-
-    // D3D Reset
-    virtual void BeforeDeviceReset();
-    virtual void AfterDeviceReset();
-
-    double GetFrameTime();
-    double GetFrameRate();
-
-
-    int            m_nTearingPos;
-    VMR9AlphaBitmap      m_VMR9AlphaBitmap;
-    Com::SmartAutoVectorPtr<BYTE>  m_VMR9AlphaBitmapData;
-    Com::SmartRect          m_VMR9AlphaBitmapRect;
-    int            m_VMR9AlphaBitmapWidthBytes;
-
-    D3DXLoadSurfaceFromMemoryPtr  m_pD3DXLoadSurfaceFromMemory;
-    D3DXCreateLinePtr    m_pD3DXCreateLine;
-    D3DXCreateFontPtr    m_pD3DXCreateFont;
-    HRESULT (__stdcall *m_pD3DXCreateSprite)(LPDIRECT3DDEVICE9 pDevice, LPD3DXSPRITE * ppSprite);
-
-
-
-    int            m_nNbDXSurface;          // Total number of DX Surfaces
-    int            m_nVMR9Surfaces;          // Total number of DX Surfaces
-    int            m_iVMR9Surface;
-    int            m_nCurSurface;          // Surface currently displayed
-    long           m_nUsedBuffer;
-
-    double          m_fAvrFps;            // Estimate the real FPS
-    double          m_fJitterStdDev;        // Estimate the Jitter std dev
-    double          m_fJitterMean;
-    double          m_fSyncOffsetStdDev;
-    double          m_fSyncOffsetAvr;
-    double          m_DetectedRefreshRate;
-
-    CCritSec        m_RefreshRateLock;
-    double          m_DetectedRefreshTime;
-    double          m_DetectedRefreshTimePrim;
-    double          m_DetectedScanlineTime;
-    double          m_DetectedScanlineTimePrim;
-    double          m_DetectedScanlinesPerFrame;
+    D3DXLoadSurfaceFromMemoryPtr            m_pD3DXLoadSurfaceFromMemory;
+    D3DXCreateLinePtr                       m_pD3DXCreateLine;
+    D3DXCreateFontPtr                       m_pD3DXCreateFont;
 
     double GetRefreshRate()
     {
@@ -266,99 +281,54 @@ public:
       return m_ScreenSize.cy;
     }
 
-    double         m_ldDetectedRefreshRateList[100];
-    double         m_ldDetectedScanlineRateList[100];
-    int            m_DetectedRefreshRatePos;
-    bool           m_bSyncStatsAvailable;            
-    __int64        m_pllJitter [NB_JITTER];    // Jitter buffer for stats
-    __int64        m_pllSyncOffset [NB_JITTER];    // Jitter buffer for stats
-    __int64        m_llLastPerf;
-    __int64        m_JitterStdDev;
-    __int64        m_MaxJitter;
-    __int64        m_MinJitter;
-    __int64        m_MaxSyncOffset;
-    __int64        m_MinSyncOffset;
-    int            m_nNextJitter;
-    int            m_nNextSyncOffset;
-    __int64        m_rtTimePerFrame;
-    double         m_DetectedFrameRate;
-    double         m_DetectedFrameTime;
-    double         m_DetectedFrameTimeStdDev;
-    bool           m_DetectedLock;
-    __int64        m_DetectedFrameTimeHistory[60];
-    double         m_DetectedFrameTimeHistoryHistory[500];
-    int            m_DetectedFrameTimePos;
-    int            m_bInterlaced;
+    void LockD3DDevice()
+    {
+      if (m_pD3DDev)
+      {
+        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
 
-    double         m_TextScale;
+        if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
+          && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))
+        {
+          if (pCritSec->DebugInfo->CriticalSection == pCritSec)
+            EnterCriticalSection(pCritSec);
+        }
+      }
+    }
 
-    int            m_VBlankEndWait;
-    int            m_VBlankStartWait;
-    __int64        m_VBlankWaitTime;
-    __int64        m_VBlankLockTime;
-    int            m_VBlankMin;
-    int            m_VBlankMinCalc;
-    int            m_VBlankMax;
-    int            m_VBlankEndPresent;
-    __int64        m_VBlankStartMeasureTime;
-    int            m_VBlankStartMeasure;
+    void UnlockD3DDevice()
+    {
+      if (m_pD3DDev)
+      {
+        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
 
-    __int64        m_PresentWaitTime;
-    __int64        m_PresentWaitTimeMin;
-    __int64        m_PresentWaitTimeMax;
-
-    __int64        m_PaintTime;
-    __int64        m_PaintTimeMin;
-    __int64        m_PaintTimeMax;
-    __int64        m_beforePresentTime;
-
-    __int64        m_WaitForGPUTime;
-
-    __int64        m_RasterStatusWaitTime;
-    __int64        m_RasterStatusWaitTimeMin;
-    __int64        m_RasterStatusWaitTimeMax;
-    __int64        m_RasterStatusWaitTimeMaxCalc;
-
-    double          m_ClockDiffCalc;
-    double          m_ClockDiffPrim;
-    double          m_ClockDiff;
-
-    double          m_TimeChangeHistory[100];
-    double          m_ClockChangeHistory[100];
-    int            m_ClockTimeChangeHistoryPos;
-    double          m_ModeratedTimeSpeed;
-    double          m_ModeratedTimeSpeedPrim;
-    double          m_ModeratedTimeSpeedDiff;
-
-    bool          m_bCorrectedFrameTime;
-    bool          m_bTakenLock;
-    bool          m_bPaintWasCalled;
-    int           m_FrameTimeCorrection;
-    __int64       m_LastFrameDuration;
-    __int64       m_LastSampleTime;
-
-    CStdString          m_strStatsMsg[10];
-    
-    CStdString          m_D3D9Device;
+        if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
+          && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))      
+        {
+          if (pCritSec->DebugInfo->CriticalSection == pCritSec)
+            LeaveCriticalSection(pCritSec);
+        }
+      }
+    }
 
   public:
     CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsEVR, CStdString &_Error);
     ~CDX9AllocatorPresenter();
 
     // ISubPicAllocatorPresenter
-    STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
-    STDMETHODIMP_(bool) Paint(bool fAll);
-    STDMETHODIMP GetDIB(BYTE* lpDib, DWORD* size);
+    STDMETHODIMP                        CreateRenderer(IUnknown** ppRenderer);
+    STDMETHODIMP_(bool)                 Paint(bool fAll);
+    STDMETHODIMP                        GetDIB(BYTE* lpDib, DWORD* size);
     
     // ID3DResource
-    virtual void OnLostDevice();
-    virtual void OnDestroyDevice();
-    virtual void OnCreateDevice();
-    virtual void OnResetDevice();
+    virtual void                        OnLostDevice();
+    virtual void                        OnDestroyDevice();
+    virtual void                        OnCreateDevice();
+    virtual void                        OnResetDevice();
 
     // IPainCallback
-    virtual void OnPaint(CRect destRect);
-    virtual void OnAfterPresent();
+    virtual void                        OnPaint(CRect destRect);
+    virtual void                        OnAfterPresent();
 
-    static bool bPaintAll;
+    static bool                         bPaintAll;
   };

@@ -649,7 +649,7 @@ bool CEVRAllocatorPresenter::GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *S
 
   if (m_bSignaledStarvation)
   {
-    unsigned int nSamples = std::max(m_nNbDXSurface / 2, 1);
+    unsigned int nSamples = std::max(m_nNbDXSurface / 2, 1U);
     if ((m_ScheduledSamples.GetCount() < nSamples || m_LastSampleOffset < -m_rtTimePerFrame*2) && !g_bNoDuration)
     {      
       *State = (FILTER_STATE)Paused;
@@ -1546,7 +1546,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
     hr = AllocSurfaces(D3DFMT_X8R8G8B8);
   
 
-  for(int i = 0; i < m_nNbDXSurface; i++)
+  for(size_t i = 0; i < m_nNbDXSurface; i++)
   {
     Com::SmartPtr<IMFSample>    pMFSample;
     hr = pfMFCreateVideoSampleFromSurface (m_pVideoSurface[i], &pMFSample);
@@ -2344,7 +2344,7 @@ void CEVRAllocatorPresenter::AfterDeviceReset()
   if (m_pSink)
     m_pSink->Notify (EC_DISPLAY_CHANGED, 0, 0);
 
-  for(int i = 0; i < m_nNbDXSurface; i++)
+  for(size_t i = 0; i < m_nNbDXSurface; i++)
   {
     Com::SmartPtr<IMFSample>  pMFSample;
     HRESULT hr = pfMFCreateVideoSampleFromSurface (m_pVideoSurface[i], &pMFSample);

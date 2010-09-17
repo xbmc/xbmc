@@ -106,7 +106,7 @@
     STDMETHODIMP  GetFastestRate(MFRATE_DIRECTION eDirection, BOOL fThin, float *pflRate);
     STDMETHODIMP  IsRateSupported(BOOL fThin, float flRate, float *pflNearestSupportedRate);
 
-    float      GetMaxRate(BOOL bThin);
+    float         GetMaxRate(BOOL bThin);
 
 
     // IMFVideoPresenter
@@ -164,19 +164,19 @@
 
   protected :
     // D3D Reset
-    void BeforeDeviceReset();
-    void AfterDeviceReset();
+    void            BeforeDeviceReset();
+    void            AfterDeviceReset();
+    int64_t         GetClockTime(int64_t PerformanceCounter);
 
-    virtual void  OnVBlankFinished(bool fAll, int64_t PerformanceCounter);
+    virtual void    OnVBlankFinished(bool fAll, int64_t PerformanceCounter);
 
-    double      m_ModeratedTime;
-    int64_t    m_ModeratedTimeLast;
-    int64_t    m_ModeratedClockLast;
-    int64_t    m_ModeratedTimer;
-    MFCLOCK_STATE  m_LastClockState;
-    int64_t    GetClockTime(int64_t PerformanceCounter);
+    double          m_ModeratedTime;
+    int64_t         m_ModeratedTimeLast;
+    int64_t         m_ModeratedClockLast;
+    int64_t         m_ModeratedTimer;
+    MFCLOCK_STATE   m_LastClockState;
 
-  private :
+  private:
 
     typedef enum
     {
@@ -192,9 +192,9 @@
     Com::SmartPtr<IMFTransform>               m_pMixer;
     Com::SmartPtr<IMediaEventSink>            m_pSink;
     Com::SmartPtr<IMFVideoMediaType>          m_pMediaType;
-    MFVideoAspectRatioMode   m_dwVideoAspectRatioMode;
-    MFVideoRenderPrefs       m_dwVideoRenderPrefs;
-    COLORREF                 m_BorderColor;
+    MFVideoAspectRatioMode                    m_dwVideoAspectRatioMode;
+    MFVideoRenderPrefs                        m_dwVideoRenderPrefs;
+    COLORREF                                  m_BorderColor;
 
     HANDLE                   m_hEvtQuit;      // Stop rendering thread event
     bool                     m_bEvtQuit;
