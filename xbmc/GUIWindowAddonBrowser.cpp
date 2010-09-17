@@ -149,14 +149,16 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return;
 
-  if (addon->Type() == ADDON_REPOSITORY)
+  if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
   {
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
     buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY,24035);
   }
+
+  buttons.Add(CONTEXT_BUTTON_INFO,24003);
 
   if (addon->HasSettings())
     buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
@@ -175,7 +177,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
     }
   }
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return false;
 
   if (button == CONTEXT_BUTTON_SETTINGS)
@@ -193,6 +195,12 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
     CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),this);
+    return true;
+  }
+
+  if (button == CONTEXT_BUTTON_INFO)
+  {
+    CGUIDialogAddonInfo::ShowForItem(pItem);
     return true;
   }
 

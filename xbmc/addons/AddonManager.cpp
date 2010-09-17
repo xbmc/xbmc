@@ -336,7 +336,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabled/*= true*/)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -346,7 +346,9 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return NULL != addon.get() && m_database.IsAddonDisabled(addon->ID()) != enabled;
+    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+      return false;
+    return NULL != addon.get();
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);
