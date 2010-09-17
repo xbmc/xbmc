@@ -22,6 +22,34 @@
 
 #include "AEStream.h"
 #include <pulse/pulseaudio.h>
+#include "utils/Event.h"
+#include "utils/Thread.h"
+#include "utils/CriticalSection.h"
+
+class CPulseStream;
+
+class CPulseThread : public IRunnable
+{
+  virtual void Run();
+
+private:
+  friend class CPulseStream;
+
+  bool                 m_run;
+  CPulseStream        *m_stream;
+  CEvent               m_event;
+  CThread              m_thread;
+  IAEStream::AECBFunc *m_cbFunc;
+  void                *m_arg;
+  CCriticalSection     m_lock;
+  CCriticalSection     m_lockEvent;
+
+  CPulseThread(CPulseStream *stream);
+  virtual ~CPulseThread();
+
+  void Trigger();
+  void SetCallback(IAEStream::AECBFunc *cbFunc, void *arg);
+};
 
 class CPulseStream : public IAEStream
 {
@@ -36,6 +64,7 @@ public:
 
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
+  int GetSpace();
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
@@ -92,10 +121,8 @@ private:
 
   IAudioCallback* m_AudioCallback;
 
-  AECBFunc *m_AudioDataCallback;
-  AECBFunc *m_AudioDrainCallback;
-  void *m_AudioDataArg;
-  void *m_AudioDrainArg;
+  CPulseThread      *m_AudioDataThread;
+  CPulseThread      *m_AudioDrainThread;
 
   enum AEDataFormat m_format;
   unsigned int m_sampleRate;

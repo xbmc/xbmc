@@ -22,6 +22,7 @@
 #include "PulseStream.h"
 #include "AEUtil.h"
 #include "log.h"
+#include "utils/SingleLock.h"
 
 static const char *StreamStateToString(pa_stream_state s)
 {
@@ -42,20 +43,15 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
+CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
+  m_AudioDataThread (NULL),
+  m_AudioDrainThread(NULL)
 {
   m_Destroyed = false;
   m_Initialized = false;
   m_Paused = false;
 
   m_Stream = NULL;
-  m_AudioCallback = NULL;
-
-  m_AudioDataCallback   = NULL;
-  m_AudioDataArg        = NULL;
-  m_AudioDrainCallback  = NULL;
-  m_AudioDrainArg       = NULL;
-
   m_Context = context;
   m_MainLoop = mainLoop;
 
@@ -89,8 +85,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
 
     default:
       CLog::Log(LOGERROR, "PulseAudio: Invalid format %i", format);
-      if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-        pa_threaded_mainloop_unlock(m_MainLoop);
+      pa_threaded_mainloop_unlock(m_MainLoop);
       m_format = AE_FMT_INVALID;
       return;
   }
@@ -117,6 +112,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
     {
       case AE_CH_NULL: break;
       case AE_CH_MAX : break;
+      case AE_CH_RAW : break;
       case AE_CH_FL  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
       case AE_CH_FR  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
       case AE_CH_FC  : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
@@ -142,8 +138,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
-    if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-      pa_threaded_mainloop_unlock(m_MainLoop);
+    pa_threaded_mainloop_unlock(m_MainLoop);
     Destroy();
     return /*false*/;
   }
@@ -159,8 +154,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   if (pa_stream_connect_playback(m_Stream, NULL, NULL, (pa_stream_flags)flags, &m_Volume, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
-    if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-      pa_threaded_mainloop_unlock(m_MainLoop);
+    pa_threaded_mainloop_unlock(m_MainLoop);
     Destroy();
     return /*false*/;
   }
@@ -176,8 +170,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   if (pa_stream_get_state(m_Stream) == PA_STREAM_FAILED)
   {
     CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it failed");
-    if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-      pa_threaded_mainloop_unlock(m_MainLoop);
+    pa_threaded_mainloop_unlock(m_MainLoop);
     Destroy();
     return /*false*/;
   }
@@ -191,37 +184,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   a.tlength   = m_frameSamples * m_frameSize;
   WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &a, NULL, NULL), m_MainLoop, "SetBuffer");
 
-/*
-  if (!(a = pa_stream_get_buffer_attr(m_Stream)))
-      CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
-  else
-  {
-    m_frameSamples = a->minreq;
-    CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
-*/
-/*
-    pa_buffer_attr b;
-    b.prebuf = a->minreq * 10;
-    b.minreq = a->minreq;
-    b.tlength = a->tlength;
-    b.maxlength = a->maxlength;
-    b.fragsize = a->fragsize;
-
-    WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, NULL, NULL), m_MainLoop, "SetBuffer");
-
-    if (!(a = pa_stream_get_buffer_attr(m_Stream)))
-        CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
-    else
-    {
-      m_frameSize = a->minreq;
-      //m_uiBufferSize = a->tlength;
-      CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
-    }
-*/
-//  }
-
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
+  pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_Initialized = true;
   printf("Initialized\n");
@@ -232,6 +195,11 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
 
 CPulseStream::~CPulseStream()
 {
+  delete m_AudioDataThread;
+  delete m_AudioDrainThread;
+  m_AudioDataThread  = NULL;
+  m_AudioDrainThread = NULL;
+
   if (!m_Initialized)
     return;
 
@@ -250,34 +218,32 @@ CPulseStream::~CPulseStream()
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
+/*
+  this method may be called inside the pulse main loop,
+  so be VERY careful with locking
+*/
 void CPulseStream::Destroy()
 {
   if (m_Destroyed)
     return;
 
-  printf("dest1\n");
-//  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-//    pa_threaded_mainloop_lock(m_MainLoop);
-
-  m_AudioDrainCallback = NULL;
-  m_AudioDataCallback  = NULL;
+  if (m_AudioDataThread ) m_AudioDataThread ->SetCallback(NULL, NULL);
+  if (m_AudioDrainThread) m_AudioDrainThread->SetCallback(NULL, NULL);
   m_Destroyed = true;
-
-//  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-//    pa_threaded_mainloop_unlock(m_MainLoop);
-  printf("dest2\n");
 }
 
 void CPulseStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_AudioDataCallback = cbFunc;
-  m_AudioDataArg = arg;
+  if (!m_AudioDataThread)
+    m_AudioDataThread = new CPulseThread(this);
+  m_AudioDataThread->SetCallback(cbFunc, arg);
 }
 
 void CPulseStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_AudioDrainCallback = cbFunc;
-  m_AudioDrainArg = arg;
+  if (!m_AudioDrainThread)
+    m_AudioDrainThread = new CPulseThread(this);
+  m_AudioDrainThread->SetCallback(cbFunc, arg);
 }
 
 unsigned int CPulseStream::AddData(void *data, unsigned int size)
@@ -285,20 +251,17 @@ unsigned int CPulseStream::AddData(void *data, unsigned int size)
   if (!m_Initialized)
     return size;
 
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_lock(m_MainLoop);
+  pa_threaded_mainloop_lock(m_MainLoop);
 
   int length = std::min((int)pa_stream_writable_size(m_Stream), (int)size);
   if (length == 0)
   {
-    if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-      pa_threaded_mainloop_unlock(m_MainLoop);
+    pa_threaded_mainloop_unlock(m_MainLoop);
     return 0;
   }
 
   int written = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
+  pa_threaded_mainloop_unlock(m_MainLoop);
 
   if (written < 0)
   {
@@ -315,15 +278,25 @@ float CPulseStream::GetDelay()
     return 0.0f;
 
   pa_usec_t latency = 0;
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_lock(m_MainLoop);
+  pa_threaded_mainloop_lock(m_MainLoop);
 
   if (pa_stream_get_latency(m_Stream, &latency, NULL) == PA_ERR_NODATA)
     CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
 
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
+  pa_threaded_mainloop_unlock(m_MainLoop);
   return (float)((float)latency / 1000000.0f);
+}
+
+int CPulseStream::GetSpace()
+{
+  if (!m_Initialized)
+    return 0;
+
+  pa_threaded_mainloop_lock(m_MainLoop);
+  int space = pa_stream_writable_size(m_Stream);
+  pa_threaded_mainloop_unlock(m_MainLoop);
+
+  return space / m_frameSize;
 }
 
 bool CPulseStream::IsPaused()
@@ -365,15 +338,11 @@ void CPulseStream::Drain()
 
   printf("drain1\n");
   m_draining = true;
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_lock(m_MainLoop);
+  pa_threaded_mainloop_lock(m_MainLoop);
 
   printf("drain2\n");
-  WaitForOperation(pa_stream_drain(m_Stream, CPulseStream::StreamDrainComplete, this), m_MainLoop, "Drain");
-
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
-
+  pa_operation_unref(pa_stream_drain(m_Stream, CPulseStream::StreamDrainComplete, this));
+  pa_threaded_mainloop_unlock(m_MainLoop);
   printf("drain3\n");
 }
 
@@ -382,14 +351,9 @@ void CPulseStream::Flush()
   if (!m_Initialized)
     return;
 
-  printf("flush\n");
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_lock(m_MainLoop);
-
-  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
-
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
+  pa_threaded_mainloop_lock(m_MainLoop);
+  pa_operation_unref(pa_stream_flush(m_Stream, NULL, NULL));
+  pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
 float CPulseStream::GetVolume()
@@ -492,10 +456,9 @@ void CPulseStream::StreamRequestCallback(pa_stream *s, size_t length, void *user
 {
   CPulseStream *stream = (CPulseStream *)userdata;
 
-  if (stream->m_AudioDataCallback)
-    stream->m_AudioDataCallback(stream, stream->m_AudioDataArg, length / stream->m_frameSize);
-
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+  if (stream->m_AudioDataThread)
+    stream->m_AudioDataThread->Trigger();
 }
 
 void CPulseStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
@@ -523,16 +486,13 @@ void CPulseStream::StreamStateCallback(pa_stream *s, void *userdata)
 
 void CPulseStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)
 {
-  if (!success) return;
   CPulseStream *stream = (CPulseStream *)userdata;
-
-  if (stream->m_AudioDrainCallback)
-    stream->m_AudioDrainCallback(stream, stream->m_AudioDrainArg, 0);
+  pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+  if (stream->m_AudioDrainThread)
+    stream->m_AudioDrainThread->Trigger();
 
   if (stream->IsFreeOnDrain())
     stream->Destroy();
-
-  pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
 }
 
 inline bool CPulseStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
@@ -558,19 +518,81 @@ inline bool CPulseStream::WaitForOperation(pa_operation *op, pa_threaded_mainloo
 
 bool CPulseStream::Cork(bool cork)
 {
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_lock(m_MainLoop);
+  pa_threaded_mainloop_lock(m_MainLoop);
 
   pa_operation *op = pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL);
-  pa_operation_unref(op);
-/*
   if (!WaitForOperation(op, m_MainLoop, cork ? "Pause" : "Resume"))
     cork = !cork;
-*/
-  unsigned int length = pa_stream_writable_size(m_Stream);
-  if (!pa_threaded_mainloop_in_thread(m_MainLoop))
-    pa_threaded_mainloop_unlock(m_MainLoop);
 
+  pa_threaded_mainloop_unlock(m_MainLoop);
   return cork;
+}
+
+CPulseThread::CPulseThread(CPulseStream *stream) :
+  m_run   (true  ),
+  m_stream(stream),
+  m_thread(this  ),
+  m_cbFunc(NULL  ),
+  m_arg   (NULL  )
+{
+  m_thread.Create();
+}
+
+CPulseThread::~CPulseThread()
+{
+  /* tell the thread we are terminating */
+  CSingleLock lock(m_lock);
+  m_run = false;
+  lock.Leave();
+
+  /* trigger the event incase it is blocking */
+  Trigger();
+
+  /* wait for the thread to exit */
+  m_thread.StopThread(true);
+}
+
+void CPulseThread::SetCallback(IAEStream::AECBFunc *cbFunc, void *arg)
+{
+  CSingleLock lock(m_lock);
+  m_cbFunc = cbFunc;
+  m_arg    = arg;
+}
+
+void CPulseThread::Trigger()
+{
+  CSingleLock lock(m_lockEvent);
+  m_event.Set();
+}
+
+void CPulseThread::Run()
+{
+/*
+  this thread has to be VERY careful not to leave m_lock locked
+  when m_cbFunc is called, otherwise signals generated by calls
+  in the callback function WILL cause a deadlock when the next
+  signal signal arrives
+*/
+
+  CSingleLock lock(m_lock);
+  while(m_run)
+  {
+    lock.Leave();
+
+    /* wait on the event */
+    m_event.Wait();
+    lock.Enter();
+    if (!m_run)
+      return;
+
+    /* fire the callback */
+    if (m_cbFunc)
+      m_cbFunc(m_stream, m_arg, m_stream->GetSpace());
+
+    /* reset the event */
+    CSingleLock lockEvent(m_lockEvent);
+    m_event.Reset();
+    lockEvent.Leave(); 
+  }
 }
 
