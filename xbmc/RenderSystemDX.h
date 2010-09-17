@@ -145,10 +145,6 @@ protected:
   CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
 
-#ifdef HAS_DS_PLAYER
-  CD3DTexture                 m_depthStencil;
-#endif
-
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
 
