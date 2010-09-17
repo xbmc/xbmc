@@ -278,6 +278,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   iPos = strStripped.Find(L"&#");
   while (iPos > 0 && iPos < (int)strStripped.size()-4)
   {
+    int iStart = iPos + 1;
     iPos += 2;
     CStdStringW num;
     int base = 10;
@@ -300,7 +301,7 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
       num.Format(L"&#x%s;",num.c_str());
 
     strStripped.Replace(num,CStdStringW(1,val));
-    iPos = strStripped.Find(L"&#");
+    iPos = strStripped.Find(L"&#", iStart);
   }
 }
 

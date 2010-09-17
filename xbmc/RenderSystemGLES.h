@@ -27,6 +27,16 @@
 #include "RenderSystem.h"
 #include "GUIShader.h"
 
+enum ESHADERMETHOD
+{
+  SM_DEFAULT,
+  SM_TEXTURE,
+  SM_MULTI,
+  SM_FONTS,
+  SM_TEXTURE_NOBLEND,
+  SM_ESHADERCOUNT
+};
+
 class CRenderSystemGLES : public CRenderSystemBase
 {
 public:
@@ -83,9 +93,8 @@ protected:
 
   CStdString m_RenderExtensions;
 
-  CGUIShader **m_pGUIshader;  // One GUI shader for each method
-
-  int         m_method;
+  CGUIShader  **m_pGUIshader;  // One GUI shader for each method
+  ESHADERMETHOD m_method;      // Current GUI Shader method
 };
 
 #endif // RENDER_SYSTEM_H

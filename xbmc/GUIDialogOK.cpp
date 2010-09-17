@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -34,19 +34,15 @@ CGUIDialogOK::~CGUIDialogOK(void)
 
 bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-  case GUI_MSG_CLICKED:
+    int iControl = message.GetSenderId();
+    if (iControl == ID_BUTTON_OK)
     {
-      int iControl = message.GetSenderId();
-      if (iControl == ID_BUTTON_OK)
-      {
-        m_bConfirmed = true;
-        Close();
-        return true;
-      }
+      m_bConfirmed = true;
+      Close();
+      return true;
     }
-    break;
   }
   return CGUIDialogBoxBase::OnMessage(message);
 }
@@ -55,12 +51,11 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (!dialog) return;
-  dialog->SetHeading( heading );
-  dialog->SetLine( 0, line0 );
-  dialog->SetLine( 1, line1 );
-  dialog->SetLine( 2, line2 );
+  if (!dialog) 
+    return;
+  dialog->SetHeading(heading);
+  dialog->SetLine(0, line0);
+  dialog->SetLine(1, line1);
+  dialog->SetLine(2, line2);
   dialog->DoModal();
-  return ;
 }
-

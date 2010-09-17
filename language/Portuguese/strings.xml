@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 2010/09/02 -->
-<!-- Based on english strings version r33412 -->
+<!-- Date of translation: 2010/09/13 -->
+<!-- Based on english strings version r33648 -->
 <!-- Portuguese strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 <strings>
   <string id="0">Programas</string>
@@ -172,6 +172,7 @@
   <string id="196">Seleccionar vídeo:</string>
   <string id="197">A pedir informação</string>
   <string id="198">A carregar detalhes do vídeo</string>
+  <string id="199">Interface Web</string>
 
   <string id="202">Tagline</string>
   <string id="203">Sinópse</string>

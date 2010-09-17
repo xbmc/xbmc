@@ -23,9 +23,10 @@
 #include "EndianSwap.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-
-#define TEMP_FILE "temp.xbt"
-#define TEMP_SIZE (10*1024*1024)
+#ifndef __APPLE__
+#include <malloc.h>
+#endif
+#include <memory.h>
 
 #define WRITE_STR(str, size, file) fwrite(str, size, 1, file)
 #define WRITE_U32(i, file) { uint32_t _n = Endian_SwapLE32(i); fwrite(&_n, 4, 1, file); }
@@ -34,7 +35,9 @@
 CXBTFWriter::CXBTFWriter(CXBTF& xbtf, const std::string& outputFile) : m_xbtf(xbtf)
 {
   m_outputFile = outputFile;
-  m_file = m_tempFile = NULL;
+  m_file = NULL;
+  m_data = NULL;
+  m_size = 0;
 }
 
 bool CXBTFWriter::Create()
@@ -45,57 +48,54 @@ bool CXBTFWriter::Create()
     return false;
   }
 
-  m_tempFile = fopen(TEMP_FILE, "wb");
-  if (m_tempFile == NULL)
-  {
-    return false;
-  }
-
   return true;
 }
 
 bool CXBTFWriter::Close()
 {
-  if (m_file == NULL || m_tempFile == NULL)
+  if (m_file == NULL || m_data == NULL)
   {
     return false;
   }
 
-  fclose(m_tempFile);
-  m_tempFile = fopen(TEMP_FILE, "rb");
-  if (m_tempFile == NULL)
-  {
-    return false;
-  }
+  fwrite(m_data, 1, m_size, m_file);
 
-  unsigned char* tmp = new unsigned char[10*1024*1024];
-  size_t bytesRead;
-  while ((bytesRead = fread(tmp, 1, TEMP_SIZE, m_tempFile)) > 0)
-  {
-    fwrite(tmp, bytesRead, 1, m_file);
-  }
-  delete[] tmp;
-
-  fclose(m_file);
-  fclose(m_tempFile);
-  unlink(TEMP_FILE);
+  Cleanup();
 
   return true;
+}
+
+void CXBTFWriter::Cleanup()
+{
+  free(m_data);
+  m_data = NULL;
+  m_size = 0;
+  if (m_file)
+  {
+    fclose(m_file);
+    m_file = NULL;
+  }
 }
 
 bool CXBTFWriter::AppendContent(unsigned char const* data, size_t length)
 {
-  if (m_tempFile == NULL)
-  {
+  unsigned char *new_data = (unsigned char *)realloc(m_data, m_size + length);
+
+  if (new_data == NULL)
+  { // OOM - cleanup and fail
+    Cleanup();
     return false;
   }
 
-  fwrite(data, length, 1, m_tempFile);
+  m_data = new_data;
+
+  memcpy(m_data + m_size, data, length);
+  m_size += length;
 
   return true;
 }
 
-bool CXBTFWriter::UpdateHeader()
+bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
 {
   if (m_file == NULL)
   {
@@ -129,8 +129,13 @@ bool CXBTFWriter::UpdateHeader()
     for (size_t j = 0; j < frames.size(); j++)
     {
       CXBTFFrame& frame = frames[j];
-      frame.SetOffset(offset);
-      offset += frame.GetPackedSize();
+      if (dupes[i] != i)
+        frame.SetOffset(files[dupes[i]].GetFrames()[j].GetOffset());
+      else
+      {
+        frame.SetOffset(offset);
+        offset += frame.GetPackedSize();
+      }
 
       WRITE_U32(frame.GetWidth(), m_file);
       WRITE_U32(frame.GetHeight(), m_file);

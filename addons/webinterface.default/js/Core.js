@@ -50,3 +50,7 @@ function durationToString(duration) {
 	result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
 	return result;
 }
+
+function applyDeviceFixes() {
+	document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+}

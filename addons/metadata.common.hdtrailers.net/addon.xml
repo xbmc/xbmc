@@ -14,7 +14,7 @@
     <summary lang="es">Scraper de Trailers de HD-Trailers.net</summary>
     <summary lang="fr">Scraper HD-Trailers.net pour les bande-annonces</summary>
     <summary lang="hu">HD-Trailers.net leolvasó-könyvtár</summary>
-    <summary lang="nl">HD-Trailers.net Scraper Collectie</summary>
+    <summary lang="nl">HTBackdrops-scraperfuncties</summary>
     <summary lang="pl">Scraper biblioteki HD-Trailers.net</summary>
     <summary lang="pt">Scraper de trailers de HD-Trailers.net</summary>
     <summary lang="ru">Обработчик для трейлеров с HD-Trailers.net</summary>
@@ -24,7 +24,7 @@
     <description lang="es">Descarga trailers de www.hd-trailers.net</description>
     <description lang="fr">Télécharge les bande-annonces de films depuis www.hd-trailers.net</description>
     <description lang="hu">Filmelőzetesek letöltése a www.hd-trailers.net-ről</description>
-    <description lang="nl">Download trailers van www.hd-trailers.net</description>
+    <description lang="nl">Achtergronden ophalen van www.htbackdrops.com</description>
     <description lang="pl">Pobieraj zwiastuny filmowe z www.hd-trailers.net</description>
     <description lang="pt">Descarregar trailers de www.hd-trailers.net</description>
     <description lang="ru">Загружать трейлеры с www.hd-trailers.net</description>

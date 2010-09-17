@@ -179,8 +179,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
         continue;
 
       Cut cut;
-      cut.start = (int)dStart * 1000; // ms to s
-      cut.end = (int)dEnd * 1000; // ms to s
+      cut.start = (int)(dStart * 1000); // ms to s
+      cut.end = (int)(dEnd * 1000); // ms to s
 
       switch (iAction)
       {

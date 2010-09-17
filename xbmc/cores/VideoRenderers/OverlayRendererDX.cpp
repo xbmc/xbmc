@@ -125,6 +125,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 
   m_width  = (float)width;
   m_height = (float)height;
+  m_count  = 0;
 
   if     (res.fPixelRatio > 1.0)
     width  = MathUtils::round_int(width  * res.fPixelRatio);
@@ -154,7 +155,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, g_Windowing.DefaultD3DUsage(), m_fvf, g_Windowing.DefaultD3DPool()))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
@@ -166,7 +167,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 
   if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
-    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - failed to lock vertex buffer", __FUNCTION__);
     m_texture.Release();
     return;
   }
@@ -227,6 +228,9 @@ COverlayQuadsDX::~COverlayQuadsDX()
 
 void COverlayQuadsDX::Render(SRenderState &state)
 {
+  if (m_count == 0)
+    return;
+
   D3DXMATRIX orig;
   LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
   device->GetTransform(D3DTS_WORLD, &orig);

@@ -13,7 +13,7 @@
     <summary lang="fr">Visualisation montrant un analyseur de spectre 3D en rotation</summary>
     <summary lang="hu">Vizualizáció 3D spektrum analizátorral</summary>
     <summary lang="ko">회전하는 3D 스펙트럼 분석기를 보여지는 음악시각화</summary>
-    <summary lang="nl">DirectX Visualisatie</summary>
+    <summary lang="nl">DirectX-visualisatie die een roterende 3D-spectrumanalyse weergeeft</summary>
     <summary lang="pl">Wizualizacja pokazująca obracający się analizator widma w 3D (DirectX)</summary>
     <summary lang="pt">Visualização que mostra um analisador espectral rotativo em 3D (DirectX)</summary>
     <summary lang="zh">显示旋转三维频谱分析图像的可视化效果</summary>
@@ -26,8 +26,8 @@ Il possède quelques paramètres pour ajuster la hauteur de barre du spectre, sa
     <description lang="hu">A DirectX Spectrum egy olyan vizualizáció ami egy 3D hang spektrum analizátort mutat DirectX segítségével megjelenítve, ami a zene ritmusára mozog egy hullám-effektust képezve a teljes spektrumhálón.
 Beállítható a spektrum oszlopok magassága, mozgási sebessége és hogy az oszlopok hogyan jelenjenek meg (teli, pontok, drótváz). Ez egy kis erőforrásigényű vizualizáció ami nagyon jól mutat.</description>
     <description lang="ko">DirectX 스펙트럼은 회전하는 3D 스펙트럼 분석기를 통해 음악시각화를 보여주며 음악의 비트가 만들어내는 웨이브 효과를 스펙트럼 그리드에 보여줍니다. 설정에서 스펙트럼 바의 높이, 속도, 바의 갯수 (채워짐, 점, 와이어 프레임)를 지정할수 있습니다. 가볍고 CPU를 많이 사용하지 않습니다.</description>
-    <description lang="nl">DirectX spectrum is een visualisatie van een roterende 3D spectrum analyse weergegeven met behulp van DirectX. Het beweegt mee met de beat van de muziek, waarbij een golf effect ontstaat over het spectrum raster.
-Het bevat instellingen om de spectrum balk hoogte, de snelheid en hoe de balken worden weergegeven (vol, punten, draden) aan te passen. Deze visualisatie neemt weinig geheugen in en vergt ook niet veel van de CPU.</description>
+    <description lang="nl">DirectX-spectrum toont een roterende 3D-spectrumanalyse via DirectX. Het beweegt mee met de beat van de muziek, waarbij een golfeffect ontstaat over het spectrumraster.
+U kunt de hoogte, snelheid en weergave (vol, stippen, ...) van de spectrumbalk zelf instellen. Deze visualisatie vereist weinig geheugen en belast processor nauwelijks.</description>
     <description lang="pl">Wizualizacja pokazuje obracający się, trójwymiarowy analizator widma, renderowany przy użyciu DirectX. Możesz ustawić wysokość słupków, ich prędkość i wygląd.</description>
     <description lang="pt">O DirectX Spectrum é uma visualização que mostra um analisador espectral rotativavo, renderizado em DirectX, que se sincroniza com a batida, criando assin um efeito de ondas na grelha espectral.
 Pode-se definir a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que utiliza pouco o CPU e com um visual fantástico.</description>

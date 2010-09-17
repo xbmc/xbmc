@@ -24,6 +24,7 @@
 #include "utils/CriticalSection.h"
 #include "StdString.h"
 #include "Key.h"
+#include "utils/Thread.h"
 
 #include <queue>
 
@@ -96,6 +97,17 @@ typedef struct
 }
 ThreadMessage;
 
+class CDelayedMessage : public CThread
+{
+  public:
+    CDelayedMessage(ThreadMessage& msg, unsigned int delay);
+    virtual void Process();
+
+  private:
+    unsigned int   m_delay;
+    ThreadMessage  m_msg;
+};
+
 class CApplicationMessenger
 {
 
@@ -118,7 +130,7 @@ public:
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
-  void PlayListPlayerPlaySongId(int songId);
+  bool PlayListPlayerPlaySongId(int songId);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
   void PlayListPlayerAdd(int playlist, const CFileItem &item);

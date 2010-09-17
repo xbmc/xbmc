@@ -169,6 +169,9 @@ class TiXmlElement;
 #define RESAMPLE_HIGH 2
 #define RESAMPLE_REALLYHIGH 3
 
+//0.5 second increments
+#define MAXREFRESHCHANGEDELAY 20
+
 enum PowerState
 {
   POWERSTATE_QUIT       = 0,

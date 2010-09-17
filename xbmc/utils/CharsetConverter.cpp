@@ -518,7 +518,9 @@ void CCharsetConverter::toW(const CStdStringA& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,sizeof(wchar_t),enc,"UTF-16LE//IGNORE",strSource,strDest);
+  CStdString strWchar = WCHAR_CHARSET;
+  strWchar.append("//IGNORE");
+  convert(iconvString,sizeof(wchar_t),enc,strWchar,strSource,strDest);
   iconv_close(iconvString);
 }
 

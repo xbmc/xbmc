@@ -579,6 +579,7 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0

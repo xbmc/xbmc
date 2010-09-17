@@ -218,6 +218,29 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
   return false;
 }
 
+bool CAddonDatabase::GetRepoForAddon(const CStdString& addonID, CStdString& repo)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
+
+    CStdString sql = PrepareSQL("select repo.addonID from repo join addonlinkrepo on repo.id=addonlinkrepo.idRepo join addon on addonlinkrepo.idAddon=addon.id where addon.addonID like '%s'", addonID.c_str()); 
+    m_pDS2->query(sql.c_str());
+    if (!m_pDS2->eof())
+    {
+      repo = m_pDS2->fv(0).get_asString();
+      m_pDS2->close();
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed for addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
 bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
 {
   try
@@ -319,8 +342,6 @@ void CAddonDatabase::DeleteRepository(int idRepo)
     if (NULL == m_pDS.get()) return;
 
     CStdString sql = PrepareSQL("delete from repo where id=%i",idRepo);
-    m_pDS->exec(sql.c_str());
-    sql = PrepareSQL("delete from broken where addonID in (select addonID from addon join addonlinkrepo on addonlinkrepo.idAddon=addon.id where addonlinkrepo.idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());

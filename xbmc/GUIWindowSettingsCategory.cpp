@@ -638,6 +638,25 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting,true);
     }
+    else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13551), 0);
+
+      for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
+      {
+        CStdString delayText;
+        if (i < 4)
+          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 2.0);
+        else
+          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 2.0);
+
+        pControl->AddLabel(delayText, i);
+      }
+
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1025,6 +1044,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CAddonMgr::Get().GetAddon("script.rss.editor",addon);
       pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"));
+    }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1313,7 +1337,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("musiclibrary.import"))
   {
-    CStdString path(g_settings.GetDatabaseFolder());
+    CStdString path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))

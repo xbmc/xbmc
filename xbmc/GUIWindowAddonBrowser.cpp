@@ -43,6 +43,7 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "Settings.h"
+#include "StringUtils.h"
 #include "Application.h"
 #include "AddonDatabase.h"
 #include "AdvancedSettings.h"
@@ -53,6 +54,16 @@
 using namespace ADDON;
 using namespace XFILE;
 using namespace std;
+
+
+struct find_map : public binary_function<CGUIWindowAddonBrowser::JobMap::value_type, unsigned int, bool>
+{
+  bool operator() (CGUIWindowAddonBrowser::JobMap::value_type t, unsigned int id) const
+  {
+    return (t.second.jobID == id);
+  }
+};
+
 
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
@@ -138,14 +149,16 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return;
 
-  if (addon->Type() == ADDON_REPOSITORY)
+  if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
   {
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
     buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY,24035);
   }
+
+  buttons.Add(CONTEXT_BUTTON_INFO,24003);
 
   if (addon->HasSettings())
     buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
@@ -164,7 +177,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
     }
   }
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return false;
 
   if (button == CONTEXT_BUTTON_SETTINGS)
@@ -182,6 +195,12 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
     CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),this);
+    return true;
+  }
+
+  if (button == CONTEXT_BUTTON_INFO)
+  {
+    CGUIDialogAddonInfo::ShowForItem(pItem);
     return true;
   }
 
@@ -232,6 +251,39 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   return CGUIMediaWindow::OnClick(iItem);
 }
 
+bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
+                                       const CStdString& hash)
+{
+  if (hash.IsEmpty())
+    return true;
+  CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/", zipFile);
+  CStdString md5 = CUtil::GetFileMD5(package);
+  if (!md5.Equals(hash))
+  {
+    CFile::Delete(package);
+    CStdStringArray arr;
+    StringUtils::SplitString(zipFile,"-",arr);
+    AddonPtr addon;
+    CAddonDatabase database;
+    database.Open();
+    database.GetAddon(arr[0],addon);
+    if (addon)
+    {
+      AddonPtr addon2;
+      CAddonMgr::Get().GetAddon(arr[0],addon2);
+      g_application.m_guiDialogKaiToast.QueueNotification(
+                                           addon->Icon(),
+                                           addon->Name(),
+                                           g_localizeStrings.Get(addon2 ? 113 : 114),
+                                           TOAST_DISPLAY_TIME, false);
+    }
+    CLog::Log(LOGERROR,"MD5 mismatch after download %s", zipFile.c_str());
+    return false;
+  }
+
+  return true;
+}
+
 void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                            bool success, CJob* job2)
 {
@@ -246,6 +298,10 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
         // zip is downloaded - now extract it
         if (CUtil::IsZIP(strFolder))
         {
+          CSingleLock lock(m_critSection);
+          JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+          if (i != m_downloadJobs.end() && !CheckHash(CUtil::GetFileName(strFolder), i->second.hash))
+            break;
           AddJob(strFolder);
         }
         else
@@ -368,10 +424,12 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
   return CJobManager::GetInstance().AddJob(job,that);
 }
 
-void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id, unsigned int jobid)
+void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
+                                         unsigned int jobid,
+                                         const CStdString& hash)
 {
   CSingleLock lock(m_critSection);
-  m_downloadJobs.insert(make_pair(id,jobid));
+  m_downloadJobs.insert(make_pair(id,CDownloadJob(jobid,hash)));
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -379,14 +437,9 @@ void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id, unsigned int jobi
 void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
 {
   CSingleLock lock(m_critSection);
-  for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
-  {
-    if (i->second.jobID == jobID)
-    {
-      m_downloadJobs.erase(i);
-      return;
-    }
-  }
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
+    m_downloadJobs.erase(i);
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -523,11 +576,19 @@ void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force 
   database.Open();
   if (database.GetAddon(addonID, addon))
   {
+    CStdString repo;
+    database.GetRepoForAddon(addonID,repo);
+    AddonPtr ptr;
+    CAddonMgr::Get().GetAddon(repo,ptr);
+    RepositoryPtr therepo = boost::dynamic_pointer_cast<CRepository>(ptr);
+    CStdString hash;
+    if (therepo)
+      hash = therepo->GetAddonHash(addon);
     CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
     if (!window)
       return;
     unsigned int jobID = window->AddJob(addon->Path());
-    window->RegisterJob(addon->ID(), jobID);
+    window->RegisterJob(addon->ID(), jobID, hash);
   }
 }
 
@@ -562,15 +623,12 @@ void CGUIWindowAddonBrowser::OnJobProgress(unsigned int jobID, unsigned int prog
 {
   CSingleLock lock(m_critSection);
   // find this job
-  for (JobMap::iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
   {
-    if (i->second.jobID == jobID)
-    {
-      i->second.progress = progress;
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
-      msg.SetStringParam(i->first);
-      g_windowManager.SendThreadMessage(msg);
-      return;
-    }
+    i->second.progress = progress;
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
+    msg.SetStringParam(i->first);
+    g_windowManager.SendThreadMessage(msg);
   }
 }

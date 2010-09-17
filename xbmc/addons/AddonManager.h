@@ -86,10 +86,17 @@ namespace ADDON
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon);
     bool SetDefault(const TYPE &type, const CStdString &addonID);
-    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
+    /*! \brief Retrieve a specific addon (of a specific type)
+     \param id the id of the addon to retrieve.
+     \param addon [out] the retrieved addon pointer - only use if the function returns true.
+     \param type type of addon to retrieve - defaults to any type.
+     \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
+     \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
+     */
+    bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
      \param enabled Whether to get only enabled or disabled addons
@@ -105,7 +112,7 @@ namespace ADDON
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void UpdateRepos();
+    void UpdateRepos(bool force=false);
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 

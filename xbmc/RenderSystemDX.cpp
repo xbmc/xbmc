@@ -338,7 +338,7 @@ void CRenderSystemDX::DeleteDevice()
 void CRenderSystemDX::OnDeviceLost()
 {
   CSingleLock lock(m_resourceSection);
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
   SAFE_RELEASE(m_stateBlock);
 
 #ifdef HAS_DS_PLAYER

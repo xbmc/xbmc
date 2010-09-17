@@ -84,14 +84,13 @@ void CURL::Parse(const CStdString& strURL1)
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
 
-  if (strURL.size() > 1 && strURL[1] == ':')
+  if (!CUtil::IsURL(strURL))
   {
-    // form is drive:directoryandfile
-
-    // set filename and update extension
-
-    SetFileName(strURL);
-    return ;
+    // The path is not an URL, so just set the filename and return
+    
+    // set (unmodified) filename and update extension
+    SetFileName(strURL1);
+    return;
   }
 
   // form is format 1 or 2

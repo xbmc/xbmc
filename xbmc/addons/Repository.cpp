@@ -32,6 +32,7 @@
 #include "GUIWindowManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIDialogYesNo.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -67,6 +68,7 @@ CRepository::CRepository(const cp_extension_t *ext)
     m_info = CAddonMgr::Get().GetExtValue(ext->configuration, "info");
     m_datadir = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir");
     m_zipped = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir@zip").Equals("true");
+    m_hashes = CAddonMgr::Get().GetExtValue(ext->configuration, "hashes").Equals("true");
   }
 }
 
@@ -81,9 +83,16 @@ CRepository::~CRepository()
 
 CStdString CRepository::Checksum()
 {
+  if (!m_checksum.IsEmpty())
+    return FetchChecksum(m_checksum);
+  return "";
+}
+
+CStdString CRepository::FetchChecksum(const CStdString& url)
+{
   CSingleLock lock(m_critSection);
   CFile file;
-  file.Open(m_checksum);
+  file.Open(url);
   CStdString checksum;
   try
   {
@@ -97,6 +106,18 @@ CStdString CRepository::Checksum()
   {
   }
   return checksum;
+}
+
+CStdString CRepository::GetAddonHash(const AddonPtr& addon)
+{
+  CStdString result;
+  if (m_hashes)
+    result = FetchChecksum(addon->Path()+".md5");
+
+  CStdStringArray arr;
+  StringUtils::SplitString(result," ",arr);
+
+  return arr[0];
 }
 
 VECADDONS CRepository::Parse()

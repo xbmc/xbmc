@@ -16,6 +16,7 @@
     <summary lang="es">Scraper de HTBackdrops</summary>
     <summary lang="fr">Scraper HTBackdrops</summary>
     <summary lang="hu">HTBackdrops leolvasó-könyvtár</summary>
+    <summary lang="nl">HTBackdrops-scraperfuncties</summary>
     <summary lang="pl">Scraper biblioteki HTBackdrops</summary>
     <summary lang="pt">Biblioteca de fundos HTBackdrops</summary>
     <summary lang="ru">Обработчик Фоновых изображений с HTBackdrops</summary>
@@ -25,6 +26,7 @@
     <description lang="es">Descarga fanart y fotos de artistas de www.htbackdrops.com</description>
     <description lang="fr">Télécharge les backdrops depuis www.htbackgrops.com</description>
     <description lang="hu">Fanartképek letöltése www.htbackdrops.com webhelyről</description>
+    <description lang="nl">Achtergronden ophalen van www.htbackdrops.com</description>
     <description lang="pl">Pobieraj tła z www.htbackdrops.com</description>
     <description lang="pt">Descarregar fundos de www.htbackdrops.com</description>
     <description lang="ru">Загружать фоновые изображения с www.htbackdrops.com</description>

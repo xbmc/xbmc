@@ -384,6 +384,11 @@
       <back>Close</back>
     </remote>
   </AddonSettings>
+  <TextViewer>
+    <remote>
+      <back>Close</back>
+    </remote>
+  </TextViewer>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>

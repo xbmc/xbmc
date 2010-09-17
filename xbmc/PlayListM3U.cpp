@@ -123,7 +123,8 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));
         newItem->m_strPath = strFileName;
-        if (lDuration) newItem->GetMusicInfoTag()->SetDuration(lDuration);
+        if (lDuration && newItem->IsAudio())
+          newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
 
         // Reset the values just in case there part of the file have the extended marker
@@ -140,13 +141,14 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 
 void CPlayListM3U::Save(const CStdString& strFileName) const
 {
-  if (!m_vecItems.size()) return ;
+  if (!m_vecItems.size())
+    return;
   CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
-    return ;
+    return;
   }
   CStdString strLine;
   strLine.Format("%s\n",M3U_START_MARKER);
