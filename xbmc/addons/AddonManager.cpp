@@ -277,11 +277,11 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
 {
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
-    if (ADDON_REPOSITORY == (TYPE)i)
+    if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
     if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))

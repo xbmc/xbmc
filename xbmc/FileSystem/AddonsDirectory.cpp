@@ -53,13 +53,21 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   VECADDONS addons;
   // get info from repository
-  if (path.GetHostName().Equals("enabled") || path.GetHostName().Equals("disabled"))
+  bool reposAsFolders = true;
+  if (path.GetHostName().Equals("enabled"))
   {
-    CAddonMgr::Get().GetAllAddons(addons, path.GetHostName().Equals("enabled"));
+    CAddonMgr::Get().GetAllAddons(addons, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
+  }
+  else if (path.GetHostName().Equals("disabled"))
+  { // grab all disabled addons, including disabled repositories
+    reposAsFolders = false;
+    CAddonMgr::Get().GetAllAddons(addons, false, true);
+    items.SetProperty("reponame",g_localizeStrings.Get(24039));
   }
   else if (path.GetHostName().Equals("outdated"))
   {
+    reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
   }
   else if (path.GetHostName().Equals("repos"))
@@ -130,7 +138,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
 
   items.m_strPath = strPath;
-  GenerateListing(path, addons, items);
+  GenerateListing(path, addons, items, reposAsFolders);
   // check for available updates
   if (path.GetHostName().Equals("enabled"))
   {
@@ -157,14 +165,17 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   return true;
 }
 
-void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items)
+void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items, bool reposAsFolders)
 {
   items.ClearItems();
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
-    CFileItemPtr pItem = (addon->Type() == ADDON_REPOSITORY) ? FileItemFromAddon(addon, "addons://", true)
-                                                             : FileItemFromAddon(addon, path.Get(), false);
+    CFileItemPtr pItem;
+    if (reposAsFolders && addon->Type() == ADDON_REPOSITORY)
+      pItem = FileItemFromAddon(addon, "addons://", true);
+    else
+      pItem = FileItemFromAddon(addon, path.Get(), false);
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
