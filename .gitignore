@@ -249,6 +249,11 @@ config.log
 /project/obj
 /project/output
 
+# /project/Win32BuildSetup/dependencies
+/project/Win32BuildSetup/dependencies/SDL.dll
+/project/Win32BuildSetup/dependencies/glew32.dll
+
+
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
 /project/BuildDependencies/include
