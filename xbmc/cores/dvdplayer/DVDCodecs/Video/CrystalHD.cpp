@@ -1070,20 +1070,6 @@ bool CCrystalHD::DevicePresent(void)
   return m_device_preset;
 }
 
-bool CCrystalHD::Wake(void)
-{
-  CLog::Log(LOGDEBUG, "%s: resume", __MODULE_NAME__);
-  //GetInstance();
-  return true;
-}
-
-bool CCrystalHD::Sleep(void)
-{
-  CLog::Log(LOGDEBUG, "%s: suspend", __MODULE_NAME__);
-  //RemoveInstance();
-  return true;
-}
-
 void CCrystalHD::RemoveInstance(void)
 {
   if (m_pInstance)

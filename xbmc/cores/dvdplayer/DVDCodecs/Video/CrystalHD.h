@@ -130,8 +130,6 @@ public:
   static CCrystalHD* GetInstance(void);
 
   bool DevicePresent(void);
-  bool Wake(void);
-  bool Sleep(void);
 
   void OpenDevice();
   void CloseDevice();
