@@ -633,6 +633,8 @@ bool CApplication::Create()
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   g_Mouse.Initialize();
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+
   g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
@@ -709,8 +711,6 @@ bool CApplication::Create()
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
-
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   CUtil::InitRandomSeed();
 
