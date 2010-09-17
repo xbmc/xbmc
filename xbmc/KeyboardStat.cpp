@@ -559,6 +559,8 @@ void CKeyboardStat::Initialize()
     CLog::Log(LOGDEBUG, "CKeyboardStat::Initialize - XKb symbols %s", symbols);
     if(strstr(symbols, "(evdev)"))
       m_bEvdev = true;
+    else
+      m_bEvdev = false;
   }
 
   XFree(symbols);
