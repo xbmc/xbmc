@@ -346,7 +346,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
       return false;
     return NULL != addon.get();
   }
