@@ -37,30 +37,30 @@
   <string id="31046">Geluidopties</string>
   <string id="31047">Huidige instelling</string>
   <string id="31048">Visualisatiestijl</string>
-  <string id="31049">Eind Tijd</string>
+  <string id="31049">Eindigt om</string>
 
 
   <!-- Playlist Editor labels -->
-  <string id="31055">Open afspeellijst</string>
-  <string id="31056">Bewaar afspeellijst</string>
-  <string id="31057">Sluit afspeellijst</string>
-  <string id="31058">Systeem muziekbestanden</string>
+  <string id="31055">Afspeellijst openen</string>
+  <string id="31056">Afspeellijst bewaren</string>
+  <string id="31057">Afspeellijst sluiten</string>
+  <string id="31058">Muziekbestanden systeem</string>
   <string id="31059">Huidige afspeellijst</string>
-  <string id="31060">Dit bestand bestaat uit meerdere delen, selecteert u het deel dat u wilt afspelen vanaf.</string>
+  <string id="31060">Dit bestand bestaat uit meerdere delen, selecteer het deel dat u wilt afspelen.</string>
   <string id="31061">Nu geselecteerd</string>
 
   <!-- Skin Settings labels -->
   <string id="31100"></string>
-  <string id="31101">Beginscherm opties</string>
+  <string id="31101">Beginschermopties</string>
   <string id="31102">Achtergronden</string>
   <string id="31103">Laat "PAUZE" zien in diavoorstelling</string>
   <string id="31104">Trailers afspelen in een venster [COLOR=grey3](Alleen video-informatiedialoog)[/COLOR]</string>
-  <string id="31105">Laat mediatitels zien in achtergrond scanner</string>
+  <string id="31105">Mediatitels tonen tijdens scan op achtergrond</string>
   <string id="31106">Diverse opties</string>
   <string id="31107"></string>
-  <string id="31108">Verberg items hoofdmenu</string>
+  <string id="31108">Verberg knoppen hoofdmenu</string>
   <string id="31109">Beginschermachtergronden</string>
-  <string id="31110">Achtergrond aanpassen voor item hoofdmenu</string>
+  <string id="31110">Achtergrond beginschermknop aanpassen</string>
   <string id="31111">Verbergen</string>
   <string id="31112">Opties</string>
   <string id="31113">Enkele afbeelding</string>
@@ -69,83 +69,83 @@
   <string id="31116">Add-on scripts</string>
   <string id="31117">Laat onlangs toegevoegde video's zien</string>
   <string id="31118">Beginscherm submenu</string>
-  <string id="31119">Activeer aangepaste scriptknop</string>
-  <string id="31120">Knop label</string>
+  <string id="31119">Aangepaste scriptknop inschakelen</string>
+  <string id="31120">Knoplabel</string>
   <string id="31121">Pad naar script</string>
-  <string id="31122">Weer Pagina</string>
-  <string id="31123">Gebruik "Posters" in plaats van "Banners" voor TV-series</string>
+  <string id="31122">Weerpagina</string>
+  <string id="31123">Gebruik "Posters" in plaats van "Banners" voor series</string>
   <string id="31124">Laat achtergrond "Nu Afspelen" zien voor video</string>
   <string id="31125">Laat achtergrond "Nu Afspelen" zien voor visualisatie</string>
 
-  <string id="31126">Activeer lyrics in muziek-OSD</string>
-  <string id="31127">Pad naar lyricsscript</string>
-  <string id="31128">XBMC Lyrics</string>
-  <string id="31129">Activeer downloaden ondertitels in video-OSD</string>
-  <string id="31130">Pad naar ondertitelingsscript</string>
+  <string id="31126">Songteksten in muziek-OSD inschakelen</string>
+  <string id="31127">Pad naar songtekstscript</string>
+  <string id="31128">XBMC-songteksten</string>
+  <string id="31129">Downloaden ondertitels in video-OSD inschakelen</string>
+  <string id="31130">Pad naar ondertitelscript</string>
 
   <string id="31140">Muziek-OSD</string>
   <string id="31141">Video-OSD</string>
 
   <!-- Script labels -->
-  <string id="31200">Snelkoppeling</string>
+  <string id="31200">Snelkoppelingen</string>
   <string id="31201">Categorieën</string>
-  <string id="31202">Laat cast zien</string>
+  <string id="31202">Toon cast</string>
   <string id="31203">Kies uw nummer</string>
-  <string id="31204">Sectie links</string>
-  <string id="31205">Lyricsbron</string>
+  <string id="31204">Sectielinks</string>
+  <string id="31205">Songtekstbron</string>
 
   <!-- Extra labels -->
-  <string id="31300">Huidige temperatuur</string>
+  <string id="31300">Huidige temperatuur</string> <!--Voldoende ruimte in de layout van het weerscherm om temperatuur voluit te schrijven-->
   <string id="31301">Laatst bijgewerkt</string>
   <string id="31302">Menu</string>
   <string id="31303"></string>
   <string id="31304">Afbeelding</string>
   <string id="31305">Geen media gedetecteerd</string>
   <string id="31306">Uitwerpen</string>
-  <string id="31307">Verberg fanart</string>
-  <string id="31308">Film details</string>
-  <string id="31309">Gebruikt geheugen:</string>
-  <string id="31310">Track Nummer</string>
+  <string id="31307">Fanart verbergen</string>
+  <string id="31308">Filmdetails</string>
+  <string id="31309">Geheugengebruik:</string>
+  <string id="31310">Tracknummer</string>
   <string id="31311">Fanartafbeelding[CR][CR]niet beschikbaar[CR][CR] klik hier om in te stellen</string>
   <string id="31312">Huidige scraper</string>
-  <string id="31313">Kies een scraper</string>
-  <string id="31314">Inhoud scanner opties</string>
+  <string id="31313">Scraper kiezen</string>
+  <string id="31314">Opties inhoudsscanner</string>
   <string id="31315">Basis</string>
   <string id="31316"></string>
-  <string id="31317">Zet fanart pad</string>
+  <string id="31317">Fanartpad opgeven</string>
   <string id="31318">Kleine fanart</string>
-  <string id="31319">Selecteer profiel</string>
+  <string id="31319">Profiel selecteren</string>
   <string id="31320">Laatst ingelogd op</string>
-  <string id="31321">Karaoke nummer keuze</string>
+  <string id="31321">Nummerkeuze karaoke</string>
   <string id="31322">Uitgezonden</string>
   <string id="31323">Laatste films</string>
   <string id="31324">Laatste afleveringen</string>
-  <string id="31325">Speellijst opties</string>
+  <string id="31325">Afspeellijstopties</string>
   <string id="31326">Gemaakt</string>
   <string id="31327">Resolutie</string>
   <string id="31328">Onlangs toegevoegd</string>
-  <string id="31329">[B]Timer geconfigureerd![/B] [COLOR=grey2] - systeem automatisch uitschakelen in[/COLOR]</string>
+  <string id="31329">[B]Timer geconfigureerd![/B] [COLOR=grey2] - Systeem schakelt automatisch uit in[/COLOR]</string>
   <string id="31330">Klik op de knop om af te spelen[CR][CR]Filmtrailer</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pauze</string>
   <string id="31352">Stop</string>
-  <string id="31353">Vooruit spoelen</string>
+  <string id="31353">Vooruitspoelen</string>
   <string id="31354">Terugspoelen</string>
   <string id="31355">Filmmenu</string>
-  <string id="31356">Download ondertitels</string>
+  <string id="31356">Ondertitels downloaden</string>
   <string id="31357"></string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGUREER UITERLIJKINSTELLINGEN[/B][CR][CR]Verander skin. Stel taal en regio in. Configureer bestandslijstopties en schermbeveiliging.</string>
-  <string id="31401">[B]CONFIGUREER VIDEO-INSTELLINGEN[/B][CR][CR]Beheer uw videobibliotheek. Configureer videoafspeelopties en videobestandslijstsopties. Stel lettertype in voor ondertitels.</string>
-  <string id="31402">[B]CONFIGUREER MUZIEKINSTELLINGEN[/B][CR][CR]Beheer uw muziek bibliotheek. Configureer muziekafspeelopties en muziekbestandslijstopties. Configureer nummer indienen. Configureer karaokeopties.</string>
-  <string id="31403">[B]CONFIGUREER FOTO-INSTELLINGEN[/B][CR][CR]Configureer fotobestandslijstopties en diavoorstelling.</string>
-  <string id="31404">[B]CONFIGUREER WEERINSTELLINGEN[/B][CR][CR]Stel drie locaties in voor weersverwachtingen.</string>
-  <string id="31405">[B]CONFIGUREER NETWERKINSTELLINGEN[/B][CR][CR]Configureer de controle van XBMC via UPnP en HTTP. Configureer delen van bestanden. Configureer instellingen toegang internet</string>
-  <string id="31406">[B]CONFIGUREER SYSTEEMINSTELLINGEN[/B][CR][CR]Configureer en kalibreer schermgeluidsuitgang. Configureer invoerapparaten en energiebeheeropties. Schakel debugging in. Configureer vergrendelopties.</string>
-  <string id="31407">[B]CONFIGUREER SKININSTELLINGEN[/B][CR][CR]Configureer de Confluence-skin. Voeg items toe aan of verwijder ze uit het beginscherm. Verander skinachtergronden.</string>
-  <string id="31408">[B]CONFIGUREER ADD-ONS[/B][CR][CR]Beheer uw geïnstalleerde Add-ons. Zoek en installeer Add-ons via xbmc.org. Wijzig Add-oninstellingen.</string>
+  <string id="31400">[B]INSTELLINGEN UITERLIJK CONFIGUREREN[/B][CR][CR]Wijzig skin · Stel taal en regio in · Configureer bestandslijstopties en schermbeveiliging</string>
+  <string id="31401">[B]VIDEO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw videobibliotheek · Configureer videoafspeelopties en -bestandslijstsopties · Stel lettertype in voor ondertitels</string>
+  <string id="31402">[B]MUZIEKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw muziekbibliotheek · Configureer muziekafspeelopties en -bestandslijstopties · Configureer nummer indienen · Configureer karaokeopties</string>
+  <string id="31403">[B]FOTO-INSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer fotobestandslijstopties en diavoorstelling.</string>
+  <string id="31404">[B]WEERINSTELLINGEN CONFIGUREREN[/B][CR][CR]Geef drie locaties op voor weersverwachtingen.</string>
+  <string id="31405">[B]NETWERKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer de controle van XBMC via UPnP en HTTP · Configureer delen van bestanden · Configureer internettoegang</string>
+  <string id="31406">[B]SYSTEEMINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer en kalibreer schermgeluidsuitgang · Configureer invoerapparaten en energiebeheeropties · Schakel debugging in · Configureer vergrendelopties</string>
+  <string id="31407">[B]SKININSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer de Confluence-skin · Voeg items toe aan of verwijder ze uit het beginscherm · Wijzig skinachtergronden</string>
+  <string id="31408">[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-oninstellingen</string>
 
   <string id="31421">Selecteer uw XBMC-gebruikersprofiel[CR]om in te loggen</string>
 </strings>
