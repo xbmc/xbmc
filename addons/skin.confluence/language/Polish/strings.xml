@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 07/25/2010-->
+<!--Date of translation: 09/18/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
@@ -24,6 +24,7 @@
   <string id="31029">Fanart</string>
   <string id="31030">Pełna lista</string>
   <string id="31031">Miniatury zdjęć</string>
+  <string id="31032">Zawijaj obrazy</string>
   <string id="31033">info</string>
   <string id="31040">Teraz odtwarzane</string>
   <string id="31042">ODTWARZAM</string>
@@ -47,6 +48,7 @@
   <string id="31104">Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]</string>
   <string id="31105">Wyświetlaj tytuły podczas skanowania w tle</string>
   <string id="31106">Różne opcje</string>
+  <string id="31107">Ukryj ikony właściwości wideo czytane z nazw plików [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ukryj przyciski głównego menu</string>
   <string id="31109">Tła ekranu głównego</string>
   <string id="31110">Edytuj tło dla</string>
@@ -67,6 +69,7 @@
   <string id="31126">Włącz tekst piosenki w OSD</string>
   <string id="31127">ŚCIEŻKA DO WTYCZKI TEKSTy PIOSENEK</string>
   <string id="31128">Teksty piosenek</string>
+  <string id="31129">Włącz pobieranie napisów w OSD</string>
   <string id="31130">ŚCIEŻKA DO WTYCZKI NAPISY DO FILMÓW</string>
   <string id="31140">Muzyka - OSD</string>
   <string id="31141">Wideo - OSD</string>
