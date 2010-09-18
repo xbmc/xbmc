@@ -74,15 +74,18 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    *
    * Adjust the frame rate using the detected frame rate or height to determine typical interlaced
    * content (obtained from http://en.wikipedia.org/wiki/Frame_rate)
+   *
+   * Note that this is a HACK and we should be able to get the frame rate from the source sending
+   * back frame markers. However, this doesn't seem possible for MythTV.
    */
   float fFramesPerSecond;
-  if (fFrameRate == 59.940f) // NTSC or 60i content
+  if (int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
               __FUNCTION__);
     fFramesPerSecond = 29.97f;
   }
-  else if (fFrameRate == 47.952f) // 24p -> NTSC conversion
+  else if (int(fFrameRate * 100) == 4795) // 47.952 fps = 24p -> NTSC conversion
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
               __FUNCTION__);
@@ -90,7 +93,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   }
   else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
   {
-    CLog::Log(LOGDEBUG, "%s - Setting frames per second to 25.0 assuming PAL (interlaced)",
+    CLog::Log(LOGDEBUG, "%s - Changing frames per second to 25.0 assuming PAL (interlaced)",
                __FUNCTION__);
     fFramesPerSecond = 25.0f;
   }
