@@ -134,8 +134,6 @@ public:
   static CCrystalHD* GetInstance(void);
 
   bool DevicePresent(void);
-  bool Wake(void);
-  bool Sleep(void);
 
   void OpenDevice();
   void CloseDevice();
@@ -156,6 +154,7 @@ protected:
 
   DllLibCrystalHD *m_dll;
   void          *m_device;
+  bool          m_device_preset;
   bool          m_new_lib;
   bool          m_decoder_open;
   bool          m_has_bcm70015;

@@ -1000,6 +1000,7 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
+  m_device_preset(false),
   m_new_lib(false),
   m_decoder_open(false),
   m_has_bcm70015(false),
@@ -1043,6 +1044,11 @@ CCrystalHD::CCrystalHD() :
     m_dll = NULL;
     CLog::Log(LOGDEBUG, "%s: broadcom crystal hd not found", __MODULE_NAME__);
   }
+  else
+  {
+    // we know there's a device present now, close the device until doing playback
+    CloseDevice();
+  }
 }
 
 
@@ -1061,21 +1067,7 @@ CCrystalHD::~CCrystalHD()
 
 bool CCrystalHD::DevicePresent(void)
 {
-  return m_device != NULL;
-}
-
-bool CCrystalHD::Wake(void)
-{
-  CLog::Log(LOGDEBUG, "%s: resume", __MODULE_NAME__);
-  //GetInstance();
-  return true;
-}
-
-bool CCrystalHD::Sleep(void)
-{
-  CLog::Log(LOGDEBUG, "%s: suspend", __MODULE_NAME__);
-  //RemoveInstance();
-  return true;
+  return m_device_preset;
 }
 
 void CCrystalHD::RemoveInstance(void)
@@ -1115,6 +1107,7 @@ void CCrystalHD::OpenDevice()
       CLog::Log(LOGDEBUG, "%s: device owned by another application", __MODULE_NAME__);
     else
       CLog::Log(LOGDEBUG, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
+    m_device_preset = false;
   }
   else
   {
@@ -1126,6 +1119,7 @@ void CCrystalHD::OpenDevice()
     #else
       CLog::Log(LOGDEBUG, "%s: device opened", __MODULE_NAME__);
     #endif
+    m_device_preset = true;
   }
 }
 
@@ -1147,11 +1141,15 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
   BCM::BC_MEDIA_SUBTYPE Subtype;
 #endif
 
-  if (!m_device)
+  if (!m_device_preset)
     return false;
 
   if (m_decoder_open)
     CloseDecoder();
+    
+  OpenDevice();
+  if (!m_device)
+    return false;
 
   uint32_t videoAlg = 0;
   switch (codec_type)
@@ -1247,19 +1245,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
 
   do
   {
-    if (m_has_bcm70015)
-    {
-      // bcm70015 quirk
-      m_dll->DtsOpenDecoder(m_device, StreamType);
-      m_dll->DtsCloseDecoder(m_device);
-    }
-    res = m_dll->DtsOpenDecoder(m_device, StreamType);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
-      break;
-    }
-
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_new_lib)
     {
@@ -1299,6 +1284,13 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         break;
       }
 
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
+        break;
+      }
+
       if (m_has_bcm70015)
         res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2); 
       else
@@ -1312,6 +1304,13 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
     else
 #endif
     {
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
+        break;
+      }
+
       uint32_t OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
       res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
       if (res != BCM::BC_STS_SUCCESS)
@@ -1382,7 +1381,7 @@ void CCrystalHD::CloseDecoder(void)
 	}
 #endif
 
-  if (m_device)
+  if (m_decoder_open)
   {
     // DtsFlushRxCapture must release internal queues when
     // calling DtsStopDecoder/DtsCloseDecoder or the next
@@ -1393,8 +1392,10 @@ void CCrystalHD::CloseDecoder(void)
       m_dll->DtsFlushRxCapture(m_device, false);
     m_dll->DtsStopDecoder(m_device);
     m_dll->DtsCloseDecoder(m_device);
+    m_decoder_open = false;
   }
-  m_decoder_open = false;
+  
+  CloseDevice();
 }
 
 void CCrystalHD::Reset(void)
