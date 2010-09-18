@@ -84,15 +84,6 @@ void CURL::Parse(const CStdString& strURL1)
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
 
-  if (!CUtil::IsURL(strURL))
-  {
-    // The path is not an URL, so just set the filename and return
-    
-    // set (unmodified) filename and update extension
-    SetFileName(strURL1);
-    return;
-  }
-
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
@@ -111,22 +102,9 @@ void CURL::Parse(const CStdString& strURL1)
       int extLen = 3;
       if (iPos < 0)
       {
-#ifndef _LINUX
-        // check for misconstructed protocols
-        iPos = strURL.Find(":");
-        if (iPos == strURL.GetLength() - 1)
-        {
-          SetProtocol(strURL.Left(iPos));
-          iPos += 1;
-          break;
-        }
-        else
-#endif
-        {
-          /* set filename and update extension*/
-          SetFileName(strURL);
-          return ;
-        }
+        /* set filename and update extension*/
+        SetFileName(strURL);
+        return ;
       }
       iPos += extLen + 1;
       CStdString archiveName = strURL.Left(iPos);
