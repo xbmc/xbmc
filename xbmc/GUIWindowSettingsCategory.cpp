@@ -1464,7 +1464,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     DisplayMode mode = g_guiSettings.GetInt("videoscreen.screen");
     // Cascade
-    FillInResolutions("videoscreen.resolution", mode, RES_INVALID, true);
+    FillInResolutions("videoscreen.resolution", mode, RES_DESKTOP, true);
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   {
