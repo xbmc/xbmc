@@ -87,7 +87,8 @@
   <string id="110">Créer vignettes</string>
   <string id="111">Raccourcis</string>
   <string id="112">PAUSE</string>
-  
+  <string id="113">Echec Mise-à-jour</string>
+  <string id="114">Echec Installation</string>  
   <string id="115">Copier</string>
   <string id="116">Déplacer</string>
   <string id="117">Effacer</string>
@@ -1273,6 +1274,11 @@
   <string id="13508">Haute</string>
   <string id="13509">Vraiment élevé (lent !)</string>
   <string id="13510">Synchro. lecture avec affichage</string>
+
+  <string id="13550">Pause pendant le changement de fréquence</string>
+  <string id="13551">Off</string>
+  <string id="13552">%.1f Seconde</string>
+  <string id="13553">%.1f Secondes</string>
   
   <string id="13600">Télécommande Apple</string>
   
