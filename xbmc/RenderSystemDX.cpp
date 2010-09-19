@@ -84,7 +84,6 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 
 CRenderSystemDX::~CRenderSystemDX()
 {
-  DestroyRenderSystem();
 }
 
 bool CRenderSystemDX::InitRenderSystem()

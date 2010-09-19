@@ -91,7 +91,6 @@ CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 
 CWinSystemEGL::~CWinSystemEGL()
 {
-  DestroyWindowSystem();
 }
 
 bool CWinSystemEGL::InitWindowSystem()

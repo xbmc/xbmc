@@ -41,7 +41,6 @@ CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 
 CRenderSystemGL::~CRenderSystemGL()
 {
-  DestroyRenderSystem();
 }
 
 void CRenderSystemGL::CheckOpenGLQuirks()
