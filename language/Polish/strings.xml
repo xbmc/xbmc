@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/18/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 09/19/2010-->
 <!--$Revision$-->
 <!--Based on english strings version 33901-->
 <strings>
@@ -712,7 +712,7 @@
   <string id="1048">- Użytkownik</string>
   <string id="1049">Ustawienia skryptu</string>
   <string id="1050">Single</string>
-  <string id="1051">Wprwadź adres</string>
+  <string id="1051">Wprowadź adres</string>
   <string id="1200">Klient SMB</string>
   <string id="1202">Grupa robocza</string>
   <string id="1203">Domyślny użytkownik</string>
@@ -827,7 +827,7 @@
   <string id="10506">Programy</string>
   <string id="10507">Konfiguracja</string>
   <string id="10508">Prognoza pogody</string>
-  <string id="10509">Gry sieciowie</string>
+  <string id="10509">Gry sieciowe</string>
   <string id="10510">Rozszerzenia</string>
   <string id="10511">Informacje o systemie</string>
   <string id="10516">Muzyka - Biblioteka</string>
@@ -1131,10 +1131,10 @@
   <string id="13552">%.1f sekunda</string>
   <string id="13553">%.1f sekund(y)</string>
   <string id="13600">Pilot Apple</string>
-  <string id="13602">Zezwalaj na start XBMC za pomoca pilota</string>
+  <string id="13602">Zezwalaj na start XBMC za pomocą pilota</string>
   <string id="13603">Opóźnienie sekwencji</string>
   <string id="13610">Wyłączony</string>
-  <string id="13611">Standartowy</string>
+  <string id="13611">Standardowy</string>
   <string id="13612">Pilot uniwersalny</string>
   <string id="13613">Pilot do wszystkiego (Harmony)</string>
   <string id="13620">Błąd Pilota Apple</string>
@@ -1295,12 +1295,12 @@
   <string id="15280">Nie można pobrać listy z Last.fm...</string>
   <string id="15281">Wpisz nazwę wykonawcy, aby wyszukać pokrewnych</string>
   <string id="15282">Wpisz tag, aby znaleźć podobne</string>
-  <string id="15283">Utowry ostatnio odtwarzane przez %name%</string>
+  <string id="15283">Utwory ostatnio odtwarzane przez %name%</string>
   <string id="15284">Słuchaj Radia %name% Poleca z Last.fm</string>
   <string id="15285">Top tagi dla %name%</string>
   <string id="15286">Słuchaj playlisty %name% radia Last.fm</string>
-  <string id="15287">Napewno chcesz dodać ten utwór do ulubionych?</string>
-  <string id="15288">Napewno chcesz zablokować ten utwór?</string>
+  <string id="15287">Na pewno chcesz dodać ten utwór do ulubionych?</string>
+  <string id="15288">Na pewno chcesz zablokować ten utwór?</string>
   <string id="15289">Dodano do ulubionych: '%s'.</string>
   <string id="15290">Nie można dodać '%s' do ulubionych.</string>
   <string id="15291">Zablokowano: '%s'.</string>
@@ -1315,7 +1315,7 @@
   <string id="15301">Nie mogę połączyć się z serwerem</string>
   <string id="15302">Nie znaleziono żadnego serwera</string>
   <string id="15303">Grupa robocza nie została odnaleziona</string>
-  <string id="15310">Otwieranie wielościeżkowego źróła</string>
+  <string id="15310">Otwieranie wielościeżkowego źródła</string>
   <string id="15311">Ścieżka:</string>
   <string id="16000">Ogólne</string>
   <string id="16002">Przeszukuję w Internecie</string>
@@ -1345,7 +1345,7 @@
   <string id="16029">Przejrzyj plik dziennika (log).</string>
   <string id="16030">Tryb Imprezy przerwany.</string>
   <string id="16031">Nie ma utworów spełniających twoje kryteria.</string>
-  <string id="16032">Nie można zainicjalizować bazy danych.</string>
+  <string id="16032">Nie można utworzyć bazy danych.</string>
   <string id="16033">Nie można otworzyć bazy danych.</string>
   <string id="16034">Nie można pobrać utworów z bazy danych.</string>
   <string id="16035">Playlista Trybu Imprezy</string>
@@ -1472,9 +1472,9 @@
   <string id="20101">Wprowadzenie hasła głównego uaktywnia tryb administratora</string>
   <string id="20102">czy może raczej skopiować je z profilu domyślnego?</string>
   <string id="20103">Zapisać zmiany w profilu?</string>
-  <string id="20104">Znalaziono poprzednie ustawienia.</string>
+  <string id="20104">Znaleziono poprzednie ustawienia.</string>
   <string id="20105">Czy chcesz je przywrócić?</string>
-  <string id="20106">Znalaziono poprzednie źródła mediów.</string>
+  <string id="20106">Znaleziono poprzednie źródła mediów.</string>
   <string id="20109">- Powiększenie</string>
   <string id="20110">Ustawienia UPnP</string>
   <string id="20111">Autostart klienta UPnP</string>
@@ -1539,7 +1539,7 @@
   <string id="20171">Otoczenie sieciowe Windows (SMB)</string>
   <string id="20172">Serwer XBMSP</string>
   <string id="20173">Serwer FTP</string>
-  <string id="20174">ITunes (DAAP)</string>
+  <string id="20174">iTunes (DAAP)</string>
   <string id="20175">Serwer UPnP</string>
   <string id="20176">Pokazuj info o filmie</string>
   <string id="20177">Gotowe</string>
@@ -1639,7 +1639,7 @@
   <string id="20377">Odśwież informację o serialu</string>
   <string id="20378">Odświeżyć dane dla wszystkich odcinków?</string>
   <string id="20379">Wybrany katalog zawiera jeden serial</string>
-  <string id="20380">Wyklucz wybrane katalogi ze skanowia</string>
+  <string id="20380">Wyklucz wybrane katalogi ze skanowania</string>
   <string id="20381">Specjalne</string>
   <string id="20382">Automatycznie pobieraj ikony sezonu</string>
   <string id="20383">Wybrany katalog zawiera jeden plik wideo</string>
@@ -1671,7 +1671,7 @@
   <string id="20410">Zwiastun</string>
   <string id="20411">Tylko tytuły</string>
   <string id="20412">Pomiń podział na sezony</string>
-  <string id="20413">Pobierz FanArt</string>
+  <string id="20413">Pobierz Fanart</string>
   <string id="20414">Fanart jako tło w trybie biblioteki</string>
   <string id="20415">Wyszukiwanie nowych pozycji</string>
   <string id="20416">Premiera</string>
@@ -1701,7 +1701,7 @@
   <string id="20441">Fanart z Internetu</string>
   <string id="20442">Zmień typ zawartości</string>
   <string id="20443">Odświeżyć informacje dla wszystkich</string>
-  <string id="20444">pozycji związanych z tą scieżką?</string>
+  <string id="20444">pozycji związanych z tą ścieżką?</string>
   <string id="20445">Fanart</string>
   <string id="20446">Informacja lokalna znaleziona.</string>
   <string id="20447">Zignorować i odświeżyć z Internetu?</string>
@@ -1770,7 +1770,7 @@
   <string id="21413">Domyślny dla filmów</string>
   <string id="21414">Domyślny dla seriali</string>
   <string id="21415">Domyślny dla teledysków</string>
-  <string id="21416">Włącz fallback bazujący na języku scrapera</string>
+  <string id="21416">Włącz powrót bazując na języku scrapera</string>
   <string id="21417">- Ustawienia</string>
   <string id="21418">wielojęzyczny</string>
   <string id="21419">Brak scraperów</string>
@@ -2066,7 +2066,7 @@
   <string id="33079">Lubię</string>
   <string id="33080">Nie lubię</string>
   <string id="33081">Plik znajduje się w stosie, wybierz część którą chcesz odtwarzać.</string>
-  <string id="33082">Scieżka do skryptu</string>
+  <string id="33082">Ścieżka do skryptu</string>
   <string id="33083">Włącz własny przycisk dla skryptu</string>
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>

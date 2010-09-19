@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/18/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 09/19/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
@@ -15,7 +15,7 @@
   <string id="31020">Ostatnio dodane</string>
   <string id="31021">Wideo p pliki</string>
   <string id="31022">Muzyka - pliki</string>
-  <string id="31023">Otwarzam</string>
+  <string id="31023">Odtwarzam</string>
   <string id="31024">strona</string>
   <string id="31025">pozycji</string>
   <string id="31026">Różne opcje</string>
@@ -67,7 +67,7 @@
   <string id="31124">Pokazuj aktualnie odtwarzane wideo jako tło</string>
   <string id="31125">Pokazuj aktualną wizualizację jako tło</string>
   <string id="31126">Włącz tekst piosenki w OSD</string>
-  <string id="31127">ŚCIEŻKA DO WTYCZKI TEKSTy PIOSENEK</string>
+  <string id="31127">ŚCIEŻKA DO WTYCZKI TEKSTY PIOSENEK</string>
   <string id="31128">Teksty piosenek</string>
   <string id="31129">Włącz pobieranie napisów w OSD</string>
   <string id="31130">ŚCIEŻKA DO WTYCZKI NAPISY DO FILMÓW</string>
