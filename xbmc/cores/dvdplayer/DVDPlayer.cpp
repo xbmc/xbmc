@@ -511,7 +511,7 @@ void CDVDPlayer::OpenDefaultStreams()
 {
   int  count;
   bool valid;
-  bool force;
+  bool force = false;
   SelectionStream st;
 
   // open video stream
