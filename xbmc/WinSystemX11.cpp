@@ -234,6 +234,7 @@ void CWinSystemX11::UpdateResolutions()
       res.strId        = mode.id;
       res.iSubtitles   = (int)(0.95*mode.h);
       res.fRefreshRate = mode.hz;
+      res.bFullScreen  = true;
 
       if ((float)mode.w / (float)mode.h >= 1.59)
         res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
