@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/02/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 09/18/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 32080-->
+<!--Based on english strings version 33901-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -85,6 +85,8 @@
   <string id="110">Utwórz miniaturki</string>
   <string id="111">Skróty</string>
   <string id="112">Pauza</string>
+  <string id="113">Błąd aktualizacji</string>
+  <string id="114">Błąd instalacji</string>
   <string id="115">Kopiuj</string>
   <string id="116">Przenieś</string>
   <string id="117">Usuń</string>
@@ -162,6 +164,7 @@
   <string id="195">Nie znaleziono informacji</string>
   <string id="196">Wybierz film:</string>
   <string id="198">Wczytuję informacje o filmie</string>
+  <string id="199">Interfejs WWW</string>
   <string id="202">O filmie</string>
   <string id="203">Krótki opis</string>
   <string id="205">Głosy</string>
@@ -212,7 +215,7 @@
   <string id="255">CDDB</string>
   <string id="256">Pobieram informację o CD</string>
   <string id="257">Błąd</string>
-  <string id="258">Włącz czytanie tagów (metadanych)</string>
+  <string id="258">Włącz obsługę tagów (metadanych)</string>
   <string id="259">Otwieram</string>
   <string id="260">Shoutcast</string>
   <string id="261">Oczekuję na rozpoczęcie...</string>
@@ -294,7 +297,7 @@
   <string id="345">Rok</string>
   <string id="346">Wzmocnij głośność przy downmixie</string>
   <string id="350">Programy</string>
-  <string id="351">Wył.</string>
+  <string id="351">Wyłączone</string>
   <string id="352">Przyciemnienie</string>
   <string id="353">Czarny ekran</string>
   <string id="354">Matrix</string>
@@ -655,7 +658,7 @@
   <string id="795">Wstępna przerwa przed powtórzeniem (ms)</string>
   <string id="796">Właściwa przerwa przed powtórzeniem (ms)</string>
   <string id="797">Maksymalna liczba klientów</string>
-  <string id="798">Dostęp do Internetu</string>
+  <string id="798">Internet</string>
   <string id="850">Wprowadzono nieprawidłowy port</string>
   <string id="851">Wartość musi być z przedziału 1-65535</string>
   <string id="852">Wartość musi być z przedziału 1024-65535</string>
@@ -747,7 +750,7 @@
   <string id="1255">Wysyłaj nazwę użytkownika i hasło FTP</string>
   <string id="1256">Interwał pingu</string>
   <string id="1257">Połączyć z wykrytym systemem?</string>
-  <string id="1260">Rozgłoś te usługi do innych systemów poprzez funkcję Zeroconf</string>
+  <string id="1260">Rozgłoś te usługi do innych systemów poprzez Zeroconf</string>
   <string id="1300">Inne urządzenie audio</string>
   <string id="1301">Inne urządzenie przejścia</string>
   <string id="1396">zamiecie</string>
@@ -946,7 +949,7 @@
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU poziom skalowania HQ</string>
-  <string id="13122">VDPAU koekcja poziomu kolorów (YCbCr i RGB)</string>
+  <string id="13122">VDPAU korekcja poziomu kolorów (YCbCr i RGB)</string>
   <string id="13130">Wygaszaj inne ekrany</string>
   <string id="13131">Wyłączone</string>
   <string id="13132">Wygaszaj ekrany</string>
@@ -1123,6 +1126,10 @@
   <string id="13508">Wysoka</string>
   <string id="13509">Bardzo wysoka (wolne!)</string>
   <string id="13510">Synchronizuj odtwarzanie z ekranem</string>
+  <string id="13550">Pauza podczas zmiany odświeżania</string>
+  <string id="13551">Wyłącz</string>
+  <string id="13552">%.1f sekunda</string>
+  <string id="13553">%.1f sekund(y)</string>
   <string id="13600">Pilot Apple</string>
   <string id="13602">Zezwalaj na start XBMC za pomoca pilota</string>
   <string id="13603">Opóźnienie sekwencji</string>
@@ -1234,7 +1241,7 @@
   <string id="15111">Motyw skóry</string>
   <string id="15112">Domyślny</string>
   <string id="15200">Last.fm</string>
-  <string id="15201">Publikuj odtwarzane utwory do do Last.fm</string>
+  <string id="15201">Publikuj odtwarzane utwory do Last.fm</string>
   <string id="15202">Użytkownik</string>
   <string id="15203">Hasło</string>
   <string id="15204">Stan czuwania...</string>
@@ -1796,7 +1803,7 @@
   <string id="21446">Kodek audio</string>
   <string id="21447">Język dialogów</string>
   <string id="21448">Język napisów</string>
-  <string id="21449">Przyciski pilota emulują naciśniecia klawiszy</string>
+  <string id="21449">Przyciski pilota emulują naciśnięcia klawiszy</string>
   <string id="21450">- Edytuj</string>
   <string id="21451">Wymagane połączenie z Internetem.</string>
   <string id="21452">Pobierz więcej...</string>
@@ -1917,7 +1924,7 @@
   <string id="22081">Pokaż informacje</string>
   <string id="22082">Więcej...</string>
   <string id="22083">Odtwórz wszystko</string>
-  <string id="23049">Teletext niedostępny</string>
+  <string id="23049">Teletekst niedostępny</string>
   <string id="23050">Włącz Teletekst</string>
   <string id="23051">Część %i</string>
   <string id="23052">Ładowanie %i bajtów</string>
@@ -1957,7 +1964,7 @@
   <string id="24036">Lista zmian</string>
   <string id="24037">Usuń</string>
   <string id="24038">Instaluj</string>
-  <string id="24039">Wyłącz wtyczkę</string>
+  <string id="24039">Wyłączone wtyczki</string>
   <string id="24040">(Wyczyść bieżące ustawienie)</string>
   <string id="24041">Instaluj z pliku zip</string>
   <string id="24042">Pobieram %i%%</string>
@@ -1970,7 +1977,7 @@
   <string id="24059">Czy chcesz włączyć tę wtyczkę?</string>
   <string id="24060">Czy chcesz wyłączyć tę wtyczkę?</string>
   <string id="24061">Dostępna aktualizacja wtyczki!</string>
-  <string id="24062">Włącz wtyczki</string>
+  <string id="24062">Włączone wtyczki</string>
   <string id="24063">Auto aktualizacja</string>
   <string id="24064">Wtyczka włączona</string>
   <string id="24065">Wtyczka zaktualizowana</string>
