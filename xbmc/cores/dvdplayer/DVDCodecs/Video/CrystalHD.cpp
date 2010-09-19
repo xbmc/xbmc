@@ -1267,7 +1267,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
 #if defined(__APPLE__)
       if (g_sysinfo.IsAppleTV() && bcm_input_format.width > 1280)
       {
-        bcm_input_format.bEnableScaling = true;
+        bcm_input_format.bEnableScaling = m_has_bcm70015;
         bcm_input_format.ScalingParams.sWidth = 1280;
         bcm_input_format.ScalingParams.sHeight = 0;
       }
