@@ -40,6 +40,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_glContext = NULL;
   m_SDLSurface = NULL;
   m_dpy = NULL;
+  m_bModeSet = false;
 }
 
 CWinSystemX11::~CWinSystemX11()
@@ -72,6 +73,10 @@ bool CWinSystemX11::InitWindowSystem()
 
 bool CWinSystemX11::DestroyWindowSystem()
 {
+  //restore videomode on exit
+  if (m_bFullScreen)
+    g_xrandr.RestoreState();
+
   if (m_dpy)
   {
     if (m_glContext)
@@ -139,20 +144,25 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_bFullScreen = fullScreen;
 
 #if defined(HAS_XRANDR)
-
-  if(m_bFullScreen)
+  XOutput out;
+  XMode mode;
+  out.name = res.strOutput;
+  mode.w   = res.iWidth;
+  mode.h   = res.iHeight;
+  mode.hz  = res.fRefreshRate;
+  mode.id  = res.strId;
+ 
+  //on the first call to SDL_SetVideoMode, SDL stores the current displaymode
+  //SDL restores the displaymode on SDL_QUIT(), if we change the displaymode
+  //before the first call to SDL_SetVideoMode, SDL changes the displaymode back
+  //to the wrong mode on exit
+  if (m_bModeSet)
   {
-    XOutput out;
-    XMode mode;
-    out.name = res.strOutput;
-    mode.w   = res.iWidth;
-    mode.h   = res.iHeight;
-    mode.hz  = res.fRefreshRate;
-    mode.id  = res.strId;
-    g_xrandr.SetMode(out, mode);
+    if(m_bFullScreen)
+      g_xrandr.SetMode(out, mode);
+    else
+      g_xrandr.RestoreState();
   }
-  else
-    g_xrandr.RestoreState();
 
 #endif
 
@@ -168,6 +178,19 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       CLog::Log(LOGERROR, "CWinSystemX11::SetFullScreen SDL_OPENGL not set, SDL_GetError:%s", SDL_GetError());
 
     RefreshGlxContext();
+
+#if defined(HAS_XRANDR)
+    if (!m_bModeSet)
+    {
+      if(m_bFullScreen)
+        g_xrandr.SetMode(out, mode);
+      else
+        g_xrandr.RestoreState();
+
+      m_bModeSet = true; //first call to SDL_SetVideoMode done
+    }
+#endif
+
     return true;
   }
 
