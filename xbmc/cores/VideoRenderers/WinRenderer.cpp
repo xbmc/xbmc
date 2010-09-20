@@ -1118,8 +1118,8 @@ bool YUVBuffer::Create(unsigned int width, unsigned int height)
   // and Present failed every second time for the second video played.
   // - this is what D3D9 does behind the scenes anyway
   if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-    || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-    || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
+    || !planes[PLANE_U].texture.Create((m_width+1) / 2, (m_height+1) / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+    || !planes[PLANE_V].texture.Create((m_width+1) / 2, (m_height+1) / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
     return false;
 
   return true;
