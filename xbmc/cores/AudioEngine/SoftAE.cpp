@@ -263,7 +263,8 @@ bool CSoftAE::Initialize()
 
   if (OpenSink())
   {
-    m_thread = new CThread(this);
+    m_running = true;
+    m_thread  = new CThread(this);
     m_thread->Create();
     return true;
   }
@@ -381,10 +382,13 @@ void CSoftAE::DelayFrames()
 
 void CSoftAE::Stop()
 {
+  CSingleLock sinkLock(m_critSectionSink);
   m_running = false;
+  sinkLock.Leave();
 
   /* wait for the thread to stop */
   CSingleLock lock(m_runLock);
+  printf("Stopped\n");
 }
 
 IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
@@ -696,19 +700,16 @@ void CSoftAE::Run()
   uint8_t *out = NULL;
   size_t   outSize = 0;
 
-  m_running = true;
-
   CLog::Log(LOGINFO, "CSoftAE::Run - Thread Started");
+  CSingleLock sinkLock(m_critSectionSink);
   while(m_running)
   {
     unsigned int channelCount, mixed;
-
-    CSingleLock sinkLock(m_critSectionSink);
-      m_reOpened = false;
-      RunOutputStage();
-      /* copy this value so we can unlock the sink */
-      channelCount = m_channelCount;
-      size_t size  = m_rawPassthrough ? m_format.m_frameSize : m_frameSize;
+    m_reOpened = false;
+    RunOutputStage();
+    /* copy this value so we can unlock the sink */
+    channelCount = m_channelCount;
+    size_t size  = m_rawPassthrough ? m_format.m_frameSize : m_frameSize;
     sinkLock.Leave();
 
     CSingleLock mixLock(m_critSection);
@@ -736,7 +737,6 @@ void CSoftAE::Run()
     sinkLock.Enter();
     if (!m_reOpened)
       RunBufferStage(out);
-    sinkLock.Leave();
   }
 
   if(out) _aligned_free(out);

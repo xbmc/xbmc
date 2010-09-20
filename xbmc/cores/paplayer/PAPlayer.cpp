@@ -94,6 +94,7 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
   m_finishing.remove(si);
   si->m_decoder.Destroy();
+
   if (si->m_stream)
     si->m_stream->Destroy();
 

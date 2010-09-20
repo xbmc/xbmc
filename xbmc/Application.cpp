@@ -3199,9 +3199,6 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 
-    // shutdown the AudioEngine
-    CAEFactory::Shutdown();
-
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
     {
@@ -3299,6 +3296,9 @@ void CApplication::Stop()
 
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindowSystem();
+
+    // shutdown the AudioEngine
+    CAEFactory::Shutdown();
 
     CLog::Log(LOGNOTICE, "stopped");
   }
