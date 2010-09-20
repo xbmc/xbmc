@@ -42,6 +42,8 @@ class IAEPacketizer;
 class IAE
 {
 public:
+  virtual ~IAE() {}
+
   /* this is called when it is time to initialize the audio engine */
   virtual bool Initialize() = 0;
 
