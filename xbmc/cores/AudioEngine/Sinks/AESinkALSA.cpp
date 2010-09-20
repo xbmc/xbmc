@@ -179,13 +179,12 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
     case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
+    case AE_FMT_S24NE : return SND_PCM_FORMAT_S24;
 #ifdef __BIG_ENDIAN__
-    case AE_FMT_S24NE : return SND_PCM_FORMAT_S24_3BE;
+    case AE_FMT_S24NE3: return SND_PCM_FORMAT_S24_3BE;
 #else
-    case AE_FMT_S24NE : return SND_PCM_FORMAT_S24_3LE;
+    case AE_FMT_S24NE3: return SND_PCM_FORMAT_S24_3LE;
 #endif
-    case AE_FMT_S24LE : return SND_PCM_FORMAT_S24_3LE;
-    case AE_FMT_S24BE : return SND_PCM_FORMAT_S24_3BE;
     case AE_FMT_S32NE : return SND_PCM_FORMAT_S32;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
     case AE_FMT_RAW   : return SND_PCM_FORMAT_S16_LE;
@@ -225,6 +224,17 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
       {
         fmt = SND_PCM_FORMAT_UNKNOWN;
         continue;
+      }
+
+      int fmtBits = CAEUtil::DataFormatToBits(format.m_dataFormat);
+      int bits    = snd_pcm_hw_params_get_sbits(hw_params);
+      if (bits != fmtBits)
+      {
+        /* if we opened in 32bit and only have 24bits, pack into 24 */
+        if (fmtBits == 32 && bits == 24)
+          i = AE_FMT_S24NE;
+        else
+          continue;
       }
 
       /* record that the format fell back to X */

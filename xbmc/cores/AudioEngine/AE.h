@@ -68,5 +68,8 @@ public:
 
   /* return the output devices that the engine supports */
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
+
+  /* return if the engine supports RAW streams */
+  virtual bool SupportsRaw() { return false; }
 };
 

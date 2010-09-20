@@ -96,6 +96,8 @@ public:
   inline static void SSEMulArray   (float *data, const float mul, uint32_t count);
 #endif
 
+  virtual bool SupportsRaw() { return true; }
+
 private:
   CThread *m_thread;
 

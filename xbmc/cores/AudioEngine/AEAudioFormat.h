@@ -51,23 +51,24 @@ enum AEStdChLayout
   AE_CH_LAYOUT_MAX
 };
 
+
+/* this list is ordered from worst to best preferred */
 /* NE = Native Endian */
 enum AEDataFormat
 {
   AE_FMT_INVALID = -1,
   AE_FMT_U8,
   AE_FMT_S8,
-  AE_FMT_S16NE,
   AE_FMT_S16BE,
   AE_FMT_S16LE,
-  AE_FMT_S24NE,
-  AE_FMT_S24LE,
-  AE_FMT_S24BE,
-  AE_FMT_S32NE,
+  AE_FMT_S16NE,
   AE_FMT_S32LE,
   AE_FMT_S32BE,
-  AE_FMT_FLOAT,
+  AE_FMT_S32NE,
+  AE_FMT_S24NE,  /* S24 in 4 bytes */
+  AE_FMT_S24NE3, /* S24 in 3 bytes */
   AE_FMT_DOUBLE,
+  AE_FMT_FLOAT,
 
   /* for passthrough streams and the like */
   AE_FMT_RAW,
