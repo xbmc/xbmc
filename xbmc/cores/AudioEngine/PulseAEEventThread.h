@@ -20,22 +20,22 @@
  *
  */
 
-#include "PulseStream.h"
+#include "PulseAEStream.h"
 #include "utils/Event.h"
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
 
-class CPulseStream;
-class CPulseEventThread : public IRunnable
+class CPulseAEStream;
+class CPulseAEEventThread : public IRunnable
 {
 public:
   virtual void Run();
 
 private:
-  friend class CPulseStream;
+  friend class CPulseAEStream;
 
   bool                 m_run;
-  CPulseStream        *m_stream;
+  CPulseAEStream        *m_stream;
   CEvent               m_event;
   CThread              m_thread;
   IAEStream::AECBFunc *m_cbFunc;
@@ -43,8 +43,8 @@ private:
   CCriticalSection     m_lock;
   CCriticalSection     m_lockEvent;
 
-  CPulseEventThread(CPulseStream *stream);
-  virtual ~CPulseEventThread();
+  CPulseAEEventThread(CPulseAEStream *stream);
+  virtual ~CPulseAEEventThread();
 
   void Trigger();
   void SetCallback(IAEStream::AECBFunc *cbFunc, void *arg);

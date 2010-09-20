@@ -21,7 +21,7 @@
  */
 
 #include "AE.h"
-#include "PulseStream.h"
+#include "PulseAEStream.h"
 #include "utils/CriticalSection.h"
 #include <list>
 
@@ -29,7 +29,7 @@ struct pa_context;
 struct pa_threaded_mainloop;
 struct pa_stream;
 
-class CPulseStream;
+class CPulseAEStream;
 class CPulseAE : public IAE
 {
 public:
@@ -56,7 +56,7 @@ public:
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 private:
   CCriticalSection m_lock;
-  std::list<CPulseStream*> m_streams;
+  std::list<CPulseAEStream*> m_streams;
 
   static void ContextStateCallback(pa_context *c, void *userdata);
 

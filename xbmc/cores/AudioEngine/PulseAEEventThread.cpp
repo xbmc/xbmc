@@ -19,12 +19,12 @@
  *
  */
 
-#include "PulseEventThread.h"
+#include "PulseAEEventThread.h"
 #include "AEUtil.h"
 #include "log.h"
 #include "utils/SingleLock.h"
 
-CPulseEventThread::CPulseEventThread(CPulseStream *stream) :
+CPulseAEEventThread::CPulseAEEventThread(CPulseAEStream *stream) :
   m_run   (true  ),
   m_stream(stream),
   m_thread(this  ),
@@ -34,7 +34,7 @@ CPulseEventThread::CPulseEventThread(CPulseStream *stream) :
   m_thread.Create();
 }
 
-CPulseEventThread::~CPulseEventThread()
+CPulseAEEventThread::~CPulseAEEventThread()
 {
   /* tell the thread we are terminating */
   CSingleLock lock(m_lock);
@@ -48,20 +48,20 @@ CPulseEventThread::~CPulseEventThread()
   m_thread.StopThread(true);
 }
 
-void CPulseEventThread::SetCallback(IAEStream::AECBFunc *cbFunc, void *arg)
+void CPulseAEEventThread::SetCallback(IAEStream::AECBFunc *cbFunc, void *arg)
 {
   CSingleLock lock(m_lock);
   m_cbFunc = cbFunc;
   m_arg    = arg;
 }
 
-void CPulseEventThread::Trigger()
+void CPulseAEEventThread::Trigger()
 {
   CSingleLock lock(m_lockEvent);
   m_event.Set();
 }
 
-void CPulseEventThread::Run()
+void CPulseAEEventThread::Run()
 {
 /*
   this thread has to be VERY careful not to leave m_lock locked

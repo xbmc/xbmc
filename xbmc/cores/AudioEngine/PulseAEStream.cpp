@@ -19,7 +19,7 @@
  *
  */
 
-#include "PulseStream.h"
+#include "PulseAEStream.h"
 #include "AEUtil.h"
 #include "log.h"
 #include "utils/SingleLock.h"
@@ -43,7 +43,7 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
+CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
   m_AudioDataThread (NULL),
   m_AudioDrainThread(NULL)
 {
@@ -143,9 +143,9 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
     return /*false*/;
   }
 
-  pa_stream_set_state_callback(m_Stream, CPulseStream::StreamStateCallback, this);
-  pa_stream_set_write_callback(m_Stream, CPulseStream::StreamRequestCallback, this);
-  pa_stream_set_latency_update_callback(m_Stream, CPulseStream::StreamLatencyUpdateCallback, this);
+  pa_stream_set_state_callback(m_Stream, CPulseAEStream::StreamStateCallback, this);
+  pa_stream_set_write_callback(m_Stream, CPulseAEStream::StreamRequestCallback, this);
+  pa_stream_set_latency_update_callback(m_Stream, CPulseAEStream::StreamLatencyUpdateCallback, this);
 
   int flags = PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE;
   if (options && AESTREAM_FORCE_RESAMPLE)
@@ -193,7 +193,7 @@ CPulseStream::CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, 
   return /*true*/;
 }
 
-CPulseStream::~CPulseStream()
+CPulseAEStream::~CPulseAEStream()
 {
   delete m_AudioDataThread;
   delete m_AudioDrainThread;
@@ -222,7 +222,7 @@ CPulseStream::~CPulseStream()
   this method may be called inside the pulse main loop,
   so be VERY careful with locking
 */
-void CPulseStream::Destroy()
+void CPulseAEStream::Destroy()
 {
   if (m_Destroyed)
     return;
@@ -234,21 +234,21 @@ void CPulseStream::Destroy()
   m_Destroyed = true;
 }
 
-void CPulseStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
+void CPulseAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
   if (!m_AudioDataThread)
-    m_AudioDataThread = new CPulseEventThread(this);
+    m_AudioDataThread = new CPulseAEEventThread(this);
   m_AudioDataThread->SetCallback(cbFunc, arg);
 }
 
-void CPulseStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
+void CPulseAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
   if (!m_AudioDrainThread)
-    m_AudioDrainThread = new CPulseEventThread(this);
+    m_AudioDrainThread = new CPulseAEEventThread(this);
   m_AudioDrainThread->SetCallback(cbFunc, arg);
 }
 
-unsigned int CPulseStream::AddData(void *data, unsigned int size)
+unsigned int CPulseAEStream::AddData(void *data, unsigned int size)
 {
   if (!m_Initialized)
     return size;
@@ -274,7 +274,7 @@ unsigned int CPulseStream::AddData(void *data, unsigned int size)
   return length;
 }
 
-float CPulseStream::GetDelay()
+float CPulseAEStream::GetDelay()
 {
   if (!m_Initialized)
     return 0.0f;
@@ -289,7 +289,7 @@ float CPulseStream::GetDelay()
   return (float)((float)latency / 1000000.0f);
 }
 
-int CPulseStream::GetSpace()
+int CPulseAEStream::GetSpace()
 {
   if (!m_Initialized)
     return 0;
@@ -301,39 +301,39 @@ int CPulseStream::GetSpace()
   return space / m_frameSize;
 }
 
-bool CPulseStream::IsPaused()
+bool CPulseAEStream::IsPaused()
 {
   return m_Paused;
 }
 
-bool CPulseStream::IsDraining()
+bool CPulseAEStream::IsDraining()
 {
   return m_draining;
 }
 
-bool CPulseStream::IsFreeOnDrain()
+bool CPulseAEStream::IsFreeOnDrain()
 {
   return m_options & AESTREAM_FREE_ON_DRAIN;
 }
 
-bool CPulseStream::IsDestroyed()
+bool CPulseAEStream::IsDestroyed()
 {
   return m_Destroyed;
 }
 
-void CPulseStream::Pause()
+void CPulseAEStream::Pause()
 {
   if (m_Initialized)
     m_Paused = Cork(true);
 }
 
-void CPulseStream::Resume()
+void CPulseAEStream::Resume()
 {
   if (m_Initialized)
     m_Paused = Cork(false);
 }
 
-void CPulseStream::Drain()
+void CPulseAEStream::Drain()
 {
   if (!m_Initialized || m_draining)
     return;
@@ -343,12 +343,12 @@ void CPulseStream::Drain()
   pa_threaded_mainloop_lock(m_MainLoop);
 
   printf("drain2\n");
-  pa_operation_unref(pa_stream_drain(m_Stream, CPulseStream::StreamDrainComplete, this));
+  pa_operation_unref(pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this));
   pa_threaded_mainloop_unlock(m_MainLoop);
   printf("drain3\n");
 }
 
-void CPulseStream::Flush()
+void CPulseAEStream::Flush()
 {
   if (!m_Initialized)
     return;
@@ -358,17 +358,17 @@ void CPulseStream::Flush()
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
-float CPulseStream::GetVolume()
+float CPulseAEStream::GetVolume()
 {
   return 0.0f;
 }
 
-float CPulseStream::GetReplayGain()
+float CPulseAEStream::GetReplayGain()
 {
   return 0.0f;
 }
 
-void CPulseStream::SetVolume(float volume)
+void CPulseAEStream::SetVolume(float volume)
 {
   if (!m_Initialized)
     return;
@@ -394,84 +394,84 @@ void CPulseStream::SetVolume(float volume)
     pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
-void CPulseStream::SetReplayGain(float factor)
+void CPulseAEStream::SetReplayGain(float factor)
 {
 }
 
-void CPulseStream::AppendPostProc(IAEPostProc *pp)
+void CPulseAEStream::AppendPostProc(IAEPostProc *pp)
 {
 }
 
-void CPulseStream::PrependPostProc(IAEPostProc *pp)
+void CPulseAEStream::PrependPostProc(IAEPostProc *pp)
 {
 }
 
-void CPulseStream::RemovePostProc(IAEPostProc *pp)
+void CPulseAEStream::RemovePostProc(IAEPostProc *pp)
 {
 }
 
-unsigned int CPulseStream::GetFrameSize()
+unsigned int CPulseAEStream::GetFrameSize()
 {
   return m_frameSize;
 }
 
-unsigned int CPulseStream::GetChannelCount()
+unsigned int CPulseAEStream::GetChannelCount()
 {
   return m_channelCount;
 }
 
-unsigned int CPulseStream::GetSampleRate()
+unsigned int CPulseAEStream::GetSampleRate()
 {
   return m_sampleRate;
 }
 
-enum AEDataFormat CPulseStream::GetDataFormat()
+enum AEDataFormat CPulseAEStream::GetDataFormat()
 {
   return m_format;
 }
 
-bool CPulseStream::IsRaw()
+bool CPulseAEStream::IsRaw()
 {
   return false;
 }
 
-double CPulseStream::GetResampleRatio()
+double CPulseAEStream::GetResampleRatio()
 {
   return 1.0;
 }
 
-void CPulseStream::SetResampleRatio(double ratio)
+void CPulseAEStream::SetResampleRatio(double ratio)
 {
 }
 
-void CPulseStream::RegisterAudioCallback(IAudioCallback* pCallback)
+void CPulseAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   m_AudioCallback = pCallback;
 }
 
-void CPulseStream::UnRegisterAudioCallback()
+void CPulseAEStream::UnRegisterAudioCallback()
 {
   m_AudioCallback = NULL;
 }
 
-void CPulseStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
+void CPulseAEStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  CPulseStream *stream = (CPulseStream *)userdata;
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
 
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
   if (stream->m_AudioDataThread)
     stream->m_AudioDataThread->Trigger();
 }
 
-void CPulseStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
+void CPulseAEStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 {
-  CPulseStream *stream = (CPulseStream *)userdata;
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
 }
 
-void CPulseStream::StreamStateCallback(pa_stream *s, void *userdata)
+void CPulseAEStream::StreamStateCallback(pa_stream *s, void *userdata)
 {
-  CPulseStream *stream = (CPulseStream *)userdata;
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
   pa_stream_state_t state = pa_stream_get_state(s);
 
   switch (state)
@@ -486,9 +486,9 @@ void CPulseStream::StreamStateCallback(pa_stream *s, void *userdata)
   }
 }
 
-void CPulseStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)
+void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)
 {
-  CPulseStream *stream = (CPulseStream *)userdata;
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
   if (stream->m_AudioDrainThread)
     stream->m_AudioDrainThread->Trigger();
@@ -497,7 +497,7 @@ void CPulseStream::StreamDrainComplete(pa_stream *s, int success, void *userdata
     stream->Destroy();
 }
 
-inline bool CPulseStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
+inline bool CPulseAEStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
 {
   if (op == NULL)
     return false;
@@ -518,7 +518,7 @@ inline bool CPulseStream::WaitForOperation(pa_operation *op, pa_threaded_mainloo
   return sucess;
 }
 
-bool CPulseStream::Cork(bool cork)
+bool CPulseAEStream::Cork(bool cork)
 {
   pa_threaded_mainloop_lock(m_MainLoop);
 

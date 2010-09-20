@@ -14,12 +14,12 @@ SRCS = \
 	SoftAE.cpp \
 	SoftAEStream.cpp \
 	SoftAESound.cpp \
+	PulseAE.cpp \
+	PulseAEStream.cpp \
+	PulseAEEventThread.cpp \
         AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
-	PulseAE.cpp \
-	PulseStream.cpp \
-	PulseEventThread.cpp \
 	AEConvert.cpp \
 	AERemap.cpp \
 	AEUtil.cpp \
