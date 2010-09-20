@@ -22,6 +22,17 @@
 #include "DVDAudioCodecLibMad.h"
 #include "DVDStreamInfo.h"
 
+inline float scale(mad_fixed_t sample)
+{
+  double s, x = scale(sample);
+  static const double k = 0.5f;
+
+       if (x >  k) x = tanh((x - k) / (1 - k)) * (1 - k) + k;
+  else if (x < -k) x = tanh((x + k) / (1 - k)) * (1 - k) - k;
+
+  return x;
+}
+
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
   m_bInitialized = false;
@@ -152,9 +163,9 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 	    while (nsamples--)
 	    {
 	      // output sample(s) in float
-	      *output++ = mad_f_todouble(*left_ch++);   	
+	      *output++ = scale(*left_ch++);   	
               if (nchannels == 2) {
-                *output++ = mad_f_todouble(*right_ch++);
+                *output++ = scale(*right_ch++);
 	      }
 	    }
 	    m_iDecodedDataSize += iSize;

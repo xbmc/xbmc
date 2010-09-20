@@ -59,14 +59,23 @@ enum AEDataFormat
   AE_FMT_INVALID = -1,
   AE_FMT_U8,
   AE_FMT_S8,
+
   AE_FMT_S16BE,
   AE_FMT_S16LE,
   AE_FMT_S16NE,
-  AE_FMT_S32LE,
+
   AE_FMT_S32BE,
+  AE_FMT_S32LE,
   AE_FMT_S32NE,
-  AE_FMT_S24NE,  /* S24 in 4 bytes */
+
+  AE_FMT_S24BE4,
+  AE_FMT_S24LE4,
+  AE_FMT_S24NE4, /* S24 in 4 bytes */
+
+  AE_FMT_S24BE3,
+  AE_FMT_S24LE3,
   AE_FMT_S24NE3, /* S24 in 3 bytes */
+
   AE_FMT_DOUBLE,
   AE_FMT_FLOAT,
 
