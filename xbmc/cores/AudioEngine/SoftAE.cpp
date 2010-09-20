@@ -388,7 +388,6 @@ void CSoftAE::Stop()
 
   /* wait for the thread to stop */
   CSingleLock lock(m_runLock);
-  printf("Stopped\n");
 }
 
 IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)

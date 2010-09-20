@@ -21,16 +21,17 @@
  */
 
 #include "StdString.h"
+#include "AE.h"
 
+class IAE;
 class IAESound
 {
-public:
-  /* this should NEVER be called directly, use AE.GetSound */
+protected:
+  friend class IAE;
   IAESound(const CStdString &filename) {}
-
-  /* this should NEVER be called directly, use AE.FreeSound */
   virtual ~IAESound() {}
 
+public:
   /* play the sound this object represents */
   virtual void Play() = 0;
 
