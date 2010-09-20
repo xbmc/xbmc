@@ -21,17 +21,17 @@
  */
 
 #include "AEStream.h"
-#include "PulseEventThread.h"
+#include "PulseAEEventThread.h"
 #include <pulse/pulseaudio.h>
 
-class CPulseEventThread;
+class CPulseAEEventThread;
 
-class CPulseStream : public IAEStream
+class CPulseAEStream : public IAEStream
 {
 public:
   /* this should NEVER be called directly, use AE.GetStream */
-  CPulseStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
-  virtual ~CPulseStream();
+  CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
+  virtual ~CPulseAEStream();
 
   virtual void Destroy();
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
@@ -96,8 +96,8 @@ private:
 
   IAudioCallback* m_AudioCallback;
 
-  CPulseEventThread      *m_AudioDataThread;
-  CPulseEventThread      *m_AudioDrainThread;
+  CPulseAEEventThread      *m_AudioDataThread;
+  CPulseAEEventThread      *m_AudioDrainThread;
 
   enum AEDataFormat m_format;
   unsigned int m_sampleRate;
