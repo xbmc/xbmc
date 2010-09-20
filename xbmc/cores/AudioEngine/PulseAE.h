@@ -62,4 +62,5 @@ private:
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
+  float m_Volume;
 };
