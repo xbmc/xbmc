@@ -78,7 +78,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     case AE_FMT_S16LE : m_SampleSpec.format = PA_SAMPLE_S16LE; break;
     case AE_FMT_S16BE : m_SampleSpec.format = PA_SAMPLE_S16BE; break;
     case AE_FMT_S24NE3: m_SampleSpec.format = PA_SAMPLE_S24NE; break;
-    case AE_FMT_S24NE : m_SampleSpec.format = PA_SAMPLE_S24_32NE; break;
+    case AE_FMT_S24NE4: m_SampleSpec.format = PA_SAMPLE_S24_32NE; break;
     case AE_FMT_S32NE : m_SampleSpec.format = PA_SAMPLE_S32NE; break;
     case AE_FMT_S32LE : m_SampleSpec.format = PA_SAMPLE_S32LE; break;
     case AE_FMT_S32BE : m_SampleSpec.format = PA_SAMPLE_S32BE; break;

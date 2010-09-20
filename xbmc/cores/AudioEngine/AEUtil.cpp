@@ -131,16 +131,26 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
   {
     8,                   /* U8     */
     8,                   /* S8     */
-    16,                  /* S16NE  */
+
     16,                  /* S16BE  */
     16,                  /* S16LE  */
-    32,                  /* S32NE  */
-    32,                  /* S32LE  */
+    16,                  /* S16NE  */
+
     32,                  /* S32BE  */
+    32,                  /* S32LE  */
+    32,                  /* S32NE  */
+
+    32,                  /* S24BE  */
+    32,                  /* S24LE  */
     32,                  /* S24NE  */
+
+    24,                  /* S24BE3 */
+    24,                  /* S24LE3 */
     24,                  /* S24NE3 */
+
     sizeof(double) << 3, /* DOUBLE */
     sizeof(float ) << 3, /* FLOAT  */
+
     8                    /* RAW    */
   };
 
@@ -156,16 +166,27 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   {
     "AE_FMT_U8",
     "AE_FMT_S8",
+
     "AE_FMT_S16BE",
     "AE_FMT_S16LE",
     "AE_FMT_S16NE",
-    "AE_FMT_S32LE",
+
     "AE_FMT_S32BE",
+    "AE_FMT_S32LE",
     "AE_FMT_S32NE",
+
+    "AE_FMT_S24BE",
+    "AE_FMT_S24LE",
     "AE_FMT_S24NE",  /* S24 in 4 bytes */
+
+    "AE_FMT_S24BE3",
+    "AE_FMT_S24LE3",
     "AE_FMT_S24NE3", /* S24 in 3 bytes */
+
     "AE_FMT_DOUBLE",
     "AE_FMT_FLOAT",
+
+    /* for passthrough streams and the like */
     "AE_FMT_RAW"
   };
 
