@@ -38,7 +38,16 @@ using namespace MUSIC_INFO;
 #define BITSPERSAMPLE     32
 #define OUTPUTFRAMESIZE   (SAMPLESPERFRAME * CHANNELSPERSAMPLE * (BITSPERSAMPLE >> 3))
 
-#define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
+inline float scale(mad_fixed_t sample)
+{
+  double s, x = mad_f_todouble(sample);
+  static const double k = 0.5f;
+
+       if (x >  k) x = tanh((x - k) / (1 - k)) * (1 - k) + k;
+  else if (x < -k) x = tanh((x + k) / (1 - k)) * (1 - k) - k;
+
+  return x;
+}
 
 MP3Codec::MP3Codec()
 {
@@ -518,13 +527,15 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
   float *data_f = (float *)mxhouse->output_ptr;
   for( int i=0; i < mxhouse->synth.pcm.length; i++ )
   {
+    float s;
+
     // Left channel
-    *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[0][i]);
+    *data_f++ = scale(mxhouse->synth.pcm.samples[0][i]);
     mxhouse->output_ptr += sizeof(float);
     // Right channel
     if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
     {
-      *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[1][i]);
+      *data_f++ = scale(mxhouse->synth.pcm.samples[1][i]);
       mxhouse->output_ptr += sizeof(float);
     }
   }

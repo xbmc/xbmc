@@ -263,6 +263,7 @@ float CAudioDecoder::GetReplayGain()
     if (fabs(peak * replaygain) > 1.0f)
       replaygain = 1.0f / fabs(peak);
   }
+
   return replaygain;
 }
 

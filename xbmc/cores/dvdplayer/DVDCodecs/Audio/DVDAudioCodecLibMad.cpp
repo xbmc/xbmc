@@ -22,8 +22,6 @@
 #include "DVDAudioCodecLibMad.h"
 #include "DVDStreamInfo.h"
 
-#define mad_f_tofloat(x) ((float) ((x) / (float) (1L << MAD_F_FRACBITS)))
-
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
   m_bInitialized = false;
@@ -154,9 +152,9 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 	    while (nsamples--)
 	    {
 	      // output sample(s) in float
-	      *output++ = mad_f_tofloat(*left_ch++);   	
+	      *output++ = mad_f_todouble(*left_ch++);   	
               if (nchannels == 2) {
-                *output++ = mad_f_tofloat(*right_ch++);
+                *output++ = mad_f_todouble(*right_ch++);
 	      }
 	    }
 	    m_iDecodedDataSize += iSize;
