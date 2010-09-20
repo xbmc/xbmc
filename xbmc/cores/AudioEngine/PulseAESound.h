@@ -22,12 +22,12 @@
 
 #include "AESound.h"
 
-class CPulseSound : public IAESound
+class CPulseAESound : public IAESound
 {
 public:
   /* this should NEVER be called directly, use AE.GetSound */
-  CPulseSound(const CStdString &filename) : IAESound(filename) {}
-  virtual ~CPulseSound() {}
+  CPulseAESound(const CStdString &filename) : IAESound(filename) {}
+  virtual ~CPulseAESound() {}
 
   virtual void DeInitialize() {}
   virtual bool Initialize() { return true; }

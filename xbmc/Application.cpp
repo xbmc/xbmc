@@ -1122,7 +1122,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  AE.Initialize();
+  CAEFactory::Start();
   SetHardwareVolume(AE.GetVolume());
 
   // if the user shutoff the xbox during music scan

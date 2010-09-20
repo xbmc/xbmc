@@ -41,11 +41,14 @@ class IAEPacketizer;
 
 class IAE
 {
-public:
+protected:
+  friend class CAEFactory;
+  IAE() {}
   virtual ~IAE() {}
 
   /* this is called when it is time to initialize the audio engine */
   virtual bool Initialize() = 0;
+public:
 
   /* implement this to recieve notification of audio settings changes */
   virtual void OnSettingsChange(CStdString setting) {}

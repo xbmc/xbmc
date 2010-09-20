@@ -36,6 +36,7 @@ class IAEStream
 {
 protected:
   friend class IAE;
+  IAEStream() {}
   virtual ~IAEStream() {}
 
 public:

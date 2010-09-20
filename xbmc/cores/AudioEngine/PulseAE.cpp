@@ -169,13 +169,13 @@ IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sample
 IAESound *CPulseAE::GetSound(CStdString file)
 {
   printf("GetSound %s\n", file.c_str());
-  return new CPulseSound(file);
+  return new CPulseAESound(file);
 }
 
 void CPulseAE::FreeSound(IAESound *sound)
 {
   printf("FreeSound\n");
-  delete sound;
+  delete (CPulseAESound*)sound;
 }
 
 void CPulseAE::GarbageCollect()
