@@ -487,9 +487,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoscreen.resolution"))
     {
-      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), false);
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetValue(g_guiSettings.GetResolution());
+      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
     }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
@@ -577,6 +575,25 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       FillInAudioDevices(pSetting,true);
+    }
+    else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13551), 0);
+
+      for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
+      {
+        CStdString delayText;
+        if (i < 4)
+          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 2.0);
+        else
+          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 2.0);
+
+        pControl->AddLabel(delayText, i);
+      }
+
+      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -965,6 +982,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CAddonMgr::Get().GetAddon("script.rss.editor",addon);
       pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"));
+    }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1208,7 +1230,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("musiclibrary.import"))
   {
-    CStdString path(g_settings.GetDatabaseFolder());
+    CStdString path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
@@ -1424,7 +1446,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     DisplayMode mode = g_guiSettings.GetInt("videoscreen.screen");
     // Cascade
-    FillInResolutions("videoscreen.resolution", mode, true);
+    FillInResolutions("videoscreen.resolution", mode, RES_DESKTOP, true);
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   {
@@ -2285,7 +2307,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   return mode;
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange)
+void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange)
 {
   CBaseSettingControl *control = GetSetting(strSetting);
   control->SetDelayed();
@@ -2293,9 +2315,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
 
   pControl->Clear();
 
+  RESOLUTION spinres = RES_INVALID; // index of the resolution in the spinner that has same screen/width/height as res
+
   if (mode == DM_WINDOWED)
   {
     pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
+    spinres = RES_WINDOW;
   }
   else
   {
@@ -2306,6 +2331,11 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
       CStdString strRes;
       strRes.Format("%dx%d", resolutions[idx].width, resolutions[idx].height);
       pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
+
+      RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
+      RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
+      if (res1.iScreen == res2.iScreen && res1.iWidth == res2.iWidth && res1.iHeight == res2.iHeight)
+        spinres = (RESOLUTION) resolutions[idx].ResInfo_Index;
     }
   }
 
@@ -2333,7 +2363,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
   }
   else
   {
-    // selecting a value is done outside of this function when UserChange = false
+    // select the entry equivalent to the resolution passed by the res parameter
+    pControl->SetValue(spinres);
   }
 }
 
@@ -2406,9 +2437,7 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
     g_graphicsContext.SetVideoResolution(lastRes);
 
     DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);
-    FillInResolutions("videoscreen.resolution", mode, false);
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("videoscreen.resolution")->GetID());
-    pControl->SetValue(lastRes);
+    FillInResolutions("videoscreen.resolution", mode, lastRes, false);
     FillInRefreshRates("videoscreen.screenmode", lastRes, false);
   }
 }

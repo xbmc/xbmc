@@ -118,6 +118,7 @@ static const ActionMapping actions[] =
         {"fastforward"       , ACTION_PLAYER_FORWARD},
         {"rewind"            , ACTION_PLAYER_REWIND},
         {"play"              , ACTION_PLAYER_PLAY},
+        {"playpause"         , ACTION_PLAYER_PLAYPAUSE},
         {"delete"            , ACTION_DELETE_ITEM},
         {"copy"              , ACTION_COPY_ITEM},
         {"move"              , ACTION_MOVE_ITEM},
@@ -782,7 +783,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       TiXmlElement *pButton = pDevice->FirstChildElement();
       while (pButton)
       {
-        uint32_t buttonCode;
+        uint32_t buttonCode=0;
         if (type == "gamepad")
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")

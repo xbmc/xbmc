@@ -1168,12 +1168,10 @@ void CApplication::StartWebServer()
     }
 #endif
     if (m_network.GetFirstConnectedInterface())
-      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
+      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
     if (m_WebServer.IsStarted())
     {
-      m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
-
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
@@ -2346,7 +2344,17 @@ bool CApplication::OnAction(const CAction &action)
   if (action.IsMouse())
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
 
-  // in normal case
+  // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
+  // playing or ACTION_PLAYER_PLAY if we are not playing.
+  if (action.GetID() == ACTION_PLAYER_PLAYPAUSE)
+  {
+    if (IsPlaying())
+      return OnAction(CAction(ACTION_PAUSE));
+    else
+      return OnAction(CAction(ACTION_PLAYER_PLAY));
+  }
+
+// in normal case
   // just pass the action to the current window and let it handle it
   if (g_windowManager.OnAction(action))
   {
@@ -3296,10 +3304,8 @@ void CApplication::Stop()
     }
 #endif
 
-#if !defined(_LINUX)
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindowSystem();
-#endif
 
     CLog::Log(LOGNOTICE, "stopped");
   }

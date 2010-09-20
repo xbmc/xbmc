@@ -31,6 +31,20 @@ class CFileItem;
 class CFileItemList;
 class CFileOperationJob;
 
+class CDownloadJob
+{
+public:
+  CDownloadJob(unsigned int id, const CStdString& thehash)
+  {
+    jobID = id;
+    progress = 0;
+    hash = thehash;
+  }
+  unsigned int jobID;
+  unsigned int progress;
+  CStdString hash;
+};
+
 class CGUIWindowAddonBrowser :
       public CGUIMediaWindow,
       public IJobCallback
@@ -65,13 +79,23 @@ public:
    */
   static void InstallAddonsFromXBMCRepo(const std::set<CStdString> &addonIDs);
 
+  typedef std::map<CStdString,CDownloadJob> JobMap;
+  JobMap m_downloadJobs;
+
 protected:
   /* \brief set label2 of an item based on the Addon.Status property
    \param item the item to update
    */
   void SetItemLabel2(CFileItemPtr item);
 
-  void RegisterJob(const CStdString& id, unsigned int jobid);
+  /*! \brief Check the hash of a downloaded addon with the hash in the repository
+   \param addonZip - filename of the zipped addon to check
+   \param hash - correct hash of the file 
+   \return true if the hash matches (or no hash is available on the repo), false otherwise
+   */
+  bool CheckHash(const CStdString& addonZip, const CStdString& hash);
+
+  void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -81,19 +105,6 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual CStdString GetStartFolder(const CStdString &dir);
 private:
-  class CDownloadJob
-  {
-  public:
-    CDownloadJob(unsigned int id)
-    {
-      jobID = id;
-      progress = 0;
-    }
-    unsigned int jobID;
-    unsigned int progress;
-  };
-  typedef std::map<CStdString,CDownloadJob> JobMap;
-  JobMap m_downloadJobs;
   CCriticalSection m_critSection;
   CPictureThumbLoader m_thumbLoader;
 };

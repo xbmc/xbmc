@@ -32,6 +32,7 @@
 #include "MouseStat.h"
 #include "GUIWindowManager.h"
 #include "SystemGlobals.h"
+#include "utils/JobManager.h"
 
 using namespace std;
 
@@ -317,6 +318,16 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
   {
     return;
+  }
+
+  //pause the player during the refreshrate change
+  int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
+  if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+  {
+    g_application.m_pPlayer->Pause();
+    ThreadMessage msg = {TMSG_MEDIA_PAUSE};
+    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
+    pauseMessage->Create(true);
   }
 
   if (res >= RES_DESKTOP)

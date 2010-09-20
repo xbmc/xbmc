@@ -49,7 +49,7 @@ namespace XFILE
      \return true if more than one item is found, false otherwise.
      */
     static bool GetScriptsAndPlugins(const CStdString &content, CFileItemList &items);
-    static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
+    static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items, bool reposAsFolders = true);
     static CFileItemPtr FileItemFromAddon(ADDON::AddonPtr &addon, const CStdString &basePath, bool folder = false);
   };
 }

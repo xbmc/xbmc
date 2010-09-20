@@ -97,6 +97,7 @@ typedef struct
   std::string  filename;
   std::string  language;
   std::string  name;
+  CDemuxStream::EFlags flags;
   int          source;
   int          id;
 } SelectionStream;
@@ -118,6 +119,7 @@ public:
   int              IndexOf (StreamType type, CDVDPlayer& p);
   int              Count   (StreamType type) { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
   SelectionStream& Get     (StreamType type, int index);
+  bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);

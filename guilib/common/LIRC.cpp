@@ -278,8 +278,11 @@ void CRemoteControl::Update()
 
     m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, buttonName);
 
-    int repeat = atol(repeatStr);
-    if (strcmp(repeatStr, "00") == 0)
+    char *end = NULL;
+    long repeat = strtol(repeatStr, &end, 10);
+    if (!end || *end != 0)
+      CLog::Log(LOGERROR, "LIRC: invalid non-numeric character in expression %s", repeatStr);
+    if (repeat == 0)
     {
       CLog::Log(LOGDEBUG, "LIRC: %s - NEW at %d:%s (%s)", __FUNCTION__, now, m_buf, buttonName);
       m_firstClickTime = now;

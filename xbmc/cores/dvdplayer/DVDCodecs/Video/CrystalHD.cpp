@@ -32,6 +32,7 @@
 
 #include "DVDClock.h"
 #include "DynamicDll.h"
+#include "utils/SystemInfo.h"
 #include "utils/Atomics.h"
 #include "utils/Thread.h"
 #include "utils/log.h"
@@ -243,7 +244,6 @@ protected:
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
-  CPictureBuffer      *m_interlace_buf;
   CEvent              m_ready_event;
   DllSwScale          *m_dllSwScale;
   struct SwsContext   *m_sw_scale_ctx;
@@ -330,8 +330,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0),
-  m_interlace_buf(NULL)
+  m_framerate(0.0)
 {
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
@@ -345,9 +344,6 @@ CMPCOutputThread::~CMPCOutputThread()
   while(m_FreeList.Count())
     delete m_FreeList.Pop();
     
-  if (m_interlace_buf)
-    delete m_interlace_buf;
-
   if (m_sw_scale_ctx)
     m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
   delete m_dllSwScale;
@@ -389,6 +385,7 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
     {
       double framerate;
 
+      m_framerate_timestamp += duration;
       framerate = DVD_TIME_BASE / duration;
       // qualify framerate, we don't care about absolute value, just
       // want to to verify range. Timestamp could be borked so ignore
@@ -405,7 +402,6 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
         case 30:
         case 25:
         case 24:
-          m_framerate_timestamp += duration;
           m_framerate_cnt++;
           m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
         break;
@@ -758,6 +754,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
         if (procOut.PicInfo.timeStamp && 
+          m_timestamp != procOut.PicInfo.timeStamp &&
           m_width == (int)procOut.PicInfo.width && 
           m_height == (int)procOut.PicInfo.height)
         {
@@ -905,6 +902,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_timestamp = DVD_NOPTS_VALUE;
         m_color_space = procOut.b422Mode;
         m_color_range = 0;
         m_color_matrix = procOut.PicInfo.colour_primaries;
@@ -913,7 +911,6 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
         {
           m_interlace = true;
-          m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_timeout = 2000;
         m_format_valid = true;
@@ -1003,6 +1000,7 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
+  m_device_preset(false),
   m_new_lib(false),
   m_decoder_open(false),
   m_has_bcm70015(false),
@@ -1046,6 +1044,11 @@ CCrystalHD::CCrystalHD() :
     m_dll = NULL;
     CLog::Log(LOGDEBUG, "%s: broadcom crystal hd not found", __MODULE_NAME__);
   }
+  else
+  {
+    // we know there's a device present now, close the device until doing playback
+    CloseDevice();
+  }
 }
 
 
@@ -1064,21 +1067,7 @@ CCrystalHD::~CCrystalHD()
 
 bool CCrystalHD::DevicePresent(void)
 {
-  return m_device != NULL;
-}
-
-bool CCrystalHD::Wake(void)
-{
-  CLog::Log(LOGDEBUG, "%s: resume", __MODULE_NAME__);
-  //GetInstance();
-  return true;
-}
-
-bool CCrystalHD::Sleep(void)
-{
-  CLog::Log(LOGDEBUG, "%s: suspend", __MODULE_NAME__);
-  //RemoveInstance();
-  return true;
+  return m_device_preset;
 }
 
 void CCrystalHD::RemoveInstance(void)
@@ -1118,6 +1107,7 @@ void CCrystalHD::OpenDevice()
       CLog::Log(LOGDEBUG, "%s: device owned by another application", __MODULE_NAME__);
     else
       CLog::Log(LOGDEBUG, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
+    m_device_preset = false;
   }
   else
   {
@@ -1129,6 +1119,7 @@ void CCrystalHD::OpenDevice()
     #else
       CLog::Log(LOGDEBUG, "%s: device opened", __MODULE_NAME__);
     #endif
+    m_device_preset = true;
   }
 }
 
@@ -1150,11 +1141,15 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
   BCM::BC_MEDIA_SUBTYPE Subtype;
 #endif
 
-  if (!m_device)
+  if (!m_device_preset)
     return false;
 
   if (m_decoder_open)
     CloseDecoder();
+    
+  OpenDevice();
+  if (!m_device)
+    return false;
 
   uint32_t videoAlg = 0;
   switch (codec_type)
@@ -1249,13 +1244,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
 
   do
   {
-    res = m_dll->DtsOpenDecoder(m_device, StreamType);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
-      break;
-    }
-
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_new_lib)
     {
@@ -1276,10 +1264,25 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       bcm_input_format.metaDataSz = metaDataSz;
       bcm_input_format.startCodeSz = startCodeSz;
 
+#if defined(__APPLE__)
+      if (g_sysinfo.IsAppleTV() && bcm_input_format.width > 1280)
+      {
+        bcm_input_format.bEnableScaling = m_has_bcm70015;
+        bcm_input_format.ScalingParams.sWidth = 1280;
+        bcm_input_format.ScalingParams.sHeight = 0;
+      }
+#endif
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
       {
         CLog::Log(LOGERROR, "%s: set input format failed", __MODULE_NAME__);
+        break;
+      }
+
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
         break;
       }
 
@@ -1292,23 +1295,17 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
         CLog::Log(LOGERROR, "%s: set color space failed", __MODULE_NAME__); 
         break; 
       }
-/*
-      BCM::BC_SCALING_PARAMS bc_scale_params;
-      memset(&bc_scale_params, 0, sizeof(BCM::BC_SCALING_PARAMS));
-      bc_scale_params.sWidth = 600;
-      bc_scale_params.sHeight = 400;
-      //bc_scale_params.DNR = ;
-      res = m_dll->DtsSetScaleParams(m_device, &bc_scale_params);
-      if (res != BCM::BC_STS_SUCCESS)
-      { 
-        CLog::Log(LOGDEBUG, "%s: set scale params failed", __MODULE_NAME__); 
-        break; 
-      }
-*/
     }
     else
 #endif
     {
+      res = m_dll->DtsOpenDecoder(m_device, StreamType);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
+        break;
+      }
+
       uint32_t OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
       res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
       if (res != BCM::BC_STS_SUCCESS)
@@ -1379,7 +1376,7 @@ void CCrystalHD::CloseDecoder(void)
 	}
 #endif
 
-  if (m_device)
+  if (m_decoder_open)
   {
     // DtsFlushRxCapture must release internal queues when
     // calling DtsStopDecoder/DtsCloseDecoder or the next
@@ -1390,8 +1387,10 @@ void CCrystalHD::CloseDecoder(void)
       m_dll->DtsFlushRxCapture(m_device, false);
     m_dll->DtsStopDecoder(m_device);
     m_dll->DtsCloseDecoder(m_device);
+    m_decoder_open = false;
   }
-  m_decoder_open = false;
+  
+  CloseDevice();
 }
 
 void CCrystalHD::Reset(void)

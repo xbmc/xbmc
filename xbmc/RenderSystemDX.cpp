@@ -84,7 +84,6 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 
 CRenderSystemDX::~CRenderSystemDX()
 {
-  DestroyRenderSystem();
 }
 
 bool CRenderSystemDX::InitRenderSystem()
@@ -308,7 +307,7 @@ void CRenderSystemDX::DeleteDevice()
 void CRenderSystemDX::OnDeviceLost()
 {
   CSingleLock lock(m_resourceSection);
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
   SAFE_RELEASE(m_stateBlock);
 
   if (m_needNewDevice)
@@ -617,10 +616,17 @@ bool CRenderSystemDX::BeginRender()
       m_nDeviceStatus = D3D_OK;
       break;
     case D3DERR_DEVICEHUNG:
-    case D3DERR_OUTOFVIDEOMEMORY:
+      CLog::Log(LOGERROR, "D3DERR_DEVICEHUNG");
       m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
+      break;
+    case D3DERR_OUTOFVIDEOMEMORY:
+      CLog::Log(LOGERROR, "D3DERR_OUTOFVIDEOMEMORY");
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
       break;
     case D3DERR_DEVICEREMOVED:
+      CLog::Log(LOGERROR, "D3DERR_DEVICEREMOVED");
       m_nDeviceStatus = D3DERR_DEVICELOST;
       m_needNewDevice = true;
       // fixme: also needs to re-enumerate and switch to another screen

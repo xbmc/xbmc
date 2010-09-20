@@ -65,6 +65,27 @@
 
 using namespace std;
 
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+{
+  m_msg.dwMessage  = msg.dwMessage;
+  m_msg.dwParam1   = msg.dwParam1;
+  m_msg.dwParam2   = msg.dwParam2;
+  m_msg.hWaitEvent = msg.hWaitEvent;
+  m_msg.lpVoid     = msg.lpVoid;
+  m_msg.strParam   = msg.strParam;
+  m_msg.params     = msg.params;
+
+  m_delay = delay;
+}
+
+void CDelayedMessage::Process()
+{
+  Sleep(m_delay);
+
+  if (!m_bStop)
+    g_application.getApplicationMessenger().SendMessage(m_msg, false);
+}
+
 CApplicationMessenger::~CApplicationMessenger()
 {
   Cleanup();
@@ -496,7 +517,10 @@ case TMSG_POWERDOWN:
 
     case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
       if (pMsg->dwParam1 != (DWORD) -1)
-        g_playlistPlayer.PlaySongId(pMsg->dwParam1);
+      {
+        bool *result = (bool*)pMsg->lpVoid;
+        *result = g_playlistPlayer.PlaySongId(pMsg->dwParam1);
+      }
       else
         g_playlistPlayer.Play();
       break;
@@ -790,10 +814,13 @@ void CApplicationMessenger::PlayListPlayerPlay(int iSong)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
+bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
+  bool returnState;
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
+  tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
+  return returnState;
 }
 
 void CApplicationMessenger::PlayListPlayerNext()

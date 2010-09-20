@@ -277,11 +277,11 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
 {
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
-    if (ADDON_REPOSITORY == (TYPE)i)
+    if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
     if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
@@ -336,7 +336,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabled/*= true*/)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -346,7 +346,9 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return NULL != addon.get() && m_database.IsAddonDisabled(addon->ID()) != enabled;
+    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+      return false;
+    return NULL != addon.get();
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);
@@ -477,6 +479,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_SCRIPT_MODULE:
+    case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
@@ -503,10 +506,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   return AddonPtr();
 }
 
-void CAddonMgr::UpdateRepos()
+void CAddonMgr::UpdateRepos(bool force)
 {
   CSingleLock lock(m_critSection);
-  if (m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
+  if (!force && m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
     return;
   m_watch.StartZero();
   VECADDONS addons;
@@ -515,7 +518,7 @@ void CAddonMgr::UpdateRepos()
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
     CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
-    if (!lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
       CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);

@@ -181,14 +181,24 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
-  if (hint.width > 720 && CCrystalHD::GetInstance()->DevicePresent())
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usechd"))
   {
-    if (g_guiSettings.GetBool("videoplayer.usechd") && !hint.software)
+    if (CCrystalHD::GetInstance()->DevicePresent())
     {
-      if (hint.codec == CODEC_ID_VC1 || hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO)
+      switch(hint.codec)
       {
-        CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
+        case CODEC_ID_VC1:
+        case CODEC_ID_H264:
+        case CODEC_ID_MPEG2VIDEO:
+          if (hint.codec == CODEC_ID_H264 && hint.width <= 700)
+            break;
+          if (hint.codec == CODEC_ID_MPEG2VIDEO && hint.width <= 720)
+            break;
+          CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
+        break;
+        default:
+        break;
       }
     }
   }

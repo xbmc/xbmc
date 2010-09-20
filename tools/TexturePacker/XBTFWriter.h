@@ -37,10 +37,13 @@ public:
   bool UpdateHeader(const std::vector<unsigned int>& dupes);
 
 private:
+  void Cleanup();
+
   CXBTF& m_xbtf;
   std::string m_outputFile;
   FILE* m_file;
-  FILE* m_tempFile;
+  unsigned char *m_data;
+  size_t         m_size;
 };
 
 #endif

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: kyouhei-->
 <!--Email: Twitter: @kyouhei-->
-<!--Date of translation: 09/01/2010-->
+<!--Date of translation: 09/19/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">プログラム</string>
@@ -239,7 +239,7 @@
   <string id="327">アルバムを更新できません</string>
   <string id="328">変更を書き込み中...</string>
   <string id="329">書き込みができません</string>
-  <string id="330">しばらくお待ち下さい...</string>
+  <string id="330">お待ち下さい...</string>
   <string id="331">データベースの圧縮中...</string>
   <string id="332">データベースを圧縮できません</string>
   <string id="333">ライブラリを消去しますか？</string>
@@ -355,7 +355,7 @@
   <string id="454">4行目のアドレス</string>
   <string id="455">行数</string>
   <string id="456">モード</string>
-  <string id="457">スイッチビュー</string>
+  <string id="457">ビュー切り替え</string>
   <string id="459">サブ</string>
   <string id="460">音声</string>
   <string id="461">[アクティブ]</string>
@@ -400,7 +400,7 @@
   <string id="505">ファイルからメディア情報を読み込んでいます...</string>
   <string id="507">ソート: 回数</string>
   <string id="510">視覚エフェクトを有効</string>
-  <string id="511">ビデオモードを変更</string>
+  <string id="511">ビデオモードを切り替えを有効</string>
   <string id="512">起動画面</string>
   <string id="513">メニュー画面</string>
   <string id="514">手動設定</string>
@@ -411,7 +411,7 @@
   <string id="520">XBEタイトル編集</string>
   <string id="521">コンピレーション</string>
   <string id="522">このソースを削除</string>
-  <string id="523">Switch Media</string>
+  <string id="523">メディア切り替え</string>
   <string id="524">プレイリスト選択</string>
   <string id="525">新規プレイリスト...</string>
   <string id="526">プレイリストに追加</string>
@@ -424,7 +424,7 @@
   <string id="533">Enter Genre</string>
   <string id="534">View: %s</string>
   <string id="535">List</string>
-  <string id="536">Icons</string>
+  <string id="536">アイコン</string>
   <string id="537">Big List</string>
   <string id="538">Big Icons</string>
   <string id="539">Wide</string>
@@ -440,11 +440,11 @@
   <string id="551">Name</string>
   <string id="552">Date</string>
   <string id="553">Size</string>
-  <string id="554">Track</string>
+  <string id="554">トラック</string>
   <string id="555">Time</string>
   <string id="556">Title</string>
   <string id="557">アーティスト</string>
-  <string id="558">Album</string>
+  <string id="558">アルバム</string>
   <string id="559">Playlist</string>
   <string id="560">ID</string>
   <string id="561">File</string>
@@ -734,7 +734,7 @@
   <string id="10020">スクリプト</string>
   <string id="10021">Webブラウザ</string>
   <string id="10028">ビデオ/プレイリスト</string>
-  <string id="10034">設定 - プロフィール</string>
+  <string id="10034">設定 - プロファイル</string>
   <string id="10100">はい/いいえ ダイアログ</string>
   <string id="10101">進行ダイアログ</string>
   <string id="10210">字幕を検索しています...</string>
@@ -824,8 +824,8 @@
   <string id="12358">ﾊﾟｽﾜｰﾄﾞが未記入です 再び試みてください</string>
   <string id="12360">ﾏｽﾀｰ ﾛｯｸ</string>
   <string id="12362">Shutdown system if Master Lock retries exceeded</string>
-  <string id="12367">ﾏｽﾀｰ ｺｰﾄﾞが有効ではありません!</string>
-  <string id="12368">正しいﾏｽﾀｰ ｺｰﾄﾞを入力して下さい!</string>
+  <string id="12367">ﾏｽﾀｰ ｺｰﾄﾞが有効ではありません</string>
+  <string id="12368">正しいﾏｽﾀｰ ｺｰﾄﾞを入力して下さい</string>
   <string id="12373">Settings &amp;  Filemanager</string>
   <string id="12376">Set as default for all Movies</string>
   <string id="12377">This will reset any previously saved values</string>
@@ -900,7 +900,7 @@
   <string id="13172">After %i secs</string>
   <string id="13173">HDD Install Date:</string>
   <string id="13174">HDD Power Cycle Count:</string>
-  <string id="13200">プロフィール</string>
+  <string id="13200">プロファイル</string>
   <string id="13201">ﾌﾟﾛﾌｨｰﾙ '%s'を削除しますか？</string>
   <string id="13204">最後にﾛｰﾄﾞしたﾌﾟﾛﾌｨｰﾙ:</string>
   <string id="13205">不明</string>
@@ -1029,7 +1029,7 @@
   <string id="13402">Show track position</string>
   <string id="13403">Clear Default</string>
   <string id="13404">Resume</string>
-  <string id="13405">サムネイル取得</string>
+  <string id="13405">サムネイルを取得</string>
   <string id="13406">画像情報</string>
   <string id="13407">%s Presets</string>
   <string id="13408">(IMDb User Rating)</string>
@@ -1142,7 +1142,7 @@
   <string id="15210">キャッシュ済み曲 %i</string>
   <string id="15211">送信中...</string>
   <string id="15212">送信 %i 秒</string>
-  <string id="15213">Play Using...</string>
+  <string id="15213">...を使用して再生</string>
   <string id="15214">Use Smoothed A/V Synchronisation</string>
   <string id="15215">Hide File Names in Thumbs View</string>
   <string id="15216">Play in Party Mode</string>
@@ -1258,14 +1258,14 @@
   <string id="20007">Recordings</string>
   <string id="20008">Screenshots</string>
   <string id="20009">Use XBMC</string>
-  <string id="20011">Music Playlists</string>
-  <string id="20012">Video Playlists</string>
+  <string id="20011">ミュージックプレイリスト</string>
+  <string id="20012">ビデオプレイリスト</string>
   <string id="20013">Do you wish to launch the game?</string>
   <string id="20014">Sort by: Playlist</string>
-  <string id="20015">Remote Thumb</string>
-  <string id="20016">Current Thumb</string>
-  <string id="20017">Local Thumb</string>
-  <string id="20018">No Thumb</string>
+  <string id="20015">サーバ上のサムネイル</string>
+  <string id="20016">現在のサムネイル</string>
+  <string id="20017">ローカルサムネイル</string>
+  <string id="20018">サムネイルなし</string>
   <string id="20019">サムネイルを選択</string>
   <string id="20022">
   </string>
@@ -1416,8 +1416,9 @@
   <string id="20181">Backspace</string>
   <string id="20182">Space</string>
   <string id="20183">スキンを再ロード</string>
+  <string id="20184">EXIF情報による画像の向き補正</string>
   <string id="20185">Use Poster View Styles for TV Shows</string>
-  <string id="20186">Please Wait</string>
+  <string id="20186">お待ち下さい...</string>
   <string id="20187">Backing up EEPROM</string>
   <string id="20188">Backing up BIOS</string>
   <string id="20189">Enable Auto Scrolling for Plot &amp; Review</string>
@@ -1479,7 +1480,7 @@
   <string id="20350">votes</string>
   <string id="20351">TV番組情報</string>
   <string id="20352">エピソード情報</string>
-  <string id="20353">Loading TV Show details</string>
+  <string id="20353">TV番組の詳細をロード中</string>
   <string id="20354">Fetching Episode Guide</string>
   <string id="20355">Loading Info For Episodes In Directory</string>
   <string id="20356">Select TV Show:</string>
@@ -1487,7 +1488,7 @@
   <string id="20358">Season %i</string>
   <string id="20359">Episode</string>
   <string id="20360">Episodes</string>
-  <string id="20361">Loading Episode details</string>
+  <string id="20361">エピソードの詳細をロード中</string>
   <string id="20362">エピソードをライブラリから削除</string>
   <string id="20363">TV番組をライブラリから削除</string>
   <string id="20364">TV Show</string>
@@ -1733,8 +1734,7 @@
   <string id="22082">さらに...</string>
   <string id="24067">現在ダウンロード中のAdd-on</string>
   <string id="29800">Library Mode</string>
-  <string id="29801">QWERTY Keyboard</string>
+  <string id="29801">QWERTYキーボード</string>
   <string id="29802">パススルーオーディオ使用中</string>
-  <string id="29999">Apply Flicker Filter Setting to Games</string>
   <string id="33061">メニュー</string>
 </strings>

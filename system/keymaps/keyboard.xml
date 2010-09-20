@@ -106,6 +106,24 @@
       <b mod="ctrl,shift">Rewind</b>      <!-- Rew -->
       <f mod="ctrl">SkipNext</f>          <!-- Skip -->
       <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
+      <d mod="ctrl">Info</d>              <!-- MCE Details -->
+      <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
+      <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
+      <f8>Mute</f8>                       <!-- MCE mute -->
+      <equals>PageUp</equals>             <!-- = means page up -->
+      <minus>PageDown</minus>             <!-- - means page down -->
+      <g mod="ctrl">OSD</g>               <!-- MCE Guide -->
+      <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
+      <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
+      <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
+      <!-- MCE keypresses without an obvious use in XBMC -->
+      <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
+      <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
+      <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
+      <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
+      <m mod="ctrl,shift">Notification(MCEKeypress, DVD menu, 3)</m>
+      <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
+      <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
   </global>
   <Home>
@@ -187,7 +205,7 @@
       <return>Select</return>
       <enter>Select</enter>
     </keyboard>
-</VideoTimeSeek>
+  </VideoTimeSeek>
   <FullscreenInfo>
     <keyboard>
       <f>FastForward</f>
@@ -196,6 +214,7 @@
       <backspace>Close</backspace>
       <o>CodecInfo</o>
       <i>Close</i>
+      <d mod="ctrl">Close</d>
       <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
@@ -320,6 +339,7 @@
       <backspace>Close</backspace>
       <escape>Close</escape>
       <m>Close</m>
+      <g mod="ctrl">close</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
@@ -479,6 +499,7 @@
     <keyboard>
       <backspace>Close</backspace>
       <i>Close</i>
+      <d mod="ctrl">Close</d>
       <key id='65446'>Close</key>
     </keyboard>
   </MusicInformation>
@@ -499,6 +520,11 @@
       <backspace>Close</backspace>
     </keyboard>
   </AddonSettings>
+  <TextViewer>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </TextViewer>
   <LockSettings>
     <keyboard>
       <escape>Close</escape>
@@ -516,6 +542,7 @@
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <i>Close</i>
+      <d mod="ctrl">Close</d>
       <o>Close</o>
       <backspace>Close</backspace>
       <space>Pause</space>

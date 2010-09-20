@@ -87,7 +87,8 @@
   <string id="110">Create thumbnails</string>
   <string id="111">Shortcuts</string>
   <string id="112">Paused</string>
-
+  <string id="113">Update failed</string>
+  <string id="114">Install failed</string>
   <string id="115">Copy</string>
   <string id="116">Move</string>
   <string id="117">Delete</string>
@@ -1274,6 +1275,11 @@
   <string id="13508">High</string>
   <string id="13509">Really high(slow!)</string>
   <string id="13510">Sync playback to display</string>
+
+  <string id="13550">Pause during refresh rate change</string>
+  <string id="13551">Off</string>
+  <string id="13552">%.1f Second</string>
+  <string id="13553">%.1f Seconds</string>
 
   <string id="13600">Apple remote</string>
 
