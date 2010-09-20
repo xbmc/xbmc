@@ -73,17 +73,16 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   switch (m_format)
   {
-    case AE_FMT_U8   : m_SampleSpec.format = PA_SAMPLE_U8; break;
-    case AE_FMT_S16NE: m_SampleSpec.format = PA_SAMPLE_S16NE; break;
-    case AE_FMT_S16LE: m_SampleSpec.format = PA_SAMPLE_S16LE; break;
-    case AE_FMT_S16BE: m_SampleSpec.format = PA_SAMPLE_S16BE; break;
-    case AE_FMT_S24NE: m_SampleSpec.format = PA_SAMPLE_S24NE; break;
-    case AE_FMT_S24LE: m_SampleSpec.format = PA_SAMPLE_S24LE; break;
-    case AE_FMT_S24BE: m_SampleSpec.format = PA_SAMPLE_S24BE; break;
-    case AE_FMT_S32NE: m_SampleSpec.format = PA_SAMPLE_S32NE; break;
-    case AE_FMT_S32LE: m_SampleSpec.format = PA_SAMPLE_S32LE; break;
-    case AE_FMT_S32BE: m_SampleSpec.format = PA_SAMPLE_S32BE; break;
-    case AE_FMT_FLOAT: m_SampleSpec.format = PA_SAMPLE_FLOAT32NE; break;
+    case AE_FMT_U8    : m_SampleSpec.format = PA_SAMPLE_U8; break;
+    case AE_FMT_S16NE : m_SampleSpec.format = PA_SAMPLE_S16NE; break;
+    case AE_FMT_S16LE : m_SampleSpec.format = PA_SAMPLE_S16LE; break;
+    case AE_FMT_S16BE : m_SampleSpec.format = PA_SAMPLE_S16BE; break;
+    case AE_FMT_S24NE3: m_SampleSpec.format = PA_SAMPLE_S24NE; break;
+    case AE_FMT_S24NE : m_SampleSpec.format = PA_SAMPLE_S24_32NE; break;
+    case AE_FMT_S32NE : m_SampleSpec.format = PA_SAMPLE_S32NE; break;
+    case AE_FMT_S32LE : m_SampleSpec.format = PA_SAMPLE_S32LE; break;
+    case AE_FMT_S32BE : m_SampleSpec.format = PA_SAMPLE_S32BE; break;
+    case AE_FMT_FLOAT : m_SampleSpec.format = PA_SAMPLE_FLOAT32NE; break;
 
     default:
       CLog::Log(LOGERROR, "PulseAudio: Invalid format %i", format);
