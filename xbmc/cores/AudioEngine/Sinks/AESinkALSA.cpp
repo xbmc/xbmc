@@ -226,7 +226,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
         continue;
       }
 
-      int fmtBits = CAEUtil::DataFormatToBits(format.m_dataFormat);
+      int fmtBits = CAEUtil::DataFormatToBits(i);
       int bits    = snd_pcm_hw_params_get_sbits(hw_params);
       if (bits != fmtBits)
       {
