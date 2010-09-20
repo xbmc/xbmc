@@ -24,6 +24,7 @@
 #include "PulseAESound.h"
 #include "utils/SingleLock.h"
 #include "log.h"
+#include "Settings.h"
 #include <pulse/pulseaudio.h>
 
 /* Static helpers */
@@ -90,6 +91,8 @@ CPulseAE::~CPulseAE()
 
 bool CPulseAE::Initialize()
 {
+  m_Volume = g_settings.m_fVolumeLevel;
+
   if ((m_MainLoop = pa_threaded_mainloop_new()) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
@@ -143,12 +146,16 @@ void CPulseAE::OnSettingsChange(CStdString setting)
 
 float CPulseAE::GetVolume()
 {
-  return 0.0f;
+  return m_Volume;
 }
 
 void CPulseAE::SetVolume(float volume)
 {
-  printf("AE SetVolume %f\n", volume);
+  CSingleLock lock(m_lock);
+  m_Volume = volume;
+  std::list<CPulseAEStream*>::iterator itt;
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    (*itt)->UpdateVolume(volume);
 }
 
 IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)

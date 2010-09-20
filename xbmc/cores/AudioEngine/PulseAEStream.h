@@ -64,7 +64,6 @@ public:
   virtual unsigned int      GetChannelCount();
   virtual unsigned int      GetSampleRate  ();
   virtual enum AEDataFormat GetDataFormat  ();
-  virtual bool              IsRaw          ();
 
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio();
@@ -74,6 +73,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
+  /* trigger the stream to update its volume relative to AE */
+  void UpdateVolume(float max);
 private:
   static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata);
   static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata);
@@ -89,7 +90,10 @@ private:
 
   pa_stream *m_Stream;
   pa_sample_spec m_SampleSpec;
-  pa_cvolume m_Volume;
+
+  float       m_MaxVolume;
+  float       m_Volume;
+  pa_cvolume  m_ChVolume;
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;

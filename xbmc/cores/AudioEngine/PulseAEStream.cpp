@@ -20,9 +20,11 @@
  */
 
 #include "PulseAEStream.h"
+#include "AEFactory.h"
 #include "AEUtil.h"
 #include "log.h"
 #include "utils/SingleLock.h"
+#include "MathUtils.h"
 
 static const char *StreamStateToString(pa_stream_state s)
 {
@@ -90,8 +92,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       return;
   }
 
-  printf("format %i\n", m_format);
-
   if (!pa_sample_spec_valid(&m_SampleSpec))
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
@@ -133,8 +133,14 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       case AE_CH_TBC : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
     }
 
-  pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
+  m_MaxVolume     = AE.GetVolume();
+  m_Volume        = 1.0f;
+  float useVolume = m_Volume * m_MaxVolume;
 
+  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
+  printf("%f %f %f %d\n", m_Volume, m_MaxVolume, useVolume, paVolume);
+
+  pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
@@ -151,7 +157,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   if (options && AESTREAM_FORCE_RESAMPLE)
     flags |= PA_STREAM_VARIABLE_RATE;
 
-  if (pa_stream_connect_playback(m_Stream, NULL, NULL, (pa_stream_flags)flags, &m_Volume, NULL) < 0)
+  if (pa_stream_connect_playback(m_Stream, NULL, NULL, (pa_stream_flags)flags, &m_ChVolume, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
     pa_threaded_mainloop_unlock(m_MainLoop);
@@ -360,7 +366,7 @@ void CPulseAEStream::Flush()
 
 float CPulseAEStream::GetVolume()
 {
-  return 0.0f;
+  return m_Volume;
 }
 
 float CPulseAEStream::GetReplayGain()
@@ -378,13 +384,13 @@ void CPulseAEStream::SetVolume(float volume)
   if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_lock(m_MainLoop);
 
-  pa_volume_t pa_volume = pa_sw_volume_from_dB((float)volume*1.5f / 200.0f);
-/*
-  if ( nVolume <= VOLUME_MINIMUM )
-    pa_cvolume_mute(&m_Volume, m_SampleSpec.channels);
-  else*/
-    pa_cvolume_set(&m_Volume, m_SampleSpec.channels, pa_volume);
-  pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
+  m_Volume = volume;
+  float useVolume = volume * m_MaxVolume;
+  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
+
+  pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
+  pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_ChVolume, NULL, NULL);
+
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
   else
@@ -392,6 +398,15 @@ void CPulseAEStream::SetVolume(float volume)
 
   if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_unlock(m_MainLoop);
+}
+
+void CPulseAEStream::UpdateVolume(float max)
+{
+   if (!m_Initialized)
+    return;
+
+  m_MaxVolume = max;
+  SetVolume(m_Volume);
 }
 
 void CPulseAEStream::SetReplayGain(float factor)
@@ -428,11 +443,6 @@ unsigned int CPulseAEStream::GetSampleRate()
 enum AEDataFormat CPulseAEStream::GetDataFormat()
 {
   return m_format;
-}
-
-bool CPulseAEStream::IsRaw()
-{
-  return false;
 }
 
 double CPulseAEStream::GetResampleRatio()
