@@ -359,7 +359,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
 
     /* clamp the resamplers output */
     for(unsigned int i = 0; i < samples; ++i)
-      ((float*)data)[i] = std::min(-1.0f, std::max(1.0f, ((float*)data)[i]));
+      ((float*)data)[i] = std::max(-1.0f, std::min(1.0f, ((float*)data)[i]));
   }
   else
   {
