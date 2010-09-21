@@ -630,6 +630,8 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
     m_prevsynctype = m_synctype;
   }
+
+  CDVDClock::SetMasterClock(m_synctype == SYNC_DISCON);
 }
 
 void CDVDPlayerAudio::HandleSyncError(double duration)

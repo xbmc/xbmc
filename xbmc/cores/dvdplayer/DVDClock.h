@@ -84,6 +84,13 @@ public:
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 
+  //when m_ismasterclock is true, CDVDPlayerAudio synchronizes the clock to the audio stream
+  //when it's false, CDVDPlayerAudio synchronizes the audio stream to the clock
+  //the rendermanager needs to know about that because it can synchronize the videoreferenceclock to the video timestamps
+  static void SetMasterClock(bool ismasterclock) { m_ismasterclock = ismasterclock; }
+  static bool IsMasterClock()                    { return m_ismasterclock;          }
+
+
   // Allow a different time base (DirectShow for example use a 100 ns time base)
   static void SetTimeBase(int64_t timeBase) { m_timeBase = timeBase; }
   static int64_t GetTimeBase() { return m_timeBase; }
@@ -103,4 +110,5 @@ protected:
   double           m_maxspeedadjust;
   bool             m_speedadjust;
   CCriticalSection m_speedsection;
+  static bool      m_ismasterclock;
 };

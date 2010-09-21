@@ -31,6 +31,8 @@ int64_t CDVDClock::m_systemFrequency;
 int64_t CDVDClock::m_timeBase = DVD_TIME_BASE;
 CCriticalSection CDVDClock::m_systemsection;
 
+bool CDVDClock::m_ismasterclock;
+
 CDVDClock::CDVDClock()
 {
   if(!m_systemFrequency)
@@ -45,6 +47,8 @@ CDVDClock::CDVDClock()
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
   m_speedadjust = false;
+
+  m_ismasterclock = true;
 }
 
 CDVDClock::~CDVDClock()
