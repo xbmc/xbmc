@@ -34,7 +34,7 @@ class CPullupCorrection
     void   Flush(); //flush the saved pattern and the ringbuffer
 
     int    GetPatternLength() {return m_patternlength;}
-    double CalcFrameDuration(); //calculates the frame duration from m_pattern
+    double GetFrameDuration() { return m_frameduration; }
 
   private:
     double m_prevpts;                //last pts added
@@ -56,10 +56,13 @@ class CPullupCorrection
     //checks if the current pattern matches with the saved m_pattern with offset m_patternpos
     bool CheckPattern(std::vector<double>& pattern);
 
+    double CalcFrameDuration(); //calculates the frame duration from m_pattern
+
     std::vector<double> m_pattern; //the last saved pattern
     int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_ptscorrection;        //the correction needed for the last added pts
     double m_trackingpts;          //the pts value we want to have
+    double m_frameduration;
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
     CStdString GetPatternStr();   //also for the log

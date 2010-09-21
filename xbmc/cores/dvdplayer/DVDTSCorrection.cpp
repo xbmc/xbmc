@@ -46,6 +46,7 @@ void CPullupCorrection::Flush()
   m_patternlength = 0;
   m_leadin = 0;
   m_trackingpts = DVD_NOPTS_VALUE;
+  m_frameduration = DVD_NOPTS_VALUE;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -77,10 +78,15 @@ void CPullupCorrection::Add(double pts)
   vector<double> pattern;
   GetPattern(pattern);
 
+  bool setframeduration = true;
+
   //check if the pattern is the same as the saved pattern
   //and if it is actually a pattern
   if (!CheckPattern(pattern))
   {
+    m_frameduration = DVD_NOPTS_VALUE;
+    setframeduration = false;
+
     //if the ringbuffer is full, a pattern was detected on the previous iteration
     //and the last added diff breaks the pattern, drop this diff,
     //future added diffs will usually fit the pattern again
@@ -126,6 +132,8 @@ void CPullupCorrection::Add(double pts)
   }
 
   double frameduration = CalcFrameDuration();
+  if (setframeduration)
+    m_frameduration = frameduration;
 
   //correct the last pts based on where we should be according to the frame duration
   m_ptscorrection = (frameduration * m_patternpos) - ptsinpattern;
