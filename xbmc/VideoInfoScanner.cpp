@@ -1213,11 +1213,8 @@ namespace VIDEO
       CUtil::GetDirectory(item->m_strPath, strPath);
 
       if (bGrabAny)
-      { // looking up by folder name - movie.nfo and mymovies.xml take priority
+      { // looking up by folder name - movie.nfo takes priority
         nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
-        if (CFile::Exists(nfoFile))
-          return nfoFile;
-        nfoFile = CUtil::AddFileToFolder(strPath, "mymovies.xml");
         if (CFile::Exists(nfoFile))
           return nfoFile;
       }

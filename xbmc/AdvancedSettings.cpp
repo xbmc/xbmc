@@ -203,7 +203,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryHideEmptySeries = false;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryExportAutoThumbs = false;
-  m_bVideoLibraryMyMoviesCategoriesToGenres = false;
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoScannerIgnoreErrors = false;
 
@@ -445,10 +444,6 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
-
-    TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
-    if (pMyMovies)
-      XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", m_bVideoLibraryMyMoviesCategoriesToGenres);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
