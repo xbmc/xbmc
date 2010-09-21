@@ -22,6 +22,7 @@
 #include "StdString.h"
 #include "AEUtil.h"
 #include "utils/log.h"
+#include "math.h"
 
 using namespace std;
 
@@ -69,7 +70,7 @@ const AEChLayout CAEUtil::GuessChLayout(const unsigned int channels)
   if (channels < 1 || channels > 8)
     return NULL;
 
-  AEStdChLayout layout;
+  AEStdChLayout layout = AE_CH_LAYOUT_INVALID;
   switch(channels)
   {
     case 1: layout = AE_CH_LAYOUT_1_0; break;
@@ -192,3 +193,19 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
 
   return formats[dataFormat];
 }
+
+inline float CAEUtil::SoftClamp(float x)
+{
+  static const double k = 0.9f;
+  /* perform a soft clamp */
+       if (x >  k) x = tanh((x - k) / (1 - k)) * (1 - k) + k; 
+  else if (x < -k) x = tanh((x + k) / (1 - k)) * (1 - k) - k;
+
+  /* hard clamp anything still outside the bounds */
+  if (x >  1.0f) return  1.0f;
+  if (x < -1.0f) return -1.0f;
+
+  /* return the final sample */
+  return x;
+}
+
