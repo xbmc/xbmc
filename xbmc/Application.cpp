@@ -585,9 +585,6 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
-  /* Start the AudioEngine */
-  CAEFactory::Start();
-
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
@@ -1116,6 +1113,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
+  /* start the audio engine */
   CAEFactory::Start();
   SetHardwareVolume(AE.GetVolume());
 
