@@ -52,6 +52,24 @@
   <string id="61">Nov</string>
   <string id="62">Dez</string>
 
+  <string id="71">N</string>
+  <string id="72">NNO</string>
+  <string id="73">NO</string>
+  <string id="74">ONO</string>
+  <string id="75">O</string>
+  <string id="76">OSO</string>
+  <string id="77">SO</string>
+  <string id="78">SSO</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
+
   <string id="98">Autoansicht</string>
   <string id="99">Große Autoansicht</string>
   <string id="100">Symbolansicht</string>
@@ -347,8 +365,8 @@
   <string id="404">Wind</string>
   <string id="405">Taupunkt</string>
   <string id="406">Feuchtigkeit</string>
-  <string id="407">von</string>
-  <string id="408">mit</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Standards</string>
   <string id="410">Verbinde mit Wetterservice</string>
   <string id="411">Erhalte Wetter-Informationen für:</string>
@@ -810,6 +828,9 @@
   <string id="1418">Gewitter</string>
   <string id="1419">Gewitterregen</string>
   <string id="1420">Mäßig</string>
+  <string id="1421">Sehr Hoch</string> 
+  <string id="1422">Windig</string>
+  <string id="1423">Dunst</string>
 
   <string id="1450">Aktiviere Energiesparmodus bei Leerlauf</string>
 
@@ -1065,6 +1086,8 @@
   <string id="13210">Gestartet, Alarm in %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Deaktiviert. Restzeit war %im%is.</string>
+  <string id="13213">%2.0fm</string> 
+  <string id="13214">%2.0fs</string> 
 
   <string id="13249">Untertitel in RAR-Dateien suchen</string>
   <string id="13250">Untertitel suchen...</string>
@@ -2062,6 +2085,7 @@
   <string id="22001">Fortschritt von Datenbank-Aktualisierungen verbergen</string>
   <string id="22002">DNS Suffix</string>
 
+  <string id="22003">%2.3fs</string> 
   <string id="22004">Verzögert um: %2.3fs</string>
   <string id="22005">Beschleunigt um: %2.3fs</string>
   <string id="22006">Untertitelabstand</string>
@@ -2158,7 +2182,7 @@
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>
-  <string id="24052">Disclaimer</string>
+  <string id="24052">Haftungsausschluss</string>
   <string id="24053">Lizenz:</string>
   <string id="24054">Änderungen</string>
   <string id="24059">Wollen Sie dieses Add-on aktivieren?</string>
