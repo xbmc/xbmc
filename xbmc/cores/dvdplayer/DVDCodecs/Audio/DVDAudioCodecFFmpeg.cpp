@@ -271,7 +271,6 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
     if (m_pCodecContext->codec_id == CODEC_ID_DTS)
       m_pCodecContext->channels = bits;
   }
-  }
 
   if (bits >= m_pCodecContext->channels)
   {
