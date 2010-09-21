@@ -803,6 +803,16 @@ inline void CSoftAE::RunOutputStage()
         for(unsigned int i = 0; i < samples; ++i)
           floatBuffer[i] *= m_volume;
       #endif
+
+      /* scale the output to prevent clipping, this is better then clamping */
+      /* TODO: could to be done using SSE? */
+      for(unsigned int i = 0; i < samples; ++i)
+      {
+        /* round off anything > 0.9f or < -0.9f */
+        static const double k = 0.9f;
+             if (floatBuffer[i] >  k) floatBuffer[i] = tanh((floatBuffer[i] - k) / (1 - k)) * (1 - k) + k;
+        else if (floatBuffer[i] < -k) floatBuffer[i] = tanh((floatBuffer[i] + k) / (1 - k)) * (1 - k) - k;
+      }
   
       if(m_remappedSize < rSamples)
       {
