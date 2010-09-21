@@ -21,6 +21,16 @@ body {
 	padding: 11px 10px;
 	}
 
+#commsErrorPanel {
+	float: left;
+	line-height: 50px;
+	background: #c00;
+	color: #fff;
+	font-size: 20px;
+	padding-left: 10px;
+	width: 330px;
+	}
+
 #navigation ul {
 	list-style-type: none;
 	border-right: 1px solid #969696;

@@ -928,9 +928,9 @@ void CGUIDialogAddonSettings::SetDefaults()
       {
         if (value)
           m_settings[id] = value;
-        else if (0 == strcmpi(type, "bool"))
+        else if (type && 0 == strcmpi(type, "bool"))
           m_settings[id] = "false";
-        else if (0 == strcmpi(type, "slider") || 0 == strcmpi(type, "enum"))
+        else if (type && (0 == strcmpi(type, "slider") || 0 == strcmpi(type, "enum")))
           m_settings[id] = "0";
         else
           m_settings[id] = "";

@@ -150,10 +150,6 @@ bool CPowerManager::Suspend()
   bool success = false;
   if (CanSuspend())
   {
-#if defined(HAVE_LIBCRYSTALHD)
-    CCrystalHD::GetInstance()->Sleep();
-#endif
-
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
 #endif
@@ -171,10 +167,6 @@ bool CPowerManager::Hibernate()
   bool success = false;
   if (CanHibernate())
   {
-#if defined(HAVE_LIBCRYSTALHD)
-    CCrystalHD::GetInstance()->Sleep();
-#endif
-
     g_Keyboard.ResetState();
     success = m_instance->Hibernate();
   }
@@ -222,10 +214,6 @@ void CPowerManager::OnSleep()
   CAnnouncementManager::Announce(System, "xbmc", "Sleep");
 
   g_application.StopPlaying();
-
-#if defined(HAVE_LIBCRYSTALHD)
-  CCrystalHD::GetInstance()->Sleep();
-#endif
 }
 
 void CPowerManager::OnWake()
@@ -247,10 +235,6 @@ void CPowerManager::OnWake()
 #endif
   }
   g_application.ResetScreenSaver();
-#endif
-
-#if defined(HAVE_LIBCRYSTALHD)
-  CCrystalHD::GetInstance()->Wake();
 #endif
 
   // restart lirc

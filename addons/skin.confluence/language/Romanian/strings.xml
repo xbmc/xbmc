@@ -5,9 +5,9 @@
   <string id="31000">Modificare</string>
   <string id="31001">Dragoste</string>
   <string id="31002">Ură</string>
-  <string id="31003">Opțiuni alimentare</string>
+  <string id="31003">Opțiuni de alimentare</string>
   <string id="31004">Procesare...</string>
-  <string id="31005">Ascundere informații</string>
+  <string id="31005">Ascunde detalii</string>
 
   <string id="31007">Module</string>
 
@@ -15,17 +15,17 @@
   <string id="31021">Filme - Fișiere</string>
   <string id="31022">Muzică - Fișiere</string>
   <string id="31023">Redare</string>
-  <string id="31024">Pagină</string>
+  <string id="31024">Pagina</string>
   <string id="31025">Elemente</string>
   <string id="31026">Opțiuni diverse</string>
   <string id="31027">Locație</string>
  
   <!-- View Type labels -->
-  <string id="31028">Poster</string>
+  <string id="31028">Afișe</string>
   <string id="31029">Fanart</string>
   <string id="31030">Listă completă</string>
   <string id="31031">Miniaturi imagini</string>
-  <string id="31032">Înveliș imagine</string>
+  <string id="31032">Imagini</string>
   <string id="31033">Informații</string>
 
   <!-- Extra labels -->
@@ -43,9 +43,9 @@
 
   <!-- Playlist Editor labels -->
   <string id="31055">Deschide listă de redare</string>
-  <string id="31056">Salvează listă de redare</string>
-  <string id="31057">Închide listă de redare</string>
-  <string id="31058">Fișiere de muzică sistem</string>
+  <string id="31056">Salvează lista de redare</string>
+  <string id="31057">Închide lista de redare</string>
+  <string id="31058">Fișiere de muzică în sistem</string>
   <string id="31059">Listă de redare curentă</string>
   <string id="31060">Acest fișier este în stivă, selectați partea din care doriți să redați.</string>
   <string id="31061">Selectat curent</string>
@@ -74,7 +74,7 @@
   <string id="31120">ETICHETĂ BUTON</string>
   <string id="31121">CALE CĂTRE SUPLIMENT</string>
   <string id="31122">Pagină meteo</string>
-  <string id="31123">Folosește "Postere" în loc de "Bannere" pentru seriale</string>
+  <string id="31123">Folosește "Afișe" în loc de "Bannere" pentru seriale</string>
   <string id="31124">Arată fundal video "În redare"</string>
   <string id="31125">Arată fundal vizualizare "În redare"</string>
 
@@ -84,8 +84,8 @@
   <string id="31129">Activează descărcare subtitrare în OSD video</string>
   <string id="31130">CALE CĂTRE SUPLIMENT SUBTITRĂRI</string>
 
-  <string id="31140">OSD muzică</string>
-  <string id="31141">OSD filme</string>
+  <string id="31140">Afișaj audio</string>
+  <string id="31141">Afișaj video</string>
 
   <!-- Script labels -->
   <string id="31200">Scurtături</string>
@@ -103,13 +103,13 @@
   <string id="31304">Imagine</string>
   <string id="31305">Niciun disc media detectat</string>
   <string id="31306">Scoate</string>
-  <string id="31307">Ascundere Fanart</string>
+  <string id="31307">Ascunde Fanart</string>
   <string id="31308">Detalii film</string>
   <string id="31309">Utilizare memorie:</string>
   <string id="31310">Număr pistă</string>
-  <string id="31311">Imagine fanart[CR][CR]Indisponibilă[CR][CR] Clic pe buton pentru setare</string>
+  <string id="31311">Imagine Fanart[CR][CR]indisponibilă[CR][CR]Clic pe buton pentru setare</string>
   <string id="31312">Scraper curent</string>
-  <string id="31313">Alege un scraper</string>
+  <string id="31313">Alegeți un scraper</string>
   <string id="31314">Opțiuni de scanare conținut</string>
   <string id="31315">De bază</string>
   <string id="31316"></string>
@@ -148,5 +148,5 @@
   <string id="31407">[B]CONFIGURAȚI SETĂRI COSTUM[/B][CR][CR]Configurați costumul Confluence · Adăugați și eliminați elemente din meniul principal[CR]Schimbați fundale costum</string>
   <string id="31408">[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la xbmc.org[CR]Modificați setări suplimente</string>
 
-  <string id="31421">Selectați profilul dumneavoastră de utilizator XBMC[CR]pentru autentificare și continuați</string>
+  <string id="31421">Selectați profilul dumneavoastră de utilizator XBMC[CR]pentru a vă autentifica și a continua</string>
 </strings>

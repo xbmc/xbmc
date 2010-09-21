@@ -66,12 +66,17 @@ if [ "$GPUTYPE" = "NVIDIA" ]; then
 	sed -i -e 's%Section \"Screen\"%&\n    Option      \"FlatPanelProperties\" \"Scaling = Native\"\n    Option      \"HWCursor\" \"Off\"%' /etc/X11/xorg.conf
 fi
 if [ "$GPUTYPE" = "AMD" ]; then
-	if [ $LSBRELEASE -gt 910 ]; then
-		# only on lucid!
-		update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
-		ldconfig
-	fi
-
+	set +e # Temporarily disable exit on failure 
 	# run aticonfig
 	/usr/bin/aticonfig --initial --sync-vsync=on -f
+	ATICONFIG_RETURN_CODE=$? 
+ 	set -e # Re-able exit on failure 
+
+	if [ $ATICONFIG_RETURN_CODE -ne 255 ]; then 
+		if [ $LSBRELEASE -gt 910 ]; then
+			# only on lucid!
+			update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
+			ldconfig
+		fi
+	fi
 fi

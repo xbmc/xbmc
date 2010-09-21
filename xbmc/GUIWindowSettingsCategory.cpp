@@ -541,9 +541,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoscreen.resolution"))
     {
-      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), false);
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetValue(g_guiSettings.GetResolution());
+      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
     }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
@@ -1580,7 +1578,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     DisplayMode mode = g_guiSettings.GetInt("videoscreen.screen");
     // Cascade
-    FillInResolutions("videoscreen.resolution", mode, true);
+    FillInResolutions("videoscreen.resolution", mode, RES_DESKTOP, true);
   }
   else if (strSetting.Equals("videoscreen.resolution"))
   {
@@ -2416,7 +2414,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   return mode;
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange)
+void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange)
 {
   CBaseSettingControl *control = GetSetting(strSetting);
   control->SetDelayed();
@@ -2424,9 +2422,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
 
   pControl->Clear();
 
+  RESOLUTION spinres = RES_INVALID; // index of the resolution in the spinner that has same screen/width/height as res
+
   if (mode == DM_WINDOWED)
   {
     pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
+    spinres = RES_WINDOW;
   }
   else
   {
@@ -2437,6 +2438,11 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
       CStdString strRes;
       strRes.Format("%dx%d", resolutions[idx].width, resolutions[idx].height);
       pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
+
+      RESOLUTION_INFO res1 = g_settings.m_ResInfo[res];
+      RESOLUTION_INFO res2 = g_settings.m_ResInfo[resolutions[idx].ResInfo_Index];
+      if (res1.iScreen == res2.iScreen && res1.iWidth == res2.iWidth && res1.iHeight == res2.iHeight)
+        spinres = (RESOLUTION) resolutions[idx].ResInfo_Index;
     }
   }
 
@@ -2464,7 +2470,8 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
   }
   else
   {
-    // selecting a value is done outside of this function when UserChange = false
+    // select the entry equivalent to the resolution passed by the res parameter
+    pControl->SetValue(spinres);
   }
 }
 
@@ -2537,9 +2544,7 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
     g_graphicsContext.SetVideoResolution(lastRes);
 
     DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);
-    FillInResolutions("videoscreen.resolution", mode, false);
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("videoscreen.resolution")->GetID());
-    pControl->SetValue(lastRes);
+    FillInResolutions("videoscreen.resolution", mode, lastRes, false);
     FillInRefreshRates("videoscreen.screenmode", lastRes, false);
   }
 }

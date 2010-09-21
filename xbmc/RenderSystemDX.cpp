@@ -93,7 +93,6 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 
 CRenderSystemDX::~CRenderSystemDX()
 {
-  DestroyRenderSystem();
 }
 
 bool CRenderSystemDX::InitRenderSystem()
@@ -677,10 +676,17 @@ bool CRenderSystemDX::BeginRender()
       m_nDeviceStatus = D3D_OK;
       break;
     case D3DERR_DEVICEHUNG:
-    case D3DERR_OUTOFVIDEOMEMORY:
+      CLog::Log(LOGERROR, "D3DERR_DEVICEHUNG");
       m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
+      break;
+    case D3DERR_OUTOFVIDEOMEMORY:
+      CLog::Log(LOGERROR, "D3DERR_OUTOFVIDEOMEMORY");
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
       break;
     case D3DERR_DEVICEREMOVED:
+      CLog::Log(LOGERROR, "D3DERR_DEVICEREMOVED");
       m_nDeviceStatus = D3DERR_DEVICELOST;
       m_needNewDevice = true;
       // fixme: also needs to re-enumerate and switch to another screen

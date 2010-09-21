@@ -15,16 +15,16 @@
   <regions>
     <region name="România">
       <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>DDDD, D MMMM, YYYY</datelong>
+      <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+2</timezone>
+      <timezone>EET</timezone>
     </region>
     
     <region name="Rp. Moldova">
 	  <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>DDDD, D MMMM, YYYY</datelong>
+      <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>

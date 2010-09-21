@@ -63,6 +63,7 @@ protected:
   Window       m_wmWindow;
   Display*     m_dpy;
   bool         m_bWasFullScreenBeforeMinimize;
+  bool         m_bModeSet;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

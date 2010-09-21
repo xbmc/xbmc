@@ -747,6 +747,7 @@ void CPlugin::MyPreInitialize()
 
 	m_lpVS[0]				= NULL;
 	m_lpVS[1]				= NULL;
+  m_pZBuffer      = NULL;
 //	m_lpDDSTitle			= NULL;
     m_nTitleTexSizeX        = 0;
     m_nTitleTexSizeY        = 0;
@@ -1165,23 +1166,25 @@ int CPlugin::AllocateMyDX8Stuff()
 	    {
 		    SafeRelease(m_lpVS[0]);
 		    SafeRelease(m_lpVS[1]);
+        SafeRelease(m_pZBuffer);
 
-        LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer, tmpSurface;
+        LPDIRECT3DSURFACE9 pBackBuffer, tmpSurface;
         D3DSURFACE_DESC tmpDesc;
         D3DVIEWPORT9 pVP;
+
         GetDevice()->GetRenderTarget(0, &pBackBuffer );
         GetDevice()->GetDepthStencilSurface(&tmpSurface);
         tmpSurface->GetDesc(&tmpDesc);
+        SafeRelease(tmpSurface);
         GetDevice()->GetViewport(&pVP);
+
         UINT uiwidth=(pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize;
         UINT uiheight=(pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize;
         
         printf("CreateDepthStencilSurface with %u x %u", uiwidth, uiheight);
-        if(GetDevice()->CreateDepthStencilSurface(uiwidth, uiheight, tmpDesc.Format, D3DMULTISAMPLE_NONE, 0, TRUE, &pZBuffer, NULL) != D3D_OK)
+        if(GetDevice()->CreateDepthStencilSurface(uiwidth, uiheight, tmpDesc.Format, D3DMULTISAMPLE_NONE, 0, TRUE, &m_pZBuffer, NULL) != D3D_OK)
           printf("Can't create DepthStencilSurface");
 
-        if(GetDevice()->SetDepthStencilSurface(pZBuffer) != D3D_OK)
-          printf("failed to set DepthStencilSurface");
 		    // create VS1 and VS2
         bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
         if (bSuccess)
@@ -1212,8 +1215,6 @@ int CPlugin::AllocateMyDX8Stuff()
 
         GetDevice()->SetRenderTarget(0, pBackBuffer);
         SafeRelease(pBackBuffer);
-        SafeRelease(pZBuffer);
-        SafeRelease(tmpSurface);
 
 
 		    if (!bSuccess && m_bTexSizeWasAuto)
@@ -1457,6 +1458,7 @@ void CPlugin::CleanUpMyDX8Stuff(int final_cleanup)
     // 2. release stuff
     SafeRelease(m_lpVS[0]);
     SafeRelease(m_lpVS[1]);
+    SafeRelease(m_pZBuffer);
 //    SafeRelease(m_lpDDSTitle);
 //    SafeRelease(m_d3dx_title_font_doublesize);
 
@@ -1500,6 +1502,10 @@ void CPlugin::CleanUpMyDX8Stuff(int final_cleanup)
 
 void CPlugin::MyRenderFn(int redraw)
 {
+    LPDIRECT3DSURFACE9 tmpSurface;
+    GetDevice()->GetDepthStencilSurface(&tmpSurface);
+    GetDevice()->SetDepthStencilSurface(m_pZBuffer);
+
     // Render a frame of animation here.  
     // This function is called each frame just AFTER BeginScene().
     // For timing information, call 'GetTime()' and 'GetFps()'.
@@ -1621,6 +1627,8 @@ void CPlugin::MyRenderFn(int redraw)
             m_text.QueueText(GetFont(DECORATIVE_FONT), buf, r, 0, 0xFFFF00FF);
     }
     /**/
+    GetDevice()->SetDepthStencilSurface(tmpSurface);
+    SafeRelease(tmpSurface);
 }
 
 //----------------------------------------------------------------------

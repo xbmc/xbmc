@@ -52,7 +52,7 @@ protected:
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
   DisplayMode FillInScreens(CStdString strSetting, RESOLUTION res);
-  void FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange);  
+  void FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange);
   void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);
   void OnRefreshRateChanged(RESOLUTION resolution);
   void FillInRegions(CSetting *pSetting);

@@ -74,15 +74,18 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    *
    * Adjust the frame rate using the detected frame rate or height to determine typical interlaced
    * content (obtained from http://en.wikipedia.org/wiki/Frame_rate)
+   *
+   * Note that this is a HACK and we should be able to get the frame rate from the source sending
+   * back frame markers. However, this doesn't seem possible for MythTV.
    */
   float fFramesPerSecond;
-  if (fFrameRate == 59.940f) // NTSC or 60i content
+  if (int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
               __FUNCTION__);
     fFramesPerSecond = 29.97f;
   }
-  else if (fFrameRate == 47.952f) // 24p -> NTSC conversion
+  else if (int(fFrameRate * 100) == 4795) // 47.952 fps = 24p -> NTSC conversion
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
               __FUNCTION__);
@@ -90,7 +93,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   }
   else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
   {
-    CLog::Log(LOGDEBUG, "%s - Setting frames per second to 25.0 assuming PAL (interlaced)",
+    CLog::Log(LOGDEBUG, "%s - Changing frames per second to 25.0 assuming PAL (interlaced)",
                __FUNCTION__);
     fFramesPerSecond = 25.0f;
   }
@@ -179,8 +182,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
         continue;
 
       Cut cut;
-      cut.start = (int)(dStart * 1000); // ms to s
-      cut.end = (int)(dEnd * 1000); // ms to s
+      cut.start = (int64_t)(dStart * 1000); // seconds to ms
+      cut.end = (int64_t)(dEnd * 1000); // seconds to ms
 
       switch (iAction)
       {
@@ -370,7 +373,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker((int)dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
+        bValid = AddSceneMarker((int64_t)(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
@@ -820,8 +823,8 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
 
     Cut cut;
     cut.action = COMM_BREAK;
-    cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
-    cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
+    cut.start = (int64_t)(commbreak->start_mark / fFramesPerSecond * 1000);
+    cut.end = (int64_t)(commbreak->end_mark / fFramesPerSecond * 1000);
 
     if (!AddCut(cut)) // Log and continue with errors while still testing.
       CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. Continuing anyway.",

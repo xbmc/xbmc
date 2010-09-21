@@ -19,7 +19,7 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 cat > /usr/bin/hwSetupNvidiaHDMI.sh << 'BLOB'
-#!/bin/bash -x
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -38,11 +38,6 @@ cat > /usr/bin/hwSetupNvidiaHDMI.sh << 'BLOB'
 #  along with XBMC; see the file COPYING.  If not, write to
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
-
-#
-# Remove entry in rc.local - launch script automatically only once 
-#
-sed -i -e "/XBMCLIVE/d" /tmp/rc.local 
 
 #
 # Nvidia ION detection
@@ -85,6 +80,8 @@ fi
 DIGITALCARD=$(aplay -l | grep "$DIGITALCONTROL" | awk -F: '{ print $1 }' | awk '{ print $2 }')
 DIGITALDEVICE=$(aplay -l | grep "$DIGITALCONTROL" | awk -F: '{ print $2 }' | awk '{ print $5 }')
 
+ANALOGCARD=$(aplay -l | grep 'Analog' -m1 | awk -F: '{ print $1 }' | awk '{ print $2 }')
+ANALOGDEVICE=$(aplay -l | grep 'Analog' -m1 | awk -F: '{ print $2 }' | awk '{ print $5 }')
 
 #
 # Bails out if we don't have digital outputs
@@ -120,11 +117,9 @@ fi
 #
 # Setup .asoundrc
 #
-
 xbmcUser=xbmc
 # Read configuration variable file if it is present
 [ -r /etc/default/xbmc-live ] && . /etc/default/xbmc-live
-
 if ! getent passwd $xbmcUser >/dev/null; then
 	xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
 fi
@@ -137,25 +132,33 @@ pcm.!default {
                 pcm "both"
         }
 }
+
 pcm.both {
         type route
         slave {
                 pcm multi
-                channels 4
+                channels 6
         }
         ttable.0.0 1.0
         ttable.1.1 1.0
         ttable.0.2 1.0
         ttable.1.3 1.0
+        ttable.0.4 1.0
+        ttable.1.5 1.0
 }
+
 pcm.multi {
         type multi
         slaves.a {
-                pcm "tv"
+                pcm "hdmi_hw"
                 channels 2
         }
         slaves.b {
-                pcm "dmixrec"
+                pcm "digital_hw"
+                channels 2
+        }
+        slaves.c {
+                pcm "analog_hw"
                 channels 2
         }
         bindings.0.slave a
@@ -166,32 +169,46 @@ pcm.multi {
         bindings.2.channel 0
         bindings.3.slave b
         bindings.3.channel 1
+        bindings.4.slave c
+        bindings.4.channel 0
+        bindings.5.slave c
+        bindings.5.channel 1
 }
-pcm.dmixrec {
-    type dmix
-    ipc_key 1024
-    slave {
-        pcm "receiver"
-        period_time 0
-        period_size 1024
-        buffer_size 8192
-        rate 48000
-     }
-     bindings {
-        0 0
-        1 1
-     }
-}
-pcm.tv {
+
+pcm.hdmi_hw {
         type hw
         =HDMICARD=
         =HDMIDEVICE=
         channels 2
 }
-pcm.receiver {
+
+pcm.hdmi_formatted {
+        type plug
+        slave {
+                pcm hdmi_hw
+                rate 48000
+                channels 2
+        }
+}
+
+pcm.hdmi_complete {
+        type softvol
+        slave.pcm hdmi_formatted
+        control.name hdmi_volume
+        control.=HDMICARD=
+}
+
+pcm.digital_hw {
         type hw
         =DIGITALCARD=
         =DIGITALDEVICE=
+        channels 2
+}
+
+pcm.analog_hw {
+        type hw
+        =ANALOGCARD=
+        =ANALOGDEVICE=
         channels 2
 }
 EOF
@@ -201,6 +218,9 @@ EOF
 
         sed -i "s/=DIGITALCARD=/card $DIGITALCARD/g" /home/$xbmcUser/.asoundrc
         sed -i "s/=DIGITALDEVICE=/device $DIGITALDEVICE/g" /home/$xbmcUser/.asoundrc
+
+        sed -i "s/=ANALOGCARD=/card $ANALOGCARD/g" /home/$xbmcUser/.asoundrc
+        sed -i "s/=ANALOGDEVICE=/device $ANALOGDEVICE/g" /home/$xbmcUser/.asoundrc
 
         chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.asoundrc
 
@@ -224,6 +244,7 @@ if [ -n "$restartALSA" ] ; then
 	/usr/bin/amixer -q -c 0 sset 'IEC958 Default PCM',0 unmute &> /dev/null
 	/usr/bin/amixer -q -c 0 sset 'IEC958',0 unmute &> /dev/null
 	/usr/bin/amixer -q -c 0 sset 'IEC958',1 unmute &> /dev/null
+	/usr/bin/amixer -c 1 sset 'IEC958' unmute &> /dev/null
 
 	#
 	# Store alsa settings
@@ -235,6 +256,7 @@ fi
 # Remove entry in rc.local
 sed -i -e "/XBMCLIVE/d" /etc/rc.local 
 BLOB
+
 chmod +x /usr/bin/hwSetupNvidiaHDMI.sh
 
 sed -i -e "/exit 0/d" /etc/rc.local 
