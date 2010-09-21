@@ -396,3 +396,4 @@ public:
 };
 
 extern CLAVFGuidHelper g_GuidHelper;
+extern DWORD avc_quant_inverse(uint8_t profile, uint8_t level, uint8_t nal_len, BYTE *src, BYTE *dst, int extralen);

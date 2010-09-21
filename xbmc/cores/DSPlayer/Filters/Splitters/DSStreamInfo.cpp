@@ -364,9 +364,8 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
 {
   Clear();
 
-  const BYTE*    data = NULL;
+  const BYTE*   data = NULL;
   unsigned int  size = 0;
-  
 
   m_dllAvFormat.Load();
   //find the codecid
@@ -417,16 +416,19 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
     //mpg2v->dwFlags is corresponding to the nal data length but until i find a sample
     //that conflict with the decoder i wont add it to the process
     MPEG2VIDEOINFO*    mpeg2info = (MPEG2VIDEOINFO*)pmt.pbFormat;
-    if (mpeg2info->cbSequenceHeader)
-    {
-      size = mpeg2info->cbSequenceHeader;
-      data = (const uint8_t*)mpeg2info->dwSequenceHeader;
-    }
     profile = mpeg2info->dwProfile;
     level = mpeg2info->dwLevel;
     dwflags = mpeg2info->dwFlags;
     avgtimeperframe = mpg2v->hdr.AvgTimePerFrame;
-    
+
+    if (mpeg2info->cbSequenceHeader)
+    {
+      if (extradata)
+        free(extradata);
+      extradata = (BYTE *) malloc(mpeg2info->cbSequenceHeader + 7);
+      extrasize = avc_quant_inverse(profile, level, dwflags,
+        (BYTE *) &mpeg2info->dwSequenceHeader[0], (BYTE *) extradata, mpeg2info->cbSequenceHeader);
+    }
   }
   else if (pmt.formattype==FORMAT_VorbisFormat2)
   {
@@ -442,7 +444,9 @@ void CDSStreamInfo::Assign(const CMediaType &pmt)
   
   if (size)
   {
-    extrasize  = size;
+    extrasize = size;
+    if (extradata)
+      free(extradata);
     extradata = malloc(extrasize);
     memcpy((void*)extradata, data, extrasize);
     

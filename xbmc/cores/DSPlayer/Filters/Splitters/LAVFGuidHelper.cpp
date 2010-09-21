@@ -151,6 +151,66 @@ DWORD avc_quant(BYTE *src, BYTE *dst, int extralen)
   return cb;
 }
 
+// Does the inverse of avc_quant
+// dst must be allocated with extralen + 7 length
+DWORD avc_quant_inverse(uint8_t profile, uint8_t level, uint8_t nal_len, BYTE *src, BYTE *dst, int extralen)
+{
+  DWORD cb = 6;
+  BYTE* src_end = (BYTE *) src + extralen;
+  BYTE* dst_end = (BYTE *) dst + extralen + 7;
+  uint8_t data;
+
+  // 8 bit reserved, 8 bit profile
+  memset(dst++, 1, 1);
+  data = profile;
+  memcpy(dst++, &data, sizeof(data));
+
+  // 8 bit reserved, 8 bit level
+  memset(dst++, 0, 1);
+  data = level;
+  memcpy(dst++, &data, sizeof(data));
+
+  uint8_t nal_length = (nal_len - 1) | 0xFC;
+  memcpy(dst++, &nal_length, sizeof(data));
+
+  // There's always one sps
+  data = 1;
+  memcpy(dst++, &data, sizeof(data));
+
+  // First, sps
+  unsigned len = (((unsigned)src[0] << 8) | src[1]) + 2;
+  if (src + len > src_end || dst + len > dst_end)
+  {
+    ASSERT(0);
+    return 0;
+  }
+  memcpy(dst, src, len);
+  src += len;
+  dst += len;
+  cb += len;
+
+  // We don't known how many pps there're.
+  unsigned pps_len = 0;
+  uint8_t i = 0;
+  BYTE* buffer = (BYTE*) malloc(src_end - src);
+  for (i = 0; src < src_end - 2; i++)
+  {
+    pps_len += (((unsigned)src[0] << 8) | src[1]) + 2;
+    memcpy(buffer, src, pps_len);
+    src += pps_len;
+  }
+
+  // There're i pps
+  data = i;
+  memcpy(dst++, &data, sizeof(data));
+  cb++;
+
+  memcpy(dst, buffer, pps_len);
+  delete buffer;
+
+  return cb + pps_len;
+}
+
 // Helper function to get the next number of bits from the buffer
 // Supports reading 0 to 64 bits.
 UINT64 next_bits(BYTE *buf, int nBits)
@@ -510,8 +570,8 @@ MPEG2VIDEOINFO *CLAVFGuidHelper::CreateMPEG2VI(const AVStream *avstream, ULONG *
         memcpy(&mp2vi->dwSequenceHeader[0],(void*)extradata,extra);
         mp2vi->cbSequenceHeader = extra;
 #else
-        mp2vi->cbSequenceHeader = avc_quant(extradata,
-                                            (BYTE *)(&mp2vi->dwSequenceHeader[0]), extra);
+        mp2vi->cbSequenceHeader = avc_quant(extradata, 
+          (BYTE *)(&mp2vi->dwSequenceHeader[0]), extra);
 #endif
       }
       else
