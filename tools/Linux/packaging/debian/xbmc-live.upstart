@@ -103,7 +103,11 @@ pre-start script
 			ATICONFIG_RETURN_CODE=$? 
 			set -e # Re-able exit on failure 
 
-			if [ $ATICONFIG_RETURN_CODE -ne 255 ]; then 
+			if [ $ATICONFIG_RETURN_CODE -eq 255 ]; then
+				# aticonfig returns 255 on old unsuported ATI cards 
+				# Let the X default ati driver handle the card 
+				modprobe radeon # Required to permit KMS switching and support hardware GL  
+			else
 				if [ $LSBRELEASE -gt 910 ]; then
 					# only on lucid!
 					update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
