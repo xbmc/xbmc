@@ -1452,14 +1452,19 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA2Decoder(UINT nNumRenderTargets, IDirect3
   {
     if (!m_pDXVADecoder)
     {
-		m_pDXVADecoder  = CDXVADecoder::CreateDecoder(this, pDirectXVideoDec, &m_DXVADecoderGUID, GetPicEntryNumber(), &m_DXVA2Config);
-      if (m_pDXVADecoder) 
+		  m_pDXVADecoder  = CDXVADecoder::CreateDecoder(this, pDirectXVideoDec, &m_DXVADecoderGUID, GetPicEntryNumber(), &m_DXVA2Config);
+      m_pDXVADecoder->SetDirectXVideoDec (pDirectXVideoDec);
+      if (m_nDXVAMode == DECODER_TYPE_DXVA_2 )
+      {
+        m_pDXVADecoder->SetSurfaceArray(nNumRenderTargets, pDecoderRenderTargets);
+      }
+      if (m_pDXVADecoder)
       {
         CLog::Log(LOGINFO,"YEAH GOT IT");
       }//m_pDXVADecoder->SetExtraData ((BYTE*)m_pCodecContext->extradata, m_pCodecContext->extradata_size);
     }
 
-    m_pDXVADecoder->SetDirectXVideoDec (pDirectXVideoDec);
+    
   }
 
   return hr;

@@ -100,8 +100,9 @@ public:
   void CreateDummySurface();
   bool  ConfigureDXVA1();
   bool DXVADisplayFrame(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop);
-  bool  GetDeliveryBuffer(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, IMediaSample** ppSampleToDeliver);
-  void  SetDirectXVideoDec (IDirectXVideoDecoder* pDirectXVideoDec)  { m_pDirectXVideoDec = pDirectXVideoDec; };
+  bool GetDeliveryBuffer(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, IMediaSample** ppSampleToDeliver);
+  void SetDirectXVideoDec (IDirectXVideoDecoder* pDirectXVideoDec)  { m_pDirectXVideoDec = pDirectXVideoDec; };
+  void SetSurfaceArray(UINT nNumRenderTargets, IDirect3DSurface9** pDecoderRenderTargets);
   /* ffmpeg callbacks*/
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);

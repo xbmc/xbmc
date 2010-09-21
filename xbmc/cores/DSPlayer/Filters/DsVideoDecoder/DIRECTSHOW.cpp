@@ -246,6 +246,11 @@ do { \
   } \
 } while(0);
 
+void CDXVADecoder::SetSurfaceArray(UINT nNumRenderTargets, IDirect3DSurface9 **pDecoderRenderTargets)
+{
+  m_context->surface = pDecoderRenderTargets;
+  m_context->surface_count = nNumRenderTargets;
+}
 
 bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
@@ -272,25 +277,26 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
 
   m_pFilter = (CXBMCVideoDecFilter*)avctx->opaque;
-  CreateDummySurface();
+  
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   m_context->cfg = &m_DXVA2Config;
   
-  
-  m_pIDXVideoDecoder = new CDXDecWrapper(m_pAMVideoAccelerator, m_refs, (void**)m_context->surface);//m_context_buffer_id);
-  m_context->decoder = m_pIDXVideoDecoder;
-  
-  /*m_context->exec.pCompressedBuffers = new DXVA2_DecodeBufferDesc[6];//= m_ExecuteParams;
-  for (int i = 0; i < 6; i++)
-    memset (&m_context->exec.pCompressedBuffers[i], 0, sizeof(DXVA2_DecodeBufferDesc));
-  
-  m_context->decoder->type = m_nEngine;
-  m_context->decoder->dxva2_decoder_begin_frame = DXVABeginFrameS;
-  m_context->decoder->dxva2_decoder_end_frame = DXVAEndFrameS;
-  m_context->decoder->dxva2_decoder_execute = DXVAExecuteS;
-  m_context->decoder->dxva2_decoder_get_buffer = DXVAGetBufferS;
-  m_context->decoder->dxva2_decoder_release_buffer = DXVAReleaseBufferS;*/
+  if (m_pFilter->UseDXVA2())
+  {
+    m_context->decoder = m_pDirectXVideoDec;
+    for(int i = 0; i < m_context->surface_count; i++)
+    {
+      m_buffer[i].surface = m_context->surface[i];
+    }
+  }
+  else
+  {
+    //Create the dummy surface that will be used to follow the id of the surface
+    CreateDummySurface();
+    m_pIDXVideoDecoder = new CDXDecWrapper(m_pAMVideoAccelerator, m_refs, (void**)m_context->surface);
+    m_context->decoder = m_pIDXVideoDecoder;
+  }
 
   
   avctx->hwaccel_context = m_context;
