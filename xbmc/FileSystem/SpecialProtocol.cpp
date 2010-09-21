@@ -75,41 +75,51 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
   return TranslatePath(path1) == TranslatePath(path2);
 }
 
-CStdString CSpecialProtocol::TranslatePath(const CURL &url)
-{
-  return TranslatePath(url.Get());
-}
-
 CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
+  CURL url(path);
   // check for special-protocol, if not, return
-  if (!CUtil::IsSpecial(path))
+  if (!url.GetProtocol().Equals("special"))
+  {
+    return path;
+  }
+  return TranslatePath(url);
+}
+
+CStdString CSpecialProtocol::TranslatePath(const CURL &url)
+{
+  // check for special-protocol, if not, return
+  if (!url.GetProtocol().Equals("special"))
   {
 #if defined(_LINUX) && defined(_DEBUG)
+    CStdString path(url.Get());
     if (path.length() >= 2 && path[1] == ':')
     {
       CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
      // printf("Trying to access old style dir: %s\n", path.c_str());
     }
 #endif
-    return path;
+
+    return url.Get();
   }
+
+  CStdString FullFileName = url.GetFileName();
 
   CStdString translatedPath;
   CStdString FileName;
   CStdString RootDir;
 
   // Split up into the special://root and the rest of the filename
-  int pos = path.Find('/');
+  int pos = FullFileName.Find('/');
   if (pos != -1 && pos > 1)
   {
-    RootDir = path.Left(pos);
+    RootDir = FullFileName.Left(pos);
 
-    if (pos < path.GetLength())
-      FileName = path.Mid(pos + 1);
+    if (pos < FullFileName.GetLength())
+      FileName = FullFileName.Mid(pos + 1);
   }
   else
-    RootDir = path;
+    RootDir = FullFileName;
 
   if (RootDir.Equals("subtitles"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), FileName, translatedPath);
