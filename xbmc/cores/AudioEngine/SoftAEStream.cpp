@@ -356,10 +356,6 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
       return consumed;
 
     samples = frames * m_format.m_channelCount;
-
-    /* clamp the resamplers output */
-    for(unsigned int i = 0; i < samples; ++i)
-      ((float*)data)[i] = std::max(-1.0f, std::min(1.0f, ((float*)data)[i]));
   }
   else
   {
