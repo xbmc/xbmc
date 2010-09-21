@@ -60,6 +60,7 @@ class CPullupCorrection
     std::vector<double> m_pattern; //the last saved pattern
     int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_ptscorrection;        //the correction needed for the last added pts
+    double m_trackingpts;          //the pts value we want to have
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
     CStdString GetPatternStr();   //also for the log

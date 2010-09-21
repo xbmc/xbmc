@@ -46,6 +46,7 @@ void CPullupCorrection::Flush()
   m_patternlength = 0;
   m_leadin = 0;
   m_dropped = 0;
+  m_trackingpts = DVD_NOPTS_VALUE;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -98,6 +99,7 @@ void CPullupCorrection::Add(double pts)
       m_pattern = pattern;   //save the current pattern
       m_patternpos = 0;      //reset the position
       m_dropped = 0;
+      m_trackingpts = DVD_NOPTS_VALUE;
 
       if (m_haspattern)
       {
@@ -139,6 +141,35 @@ void CPullupCorrection::Add(double pts)
 
   //correct the last pts based on where we should be according to the frame duration
   m_ptscorrection = (frameduration * m_patternpos) - ptsinpattern;
+
+  //the pts when only corrected by the pattern detection
+  double corrpts = pts + m_ptscorrection;
+
+  if (m_trackingpts != DVD_NOPTS_VALUE)
+  {
+    //move the tracking pts one frame forward
+    m_trackingpts += frameduration;
+
+    //reset if we drifted from the pattern corrected pts by more than half a frame
+    //dropped diffs can cause this
+    if (fabs(corrpts - m_trackingpts) > frameduration / 2.0)
+    {
+      CLog::Log(LOGDEBUG, "CPullupCorrection: tracked pts differs from actual by %f", m_trackingpts - corrpts);
+      Flush();
+    }
+    else
+    {
+      //set m_ptscorrection so that pts + m_ptscorrection becomes m_trackingpts
+      m_ptscorrection -= corrpts - m_trackingpts;
+
+      //move m_trackingpts slowly towards corrpts
+      m_trackingpts += (corrpts - m_trackingpts) * 0.005;
+    }
+  }
+  else
+  {
+    m_trackingpts = pts + m_ptscorrection;
+  }
 }
 
 //gets a diff diffnr into the past
