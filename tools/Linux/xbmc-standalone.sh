@@ -23,7 +23,7 @@ if [ ! -z "$PULSE" ]; then
   $PULSE --start
 fi
 
-XBMC="xbmc.bin --standalone \"$@\""
+XBMC="xbmc --standalone \"$@\""
 
 LOOP=1
 CRASHCOUNT=0
