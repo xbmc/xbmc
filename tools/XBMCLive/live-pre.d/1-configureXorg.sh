@@ -65,14 +65,17 @@ if [ "$GPUTYPE" = "NVIDIA" ]; then
 	# Disable scaling to make sure the gpu does not loose performance
 	sed -i -e 's%Section \"Screen\"%&\n    Option      \"FlatPanelProperties\" \"Scaling = Native\"\n    Option      \"HWCursor\" \"Off\"%' /etc/X11/xorg.conf
 fi
+
 if [ "$GPUTYPE" = "AMD" ]; then
-	set +e # Temporarily disable exit on failure 
 	# run aticonfig
 	/usr/bin/aticonfig --initial --sync-vsync=on -f
 	ATICONFIG_RETURN_CODE=$? 
- 	set -e # Re-able exit on failure 
 
-	if [ $ATICONFIG_RETURN_CODE -ne 255 ]; then 
+	if [ $ATICONFIG_RETURN_CODE -eq 255 ]; then
+		# aticonfig returns 255 on old unsuported ATI cards 
+		# Let the X default ati driver handle the card 
+		modprobe radeon # Required to permit KMS switching and support hardware GL  
+	else
 		if [ $LSBRELEASE -gt 910 ]; then
 			# only on lucid!
 			update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
