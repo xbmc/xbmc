@@ -42,7 +42,6 @@ class CPullupCorrection
     int    m_ringpos;                //position of last diff added to ringbuffer
     int    m_ringfill;               //how many diffs we have in the ringbuffer
     int    m_leadin;                 //how many timestamps we ignored
-    int    m_dropped;                //how many diffs we dropped
     double GetDiff(int diffnr);      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern

@@ -45,7 +45,6 @@ void CPullupCorrection::Flush()
   m_haspattern = false;
   m_patternlength = 0;
   m_leadin = 0;
-  m_dropped = 0;
   m_trackingpts = DVD_NOPTS_VALUE;
 }
 
@@ -85,9 +84,8 @@ void CPullupCorrection::Add(double pts)
     //if the ringbuffer is full, a pattern was detected on the previous iteration
     //and the last added diff breaks the pattern, drop this diff,
     //future added diffs will usually fit the pattern again
-    if (m_haspattern && m_dropped < 21 && m_ringfill == DIFFRINGSIZE)
+    if (m_haspattern && m_ringfill == DIFFRINGSIZE)
     {
-      m_dropped += 2; //don't want to drop too many in case the pattern severely changes
       m_ringfill--;
       m_ringpos--;
       if (m_ringpos < 0)
@@ -98,7 +96,6 @@ void CPullupCorrection::Add(double pts)
       m_ptscorrection = 0.0; //no pattern no correction
       m_pattern = pattern;   //save the current pattern
       m_patternpos = 0;      //reset the position
-      m_dropped = 0;
       m_trackingpts = DVD_NOPTS_VALUE;
 
       if (m_haspattern)
@@ -106,21 +103,12 @@ void CPullupCorrection::Add(double pts)
         m_haspattern = false;
         m_patternlength = 0;
         CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
-
-        //if the ringbuffer is full and the pattern is lost,
-        //flush it so it can detect the pattern faster
-        if (m_ringfill == DIFFRINGSIZE && pattern.size() == 0)
-          Flush();
       }
       return;
     }
   }
   else
   {
-    //slowly decrease dropcounter
-    if (m_dropped > 0)
-      m_dropped--;
-
     if (!m_haspattern)
     {
       m_haspattern = true;
