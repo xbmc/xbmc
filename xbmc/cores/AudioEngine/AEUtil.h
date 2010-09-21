@@ -22,6 +22,7 @@
 
 #include "AEAudioFormat.h"
 #include "StdString.h"
+#include "math.h"
 
 class CAEUtil
 {
@@ -35,6 +36,19 @@ public:
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
 
-  static inline float SoftClamp(float sample);
+  static inline float SoftClamp(float x)
+  {
+    static const double k = 0.9f;
+    /* perform a soft clamp */
+         if (x >  k) x = tanh((x - k) / (1 - k)) * (1 - k) + k; 
+    else if (x < -k) x = tanh((x + k) / (1 - k)) * (1 - k) - k;
+
+    /* hard clamp anything still outside the bounds */
+    if (x >  1.0f) return  1.0f;
+    if (x < -1.0f) return -1.0f;
+
+    /* return the final sample */
+    return x;
+  }
 };
 
