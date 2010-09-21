@@ -45,6 +45,7 @@
   <string id="31104">Spill trailere i et vindu[COLOR=grey3](Kun videoinformasjonsdialog)[/COLOR]</string>
   <string id="31105">Vis medietitler i bakgrunnsskanneren</string>
   <string id="31106">Øvrige alternativer</string>
+  <string id="31107">Gjem 'sett'-flagg fra videofilnavn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Inaktive hovedmenyknapper</string>
   <string id="31109">Mediebakgrunner</string>
   <string id="31110">Endre bakgrunn for medietype</string>
@@ -53,21 +54,21 @@
   <string id="31113">Enkeltbilde</string>
   <string id="31114">Multibilde</string>
   <string id="31115">Tilpasser</string>
-  <string id="31116">Tilleggsskript</string>
+  <string id="31116"></string>
   <string id="31117">Vis videoer nylig lagt til</string>
-  <string id="31118">Undermeny for hovedmeny</string>
-  <string id="31119">Aktiver egen skriptknapp</string>
+  <string id="31118">Programundermeny i hovedmeny</string>
+  <string id="31119">Aktiver egen knapp for tillegg</string>
   <string id="31120">KNAPPETIKETT</string>
-  <string id="31121">STI TIL SKRIPT</string>
+  <string id="31121">STI TIL TILLEGG</string>
   <string id="31122">Værside</string>
   <string id="31123">Bruk plakat istedet for banner for TV-serier</string>
   <string id="31124">Vis "Nå spilles" for filmer i bakgrunnen</string>
   <string id="31125">Vis visualisering for "Nå spilles" i bakgrunnen</string>
   <string id="31126">Aktiver sangtekster i musikk-OSD</string>
-  <string id="31127">STI TIL SANGTEKSTSKRIPT</string>
-  <string id="31128">XBMC sangtekster</string>
+  <string id="31127">STI TIL SANGTEKSTTILLEGG</string>
+  <string id="31128">Sangtekster</string>
   <string id="31129">Aktiver nedlasting av undertekster i Video OSD</string> 
-  <string id="31130">STI TIL SKRIPT FOR UNDERTEKSTER</string> 
+  <string id="31130">STI TIL TILLEGG FOR UNDERTEKSTER</string> 
   <string id="31140">Musikk OSD</string> 
   <string id="31141">Video OSD</string>
   <string id="31200">Hurtigsti</string>
@@ -76,9 +77,7 @@
   <string id="31203">Velg din låt</string>
   <string id="31204">Seksjonslenker</string>
   <string id="31205">Sangtekstskilde</string>
-  <string id="31250">Radar &amp; værmelding</string>
-  <string id="31251">Værmelding</string>
-  <string id="31252">TWC skript</string>
+
   <string id="31300">Været nå</string>
   <string id="31301">Sist oppdatert</string>
   <string id="31302">Meny</string>
