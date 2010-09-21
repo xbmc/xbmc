@@ -24,7 +24,7 @@
 
 inline float scale(mad_fixed_t sample)
 {
-  double s, x = scale(sample);
+  double x = mad_f_todouble(sample);
   static const double k = 0.5f;
 
        if (x >  k) x = tanh((x - k) / (1 - k)) * (1 - k) + k;

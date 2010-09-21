@@ -130,8 +130,6 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
     swab(data, &value, 2);
     *dest = AELookupS16toFloat[value + INT16_MAX];
 #endif
-    if (*dest > 1.0 || *dest < -1.0)
-      printf("%f\n", *dest);
   }
 
   return samples;

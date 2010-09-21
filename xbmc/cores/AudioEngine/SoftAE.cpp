@@ -726,6 +726,8 @@ void CSoftAE::Run()
       {
         mixLock.Leave();
         OpenSink();
+
+        sinkLock.Enter();
         continue;
       }
 
