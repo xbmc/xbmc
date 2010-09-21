@@ -45,6 +45,7 @@ void CPullupCorrection::Flush()
   m_haspattern = false;
   m_patternlength = 0;
   m_leadin = 0;
+  m_dropped = 0;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -80,29 +81,51 @@ void CPullupCorrection::Add(double pts)
   //and if it is actually a pattern
   if (!CheckPattern(pattern))
   {
-    m_ptscorrection = 0.0; //no pattern no correction
-    m_pattern = pattern;   //save the current pattern
-    m_patternpos = 0;      //reset the position
-
-    if (m_haspattern)
+    //if the ringbuffer is full, a pattern was detected on the previous iteration
+    //and the last added diff breaks the pattern, drop this diff,
+    //future added diffs will usually fit the pattern again
+    if (m_haspattern && m_dropped < 5 && m_ringfill == DIFFRINGSIZE)
     {
-      m_haspattern = false;
-      m_patternlength = 0;
-      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
-
-      //if the ringbuffer is full and the pattern is lost,
-      //flush it so it can detect the pattern faster
-      if (m_ringfill == DIFFRINGSIZE && pattern.size() == 0)
-        Flush();
+      m_dropped += 2; //don't want to drop too many in case the pattern severely changes
+      m_ringfill--;
+      m_ringpos--;
+      if (m_ringpos < 0)
+        m_ringpos = DIFFRINGSIZE - 1;
     }
-    return;
+    else
+    {
+      m_ptscorrection = 0.0; //no pattern no correction
+      m_pattern = pattern;   //save the current pattern
+      m_patternpos = 0;      //reset the position
+      m_dropped = 0;
+
+      if (m_haspattern)
+      {
+        m_haspattern = false;
+        m_patternlength = 0;
+        CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
+
+        //if the ringbuffer is full and the pattern is lost,
+        //flush it so it can detect the pattern faster
+        if (m_ringfill == DIFFRINGSIZE && pattern.size() == 0)
+          Flush();
+      }
+      return;
+    }
   }
-  else if (!m_haspattern)
+  else
   {
-    m_haspattern = true;
-    m_patternlength = m_pattern.size();
-    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
-              (int)pattern.size(), GetPatternStr().c_str());
+    //slowly decrease dropcounter
+    if (m_dropped > 0)
+      m_dropped--;
+
+    if (!m_haspattern)
+    {
+      m_haspattern = true;
+      m_patternlength = m_pattern.size();
+      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
+                (int)pattern.size(), GetPatternStr().c_str());
+    }
   }
 
   //calculate where we are in the pattern
