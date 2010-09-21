@@ -85,7 +85,7 @@ void CPullupCorrection::Add(double pts)
     //if the ringbuffer is full, a pattern was detected on the previous iteration
     //and the last added diff breaks the pattern, drop this diff,
     //future added diffs will usually fit the pattern again
-    if (m_haspattern && m_dropped < 5 && m_ringfill == DIFFRINGSIZE)
+    if (m_haspattern && m_dropped < 21 && m_ringfill == DIFFRINGSIZE)
     {
       m_dropped += 2; //don't want to drop too many in case the pattern severely changes
       m_ringfill--;
@@ -150,9 +150,9 @@ void CPullupCorrection::Add(double pts)
     //move the tracking pts one frame forward
     m_trackingpts += frameduration;
 
-    //reset if we drifted from the pattern corrected pts by more than half a frame
+    //reset if we drifted from the pattern corrected pts by too much
     //dropped diffs can cause this
-    if (fabs(corrpts - m_trackingpts) > frameduration / 2.0)
+    if (fabs(corrpts - m_trackingpts) > frameduration * 2.0)
     {
       CLog::Log(LOGDEBUG, "CPullupCorrection: tracked pts differs from actual by %f", m_trackingpts - corrpts);
       Flush();
