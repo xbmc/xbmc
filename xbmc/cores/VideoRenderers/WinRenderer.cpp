@@ -1166,9 +1166,9 @@ void YUVBuffer::StartDecode()
 
 void YUVBuffer::Clear()
 {
-    memset(planes[PLANE_Y].rect.pBits, 0,   planes[0].rect.Pitch * m_height);
-    memset(planes[PLANE_U].rect.pBits, 128, planes[1].rect.Pitch * m_height>>1);
-    memset(planes[PLANE_V].rect.pBits, 128, planes[2].rect.Pitch * m_height>>1);
+    memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
+    memset(planes[PLANE_U].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
+    memset(planes[PLANE_V].rect.pBits, 128, planes[PLANE_V].rect.Pitch * (m_height/2));
 }
 
 //==================================
