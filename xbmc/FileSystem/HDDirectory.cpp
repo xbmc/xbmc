@@ -191,6 +191,8 @@ bool CHDDirectory::Remove(const char* strPath)
 
 bool CHDDirectory::Exists(const char* strPath)
 {
+  if (!strPath || !*strPath)
+    return false;
   CStdString strReplaced=strPath;
 #ifndef _LINUX
   CStdStringW strWReplaced;
