@@ -23,7 +23,7 @@
 
 import sys, subprocess
 
-gVolumeLevel = "100"
+gVolumeLevel = "90"
 
 def runSilent(aCmdline):
 	process = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -38,14 +38,17 @@ if __name__ == '__main__':
 
 	mixerList = runSilent("amixer scontrols")
 
-	arMixers = mixerList.split('\n')
+	arMixers = mixerList.split('\n')	
 	for aMixer in arMixers:
 		nameStart = aMixer.find("'")
 		if nameStart>0:
 			# print "Mixer name=" + aMixer[nameStart:]
-			output = runSilent("amixer sget " + aMixer[nameStart:])
-			if output.find("pvolume") > 0:
-				output = runSilent("amixer sset " + aMixer[nameStart:] + " " + gVolumeLevel + "% unmute")
-			if output.find("pswitch") > 0:
-				output = runSilent("amixer sset " + aMixer[nameStart:] + " unmute")
+			if "Mic" in aMixer[nameStart:]:
+				output = runSilent("amixer sset " + aMixer[nameStart:] + " mute")
+			else:
+				output = runSilent("amixer sget " + aMixer[nameStart:])
+				if output.find("pvolume") > 0:
+					 output = runSilent("amixer sset " + aMixer[nameStart:] + " " + gVolumeLevel + "% unmute")
+				if output.find("pswitch") > 0:
+					  output = runSilent("amixer sset " + aMixer[nameStart:] + " unmute")
 	runSilent("amixer sset Capture nocap")
