@@ -47,19 +47,10 @@ pre-start script
 
 	if grep "boot=live" /proc/cmdline ; then
 		# Relies on init scripts to mount boot device on a specified directory
-		# TODO hardcode the already mounted directories (speed)
-		# XBMC Live V2
-		BOOTMEDIADIRECTORY="image"
-		BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-		if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
-			# XBMC Live V1
-			BOOTMEDIADIRECTORY="bootMedia"
-			BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-		fi
-		BOOTHOOKSDIRECTORY=$BOOTMEDIAMOUNTPOINT
-	else
-		BOOTHOOKSDIRECTORY="/etc/xbmc"
+		BOOTMEDIAMOUNTPOINT=/live/image"
 	fi
+
+	BOOTHOOKSDIRECTORY="/etc/xbmc"
 	echo $BOOTHOOKSDIRECTORY > /tmp/hooksDirectory
 
 	xbmcUser=xbmc
