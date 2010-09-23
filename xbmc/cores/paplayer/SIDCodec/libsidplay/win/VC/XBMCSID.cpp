@@ -25,7 +25,7 @@ extern "C"
       return 0;
     }
 
-    long __declspec(dllexport) DLL_LoadSID(const char* szFileName)
+    void* __declspec(dllexport) DLL_LoadSID(const char* szFileName)
     {
       WaitForSingleObject(hMutex,INFINITE);
       SSid* result = new SSid;
@@ -34,10 +34,10 @@ extern "C"
       result->config.sidEmulation = NULL;
       
       ReleaseMutex(hMutex);
-      return (long)result;
+      return result;
     }
 
-    void __declspec(dllexport) DLL_StartPlayback(int sid, int track)
+    void __declspec(dllexport) DLL_StartPlayback(void* sid, int track)
     {
       WaitForSingleObject(hMutex,INFINITE);
       SSid* result = (SSid*)sid;
@@ -72,7 +72,7 @@ extern "C"
       ReleaseMutex(hMutex);
     }
 
-    int __declspec(dllexport) DLL_FillBuffer(int sid, void* szBuffer, int length)
+    int __declspec(dllexport) DLL_FillBuffer(void* sid, void* szBuffer, int length)
     {
       WaitForSingleObject(hMutex,INFINITE);
       SSid* player = (SSid*)sid;
@@ -81,7 +81,7 @@ extern "C"
       return iResult;
     }
 
-    void __declspec(dllexport) DLL_FreeSID(int sid)
+    void __declspec(dllexport) DLL_FreeSID(void* sid)
     {
       WaitForSingleObject(hMutex,INFINITE);
       SSid* player = (SSid*)sid;
@@ -96,7 +96,7 @@ extern "C"
       return tune.getInfo().songs;
     }
 
-    void __declspec(dllexport) DLL_SetSpeed(int sid, int speed)
+    void __declspec(dllexport) DLL_SetSpeed(void* sid, int speed)
     {
       SSid* player = (SSid*)sid;
       player->player.fastForward(speed);
