@@ -2,7 +2,7 @@
 #include "../../../builders/resid-builder/include/sidplay/builders/resid.h"
 
 #ifdef _LINUX
-#include "XSyncUtils.h"
+#define __declspec(x)
 #else
 #include <windows.h>
 #endif
@@ -14,32 +14,25 @@ struct SSid
   SidTune tune;
 };
 
-HANDLE hMutex = NULL;
-
 extern "C"
 {
     int __declspec(dllexport) DLL_Init()
     {
-      if (!hMutex)
-        hMutex = CreateMutex(NULL,false,NULL);
       return 0;
     }
 
     void* __declspec(dllexport) DLL_LoadSID(const char* szFileName)
     {
-      WaitForSingleObject(hMutex,INFINITE);
       SSid* result = new SSid;
       result->tune.load(szFileName,true);
 
       result->config.sidEmulation = NULL;
       
-      ReleaseMutex(hMutex);
       return result;
     }
 
     void __declspec(dllexport) DLL_StartPlayback(void* sid, int track)
     {
-      WaitForSingleObject(hMutex,INFINITE);
       SSid* result = (SSid*)sid;
 
       result->tune.selectSong(track);
@@ -69,24 +62,19 @@ extern "C"
 
       result->player.config(result->config);
       result->player.fastForward(100*32);
-      ReleaseMutex(hMutex);
     }
 
     int __declspec(dllexport) DLL_FillBuffer(void* sid, void* szBuffer, int length)
     {
-      WaitForSingleObject(hMutex,INFINITE);
       SSid* player = (SSid*)sid;
       int iResult = player->player.play(szBuffer,length);
-      ReleaseMutex(hMutex);
       return iResult;
     }
 
     void __declspec(dllexport) DLL_FreeSID(void* sid)
     {
-      WaitForSingleObject(hMutex,INFINITE);
       SSid* player = (SSid*)sid;
       delete player;
-      ReleaseMutex(hMutex);
     }
 
     int __declspec(dllexport) DLL_GetNumberOfSongs(const char* szFileName)
