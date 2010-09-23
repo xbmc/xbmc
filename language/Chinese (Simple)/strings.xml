@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 33901 -->
+<!--Based on english strings version 34028 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2276,7 +2276,7 @@
   <string id="33008">保存</string>
   <string id="33009">拷贝</string>
   <string id="33010">设置下载目录</string>
-  <string id="30011">搜索持续时间</string>
+  <string id="33011">搜索持续时间</string>
   <string id="33012">短</string>
   <string id="33013">长</string>
   <string id="33014">用DVD player代替常规播放器</string>
