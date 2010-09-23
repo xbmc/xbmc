@@ -75,7 +75,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  m_Channels = 2;
+  m_Channels = 1;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   CMusicInfoTagLoaderSid tagLoader;
@@ -102,20 +102,20 @@ void SIDCodec::DeInit()
 
 __int64 SIDCodec::Seek(__int64 iSeekTime)
 {
-  char temp[3840*4];
-  if (m_iDataPos > iSeekTime/1000*48000*4)
+  char temp[3840*2];
+  if (m_iDataPos > iSeekTime/1000*48000*2)
   {
     m_dll.StartPlayback(m_sid,m_iTrack);
     m_iDataPos = 0;
   }
 
-  while (m_iDataPos < iSeekTime/1000*48000*4)
+  while (m_iDataPos < iSeekTime/1000*48000*2)
   {
-    __int64 iRead = iSeekTime/1000*48000*4-m_iDataPos;
-    if (iRead > 3840*4)
+    __int64 iRead = iSeekTime/1000*48000*2-m_iDataPos;
+    if (iRead > 3840*2)
     {
       m_dll.SetSpeed(m_sid,32*100);
-      iRead = 3840*4;
+      iRead = 3840*2;
     }
     else
       m_dll.SetSpeed(m_sid,100);
@@ -123,7 +123,7 @@ __int64 SIDCodec::Seek(__int64 iSeekTime)
     iRead = m_dll.FillBuffer(m_sid,temp,int(iRead));
     if (!iRead)
       break; // get out of here
-    if (iRead == 3840*4)
+    if (iRead == 3840*2)
       m_iDataPos += iRead*32;
     else m_iDataPos += iRead;
   }
@@ -138,7 +138,7 @@ int SIDCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_iDataPos = 0;
   }
 
-  if (m_iDataPos >= m_TotalTime/1000*48000*4)
+  if (m_iDataPos >= m_TotalTime/1000*48000*2)
     return READ_EOF;
 
   m_dll.SetSpeed(m_sid,100);
