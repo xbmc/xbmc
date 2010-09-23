@@ -871,6 +871,11 @@ bool CFileCurl::Open(const CURL& url)
         m_seekable = false;
     }
   }
+
+  char* efurl;
+  if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
+    m_url = efurl;
+
   return true;
 }
 
