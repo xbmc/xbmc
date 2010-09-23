@@ -182,8 +182,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
         continue;
 
       Cut cut;
-      cut.start = (int)(dStart * 1000); // ms to s
-      cut.end = (int)(dEnd * 1000); // ms to s
+      cut.start = (int64_t)(dStart * 1000); // seconds to ms
+      cut.end = (int64_t)(dEnd * 1000); // seconds to ms
 
       switch (iAction)
       {
@@ -373,7 +373,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker((int)dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
+        bValid = AddSceneMarker((int64_t)(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
@@ -823,8 +823,8 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
 
     Cut cut;
     cut.action = COMM_BREAK;
-    cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
-    cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
+    cut.start = (int64_t)(commbreak->start_mark / fFramesPerSecond * 1000);
+    cut.end = (int64_t)(commbreak->end_mark / fFramesPerSecond * 1000);
 
     if (!AddCut(cut)) // Log and continue with errors while still testing.
       CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. Continuing anyway.",
