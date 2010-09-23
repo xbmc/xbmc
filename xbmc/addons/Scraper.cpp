@@ -203,7 +203,7 @@ void CScraper::ClearCache()
     for (int i=0;i<items.Size();++i)
     {
       // wipe cache
-      if (items[i]->m_dateTime + m_persistence <= CDateTime::GetUTCDateTime())
+      if (items[i]->m_dateTime + m_persistence <= CDateTime::GetCurrentDateTime())
         CFile::Delete(items[i]->m_strPath);
     }
   }
