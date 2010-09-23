@@ -27,6 +27,7 @@
 #include "SingleLock.h"
 #include "log.h"
 
+#include <errno.h>
 #include <iconv.h>
 
 #ifdef __APPLE__
