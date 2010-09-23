@@ -415,8 +415,10 @@ static int end_frame(AVCodecContext *avctx)
     struct dxva2_picture_context *ctx_pic =
         h->s.current_picture_ptr->hwaccel_picture_private;
 
-    if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
+    if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0) {
+        av_log(avctx, AV_LOG_ERROR, "h264_dxva2 failed to end_frame slicecount <- %d bitstreamsize <- %d \n", ctx_pic->slice_count, ctx_pic->bitstream_size);
         return -1;
+    }
     return ff_dxva2_common_end_frame(avctx, s,
                                      &ctx_pic->pp, sizeof(ctx_pic->pp),
                                      &ctx_pic->qm, sizeof(ctx_pic->qm),

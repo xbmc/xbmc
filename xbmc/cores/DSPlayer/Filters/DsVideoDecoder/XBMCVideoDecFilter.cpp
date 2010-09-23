@@ -1011,14 +1011,14 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     // TODO : quick and dirty patch to fix convertion to YUY2 with swscale
     /*FF_CSP_YUY2 is PIX_FMT_YUYV422 */
     if (m_nOutCsp == FF_CSP_YUY2)
+    {  
       CopyBuffer(pDataOut, m_pFrame->data, m_pCodecContext->width, m_pCodecContext->height, m_pFrame->linesize[0], MEDIASUBTYPE_I420, false);
-
+    }
     else if (m_pSwsContext != NULL)
     {
       uint8_t*  dst[4];
       stride_t  srcStride[4];
       stride_t  dstStride[4];
-
       const TcspInfo *outcspInfo=csp_getInfo(m_nOutCsp);
       for (int i=0;i<4;i++)
       {
@@ -1029,29 +1029,23 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
         else
           dst[i]=dst[i-1]+dstStride[i-1]*(m_pOutSize.cy>>outcspInfo->shiftY[i-1]);
       }
-
       int nTempCsp = m_nOutCsp;
       if(outcspInfo->id==FF_CSP_420P)
         csp_yuv_adj_to_plane(nTempCsp,outcspInfo,odd2even(m_pOutSize.cy),(unsigned char**)dst,dstStride);
       else
         csp_yuv_adj_to_plane(nTempCsp,outcspInfo,m_pCodecContext->height,(unsigned char**)dst,dstStride);
-
-      
       m_dllSwScale.sws_scale(m_pSwsContext, m_pFrame->data, srcStride, 0, m_pCodecContext->height, dst, dstStride);
     }
-
     SetTypeSpecificFlags (pOut);
     hr = m_pOutput->Deliver(pOut);
     return hr;
+    /* END MODE_SOFTWARE */
   }
   else if (m_nDXVAMode == MODE_DXVA1)
   {
-    //nSize  -= used_bytes;
-    //pData += used_bytes;
-    if (m_pDXVADecoder)//  || m_nDXVAMode == MODE_DXVA2 )
+    if (m_pDXVADecoder)
     {
       int result = -1;
-      //CheckPointer (m_pDXVADecoder, E_UNEXPECTED);
       UpdateAspectRatio();
 
       // Change aspect ratio for DXVA1
@@ -1081,8 +1075,17 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
         if (FAILED(hr))
           ASSERT(0);
       }
-      
-      //result = m_pDXVADecoder->Decode(m_pCodecContext, m_pFrame);
+    }
+    /* END MODE_DXVA1 */
+  }
+  else if (m_nDXVAMode == MODE_DXVA2)
+  {
+    Com::SmartPtr<IMediaSample> sampledxva2;
+    sampledxva2 = m_pDXVADecoder->GetMediaSample(m_pCodecContext, m_pFrame);
+    hr = GetOutputPin()->Deliver(sampledxva2);
+    if (SUCCEEDED(hr))
+    {
+      CLog::Log(LOGINFO,"yeah");
     }
   }
   

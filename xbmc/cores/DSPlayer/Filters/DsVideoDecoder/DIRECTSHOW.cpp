@@ -289,6 +289,16 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     {
       m_buffer[i].surface = m_context->surface[i];
     }
+    /*HRESULT hr;
+    hr = m_pDirectXVideoDec->BeginFrame(m_buffer[0].surface, NULL);
+    if (SUCCEEDED(hr))
+    {
+      CLog::Log(LOGERROR,"%s",__FUNCTION__);
+    }
+    else
+    {
+      CLog::Log(LOGERROR,"%s",__FUNCTION__);
+    }*/
   }
   else
   {
@@ -393,8 +403,26 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     CLog::Log(LOGERROR, "%s - unable to find new unused buffer",__FUNCTION__);
     return -1;
   }
+  
+  
   buf->rt_start = pic->reordered_opaque = avctx->reordered_opaque;
   buf->rt_stop = buf->rt_start + (ctx->GetAvrTimePerFrame()/10);
+  if (ctx->UseDXVA2())
+  {
+    ctx->UpdateAspectRatio();
+    ctx->ReconnectOutput(ctx->PictWidthRounded(), ctx->PictHeightRounded(), true, ctx->PictWidth(), ctx->PictHeight());
+  }
+  REFERENCE_TIME rtStart, rtStop;
+  HRESULT hr;
+  hr = ctx->GetOutputPin()->GetDeliveryBuffer(&buf->mediasample, 0, 0, 0);
+  if (SUCCEEDED(hr))
+  {
+    rtStart = buf->rt_start * 10;
+    rtStop = buf->rt_stop * 10;
+    buf->mediasample->SetTime(&rtStart, &rtStop);
+    buf->mediasample->SetMediaTime(0, 0);
+  }
+
   pic->type = FF_BUFFER_TYPE_USER;
   pic->age = INT_MAX; //According to ffmpeg api it should be initialized with this value
   //What is this i forgot :S
@@ -430,6 +458,20 @@ void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
   for(unsigned i = 0; i < 4; i++)
     pic->data[i] = NULL;
+}
+
+IMediaSample* CDXVADecoder::GetMediaSample(AVCodecContext *avctx, AVFrame *pic)
+{
+  IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
+
+  for(unsigned i = 0; i < m_context->surface_count; i++)
+  {
+    if(m_buffer[i].surface == surface)
+    {
+      return m_buffer[i].mediasample;
+    }
+  }
+  return NULL;
 }
 
 HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferIndex)
