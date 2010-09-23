@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 33412 -->
+<!--Based on english strings version 34028 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -88,7 +88,8 @@
   <string id="110">创建缩略图</string>
   <string id="111">快捷方式</string>
   <string id="112">暂停</string>
-
+  <string id="113">更新失败</string>
+  <string id="114">安装失败</string>
   <string id="115">复制</string>
   <string id="116">移动</string>
   <string id="117">删除</string>
@@ -173,6 +174,7 @@
   <string id="196">选择视频：</string>
   <string id="197">读取%s信息</string>
   <string id="198">载入视频详细资料</string>
+  <string id="199">Web 界面</string>
 
   <string id="202">标语</string>
   <string id="203">大纲</string>
@@ -1273,6 +1275,11 @@
   <string id="13509">极高（慢）</string>
   <string id="13510">同步回放显示</string>
 
+  <string id="13550">切换刷新率时暂停播放</string>
+  <string id="13551">关</string>
+  <string id="13552">%.1f 秒</string>
+  <string id="13553">%.1f 秒</string>
+
   <string id="13600">Apple 遥控器</string>
 
   <string id="13602">允许用遥控器启动 XBMC</string>
@@ -2098,11 +2105,11 @@
   <string id="21890">选择艺人</string>
   <string id="21891">艺人信息</string>
   <string id="21892">乐器</string>
-  <string id="21893">创建时间</string>
-  <string id="21894">成型时间</string>
+  <string id="21893">出生日期</string>
+  <string id="21894">出道时间</string>
   <string id="21895">风格</string>
   <string id="21896">解散时间</string>
-  <string id="21897">死亡时间</string>
+  <string id="21897">去世时间</string>
   <string id="21898">活跃年代</string>
   <string id="21899">标签</string>
   <string id="21900">创建/成型</string>
@@ -2269,7 +2276,7 @@
   <string id="33008">保存</string>
   <string id="33009">拷贝</string>
   <string id="33010">设置下载目录</string>
-  <string id="30011">搜索持续时间</string>
+  <string id="33011">搜索持续时间</string>
   <string id="33012">短</string>
   <string id="33013">长</string>
   <string id="33014">用DVD player代替常规播放器</string>
