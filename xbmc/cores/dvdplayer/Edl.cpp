@@ -81,27 +81,27 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   float fFramesPerSecond;
   if (int(fFrameRate * 100) == 5994) // 59.940 fps = NTSC or 60i content
   {
-    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
-              __FUNCTION__);
-    fFramesPerSecond = 29.97f;
+    fFramesPerSecond = fFrameRate / 2; // ~29.97f - division used to retain accuracy of original.
+    CLog::Log(LOGDEBUG, "%s - Assuming NTSC or 60i interlaced content. Adjusted frames per second from %.3f (~59.940 fps) to %.3f",
+              __FUNCTION__, fFrameRate, fFramesPerSecond);
   }
   else if (int(fFrameRate * 100) == 4795) // 47.952 fps = 24p -> NTSC conversion
   {
-    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
-              __FUNCTION__);
-    fFramesPerSecond = 23.976f;
+    fFramesPerSecond = fFrameRate / 2; // ~23.976f - division used to retain accuracy of original.
+    CLog::Log(LOGDEBUG, "%s - Assuming 24p -> NTSC conversion interlaced content. Adjusted frames per second from %.3f (~47.952 fps) to %.3f",
+              __FUNCTION__, fFrameRate, fFramesPerSecond);
   }
   else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
   {
-    CLog::Log(LOGDEBUG, "%s - Changing frames per second to 25.0 assuming PAL (interlaced)",
-               __FUNCTION__);
-    fFramesPerSecond = 25.0f;
+    fFramesPerSecond = fFrameRate / 2; // ~25.0f - division used to retain accuracy of original.
+    CLog::Log(LOGDEBUG, "%s - Assuming PAL interlaced content. Adjusted frames per second from %.3f (~50.00 fps) to %.3f",
+              __FUNCTION__, fFrameRate, fFramesPerSecond);
   }
   else if (iHeight == 1080) // Don't know of any 1080p content being broadcast so assume 1080i
   {
-    CLog::Log(LOGDEBUG, "%s - Adjusting detected frame rate by half assuming 1080i (interlaced): %.3f",
-              __FUNCTION__, fFrameRate);
     fFramesPerSecond = fFrameRate / 2;
+    CLog::Log(LOGDEBUG, "%s - Assuming 1080i interlaced content. Adjusted frames per second from %.3f to %.3f",
+              __FUNCTION__, fFrameRate, fFramesPerSecond);
   }
   else // Assume everything else is not interlaced, e.g. 720p.
     fFramesPerSecond = fFrameRate;
