@@ -40,13 +40,13 @@ extern "C"
       result->config.clockDefault = SID2_CLOCK_PAL;
       result->config.clockForced = false;
       result->config.clockSpeed = SID2_CLOCK_CORRECT;
-      result->config.emulateStereo = true;
+      result->config.emulateStereo = false;
       result->config.environment = sid2_envR;
       result->config.forceDualSids = false;
       result->config.frequency = 48000;
       result->config.leftVolume = 255;
       result->config.optimisation = SID2_DEFAULT_OPTIMISATION;
-      result->config.playback = sid2_stereo;
+      result->config.playback = sid2_mono;
       result->config.powerOnDelay = SID2_DEFAULT_POWER_ON_DELAY;
       result->config.precision = 16;
       result->config.rightVolume = 255;
