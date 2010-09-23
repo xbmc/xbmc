@@ -2239,7 +2239,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
         break;
       case SYSTEM_HAS_ALARM:
-        bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.GetData1()]);
+        bReturn = g_alarmClock.HasAlarm(m_stringParameters[info.GetData1()]);
         break;
       case SYSTEM_GET_BOOL:
         bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);

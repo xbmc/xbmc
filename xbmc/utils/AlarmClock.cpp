@@ -37,12 +37,12 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
-void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */)
+void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */)
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
   lowerName.ToLower();
-  stop(lowerName);
+  Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
   event.m_strCommand = strCommand;
@@ -79,7 +79,7 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
   CLog::Log(LOGDEBUG,"started alarm with name: %s",lowerName.c_str());
 }
 
-void CAlarmClock::stop(const CStdString& strName, bool bSilent /* false */)
+void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
 {
   CSingleLock lock(m_events);
 
@@ -129,7 +129,7 @@ void CAlarmClock::Process()
       for (map<CStdString,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
         if (iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
         {
-          stop(iter->first);
+          Stop(iter->first);
           if ((iter = m_event.find(strLast)) == m_event.end())
             break;
         }

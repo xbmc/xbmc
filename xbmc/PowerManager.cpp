@@ -239,8 +239,8 @@ void CPowerManager::OnWake()
 #endif
 
   // reset custom shutdowntimer
-  if (g_alarmClock.hasAlarm("shutdowntimer"))
-    g_alarmClock.stop("shutdowntimer", true);
+  if (g_alarmClock.HasAlarm("shutdowntimer"))
+    g_alarmClock.Stop("shutdowntimer", true);
 
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
