@@ -65,5 +65,6 @@ class CPullupCorrection
     double m_frameduration;
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
+    int    m_dropped;              //nr of dropped diffs
     CStdString GetPatternStr();   //also for the log
 };

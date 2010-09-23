@@ -47,6 +47,7 @@ void CPullupCorrection::Flush()
   m_leadin = 0;
   m_trackingpts = DVD_NOPTS_VALUE;
   m_frameduration = DVD_NOPTS_VALUE;
+  m_dropped = 0;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -90,8 +91,9 @@ void CPullupCorrection::Add(double pts)
     //if the ringbuffer is full, a pattern was detected on the previous iteration
     //and the last added diff breaks the pattern, drop this diff,
     //future added diffs will usually fit the pattern again
-    if (m_haspattern && m_ringfill == DIFFRINGSIZE)
+    if (m_haspattern && m_ringfill == DIFFRINGSIZE && m_dropped < DIFFRINGSIZE)
     {
+      m_dropped++;
       m_ringfill--;
       m_ringpos--;
       if (m_ringpos < 0)
@@ -103,6 +105,7 @@ void CPullupCorrection::Add(double pts)
       m_pattern = pattern;   //save the current pattern
       m_patternpos = 0;      //reset the position
       m_trackingpts = DVD_NOPTS_VALUE;
+      m_dropped = 0;
 
       if (m_haspattern)
       {
@@ -115,6 +118,12 @@ void CPullupCorrection::Add(double pts)
   }
   else
   {
+    if (m_dropped > 0)
+      m_dropped--;
+
+    //the saved pattern should have moved 1 diff into the past
+    m_patternpos = (m_patternpos + 1) % m_pattern.size();
+
     if (!m_haspattern)
     {
       m_haspattern = true;
@@ -308,12 +317,12 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
     return false;
 
   //the saved pattern should have moved 1 diff into the past
-  m_patternpos = (m_patternpos + 1) % m_pattern.size();
+  int patternpos = (m_patternpos + 1) % m_pattern.size();
 
   //check if the current pattern matches the saved pattern, with an offset of 1
   for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
-    double diff = pattern[(m_patternpos + i) % pattern.size()];
+    double diff = pattern[(patternpos + i) % pattern.size()];
 
     if (!MatchDiff(diff, m_pattern[i]))
       return false;
@@ -321,7 +330,7 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 
   //we save the pattern, in case it changes very slowly
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-    m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
+    m_pattern[i] = pattern[(patternpos + i) % pattern.size()];
 
   return true;
 }
