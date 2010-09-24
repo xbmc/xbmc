@@ -43,6 +43,9 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   bool bSupportsDTSOut = false;
   int audioMode = g_guiSettings.GetInt("audiooutput.mode");
 
+  if (!AE.SupportsRaw())
+    return false;
+
   // TODO - move this stuff somewhere else
   if (AUDIO_IS_BITSTREAM(audioMode))
   {
