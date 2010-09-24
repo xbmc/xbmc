@@ -289,16 +289,6 @@ bool CDXVADecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     {
       m_buffer[i].surface = m_context->surface[i];
     }
-    /*HRESULT hr;
-    hr = m_pDirectXVideoDec->BeginFrame(m_buffer[0].surface, NULL);
-    if (SUCCEEDED(hr))
-    {
-      CLog::Log(LOGERROR,"%s",__FUNCTION__);
-    }
-    else
-    {
-      CLog::Log(LOGERROR,"%s",__FUNCTION__);
-    }*/
   }
   else
   {
@@ -317,22 +307,13 @@ void CDXVADecoder::CreateDummySurface()
 {
   //m_context->surface_count = m_refs + 1 + 1 + m_nPicEntryNumber; // refs + 1 decode + 1 libavcodec safety + processor buffer
   m_context->surface_count = m_nPicEntryNumber;
-HRESULT hr;
-  
-    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_refs);
-    for(int i = 0; i < m_context->surface_count; i++)
-    {
-      
-      IDirect3DTexture9* pTexture;
-      hr = g_Windowing.Get3DDevice()->CreateTexture(
-        640, 480, 1, 
-        D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, 
-        D3DPOOL_DEFAULT, &pTexture, NULL);
-
-      hr = pTexture->GetSurfaceLevel(0, &m_context->surface[i]);
-
-      m_buffer[i].surface = m_context->surface[i];
-    }
+  CLog::Log(LOGDEBUG, "Creating %d dummy surfaces for dxva1 decoder", m_context->surface_count);
+  m_context->surface = (LPDIRECT3DSURFACE9*) calloc(m_context->surface_count, sizeof(*m_context->surface));
+  for(int i = 0; i < m_context->surface_count; i++)
+  {
+    m_context->surface[i] = (IDirect3DSurface9*)(i+1);
+    m_buffer[i].surface = m_context->surface[i];
+  }
      
   
 
@@ -350,14 +331,6 @@ int CDXVADecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
  return 0;
 }
 
-/*bool CDXVADecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture)
-{
-  CSingleLock lock(m_section);
-  
-  picture = (directshow_dxva_h264*)avctx->coded_frame->data[0];
-  return true;
-}*/
-
 int CDXVADecoder::Check(AVCodecContext* avctx)
 {
   return 0;
@@ -374,10 +347,8 @@ bool CDXVADecoder::Supports(enum PixelFormat fmt)
 
 int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  //CLog::DebugLog("%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDXVADecoder* dec        = (CDXVADecoder*)ctx->GetDXVADecoder();
-
   int           count = 0;
   SVideoBuffer* buf   = NULL;
   /*TODO verify if there any verification to do before touching the buffer*/
@@ -411,22 +382,21 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     ctx->UpdateAspectRatio();
     ctx->ReconnectOutput(ctx->PictWidthRounded(), ctx->PictHeightRounded(), true, ctx->PictWidth(), ctx->PictHeight());
+    REFERENCE_TIME rtStart, rtStop;
+    HRESULT hr;
+    hr = ctx->GetOutputPin()->GetDeliveryBuffer(&buf->mediasample, 0, 0, 0);
+    if (SUCCEEDED(hr))
+    {
+      rtStart = buf->rt_start * 10;
+      rtStop = buf->rt_stop * 10;
+      buf->mediasample->SetTime(&rtStart, &rtStop);
+      buf->mediasample->SetMediaTime(0, 0);
+    }
   }
-  REFERENCE_TIME rtStart, rtStop;
-  HRESULT hr;
-  hr = ctx->GetOutputPin()->GetDeliveryBuffer(&buf->mediasample, 0, 0, 0);
-  if (SUCCEEDED(hr))
-  {
-    rtStart = buf->rt_start * 10;
-    rtStop = buf->rt_stop * 10;
-    buf->mediasample->SetTime(&rtStart, &rtStop);
-    buf->mediasample->SetMediaTime(0, 0);
-  }
+  
 
   pic->type = FF_BUFFER_TYPE_USER;
   pic->age = INT_MAX; //According to ffmpeg api it should be initialized with this value
-  //What is this i forgot :S
-  //buf->surface->decoder_surface_index = buf->surface_index;
   for(unsigned i = 0; i < 4; i++)
   {
     pic->data[i] = NULL;
@@ -444,7 +414,6 @@ int CDXVADecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   /*CSingleLock lock(m_section);*/
-  /*CLog::DebugLog("%s",__FUNCTION__);*/
   IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 
   for(unsigned i = 0; i < m_context->surface_count; i++)
@@ -452,6 +421,7 @@ void CDXVADecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
     if(m_buffer[i].surface == surface)
     {
       m_buffer[i].used = false;
+      m_buffer[i].mediasample = NULL;
       m_buffer[i].age  = ++m_buffer_age;
       break;
     }
