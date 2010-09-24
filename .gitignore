@@ -283,6 +283,7 @@ config.log
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
 /project/VS2010Express/sliceshort.log
+/project/VS2010Express/dxva.log
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
