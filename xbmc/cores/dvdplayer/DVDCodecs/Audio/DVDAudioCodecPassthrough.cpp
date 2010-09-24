@@ -26,6 +26,8 @@
 #include "Settings.h"
 #include "utils/log.h"
 
+#include "cores/AudioEngine/AEFactory.h"
+
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
   m_buffer    (NULL),
   m_bufferSize(0)
