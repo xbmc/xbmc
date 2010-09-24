@@ -3683,7 +3683,7 @@ public:
     while(std::string::npos != pos || std::string::npos != lastPos)
     {
       //Found a token, add it to the vector
-      tokens.push_back(substr(lastPos, pos - lastPos));
+      tokens.push_back(this->substr(lastPos, pos - lastPos));
       //Skip delimiters.  Note the "not_of"
       lastPos = find_first_not_of(delimiters, pos);
       //Find next "non-delimiter"
