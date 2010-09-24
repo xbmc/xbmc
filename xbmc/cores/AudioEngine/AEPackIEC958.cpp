@@ -19,23 +19,19 @@
  *
  */
 
+/* DTS spec shows it suppors both BE and LE, we should not need to convert */
+
 #include "system.h"
 #include "AEPackIEC958.h"
 
 #define IEC958_PREAMBLE1  0xF872
 #define IEC958_PREAMBLE2  0x4E1F
 
-#if 0 
-inline void CAEPackIEC958::SwapPacket(struct IEC958Packet &packet, const bool swapData)
+inline void SwapEndian(uint16_t *dst, uint16_t *src, unsigned int size)
 {
-  if (swapData)
-  {
-    uint16_t *pos = (uint16_t*)packet.m_data;
-    for(unsigned int i = 0; i < sizeof(packet.m_data); i += 2, ++pos)
-      *pos = Endian_Swap16(*pos);
-  }
+  for(unsigned int i = 0; i < size; ++i, ++dst, ++src)
+    *dst = ((*src & 0xFF00) >> 8) | ((*src * 0x00FF) << 8);
 }
-#endif
 
 void CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 {
@@ -45,7 +41,13 @@ void CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_preamble2 = IEC958_PREAMBLE2;
   packet->m_type      = IEC958_TYPE_AC3;
   packet->m_length    = size;
+
+#ifdef __ENDIAN_BIG__
   memcpy(packet->m_data, data, size);
+#else
+  SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+#endif
+
   memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
 }
 
