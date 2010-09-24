@@ -141,6 +141,11 @@
   <string id="31356">Felirat letöltése</string>
   <string id="31357"></string>
 
+  <!-- Betűtípus készletek -->
+  <string id="31390">Arculat alapértelmezése</string>
+  <string id="31391">Alapértelmezett, nagybetűsítés nélkül</string>
+  <string id="31392">Arial betűkészlet</string>
+
   <!-- Magyarázó feliratok  -->
   <string id="31400">[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Arculat váltása · Nyelv, régió váltása · Fájl listázás módjának beállítása[CR]Képernyővédő beállítása</string>
   <string id="31401">[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videólejátszás beállítása · Videólistázás módjának beállítása[CR]Feliratok karaktertípusának váltása</string>
