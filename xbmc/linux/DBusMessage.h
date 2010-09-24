@@ -38,9 +38,16 @@ public:
 
   DBusMessage *SendSystem();
   DBusMessage *SendSession();
+
+  bool SendAsyncSystem();
+  bool SendAsyncSession();
+
   DBusMessage *Send(DBusBusType type);
   DBusMessage *Send(DBusConnection *con, DBusError *error);
 private:
+
+  bool SendAsync(DBusBusType type);
+
   void Close();
   void PrepareArgument();
 
