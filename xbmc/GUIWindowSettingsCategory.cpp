@@ -1550,7 +1550,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("lookandfeel.font"))
   { // new font choosen...
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString strSkinFontSet = pControl->GetCurrentLabel();
+    CStdString strSkinFontSet = m_SkinFontSetIDs[pControl->GetCurrentLabel()];
     if (strSkinFontSet != ".svn" && strSkinFontSet != g_guiSettings.GetString("lookandfeel.font"))
     {
       g_guiSettings.SetString("lookandfeel.font", strSkinFontSet);
@@ -2247,6 +2247,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   pControl->Clear();
   setting->SetDelayed();
 
+  m_SkinFontSetIDs.clear();
   int iSkinFontSet = 0;
 
   CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml");
@@ -2277,6 +2278,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
       if (strValue == "fontset")
       {
         const char* idAttr = ((TiXmlElement*) pChild)->Attribute("id");
+        const char* idLocAttr = ((TiXmlElement*) pChild)->Attribute("idloc");
         const char* unicodeAttr = ((TiXmlElement*) pChild)->Attribute("unicode");
 
         bool isUnicode=(unicodeAttr && stricmp(unicodeAttr, "true") == 0);
@@ -2287,7 +2289,16 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
         if (idAttr != NULL && isAllowed)
         {
-          pControl->AddLabel(idAttr, iSkinFontSet);
+          if (idLocAttr) 
+          {
+            pControl->AddLabel(g_localizeStrings.Get(atoi(idLocAttr)), iSkinFontSet); 
+            m_SkinFontSetIDs[g_localizeStrings.Get(atoi(idLocAttr))] = idAttr;
+          }
+          else
+          {
+            pControl->AddLabel(idAttr, iSkinFontSet);
+            m_SkinFontSetIDs[idAttr] = idAttr;
+          }
           if (strcmpi(idAttr, g_guiSettings.GetString("lookandfeel.font").c_str()) == 0)
             pControl->SetValue(iSkinFontSet);
           iSkinFontSet++;
@@ -2931,13 +2942,13 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   {
     m_DigitalAudioSinkMap.clear();
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
-    m_DigitalAudioSinkMap["custom"] = "custom";
+    m_DigitalAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
-    m_AnalogAudioSinkMap["custom"] = "custom";
+    m_AnalogAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
 
   int numberSinks = 0;
@@ -2978,7 +2989,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   if (currentDevice.Equals("custom"))
     selectedValue = numberSinks;
 
-  pControl->AddLabel("custom", numberSinks++);
+  pControl->AddLabel(g_localizeStrings.Get(636), numberSinks++);
 #endif
 
   if (selectedValue < 0)

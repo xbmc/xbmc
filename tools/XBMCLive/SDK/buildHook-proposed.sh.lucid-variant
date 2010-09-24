@@ -18,22 +18,11 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-hookDir=Hooks
 
-cp -R /cdrom/install/$hookDir /target/tmp
-
-cat > /target/tmp/runHooks.sh << 'EOF'
-hookDir=$1
-
-filesToRun=$(ls /tmp/$hookDir/*.sh 2> /dev/null)
-if [ -n "$filesToRun" ]; then
-	for hook in $filesToRun; do
-		sh $hook
-	done
-fi
+cat > $WORKPATH/buildLive/Files/chroot_sources/proposed.list.chroot << EOF
+deb http://archive.ubuntu.com/ubuntu/ lucid-proposed main restricted universe multiverse
 EOF
 
-in-target sh /tmp/runHooks.sh $hookDir
-
-rm /target/tmp/runHooks.sh
-rm -rf /tmp/Hooks
+cat > $WORKPATH/buildLive/Files/chroot_sources/proposed.list.binary << EOF
+deb http://archive.ubuntu.com/ubuntu/ lucid-proposed main restricted universe multiverse
+EOF

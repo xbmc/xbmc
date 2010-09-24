@@ -46,7 +46,7 @@
 
 
 
-<language>
+<language locale="bgr">
   <charsets>
     <gui>CP1251</gui>
     <subtitle>CP1251</subtitle>
@@ -59,7 +59,7 @@
   </dvd>
 
   <regions>
-    <region name="Bulgaria">
+    <region name="Bulgaria" locale="BGR">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY 'г.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

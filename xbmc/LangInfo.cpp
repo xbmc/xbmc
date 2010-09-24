@@ -43,6 +43,8 @@ CLangInfo::CRegion::CRegion(const CRegion& region)
   m_strDVDMenuLanguage=region.m_strDVDMenuLanguage;
   m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
   m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
+  m_strLangLocaleName = region.m_strLangLocaleName;
+  m_strRegionLocaleName = region.m_strRegionLocaleName;
 
   m_strDateFormatShort=region.m_strDateFormatShort;
   m_strDateFormatLong=region.m_strDateFormatLong;
@@ -74,6 +76,7 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDVDMenuLanguage="en";
   m_strDVDAudioLanguage="en";
   m_strDVDSubtitleLanguage="en";
+  m_strLangLocaleName = "English";
 
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
@@ -164,6 +167,9 @@ bool CLangInfo::Load(const CStdString& strFileName)
     return false;
   }
 
+  if (pRootElement->Attribute("locale"))
+    m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
+
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
   if (pCharSets && !pCharSets->NoChildren())
   {
@@ -209,6 +215,9 @@ bool CLangInfo::Load(const CStdString& strFileName)
       region.m_strName=pRegion->Attribute("name");
       if (region.m_strName.IsEmpty())
         region.m_strName="N/A";
+
+      if (pRegion->Attribute("locale"))
+        region.m_strRegionLocaleName = pRegion->Attribute("locale");
 
       const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
       if (pDateLong && !pDateLong->NoChildren())
@@ -321,6 +330,26 @@ const CStdString& CLangInfo::GetDVDAudioLanguage() const
 const CStdString& CLangInfo::GetDVDSubtitleLanguage() const
 {
   return m_currentRegion->m_strDVDSubtitleLanguage;
+}
+
+const CStdString& CLangInfo::GetLanguageLocale() const
+{
+  return m_currentRegion->m_strLangLocaleName;
+}
+
+const CStdString& CLangInfo::GetRegionLocale() const
+{
+  return m_currentRegion->m_strRegionLocaleName;
+}
+
+const CStdString CLangInfo::GetLocale() const
+{
+  const CStdString& langLocale = GetLanguageLocale();
+  const CStdString& regionLocale = GetRegionLocale();
+  if (regionLocale.length() > 0)
+    return langLocale + "_" + regionLocale;
+  else
+    return langLocale;
 }
 
 // Returns the format string for the date of the current language

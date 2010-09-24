@@ -26,8 +26,8 @@ xbmcParams=${subString%% *}
 activationToken="nodiskmount"
 
 # if strings are the same the token is NOT part of the parameters list
-# here we want to stop script if the token is NOT there
-if [ "$xbmcParams" = "${xbmcParams%$activationToken*}" ] ; then
+# here we want to stop script if the token is there
+if [ "$xbmcParams" != "${xbmcParams%$activationToken*}" ] ; then
 	exit 0
 fi
 

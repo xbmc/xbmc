@@ -252,9 +252,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-      int label = g_settings.m_currentVideoSettings.m_SubtitleOn?305:1223;
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287),
-                                                                                      g_localizeStrings.Get(label), TOAST_DISPLAY_TIME, false);
+      CStdString sub;
+      if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+        g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
+      else
+        sub = g_localizeStrings.Get(1223);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info,
+                                                          g_localizeStrings.Get(287), sub, TOAST_DISPLAY_TIME, false);
     }
     return true;
     break;
@@ -272,17 +276,32 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_NEXT_SUBTITLE:
     {
-      if (g_application.m_pPlayer->GetSubtitleCount() <= 1)
+      if (g_application.m_pPlayer->GetSubtitleCount() == 0)
         return true;
 
-      g_settings.m_currentVideoSettings.m_SubtitleStream++;
-      if (g_settings.m_currentVideoSettings.m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
-        g_settings.m_currentVideoSettings.m_SubtitleStream = 0;
-      g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
+      if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+      {
+        g_settings.m_currentVideoSettings.m_SubtitleStream++;
+        if (g_settings.m_currentVideoSettings.m_SubtitleStream >= g_application.m_pPlayer->GetSubtitleCount())
+        {
+          g_settings.m_currentVideoSettings.m_SubtitleStream = 0;
+          g_settings.m_currentVideoSettings.m_SubtitleOn = false;
+          g_application.m_pPlayer->SetSubtitleVisible(false);
+        }
+        g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
+      }
+      else
+      {
+        g_settings.m_currentVideoSettings.m_SubtitleOn = true;
+        g_application.m_pPlayer->SetSubtitleVisible(true);
+      }
+
       CStdString sub;
-      g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
+      if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+        g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
+      else
+        sub = g_localizeStrings.Get(1223);
       g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, TOAST_DISPLAY_TIME, false);
-      return true;
     }
     return true;
     break;

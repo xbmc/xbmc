@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 2010/09/13 -->
-<!-- Based on english strings version r33648 -->
+<!-- Date of translation: 2010/09/22 -->
+<!-- Based on english strings version r34028 -->
 <!-- Portuguese strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 <strings>
   <string id="0">Programas</string>
@@ -89,7 +89,8 @@
   <string id="110">Criar miniaturas</string>
   <string id="111">Atalhos</string>
   <string id="112">Pausa</string>
-
+  <string id="113">Actualização falhou</string>
+  <string id="114">Instalação falhou</string>
   <string id="115">Copiar</string>
   <string id="116">Mover</string>
   <string id="117">Apagar</string>
@@ -1260,6 +1261,11 @@
   <string id="13509">Muito Alta (Lento)</string>
   <string id="13510">Sincronizar vídeo com ecrã</string>
 
+  <string id="13550">Pausar durante mudança de taxa de actualização</string>
+  <string id="13551">Off</string>
+  <string id="13552">%.1f Segundo</string>
+  <string id="13553">%.1f Segundos</string>
+
   <string id="13600">Comando da Apple</string>
 
   <string id="13602">Permitir início do XBMC com controlo remoto</string>
@@ -2242,7 +2248,7 @@
   <string id="33008">A guardar</string>
   <string id="33009">A copiar</string>
   <string id="33010">Definir pasta para descarregar</string>
-  <string id="30011">Tempo de busca</string>
+  <string id="33011">Tempo de busca</string>
   <string id="33012">Curto</string>
   <string id="33013">Longo</string>
   <string id="33014">Usar reprodutor de DVD em vez do reprodutor normal</string>

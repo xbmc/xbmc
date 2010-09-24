@@ -4223,7 +4223,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
 
     if (progress)
     {
-      progress->SetHeading(648);
+      progress->SetHeading(20197);
       progress->SetLine(0, 649);
       progress->SetLine(1, 330);
       progress->SetLine(2, "");

@@ -4808,6 +4808,9 @@
     <ClInclude Include="..\..\xbmc\URIUtils.h">
       <Filter>Source Files\Database</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Variant.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h">
       <Filter>cores\dsplayer\Utils</Filter>
     </ClInclude>
@@ -4873,9 +4876,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\dxva2_wrapper.h">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\Variant.h">
-      <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h">
       <Filter>cores\dsplayer\Shaders</Filter>

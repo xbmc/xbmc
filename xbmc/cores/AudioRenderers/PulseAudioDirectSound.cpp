@@ -27,6 +27,7 @@
 #include "GUISettings.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
@@ -626,7 +627,7 @@ void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, boo
     SinkInfoStruct sinkStruct;
     sinkStruct.mainloop = mainloop;
     sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink("default", "pulse:default@default"));
+    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409), "pulse:default@default"));
     WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
     pa_threaded_mainloop_unlock(mainloop);

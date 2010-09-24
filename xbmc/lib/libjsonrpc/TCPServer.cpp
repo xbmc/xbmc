@@ -276,8 +276,8 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
       m_endBrackets++;
     if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
     {
-      CSingleLock lock (m_critSection);
       std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
+      CSingleLock lock (m_critSection);
       send(m_socket, line.c_str(), line.size(), 0);
       m_beginBrackets = m_endBrackets = 0;
       m_buffer.clear();

@@ -245,7 +245,7 @@
   <string id="287">Napisy</string>
   <string id="288">Czcionka</string>
   <string id="289">- Rozmiar</string>
-  <string id="290">Wzmocnienie (Dynamic Range Compression)</string>
+  <string id="290">Dynamiczna kontrola zakresu</string>
   <string id="291">Wideo</string>
   <string id="292">Dźwięk</string>
   <string id="293">Wskaż napisy</string>
@@ -866,7 +866,7 @@
   <string id="12327">Wprowadź główne hasło</string>
   <string id="12328">Wprowadź kod odblokowujący</string>
   <string id="12329">albo naciśnij C, aby anulować</string>
-  <string id="12330">Wprowadź kombinacje przycisków na padzie</string>
+  <string id="12330">Wprowadź kombinację przycisków na padzie</string>
   <string id="12331">i naciśnij Start, aby zatwierdzić lub naciśnij Back, aby anulować.</string>
   <string id="12332">Ustaw zabezpieczenie</string>
   <string id="12333">Odblokuj</string>
@@ -2000,10 +2000,9 @@
   <string id="29800">Tryb biblioteki</string>
   <string id="29801">Klawiatura QWERTY</string>
   <string id="29802">Używasz bezpośredniego przejścia dźwięku</string>
-  <string id="30011">Czas trwania</string>
-  <string id="33001">Jakość obrazu</string>
-  <string id="33002">Odtwarzanie strumieniowe</string>
-  <string id="33003">Pobieranie</string>
+  <string id="33001">Jakość zwiastunu</string>
+  <string id="33002">Strumieniuj</string>
+  <string id="33003">Pobierz</string>
   <string id="33004">Pobierz i odtwarzaj</string>
   <string id="33005">Pobierz i zapisz</string>
   <string id="33006">Dzisiaj</string>
@@ -2011,6 +2010,7 @@
   <string id="33008">Zapisywanie</string>
   <string id="33009">Kopiowanie</string>
   <string id="33010">Zapisz do</string>
+  <string id="33011">Czas przeszukiwania</string>
   <string id="33012">Krótki</string>
   <string id="33013">Długi</string>
   <string id="33014">Użyj odtwarzacza DVD zamiast zwykłego</string>

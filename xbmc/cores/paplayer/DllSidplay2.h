@@ -28,24 +28,24 @@ class DllSidplay2Interface
 public:
     virtual ~DllSidplay2Interface() {}
     virtual int Init()=0;
-    virtual int LoadSID(const char* szFileName)=0;
-    virtual void FreeSID(int sid)=0;
-    virtual void StartPlayback(int sid, int track)=0;
-    virtual int FillBuffer(int sid, void* buffer, int length)=0;
+    virtual void* LoadSID(const char* szFileName)=0;
+    virtual void FreeSID(void* sid)=0;
+    virtual void StartPlayback(void* sid, int track)=0;
+    virtual int FillBuffer(void* sid, void* buffer, int length)=0;
     virtual int GetNumberOfSongs(const char* szFileName)=0;
-    virtual void SetSpeed(int sid, int speed)=0;
+    virtual void SetSpeed(void* sid, int speed)=0;
 };
 
 class DllSidplay2 : public DllDynamic, DllSidplay2Interface
 {
   DECLARE_DLL_WRAPPER(DllSidplay2, DLL_PATH_SID_CODEC)
   DEFINE_METHOD0(int, Init)
-  DEFINE_METHOD1(int, LoadSID, (const char* p1))
-  DEFINE_METHOD1(void, FreeSID, (int p1))
-  DEFINE_METHOD2(void, StartPlayback,(int p1, int p2))
-  DEFINE_METHOD3(int, FillBuffer, (int p1, void* p2, int p3))
+  DEFINE_METHOD1(void*, LoadSID, (const char* p1))
+  DEFINE_METHOD1(void, FreeSID, (void* p1))
+  DEFINE_METHOD2(void, StartPlayback,(void* p1, int p2))
+  DEFINE_METHOD3(int, FillBuffer, (void* p1, void* p2, int p3))
   DEFINE_METHOD1(int, GetNumberOfSongs, (const char* p1))
-  DEFINE_METHOD2(void, SetSpeed, (int p1, int p2))
+  DEFINE_METHOD2(void, SetSpeed, (void* p1, int p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DLL_Init, Init)
     RESOLVE_METHOD_RENAME(DLL_LoadSID, LoadSID)

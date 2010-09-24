@@ -133,7 +133,7 @@
 			<control type="group" id="201">
 				<posx>718</posx>
 				<posy>4</posy>
-				<control type="button" id="703">
+				<control type="togglebutton" id="703">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>45</width>
@@ -142,14 +142,18 @@
 					<font>-</font>
 					<texturefocus>OSDLyricsFO.png</texturefocus>
 					<texturenofocus>OSDLyricsNF.png</texturenofocus>
+					<alttexturefocus>OSDLyricsFO.png</alttexturefocus>
+					<alttexturenofocus>OSDLyricsNF.png</alttexturenofocus>
 					<onleft>801</onleft>
 					<onright>704</onright>
 					<onup>604</onup>
 					<ondown>604</ondown>
 					<onclick>Close</onclick>
 					<onclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
-					<enable>Skin.HasSetting(LyricScript_Enable) + !IsEmpty(Skin.String(LyricScript_Path))</enable>
-					<animation effect="fade" start="100" end="50" time="100" condition="![Skin.HasSetting(LyricScript_Enable) + !IsEmpty(Skin.String(LyricScript_Path))]">Conditional</animation>
+					<altclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</altclick>
+					<altclick>Close</altclick>
+					<altclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</altclick>
+					<usealttexture>IsEmpty(Skin.String(LyricScript_Path))</usealttexture>
 				</control>
 				<control type="button" id="704">
 					<posx>50</posx>

@@ -27,6 +27,7 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
+#include "utils/AlarmClock.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -236,6 +237,10 @@ void CPowerManager::OnWake()
   }
   g_application.ResetScreenSaver();
 #endif
+
+  // reset custom shutdowntimer
+  if (g_alarmClock.HasAlarm("shutdowntimer"))
+    g_alarmClock.Stop("shutdowntimer", true);
 
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)

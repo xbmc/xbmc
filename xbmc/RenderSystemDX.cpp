@@ -628,10 +628,7 @@ bool CRenderSystemDX::PresentRenderImpl()
       SetThreadPriority(GetCurrentThread(), priority);
   }
 
-  if (m_useD3D9Ex)
-    hr = ((IDirect3DDevice9Ex *)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, 0);
-  else
-    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 #ifdef HAS_DS_PLAYER
   if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
   {
