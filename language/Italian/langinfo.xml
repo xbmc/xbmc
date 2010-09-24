@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language>
+<language locale="italian">
   <charsets>
     <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region name="Italia">
+    <region name="Italia" locale="italy">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -20,7 +20,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Svizzera">
+    <region name="Svizzera" locale="che">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

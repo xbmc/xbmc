@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="Norwegian">
   <charsets>
     <gui unicodefont="false">CP1252</gui>
     <subtitle>CP1252</subtitle>

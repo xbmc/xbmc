@@ -46,7 +46,7 @@
 
 
 
-<language>
+<language locale="English">
   <charsets>
     <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -59,7 +59,7 @@
   </dvd>
 
   <regions>
-    <region name="USA">
+    <region name="USA" locale="USA">
       <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -67,7 +67,7 @@
       <speedunit>mph</speedunit>
     </region>
 
-    <region name="UK (12h)">
+    <region name="UK (12h)" locale="UK">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -76,7 +76,7 @@
       <timezone>GMT</timezone>
     </region>
 
-    <region name="UK (24h)">
+    <region name="UK (24h)" locale="UK">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -85,7 +85,7 @@
       <timezone>GMT</timezone>
     </region>
 
-    <region name="Canada">
+    <region name="Canada" locale="Canada">
       <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -93,7 +93,7 @@
       <speedunit>kmh</speedunit>
     </region>
 
-    <region name="Australia (12h)">
+    <region name="Australia (12h)" locale="Australia">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -102,7 +102,7 @@
       <timezone>GMT</timezone>
     </region>
 
-    <region name="Australia (24h)">
+    <region name="Australia (24h)" locale="Australia">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>
@@ -120,7 +120,7 @@
       <timezone>CET</timezone>
     </region>
 
-    <region name="India (12h)">
+    <region name="India (12h)" locale="India">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -129,7 +129,7 @@
       <timezone>GMT</timezone>
     </region>
 
-    <region name="India (24h)">
+    <region name="India (24h)" locale="India">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">H:mm:ss</time>

@@ -42,6 +42,10 @@ public:
   const CStdString& GetDVDSubtitleLanguage() const;
   const CStdString& GetTimeZone() const;
 
+  const CStdString& GetRegionLocale() const;
+  const CStdString& GetLanguageLocale() const;
+  const CStdString GetLocale() const;
+
   bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 
   const CStdString& GetDateFormat(bool bLongDate=false) const;
@@ -116,6 +120,8 @@ protected:
     CStdString m_strDVDMenuLanguage;
     CStdString m_strDVDAudioLanguage;
     CStdString m_strDVDSubtitleLanguage;
+    CStdString m_strLangLocaleName;
+    CStdString m_strRegionLocaleName;
     bool m_forceUnicodeFont;
     CStdString m_strName;
     CStdString m_strDateFormatLong;

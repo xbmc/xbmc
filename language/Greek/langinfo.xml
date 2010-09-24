@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language lang="Greek">
   <charsets>
     <gui unicodefont="true">CP1253</gui>
     <subtitle>CP1253</subtitle>
