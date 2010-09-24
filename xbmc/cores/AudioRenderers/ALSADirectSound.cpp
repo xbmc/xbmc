@@ -25,6 +25,7 @@
 #include "GUISettings.h"
 #include "utils/log.h"
 #include "limits.h"
+#include "LocalizeStrings.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %d - %s",__FUNCTION__,s,e,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
@@ -610,7 +611,7 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
 {
   if (!passthrough)
   {
-    vAudioSinks.push_back(AudioSink("default", "alsa:default"));
+    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409), "alsa:default"));
     vAudioSinks.push_back(AudioSink("iec958" , "alsa:plug:iec958"));
     vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:plug:hdmi"));
   }
@@ -645,7 +646,7 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
         CStdString strCardName = snd_ctl_card_info_get_id( info );
 
         if (!passthrough)
-          GenSoundLabel(vAudioSinks, "default", strCardName, strReadableCardName);
+          GenSoundLabel(vAudioSinks, g_localizeStrings.Get(409), strCardName, strReadableCardName);
         GenSoundLabel(vAudioSinks, "iec958", strCardName, strReadableCardName);
         GenSoundLabel(vAudioSinks, "hdmi", strCardName, strReadableCardName);
       }
@@ -688,7 +689,7 @@ void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink
 {
   CStdString deviceString;
   deviceString.Format("%s:CARD=%s", sink, card.c_str());
-  if (sink.Equals("default") || SoundDeviceExists(deviceString.c_str()))
+  if (sink.Equals(g_localizeStrings.Get(409)) || SoundDeviceExists(deviceString.c_str()))
   {
     CStdString finalSink;
     finalSink.Format("alsa:%s", deviceString.c_str());

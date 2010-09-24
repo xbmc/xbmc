@@ -2797,13 +2797,13 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   {
     m_DigitalAudioSinkMap.clear();
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
-    m_DigitalAudioSinkMap["custom"] = "custom";
+    m_DigitalAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
-    m_AnalogAudioSinkMap["custom"] = "custom";
+    m_AnalogAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
 
   int numberSinks = 0;
@@ -2844,7 +2844,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   if (currentDevice.Equals("custom"))
     selectedValue = numberSinks;
 
-  pControl->AddLabel("custom", numberSinks++);
+  pControl->AddLabel(g_localizeStrings.Get(636), numberSinks++);
 #endif
 
   if (selectedValue < 0)
