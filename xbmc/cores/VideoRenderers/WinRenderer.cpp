@@ -415,8 +415,6 @@ void CWinRenderer::UnInit()
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
-  if (m_IntermediateStencilSurface.Get())
-    m_IntermediateStencilSurface.Release();
 
   SAFE_RELEASE(m_colorShader)
   SAFE_RELEASE(m_scalerShader)
@@ -459,20 +457,6 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
   if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, usage, format, D3DPOOL_DEFAULT))
   {
     CLog::Log(LOGERROR, __FUNCTION__": render target creation failed. Going back to bilinear scaling.", format);
-    return false;
-  }
-
-  //Pixel shaders need a matching depth-stencil surface.
-  LPDIRECT3DSURFACE9 tmpSurface;
-  D3DSURFACE_DESC tmpDesc;
-  //Use the same depth stencil format as the backbuffer.
-  pD3DDevice->GetDepthStencilSurface(&tmpSurface);
-  tmpSurface->GetDesc(&tmpDesc);
-  tmpSurface->Release();
-  if (!m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create depth stencil. Going back to bilinear scaling.");
-    m_IntermediateTarget.Release();
     return false;
   }
   return true;
@@ -560,8 +544,6 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if(m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
-  if (m_IntermediateStencilSurface.Get())
-    m_IntermediateStencilSurface.Release();
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
@@ -577,7 +559,6 @@ void CWinRenderer::UpdatePSVideoFilter()
     if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight))
     {
       m_IntermediateTarget.Release();
-      m_IntermediateStencilSurface.Release();
       SAFE_RELEASE(m_scalerShader)
       SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
@@ -897,13 +878,10 @@ void CWinRenderer::Stage1(DWORD flags)
   {
     // Switch the render target to the temporary destination
     LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-    LPDIRECT3DSURFACE9 newRT, oldRT, oldDS, newDS;
+    LPDIRECT3DSURFACE9 newRT, oldRT;
     m_IntermediateTarget.GetSurfaceLevel(0, &newRT);
-    m_IntermediateStencilSurface.GetSurfaceLevel(0, &newDS);
     pD3DDevice->GetRenderTarget(0, &oldRT);
     pD3DDevice->SetRenderTarget(0, newRT);
-    pD3DDevice->GetDepthStencilSurface(&oldDS);
-    pD3DDevice->SetDepthStencilSurface(newDS);
 
     CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
@@ -916,11 +894,8 @@ void CWinRenderer::Stage1(DWORD flags)
 
     // Restore the render target
     pD3DDevice->SetRenderTarget(0, oldRT);
-    pD3DDevice->SetDepthStencilSurface(oldDS);
 
-    oldDS->Release();
     oldRT->Release();
-    newDS->Release();
     newRT->Release();
   }
 }
