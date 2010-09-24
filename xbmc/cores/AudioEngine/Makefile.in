@@ -17,7 +17,8 @@ SRCS = \
 	AEConvert.cpp \
 	AERemap.cpp \
 	AEUtil.cpp \
-	Packetizers/AEPacketizerIEC958.cpp \
+	AEStreamInfo.cpp \
+	AEPackIEC958.cpp \
 	PostProc/AEPPAnimationFade.cpp \
 	\
 	Engines/SoftAE.cpp \

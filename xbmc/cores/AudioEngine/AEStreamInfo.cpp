@@ -19,7 +19,7 @@
  *
  */
 
-#include "AEPacketizerIEC958.h"
+#include "AEStreamInfo.h"
 
 #define IEC958_PREAMBLE1  0xF872
 #define IEC958_PREAMBLE2  0x4E1F
@@ -52,82 +52,36 @@ static const uint32_t DTSSampleRates[DTS_SRATE_COUNT] =
   192000
 };
 
-CAEPacketizerIEC958::CAEPacketizerIEC958() :
+CAEStreamInfo::CAEStreamInfo() :
   m_bufferSize(0),
+  m_skipBytes (0),
+  m_syncFunc  (&CAEStreamInfo::DetectType),
   m_hasSync   (false),
-  m_dataType  (IEC958_TYPE_NULL),
-  m_syncFunc  (&CAEPacketizerIEC958::DetectType),
-  m_packFunc  (NULL ),
-  m_sampleRate(48000),
-  m_fsize     (1536 ),
-  m_ratio     (4    )
+  m_dataType  (STREAM_TYPE_NULL),
+  m_packFunc  (NULL)
 {
   m_dllAvUtil.Load();
-
-  m_nullPacket.m_preamble1    = IEC958_PREAMBLE1;
-  m_nullPacket.m_preamble2    = IEC958_PREAMBLE2;
-  m_nullPacket.m_type         = IEC958_TYPE_NULL;
-  m_nullPacket.m_length       = 0;
-  memset(m_nullPacket.m_data, 0, sizeof(m_nullPacket.m_data));
-  SwapPacket(m_nullPacket, false);
 }
 
-CAEPacketizerIEC958::~CAEPacketizerIEC958()
+CAEStreamInfo::~CAEStreamInfo()
 {
   m_dllAvUtil.Unload();
 }
 
-bool CAEPacketizerIEC958::Initialize()
+int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* = NULL */, unsigned int *bufferSize/* = 0 */)
 {
-  Reset();
-  return true;
-}
+  if (m_skipBytes)
+  {
+    unsigned int canSkip = std::min(size, m_skipBytes);
+    size -= canSkip;
+    data += canSkip;
+  }
 
-void CAEPacketizerIEC958::Deinitialize()
-{
-  Reset();
-}
-
-void CAEPacketizerIEC958::Reset()
-{
-  m_bufferSize = 0;
-  m_hasSync    = false;
-  m_dataType   = IEC958_TYPE_NULL;
-  m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_sampleRate = 48000;
-  m_fsize      = 1536;
-  m_ratio      = 4;
-  m_packetBuffer.clear();
-}
-
-int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
-{
-  if (size == 0 || m_packetBuffer.size() == 2)
+  if (size == 0)
     return 0;
 
   unsigned int consumed = 0;
   unsigned int offset   = 0;
-  unsigned int fsize    = 0;
-
-  /* first try to work on the incoming data */
-  if (m_bufferSize == 0)
-  {
-    offset = (this->*m_syncFunc)(data, size, &fsize);
-    if (m_hasSync)
-    {
-      /* if we have been given a full packet */
-      if (size >= fsize)
-      {
-        ((this)->*m_packFunc)(data, fsize);
-        return offset + fsize;
-      }
-
-      /* align as we need to buffer */
-      consumed  = offset;
-      data     += offset;
-      size     -= offset;
-    }
-  }
 
   unsigned int room = sizeof(m_buffer) - m_bufferSize;
   while(1)
@@ -144,10 +98,14 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
     size         -= copy;
     room         -= copy;
 
-    offset = (this->*m_syncFunc)(m_buffer, m_bufferSize, &fsize);
+    offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
     if (m_hasSync) break;
     else
     {
+      m_syncFunc = &CAEStreamInfo::DetectType;
+      m_dataType = STREAM_TYPE_NULL;
+      m_packFunc = NULL;
+
       /* if the buffer is full, or the offset < the buffer size */
       if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
       {
@@ -160,97 +118,31 @@ int CAEPacketizerIEC958::AddData(uint8_t *data, unsigned int size)
 
   /* if we got here, we acquired sync on the buffer */
 
-  /* align the data with the packet */
-  if (offset > 0)
+  /* bytes to skip until the next packet */
+  m_skipBytes = std::min(0, (int)m_fsize - (int)m_bufferSize);
+
+  /* if the caller wants the packet */
+  if (buffer)
   {
-    memmove(m_buffer, m_buffer + offset, m_bufferSize - offset);
-    m_bufferSize -= offset;
+    /* make sure the buffer is allocated and big enough */
+    if (!*buffer || !bufferSize || *bufferSize < m_fsize)
+    {
+      delete[] *buffer;
+      *buffer = new uint8_t[m_fsize];
+    }
+
+    /* copy the data into the buffer and update the size */
+    memcpy(*buffer, m_buffer + offset, m_fsize);
+    if (bufferSize)
+      *bufferSize = m_fsize;
   }
 
-  /* update the buffer size ratio */
-  m_ratio = sizeof(struct IEC958Packet) / fsize;
-  m_fsize = fsize;
-
-  /* we need the complete frame to pack it */
-  if (m_bufferSize < fsize)
-    return consumed;
-
-  /* pack the frame */
-  ((this)->*m_packFunc)(m_buffer, fsize);
-
-  /* shift buffered samples data along */
-  memmove(m_buffer, m_buffer + fsize, m_bufferSize - fsize);
-  m_bufferSize -= fsize;
+  /* remove the parsed data from the buffer */
+  unsigned int remove = m_fsize + offset;
+  m_bufferSize -= remove;
+  memmove(m_buffer, m_buffer + remove, m_bufferSize);
 
   return consumed;
-}
-
-bool CAEPacketizerIEC958::HasPacket()
-{
-  return !m_packetBuffer.empty();
-}
-
-int CAEPacketizerIEC958::GetPacket(uint8_t **data)
-{
-  if (m_packetBuffer.empty())
-    *data = (uint8_t*)&m_nullPacket;
-  else
-  {
-    m_current = m_packetBuffer.front();
-    m_packetBuffer.pop_front();
-    *data = (uint8_t*)&m_current;
-  }
-
-  return sizeof(struct IEC958Packet);
-}
-
-unsigned int CAEPacketizerIEC958::GetBufferSize()
-{
-  unsigned int size = m_bufferSize * m_ratio;
-  size += m_packetBuffer.size() * sizeof(struct IEC958Packet);
-  return size;
-}
-
-inline void CAEPacketizerIEC958::SwapPacket(struct IEC958Packet &packet, const bool swapData)
-{
-  if (swapData)
-  {
-    uint16_t *pos = (uint16_t*)packet.m_data;
-    for(unsigned int i = 0; i < sizeof(packet.m_data); i += 2, ++pos)
-      *pos = Endian_Swap16(*pos);
-  }
-}
-
-/* PACK FUNCTIONS */
-void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
-{
-  struct IEC958Packet packet;
-
-  packet.m_preamble1 = IEC958_PREAMBLE1;
-  packet.m_preamble2 = IEC958_PREAMBLE2;
-  packet.m_type      = m_dataType;
-  packet.m_length    = fsize;
-  memcpy(packet.m_data, data, fsize);
-  memset(packet.m_data + fsize, 0, sizeof(packet.m_data) - fsize);
-
-  SwapPacket(packet, true);
-  m_packetBuffer.push_back(packet);
-}
-
-void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
-{
-  struct IEC958Packet packet;
-
-  packet.m_preamble1 = IEC958_PREAMBLE1;
-  packet.m_preamble2 = IEC958_PREAMBLE2;
-  packet.m_type      = m_dataType;
-  packet.m_length    = fsize;
-  memcpy(packet.m_data, data, fsize);
-  memset(packet.m_data + fsize, 0, sizeof(packet.m_data) - fsize);
-
-  /* swap the data too if the stream is BE */
-  SwapPacket(packet, !m_dataIsLE);
-  m_packetBuffer.push_back(packet);
 }
 
 /* SYNC FUNCTIONS */
@@ -261,7 +153,7 @@ void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
   m_syncFunc to itself. This function will only be called again if total sync is lost, which 
   allows is to switch stream types on the fly much like a real reicever does.
 */
-unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, unsigned int *fsize)
+unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
 {
   unsigned int skipped  = 0;
   unsigned int possible = 0;
@@ -270,7 +162,7 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
     /* if it could be AC3 */
     if (size > 6 && data[0] == 0x0b && data[1] == 0x77)
     {
-      unsigned int skip = SyncAC3(data, size, fsize);
+      unsigned int skip = SyncAC3(data, size);
       if (m_hasSync)
         return skipped + skip;
       else
@@ -286,7 +178,7 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
           header == DTS_PREAMBLE_16LE || 
           header == DTS_PREAMBLE_16BE)
       {
-        unsigned int skip = SyncDTS(data, size, fsize);
+        unsigned int skip = SyncDTS(data, size);
         if (m_hasSync)
           return skipped + skip;
         else
@@ -303,7 +195,7 @@ unsigned int CAEPacketizerIEC958::DetectType(uint8_t *data, unsigned int size, u
   return possible ? possible : skipped;
 }
 
-unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsigned int *fsize)
+unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 {
   unsigned int skip = 0;
 
@@ -334,11 +226,11 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
       case 2: framesize = bitRate * 4; break;
     }
 
-    *fsize = framesize * 2;
+    m_fsize = framesize * 2;
     m_sampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */
-    if (m_dataType == IEC958_TYPE_AC3 && skip == 0)
+    if (m_dataType == STREAM_TYPE_AC3 && skip == 0)
       return 0;
 
     unsigned int crc_size;
@@ -353,21 +245,19 @@ unsigned int CAEPacketizerIEC958::SyncAC3(uint8_t *data, unsigned int size, unsi
 
     /* if we get here, we can sync */
     m_hasSync  = true;
-    m_syncFunc = &CAEPacketizerIEC958::SyncAC3;
-    m_packFunc = &CAEPacketizerIEC958::PackAC3;
-    m_dataType = IEC958_TYPE_AC3;
-    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
+    m_syncFunc = &CAEStreamInfo::SyncAC3;
+    m_dataType = STREAM_TYPE_AC3;
+    m_packFunc = &CAEPackIEC958::PackAC3;
+    CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
     return skip;
   }
 
   /* if we get here, the entire packet is invalid and we have lost sync */
-  m_hasSync    = false;
-  m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_dataType   = IEC958_TYPE_NULL;
+  m_hasSync = false;
   return size;
 }
 
-unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsigned int *fsize)
+unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
 {
   unsigned int skip;
 
@@ -435,7 +325,7 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
         continue;
 
       /* get the frame size */
-      *fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1; 
+      m_fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1; 
    }
    else
    {
@@ -444,19 +334,19 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
         continue;
 
       /* get the frame size */
-      *fsize = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
+      m_fsize = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
    }
 
     /* make sure the framesize is sane */
-    if (*fsize < 96 || *fsize > 16384)
+    if (m_fsize < 96 || m_fsize > 16384)
       continue;
 
     bool invalid = false;
     switch((blocks + 1) << 5)
     {
-      case 512 : m_dataType = IEC958_TYPE_DTS1;
-      case 1024: m_dataType = IEC958_TYPE_DTS2;
-      case 2048: m_dataType = IEC958_TYPE_DTS3;
+      case 512 : m_dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC958::PackDTS_512 ; break;
+      case 1024: m_dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC958::PackDTS_1024; break;
+      case 2048: m_dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC958::PackDTS_2048; break;
       default:
         invalid = true;
         continue;
@@ -465,17 +355,14 @@ unsigned int CAEPacketizerIEC958::SyncDTS(uint8_t *data, unsigned int size, unsi
       continue;
 
     m_hasSync    = true;
-    m_syncFunc   = &CAEPacketizerIEC958::SyncDTS;
-    m_packFunc   = &CAEPacketizerIEC958::PackDTS;
+    m_syncFunc   = &CAEStreamInfo::SyncDTS;
     m_sampleRate = DTSSampleRates[srate_code];
-    CLog::Log(LOGINFO, "CAEPacketizerIEC958::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
+    CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
     return skip;
   }
 
   /* lost sync */
-  m_hasSync    = false;
-  m_syncFunc   = &CAEPacketizerIEC958::DetectType;
-  m_dataType   = IEC958_TYPE_NULL;
+  m_hasSync = false;
   return size;
 }
 

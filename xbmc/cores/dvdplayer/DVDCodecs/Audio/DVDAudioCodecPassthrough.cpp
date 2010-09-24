@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
+  m_buffer    (NULL),
   m_bufferSize(0)
 {
 }
@@ -59,28 +60,40 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
 void CDVDAudioCodecPassthrough::Dispose()
 {
+  delete[] m_buffer;
+  m_buffer     = NULL;
+  m_bufferSize = 0;
 }
 
 int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
 {
   if (iSize <= 0) return 0;
-  unsigned int room = sizeof(m_buffer) - m_bufferSize;
-  unsigned int copy = std::min(room, (unsigned int)iSize);
-  memcpy(m_buffer + m_bufferSize, pData, copy);
-  m_bufferSize += copy;
-  return copy;
+
+  unsigned int size = m_bufferSize;
+  unsigned int used = m_info.AddData(pData, iSize, &m_buffer, &size);
+  m_bufferSize = std::max(m_bufferSize, size);
+
+  /* pack the data into an IEC958 frame */
+  CAEPackIEC958::PackFunc pack = m_info.GetPackFunc();
+  if (pack)
+  {
+    pack(m_buffer, size, m_packedBuffer);
+    m_hasData = true;
+  }
+
+  return used;
 }
 
 int CDVDAudioCodecPassthrough::GetData(BYTE** dst)
 {
-  int size     = m_bufferSize;
-  *dst         = m_buffer;
-  m_bufferSize = 0;
+  int size     = m_hasData ? MAX_IEC958_PACKET : 0;
+  m_hasData    = false;
+  *dst         = m_packedBuffer;
   return size;
 }
 
 void CDVDAudioCodecPassthrough::Reset()
 {
-  m_bufferSize = 0;
+  m_hasData = false;
 }
 

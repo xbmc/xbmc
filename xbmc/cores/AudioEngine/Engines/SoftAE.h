@@ -30,7 +30,6 @@
 #include "ThreadedAE.h"
 #include "AEConvert.h"
 #include "AERemap.h"
-#include "AEPacketizer.h"
 #include "AESink.h"
 #include "AEAudioFormat.h"
 
@@ -81,7 +80,6 @@ public:
   virtual AEChLayout     GetChannelLayout() {return m_chLayout              ;}
   virtual unsigned int   GetFrames       () {return m_format.m_frames       ;}
   virtual unsigned int   GetFrameSize    () {return m_frameSize             ;}
-  virtual IAEPacketizer *GetPacketizer   () {return m_packetizer            ;}
 
   /* these are for streams that are in RAW mode */
   enum AEDataFormat   GetSinkDataFormat() {return m_format.m_dataFormat   ;}
@@ -129,10 +127,6 @@ private:
   unsigned int        m_channelCount;
   AEChLayout          m_chLayout;
   unsigned int        m_frameSize;
-
-  IAEPacketizer  *m_packetizer; 
-  uint8_t        *m_packetPos;
-  unsigned int    m_packetFrames;
 
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
