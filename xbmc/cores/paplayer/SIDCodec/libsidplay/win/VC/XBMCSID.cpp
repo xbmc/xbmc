@@ -16,12 +16,12 @@ struct SSid
 
 extern "C"
 {
-    int __declspec(dllexport) DLL_Init()
+    __declspec(dllexport) int DLL_Init()
     {
       return 0;
     }
 
-    void* __declspec(dllexport) DLL_LoadSID(const char* szFileName)
+    __declspec(dllexport) void* DLL_LoadSID(const char* szFileName)
     {
       SSid* result = new SSid;
       result->tune.load(szFileName,true);
@@ -31,7 +31,7 @@ extern "C"
       return result;
     }
 
-    void __declspec(dllexport) DLL_StartPlayback(void* sid, int track)
+    __declspec(dllexport) void DLL_StartPlayback(void* sid, int track)
     {
       SSid* result = (SSid*)sid;
 
@@ -64,27 +64,27 @@ extern "C"
       result->player.fastForward(100*32);
     }
 
-    int __declspec(dllexport) DLL_FillBuffer(void* sid, void* szBuffer, int length)
+    __declspec(dllexport) int DLL_FillBuffer(void* sid, void* szBuffer, int length)
     {
       SSid* player = (SSid*)sid;
       int iResult = player->player.play(szBuffer,length);
       return iResult;
     }
 
-    void __declspec(dllexport) DLL_FreeSID(void* sid)
+    __declspec(dllexport) void DLL_FreeSID(void* sid)
     {
       SSid* player = (SSid*)sid;
       delete player;
     }
 
-    int __declspec(dllexport) DLL_GetNumberOfSongs(const char* szFileName)
+    __declspec(dllexport) int DLL_GetNumberOfSongs(const char* szFileName)
     {
       SidTune tune;
       tune.load(szFileName,true);
       return tune.getInfo().songs;
     }
 
-    void __declspec(dllexport) DLL_SetSpeed(void* sid, int speed)
+    __declspec(dllexport) void DLL_SetSpeed(void* sid, int speed)
     {
       SSid* player = (SSid*)sid;
       player->player.fastForward(speed);
