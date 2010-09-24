@@ -29,7 +29,6 @@
 #include "AEAudioFormat.h"
 #include "AEStream.h"
 #include "AESound.h"
-#include "AEPacketizer.h"
 
 typedef std::pair<CStdString, CStdString> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;

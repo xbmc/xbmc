@@ -40,7 +40,6 @@
 
 #include "AEUtil.h"
 #include "AESink.h"
-#include "Packetizers/AEPacketizerIEC958.h"
 
 #include "AESinkFactory.h"
 
@@ -60,8 +59,6 @@ CSoftAE::CSoftAE():
   m_thread          (NULL ),
   m_running         (false),
   m_reOpened        (false),
-  m_packetizer      (NULL ),
-  m_packetFrames    (0    ),
   m_sink            (NULL ),
   m_rawPassthrough  (false),
   m_passthrough     (false),
@@ -257,8 +254,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 bool CSoftAE::Initialize()
 {
   /* get the current volume level */
-  m_volume     = g_settings.m_fVolumeLevel;
-  m_packetizer = new CAEPacketizerIEC958();
+  m_volume = g_settings.m_fVolumeLevel;
   OnSettingsChange("");
 
   if (OpenSink())
@@ -359,9 +355,6 @@ void CSoftAE::Deinitialize()
   _aligned_free(m_remapped);
   m_remapped = NULL;
   m_remappedSize = 0;
-
-  delete m_packetizer;
-  m_packetizer = NULL;
 }
 
 void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
@@ -513,10 +506,6 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  /* if raw passthrough we need to adjust the sample rate so delays are calculated correctly */
-  if (m_rawPassthrough)
-    return (float)m_format.m_sampleRate / ((float)m_packetizer->GetPacketSize() / (float)m_packetizer->GetFrameSize());
-
   return m_format.m_sampleRate;
 }
 
@@ -569,12 +558,6 @@ float CSoftAE::GetDelay()
   sinkLock.Leave();
 
   unsigned int buffered = m_bufferSamples / m_channelCount;
-  if (m_passthrough || m_rawPassthrough)
-  {
-    buffered += m_packetizer->GetBufferSize() / m_format.m_frameSize;
-    buffered += m_packetFrames;
-  }
-
   delay += (float)buffered / (float)m_format.m_sampleRate;
   return delay;
 }
@@ -708,7 +691,7 @@ void CSoftAE::Run()
     RunOutputStage();
     /* copy this value so we can unlock the sink */
     channelCount = m_channelCount;
-    size_t size  = m_rawPassthrough ? m_format.m_frameSize : m_frameSize;
+    size_t size  = m_frameSize;
     sinkLock.Leave();
 
     CSingleLock mixLock(m_critSection);
@@ -845,42 +828,24 @@ inline void CSoftAE::RunOutputStage()
       }
 
       int wroteSamples = wroteFrames * m_channelCount;
-      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_frameSize;
+      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
       memmove(floatBuffer, floatBuffer + wroteSamples, bytesLeft);
       m_bufferSamples -= wroteSamples;
     }
     else
     {
       /* RAW output */
-
-      /* add as much as we can to the packetizer */
+      unsigned int wroteFrames;
       uint8_t *rawBuffer = (uint8_t*)m_buffer;
-      int wroteBytes = m_packetizer->AddData(rawBuffer, m_bufferSamples * m_bytesPerSample);
-      if (wroteBytes)
-      {
-        int bytesLeft   = (m_bufferSamples * m_bytesPerSample) - wroteBytes;
-        memmove(rawBuffer, rawBuffer + wroteBytes, bytesLeft);
-        m_bufferSamples = bytesLeft / m_bytesPerSample;
-      }
-
-      /* if we have no frames left to output */
-      if (m_packetFrames == 0)
-      {
-        /* get the next packet */
-        unsigned int size = m_packetizer->GetPacket(&m_packetPos);
-        m_packetFrames = size / m_format.m_frameSize;
-      }
-
-      /* the packetizer will ALWAYS return a packet, even if it is empty */
-      unsigned int use = std::min(m_format.m_frames, m_packetFrames);
-      unsigned int wrote;
       if (m_sink)
-        wrote = m_sink->AddPackets(m_packetPos, use);
+        wroteFrames = m_sink->AddPackets(rawBuffer, m_format.m_frames);
       else
-        wrote = use;
+        wroteFrames = m_format.m_frames;
 
-      m_packetPos    += wrote * m_format.m_frameSize;
-      m_packetFrames -= wrote;
+      int wroteSamples = wroteFrames * m_channelCount;
+      int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
+      memmove(rawBuffer, rawBuffer + (wroteSamples * m_bytesPerSample), bytesLeft);
+      m_bufferSamples -= wroteSamples;
     }
   }
 }
