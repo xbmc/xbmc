@@ -11,12 +11,6 @@ endif
 
 SRCS = \
 	AEFactory.cpp \
-	SoftAE.cpp \
-	SoftAEStream.cpp \
-	SoftAESound.cpp \
-	PulseAE.cpp \
-	PulseAEStream.cpp \
-	PulseAEEventThread.cpp \
         AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
@@ -24,7 +18,14 @@ SRCS = \
 	AERemap.cpp \
 	AEUtil.cpp \
 	Packetizers/AEPacketizerIEC958.cpp \
-	PostProc/AEPPAnimationFade.cpp
+	PostProc/AEPPAnimationFade.cpp \
+	\
+	Engines/SoftAE.cpp \
+	Engines/SoftAEStream.cpp \
+	Engines/SoftAESound.cpp \
+	Engines/PulseAE.cpp \
+	Engines/PulseAEStream.cpp \
+	Engines/PulseAEEventThread.cpp
 
 LIB=audioengine.a
 
