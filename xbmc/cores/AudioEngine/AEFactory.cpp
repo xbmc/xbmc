@@ -19,8 +19,8 @@
  *
  */
 #include "AEFactory.h"
-#include "SoftAE.h"
-#include "PulseAE.h"
+#include "Engines/SoftAE.h"
+#include "Engines/PulseAE.h"
 
 IAE     *CAEFactory::m_ae       = NULL;
 bool     CAEFactory::m_ready    = false;
