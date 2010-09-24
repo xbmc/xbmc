@@ -105,6 +105,7 @@ protected:
 
   std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
   std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
+  std::map<CStdString, CStdString> m_SkinFontSetIDs;
 
   // state of the window saved in JumpToSection()
   // to get to the previous settings screen when
