@@ -661,13 +661,15 @@ bool CRenderSystemDX::BeginRender()
     }
   }
 
-  if(FAILED (m_pD3DDevice->BeginScene()))
+  HRESULT hr;
+
+  if(FAILED(hr = m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     // When XBMC caught an exception after BeginScene(), EndScene() may never been called
     // and thus all following BeginScene() will fail too.
-    if(FAILED (m_pD3DDevice->EndScene()))
-      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
+    if(FAILED(hr = m_pD3DDevice->EndScene()))
+      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -690,9 +692,10 @@ bool CRenderSystemDX::EndRender()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if(FAILED (m_pD3DDevice->EndScene()))
+  HRESULT hr = m_pD3DDevice->EndScene();
+  if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return false;
   }
 
