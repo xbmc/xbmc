@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "VideoReferenceClock.h"
+#include "DXErr.h"
 
 using namespace std;
 
@@ -400,7 +401,7 @@ bool CRenderSystemDX::CreateDevice()
         VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device. %s", GetErrorDescription(hr).c_str());
         return false;
       }
     }
@@ -420,7 +421,7 @@ bool CRenderSystemDX::CreateDevice()
         VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device. %s", GetErrorDescription(hr).c_str());
         return false;
       }
     }
@@ -584,7 +585,7 @@ bool CRenderSystemDX::PresentRenderImpl()
 
   if(FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s - Present failed with hr=%d", __FUNCTION__, hr);
+    CLog::Log(LOGDEBUG, "%s - Present failed. %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -917,6 +918,14 @@ void CRenderSystemDX::Unregister(ID3DResource* resource)
   vector<ID3DResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
+}
+
+CStdString CRenderSystemDX::GetErrorDescription(HRESULT hr)
+{
+  CStdString strError;
+  strError.Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+  return strError;
 }
 
 #endif
