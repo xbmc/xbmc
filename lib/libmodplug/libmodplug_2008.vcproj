@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libmodplug_2008"
 	ProjectGUID="{C15B374E-7126-48FF-B618-A375D7B17FCF}"
 	RootNamespace="libmodplug_2008"
@@ -64,6 +64,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -136,6 +138,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -165,6 +168,10 @@
 	<Files>
 		<File
 			RelativePath=".\src\fastmix.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\libmodplug.def"
 			>
 		</File>
 		<File
