@@ -72,7 +72,7 @@ private:
   std::vector<Cut> m_vecCuts;
   std::vector<int64_t> m_vecSceneMarkers;
 
-  bool ReadEdl(const CStdString& strMovie);
+  bool ReadEdl(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
