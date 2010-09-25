@@ -37,6 +37,7 @@
 #include "win32/WIN32Util.h"
 #include "VideoReferenceClock.h"
 
+
 using namespace std;
 
 // Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.
@@ -576,7 +577,7 @@ bool CRenderSystemDX::PresentRenderImpl()
 
   if(FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s - Present failed with hr=%d", __FUNCTION__, hr);
+    CLog::Log(LOGDEBUG, "%s - Present failed. %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -902,6 +903,14 @@ void CRenderSystemDX::Unregister(ID3DResource* resource)
   vector<ID3DResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
+}
+
+CStdString CRenderSystemDX::GetErrorDescription(HRESULT hr)
+{
+  CStdString strError;
+  strError.Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+  return strError;
 }
 
 #endif

@@ -90,6 +90,8 @@ public:
   */
   void Unregister(ID3DResource *resource);
 
+  static CStdString GetErrorDescription(HRESULT hr);
+
 protected:
   bool CreateDevice();
   void DeleteDevice();

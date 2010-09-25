@@ -784,7 +784,7 @@ void CWinRenderer::ScaleFixedPipeline()
   IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
   D3DSURFACE_DESC srcDesc;
   if (FAILED(hr = m_SWTarget.Get()->GetLevelDesc(0, &srcDesc)))
-    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. (0x%08X)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
 
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
@@ -865,7 +865,7 @@ void CWinRenderer::ScaleFixedPipeline()
   hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
 
   if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
-    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. (0x%08X)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
 
   pD3DDev->SetTexture(0, NULL);
 
@@ -940,6 +940,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   RECT rect;
+  HRESULT hr;
   rect.top    = m_destRect.y1;
   rect.bottom = m_destRect.y2;
   rect.left   = m_destRect.x1;
@@ -950,9 +951,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
 
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+  if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target");
+    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return;
   }
 
