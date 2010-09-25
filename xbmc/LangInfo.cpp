@@ -139,6 +139,35 @@ void CLangInfo::CRegion::SetTimeZone(const CStdString& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
+// set the locale associated with this region global. This affects string
+// sorting & transformations
+void CLangInfo::CRegion::SetGlobalLocale()
+{
+  CStdString strLocale;
+  if (m_strRegionLocaleName.length() > 0)
+    strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
+  else
+    strLocale = m_strLangLocaleName;
+
+  locale current_locale = locale("");
+  try
+  {
+    // if the locale does not exist, it crashes (at least on Windows)
+    current_locale = locale( strLocale );
+    if (current_locale.name().compare("*") == 0)
+    {
+      // the locale does not exist, get current system local
+      current_locale = locale("");
+    }
+
+  } catch(...) {
+    current_locale = locale("");
+  }
+
+  locale::global(current_locale);
+  CLog::Log(LOGINFO, "global locale set to %s", current_locale.name().c_str());
+}
+
 CLangInfo::CLangInfo()
 {
   SetDefaults();
@@ -342,16 +371,6 @@ const CStdString& CLangInfo::GetRegionLocale() const
   return m_currentRegion->m_strRegionLocaleName;
 }
 
-const CStdString CLangInfo::GetLocale() const
-{
-  const CStdString& langLocale = GetLanguageLocale();
-  const CStdString& regionLocale = GetRegionLocale();
-  if (regionLocale.length() > 0)
-    return langLocale + "_" + regionLocale;
-  else
-    return langLocale;
-}
-
 // Returns the format string for the date of the current language
 const CStdString& CLangInfo::GetDateFormat(bool bLongDate/*=false*/) const
 {
@@ -401,6 +420,8 @@ void CLangInfo::SetCurrentRegion(const CStdString& strName)
     m_currentRegion=&m_regions.begin()->second;
   else
     m_currentRegion=&m_defaultRegion;
+
+  m_currentRegion->SetGlobalLocale();
 }
 
 // Returns the current region set for this language
