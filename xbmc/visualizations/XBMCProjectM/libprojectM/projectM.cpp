@@ -82,10 +82,10 @@ projectM::~projectM()
 {
 
  #ifdef USE_THREADS
-  pthread_mutex_lock( &mutex );
+	pthread_mutex_lock( &mutex );
 	running = false;
 	pthread_cond_signal(&condition);
-  pthread_mutex_unlock( &mutex );
+	pthread_mutex_unlock( &mutex );
 	pthread_join(thread, NULL);
 
 	pthread_cond_destroy(&condition);
