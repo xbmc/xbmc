@@ -76,7 +76,7 @@ private:
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
-  bool ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond);
 
   bool AddCut(Cut& NewCut);

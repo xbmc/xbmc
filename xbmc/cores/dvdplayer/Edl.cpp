@@ -142,7 +142,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
     Clear(); // Don't clear in either ReadMyth* method as they are intended to be used together.
     CLog::Log(LOGDEBUG, "%s - Checking for commercial breaks within MythTV for: %s", __FUNCTION__,
               strMovie.c_str());
-    bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
+    bFound = ReadMythCommBreakList(strMovie, fFramesPerSecond);
     CLog::Log(LOGDEBUG, "%s - Checking for cut list within MythTV for: %s", __FUNCTION__,
               strMovie.c_str());
     bFound |= ReadMythCutList(strMovie, fFramesPerSecond);
@@ -798,7 +798,7 @@ CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond)
 {
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
@@ -808,13 +808,13 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
   if (!mythFile.Exists(url))
     return false;
 
-  CLog::Log(LOGDEBUG, "%s - Reading commercial breaks from MythTV for: %s", __FUNCTION__,
+  CLog::Log(LOGDEBUG, "%s - Reading commercial break list from MythTV for: %s", __FUNCTION__,
             url.GetFileName().c_str());
 
   cmyth_commbreaklist_t commbreaklist;
   if (!mythFile.GetCommBreakList(commbreaklist))
   {
-    CLog::Log(LOGERROR, "%s - Error getting commercial breaks from MythTV for: %s", __FUNCTION__,
+    CLog::Log(LOGERROR, "%s - Error getting commercial break list from MythTV for: %s", __FUNCTION__,
               url.GetFileName().c_str());
     return false;
   }
