@@ -32,7 +32,6 @@
 
 #include "StringUtils.h"
 #include "utils/RegExp.h"
-#include "utils/CharsetConverter.h"
 #include "LangInfo.h"
 #include <locale>
 
@@ -136,29 +135,14 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 // Compares separately the numeric and alphabetic parts of a string.
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical (essentially calculates left - right)
-int64_t StringUtils::AlphaNumericCompare(const char *left, const char *right)
+int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *right)
 {
-  // We need to encode to UTF16 before, to avoid weird char in UTF8 encoding
-  CStdStringW wleft, wright;
-  g_charsetConverter.utf8ToW(left, wleft);
-  g_charsetConverter.utf8ToW(right, wright);
-
-  wchar_t *l = (wchar_t *)wleft.c_str();
-  wchar_t *r = (wchar_t *)wright.c_str();
+  wchar_t *l = (wchar_t *)left;
+  wchar_t *r = (wchar_t *)right;
   wchar_t *ld, *rd;
   wchar_t lc, rc;
   int64_t lnum, rnum;
-  locale current_locale = locale("");
-  try
-  {
-    // if the locale does not exist, it crashes (at least on Windows)
-    current_locale = locale( g_langInfo.GetLocale() );
-    if (current_locale.name() == "*") // the locale does not exist, get current system local
-      current_locale = locale("");
-  } catch(...) {
-    current_locale = locale("");
-  }
-  const collate<wchar_t>& coll = use_facet< collate<wchar_t> >( current_locale );
+  const collate<wchar_t>& coll = use_facet< collate<wchar_t> >( locale() );
   int cmp_res = 0;
   while (*l != 0 && *r != 0)
   {
