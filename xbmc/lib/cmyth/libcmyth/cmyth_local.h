@@ -102,6 +102,8 @@ typedef int cmyth_socket_t;
 #define CMYTH_UTC_LEN (sizeof("1240120680") - 1)
 #define CMYTH_COMMBREAK_START 4
 #define CMYTH_COMMBREAK_END 5
+#define CMYTH_CUTLIST_START 1
+#define CMYTH_CUTLIST_END 0
 
 /**
  * MythTV backend connection

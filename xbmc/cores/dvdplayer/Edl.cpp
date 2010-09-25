@@ -139,9 +139,13 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   else if (CUtil::IsMythTV(strMovie)
   &&      !CUtil::IsLiveTV(strMovie))
   {
+    Clear(); // Don't clear in either ReadMyth* method as they are intended to be used together.
     CLog::Log(LOGDEBUG, "%s - Checking for commercial breaks within MythTV for: %s", __FUNCTION__,
               strMovie.c_str());
     bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
+    CLog::Log(LOGDEBUG, "%s - Checking for cut list within MythTV for: %s", __FUNCTION__,
+              strMovie.c_str());
+    bFound |= ReadMythCutList(strMovie, fFramesPerSecond);
   }
 
   if (bFound)
@@ -796,8 +800,6 @@ CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 
 bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  Clear();
-
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
@@ -841,6 +843,59 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
   else
   {
     CLog::Log(LOGDEBUG, "%s - No commercial breaks found in MythTV for: %s", __FUNCTION__,
+              url.GetFileName().c_str());
+    return false;
+  }
+}
+
+bool CEdl::ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond)
+{
+  /*
+   * Exists() sets up all the internal bits needed for GetCutList().
+   */
+  CMythFile mythFile;
+  CURL url(strMovie);
+  if (!mythFile.Exists(url))
+    return false;
+
+  CLog::Log(LOGDEBUG, "%s - Reading cut list from MythTV for: %s", __FUNCTION__,
+            url.GetFileName().c_str());
+
+  cmyth_commbreaklist_t commbreaklist;
+  if (!mythFile.GetCutList(commbreaklist))
+  {
+    CLog::Log(LOGERROR, "%s - Error getting cut list from MythTV for: %s", __FUNCTION__,
+              url.GetFileName().c_str());
+    return false;
+  }
+
+  bool found = false;
+  for (int i = 0; i < (int)commbreaklist->commbreak_count; i++)
+  {
+    cmyth_commbreak_t commbreak = commbreaklist->commbreak_list[i];
+
+    Cut cut;
+    cut.action = CUT;
+    cut.start = (int64_t)(commbreak->start_mark / fFramesPerSecond * 1000);
+    cut.end = (int64_t)(commbreak->end_mark / fFramesPerSecond * 1000);
+
+    if (!AddCut(cut)) // Log and continue with errors while still testing.
+      CLog::Log(LOGERROR, "%s - Invalid cut [%s - %s] found in MythTV for: %s. Continuing anyway.",
+                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str());
+    else
+      found = true;
+  }
+
+  if (found)
+  {
+    CLog::Log(LOGDEBUG, "%s - Added %"PRIuS" cuts from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
+              __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No cut list found in MythTV for: %s", __FUNCTION__,
               url.GetFileName().c_str());
     return false;
   }
