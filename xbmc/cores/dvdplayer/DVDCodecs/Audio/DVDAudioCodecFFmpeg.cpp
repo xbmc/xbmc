@@ -227,7 +227,6 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  if (m_pCodecContext) return m_pCodecContext->channels;
   return m_channels;
 }
 
