@@ -21,10 +21,7 @@
  */
 #include "system.h"
 #ifdef HAS_DBUS
-#include "StdString.h"
-#include "log.h"
 #include <dbus/dbus.h>
-#include <stdio.h>
 
 class CDBusMessage
 {
