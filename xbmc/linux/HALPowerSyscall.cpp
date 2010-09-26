@@ -83,6 +83,7 @@ bool CHALPowerSyscall::doPowerCall(const char *powerstate)
   dbus_int32_t int32 = 0;
   if (connection)
   {
+    bool result = false;
     msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", powerstate);
 
     if (msg && strcmp(powerstate, "Suspend") == 0)
@@ -95,25 +96,15 @@ bool CHALPowerSyscall::doPowerCall(const char *powerstate)
       CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
     else
     {
-      DBusMessage *reply;
-      reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error);
-      if (dbus_error_is_set(&error))
-      {
-        CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
-        if (strcmp(error.name, "org.freedesktop.Hal.Device.PermissionDeniedByPolicy") == 0)
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), g_localizeStrings.Get(13020));
-
-        return false;
-      }
+      result = dbus_connection_send(connection, msg, NULL);
       // Need to create a reader for the Message
-      dbus_message_unref (reply);
       dbus_message_unref(msg);
       msg = NULL;
     }
 
     dbus_connection_unref(connection);
     connection = NULL;
-    return true;
+    return result;
   }
   return false;
 }
