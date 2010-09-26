@@ -28,7 +28,7 @@
 #define _WIN32_POWER_SYSCALL_H_
 #include "IPowerSyscall.h"
 
-class CWin32PowerSyscall : public CPowerSyscallWithoutEvents
+class CWin32PowerSyscall : public IPowerSyscall
 {
 public:
   CWin32PowerSyscall();
