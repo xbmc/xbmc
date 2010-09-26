@@ -192,6 +192,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
       {
         case CODEC_ID_VC1:
         case CODEC_ID_H264:
+        case CODEC_ID_WMV3:
         case CODEC_ID_MPEG2VIDEO:
           if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
             break;
