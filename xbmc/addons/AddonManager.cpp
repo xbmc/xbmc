@@ -479,6 +479,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_SCRIPT_MODULE:
+    case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="cht">
   <charsets>
     <gui unicodefont="true">CP950</gui>
     <subtitle>CP950</subtitle>
@@ -10,14 +10,14 @@
     <subtitle>zh</subtitle>
   </dvd>
   <regions>
-    <region name="台北 (12h)"> 
+    <region name="台北 (12h)" locale="china"> 
       <dateshort>YYYY/MM/DD</dateshort> 
       <datelong>YYYY年M月D日 DDDD</datelong> 
       <time symbolAM="上午" symbolPM="下午">xx h:mm:ss</time> 
       <tempunit>C</tempunit> 
       <speedunit>kmh</speedunit> 
     </region> 
-    <region name="台北 (24h)"> 
+    <region name="台北 (24h)" locale="china"> 
       <dateshort>YYYY/MM/DD</dateshort> 
       <datelong>YYYY年M月D日 DDDD</datelong> 
       <time symbolAM="" symbolPM="">H:mm:ss</time> 

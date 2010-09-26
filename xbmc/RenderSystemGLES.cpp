@@ -48,22 +48,6 @@ CRenderSystemGLES::CRenderSystemGLES()
 
 CRenderSystemGLES::~CRenderSystemGLES()
 {
-  DestroyRenderSystem();
-  CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
-
-  if (m_pGUIshader)
-  {
-    for (int i = 0; i < SM_ESHADERCOUNT; i++)
-    {
-      if (m_pGUIshader[i])
-      {
-        m_pGUIshader[i]->Free();
-        delete m_pGUIshader[i];
-        m_pGUIshader[i] = NULL;
-      }
-    }
-    delete[] m_pGUIshader;
-  }
 }
 
 bool CRenderSystemGLES::InitRenderSystem()
@@ -143,6 +127,22 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
 
 bool CRenderSystemGLES::DestroyRenderSystem()
 {
+  CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
+
+  if (m_pGUIshader)
+  {
+    for (int i = 0; i < SM_ESHADERCOUNT; i++)
+    {
+      if (m_pGUIshader[i])
+      {
+        m_pGUIshader[i]->Free();
+        delete m_pGUIshader[i];
+        m_pGUIshader[i] = NULL;
+      }
+    }
+    delete[] m_pGUIshader;
+  }
+
   m_bRenderCreated = false;
 
   return true;

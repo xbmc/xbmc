@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 09/10/2010-->
+<!--Date of translation: 09/17/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -84,6 +84,8 @@
   <string id="110">미리보기 만들기</string>
   <string id="111">바로가기</string>
   <string id="112">일시중지</string>
+  <string id="113">업데이트 실패함</string>
+  <string id="114">설치 실패함</string>
   <string id="115">복사</string>
   <string id="116">이동</string>
   <string id="117">삭제</string>
@@ -335,9 +337,9 @@
   <string id="388">이른</string>
   <string id="389">소나기</string>
   <string id="390">눈보라</string>
-  <string id="391">최저</string>
+  <string id="391">낮음</string>
   <string id="392">보통</string>
-  <string id="393">최고</string>
+  <string id="393">높음</string>
   <string id="394">안개</string>
   <string id="395">흐린 안개</string>
   <string id="396">지역 선택</string>
@@ -360,8 +362,8 @@
   <string id="415">미리보기 다운로드중...</string>
   <string id="416">사용할수 없음</string>
   <string id="417">보기: 큰 아이콘</string>
-  <string id="418">낮은</string>
-  <string id="419">높은</string>
+  <string id="418">최저</string>
+  <string id="419">최고</string>
   <string id="420">HDMI</string>
   <string id="422">앨범 정보 삭제</string>
   <string id="423">CD 정보 삭제</string>
@@ -766,7 +768,7 @@
   <string id="1407">국지적인</string>
   <string id="1408">얼음</string>
   <string id="1409">눈</string>
-  <string id="1410">온화함</string>
+  <string id="1410">고요함</string>
   <string id="1411">동반한</string>
   <string id="1412">바람</string>
   <string id="1413">이슬비</string>
@@ -1132,6 +1134,10 @@
   <string id="13508">높음</string>
   <string id="13509">매우 높음(느림!)</string>
   <string id="13510">화면에 재생 동기</string>
+  <string id="13550">새로고침 비율 변경시 일시중지</string>
+  <string id="13551">끄기</string>
+  <string id="13552">%.1f 초</string>
+  <string id="13553">%.1f 초</string>
   <string id="13600">애플 리모트</string>
   <string id="13602">리모트를 사용하여 XBMC 시작 허용</string>
   <string id="13603">순차 지연 시간</string>

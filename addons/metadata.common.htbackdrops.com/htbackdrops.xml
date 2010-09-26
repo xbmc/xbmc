@@ -9,7 +9,7 @@
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/data/thumbnails/\2&quot;&gt;http://www.htbackdrops.com/data/media/\2&lt;/thumb&gt;" dest="13">
 				<expression noclean="1" repeat="yes">&lt;td.*?mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;.*?&lt;br&gt;Music Artist Thumbnails&lt;br&gt;.*?&lt;/td&gt;</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseHTBThumbs>
 	<GetHTBFanart dest="5">
@@ -22,7 +22,7 @@
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\2&quot;&gt;data/media/\2&lt;/thumb&gt;" dest="13">
 				<expression noclean="1" repeat="yes">&lt;td.*?mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;.*?&lt;br&gt;Music Artist Backdrops&lt;br&gt;.*?&lt;/td&gt;</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</ParseHTBFanart>
 </scraperfunctions>

@@ -72,11 +72,12 @@ private:
   std::vector<Cut> m_vecCuts;
   std::vector<int64_t> m_vecSceneMarkers;
 
-  bool ReadEdl(const CStdString& strMovie);
+  bool ReadEdl(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
-  bool ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond);
 
   bool AddCut(Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);

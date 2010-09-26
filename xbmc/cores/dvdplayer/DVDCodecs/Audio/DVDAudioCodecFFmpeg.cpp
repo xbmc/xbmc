@@ -38,6 +38,7 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   memset(m_pBuffer2, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
 
   m_iBuffered = 0;
+  m_channels = 0;
   m_pCodecContext = NULL;
   m_pConvert = NULL;
   m_bOpenedCodec = false;
@@ -76,6 +77,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
+  m_channels = hints.channels;
   m_pCodecContext->channels = hints.channels;
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
@@ -225,8 +227,7 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  if (m_pCodecContext) return m_pCodecContext->channels;
-  return 0;
+  return m_channels;
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
@@ -263,15 +264,12 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   }
   else
   /* if there are more bits set then there are channels */
-  if (bits > m_pCodecContext->channels) {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg only reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
+  if (bits != m_pCodecContext->channels) {
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
 
-    /* if it is DTS */
+    /* for some reason some DTS files report a messed up channel count (https://roundup.ffmpeg.org/issue2137) */
     if (m_pCodecContext->codec_id == CODEC_ID_DTS)
-    {
-      /* for some reason some DTS files report 5 channels when there is actually 6 */
       m_pCodecContext->channels = bits;
-    }
   }
 
   if (bits >= m_pCodecContext->channels)
@@ -378,7 +376,8 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
 
   //terminate the channel map
   m_channelMap[index] = PCM_INVALID;
-  m_iMapChannels = GetChannels();
+  m_channels     = m_pCodecContext->channels;
+  m_iMapChannels = m_pCodecContext->channels;
 }
 
 enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()

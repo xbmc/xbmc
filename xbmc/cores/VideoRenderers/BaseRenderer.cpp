@@ -205,9 +205,9 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
     int c_weight = MathUtils::round_int(RefreshWeight(curr.fRefreshRate, fps * multiplier) * 1000.0);
     int i_weight = MathUtils::round_int(RefreshWeight(info.fRefreshRate, fps * multiplier) * 1000.0);
 
-    // Closer the better, prefer lower refresh rate if the same
+    // Closer the better, prefer higher refresh rate if the same
     if ((i_weight <  c_weight)
-    ||  (i_weight == c_weight && info.fRefreshRate < curr.fRefreshRate))
+    ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
       current = (RESOLUTION)i;
   }
 

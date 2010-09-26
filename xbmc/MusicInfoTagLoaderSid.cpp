@@ -191,8 +191,8 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     f2.getline(temp,8191);
     CStdString strTemp(temp);
     strTemp.MakeLower();
-    unsigned int iFind = strTemp.find(strHVSCpath);
-    if (iFind == string::npos)
+    int iFind = strTemp.Find(strHVSCpath);
+    if (iFind < 0)
       continue;
 
     char temp2[1024];

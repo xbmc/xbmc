@@ -49,7 +49,7 @@ protected:
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
   DisplayMode FillInScreens(CStdString strSetting, RESOLUTION res);
-  void FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange);  
+  void FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange);
   void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);
   void OnRefreshRateChanged(RESOLUTION resolution);
   void FillInRegions(CSetting *pSetting);
@@ -105,6 +105,7 @@ protected:
 
   std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
   std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
+  std::map<CStdString, CStdString> m_SkinFontSetIDs;
 
   // state of the window saved in JumpToSection()
   // to get to the previous settings screen when

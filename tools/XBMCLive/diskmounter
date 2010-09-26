@@ -48,7 +48,7 @@ for drive in $drivesntfs; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		uuid=`blkid -o udev /dev/$drive | grep UUID= | cut -d"=" -f2`
 		if [ ! -d /media/$uuid ] ; then
 	                mkdir /media/$uuid
 		fi
@@ -76,7 +76,7 @@ for drive in $drivesfat; do
 	uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		uuid=`blkid -o udev /dev/$drive | grep UUID= | cut -d"=" -f2`
 		if [ ! -d /media/$uuid ] ; then
 	                mkdir /media/$uuid
 		fi
@@ -104,7 +104,7 @@ for drive in $driveshfs; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		uuid=`blkid -o udev /dev/$drive | grep UUID= | cut -d"=" -f2`
 		if [ ! -d /media/$uuid ] ; then
 	                mkdir /media/$uuid
 		fi
@@ -131,7 +131,7 @@ for drive in $drivesext; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		uuid=`blkid -o udev /dev/$drive | grep UUID= | cut -d"=" -f2`
 		if [ ! -d /media/$uuid ] ; then
 	                mkdir /media/$uuid
 		fi

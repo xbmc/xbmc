@@ -787,10 +787,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
       silent = true;
 
-    if( g_alarmClock.isRunning() )
-      g_alarmClock.stop(params[0]);
+    if( g_alarmClock.IsRunning() )
+      g_alarmClock.Stop(params[0]);
 
-    g_alarmClock.start(params[0], seconds, params[1], silent);
+    g_alarmClock.Start(params[0], seconds, params[1], silent);
   }
   else if (execute.Equals("notification"))
   {
@@ -805,7 +805,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("cancelalarm"))
   {
-    g_alarmClock.stop(parameter);
+    g_alarmClock.Stop(parameter);
   }
   else if (execute.Equals("playdvd"))
   {

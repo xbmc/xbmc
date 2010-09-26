@@ -27,6 +27,7 @@
 #include "SingleLock.h"
 #include "log.h"
 
+#include <errno.h>
 #include <iconv.h>
 
 #ifdef __APPLE__
@@ -116,7 +117,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
 
       if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
       {
-        CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+        CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno);
         strDest.ReleaseBuffer();
         return false;
       }
@@ -396,7 +397,7 @@ void CCharsetConverter::fromW(const CStdStringW& strSource,
   CStdString strEnc = enc;
   if (strEnc.Right(8) != "//IGNORE")
     strEnc.append("//IGNORE");
-  convert(iconvString,sizeof(wchar_t),WCHAR_CHARSET,strEnc,strSource,strDest);
+  convert(iconvString,4,WCHAR_CHARSET,strEnc,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -649,11 +650,9 @@ void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CS
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
 }
 
-CStdStringA CCharsetConverter::utf8Left(const CStdStringA &source, int num_chars)
+CStdStringA CCharsetConverter::utf8Left(const CStdStringW &source, int num_chars)
 {
   CStdStringA result;
-  CStdStringW wide;
-  utf8ToW(source, wide);
-  wToUTF8(wide.Left(num_chars), result);
+  wToUTF8(source.Left(num_chars), result);
   return result;
 }

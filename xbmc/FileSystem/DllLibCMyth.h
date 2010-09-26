@@ -123,6 +123,7 @@ public:
   virtual cmyth_chanlist_t mysql_get_chanlist       (cmyth_database_t db)=0;
 
   virtual cmyth_commbreaklist_t get_commbreaklist   (cmyth_conn_t control, cmyth_proginfo_t prog)=0;
+  virtual cmyth_commbreaklist_t get_cutlist         (cmyth_conn_t control, cmyth_proginfo_t prog)=0;
 
 };
 
@@ -219,6 +220,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_chanlist_t,    mysql_get_chanlist,       (cmyth_database_t p1))
 
   DEFINE_METHOD2(cmyth_commbreaklist_t, get_commbreaklist,      (cmyth_conn_t p1, cmyth_proginfo_t p2))
+  DEFINE_METHOD2(cmyth_commbreaklist_t, get_cutlist,            (cmyth_conn_t p1, cmyth_proginfo_t p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_ctrl, conn_connect_ctrl)
@@ -309,6 +311,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_mysql_get_chanlist, mysql_get_chanlist)
 
     RESOLVE_METHOD_RENAME(cmyth_get_commbreaklist, get_commbreaklist)
+    RESOLVE_METHOD_RENAME(cmyth_get_cutlist, get_cutlist)
 
   END_METHOD_RESOLVE()
 };

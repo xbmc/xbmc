@@ -54,3 +54,16 @@ function durationToString(duration) {
 function applyDeviceFixes() {
 	document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 }
+
+var commsErrorTimeout;
+
+function displayCommunicationError(m) {
+	clearTimeout(commsErrorTimeout);
+	var message = m||'Connection to server lost';
+	$('#commsErrorPanel').html(message).show();
+	commsErrorTimeout = setTimeout('hideCommunicationError()', 5000);
+}
+
+function hideCommunicationError() {
+	$('#commsErrorPanel').hide();
+}

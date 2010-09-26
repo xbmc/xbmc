@@ -35,24 +35,34 @@ NowPlayingManager.prototype = {
 			$(window).bind('click', jQuery.proxy(this.hidePlaylist, this));
 		},
 		updateState: function() {
-			jQuery.post(JSON_RPC + '?UpdateState', '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', jQuery.proxy(function(data) {
-				if (data && data.result) {
-					if (data.result.audio && this.activePlayer != 'Audio') {
-						this.activePlayer = 'Audio';
-						this.stopVideoPlaylistUpdate();
-						this.displayAudioNowPlaying();
-						this.stopRefreshTime();
-					} else if (data.result.video && this.activePlayer != 'Video') {
-						this.activePlayer = 'Video';
-						this.stopAudioPlaylistUpdate();
-						this.displayVideoNowPlaying();
-						this.stopRefreshTime();
-					} else if (!data.result.audio && !data.result.video) {
-						this.stopRefreshTime();
+			jQuery.ajax({
+				type: 'POST', 
+				url: JSON_RPC + '?UpdateState', 
+				data: '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', 
+				timeout: 2000,
+				success: jQuery.proxy(function(data) {
+					if (data && data.result) {
+						if (data.result.audio && this.activePlayer != 'Audio') {
+							this.activePlayer = 'Audio';
+							this.stopVideoPlaylistUpdate();
+							this.displayAudioNowPlaying();
+							this.stopRefreshTime();
+						} else if (data.result.video && this.activePlayer != 'Video') {
+							this.activePlayer = 'Video';
+							this.stopAudioPlaylistUpdate();
+							this.displayVideoNowPlaying();
+							this.stopRefreshTime();
+						} else if (!data.result.audio && !data.result.video) {
+							this.stopRefreshTime();
+						}
 					}
-				}
-				setTimeout(jQuery.proxy(this.updateState, this), 1000);
-			}, this), 'json');
+					setTimeout(jQuery.proxy(this.updateState, this), 1000);
+				}, this),
+				error: jQuery.proxy(function(data, error) {
+					displayCommunicationError();
+					setTimeout(jQuery.proxy(this.updateState, this), 2000);
+				}, this), 
+				dataType: 'json'});
 		},
 		bindPlaybackControls: function() {
 			$('#pbNext').bind('click', jQuery.proxy(this.nextTrack, this));
@@ -221,7 +231,7 @@ NowPlayingManager.prototype = {
 					}
 				}, this),
 				error: jQuery.proxy(function(data) {
-					//TODO: Raise Communication Error
+					displayCommunicationError();
 					if (this.autoRefreshAudioPlaylist) {
 						setTimeout(jQuery.proxy(this.updateAudioPlaylist, this), 2000); /* Slow down request period */
 					}
@@ -460,7 +470,7 @@ NowPlayingManager.prototype = {
 					}
 				}, this),
 				error: jQuery.proxy(function(data) {
-					//TODO: Raise Communication Error
+					displayCommunicationError();
 					if (this.autoRefreshVideoPlaylist) {
 						setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
 					}

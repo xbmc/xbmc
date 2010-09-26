@@ -52,6 +52,24 @@
   <string id="61">Nov</string>
   <string id="62">Dez</string>
 
+  <string id="71">N</string>
+  <string id="72">NNO</string>
+  <string id="73">NO</string>
+  <string id="74">ONO</string>
+  <string id="75">O</string>
+  <string id="76">OSO</string>
+  <string id="77">SO</string>
+  <string id="78">SSO</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
+
   <string id="98">Autoansicht</string>
   <string id="99">Große Autoansicht</string>
   <string id="100">Symbolansicht</string>
@@ -347,8 +365,8 @@
   <string id="404">Wind</string>
   <string id="405">Taupunkt</string>
   <string id="406">Feuchtigkeit</string>
-  <string id="407">von</string>
-  <string id="408">mit</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Standards</string>
   <string id="410">Verbinde mit Wetterservice</string>
   <string id="411">Erhalte Wetter-Informationen für:</string>
@@ -450,7 +468,7 @@
   <string id="517">Zuletzt gespielte Alben</string>
   <string id="518">Starten</string>
   <string id="519">Starten als...</string>
-  <string id="520">XBE-Titel ändern</string>
+  <string id="520"></string>
   <string id="521">Sampler</string>
   <string id="522">Quelle entfernen</string>
   <string id="523">Medium wechseln</string>
@@ -598,7 +616,7 @@
   <string id="715">- Zuweisung der IP-Adresse</string>
   <string id="716">Automatisch (DHCP)</string>
   <string id="717">Manuell (Statisch)</string>
-  <string id="718">Standard (Dashboard)</string>
+  <string id="718"></string>
   <string id="719">- IP-Adresse</string>
   <string id="720">- Subnetzmaske</string>
   <string id="721">- Standardgateway</string>
@@ -719,13 +737,13 @@
   <string id="1034">Untermenü</string>
   <string id="1035">Untermenü-Einträge aktivieren</string>
   <string id="1036">Favoriten</string>
-  <string id="1037">Video-Plugins</string>
-  <string id="1038">Musik-Plugins</string>
-  <string id="1039">Bilder-Plugins</string>
+  <string id="1037">Video Add-ons</string>
+  <string id="1038">Musik Add-ons</string>
+  <string id="1039">Bilder Add-ons</string>
   <string id="1040">Ordner wird geladen</string>
   <string id="1041">%i Einträge geladen</string>
   <string id="1042">%i von %i Einträgen geladen</string>
-  <string id="1043">Programm-Plugins</string>
+  <string id="1043">Programm Add-ons</string>
   <string id="1044">Setze Plugin Thumbnail</string>
   <string id="1045">Plugin-Einstellungen</string>
   <string id="1046">Zugangspunkte</string>
@@ -768,9 +786,9 @@
   <string id="1234">Programme &amp; Bilder &amp; Musik</string>
   <string id="1235">Programme &amp; Bilder &amp; Videos</string>
 
-  <string id="1245">FTP-Benutzername</string>
-  <string id="1246">FTP-Passwort</string>
-  <string id="1247">Das Passwort wurde erfolgreich gesetzt.</string>
+  <string id="1245"></string>
+  <string id="1246"></string>
+  <string id="1247"></string>
 
   <string id="1250">Automatische erkennung</string>
   <string id="1251">Andere Systeme erkennen</string>
@@ -810,6 +828,9 @@
   <string id="1418">Gewitter</string>
   <string id="1419">Gewitterregen</string>
   <string id="1420">Mäßig</string>
+  <string id="1421">Sehr Hoch</string> 
+  <string id="1422">Windig</string>
+  <string id="1423">Dunst</string>
 
   <string id="1450">Aktiviere Energiesparmodus bei Leerlauf</string>
 
@@ -817,8 +838,8 @@
 
   <string id="2100">Script-Fehler! : %s</string>
   <string id="2101">Neuere Version benötigt - Siehe Logfile</string>
-  <string id="2102">Grafikkarte</string>
-  <string id="2103">Vorraussetzungen nicht erfüllt - Siehe Logfile</string>
+  <string id="2102"></string>
+  <string id="2103"></string>
 
   <string id="4501">LCD/VFD benutzen</string>
 
@@ -921,7 +942,7 @@
   <string id="12328">Bitte Passwort zum Entsperren eingeben</string>
   <string id="12329">oder mit C abbrechen</string>
   <string id="12330">Bitte die Gamepad-Tastenkombination eingeben</string>
-  <string id="12331">und mit der 'Start'-Taste bestätigen. Um abzubrechen, 'Back'-Taste drücken.</string>
+  <string id="12331">und mit der 'Ok'-Taste bestätigen. Um abzubrechen, 'Back'-Taste drücken.</string>
   <string id="12332">Sperren</string>
   <string id="12333">Entsperren</string>
   <string id="12334">Sperre zurücksetzen</string>
@@ -951,9 +972,9 @@
   <string id="12377">Alle vorherigen Werte werden damit überschrieben</string>
   <string id="12378">Anzeigedauer eines Bildes</string>
   <string id="12379">Schwenk- und Zoom-Effekte verwenden</string>
-  <string id="12380">NTSC-Videos nach PAL</string>
-  <string id="12381">PAL-Videos nach NTSC</string>
-  <string id="12382">NTSC-Videos nach PAL60</string>
+  <string id="12380"></string>
+  <string id="12381"></string>
+  <string id="12382"></string>
   <string id="12383">12 Stunden Uhr</string>
   <string id="12384">24 Stunden Uhr</string>
   <string id="12385">Tag/Monat</string>
@@ -976,8 +997,8 @@
   <string id="13003">- Verzögerung</string>
   <string id="13004">- minimale Dauer der Datei</string>
   <string id="13005">Ausschalten</string>
-  <string id="13006">Dashboard</string>
-  <string id="13007">Individuellen Dashboard-Pfad verwenden</string>
+  <string id="13006"></string>
+  <string id="13007"></string>
   <string id="13008">Funktion für 'Ausschalten'</string>
   <string id="13009">Beenden</string>
   <string id="13010">Ruhezustand</string>
@@ -1029,26 +1050,26 @@
   <string id="13146">verwendet, zieht ein Wechseln dieser Einstellung den</string>
   <string id="13147">Verlust der Steuerung nach sich. Soll fortgefahren werden?</string>
 
-  <string id="13150">Schlüssel:</string>
-  <string id="13151">Temperatur:</string>
-  <string id="13152">Modell:</string>
-  <string id="13153">Firmware:</string>
-  <string id="13154">Modell:</string>
-  <string id="13155">Seriennummer:</string>
-  <string id="13156">Firmware:</string>
-  <string id="13157">Passwort:</string>
-  <string id="13158">Festplattensperre:</string>
+  <string id="13150"></string>
+  <string id="13151"></string>
+  <string id="13152"></string>
+  <string id="13153"></string>
+  <string id="13154"></string>
+  <string id="13155"></string>
+  <string id="13156"></string>
+  <string id="13157"></string>
+  <string id="13158"></string>
   <string id="13159">Subnetzmaske</string>
   <string id="13160">Gateway</string>
   <string id="13161">Primärer DNS-Server</string>
   <string id="13162">Initialisierung fehlgeschlagen</string>
-  <string id="13163">Gamepad</string>
-  <string id="13164">Tastatur</string>
-  <string id="13165">Maus</string>
-  <string id="13166">Kopfhörer/Mikrofon</string>
-  <string id="13167">MemoryStick</string>
-  <string id="13168">Fernbedienung</string>
-  <string id="13169">Controller Port</string>
+  <string id="13163"></string>
+  <string id="13164"></string>
+  <string id="13165"></string>
+  <string id="13166"></string>
+  <string id="13167"></string>
+  <string id="13168"></string>
+  <string id="13169"></string>
   <string id="13170">Nie</string>
   <string id="13171">Sofort</string>
   <string id="13172">Nach %i Sek</string>
@@ -1065,6 +1086,8 @@
   <string id="13210">Gestartet, Alarm in %im</string>
   <string id="13211">Alarm!</string>
   <string id="13212">Deaktiviert. Restzeit war %im%is.</string>
+  <string id="13213">%2.0fm</string> 
+  <string id="13214">%2.0fs</string> 
 
   <string id="13249">Untertitel in RAR-Dateien suchen</string>
   <string id="13250">Untertitel suchen...</string>
@@ -1220,6 +1243,7 @@
   <string id="13428">Hardwarebeschleunigung erlauben (CrystalHD)</string>
   <string id="13429">Hardwarebeschleunigung erlauben (VDADecoder)</string>
   <string id="13430">Hardwarebeschleunigung erlauben (OpenMax)</string>
+  <string id="13431">Pixel Shaders</string>
 
   <string id="13500">A/V Sync Methode</string>
   <string id="13501">Audio Takt</string>
@@ -1284,7 +1308,7 @@
   <string id="14038">Netzwerkeinstellungen wurden geändert</string>
   <string id="14039">XBMC muss neu gestartet werden, damit die Änderung</string>
   <string id="14040">wirksam wird. Soll jetzt neu gestartet werden?</string>
-  <string id="14041">Nachbearbeitung</string>
+  <string id="14041"></string>
   <string id="14043">- Auch während der Wiedergabe ausschalten</string>
   <string id="14044">%i Min</string>
   <string id="14045">%i Sek</string>
@@ -1513,6 +1537,7 @@
   <string id="16316">Automatisch</string>
   <string id="16317">Zeitlich (Hälfte)</string>
   <string id="16318">Zeitlich/Räumlich (Hälfte)</string>
+  <string id="16319">DXVA</string>
 
   <string id="16400">Video Nachbearbeitung</string>
   <string id="16401">Deaktiviert</string>
@@ -1718,6 +1743,8 @@
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
   <string id="20255">Erster Login: Bearbeite dein Profil.</string>
+  <string id="20256">HTS Tvheadend Client</string>
+  <string id="20257">VDR Streamdev Client</string>
 
   <string id="20300">Webserver-Verzeichnis (HTTP)</string>
   <string id="20301">Webserver-Verzeichnis (HTTPS)</string>
@@ -1725,14 +1752,14 @@
   <string id="20303">Export Überspringen und fortsetzen?</string>
   <string id="20304">RSS Feed</string>
 
-  <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
+  <string id="20306"></string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
   <string id="20309">Neuer Ordner</string>
   <string id="20310">LCD während der Wiedergabe ausschalten</string>
   <string id="20311">Unbekannt oder OnBoard (geschützt)</string>
-  <string id="20312">Während 'Pause' das LCD wieder einschalten</string>
-  <string id="20313">Während 'Pause' die LED wieder einschalten</string>
+  <string id="20312">Während 'Pause' das LCD dimmen</string>
+  <string id="20313"></string>
   <string id="20314">Videodatenbank</string>
   <string id="20315"></string>
   <string id="20316">Sortiert nach ID</string>
@@ -1868,7 +1895,7 @@
   <string id="20446">Lokal gespeicherte Informationen gefunden.</string>
   <string id="20447">Ignorieren und neu aus dem Internet laden?</string>
   <string id="20448">Informationen können nicht herunter geladen werden</string>
-  <string id="20449">Der Server ist wahrscheinlich nicht verfügbar.</string>
+  <string id="20449">Es kann keine Verbindung  zum Server hergestellt werden</string>
   <string id="20450">Wollen Sie mit der Aktualisierung fortfahren?</string>
   <string id="20451">Länder</string>
   <string id="20452">Episode</string>
@@ -2055,9 +2082,10 @@
   <string id="21900">Geboren/Gegründet</string>
 
   <string id="22000">Aktualisiere Datenbank beim Start</string>
-  <string id="22001">Datenbank immer im Hintergrund aktualisieren</string>
+  <string id="22001">Fortschritt von Datenbank-Aktualisierungen verbergen</string>
   <string id="22002">DNS Suffix</string>
 
+  <string id="22003">%2.3fs</string> 
   <string id="22004">Verzögert um: %2.3fs</string>
   <string id="22005">Beschleunigt um: %2.3fs</string>
   <string id="22006">Untertitelabstand</string>
@@ -2154,7 +2182,7 @@
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>
-  <string id="24052">Disclaimer</string>
+  <string id="24052">Haftungsausschluss</string>
   <string id="24053">Lizenz:</string>
   <string id="24054">Änderungen</string>
   <string id="24059">Wollen Sie dieses Add-on aktivieren?</string>
@@ -2169,8 +2197,8 @@
   <string id="24068">Aktualisierung verfügbar</string>
   <string id="24069">Aktualisierung</string>
 
-  <string id="24070">Das Add-on kann nicht verwendet werden</string>
-  <string id="24071">Ein unbekannter Fehler ist aufgetreten</string>
+  <string id="24070">Das Add-on kann nicht geladen werden.</string>
+  <string id="24071">Ein unbekannter Fehler ist aufgetreten.</string>
   <string id="24072">Einstellungen fehlen oder sind ungültig</string>
   <string id="24073">Die Verbindung kann nicht hergestellt werden</string>
   <string id="24074">Neustart erforderlich</string>

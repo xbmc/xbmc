@@ -19,8 +19,8 @@
  *
  */
 #include "DBusMessage.h"
-#include "log.h"
 #ifdef HAS_DBUS
+#include "log.h"
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
@@ -71,6 +71,16 @@ DBusMessage *CDBusMessage::SendSession()
   return Send(DBUS_BUS_SESSION);
 }
 
+bool CDBusMessage::SendAsyncSystem()
+{
+  return SendAsync(DBUS_BUS_SYSTEM);
+}
+
+bool CDBusMessage::SendAsyncSession()
+{
+  return SendAsync(DBUS_BUS_SESSION);
+}
+
 DBusMessage *CDBusMessage::Send(DBusBusType type)
 {
   DBusError error;
@@ -86,6 +96,18 @@ DBusMessage *CDBusMessage::Send(DBusBusType type)
   dbus_connection_unref(con);
 
   return returnMessage;
+}
+
+bool CDBusMessage::SendAsync(DBusBusType type)
+{
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con = dbus_bus_get(type, &error);
+
+  if (con && m_message)
+    return dbus_connection_send(con, m_message, NULL);
+  else
+    return false;
 }
 
 DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)

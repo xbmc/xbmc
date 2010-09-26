@@ -415,8 +415,6 @@ void CWinRenderer::UnInit()
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
-  if (m_IntermediateStencilSurface.Get())
-    m_IntermediateStencilSurface.Release();
 
   SAFE_RELEASE(m_colorShader)
   SAFE_RELEASE(m_scalerShader)
@@ -459,20 +457,6 @@ bool CWinRenderer::CreateIntermediateRenderTarget()
   if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, usage, format, D3DPOOL_DEFAULT))
   {
     CLog::Log(LOGERROR, __FUNCTION__": render target creation failed. Going back to bilinear scaling.", format);
-    return false;
-  }
-
-  //Pixel shaders need a matching depth-stencil surface.
-  LPDIRECT3DSURFACE9 tmpSurface;
-  D3DSURFACE_DESC tmpDesc;
-  //Use the same depth stencil format as the backbuffer.
-  pD3DDevice->GetDepthStencilSurface(&tmpSurface);
-  tmpSurface->GetDesc(&tmpDesc);
-  tmpSurface->Release();
-  if (!m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create depth stencil. Going back to bilinear scaling.");
-    m_IntermediateTarget.Release();
     return false;
   }
   return true;
@@ -560,8 +544,6 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if(m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
-  if (m_IntermediateStencilSurface.Get())
-    m_IntermediateStencilSurface.Release();
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
@@ -577,7 +559,6 @@ void CWinRenderer::UpdatePSVideoFilter()
     if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight))
     {
       m_IntermediateTarget.Release();
-      m_IntermediateStencilSurface.Release();
       SAFE_RELEASE(m_scalerShader)
       SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
@@ -784,7 +765,7 @@ void CWinRenderer::ScaleFixedPipeline()
   IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
   D3DSURFACE_DESC srcDesc;
   if (FAILED(hr = m_SWTarget.Get()->GetLevelDesc(0, &srcDesc)))
-    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. (0x%08X)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
 
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
@@ -865,7 +846,7 @@ void CWinRenderer::ScaleFixedPipeline()
   hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
 
   if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
-    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. (0x%08X)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
 
   pD3DDev->SetTexture(0, NULL);
 }
@@ -897,13 +878,10 @@ void CWinRenderer::Stage1(DWORD flags)
   {
     // Switch the render target to the temporary destination
     LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-    LPDIRECT3DSURFACE9 newRT, oldRT, oldDS, newDS;
+    LPDIRECT3DSURFACE9 newRT, oldRT;
     m_IntermediateTarget.GetSurfaceLevel(0, &newRT);
-    m_IntermediateStencilSurface.GetSurfaceLevel(0, &newDS);
     pD3DDevice->GetRenderTarget(0, &oldRT);
     pD3DDevice->SetRenderTarget(0, newRT);
-    pD3DDevice->GetDepthStencilSurface(&oldDS);
-    pD3DDevice->SetDepthStencilSurface(newDS);
 
     CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
     CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
@@ -916,11 +894,8 @@ void CWinRenderer::Stage1(DWORD flags)
 
     // Restore the render target
     pD3DDevice->SetRenderTarget(0, oldRT);
-    pD3DDevice->SetDepthStencilSurface(oldDS);
 
-    oldDS->Release();
     oldRT->Release();
-    newDS->Release();
     newRT->Release();
   }
 }
@@ -934,6 +909,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   RECT rect;
+  HRESULT hr;
   rect.top    = m_destRect.y1;
   rect.bottom = m_destRect.y2;
   rect.left   = m_destRect.x1;
@@ -944,9 +920,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
 
   IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+  if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
   {
-    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target");
+    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return;
   }
 
@@ -1160,9 +1136,9 @@ void YUVBuffer::StartDecode()
 
 void YUVBuffer::Clear()
 {
-    memset(planes[PLANE_Y].rect.pBits, 0,   planes[0].rect.Pitch * m_height);
-    memset(planes[PLANE_U].rect.pBits, 128, planes[1].rect.Pitch * m_height>>1);
-    memset(planes[PLANE_V].rect.pBits, 128, planes[2].rect.Pitch * m_height>>1);
+    memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
+    memset(planes[PLANE_U].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
+    memset(planes[PLANE_V].rect.pBits, 128, planes[PLANE_V].rect.Pitch * (m_height/2));
 }
 
 //==================================

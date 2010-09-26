@@ -316,8 +316,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       // get decoded data and the size of it
       audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
       audioframe.pts = m_audioClock;
-      audioframe.channels = m_pAudioCodec->GetChannels();
       audioframe.channel_map = m_pAudioCodec->GetChannelMap();
+      audioframe.channels = m_pAudioCodec->GetChannels(); /* get channels AFTER map so that it can be corrected if bad */
       audioframe.bits_per_sample = m_pAudioCodec->GetBitsPerSample();
       audioframe.sample_rate = m_pAudioCodec->GetSampleRate();
       audioframe.passthrough = m_pAudioCodec->NeedPassthrough();
@@ -630,6 +630,8 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
     CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
     m_prevsynctype = m_synctype;
   }
+
+  CDVDClock::SetMasterClock(m_synctype == SYNC_DISCON);
 }
 
 void CDVDPlayerAudio::HandleSyncError(double duration)

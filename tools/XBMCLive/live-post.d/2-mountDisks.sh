@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -18,20 +18,17 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-if [ -f /target/boot/grub/grub.cfg ]; then
-	# Modify /etc/default/grub on target
+kernelParams=$(cat /proc/cmdline)
 
-	# Comment out defaults if not done already
-	sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT/' /target/etc/default/grub
-	sed -i -e 's/^GRUB_GFXMODE/#GRUB_GFXMODE/' /target/etc/default/grub
-	sed -i -e 's/^GRUB_GFXPAYLOAD_LINUX/#GRUB_GFXPAYLOAD_LINUX/' /target/etc/default/grub
+subString=${kernelParams##*xbmc=}
+xbmcParams=${subString%% *}
 
-	# Set our own defaults
-	echo  >> /target/etc/default/grub
-	echo '# Defaults from XBMC Installation' >> /target/etc/default/grub
-	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount,setvolume loglevel=0 video=vesafb"' >> /target/etc/default/grub
-	echo 'GRUB_GFXMODE="800x600"' >> /target/etc/default/grub
-	echo 'GRUB_GFXPAYLOAD_LINUX="800x600"' >> /target/etc/default/grub
+activationToken="nodiskmount"
 
-	in-target update-grub
+# if strings are the same the token is NOT part of the parameters list
+# here we want to stop script if the token is there
+if [ "$xbmcParams" != "${xbmcParams%$activationToken*}" ] ; then
+	exit 0
 fi
+
+/usr/bin/diskmounter

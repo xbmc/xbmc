@@ -271,10 +271,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("mpegts");
   }
 
+  // try to abort after 30 seconds
+  m_timeout = CTimeUtils::GetTimeMS() + 30000;
+
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    m_timeout = CTimeUtils::GetTimeMS() + 10000;
-
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
@@ -286,7 +287,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
   else
   {
-    m_timeout = 0;
     unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
@@ -951,6 +951,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->bVFR = true;
         else
           st->bVFR = false;
+
+        // never trust pts in avi files with h264.
+        if (m_bAVI && pStream->codec->codec_id == CODEC_ID_H264)
+          st->bPTSInvalid = true;
 
         if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {

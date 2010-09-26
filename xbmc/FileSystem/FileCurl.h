@@ -104,6 +104,7 @@ namespace XFILE
 
           /* returned http header */
           CHttpHeader m_httpheader;
+          bool        m_headerdone;
 
           size_t WriteCallback(char *buffer, size_t size, size_t nitems);
           size_t HeaderCallback(void *ptr, size_t size, size_t nmemb);

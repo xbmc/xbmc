@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 22/08/2010-->
-<!--Based on English r32890-->
+<!--Date of translation: 19/09/2010-->
+<!--Based on English r33901-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -91,7 +91,8 @@
   <string id="110">Bélyegképek létrehozása</string>
   <string id="111">Parancsikonok</string>
   <string id="112">Szünet</string>
-
+  <string id="113">A frissítés nem sikerült</string>
+  <string id="114">A telepítés nem sikerült</string>
   <string id="115">Másolás</string>
   <string id="116">Áthelyezés</string>
   <string id="117">Törlés</string>
@@ -176,6 +177,7 @@
   <string id="196">Film választás:</string>
   <string id="197">%s lekérdezése</string>
   <string id="198">Filminformációk betöltése</string>
+  <string id="199">Webes kezelőfelület</string>
 
   <string id="202">Röviden</string>
   <string id="203">Tartalom</string>
@@ -1277,6 +1279,11 @@
   <string id="13509">Nagyon magas(lassú!)</string>
   <string id="13510">Lejátszás szinkronizálása a megjelenítőhöz</string>
 
+  <string id="13550">Videó megállítása a frekvenciaváltás alatt</string>
+  <string id="13551">Kikapcsolva</string>
+  <string id="13552">%.1f másodperc</string>
+  <string id="13553">%.1f másodperc</string>
+	
   <string id="13600">Apple távirányító</string>
 
   <string id="13602">XBMC indítható legyen távirányítóval</string>
@@ -2156,7 +2163,7 @@
   <string id="22043">fekete/fehér</string>
 
   <string id="22079">Alapértelmezett kiválasztási művelet</string>
-  <string id="22080">Lejátszás</string>
+  <string id="22080">Választás</string>
   <string id="22081">Információ mutatása</string>
   <string id="22082">Több...</string>
   <string id="22083">Összes játszása</string>

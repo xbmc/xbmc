@@ -20,7 +20,7 @@
 
 hookDir=Hooks
 
-cp -R /cdrom/$hookDir /target/tmp
+cp -R /cdrom/install/$hookDir /target/tmp
 
 cat > /target/tmp/runHooks.sh << 'EOF'
 hookDir=$1

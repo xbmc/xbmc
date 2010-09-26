@@ -43,6 +43,8 @@ CLangInfo::CRegion::CRegion(const CRegion& region)
   m_strDVDMenuLanguage=region.m_strDVDMenuLanguage;
   m_strDVDAudioLanguage=region.m_strDVDAudioLanguage;
   m_strDVDSubtitleLanguage=region.m_strDVDSubtitleLanguage;
+  m_strLangLocaleName = region.m_strLangLocaleName;
+  m_strRegionLocaleName = region.m_strRegionLocaleName;
 
   m_strDateFormatShort=region.m_strDateFormatShort;
   m_strDateFormatLong=region.m_strDateFormatLong;
@@ -74,6 +76,7 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDVDMenuLanguage="en";
   m_strDVDAudioLanguage="en";
   m_strDVDSubtitleLanguage="en";
+  m_strLangLocaleName = "English";
 
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
@@ -136,6 +139,35 @@ void CLangInfo::CRegion::SetTimeZone(const CStdString& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
+// set the locale associated with this region global. This affects string
+// sorting & transformations
+void CLangInfo::CRegion::SetGlobalLocale()
+{
+  CStdString strLocale;
+  if (m_strRegionLocaleName.length() > 0)
+    strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
+  else
+    strLocale = m_strLangLocaleName;
+
+  locale current_locale = locale("");
+  try
+  {
+    // if the locale does not exist, it crashes (at least on Windows)
+    current_locale = locale( strLocale );
+    if (current_locale.name().compare("*") == 0)
+    {
+      // the locale does not exist, get current system local
+      current_locale = locale("");
+    }
+
+  } catch(...) {
+    current_locale = locale("");
+  }
+
+  locale::global(current_locale);
+  CLog::Log(LOGINFO, "global locale set to %s", current_locale.name().c_str());
+}
+
 CLangInfo::CLangInfo()
 {
   SetDefaults();
@@ -163,6 +195,9 @@ bool CLangInfo::Load(const CStdString& strFileName)
     CLog::Log(LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
     return false;
   }
+
+  if (pRootElement->Attribute("locale"))
+    m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
   if (pCharSets && !pCharSets->NoChildren())
@@ -209,6 +244,9 @@ bool CLangInfo::Load(const CStdString& strFileName)
       region.m_strName=pRegion->Attribute("name");
       if (region.m_strName.IsEmpty())
         region.m_strName="N/A";
+
+      if (pRegion->Attribute("locale"))
+        region.m_strRegionLocaleName = pRegion->Attribute("locale");
 
       const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
       if (pDateLong && !pDateLong->NoChildren())
@@ -323,6 +361,16 @@ const CStdString& CLangInfo::GetDVDSubtitleLanguage() const
   return m_currentRegion->m_strDVDSubtitleLanguage;
 }
 
+const CStdString& CLangInfo::GetLanguageLocale() const
+{
+  return m_currentRegion->m_strLangLocaleName;
+}
+
+const CStdString& CLangInfo::GetRegionLocale() const
+{
+  return m_currentRegion->m_strRegionLocaleName;
+}
+
 // Returns the format string for the date of the current language
 const CStdString& CLangInfo::GetDateFormat(bool bLongDate/*=false*/) const
 {
@@ -372,6 +420,8 @@ void CLangInfo::SetCurrentRegion(const CStdString& strName)
     m_currentRegion=&m_regions.begin()->second;
   else
     m_currentRegion=&m_defaultRegion;
+
+  m_currentRegion->SetGlobalLocale();
 }
 
 // Returns the current region set for this language

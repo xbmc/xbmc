@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/02/2010-->
+<!--Date of translation: 09/19/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 32080-->
+<!--Based on english strings version 33901-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -85,6 +85,8 @@
   <string id="110">Utwórz miniaturki</string>
   <string id="111">Skróty</string>
   <string id="112">Pauza</string>
+  <string id="113">Błąd aktualizacji</string>
+  <string id="114">Błąd instalacji</string>
   <string id="115">Kopiuj</string>
   <string id="116">Przenieś</string>
   <string id="117">Usuń</string>
@@ -162,6 +164,7 @@
   <string id="195">Nie znaleziono informacji</string>
   <string id="196">Wybierz film:</string>
   <string id="198">Wczytuję informacje o filmie</string>
+  <string id="199">Interfejs WWW</string>
   <string id="202">O filmie</string>
   <string id="203">Krótki opis</string>
   <string id="205">Głosy</string>
@@ -212,7 +215,7 @@
   <string id="255">CDDB</string>
   <string id="256">Pobieram informację o CD</string>
   <string id="257">Błąd</string>
-  <string id="258">Włącz czytanie tagów (metadanych)</string>
+  <string id="258">Włącz obsługę tagów (metadanych)</string>
   <string id="259">Otwieram</string>
   <string id="260">Shoutcast</string>
   <string id="261">Oczekuję na rozpoczęcie...</string>
@@ -242,7 +245,7 @@
   <string id="287">Napisy</string>
   <string id="288">Czcionka</string>
   <string id="289">- Rozmiar</string>
-  <string id="290">Wzmocnienie (Dynamic Range Compression)</string>
+  <string id="290">Dynamiczna kontrola zakresu</string>
   <string id="291">Wideo</string>
   <string id="292">Dźwięk</string>
   <string id="293">Wskaż napisy</string>
@@ -294,7 +297,7 @@
   <string id="345">Rok</string>
   <string id="346">Wzmocnij głośność przy downmixie</string>
   <string id="350">Programy</string>
-  <string id="351">Wył.</string>
+  <string id="351">Wyłączone</string>
   <string id="352">Przyciemnienie</string>
   <string id="353">Czarny ekran</string>
   <string id="354">Matrix</string>
@@ -655,7 +658,7 @@
   <string id="795">Wstępna przerwa przed powtórzeniem (ms)</string>
   <string id="796">Właściwa przerwa przed powtórzeniem (ms)</string>
   <string id="797">Maksymalna liczba klientów</string>
-  <string id="798">Dostęp do Internetu</string>
+  <string id="798">Internet</string>
   <string id="850">Wprowadzono nieprawidłowy port</string>
   <string id="851">Wartość musi być z przedziału 1-65535</string>
   <string id="852">Wartość musi być z przedziału 1024-65535</string>
@@ -709,7 +712,7 @@
   <string id="1048">- Użytkownik</string>
   <string id="1049">Ustawienia skryptu</string>
   <string id="1050">Single</string>
-  <string id="1051">Wprwadź adres</string>
+  <string id="1051">Wprowadź adres</string>
   <string id="1200">Klient SMB</string>
   <string id="1202">Grupa robocza</string>
   <string id="1203">Domyślny użytkownik</string>
@@ -747,7 +750,7 @@
   <string id="1255">Wysyłaj nazwę użytkownika i hasło FTP</string>
   <string id="1256">Interwał pingu</string>
   <string id="1257">Połączyć z wykrytym systemem?</string>
-  <string id="1260">Rozgłoś te usługi do innych systemów poprzez funkcję Zeroconf</string>
+  <string id="1260">Rozgłoś te usługi do innych systemów poprzez Zeroconf</string>
   <string id="1300">Inne urządzenie audio</string>
   <string id="1301">Inne urządzenie przejścia</string>
   <string id="1396">zamiecie</string>
@@ -824,7 +827,7 @@
   <string id="10506">Programy</string>
   <string id="10507">Konfiguracja</string>
   <string id="10508">Prognoza pogody</string>
-  <string id="10509">Gry sieciowie</string>
+  <string id="10509">Gry sieciowe</string>
   <string id="10510">Rozszerzenia</string>
   <string id="10511">Informacje o systemie</string>
   <string id="10516">Muzyka - Biblioteka</string>
@@ -863,7 +866,7 @@
   <string id="12327">Wprowadź główne hasło</string>
   <string id="12328">Wprowadź kod odblokowujący</string>
   <string id="12329">albo naciśnij C, aby anulować</string>
-  <string id="12330">Wprowadź kombinacje przycisków na padzie</string>
+  <string id="12330">Wprowadź kombinację przycisków na padzie</string>
   <string id="12331">i naciśnij Start, aby zatwierdzić lub naciśnij Back, aby anulować.</string>
   <string id="12332">Ustaw zabezpieczenie</string>
   <string id="12333">Odblokuj</string>
@@ -946,7 +949,7 @@
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU poziom skalowania HQ</string>
-  <string id="13122">VDPAU koekcja poziomu kolorów (YCbCr i RGB)</string>
+  <string id="13122">VDPAU korekcja poziomu kolorów (YCbCr i RGB)</string>
   <string id="13130">Wygaszaj inne ekrany</string>
   <string id="13131">Wyłączone</string>
   <string id="13132">Wygaszaj ekrany</string>
@@ -1123,11 +1126,15 @@
   <string id="13508">Wysoka</string>
   <string id="13509">Bardzo wysoka (wolne!)</string>
   <string id="13510">Synchronizuj odtwarzanie z ekranem</string>
+  <string id="13550">Pauza podczas zmiany odświeżania</string>
+  <string id="13551">Wyłącz</string>
+  <string id="13552">%.1f sekunda</string>
+  <string id="13553">%.1f sekund(y)</string>
   <string id="13600">Pilot Apple</string>
-  <string id="13602">Zezwalaj na start XBMC za pomoca pilota</string>
+  <string id="13602">Zezwalaj na start XBMC za pomocą pilota</string>
   <string id="13603">Opóźnienie sekwencji</string>
   <string id="13610">Wyłączony</string>
-  <string id="13611">Standartowy</string>
+  <string id="13611">Standardowy</string>
   <string id="13612">Pilot uniwersalny</string>
   <string id="13613">Pilot do wszystkiego (Harmony)</string>
   <string id="13620">Błąd Pilota Apple</string>
@@ -1234,7 +1241,7 @@
   <string id="15111">Motyw skóry</string>
   <string id="15112">Domyślny</string>
   <string id="15200">Last.fm</string>
-  <string id="15201">Publikuj odtwarzane utwory do do Last.fm</string>
+  <string id="15201">Publikuj odtwarzane utwory do Last.fm</string>
   <string id="15202">Użytkownik</string>
   <string id="15203">Hasło</string>
   <string id="15204">Stan czuwania...</string>
@@ -1288,12 +1295,12 @@
   <string id="15280">Nie można pobrać listy z Last.fm...</string>
   <string id="15281">Wpisz nazwę wykonawcy, aby wyszukać pokrewnych</string>
   <string id="15282">Wpisz tag, aby znaleźć podobne</string>
-  <string id="15283">Utowry ostatnio odtwarzane przez %name%</string>
+  <string id="15283">Utwory ostatnio odtwarzane przez %name%</string>
   <string id="15284">Słuchaj Radia %name% Poleca z Last.fm</string>
   <string id="15285">Top tagi dla %name%</string>
   <string id="15286">Słuchaj playlisty %name% radia Last.fm</string>
-  <string id="15287">Napewno chcesz dodać ten utwór do ulubionych?</string>
-  <string id="15288">Napewno chcesz zablokować ten utwór?</string>
+  <string id="15287">Na pewno chcesz dodać ten utwór do ulubionych?</string>
+  <string id="15288">Na pewno chcesz zablokować ten utwór?</string>
   <string id="15289">Dodano do ulubionych: '%s'.</string>
   <string id="15290">Nie można dodać '%s' do ulubionych.</string>
   <string id="15291">Zablokowano: '%s'.</string>
@@ -1308,7 +1315,7 @@
   <string id="15301">Nie mogę połączyć się z serwerem</string>
   <string id="15302">Nie znaleziono żadnego serwera</string>
   <string id="15303">Grupa robocza nie została odnaleziona</string>
-  <string id="15310">Otwieranie wielościeżkowego źróła</string>
+  <string id="15310">Otwieranie wielościeżkowego źródła</string>
   <string id="15311">Ścieżka:</string>
   <string id="16000">Ogólne</string>
   <string id="16002">Przeszukuję w Internecie</string>
@@ -1338,7 +1345,7 @@
   <string id="16029">Przejrzyj plik dziennika (log).</string>
   <string id="16030">Tryb Imprezy przerwany.</string>
   <string id="16031">Nie ma utworów spełniających twoje kryteria.</string>
-  <string id="16032">Nie można zainicjalizować bazy danych.</string>
+  <string id="16032">Nie można utworzyć bazy danych.</string>
   <string id="16033">Nie można otworzyć bazy danych.</string>
   <string id="16034">Nie można pobrać utworów z bazy danych.</string>
   <string id="16035">Playlista Trybu Imprezy</string>
@@ -1465,9 +1472,9 @@
   <string id="20101">Wprowadzenie hasła głównego uaktywnia tryb administratora</string>
   <string id="20102">czy może raczej skopiować je z profilu domyślnego?</string>
   <string id="20103">Zapisać zmiany w profilu?</string>
-  <string id="20104">Znalaziono poprzednie ustawienia.</string>
+  <string id="20104">Znaleziono poprzednie ustawienia.</string>
   <string id="20105">Czy chcesz je przywrócić?</string>
-  <string id="20106">Znalaziono poprzednie źródła mediów.</string>
+  <string id="20106">Znaleziono poprzednie źródła mediów.</string>
   <string id="20109">- Powiększenie</string>
   <string id="20110">Ustawienia UPnP</string>
   <string id="20111">Autostart klienta UPnP</string>
@@ -1532,7 +1539,7 @@
   <string id="20171">Otoczenie sieciowe Windows (SMB)</string>
   <string id="20172">Serwer XBMSP</string>
   <string id="20173">Serwer FTP</string>
-  <string id="20174">ITunes (DAAP)</string>
+  <string id="20174">iTunes (DAAP)</string>
   <string id="20175">Serwer UPnP</string>
   <string id="20176">Pokazuj info o filmie</string>
   <string id="20177">Gotowe</string>
@@ -1632,7 +1639,7 @@
   <string id="20377">Odśwież informację o serialu</string>
   <string id="20378">Odświeżyć dane dla wszystkich odcinków?</string>
   <string id="20379">Wybrany katalog zawiera jeden serial</string>
-  <string id="20380">Wyklucz wybrane katalogi ze skanowia</string>
+  <string id="20380">Wyklucz wybrane katalogi ze skanowania</string>
   <string id="20381">Specjalne</string>
   <string id="20382">Automatycznie pobieraj ikony sezonu</string>
   <string id="20383">Wybrany katalog zawiera jeden plik wideo</string>
@@ -1664,7 +1671,7 @@
   <string id="20410">Zwiastun</string>
   <string id="20411">Tylko tytuły</string>
   <string id="20412">Pomiń podział na sezony</string>
-  <string id="20413">Pobierz FanArt</string>
+  <string id="20413">Pobierz Fanart</string>
   <string id="20414">Fanart jako tło w trybie biblioteki</string>
   <string id="20415">Wyszukiwanie nowych pozycji</string>
   <string id="20416">Premiera</string>
@@ -1694,7 +1701,7 @@
   <string id="20441">Fanart z Internetu</string>
   <string id="20442">Zmień typ zawartości</string>
   <string id="20443">Odświeżyć informacje dla wszystkich</string>
-  <string id="20444">pozycji związanych z tą scieżką?</string>
+  <string id="20444">pozycji związanych z tą ścieżką?</string>
   <string id="20445">Fanart</string>
   <string id="20446">Informacja lokalna znaleziona.</string>
   <string id="20447">Zignorować i odświeżyć z Internetu?</string>
@@ -1763,7 +1770,7 @@
   <string id="21413">Domyślny dla filmów</string>
   <string id="21414">Domyślny dla seriali</string>
   <string id="21415">Domyślny dla teledysków</string>
-  <string id="21416">Włącz fallback bazujący na języku scrapera</string>
+  <string id="21416">Włącz powrót bazując na języku scrapera</string>
   <string id="21417">- Ustawienia</string>
   <string id="21418">wielojęzyczny</string>
   <string id="21419">Brak scraperów</string>
@@ -1796,7 +1803,7 @@
   <string id="21446">Kodek audio</string>
   <string id="21447">Język dialogów</string>
   <string id="21448">Język napisów</string>
-  <string id="21449">Przyciski pilota emulują naciśniecia klawiszy</string>
+  <string id="21449">Przyciski pilota emulują naciśnięcia klawiszy</string>
   <string id="21450">- Edytuj</string>
   <string id="21451">Wymagane połączenie z Internetem.</string>
   <string id="21452">Pobierz więcej...</string>
@@ -1917,7 +1924,7 @@
   <string id="22081">Pokaż informacje</string>
   <string id="22082">Więcej...</string>
   <string id="22083">Odtwórz wszystko</string>
-  <string id="23049">Teletext niedostępny</string>
+  <string id="23049">Teletekst niedostępny</string>
   <string id="23050">Włącz Teletekst</string>
   <string id="23051">Część %i</string>
   <string id="23052">Ładowanie %i bajtów</string>
@@ -1957,7 +1964,7 @@
   <string id="24036">Lista zmian</string>
   <string id="24037">Usuń</string>
   <string id="24038">Instaluj</string>
-  <string id="24039">Wyłącz wtyczkę</string>
+  <string id="24039">Wyłączone wtyczki</string>
   <string id="24040">(Wyczyść bieżące ustawienie)</string>
   <string id="24041">Instaluj z pliku zip</string>
   <string id="24042">Pobieram %i%%</string>
@@ -1970,7 +1977,7 @@
   <string id="24059">Czy chcesz włączyć tę wtyczkę?</string>
   <string id="24060">Czy chcesz wyłączyć tę wtyczkę?</string>
   <string id="24061">Dostępna aktualizacja wtyczki!</string>
-  <string id="24062">Włącz wtyczki</string>
+  <string id="24062">Włączone wtyczki</string>
   <string id="24063">Auto aktualizacja</string>
   <string id="24064">Wtyczka włączona</string>
   <string id="24065">Wtyczka zaktualizowana</string>
@@ -1993,10 +2000,9 @@
   <string id="29800">Tryb biblioteki</string>
   <string id="29801">Klawiatura QWERTY</string>
   <string id="29802">Używasz bezpośredniego przejścia dźwięku</string>
-  <string id="30011">Czas trwania</string>
-  <string id="33001">Jakość obrazu</string>
-  <string id="33002">Odtwarzanie strumieniowe</string>
-  <string id="33003">Pobieranie</string>
+  <string id="33001">Jakość zwiastunu</string>
+  <string id="33002">Strumieniuj</string>
+  <string id="33003">Pobierz</string>
   <string id="33004">Pobierz i odtwarzaj</string>
   <string id="33005">Pobierz i zapisz</string>
   <string id="33006">Dzisiaj</string>
@@ -2004,6 +2010,7 @@
   <string id="33008">Zapisywanie</string>
   <string id="33009">Kopiowanie</string>
   <string id="33010">Zapisz do</string>
+  <string id="33011">Czas przeszukiwania</string>
   <string id="33012">Krótki</string>
   <string id="33013">Długi</string>
   <string id="33014">Użyj odtwarzacza DVD zamiast zwykłego</string>
@@ -2059,7 +2066,7 @@
   <string id="33079">Lubię</string>
   <string id="33080">Nie lubię</string>
   <string id="33081">Plik znajduje się w stosie, wybierz część którą chcesz odtwarzać.</string>
-  <string id="33082">Scieżka do skryptu</string>
+  <string id="33082">Ścieżka do skryptu</string>
   <string id="33083">Włącz własny przycisk dla skryptu</string>
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
