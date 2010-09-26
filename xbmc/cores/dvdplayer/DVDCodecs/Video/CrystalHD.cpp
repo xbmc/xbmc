@@ -1165,6 +1165,8 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       m_convert_bitstream = false;
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
+      if (!m_has_bcm70015)
+        return false;
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
       StreamType = BCM::BC_STREAM_TYPE_ES;
       m_convert_bitstream = false;
@@ -1208,8 +1210,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       Subtype = BCM::BC_MSUBTYPE_WVC1;
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
-      if (!m_has_bcm70015)
-        return false;
       Subtype = BCM::BC_MSUBTYPE_WMV3;
       pMetaData = (uint8_t*)hints.extradata;
       metaDataSz = hints.extrasize;
