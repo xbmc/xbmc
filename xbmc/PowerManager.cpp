@@ -27,7 +27,6 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
-#include "utils/AlarmClock.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -211,16 +210,20 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
   CAnnouncementManager::Announce(System, "xbmc", "Sleep");
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   g_application.StopPlaying();
+  g_application.StopShutdownTimer();
 }
 
 void CPowerManager::OnWake()
 {
-  CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
   CAnnouncementManager::Announce(System, "xbmc", "Wake");
+  CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  // reset out timers
+  g_application.ResetShutdownTimers();
 
 #ifdef HAS_SDL
   if (g_Windowing.IsFullScreen())
@@ -237,10 +240,6 @@ void CPowerManager::OnWake()
   }
   g_application.ResetScreenSaver();
 #endif
-
-  // reset custom shutdowntimer
-  if (g_alarmClock.HasAlarm("shutdowntimer"))
-    g_alarmClock.Stop("shutdowntimer", true);
 
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
