@@ -27,7 +27,6 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
-#include "utils/AlarmClock.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -150,13 +149,7 @@ bool CPowerManager::Suspend()
 {
   bool success = false;
   if (CanSuspend())
-  {
-#ifdef HAS_LCD
-    g_lcd->SetBackLight(0);
-#endif
-    g_Keyboard.ResetState();
     success = m_instance->Suspend();
-  }
   
   if (success)
     CAnnouncementManager::Announce(System, "xbmc", "Suspend");
@@ -167,10 +160,7 @@ bool CPowerManager::Hibernate()
 {
   bool success = false;
   if (CanHibernate())
-  {
-    g_Keyboard.ResetState();
     success = m_instance->Hibernate();
-  }
 
   if (success)
     CAnnouncementManager::Announce(System, "xbmc", "Hibernate");
@@ -211,16 +201,26 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
   CAnnouncementManager::Announce(System, "xbmc", "Sleep");
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
+
+#ifdef HAS_LCD
+  g_lcd->SetBackLight(0);
+#endif
+
+  g_Keyboard.ResetState();
 
   g_application.StopPlaying();
+  g_application.StopShutdownTimer();
 }
 
 void CPowerManager::OnWake()
 {
-  CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
   CAnnouncementManager::Announce(System, "xbmc", "Wake");
+  CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  // reset out timers
+  g_application.ResetShutdownTimers();
 
 #ifdef HAS_SDL
   if (g_Windowing.IsFullScreen())
@@ -237,10 +237,6 @@ void CPowerManager::OnWake()
   }
   g_application.ResetScreenSaver();
 #endif
-
-  // reset custom shutdowntimer
-  if (g_alarmClock.HasAlarm("shutdowntimer"))
-    g_alarmClock.Stop("shutdowntimer", true);
 
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)

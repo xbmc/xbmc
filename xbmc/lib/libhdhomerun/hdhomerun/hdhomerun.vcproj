@@ -152,7 +152,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ProfileGuidedDatabase=""
-				ImportLibrary="Release\$(TargetName).lib"
+				ImportLibrary="$(OutDir)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

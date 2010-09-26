@@ -253,6 +253,11 @@ config.log
 /project/Win32BuildSetup/dependencies/SDL.dll
 /project/Win32BuildSetup/dependencies/glew32.dll
 
+# /project/Win32BuildSetup/
+/project/Win32BuildSetup/BuildLog.htm
+/project/Win32BuildSetup/XBMCSetup*.exe
+/project/Win32BuildSetup/languages.nsi
+/project/Win32BuildSetup/BUILD_WIN32/
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads

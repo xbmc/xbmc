@@ -108,11 +108,12 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_CallAgainWithSameBuffer = false;
 
   CFileItem item(strFile, false);
-  bool bIsInternetStream = item.IsInternetStream();
-  if (!bIsInternetStream)
+  CMusicInfoTagLoaderMP3 mp3info;
+
+  bool bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
+  if(bTags)
   {
     // Guess Bitrate and obtain replayGain information etc.
-    CMusicInfoTagLoaderMP3 mp3info;
     mp3info.ReadSeekAndReplayGainInfo(strFile);
     mp3info.GetSeekInfo(m_seekInfo);
     mp3info.GetReplayGain(m_replayGain);
@@ -129,16 +130,14 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   length = m_file.GetLength();
-  if (!bIsInternetStream)
-  {
+  if (bTags)
     m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
-  }
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
   // and cycle around continually reading until we have the necessary data
   // as a first workaround skip the id3v2 tag at the beginning of the file
-  if (!bIsInternetStream)
+  if (bTags)
   {
     if (m_seekInfo.GetNumOffsets() > 0)
     {
@@ -167,7 +166,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
       goto error;
     }
-    if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
+    if (bTags) m_Bitrate = m_Formatdata[4];
   } ;
   return true;
 

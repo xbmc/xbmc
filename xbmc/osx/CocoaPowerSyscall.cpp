@@ -281,6 +281,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // if we don't respond, OS will sleep in 30 second.
       ctx->m_OnSuspend = true;
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
+      //CLog::Log(LOGDEBUG, "%s - kIOMessageCanSystemSleep", __FUNCTION__);
     break;
     case kIOMessageSystemWillSleep:
       // System demanded sleep from:
@@ -288,7 +289,11 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       //   2) closing the lid of a laptop.
       //   3) running out of battery power.
       ctx->m_OnSuspend = true;
+      // force processing of this power event. This callback runs
+      // in main thread so we can do this.
+      g_powerManager.ProcessEvents();
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
+      //CLog::Log(LOGDEBUG, "%s - kIOMessageSystemWillSleep", __FUNCTION__);
       // let XBMC know system will sleep
       // TODO:
     break;
@@ -297,6 +302,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // let XBMC know system has woke
       // TODO:
       ctx->m_OnResume = true;
+      //CLog::Log(LOGDEBUG, "%s - kIOMessageSystemHasPoweredOn", __FUNCTION__);
     break;
 	}
 }

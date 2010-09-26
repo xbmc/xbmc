@@ -44,7 +44,6 @@ public:
 
   const CStdString& GetRegionLocale() const;
   const CStdString& GetLanguageLocale() const;
-  const CStdString GetLocale() const;
 
   bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 
@@ -115,6 +114,7 @@ protected:
     void SetTempUnit(const CStdString& strUnit);
     void SetSpeedUnit(const CStdString& strUnit);
     void SetTimeZone(const CStdString& strTimeZone);
+    void SetGlobalLocale();
     CStdString m_strGuiCharSet;
     CStdString m_strSubtitleCharSet;
     CStdString m_strDVDMenuLanguage;

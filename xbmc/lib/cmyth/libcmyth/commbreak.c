@@ -138,6 +138,52 @@ cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog)
 	return breaklist;
 }
 
+cmyth_commbreaklist_t
+cmyth_get_cutlist(cmyth_conn_t conn, cmyth_proginfo_t prog)
+{
+	unsigned int len = CMYTH_UTC_LEN + CMYTH_LONGLONG_LEN + 17;
+	int err;
+	int count;
+	char *buf;
+	int r;
+
+	cmyth_commbreaklist_t breaklist = cmyth_commbreaklist_create();
+
+	buf = alloca(len);
+	if (!buf) {
+		return breaklist;
+	}
+
+	sprintf(buf,"%s %ld %i", "QUERY_CUTLIST", prog->proginfo_chanId, 
+	        (int)cmyth_timestamp_to_unixtime(prog->proginfo_rec_start_ts));
+
+	if ((err = cmyth_send_message(conn, buf)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_send_message() failed (%d)\n",
+			__FUNCTION__, err);
+		goto out;
+	}
+
+	count = cmyth_rcv_length(conn);
+	if (count < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_rcv_length() failed (%d)\n",
+			__FUNCTION__, count);
+		goto out;
+	}
+
+	if ((r = cmyth_rcv_commbreaklist(conn, &err, breaklist, count)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_rcv_string() failed (%d)\n",
+			__FUNCTION__, r);
+		goto out;
+	}
+
+	out:
+	pthread_mutex_unlock(&mutex);
+	return breaklist;
+}
+
 int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err, 
 			cmyth_commbreaklist_t breaklist, int count)
 {
@@ -203,15 +249,17 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 			/*
 			 * Do a little sanity-checking.
 			 */
-			if (j == 0 && type != CMYTH_COMMBREAK_START) {
+			if (j == 0 && type != CMYTH_COMMBREAK_START
+					   && type != CMYTH_CUTLIST_START) {
 				cmyth_dbg(CMYTH_DBG_ERROR,
-					"%s: type was not CMYTH_COMMBREAK_START\n",
-					__FUNCTION__);
+					"%s: type (%d) was not CMYTH_COMMBREAK_START or CMYTH_CUTLIST_START\n",
+					__FUNCTION__, type);
 				return 0;
-			} else if (j == 1 && type != CMYTH_COMMBREAK_END) {
+			} else if (j == 1 && type != CMYTH_COMMBREAK_END
+							  && type != CMYTH_CUTLIST_END) {
 				cmyth_dbg(CMYTH_DBG_ERROR,
-					"%s: type was not CMYTH_COMMBREAK_END\n",
-					__FUNCTION__);
+					"%s: type (%d) was not CMYTH_COMMBREAK_END or CMYTH_CUTLIST_END\n",
+					__FUNCTION__, type);
 				return 0;
 			}
 

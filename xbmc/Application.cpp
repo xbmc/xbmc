@@ -5015,6 +5015,22 @@ void CApplication::ResetPlayTime()
     m_pPlayer->ResetTime();
 }
 
+void CApplication::StopShutdownTimer()
+{
+  if (m_shutdownTimer.IsRunning())
+    m_shutdownTimer.Stop();
+}
+
+void CApplication::ResetShutdownTimers()
+{
+  // reset system shutdown timer
+  m_shutdownTimer.StartZero();
+
+  // delete custom shutdown timer
+  if (g_alarmClock.HasAlarm("shutdowntimer"))
+    g_alarmClock.Stop("shutdowntimer", true);
+}
+
 // Returns the current time in seconds of the currently playing media.
 // Fractional portions of a second are possible.  This returns a double to
 // be consistent with GetTotalTime() and SeekTime().

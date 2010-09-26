@@ -165,7 +165,7 @@
 						<height>90</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>-</texturenofocus>
-						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown())</onclick>
+						<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown())</onclick>
 						<pulseonselect>no</pulseonselect>
 						<font>-</font>
 						<label>20150</label>
@@ -182,10 +182,10 @@
 						<height>90</height>
 						<texturefocus>-</texturefocus>
 						<texturenofocus>ButtonMenuShutdownNF.png</texturenofocus>
-						<onclick>XBMC.Shutdown()</onclick>
+						<onclick>XBMC.Powerdown()</onclick>
 						<pulseonselect>no</pulseonselect>
 						<font>-</font>
-						<label>13005</label>
+						<label>13016</label>
 						<onleft>11</onleft>
 						<onright>12</onright>
 						<onup>16</onup>

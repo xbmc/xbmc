@@ -64,6 +64,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)$(TargetName).pdb"
+				ProfileGuidedDatabase="$(OutDir)$(TargetName).pgd"
+				ImportLibrary="$(OutDir)$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -136,6 +141,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
+				ProfileGuidedDatabase="$(OutDir)$(TargetName).pgd"
+				ImportLibrary="$(OutDir)$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -165,6 +173,10 @@
 	<Files>
 		<File
 			RelativePath=".\src\fastmix.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\libmodplug.def"
 			>
 		</File>
 		<File

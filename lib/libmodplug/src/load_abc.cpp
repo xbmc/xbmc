@@ -275,7 +275,7 @@ static void setenv(const char *name, const char *value, int overwrite)
 #endif
 
 
-static int abc_isvalidchar(char c) {
+static int abc_isvalidchar(unsigned char c) {
 	return(isalpha(c) || isdigit(c) || isspace(c) || c == '%' || c == ':');
 }
 
