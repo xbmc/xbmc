@@ -149,19 +149,19 @@ void CLangInfo::CRegion::SetGlobalLocale()
   else
     strLocale = m_strLangLocaleName;
 
-  locale current_locale = locale("");
+  locale current_locale = locale("", locale::collate);
   try
   {
     // if the locale does not exist, it crashes (at least on Windows)
-    current_locale = locale( strLocale );
+    current_locale = locale( strLocale, locale::collate );
     if (current_locale.name().compare("*") == 0)
     {
       // the locale does not exist, get current system local
-      current_locale = locale("");
+      current_locale = locale("", locale::collate);
     }
 
   } catch(...) {
-    current_locale = locale("");
+    current_locale = locale("", locale::collate);
   }
 
   locale::global(current_locale);
