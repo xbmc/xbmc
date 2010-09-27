@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 09/17/2010-->
+<!--Date of translation: 09/27/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -923,6 +923,7 @@
   <string id="13013">재시작</string>
   <string id="13014">최소화</string>
   <string id="13015">전원 버튼 동작</string>
+  <string id="13016">시스템 전원 끄기</string>
   <string id="13020">혹시 ssh 를 통해 다른 세션이 활성화되어 있습니까?</string>
   <string id="13021">장착된 이동식 하드드라이브</string>
   <string id="13022">장치 제거 안전하지 않음</string>
@@ -2015,7 +2016,6 @@
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
-  <string id="30011">재생시간 찾기</string>
   <string id="33001">예고편 품질</string>
   <string id="33002">스트림</string>
   <string id="33003">다운로드</string>
@@ -2026,6 +2026,7 @@
   <string id="33008">저장</string>
   <string id="33009">복사</string>
   <string id="33010">다운로드 디렉토리 설정</string>
+  <string id="33011">검색 기간</string>
   <string id="33012">짧은</string>
   <string id="33013">긴</string>
   <string id="33014">일반 플레이어 대신 DVD 플레이어 사용</string>

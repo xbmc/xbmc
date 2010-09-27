@@ -92,7 +92,8 @@
   <string id="110">Criar ícones</string>
   <string id="111">Atalhos</string>
   <string id="112">Pausado</string>
-
+  <string id="113">Falha na atualização</string>
+  <string id="114">Falha na instalação</string>
   <string id="115">Copiar</string>
   <string id="116">Mover</string>
   <string id="117">Excluir</string>
@@ -177,6 +178,7 @@
   <string id="196">Selecione o filme:</string>
   <string id="197">Procurando informação de %s</string>
   <string id="198">Carregando detalhes do filme</string>
+  <string id="199">Interface web</string>
 
   <string id="202">Título:</string>
   <string id="203">Sinopse:</string>
@@ -403,6 +405,7 @@
   <string id="431">Sem cache</string>
   <string id="432">Excluir filme da coleção</string>
   <string id="433">Deseja excluir '%s'?</string>
+  <string id="434">De %s até %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Disco removível</string>
   <string id="438">Abrindo arquivo</string>
@@ -1270,7 +1273,12 @@
   <string id="13507">Médio</string>
   <string id="13508">Alto</string>
   <string id="13509">Realmente alto(lento!)</string>
-  <string id="13510">Sincronizar reprodução com a exibição</string>
+  <string id="13510">Sincronizar reprodução com a exibição</string>  
+
+  <string id="13550">Pausa durante alteração na taxa de atualização</string>
+  <string id="13551">Desligado</string>
+  <string id="13552">%.1f Segundo</string>
+  <string id="13553">%.1f Segundos</string>
 
   <string id="13600">Controle Remoto Apple</string>
 
@@ -2272,7 +2280,7 @@
   <string id="33008">Salvando</string>
   <string id="33009">Copiando</string>
   <string id="33010">Definir diretório para download</string>
-  <string id="30011">Duração da busca</string>
+  <string id="33011">Duração da busca</string>
   <string id="33012">Curto</string>
   <string id="33013">Longo</string>
   <string id="33014">Utilizar tocador de DVD ao invés de tocador regular</string>
