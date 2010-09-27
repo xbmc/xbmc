@@ -33,6 +33,7 @@
 #include "GUIWindowAddonBrowser.h"
 #include "GUIDialogYesNo.h"
 #include "StringUtils.h"
+#include "log.h"
 
 using namespace XFILE;
 using namespace ADDON;
