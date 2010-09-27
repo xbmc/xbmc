@@ -110,15 +110,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   CFileItem item(strFile, false);
   CMusicInfoTagLoaderMP3 mp3info;
 
-  bool bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
-  if(bTags)
-  {
-    // Guess Bitrate and obtain replayGain information etc.
-    mp3info.ReadSeekAndReplayGainInfo(strFile);
-    mp3info.GetSeekInfo(m_seekInfo);
-    mp3info.GetReplayGain(m_replayGain);
-  }
-
   int id3v2Size = 0;
   int result = -1;
   __int64 length = 0;
@@ -127,6 +118,15 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     goto error;
+  }
+
+  bool bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
+  if(bTags)
+  {
+    // Guess Bitrate and obtain replayGain information etc.
+    mp3info.ReadSeekAndReplayGainInfo(strFile);
+    mp3info.GetSeekInfo(m_seekInfo);
+    mp3info.GetReplayGain(m_replayGain);
   }
 
   length = m_file.GetLength();
