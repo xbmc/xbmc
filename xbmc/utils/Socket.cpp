@@ -192,14 +192,7 @@ bool CSocketListener::Listen(int timeout)
   tv.tv_usec = rem * 1000;
   tv.tv_sec = timeout / 1000;
 
-  if (timeout<0)
-  {
-    m_iReadyCount = select(m_iMaxSockets+1, &m_fdset, NULL, NULL, NULL);
-  }
-  else
-  {
-    m_iReadyCount = select(m_iMaxSockets+1, &m_fdset, NULL, NULL, &tv);
-  }
+  m_iReadyCount = select(m_iMaxSockets+1, &m_fdset, NULL, NULL, (timeout < 0 ? NULL : &tv));
 
   if (m_iReadyCount<0)
   {
