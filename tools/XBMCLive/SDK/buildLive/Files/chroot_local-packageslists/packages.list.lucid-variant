@@ -29,3 +29,4 @@ g++ autoconf
 fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1
 wpasupplicant wireless-tools
+linux-alsa-driver-modules-2.6.32-24-generic
