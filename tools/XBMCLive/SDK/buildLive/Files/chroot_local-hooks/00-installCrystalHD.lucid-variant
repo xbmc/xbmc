@@ -88,6 +88,8 @@ mkdir -p /lib/udev/rules.d/
 cp -f crystalhd/driver/linux/20-crystalhd.rules /lib/udev/rules.d/
 popd
 
+rm -rf crystalhd
+
 pushd .
 
 rm /root/crystalhd.tar
