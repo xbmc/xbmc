@@ -1435,6 +1435,10 @@ static int matroska_read_header(AVFormatContext *s, AVFormatParameters *ap)
             st->codec->channels = track->audio.channels;
             if (st->codec->codec_id != CODEC_ID_AAC)
             st->need_parsing = AVSTREAM_PARSE_HEADERS;
+            if (st->codec->codec_id == CODEC_ID_DTS) {
+                st->need_parsing = AVSTREAM_PARSE_FULL;
+                st->codec->channels = 0;
+            }
         } else if (track->type == MATROSKA_TRACK_TYPE_SUBTITLE) {
             st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
         }
