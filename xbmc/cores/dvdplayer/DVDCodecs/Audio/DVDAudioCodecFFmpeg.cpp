@@ -266,10 +266,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   /* if there are more bits set then there are channels */
   if (bits != m_pCodecContext->channels) {
     CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
-
-    /* for some reason some DTS files report a messed up channel count (https://roundup.ffmpeg.org/issue2137) */
-    if (m_pCodecContext->codec_id == CODEC_ID_DTS)
-      m_pCodecContext->channels = bits;
+    m_pCodecContext->channels = bits;
   }
 
   if (bits >= m_pCodecContext->channels)
