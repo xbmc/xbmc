@@ -47,6 +47,8 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
     </videoscreen>
 </settings>
 EOF
+else
+	sed -i 's#\(<vsync>\)[0-9]*\(</vsync>\)#\1'2'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 fi
 
 chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
