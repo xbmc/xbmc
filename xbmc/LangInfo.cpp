@@ -149,6 +149,10 @@ void CLangInfo::CRegion::SetGlobalLocale()
   else
     strLocale = m_strLangLocaleName;
 
+  // We need to set the locale to only change the collate. Otherwise,
+  // decimal separator is changed depending of the current language
+  // (ie. "," in French or Dutch instead of "."). This breaks atof() and
+  // others similar functions.
   locale current_locale = locale("", locale::collate);
   try
   {
