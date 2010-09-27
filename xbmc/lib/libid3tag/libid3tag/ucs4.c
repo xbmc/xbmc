@@ -129,7 +129,7 @@ id3_latin1_t *id3_ucs4_latin1duplicate(id3_ucs4_t const *ucs4)
   if (latin1)
     id3_latin1_encode(latin1, ucs4);
 
-  return release(latin1);
+  return latin1;
 }
 
 /*
@@ -144,7 +144,7 @@ id3_utf16_t *id3_ucs4_utf16duplicate(id3_ucs4_t const *ucs4)
   if (utf16)
     id3_utf16_encode(utf16, ucs4);
 
-  return release(utf16);
+  return utf16;
 }
 
 /*
@@ -159,7 +159,7 @@ id3_utf8_t *id3_ucs4_utf8duplicate(id3_ucs4_t const *ucs4)
   if (utf8)
     id3_utf8_encode(utf8, ucs4);
 
-  return release(utf8);
+  return utf8;
 }
 
 /*
