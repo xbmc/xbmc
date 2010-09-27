@@ -451,6 +451,12 @@ bool CDVDPlayer::OpenInputStream()
     // find any available external subtitles
     std::vector<std::string> filenames;
     CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+
+    // find any upnp subtitles
+    CStdString key("upnp:subtitle:1");
+    for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
+      filenames.push_back(m_item.GetProperty(key));
+
     for(unsigned int i=0;i<filenames.size();i++)
       AddSubtitleFile(filenames[i]);
 
