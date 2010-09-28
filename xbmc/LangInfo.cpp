@@ -153,23 +153,21 @@ void CLangInfo::CRegion::SetGlobalLocale()
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
   // others similar functions.
-  locale current_locale = locale("");
+  locale current_locale = locale::classic(); // C-Locale
   try
   {
-    // if the locale does not exist, it crashes (at least on Windows)
-    current_locale = locale( current_locale, strLocale, locale::collate );
-    if (current_locale.name().compare("*") == 0)
-    {
-      // the locale does not exist, get current system local
-      current_locale = locale("");
-    }
+    locale lcl = locale(strLocale);
+    strLocale = lcl.name();
+    current_locale = current_locale.combine< collate<wchar_t> >(lcl);
+
+    assert(use_facet< numpunct<char> >(current_locale).decimal_point() == '.');
 
   } catch(...) {
-    current_locale = locale("");
+    current_locale = locale::classic();
   }
 
   locale::global(current_locale);
-  CLog::Log(LOGINFO, "global locale set to %s", current_locale.name().c_str());
+  CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 }
 
 CLangInfo::CLangInfo()
