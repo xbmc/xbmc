@@ -32,6 +32,8 @@ pre-start script
 		echo "$@" | cut -d "=" -f 2
 	}
 
+	clear >/dev/tty7 || true
+
 	CMDLINE=$(cat /proc/cmdline)
 
 	#Process command line options
