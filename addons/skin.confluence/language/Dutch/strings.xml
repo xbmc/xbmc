@@ -6,7 +6,7 @@
   <string id="31002">Haat</string>
   <string id="31003">Energiebeheer</string>
   <string id="31004">Bezig...</string>
-  <string id="31005">Verberg INFO</string>
+  <string id="31005">Info verbergen</string> <!-- slaat niet op .NFO-bestand, wel op oa. plot, acteurs, etc.-->
 
   <string id="31007">Plugins</string>
 
@@ -135,6 +135,11 @@
   <string id="31355">Filmmenu</string>
   <string id="31356">Ondertitels downloaden</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets --> 
+  <string id="31390">Skinstandaard</string> 
+  <string id="31391">Skinstandaard zonder hoofdletters</string> 
+  <string id="31392">Gebaseerd op Arial</string> 
 
   <!-- Description Labels  -->
   <string id="31400">[B]INSTELLINGEN UITERLIJK CONFIGUREREN[/B][CR][CR]Wijzig skin · Stel taal en regio in · Configureer bestandslijstopties en schermbeveiliging</string>
