@@ -1924,9 +1924,7 @@ void CDVDPlayer::HandleMessages()
         {
           if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
           {
-            if ((m_playSpeed != DVD_PLAYSPEED_NORMAL * 32 && speed == DVD_PLAYSPEED_NORMAL) ||
-                (m_playSpeed != DVD_PLAYSPEED_NORMAL * -32 && speed == DVD_PLAYSPEED_NORMAL))
-              m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
+            m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
           }
         }
 
