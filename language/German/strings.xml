@@ -142,7 +142,7 @@
   <string id="167"></string>
   <string id="168"></string>
   <string id="169">Auflösung</string>
-  <string id="170">Bildwiederholungsrate anpassen</string>
+  <string id="170">Bildwiederholfrequenz anpassen</string>
   <string id="171"></string>
 
   <string id="172">Veröffentlichung</string>
@@ -183,7 +183,7 @@
   <string id="209">Nächste</string>
   <string id="210">Vorherige</string>
   <string id="213">Benutzeroberfläche kalibrieren...</string>
-  <string id="214">Video kalibrieren...</string>
+  <string id="214">Bildschirm kalibrieren...</string>
   <string id="215">Weichzeichnen</string>
   <string id="216">Vergrößerung</string>
   <string id="217">Bild-Verhältnis</string>
@@ -233,7 +233,7 @@
   <string id="262">Skript-Ausgabe</string>
   <string id="263">Erlaube Kontrolle von XBMC über HTTP</string>
   <string id="264">Aufnehmen</string>
-  <string id="265">Aufnahme-Stopen</string>
+  <string id="265">Aufnahme beenden</string>
   <string id="266">Nach: Titel-Nr.</string>
   <string id="267">Nach: Zeit</string>
   <string id="268">Nach: Titel</string>
@@ -243,7 +243,7 @@
   <string id="272">Bildbereich oben links ausrichten</string>
   <string id="273">Bildbereich unten rechts ausrichten</string>
   <string id="274">Position der Untertitel</string>
-  <string id="275">Bildverhältniss einstellen</string>
+  <string id="275">Bildverhältnis einstellen</string>
   <string id="276">Bewege den Pfeil um den Bildbereich einzustellen</string>
   <string id="277">Bewege den Balken um die Position der Untertitel einzustellen</string>
   <string id="278">Ändere das Rechteck so, daß es ein perfektes Quadrat ergibt</string>
@@ -529,7 +529,7 @@
   <string id="572">Studio</string>
   <string id="573">Pfad</string>
   <string id="574">Land</string>
-  <string id="575">In Bearbeitung</string>
+  <string id="575">In Gange</string>
 
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
@@ -1026,7 +1026,7 @@
   <string id="13050">Der Akku ist fast leer</string>
 
   <string id="13100">Flicker-Filter</string>
-  <string id="13101">Wähle Treiber (benötigt Neustart)</string>
+  <string id="13101">Wie Treiber (benötigt Neustart)</string>
   <string id="13105">Vertical Blank Synchronisation</string>
   <string id="13106">Deaktiviert</string>
   <string id="13107">Aktiviert während der Videowiedergabe</string>
@@ -1053,7 +1053,7 @@
 
   <string id="13140">Aktive Verbindungen festgestellt!</string>
   <string id="13141">Wird fortgefahren, kann XBMC möglicherweise nicht mehr</string>
-  <string id="13142">gesteuert werden. Fernsteuerung wirklich stoppen?</string>
+  <string id="13142">gesteuert werden. Fernsteuerung wirklich beenden?</string>
 
   <string id="13144">Wechsle Apple-Remote-Modus?</string>
   <string id="13145">Wird aktuell Apple Remote zur Steuerung von XBMC</string>
@@ -1267,6 +1267,11 @@
   <string id="13509">Sehr Hoch(langsam!)</string>
   <string id="13510">Synchronisiere Wiedergabe zur Anzeige</string>
 
+  <string id="13550">Pause während der Wiederholfrequenz Änderung</string>
+  <string id="13551">Aus</string>
+  <string id="13552">%.1f Sekunden</string>
+  <string id="13553">%.1f Sekunden</string>
+
   <string id="13600">Apple-Remote</string>
 
   <string id="13602">XBMC Start mit Fernbedienung erlauben</string>
@@ -1332,7 +1337,7 @@
   <string id="14053">GUI-Filter</string>
 
   <string id="14055">Durchsuchen im Hintergrund</string>
-  <string id="14056">Scan stopen</string>
+  <string id="14056">Scan beenden</string>
   <string id="14057">Nicht möglich während des Durchsuchens</string>
   <string id="14058">Filmkörnungseffekt</string>
   <string id="14059">Netzwerkquellen nach Thumbnails durchsuchen</string>
@@ -1914,7 +1919,7 @@
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
-  <string id="21333">Der Stream wird gestoppt!</string>
+  <string id="21333">Der Stream wird beendet!</string>
   <string id="21334">Umschalten auf Kanal: %s fehlgeschlagen!</string>
   <string id="21335">Den Stream jetzt starten?</string>
   <string id="21336">Verbinden zu: %s</string>
@@ -2143,7 +2148,7 @@
   <string id="23050">Videotext aktivieren</string>
   <string id="23051">Teil %i</string>
   <string id="23052">Zwischenspeichern - %i Bytes</string>
-  <string id="23053">Wird gestoppt</string>
+  <string id="23053">Wird beendet</string>
   <string id="23054">Läuft</string>
 
   <string id="23100">Externer Player ist aktiv</string>
