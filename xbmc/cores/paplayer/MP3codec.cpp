@@ -115,6 +115,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int id3v2Size = 0;
   int result = -1;
   __int64 length = 0;
+  bool bTags = false;
 
   if (!m_file.Open(strFile, READ_CACHED))
   {
@@ -122,7 +123,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     goto error;
   }
 
-  bool bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
+  bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
   if(bTags)
   {
     // Guess Bitrate and obtain replayGain information etc.
