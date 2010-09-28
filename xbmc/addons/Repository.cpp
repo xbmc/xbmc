@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIDialogYesNo.h"
@@ -230,7 +231,10 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
   if (idRepo == -1 || !checksum.Equals(reposum))
   {
     addons = repo->Parse();
-    database.AddRepository(repo->ID(),addons,reposum);
+    if (!addons.empty())
+      database.AddRepository(repo->ID(),addons,reposum);
+    else
+      CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
   }
   else
   {
