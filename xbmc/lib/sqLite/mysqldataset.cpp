@@ -1216,11 +1216,24 @@ int MysqlDataset::exec(const string &sql) {
   exec_res.clear();
 
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
-  const char* toFind = "integer primary key";
-  size_t loc = qry.find(toFind);
-  if (loc != string::npos)
+  size_t loc;
+  if ( (loc=qry.find("integer primary key")) != string::npos)
   {
-    qry = qry.insert(loc + strlen(toFind), " auto_increment ");
+    qry = qry.insert(loc + 19, " auto_increment ");
+  }
+
+  // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
+  if ( qry.find("CREATE TRIGGER") != string::npos )
+  {
+    if ( (loc=qry.find("BEGIN ")) != string::npos )
+    {
+        qry.replace(loc, 6, "");
+    }
+
+    if ( (loc=qry.find(" END")) != string::npos )
+    {
+        qry.replace(loc, 4, "");
+    }
   }
 
   CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
