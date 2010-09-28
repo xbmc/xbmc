@@ -90,12 +90,12 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   CStdString deviceString, device;
   if (bPassthrough)
   {
-#ifndef __APPLE__
+#if defined(_LINUX) && !defined(__APPLE__)
     deviceString = g_guiSettings.GetString("audiooutput.passthroughdevice");
     if (deviceString.Equals("custom"))
       deviceString = g_guiSettings.GetString("audiooutput.custompassthrough");
 #else
-    // osx platform does not have a "audiooutput.passthroughdevice" setting but can do passthrough
+    // osx/win platforms do not have an "audiooutput.passthroughdevice" setting but can do passthrough
     deviceString = g_guiSettings.GetString("audiooutput.audiodevice");
 #endif
   }
