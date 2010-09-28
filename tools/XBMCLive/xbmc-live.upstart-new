@@ -63,13 +63,13 @@ pre-start script
 	fi
 
 	# Executes pre-hooks (if any) in the System "Hooks" directory
-	for hook in $(ls -1 $BOOTHOOKSDIRECTORY/live-pre.d/*.sh)
+	for hook in $(ls -1 $BOOTHOOKSDIRECTORY/live.d/*.sh)
 	do
 	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
 	done
 
 	# Executes pre-hooks (if any) in the user "Hooks" directory
-	for hook in $(ls -1 /home/$xbmcUser/.xbmc/live-pre.d/*.sh)
+	for hook in $(ls -1 /home/$xbmcUser/.xbmc/live.d/*.sh)
 	do
 	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
 	done
@@ -88,29 +88,6 @@ script
 	fi
 
 	exec /usr/bin/runXBMC
-end script
-
-post-start script
-	xbmcUser=xbmc
-	# Read configuration variable file if it is present
-	[ -r /etc/default/xbmc-live ] && . /etc/default/xbmc-live
-	if ! getent passwd $xbmcUser >/dev/null; then
-		xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
-	fi
-
-	BOOTHOOKSDIRECTORY=$(cat /tmp/hooksDirectory)
-
-	# Executes hooks (if any) in the System "Hooks" directory
-	for hook in $(ls -1 $BOOTHOOKSDIRECTORY/live-post.d/*.sh)
-	do
-	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
-	done
-
-	# Executes hooks (if any) in the user "Hooks" directory
-	for hook in $(ls -1 /home/$xbmcUser/.xbmc/live-post.d/*.sh)
-	do
-	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
-	done
 end script
 
 pre-stop script
