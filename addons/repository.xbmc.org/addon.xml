@@ -8,6 +8,7 @@
 		<info compressed="true">http://mirrors.xbmc.org/addons/dharma-pre/addons.xml</info>
 		<checksum>http://mirrors.xbmc.org/addons/dharma-pre/addons.xml.md5</checksum>
 		<datadir zip="true">http://mirrors.xbmc.org/addons/dharma-pre</datadir>
+		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Install Add-ons from XBMC.org</summary>
