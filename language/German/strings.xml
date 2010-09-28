@@ -85,7 +85,8 @@
   <string id="110">Thumbnail wird erstellt</string>
   <string id="111">Verknüpfungen</string>
   <string id="112">Pause</string>
-
+  <string id="113">Update fehlgeschlagen</string>
+  <string id="114">Installation fehlgeschlagen</string>
   <string id="115">Kopieren</string>
   <string id="116">Verschieben</string>
   <string id="117">Löschen</string>
@@ -170,9 +171,11 @@
   <string id="196">Film-Auswahl:</string>
   <string id="197">Online-Datenbank wird abgefragt...</string>
   <string id="198">Lade Filminformationen</string>
+  <string id="199">Web Benutzerschnittstelle</string>
 
   <string id="202">Kurzinfo</string>
   <string id="203">Handlung</string>
+
   <string id="205">Stimmen:</string>
   <string id="206">Besetzung</string>
   <string id="207">Handlung</string>
@@ -180,7 +183,7 @@
   <string id="209">Nächste</string>
   <string id="210">Vorherige</string>
   <string id="213">Benutzeroberfläche kalibrieren...</string>
-  <string id="214">Bildschirm kalibrieren...</string>
+  <string id="214">Video kalibrieren...</string>
   <string id="215">Weichzeichnen</string>
   <string id="216">Vergrößerung</string>
   <string id="217">Bild-Verhältnis</string>
@@ -209,6 +212,8 @@
   <string id="241">Vollbild #%d</string>
   <string id="242">Fenster</string>
   <string id="243">Bildwiederholrate</string>
+  <string id="244">Vollbild</string>
+  <string id="245">Anpassen: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1)</string>
 
   <string id="247">Skripte</string>
   <string id="248">Sprache</string>
@@ -226,9 +231,9 @@
   <string id="260">Shoutcast</string>
   <string id="261">Warte auf Start...</string>
   <string id="262">Skript-Ausgabe</string>
-  <string id="263">Webserver aktivieren</string>
+  <string id="263">Erlaube Kontrolle von XBMC über HTTP</string>
   <string id="264">Aufnehmen</string>
-  <string id="265">Aufnahme-Stop</string>
+  <string id="265">Aufnahme-Stopen</string>
   <string id="266">Nach: Titel-Nr.</string>
   <string id="267">Nach: Zeit</string>
   <string id="268">Nach: Titel</string>
@@ -238,13 +243,13 @@
   <string id="272">Bildbereich oben links ausrichten</string>
   <string id="273">Bildbereich unten rechts ausrichten</string>
   <string id="274">Position der Untertitel</string>
-  <string id="275">Bildverhältnis einstellen</string>
+  <string id="275">Bildverhältniss einstellen</string>
   <string id="276">Bewege den Pfeil um den Bildbereich einzustellen</string>
   <string id="277">Bewege den Balken um die Position der Untertitel einzustellen</string>
   <string id="278">Ändere das Rechteck so, daß es ein perfektes Quadrat ergibt</string>
   <string id="279">Einstellungen können nicht geladen werden</string>
   <string id="280">Standardeinstellungen verwenden</string>
-  <string id="281">Bitte überprüfe die .xml-Dateien</string>
+  <string id="281">Bitte überprüfe die XML-Dateien</string>
   <string id="282">%i Einträge gefunden</string>
   <string id="283">Suchergebnisse</string>
   <string id="284">Keine Ergebnisse gefunden</string>
@@ -253,7 +258,7 @@
   <string id="288">Schriftart</string>
   <string id="289">- Schriftgröße</string>
   <string id="290">Dynamische Kompression</string>
-  <string id="291">Videos</string>
+  <string id="291">Video</string>
   <string id="292">Audio</string>
   <string id="293">Nach Untertitel durchsuchen</string>
   <string id="294">Lesezeichen erstellen</string>
@@ -264,10 +269,10 @@
   <string id="300">- Receiver unterstützt MP1</string>
   <string id="301">- Receiver unterstützt MP2</string>
   <string id="302">- Receiver unterstützt MP3</string>
-  <string id="303">Untertitel-Verzögerung</string>
+  <string id="303">Verzögerung</string>
   <string id="304">Sprache</string>
   <string id="305">Aktiviert</string>
-  <string id="306">Paralleles Audio/Video</string>
+  <string id="306">Nicht-interleaved</string>
   <string id="307"></string>
   <string id="308"></string>
   <string id="309"></string>
@@ -392,6 +397,7 @@
   <string id="431">Keinen Cache verwenden</string>
   <string id="432">Film aus der Datenbank entfernen</string>
   <string id="433">Soll '%s' wirklich entfernt werden?</string>
+  <string id="434">Von %s mit %i %s</string> 
 
   <string id="437">Wechsellaufwerk</string>
   <string id="438">Öffne Datei</string>
@@ -425,7 +431,7 @@
   <string id="467">Typ</string>
   <string id="468">Die Leiste bewegen, um die OSD-Position einzustellen</string>
   <string id="469">OSD-Position</string>
-  <string id="470">Credits</string>
+  <string id="470">Anerkennung</string>
   <string id="471">Modchip</string>
   <string id="474">Aus</string>
   <string id="475">nur Musik</string>
@@ -523,7 +529,7 @@
   <string id="572">Studio</string>
   <string id="573">Pfad</string>
   <string id="574">Land</string>
-  <string id="575">Im Gange</string>
+  <string id="575">In Bearbeitung</string>
 
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
@@ -550,6 +556,7 @@
   <string id="603">Höchste Qualität</string>
   <string id="604">konstante Bitrate</string>
   <string id="605">Kopieren...</string>
+
   <string id="607">Zielordner:</string>
   <string id="608">CD oder Titel konnte nicht kopiert werden!</string>
   <string id="609">CD Ziel-Pfad ist nicht konfiguriert.</string>
@@ -793,6 +800,7 @@
   <string id="1250">Automatische erkennung</string>
   <string id="1251">Andere Systeme erkennen</string>
   <string id="1252">Nickname</string>
+
   <string id="1254">Nachfragen ob eine Verbindung aufgebaut werden soll</string>
   <string id="1255">FTP-Benutzername und -Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
@@ -869,8 +877,8 @@
   <string id="10028">Videos/Playlisten</string>
   <string id="10034">Einstellungen-&gt;Profile</string>
 
-  <string id="10100">JA/NEIN-Dialog</string>
-  <string id="10101">Fortschrittsdialog</string>
+  <string id="10100">Ja/Nein Dialog</string>
+  <string id="10101">Fortschrittsanzeige</string>
 
   <string id="10210">Suche nach Untertiteln...</string>
   <string id="10211">Zwischenspeichern der Untertitel...</string>
@@ -1016,15 +1024,17 @@
   <string id="13025">Joystick ausgesteckt</string>
 
   <string id="13050">Der Akku ist fast leer</string>
+
   <string id="13100">Flicker-Filter</string>
   <string id="13101">Wähle Treiber (benötigt Neustart)</string>
-  <string id="13105">Vertical Blank Sync</string>
+  <string id="13105">Vertical Blank Synchronisation</string>
   <string id="13106">Deaktiviert</string>
-  <string id="13107">Aktiviere während der Videowiedergabe</string>
+  <string id="13107">Aktiviert während der Videowiedergabe</string>
   <string id="13108">Immer aktiviert</string>
   <string id="13109">Teste Auflösung</string>
   <string id="13110">Auflösung speichern?</string>
   <string id="13111">Soll diese Auflösung beibehalten werden?</string>
+
   <string id="13112">Hochauflösende Software-Hochskalierung</string>
   <string id="13113">Deaktiviert</string>
   <string id="13114">Nur für SD-Inhalte aktivieren</string>
@@ -1073,8 +1083,8 @@
   <string id="13170">Nie</string>
   <string id="13171">Sofort</string>
   <string id="13172">Nach %i Sek</string>
-  <string id="13173">Herstellungsdatum:</string>
-  <string id="13174">Einschaltanzahl:</string>
+  <string id="13173">HD Installations-Datum:</string>
+  <string id="13174">HD Anzahl Einschaltungen:</string>
 
   <string id="13200">Profile</string>
   <string id="13201">Soll das Profil '%s' wirklich gelöscht werden?</string>
@@ -1322,7 +1332,7 @@
   <string id="14053">GUI-Filter</string>
 
   <string id="14055">Durchsuchen im Hintergrund</string>
-  <string id="14056">Scan unterbrechen</string>
+  <string id="14056">Scan stopen</string>
   <string id="14057">Nicht möglich während des Durchsuchens</string>
   <string id="14058">Filmkörnungseffekt</string>
   <string id="14059">Netzwerkquellen nach Thumbnails durchsuchen</string>
@@ -2223,7 +2233,6 @@
 
   <string id="29999"></string>
 
-  <string id="30011">Suchdauer</string>
   <string id="33001">Trailer Qualität</string>
   <string id="33002">Streamen</string>
   <string id="33003">Herunterladen</string>
@@ -2234,6 +2243,7 @@
   <string id="33008">Speichern</string>
   <string id="33009">Kopieren</string>
   <string id="33010">Download-Ordner wählen</string>
+  <string id="33011">Suchdauer</string>
   <string id="33012">Kurz</string>
   <string id="33013">Lang</string>
   <string id="33014">Benutze DVDplayer statt dem regulären</string>

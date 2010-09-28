@@ -1010,6 +1010,7 @@
   <string id="13301">Auto kontrola temperatury</string>
   <string id="13302">Kontrola obrotów wentylatora</string>
   <string id="13303">- Czcionki</string>
+  <string id="13304">Włącz odwrócone napisy (język arabski, hebrajski, ...)</string>
   <string id="13305">Pokazuj wiadomości RSS</string>
   <string id="13306">Pokazuj folder nadrzędny (..)</string>
   <string id="13307">Szablon nazewnictwa utworu</string>
@@ -1076,6 +1077,7 @@
   <string id="13384">Maskowanie głosu - port 3</string>
   <string id="13385">Maskowanie głosu - port 4</string>
   <string id="13386">Przewijanie oparte na czasie</string>
+  <string id="13387">Szablon nazewnictwa utworu - prawa strona</string>
   <string id="13388">Efekt</string>
   <string id="13389">Nie ma dostępnych efektów dla tej wizualizacji</string>
   <string id="13390">Nie ma dostępnych opcji dla tej wizualizacji</string>

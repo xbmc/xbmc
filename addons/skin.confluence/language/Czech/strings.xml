@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 10/02/2009-->
+<!--Date of translation: 26/09/2010-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Změnit</string>
@@ -27,6 +27,7 @@
   <string id="31030">Seznam I</string>
   <string id="31031">Náhledy</string>
   <string id="31032">Obrázky</string>
+  <string id="31033">Info</string>
 
   <!-- Extra labels -->
   <string id="31040">Přehrává se</string>
@@ -58,7 +59,7 @@
   <string id="31104">Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]</string>
   <string id="31105">Zobrazovat názvy médií při vyhledávání na pozadí</string>
   <string id="31106">Různé</string>
-  <string id="31107"></string>
+  <string id="31107">Nezobrazovat ikony zdroje videí [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Zobrazení sekcí úvodní obrazovky</string>
   <string id="31109">Pozadí úvodní obrazovky</string>
   <string id="31110">Změnit pozadí úvodní obrazovky - sekce</string>
@@ -95,11 +96,6 @@
   <string id="31204">Odkazy sekcí</string>
   <string id="31205">Zdroj textu skladeb</string>
 
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Radar &amp; Předpověď</string>
-  <string id="31251">Předpověď</string>
-  <string id="31252">TWC Skript</string>
-
   <!-- Extra labels -->
   <string id="31300">Aktuální teplota</string>
   <string id="31301">Naposledy aktualizováno</string>
@@ -112,7 +108,7 @@
   <string id="31308">Detaily o filmu</string>
   <string id="31309">Využitá paměť:</string>
   <string id="31310">Číslo stopy</string>
-  <string id="31311">POZADÍ FANART[CR][CR]NENÍ DOSTUPNÉ[CR][CR] NASTAVTE HO STISKNUTÍM TLAČÍTKA</string>
+  <string id="31311">POZADÍ FANART[CR][CR]NENÍ K DISPOZICI[CR][CR] NASTAVTE HO STISKNUTÍM TLAČÍTKA</string>
   <string id="31312">Současný stahovač</string>
   <string id="31313">Změnit stahovač</string>
   <string id="31314">Možnosti vyhledávání obsahu</string>
@@ -151,6 +147,7 @@
   <string id="31405">[B]MOŽNOSTI SÍTĚ[/B][CR][CR]Možnosti ovládání XBMC přes UPnP a HTTP · Nastavení sdílení médií[CR]Nastavení přístupu na internet</string>
   <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Možnosti úsporného režimu · Ukládání informací o ladění · Konfigurace rodičovského zámku</string>
   <string id="31407">[B]MOŽNOSTI VZHLEDU[/B][CR][CR]Přizpůsobení vzhledu Confluence · Správa sekcí na úvodní obrazovce[CR]Nastavení pozadí vzhledu</string>
+  <string id="31408">[B]MOŽNOSTI DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků</string>
 
-  <string id="31421">Uživatelské přihlášení[CR]Vyberte profil</string>
+  <string id="31421">Přihlášení uživatele[CR]Pokračujte výběrem profilu</string>
 </strings>

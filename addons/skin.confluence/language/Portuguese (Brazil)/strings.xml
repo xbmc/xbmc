@@ -148,6 +148,11 @@
   <string id="31355">Menu do Filme</string>
   <string id="31356">Download de Legendas</string>
   <string id="31357"></string>
+  
+  <!-- Skin Fontsets -->
+  <string id="31390">Padrão da skin</string>
+  <string id="31391">Padrão da skin sem capslock</string>
+  <string id="31392">Baseado em Arial</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURAR AJUSTES DE APARÊNCIA[/B][CR][CR]Mudar o skin · Definir idioma e região · Definir opções de listagem de arquivos · Definir um descanso de tela</string>

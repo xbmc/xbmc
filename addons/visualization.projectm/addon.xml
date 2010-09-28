@@ -19,7 +19,7 @@
     <summary lang="en">projectM takes you flying through the soundwaves you're hearing</summary>
     <summary lang="fi">projectM lennättää sinut ääniaaltojen läpi</summary>
     <summary lang="fr">projectM vous entraine à travers les ondes sonores que vous écoutez</summary>
-    <summary lang="nl">projectM Visualisatie</summary>
+    <summary lang="nl">projectM-visualisatie</summary>
     <summary lang="hu">A projectM végigrepít a zene hullámain</summary>
     <summary lang="ko">projectM 은 사운드웨이브 속으로 날아가는듯한 효과를 보여줍니다.</summary>
     <summary lang="pl">projectM zabiera Cię w niesamowity lot w chmurach aktualnie słuchanych dźwięków</summary>
@@ -38,9 +38,8 @@ Le seul pré-requis de projectM est une carte graphique avec accélération 3D e
 A projectM Vizualizáció a Milkdrop újrakódolása LGPL licenc alatt, OpenGL videókártya támogatást használva.
 Minden projectM látványbeállításhoz 3D gyorsításra képes videókártya és a kedvenc zenéd szükséges.</description>
     <description lang="ko">projectM은 멋진 음악 시각화입니다. Unix에는 이것보다 좋은것은 없습니다. projectM은 많은 사람들에 의해 개발되었습니다. 여러분과 같은 유저들이 음악을 표현하는 프리셋을 만들었습니다. projectM 음악시각화는 OpenGL에서 작동하도록 Milkdrop를 새로 만든것입니다. 모든 projectM은 3D 가속이 되는 비디오카드와 음악이 필요합니다.</description>
-    <description lang="nl">projectM is een geweldige muziek visualisator. Er bestaat niets beter in de Unix wereld. projectM's success vloeit voort uit het harde werk van de gemeenschap. Gebruikers zoals jij kunnen hun eigen presets instellen die muziek verbinden met verbluffende visualisaties. Probeer het uit!
-projectM visualisatie is vrijgegeven onder de LGPL licentie en is een herimplementatie van Milkdrop (OpenGL)
-Het enige dat projectM vereist is een videokaart met 3D-versnelling en jouw favoriete muziek.</description>
+    <description lang="nl">ProjectM is een geweldige muziekvisualisatie. Er bestaat niets beters in de UNIX-wereld. Het success van ProjectM is het resultaat van het harde werk van de XBMC-gemeenschap. U kunt hun eigen presets instellen die muziek linken aan verbluffende visualisaties. Probeer het uit!
+ProjectM-visualisatie is beschikbaar onder de LGPL-licentie en is een herimplementatie van Milkdrop (OpenGL). Alles wat projectM vereist is een videokaart met 3D-versnelling en jouw favoriete muziek.</description>
     <description lang="pl">projectM to rewelacyjna wizualizacją muzyki. Nie ma nic lepszego w świecie Unixa. Wspaniałość projectM wywodzi się ciężkiej pracy społeczności. Użytkownicy tacy jak Ty, mogą tworzyć efekty łączące muzykę z niesamowitymi efektami wizualnymi. Przekonaj się!
 projectM jest reimplementacją Milkdropa na licencji LGPL i używa OpenGL
 Wszystko czego wymaga projectM, to karta graficzna wspierająca akcelerację 3D oraz zasoby Twojej muzyki.</description>

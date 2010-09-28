@@ -11,6 +11,7 @@
     <summary lang="fr">Economiseur affichant un diaporama</summary>
     <summary lang="hu">Képernyővédő ami diavetítést csinál</summary>
     <summary lang="ko">이미지 슬라이드쇼를 보여주는 화면보호기</summary>
+    <summary lang="nl">Schermbeveiliging die een diavoorstelling toont</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający pokaz slajdów</summary>
     <summary lang="pt">Protecção de ecrã que mostra uma apresentação de fotografias</summary>
     <summary lang="ru">Хранитель экрана показывающий слайдшоу из изображений</summary>
@@ -21,6 +22,7 @@
     <description lang="fr">L'économiseur Diaporama affichera un diaporama en utilisant divers effets de transition. Il peut afficher votre collection de fanarts vidéos ou musicaux, ou un dossier d'images en particulier.</description>
     <description lang="hu">A Slideshow képernyővédő diavetítés-szerűen képeket mutat egymás után különböző váltási effektussal. Beállítható úgy hogy a médiatárból mutasson zenei-, vagy film fanartképeket, vagy egy egyedi mappából mutassa azokat.</description>
     <description lang="ko">슬라이드쇼 화면보호기는 다양한 화면 전환효과를 이용해 이미지 슬라이드쇼를 보여줍니다. 설정을 통해 음악, 비디오 팬아트나 사용자 폴더의 사진을 지정할수 있습니다.</description>
+    <description lang="nl">De Diavoorstellingsschermbeveiliging zal u een diavoorstelling tonen met verschillende overgangseffecten. U kan muziek- of videofanart uit uw bibliotheek tonen of zelf een map opgeven die afbeeldingen bevat.</description>
     <description lang="pl">Ten wygaszacz ekranu to pokaz slajdów obrazów, przy użyciu różnych efektów przejść. Może być skonfigurowany tak, aby pokazywał fanart filmów, muzyki lub dowolny folder ze zdjęciami.</description>
     <description lang="pt">Protecção de ecrã que lhe mostra fotografias usando vários efeitos de transição. Pode ser configurado para visualizar fanart das bibliotecas de música e vídeo ou uma pasta com as suas imagens.</description>
     <description lang="ru">Хранитель экрана Slideshow покажет вам слайдшоу из изображений используя различные эффекты переходов. Он может быть настроен для показа фанарта музыки и видео из вашей библиотеки мультимедиа, или папки с изображениям.</description>

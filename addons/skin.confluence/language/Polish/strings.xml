@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/19/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 09/24/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
@@ -106,6 +106,7 @@
   <string id="31326">Utworzony</string>
   <string id="31327">Rozdzielczość</string>
   <string id="31328">Ostatnio dodane</string>
+  <string id="31329">[B]Timer ustawiony![/B] [COLOR=grey2] - Wyłączenie systemu za[/COLOR]</string>
   <string id="31330">Kliknij przycisk, aby[CR][CR]odtworzyć zwiastun</string>
   <string id="31351">Pauza</string>
   <string id="31352">Stop</string>
@@ -113,6 +114,9 @@
   <string id="31354">Cofnij</string>
   <string id="31355">Menu filmu</string>
   <string id="31356">Pobierz napisy</string>
+  <string id="31390">Domyślne dla skóry</string>
+  <string id="31391">Domyślne dla skóry bez dużych liter</string>
+  <string id="31392">Bazujące na Arialu</string>
   <string id="31400">[B]KONFIGURUJ USTAWIENIA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Lista plików[CR]Wygaszacz ekranu</string>
   <string id="31401">[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Lista wideo[CR]Czcionka napisów</string>
   <string id="31402">[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Lista utworów[CR]Publikacja piosenek · Opcje karaoke</string>
