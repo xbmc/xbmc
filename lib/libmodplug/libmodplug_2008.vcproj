@@ -64,6 +64,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)$(TargetName).pdb"
+				LinkTimeCodeGeneration="1"
+				ProfileGuidedDatabase=""
+				ImportLibrary="$(OutDir)$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -136,6 +142,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\system\players\paplayer\libmodplug.dll"
+				ModuleDefinitionFile="libmodplug.def"
+				LinkTimeCodeGeneration="1"
+				ProfileGuidedDatabase=""
+				ImportLibrary="$(OutDir)$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

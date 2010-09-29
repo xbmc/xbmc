@@ -135,7 +135,7 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
 }
 
 
-#define SCOPE(type, var) shared_ptr<type> var##_holder(var, CoTaskMemFree);
+#define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
 CDecoder::SVideoBuffer::SVideoBuffer()
 {
