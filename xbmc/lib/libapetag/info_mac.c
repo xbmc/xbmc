@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "file_io.h"
 #include "info_mac.h"
 #include "is_tag.h"
 
@@ -95,23 +96,23 @@ int
 info_mac_read(const char *fn, StreamInfoMac * Info)
 {
     unsigned int HeaderData[32];
-    FILE *tmpFile = NULL;
+    ape_file *tmpFile = NULL;
     long SkipSizeID3;
     struct macHeader * header;
     
     // load file
-    tmpFile = fopen(fn, "rb");
+    tmpFile = ape_fopen(fn, "rb");
         
     if (tmpFile == NULL) 
         return 1;    // file not found or read-protected
     
     // skip id3v2 
     SkipSizeID3 = is_id3v2(tmpFile);
-    fseek(tmpFile, SkipSizeID3, SEEK_SET);
-    fread((void *) HeaderData, sizeof (int), 16, tmpFile);
-    fseek(tmpFile, 0, SEEK_END);
-    Info->FileSize = ftell(tmpFile);
-    fclose(tmpFile);
+    ape_fseek(tmpFile, SkipSizeID3, SEEK_SET);
+    ape_fread((void *) HeaderData, sizeof (int), 16, tmpFile);
+    ape_fseek(tmpFile, 0, SEEK_END);
+    Info->FileSize = ape_ftell(tmpFile);
+    ape_fclose(tmpFile);
     
     if (0 != memcmp(HeaderData, "MAC", 3))
         return 2; // no monkeyAudio file
