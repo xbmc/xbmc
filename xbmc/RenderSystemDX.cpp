@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "VideoReferenceClock.h"
+#include "DXErr.h"
 
 using namespace std;
 
@@ -400,7 +401,7 @@ bool CRenderSystemDX::CreateDevice()
         VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device. %s", GetErrorDescription(hr).c_str());
         return false;
       }
     }
@@ -420,7 +421,7 @@ bool CRenderSystemDX::CreateDevice()
         VertexProcessingFlags | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device");
+        CLog::Log(LOGERROR, __FUNCTION__" - unable to create a device. %s", GetErrorDescription(hr).c_str());
         return false;
       }
     }
@@ -574,10 +575,7 @@ bool CRenderSystemDX::PresentRenderImpl()
       SetThreadPriority(GetCurrentThread(), priority);
   }
 
-  if (m_useD3D9Ex)
-    hr = ((IDirect3DDevice9Ex*)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, 0);
-  else
-    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
   {
@@ -587,7 +585,7 @@ bool CRenderSystemDX::PresentRenderImpl()
 
   if(FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s - Present failed with hr=%d", __FUNCTION__, hr);
+    CLog::Log(LOGDEBUG, "%s - Present failed. %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -663,13 +661,15 @@ bool CRenderSystemDX::BeginRender()
     }
   }
 
-  if(FAILED (m_pD3DDevice->BeginScene()))
+  HRESULT hr;
+
+  if(FAILED(hr = m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     // When XBMC caught an exception after BeginScene(), EndScene() may never been called
     // and thus all following BeginScene() will fail too.
-    if(FAILED (m_pD3DDevice->EndScene()))
-      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
+    if(FAILED(hr = m_pD3DDevice->EndScene()))
+      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -692,9 +692,10 @@ bool CRenderSystemDX::EndRender()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if(FAILED (m_pD3DDevice->EndScene()))
+  HRESULT hr = m_pD3DDevice->EndScene();
+  if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return false;
   }
 
@@ -920,6 +921,14 @@ void CRenderSystemDX::Unregister(ID3DResource* resource)
   vector<ID3DResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
+}
+
+CStdString CRenderSystemDX::GetErrorDescription(HRESULT hr)
+{
+  CStdString strError;
+  strError.Format("%X - %s (%s)", hr, DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+  return strError;
 }
 
 #endif

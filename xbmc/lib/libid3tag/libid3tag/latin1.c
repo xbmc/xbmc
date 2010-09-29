@@ -91,7 +91,7 @@ id3_ucs4_t *id3_latin1_ucs4duplicate(id3_latin1_t const *latin1)
   if (ucs4)
     id3_latin1_decode(latin1, ucs4);
 
-  return release(ucs4);
+  return ucs4;
 }
 
 /*

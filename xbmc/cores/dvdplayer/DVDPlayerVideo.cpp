@@ -1412,7 +1412,7 @@ void CDVDPlayerVideo::CalcFrameRate()
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
-  double frameduration = m_pullupCorrection.CalcFrameDuration();
+  double frameduration = m_pullupCorrection.GetFrameDuration();
 
   if (frameduration == DVD_NOPTS_VALUE)
   {

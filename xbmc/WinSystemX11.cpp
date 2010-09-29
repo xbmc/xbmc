@@ -73,9 +73,11 @@ bool CWinSystemX11::InitWindowSystem()
 
 bool CWinSystemX11::DestroyWindowSystem()
 {
+#if defined(HAS_XRANDR)
   //restore videomode on exit
   if (m_bFullScreen)
     g_xrandr.RestoreState();
+#endif
 
   if (m_dpy)
   {

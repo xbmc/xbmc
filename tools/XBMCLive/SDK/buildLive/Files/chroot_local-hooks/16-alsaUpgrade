@@ -19,74 +19,17 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 echo 
-echo "Upgrading ALSA..."
+echo "Upgrading ALSA using Ubuntu Audio Dev PPA..."
 echo
 
-cd /root
-pushd .
+# Assuming only one kernel is installed!
+kernelVersion=$(ls /lib/modules)
 
-apt-get -y install build-essential ncurses-dev gettext xmlto libasound2-dev libncursesw5-dev
+packageName=linux-alsa-driver-modules-$kernelVersion
 
-wget --no-proxy -q ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.23.tar.bz2
-wget --no-proxy -q ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.23.tar.bz2
-wget --no-proxy -q ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.23.tar.bz2
-
-# 
-# uname -r gives the host version, we need the chrooted one
-#
-mv /bin/uname /bin/uname.ori
-
-cat > /bin/uname << EOF
-#!/bin/sh
-
-if  [ "\$1" = "-r" ] ; then
-        echo \$(ls /lib/modules)
-else
-        /bin/uname.ori \$@
+apt-get -y install $packageName
+if [ "$?" -eq "0" ]; then
+	exit 0
 fi
-EOF
-chmod +x /bin/uname
 
-tar xjf alsa-driver*
-
-cd alsa-driver*
-./configure 
-make
-make install
-
-popd
-pushd .
-
-tar xjf alsa-lib*
-cd alsa-lib*
-./configure
-make
-make install
-
-popd
-pushd .
-
-tar xjf alsa-utils*
-cd alsa-utils*
-./configure
-make
-make install
-
-popd
-pushd .
-
-rm -rf alsa-driver*
-rm -rf alsa-lib*
-rm -rf alsa-utils*
-
-# TODO CHECK
-# alsaconf
-
-apt-get -y remove build-essential ncurses-dev gettext xmlto libasound2-dev
-apt-get -y remove libncursesw5-dev
-apt-get -y autoremove
-
-dpkg -l | grep ^rc | cut -d' ' -f3|xargs dpkg -P
-
-rm /bin/uname
-mv /bin/uname.ori /bin/uname
+exit 1

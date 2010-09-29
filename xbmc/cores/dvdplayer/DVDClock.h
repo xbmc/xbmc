@@ -72,6 +72,13 @@ public:
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
+
+  //when m_ismasterclock is true, CDVDPlayerAudio synchronizes the clock to the audio stream
+  //when it's false, CDVDPlayerAudio synchronizes the audio stream to the clock
+  //the rendermanager needs to know about that because it can synchronize the videoreferenceclock to the video timestamps
+  static void SetMasterClock(bool ismasterclock) { m_ismasterclock = ismasterclock; }
+  static bool IsMasterClock()                    { return m_ismasterclock;          }
+
 protected:
   CSharedSection m_critSection;
   int64_t m_systemUsed;
@@ -87,4 +94,5 @@ protected:
   double           m_maxspeedadjust;
   bool             m_speedadjust;
   CCriticalSection m_speedsection;
+  static bool      m_ismasterclock;
 };

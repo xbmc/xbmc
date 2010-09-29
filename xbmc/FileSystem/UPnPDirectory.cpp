@@ -348,6 +348,28 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
                     }
                 }
+
+                // look for subtitles
+                unsigned subs = 0;
+                for(unsigned r = 0; r < (*entry)->m_Resources.GetItemCount(); r++)
+                {
+                    PLT_MediaItemResource& res  = (*entry)->m_Resources[r];
+                    PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
+                    static const char* allowed[] = { "text/srt"
+                                                   , "text/ssa"
+                                                   , "text/sub"
+                                                   , "text/idx" };
+                    for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
+                    {
+                        if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
+                        {
+                            CStdString prop;
+                            prop.Format("upnp:subtitle:%d", ++subs);
+                            pItem->SetProperty(prop, (const char*)res.m_Uri);
+                            break;
+                        }
+                    }
+                }
             }
 
             // if there is a thumbnail available set it here

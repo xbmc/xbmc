@@ -118,7 +118,15 @@ namespace XBMC
                 if (socket != null) Disconnect();
                 uniqueToken = UID;
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+// For compilation with .net framework 1.0 or 1.1
+// define the FRAMEWORK_1_x conditional compilation constant in the project
+// or add /define:FRAMEWORK_1_x to the csc.exe command line
+#if FRAMEWORK_1_x
                 socket.Connect(Dns.GetHostByName(Address).AddressList[0].ToString(), Port);
+#else
+                socket.Connect(Address, Port);
+#endif
                 return true;
             }
             catch
@@ -382,7 +390,7 @@ namespace XBMC
                     Flags |= ButtonFlagsType.BTN_USE_AMOUNT;
             }
 
-            if ((Flags & ButtonFlagsType.BTN_DOWN) == 0 || (Flags & ButtonFlagsType.BTN_UP) == 0)
+            if ((Flags & ButtonFlagsType.BTN_DOWN) == 0 && (Flags & ButtonFlagsType.BTN_UP) == 0)
                 Flags |= ButtonFlagsType.BTN_DOWN;
 
             byte[] payload = new byte[Button.Length + DeviceMap.Length + 8];

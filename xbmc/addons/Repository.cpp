@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIDialogYesNo.h"
@@ -110,14 +111,15 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
 
 CStdString CRepository::GetAddonHash(const AddonPtr& addon)
 {
-  CStdString result;
+  CStdString checksum;
   if (m_hashes)
-    result = FetchChecksum(addon->Path()+".md5");
-
-  CStdStringArray arr;
-  StringUtils::SplitString(result," ",arr);
-
-  return arr[0];
+  {
+    checksum = FetchChecksum(addon->Path()+".md5");
+    size_t pos = checksum.find_first_of(" \n");
+    if (pos != CStdString::npos)
+      return checksum.Left(pos);
+  }
+  return checksum;
 }
 
 VECADDONS CRepository::Parse()
@@ -229,7 +231,10 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
   if (idRepo == -1 || !checksum.Equals(reposum))
   {
     addons = repo->Parse();
-    database.AddRepository(repo->ID(),addons,reposum);
+    if (!addons.empty())
+      database.AddRepository(repo->ID(),addons,reposum);
+    else
+      CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
   }
   else
   {

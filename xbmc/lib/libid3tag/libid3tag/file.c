@@ -392,8 +392,10 @@ struct id3_file *new_file(FILE *iofile, enum id3_file_mode mode,
 
   file->iofile  = iofile;
   file->mode    = mode;
-  file->path    = path ? strdup(path) : 0;
-
+  if(path) { /* strdup isn't handled for debug memory */
+    file->path = malloc(strlen(path)+1);
+    strcpy(file->path, path);
+  }
   file->flags   = 0;
 
   file->ntags   = 0;

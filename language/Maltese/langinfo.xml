@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="Mlt">
   <charsets>
     <gui unicodefont="true">CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>mt</subtitle>
   </dvd>
   <regions>
-    <region name="Malta">
+    <region name="Malta" locale="Malta">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

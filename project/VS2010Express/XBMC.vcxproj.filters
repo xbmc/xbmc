@@ -4448,6 +4448,9 @@
     <ClInclude Include="..\..\xbmc\URIUtils.h">
       <Filter>Source Files\Database</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Variant.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

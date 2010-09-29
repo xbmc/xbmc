@@ -5,7 +5,7 @@ Maintainer: Luigi Capriotti <l.capriotti@xbmc.org>
 Build-Depends: debhelper (>= 5.0.22)
 
 Package: xbmclive-installhelpers
-Architecture: i386
+Architecture: all
 XC-Package-Type: udeb
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: XBMCLive install helpers for Debian Installer

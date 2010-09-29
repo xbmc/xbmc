@@ -241,7 +241,6 @@ protected:
   // PS rendering
   bool                 m_bUseHQScaler;
   CD3DTexture          m_IntermediateTarget;
-  CD3DTexture          m_IntermediateStencilSurface;
 
   CYUV2RGBShader*      m_colorShader;
   CConvolutionShader*  m_scalerShader;

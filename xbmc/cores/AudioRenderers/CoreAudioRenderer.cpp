@@ -521,7 +521,7 @@ bool CCoreAudioRenderer::Pause()
 
   if (!m_Pause)
   {
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Pause: Pausing Playback.");
+    //CLog::Log(LOGDEBUG, "CoreAudioRenderer::Pause: Pausing Playback.");
     if (m_Passthrough)
       m_AudioDevice.Stop();
     else
@@ -540,7 +540,7 @@ bool CCoreAudioRenderer::Resume()
 
   if (m_Pause)
   {
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Resume: Resuming Playback.");
+    //CLog::Log(LOGDEBUG, "CoreAudioRenderer::Resume: Resuming Playback.");
     if (m_Passthrough)
       m_AudioDevice.Start();
     else
@@ -719,11 +719,13 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     MPSetEvent(m_RunoutEvent, 1); // Tell anyone who cares that the cache is empty
     if (m_DoRunout) // We were waiting for a runout. This is not an error.
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Runout complete");
+      //CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Runout complete");
       m_DoRunout = 0;
     }
+/*
     else
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Buffer underrun.");
+*/
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
   if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
@@ -877,7 +879,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
 
   if (!outputFormat.mFormatID) // No match found
   {
-    CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output format.");
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output format.");
     return false;
   }
 

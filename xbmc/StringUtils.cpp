@@ -32,6 +32,8 @@
 
 #include "StringUtils.h"
 #include "utils/RegExp.h"
+#include "LangInfo.h"
+#include <locale>
 
 #include <math.h>
 #include <sstream>
@@ -133,31 +135,33 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 // Compares separately the numeric and alphabetic parts of a string.
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical (essentially calculates left - right)
-int64_t StringUtils::AlphaNumericCompare(const char *left, const char *right)
+int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *right)
 {
-  unsigned char *l = (unsigned char *)left;
-  unsigned char *r = (unsigned char *)right;
-  unsigned char *ld, *rd;
-  unsigned char lc, rc;
+  wchar_t *l = (wchar_t *)left;
+  wchar_t *r = (wchar_t *)right;
+  wchar_t *ld, *rd;
+  wchar_t lc, rc;
   int64_t lnum, rnum;
+  const collate<wchar_t>& coll = use_facet< collate<wchar_t> >( locale() );
+  int cmp_res = 0;
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
-    if (*l >= '0' && *l <= '9' && *r >= '0' && *r <= '9')
+    if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9')
     {
       ld = l;
       lnum = 0;
-      while (*ld >= '0' && *ld <= '9' && ld < l + 15)
+      while (*ld >= L'0' && *ld <= L'9' && ld < l + 15)
       { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - '0';
       }
       rd = r;
       rnum = 0;
-      while (*rd >= '0' && *rd <= '9' && rd < r + 15)
+      while (*rd >= L'0' && *rd <= L'9' && rd < r + 15)
       { // compare only up to 15 digits
         rnum *= 10;
-        rnum += *rd++ - '0';
+        rnum += *rd++ - L'0';
       }
       // do we have numbers?
       if (lnum != rnum)
@@ -170,15 +174,16 @@ int64_t StringUtils::AlphaNumericCompare(const char *left, const char *right)
     }
     // do case less comparison
     lc = *l;
-    if (lc >= 'A' && lc <= 'Z')
-      lc += 'a'-'A';
+    if (lc >= L'A' && lc <= L'Z')
+      lc += L'a'-L'A';
     rc = *r;
-    if (rc >= 'A' && rc <= 'Z')
-      rc += 'a'-'A';
-    // ok, do a normal comparison.  Add special case stuff (eg '(' characters)) in here later
-    if (lc  != rc)
+    if (rc >= L'A' && rc <= L'Z')
+      rc += L'a'- L'A';
+
+    // ok, do a normal comparison, taking current locale into account. Add special case stuff (eg '(' characters)) in here later
+    if ((cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1)) != 0)
     {
-      return lc - rc;
+      return cmp_res;
     }
     l++; r++;
   }

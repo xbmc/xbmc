@@ -1022,6 +1022,7 @@
   <string id="13013">Reboot</string>
   <string id="13014">Minimize</string>
   <string id="13015">Power button action</string>
+  <string id="13016">Power off System</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
@@ -2277,7 +2278,7 @@
   <string id="33008">Saving</string>
   <string id="33009">Copying</string>
   <string id="33010">Set download directory</string>
-  <string id="30011">Search duration</string>
+  <string id="33011">Search duration</string>
   <string id="33012">Short</string>
   <string id="33013">Long</string>
   <string id="33014">Use DVD player instead of regular player</string>

@@ -263,11 +263,18 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Minimize();
   }
-  else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  else if (execute.Equals("loadprofile"))
   {
     int index = g_settings.GetProfileIndex(parameter);
-    if (index >= 0)
+    bool prompt = (params.size() == 2 && params[1].Equals("prompt"));
+    bool bCanceled;
+    if (index >= 0
+        && (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+            || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
+    {
+
       CGUIWindowLoginScreen::LoadProfile(index);
+    }
   }
   else if (execute.Equals("mastermode"))
   {
@@ -787,10 +794,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
       silent = true;
 
-    if( g_alarmClock.isRunning() )
-      g_alarmClock.stop(params[0]);
+    if( g_alarmClock.IsRunning() )
+      g_alarmClock.Stop(params[0]);
 
-    g_alarmClock.start(params[0], seconds, params[1], silent);
+    g_alarmClock.Start(params[0], seconds, params[1], silent);
   }
   else if (execute.Equals("notification"))
   {
@@ -805,7 +812,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("cancelalarm"))
   {
-    g_alarmClock.stop(parameter);
+    g_alarmClock.Stop(parameter);
   }
   else if (execute.Equals("playdvd"))
   {

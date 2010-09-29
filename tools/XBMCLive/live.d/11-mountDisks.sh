@@ -18,27 +18,17 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-#check AMD GPU
-amdGpuType=$(lspci -nn | grep '0300' | grep '1002')
-if [ ! -n "$amdGpuType" ] ; then
+kernelParams=$(cat /proc/cmdline)
+
+subString=${kernelParams##*xbmc=}
+xbmcParams=${subString%% *}
+
+activationToken="nodiskmount"
+
+# if strings are the same the token is NOT part of the parameters list
+# here we want to stop script if the token is there
+if [ "$xbmcParams" != "${xbmcParams%$activationToken*}" ] ; then
 	exit 0
 fi
 
-xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
-
-mkdir -p /home/$xbmcUser/.xbmc/userdata
-
-#
-# Always sync to vblank
-#
-if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
-	cat > /home/$xbmcUser/.xbmc/userdata/guisettings.xml << 'EOF'
-<settings>
-    <videoscreen>
-        <vsync>2</vsync>
-    </videoscreen>
-</settings>
-EOF
-fi
-
-chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
+/usr/bin/diskmounter

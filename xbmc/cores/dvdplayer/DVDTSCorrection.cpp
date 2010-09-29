@@ -45,6 +45,9 @@ void CPullupCorrection::Flush()
   m_haspattern = false;
   m_patternlength = 0;
   m_leadin = 0;
+  m_trackingpts = DVD_NOPTS_VALUE;
+  m_frameduration = DVD_NOPTS_VALUE;
+  m_dropped = 0;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -76,33 +79,58 @@ void CPullupCorrection::Add(double pts)
   vector<double> pattern;
   GetPattern(pattern);
 
+  bool setframeduration = true;
+
   //check if the pattern is the same as the saved pattern
   //and if it is actually a pattern
   if (!CheckPattern(pattern))
   {
-    m_ptscorrection = 0.0; //no pattern no correction
-    m_pattern = pattern;   //save the current pattern
-    m_patternpos = 0;      //reset the position
+    m_frameduration = DVD_NOPTS_VALUE;
+    setframeduration = false;
 
-    if (m_haspattern)
+    //if the ringbuffer is full, a pattern was detected on the previous iteration
+    //and the last added diff breaks the pattern, drop this diff,
+    //future added diffs will usually fit the pattern again
+    if (m_haspattern && m_ringfill == DIFFRINGSIZE && m_dropped < DIFFRINGSIZE)
     {
-      m_haspattern = false;
-      m_patternlength = 0;
-      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
-
-      //if the ringbuffer is full and the pattern is lost,
-      //flush it so it can detect the pattern faster
-      if (m_ringfill == DIFFRINGSIZE && pattern.size() == 0)
-        Flush();
+      m_dropped++;
+      m_ringfill--;
+      m_ringpos--;
+      if (m_ringpos < 0)
+        m_ringpos = DIFFRINGSIZE - 1;
     }
-    return;
+    else
+    {
+      m_ptscorrection = 0.0; //no pattern no correction
+      m_pattern = pattern;   //save the current pattern
+      m_patternpos = 0;      //reset the position
+      m_trackingpts = DVD_NOPTS_VALUE;
+      m_dropped = 0;
+
+      if (m_haspattern)
+      {
+        m_haspattern = false;
+        m_patternlength = 0;
+        CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
+      }
+      return;
+    }
   }
-  else if (!m_haspattern)
+  else
   {
-    m_haspattern = true;
-    m_patternlength = m_pattern.size();
-    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
-              (int)pattern.size(), GetPatternStr().c_str());
+    if (m_dropped > 0)
+      m_dropped--;
+
+    //the saved pattern should have moved 1 diff into the past
+    m_patternpos = (m_patternpos + 1) % m_pattern.size();
+
+    if (!m_haspattern)
+    {
+      m_haspattern = true;
+      m_patternlength = m_pattern.size();
+      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
+                (int)pattern.size(), GetPatternStr().c_str());
+    }
   }
 
   //calculate where we are in the pattern
@@ -113,9 +141,40 @@ void CPullupCorrection::Add(double pts)
   }
 
   double frameduration = CalcFrameDuration();
+  if (setframeduration)
+    m_frameduration = frameduration;
 
   //correct the last pts based on where we should be according to the frame duration
   m_ptscorrection = (frameduration * m_patternpos) - ptsinpattern;
+
+  //the pts when only corrected by the pattern detection
+  double corrpts = pts + m_ptscorrection;
+
+  if (m_trackingpts != DVD_NOPTS_VALUE)
+  {
+    //move the tracking pts one frame forward
+    m_trackingpts += frameduration;
+
+    //reset if we drifted from the pattern corrected pts by too much
+    //dropped diffs can cause this
+    if (fabs(corrpts - m_trackingpts) > frameduration * 2.0)
+    {
+      CLog::Log(LOGDEBUG, "CPullupCorrection: tracked pts differs from actual by %f", m_trackingpts - corrpts);
+      Flush();
+    }
+    else
+    {
+      //set m_ptscorrection so that pts + m_ptscorrection becomes m_trackingpts
+      m_ptscorrection -= corrpts - m_trackingpts;
+
+      //move m_trackingpts slowly towards corrpts
+      m_trackingpts += (corrpts - m_trackingpts) * 0.005;
+    }
+  }
+  else
+  {
+    m_trackingpts = pts + m_ptscorrection;
+  }
 }
 
 //gets a diff diffnr into the past
@@ -258,12 +317,12 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
     return false;
 
   //the saved pattern should have moved 1 diff into the past
-  m_patternpos = (m_patternpos + 1) % m_pattern.size();
+  int patternpos = (m_patternpos + 1) % m_pattern.size();
 
   //check if the current pattern matches the saved pattern, with an offset of 1
   for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
-    double diff = pattern[(m_patternpos + i) % pattern.size()];
+    double diff = pattern[(patternpos + i) % pattern.size()];
 
     if (!MatchDiff(diff, m_pattern[i]))
       return false;
@@ -271,7 +330,7 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 
   //we save the pattern, in case it changes very slowly
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-    m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
+    m_pattern[i] = pattern[(patternpos + i) % pattern.size()];
 
   return true;
 }

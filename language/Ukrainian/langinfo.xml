@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="Ukrainian">
   <charsets>
     <gui unicodefont="true">CP1251</gui>
     <subtitle>CP1251</subtitle>

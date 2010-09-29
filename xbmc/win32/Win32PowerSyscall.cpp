@@ -37,13 +37,17 @@ bool CWin32PowerSyscall::Powerdown()
 }
 bool CWin32PowerSyscall::Suspend()
 {
-  CPowerSyscallWithoutEvents::Suspend();
+  // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
+  // Set the flag manually
+  CWin32PowerSyscall::SetOnSuspend();
 
   return CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
 }
 bool CWin32PowerSyscall::Hibernate()
 {
-  CPowerSyscallWithoutEvents::Hibernate();
+  // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
+  // Set the flag manually
+  CWin32PowerSyscall::SetOnSuspend();
 
   return CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
 }

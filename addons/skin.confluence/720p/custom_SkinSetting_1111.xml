@@ -1638,30 +1638,17 @@
 							<aligny>center</aligny>
 						</control>
 
-						<control type="radiobutton" id="424">
-							<width>750</width>
-							<height>35</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31126]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(LyricScript_Enable)</onclick>
-							<selected>Skin.HasSetting(LyricScript_Enable)</selected>
-						</control>
 						<control type="button" id="425">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
-							<label>- $LOCALIZE[31127]</label>
+							<label>$LOCALIZE[31127]</label>
 							<label2>[COLOR=selected]$INFO[Skin.String(LyricScript_Path)][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
-							<visible>Skin.HasSetting(LyricScript_Enable)</visible>
 						</control>
 
 						<control type="label" id="426">
@@ -1675,30 +1662,17 @@
 							<aligny>center</aligny>
 						</control>
 
-						<control type="radiobutton" id="427">
-							<width>750</width>
-							<height>35</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31129]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(SubtitleDownload_Enable)</onclick>
-							<selected>Skin.HasSetting(SubtitleDownload_Enable)</selected>
-						</control>
 						<control type="button" id="428">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
-							<label>- $LOCALIZE[31130]</label>
+							<label>$LOCALIZE[31130]</label>
 							<label2>[COLOR=selected]$INFO[Skin.String(SubtitleScript_Path)][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</onclick>
-							<visible>Skin.HasSetting(SubtitleDownload_Enable)</visible>
 						</control>
 					</control>
 				</control>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="Slovak">
   <charsets>
     <gui unicodefont="true">CP1250</gui>
     <subtitle>CP1250</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>sk</subtitle>
   </dvd>
   <regions>
-    <region name="Slovensko">
+    <region name="Slovensko" locale="Slovak">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

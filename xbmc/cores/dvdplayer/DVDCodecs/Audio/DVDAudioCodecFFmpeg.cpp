@@ -71,6 +71,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
+  m_channels = hints.channels;
   m_pCodecContext->channels = hints.channels;
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
@@ -165,8 +166,7 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  if (m_pCodecContext) return m_pCodecContext->channels;
-  return 0;
+  return m_channels;
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
@@ -216,11 +216,8 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   else
   /* if there are more bits set then there are channels */
   if (bits != m_pCodecContext->channels) {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg only reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
-
-    /* for some reason some DTS files report a messed up channel count (https://roundup.ffmpeg.org/issue2137) */
-    if (m_pCodecContext->codec_id == CODEC_ID_DTS)
-      m_pCodecContext->channels = bits;
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
+    m_pCodecContext->channels = bits;
   }
 
   if (bits >= m_pCodecContext->channels)
@@ -338,7 +335,9 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
     }
   }
 
-  m_iMapChannels = GetChannels();
+  //terminate the channel map
+  m_channels     = m_pCodecContext->channels;
+  m_iMapChannels = m_pCodecContext->channels;
 }
 
 AEChLayout CDVDAudioCodecFFmpeg::GetChannelMap()

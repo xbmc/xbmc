@@ -79,7 +79,7 @@ public:
   CStdString GetOverlayImage() const;
 
   void SetSortLabel(const CStdString &label);
-  const CStdString &GetSortLabel() const;
+  const CStdStringW &GetSortLabel() const;
 
   void Select(bool bOnOff);
   bool IsSelected() const;
@@ -144,7 +144,7 @@ protected:
   typedef std::map<CStdString, CStdString, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 private:
-  CStdString m_sortLabel;     // text for sorting
+  CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   CStdString m_strLabel;      // text of column1
 };
 #endif

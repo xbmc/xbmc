@@ -1165,10 +1165,8 @@ void CApplication::StartWebServer()
         return;
     }
 #endif
-    if (m_network.GetFirstConnectedInterface())
-      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
-    if (m_WebServer.IsStarted())
+    if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
     {
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -1182,7 +1180,7 @@ void CApplication::StartWebServer()
 #endif
     }
 #ifdef HAS_HTTPAPI
-    if (g_settings.m_HttpApiBroadcastLevel>=1)
+    if (g_settings.m_HttpApiBroadcastLevel >= 1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
 #endif
   }
@@ -4923,6 +4921,22 @@ void CApplication::ResetPlayTime()
 {
   if (IsPlaying() && m_pPlayer)
     m_pPlayer->ResetTime();
+}
+
+void CApplication::StopShutdownTimer()
+{
+  if (m_shutdownTimer.IsRunning())
+    m_shutdownTimer.Stop();
+}
+
+void CApplication::ResetShutdownTimers()
+{
+  // reset system shutdown timer
+  m_shutdownTimer.StartZero();
+
+  // delete custom shutdown timer
+  if (g_alarmClock.HasAlarm("shutdowntimer"))
+    g_alarmClock.Stop("shutdowntimer", true);
 }
 
 // Returns the current time in seconds of the currently playing media.

@@ -39,7 +39,7 @@ public:
 
 private:
   DllSidplay2 m_dll;
-  int m_sid;
+  void* m_sid;
   int m_iTrack;
   __int64 m_iDataPos;
 };

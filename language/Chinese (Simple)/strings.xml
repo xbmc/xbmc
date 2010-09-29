@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 33901 -->
+<!--Based on english strings version 34028 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2105,11 +2105,11 @@
   <string id="21890">选择艺人</string>
   <string id="21891">艺人信息</string>
   <string id="21892">乐器</string>
-  <string id="21893">创建时间</string>
-  <string id="21894">成型时间</string>
+  <string id="21893">出生日期</string>
+  <string id="21894">出道时间</string>
   <string id="21895">风格</string>
   <string id="21896">解散时间</string>
-  <string id="21897">死亡时间</string>
+  <string id="21897">去世时间</string>
   <string id="21898">活跃年代</string>
   <string id="21899">标签</string>
   <string id="21900">创建/成型</string>
@@ -2276,7 +2276,7 @@
   <string id="33008">保存</string>
   <string id="33009">拷贝</string>
   <string id="33010">设置下载目录</string>
-  <string id="30011">搜索持续时间</string>
+  <string id="33011">搜索持续时间</string>
   <string id="33012">短</string>
   <string id="33013">长</string>
   <string id="33014">用DVD player代替常规播放器</string>

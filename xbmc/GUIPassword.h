@@ -52,7 +52,7 @@ public:
   bool CheckLock(LockType btnType, const CStdString& strPassword, int iHeading);
   bool CheckLock(LockType btnType, const CStdString& strPassword, int iHeading, bool& bCanceled);
   bool IsProfileLockUnlocked(int iProfile=-1);
-  bool IsProfileLockUnlocked(int iProfile, bool& bCanceled);
+  bool IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool prompt = true);
   bool IsMasterLockUnlocked(bool bPromptUser);
   bool IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled);
 

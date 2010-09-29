@@ -18,23 +18,15 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-#check Nvidia GPU
-nvidiaGpuType=$(lspci -nn | grep '0300' | grep '10de')
-if [ ! -n "$nvidiaGpuType" ] ; then
+#check AMD GPU
+amdGpuType=$(lspci -nn | grep '0300' | grep '1002')
+if [ ! -n "$amdGpuType" ] ; then
 	exit 0
 fi
 
 xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
 
 mkdir -p /home/$xbmcUser/.xbmc/userdata
-
-if [ ! -f /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ] ; then
-	cat > /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml << 'EOF'
-<advancedsettings>
-    <gputempcommand>echo "$(nvidia-settings -tq gpuCoreTemp) C"</gputempcommand>
-</advancedsettings>
-EOF
-fi
 
 #
 # Always sync to vblank
@@ -47,6 +39,8 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
     </videoscreen>
 </settings>
 EOF
+else
+	sed -i 's#\(<vsync>\)[0-9]*\(</vsync>\)#\1'2'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 fi
 
 chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc

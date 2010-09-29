@@ -779,7 +779,7 @@ namespace VIDEO
       return false;
 
     CStdString strLabel=item->m_strPath;
-    // URLDecode since the path may be an URL like foo%201x01%20bar.avi
+    // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
@@ -871,7 +871,7 @@ namespace VIDEO
       return false;
 
     CStdString strLabel=item->m_strPath;
-    // URLDecode since the path may be an URL like foo%201x01%20bar.avi
+    // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     CUtil::URLDecode(strLabel);
     strLabel.MakeLower();
 //    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
