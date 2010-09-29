@@ -649,10 +649,3 @@ void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CS
 {
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
 }
-
-CStdStringA CCharsetConverter::utf8Left(const CStdStringW &source, int num_chars)
-{
-  CStdStringA result;
-  wToUTF8(source.Left(num_chars), result);
-  return result;
-}
