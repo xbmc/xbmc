@@ -38,8 +38,8 @@
 #define ALLOW_ADDING_SURFACES 0
 
 using namespace DXVA;
-using namespace boost;
 using namespace AUTOPTR;
+using namespace std;
 
 typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
 static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
@@ -416,6 +416,12 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   if(!OpenDecoder())
     return false;
 
+  // The front buffer seems to be the only one required and it seems to always be m_buffer[0] on ATI and nVidia
+  // but how reliable is that information?
+  // Not adding refs causes a crash at the end of playback because the surfaces are released with the decoder, despite the >0 D3D ref count.
+  for(unsigned i = 0; i < m_buffer_count; i++)
+    m_processor->HoldSurface(m_buffer[i].surface);
+
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
@@ -608,10 +614,6 @@ bool CDecoder::OpenDecoder()
                                     , m_context->surface_count
                                     , &m_decoder))
 
-  // CreateVideoDecoder will not addref the surfaces, but will release them when released
-  for(unsigned i = 0; i < m_buffer_count; i++)
-    m_buffer[i].surface->AddRef();
-
   m_context->decoder = m_decoder;
 
   return true;
@@ -734,8 +736,9 @@ void CProcessor::Close()
   for(unsigned i = 0; i < m_sample.size(); i++)
     SAFE_RELEASE(m_sample[i].SrcSurface);
   m_sample.clear();
+  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); it++)
+    SAFE_RELEASE(*it);
 }
-
 
 bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
 {
@@ -795,7 +798,14 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
 
   m_time = 0;
+
   return true;
+}
+
+void CProcessor::HoldSurface(IDirect3DSurface9* surface)
+{
+  surface->AddRef();
+  m_heldsurfaces.push_back(surface);
 }
 
 REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
