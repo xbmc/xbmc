@@ -201,7 +201,6 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     {
       iAction = atoi(strFields[1]);
       strFields[1] = strFields[0];
-      continue;
     }
 
     /*
