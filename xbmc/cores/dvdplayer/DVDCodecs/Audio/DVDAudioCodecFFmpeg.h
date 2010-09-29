@@ -47,7 +47,6 @@ protected:
   AVAudioConvert* m_pConvert;;
   enum SampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
-  int  m_iMapChannels;
 
   BYTE *m_pBuffer1;
   int   m_iBufferSize1;
