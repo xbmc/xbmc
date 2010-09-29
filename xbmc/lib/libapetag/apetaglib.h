@@ -194,7 +194,7 @@ apetag_read (apetag *mem_cnt, char *filename, int flag) ;
 
 /* read file and add frames */
 int 
-apetag_read_fp (apetag *mem_cnt, FILE * fp, char *filename, int flag) ;
+apetag_read_fp (apetag *mem_cnt, ape_file * fp, char *filename, int flag) ;
 
 /* initialise new object #apetag and return */
 apetag * 
@@ -248,7 +248,7 @@ apefrm_remove (apetag *mem_cnt, char *name);
 
 /* read id3v1 and add frames */
 int 
-readtag_id3v1_fp (apetag *mem_cnt, FILE * fp) ;
+readtag_id3v1_fp (apetag *mem_cnt, ape_file * fp) ;
 
 /** \name flags in frames and headers */ 
 /**\{*/

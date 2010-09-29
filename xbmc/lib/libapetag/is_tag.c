@@ -28,6 +28,7 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+#include "file_io.h"
 #include "is_tag.h"
 
 unsigned long
@@ -46,24 +47,24 @@ is_tag_ape2long (unsigned char *p);
     \return Return size of id3v1 tag (in bytes) 0 no tag at all 
 */
 int
-is_id3v1 (FILE * fp)
+is_id3v1 (ape_file * fp)
 {
     int n=0;
     char buf[16];
     size_t savedFilePosition;
     
-    savedFilePosition = ftell (fp);
-    fseek (fp, 0, SEEK_END);
+    savedFilePosition = ape_ftell(fp);
+    ape_fseek (fp, 0, SEEK_END);
     do {
         n++;
         memset (buf, 0, sizeof (buf));
-        fseek (fp, ((-128)*n) - 3 , SEEK_END);
-        fread (&buf, 1, sizeof (buf), fp);
+        ape_fseek (fp, ((-128)*n) - 3 , SEEK_END);
+        ape_fread (&buf, 1, sizeof (buf), fp);
         if (memcmp (buf, "APETAGEX",8) == 0) /*APE.TAG.EX*/
         break;
     } while (memcmp (buf+3, "TAG", 3) == 0);
     
-    fseek (fp, savedFilePosition, SEEK_SET);
+    ape_fseek (fp, savedFilePosition, SEEK_SET);
     return (n-1)*128;
 }
 
@@ -76,18 +77,18 @@ is_id3v1 (FILE * fp)
     (some bugy tagers add this again and again ) 0 no tag at all 
 */
 int
-is_id3v2 (FILE * fp)
+is_id3v2 (ape_file * fp)
 {
     char buf[16];
     size_t savedFilePosition;
     long id3v2size=0;
         
-    savedFilePosition = ftell (fp);
-    fseek (fp, 0, SEEK_SET);
+    savedFilePosition = ape_ftell (fp);
+    ape_fseek (fp, 0, SEEK_SET);
     do {    
         memset (buf, 0, sizeof (buf));
-        fseek (fp, id3v2size, SEEK_SET);
-        fread (&buf, 1, sizeof (buf), fp);
+        ape_fseek (fp, id3v2size, SEEK_SET);
+        ape_fread (&buf, 1, sizeof (buf), fp);
         if (memcmp (buf, "ID3", 3) != 0) {
         break;
         }
@@ -96,7 +97,7 @@ is_id3v2 (FILE * fp)
         ((long) (buf[7]) << 14) | ((long) (buf[6]) << 21));
     } while(memcmp (buf, "ID3", 3) == 0);
     
-    fseek (fp, savedFilePosition, SEEK_SET);
+    ape_fseek (fp, savedFilePosition, SEEK_SET);
     return (int) id3v2size;
 }
 
@@ -108,22 +109,22 @@ is_id3v2 (FILE * fp)
     \return Version of ape tag if any, else 0 
 */
 int
-is_ape_ver (FILE * fp)
+is_ape_ver (ape_file * fp)
 {
     char unsigned buf[32];
     size_t savedFilePosition;
         
-    savedFilePosition = ftell (fp);
+    savedFilePosition = ape_ftell (fp);
     memset (buf, 0, sizeof (buf));
         
-    fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
-    fread (&buf, 1, sizeof (buf), fp);
+    ape_fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
+    ape_fread (&buf, 1, sizeof (buf), fp);
     if (memcmp (buf, "APETAGEX", 8) != 0) {
-        fseek (fp, savedFilePosition, SEEK_SET);
+        ape_fseek (fp, savedFilePosition, SEEK_SET);
         return 0;
     }
         
-    fseek (fp, savedFilePosition, SEEK_SET);
+    ape_fseek (fp, savedFilePosition, SEEK_SET);
     return (int) is_tag_ape2long (buf + 8);
 }
 
@@ -136,22 +137,22 @@ is_ape_ver (FILE * fp)
     \return Size of ape tag if any, else 0 
 */
 int
-is_ape (FILE * fp)
+is_ape (ape_file * fp)
 {
     char unsigned buf[32];
     size_t savedFilePosition;
         
-    savedFilePosition = ftell (fp);
+    savedFilePosition = ape_ftell(fp);
     memset (buf, 0, sizeof (buf));
         
-    fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
-    fread (&buf, 1, sizeof (buf), fp);
+    ape_fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
+    ape_fread (&buf, 1, sizeof (buf), fp);
     if (memcmp (buf, "APETAGEX", 8) != 0) {
-        fseek (fp, savedFilePosition, SEEK_SET);
+        ape_fseek (fp, savedFilePosition, SEEK_SET);
         return 0;
     }
         
-    fseek (fp, savedFilePosition, SEEK_SET);
+    ape_fseek (fp, savedFilePosition, SEEK_SET);
     /* WARNING! macabra code */
     return (int) (is_tag_ape2long (buf + 8 + 4) +
         ( 

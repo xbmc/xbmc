@@ -1,8 +1,7 @@
 /********************************************************************
 *    
-* Copyright (c) 2002 Artur Polaczynski (Ar't)  All rights reserved.
-*            <artii@o2.pl>        LGPL-2.1
-*       $ArtId: is_tag.h,v 1.7 2003/04/13 11:24:10 art Exp $
+* Copyright (c) 2010 Team XBMC. All rights reserved.
+*
 ********************************************************************/
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -21,21 +20,27 @@
  */
 
 
-#ifndef _IS_TAG_H
-#define _IS_TAG_H
+#ifndef _FILEIO_H
+#define _FILEIO_H
 
-/** \file is_tag.h 
-    \brief Function for check if tag is avilable 
-
-    All is_* function restore file positon on return
+/** \file
+    \brief All function related to apetag file i/o
 */
 
-int is_id3v1 (ape_file * fp);
 
-int is_id3v2 (ape_file * fp);
+/**
+ object ape_file used to store file i/o functions
+ contains functions read_func,seek_func,tell_func,close_func and a data pointer.
+ \brief object ape_file used to store file i/o functions
+ */
+typedef struct _ape_file_io ape_file;
 
-int is_ape (ape_file * fp);
+ape_file *ape_fopen(const char *file, const char *rw);
+size_t ape_fread(void *ptr, size_t size, size_t nmemb, ape_file *fp);
+int ape_fseek(ape_file *fp, long int offset, int whence);
+int ape_fclose(ape_file *fp);
+long ape_ftell(ape_file *fp);
+int ape_fflush(ape_file *fp);
+size_t ape_fwrite (const void * ptr, size_t size, size_t count, ape_file *fp);
 
-int is_ape_ver (ape_file * fp);
-
-#endif /* _IS_TAG_H */
+#endif /* _FILEIO_H */

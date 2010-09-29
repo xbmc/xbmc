@@ -158,6 +158,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\file_io.c"
+			>
+		</File>
+		<File
+			RelativePath=".\file_io.h"
+			>
+		</File>
+		<File
 			RelativePath=".\genres.h"
 			>
 		</File>

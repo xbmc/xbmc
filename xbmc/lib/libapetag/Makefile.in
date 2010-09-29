@@ -80,10 +80,10 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libapetag_la_LIBADD =
 am__libapetag_la_SOURCES_DIST = apetaglib.c is_tag.c info_mac.c \
-	info_mpc.c id3v2_read.c
+	info_mpc.c file_io.c id3v2_read.c
 @COMPILE_WITH_ID3_TRUE@am__objects_1 = id3v2_read.lo
 am_libapetag_la_OBJECTS = apetaglib.lo is_tag.lo info_mac.lo \
-	info_mpc.lo $(am__objects_1)
+	info_mpc.lo file_io.lo $(am__objects_1)
 libapetag_la_OBJECTS = $(am_libapetag_la_OBJECTS)
 libapetag_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -236,7 +236,7 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libapetag.la
 include_HEADERS = apetaglib.h
 libapetag_la_SOURCES = apetaglib.c is_tag.c info_mac.c info_mpc.c \
-	$(am__append_1)
+	file_io.c $(am__append_1)
 libapetag_la_LDFLAGS = -version-info @APETAG_VERSION@
 EXTRA_DIST = \
     COPYING.LGPL \
@@ -339,6 +339,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apetaglib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file_io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/id3v2_read.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/info_mac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/info_mpc.Plo@am__quote@
