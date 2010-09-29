@@ -255,7 +255,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Disable scan button if shoutcast
-  if (m_vecItems->IsVirtualDirectoryRoot() ||
+  if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsShoutCast() ||
       m_vecItems->IsLastFM() || m_vecItems->IsMusicDb())
   {
     CONTROL_DISABLE(CONTROL_BTNSCAN);
@@ -316,9 +316,9 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         return;
       if (!item->IsPlayList())
       {
-        if (item->IsAudio() && !item->IsLastFM())
+        if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
-        else if (!item->IsParentFolder() && !item->IsLastFM() &&
+        else if (!item->IsParentFolder() && !item->IsLastFM() && !item->IsShoutCast() &&
                  !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
         {
 #if 0
@@ -364,7 +364,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       if (pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
-               !item->IsLastFM()                                         &&
+               !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
                !item->IsPlugin()                                         &&
               (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))

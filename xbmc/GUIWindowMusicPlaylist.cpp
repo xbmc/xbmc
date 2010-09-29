@@ -527,7 +527,7 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     { // aren't in a move
-      if (!item->IsLastFM())
+      if (!item->IsLastFM() && !item->IsShoutCast())
         buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (CFavourites::IsFavourite(item.get(), GetID()))
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

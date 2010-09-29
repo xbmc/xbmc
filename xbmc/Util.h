@@ -108,6 +108,7 @@ public:
   static bool IsLiveTV(const CStdString& strFile);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsVideoDb(const CStdString& strFile);
+  static bool IsShoutCast(const CStdString& strFile);
   static bool IsLastFM(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
