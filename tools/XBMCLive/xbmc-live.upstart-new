@@ -53,7 +53,6 @@ pre-start script
 	fi
 
 	BOOTHOOKSDIRECTORY="/etc/xbmc"
-	echo $BOOTHOOKSDIRECTORY > /tmp/hooksDirectory
 
 	xbmcUser=xbmc
 	# Read configuration variable file if it is present
@@ -93,7 +92,6 @@ end script
 pre-stop script
 	touch /tmp/noRestartXBMC
 	rm /tmp/xbmcliveParams
-	rm /tmp/hooksDirectory
 
 	# Clean up the console before we switch to it, to avoid text flicker
 	if [ -x /usr/bin/tput ] ; then
