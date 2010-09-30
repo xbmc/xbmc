@@ -21,6 +21,7 @@
 #include "system.h"
 #include "Util.h"
 #include "URIUtils.h"
+#include "SpecialProtocol.h"
 
 CStdString CURIUtils::GetParentFolderURI(const CStdString& uri, bool preserveFileNameInPath)
 {
@@ -28,4 +29,11 @@ CStdString CURIUtils::GetParentFolderURI(const CStdString& uri, bool preserveFil
     return CUtil::AddFileToFolder(CUtil::GetParentPath(uri), CUtil::GetFileName(uri));
   else
     return CUtil::GetParentPath(uri);
+}
+
+bool CURIUtils::IsInPath(const CStdString &uri, const CStdString &baseURI)
+{
+  CStdString uriPath = CSpecialProtocol::TranslatePath(uri);
+  CStdString basePath = CSpecialProtocol::TranslatePath(baseURI);
+  return (strncmp(uriPath.c_str(), basePath.c_str(), basePath.GetLength()) == 0);
 }

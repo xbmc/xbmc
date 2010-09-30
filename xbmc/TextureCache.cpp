@@ -32,7 +32,7 @@
 #include "DDSImage.h"
 #include "Picture.h"
 #include "TextureManager.h"
-#include "SpecialProtocol.h"
+#include "URIUtils.h"
 
 using namespace XFILE;
 
@@ -150,19 +150,11 @@ void CTextureCache::Deinitialize()
 
 bool CTextureCache::IsCachedImage(const CStdString &url) const
 {
-  if (0 == strncmp(url.c_str(), "special://skin/", 15)) // a skin image
-    return true;
   if (url != "-" && !CURL::IsFullPath(url))
     return true;
-  CStdString basePath(g_settings.GetThumbnailsFolder());
-  if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
+  if (CURIUtils::IsInPath(url, "special://skin/") ||
+      CURIUtils::IsInPath(url, g_settings.GetThumbnailsFolder()))
     return true;
-  if (basePath.Left(8).Equals("special:"))
-  {
-    basePath = CSpecialProtocol::TranslatePath(basePath);
-    if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
-      return true;
-  }
   return false;
 }
 
@@ -190,7 +182,7 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
   CStdString path(GetCachedImage(url));
   if (!path.IsEmpty())
   {
-    if (returnDDS && 0 != strncmp(url.c_str(), "special://skin/", 15)) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
+    if (returnDDS && !CURIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
       CStdString ddsPath = CUtil::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
