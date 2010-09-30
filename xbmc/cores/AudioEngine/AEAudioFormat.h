@@ -20,6 +20,9 @@
  *
  */
 
+/**
+ * The possible channels
+ */
 enum AEChannel
 {
   AE_CH_NULL = -1,
@@ -32,8 +35,14 @@ enum AEChannel
   AE_CH_MAX
 };
 
+/**
+ * A channel layout array that is terminated by AE_CH_NULL
+ */
 typedef enum AEChannel* AEChLayout;
 
+/**
+ * Standard channel layouts
+ */
 enum AEStdChLayout
 {
   AE_CH_LAYOUT_INVALID = -1,
@@ -54,8 +63,11 @@ enum AEStdChLayout
 };
 
 
-/* this list is ordered from worst to best preferred */
-/* NE = Native Endian */
+/**
+ * The various data formats
+ * LE = Little Endian, BE = Big Endian, NE = Native Endian
+ * @note This is ordered from the worst to best preferred formats
+ */
 enum AEDataFormat
 {
   AE_FMT_INVALID = -1,
@@ -88,14 +100,44 @@ enum AEDataFormat
   AE_FMT_MAX
 };
 
+/**
+ * The audio format structure that fully defines a stream's audio information
+ */
 typedef struct {
-  enum AEDataFormat  m_dataFormat   ;
-  unsigned int       m_sampleRate   ;
-  unsigned int       m_channelCount ;
+  /**
+   * The stream's data format (eg, AE_FMT_S16LE)
+   */
+  enum AEDataFormat  m_dataFormat;
+
+  /**
+   * The stream's sample rate (eg, 48000)
+   */
+  unsigned int       m_sampleRate;
+
+  /**
+   * The stream's channel count
+   */
+  unsigned int       m_channelCount;
+
+  /**
+   * The stream's channel layout
+   * @warning this should NEVER be null and MUST be terminated by AE_CH_NULL
+   */
   AEChLayout         m_channelLayout;
 
-  unsigned int       m_frames       ;
-  unsigned int       m_frameSamples ;
-  unsigned int       m_frameSize    ;
+  /**
+   * The number of frames per period
+   */
+  unsigned int       m_frames;
+
+  /**
+   * The number of samples in one frame
+   */
+  unsigned int       m_frameSamples;
+
+  /**
+   * The size of one frame in bytes
+   */
+  unsigned int       m_frameSize;
 } AEAudioFormat;
 
