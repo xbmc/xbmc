@@ -3545,7 +3545,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
   {
-    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && ((CStreamDetailVideo*)details.GetStreamCount(CStreamDetail::VIDEO) > 0)) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
