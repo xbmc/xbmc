@@ -235,6 +235,12 @@ bool CWinSystemOSX::InitWindowSystem()
 
 bool CWinSystemOSX::DestroyWindowSystem()
 {  
+  if (m_glContext)
+  {
+    NSOpenGLContext* oldContext = (NSOpenGLContext*)m_glContext;
+    [oldContext release];
+    m_glContext = NULL;
+  }
   return true;
 }
 
