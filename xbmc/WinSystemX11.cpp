@@ -77,7 +77,11 @@ bool CWinSystemX11::DestroyWindowSystem()
   {
     if (m_glContext)
       glXDestroyContext(m_dpy, m_glContext);
+
+    m_glContext = 0;
+
     XCloseDisplay(m_dpy);
+    m_dpy = NULL;
   }
 
   // m_SDLSurface is free()'d by SDL_Quit().
