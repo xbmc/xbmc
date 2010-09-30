@@ -568,6 +568,8 @@
   <string id="609">CDDA bemásolási mappa nincs beállítva.</string>
   <string id="610">Zeneszám bemásolása</string>
   <string id="611">Szám megadása</string>
+  <string id="612">Bitszám/minta</string>
+  <string id="613">Mintavételi frekvencia</string>
 
   <string id="620">Zenei CD</string>
   <string id="621">Kódoló</string>
