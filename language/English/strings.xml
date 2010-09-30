@@ -564,6 +564,8 @@
   <string id="609">CDDARipPath is not set.</string>
   <string id="610">Rip audio track</string>
   <string id="611">Enter number</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Sample Frequency</string>
 
   <string id="620">Audio CDs</string>
   <string id="621">Encoder</string>
