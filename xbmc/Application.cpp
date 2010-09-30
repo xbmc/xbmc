@@ -4086,14 +4086,14 @@ void CApplication::UpdateFileState()
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
+            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
         {
           // Delete the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
         }
         else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
         {
           // Update the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
@@ -4504,7 +4504,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
       {
         // Delete the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;

@@ -99,8 +99,8 @@ class CAdvancedSettings
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
     int m_videoBlackBarColour;
-    int m_videoIgnoreAtStart;
-    int m_videoIgnoreAtEnd;
+    int m_videoIgnoreSecondsAtStart;
+    float m_videoIgnorePercentAtEnd;
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
