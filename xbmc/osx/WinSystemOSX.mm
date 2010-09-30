@@ -216,7 +216,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
 
 CWinSystemOSX::~CWinSystemOSX()
 {
-  DestroyWindowSystem();
 };
 
 bool CWinSystemOSX::InitWindowSystem()

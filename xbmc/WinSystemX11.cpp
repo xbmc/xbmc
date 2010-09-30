@@ -44,7 +44,6 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 
 CWinSystemX11::~CWinSystemX11()
 {
-  DestroyWindowSystem();
 }
 
 bool CWinSystemX11::InitWindowSystem()
