@@ -32,6 +32,7 @@
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDInputStreamBluray.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -118,7 +119,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   }
 
   if (pStreamDetails)
-    DemuxerToStreamDetails(pDemuxer, *pStreamDetails, strPath);
+    DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
   CDemuxStream* pStream = NULL;
   int nVideoStream = -1;
@@ -357,7 +358,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
   if (pDemuxer)
   {
-    bool retVal = DemuxerToStreamDetails(pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
+    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
     delete pDemuxer;
     delete pInputStream;
     return retVal;
@@ -370,7 +371,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 }
 
 /* returns true if details have been added */
-bool CDVDFileInfo::DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path)
+bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path)
 {
   bool retVal = false;
   details.Reset();
@@ -437,6 +438,16 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &det
   }  /* for iStream */
 
   details.DetermineBestStreams();
+
+  // correct bluray runtime. we need the duration from the input stream, not the demuxer.
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+  {
+    if(((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() > 0)
+    {
+      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
+    }
+  }
+
   return retVal;
 }
 
