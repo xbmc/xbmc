@@ -461,7 +461,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     CURL url(strDirectory);
     CAddonsDirectory::GenerateListing(url,addons,items);
     result = true;
-    items.SetProperty("Repo.Name",g_localizeStrings.Get(24067));
+    items.SetProperty("reponame",g_localizeStrings.Get(24067));
     items.m_strPath = strDirectory;
 
     CFileItemPtr pItem(new CFileItem(".."));
