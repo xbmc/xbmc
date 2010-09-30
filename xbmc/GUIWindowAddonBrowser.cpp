@@ -463,6 +463,13 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     result = true;
     items.SetProperty("Repo.Name",g_localizeStrings.Get(24067));
     items.m_strPath = strDirectory;
+
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath = m_history.GetParentPath();
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    items.AddFront(pItem, 0);
+
   }
   else
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
