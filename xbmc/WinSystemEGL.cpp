@@ -124,24 +124,42 @@ bool CWinSystemEGL::InitWindowSystem()
 bool CWinSystemEGL::DestroyWindowSystem()
 {
   if (m_eglContext)
+  {
     eglDestroyContext(m_eglDisplay, m_eglContext);
+    m_eglContext = 0;
+  }
 
   if (m_eglSurface)
+  {
     eglDestroySurface(m_eglDisplay, m_eglSurface);
+    m_eglSurface = NULL;
+  }
 
   // Needed???
   if (m_eglWindow)
+  {
     XDestroyWindow(m_dpy, m_eglWindow);
+    m_eglWindow = 0;
+  }
 
   // Needed???
   if (m_wmWindow)
+  {
     XDestroyWindow(m_dpy, m_wmWindow);
+    m_wmWindow = 0;
+  }
 
   if (m_eglDisplay)
+  {
     eglTerminate(m_eglDisplay);
+    m_eglDisplay = 0;
+  }
 
   if (m_dpy)
+  {
     XCloseDisplay(m_dpy);
+    m_dpy = NULL;
+  }
 
   return true;
 }
