@@ -24,14 +24,20 @@
 #include "cores/IAudioCallback.h"
 #include <stdint.h>
 
-/* options to pass to GetStream */
-enum {
+/**
+ * Bit options to pass to IAE::GetStream and IAE::AlterStream
+ */
+enum AEStreamOptions {
   AESTREAM_FREE_ON_DRAIN  = 0x01, /* auto free the stream when it has drained */
   AESTREAM_OWNS_POST_PROC = 0x02, /* free postproc filters on stream free */
   AESTREAM_FORCE_RESAMPLE = 0x04  /* force resample even if rates match */
 };
 
 class IAEPostProc;
+
+/**
+ * IAEStream Stream Interface for streaming audio
+ */
 class IAEStream
 {
 protected:
@@ -40,72 +46,165 @@ protected:
   virtual ~IAEStream() {}
 
 public:
+  /**
+   * Callback prototye for Drain and Data callbacks
+   * @see SetDataCallback(), SetDrainCallback()
+   * @param stream The calling stream
+   * @param arg The user supplied pointer
+   * @param samples The number of samples (only used for the Data callback, otherwise this value is unspecified)
+   */
   typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
 
-  /* use this to destroy & free the stream */
+  /**
+   * Call this to destroy the stream
+   * @note Do not use delete
+   */
   virtual void Destroy() = 0;
 
-  /* set callbacks for when more data is needed, or when drain has completed */
-  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer < 50% full */
-  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0; /* called when the buffer has been drained */
+  /**
+   * Set the callback function to call when more data is required, this is called when there is at-least one full frame of audio free.
+   * @param cbFunc The callback function
+   * @param arg Pointer to pass to the callback function (eg, this)   
+   */
+  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg) = 0;
 
-  /* add data to the stream */
+  /**
+   * Set the callback function to call when the stream has completed draining
+   * @param cbFunc The callback function
+   * @param arg Pointer to pass to the callback function (eg, this)
+   */
+  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0;
+
+  /**
+   * Add interleaved PCM data to the stream
+   * @param data The interleaved PCM data
+   * @param size The size in bytes of data
+   * @return The number of bytes consumed
+   */
   virtual unsigned int AddData(void *data, unsigned int size) = 0;
 
-  /* get the delay till playback of this stream */
+  /**
+   * Returns how long until new data will be played
+   * @return The delay in seconds
+   */
   virtual float GetDelay() = 0;
 
-  /* pause the stream */
+  /**
+   * Pauses the stream playback
+   */
   virtual void Pause() = 0;
 
-  /* resume the stream */
+  /**
+   * Resumes the stream after pausing
+   */
   virtual void Resume  () = 0;
 
-  /* drain the stream */
+  /**
+   * Start draining the stream
+   * @note Once called AddData will not consume more data.
+   */
   virtual void Drain() = 0;
 
-  /* returns true if the is stream draining */
+  /**
+   * Returns true if the is stream draining
+   */
   virtual bool IsDraining() = 0;
 
-  /* flush the stream */
+  /**
+   * Flush all buffers dropping the audio data
+   */
   virtual void Flush() = 0;
 
-  /* get the streams playback volume */
+  /**
+   * Return the stream's current volume level
+   * @return The volume level between 0.0 and 1.0
+   */
   virtual float GetVolume() = 0;
 
-  /* set the streams playback volume */
-  virtual void  SetVolume    (float volume) = 0;
+  /**
+   * Set the stream's volume level
+   * @param volume The new volume level between 0.0 and 1.0
+   */
+  virtual void  SetVolume(float volume) = 0;
 
-  /* get the replay gain of the stream */
+  /**
+   * Returns the stream's current replay gain factor
+   * @return The replay gain factor between 0.0 and 1.0
+   */
   virtual float GetReplayGain() = 0;
 
-  /* set the replay gain of the stream */
+  /**
+   * Sets the stream's replay gain factor, this is used by formats such as MP3 that have attenuation information in their streams
+   * @param factor The replay gain factor
+   */
   virtual void  SetReplayGain(float factor) = 0;
 
-  /* append/prepend/remove a post proc filter to/from the stream */
+  /**
+   * Appends a post-processor filter to the stream
+   * @param pp The post-processor to append
+   */
   virtual void AppendPostProc (IAEPostProc *pp) = 0;
+
+  /**
+   * Prepends a post-processor filter to the stream
+   * @param pp The post-processor to prepend
+   */
   virtual void PrependPostProc(IAEPostProc *pp) = 0;
+
+  /**
+   * Removes a post-processor filter from the stream
+   * @param pp The post-processor to remove
+   */
   virtual void RemovePostProc (IAEPostProc *pp) = 0;
 
-  /* returns the size in bytes of one frame */
+  /**
+   * Returns the size of one audio frame in bytes (channelCount * resolution)
+   * @return The size in bytes of one frame
+  */
   virtual unsigned int GetFrameSize() = 0;
 
-  /* returns the number of channels */
+  /**
+   * Returns the number of channels the stream is configured to accept
+   * @return The channel count
+   */
   virtual unsigned int GetChannelCount() = 0;
 
-  /* returns the stream's sample rate */
-  /* note, this is not updated by Get/Set Resample ratio */
+  /**
+   * Returns the stream's sample rate, if the stream is using a dynamic sample rate, this value will NOT reflect any changes made by calls to SetResampleRatio()
+   * @return The stream's sample rate (eg, 48000)
+   */
   virtual unsigned int GetSampleRate() = 0;
 
-  /* returns the data format the stream expects */
+  /**
+   * Return the data format the stream has been configured with
+   * @return The stream's data format (eg, AE_FMT_S16LE)
+   */
   virtual enum AEDataFormat GetDataFormat() = 0;
 
-  /* for dynamic sample rate changes (smoothvideo) */
+  /**
+   * Return the resample ratio
+   * @note This will return an undefined value if the stream is not resampling
+   * @return the current resample ratio or undefined if the stream is not resampling
+   */
   virtual double GetResampleRatio() = 0;
+
+  /**
+   * Sets the resample ratio
+   * @note This function will silently fail if the stream is not resampling, if you wish to use this be sure to set the AESTREAM_FORCE_RESAMPLE option
+   * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
+   */
   virtual void   SetResampleRatio(double ratio) = 0;
 
-  /* vizualization callback register/unregister function */
+  /**
+   * Registers the audio callback to call with each block of data, this is used by Audio Visualizations
+   * @warning Currently the callbacks require stereo float data in blocks of 512 samples, any deviation from this may crash XBMC, or cause junk to be rendered
+   * @param pCallback The callback
+   */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
+
+  /**
+   * Unregisters the current audio callback
+   */
   virtual void UnRegisterAudioCallback() = 0;
 };
 
