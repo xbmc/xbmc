@@ -879,7 +879,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
 
   if (!outputFormat.mFormatID) // No match found
   {
-    CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output format.");
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output format.");
     return false;
   }
 
