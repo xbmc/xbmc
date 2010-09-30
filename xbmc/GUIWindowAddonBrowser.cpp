@@ -464,11 +464,14 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     items.SetProperty("reponame",g_localizeStrings.Get(24067));
     items.m_strPath = strDirectory;
 
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->m_strPath = m_history.GetParentPath();
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.AddFront(pItem, 0);
+    if (m_guiState.get() && !m_guiState->HideParentDirItems())
+    {
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->m_strPath = m_history.GetParentPath();
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = false;
+      items.AddFront(pItem, 0);
+    }
 
   }
   else
