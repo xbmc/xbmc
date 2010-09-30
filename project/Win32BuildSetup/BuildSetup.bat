@@ -93,7 +93,6 @@ IF %comp%==vs2008 (
   echo  :::::::::  :::::::::  :::::::::::  :::         :::         ::: :::::::::  
   echo  ::::::::    :::::::::  :::::::::   :::         :::         :::  ::::::::  
   echo ::::::         :::::::    :::::     :            ::          ::    ::::::  
-  echo.
   goto EXE_COMPILE
 
 :EXE_COMPILE
@@ -124,7 +123,7 @@ IF %comp%==vs2008 (
   ECHO ------------------------------------------------------------
   ECHO Cleaning Solution...
   %NET% %CLEAN_EXE%
-  ECHO Compiling Solution...
+  ECHO Compiling XBMC...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
   	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog.htm for details."
@@ -195,19 +194,11 @@ IF %comp%==vs2008 (
   copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  rem screensavers currently are xbox only
-  rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\addons BUILD_WIN32\Xbmc\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  
-  SET skinpath=%CD%\Add_skins
-  SET scriptpath=%CD%\Add_scripts
-  SET pluginpath=%CD%\Add_plugins
-  rem override skin/script/pluginpaths from config.ini if there's a config.ini
-  IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
-  
+    
   IF EXIST error.log del error.log > NUL
   SET build_path=%CD%
   ECHO ------------------------------------------------------------
@@ -215,13 +206,6 @@ IF %comp%==vs2008 (
   cd ..\..\addons\skin.confluence
   call build.bat > NUL
   cd %build_path%
-  rem call buildskins.bat
-  rem call buildscripts.bat "%scriptpath%"
-  rem call buildplugins.bat "%pluginpath%"
-  rem reset variables
-  SET skinpath=
-  SET scriptpath=
-  SET pluginpath=
   rem restore color and title, some scripts mess these up
   COLOR 1B
   TITLE XBMC for Windows Build Script
