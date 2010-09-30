@@ -54,7 +54,7 @@ makeConfig()
 	configString="$configString --mirror-binary http://archive.ubuntu.com/ubuntu/"
 	configString="$configString --mirror-chroot http://archive.ubuntu.com/ubuntu/"
 
-	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
+	lb config --mode ubuntu --archive-areas "$CATEGORIES" $configString
 
 	# Copy files for chroot
 	cp -R "$THISDIR"/Files/chroot_* config

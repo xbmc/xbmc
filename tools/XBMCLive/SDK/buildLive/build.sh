@@ -25,12 +25,12 @@ WORKDIR=workarea
 
 build()
 {
-	lh build
+	lb build
 
 	# safeguard against crashes
-	lh chroot_devpts remove
-	lh chroot_proc remove
-	lh chroot_sysfs remove
+	lb chroot_devpts remove
+	lb chroot_proc remove
+	lb chroot_sysfs remove
 	
 	for modulesdir in chroot/lib/modules/*
 	do
@@ -38,7 +38,7 @@ build()
 	done
 }
 
-if ! which lh > /dev/null ; then
+if ! which lb > /dev/null ; then
 	echo "A required package (live-build) is not available, exiting..."
 	exit 1
 fi
