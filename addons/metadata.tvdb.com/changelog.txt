@@ -1,0 +1,5 @@
+[B]1.0.8[/B]
+- Fixed: fallback to other image languages if preferred doesn't exist
+
+[B]1.0.7[/B]
+- Fixed: season thumbs

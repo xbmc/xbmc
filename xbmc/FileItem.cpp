@@ -484,10 +484,7 @@ bool CFileItem::IsVideo() const
 
   extension.ToLower();
 
-  if (g_settings.m_videoExtensions.Find(extension) != -1)
-    return true;
-
-  return false;
+  return (g_settings.m_videoExtensions.Find(extension) != -1);
 }
 
 bool CFileItem::IsAudio() const
@@ -518,10 +515,8 @@ bool CFileItem::IsAudio() const
     return false;
 
   extension.ToLower();
-  if (g_settings.m_musicExtensions.Find(extension) != -1)
-    return true;
 
-  return false;
+  return (g_settings.m_musicExtensions.Find(extension) != -1);
 }
 
 bool CFileItem::IsKaraoke() const
@@ -625,8 +620,7 @@ bool CFileItem::IsDVDImage() const
 {
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg")) return true;
-  return false;
+  return (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg"));
 }
 
 bool CFileItem::IsDiskFile() const
@@ -1984,7 +1978,7 @@ void CFileItemList::Stack()
             CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
             if (CFile::Exists(path))
               dvdPath = path;
-            }
+          }
 #endif
           if (!dvdPath.IsEmpty())
           {

@@ -87,7 +87,6 @@
   <string id="110">Miniaturen aanmaken</string>
   <string id="111">Snelkoppelingen</string>
   <string id="112">Pauze</string>
-  
   <string id="113">Update mislukt</string> 
   <string id="114">Installatie mislukt</string> 
   <string id="115">Kopieer</string>
@@ -172,7 +171,7 @@
   <string id="194">Zoeken...</string>
   <string id="195">Geen informatie gevonden</string>
   <string id="196">Kies film:</string>
-  <string id="197">Zoek %s voor informatie</string>
+  <string id="197">%s raadplegen voor informatie</string> <!--%s wordt vervangen door de naam van een scraper-->
   <string id="198">Filmgegevens ophalen</string>
   <string id="199">Webinterface</string> 
 
@@ -781,7 +780,7 @@
   <string id="1216">Muziek en afbeeldingen</string>
   <string id="1217">Muziek en bestanden</string>
   <string id="1218">Video en afbeeldingen</string>
-  <string id="1219">Video en bestanden</string>
+  <string id="1219">Video - Bestanden</string> <!--Blijkbaar een label voor de lijstweergave-->
   <string id="1220">Afbeeldingen en bestanden</string>
   <string id="1221">Muziek, video's en afbeeldingen</string>
   <string id="1222">Muziek, video's, afbeeldingen en bestanden</string>
@@ -1021,7 +1020,8 @@
   <string id="13012">Afsluiten</string>
   <string id="13013">Opnieuw opstarten</string>
   <string id="13014">Minimaliseren</string>
-  <string id="13015">Actie voor an/uitknop</string>
+  <string id="13015">Actie voor aan/uitknop</string>
+  <string id="13016">Systeem uitschakelen</string> 
 
   <string id="13020">Er is een andere sessie actief, wellicht SSH?</string>
   <string id="13021">Verwisselbare harde schijf aankoppelen?</string>
@@ -1275,6 +1275,11 @@
   <string id="13508">Hoog</string>
   <string id="13509">Echt hoog</string>
   <string id="13510">Afspelen video naar beeldscherm synchroniseren</string>
+   
+  <string id="13550">Tijdens wijzigen verversingsfrequentie pauzeren</string> 
+  <string id="13551">Uit</string> 
+  <string id="13552">%.1f Seconde</string> 
+  <string id="13553">%.1f Seconden</string> 
 
   <string id="13600">Apple afstandsbediening</string>
 
@@ -1832,16 +1837,16 @@
   <string id="20357">Geef de naam van de serie</string>
   <string id="20358">Seizoen %i</string>
   <string id="20359">Afl.</string> <!--Overlapt met andere delen van de UI in bepaalde schermen-->
-  <string id="20360">Afl.</string> <!--Zelfde opmerking als bij string 20359-->
+  <string id="20360">Afl.</string> <!--Zelfde opmerking als bij vorige string-->
   <string id="20361">Afleveringsdetails laden</string>
   <string id="20362">Aflevering uit bibliotheek verwijderen</string>
   <string id="20363">Serie uit bibliotheek verwijderen</string>
   <string id="20364">Serie</string>
   <string id="20365">Afleveringsplot</string>
   <string id="20366">* Alle seizoenen</string>
-  <string id="20367">Verberg bekeken</string>
+  <string id="20367">Bekeken verbergen</string>
   <string id="20368">Prod.</string>
-  <string id="20369">Plot van niet-bekeken video's verbergen</string>
+  <string id="20369">Plot van niet-bekeken video's weergeven</string>
   <string id="20370">* Verborgen om plot niet te verklappen *</string>
   <string id="20371">Afbeelding seizoen selecteren</string>
   <string id="20372">Afbeelding van seizoen</string>
@@ -1851,13 +1856,13 @@
   <string id="20376">Originele titel</string> 
   <string id="20377">Serie-informatie vernieuwen</string>
   <string id="20378">Alle afleveringen vernieuwen?</string>
-  <string id="20379">Map bevat één enkele serie</string>
+  <string id="20379">Geselecteerde map bevat één enkele serie</string>
   <string id="20380">Map uitsluiten van scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatisch miniaturen van seizoen laden</string>
-  <string id="20383">Map bevat 1 video</string>
-  <string id="20384">Link naar serie</string>
-  <string id="20385">Link naar serie verwijderen</string>
+  <string id="20383">Geselecteerde map bevat 1 video</string>
+  <string id="20384">Aan serie koppelen</string>
+  <string id="20385">Van serie loskoppelen</string>
   <string id="20386">Onlangs toegevoegde films</string>
   <string id="20387">Onlangs toegevoegde afleveringen series</string>
   <string id="20388">Filmstudio's</string>
@@ -1878,7 +1883,7 @@
   <string id="20403">Acteursafbeelding instellen</string>
 
   <string id="20405">Afl. uit favorieten verwijderen</string>
-  <string id="20406">Afl. toevoegen aan favorieten</string>
+  <string id="20406">Afl. aan favorieten toevoegen</string>
   <string id="20407">Scraperinstellingen</string>
   <string id="20408">Muziekvideo-informatie ophalen</string>
   <string id="20409">Serie-info ophalen</string>
@@ -1902,13 +1907,13 @@
   <string id="20427">bestanden per entry?</string>
   <string id="20428">Enkel bestand</string>
   <string id="20429">Apart</string>
-  <string id="20430">Thumbs en fanart exporteren?</string>
+  <string id="20430">Miniaturen en fanart exporteren?</string>
   <string id="20431">Oude bestanden overschrijven?</string>
   <string id="20432">Pad uitsluiten van bibliotheekupdates</string>
-  <string id="20433">Thumbs en vlaggen extraheren</string>
+  <string id="20433">Miniaturen en vlaggen extraheren</string>
   <string id="20434">Sets</string>
   <string id="20435">Filmsetthumb kiezen</string>
-  <string id="20436">Acteurthumbs exporteren</string>
+  <string id="20436">Acteurminiaturen exporteren</string>
   <string id="20437">Fanart kiezen</string>
   <string id="20438">Lokale fanart</string>
   <string id="20439">Geen fanart</string>
@@ -1962,7 +1967,7 @@
   <string id="21381">Geef naam voor de intelligente afspeellijst</string>
   <string id="21382">'Locatie toevoegen' weergeven</string>
   <string id="21383">Schuifbalken weergeven</string>
-  <string id="21384">'Verberg bekeken'-knop toevoegen in bibliotheek</string>
+  <string id="21384">'Bekeken verbergen'-knop toevoegen in bibliotheek</string>
   <string id="21385">Openen</string>
   <string id="21386">Akoestiekbeheerniveau</string>
   <string id="21387">Snel</string>
@@ -2272,7 +2277,7 @@
   <string id="33008">Opslaan</string>
   <string id="33009">Kopiëren</string>
   <string id="33010">Geef downloadmap op</string>
-  <string id="30011">Zoek tijdsduur</string>
+  <string id="33011">Zoek tijdsduur</string>
   <string id="33012">Kort</string>
   <string id="33013">Lang</string>
   <string id="33014">Gebruik DVD-speler in plaats van standaardspeler</string>

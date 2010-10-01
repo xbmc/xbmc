@@ -337,6 +337,7 @@ void CExternalPlayer::Process()
   {
     CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
     SetWindowPos(g_hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+    SetForegroundWindow(g_hWnd);
   }
   else
 #endif

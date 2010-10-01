@@ -20,9 +20,37 @@
  */
 
 #include "APEv2Tag.h"
+#include "FileSystem/File.h"
 
+using namespace XFILE;
+
+struct _ape_file_io
+{
+  size_t (*read_func)  (void *ptr, size_t size, size_t nmemb, void *datasource);
+  int    (*seek_func)  (void *datasource, long int offset, int whence);
+  long   (*tell_func)  (void *datasource);
+  void *data;
+};
 
 using namespace MUSIC_INFO;
+
+size_t CAPEv2Tag::fread_callback(void *ptr, size_t size, size_t nmemb, void *fp)
+{
+  CFile *file = (CFile *)fp;
+  return file->Read(ptr, size * nmemb) / size;
+}
+
+int CAPEv2Tag::fseek_callback(void *fp, long int offset, int whence)
+{
+  CFile *file = (CFile *)fp;
+  return (file->Seek(offset, whence) >= 0) ? 0 : -1;
+}
+
+long CAPEv2Tag::ftell_callback(void *fp)
+{
+  CFile *file = (CFile *)fp;
+  return file->GetPosition();
+}
 
 CAPEv2Tag::CAPEv2Tag()
 {
@@ -43,7 +71,20 @@ bool CAPEv2Tag::ReadTag(const char* filename)
 
   // Read in our tag using our dll
   apetag *tag = m_dll.apetag_init();
-  m_dll.apetag_read(tag, (char*)filename, 0);
+
+  CFile file;
+  if (!file.Open(filename))
+    return false;
+
+  // Create our file reading class
+  ape_file file_api;
+  memset(&file_api, 0, sizeof(ape_file));
+  file_api.read_func = fread_callback;
+  file_api.seek_func = fseek_callback;
+  file_api.tell_func = ftell_callback;
+  file_api.data = &file;
+
+  m_dll.apetag_read_fp(tag, &file_api, (char *)filename, 0);
   if (!tag)
     return false;
 

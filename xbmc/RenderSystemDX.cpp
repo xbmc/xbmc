@@ -40,7 +40,13 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "VideoReferenceClock.h"
-#include "DXErr.h"
+#if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up use dxerr
+  #include <Dxerr.h>
+#else
+  #include <dxerr9.h>
+  #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+  #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+#endif
 
 using namespace std;
 

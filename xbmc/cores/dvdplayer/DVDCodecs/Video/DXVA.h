@@ -26,6 +26,8 @@
 #include "Event.h"
 #include <dxva2api.h>
 #include <deque>
+#include <vector>
+
 namespace DXVA {
 
 class CProcessor;
@@ -102,9 +104,10 @@ public:
   CProcessor();
  ~CProcessor();
 
-  bool Open(const DXVA2_VideoDesc& dsc);
-  void Close();
-  REFERENCE_TIME Add   (IDirect3DSurface9* source);
+  bool           Open(const DXVA2_VideoDesc& dsc);
+  void           Close();
+  void           HoldSurface(IDirect3DSurface9* surface);
+  REFERENCE_TIME Add(IDirect3DSurface9* source);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   int            Size() { return m_size; }
 
@@ -137,6 +140,7 @@ public:
   long              m_references;
 
 protected:
+  std::vector<IDirect3DSurface9*> m_heldsurfaces;
 };
 
 };

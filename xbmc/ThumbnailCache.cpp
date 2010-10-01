@@ -70,10 +70,7 @@ bool CThumbnailCache::IsCached(const CStdString& strFileName)
 
   map<CStdString, bool>::iterator it;
   it = m_Cache.find(strFileName);
-  if (it != m_Cache.end())
-    return true;
-
-  return false;
+  return it != m_Cache.end();
 }
 
 void CThumbnailCache::Clear()
@@ -96,9 +93,7 @@ void CThumbnailCache::Add(const CStdString& strFileName, bool bExists)
   map<CStdString, bool>::iterator it;
   it = m_Cache.find(strFileName);
   if (it != m_Cache.end())
-  {
     it->second = bExists;
-  }
   else
     m_Cache.insert(pair<CStdString, bool>(strFileName, bExists));
 }

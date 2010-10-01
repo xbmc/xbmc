@@ -128,11 +128,8 @@ void CTuxBoxService::Process()
       g_infoManager.UpdateFromTuxBox();
     }
     else
-    {
       CLog::Log(LOGDEBUG, "%s - Could not receive current service data", __FUNCTION__);
-    }
   }
-  return;
 }
 bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
 {
@@ -172,13 +169,9 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
   strOptions = url.GetOptions();
   // Detect Port
   if (url.GetPort()!=0 && url.GetPort()!=80)
-  {
     strPort.Format(":%i",url.GetPort());
-  }
   else
-  {
     strPort = "";
-  }
 
   if (!pRootElement)
   {
@@ -231,13 +224,9 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
 
   //Detect Port
   if (url.GetPort()!=0 && url.GetPort()!=80)
-  {
     strPort.Format(":%i",url.GetPort());
-  }
   else
-  {
     strPort = "";
-  }
 
   if (!pRootElement)
   {
@@ -279,13 +268,9 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
 
   //Detect Port
   if (url.GetPort()!=0 && url.GetPort()!=80)
-  {
     strPort.Format(":%i",url.GetPort());
-  }
   else
-  {
     strPort = "";
-  }
 
   if (!pRootElement)
   {
@@ -568,14 +553,10 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
           strVideoStream.Format("0,%s,%s,%s%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), strAPids.c_str());
         }
         else
-        {
           strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
-        }
       }
       else
-      {
         strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
-      }
 
       strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),g_advancedSettings.m_iTuxBoxStreamtsPort,strVideoStream.c_str());
 
@@ -750,7 +731,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
     int data_size = 0;
     int size_total = (int)http.GetLength();
 
-    if(size_total >0)
+    if(size_total > 0)
     {
       // read response from server into string buffer
       CStdString strTmp;
@@ -773,30 +754,18 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       XMLRoot = doc.RootElement();
       CStdString strRoot = XMLRoot->Value();
       if( strRoot.Equals("streaminfo"))
-      {
         return StreamInformations(XMLRoot);
-      }
-      else if(strRoot.Equals("currentservicedata"))
-      {
+      if(strRoot.Equals("currentservicedata"))
         return CurrentServiceData(XMLRoot);
-      }
-      else if(strRoot.Equals("boxstatus"))
-      {
+      if(strRoot.Equals("boxstatus"))
         return BoxStatus(XMLRoot);
-      }
-      else if(strRoot.Equals("boxinfo"))
-      {
+      if(strRoot.Equals("boxinfo"))
         return BoxInfo(XMLRoot);
-      }
-      else if(strRoot.Equals("serviceepg") || strRoot.Equals("service_epg"))
-      {
+      if(strRoot.Equals("serviceepg") || strRoot.Equals("service_epg"))
         return ServiceEPG(XMLRoot);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
-        CLog::Log(LOGERROR, "%s - Request String: %s", __FUNCTION__,strRoot.c_str());
-      }
+
+      CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - Request String: %s", __FUNCTION__,strRoot.c_str());
       return false;
     }
     else
@@ -1037,21 +1006,15 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
 
         pVal = pIt->FirstChild("pid");
         if(pVal)
-        {
           newChannel.pid = pVal->FirstChild()->Value();
-        }
 
         pVal = pIt->FirstChild("selected");
         if(pVal)
-        {
           newChannel.selected = pVal->FirstChild()->Value();
-        }
 
         pVal = pIt->FirstChild("name");
         if(pVal)
-        {
           newChannel.name = pVal->FirstChild()->Value();
-        }
 
         CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, newChannel.pid.c_str(), newChannel.selected.c_str(), newChannel.name.c_str() );
 
@@ -1522,9 +1485,8 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))
-    {
       return defaultPng;
-    }
+
     if (!piconDoc.LoadFile(piconXML))
     {
       CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", piconXML.c_str(), piconDoc.ErrorRow(), piconDoc.ErrorDesc());
@@ -1544,13 +1506,10 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     while(pService)
     {
       if(pService->Attribute("name"))
-      {
         strName.Format("%s",pService->Attribute("name"));
-      }
+
       if(pService->Attribute("png"))
-      {
         strPng.Format("%s",pService->Attribute("png"));
-      }
 
       if(strName.Equals(strServiceName))
       {
@@ -1628,9 +1587,8 @@ CStdString CTuxBoxUtil::DetectSubMode(CStdString strSubMode, CStdString& strXMLR
   int ipointMode = strSubMode.Find("?mode=");
   int ipointSubMode = strSubMode.Find("&submode=");
   if (ipointMode >=0)
-  {
     strFilter = strSubMode.GetAt(ipointMode+6);
-  }
+
   if (ipointSubMode >=0)
   {
     CStdString strTemp;

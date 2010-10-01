@@ -263,11 +263,18 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Minimize();
   }
-  else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  else if (execute.Equals("loadprofile"))
   {
     int index = g_settings.GetProfileIndex(parameter);
-    if (index >= 0)
+    bool prompt = (params.size() == 2 && params[1].Equals("prompt"));
+    bool bCanceled;
+    if (index >= 0
+        && (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+            || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
+    {
+
       CGUIWindowLoginScreen::LoadProfile(index);
+    }
   }
   else if (execute.Equals("mastermode"))
   {

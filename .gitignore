@@ -306,6 +306,7 @@ config.log
 /system/libidn-11.dll
 /system/libssh2.dll
 /system/libssl32.dll
+/system/hdhomerun.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll

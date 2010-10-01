@@ -2886,16 +2886,20 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
 
 bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items)
 {
-  if (NULL == m_pDB.get()) return false;
-  if (NULL == m_pDS.get()) return false;
+  if (m_pDB.get() == NULL || m_pDS.get() == NULL)
+    return false;
 
   try
   {
     CStdString sql = "select * from albumview " + where + order;
 
-    // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
+    // run query
+    unsigned int time = CTimeUtils::GetTimeMS();
     if (!m_pDS->query(sql.c_str())) return false;
+    CLog::Log(LOGDEBUG, "%s - query took %i ms",
+              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {

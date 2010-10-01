@@ -587,6 +587,10 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     /* Force parsing as several audio frames can be in
                      * one packet and timestamps refer to packet start. */
                     st->need_parsing = AVSTREAM_PARSE_TIMESTAMPS;
+                    if (st->codec->codec_id == CODEC_ID_DTS) {
+                        st->need_parsing = AVSTREAM_PARSE_FULL;
+                        st->codec->channels = 0;
+                    }
                     /* ADTS header is in extradata, AAC without header must be
                      * stored as exact frames. Parser not needed and it will
                      * fail. */

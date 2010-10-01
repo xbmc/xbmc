@@ -144,7 +144,17 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   strPath.Replace('/', '\\');
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);
-
+  CStdString strCachedPath;
+  CUtil::AddFileToFolder(strDir + "rarfolder%04d", CUtil::GetFileName(strPathInRar), strCachedPath);
+  strCachedPath = CUtil::GetNextPathname(strCachedPath, 9999);
+  if (strCachedPath.IsEmpty())
+  {
+    CLog::Log(LOGWARNING, "Could not cache file %s", (strRarPath + strPathInRar).c_str());
+    return false;
+  }
+  strCachedPath = CUtil::MakeLegalPath(strCachedPath);
+  CStdString strCachedDir;
+  CUtil::GetDirectory(strCachedPath, strCachedDir);
   int64_t iOffset = -1;
   if (iRes != 2)
   {
@@ -177,8 +187,10 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     if (iSize > 1024*1024 || iSize == -2) // 1MB
       bShowProgress=true;
 
-    CStdString strDir2(strDir);
+    CStdString strDir2(strCachedDir);
     CUtil::RemoveSlashAtEnd(strDir2);
+    if (!CDirectory::Exists(strDir2))
+      CDirectory::Create(strDir2);
     iRes = urarlib_get(const_cast<char*>(strRarPath.c_str()), const_cast<char*>(strDir2.c_str()),
                        const_cast<char*>(strPath.c_str()),NULL,&iOffset,bShowProgress);
   }
@@ -207,8 +219,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     pFile = &(j->second.second[j->second.second.size()-1]);
     pFile->m_iUsed = 1;
   }
-  CUtil::AddFileToFolder(strDir,CUtil::GetFileName(strPathInRar),pFile->m_strCachedPath); // GetFileName
-  pFile->m_strCachedPath = CUtil::MakeLegalPath(pFile->m_strCachedPath);
+  pFile->m_strCachedPath = strCachedPath;
   pFile->m_bAutoDel = (bOptions & EXFILE_AUTODELETE) != 0;
   pFile->m_iOffset = iOffset;
   strPathInCache = pFile->m_strCachedPath;

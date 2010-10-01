@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/06/2010-->
-<!--Turkish strings based on English strings revision 31350-->
+<!--Date of translation: 27/09/2010-->
+<!--Turkish strings based on English strings revision 34139-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -139,6 +139,11 @@
   <string id="31355">Film menüsü</string>
   <string id="31356">Altyazıları İndir</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Dış görünüm varsayılanı</string>
+  <string id="31391">B. Harfsiz dış görünüm varsayılanı</string>
+  <string id="31392">Arial tabanlı</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Dış görünümü değiştir · Dil ve bölgesel ayarları değiştir · Dosya listeleme seçeneklerini değiştir · Ekran koruyucuyu ayarla</string>

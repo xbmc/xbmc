@@ -69,7 +69,7 @@
   <string id="31115">Personalizator</string>
   <string id="31116"></string>
   <string id="31117">Arată filme adăugate recent</string>
-  <string id="31118">Submeniu programe pagină principală</string>
+  <string id="31118">Submeniu programe pagină inițială</string>
   <string id="31119">Activează buton supliment personalizat</string>
   <string id="31120">ETICHETĂ BUTON</string>
   <string id="31121">CALE CĂTRE SUPLIMENT</string>
@@ -77,7 +77,6 @@
   <string id="31123">Folosește "Afișe" în loc de "Bannere" pentru seriale</string>
   <string id="31124">Arată fundal video "În redare"</string>
   <string id="31125">Arată fundal vizualizare "În redare"</string>
-
   <string id="31126">Activează versuri în OSD muzică</string>
   <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
   <string id="31128">Versuri</string>
@@ -107,7 +106,7 @@
   <string id="31308">Detalii film</string>
   <string id="31309">Utilizare memorie:</string>
   <string id="31310">Număr pistă</string>
-  <string id="31311">Imagine Fanart[CR][CR]indisponibilă[CR][CR]Clic pe buton pentru setare</string>
+  <string id="31311">Imagine Fanart indisponibilă[CR][CR]Clic pe buton pentru setare</string>
   <string id="31312">Scraper curent</string>
   <string id="31313">Alegeți un scraper</string>
   <string id="31314">Opțiuni de scanare conținut</string>
@@ -136,6 +135,11 @@
   <string id="31355">Meniu film</string>
   <string id="31356">Descarcă subtitrări</string>
   <string id="31357"></string>
+  
+  <!-- Skin Fontsets -->
+  <string id="31390">Implicit costum</string>
+  <string id="31391">Implicit costum fără majuscule</string>
+  <string id="31392">Cu Arial la bază</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURAȚI SETĂRI ASPECT[/B][CR][CR]Schimbați costumul · Alegeți limbă și regiune · Modificați opțiuni de listare fișiere[CR]Alegeți un ecran de veghe</string>
@@ -144,7 +148,7 @@
   <string id="31403">[B]CONFIGURAȚI SETĂRI IMAGINE[/B][CR][CR]Modificați opțiuni de listare imagini · Configurați prezentare diapozitive</string>
   <string id="31404">[B]CONFIGURAȚI SETĂRI VREME[/B][CR][CR]Alegeți trei orașe pentru a aduna informații despre vreme</string>
   <string id="31405">[B]CONFIGURAȚI SETĂRI REȚEA[/B][CR][CR]Configurați controlul XBMC prin UPnP și HTTP · Configurați partajare fișiere[CR]Setați opțiuni de acces Internet</string>
-  <string id="31406">[B]CONFIGURAȚI SETĂRI SISTEM[/B][CR][CR]Configurați și calibrați afișaje · Configurați ieșire audio · Instalați telecomenzi[CR]Alegeți opțiuni de economisire energie · Activați depanare · Configurați blocare principală</string>
+  <string id="31406">[B]CONFIGURAȚI SETĂRI SISTEM[/B][CR][CR]Configurați și calibrați afișaje · Configurați ieșire audio · Instalați telecomenzi[CR]Alegeți opțiuni de economisire energie · Activați depanare · Configurați blocarea principală</string>
   <string id="31407">[B]CONFIGURAȚI SETĂRI COSTUM[/B][CR][CR]Configurați costumul Confluence · Adăugați și eliminați elemente din meniul principal[CR]Schimbați fundale costum</string>
   <string id="31408">[B]CONFIGURAȚI SUPLIMENTE[/B][CR][CR]Administrați suplimentele instalate · Căutați și instalați suplimente de la xbmc.org[CR]Modificați setări suplimente</string>
 

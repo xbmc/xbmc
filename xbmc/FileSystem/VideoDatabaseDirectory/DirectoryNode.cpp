@@ -322,7 +322,6 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     pItem->m_bIsFolder = true;
     pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SORT_ON_BOTTOM : SORT_ON_TOP);
     pItem->SetCanQueue(false);
-    pItem->SetLabelPreformated(true);
     items.Add(pItem);
   }
 }

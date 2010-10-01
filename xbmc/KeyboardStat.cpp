@@ -120,6 +120,7 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 { { 121, 0xad } // Volume mute
 , { 122, 0xae } // Volume down
 , { 123, 0xaf } // Volume up
+, { 127, 0x20 } // Pause
 , { 135, 0x5d } // Right click
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info

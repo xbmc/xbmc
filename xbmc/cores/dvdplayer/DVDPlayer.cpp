@@ -451,6 +451,12 @@ bool CDVDPlayer::OpenInputStream()
     // find any available external subtitles
     std::vector<std::string> filenames;
     CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+
+    // find any upnp subtitles
+    CStdString key("upnp:subtitle:1");
+    for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
+      filenames.push_back(m_item.GetProperty(key));
+
     for(unsigned int i=0;i<filenames.size();i++)
       AddSubtitleFile(filenames[i]);
 
@@ -1918,9 +1924,7 @@ void CDVDPlayer::HandleMessages()
         {
           if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
           {
-            if ((m_playSpeed != DVD_PLAYSPEED_NORMAL * 32 && speed == DVD_PLAYSPEED_NORMAL) ||
-                (m_playSpeed != DVD_PLAYSPEED_NORMAL * -32 && speed == DVD_PLAYSPEED_NORMAL))
-              m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
+            m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
           }
         }
 
@@ -3545,7 +3549,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
   {
-    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && ((CStreamDetailVideo*)details.GetStreamCount(CStreamDetail::VIDEO) > 0)) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);

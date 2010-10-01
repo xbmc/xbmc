@@ -81,7 +81,6 @@ public:
   void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
   void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
 
-  CStdString utf8Left(const CStdStringW &source, int num_chars);
 private:
   CStdString EMPTY;
 };

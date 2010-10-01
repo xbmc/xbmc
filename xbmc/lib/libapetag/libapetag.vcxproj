@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="apetaglib.c" />
+    <ClCompile Include="file_io.c" />
     <ClCompile Include="id3v2_read.c" />
     <ClCompile Include="info_mac.c" />
     <ClCompile Include="info_mpc.c" />
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="apetaglib.h" />
+    <ClInclude Include="file_io.h" />
     <ClInclude Include="genres.h" />
     <ClInclude Include="id3v2_read.h" />
     <ClInclude Include="info_mac.h" />

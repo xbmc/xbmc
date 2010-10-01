@@ -26,4 +26,5 @@ public:
   CURIUtils(void);
   virtual ~CURIUtils(void);
   static CStdString GetParentFolderURI(const CStdString& uri, bool preserveFileNameInPath);
+  static bool IsInPath(const CStdString &uri, const CStdString &baseURI);
 };

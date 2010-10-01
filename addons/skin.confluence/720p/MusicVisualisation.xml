@@ -209,7 +209,7 @@
 				<posy>50</posy>
 				<width>360</width>
 				<height>100</height>
-				<label>$INFO[musicplayer.Codec,· Codec: ,]$INFO[musicplayer.Bitrate,[CR]· Bitrate: ,kbps]$INFO[musicplayer.bitspersample,[CR]· Bits:,bit]$INFO[musicplayer.Samplerate,[CR]· Freq.: ,kHz]$INFO[musicplayer.Channels,[CR]· Channels: ]</label>
+				<label>$INFO[musicplayer.Codec,· $LOCALIZE[21446]: ,]$INFO[musicplayer.Bitrate,[CR]· $LOCALIZE[623]: ,kbps]$INFO[musicplayer.bitspersample,[CR]· $LOCALIZE[612]: ,bit]$INFO[musicplayer.Samplerate,[CR]· $LOCALIZE[613]: ,kHz]$INFO[musicplayer.Channels,[CR]· $LOCALIZE[21444]: ]</label>
 				<align>left</align>
 				<aligny>top</aligny>
 				<font>font13</font>
@@ -271,7 +271,7 @@
 				<posy>135</posy>
 				<width>360</width>
 				<height>25</height>
-				<label fallback="· (UnAvailable)">$INFO[Visualisation.Preset,, ·]</label>
+				<label fallback="161">$INFO[Visualisation.Preset,, ·]</label>
 				<align>right</align>
 				<aligny>top</aligny>
 				<font>font12</font>
