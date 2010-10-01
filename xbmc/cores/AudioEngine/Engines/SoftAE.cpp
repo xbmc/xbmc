@@ -411,6 +411,15 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
   return stream;
 }
 
+IAEStream *CSoftAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
+{
+  /* TODO: reconfigure the stream */
+  ((CSoftAEStream*)stream)->SetFreeOnDrain();
+  stream->Drain();
+
+  return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
+}
+
 IAESound *CSoftAE::GetSound(CStdString file)
 {
   CSingleLock lock(m_critSection);
