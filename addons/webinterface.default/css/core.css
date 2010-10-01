@@ -249,7 +249,7 @@ div.imgWrapper div.inner {
 	height: 150px;
 	bottom: 0;
 	left: 0;
-	right: 0;
+	right: 16px;
 	z-index: 10000; /* Top most always */
 	background: #333;
 	opacity: 0.98;
