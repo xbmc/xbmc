@@ -1,0 +1,122 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: Library functions</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: Library functions</h1>
+
+<pre class=border>
+extern "C"
+{
+  AS_API asIScriptEngine *  <a href="#create">asCreateScriptEngine</a>(asDWORD version);
+  AS_API const char *       <a href="#version">asGetLibraryVersion</a>();
+  AS_API asIScriptContext * <a href="#context">asGetActiveContext</a>();
+  AS_API int                <a href="#threadclean">asThreadCleanup</a>();
+}
+</pre>
+
+<a name=create></a>
+<h2>asCreateScriptEngine</h2>
+
+<pre class=border>
+asIScriptEngine *asCreateScriptEngine(asDWORD version);
+</pre>
+
+<p>Exported as "_asCreateScriptEngine".</p>
+
+<h3>Description</h3>
+
+<p>Creates a new script engine object, based on the version specified.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>version</code>&nbsp;</td>
+<td valign=top><p>The engine version wanted.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns a pointer to the engine object if successful, or 0 if the version is not supported or memory couldn't be allocated.</p>
+
+
+
+
+
+<a name=version></a>
+<h2>asGetLibraryVersion</h2>
+
+<pre class=border>
+const char *asGetLibraryVersion();
+</pre>
+
+<p>Exported as "_asGetLibraryVersion".</p>
+
+<h3>Description</h3>
+
+<p>Use this to verify library version.</p>
+
+<h3>Returns</h3>
+
+<p>Returns a pointer to a constant string holding the library version.</p>
+
+
+
+
+
+
+
+<a name=context></a>
+<h2>asGetActiveContext</h2>
+
+<pre class=border>
+asIScriptContext *asGetActiveContext();
+</pre>
+
+<p>Exported as "_asGetActiveContext".</p>
+
+<h3>Description</h3>
+
+<p>This function is used to retrieve the context interface from within system functions that need it, e.g to set script exceptions.</p>
+
+<h3>Returns</h3>
+
+<p>Returns a pointer to the script context currently executing, or 0 if no context is executing.</p>
+
+
+
+
+<a name=threadclean></a>
+<h2>asThreadCleanup</h2>
+
+<pre class=border>
+int asThreadCleanup();
+</pre>
+
+<p>Exported as "_asThreadCleanup".</p>
+
+<h3>Description</h3>
+
+<p>If you are using multiple threads it is a good idea to call this function 
+just before terminating a thread. It will allow AngelScript to cleanup some
+memory that is local to the current running thread.</p>
+
+<h3>Returns</h3>
+
+<p>If the cleanup couldn't be performed, e.g. if a context is currently 
+active, the function returns a negative value.</p>
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

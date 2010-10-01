@@ -1,0 +1,567 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: Behaviours</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: Behaviours</h1>
+
+<pre class=border>
+<a href="#construct">asBEHAVE_CONSTRUCT</a>
+<a href="#destruct">asBEHAVE_DESTRUCT</a>
+<a href="#assign">asBEHAVE_ASSIGNMENT</a>
+<a href="#add_assign">asBEHAVE_ADD_ASSIGN</a>
+<a href="#sub_assign">asBEHAVE_SUB_ASSIGN</a>
+<a href="#mul_assign">asBEHAVE_MUL_ASSIGN</a>
+<a href="#div_assign">asBEHAVE_DIV_ASSIGN</a>
+<a href="#mod_assign">asBEHAVE_MOD_ASSIGN</a>
+<a href="#or_assign">asBEHAVE_OR_ASSIGN</a>
+<a href="#and_assign">asBEHAVE_AND_ASSIGN</a>
+<a href="#xor_assign">asBEHAVE_XOR_ASSIGN</a>
+<a href="#sll_assign">asBEHAVE_SLL_ASSIGN</a>
+<a href="#srl_assign">asBEHAVE_SRL_ASSIGN</a>
+<a href="#sra_assign">asBEHAVE_SRA_ASSIGN</a>
+<a href="#add">asBEHAVE_ADD</a>
+<a href="#sub">asBEHAVE_SUBTRACT</a>
+<a href="#mul">asBEHAVE_MULTIPLY</a>
+<a href="#div">asBEHAVE_DIVIDE</a>
+<a href="#mod">asBEHAVE_MODULO</a>
+<a href="#equal">asBEHAVE_EQUAL</a>
+<a href="#nequal">asBEHAVE_NOTEQUAL</a>
+<a href="#lthan">asBEHAVE_LESSTHAN</a>
+<a href="#gthan">asBEHAVE_GREATERTHAN</a>
+<a href="#lequal">asBEHAVE_LEQUAL</a>
+<a href="#gequal">asBEHAVE_GEQUAL</a>
+<a href="#or">asBEHAVE_LOGIC_OR</a>
+<a href="#and">asBEHAVE_LOGIC_AND</a>
+<a href="#bor">asBEHAVE_BIT_OR</a>
+<a href="#band">asBEHAVE_BIT_AND</a>
+<a href="#bxor">asBEHAVE_BIT_XOR</a>
+<a href="#bsll">asBEHAVE_BIT_SLL</a>
+<a href="#bsrl">asBEHAVE_BIT_SRL</a>
+<a href="#bsra">asBEHAVE_BIT_SRA</a>
+<a href="#index">asBEHAVE_INDEX</a>
+<a href="#negate">asBEHAVE_NEGATE</a>
+<a href="#addref">asBEHAVE_ADDREF</a>
+<a href="#release">asBEHAVE_RELEASE</a>
+<a href="#alloc">asBEHAVE_ALLOC</a>
+<a href="#free">asBEHAVE_FREE</a>
+</pre>
+
+<a name="construct"></a>
+<h2>asBEHAVE_CONSTRUCT</h2>
+
+<p>Constructor, called when variables comes into scope.</p>
+
+<p><font color=red>Warning: Do not register a virtual method as a constructor. The virtual function 
+pointer table will be initialized by the constructor function, thus the 
+virtual method will fail.</font></p>
+
+<p>Example:</p>
+
+<pre class=border>
+void Constructor(Object *o)
+{
+  new(o) Object();
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(Constructor), asCALL_DECL_OBJLAST);
+</pre>
+
+
+<a name="destruct"></a>
+<h2>asBEHAVE_DESTRUCT</h2>
+
+<p>Destructor, called when variable goes out of scope.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+void Destructor(Object *o)
+{
+  o->~Object();
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(Destructor), asCALL_CDECL_OBJLAST);
+</pre>
+
+
+<a name="assign"></a>
+<h2>asBEHAVE_ASSIGNMENT</h2>
+
+<p>Assignment '='.</p>
+
+<p>The assignment behaviour should return a reference to itself. The operator 
+parameter can have any type. If the parameter is a reference to an object of 
+the same type as itself the function is used as a copy operator, which is 
+important if the object needs to treat members especially, for example if the 
+class holds pointers to resources.</p>
+
+<p>If you pass parameters by &amp;in, then it is a good idea to also make 
+them const, as it can allow the compiler to make a few optimizations.</p>
+
+<p>Example 1:</p>
+
+<pre class=border>
+Object &amp;Assign(Object *self, Object &amp;other)
+{
+  *self = other;
+  return *self;
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_ASSIGNMENT, "object &amp;f(const object &amp;in)", asFUNCTION(Assign), asCALL_CDECL_OBJFIRST);
+</pre>
+
+<p>Example 2:</p>
+
+<pre class=border>
+Object &amp;Object::operator=(int val)
+{
+  this->val = val;
+  return *this;
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_ASSIGNMENT, "object &amp;f(int)", asMETHOD(Object, operator=), asCALL_THISCALL);
+</pre>
+
+<a name="add_assign"></a>
+<h2>asBEHAVE_ADD_ASSIGN</h2>
+
+<p>Add and assign '+='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+<a name="sub_assign"></a>
+<h2>asBEHAVE_SUB_ASSIGN</h2>
+
+<p>Subtract and assign '-='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+<a name="mul_assign"></a>
+<h2>asBEHAVE_MUL_ASSIGN</h2>
+
+<p>Multiply and assign '*='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+<a name="div_assign"></a>
+<h2>asBEHAVE_DIV_ASSIGN</h2>
+
+<p>Divide and assign '/='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+<a name="mod_assign"></a>
+<h2>asBEHAVE_MOD_ASSIGN</h2>
+
+<p>Mod and assign '%='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+<a name="or_assign"></a>
+<h2>asBEHAVE_OR_ASSIGN</h2>
+
+<p>Bitwise or and assign '|='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+<a name="and_assign"></a>
+<h2>asBEHAVE_AND_ASSIGN</h2>
+
+<p>Bitwise and and assign '&='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+<a name="xor_assign"></a>
+<h2>asBEHAVE_XOR_ASSIGN</h2>
+
+<p>Bitwise xor and assign '^='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+
+<a name="sll_assign"></a>
+<h2>asBEHAVE_SLL_ASSIGN</h2>
+
+<p>Shift left and assign '<<='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+<a name="srl_assign"></a>
+<h2>asBEHAVE_SRL_ASSIGN</h2>
+
+<p>Shift right logically and assign '>>='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+
+<a name="sra_assign"></a>
+<h2>asBEHAVE_SRA_ASSIGN</h2>
+
+<p>Shift right arithmetically and assign '>>>='.</p>
+
+<p>See <a href="#assign">assignment</a>.</p>
+
+
+
+
+<a name="add"></a>
+<h2>asBEHAVE_ADD</h2>
+
+<p>Add '+'.</p>
+
+<p>This is a global behaviour that takes two operands and creates a new value.
+The function should not return a reference and shouldn't store the input 
+values. The operands can be any type, reference or not, but one of the operands
+must be a registered type.</p>
+
+<p>If you pass parameters by &amp;in, then it is a good idea to also make 
+them const, as it can allow the compiler to make a few optimizations.</p>
+
+<p>Example 1:</p>
+
+<pre class=border>
+Object Add(Object &amp;a, Object &amp;b)
+{
+  return a + b;
+}
+
+engine->RegisterGlobalBehaviour(asBEHAVE_ADD, "object f(const object &amp;in, const object &amp;in)", asFUNCTION(Add), asCALL_CDECL);
+</pre>
+
+<p>Example 2:</p>
+
+<pre class=border>
+Object Add(Object &amp;a, int i)
+{
+  return a + i;
+}
+
+engine->RegisterGlobalBehaviour(asBEHAVE_ADD, "object f(const object &amp;in, int)", asFUNCTION(Add), asCALL_CDECL);
+</pre>
+
+<a name="sub"></a>
+<h2>asBEHAVE_SUBTRACT</h2>
+
+<p>Subtract '-'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="mul"></a>
+<h2>asBEHAVE_MULTIPLY</h2>
+
+<p>Multiply '*'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+
+
+<a name="div"></a>
+<h2>asBEHAVE_DIVIDE</h2>
+
+<p>Divide '/'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+
+<a name="mod"></a>
+<h2>asBEHAVE_MODULO</h2>
+
+<p>Modulo '%'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+
+<a name="equal"></a>
+<h2>asBEHAVE_EQUAL</h2>
+
+<p>Equal '=='.</p>
+
+<p>Example 1:</p>
+
+<pre class=border>
+bool Equals(Object &amp;a, Object &amp;b)
+{
+  return a == b;
+}
+
+engine->RegisterGlobalBehaviour(asBEHAVE_EQUAL, "bool f(const object &amp;in, const object &amp;in)", asFUNCTION(Equals), asCALL_CDECL);
+</pre>
+
+<p>Example 2:</p>
+
+<pre class=border>
+bool Equals(Object &amp;a, int i)
+{
+  return a == i;
+}
+
+engine->RegisterGlobalBehaviour(asBEHAVE_EQUAL, "bool f(const object &amp;in, int)", asFUNCTION(Equals), asCALL_CDECL);
+</pre>
+
+<p>See also <a href="#add">addition</a>.</p>
+
+
+
+<a name="nequal"></a>
+<h2>asBEHAVE_NOTEQUAL</h2>
+
+<p>Not equal '!='.</p>
+
+<p>See <a href="#equal">equal</a>.</p>
+
+
+<a name="lthan"></a>
+<h2>asBEHAVE_LESSTHAN</h2>
+
+<p>Less than '<'.</p>
+
+<p>See <a href="#equal">equal</a>.</p>
+
+
+<a name="gthan"></a>
+<h2>asBEHAVE_GREATERTHAN</h2>
+
+<p>Greater than '>'.</p>
+
+<p>See <a href="#equal">equal</a>.</p>
+
+
+<a name="lequal"></a>
+<h2>asBEHAVE_LEQUAL</h2>
+
+<p>Less than or equal '<='.</p>
+
+<p>See <a href="#equal">equal</a>.</p>
+
+
+<a name="gequal"></a>
+<h2>asBEHAVE_GEQUAL</h2>
+
+<p>Greater than or equal '>='.</p>
+
+<p>See <a href="#equal">equal</a>.</p>
+
+
+<a name="or"></a>
+<h2>asBEHAVE_LOGIC_OR</h2>
+
+<p>Logical or 'or'/'||'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="and"></a>
+<h2>asBEHAVE_LOGIC_AND</h2>
+
+<p>Logical and 'and'/'&&'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="bor"></a>
+<h2>asBEHAVE_BIT_OR</h2>
+
+<p>Bitwise or '|'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="band"></a>
+<h2>asBEHAVE_BIT_AND</H2>
+
+<p>Bitwise and '&'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="bxor"></a>
+<h2>asBEHAVE_BIT_XOR</h2>
+
+<p>Bitwise exclusive or '^'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="bsll"></a>
+<h2>asBEHAVE_BIT_SLL</h2>
+
+<p>Bitwise shift left logically '<<'.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="bsrl"></a>
+<h2>asBEHAVE_BIT_SRL</h2>
+
+<p>Bitwise shift right logically '>>', ie. clear left most bits.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+<a name="bsra"></a>
+<h2>asBEHAVE_BIT_SRA</h2>
+
+<p>Bitwise shift right arithmetically '>>>', ie. set left most bits to the sign bit.</p>
+
+<p>See <a href="#add">addition</a>.</p>
+
+
+
+<a name="index"></a>
+<h2>asBEHAVE_INDEX</h2>
+
+<p>Indexing operator []. Must be registered as a object behaviour.</p>
+
+<p>This behaviour is normally used to access an element in a collection based 
+on an index, wether it be a numerical index or some other form. The behaviour 
+normally returns a reference to the element so that it can be altered by the 
+script, but it is allowed to return the element by value.</p>
+
+<p>You'll normally want to register two versions of this behaviour, one that
+allow the element to be altered, and one that return a read-only value. This 
+is useful when having constant objects.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+int *Object::operator[](uint idx)
+{
+  if( idx >= collection.size() )
+  {
+    asIScriptContext *ctx = asGetActiveContext();
+    if( ctx ) ctx->SetException("Out of range");
+    return 0;
+  }
+  return &amp;collection[int];
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_INDEX, "int &amp;f(uint)", asMETHOD(Object, operator[]), asCALL_THISCALL);
+engine->RegisterObjectBehaviour("object", asBEHAVE_INDEX, "const int &amp;f(uint) const", asMETHOD(Object, operator[]), asCALL_THISCALL);
+</pre>
+
+
+
+<a name="negate"></a>
+<h2>asBEHAVE_NEGATE</h2>
+
+<p>Unary negate operator -. Must be registered as a object behaviour.</p>
+
+<p>This behaviour should return a new object with the effect of the operation 
+applied to it.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+Object Negate(Object *self)
+{
+  Object obj;
+  obj.val = -self->val;
+  return obj;
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_NEGATE, "object f()", asFUNCTION(Negate), asCALL_CDECL_OBJLAST);
+</pre>
+
+
+<a name="addref"></a>
+<h2>asBEHAVE_ADDREF</h2>
+
+<p>Necessary for object handles to work. Allows the library to increase the reference counter for the object.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+void Object::AddRef()
+{
+  refCount++;
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_ADDREF, "void f()", asMETHOD(Object, AddRef), asCALL_THISCALL);
+</pre>
+
+
+
+
+<a name="release"></a>
+<h2>asBEHAVE_RELEASE</h2>
+
+<p>Necessary for object handles to work. Allows the library to decrease the reference counter for the object. When the reference counter reaches zero the function should release any resources held by the object and free its memory.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+void Object::Release()
+{
+  if( --refCount == 0 )
+    delete this;
+}
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_RELEASE, "void f()", asMETHOD(Object, Release), asCALL_THISCALL);
+</pre>
+
+
+
+
+
+<a name="alloc"></a>
+<h2>asBEHAVE_ALLOC</h2>
+
+<p>If you want to use custom memory management for an object type, you should register this behaviour. Some examples where this might be needed is if the object type is allocated from a memory pool, or if it is dynamically allocated from a DLL which doesn't share the same heap as the application.</p>
+
+<p>This behaviour must be registered as an object behaviour despite the fact that it is a global function with the same signature as standard C's malloc() function, i.e:</p>
+
+<pre class=border>
+void *my_alloc(asUINT size);
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_ALLOC, "object &amp;f(uint)", asFUNCTION(my_alloc), asCALL_CDECL);
+</pre>
+
+<p>The function declaration should return a reference to the object type.</p>
+
+
+
+
+
+<a name="free"></a>
+<h2>asBEHAVE_FREE</h2>
+
+<p>If the object type doesn't register the free behaviour then the library uses the standard C's free() function. Note that if the object type has the ADDREF and RELEASE behaviours registered then the library never frees the memory itself, since it expects that the application to free the memory when the reference count reaches zero.</p>
+
+<pre class=border>
+void my_free(void *mem);
+
+engine->RegisterObjectBehaviour("object", asBEHAVE_FREE, "void f(object &amp;in)", asFUNCTION(my_free), asCALL_CDECL);
+</pre>
+
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

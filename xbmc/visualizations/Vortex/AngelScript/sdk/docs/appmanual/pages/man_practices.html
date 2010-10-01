@@ -1,0 +1,65 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: Good practices</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Documentation: Good practices</h1>
+
+<p>This article will try to explain some good practices, that will help you get going faster and easier find the solution when a problem occurs.</p>
+
+<h2>Always check return values for registrations</h2>
+
+<p>
+When configuring the script engine you should always check the return values, at least in debug mode. All error codes are negative so a simple assert( r >= 0 ) where r is the returned value is sufficient to pinpoint where the configuration failed.
+</p>
+
+<p>If a function failed during the configuration, the Build() method will always fail with a return code of asINVALID_CONFIGURATION. And unless you already verified the error codes for all the configuration calls, it will not be possible to determine what the error was.</p>
+
+<pre class=border>
+<font color=green>// Verifying the return code with an assert is simple and won't pollute the code</font>
+r = engine->RegisterGlobalFunction("void func()", asFUNCTION(func), asCALL_CDECL); assert( r >= 0 );
+</pre>
+
+<p>assert() can safely be used with engine registrations, since the engine will set the internal state to invalid configuration if a function fails. Even in release mode the failure is discovered when a script is built.</p>
+
+<h2>Use the output stream to receive detailed error messages</h2>
+
+<p>
+The return code from the register functions, Build(), and ExecuteString() can 
+only tell you that something was wrong, not what it was. To help identify the 
+exact problem the output stream should be used. The script library will then 
+send messages explaining the error or warning in clear text.
+</p>
+
+<p>
+For your convenience the library has been designed so that when there are no 
+errors or warnings, nothing will be output to the stream.
+</p>
+
+<pre class=border>
+<font color=green>// Declare a simple output stream class</font>
+class COutStream : public asIOutputStream
+{
+public:
+  void Write(const char *text) { printf(text); }
+};
+
+<font color=green>// Set the output stream pointer when creating the engine</font>
+COutStream out;
+asIScriptEngine *engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
+engine->SetCommonMessageStream(&amp;out);
+</pre>
+
+<p>Don't forget to make sure the output stream is valid during the entire life time of the script engine, or call SetCommonMessageStream() with 0 to remove the stream again.</p>
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

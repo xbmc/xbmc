@@ -1,0 +1,86 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: Tips &amp; Tricks</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Documentation: Tips &amp; Tricks</h1>
+
+<p>These are a few tips and tricks that may come in handy.</p>
+
+<h2>Use the line callback to timeout long running scripts</h2>
+
+<p>The line callback feature is used to be able to some special treatment 
+during execution of the scripts. The callback is called for every script 
+statement, which for example makes it possible to verify if the script has  
+executed for too long time and if so suspend the execution to be resumed at
+a later time.</p>
+
+<p>Before calling the context's Execute() method, set the callback function 
+like so:</p>
+
+<pre class=border>
+void ExecuteScript()
+{
+  DWORD timeOut;
+  ctx->SetLineCallback(asFUNCTION(LineCallback), &amp;timeOut, asCALL_CDECL);
+
+  int status = asEXECUTION_SUSPENDED;
+  while( status == asEXECUTION_SUSPENDED )
+  {
+    <font color=green>// Allow the long running script to execute for 10ms</font>
+    timeOut = timeGetTime() + 10;
+    status = ctx->Execute();
+  
+    <font color=green>// The execution was suspended, now we can do something else before
+    // continuing the execution with another call to Execute().</font>
+    ...
+  }
+}
+
+void LineCallback(asIScriptContext *ctx, DWORD *timeOut)
+{
+  <font color=green>// If the time out is reached we suspend the script</font>
+  if( *timeOut &lt; timeGetTime() )
+    ctx->Suspend();
+}
+</pre>
+
+<p>
+Take a look at the sample <a href="man_samples.html#events">events</a> to 
+see this working.
+</p>
+
+
+
+<h2>Compiling an ANSI C binary compatible DLL of AngelScript</h2>
+
+<p>AngelScript is written with C++, and unfortunately C++ compilers were
+never standardized on the binary level, so code compiled by one C++ compiler
+is usually not compatible with code compiled from another C++ compiler.</p>
+
+<p>Fortunately there is a way to make a binary compatible DLL of AngelScript.
+Because of the large base of ANSI C resources readily available all C++ 
+compilers make sure to produce compatible C code. Even other languages, such
+as Delphi and D, are able to use an ANSI C compatible dll. AngelScript has a 
+prepared C compatible interface that can be used for this purpose.</p>
+
+<p>To compile the dll and expose the C interface some preprocessor flags has 
+to be turned on: <code>AS_C_INTERFACE</code> and <code>ANGELSCRIPT_EXPORT</code>. 
+Obviously it will not be possible to register C++ class methods through this 
+interface, so it might be useful to remove that part from the engine by 
+defining the flag <code>AS_NO_CLASS_METHODS</code>.</p>
+
+<p>These flags and others are documented in the as_config.h header file.</p>
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

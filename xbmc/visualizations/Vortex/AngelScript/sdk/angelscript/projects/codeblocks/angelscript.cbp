@@ -1,0 +1,469 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Static library"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option active_target="1"/>
+		<Option compiler="6"/>
+		<Build>
+			<Target title="MSVC++ 6 DEBUG">
+				<Option output="..\..\lib\angelscriptd.lib"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="6"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="/MDd"/>
+					<Add option="/Gm"/>
+					<Add option="/Od"/>
+					<Add option="/W3"/>
+					<Add option="/ZI"/>
+					<Add option="/YX"/>
+					<Add option="/FD"/>
+					<Add option="/GZ"/>
+					<Add option="/opt:nowin98"/>
+					<Add option="/c"/>
+					<Add option="/DAS_C_INTERFACE"/>
+					<Add option="/DAS_DEBUG"/>
+					<Add option="/DWIN32"/>
+					<Add option="/D_DEBUG"/>
+					<Add option="/D_MBCS"/>
+					<Add option="/D_LIB"/>
+					<Add option="/DANGELSCRIPT_EXPORT"/>
+				</Compiler>
+			</Target>
+			<Target title="MinGW RELEASE">
+				<Option output="..\..\lib\libangelscript.a"/>
+				<Option working_dir=""/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="2"/>
+				<Option compiler="0"/>
+				<Option createDefFile="1"/>
+				<Option projectResourceIncludeDirsRelation="2"/>
+				<Compiler>
+					<Add option="-O2"/>
+					<Add option="-W"/>
+					<Add option="-Di386"/>
+					<Add option="-DANGELSCRIPT_EXPORT"/>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DWIN32"/>
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="..\..\include\angelscript.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_anyobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_anyobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_array.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_arrayobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_arrayobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_builder.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_builder.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_bytecode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_bytecode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_bytecodedef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_c.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_callfunc.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_callfunc.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_callfunc_sh4.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_callfunc_x86.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_compiler.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_compiler.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_config.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_configgroup.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_configgroup.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_context.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_context.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_datatype.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_datatype.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_debug.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_gcobject.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_gcobject.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_generic.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_generic.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_map.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_module.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_module.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_objecttype.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_objecttype.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_outputbuffer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_outputbuffer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_parser.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_parser.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_property.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_restore.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_restore.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptcode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptcode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptengine.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptengine.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptfunction.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptfunction.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptnode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptnode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptstruct.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_scriptstruct.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_string.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_string.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_string_util.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_string_util.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_structs.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_texts.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_thread.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_thread.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_tokendef.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_tokenizer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_tokenizer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_typeinfo.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_typeinfo.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_variablescope.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+		<Unit filename="..\..\source\as_variablescope.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="MSVC++ 6 DEBUG"/>
+			<Option target="MinGW RELEASE"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

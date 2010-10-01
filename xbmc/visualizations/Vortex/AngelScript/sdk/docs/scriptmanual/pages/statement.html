@@ -1,0 +1,157 @@
+<HTML>
+<head>
+<title>AngelScript: Statements</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>Statements</h1>
+
+	<ul>
+	<li><a href="#block">Statement blocks</a>
+	<li><a href="#variable">Variable declarations</a>
+	<li><a href="#if">Conditions: if / if-else / switch-case</a>
+	<li><a href="#while">Loops: while / do-while / for</a>
+	<li><a href="#break">Loop control: break / continue</a>
+	<li><a href="#return">Return statement</a>
+	<li><a href="#expression">Expression statement</a>
+	</ul>
+
+
+<a name="block">
+<h2>Statement blocks</h2>
+
+<pre>
+{
+   STATEMENTS
+}
+</pre>
+
+<p>A statement block is a collection of statements.</p>
+
+
+
+
+<a name="variable">
+<h2>Variable declarations</h2>
+
+<pre>
+<i>TYPE</i> <i>POINTER</i> VarName = <i>EXPR</i>, <i>POINTER</i> VarName2 = <i>EXPR</i>;
+</pre>
+
+<p>TYPE is exchanged for the data type. POINTER can be zero or more stars, <code>*</code>, showing the pointer level, e.g. one star, <code>*</code>, means a pointer to a TYPE, two stars, <code>**</code>, means a pointer to a pointer to a TYPE. The EXPR <a href="expression.html">expression</a> must evaluate to the same data type, and pointer level. The initialization expressions are optional. Any number of variables can be declared on the same line separated with commas.</p>
+
+<p>Variables can be declared as <code>const</code>. In these cases the value of the variable cannot be changed after initialization.</p>
+
+<p>Variables not initialized cannot be assumed to be set to zero, although object variables usually are since the engine's memory management depends on it.</p>
+
+<p>Variables must be declared before they are used within the statement block, or any sub blocks. When the code exits the statement block where the variable was declared the variable is no longer valid.</p>
+
+
+
+<a name="if">
+<h2>Conditions: if / if-else / switch-case</h2>
+
+<pre>
+<font color=blue>if</font>( <i>BOOL_EXP</i> ) <i>STATEMENT</i>
+
+<font color=blue>if</font>( <i>BOOL_EXP</i> ) <i>STATEMENT</i> <font color=blue>else</font> <i>STATEMENT</i>
+</pre>
+
+<p>BOOL_EXP can be exchanged for any <a href="expression.html">expression</a> that evaluates to a boolean data type. STATEMENT is either a one-line statement or a statement block.</p>
+
+<pre>
+<font color=blue>switch</font>( <i>INT_EXP</i> )
+{
+<font color=blue>case</font> <i>INT_CONST</i>:
+  <i>STATEMENT</i>
+
+<font color=blue>default</font>:
+  <i>STATEMENT</i>
+}
+</pre>
+
+<p>If you have an integer (signed or unsigned) expression that have many 
+different outcomes that should lead to different code, a switch case is often 
+the best choice for implementing the condition. It is much faster than a 
+series of ifs, especially if all of the case values are close in numbers.</p>
+
+<p>Each case should be terminated with a break statement unless you want the 
+code to continue with the next case.</p>
+
+<p>The case value can be a const variable that was initialized with a constant
+expression. If the constant variable was initialized with an expression that 
+cannot be determined at compile time, it cannot be used in the case values.</p>
+
+
+
+
+<a name="while">
+<h2>Loops: while / do-while / for</h2>
+
+<pre>
+<font color=blue>while</font>( <i>BOOL_EXP</i> ) <i>STATEMENT</i>
+
+<font color=blue>do</font> <i>STATEMENT</i> <font color=blue>while</font>( <i>BOOL_EXP</i> );
+
+<font color=blue>for</font>( <i>INIT</i> ; <i>BOOL_EXP</i> ; <i>NEXT</i> ) <i>STATEMENT</i>
+</pre>
+
+<p>BOOL_EXP can be exchanged for any <a href="expression.html">expression</a> that evaluates
+to a boolean data type. STATEMENT is either a one-line statement or a statement block. INIT
+can be a variable declaration, an expression, or even blank. If it is a declaration the variable
+goes out of scope as the for loop ends. NEXT is an expression that is executed after STATEMENT
+and before BOOL_EXP. It can also be blank. If BOOL_EXP for the for loop evaluates
+to true or is blank the loop continues.
+</p>
+
+
+
+
+
+<a name="break">
+<h2>Loop control: break / continue</h2>
+
+<pre>
+<font color=blue>break</font>;
+
+<font color=blue>continue</font>;
+</pre>
+
+<p><code><font color=blue>break</font></code> terminates the smallest enclosing loop statement. <code><font color=blue>continue</font></code> jumps to the next iteration of the smallest enclosing loop statement.</p>
+
+<p>The <code><font color=blue>break</font></code> and <code><font color=blue>continue</font></code> statements are only valid inside a loop statement.</p>
+
+
+
+
+
+
+<a name="return">
+<h2>Return statement</h2>
+
+<pre>
+<font color=blue>return</font> <i>EXPR</i>;
+</pre>
+
+<p>Any function with a return type other than <code><font color=blue>void</font></code> must be finished with a <code><font color=blue>return</font></code> statement where EXPR is an <a href="expression.html">expression</a> that evaluates to the same data type as the function. Functions declared as <code><font color=blue>void</font></code> can have <code><font color=blue>return</font></code> statements without any expression to terminate early.</p>
+
+
+
+
+<a name="expression">
+<h2>Expression statement</h2>
+
+<pre><i>EXPR</i>;</pre>
+
+<p>Any <a href="expression.html">expression</a> may be placed alone on a line as a statement. This will normally be used for variable assignments or function calls that don't return any value of importance.</p>
+
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

@@ -1,0 +1,104 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: Type id flags</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: Type id flags</h1>
+
+<pre class=border>
+<a href="#handle">asTYPEID_OBJHANDLE</a>
+<a href="#handletoconst">asTYPEID_HANDLETOCONST</a>
+<a href="#maskobj">asTYPEID_MASK_OBJECT</a>
+<a href="#appobj">asTYPEID_APPOBJECT</a>
+<a href="#scriptany">asTYPEID_SCRIPTANY</a>
+<a href="#scriptstruct">asTYPEID_SCRIPTSTRUCT</a>
+<a href="#scriptarray">asTYPEID_SCRIPTARRAY</a>
+<a href="#seqnbr">asTYPEID_MASK_SEQNBR</a>
+</pre>
+
+<a name=handle></a>
+<h2>asTYPEID_OBJHANDLE</h2>
+
+<p>If this bit flag is set in a type id, then the id is representing an object handle.</p>
+
+<a name=handletoconst></a>
+<h2>asTYPEID_HANDLETOCONST</h2>
+
+<p>If this bit flag is set in a type id, then the id is representing an object handle that have read only access to the object. This flag is valid only with the asTYPEID_OBJHANDLE flag.</p>
+
+<a name=maskobj></a>
+<h2>asTYPEID_MASK_OBJECT</h2>
+
+<p>Use this flag to mask out the bits that determine the object type. It can also be used to determine if the type id represents a primitive type.</p>
+
+<pre class=border>
+if( (typeId &amp; asTYPEID_MASK_OBJECT) == 0 ) 
+{
+  <font color=green>// the type is a primitive</font>
+}
+</pre>
+
+<a name=appobj></a>
+<h2>asTYPEID_APPOBJECT</h2>
+
+<p>These bits are set when the type id represents an application registered object type. First mask out the object type bits with asTYPEID_MASK_OBJECT and then compare with this constant.</p>
+
+<pre class=border>
+if( (typeId &amp; asTYPEID_MASK_OBJECT) == asTYPEID_APPOBJECT ) 
+{
+  <font color=green>// the type is an application registered type</font>
+}
+</pre>
+
+<a name=scriptany></a>
+<h2>asTYPEID_SCRIPTANY</h2>
+
+<p>These bits are set when the type id represents a script any type. First mask out the object type bits with asTYPEID_MASK_OBJECT and then compare with this constant.</p>
+
+<pre class=border>
+if( (typeId &amp; asTYPEID_MASK_OBJECT) == asTYPEID_SCRIPTANY ) 
+{
+  <font color=green>// the type is a script any type</font>
+}
+</pre>
+
+<a name=scriptstruct></a>
+<h2>asTYPEID_SCRIPTSTRUCT</h2>
+
+<p>These bits are set when the type id represents a script struct type. First mask out the object type bits with asTYPEID_MASK_OBJECT and then compare with this constant.</p>
+
+<pre class=border>
+if( (typeId &amp; asTYPEID_MASK_OBJECT) == asTYPEID_SCRIPTSTRUCT ) 
+{
+  <font color=green>// the type is a script struct type</font>
+}
+</pre>
+
+<a name=scriptarray></a>
+<h2>asTYPEID_SCRIPTARRAY</h2>
+
+<p>These bits are set when the type id represents a script array type. First mask out the object type bits with asTYPEID_MASK_OBJECT and then compare with this constant.</p>
+
+<pre class=border>
+if( (typeId &amp; asTYPEID_MASK_OBJECT) == asTYPEID_SCRIPTARRAY ) 
+{
+  <font color=green>// the type is a script array type</font>
+}
+</pre>
+
+<a name=seqnbr></a>
+<h2>asTYPEID_MASK_SEQNBR</h2>
+
+<p>This mask can be used to retrieve the object type's basic sequence number. Normally this is not something that is useful to an application.</p>
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

@@ -1,0 +1,215 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: Return codes</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: Return codes</h1>
+
+<pre class=border>
+<a href="#success"          >asSUCCESS</a>                                 0
+<a href="#error"            >asERROR</a>                                  -1
+<a href="#ctxactive"        >asCONTEXT_ACTIVE</a>                         -2
+<a href="#ctxnotfinished"   >asCONTEXT_NOT_FINISHED</a>                   -3
+<a href="#ctxnotprepared"   >asCONTEXT_NOT_PREPARED</a>                   -4
+<a href="#invalidarg"       >asINVALID_ARG</a>                            -5
+<a href="#nofunc"           >asNO_FUNCTION</a>                            -6
+<a href="#notsupported"     >asNOT_SUPPORTED</a>                          -7
+<a href="#invalidname"      >asINVALID_NAME</a>                           -8
+<a href="#nametaken"        >asNAME_TAKEN</a>                             -9
+<a href="#invaliddecl"      >asINVALID_DECLARATION</a>                   -10
+<a href="#invalidobj"       >asINVALID_OBJECT</a>                        -11
+<a href="#invalidtype"      >asINVALID_TYPE</a>                          -12
+<a href="#alreadyregistered">asALREADY_REGISTERED</a>                    -13
+<a href="#multiplefuncs"    >asMULTIPLE_FUNCTIONS</a>                    -14
+<a href="#nomodule"         >asNO_MODULE</a>                             -15
+<a href="#noglobalvar"      >asNO_GLOBAL_VAR</a>                         -16
+<a href="#invalidconf"      >asINVALID_CONFIGURATION</a>                 -17
+<a href="#invalidinterface" >asINVALID_INTERFACE</a>                     -18
+<a href="#candbindall"      >asCANT_BIND_ALL_FUNCTIONS</a>               -19
+<a href="#lowerarray"       >asLOWER_ARRAY_DIMENSION_NOT_REGISTERED</a>  -20
+<a href="#wrongcfggrp"      >asWRONG_CONFIG_GROUP</a>                    -21
+<a href="#groupinuse"       >asCONFIG_GROUP_IS_IN_USE</a>                -22
+</pre>
+
+<a name=success></a>
+<h2>asSUCCESS</h2>
+
+<p>Call finished successfully.</p>
+
+
+<a name=error></a>
+<h2>asERROR</h2>
+
+<p>An error occured.</p>
+
+
+
+<a name=ctxactive></a>
+<h2>asCONTEXT_ACTIVE</h2>
+
+<p>A script context is currently active.</p>
+
+
+
+<a name=ctxnotfinished></a>
+<h2>asCONTEXT_NOT_FINISHED</h2>
+
+<p>A script context hasn't finished the execution.</p>
+
+
+
+<a name="ctxnotprepared"></a>
+<h2>asCONTEXT_NOT_PREPARED</h2>
+
+<p>The context hasn't been prepared yet and cannot be executed.</p>
+
+
+
+<a name="invalidarg"></a>
+<h2>asINVALID_ARG</h2>
+
+<p>One or more arguments are invalid.</p>
+
+
+
+<a name="nofunc"></a>
+<h2>asNO_FUNCTION</h2>
+
+<p>No function could be found.</p>
+
+
+
+
+<a name="notsupported"></a>
+<h2>asNOT_SUPPORTED</h2>
+
+<p>The feature you are trying to use is not yet supported.</p>
+
+
+
+
+<a name="invalidname"></a>
+<h2>asINVALID_NAME</h2>
+
+<p>The name is invalid.</p>
+
+
+
+
+<a name="nametaken"></a>
+<h2>asNAME_TAKEN</h2>
+
+<p>The name is taken.</p>
+
+
+
+
+<a name="invaliddecl"></a>
+<h2>asINVALID_DECLARATION</h2>
+
+<p>The declaration is invalid.</p>
+
+
+
+
+<a name="invalidobj"></a>
+<h2>asINVALID_OBJECT</h2>
+
+<p>The object is invalid.</p>
+
+
+
+
+<a name="invalidtype"></a>
+<h2>asINVALID_TYPE</h2>
+
+<p>The type is invalid.</p>
+
+
+
+
+<a name="alreadyregistered"></a>
+<h2>asALREADY_REGISTERED</h2>
+
+<p>The function, property, or object is already registered.</p>
+
+
+
+<a name="multiplefuncs"></a>
+<h2>asMULTIPLE_FUNCTIONS</h2>
+
+<p>Multiple functions were found that matches the search.</p>
+
+
+<a name="nomodule"></a>
+<h2>asNO_MODULE</h2>
+
+<p>No module with the specified name could be found.</p>
+
+
+
+
+<a name="noglobalvar"></a>
+<h2>asNO_GLOBAL_VAR</h2>
+
+<p>No global variable with the specified name could be found.</p>
+
+
+
+<a name="invalidconf"></a>
+<h2>asINVALID_CONFIGURATION</h2>
+
+<p>At least one of the registration methods failed.</p>
+
+
+
+<a name="invalidinterface"></a>
+<h2>asINVALID_INTERFACE</h2>
+
+<p>The function cannot be bound because the interface is not correct.</p>
+
+
+<a name="candbindall"></a>
+<h2>asCANT_BIND_ALL_FUNCTIONS</h2>
+
+<p>Not all of the functions could be bound.</p>
+
+
+
+<a name="lowerarray"></a>
+<h2>asLOWER_ARRAY_DIMENSION_NOT_REGISTERED</h2>
+
+<p>A lower dimension array must be registered first.</p>
+
+
+
+<a name="wrongcfggrp"></a>
+<h2>asWRONG_CONFIG_GROUP</h2>
+
+<p>This error message is received, for example, when trying to register an 
+object property and the object type was registered in a different 
+configuration group than the current one.</p>
+
+
+
+<a name="groupinuse"></a>
+<h2>asCONFIG_GROUP_IS_IN_USE</h2>
+
+<p>This happens when trying to remove a configuration group that is currently 
+being used. A group is in use, if a script module uses the configuration in 
+the group, or if an object with a type from the group is still alive.</p>
+
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

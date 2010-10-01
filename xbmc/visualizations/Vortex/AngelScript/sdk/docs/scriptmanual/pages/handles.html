@@ -1,0 +1,99 @@
+<HTML>
+<head>
+<title>AngelScript: Object handles</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>Object handles</h1>
+
+<p>An object handle is a type that can hold a reference to an object. With
+object handles it is possible to declare more than one variables that refer
+to the same physical object.</p>
+
+<p>Not all types allow object handles to be used. None of the primitive
+data types, bool, int, float, etc, can have object handles. Object types
+registered by the application may or may not allow object handles, verify
+the applications documentation.
+</p>
+
+<p>An object handle is declared by appending the @ symbol to the data type.</p>
+
+<pre class=border>
+object@ obj_h;
+</pre>
+
+<p>This code declares the object handle obj and initializes it to null, i.e.
+it doesn't hold a reference to any object.</p>
+
+<p>In expressions variables declared as object handles are used the exact 
+same way as normal objects. But you should be aware that object handles are
+not guaranteed to actually reference an object, and if you try to access the
+contents of an object in a handle that is null an exception will be raised.</p>
+
+<pre class=border>
+object obj;
+object@ obj_h;
+obj.Method();
+obj_h.Method();
+</pre>
+
+<p>Operators like =, or any other operator registered for the object type work
+on the actual object that the handle references. These will also throw an 
+exception if the handle is empty.</p>
+
+<pre class=border>
+object obj;
+object@ obj_h;
+obj_h = obj;
+</pre>
+
+<p>When you need to make an operation on the actual handle, you should prepend
+the expression with the @ symbol. Setting the object handle to point to an 
+object is for example done like this:</p>
+
+<pre class=border>
+object obj;
+object@ obj_h;
+@obj_h = @obj;
+</pre>
+
+<p>An object handle can be compared against another object handle 
+(of the same type) to verify if they are pointing to the same object or not. 
+It can also be compared against null, which is a special keyword that 
+represents an empty handle.</p>
+
+<pre class=border>
+object@ obj_a, obj_b;
+<font color=blue>if</font>( @obj_a == @obj_b ) {}
+<font color=blue>if</font>( @obj_a == null ) {}
+</pre>
+
+<p>An object's life time is normally for the duration of the scope the 
+variable was declared in. But if a handle outside the scope is set to 
+reference the object, the object will live on until all object handles are
+released.</p>
+
+<pre class=border>
+object@ obj_h;
+{
+  object obj;
+  @obj_h = @obj;
+  
+  <font color=green>// The object would normally die when the block ends, 
+  // but the handle is still holding a reference to it</font>
+}
+
+<font color=green>// The object still lives on in obj_h ...</font>
+obj_h.Method();
+
+<font color=green>// ... until the reference is explicitly released 
+// or the object handle goes out of scope</font>
+@obj_h = null;
+</pre>
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

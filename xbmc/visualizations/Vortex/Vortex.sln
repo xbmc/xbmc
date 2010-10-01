@@ -1,0 +1,44 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vortex", "Vortex.vcproj", "{EE6C0E28-BF85-42D9-86A4-E208C2316591}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VortexViz", "VortexVis\VortexViz.vcproj", "{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Debug.ActiveCfg = Debug|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Debug.Build.0 = Debug|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Profile.ActiveCfg = Profile|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Profile.Build.0 = Profile|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Release.ActiveCfg = Release|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Release.Build.0 = Release|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{EE6C0E28-BF85-42D9-86A4-E208C2316591}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Debug.ActiveCfg = Debug|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Debug.Build.0 = Debug|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Profile.ActiveCfg = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Profile.Build.0 = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Profile_FastCap.ActiveCfg = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Profile_FastCap.Build.0 = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Release.ActiveCfg = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Release.Build.0 = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Release_LTCG.ActiveCfg = Release|Win32
+		{7E2F0F70-1D72-45C9-8545-9FEAD5C2CE53}.Release_LTCG.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,561 @@
+<HTML>
+<head>
+<title>AngelScript - Changes</title>
+
+<style>
+H1
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 24px;
+    FONT-FAMILY: Verdana
+}
+H2
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 18px;
+    FONT-FAMILY: Verdana
+}
+H3
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 16px;
+    FONT-FAMILY: Verdana
+}
+H4
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 14px;
+    FONT-FAMILY: Verdana
+}
+P
+{
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Arial
+}
+BODY
+{
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Arial
+}
+TD
+{
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Arial
+}
+.text_small
+{
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Arial
+}
+.text_normal
+{
+    FONT-SIZE: 12px;
+    FONT-FAMILY: Arial
+}
+.text_large
+{
+    FONT-SIZE: 14px;
+    FONT-FAMILY: Arial
+}
+.header_normal
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 18px;
+    FONT-FAMILY: Verdana
+}
+.header_small
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 16px;
+    FONT-FAMILY: Verdana
+}
+.header_large
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 24px;
+    FONT-FAMILY: Verdana
+}
+A
+{
+    TEXT-DECORATION: none
+}
+A:hover
+{
+    TEXT-DECORATION: underline
+}
+.border
+{
+    BORDER-RIGHT: gray 1px solid;
+    BORDER-TOP: gray 1px solid;
+    BORDER-LEFT: gray 1px solid;
+    BORDER-BOTTOM: gray 1px solid;
+    MARGIN-TOP: 0;
+    MARGIN-LEFT: 0;
+    MARGIN-RIGHT: 5;
+    MARGIN-BOTTOM: 5;
+    PADDING: 5 5 5 5;
+    DISPLAY: block;
+}
+.a
+{
+    BACKGROUND-COLOR: #FFFFCC;
+    DISPLAY: block;
+    margin-bottom: 2;
+    PADDING: 5 5 5 5;
+}
+.b
+{
+    BACKGROUND-COLOR: #EEEEEE;
+    DISPLAY: block;
+    margin-bottom: 2;
+    PADDING: 5 5 5 5;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>AngelScript Change Log</h1>
+
+<h2>Version 2.5.0b - 2006/01/31</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Comparison with object handle in a local variable produced incorrect byte code. (Thanks Villemon)
+<li>A bug in the VM for the BC_ChkNullV byte code caused script exceptions when using asCScriptString compiled with VC++ 2005. (Thanks topcatse)
+<li>When releasing the engine, the internal resources were released in the wrong order, causing assert failures in the memory manager with VC++ 2005.
+<li>The assignment operator for the internal type 'any' wasn't properly registered, causing memory management problems.
+<li>Global variables were not initialized properly when loading pre-compiled bytecode. (Thanks Villemon)
+</ul>
+</ul>
+
+<h2>Version 2.5.0a - 2006/01/20</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Using assignment behaviours that took a reference as &amp;inout with asALLOW_UNSAFE_REFERENCES would crash the application. (Thanks Deyja)
+<li>Using the default constructor for script structures to create temporary objects didn't work.
+</ul>
+</ul>
+
+<h2>Version 2.5.0 - 2006/01/12</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>asCALL_CDECL_OBJLAST that returned objects by value didn't work correctly (Thanks Deyja)
+</ul>
+<li>Script language
+<ul>
+<li>Primitive types can be implicitly converted to a reference of another primitive type for function calls. This is something C++ doesn't accept.
+<li>Parameter reference specified as &amp;inout no longer copies the value. The argument is only computed once. The function receives a reference to the true value. Expressions where the reference cannot be guaranteed during the execution of the function generates a compiler error. The value must then be copied to a local variable instead.
+<li>Added support for character literals.
+</ul>
+<li>Library interface
+<ul>
+<li>Overloaded operators may now use &amp;inout references. Since this type of references now guarantees a pointer to the true object this is useful if the operand has to be modified, e.g. a stream class.
+<li>Overloaded operators may now use &amp;out references. The order of evaluation will change, but precedence order is kept.
+<li>Added functions to the asIScriptContext interface that allow the application to enumerate variables on the stack and examine their values. (Thanks Ivan Marinov)
+</ul>
+<li>Library
+<ul>
+<li>A couple of minor code changes to make it easier to compile the library on Metrowerks CodeWarrior for NintendoDS (Thanks Fumihiro KanaYA)
+<li>The script compiler was changed to generate less copies of objects when doing function parameters by reference.
+<li>Added a new compile time flag: AS_ALLOW_UNSAFE_REFERENCES. When this is defined the library will allow parameter references without the in, out, or inout keywords. These parameters references will also work just like normal C++ parameter references, without any restrictions.
+</ul>
+<li>Virtual Machine
+<ul>
+<li>The VM has been changed to use three op instructions instead of stack based instructions. In some situations the new VM is faster, in others it is about the same.
+</ul>
+<li>Project
+<ul>
+<li>as_types.h was removed.
+</ul>
+</ul>
+
+<h2>Version 2.4.1d - 2005/12/09</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>The compiler didn't raise an error when doing an handle assignment where the lvalue was a normal object (Thanks Lbas)
+</ul>
+</ul>
+
+<h2>Version 2.4.1c - 2005/11/22</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Overloaded indexing operators that take an object as parameter and returns a reference, crashed the application when compiling the script. (Thanks Desdemona)
+</ul>
+</ul>
+
+<h2>Version 2.4.1b - 2005/11/08</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Chained expressions with overloaded operators and registered types could cause null pointer violations (continued) (Thanks __Avatar__)
+</ul>
+</ul>
+
+<h2>Version 2.4.1a - 2005/10/18</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Registering global properties, after removing a config group with global properties, caused a null pointer violation. (Thanks DaesDemon)
+<li>An assert failed when initializing variables with a function that took reference parameters. (Thanks mandrav)
+<li>Chained expressions with overloaded operators and registered types could cause null pointer violations. (Thanks Anders Stenberg, a.k.a Dentoid)
+<li>Expressions with multiple levels of indirections (.) and object handles as arguments in each level, caused incorrect bytecode. (Thanks Vexorian)
+</ul>
+</ul>
+
+<h2>Version 2.4.1 - 2005/09/23</h2>
+
+<ul>
+<li>Script language
+<ul>
+<li>Added support for heredoc string constants. (Thanks Ashish Ranjan)
+<li>Added support for array initialization lists.
+</ul>
+</ul>
+
+<h2>Version 2.4.0 - 2005/09/15</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>The bitwise negate operator, ~, now works with integer types as well, e.g. int and uint. (Thanks Suudy)
+<li>Save and load of compiled bytecode with script arrays now work. (Thanks Evgeny Efremov, a.k.a wolfenstein)
+</ul>
+<li>Library interface
+<ul>
+<li>Added methods BeginConfigGroup(), EndConfigGroup(), and RemoveConfigGroup() for asIScriptEngine.
+<li>The engine no longer allow overriding the array types if they are already being used elsewhere.
+<li>All methods taking asUPtr as parameter was changed to take const asUPtr&amp; instead, which ought to help avoid ESP problems that some people have encountered.
+<li>Added an optional namespace. Define the flag AS_USE_NAMESPACE when compiling to put the script engine in the namespace AngelScript.
+<li>Added a method SetCommonObjectMemoryFunctions() that allow the application to register an alloc()/free() function pair that will be used for all script objects.
+<li>asIBinaryStream was changed to use asUINT instead of int for the block size, and const void * instead of void * for Write().
+<li>Added a method SetCommonMessageStream(). The engine uses this output stream to output error messages when registering configurations, and also if the Build() method is called with a null pointer for the output stream. A second version of this method is available that takes a simple function pointer and an optional parameter, like a normal callback function.
+<li>Build() and ExecuteString() no longer takes a pointer to an asIOutputStream. The old version is still available by defining the flag AS_DEPRECATED.
+<li>Added method SetConfigGroupModuleAccess() which is used to set both default module access mode and individual module accesses.
+</ul>
+<li>Script language
+<ul>
+<li>Constant variables that are initialized with a constant expression, can now be used as named constants in for example switch cases. (Thanks juhnu)
+</ul>
+<li>Library
+<ul>
+<li>Changed the way the modules free global variables. Instead of a script function, it is now just a simple loop freeing each of the variables.
+<li>asBSTR is no longer used internally to store constant strings, asCString is used instead.
+<li>Converted the asCMap to template code.
+<li>The assembler VM was removed as it will no longer be possible to keep it compatible with the C++ VM.
+</ul>
+<li>Project
+<ul>
+<li>Added as_configgroup.cpp and as_configgroup.h.
+<li>Removed as_map.cpp
+<li>Removed as_context_x86.cpp
+<li>Removed as_bstr_util.cpp and as_bstr_util.h.
+</ul>
+</ul>
+
+<h2>Version 2.3.0b - 2005/08/09</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Parameters where freed before the returned reference was used, which caused errors if the reference pointed to one of the parameters. (Thanks Suudy)
+</ul>
+</ul>
+
+<h2>Version 2.3.0a - 2005/07/29</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>Structure definitions and function declarations where not order independent. (Thanks Carl Ådahl)
+<li>Added the old CreateContext() and GetGlobalVarPointer() as deprecated methods.
+<li>Fixed some more compiler warnings.
+</ul>
+</ul>
+
+<h2>Version 2.3.0 - 2005/07/14</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>RegisterGlobalProperty() for object handles wasn't working correctly, the wrong address was used by the VM.
+<li>The C interface for asIScriptGeneric wasn't declared correctly.
+<li>Fixed a few compiler warnings. (Thanks Rain Dog)
+<li>When calling methods on null handles, the application crashed with a memory access violation (Thanks Robert Manuszewski)
+<li>If accessing the elements of a script array handle, the compiler wrongly made the elements handles as well (Thanks Scott Dillman, a.k.a AlphaDog)
+</ul>
+<li>Library interface
+<ul>
+<li>Added an interface to manipulate the any type, asIScriptAny.
+<li>Added an interface to manipulate script structures, asIScriptStruct.
+<li>Added an interface to manipulate script arrays, asIScriptArray.
+<li>Added methods GetTypeIdByDecl() and GetTypeDeclaration().
+<li>Added the method asIScriptEngine::CreateScriptObject() that allow the application to create objects from a type id.
+<li>Added the method asIScriptEngine::GetObjectsInGarbageCollectorCount()
+    which can be used to finetune how often the GarbageCollect() is called.
+<li>Changed the asIScriptEngine::CreateContext() to return the context pointer instead of placing it in the parameter.
+<li>asIScriptEngine::GetGlobalVarPointer() now returns the pointer directly, instead of putting it in the argument.
+<li>Removed the deprecated asIScriptContext::ExecuteStep().
+</ul>
+<li>Script language
+<ul>
+<li>New built-in type: any. This type will be able to hold any other type, as a generic container, though currently it can only hold object handles. It is possible to pass this type to the application.
+</ul>
+<li>Library
+<ul>
+<li>Changed the implementation for asCGCObject, since it is not possible to use multiple inheritance with anonymous pointers.
+<li>Slimmed down the internal datatype representation, for the typeid feature.
+</ul>
+<li>Virtual machine
+<ul>
+<li>A new bytecode TYPEID has been implemented.
+<li>The object types are now passed as pointers directly in the bytecode, instead of by index. 
+</ul>
+<li>Project
+<ul>
+<li>Added as_anyobject.h and as_anyobject.cpp
+</ul>
+</ul>
+
+<h2>Version 2.2.0 - 2005/06/08</h2>
+
+<ul>
+<li>Script language
+<ul>
+<li>New reserved keyword: struct
+<li>The scripts can now declare and use structures.
+<li>The compiler now automatically converts objects to object handles, when it is obvious a handle is wanted, i.e. there will be less need to use the @ operator.
+</ul>
+<li>Library interface
+<ul>
+<li>It is now possible to tell the library to automatically handle reference for handles passed to and from application functions. Simply add a + after the @. This makes it possible to pass handles to functions that do not call the release method before returning.
+<li>A new method GarbageCollect() has been implemented that will free unused script objects. For long running programs it is necessary to call this every now and then. It can do either a full cycle or just a small incremental step, depending on the needs of the application.
+</ul>
+<li>Virtual machine
+<ul>
+<li>The bytecode now identifies object types locally to each module. 
+<li>There is a new bytecode OBJTYPE that translates a local object type id to the engine's object type id.
+</ul>
+<li>Library
+<ul>
+<li>Added a new preprocessor flag, AS_MAX_PORTABILITY, which removes all calls to assembler routines, which should make the library work on all platforms. In this mode, only asCALL_GENERIC can be used for application functions.
+<li>Changed the internal data type description class to be easier to work with. The intention is to allow the application to access this to get information about types for global variables, function declarations, etc.
+<li>Changed the implementation of the internal script array object to work more similar to the way script structures work. 
+</ul>
+<li>Project
+<ul>
+<li>New files: as_scriptstruct.cpp and as_scriptstruct.h
+<li>Added as_callfunc.cpp which implements the portable functions when AS_MAX_PORTABILITY is defined.
+<li>Added the files as_gcobject.h and as_gcobject.cpp
+</ul>
+</ul>
+
+<h2>Version 2.1.0c - 2005/05/26</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>When getting the function declaration the library didn't set the 'in', 'out', 'inout' flags for parameter references (Thanks Andrey Kraynov, a.k.a _Dreamer)
+<li>After loading precompiled bytecode script functions that took objects by handle couldn't be identified (Thanks Andrey Kraynov, a.k.a _Dreamer)
+</ul>
+</ul>
+
+<h2>Version 2.1.0b - 2005/04/25</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>The C interface wasn't exporting the functions. (Thanks Lars Peter Christiansen)
+<li>Variables of types int and uint of any size weren't implicitly converted to bits.
+<li>Uninitialized variables passed to &amp;out parameters were incorrectly reported as uninitialized.
+<li>The compiler was accepting assignments of any type to objects with no registered assignment operator.
+</ul>
+</ul>
+
+<h2>Version 2.1.0a - 2005/04/11</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>The null pointer access in the compiler when matching function arguments was removed (Thanks Lennart Denninger)
+<li>The ?: operator was reusing temporary variables incorrectly.
+<li>The compiler failed to compile the boolean not operator for variables. (Thanks SharkBait)
+</ul>
+</ul>
+
+<h2>Version 2.1.0 - 2005/04/03</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>The line numbers reported by the VM were incorrect.
+<li>GetGlobalVarPointer() was returning a pointer to a pointer for registered object types. (Thanks Rain Dog)
+<li>Fixed a possible crash when calling AddScriptSection() with 0 for section name.
+<li>The operands for overloaded operators are now evaluated left-to-right.
+<li>Output parameters weren't working correctly for object methods (Thanks Mårten Svanfeldt, a.k.a thebolt00)
+<li>The engine failed when calling registered functions that received objects both by value and by reference (Thanks Lennart Denninger)
+<li>Registered object types without registered constructor couldn't be used to create temporary objects in expressions.
+<li>Global variables couldn't use overloaded assignment operators to initialize the variables.
+<li>Object properties declared as object handles were not handled correctly by the compiler.
+<li>Fixed a bug that crashed the application when compiling a function declared with a void parameter. (Thanks SharkBait)
+<li>Sending complex objects by value to class methods caused a crash on GNUC based compilers. (Thanks Torsten, a.k.a torsten_pf)
+<li>Passing objects by reference to constructors in declarations caused an assert failure. (Thanks Rain Dog)
+</ul>
+<li>Script language
+<ul>
+<li>The script language now allows statements like: func(expr), where the function doesn't take any arguments and 
+    the expression evaluates to a void type. This is especially useful when using dynamically generating scripts where 
+	the expression type isn't known before hand.
+<li>Object variables and properties can be declared as const again
+<li>Properties of a const object are automatically const as well
+<li>When the object is const, the compiler doesn't allow non-const methods to be called
+<li>It is possible to take a handle for a const object, but it can only be assigned to a handle to a const object
+<li>The object held by a handle that is member of a const object, is not automatically const
+<li>An object handle that is member of a const object is also const
+<li>Const can be used for parameters again
+</ul>
+<li>Virtual machine
+<ul>
+<li>The calling convention used by the script engine now passes the object pointer as the first parameter instead of the last.
+<li>GETOBJ was changed to read the offset from the stack instead of the address to the variable.
+<li>Added GETOBJREF and GETREF to handle parameter references.
+<li>Parameter references to overloaded operators are also protected by copying them to temporary variables.
+<li>Added SWAP48 and SWAP84 to swap two values of different bytesizes.
+<li>The compiler has been changed to output bytecode that don't keep unprotected pointers on the stack where they cannot be controlled. This will prove especially useful when I will later implement context serialization and co-routines.
+<li>Calling the constructors with arguments are now also protected by not pushing the object pointer on the stack before the arguments.
+</ul>
+<li>Library interface
+<ul>
+<li>Implemented a C wrapper for the library. Compile the library with AS_C_INTERFACE to use it.
+<li>Added a dummy array in asUPtr to make the size equal on all compilers (even when the C++ interface is disabled)
+<li>Added SetLineCallback()/ClearLineCallback() to the context interface. These should be used instead of ExecuteStep() to control how much is executed each frame.
+<li>Added SetExceptionCallback()/ClearExceptionCallback() to the context interface. These methods can be used for debugging purposes and allow the application to examine the callstack when an exception is raised.
+<li>Added GetCallstackSize() and GetCallstackFunction() to the context interface.
+<li>Added the possibility to turn off support for registering class methods. Compile the library with AS_NO_CLASS_METHODS. This can be used on compilers where class methods don't currently work.
+<li>Added GetFunctionSection() to the engine interface.
+<li>ExecuteStep() is now a deprecated method. Use the line callback method instead, which is much more flexible.
+<li>Added GetCallstackLineNumber() to the context interface.
+<li>All methods that return line numbers can now optionally return column number as well.
+<li>Added the asCALL_GENERIC flag for functions using the generic calling convention.
+<li>Added a new asIScriptGeneric interface for handling generic functions.
+<li>Added GetObject() to the generic interface, that will return the object pointer when a method function using the generic calling convention is called.
+<li>Added GetArgDWord(), GetArgQWord(), GetArgFloat(), GetArgDouble(), and GetArgObject() to the generic interface.
+<li>Added SetReturnDWord(), SetReturnQWord(), SetReturnFloat(), SetReturnDouble(), and SetReturnObject() to the generic interface.
+<li>Added two new behaviours asBEHAVE_ALLOC and asBEHAVE_FREE, that can be used to register custom memory allocation functions for an object type.
+<li>Overloaded operators have been limited to only allow parameter references marked as 'in' (non-references are still allowed). This means that you cannot rely on that you receive a reference to the actual operand, as it might be a copy. 
+<li>The extra call to addref/release for the object pointer when calling class methods has been removed. The responsibility of making sure the pointer is valid during the call has been moved to the application.
+<li>RegisterObjectType() now returns asALREADY_REGISTERED if name has already been registered as a type. (Suggestion by Adrian Licu)
+<li>It is now possible to declare object methods as const, so that they can be called for constant objects. Ex: "void GetVal() const"
+<li>Const overloading is now available for object behaviours and methods, i.e. if the object is const then the const version will be used, otherwise the non-const version will be used.
+<li>AddScriptSection() now has an extra parameter that can be used to tell the library not to make a copy of the script code, and instead use the original pointer directly. (Thanks Adrian Licu)
+<li>A new method ResetModule() was added to the engine. This can be used to reset the value of global variables for a module.
+</ul>
+<li>Project
+<ul>
+<li>Added as_generic.cpp and as_generic.h with the interface for generic functions.
+<li>Removed the #include &lt;memory.h&gt; from the angelscript.h file.
+<li>Added as_c.cpp with the C wrapper functions.
+</ul>
+</ul>
+
+<h2>Version 2.0.0a - 2005/01/31</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>GetCurrentFunction() and GetExceptionFunction() didn't return the function ID with the module index, affecting applications that were using module bindings (Thanks Tomas Stepanek)
+<li>The library crashed when trying to register a function that used a handle to a type that had no addref/release behaviours registered (Thanks Adrian Licu)
+<li>It wasn't possible to return null in a function which return type is a handle (Thanks Adrian Licu)
+<li>Passing object handles by value to application functions could cause a crash (Thanks Adrian Licu)
+<li>Fixed a minor memory leak when RegisterGlobalFunction() failed.
+</ul>
+</ul>
+
+<h2>Version 2.0.0 - 2005/01/23</h2>
+
+<ul>
+<li>Bug fixes
+<ul>
+<li>GNUC: Classes with destructors can now be sent by value to system functions
+<li>The compiler failed to successfully parse/compile temporary array constructors, e.g. int[](3).
+<li>On GCC/Linux all classes/structs are returned in memory regardless of size, complexity, or calling convention. (Thanks Fredrik Ehnbom)
+<li>Some compilers complained about the negative array size in the template code that is never instanciated. The code was commented.
+<li>Overloaded assignment operators that take types other than the target can now be used in initializations. (Thanks Alan Kemp)
+<li>asGetActiveContext() would cause an assert failure if called when no context was active. (Thanks Chee Chong Tay, a.k.a Iram)
+<li>It was not possible to register arrays of registered types. (Thanks Tomas Stepanek)
+</ul>
+
+<li>Library interface
+<ul>
+<li>Removed deprecated functionality
+<li>Removed the flag asOBJ_GUESS for RegisterObjectType().
+<li>Removed the macros asFUNCTIONP() and asMETHODP().
+<li>Removed GetReturnValue()
+<li>Added GetReturnDWord(), GetReturnQWord(), GetReturnFloat(), GetReturnDouble(), and GetReturnObject()
+<li>Removed SetArguments()
+<li>Added SetArgDWord(), SetArgQWord(), SetArgFloat(), SetArgDouble(), SetArgObject()
+<li>Protected destructors have been added to the interfaces so that the application doesn't call them by mistake (thanks Dan "Aggrav8d" Royer)
+<li>Function declarations with arguments by ref must use the in, out, or inout flags
+<li>Added the behaviours ADDREF and RELEASE that will be used by object handles to do memory management
+<li>New context state: asEXECUTION_ERROR, that is set if one of the SetArg...() functions failed.
+</ul>
+
+<li>Script language
+<ul>
+<li>Removed the pointer type modifier
+<li>Removed the -&gt; operator
+<li>In declarations the array brackets are now part of the type, i.e. for "int[] a, b;" both a and b are arrays
+<li>Arrays can now be resized by using the method resize().
+<li>Parameter references are now protected by copying the value into a 
+    temporary variable when calling the function, and then copying the 
+    temporary variable back to the original location when the function 
+    returns. The expression is computed twice for in/out references.
+<li>Function parameters by reference should use the flags in, out, or inout to allow the compiler to optimize the use of the parameters.
+<li>Added the object handle type modifier so that object handles can be declared. The token @ is used so as not to confuse it with C++ pointers or references.
+<li>Added the null keyword for object handles.
+<li>const is now only available for variable and property declarations, and only for primitive types. This change was made for consistency and because the script language was not able to guarantee that an object isn't changed by object methods. 
+<li>Arrays have been limited to only allow four dimensions
+</ul>
+
+<li>Virtual machine
+<ul>
+<li>Removed the bytecode ADDOFF
+<li>Objects are stored in dynamically allocated memory. A pointer to the memory is stored on the stack
+<li>Created ALLOC/FREE instructions for allocating and freeing the objects
+<li>Objects are returned in a register
+<li>Created LOADOBJ/STOREOBJ that moves an object pointer from a variable into the object register, and vice versa
+<li>Created GETOBJ which moves an object pointer from a reference to the stack, overwriting the reference
+<li>Removed END and PEID.
+<li>Simplified the exception handler to free objects based only on their position on the stack
+<li>A script function receives an object by value and by ref the same way. The difference is if the function is the owner of the object or not.
+<li>Added REFCPY to support reference assignments for object handles
+<li>Added CHKREF to validate object handles when used as normal objects
+<li>Added the bytecodes RD1 and RD2 to fix alignment problems on CPUs that requires data to be aligned.
+<li>The VM keeps a reference to the object when calling a method, to protect the object from being released before the method returns. 
+</ul>
+
+<li>Library
+<ul>
+<li>The library was made to work with Dreamcast once more. (Thanks Fredrik Ehnbom) 
+<li>The compile time flag BUILD_WITH_LINE_CUES was replaced with BUILD_WITHOUT_LINE_CUES. This flag is not 
+defined by default making ExecuteStep() work as specified, but for those that do not use this function the 
+performance may be increased a little by specifying this flag when compiling the library.
+</ul>
+</ul>
+
+
+
+</body>
+</html>

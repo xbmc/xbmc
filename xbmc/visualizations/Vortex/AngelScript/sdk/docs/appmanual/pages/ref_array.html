@@ -1,0 +1,234 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: asIScriptArray</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: asIScriptArray</h1>
+
+<pre class=border>
+class asIScriptArray
+{
+public:
+  <font color=green>// Memory management</font>
+  int <a href="#addref">AddRef</a>();
+  int <a href="#release">Release</a>();
+
+  <font color=green>// Array type</font>
+  int <a href="#gettypeid">GetArrayTypeId</a>();
+
+  <font color=green>// Elements</font>
+  int    <a href="#eltype">GetElementTypeId</a>();
+  asUINT <a href="#elcount">GetElementCount</a>();
+  void * <a href="#elptr">GetElementPointer</a>(asUINT index);
+  void   <a href="#resize">Resize</a>(asUINT size);
+  int    <a href="#copyfrom">CopyFrom</a>(asIScriptArray *other);
+};
+</pre>
+
+
+
+<a name=addref></a>
+<h2>AddRef</h2>
+
+<pre class=border>
+int AddRef();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method increases the internal reference counter of the object and
+returns the count. The returned value shouldn't be used for anything else
+but debugging.</p>
+
+<p>Call AddRef() each time you assign a reference to a new variable.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name=release></a>
+<h2>Release</h2>
+
+<pre class=border>
+int Release();
+</pre>
+
+<h3>Description</h3>
+
+<p>Decreases the internal reference counter and returns the count. If the
+counter reaches 0 the object is deleted and the memory is freed.</p>
+
+<p>After calling Release() don't forget to set your reference to 0 so that
+you don't mistakenly try to use the reference again.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+
+
+
+<a name=gettypeid></a>
+<h2>GetArrayTypeId</h2>
+
+<pre class=border>
+int GetArrayTypeId();
+</pre>
+
+<h3>Description</h3>
+
+<p>Returns the type id of the script array.</p>
+
+<h3>Returns</h3>
+
+<p>The type id.</p>
+
+
+
+
+<a name=eltype></a>
+<h2>GetElementTypeId</h2>
+
+<pre class=border>
+int GetElementTypeId();
+</pre>
+
+<h3>Description</h3>
+
+<p>Use this method to determine the type of the elements and how to handle 
+the pointer returned by GetElementPointer().</p>
+
+<h3>Returns</h3>
+
+<p>The type id of the elements.</p>
+
+
+
+
+
+
+<a name=elcount></a>
+<h2>GetElementCount</h2>
+
+<pre class=border>
+asUINT GetElementCount();
+</pre>
+
+<h3>Description</h3>
+
+<p>Use this method to determine how many elements there are in the array.</p>
+
+<h3>Returns</h3>
+
+<p>The size of the array.</p>
+
+
+
+
+
+
+
+
+
+<a name=elptr></a>
+<h2>GetElementPointer</h2>
+
+<pre class=border>
+void *GetElementPointer(asUINT index);
+</pre>
+
+<h3>Description</h3>
+
+<p>The method returns a pointer to the memory location for the element. Use 
+the type id for the element to determine the content of the pointer, and how 
+to handle it.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>index</code>&nbsp;</td>
+<td valign=top><p>The zero based index of the element of interest.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A pointer to the element, or null if out of range.</p>
+
+
+
+
+
+<a name=resize></a>
+<h2>Resize</h2>
+
+<pre class=border>
+void Resize(asUINT size);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method allows the application to resize the array.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>size</code>&nbsp;</td>
+<td valign=top><p>The new size of the array.</p></td>
+</tr>
+</table>
+
+
+
+<a name=copyfrom></a>
+<h2>CopyFrom</h2>
+
+<pre class=border>
+int CopyFrom(asIScriptArray *other);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method copies the contents of the other object to this one.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>other</code>&nbsp;</td>
+<td valign=top><p>A pointer to the other array object.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error.</p>
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

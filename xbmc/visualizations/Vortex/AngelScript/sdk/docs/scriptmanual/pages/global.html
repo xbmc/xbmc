@@ -1,0 +1,101 @@
+<HTML>
+<head>
+<title>AngelScript: Global declarations</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>Global declarations</h1>
+
+<p>All global declarations share the same namespace so their names may not
+conflict. This includes extended data types and built in functions registered
+by the host application. Also, all declarations are visible to all, e.g. a
+function to be called do not have to be declared above the function that calls
+it.</p>
+
+	<ul>
+	<li><a href="#function">functions</a>
+	<li><a href="#variable">variables</a>
+        <li><a href="#structs">structures</a>
+        <li><a href="#import">imports</a>
+	</ul>
+
+
+<a name="function">
+<h2>Functions</h2>
+
+<pre>
+FUNCTION       ::= TYPE IDENTIFIER '(' PARAMETERS ')' '{' IMPLEMENTATION '}'
+PARAMETERS     ::= (TYPE ('&' ('in' | 'out' | 'inout'))? IDENTIFIER?)*
+TYPE           ::= &lt;a data type&gt;
+IDENTIFIER     ::= &lt;the function name&gt;
+IMPLEMENTATION ::= &lt;zero or more statements&gt;
+</pre>
+
+<p>TYPE is one of the available return <a href="datatypes.html">data types</a>, e.g. <code><font color=blue>void</font></code>, <code><font color=blue>int</font></code>, or <code><font color=blue>bool</font></code>.</p>
+
+<p>Parameters are declared with data type, optionally <code>&amp;</code> for
+data sent by reference and optionally an identifier to access the parameter from within
+the function. If more than one parameter is specified they are separated with commas.</p>
+
+<p>For parameters sent by reference, i.e. with the <code>&amp;</code> modifier it is necessary in which direction the value is passed, in, out, or inout, e.g. &amp;out. For parameters marked with in the value is passed in to the function, and for parameters marked with out the value is returned from the function. Note that if the parameter is marked as inout, the argument is copied twice, once when going in to the function and once when going out, this can lead to a performance impact, so should be avoided if possible.</p>
+
+<p>Parameters can also be declared as <code>const</code> which prohibits the alteration of their value. It is
+good practice to declare variables that will not be changed as <code>const</code>,
+because it makes for more readable code and the compiler is also able to take advantage of it some times.</p>
+
+<p>The IMPLEMENTATION is written through a series of <a href="statement.html">statements</a>.</p>
+
+<p>Note that although functions that return types by references can't be
+declared by scripts you may still see functions like these if the host
+application defines them. In that case you the returned value may also
+be used as the target in assignments.</p>
+
+<a name="variable">
+<h2>Variables</h2>
+
+<pre>
+DECLARATION ::= TYPE IDENTIFIER ('=' EXPRESSION)? (',' IDENTIFIER ('=' EXPRESSION)?)* ';'
+TYPE        ::= &lt;a data type&gt;
+IDENTIFIER  ::= &lt;the variable name&gt;
+EXPRESSION  ::= &lt;an expression whose value will initialize the variable&gt;
+</pre>
+
+<p>TYPE is one of the available <a href="datatypes.html">data types</a>. The expression may not call any functions, assign any variables. The expression doesn't have to be constant, and it can even use the condition operator ?:.</p>
+
+<p>Variables declared globally like this are accessible from all functions. The value of the variables are initialized at compile time and any changes are maintained between calls. If a global variable holds a memory resource, e.g. an bstr, its memory is released when the script engine is reset.</p>
+
+<a name="structs">
+<h2>Structures</h2>
+
+<pre>
+DECLARATION ::= 'struct' IDENTIFIER '{' PROP* '}' ';'
+PROP        ::= TYPE IDENTIFIER ';'
+TYPE        ::= &lt;a data type&gt;
+</pre>
+
+<p>With structures the script writer can declare new data types that hold groups of values.</p>
+
+<a name="import">
+<h2>Imports</h2>
+
+<pre>
+IMPORT         ::= 'import' TYPE IDENTIFIER '(' PARAMETERS ')' 'from' STRING ';'
+PARAMETERS     ::= (TYPE ('&' ('in' | 'out' | 'inout'))? IDENTIFIER?)*
+TYPE           ::= &lt;a data type&gt;
+IDENTIFIER     ::= &lt;the function name&gt;
+STRING         ::= &lt;a text string between double quotes&gt;
+</pre>
+
+
+<p>TYPE is one of the available return <a href="datatypes.html">data types</a>, e.g. <code><font color=blue>void</font></code>, <code><font color=blue>int</font></code>, or <code><font color=blue>bool</font></code>.</p>
+
+<p>This statement allow a script to declare function prototypes that will be imported from other modules. If the application support this, then the functions are bound after the module has been compiled, and can even be exchanged while running the script.</p>
+
+<p>Note: The <code>from</code> keyword is not a reserved keyword and can therefore be used as normal for function and variable names.</p>
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

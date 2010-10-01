@@ -1,0 +1,154 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: Calling script functions with parameters</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Documentation: Calling script functions with parameters</h1>
+
+<h2>Preparing context and executing the function</h2>
+
+<p>Normally a script function is executed in a few steps:</p>
+
+<ol>
+<li>Prepare the context
+<li>Set the function arguments
+<li>Execute the function
+<li>Retrieve the return value
+</ol>
+
+<p>This is assuming a script context is already available. The code for this 
+might look something like this:</p>
+
+<pre class=border>
+<font color=green>// Prepare() must be called to allow the context to prepare the stack</font>
+context->Prepare(engine->GetFunctionIDByDecl(module_name, function_declaration);
+
+<font color=green>// Set the function arguments</font>
+context->SetArgDWord(...);
+
+int r = context->Execute();
+if( r == asEXECUTION_FINISHED )
+{
+  <font color=green>// The return value is only valid if the execution finished successfully</font>
+  asDWORD ret = context->GetReturnDWord();
+}
+</pre>
+
+<p>If your application allow the execution to be suspended, either by using
+the callback function or registering a function that allow the script to 
+manually suspend the execution, then the execution function may return 
+before finishing with the return code asEXECUTION_SUSPENDED. In that case you
+can later resume the execution by simply calling the execution function again.
+</p>
+
+<p>Note that the return value retrieved with GetReturnValue() is only valid
+if the script function returned successfully, i.e. if Execute() returned 
+asEXECUTION_FINISHED.</p>
+
+<h2>Passing and returning primitives</h2>
+
+<p>When calling script functions that take arguments, the values of these 
+arguments must be set after the call to Prepare() and before Execute(). 
+The arguments are set using a group of SetArg methods:</p>
+
+<pre class=border>
+int SetArgDWord(int arg, asDWORD value);
+int SetArgQWord(int arg, asQWORD value);
+int SetArgFloat(int arg, float value);
+int SetArgDouble(int arg, double value);
+</pre>
+
+<p><code>arg</code> is the argument number, where the first argument is on 0, the second 
+on 1, and so on. <code>value</code> is the value of the argument. What method to use is 
+determined by the type of the parameter. For primitive types you can use any of these. 
+If the parameter type is a reference to a primitive type it is recommended to use the 
+SetArgDWord() method and pass the pointer as the value. For non-primitive types the 
+method SetArgObject() should be used, which will be described in the next section.
+</p>
+
+<pre class=border>
+  <font color=green>// The context has been prepared for a script 
+  // function with the following signature:
+  // int function(int, double, int&amp;in)
+
+  // Put the arguments on the context stack, starting with the first one</font>
+  ctx->SetArgDWord(0, 1);
+  ctx->SetArgDouble(1, 3.141592);
+  int val;
+  ctx->SetArgDWord(2, (asDWORD)&amp;val);
+</pre>
+
+<p>Once the script function has been executed the return value is retrieved in 
+a similar way using the group of GetReturn methods:</p>
+
+<pre class=border>
+asDWORD GetReturnDWord();
+asQWORD GetReturnQWord();
+float   GetReturnFloat();
+double  GetReturnDouble();
+</pre>
+
+<p>Note that you must make sure the returned value is in fact valid, for 
+example if the script function was interrupted by a script exception the value
+would not be valid. You do this by verifying the return code from Execute() or
+GetState(), where the return code should be asEXECUTION_FINISHED.</p>
+
+<h2>Passing and returning objects</h2>
+
+<p>Passing registered object types to a script function is done in a similar
+way to how primitive types are passed. The function to use is SetArgObject():</p>
+
+<pre class=border>
+int SetArgObject(int arg, void *object);
+</pre>
+
+<p><code>arg</code> is the argument number, just like the other SetArg methods. 
+<code>object</code> is a pointer to the object you wish to pass.</p>
+
+<p>This same method is used both for parameters passed by value and for those
+passed by reference. The library will automatically make a copy of the object
+if the parameter is defined to be passed by value.</p>
+
+<pre class=border>
+<font color=green>// The complex object we wish to pass to the script function</font>
+CObject obj;
+
+<font color=green>// Pass the object to the function</font>
+ctx->SetArgObject(0, &amp;obj);
+</pre>
+
+<p>Getting an object returned by a script function is done in a similar way, using 
+GetReturnObject(): </p>
+
+<pre class=border>
+void *GetReturnObject();
+</pre>
+
+<p>This method will return a pointer to the object returned by the script function.
+The library will still hold a reference to the object, which will only be freed as 
+the context is released.</p>
+
+<pre class=border>
+<font color=green>// The object where we want to store the return value</font>
+CObject obj;
+
+<font color=green>// Execute the function</font>
+int r = ctx->Execute();
+if( r == asEXECUTION_FINISHED )
+{
+  <font color=green>// Get a pointer to the returned object and copy it to our object</font>
+  obj = *(CObject*)ctx->GetReturnObject();
+}
+</pre>
+
+<p>It is important to make a copy of the returned object, or if it is managed by reference counting add a reference to it. If this is not done the pointer obtained with GetReturnObject() will be invalidated as
+the context is released, or reused for another script function call.</p>
+
+</body></HTML>

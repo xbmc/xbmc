@@ -1,0 +1,2045 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: asIScriptEngine</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: asIScriptEngine</h1>
+
+<pre class=border>
+class asIScriptEngine
+{
+public:
+  <font color=green>// Memory management</font>
+  int <a href="#addref">AddRef</a>();
+  int <a href="#release">Release</a>();
+
+  <font color=green>// Engine configuration</font>
+  void <a href="#msgstream">SetCommonMessageStream</a>(asIOutputStream *out);
+  void <a href="#msgstream">SetCommonMessageStream</a>(asOUTPUTFUNC_t outFunc, void *outParam);
+  
+  int <a href="#memfunc">SetCommonObjectMemoryFunctions</a>(asALLOCFUNC_t allocFunc, asFREEFUNC_t freeFunc);
+  
+  int <a href="#datatype">RegisterObjectType</A>(const char *name, int byteSize, asDWORD flags);
+  int <a href="#property">RegisterObjectProperty</a>(const char *obj, const char *declaration, int byteOffset);
+  int <a href="#method">RegisterObjectMethod</a>(const char *obj, const char *declaration, const asUPtr &amp;funcPointer, asDWORD callConv);
+  int <a href="#behave">RegisterObjectBehaviour</a>(const char *datatype, asDWORD behaviour, const char *declaration, const asUPtr &amp;funcPointer, asDWORD callConv);
+
+  int <a href="#globprop">RegisterGlobalProperty</a>(const char *declaration, void *pointer);
+  int <a href="#sysfunc">RegisterGlobalFunction</a>(const char *declaration, const asUPtr &amp;funcPointer, asDWORD callConv);
+  int <a href="#gbehave">RegisterGlobalBehaviour</a>(asDWORD behaviour, const char *declaration, const asUPtr &amp;funcPointer, asDWORD callConv);
+
+  int <a href="#string">RegisterStringFactory</a>(const char *datatype, const asUPtr &amp;factoryFunc, asDWORD callConv);
+
+  int <a href="#begincfg">BeginConfigGroup</a>(const char *groupName);
+  int <a href="#endcfg">EndConfigGroup</a>();
+  int <a href="#remcfg">RemoveConfigGroup</a>(const char *groupName);
+  int <a href="#cfgaccess">SetConfigGroupModuleAccess</a>(const char *groupName, const char *module, bool hasAccess);
+
+  <font color=green>// Script modules</font>
+  int <a href="#addscript">AddScriptSection</a>(const char *module, const char *name, const char *code, int codeLength, int lineOffset = 0, bool makeCopy = true);
+  int <a href="#build">Build</a>(const char *module);
+  int <a href="#discard">Discard</a>(const char *module);
+  int <a href="#reset">ResetModule</a>(const char *module);
+  int <a href="#getmodindex">GetModuleIndex</a>(const char *module);
+  const char *<a href="#getmodname">GetModuleNameFromIndex</a>(int index, int *length = 0);
+
+  <font color=green>// Script functions</font>
+  int <a href="#funccount">GetFunctionCount</a>(const char *module);
+  int <a href="#funcidindex">GetFunctionIDByIndex</a>(const char *module, int index);
+  int <a href="#funcidname">GetFunctionIDByName</a>(const char *module, const char *name);
+  int <a href="#funciddecl">GetFunctionIDByDecl</a>(const char *module, const char *decl);
+  const char *<a href="#funcdecl">GetFunctionDeclaration</a>(int funcID, int *length = 0);
+  const char *<a href="#funcname">GetFunctionName</a>(int funcID, int *length = 0);
+  const char *<a href="#funcsection">GetFunctionSection</a>(int funcID, int *length = 0);
+
+  <font color=green>// Script global variables</font>
+  int <a href="#varcount">GetGlobalVarCount</a>(const char *module);
+  int <a href="#varidindex">GetGlobalVarIDByIndex</a>(const char *module, int index);
+  int <a href="#varidname">GetGlobalVarIDByName</a>(const char *module, const char *name);
+  int <a href="#variddecl">GetGlobalVarIDByDecl</a>(const char *module, const char *decl);
+  const char *<a href="#vardecl">GetGlobalVarDeclaration</a>(int gvarID, int *length = 0);
+  const char *<a href="#varname">GetGlobalVarName</a>(int gvarID, int *length = 0);
+  void *<a href="#varpointer">GetGlobalVarPointer</a>(int gvarID);
+
+  <font color=green>// Dynamic binding between modules</font>
+  int <a href="#importcount">GetImportedFunctionCount</a>(const char *module);
+  int <a href="#importidxdecl">GetImportedFunctionIndexByDecl</a>(const char *module, const char *decl);
+  const char *<a href="#importdecl">GetImportedFunctionDeclaration</a>(const char *module, int importIndex, int *length = 0);
+  const char *<a href="#importsource">GetImportedFunctionSourceModule</a>(const char *module, int importIndex, int *length = 0);
+  int <a href="#bind">BindImportedFunction</a>(const char *module, int importIndex, int funcID);
+  int <a href="#unbind">UnbindImportedFunction</a>(const char *module, int importIndex);
+
+  int <a href="#bindall">BindAllImportedFunctions</a>(const char *module);
+  int <a href="#unbindall">UnbindAllImportedFunctions</a>(const char *module);
+
+  <font color=green>// Type identification</font>
+  int <a href="#typebydecl">GetTypeIdByDecl</a>(const char *module, const char *decl);
+  const char *<a href="#typedecl">GetTypeDeclaration</a>(int typeId, int *length = 0);
+
+  <font color=green>// Script execution</font>
+  int <a href="#stacksize">SetDefaultContextStackSize</a>(asUINT initial, asUINT maximum);
+  asIScriptContext *<a href="#createcontext">CreateContext</a>();
+  void *<a href="#createobj">CreateScriptObject</a>(int typeId);
+
+  <font color=green>// String interpretation</font>
+  int <a href="#executestring">ExecuteString</a>(const char *module, const char *script, asIScriptContext **ctx = 0, asDWORD flags = 0);
+
+  <font color=green>// Garbage collection</font>
+  int <a href="#gc">GarbageCollect</a>(bool doFullCycle = true);
+  int <a href="#gccount">GetObjectsInGarbageCollectorCount</a>();
+
+  <font color=green>// Bytecode saving/loading</font>
+  int <a href="#save">SaveByteCode</a>(const char *module, asIBinaryStream *out);
+  int <a href="#load">LoadByteCode</a>(const char *module, asIBinaryStream *in);
+};
+</pre>
+
+
+
+
+
+
+
+
+<a name=addref></a>
+<h2>AddRef</h2>
+
+<pre class=border>
+int AddRef();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method increases the internal reference counter of the object and
+returns the count. The returned value shouldn't be used for anything else
+but debugging.</p>
+
+<p>Call AddRef() each time you assign a reference to a new variable.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name=release></a>
+<h2>Release</h2>
+
+<pre class=border>
+int Release();
+</pre>
+
+<h3>Description</h3>
+
+<p>Decreases the internal reference counter and returns the count. If the
+counter reaches 0 the object is deleted and the memory is freed.</p>
+
+<p>After calling Release() don't forget to set your reference to 0 so that
+you don't mistakenly try to use the reference again.</p>
+
+<p>It is an error to release the engine, while there are still contexts running.
+Doing this may result in memory leaks as the contexts may not be able to release the
+object references successfully.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+
+
+
+<a name=msgstream></a>
+<h2>SetCommonMessageStream</h2>
+
+<pre class=border>
+void SetCommonMessageStream(asIOutputStream *out);
+void SetCommonMessageStream(asOUTPUTFUNC_t outFunc, void *outParam);
+</pre>
+
+<h3>Description</h3>
+
+<p>There are two possible ways of receiving the compiler messages, either 
+through a C++ interface, or a simpler C callback function.</p>
+
+<p>The outFunc must have the signature <code>void func(const char *msgText, 
+void *outParam)</code>, and use the cdecl calling convention. printf() is a 
+perfect candidate for this.</p>
+
+<p>Since the pointer to this message stream will be held by the engine until 
+the the next call to the method or the engine is released it is important 
+that the application makes sure that it isn't destroyed before its time.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>out</code>&nbsp;</td>
+<td valign=top><p>A pointer to an output stream.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>outFunc</code>&nbsp;</td>
+<td valign=top><p>The function pointer.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>outParam</code>&nbsp;</td>
+<td valign=top><p>An extra parameter that will be passed together with the message text.</p></td>
+</tr>
+</table>
+
+
+
+
+<a name=memfunc></a>
+<h2>SetCommonObjectMemoryFunctions</h2>
+
+<pre class=border>
+int SetCommonObjectMemoryFunctions(asALLOCFUNC_t allocFunc, asFREEFUNC_t freeFunc);
+</pre>
+
+<h3>Description</h3>
+
+<p>This function allows the application to set the allocation and deallocation 
+functions used to manage memory for script objects. These functions will then
+be used for all objects, except those that have individually overidden the 
+functions by registering the behaviours asBEHAVE_ALLOC and asBEHAVE_FREE.</p>
+
+<p>The allocFunc must have the same signature as malloc(), and the freeFunc  
+must have the same signature as free().</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>allocFunc</code>&nbsp;</td>
+<td valign=top><p>The allocation function pointer.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>freeFunc</code>&nbsp;</td>
+<td valign=top><p>The deallocation function pointer.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Negative value on error.</p>
+
+
+
+
+
+
+
+<a name=datatype></a>
+<h2>RegisterObjectType</h2>
+
+<pre class=border>
+int RegisterObjectType(const char *name, int byteSize, asDWORD flags);
+</pre>
+
+<h3>Description</h3>
+
+<p>Call this method to register a new data type that the scripts may use.</p>
+
+<p>
+Script variables and parameters using this type have their values protected
+in that the user may not assign values of other types by mistake, and may
+not manipulate the values directly by operators.</p>
+
+<p>If you specify a byteSize larger than 0, this means that structure can be
+declared as a local object in the script functions.</p>
+
+<p>Note that if the object dynamically allocates memory then you are adviced to
+register at least a destruct behaviour function that frees that memory as the
+variable is no longer used.</p>
+
+<p>The flags should be set according to the true object type, so that AngelScript can handle the type correctly in communications with the host application. See <a href="ref_objecttypes.html">object types</a> for more information.</p>
+
+<p>It is also possible to override the default array object in AngelScript by registering a object specifying the name with [], e.g: int[]. To register functions that receive arrays in the parameters the array must first have been registered like this.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>name</code>&nbsp;</td>
+<td valign=top><p>The name of the data type as it should be used in the scripts.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>byteSize</code>&nbsp;</td>
+<td valign=top><p>The size of the object in bytes.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>flags</code>&nbsp;</td>
+<td valign=top><p>Should be one of the <a href="ref_objecttypes.html">object types</a>.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name=property></a>
+<h2>RegisterObjectProperty</h2>
+
+<pre class=border>
+int RegisterObjectProperty(const char *obj,
+                           const char *declaration,
+                           int byteOffset);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method allows the host application to register properties for objects that
+are accessable by the scripts. The properties may optionally be marked as read-only
+to improve security, this is done by declaring them as <code>const</code>.</p>
+
+<p>Computing the byte offset is not just counting the size of the members, the
+compiler may insert hidden members, such as virtual table pointers, and at times
+inserts padding between members so that they will be align to a certain byte boundary.
+</p>
+
+<p>The easiest way to compute the byte offset is to let the compiler do it for you.
+There is a standard macro called <code>offsetof</code> that does just this for you.
+That macro is defined in stddef.h.</p>
+
+<p>Data members inherited from virtual base class are not supported by this method as
+the location of these members must be verified at run time through lookup in a virtual table.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>obj</code>&nbsp;</td>
+<td valign=top><p>The name of the object type.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>The property declaration, with data type and name.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>byteOffset</code>&nbsp;</td>
+<td valign=top><p>The offset from the object pointer where the property is found.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name=method></a>
+<h2>RegisterObjectMethod</h2>
+
+<pre class=border>
+int RegisterObjectMethod(const char *obj,
+                         const char *declaration,
+                         const asUPtr &amp;funcPointer,
+                         asDWORD callConv);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method registers object methods that the scripts may use.
+The function pointer must be a pointer to a class method.</p>
+
+<p>If a parameter is declared as reference you must also specify 
+the direction in which the value travels, i.e. in, out, or inout. 
+If the reference is marked as only out, the argument will be a 
+default value, e.g. objects will be initialized with their default 
+constructors. Note that the reference will not be to the true object, 
+so do not store the pointer thinking it will be valid at a later time.</p>
+
+<p>If the method receives object handles by value, the method must
+release those handles before returning. Likewise if the method
+returns an object handle it must increase the reference count for
+it.</p>
+
+<p>Some methods shouldn't be allowed to be called on constant objects,
+for example methods that alter a property of the object. Other methods
+are allowed to be called on constant objects because they don't alter them.
+You tell the script engine which methods can and cannot be called on constant
+objects by adding the keyword <code>const</code> after the parameter list in 
+the declaration.</p>
+
+<p>If two methods with the same parameters but one with <code>const</code> 
+and one without is registered, then the compiler will use the one with 
+<code>code</code> for constant objects, and the other one for normal objects. 
+This is called const-overloading.</p>
+
+<p>Example:</p>
+
+<pre class=border>
+engine->RegisterObjectMethod("obj", "int &amp;func(int)", asFUNCTION(func), asCALL_CDECL);
+engine->RegisterObjectMethod("obj", "const int &amp;func(int) const", asFUNCTION(func), asCALL_CDECL);
+</pre>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>obj</code>&nbsp;</td>
+<td valign=top><p>The name of the object.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>Should be the functions declaration
+written in the AngelScript language.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>funcPointer</code>&nbsp;</td>
+<td valign=top><p>Pointer to the
+function that the engine will call. Use the macro asMETHOD() if you are registering a class method or asFUNCTION() if it is a global function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>callConv</code>&nbsp;</td>
+<td valign=top><p>Must be either <a href="ref_callconv.html#thiscall">asCALL_THISCALL</a>, <a href="ref_callconv.html#cobjlast">asCALL_CDECL_OBJLAST</a>, <a href="ref_callconv.html#cobjfirst">asCALL_CDECL_OBJFIRST</a>, or <a href="ref_callconv.html#generic">asCALL_GENERIC</a>.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+
+<a name=behave></a>
+<h2>RegisterObjectBehaviour</h2>
+
+<pre class=border>
+int RegisterObjectBehaviour(const char *datatype,
+                            asDWORD behaviour,
+                            const char *declaration,
+                            const asUPtr &amp;funcPointer,
+                            asDWORD callConv);
+</pre>
+
+<h3>Description</h3>
+
+<p>By registering behaviour functions for a data type AngelScript is able to improve object
+handling. You can for example easily control how references are counted, or create objects that
+can be manipulated in expressions through operators.</p>
+
+<p>The construct function is called when a variable enters the scope,
+usually at the start of a function. The destruct function is called when
+the variable exits the scope, usually at the end of the function. The
+copy function is called for assignments, i.e when a variable is copied
+to another, or when an object is sent by value to a function.</p>
+
+<p>Behaviours may only be registered for object types registered by the application.</p>
+
+<p>The constructor, destructor, and assignment behaviours must be registered as an object
+method, i.e. with a data type in the first parameter. The other operators must be registered
+as global functions, i.e. datatype set to 0.</p>
+
+<p>The host application may not throw exceptions in the destructor behaviour as it may
+lead to undefined behaviour. These is the same rule as C++ has for destructors. The rule
+is there because if a destructor calls an exception, the destructor will be called again
+by the exception handler, which might lead to an endless loop.</p>
+
+<p>Behaviours shouldn't be registered to take handles as their parameters, use 
+references instead. Unlike functions, methods, and constructors, overloaded 
+operators may receive a reference to the true object instead of a dummy object, 
+but it also may not so don't rely on it. Output reference parameters are not 
+supported by behaviours.</p>
+
+<p>If the parameter is sent by reference, then declare it as const, as it may
+allow the compiler to optimize the code to execute faster.</p>
+
+<p>If an object support object handles, then the constructor should initialize the
+object with one reference already counted.</p>
+
+<p>If the constructor calls SetException() to indicate failure it must make sure that
+that the object doesn't hold any resources, because the VM will free the object's memory
+without calling the Release() method or the destructor.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>datatype</code>&nbsp;</td>
+<td valign=top><p>The type declaration.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>behaviour</code>&nbsp;</td>
+<td valign=top><p>The <a href="ref_behaviours.html">behaviour</a> you wish to register.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>The function declaration that specifies the return type and parameter types of the function. The function name in this declaration is ignored. The engine will send the pointer to the type as the first parameter hiddenly so you should not declare it.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>funcPointer</code>&nbsp;</td>
+<td valign=top><p>A pointer to the behaviour function. Use macro asMETHOD() or asFUNCTION() depending on type of function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>callConv</code>&nbsp;</td>
+<td valign=top><p>The <a href="ref_callconv.html">calling convention</a>.</p></td>
+</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+
+<a name=globprop></a>
+<h2>RegisterGlobalProperty</h2>
+
+<pre class=border>
+int RegisterGlobalProperty(const char *declaration,
+                           void *pointer);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method allows the host application to register global properties that
+are accessable by the scripts. The properties may optionally be declared as const
+to improve security.</p>
+
+<p>It is not allowed to register a property as reference, as the property is 
+by default considered a reference, i.e. don't use the &amp; type modifier in
+the type declaration.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>The property declaration, with data type and name.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>pointer</code>&nbsp;</td>
+<td valign=top><p>A pointer to the variable holding the property's value.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+
+
+<a name=sysfunc></a>
+<h2>RegisterGlobalFunction</h2>
+
+<pre class=border>
+int RegisterGlobalFunction(const char *declaration,
+                           const asUPtr &amp;funcPointer,
+                           asDWORD callConv);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method registers system functions that the scripts may use to communicate
+with the host application.</p>
+
+<p>If a parameter is declared as reference you must also specify 
+the direction in which the value travels, i.e. in, out, or inout. 
+If the reference is marked as only out, the argument will be a 
+default value, e.g. objects will be initialized with their default 
+constructors. Note that the reference will not be to the true object, 
+so do not store the pointer thinking it will be valid at a later time.</p>
+
+<p>If the function receives object handles by value, the method must
+release those handles before returning. Likewise if the function
+returns an object handle it must increase the reference count for
+it.</p>
+
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>Should be the functions declaration
+written in the AngelScript language.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>funcPointer</code>&nbsp;</td>
+<td valign=top><p>Pointer to the
+function that the engine will call.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>callConv</code>&nbsp;</td>
+<td valign=top><p>Must be either <a href="ref_callconv.html#cdecl">asCALL_CDECL</a>, <a href="ref_callconv.html#stdcall">asCALL_STDCALL</a>, or <a href="ref_callconv.html#generic">asCALL_GENERIC</a>.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+<a name=gbehave></a>
+<h2>RegisterGlobalBehaviour</h2>
+
+<pre class=border>
+int RegisterGlobalBehaviour(asDWORD behaviour,
+                            const char *declaration,
+                            const asUPtr &amp;funcPointer,
+                            asDWORD callConv);
+</pre>
+
+<h3>Description</h3>
+
+<p>By registering behaviour functions for a data type AngelScript is able to improve object
+handling. You can for example easily control how references are counted, or create objects that
+can be manipulated in expressions through operators.</p>
+
+<p>Behaviours may only be registered for object types registered by the application.</p>
+
+<p>Behaviours shouldn't be registered to take handles as their parameters, use 
+references instead. Unlike functions, methods, and constructors, overloaded operators
+may receive a reference to the true object instead of a dummy object, 
+but it also may not so don't rely on it. Output references are 
+not supported by behaviours.</p>
+
+<p>If the parameter is sent by reference, then declare it as const, as it may
+allow the compiler to optimize the code to execute faster.</p>
+
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>behaviour</code>&nbsp;</td>
+<td valign=top><p>The <a href="ref_behaviours.html">behaviour</a> you wish to register.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>declaration</code>&nbsp;</td>
+<td valign=top><p>The function declaration that specifies the return type and parameter types of the function. The function name in this declaration is ignored. The engine will send the pointer to the type as the first parameter hiddenly so you should not declare it.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>funcPointer</code>&nbsp;</td>
+<td valign=top><p>A pointer to the behaviour function. Use macro asMETHOD() or asFUNCTION() depending on type of function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>callConv</code>&nbsp;</td>
+<td valign=top><p>The <a href="ref_callconv.html">calling convention</a>.</p></td>
+</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+<a name=string></a>
+<h2>RegisterStringFactory</h2>
+
+<pre class=border>
+int RegisterStringFactory(const char *datatype,
+                          const asUPtr &amp;factoryFunc,
+                          asDWORD callConv);
+</pre>
+
+<h3>Description</h3>
+
+<p>Use this function to register a string factory that will be called when the virtual engine finds a 
+string constant in an expression. The string factory function will receive two parameters, the length 
+of the string constant and a pointer to the character data.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>datatype</code>&nbsp;</td>
+<td valign=top><p>The type returned by the factory function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>factoryFunc</code>&nbsp;</td>
+<td valign=top><p>The pointer of the factory function. Use the macro asFUNCTION().</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>callConv</code>&nbsp;</td>
+<td valign=top><p>Must be either <a href="ref_callconv.html#cdecl">asCALL_CDECL</a>, <a href="ref_callconv.html#stdcall">asCALL_STDCALL</a>, or <a href="ref_callconv.html#generic">asCALL_GENERIC</a>.</p></td>
+</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+<a name="begincfg"></a>
+<h2>BeginConfigGroup</h2>
+
+<pre class=border>
+int BeginConfigGroup(const char *groupName);
+</pre>
+
+<h3>Description</h3>
+
+<p>Starts a new dynamic configuration group. This group can be setup so that 
+it is only visible to specific modules, and it can also be removed when it is
+no longer used.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>groupName</code>&nbsp;</td>
+<td valign=top><p>The name of the group.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name="endcfg"></a>
+<h2>EndConfigGroup</h2>
+
+<pre class=border>
+int EndConfigGroup();
+</pre>
+
+<h3>Description</h3>
+
+<p>Ends the current configuration group. Once finished a config group cannot 
+be changed, but it can be removed when it is no longer used.</p>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name="remcfg"></a>
+<h2>RemoveConfigGroups</h2>
+
+<pre class=border>
+int RemoveConfigGroup(const char *groupName);
+</pre>
+
+<h3>Description</h3>
+
+<p>Remove the configuration group. If something in the configuration group is 
+currently in use, the function will return with an error code. Examples of 
+uses are compiled modules that have function calls to functions in the group
+and global variables of types registered in the group.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>groupName</code>&nbsp;</td>
+<td valign=top><p>The name of the group.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name="cfgaccess"></a>
+<h2>SetConfigGroupModuleAccess</h2>
+
+<pre class=border>
+int SetConfigGroupModuleAccess(const char *groupName, const char *module, bool hasAccess);
+</pre>
+
+<h3>Description</h3>
+
+<p>
+With this method the application can give modules access to individual configuration groups. This is useful when exposing more than one script interface for various parts of the application, e.g. one interface for GUI handling, another for in-game events, etc.
+</p>
+
+<p>
+The default module access is granted. The default for a group can be changed by specifying the modulename asALL_MODULES.
+</p>
+
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>groupName</code>&nbsp;</td>
+<td valign=top><p>The name of the group.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or asALL_MODULES.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>hasAccess</code>&nbsp;</td>
+<td valign=top><p>Access mode.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+
+<a name=addscript></a>
+<h2>AddScriptSection</h2>
+
+<pre class=border>
+int AddScriptSection(const char *module,
+                     const char *name,
+                     const char *code,
+                     int codeLength,
+                     int lineOffset = 0,
+                     bool makeCopy = true);
+</pre>
+
+<h3>Description</h3>
+
+<p>This adds a script section to the engine. All sections added will be treated as if one large script. Errors reported will give the name of the corresponding section.</p>
+
+<p>The code added is copied by the engine, so there is no need to keep the original buffer after the call.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>name</code>&nbsp;</td>
+<td valign=top><p>The name of the section.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>code</code>&nbsp;</td>
+<td valign=top><p>The script code in the section.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>codeLength</code>&nbsp;</td>
+<td valign=top><p>The length of the code buffer.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>lineOffset</code>&nbsp;</td>
+<td valign=top><p>This will be added to all line numbers reported by the engine.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>makeCopy</code>&nbsp;</td>
+<td valign=top><p>Should the library make a copy of the script code, or use the pointer to the original 
+                  code. If this argument is false, the application will be responsible for making sure 
+                  the memory is available and unchanged until the Build() method has been called.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name=build></a>
+<h2>Build</h2>
+
+<pre class=border>
+int Build(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>Builds the script based on the added sections, and registered types and functions.</p>
+
+<p>If Build() is to be called again new code sections must first be added again. Registered data types and functions are remembered by the engine though.</p>
+
+<p>Any compiler messages are sent to the message stream set with SetCommonMessageStream(). If there are no errors or warnings, no messages will be sent to the stream.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name=discard></a>
+<h2>Discard</h2>
+
+<pre class=border>
+int Discard(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>Discards a module and frees its memory.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+<a name=reset></a>
+<h2>ResetModule</h2>
+
+<pre class=border>
+int ResetModule(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>Resets the global variables declared in this module to their initial value.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, 0 or greater if successful.</p>
+
+
+
+
+
+
+<a name="getmodindex"></a>
+<h2>GetModuleIndex</h2>
+
+<pre class=border>
+int GetModuleIndex(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>Gets the module index from the module name.
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the index of the module.</p>
+
+
+
+
+
+
+<a name="getmodname"></a>
+<h2>GetModuleNameFromIndex</h2>
+
+<pre class=border>
+const char *GetModuleNameFromIndex(int index, int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>Gets the module name from the module index.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>index</code>&nbsp;</td>
+<td valign=top><p>The index of the module.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Null on error, or a pointer to the name of the module.</p>
+
+
+
+
+
+
+<a name=funccount></a>
+<h2>GetFunctionCount</h2>
+
+<pre class=border>
+int GetFunctionCount(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method retrieves the number of compiled script functions. It can be used for enumerating the script functions, as the IDs of the script functions will be between 0 and count - 1.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the number of script functions if successful.</p>
+
+
+
+
+
+
+<a name=funcidindex></a>
+<h2>GetFunctionIDByIndex</h2>
+
+<pre class=border>
+int GetFunctionIDByIndex(const char *module, int index);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script function that
+you wish to execute. The ID is then sent to the context's Prepare() method.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>index</code>&nbsp;</td>
+<td valign=top><p>The index of the function.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script function.</p>
+
+
+
+
+
+
+
+
+<a name=funcidname></a>
+<h2>GetFunctionIDByName</h2>
+
+<pre class=border>
+int GetFunctionIDByName(const char *module, const char *name);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script function that
+you wish to execute. The ID is then sent to the context's Prepare() method.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>name</code>&nbsp;</td>
+<td valign=top><p>The name of the function.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script function.</p>
+
+
+
+
+<a name=funciddecl></a>
+<h2>GetFunctionIDByDecl</h2>
+
+<pre class=border>
+int GetFunctionIDByDecl(const char *module, const char *decl);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script function that
+you wish to execute. The ID is then sent to the context's Prepare() method.</p>
+
+<p>The method will find the script function with the exact same declaration.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>decl</code>&nbsp;</td>
+<td valign=top><p>The declaration of the function.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script function.</p>
+
+
+
+
+
+<a name=funcdecl></a>
+<h2>GetFunctionDeclaration</h2>
+
+<pre class=border>
+const char *GetFunctionDeclaration(int funcID,
+                                   int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method can be used to retrieve the function declaration of the
+script functions that the host application will call. Verifying the declaration
+is important because, even though the script may compile correctly the user may
+not have written the function interface as intended.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>funcID</code>&nbsp;</td>
+<td valign=top><p>ID of the function, obtained with GetFunctionID().</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the returned string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A null-terminated string with the function declaration. Note, the string is
+shared with other functions in the library so you shouldn't store the pointer.</p>
+
+
+
+
+
+
+
+
+<a name=funcname></a>
+<h2>GetFunctionName</h2>
+
+<pre class=border>
+const char *GetFunctionName(int funcID,
+                            int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method can be used to retrieve the function name of the
+script functions that the host application can call. Useful for
+obtaining the name of functions with ID obtained from GetExceptionFunction().</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>funcID</code>&nbsp;</td>
+<td valign=top><p>ID of the function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the returned string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A null-terminated string with the function name. Note, the string is
+shared with other functions in the library so you shouldn't store the pointer.</p>
+
+
+
+
+
+<a name=funcsection></a>
+<h2>GetFunctionSection</h2>
+
+<pre class=border>
+const char *GetFunctionSection(int funcID,
+                               int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method returns the name of the section where the function was 
+implemented.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>funcID</code>&nbsp;</td>
+<td valign=top><p>ID of the function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the returned string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A null-terminated string with the section name. Note, the string is
+shared with other functions in the library so you shouldn't store the pointer.</p>
+
+
+
+
+
+<a name=varcount></a>
+<h2>GetGlobalVarCount</h2>
+
+<pre class=border>
+int GetGlobalVarCount(const char *module);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method retrieves the number of compiled script variables. It can be used for enumerating the script variables, as the IDs of the script variables will be between 0 and count - 1.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the number of script variables if successful.</p>
+
+
+
+
+
+<a name=varidindex></a>
+<h2>GetGlobalVarIDByIndex</h2>
+
+<pre class=border>
+int GetGlobalVarIDByIndex(const char *module, int index);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script variable that
+you wish to access.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>index</code>&nbsp;</td>
+<td valign=top><p>The index of the variable.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script variable.</p>
+
+
+
+
+
+
+<a name=varidname></a>
+<h2>GetGlobalVarIDByName</h2>
+
+<pre class=border>
+int GetGlobalVarIDByName(const char *module, const char *name);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script variable that
+you wish to access.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>name</code>&nbsp;</td>
+<td valign=top><p>The name of the variable.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script variable.</p>
+
+
+
+
+<a name=variddecl></a>
+<h2>GetGlobalVarIDByDecl</h2>
+
+<pre class=border>
+int GetGlobalVarIDByDecl(const char *module, const char *decl);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the ID of the script variable that
+you wish to access.</p>
+
+<p>The method will find the script variable with the exact same declaration.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>decl</code>&nbsp;</td>
+<td valign=top><p>The declaration of the variable.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error, or the ID of the script variable.</p>
+
+
+
+
+
+<a name=vardecl></a>
+<h2>GetGlobalVarDeclaration</h2>
+
+<pre class=border>
+const char *GetGlobalVarDeclaration(int gvarID,
+                                    int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method can be used to retrieve the variable declaration of the
+script variables that the host application will access. Verifying the declaration
+is important because, even though the script may compile correctly the user may
+not have used the variable types as intended.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>gvarID</code>&nbsp;</td>
+<td valign=top><p>ID of the variable.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the returned string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns a null-terminated string with the variable declaration. Note, this string is shared 
+with other functions in the library so you shouldn't store the pointer.</p>
+
+
+
+
+
+
+
+
+<a name=varname></a>
+<h2>GetGlobalVarName</h2>
+
+<pre class=border>
+const char *GetGlobalVarName(int gvarID,
+                             int *length = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method can be used to retrieve the variable name of the
+script variables that the host application can access.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>gvarID</code>&nbsp;</td>
+<td valign=top><p>ID of the variable.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>Pointer to a variable that will receive the length of the returned string. Can be NULL.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns a null-terminated string with the variable name. Note, this string is shared 
+with other functions in the library so you shouldn't store the pointer.</p>
+
+
+
+
+<a name=varpointer></a>
+<h2>GetGlobalVarPointer</h2>
+
+<pre class=border>
+void *GetGlobalVarPointer(int gvarID);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method should be used to retrieve the pointer of a variable that
+you wish to access.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>gvarID</code>&nbsp;</td>
+<td valign=top><p>The id of the variable.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns the pointer, or null if it cannot be located.</p>
+
+
+
+<a name=importcount></a>
+<h2>GetImportedFunctionCount</h2>
+<pre class=border>
+int GetImportedFunctionCount(const char *module);
+</pre>
+<h3>Description</h3>
+<p>This function returns the number of functions that are imported in a module. These functions need to be bound before they can be used, or a script exception will be thrown.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Returns the number of imported functions declared in the module, or negative if unsuccessful.</p>
+
+<a name=importidxdecl></a>
+<h2>GetImportedFunctionIndexByDecl</h2>
+<pre class=border>
+int GetImportedFunctionIndexByDecl(const char *module, const char *decl);
+</pre>
+<h3>Description</h3>
+<p>This function is used to find a specific imported function by its declaration.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>decl</code>&nbsp;</td>
+<td valign=top><p>The function declaration.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Returns the index of the imported function if successful, negative otherwise.</p>
+
+
+
+
+
+<a name=importdecl></a>
+<h2>GetImportedFunctionDeclaration</h2>
+<pre class=border>
+const char *GetImportedFunctionDeclaration(const char *module, int importIndex, int *length = 0);
+</pre>
+<h3>Description</h3>
+<p>Use this function to get the declaration of the imported function. The returned declaration can be used to find a matching function in another module that can be bound to the imported function.
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>importIndex</code>&nbsp;</td>
+<td valign=top><p>Index of the imported function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>A pointer to a variable that will receive the length of the string. Can be NULL.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>A null-terminated string with the declaration of the function.</p>
+
+
+
+
+
+<a name=importsource></a>
+<h2>GetImportedFunctionSourceModule</h2>
+<pre class=border>
+const char *GetImportedFunctionSourceModule(const char *module, int importIndex, int *length = 0);
+</pre>
+<h3>Description</h3>
+<p>Use this function to get the name of the suggested module to import the function from.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>importIndex</code>&nbsp;</td>
+<td valign=top><p>Index of the imported function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>A pointer to a variable that will receive the length of the string. Can be NULL.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Null if unsuccessful, a pointer to the module name string if successful.</p>
+
+
+
+
+
+<a name=bind></a>
+<h2>BindImportedFunction</h2>
+<pre class=border>
+int BindImportedFunction(const char *module, int importIndex, int funcID);
+</pre>
+<h3>Description</h3>
+<p>The imported function is only bound if the functions have the exact same interface, i.e the same return type, and parameters.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>importIndex</code>&nbsp;</td>
+<td valign=top><p>Index of the imported function.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>funcID</code>&nbsp;</td>
+<td valign=top><p>The function ID for the function that should be bound to the imported function.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Negative on error.</p>
+
+
+
+
+<a name=unbind></a>
+<h2>UnbindImportedFunction</h2>
+<pre class=border>
+int UnbindImportedFunction(const char *module, int importIndex);
+</pre>
+<h3>Description</h3>
+<p>Unbinds the imported function.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>importIndex</code>&nbsp;</td>
+<td valign=top><p>Index of the imported function.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Negative on error.</p>
+
+
+
+
+<a name=bindall></a>
+<h2>BindAllImportedFunctions</h2>
+<pre class=border>
+int BindAllImportedFunctions(const char *module);
+</pre>
+<h3>Description</h3>
+<p>This functions tries to bind all imported functions in the module by searching for matching functions in the suggested modules. If a function cannot be bound the function will give an error asCANT_BIND_ALL_FUNCTIONS, but it will continue binding the rest of the functions.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Negative on error.</p>
+
+
+
+
+
+<a name=unbindall></a>
+<h2>UnbindAllImportedFunctions</h2>
+<pre class=border>
+int UnbindAllImportedFunctions(const char *module);
+</pre>
+<h3>Description</h3>
+<p>Unbinds all imported functions in the module.</p>
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+</table>
+<h3>Returns</h3>
+<p>Negative on error.</p>
+
+
+<a name=typebydecl></a>
+<h2>GetTypeIdByDecl</h2>
+<pre class=border>
+int GetTypeIdByDecl(const char *module, const char *decl);
+</pre>
+<h3>Description</h3>
+<p>Translates a type declaration into a type id. The returned type id is valid 
+for as long as the type is valid, so you can safely store it for later use to
+avoid potential overhead by calling this function each time. Just remember to
+update the type id, any time the type is changed within the engine, e.g. when
+recompiling script declared structures, or changing the engine configuration.</p>
+
+<p>The type id is based on a sequence number and depends on the order in which 
+the type ids are queried, thus is not guaranteed to always be the same for 
+each execution of the application.</p>
+
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module, or null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>decl</code>&nbsp;</td>
+<td valign=top><p>The type declaration.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+<p>The type id if successful, or a negative value on error.</p>
+
+
+
+<a name=typedecl></a>
+<h2>GetTypeDeclaration</h2>
+<pre class=border>
+const char *GetTypeDeclaration(int typeId, int *length = 0);
+</pre>
+<h3>Description</h3>
+<p>Translates a type id into the type declaration string.</p>
+
+<h3>Parameters</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>typeId</code>&nbsp;</td>
+<td valign=top><p>The typeId.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>length</code>&nbsp;</td>
+<td valign=top><p>A pointer to the variable that will receive the length of the returned string.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+<p>A pointer to the string that holds the type declaration. The memory for the 
+string is shared internally by the engine so do not store it for later use.</p>
+
+<p>If the typeId is not valid the returned pointer will be null.</p>
+
+
+
+<a name=stacksize></a>
+<h2>SetDefaultContextStackSize</h2>
+
+<pre class=border>
+int SetDefaultContextStackSize(asUINT initial, asUINT maximum);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method allow the application define the initial and maximum context stack sizes. All contexts will use these values when allocating the stack size.</p>
+
+<p>The context will always make sure there is enough stack size to execute the function, even if the initial stack size is set too low. If the maximum stack size is larger than 0 then the stack size will only until the size has been reached. Each time the stack grows its size is doubled, which means that the stack size can be at most 2 times the maximum size.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>initial</code>&nbsp;</td>
+<td valign=top><p>The initial stack size in bytes. Default is 1024.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>maximum</code>&nbsp;</td>
+<td valign=top><p>The maximum stack size in bytes. Default is 0.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns negative on failure.</p>
+
+
+
+
+
+
+<a name=createcontext></a>
+<h2>CreateContext</h2>
+
+<pre class=border>
+asIScriptContext *CreateContext();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method creates a context that will be used to execute the script functions. The
+context interface created will have its reference counter already increased.</p>
+
+<h3>Returns</h3>
+
+<p>Returns the context pointer.</p>
+
+
+
+
+
+<a name=createobj></a>
+<h2>CreateScriptObject</h2>
+
+<pre class=border>
+void *CreateScriptObject(int typeId);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method is used to create a script object based on it's type id. The 
+method will allocate the memory and call the object's default constructor.</p>
+
+<p>This only works for objects, for primitive types and object handles the 
+method doesn't do anything and returns a null pointer.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>typeId</code>&nbsp;</td>
+<td valign=top><p>The type id for the object type.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns the pointer to the initialized object.</p>
+
+
+
+
+
+
+
+<a name=executestring></a>
+<h2>ExecuteString</h2>
+
+<pre class=border>
+int ExecuteString(const char *module, 
+                  const char *script, 
+                  asIScriptContext **ctx = 0,
+                  asDWORD flags = 0);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method allow an application to interpret script statements using the currently compiled code.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>script</code>&nbsp;</td>
+<td valign=top><p>The script statements separated by ;. These statements will be executed within function scope, so any variable declarations will only be available to the current call.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>ctx</code>&nbsp;</td>
+<td valign=top><p>An optional parameter that will receive the context pointer. Or if asEXECSTRING_USE_MY_CONTEXT is specified is used to pass a context to the method.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>flags</code>&nbsp;</td>
+<td valign=top><p>The flags can be either 0 or a combination of asEXECSTRING_ONLY_PREPARE and asEXECSTRING_USE_MY_CONTEXT. With asEXECSTRING_ONLY_PREPARE the function returns immediately without executing the statements. With asEXECSTRING_USE_MY_CONTEXT the method uses the context supplied by the application instead of allocating its own context.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>On error the return value is negative, otherwise the function returns the state of the context when it finishes.</p>
+
+
+
+
+
+
+<a name=gc></a>
+<h2>GarbageCollect</h2>
+
+<pre class=border>
+int GarbageCollect(bool doFullCycle);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method will free script objects that can no longer be reached. When the engine is released the garbage collector will automatically do a full cycle to release all objects still alive. If the engine is long living it is important to call this method every once in a while to free up memory allocated by the scripts. If a script does a lot of allocations before returning it may be necessary to implement a line callback function that calls the garbage collector during execution of the script.</p>
+
+<p>It is not necessary to do a full cycle with every call. This makes it possible to spread out the garbage collection time over a large period, thus not impacting the responsiveness of the application.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>doFullCycle</code>&nbsp;</td>
+<td valign=top><p>Set to true if the garbage collector should complete a full cycle before returning, or false if it should just make a small incremental step.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns 1 if the cycle wasn't completed yet, or 0 if it is was. If an error occurs the value is negative.</p>
+
+
+
+
+
+<a name=gccount></a>
+<h2>GetObjectsInGarbageCollectorCount</h2>
+
+<pre class=border>
+int GetObjectsInGarbageCollectorCount();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method can be used to query the number of objects that the garbage 
+collector is keeping track of. If the number is very large then it is probably 
+time to call the GarbageCollect() method so that some of the objects can be 
+freed.</p>
+
+<p>Note, that the objects that the garbage collector keeps track of may in 
+turn hold references to other objects, but these are not reflected in the 
+return value. Thus there is no way of knowing the exact amount of memory 
+allocated directly and indirectly by the objects referred to by this function.</p>
+
+<h3>Returns</h3>
+
+<p>The number of objects.</p>
+
+
+
+
+<a name=save></a>
+<h2>SaveByteCode</h2>
+
+<pre class=border>
+int SaveByteCode(const char *module, asIBinaryStream *out);
+</pre>
+
+<h3>Description</h3>
+
+<p>With this method an application can save the compiled byte code for a module and later restore it.</p>
+
+<p>It is important to make sure the engine configuration is the same when loading the bytecode again.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>out</code>&nbsp;</td>
+<td valign=top><p>A pointer to an binary stream interface that will receive the necessary data.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns negative if an error occurs.</p>
+
+
+
+
+
+<a name=load></a>
+<h2>LoadByteCode</h2>
+
+<pre class=border>
+int LoadByteCode(const char *module, asIBinaryStream *out);
+</pre>
+
+<h3>Description</h3>
+
+<p>With this method an application load the previously compiled byte code for a module.</p>
+
+<p>It is important to make sure the engine configuration is the same as it was when the module was saved.</p>
+
+<p><font color=red>Warning: There is a potential security risk with loading precompiled bytecode. A person with malicious intent could write bytecode that exploit your application to harm to the end-user. However this risk is not greater than using dynamically loaded libraries. You can minimize the risk by adding checksums and other validations to the code.</font></p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>module</code>&nbsp;</td>
+<td valign=top><p>The name of the module. Can be null.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>out</code>&nbsp;</td>
+<td valign=top><p>A pointer to an binary stream interface that will feed the engine with the necessary data.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>Returns negative if an error occurs.</p>
+
+
+
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

@@ -1,0 +1,272 @@
+<HTML>
+<head>
+<title>AngelScript: Data types</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>Data types</h1>
+
+<p>Note that the host application may add types specific to that application, refer to the application's manual for more information.</p>
+
+	<ul>
+	<li><a href="#void">void</a>
+	<li><a href="#bool">bool</a>
+	<li><a href="#int">int, int8, int16</a>
+	<li><a href="#uint">uint, uint8, uint16</a>
+	<li><a href="#float">float</a>
+	<li><a href="#double">double</a>
+	<li><a href="#bits">bits, bits8, bits16</a>
+	<li><a href="#any">any</a>
+	<li><a href="#array">Arrays</a>
+	<li><a href="#objhandle">Object handles</a>
+	<li><a href="#bstr">Strings</a>
+	</ul>
+
+<a name="void">
+<h2>void</h2>
+
+<p><code><font color=blue>void</font></code> is not really a data type, more like lack of data type. It can only be used to tell the compiler that a function doesn't return any data.</p>
+
+<a name="bool">
+<h2>bool</h2>
+
+<p><code><font color=blue>bool</font></code> is a boolean type with only two
+possible values: <code><font color=blue>true</font></code> or
+<code><font color=blue>false</font></code>. The keywords
+<code><font color=blue>true</font></code> and
+<code><font color=blue>false</font></code> are constants of type
+<code><font color=blue>bool</font></code> that can be used as such in
+expressions.</p>
+
+<a name="int">
+<h2>int, int8, int16</h2>
+
+<p><code><font color=blue>int</font></code> holds integer values in the range -2147483648 to 2147483647.</p>
+
+<p><code><font color=blue>int8</font></code> holds integer values in the range -128 to 128.</p>
+
+<p><code><font color=blue>int16</font></code> holds integer values in the range -32768 to 32767.</p>
+
+<p>As the scripting engine has been optimized for 32 bit datatypes, using the smaller variants is only recommended for accessing application specified variables. For local variables it is better to use the 32 bit variant.</p>
+
+<p><code><font color=blue>int32</font></code> is an alias for <code><font color=blue>int</font></code>.</p>
+
+<a name="uint">
+<h2>uint, uint8, uint16</h2>
+
+<p><code><font color=blue>uint</font></code> holds integer values in the range 0 to 4294967295.</p>
+
+<p><code><font color=blue>uint8</font></code> holds integer values in the range 0 to 255.</p>
+
+<p><code><font color=blue>uint16</font></code> holds integer values in the range 0 to 65535.</p>
+
+<p>As the scripting engine has been optimized for 32 bit datatypes, using the smaller variants is only recommended for accessing application specified variables. For local variables it is better to use the 32 bit variant.</p>
+
+<p><code><font color=blue>uint32</font></code> is an alias for <code><font color=blue>uint</font></code>.</p>
+
+<a name="float">
+<h2>float</h2>
+
+<p><code><font color=blue>float</font></code> holds real (or floating point) values in the range -/+3.402823466e38.</p>
+
+<p>The smallest possible positive number that a float can destinguish is: 1.175494351e-38. The maximum number of decimal digits that can be safely used is 6, i.e. if more digits are used they are prone to rounding errors during operations.</p>
+
+<p><b>Curiousity</b>: Floats may also have the additional values of positive and negative 0 or infinite, and NaN (Not-a-Number). NaN is represented by the 32 bit data word 0x7fc00000.</p>
+
+<a name="double">
+<h2>double</h2>
+
+<p><code><font color=blue>double</font></code> holds real (or floating point) values in the range -/+1.7976931348623158e+308.</p>
+
+<p>The smallest possible positive number that a double can destinguish is: 2.2250738585072014e-308. The maximum number of decimal digits that can be safely used is 15, i.e. if more digits are used they are prone to rounding errors during operations.</p>
+
+<p><b>Curiousity</b>: Doubles may also have the additional values of positive and negative 0 or infinite, and NaN (Not-a-Number).</p>
+
+<a name="bits">
+<h2>bits, bits8, bits16</h2>
+
+<p><code><font color=blue>bits</font></code> is a data type that allows manipulation of
+individual bits. The data type holds 32 bits in a word. It can be assigned by a
+<code><font color=blue>bits</font></code> constant that is written as a hexadecimal number, e.g.
+<code>0xDEADC0DE.</code></p>
+
+<p><code><font color=blue>bits8</font></code> holds 8 bits, and <code><font color=blue>bits16</font></code> holds 16 bits.</p>
+
+<p><code><font color=blue>bits32</font></code> is an alias for <code><font color=blue>bits</font></code>.</p>
+
+<p>Both <code><font color=blue>float</font></code> and
+<code><font color=blue>int</font></code> can be converted to and from
+<code><font color=blue>bits</font></code>. </p>
+
+<p>The bits in the data type can be manipulated through the many <a href="expression.html#bits">bitwise operators</a> available:
+<code>& | ^ ~ &lt;&lt; &gt;&gt; &gt;&gt;&gt;</code>
+
+<p>As the scripting engine has been optimized for 32 bit datatypes, using the smaller variants is only recommended for accessing application specified variables. For local variables it is better to use the 32 bit variant.</p>
+
+
+
+<a name="any">
+<h2>any</h2>
+
+<p><code><font color=blue>any</font></code> is a special data type that can hold the value of any other type. Think
+of it as a generic container.</p>
+
+<p>Two methods store() and retrieve() are used to manipulate the value held by the container.</p>
+
+<pre class=border>
+object obj;             <font color=green>// An object that supports object handles</font>
+<font color=blue>any</font> container;
+container.store(@obj);  <font color=green>// The @ operator is necessary to show that it is the handle that should be stored</font>
+
+object@ handle;
+container.retrieve(@handle);  
+</pre>
+
+<p>When calling the method store() the previous value held by the container is released, and replaced with a copy of the new value. In the case of object handles, only the handle is copied, i.e. the object itself remains the same.</p>
+
+<p>When calling retrieve() and passing a variable, the variable is only assigned a copy of the value held by the container if the type of the variable is compatible with the value.</p>
+
+<p>Note: Currently only object handles can be stored by the any type, but future versions will allow all types. The any type will also receive another method for querying information about the type held by the container.</p>
+
+
+
+
+
+
+<a name="array">
+<h2>Arrays</h2>
+
+<p>It is also possible to declare array variables by appending the [] brackets to the type.</p>
+
+<p>When declaring a variable with a type modifier, the type modifier affects the type of all variables in the list. 
+Example:</p>
+
+<pre class=border>
+<font color=blue>int</font>[] a, b, c;
+</pre>
+
+<p><code>a</code>, <code>b</code>, and <code>c</code> are now arrays of integers.</p>
+
+<p>When declaring arrays it is possible to define the initial size of the array by passing the length as a parameter to the constructor. The elements can also be individually initialized by specifying an initialization list. Example:</p>
+
+<pre class=border>
+<font color=blue>int</font>[] a;           <font color=green>// A zero-length array of integers</font>
+<font color=blue>int</font>[] b(3);        <font color=green>// An array of integers with 3 elements</font>
+<font color=blue>int</font>[] c = {,3,4,}; <font color=green>// An array of integers with 4 elements, where 
+                   // the second and third elements are initialized</font>
+</pre>
+
+<p>Each element in the array is accessed with the indexing operator. The indices are zero based, i.e the range of valid indices are from 0 to length - 1.</p>
+
+<pre class=border>
+a[0] = some_value;
+</pre>
+
+<p>An array also have two methods. length() allow you to determine how many elements are in the array, and resize() lets you resize the array.</p>
+
+<a name="objhandle">
+<h2>Object handles</h2>
+
+<p>Object handles are a special type that can be used to hold references to other objects. When calling methods or accessing properties on a variable that is an object handle you will be accessing the actual object that the handle references, just as if it was an alias. Note that unless initialized with the handle of an object, the handle is <code>null</code>.</p>
+
+<pre class=border>
+obj o;
+obj@ a;           <font color=green>// a is initialized to null</font>
+obj@ b = o;       <font color=green>// b holds a reference to o</font>
+
+b.ModifyMe();     <font color=green>// The method modifies the original object</font>
+
+<font color=blue>if</font>( @a == null )  <font color=green>// Verify if the object points to an object</font>
+{
+  @a = b;         <font color=green>// Make a hold a reference to the same object as b</font> 
+}
+</pre>
+
+<p>Not all types allow a handle to be taken. Neither of the primitive types can have handles, and there may exist some object types that do not allow handles. Which objects allow handles or not, are up to the application that registers them.</p>
+
+<p>Object handle and array type modifiers can be combined to form handles to arrays, or arrays of handles, etc.</p>
+
+<a name="bstr">
+<h2>Strings</h2>
+
+<p>Strings are a special type of data that can be used only if the application 
+registers support for them. They hold an array of 
+bytes. The only limit to how large this array can be is the memory available on 
+the computer.</p>
+
+<p>There are two types of string constants supported in the AngelScript 
+language, the normal double quoted string, and the documentation strings, 
+called heredoc strings.</p>
+
+<p>The normal strings are written between double quotation marks (<code>"</code>).
+Inside the constant strings some escape sequences can be used to write exact
+byte values that might not be possible to write in your normal editor. 
+</p>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=80 valign=top><b>sequence</b></td>
+<td valign=top width=50><b>value</b></td>
+<td valign=top><b>description</b></td></tr>
+
+<tr><td width=80 valign=top><code>\0</code>&nbsp;  </td>
+<td valign=top width=50>0</td>
+<td valign=top>null character</td></tr>
+<tr><td width=80 valign=top><code>\\</code>&nbsp;  </td>
+<td valign=top width=50>92</td>
+<td valign=top>back-slash</td></tr>
+<tr><td width=80 valign=top><code>\"</code>&nbsp;  </td>
+<td valign=top width=50>34</td>
+<td valign=top>double quotation mark</td></tr>
+<tr><td width=80 valign=top><code>\n</code>&nbsp;  </td>
+<td valign=top width=50>10</td>
+<td valign=top>new line feed</td></tr>
+<tr><td width=80 valign=top><code>\r</code>&nbsp;  </td>
+<td valign=top width=50>13</td>
+<td valign=top>carriage return</td></tr>
+<tr><td width=80 valign=top><code>\xFF</code>&nbsp;</td>
+<td valign=top width=50>0xFF</td>
+<td valign=top>FF should be exchanged for the hexadecimal number representing the byte value wanted</td></tr>
+</table>
+<br>
+
+<pre class=border>
+string str = "This is a string with \"escape sequences\".";
+</pre>
+
+<p>
+The heredoc strings are designed for inclusion of large portions of text 
+without processing of escape sequences. A heredoc string is surrounded by 
+triple double-quotation marks (<code>"""</code>), and can span multiple lines 
+of code. If the characters following the start of the string until the first 
+linebreak only contains white space, it is automatically removed by the 
+compiler. Likewise if the characters following the last line break until the 
+end of the string only contains white space this is also remove, including the 
+linebreak.
+</p>
+
+<pre class=border>
+string str = """
+This is some text without "escape sequences". This is some text. 
+This is some text. This is some text. This is some text. This is 
+some text. This is some text. This is some text. This is some 
+text. This is some text. This is some text. This is some text. 
+This is some text.
+""";
+</pre>
+
+<p>If more 
+than one string constants are written in sequence with only whitespace or 
+comments between them the compiler will concatenate them into one constant.</p>
+
+<pre class=border>
+string str = "First line.\n"
+             "Second line.\n"
+             "Third line.\n";
+</pre>
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

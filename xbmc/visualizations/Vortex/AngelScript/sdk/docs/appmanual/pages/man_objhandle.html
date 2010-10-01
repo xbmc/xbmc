@@ -1,0 +1,124 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: Object handles</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Documentation: Object handles</h1>
+
+<p>In AngelScript an object handle is a reference counted pointer to an object. In the scripts they are used to pass the objects around by reference instead of by value.</p>
+
+<h2>Behaviours to support object handles</h2>
+
+<p>For an application registered object to support object handles, it must register the behaviours asBEHAVE_ADDREF and asBEHAVE_RELEASE. To initialize the reference counter properly it is also necessary to register the asBEHAVE_CONSTRUCT and asBEHAVE_ASSIGNMENT behaviours.</p>
+
+<p>The object's constructor behaviour must initialize the reference counter to 1, otherwise the object may never be released.</p>
+
+<pre class=border>
+void obj_constructor(obj *o)
+{
+  new(o) obj();
+
+  <font color=green>// In case the class' constructor doesn't initialize 
+  // the reference counter to 1 then we must do that here</font>
+}
+</pre>
+
+<p>
+The object's destructor behaviour will never be used, as the object's release behaviour is responsible for destroying the object when the reference counter reaches 0.
+</p>
+
+<pre class=border>
+void obj::Release()
+{
+  if( --refCount == 0 )
+    delete this;
+}
+</pre>
+
+<p>
+The object's assignment operator must be registered and should not copy the reference counter. If the assignment operator is not registered then AngelScript will do a default byte-for-byte copy of the object, including the reference counter. This will corrupt the value of the reference counter of the left hand object.
+</p>
+
+<h2>Managing the reference counter in functions</h2>
+
+<p>Whenever the object handle is passed by value from the application to the script engine, or vice versa its reference should be accounted for. This means that the application must release any object handles it receives as parameters when it no longer needs them, it also means that the application must increase the reference counter for any object handle being returned to the script engine.</p>
+
+<p>A function that creates an object and returns it to the script engine might look like this:</p>
+
+<pre class=border>
+<font color=green>// Registered as "obj@ CreateObject()"</font>
+obj *CreateObject()
+{
+  <font color=green>// The constructor already initializes the ref count to 1</font>
+  return new obj();
+}
+</pre>
+
+<p>A function that receives an object handle from the script and stores it in a global variable might look like this:</p>
+
+<pre class=border>
+<font color=green>// Registered as "void StoreObject(obj@)"</font>
+obj *o = 0;
+void StoreObject(obj *newO)
+{
+  <font color=green>// Release the old object handle</font>
+  if( o ) o->Release();
+
+  <font color=green>// Store the new object handle</font>
+  o = newO;
+}
+</pre>
+
+<p>A function that retrieves a previously stored object handle might look like this:</p>
+
+<pre class=border>
+<font color=green>// Registered as "obj@ RetrieveObject()"</font>
+obj *RetrieveObject()
+{
+  <font color=green>// Increase the reference counter to account for the returned handle</font>
+  if( o ) o->AddRef(); 
+
+  <font color=green>// It is ok to return null, incase there is no previous handle stored</font>
+  return o;
+}
+</pre>
+
+<p>A function that receives an object handle in the parameter, but doesn't store it looks like this:</p>
+
+<pre class=border>
+<font color=green>// Registered as "void DoSomething(obj@)"</font>
+void DoSomething(obj *o)
+{
+  <font color=green>// When finished with the object it must be released</font>
+  if( o ) o->Release();
+}
+</pre>
+
+<h2>Auto handles can make it easier</h2>
+
+<p>The application can use auto handles (@+) to alleviate some of the work of managing the reference counter. When registering the function or method with AngelScript, add a plus sign to the object handles that AngelScript should automatically manage. For parameters AngelScript will then release the reference after the function returns, and for the return value AngelScript will increase the reference on the returned pointer. The reference for the returned value is increased before the parameters are released, so it is possible to have the function return one of the parameters.</p>
+
+<pre class=border>
+<font color=green>// Registered as "obj@+ ChooseObj(obj@+, obj@+)"</font>
+obj *ChooseObj(obj *a, obj *b)
+{ 
+  <font color=green>// Because of the auto handles AngelScript will
+  // automatically manage the reference counters</font>
+  return some_condition ? a : b;
+}
+</pre>
+
+<p>However, it is not recommended to use this feature unless you can't change the functions you want to register to properly handle the reference counters. When using the auto handles, AngelScript needs to process all of the handles which causes an extra overhead when calling application registered functions.</p>
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

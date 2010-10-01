@@ -1,0 +1,114 @@
+# Project: AngelScript
+# Makefile created by Dev-C++ 4.9.9.1
+
+CPP  = g++.exe -D__DEBUG__
+CC   = gcc.exe -D__DEBUG__
+WINDRES = windres.exe
+RES  = 
+OBJ  = obj/as_arrayobject.o obj/as_builder.o obj/as_bytecode.o obj/as_callfunc_x86.o obj/as_compiler.o obj/as_context.o obj/as_datatype.o obj/as_module.o obj/as_objecttype.o obj/as_outputbuffer.o obj/as_parser.o obj/as_restore.o obj/as_scriptcode.o obj/as_scriptengine.o obj/as_scriptfunction.o obj/as_scriptnode.o obj/as_string.o obj/as_string_util.o obj/as_thread.o obj/as_tokenizer.o obj/as_typeinfo.o obj/as_variablescope.o obj/as_callfunc_sh4.o obj/as_generic.o obj/as_callfunc.o obj/as_scriptstruct.o obj/as_gcobject.o obj/as_anyobject.o obj/as_configgroup.o $(RES)
+LINKOBJ  = obj/as_arrayobject.o obj/as_builder.o obj/as_bytecode.o obj/as_callfunc_x86.o obj/as_compiler.o obj/as_context.o obj/as_datatype.o obj/as_module.o obj/as_objecttype.o obj/as_outputbuffer.o obj/as_parser.o obj/as_restore.o obj/as_scriptcode.o obj/as_scriptengine.o obj/as_scriptfunction.o obj/as_scriptnode.o obj/as_string.o obj/as_string_util.o obj/as_thread.o obj/as_tokenizer.o obj/as_typeinfo.o obj/as_variablescope.o obj/as_callfunc_sh4.o obj/as_generic.o obj/as_callfunc.o obj/as_scriptstruct.o obj/as_gcobject.o obj/as_anyobject.o obj/as_configgroup.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib"  -g3 
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/include/c++/3.3.1"  -I"C:/Dev-Cpp/include/c++/3.3.1/mingw32"  -I"C:/Dev-Cpp/include/c++/3.3.1/backward"  -I"C:/Dev-Cpp/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/Dev-Cpp/include" 
+BIN  = ../../lib/AngelScript.a
+CXXFLAGS = $(CXXINCS)   -g3
+CFLAGS = $(INCS)   -g3
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before ../../lib/AngelScript.a all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(LINKOBJ)
+	ar r $(BIN) $(LINKOBJ)
+	ranlib $(BIN)
+
+obj/as_arrayobject.o: ../../source/as_arrayobject.cpp
+	$(CPP) -c ../../source/as_arrayobject.cpp -o obj/as_arrayobject.o $(CXXFLAGS)
+
+obj/as_builder.o: ../../source/as_builder.cpp
+	$(CPP) -c ../../source/as_builder.cpp -o obj/as_builder.o $(CXXFLAGS)
+
+obj/as_bytecode.o: ../../source/as_bytecode.cpp
+	$(CPP) -c ../../source/as_bytecode.cpp -o obj/as_bytecode.o $(CXXFLAGS)
+
+obj/as_callfunc_x86.o: ../../source/as_callfunc_x86.cpp
+	$(CPP) -c ../../source/as_callfunc_x86.cpp -o obj/as_callfunc_x86.o $(CXXFLAGS)
+
+obj/as_compiler.o: ../../source/as_compiler.cpp
+	$(CPP) -c ../../source/as_compiler.cpp -o obj/as_compiler.o $(CXXFLAGS)
+
+obj/as_context.o: ../../source/as_context.cpp
+	$(CPP) -c ../../source/as_context.cpp -o obj/as_context.o $(CXXFLAGS)
+
+obj/as_datatype.o: ../../source/as_datatype.cpp
+	$(CPP) -c ../../source/as_datatype.cpp -o obj/as_datatype.o $(CXXFLAGS)
+
+obj/as_module.o: ../../source/as_module.cpp
+	$(CPP) -c ../../source/as_module.cpp -o obj/as_module.o $(CXXFLAGS)
+
+obj/as_objecttype.o: ../../source/as_objecttype.cpp
+	$(CPP) -c ../../source/as_objecttype.cpp -o obj/as_objecttype.o $(CXXFLAGS)
+
+obj/as_outputbuffer.o: ../../source/as_outputbuffer.cpp
+	$(CPP) -c ../../source/as_outputbuffer.cpp -o obj/as_outputbuffer.o $(CXXFLAGS)
+
+obj/as_parser.o: ../../source/as_parser.cpp
+	$(CPP) -c ../../source/as_parser.cpp -o obj/as_parser.o $(CXXFLAGS)
+
+obj/as_restore.o: ../../source/as_restore.cpp
+	$(CPP) -c ../../source/as_restore.cpp -o obj/as_restore.o $(CXXFLAGS)
+
+obj/as_scriptcode.o: ../../source/as_scriptcode.cpp
+	$(CPP) -c ../../source/as_scriptcode.cpp -o obj/as_scriptcode.o $(CXXFLAGS)
+
+obj/as_scriptengine.o: ../../source/as_scriptengine.cpp
+	$(CPP) -c ../../source/as_scriptengine.cpp -o obj/as_scriptengine.o $(CXXFLAGS)
+
+obj/as_scriptfunction.o: ../../source/as_scriptfunction.cpp
+	$(CPP) -c ../../source/as_scriptfunction.cpp -o obj/as_scriptfunction.o $(CXXFLAGS)
+
+obj/as_scriptnode.o: ../../source/as_scriptnode.cpp
+	$(CPP) -c ../../source/as_scriptnode.cpp -o obj/as_scriptnode.o $(CXXFLAGS)
+
+obj/as_string.o: ../../source/as_string.cpp
+	$(CPP) -c ../../source/as_string.cpp -o obj/as_string.o $(CXXFLAGS)
+
+obj/as_string_util.o: ../../source/as_string_util.cpp
+	$(CPP) -c ../../source/as_string_util.cpp -o obj/as_string_util.o $(CXXFLAGS)
+
+obj/as_thread.o: ../../source/as_thread.cpp
+	$(CPP) -c ../../source/as_thread.cpp -o obj/as_thread.o $(CXXFLAGS)
+
+obj/as_tokenizer.o: ../../source/as_tokenizer.cpp
+	$(CPP) -c ../../source/as_tokenizer.cpp -o obj/as_tokenizer.o $(CXXFLAGS)
+
+obj/as_typeinfo.o: ../../source/as_typeinfo.cpp
+	$(CPP) -c ../../source/as_typeinfo.cpp -o obj/as_typeinfo.o $(CXXFLAGS)
+
+obj/as_variablescope.o: ../../source/as_variablescope.cpp
+	$(CPP) -c ../../source/as_variablescope.cpp -o obj/as_variablescope.o $(CXXFLAGS)
+
+obj/as_callfunc_sh4.o: ../../source/as_callfunc_sh4.cpp
+	$(CPP) -c ../../source/as_callfunc_sh4.cpp -o obj/as_callfunc_sh4.o $(CXXFLAGS)
+
+obj/as_generic.o: ../../source/as_generic.cpp
+	$(CPP) -c ../../source/as_generic.cpp -o obj/as_generic.o $(CXXFLAGS)
+
+obj/as_callfunc.o: ../../source/as_callfunc.cpp
+	$(CPP) -c ../../source/as_callfunc.cpp -o obj/as_callfunc.o $(CXXFLAGS)
+
+obj/as_scriptstruct.o: ../../source/as_scriptstruct.cpp
+	$(CPP) -c ../../source/as_scriptstruct.cpp -o obj/as_scriptstruct.o $(CXXFLAGS)
+
+obj/as_gcobject.o: ../../source/as_gcobject.cpp
+	$(CPP) -c ../../source/as_gcobject.cpp -o obj/as_gcobject.o $(CXXFLAGS)
+
+obj/as_anyobject.o: ../../source/as_anyobject.cpp
+	$(CPP) -c ../../source/as_anyobject.cpp -o obj/as_anyobject.o $(CXXFLAGS)
+
+obj/as_configgroup.o: ../../source/as_configgroup.cpp
+	$(CPP) -c ../../source/as_configgroup.cpp -o obj/as_configgroup.o $(CXXFLAGS)

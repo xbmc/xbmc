@@ -1,0 +1,205 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: asIScriptAny</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: asIScriptAny</h1>
+
+<pre class=border>
+class asIScriptAny
+{
+public:
+  <font color=green>// Memory management</font>
+  int <a href="#addref">AddRef</a>();
+  int <a href="#release">Release</a>();
+
+  <font color=green>// Contained value</font>
+  void <a href="#store">Store</a>(void *ref, int typeId);
+  int  <a href="#retrieve">Retrieve</a>(void *ref, int typeId);
+  int  <a href="#gettypeid">GetTypeId</a>();
+  int  <a href="#copyfrom">CopyFrom</a>(asIScriptAny *other);
+};
+</pre>
+
+
+
+<a name=addref></a>
+<h2>AddRef</h2>
+
+<pre class=border>
+int AddRef();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method increases the internal reference counter of the object and
+returns the count. The returned value shouldn't be used for anything else
+but debugging.</p>
+
+<p>Call AddRef() each time you assign a reference to a new variable.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name=release></a>
+<h2>Release</h2>
+
+<pre class=border>
+int Release();
+</pre>
+
+<h3>Description</h3>
+
+<p>Decreases the internal reference counter and returns the count. If the
+counter reaches 0 the object is deleted and the memory is freed.</p>
+
+<p>After calling Release() don't forget to set your reference to 0 so that
+you don't mistakenly try to use the reference again.</p>
+
+<h3>Returns</h3>
+
+<p>The internal reference counter.</p>
+
+
+
+<a name=store></a>
+<h2>Store</h2>
+
+<pre class=border>
+void Store(void *ref, int typeId);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method is used to store a value in the container object. The 
+application should pass a pointer to the variable with the value, and the 
+typeId that represents the type of the variable. The method will make a copy
+of the value held by the variable.</p>
+
+<p>Currently only object handles are supported, but later on all types will 
+be supported.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>ref</code>&nbsp;</td>
+<td valign=top><p>A pointer to the variable that hold the value that should be stored.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>typeId</code>&nbsp;</td>
+<td valign=top><p>The typeId representing the type of the variable.</p></td>
+</tr>
+</table>
+
+
+
+
+
+
+
+<a name=retrieve></a>
+<h2>Retrieve</h2>
+
+<pre class=border>
+int Retrieve(void *ref, int typeId);
+</pre>
+
+<h3>Description</h3>
+
+<p>Call this method to retrieve a copy of the contained value. The application
+should pass a pointer to the variable that will receive the copy. The typeId
+represents the type of the value that you want to retrieve, if the contained 
+value is incompatible with this type, then the method will not retrieve 
+anything and will return a negative value.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>ref</code>&nbsp;</td>
+<td valign=top><p>A pointer to the variable that should receive the copy of the contained value.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>typeId</code>&nbsp;</td>
+<td valign=top><p>The typeId representing the type of the variable.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error.</p>
+
+
+
+
+<a name=gettypeid></a>
+<h2>GetTypeId</h2>
+
+<pre class=border>
+int GetTypeId();
+</pre>
+
+<h3>Description</h3>
+
+<p>Returns the type id of the contained value. If no value has been set yet 
+the return value is 0, which represents the type id of <code>void</code>.</p>
+
+<h3>Returns</h3>
+
+<p>The type id of the contained value.</p>
+
+
+
+
+
+
+<a name=copyfrom></a>
+<h2>CopyFrom</h2>
+
+<pre class=border>
+int CopyFrom(asIScriptAny *other);
+</pre>
+
+<h3>Description</h3>
+
+<p>This method copies the contents of the other object to this one.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>other</code>&nbsp;</td>
+<td valign=top><p>A pointer to the other any object.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value on error.</p>
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

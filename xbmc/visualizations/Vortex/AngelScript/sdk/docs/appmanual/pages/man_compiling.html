@@ -1,0 +1,101 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: How to compile and link with AngelScript</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>How to compile and link with AngelScript</h1>
+
+<h2>Set compile time options</h2>
+
+<p>I try to contain compiler differences in as few places as possible. The header as_config.h was created for that purpose. Here you will find some #defines that allow different compilers to work. You'll probably not have to change this file, but if you're using a compiler not previously used and you're getting compiler errors it might be worth it to take a look at this file.</p>
+
+<p>There are also a couple of other #defines used in the code to alter the compilation. When compiling the library you might want to define ANGELSCRIPT_EXPORT so that library functions are exported. If you include the library source code directly in your application project you shouldn't have to define this flag.</p>
+
+<p>If AS_DEPRECATED is defined then some backwards compatibility is maintained, this can help you do the upgrade to the latest version a little more smoothly. There is no guarantee that the backwards compatibility will be maintained though so try to upgrade as soon as possible.</p>
+
+<h2>Linking with the library</h2>
+
+<p>There are four ways of compiling and linking with AngelScript in order to use it. I recommend linking with a static library. Note that all four ways are interchangable with only a small change in your code, i.e a defined flag before including the header file, and possibly a routine for manually loading the dll. The rest of your code should look exactly the same for each of the alternatives.</p>
+
+<h3>1. Include library source files in project</h3>
+
+<p>You can take the source files for AngelScript and include them directly in your own project. The advantage of this is that you can be sure that the same compiler options are used for the library and the host applications, e.g. multi-threaded or single-threaded CRT. The disadvantage is that your project will be poluted with the library files.</p>
+
+<p>The files that need to use the library should include the angelscript.h header with no need for any special settings.</p>
+
+<pre class=border>
+<font color=green>// Include the library interface</font>
+#include "angelscript.h"
+
+<font color=gray>... Start using the library</font>
+</pre>
+
+
+
+<h3>2. Compile a static library and link into project</h3>
+
+<p>The most recommended way is to compile a static library that your project will link with. When compiling the static library you have to make sure that the correct compiler settings are used so that you don't get conflicts in linkage with the CRT functions. This happens if you for example compile the library with dynamically linked multi-threaded CRT and you application with statically linked single-threaded CRT.</p>
+
+<p>To use the library you only need to include the angelscript.h header file.</p>
+
+<pre class=border>
+<font color=green>// Include the library interface</font>
+#include "angelscript.h"
+
+<font color=gray>... Start using the library</font>
+</pre>
+
+
+
+<h3>3. Compile a dynamically loaded library with an import library</h3>
+
+<p>With Microsoft Visual C++ it is possible to compile a dynamically loaded library with an import library. The import library will then take care of the work needed to load the dll and bind the functions. A possible disadvantage of this method is that you are not able to give any user-friendly error messages in case loading the library fails.</p>
+
+<p>To use the library you'll have to define ANGELSCRIPT_DLL_LIBRARY_IMPORT before including the angelscript.h header file.</p>
+
+<pre class=border>
+<font color=green>// Include the library interface</font>
+#define ANGELSCRIPT_DLL_LIBRARY_IMPORT
+#include "angelscript.h"
+
+<font color=gray>... Start using the library</font>
+</pre>
+
+
+
+
+<h3>4. Load the dynamically loaded library manually</h3>
+
+<p>If you want to use a dll, e.g. to share code between applications, I recommend loading the library manually as you can treat any failures to load or bind functtions graciously.</p>
+
+<p>To use manually loaded dll, you should define ANGELSCRIPT_DLL_MANUAL_IMPORT before including the angelscript.h header file. This will insure that the header file doesn't declare the function prototypes, as you will most likely want to use these names for the function pointers.</p>
+
+<pre class=border>
+<font color=green>// Include the library interface</font>
+#define ANGELSCRIPT_DLL_MANUAL_IMPORT
+#include "angelscript.h"
+
+<font color=green>// Declare the function pointers</font>
+typedef asIScriptEngine * AS_CALL t_asCreateScriptEngine(int);
+t_asCreateScriptEngine *asCreateScriptEngine = 0;
+<font color=gray>... Declare the rest of the functions</font>
+
+<font color=green>// Load the dll and bind the functions (error handling left out for clarity)</font>
+HMODULE dll = LoadLibrary("angelscript.dll");
+asCreateScriptEngine = (t_asCreateScriptEngine*)GetProcAddress(dll, "_asCreateScriptEngine");
+<font color=gray>... Bind the other functions</font>
+
+<font color=gray>... Start using the library</font>
+</pre>
+
+
+
+
+</body></HTML>

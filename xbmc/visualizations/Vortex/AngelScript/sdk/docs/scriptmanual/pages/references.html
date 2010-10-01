@@ -1,0 +1,32 @@
+<HTML>
+<head>
+<title>AngelScript: References</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>References</h1>
+
+<p>Parameter references may not have the same meaning in AngelScript as they do in C++. Because AngelScript must at all times guarantee that the references are valid, some restrictions have been added. The declaration of the parameter reference must use one of the keywords <code>in</code>, <code>out</code>, or <code>inout</code>.</p>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=150 valign=top><b>reference</b>                  </td><td valign=top><b>description</b></td></tr>
+<tr><td width=150 valign=top><code>type &amp;in</code>         </td><td valign=top>This form always makes a copy of the value and passes the address of the copy.</td></tr>
+<tr><td width=150 valign=top><code>const type &amp;in</code>   </td><td valign=top>This form makes a copy, only if the life time of the value is not guaranteed, e.g. it is not a local variable, or it doesn't support object handles. This is the form that has the most advantages, as most of the time the value doesn't have to be duplicated, and there is no restriction to the expressions that can be used.</td></tr>
+<tr><td width=150 valign=top><code>type &amp;out</code>        </td><td valign=top>This form passes the address of a dummy value. When the function returns the value is copied to the reference in the argument expression. The expression is also evaluated only after the function returns. This is the preferred way to allow functions to return multiple values.</td></tr>
+<tr><td width=150 valign=top><code>const type &amp;out</code>  </td><td valign=top>This form is useless, since the function wouldn't be able to alter the value in the parameter.</td></tr>
+<tr><td width=150 valign=top><code>type &amp;inout</code>      </td><td valign=top>This form always passes the address of the true value. But if the life time of the value is not guaranteed the compiler will give an error. Local variables and object types that support object handles always have their life time guaranteed. It's recommended to use this form only with object types that support object handles.</td></tr>
+<tr><td width=150 valign=top><code>const type &amp;inout</code></td><td valign=top>Same as above, except the function will not be able to alter the value.</td></tr>
+</table>
+
+<h2>Unsafe references</h2>
+
+<p>If the application wants parameter references that work like they do in C++, then the script library can be compiled with the flag AS_ALLOW_UNSAFE_REFERENCES defined. When this is done, the parameter references can be declared without the <code>in</code>, <code>out</code>, or <code>inout</code>. The parameter references declared without any of the keywords will always pass the address to the original value, and will not have any restrictions to the expressions that can be used. The parameter references with the <code>in</code> and <code>out</code> keywords will still work like before, but the refernces with the <code>inout</code> keyword will have the restrictions removed so that they work just like normal C++ references.</p>
+
+<p>The application writer and script writer has to be aware that it is possible to write scripts that access invalid references when the library is compiled in this mode, just like it is possible to do so in C++.</p>
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

@@ -1,0 +1,199 @@
+<HTML>
+<head>
+<title>AngelScript: Expressions</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<p><a href="../index.html">index</a><p>
+
+<h1>Expressions</h1>
+
+	<ul>
+	<li><a href="#assignment">Assignments</a>
+	<li><a href="#compound">Compound assignments</a>
+	<li><a href="#function">Function calls</a>
+	<li><a href="#conversion">Type conversions</a>
+	<li><a href="#math">Math operators</a>
+	<li><a href="#bits">Bitwise operators</a>
+	<li><a href="#logic">Logic operators</a>
+	<li><a href="#comparison">Comparison operators</a>
+	<li><a href="#increment">Increment operators</a>
+	<li><a href="#index">Indexing operator</a>
+	<li><a href="#condition">Conditional expression</a>
+	<li><a href="#member">Member access</a>
+	<li><a href="#handle">Handle-of</a>
+	</ul>
+
+
+<a name=assignment>
+<h2>Assignments</h2>
+
+<pre><i>LVALUE</i> = <i>EXPR</i></pre>
+
+<p>LVALUE must be an expression that evaluates to a memory location where the expression value can be stored, e.g. a variable. An assignment evaluates to the same value and type of the data stored. The right hand expression is always computed before the left.</p>
+
+
+
+
+<a name=compound>
+<h2>Compound assignments</h2>
+
+<pre><i>LVALUE</i> <i>OP</i> <i>EXPR</i></pre>
+
+<p>In this case the expression is combined with the LVALUE using on of the available operators: <code>+= -= *= /= %= &= |= ^= &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</code></p>
+
+
+
+<a name=function>
+<h2>Function call</h2>
+
+<pre><i>FUNCTION</i>(<i>ARGS</i>)</pre>
+
+<p>Functions can only be called in expressions. Functions with no return value (void) can only be called when no data is expected, e.g. alone on a line.</p>
+
+
+
+<a name=conversion>
+<h2>Type conversions</h2>
+
+<pre><i>DATATYPE</i>(<i>EXPR</i>)</pre>
+
+<p><code><font color=blue>int</font></code>, <code><font color=blue>float</font></code>, and <code><font color=blue>bits</font></code> can all be converted to and from each other. No other conversions are available.</p>
+
+<p>Implicit conversion is only made between int and float, and only for constant values. If the conversion cannot be made without loss of data a warning is issued.</p>
+
+
+
+
+<a name=math>
+<h2>Math operators</h2>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=70 valign=top><b>operator</b></td><td width=100 valign=top><b>description</b></td><td width=80 valign=top><b>left hand</b></td><td width=80 valign=top><b>right hand</b></td><td width=80 valign=top><b>result</b></td></tr>
+<tr><td width=70 valign=top><code>+</code></td> <td width=100 valign=top>unary positive</td>    <td width=80 valign=top>&nbsp;</td>          <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>-</code></td> <td width=100 valign=top>unary negative</td>    <td width=80 valign=top>&nbsp;</td>          <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>+</code></td> <td width=100 valign=top>addition</td>          <td width=80 valign=top><i>NUM</i></td>      <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>-</code></td> <td width=100 valign=top>subtraction</td>       <td width=80 valign=top><i>NUM</i></td>      <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>*</code></td> <td width=100 valign=top>multiplication</td>    <td width=80 valign=top><i>NUM</i></td>      <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>/</code></td> <td width=100 valign=top>division</td>          <td width=80 valign=top><i>NUM</i></td>      <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+<tr><td width=70 valign=top><code>%</code></td> <td width=100 valign=top>modulos</td>           <td width=80 valign=top><i>NUM</i></td>      <td width=80 valign=top><i>NUM</i></td>       <td width=80 valign=top><i>NUM</i></td></tr>
+</table>
+
+<p>Plus and minus can be used as unary operators as well. NUM can be exchanged for either <code><font color=blue>int</font></code>, <code><font color=blue>uint</font></code>, or <code><font color=blue>float</font></code>. Both terms of the dual operations must have the same type. The result is always the same type as the original terms. One exception is unary negative which is not available for <code><font color=blue>uint</font></code>.</p>
+
+
+
+
+<a name=bits>
+<h2>Bitwise operators</h2>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=70 valign=top><b>operator</b></td>          <td width=130 valign=top><b>description</b></td>    <td width=80 valign=top><b>left hand</b></td>                         <td width=80 valign=top><b>right hand</b></td>                        <td width=80 valign=top><b>result</b></td></tr>
+<tr><td width=70 valign=top><code>~</code></td>           <td width=130 valign=top>bitwise complement</td>    <td width=80 valign=top>&nbsp;</td>                                   <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>&</code></td>           <td width=130 valign=top>bitwise and</td>           <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>|</code></td>           <td width=130 valign=top>bitwise or</td>            <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>^</code></td>           <td width=130 valign=top>bitwise xor</td>           <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>&lt;&lt;</code></td>    <td width=130 valign=top>left shift</td>            <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>uint</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>&gt;&gt;</code></td>    <td width=130 valign=top>right shift</td>           <td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>uint</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+<tr><td width=70 valign=top><code>&gt;&gt;&gt;</code></td><td width=130 valign=top>arithmetic right shift</td><td width=80 valign=top><code><font color=blue>bits</font></code></td><td width=80 valign=top><code><font color=blue>uint</font></code></td><td width=80 valign=top><code><font color=blue>bits</font></code></td></tr>
+</table>
+
+
+<p>All except <code>~</code> are dual operators. The shift operators take and integer value on the right hand. All other values are of <code><font color=blue>bits</font></code> type.</p>
+
+
+
+
+
+<a name=logic>
+<h2>Logic operators</h2>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=70 valign=top><b>operator</b></td>                         <td width=130 valign=top><b>description</b></td>  <td width=80 valign=top><b>left hand</b></td>                         <td width=80 valign=top><b>right hand</b></td>                        <td width=80 valign=top><b>result</b></td></tr>
+<tr><td width=70 valign=top><code><font color=blue>not</font></code></td><td width=130 valign=top>logical not</td>         <td width=80 valign=top>&nbsp;</td>                                   <td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code><font color=blue>and</font></code></td><td width=130 valign=top>logical and</td>         <td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code><font color=blue>or</font></code></td> <td width=130 valign=top>logical or</td>          <td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code><font color=blue>xor</font></code></td><td width=130 valign=top>logical exclusive or</td><td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td><td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+</table>
+
+<p>Boolean operators only evaluate necessary terms. For example in expression <code>a <font color=blue>and</font> b</code>, <code>b</code> is only evaluated if <code>a</code> is <code><font color=blue>true</font></code>.</p>
+
+
+
+<a name=comparison>
+<h2>Comparison operators</h2>
+
+<table cellspacing=0 cellpadding=0 border=0>
+<tr><td width=70 valign=top><b>operator</b></td>   <td width=100 valign=top><b>description</b></td><td width=80 valign=top><b>left hand</b></td><td width=80 valign=top><b>right hand</b></td><td width=80 valign=top><b>result</b></td></tr>
+<tr><td width=70 valign=top><code>==</code></td>   <td width=100 valign=top>equal</td>             <td width=80 valign=top><i>VAL</i></td>      <td width=80 valign=top><i>VAL</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code>!=</code></td>   <td width=100 valign=top>not equal</td>         <td width=80 valign=top><i>VAL</i></td>      <td width=80 valign=top><i>VAL</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code>&lt;</code></td> <td width=100 valign=top>less than</td>         <td width=80 valign=top><i>CMP</i></td>      <td width=80 valign=top><i>CMP</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code>&gt;</code></td> <td width=100 valign=top>greater than</td>      <td width=80 valign=top><i>CMP</i></td>      <td width=80 valign=top><i>CMP</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code>&lt;=</code></td><td width=100 valign=top>less or equal</td>     <td width=80 valign=top><i>CMP</i></td>      <td width=80 valign=top><i>CMP</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+<tr><td width=70 valign=top><code>&gt;=</code></td><td width=100 valign=top>greater or equal</td>  <td width=80 valign=top><i>CMP</i></td>      <td width=80 valign=top><i>CMP</i></td>       <td width=80 valign=top><code><font color=blue>bool</font></code></td></tr>
+</table>
+
+<p>VAL can be exchanged for <code><font color=blue>bool</font></code>,
+<code><font color=blue>bits</font></code>, <code><font color=blue>int</font></code>, <code><font color=blue>uint</font></code>,
+<code><font color=blue>float</font></code>, or <code><font color=blue>bstr</font></code>.
+CMP can only be exchanged for <code><font color=blue>int</font></code>, <code><font color=blue>uint</font></code>,
+<code><font color=blue>float</font></code>, or <code><font color=blue>bstr</font></code>.
+Both the left hand and right hand values must have the same type.</p>
+
+
+
+
+<a name=increment>
+<h2>Increment operators</h2>
+
+<pre>++ --</pre>
+
+<p>These operators can be placed either before or after an lvalue to increment (or decrement) its value either before or after the value is used in the expression. The value is always incremented or decremented with 1.</p>
+
+
+
+<a name=index>
+<h2>Indexing operator</h2>
+
+<pre>[<i>EXPR</i>]</pre>
+
+<p>This operator can only be used if the application has supports it.</p>
+
+
+
+
+<a name=condition>
+<h2>Conditional expression</h2>
+
+<pre><i>EXPR</i> ? <i>A</i> : <i>B</i></pre>
+
+<p>If expression is true A is executed, if not then B is executed instead.</p>
+
+
+
+
+<a name=member>
+<h2>Member access</h2>
+
+<pre><i>OBJ</i> . <i>MEMBER</i></pre>
+
+
+<p>OBJ must be an expression resulting in a data type that have members. MEMBER is the name of the member to be accessed. This member may or may not be read only.</p>
+
+
+
+<a name=handle>
+<h2>Handle-of</h2>
+
+<pre>@ <i>VAR</i></pre>
+
+
+<p>VAR is an object that allows its handle to be taken. The handle can then be assigned to a handle variable of the same type, or compared against another handle, or <code>null</code>.</p>
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

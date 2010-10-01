@@ -1,0 +1,156 @@
+<HTML>
+<head>
+<title>AngelScript: Reference: asIScriptGeneric</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Reference: asIScriptGeneric</h1>
+
+<pre class=border>
+class asIScriptGeneric
+{
+public:
+  void   *<a href="#getengine">GetEngine</a>();
+
+  void   *<a href="#getobj">GetObject</a>();
+	
+  asDWORD <a href="#getarg">GetArgDWord</a>(asUINT arg);
+  asQWORD <a href="#getarg">GetArgQWord</a>(asUINT arg);
+  float   <a href="#getarg">GetArgFloat</a>(asUINT arg);
+  double  <a href="#getarg">GetArgDouble</a>(asUINT arg);
+  void   *<a href="#getarg">GetArgObject</a>(asUINT arg);
+
+  int     <a href="#setret">SetReturnDWord</a>(asDWORD val);
+  int     <a href="#setret">SetReturnQWord</a>(asQWORD val);
+  int     <a href="#setret">SetReturnFloat</a>(float val);
+  int     <a href="#setret">SetReturnDouble</a>(double val);
+  int     <a href="#setret">SetReturnObject</a>(void *obj);
+};
+</pre>
+
+<a name=getengine></a>
+<h2>GetEngine</h2>
+
+<pre class=border>
+int GetEngine();
+</pre>
+
+<h3>Description</h3>
+
+<p>This method returns the engine, for which this generic call is registered.</p>
+
+<h3>Returns</h3>
+
+<p>The engine pointer.</p>
+
+
+
+
+
+
+<a name=getobj></a>
+<h2>GetObject</h2>
+
+<pre class=border>
+void *GetObject();
+</pre>
+
+<h3>Description</h3>
+
+<p>Retrieve the object pointer for the generic class method.</p>
+
+<h3>Returns</h3>
+
+<p>The object pointer.</p>
+
+
+
+
+<a name=getarg></a>
+<h2>GetArg</h2>
+
+<pre class=border>
+asDWORD GetArgDWord(asUINT arg);
+asQWORD GetArgQWord(asUINT arg);
+float   GetArgFloat(asUINT arg);
+double  GetArgDouble(asUINT arg);
+void   *GetArgObject(asUINT arg);
+</pre>
+
+<h3>Description</h3>
+
+<p>Gets the value of an argument, based on the index of the argument.</p>
+
+<p>Arguments with the type of an object, shouldn't be released as the 
+library will automatically do this when the function returns.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>arg</code>&nbsp;</td>
+<td valign=top><p>The index of the argument, beginning with 0.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>The value of the argument.</p>
+
+
+
+
+
+
+<a name=setret></a>
+<h2>SetReturn</h2>
+
+<pre class=border>
+int SetReturnDWord(asDWORD val);
+int SetReturnQWord(asQWORD val);
+int SetReturnFloat(float val);
+int SetReturnDouble(double val);
+int SetReturnObject(void *obj);
+</pre>
+
+<h3>Description</h3>
+
+<p>Sets the value that should be returned to the calling function.</p>
+
+<p>If the function returns an object, the library will automatically do what
+is necessary based on how the object was declared, i.e. if the function was
+registered to return a handle then the library will call the addref behaviour. 
+If it was registered to return an object by value, then the library will make 
+a copy of the object.</p>
+
+<h3>Parameters</h3>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top width=100><code>val</code>&nbsp;</td>
+<td valign=top><p>The return value.</p></td>
+</tr>
+<tr>
+<td valign=top width=100><code>obj</code>&nbsp;</td>
+<td valign=top><p>A pointer to an object.</p></td>
+</tr>
+</table>
+
+<h3>Returns</h3>
+
+<p>A negative value if the method fails.</p>
+
+
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>

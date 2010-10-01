@@ -1,0 +1,102 @@
+<HTML>
+<head>
+<title>AngelScript: Documentation: Samples</title>
+<LINK rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+<p>
+<a href="../index.html">index</a>
+</p>
+
+<h1>Documentation: Samples</h1>
+
+<ul>
+<li><a href="#concurrent">Concurrent scripts</a>
+<li><a href="#console">Console</a>
+<li><a href="#coroutine">Co-routines</a>
+<li><a href="#events">Event driven execution</a>
+<li><a href="#tutorial">Tutorial</a>
+</ul>
+
+<a name="concurrent"></a>
+<h2>Concurrent scripts</h2>
+
+<p>This sample shows how to execute two or more long running scripts in 
+parallel. The scripts voluntarily hand over the control to the next script in 
+the queue by calling the function Sleep().</p>
+
+<ul>
+<li>Multiple scripts running in parallel
+<li>Sleep()
+<li>Strings
+<li>Registered global functions
+</ul>
+
+
+<a name="console"></a>
+<h2>Console</h2>
+
+<p>This sample implements a simple console, which lets the user type in 
+commands and also evaluate simple script statements.</p>
+
+<ul>
+<li>ExecuteString()
+<li>Strings
+<li>Registered global functions
+<li>Registered global properties
+<li>Special function _grab() with overloads to receive and print resulting value from script statements
+</ul>
+
+
+<a name="coroutine"></a>
+<h2>Co-routines</h2>
+
+<p>This sample shows how co-routines can be implemented with AngelScript. Co-routines are
+threads that can be created from the scripts, and that work together by voluntarily passing control
+to each other by calling Yield().</p>
+
+<ul>
+<li>Co-routines created from the scripts with variable parameter structure.
+<li>Strings
+<li>Registered global functions
+<li>Handling the asIScriptAny object
+<li>Passing arguments to script functions
+</ul>
+
+
+<a name="events"></a>
+<h2>Events</h2>
+
+<p>This sample has the script engine execute a long running script. The script execution is regularly interrupted by the application so that keyboard events can be processed, which execute another short script before resuming the execution of the main script. The event handling scripts change the state of the long running script.</p>
+
+<ul>
+<li>LineCallback() function which suspends execution when the time is up
+<li>Strings
+<li>Registered global functions
+<li>Scripted event handlers
+</ul>
+
+
+<a name="tutorial"></a>
+<h2>Tutorial</h2>
+
+<p>This sample was written with the intention of explaining the basics of 
+AngelScript, that is, how to configure the engine, load and compile a script, 
+and finally execute a script function with parameters and return value.</p>
+
+<ul>
+<li>LineCallback() function which aborts execution when the time is up
+<li>Strings
+<li>Registered global functions
+<li>Script function parameters and return value
+<li>Retrieving information about script exceptions
+</ul>
+
+
+
+
+<p><a href="#">top</a></p>
+
+</body></HTML>
