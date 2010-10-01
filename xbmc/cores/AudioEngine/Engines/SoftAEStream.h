@@ -81,6 +81,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
+  void SetFreeOnDrain() { m_freeOnDrain = true; }
+
 private:
   void InternalFlush();
 
