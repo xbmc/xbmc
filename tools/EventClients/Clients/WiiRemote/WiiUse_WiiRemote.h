@@ -84,7 +84,7 @@ class CWiiController{
   unsigned short m_holdFlags;
   unsigned short m_currentAction;
 
-  long m_buttonDownTime;
+  int32_t m_buttonDownTime;
 
   float m_abs_roll;
   float m_abs_pitch;
@@ -115,7 +115,7 @@ unsigned short g_repeat_rate = 400;
 
 int handle_disconnect(wiimote* );
 int connectWiimote(wiimote** );
-long getTicks(void);
+int32_t getTicks(void);
 void EnableMotionSensing(wiimote* wm) {if (!WIIUSE_USING_ACC(wm)) wiiuse_motion_sensing(wm, 1);}
 void DisableMotionSensing(wiimote* wm) {if (WIIUSE_USING_ACC(wm)) wiiuse_motion_sensing(wm, 0);}
 unsigned short convert_code(unsigned short);
