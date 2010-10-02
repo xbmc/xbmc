@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="webinterface.debug"
+  version="1.0.0"
+  name="JSONRPC Debug Interface"
+  provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.gui" version="2.11"/>
+  </requires>
+  <extension
+    point="xbmc.gui.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Team XBMC Debug Web Interface</summary>
+    <description lang="en">Provides test harness and debug samples for the JSONRPC</description>
+    <platform>all</platform>
+  </extension>
+</addon>
