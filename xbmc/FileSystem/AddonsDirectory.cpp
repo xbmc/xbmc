@@ -241,14 +241,13 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
       continue;
     items.Add(FileItemFromAddon(addons[i], "script://", false));
   }
-  if (items.Size() == 0)
-  {
-    CFileItemPtr item(new CFileItem("addons://more/"+content,false));
-    item->SetLabelPreformated(true);
-    item->SetLabel(g_localizeStrings.Get(21452));
-    item->SetIconImage("DefaultAddon.png");
-    items.Add(item);
-  }
+
+  CFileItemPtr item(new CFileItem("addons://more/"+content,false));
+  item->SetLabelPreformated(true);
+  item->SetLabel(g_localizeStrings.Get(21452));
+  item->SetIconImage("DefaultAddon.png");
+  items.Add(item);
+
   return items.Size() > 0;
 }
 
