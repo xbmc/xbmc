@@ -48,25 +48,26 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#libraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
+				libraryContainer = $('<div>');
+				libraryContainer.attr('id', 'libraryContainer')
+								.addClass('contentContainer');
+				$('#content').append(libraryContainer);
 				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
-							libraryContainer = $('<div>');
-							libraryContainer.attr('id', 'libraryContainer')
-											.addClass('contentContainer');
-							$('#content').append(libraryContainer);
+						this.albumList = data.result.albums;
+						$.each($(data.result.albums), jQuery.proxy(function(i, item) {
+							var floatableAlbum = this.generateThumb('album', item.thumbnail, item.album_title, item.album_artist);
+							floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
+							libraryContainer.append(floatableAlbum);
+						}, this));
+						$('#spinner').hide();
+						//$('#libraryContainer img').lazyload();
+						libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
+						libraryContainer.trigger('scroll');
+						myScroll = new iScroll('libraryContainer');
 					} else {
 						libraryContainer.html('');
 					}
-					$.each($(data.result.albums), jQuery.proxy(function(i, item) {
-						var floatableAlbum = this.generateThumb('album', item.thumbnail, item.album_title, item.album_artist);
-						floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
-						libraryContainer.append(floatableAlbum);
-					}, this));
-					$('#spinner').hide();
-					//$('#libraryContainer img').lazyload();
-					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
-					libraryContainer.trigger('scroll');
-					myScroll = new iScroll('libraryContainer');
 				}, this), 'json');
 			} else {
 				libraryContainer.show();
@@ -105,7 +106,54 @@ MediaLibrary.prototype = {
 			floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="" /></div></div>' + code);
 			return floatableAlbum;
 		},
+		showAlbumSelectorBlock: function(album) {
+			if (album) {
+				//Find album in stored array
+				var prevAlbum = null,
+					nextAlbum = null;
+				$.each($(this.albumList), jQuery.proxy(function(i, item) {
+					if (item.albumid == album.albumid) {
+						if (this.albumList.length > 1) {
+							if (i <= 0) {
+								prevAlbum = this.albumList[this.albumList.length-1];
+							} else {
+								prevAlbum = this.albumList[i-1];
+							}
+							if (i >= this.albumList.length) {
+								nextAlbum = this.albumList[0];
+							} else {
+								nextAlbum = this.albumList[i+1];
+							}
+						}
+						return false; /* .each break */
+					}
+				}, this));
+				var albumSelectorBlock = $('#albumSelector');
+				if (!albumSelectorBlock || albumSelectorBlock.length == 0) {
+					albumSelectorBlock = $('<div>');
+					albumSelectorBlock.attr('id', 'albumSelector')
+									  .html('<table><tr><td class="allAlbums">All Albums</td><td class="activeAlbumTitle"></td><td class="prevAlbum">&nbsp;</td><td class="nextAlbum">&nbsp;</td></tr></table>');
+					$('#content').prepend(albumSelectorBlock);
+					$('#albumSelector .allAlbums').bind('click', jQuery.proxy(this.hideAlbumDetails, this));
+				}
+				$('#albumSelector .prevAlbum').unbind();
+				$('#albumSelector .nextAlbum').unbind();
+				if (prevAlbum) {
+					$('#albumSelector .prevAlbum').bind('click', {album: prevAlbum}, jQuery.proxy(this.displayAlbumDetails, this));
+				}
+				if (nextAlbum) {
+					$('#albumSelector .nextAlbum').bind('click', {album: nextAlbum}, jQuery.proxy(this.displayAlbumDetails, this));
+				}
+				$('#albumSelector .activeAlbumTitle').html(album.album_title||'Unknown Album');
+				albumSelectorBlock.show();
+			}
+		},
+		hideAlbumDetails: function() {
+			$('.contentContainer').hide();
+			this.musicLibraryOpen();
+		},
 		displayAlbumDetails: function(event) {
+			this.showAlbumSelectorBlock(event.data.album);
 			var albumDetailsContainer = $('#albumDetails' + event.data.album.albumid);
 			$('#topScrollFade').hide();
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
@@ -114,12 +162,13 @@ MediaLibrary.prototype = {
 					albumDetailsContainer = $('<div>');
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
 										 .addClass('contentContainer')
+										 .addClass('albumContainer')
 										 .html('<table class="albumView"><tr><th>Artwork</th><th>&nbsp;</th><th>Name</th><th>Time</th><th>Artist</th><th>Genre</th></tr><tbody class="resultSet"></tbody></table>');
 					$('.contentContainer').hide();
 					$('#content').append(albumDetailsContainer);
 					var albumThumbnail = event.data.album.thumbnail;
-					var albumTitle = event.data.album.album_title||'Unknown';
-					var albumArtist = event.data.album.album_artist||'Unknown';
+					var albumTitle = event.data.album.album_title||'Unknown Album';
+					var albumArtist = event.data.album.album_artist||'Unknown Artist';
 					var trackCount = data.result.total;
 					$.each($(data.result.songs), jQuery.proxy(function(i, item) {
 						var trackRow = $('<tr>');
