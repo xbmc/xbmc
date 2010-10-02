@@ -286,7 +286,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
         url.SetFileName("movies/" + path);
         break;
       case TV_SHOWS:
-        if (filter != name)
+        if (filter.CompareNoCase(name))
         {
           m_dll->ref_release(program);
           continue;
