@@ -450,16 +450,15 @@ void CDVDPlayerVideo::Process()
         //in normal mpegs
         m_iNrOfPicturesNotToSkip = 5;
       }
-      else if( iDropped*frametime > DVD_MSEC_TO_TIME(100) )
+      else if( iDropped*frametime > DVD_MSEC_TO_TIME(100) && m_iNrOfPicturesNotToSkip == 0 )
       { // if we dropped too many pictures in a row, insert a forced picture
-        m_iNrOfPicturesNotToSkip++;
+        m_iNrOfPicturesNotToSkip = 1;
       }
 
 #ifdef PROFILE
       bRequestDrop = false;
 #else
       if (m_messageQueue.GetDataSize() == 0
-      ||  m_iNrOfPicturesNotToSkip > 0
       ||  m_speed < 0)
       {
         bRequestDrop = false;
@@ -1105,22 +1104,25 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // ask decoder to drop frames next round, as we are very late
   if(m_iLateFrames > 10)
   {
-    //if we're calculating the framerate,
-    //don't drop frames until we've calculated a stable framerate
-    if (m_bAllowDrop || m_speed != DVD_PLAYSPEED_NORMAL)
+    if (!(pPicture->iFlags & DVP_FLAG_NOSKIP))
     {
-      result |= EOS_VERYLATE;
-      m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
-    }
+      //if we're calculating the framerate,
+      //don't drop frames until we've calculated a stable framerate
+      if (m_bAllowDrop || m_speed != DVD_PLAYSPEED_NORMAL)
+      {
+        result |= EOS_VERYLATE;
+        m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
+      }
 
-    //if we requested 5 drops in a row and we're still late, drop on output
-    //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
-    if (m_iDroppedRequest > 5)
-    {
-      m_iDroppedRequest--; //decrease so we only drop half the frames
-      return result | EOS_DROPPED;
+      //if we requested 5 drops in a row and we're still late, drop on output
+      //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
+      if (m_iDroppedRequest > 5)
+      {
+        m_iDroppedRequest--; //decrease so we only drop half the frames
+        return result | EOS_DROPPED;
+      }
+      m_iDroppedRequest++;
     }
-    m_iDroppedRequest++;
   }
   else
   {
