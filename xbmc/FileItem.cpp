@@ -623,7 +623,7 @@ bool CFileItem::IsDVDImage() const
   return (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg"));
 }
 
-bool CFileItem::IsDiskFile() const
+bool CFileItem::IsOpticalMediaFile() const
 {
   bool found = IsDVDFile(false, true);
   if (found)

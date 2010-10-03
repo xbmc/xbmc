@@ -1266,7 +1266,7 @@ namespace VIDEO
         }
       }
 
-      if (!nfoFile.IsEmpty() && item->IsDiskFile())
+      if (!nfoFile.IsEmpty() && item->IsOpticalMediaFile())
       {
         CStdString parent(CUtil::GetParentPath(item->m_strPath));
         CStdString parentFolder(parent);

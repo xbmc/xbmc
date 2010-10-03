@@ -6644,7 +6644,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         {
           CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
-          if (item.IsDiskFile())
+          if (item.IsOpticalMediaFile())
           {
             nfoFile = CURIUtils::GetParentFolderURI(nfoFile, true);
           }
