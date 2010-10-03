@@ -321,7 +321,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                                                    , "text/ssa"
                                                    , "text/sub"
                                                    , "text/idx" };
-                    for(int type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
+                    for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
                     {
                         if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
                         {
