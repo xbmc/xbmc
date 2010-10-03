@@ -551,20 +551,57 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
     ReShuffle(iPlaylist, iSize);
 }
 
+void CPlayListPlayer::Insert(int iPlaylist, CPlayList& playlist, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC || iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(playlist, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC || iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(pItem, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC || iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(items, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
+{
+  if (iPlaylist != PLAYLIST_MUSIC || iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  list.Remove(iPosition);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
+}
+
 void CPlayListPlayer::Clear()
 {
   if (m_PlaylistMusic)
-  {
     m_PlaylistMusic->Clear();
-  }
   if (m_PlaylistVideo)
-  {
     m_PlaylistVideo->Clear();
-  }
   if (m_PlaylistEmpty)
-  {
     m_PlaylistEmpty->Clear();
-  }
 }
-
-

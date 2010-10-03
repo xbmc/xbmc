@@ -150,7 +150,10 @@ public:
   void Add(int iPlaylist, CPlayList& playlist);
   void Add(int iPlaylist, const CFileItemPtr &pItem);
   void Add(int iPlaylist, CFileItemList& items);
-
+  void Insert(int iPlaylist, CPlayList& playlist, int iIndex);
+  void Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex);
+  void Insert(int iPlaylist, CFileItemList& items, int iIndex);
+  void Remove(int iPlaylist, int iPosition);
 protected:
   /*! \brief Returns true if the given is set to repeat all
    \param playlist Playlist to be query

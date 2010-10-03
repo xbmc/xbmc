@@ -128,6 +128,18 @@ void CPlayList::Insert(CFileItemList& items, int iPosition /* = -1 */)
   }
 }
 
+void CPlayList::Insert(const CFileItemPtr &item, int iPosition /* = -1 */)
+{
+  // out of bounds so just add to the end
+  int iSize = size();
+  if (iPosition < 0 || iPosition >= iSize)
+  {
+    Add(item);
+    return;
+  }
+  Add(item, iPosition, iPosition);
+}
+
 void CPlayList::DecrementOrder(int iOrder)
 {
   if (iOrder < 0) return;
