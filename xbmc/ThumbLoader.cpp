@@ -128,7 +128,7 @@ bool CThumbExtractor::DoWork()
   ||  CUtil::IsDAAP(m_path)
   ||  m_item.IsDVD()
   ||  m_item.IsDVDImage()
-  ||  m_item.IsDVDFile(false, true)
+  ||  m_item.IsOpticalMediaFile()
   ||  m_item.IsInternetStream()
   ||  m_item.IsPlayList())
     return false;

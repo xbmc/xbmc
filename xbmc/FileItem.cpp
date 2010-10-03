@@ -970,7 +970,7 @@ void CFileItem::CleanString()
   bool bIsFolder = m_bIsFolder;
 
   // make sure we don't append the extension to stacked dvd folders
-  if (HasProperty("isstacked") && IsDVDFile(false, true))
+  if (HasProperty("isstacked") && IsOpticalMediaFile())
     bIsFolder = true;
 
   CStdString strLabel = GetLabel();
@@ -2581,7 +2581,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       (pos=strMovieName.Find("BDMV\\")) != -1)
     strMovieName = strMovieName.Mid(0,pos+5);
 
-  if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
+  if ((!m_bIsFolder || IsOpticalMediaFile() || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
   {
     CStdString name2(strMovieName);
     CUtil::GetParentPath(name2,strMovieName);
