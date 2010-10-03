@@ -1903,16 +1903,10 @@ void CFileItemList::Stack()
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
   // stack folders
-  bool isDVDFolder(false);
   int i = 0;
   for (i = 0; i < Size(); ++i)
   {
     CFileItemPtr item = Get(i);
-    if (item->GetLabel().Equals("VIDEO_TS.IFO"))
-    {
-      isDVDFolder = true;
-      break;
-    }
     // combined the folder checks
     if (item->m_bIsFolder)
     {
@@ -2045,16 +2039,6 @@ void CFileItemList::Stack()
       continue;
     }
 
-    if (isDVDFolder)
-    {
-      // remove any other ifo files in this folder
-      if (item1->IsDVDFile(false, true) && item1->GetLabel().Equals("VIDEO_TS.IFO"))
-      {
-        Remove(i);
-        continue;
-      }
-    }
-
     int64_t               size        = 0;
     size_t                offset      = 0;
     CStdString            stackName;
@@ -2090,16 +2074,6 @@ void CFileItemList::Stack()
             // increment index
             j++;
             continue;
-          }
-
-          if (isDVDFolder)
-          {
-            // remove any other ifo files in this folder
-            if (item2->IsDVDFile(false, true) && item2->GetLabel().Equals("VIDEO_TS.IFO"))
-            {
-              Remove(j);
-              continue;
-            }
           }
 
           CStdString file2, filePath2;
