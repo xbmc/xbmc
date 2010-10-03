@@ -1968,7 +1968,7 @@ void CFileItemList::Stack()
 #ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
+            CUtil::AddFileToFolder(item->m_strPath, "index.bdmv", path);
             if (CFile::Exists(path))
               dvdPath = path;
           }
