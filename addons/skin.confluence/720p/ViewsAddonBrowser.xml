@@ -13,7 +13,7 @@
 				<onup>550</onup>
 				<ondown>550</ondown>
 				<viewtype label="$LOCALIZE[31033]">list</viewtype>
-				<visible>Window.IsVisible(AddonBrowser) | stringcompare(ListItem.Path,plugin://) | stringcompare(ListItem.Path,script://)</visible>
+				<visible>Window.IsVisible(AddonBrowser) | Container.Content(Addons)</visible>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="40" width="580">
