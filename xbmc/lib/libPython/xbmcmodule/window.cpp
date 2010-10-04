@@ -390,7 +390,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
       Py_BEGIN_ALLOW_THREADS
-      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 1};
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 1};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
       Py_END_ALLOW_THREADS
@@ -430,7 +430,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
       Py_BEGIN_ALLOW_THREADS
-      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 0};
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 0};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
       Py_END_ALLOW_THREADS
