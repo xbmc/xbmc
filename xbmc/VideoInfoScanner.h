@@ -225,7 +225,7 @@ namespace VIDEO
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
 
-    CStdString GetnfoFile(CFileItem *item) const;
+    CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 
     /*! \brief Retrieve the parent folder of an item, accounting for stacks and files in rars.
      \param item a media item.

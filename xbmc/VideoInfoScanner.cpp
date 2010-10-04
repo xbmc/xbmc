@@ -1192,7 +1192,7 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item) const
+  CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item, bool bGrabAny) const
   {
     CStdString nfoFile;
     // Find a matching .nfo file
@@ -1209,17 +1209,19 @@ namespace VIDEO
         CStdString strPath;
         CUtil::GetDirectory(url.GetHostName(), strPath);
         CUtil::AddFileToFolder(strPath, CUtil::GetFileName(item->m_strPath),item2.m_strPath);
-        return GetnfoFile(&item2);
+        return GetnfoFile(&item2, bGrabAny);
       }
 
       // grab the folder path
       CStdString strPath;
       CUtil::GetDirectory(item->m_strPath, strPath);
 
-      // looking up by folder name - movie.nfo takes priority
-      nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
-      if (CFile::Exists(nfoFile))
-        return nfoFile;
+      if (bGrabAny)
+      { // looking up by folder name - movie.nfo takes priority
+        nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
+        if (CFile::Exists(nfoFile))
+          return nfoFile;
+      }
 
       // try looking for .nfo file for a stacked item
       if (item->IsStack())
@@ -1229,13 +1231,13 @@ namespace VIDEO
         CStdString firstFile = dir.GetFirstStackedFile(item->m_strPath);
         CFileItem item2;
         item2.m_strPath = firstFile;
-        nfoFile = GetnfoFile(&item2);
+        nfoFile = GetnfoFile(&item2, bGrabAny);
         // else try .nfo file matching stacked title
         if (nfoFile.IsEmpty())
         {
           CStdString stackedTitlePath = dir.GetStackedTitlePath(item->m_strPath);
           item2.m_strPath = stackedTitlePath;
-          nfoFile = GetnfoFile(&item2);
+          nfoFile = GetnfoFile(&item2, bGrabAny);
         }
       }
       else
@@ -1260,7 +1262,7 @@ namespace VIDEO
         {
           strPath = strPath.Mid(0,strPath.size()-3);
           CUtil::AddFileToFolder(strPath, CUtil::GetFileName(item->m_strPath),item2.m_strPath);
-          return GetnfoFile(&item2);
+          return GetnfoFile(&item2, bGrabAny);
         }
       }
 
@@ -1273,12 +1275,12 @@ namespace VIDEO
         { // check for movie.nfo in the parent folder
           parent = CUtil::GetParentPath(parent);
           CFileItem parentDirectory(parent, true);
-          nfoFile = GetnfoFile(&parentDirectory);
+          nfoFile = GetnfoFile(&parentDirectory, true);
         }
       }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
-    if (item->m_bIsFolder || item->IsOpticalMediaFile() || nfoFile.IsEmpty())
+    if (item->m_bIsFolder || item->IsOpticalMediaFile() || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;
@@ -1480,7 +1482,7 @@ namespace VIDEO
     CStdString strNfoFile;
     if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
         || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
-      strNfoFile = GetnfoFile(pItem);
+      strNfoFile = GetnfoFile(pItem, bGrabAny);
     if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       CUtil::AddFileToFolder(pItem->m_strPath, "tvshow.nfo", strNfoFile);
 
