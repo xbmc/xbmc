@@ -325,27 +325,33 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   m_black      = 0.0f;
   m_contrast   = 1.0f;
 
+  string shaderfile;
+
   if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2)
   {
     if(rect)
-      PixelShader()->LoadSource("yuv2rgb_basic_rect_YUY2.arb");
+      shaderfile = "yuv2rgb_basic_rect_YUY2.arb";
     else
-      PixelShader()->LoadSource("yuv2rgb_basic_2d_YUY2.arb");
+      shaderfile = "yuv2rgb_basic_2d_YUY2.arb";
   }
-  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
   {
     if(rect)
-      PixelShader()->LoadSource("yuv2rgb_basic_rect_UYVY.arb");
+      shaderfile = "yuv2rgb_basic_rect_UYVY.arb";
     else
-      PixelShader()->LoadSource("yuv2rgb_basic_2d_UYVY.arb");
+      shaderfile = "yuv2rgb_basic_2d_UYVY.arb";
   }
   else
   {
     if(rect)
-      PixelShader()->LoadSource("yuv2rgb_basic_rect.arb");
+      shaderfile = "yuv2rgb_basic_rect.arb";
     else
-      PixelShader()->LoadSource("yuv2rgb_basic_2d.arb");
+      shaderfile = "yuv2rgb_basic_2d.arb";
   }
+
+  CLog::Log(LOGDEBUG, "GL: YUV2RGBProgressiveShaderARB: loading %s", shaderfile.c_str());
+
+  PixelShader()->LoadSource(shaderfile);
 }
 
 void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
