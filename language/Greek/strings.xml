@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 09/16/2010-->
+<!--Date of translation: 10/02/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 33881-->
+<!--Based on english strings version 34362-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -543,6 +543,8 @@
   <string id="609">Δεν ορίσθηκε διαδρομή εξαγωγής CDDA.</string>
   <string id="610">Εγγραφή κομματιού</string>
   <string id="611">Εισαγωγή αριθμού</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Συχνότητα δειγματοληψίας</string>
   <string id="620">CDs ήχου</string>
   <string id="621">Κωδικοποιητής</string>
   <string id="622">Ποιότητα</string>
@@ -934,6 +936,7 @@
   <string id="13013">Επανεκκίνηση</string>
   <string id="13014">Ελαχιστοποίηση</string>
   <string id="13015">Ενέργεια πλήκτρου λειτουργίας</string>
+  <string id="13016">Απενεργοποίηση</string>
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
@@ -1145,6 +1148,10 @@
   <string id="13508">Υψηλή</string>
   <string id="13509">Πραγματικά υψηλή (αργή!)</string>
   <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
+  <string id="13550">Παύση κατά τη διάρκεια ανανέωσης</string>
+  <string id="13551">Ανενεργή</string>
+  <string id="13552">%.1f δευτερόλεπτο</string>
+  <string id="13553">%.1f δευτερόλεπτα</string>
   <string id="13600">Apple Remote</string>
   <string id="13602">Έγκριση έναρξης του XBMC μέσου απομακρυσμένου ελέγχου</string>
   <string id="13603">Ακολουθία χρόνου καθυστέρησης</string>
@@ -2023,7 +2030,6 @@
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>
-  <string id="30011">Αναζήτηση διάρκειας</string>
   <string id="33001">Ποιότητα διαφημιστικού</string>
   <string id="33002">Ροή πολυμέσων</string>
   <string id="33003">Λήψη</string>
@@ -2034,6 +2040,7 @@
   <string id="33008">Αποθήκευση</string>
   <string id="33009">Αντιγραφή</string>
   <string id="33010">Ορισμός φακέλου λήψης</string>
+  <string id="33011">Αναζήτηση διάρκειας</string>
   <string id="33012">Σύντομος</string>
   <string id="33013">Εκτεταμένος</string>
   <string id="33014">Ορισμός αναπαραγωγέα DVD αντί του κανονικού</string>
