@@ -22,6 +22,8 @@ echo ""
 echo "Building CrystalHD drivers..."
 echo ""
 
+apt-get -y install g++ autoconf
+
 #
 if [ ! -f /etc/mtab ]; then
 	ln -s /proc/mounts /etc/mtab
@@ -93,4 +95,7 @@ rm -rf crystalhd
 pushd .
 
 rm /root/crystalhd.tar
+
+apt-get -y remove g++ autoconf
+apt-get -y autoremove
 
