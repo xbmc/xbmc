@@ -248,6 +248,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   item->SetLabelPreformated(true);
   item->SetLabel(g_localizeStrings.Get(21452));
   item->SetIconImage("DefaultAddon.png");
+  item->SetSpecialSort(SORT_ON_BOTTOM);
   items.Add(item);
 
   items.SetContent("addons");
