@@ -50,11 +50,7 @@
 #include <bits/type_traits.h>
 #endif
 
-#ifdef PCRE_STATIC
-#include "pcre.h"
-#else
 #include <pcre.h>
-#endif
 
 using std::string;
 
