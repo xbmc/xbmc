@@ -31,7 +31,7 @@
 
 extern "C"
 { 
-  int __declspec(dllexport) DLL_LoadYM(const char* szFileName)
+  __declspec(dllexport) void* DLL_LoadYM(const char* szFileName)
   {
     YMMUSIC *pMusic = ymMusicCreate();
 
@@ -39,7 +39,7 @@ extern "C"
     {
       ymMusicSetLoopMode(pMusic,YMFALSE);
       ymMusicPlay(pMusic);
-      return (intptr_t)pMusic;
+      return pMusic;
     }
   
     ymMusicDestroy(pMusic);
@@ -47,13 +47,13 @@ extern "C"
     return 0;
   }
 
-  void __declspec(dllexport) DLL_FreeYM(int ym)
+  void __declspec(dllexport) DLL_FreeYM(void* ym)
   {
     ymMusicStop((YMMUSIC*)ym);
     ymMusicDestroy((YMMUSIC*)ym);
   }
 
-  int __declspec(dllexport) DLL_FillBuffer(int ym, char* szBuffer, int iSize)
+  int __declspec(dllexport) DLL_FillBuffer(void* ym, char* szBuffer, int iSize)
   {
     if (ymMusicCompute((YMMUSIC*)ym,(ymsample*)szBuffer,iSize/2))
       return iSize;
@@ -61,7 +61,7 @@ extern "C"
       return 0;
   }
 
-  unsigned long __declspec(dllexport) DLL_Seek(int ym, unsigned long timepos)
+  unsigned long __declspec(dllexport) DLL_Seek(void* ym, unsigned long timepos)
   {
     if (ymMusicIsSeekable((YMMUSIC*)ym))
     {
@@ -72,21 +72,21 @@ extern "C"
     return 0;
   }
 
-  const char __declspec(dllexport) *DLL_GetTitle(int ym)
+  const char __declspec(dllexport) *DLL_GetTitle(void* ym)
   {
     ymMusicInfo_t info;
     ymMusicGetInfo((YMMUSIC*)ym,&info);
     return info.pSongName;
   }
 
-  const char __declspec(dllexport) *DLL_GetArtist(int ym)
+  const char __declspec(dllexport) *DLL_GetArtist(void* ym)
   {
     ymMusicInfo_t info;
     ymMusicGetInfo((YMMUSIC*)ym,&info);
     return info.pSongAuthor;
   }
 
-  unsigned long __declspec(dllexport) DLL_GetLength(int ym)
+  unsigned long __declspec(dllexport) DLL_GetLength(void* ym)
   {
     ymMusicInfo_t info;
     ymMusicGetInfo((YMMUSIC*)ym,&info);
