@@ -828,7 +828,10 @@ open_exclusive(char *filename)
         if (access(path, 0) == -1)
         {
           if (mkdir(path) != 0)
+          {
+            free(path);
             return NULL;
+          }
         }
       }
     }
