@@ -190,7 +190,7 @@ bool CRepositoryUpdateJob::DoWork()
       {
         CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
         if (!window)
-          return;
+          return false;
         window->AddJob(addons[i]->Path());
       }
       else
