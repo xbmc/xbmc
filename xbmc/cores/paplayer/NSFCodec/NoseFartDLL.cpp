@@ -30,31 +30,31 @@ extern "C"
 #include "src/version.h"
 #include "src/machine/nsf.h"
 
-  long __declspec(dllexport) DLL_LoadNSF(const char* szFileName)
+  __declspec(dllexport) void* DLL_LoadNSF(const char* szFileName)
   {
     nsf_init();
     log_init();
     nsf_t* result = nsf_load(const_cast<char*>(szFileName),NULL,0);
-    return (long)result;
+    return result;
   }
 
-  void __declspec(dllexport) DLL_FreeNSF(int nsf)
+  void __declspec(dllexport) DLL_FreeNSF(void* nsf)
   {
     nsf_t* pNsf = (nsf_t*)nsf;
     nsf_free(&pNsf);
   }
 
-  long __declspec(dllexport) DLL_GetTitle(int nsf)
+  __declspec(dllexport) char* DLL_GetTitle(void* nsf)
   {
-    return (long)((nsf_t*)nsf)->song_name;
+    return (char*)((nsf_t*)nsf)->song_name;
   }
   
-  long __declspec(dllexport) DLL_GetArtist(int nsf)
+  __declspec(dllexport) char* DLL_GetArtist(void* nsf)
   {
-    return (long)((nsf_t*)nsf)->artist_name;
+    return (char*)((nsf_t*)nsf)->artist_name;
   }
   
-  int __declspec(dllexport) DLL_StartPlayback(int nsf, int track)
+  int __declspec(dllexport) DLL_StartPlayback(void* nsf, int track)
   {
     nsf_playtrack((nsf_t*)nsf,track,48000,16,false);
     for (int i = 0; i < 6; i++)
@@ -62,7 +62,7 @@ extern "C"
     return 1;
   }
 
-  long __declspec(dllexport) DLL_FillBuffer(int nsf, char* buffer, int size)
+  long __declspec(dllexport) DLL_FillBuffer(void* nsf, char* buffer, int size)
   {
     nsf_t* pNsf = (nsf_t*)nsf;
     nsf_frame(pNsf);
@@ -70,17 +70,17 @@ extern "C"
     return size*2;
   }
 
-  void __declspec(dllexport) DLL_FrameAdvance(int nsf)
+  void __declspec(dllexport) DLL_FrameAdvance(void* nsf)
   {
     nsf_frame((nsf_t*)nsf);
   }
 
-  int __declspec(dllexport) DLL_GetPlaybackRate(int nsf)
+  int __declspec(dllexport) DLL_GetPlaybackRate(void* nsf)
   {
     return ((nsf_t*)nsf)->playback_rate;
   }
 
-  int __declspec(dllexport) DLL_GetNumberOfSongs(int nsf)
+  int __declspec(dllexport) DLL_GetNumberOfSongs(void* nsf)
   {
     return (int)((nsf_t*)nsf)->num_songs;
   }

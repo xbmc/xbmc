@@ -27,29 +27,29 @@ class DllNosefartInterface
 {
 public:
     virtual ~DllNosefartInterface() {}
-    virtual int LoadNSF(const char* szFileName)=0;
-    virtual void FreeNSF(int)=0;
-    virtual int StartPlayback(int nsf, int track)=0;
-    virtual long FillBuffer(int nsf, char* buffer, int size)=0;
-    virtual void FrameAdvance(int nsf)=0;
-    virtual int GetPlaybackRate(int nsf)=0;
-    virtual int GetNumberOfSongs(int nsf)=0;
-    virtual int GetTitle(int nsf)=0;
-    virtual int GetArtist(int nsf)=0;
+    virtual void* LoadNSF(const char* szFileName)=0;
+    virtual void FreeNSF(void*)=0;
+    virtual int StartPlayback(void* nsf, int track)=0;
+    virtual long FillBuffer(void* nsf, char* buffer, int size)=0;
+    virtual void FrameAdvance(void* nsf)=0;
+    virtual int GetPlaybackRate(void* nsf)=0;
+    virtual int GetNumberOfSongs(void* nsf)=0;
+    virtual char* GetTitle(void* nsf)=0;
+    virtual char* GetArtist(void* nsf)=0;
 };
 
 class DllNosefart : public DllDynamic, DllNosefartInterface
 {
   DECLARE_DLL_WRAPPER(DllNosefart, DLL_PATH_NSF_CODEC)
-  DEFINE_METHOD1(int, LoadNSF, (const char* p1))
-  DEFINE_METHOD1(void, FreeNSF, (int p1))
-  DEFINE_METHOD2(int, StartPlayback, (int p1, int p2))
-  DEFINE_METHOD3(long, FillBuffer, (int p1, char* p2, int p3))
-  DEFINE_METHOD1(void, FrameAdvance, (int p1))
-  DEFINE_METHOD1(int, GetPlaybackRate, (int p1))
-  DEFINE_METHOD1(int, GetNumberOfSongs, (int p1))
-  DEFINE_METHOD1(int, GetTitle, (int p1))
-  DEFINE_METHOD1(int, GetArtist, (int p1))
+  DEFINE_METHOD1(void*, LoadNSF, (const char* p1))
+  DEFINE_METHOD1(void, FreeNSF, (void* p1))
+  DEFINE_METHOD2(int, StartPlayback, (void* p1, int p2))
+  DEFINE_METHOD3(long, FillBuffer, (void* p1, char* p2, int p3))
+  DEFINE_METHOD1(void, FrameAdvance, (void* p1))
+  DEFINE_METHOD1(int, GetPlaybackRate, (void* p1))
+  DEFINE_METHOD1(int, GetNumberOfSongs, (void* p1))
+  DEFINE_METHOD1(char*, GetTitle, (void* p1))
+  DEFINE_METHOD1(char*, GetArtist, (void* p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DLL_LoadNSF, LoadNSF)
     RESOLVE_METHOD_RENAME(DLL_FreeNSF, FreeNSF)

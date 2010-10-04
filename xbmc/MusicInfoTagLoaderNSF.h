@@ -34,7 +34,7 @@ namespace MUSIC_INFO
       virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
       virtual int GetStreamCount(const CStdString& strFileName);
     private:
-      int m_nsf;
+      void* m_nsf;
       DllNosefart m_dll;
   };
 }
