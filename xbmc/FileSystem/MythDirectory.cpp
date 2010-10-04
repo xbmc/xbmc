@@ -516,7 +516,7 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     cmyth_conn_t control = m_session->GetControl();
     if (!control)
       return false;
-    
+
     CFileItemPtr item;
 
     item.reset(new CFileItem(base + "/recordings/", true));
