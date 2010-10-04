@@ -214,7 +214,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 
   if (info2 && info2->Content() != CONTENT_NONE)
     items.SetContent(ADDON::TranslateContent(info2->Content()));
-  else
+  else if (items.GetContent().IsEmpty())
     items.SetContent("files");
 
   items.SetThumbnailImage("");

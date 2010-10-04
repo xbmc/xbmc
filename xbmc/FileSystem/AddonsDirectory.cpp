@@ -51,6 +51,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   CURL path(path1);
   items.ClearProperties();
 
+  items.SetContent("addons");
+
   VECADDONS addons;
   // get info from repository
   bool reposAsFolders = true;
@@ -247,6 +249,8 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   item->SetLabel(g_localizeStrings.Get(21452));
   item->SetIconImage("DefaultAddon.png");
   items.Add(item);
+
+  items.SetContent("addons");
 
   return items.Size() > 0;
 }

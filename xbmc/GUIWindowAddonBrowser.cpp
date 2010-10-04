@@ -486,6 +486,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     items.Add(item);
   }
 
+  items.SetContent("addons");
+
   for (int i=0;i<items.Size();++i)
     SetItemLabel2(items[i]);
 
