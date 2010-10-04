@@ -69,12 +69,9 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const CStdString& strFi
 
   if (action == ActionCopy || (action == ActionMove && !CanBeRenamed(strFileA, strFileB)))
   {
-    CFile file;
-    if (file.Open(strFileA))
-    {
-      time += file.GetLength();
-      file.Close();
-    }
+    struct _stat64 data;
+    if(CFile::Stat(strFileA, &data) == 0)
+      time += data.st_size;
   }
 
   fileOperations.push_back(CFileOperation(action, strFileA, strFileB, time));
