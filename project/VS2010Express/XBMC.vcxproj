@@ -401,7 +401,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\DTSCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\FLACcodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\GYMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ModplugCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\MP3codec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\NSFCodec.cpp" />
@@ -531,7 +530,6 @@
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\musicInfoTagLoaderFactory.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderFlac.cpp" />
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderGYM.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderMidi.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderMod.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderMP3.cpp" />
@@ -1150,7 +1148,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\GYMCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ModplugCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\MP3codec.h" />
@@ -1234,7 +1231,6 @@
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderApe.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderASAP.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderDatabase.h" />
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderGYM.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMidi.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMod.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMPC.h" />
