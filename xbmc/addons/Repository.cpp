@@ -188,7 +188,10 @@ bool CRepositoryUpdateJob::DoWork()
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
-        CGUIWindowAddonBrowser::AddJob(addons[i]->Path());
+        CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+        if (!window)
+          return false;
+        window->AddJob(addons[i]->Path());
       }
       else
       {

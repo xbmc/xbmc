@@ -392,7 +392,6 @@ void CGUIWindowAddonBrowser::UpdateButtons()
 
 unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
 {
-  CGUIWindowAddonBrowser* that = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
   CStdString dest="special://home/addons/packages/";
   CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
@@ -421,7 +420,7 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
   list[0]->Select(true);
   CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
                                                  list,dest);
-  return CJobManager::GetInstance().AddJob(job,that);
+  return CJobManager::GetInstance().AddJob(job,this);
 }
 
 void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
