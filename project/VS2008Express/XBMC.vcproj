@@ -1536,14 +1536,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\GYMCodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\GYMCodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\ICodec.h"
 					>
 				</File>
@@ -2497,14 +2489,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderFlac.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderGYM.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderGYM.h"
 					>
 				</File>
 				<File
