@@ -69,7 +69,7 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const CStdString& strFi
 
   if (action == ActionCopy || (action == ActionMove && !CanBeRenamed(strFileA, strFileB)))
   {
-    struct _stat64 data;
+    struct __stat64 data;
     if(CFile::Stat(strFileA, &data) == 0)
       time += data.st_size;
   }
