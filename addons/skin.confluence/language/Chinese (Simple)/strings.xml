@@ -137,6 +137,11 @@
   <string id="31356">下载字幕</string>
   <string id="31357"></string>
 
+  <!-- Skin Fontsets -->
+  <string id="31390">皮肤默认</string>
+  <string id="31391">皮肤默认（无Caps字体）</string>
+  <string id="31392">基于Arial字体</string>
+
   <!-- Description Labels  -->
   <string id="31400">[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护</string>
   <string id="31401">[B]设置视频参数[/B][CR][CR]管理视频资料库 · 设置视频播放参数 · 修改视频列表参数 · 设置字幕字体</string>
