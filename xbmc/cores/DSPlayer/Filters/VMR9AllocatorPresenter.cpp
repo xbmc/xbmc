@@ -488,12 +488,33 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID, VMR9A
   int h = abs((int)lpAllocInfo->dwHeight);
 
   HRESULT hr;
+  
+  if (g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
+  {
+    //its important to set the format to d3dfmt unknown. The call to allocatesurfacehelper will only set the surface format required to the display.
+    lpAllocInfo->Format = D3DFMT_UNKNOWN;
+    lpAllocInfo->dwFlags = VMR9AllocFlag_3DRenderTarget;
+  }
 
   if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
     lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-
+  
+  
+  
   hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, &m_pSurfaces.at(0));
-  if(FAILED(hr)) return hr;
+  if(FAILED(hr))
+    return hr;
+
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_3DRenderTarget");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_DXVATarget");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) 
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_OffscreenSurface");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) 
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_RGBDynamicSwitch");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface )
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_TextureSurface");
 
   m_pSurfaces.resize(*lpNumBuffers);
 
@@ -661,9 +682,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
-
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
 
   if(lpPresInfo->rtEnd > lpPresInfo->rtStart)
   {
