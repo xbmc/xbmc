@@ -141,7 +141,9 @@ public:
   void SetDefault()
   {
     CRendererSettings::SetDefault();
-
+    flushGPUBeforeVSync = false;
+    vSync = false;
+    vSyncAccurate = false;
     mixerMode = true;
   };
 
