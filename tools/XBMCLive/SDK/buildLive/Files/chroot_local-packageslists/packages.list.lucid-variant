@@ -28,5 +28,4 @@ plymouth-theme-xbmc-logo
 fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1
 wpasupplicant wireless-tools
-linux-backports-modules-alsa-lucid-generic
-
+linux-backports-modules-alsa-lucid-generic linux-backports-modules-wireless-lucid-generic
