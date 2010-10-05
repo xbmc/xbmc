@@ -38,16 +38,6 @@ enum AP_SURFACE_USAGE
   VIDRNDT_AP_TEXTURE3D,
 };
 
-enum DS_RESIZERS
-{
-  DS_NEAREST_NEIGHBOR=0,
-  DS_BILINEAR,
-  DS_BILINEAR_2,
-  DS_BILINEAR_2_60,
-  DS_BILINEAR_2_75,
-  DS_BILINEAR_2_100
-};
-
 enum DS_STATS
 {
   DS_STATS_NONE = 0,
@@ -72,7 +62,6 @@ public:
   virtual void SetDefault()
   {
     apSurfaceUsage = VIDRNDT_AP_TEXTURE3D; // Fixed setting
-    resizer = DS_BILINEAR; // On GUI
     displayStats = DS_STATS_NONE; // On GUI
     vSyncOffset = 0;
     vSyncAccurate = true;
@@ -101,7 +90,6 @@ public:
   bool flushGPUAfterPresent;
   bool flushGPUWait;
   AP_SURFACE_USAGE apSurfaceUsage;
-  DS_RESIZERS resizer;
   bool d3dFullscreen;
 
   SSubSettings subtitlesSettings;

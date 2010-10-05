@@ -2016,15 +2016,15 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       Vector dst[4];
       Transform(rDstVid, dst);
 
-      DWORD iDX9Resizer = g_dsSettings.pRendererSettings->resizer;
+      EDSSCALINGMETHOD iDX9Resizer = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
 
       float A = 0;
 
       switch(iDX9Resizer)
       {
-        case 3: A = -0.60f; break;
-        case 4: A = -0.751f; break;  // FIXME : 0.75 crash recent D3D, or eat CPU 
-        case 5: A = -1.00f; break;
+        case DS_SCALINGMETHOD_BILINEAR_2_60: A = -0.60f; break;
+        case DS_SCALINGMETHOD_BILINEAR_2_75: A = -0.751f; break;  // FIXME : 0.75 crash recent D3D, or eat CPU 
+        case DS_SCALINGMETHOD_BILINEAR_2_100: A = -1.00f; break;
       }
       bool bScreenSpacePixelShaders = false;// = !m_pPixelShadersScreenSpace.IsEmpty();
 

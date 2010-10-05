@@ -74,6 +74,18 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_AUTO
 };
 
+#ifdef HAS_DS_PLAYER
+enum EDSSCALINGMETHOD
+{
+  DS_SCALINGMETHOD_NEAREST_NEIGHBOR = 0,
+  DS_SCALINGMETHOD_BILINEAR,
+  DS_SCALINGMETHOD_BILINEAR_2,
+  DS_SCALINGMETHOD_BILINEAR_2_60,
+  DS_SCALINGMETHOD_BILINEAR_2_75,
+  DS_SCALINGMETHOD_BILINEAR_2_100
+};
+#endif
+
 class CVideoSettings
 {
 public:
@@ -81,9 +93,27 @@ public:
   ~CVideoSettings() {};
 
   bool operator!=(const CVideoSettings &right) const;
+  
+  static inline int GetScalingMethodMax()
+  {
+    return (DS_SCALINGMETHOD_BILINEAR_2_100 << 16) + VS_SCALINGMETHOD_AUTO;
+  }
+
+  static int inline GetDefaultScalingMethod()
+  {
+    return (DS_SCALINGMETHOD_BILINEAR << 16) + VS_SCALINGMETHOD_LINEAR;
+  }
+  
+  void SetDVDPlayerScalingMethod(ESCALINGMETHOD method);
+  ESCALINGMETHOD GetDVDPlayerScalingMethod();
+
+#ifdef HAS_DS_PLAYER
+  void SetDSPlayerScalingMethod(EDSSCALINGMETHOD method);
+  EDSSCALINGMETHOD GetDSPlayerScalingMethod();
+#endif
 
   EINTERLACEMETHOD m_InterlaceMethod;
-  ESCALINGMETHOD   m_ScalingMethod;
+  int m_ScalingMethod; // 16 bits for dvdplayer, 16 bits for dsplayer
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
@@ -108,8 +138,6 @@ public:
   int m_CropBottom;
   int m_CropLeft;
   int m_CropRight;
-
-private:
 };
 
 #endif // !defined(AFX_VIDEOSETTINGS_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

@@ -576,12 +576,12 @@ void CWinRenderer::UpdatePSVideoFilter()
 
 void CWinRenderer::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.GetDVDPlayerScalingMethod() && m_bFilterInitialized)
     return;
 
   m_bFilterInitialized = true;
 
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = g_settings.m_currentVideoSettings.GetDVDPlayerScalingMethod();
   m_scalingMethod    = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))

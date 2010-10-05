@@ -47,6 +47,7 @@ using namespace std;
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
+  m_scalingMethod = 0;
 }
 
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
@@ -142,20 +143,22 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
+    m_scalingMethod = g_settings.m_currentVideoSettings.GetDVDPlayerScalingMethod();
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &m_scalingMethod, entries);
   }
 #ifdef HAS_DS_PLAYER
   else if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(DS_NEAREST_NEIGHBOR  , 35005));
-    entries.push_back(make_pair(DS_BILINEAR          , 35006));
-    entries.push_back(make_pair(DS_BILINEAR_2        , 35007));
-    entries.push_back(make_pair(DS_BILINEAR_2_60     , 35008));
-    entries.push_back(make_pair(DS_BILINEAR_2_75     , 35009));
-    entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_NEAREST_NEIGHBOR  , 35005));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR          , 35006));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2        , 35007));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_60     , 35008));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_75     , 35009));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_100    , 35010));
     
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int *) &g_dsSettings.pRendererSettings->resizer, entries);
+    m_scalingMethod = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &m_scalingMethod, entries);
 
     entries.clear();
     entries.push_back(make_pair(DS_STATS_NONE, 35011));
@@ -230,6 +233,17 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
+  }
+  else if (setting.id == VIDEO_SETTINGS_SCALINGMETHOD)
+  {
+#ifdef HAS_DS_PLAYER
+    if ( g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
+#endif
+      g_settings.m_currentVideoSettings.SetDVDPlayerScalingMethod((ESCALINGMETHOD) m_scalingMethod);
+#ifdef HAS_DS_PLAYER
+    else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      g_settings.m_currentVideoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD) m_scalingMethod);
+#endif
   }
   else
 #endif
