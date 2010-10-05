@@ -22,77 +22,16 @@ echo
 echo "Upgrading wireless drivers..."
 echo
 
-cd /root
-pushd .
-
-wget --no-proxy -q http://www.orbit-lab.org/kernel/compat-wireless-2.6-stable/v2.6.35/compat-wireless-2.6.35-1.tar.bz2
-
-# 
-# uname -r gives the host version, we need the chrooted one
 #
-mv /bin/uname /bin/uname.ori
-
-cat > /bin/uname << EOF
-#!/bin/sh
-
-if  [ "\$1" = "-r" ] ; then
-        echo \$(ls /lib/modules)
-else
-        /bin/uname.ori \$@
-fi
-EOF
-chmod +x /bin/uname
-
-# 
-# depmod fails trying the host kernel version, we need the chrooted one
+# Rationale: 
+# as of writing, linux-backports-modules-wireless-lucid-generic brings in linux-backports-modules-compat-wireless-2.6.34-2.6.xx-yy-generic
+# while we want the more updated linux-backports-modules-compat-wireless-2.6.35-2.6.xx-yy-generic
 #
-mv /sbin/depmod /sbin/depmod.ori
-
-cat > /sbin/depmod << EOF
-#!/bin/sh
-
-if  [ "\$1" = "-a" ] ; then
-        /sbin/depmod.ori \$(ls /lib/modules)
-else
-        /sbin/depmod.ori \$@
-fi
-EOF
-chmod +x /sbin/depmod
-
-# 
-# modprobe fails trying the host kernel version, we need the chrooted one
+# This script can be removed when the more updated package will be fetched automatically
 #
-mv /sbin/modprobe /sbin/modprobe.ori
 
-cat > /sbin/modprobe << EOF
-#!/bin/sh
+kernelVersion=$(ls /lib/modules)
 
-/sbin/modprobe.ori --set-version \$(ls /lib/modules) \$@
-EOF
-chmod +x /sbin/modprobe
+apt-get -y install "linux-backports-modules-compat-wireless-2.6.35-$kernelVersion"
 
-#need to fake output of lsb_release -i -s to prevent install to fails
-sed -i -e "/DISTRIB_ID/s/Ubuntu/Ubuntu__/" /etc/lsb-release
-
-tar xjf compat-wireless-*
-
-cd compat-wireless-*
-make
-make install
-
-popd
-pushd .
-
-rm -rf compat-wireless-*
-
-# Clean up all tricks
-rm /bin/uname
-mv /bin/uname.ori /bin/uname
-
-rm /sbin/depmod
-mv /sbin/depmod.ori /sbin/depmod
-
-rm /sbin/modprobe
-mv /sbin/modprobe.ori /sbin/modprobe
-
-sed -i -e "/DISTRIB_ID/s/Ubuntu__/Ubuntu/" /etc/lsb-release
+exit
