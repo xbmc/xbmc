@@ -27,6 +27,9 @@
 
 class CAEConvert{
 private:
+  static float *m_LookupU8 ;
+  static float *m_LookupS16;
+
   static unsigned int U8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S16LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
