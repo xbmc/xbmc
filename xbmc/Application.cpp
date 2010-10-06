@@ -2356,7 +2356,10 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   if (action.IsMouse())
+  {
+    g_Mouse.SetActive(true);
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
+  }
 
   // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
   // playing or ACTION_PLAYER_PLAY if we are not playing.
