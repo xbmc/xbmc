@@ -87,6 +87,7 @@ bool CXRandR::Query(bool force)
     xoutput.name.TrimLeft(" \n\r\t");
     xoutput.name.TrimRight(" \n\r\t");
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
+
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
     xoutput.x = (output->Attribute("x") != NULL ? atoi(output->Attribute("x")) : 0);
@@ -107,6 +108,10 @@ bool CXRandR::Query(bool force)
       xmode.h = atoi(mode->Attribute("h"));
       xmode.isPreferred = (strcasecmp(mode->Attribute("preferred"), "true") == 0);
       xmode.isCurrent = (strcasecmp(mode->Attribute("current"), "true") == 0);
+
+      if(xmode.isCurrent)
+        xoutput.isEnabled  = true;
+
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
       {
@@ -150,6 +155,8 @@ void CXRandR::RestoreState()
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
+  if(!output.isEnabled)
+    return false;
   if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
     return true;
 
@@ -228,6 +235,7 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   if (!isModeFound)
   {
     CLog::Log(LOGERROR, "CXRandR::SetMode: asked to change resolution for non existing mode: %s mode: %s", output.name.c_str(), mode.id.c_str());
+    CLog::Log(LOGERROR, "CXRandR::SetMode: requested resolution was %ux%u at %3.0f hz",mode.w,mode.h,mode.hz);
     return false;
   }
 
@@ -254,6 +262,8 @@ XOutput CXRandR::GetCurrentOutput()
   Query();
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
+    if(!m_outputs[j].isEnabled)
+      continue;
     if(m_outputs[j].isConnected)
       return m_outputs[j];
   }
@@ -267,6 +277,9 @@ XMode CXRandR::GetCurrentMode(CStdString outputName)
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
+    if(!m_outputs[j].isEnabled)
+      continue;
+
     if (m_outputs[j].name == outputName || outputName == "")
     {
       for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)

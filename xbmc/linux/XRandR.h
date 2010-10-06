@@ -76,10 +76,12 @@ public:
     {
       name="";
       isConnected=false;
+      isEnabled=false;
       w=h=x=y=wmm=hmm=0;
     }
   CStdString name;
   bool isConnected;
+  bool isEnabled;
   int w;
   int h;
   int x;
