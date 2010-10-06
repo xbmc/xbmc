@@ -55,8 +55,9 @@ if [ -n "$NvidiaHDMIFirstGen" ] ; then
 	# "ALC1200 Digital"
 	# "ALC662 Digital"
 	# "ALC889A Digital"
-	# "ALC888 Digital"
-	DIGITALCONTROL="VT1708S Digital\|ALC662 rev1 Digital\|ALC1200 Digital\|ALC662 Digital\|ALC889A Digital\|ALC888 Digital"
+	# "ALC888 Digital" 
+	# "ALC887 Digital"
+	DIGITALCONTROL="VT1708S Digital\|ALC662 rev1 Digital\|ALC1200 Digital\|ALC662 Digital\|ALC889A Digital\|ALC888 Digital\|ALC887 Digital"
 fi
 
 if [ -n "$NvidiaHDMISecondGen" ] ; then
