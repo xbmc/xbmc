@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "AEStream.h"
 #include "PulseAEEventThread.h"
 #include <pulse/pulseaudio.h>
@@ -114,3 +116,4 @@ private:
   bool m_draining;
 };
 
+#endif

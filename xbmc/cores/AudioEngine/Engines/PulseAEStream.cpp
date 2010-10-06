@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "PulseAEStream.h"
 #include "AEFactory.h"
 #include "AEUtil.h"
@@ -539,3 +541,4 @@ bool CPulseAEStream::Cork(bool cork)
   return cork;
 }
 
+#endif

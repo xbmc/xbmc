@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "AESound.h"
 
 class CPulseAESound : public IAESound
@@ -42,3 +44,4 @@ public:
   virtual float*       GetSamples    () { return NULL; }
 };
 
+#endif

@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "AE.h"
 #include "PulseAEStream.h"
 #include "utils/CriticalSection.h"
@@ -64,3 +66,5 @@ private:
   pa_threaded_mainloop *m_MainLoop;
   float m_Volume;
 };
+
+#endif
