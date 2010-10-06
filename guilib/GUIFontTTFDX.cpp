@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include "GUIFont.h"
 #include "GUIFontTTFDX.h"
 #include "GUIFontManager.h"
@@ -35,8 +37,6 @@
 #include FT_OUTLINE_H
 
 using namespace std;
-
-#ifdef HAS_DX
 
 struct CUSTOMVERTEX 
 {
