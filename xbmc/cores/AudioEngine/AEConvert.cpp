@@ -523,8 +523,9 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
 
 unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, uint8_t *dest)
 {
-  int32_t *dst = (int32_t*)dest;
   #ifdef __SSE__
+  int32_t *dst = (int32_t*)dest;
+
   const __m128 mul = _mm_set_ps1(INT24_MAX+.5f);
   unsigned int count = samples;
 
@@ -583,6 +584,8 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
 unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, uint8_t *dest)
 {
   #ifdef __SSE__
+  int32_t *dst = (int32_t*)dest;
+
   const __m128 mul = _mm_set_ps1(INT24_MAX+.5f);
   unsigned int count = samples;
 
@@ -767,7 +770,7 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
     const uint32_t odd = samples - even;
     if (odd == 1)
     {
-      dst[0] = MathUtils::round_int(data[0] * (float)INT32_MAX));
+      dst[0] = MathUtils::round_int(data[0] * (float)INT32_MAX);
       #ifndef __BIG_ENDIAN__
       dst[0] = Endian_Swap32(dst[0]);
       #endif
