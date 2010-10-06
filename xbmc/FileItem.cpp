@@ -1972,6 +1972,14 @@ void CFileItemList::Stack()
             CUtil::AddFileToFolder(item->m_strPath, "index.bdmv", path);
             if (CFile::Exists(path))
               dvdPath = path;
+            else
+            {
+              CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
+              CUtil::AddFileToFolder(dvdPath, "index.bdmv", path);
+              dvdPath.Empty();
+              if (CFile::Exists(path))
+                dvdPath = path;
+            }
           }
 #endif
           if (!dvdPath.IsEmpty())
