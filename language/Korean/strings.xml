@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 09/27/2010-->
+<!--Date of translation: 10/06/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -534,6 +534,8 @@
   <string id="609">CDDA 추출 경로가 설정되지 않음.</string>
   <string id="610">오디오 트랙 추출</string>
   <string id="611">번호 입력</string>
+  <string id="612">비트/샘플</string>
+  <string id="613">샘플 주파수</string>
   <string id="620">오디오 CD</string>
   <string id="621">인코더</string>
   <string id="622">음질</string>
