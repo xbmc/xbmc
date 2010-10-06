@@ -1,3 +1,4 @@
 usr/bin/diskmounter
 usr/bin/runXBMC
 usr/bin/setAlsaVolumes
+usr/lib/xbmc/live.d/

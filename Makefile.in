@@ -548,12 +548,14 @@ install-datas: install-scripts
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
 install-livedatas: livedatas
-	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."
+	@echo "Install Live CD datas..."
 	@mkdir -p $(DESTDIR)$(bindir)
 	@install -D tools/XBMCLive/diskmounter $(DESTDIR)$(bindir)/diskmounter
 	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
 	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
 	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
+	@mkdir -p $(DESTDIR)$(libdir)/xbmc
+	@cp -r tools/XBMCLive/live.d $(DESTDIR)$(libdir)/xbmc/
 
 uninstall:
 	@echo "Removing XBMC..."
