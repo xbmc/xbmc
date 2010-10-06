@@ -534,12 +534,8 @@ uint8_t* CSoftAEStream::GetFrame()
 
 float CSoftAEStream::GetDelay()
 {
-  CSingleLock lock(m_critSection);
   if (m_delete) return 0.0f;
-  float frames = m_framesBuffered;
-  lock.Leave();
-
-  return AE.GetDelay() + (frames / AE.GetSampleRate());
+  return AE.GetDelay() + ((float)m_framesBuffered / (float)AE.GetSampleRate());
 }
 
 void CSoftAEStream::Drain()
