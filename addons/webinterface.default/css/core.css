@@ -61,7 +61,7 @@ body {
 	float: left;
 	width: 130px;
 	height: 150px;
-	padding: 10px;
+	padding: 10px 10px 15px 10px;
 	}
 
 .floatableMovieCover {
@@ -161,18 +161,65 @@ div.imgWrapper div.inner {
 	left: 0;
 	right: 0;
 	background: #fff;
-	padding-bottom: 150px;
+	padding-bottom: 149px;
+	}
+
+.footerPadding {
+	clear: both;
 	}
 
 .albumContainer {
 	top: 74px;
 	}
 
-.albumView .track {
+.albumView .trackRow td {
 	cursor: pointer;
-	line-height: 10px;
+	line-height: 14px;
 	font-size: 14px;
 	padding: 1px 0;
+	padding-left: 4px;
+	}
+
+.albumView {
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+	}
+
+.albumView td.albumThumb {
+	padding-left: 0px;
+	}
+
+.albumView td.time,
+.albumView th.time {
+	text-align: right;
+	padding-right: 4px;
+	}
+
+.albumView tr.headerRow,
+#albumSelector table {
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAXCAIAAABF+LJYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4NTQ0NDZGQ0U1ODExREZCMjM4ODgyQjJEQTE5ODBBIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4NTQ0NDcwQ0U1ODExREZCMjM4ODgyQjJEQTE5ODBBIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OTg1NDQ0NkRDRTU4MTFERkIyMzg4ODJCMkRBMTk4MEEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OTg1NDQ0NkVDRTU4MTFERkIyMzg4ODJCMkRBMTk4MEEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7FuFIdAAAAOklEQVR42kyMUQoAMAhC0+j+J+s2ffXTVtDYA1EUpLsjImhmVFU2IsKqGm1uz8zxX7sBeF1zv44AAwDVBhSDNN7oJQAAAABJRU5ErkJggg%3D%3D') repeat-x;
+	}
+
+.albumView th {
+	font-size: 11px;
+	text-align: left;
+	border-left: 1px solid #aeaeae;
+	border-bottom: 1px solid #aeaeae;
+	padding-left: 4px;
+	height: 13px;
+	}
+
+.albumView .albumThumb,
+.albumView .albumBG {
+	width: 120px;
+	background: #efefef;
+	vertical-align: top;
+	}
+
+.albumView .fillerTrackRow2 td {
+	height: 100%;
+	line-height: 100%;
 	}
 
 /* Album Selector */
@@ -189,8 +236,7 @@ div.imgWrapper div.inner {
 	border: 1px solid #aeaeae;
 	border-top: 0px;
 	height: 23px;
-	border-collapse: collapse;
-	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAXCAIAAABF+LJYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjk4NTQ0NDZGQ0U1ODExREZCMjM4ODgyQjJEQTE5ODBBIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjk4NTQ0NDcwQ0U1ODExREZCMjM4ODgyQjJEQTE5ODBBIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OTg1NDQ0NkRDRTU4MTFERkIyMzg4ODJCMkRBMTk4MEEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OTg1NDQ0NkVDRTU4MTFERkIyMzg4ODJCMkRBMTk4MEEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7FuFIdAAAAOklEQVR42kyMUQoAMAhC0+j+J+s2ffXTVtDYA1EUpLsjImhmVFU2IsKqGm1uz8zxX7sBeF1zv44AAwDVBhSDNN7oJQAAAABJRU5ErkJggg%3D%3D') repeat-x;
+	border-collapse: collapse;	
 	}
 
 #albumSelector td {

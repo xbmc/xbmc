@@ -55,11 +55,14 @@ MediaLibrary.prototype = {
 				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 						this.albumList = data.result.albums;
-						$.each($(data.result.albums), jQuery.proxy(function(i, item) {
+						this.albumList.sort(jQuery.proxy(this.albumArtistSorter, this));
+						$.each($(this.albumList), jQuery.proxy(function(i, item) {
 							var floatableAlbum = this.generateThumb('album', item.thumbnail, item.album_title, item.album_artist);
 							floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
 							libraryContainer.append(floatableAlbum);
 						}, this));
+						var footerPadding = $('<div>').addClass('footerPadding');
+						libraryContainer.append(footerPadding);
 						$('#spinner').hide();
 						//$('#libraryContainer img').lazyload();
 						libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
@@ -163,7 +166,7 @@ MediaLibrary.prototype = {
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
 										 .addClass('contentContainer')
 										 .addClass('albumContainer')
-										 .html('<table class="albumView"><tr><th>Artwork</th><th>&nbsp;</th><th>Name</th><th>Time</th><th>Artist</th><th>Genre</th></tr><tbody class="resultSet"></tbody></table>');
+										 .html('<table class="albumView"><thead><tr class="headerRow"><th>Artwork</th><th>&nbsp;</th><th>Name</th><th class="time">Time</th><th>Artist</th><th>Genre</th></tr></thead><tbody class="resultSet"></tbody></table>');
 					$('.contentContainer').hide();
 					$('#content').append(albumDetailsContainer);
 					var albumThumbnail = event.data.album.thumbnail;
@@ -171,49 +174,51 @@ MediaLibrary.prototype = {
 					var albumArtist = event.data.album.album_artist||'Unknown Artist';
 					var trackCount = data.result.total;
 					$.each($(data.result.songs), jQuery.proxy(function(i, item) {
-						var trackRow = $('<tr>');
+						var trackRow = $('<tr>').addClass('trackRow');
 						if (i == 0) {
-							var albumTD = $('<td>');
-							albumTD.attr('rowspan', ++trackCount).addClass('albumThumb');
+							var albumTD = $('<td>').attr('rowspan', ++trackCount).addClass('albumThumb');
 							trackRow.append(albumTD);
 						}
-						var trackNumberTD = $('<td>');
-						trackNumberTD.html(item.tracknumber).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+						var trackNumberTD = $('<td>')
+							.html(item.tracknumber)
+							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackNumberTD);
-						var trackTitleTD = $('<td>');
-						trackTitleTD.html(item.title).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+						var trackTitleTD = $('<td>')
+							.html(item.title)
+							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackTitleTD);
-						var trackDurationTD = $('<td>');
-						trackDurationTD.html(durationToString(item.duration)).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+						var trackDurationTD = $('<td>')
+							.addClass('time')
+							.html(durationToString(item.duration))
+							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackDurationTD);
-						var trackArtistTD = $('<td>');
-						trackArtistTD.html(item.artist).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+						var trackArtistTD = $('<td>')
+							.html(item.artist)
+							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackArtistTD);
-						var trackGenreTD = $('<td>');
-						trackGenreTD.html(item.genre).addClass('track').bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+						var trackGenreTD = $('<td>')
+							.html(item.genre)
+							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
 					if (trackCount > 0) {
-						var trackRow = $('<tr>');
-						var trackNumberTD = $('<td>');
-						trackNumberTD.addClass('fillerTrack').html('&nbsp');
-						trackRow.append(trackNumberTD);
-						var trackTitleTD = $('<td>');
-						trackTitleTD.addClass('fillerTrack').html('&nbsp');
-						trackRow.append(trackTitleTD);
-						var trackDurationTD = $('<td>');
-						trackDurationTD.addClass('fillerTrack').html('&nbsp');
-						trackRow.append(trackDurationTD);
-						var trackArtistTD = $('<td>');
-						trackArtistTD.addClass('fillerTrack').html('&nbsp');
-						trackRow.append(trackArtistTD);
-						var trackGenreTD = $('<td>');
-						trackGenreTD.addClass('fillerTrack').html('&nbsp');
-						trackRow.append(trackGenreTD);
+						var trackRow = $('<tr>').addClass('fillerTrackRow');
+						for (var i = 0; i < 5; i++) {
+							trackRow.append($('<td>').html('&nbsp'));
+						}
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
+
+						var trackRow2 = $('<tr>').addClass('fillerTrackRow2');
+						trackRow2.append($('<td>').addClass('albumBG').html('&nbsp'));
+						for (var i = 0; i < 5; i++) {
+							trackRow2.append($('<td>').html('&nbsp'));
+						}
+						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow2);
 					}
 					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(this.generateThumb('album', albumThumbnail, albumTitle, albumArtist));
+					var footerPadding = $('<div>').addClass('footerPadding');
+					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(footerPadding);
 					$('#spinner').hide();
 					myScroll = new iScroll('albumDetails' + event.data.album.albumid);
 				}, this), 'json');
@@ -321,11 +326,14 @@ MediaLibrary.prototype = {
 					} else {
 						libraryContainer.html('');
 					}
+					data.result.movies.sort(jQuery.proxy(this.movieTitleSorter, this));
 					$.each($(data.result.movies), jQuery.proxy(function(i, item) {
 						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title, "");
 						floatableMovieCover.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
 						libraryContainer.append(floatableMovieCover);
 					}, this));
+					var footerPadding = $('<div>').addClass('footerPadding');
+					libraryContainer.append(footerPadding);
 					$('#spinner').hide();
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 					libraryContainer.trigger('scroll');
@@ -375,5 +383,27 @@ MediaLibrary.prototype = {
 			} else {
 				$('#topScrollFade').fadeOut();
 			}
+		},
+		albumArtistSorter: function(a, b) {
+			var result = this.sortAlpha(a.album_artist, b.album_artist);
+			if (result == 0) {
+				console.log('matches ', a.album_artist, b.album_artist);
+				return this.sortAlpha(a.album_title, b.album_title);
+			}
+			return result;
+		},
+		sortAlpha: function(aStr, bStr) {
+			aStr = aStr.toLowerCase();
+			bStr = bStr.toLowerCase();
+			if (aStr < bStr) {
+				return -1;
+			}
+			if (aStr > bStr) {
+				return 1;
+			}
+			return 0;
+		},
+		movieTitleSorter: function(a, b) {
+			return this.sortAlpha(a.title, b.title);
 		}
 	}
