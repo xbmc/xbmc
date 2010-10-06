@@ -231,7 +231,7 @@
 			<control type="label">
 				<posx>760</posx>
 				<posy>50</posy>
-				<width>right</width>
+				<width>360</width>
 				<height>25</height>
 				<label>$INFO[Visualisation.Name] [I]($LOCALIZE[20166])[/I] ·[CR]fps: $INFO[System.FPS] ·</label>
 				<align>right</align>
