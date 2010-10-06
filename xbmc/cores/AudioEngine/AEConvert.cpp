@@ -523,8 +523,8 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
 
 unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, uint8_t *dest)
 {
-  #ifdef __SSE__
   int32_t *dst = (int32_t*)dest;
+  #ifdef __SSE__
 
   const __m128 mul = _mm_set_ps1(INT24_MAX+.5f);
   unsigned int count = samples;
