@@ -30,10 +30,10 @@
 inline void SwapEndian(uint16_t *dst, uint16_t *src, unsigned int size)
 {
   for(unsigned int i = 0; i < size; ++i, ++dst, ++src)
-    *dst = ((*src & 0xFF00) >> 8) | ((*src * 0x00FF) << 8);
+    *dst = ((*src & 0xFF00) >> 8) | ((*src & 0x00FF) << 8);
 }
 
-void CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
+int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 {
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
 
@@ -42,49 +42,76 @@ void CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC958_TYPE_AC3;
   packet->m_length    = size;
 
-#ifdef __ENDIAN_BIG__
+#ifdef __BIG_ENDIAN__
   memcpy(packet->m_data, data, size);
 #else
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+  if (size & 0x1)
+    packet->m_data[size - 1] = data[size - 1];
 #endif
 
   memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
+  return 6114;
 }
 
-void CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
+int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
 {
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
-
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
   packet->m_type      = IEC958_TYPE_DTS1;
   packet->m_length    = size;
+
+#ifdef __BIG_ENDIAN__
   memcpy(packet->m_data, data, size);
-  memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
+#else
+  SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+  if (size & 0x1)
+    packet->m_data[size - 1] = data[size - 1];
+#endif
+
+  memset(packet->m_data + size, 0, 512 - size);
+  return 512;
 }
 
-void CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
+int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
 {
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
-
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
   packet->m_type      = IEC958_TYPE_DTS2;
   packet->m_length    = size;
+
+#ifdef __BIG_ENDIAN__
   memcpy(packet->m_data, data, size);
-  memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
+#else
+  SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+  if (size & 0x1)
+    packet->m_data[size - 1] = data[size - 1];
+#endif
+
+  memset(packet->m_data + size, 0, 1024 - size);
+  return 1024;
 }
 
-void CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
+int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
 {
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
-
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
   packet->m_type      = IEC958_TYPE_DTS3;
   packet->m_length    = size;
+
+#ifdef __BIG_ENDIAN__
   memcpy(packet->m_data, data, size);
-  memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
+#else
+  SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+  if (size & 0x1)
+    packet->m_data[size - 1] = data[size - 1];
+#endif
+
+  memset(packet->m_data + size, 0, 2048 - size);
+  return 2048;
 }
 
 

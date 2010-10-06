@@ -70,57 +70,99 @@ CAEStreamInfo::~CAEStreamInfo()
 
 int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* = NULL */, unsigned int *bufferSize/* = 0 */)
 {
-  if (m_skipBytes)
+  if (size == 0)
   {
-    unsigned int canSkip = std::min(size, m_skipBytes);
-    size -= canSkip;
-    data += canSkip;
+    if (bufferSize)
+      *bufferSize = 0;
+    return 0;
   }
 
-  if (size == 0)
-    return 0;
-
   unsigned int consumed = 0;
-  unsigned int offset   = 0;
-
-  unsigned int room = sizeof(m_buffer) - m_bufferSize;
-  while(1)
+  if(m_skipBytes)
   {
-    if (!size)
-      return consumed;
-
-    unsigned int copy = std::min(room, size);
+    unsigned int canSkip = std::min(size, m_skipBytes);
+    unsigned int room    = sizeof(m_buffer) - m_bufferSize;
+    unsigned int copy    = std::min(room, canSkip);
 
     memcpy(m_buffer + m_bufferSize, data, copy);
     m_bufferSize += copy;
-    consumed     += copy;
-    data         += copy;
-    size         -= copy;
-    room         -= copy;
+    m_skipBytes  -= copy;
 
-    offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
-    if (m_hasSync) break;
-    else
+    if (m_skipBytes)
     {
-      m_syncFunc = &CAEStreamInfo::DetectType;
-      m_dataType = STREAM_TYPE_NULL;
-      m_packFunc = NULL;
+      if (bufferSize)
+        *bufferSize = 0;
+      return copy;
+    }
 
-      /* if the buffer is full, or the offset < the buffer size */
-      if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
+    GetPacket(buffer, bufferSize);
+    return copy;
+  }
+  else
+  {
+    unsigned int offset = 0;
+    unsigned int room = sizeof(m_buffer) - m_bufferSize;
+    while(1)
+    {
+      if (!size)
       {
-        m_bufferSize -= offset;
-        room         += offset;
-        memmove(m_buffer, m_buffer + offset, m_bufferSize);
+        if (bufferSize)
+          *bufferSize = 0;
+        return consumed;
+      }
+
+      unsigned int copy = std::min(room, size);
+
+      memcpy(m_buffer + m_bufferSize, data, copy);
+      m_bufferSize += copy;
+      consumed     += copy;
+      data         += copy;
+      size         -= copy;
+      room         -= copy;
+
+      offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
+      if (m_hasSync) break;
+      else
+      {
+        m_syncFunc = &CAEStreamInfo::DetectType;
+        m_dataType = STREAM_TYPE_NULL;
+        m_packFunc = NULL;
+
+        /* if the buffer is full, or the offset < the buffer size */
+        if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
+        {
+          m_bufferSize -= offset;
+          room         += offset;
+          memmove(m_buffer, m_buffer + offset, m_bufferSize);
+        }
       }
     }
+
+    /* if we got here, we acquired sync on the buffer */
+
+    /* align the buffer */
+    if (offset)
+    {
+      m_bufferSize -= offset;
+      memmove(m_buffer, m_buffer + offset, m_bufferSize);
+    }
+
+    /* bytes to skip until the next packet */
+    m_skipBytes = std::max(0, (int)m_fsize - (int)m_bufferSize);
+    if (m_skipBytes)
+    {
+      if (bufferSize)
+        *bufferSize = 0;
+      return consumed;
+    }
+
+    GetPacket(buffer, bufferSize);
+    return consumed;
   }
+}
 
-  /* if we got here, we acquired sync on the buffer */
-
-  /* bytes to skip until the next packet */
-  m_skipBytes = std::min(0, (int)m_fsize - (int)m_bufferSize);
-
+void CAEStreamInfo::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
+{
   /* if the caller wants the packet */
   if (buffer)
   {
@@ -132,17 +174,14 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
     }
 
     /* copy the data into the buffer and update the size */
-    memcpy(*buffer, m_buffer + offset, m_fsize);
+    memcpy(*buffer, m_buffer, m_fsize);
     if (bufferSize)
       *bufferSize = m_fsize;
   }
 
   /* remove the parsed data from the buffer */
-  unsigned int remove = m_fsize + offset;
-  m_bufferSize -= remove;
-  memmove(m_buffer, m_buffer + remove, m_bufferSize);
-
-  return consumed;
+  m_bufferSize -= m_fsize;
+  memmove(m_buffer, m_buffer + m_fsize, m_bufferSize);
 }
 
 /* SYNC FUNCTIONS */
@@ -199,7 +238,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 {
   unsigned int skip = 0;
 
-  for(skip = 0; size - skip > 6; ++skip, ++data)
+  for(; size - skip > 6; ++skip, ++data)
   {
     /* search for an ac3 sync word */
     if(data[0] != 0x0b || data[1] != 0x77)
@@ -226,7 +265,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       case 2: framesize = bitRate * 4; break;
     }
 
-    m_fsize = framesize * 2;
+    m_fsize = framesize << 1;
     m_sampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */
@@ -253,15 +292,16 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
   }
 
   /* if we get here, the entire packet is invalid and we have lost sync */
+  CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 sync lost");
   m_hasSync = false;
   return size;
 }
 
 unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
 {
-  unsigned int skip;
+  unsigned int skip = 0;
 
-  for(skip = 0; size - skip > 8; ++skip, ++data)
+  for(; size - skip > 9; ++skip, ++data)
   {
     unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
     bool match = true;
@@ -321,20 +361,20 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
     if (m_dataIsLE)
     {
       /* if it is not a termination frame, check the next 6 bits are set */
-      if ((data[4] & 0x80) == 0x80 && (data[4] & 0x7C) != 0x7C)
-        continue;
-
-      /* get the frame size */
-      m_fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1; 
-   }
-   else
-   {
-      /* if it is not a termination frame, check the next 6 bits are set */
       if ((data[5] & 0x80) == 0x80 && (data[5] & 0x7C) != 0x7C)
         continue;
 
       /* get the frame size */
-      m_fsize = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
+      m_fsize = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1; 
+   }
+   else
+   {
+      /* if it is not a termination frame, check the next 6 bits are set */
+      if ((data[4] & 0x80) == 0x80 && (data[4] & 0x7C) != 0x7C)
+        continue;
+
+      /* get the frame size */
+      m_fsize = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1;
    }
 
     /* make sure the framesize is sane */
@@ -342,26 +382,35 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       continue;
 
     bool invalid = false;
+    DataType dataType;
     switch((blocks + 1) << 5)
     {
-      case 512 : m_dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC958::PackDTS_512 ; break;
-      case 1024: m_dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC958::PackDTS_1024; break;
-      case 2048: m_dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC958::PackDTS_2048; break;
+      case 512 : dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC958::PackDTS_512 ; break;
+      case 1024: dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC958::PackDTS_1024; break;
+      case 2048: dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC958::PackDTS_2048; break;
       default:
         invalid = true;
-        continue;
+        break;
     }
+
     if (invalid)
       continue;
 
-    m_hasSync    = true;
-    m_syncFunc   = &CAEStreamInfo::SyncDTS;
-    m_sampleRate = DTSSampleRates[srate_code];
-    CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
+    unsigned int sampleRate = DTSSampleRates[srate_code];
+    if (!m_hasSync || skip || dataType != m_dataType || sampleRate != m_sampleRate)
+    {
+      m_hasSync    = true;
+      m_dataType   = dataType;
+      m_sampleRate = sampleRate;
+      m_syncFunc   = &CAEStreamInfo::SyncDTS;
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
+    }
+
     return skip;
   }
 
   /* lost sync */
+  CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS sync lost");
   m_hasSync = false;
   return size;
 }

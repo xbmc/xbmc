@@ -259,7 +259,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate          , NULL);
   snd_pcm_hw_params_set_channels (m_pcm, hw_params, format.m_channelCount      );
 
-  unsigned int frames          = (sampleRate / 1000);
+  unsigned int frames          = sampleRate / 1000;
   unsigned int periods         = ALSA_PERIODS;
 
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
@@ -304,8 +304,7 @@ success:
   format.m_sampleRate   = sampleRate;
   format.m_frames       = snd_pcm_bytes_to_frames(m_pcm, periodSize);
   format.m_frameSamples = format.m_frames * format.m_channelCount;
-  format.m_frameSize    = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
-//snd_pcm_frames_to_bytes(m_pcm, 1);
+  format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
   m_timeout             = -1;//((float)format.m_frames / sampleRate * 1000.0f) * 2;
 
   snd_pcm_hw_params_free(hw_params_copy);
@@ -325,7 +324,7 @@ bool CAESinkALSA::InitializeSW(AEAudioFormat &format)
   snd_pcm_sw_params_set_silence_threshold(m_pcm, sw_params, 0);
   snd_pcm_sw_params_get_boundary         (sw_params, &boundary);
   snd_pcm_sw_params_set_silence_size     (m_pcm, sw_params, boundary);
-  snd_pcm_sw_params_set_avail_min        (m_pcm, sw_params, format.m_frames >> 1);
+  snd_pcm_sw_params_set_avail_min        (m_pcm, sw_params, format.m_frames);
 
   if (snd_pcm_sw_params(m_pcm, sw_params) < 0)
   {
