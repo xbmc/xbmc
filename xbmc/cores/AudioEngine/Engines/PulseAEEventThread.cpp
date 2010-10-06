@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "PulseAEEventThread.h"
 #include "AEUtil.h"
 #include "log.h"
@@ -92,3 +94,4 @@ void CPulseAEEventThread::Run()
   }
 }
 
+#endif

@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "PulseAE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
@@ -214,3 +216,5 @@ void CPulseAE::ContextStateCallback(pa_context *c, void *userdata)
       break;
   }
 }
+
+#endif

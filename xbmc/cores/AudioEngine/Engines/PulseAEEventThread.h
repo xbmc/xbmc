@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_PULSEAUDIO
+
 #include "PulseAEStream.h"
 #include "utils/Event.h"
 #include "utils/Thread.h"
@@ -50,3 +52,4 @@ private:
   void SetCallback(IAEStream::AECBFunc *cbFunc, void *arg);
 };
 
+#endif
