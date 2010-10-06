@@ -157,6 +157,15 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   item->SetSortLabel(label);
 }
 
+void SSortFileItem::ByDateAdded(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  label.Format("%d", item->GetVideoInfoTag()->m_iFileId);
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::BySize(CFileItemPtr &item)
 {
   if (!item) return;

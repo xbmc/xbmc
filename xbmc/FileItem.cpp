@@ -1488,6 +1488,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_COUNTRY:
     FillSortFields(SSortFileItem::ByCountry);
     break;
+  case SORT_METHOD_DATEADDED:
+    FillSortFields(SSortFileItem::ByDateAdded);
+    break;
   case SORT_METHOD_FILE:
     FillSortFields(SSortFileItem::ByFile);
     break;
