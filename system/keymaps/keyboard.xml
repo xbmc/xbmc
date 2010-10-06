@@ -124,6 +124,11 @@
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
   </global>
+  <LoginScreen>
+    <keyboard>
+      <end>XBMC.ShutDown()</end>
+    </keyboard>
+  </LoginScreen>
   <Home>
     <keyboard>
       <i>info</i>
