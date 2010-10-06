@@ -50,3 +50,20 @@ function durationToString(duration) {
 	result += (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
 	return result;
 }
+
+function applyDeviceFixes() {
+	document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+}
+
+var commsErrorTimeout;
+
+function displayCommunicationError(m) {
+	clearTimeout(commsErrorTimeout);
+	var message = m||'Connection to server lost';
+	$('#commsErrorPanel').html(message).show();
+	commsErrorTimeout = setTimeout('hideCommunicationError()', 5000);
+}
+
+function hideCommunicationError() {
+	$('#commsErrorPanel').hide();
+}
