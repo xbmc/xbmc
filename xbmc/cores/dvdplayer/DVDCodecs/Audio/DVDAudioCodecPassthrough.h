@@ -51,7 +51,7 @@ private:
   uint8_t      *m_buffer;
   unsigned int  m_bufferSize;
 
-  bool          m_hasData;
+  unsigned int  m_dataSize;
   uint8_t       m_packedBuffer[MAX_IEC958_PACKET];
 };
 
