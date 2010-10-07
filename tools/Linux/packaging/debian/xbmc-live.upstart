@@ -32,6 +32,8 @@ pre-start script
 		echo "$@" | cut -d "=" -f 2
 	}
 
+	clear >/dev/tty7 || true
+
 	CMDLINE=$(cat /proc/cmdline)
 
 	#Process command line options
@@ -45,85 +47,31 @@ pre-start script
 	done
 	echo $XBMC_PARAMS > /tmp/xbmcliveParams
 
-	# Relies on init scripts to mount boot device on a specified directory
-	# TODO hardcode the already mounted directories (speed)
-	# XBMC Live V2 
-	BOOTMEDIADIRECTORY="image"
-	BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-	if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
-		# XBMC Live V1
-		BOOTMEDIADIRECTORY="bootMedia"
-		BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+	if grep "boot=live" /proc/cmdline ; then
+		# Relies on init scripts to mount boot device on a specified directory
+		BOOTMEDIAMOUNTPOINT="/live/image"
 	fi
 
-	# Executes hooks (if any) in the "Hooks" directory
-	for hook in $(ls -1 $BOOTMEDIAMOUNTPOINT/Hooks/*.sh)
+	BOOTHOOKSDIRECTORY="/usr/lib/xbmc"
+
+	xbmcUser=xbmc
+	# Read configuration variable file if it is present
+	[ -r /etc/default/xbmc-live ] && . /etc/default/xbmc-live
+	if ! getent passwd $xbmcUser >/dev/null; then
+		xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+	fi
+
+	# Executes pre-hooks (if any) in the System "Hooks" directory
+	for hook in $(ls -1 $BOOTHOOKSDIRECTORY/live.d/*.sh)
 	do
-		sh $hook
+	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
 	done
 
-
-	# Identify Ubuntu release
-	LSBRELEASE="$(lsb_release -r | cut -f2 | sed 's/\.//')"
-
-	# Identify GPU, Intel by default
-	GPUTYPE="INTEL"
-
-	GPU=$(lspci -nn | grep 0300)
-	# 10de == NVIDIA
-	if [ "$(echo $GPU | grep 10de)" ]; then
-		GPUTYPE="NVIDIA"
-	else
-		# 1002 == AMD
-		if [ "$(echo $GPU | grep 1002)" ]; then
-			GPUTYPE="AMD"
-		fi
-	fi
-
-	# Generates valid xorg.conf for proprietary drivers if missing
-	if [ ! -e /etc/X11/xorg.conf ] && ! grep -q -i nogenxconf /tmp/xbmcliveParams ; then
-		if [ "$GPUTYPE" = "NVIDIA" ]; then
-			if [ $LSBRELEASE -gt 910 ]; then
-				# only on lucid!
-				update-alternatives --set gl_conf /usr/lib/nvidia-current/ld.so.conf
-				ldconfig
-			fi
-
-			# run nvidia-xconfig
-			/usr/bin/nvidia-xconfig -s --no-logo --no-composite --no-dynamic-twinview --force-generate
-
-			# Disable scaling to make sure the gpu does not loose performance
-			sed -i -e 's%Section \"Screen\"%&\n    Option      \"FlatPanelProperties\" \"Scaling = Native\"\n    Option      \"HWCursor\" \"Off\"%' /etc/X11/xorg.conf
-		fi
-		if [ "$GPUTYPE" = "AMD" ]; then
-			if [ $LSBRELEASE -gt 910 ]; then
-				# only on lucid!
-				update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
-				ldconfig
-			fi
-
-			# run aticonfig
-			/usr/bin/aticonfig --initial --sync-vsync=on -f
-		fi
-	fi
-
-	if [ ! "$(mount | grep iso9660)" ]; then
-		if ! grep -q -i noredir /tmp/xbmcliveParams ; then
-			if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
-				if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
-					mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
-				fi
-				if [ -d /home/xbmc/.xbmc ]; then
-					if [ -L /home/xbmc/.xbmc ]; then
-						rm /home/xbmc/.xbmc
-					else
-						mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
-					fi
-				fi
-				ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
-			fi
-		fi
-	fi
+	# Executes pre-hooks (if any) in the user "Hooks" directory
+	for hook in $(ls -1 /home/$xbmcUser/.xbmc/live.d/*.sh)
+	do
+	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
+	done
 
 	if [ -f /home/xbmc/.xsession ] ; then
 		rm /home/xbmc/.xsession
@@ -139,83 +87,6 @@ script
 	fi
 
 	exec /usr/bin/runXBMC
-end script
-
-post-start script
-	findUSBPort() {
-		local FD=7
-		local tmpFile=$(mktemp)
-		local eof=0
-		local line
-		local usbPort=""
-		local pciDevice=""
-		local inBlock="0"
-		local token=$1
-
-		lshal > $tmpFile
-
-		# Open files.
-		eval exec "$FD<$tmpFile"
-
-		while [ $eof -eq 0 ]
-		do
-			if read line <&$FD; then
-				if [ -n "$(echo $line | grep -i $token)" ]; then
-					if [ "$inBlock" = "0" ]; then
-						inBlock="1"
-						token="linux.sysfs_path"
-					else
-						pciDevice=$(echo $line | awk -F/ '{ print $5}')
-						eof=1
-					fi
-				fi
-			else
-				eof=1
-			fi
-		done
-
-		if [ -n "$pciDevice" ] ; then
-			usbPort=$(cat /proc/acpi/wakeup | grep $pciDevice | awk '{ print $1}')
-		fi
-
-		echo $usbPort
-	}
-
-
-	if  grep -q -i setvolume /tmp/xbmcliveParams ; then
-		/usr/bin/setAlsaVolumes
-	fi
-
-	if ! grep -q -i nodiskmount /tmp/xbmcliveParams ; then
-		/usr/bin/diskmounter
-	fi
-
-	if grep -q -i wakeOnUSBRemote /tmp/xbmcliveParams ; then
-		lircDriver=$(dmesg | grep usbcore | grep -i 'lirc' | sed -e "s/.* \(lirc*\)/\1/" | head -n 1)
-		if [ ! -n "$lircDriver" ] ; then
-			# No lirc driver loaded
-			exit
-		fi
-
-		# Wait for udevtrigger to settle down (if any)
-		udevTriggerPID=$(ps x | grep udevtrigger | grep -v grep | cut -f2 -d ' ')
-		if [ -n "udevTriggerPID" }; then
-			while test -d /proc/$udevTriggerPID; do sleep 1; done;
-		fi
-
-		usbPort=$(findUSBPort "${lircDriver}")
-
-		if [ -z "$usbPort" ]; then
-			# No USB Remote found
-			exit
-		fi
-
-		usbStatus=`cat /proc/acpi/wakeup | grep $usbPort | awk {'print $3}'`
-		if [ "$usbStatus" = "disabled" ]; then
-			echo $usbPort > /proc/acpi/wakeup
-			echo -1 >/sys/module/usbcore/parameters/autosuspend
-		fi
-	fi
 end script
 
 pre-stop script
