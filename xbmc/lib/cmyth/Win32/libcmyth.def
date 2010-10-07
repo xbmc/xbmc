@@ -213,3 +213,4 @@ EXPORTS
 	cmyth_ringbuf_read
 	cmyth_file_read
 	cmyth_livetv_read
+	cmyth_get_cutlist
