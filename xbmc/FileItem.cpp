@@ -1226,7 +1226,8 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
-    CStdString path(pItem->m_strPath); path.ToLower();
+    CStdString path(pItem->m_strPath); 
+    path.ToLower();
     m_map.insert(MAPFILEITEMSPAIR(path, pItem));
   }
 }

@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "AdvancedSettings.h"
 #include "../Util.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace Json;
@@ -45,6 +46,15 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       CFileItemList items;
       for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
         items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
+
+      for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+      {
+        if (items[i]->IsSmb())
+        {
+          CURL url(items[i]->m_strPath);
+          items[i]->m_strPath = url.GetWithoutUserDetails();
+        }
+      }
 
       HandleFileItemList(NULL, true, "shares", items, parameterObject, result);
     }
@@ -101,6 +111,12 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         {
           if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
             continue;
+
+          if (items[i]->IsSmb())
+          {
+            CURL url(items[i]->m_strPath);
+            items[i]->m_strPath = url.GetWithoutUserDetails();
+          }
 
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(items[i]);
