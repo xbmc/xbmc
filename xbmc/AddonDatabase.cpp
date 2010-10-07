@@ -51,7 +51,7 @@ bool CAddonDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE addon (id integer primary key, type text,"
                 "name text, summary text, description text, stars integer,"
                 "path text, addonID text, icon text, version text, "
-                "changelog text, fanart text, author text)\n");
+                "changelog text, fanart text, author text, disclaimer text)\n");
 
     CLog::Log(LOGINFO, "create addon index");
     m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
@@ -146,6 +146,10 @@ bool CAddonDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE TABLE addonextra (id integer, key text, value text)\n");
       m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
     }
+    if (version < 12)
+    {
+      m_pDS->exec("alter table addon add disclaimer text");
+    }
   }
   catch (...)
   {
@@ -167,16 +171,16 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
 
     CStdString sql = PrepareSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
-                               "fanart, addonID, version, author)"
+                               "fanart, addonID, version, author, disclaimer)"
                                " values(NULL, '%s', '%s', '%s', '%s', %i,"
-                               "'%s', '%s', '%s', '%s', '%s','%s','%s')",
+                               "'%s', '%s', '%s', '%s', '%s','%s','%s','%s')",
                                TranslateType(addon->Type(),false).c_str(),
                                addon->Name().c_str(), addon->Summary().c_str(),
                                addon->Description().c_str(),addon->Stars(),
                                addon->Path().c_str(), addon->Props().icon.c_str(),
                                addon->ChangeLog().c_str(),addon->FanArt().c_str(),
                                addon->ID().c_str(), addon->Version().str.c_str(),
-                               addon->Author().c_str());
+                               addon->Author().c_str(),addon->Disclaimer().c_str());
     m_pDS->exec(sql.c_str());
     int idAddon = (int)m_pDS->lastinsertid();
 
@@ -263,6 +267,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       props.icon = m_pDS2->fv("icon").get_asString();
       props.fanart = m_pDS2->fv("fanart").get_asString();
       props.author = m_pDS2->fv("author").get_asString();
+      props.disclaimer = m_pDS2->fv("disclaimer").get_asString();
       sql = PrepareSQL("select reason from broken where addonID='%s'",props.id.c_str());
       m_pDS2->query(sql.c_str());
       if (!m_pDS2->eof())
