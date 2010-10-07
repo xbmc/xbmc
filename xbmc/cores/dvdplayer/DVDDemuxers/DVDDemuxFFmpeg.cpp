@@ -978,7 +978,13 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if (m_bAVI && pStream->codec->codec_id == CODEC_ID_H264)
           st->bPTSInvalid = true;
 
-        if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
+        //average fps is more accurate for mkv files
+        if (m_bMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
+        {
+          st->iFpsRate = pStream->avg_frame_rate.num;
+          st->iFpsScale = pStream->avg_frame_rate.den;
+        }
+        else if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {
           st->iFpsRate = pStream->r_frame_rate.num;
           st->iFpsScale = pStream->r_frame_rate.den;
