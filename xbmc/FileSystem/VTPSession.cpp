@@ -30,9 +30,10 @@
 
 #if defined(_LINUX)
 #include <unistd.h>
+#include <netdb.h>
 #elif defined(_WIN32)
+#include <Ws2tcpip.h>
 typedef int socklen_t;
-extern "C" int inet_pton(int af, const char *src, void *dst);
 #endif
 
 //using namespace std; On VS2010, bind conflicts with std::bind
@@ -154,35 +155,67 @@ void CVTPSession::Close()
 
 bool CVTPSession::Open(const std::string &host, int port)
 {
-  struct sockaddr_in address = {};
+  char     namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
+  struct   addrinfo hints = {};
+  struct   addrinfo *result, *addr;
+  char     service[33];
+  int      res;
 
-  m_socket = socket(AF_INET, SOCK_STREAM, 0);
-  if(m_socket == INVALID_SOCKET)
-    return false;
+  hints.ai_family   = AF_INET; //the streaming code doesn't support ipv6 yet
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+  sprintf(service, "%d", port);
 
+  res = getaddrinfo(host.c_str(), service, &hints, &result);
+  if(res) {
+    switch(res) {
+    case EAI_NONAME:
+      CLog::Log(LOGERROR, "CVTPSession::Open - The specified host is unknown\n");
+      break;
 
-  address.sin_family = AF_INET;
-  address.sin_port   = htons(port);
+    case EAI_FAIL:
+      CLog::Log(LOGERROR, "CVTPSession::Open - A nonrecoverable failure in name resolution occurred\n");
+      break;
 
-  if(inet_pton(AF_INET, host.c_str(), &address.sin_addr) != 1)
-  {
-    struct hostent* hp = gethostbyname(host.c_str());
-    if(!hp)
-    {
-      CLog::Log(LOGERROR, "CVTPSession::Open - failed to resolve hostname %s", host.c_str());
-      Close();
-      return false;
+    case EAI_MEMORY:
+      CLog::Log(LOGERROR, "CVTPSession::Open - A memory allocation failure occurred\n");
+      break;
+
+    case EAI_AGAIN:
+      CLog::Log(LOGERROR, "CVTPSession::Open - A temporary error occurred on an authoritative name server\n");
+      break;
+
+    default:
+      CLog::Log(LOGERROR, "CVTPSession::Open - Unknown error %d\n", res);
+      break;
     }
-
-    memcpy(&address.sin_addr, hp->h_addr_list[0], hp->h_length);
+    return false;
   }
 
-  CLog::Log(LOGDEBUG, "CVTPSession::Open - connecting to: %s:%d ...", inet_ntoa(address.sin_addr), address.sin_port);
-
-  if(connect(m_socket, (struct sockaddr*)&address, sizeof(address)) == SOCKET_ERROR)
+  for(addr = result; addr; addr = addr->ai_next)
   {
-    CLog::Log(LOGERROR, "CVTPSession::Open - failed to connect to server");
-    Close();
+    if(getnameinfo(addr->ai_addr, addr->ai_addrlen, namebuf, sizeof(namebuf), portbuf, sizeof(portbuf),NI_NUMERICHOST))
+    {
+      strcpy(namebuf, "[unknown]");
+      strcpy(portbuf, "[unknown]");
+	}
+    CLog::Log(LOGDEBUG, "CVTPSession::Open - connecting to: %s:%s ...", namebuf, portbuf);
+
+    m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+    if(m_socket == INVALID_SOCKET)
+      continue;
+
+    if(connect(m_socket, addr->ai_addr, addr->ai_addrlen) != SOCKET_ERROR)
+      break;
+
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
+  }
+
+  freeaddrinfo(result);
+  if(m_socket == INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "CVTPSession::Open - failed to connect to hostname %s", host.c_str());
     return false;
   }
 
@@ -414,7 +447,14 @@ SOCKET CVTPSession::GetStreamLive(int channel)
     return INVALID_SOCKET;
   }
 
-  CLog::Log(LOGDEBUG, "CVTPSession::GetStreamLive - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
+  char namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
+  if(getnameinfo((struct sockaddr*)&address, len, namebuf, sizeof(namebuf), portbuf, sizeof(portbuf), NI_NUMERICHOST))
+  {
+    strcpy(namebuf, "[unknown]");
+    strcpy(portbuf, "[unknown]");
+  }
+
+  CLog::Log(LOGDEBUG, "CVTPSession::GetStreamLive - local address %s:%s", namebuf, portbuf );
 
   if(!OpenStreamSocket(sock, address))
     return INVALID_SOCKET;
