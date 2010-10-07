@@ -118,7 +118,7 @@
 					<onright>2</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(506)</visible>
+					<visible>Control.IsVisible(560)</visible>
 				</control>
 				<control type="image">
 					<posx>40</posx>
