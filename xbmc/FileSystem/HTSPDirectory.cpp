@@ -401,7 +401,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
   else
     items.AddSortMethod(SORT_METHOD_LABEL,            20364, LABEL_MASKS("%Z", "%B", "%L", ""));
 
-  items.SetContent("movies");
+  items.SetContent("livetv");
 
   return !channels.empty();
 
