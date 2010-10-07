@@ -120,7 +120,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   struct   addrinfo *result, *addr;
   char     service[33];
   int      res;
-  socket_t fd;
+  socket_t fd = -1;
 
   memset(&hints, 0, sizeof(hints));
   hints.ai_family   = AF_UNSPEC;
@@ -157,10 +157,11 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   for(addr = result; addr; addr = addr->ai_next) {
     fd = htsp_tcp_connect_addr(addr, errbuf, errbufsize, timeout);
     if(fd != -1)
-      return fd;      
+      break;
   }
 
-  return -1;
+  freeaddrinfo(result);
+  return fd;
 }
 
 
