@@ -697,42 +697,57 @@ void CSoftAE::Run()
   {
     unsigned int channelCount, mixed;
     m_reOpened = false;
+
+    /* output the buffer to the sink */
     RunOutputStage();
+
     /* copy this value so we can unlock the sink */
     channelCount = m_channelCount;
     size_t size  = m_frameSize;
+
+    /* unlock the sink, we don't need it anymore */
     sinkLock.Leave();
 
+    /* make sure we have enough room to fetch a frame */
+    if(size > outSize)
+    {
+      /* allocate space for the samples */
+      _aligned_free(out);
+      out = (uint8_t *)_aligned_malloc(size, 16);
+      outSize = size;
+    }
+    memset(out, 0, size);
+
+    /* run the stream stage */
+    bool restart = false;
     CSingleLock mixLock(m_critSection);
-      if(size > outSize)
-      {
-        _aligned_free(out);
-        out = (uint8_t *)_aligned_malloc(size, 16);
-        outSize = size;
-      }
-      memset(out, 0, size);
-
-      bool restart = false;
-      mixed = RunStreamStage(channelCount, out, restart);
-      if (restart)
-      {
-        mixLock.Leave();
-        OpenSink();
-
-        sinkLock.Enter();
-        continue;
-      }
-
-      if (!m_rawPassthrough && mixed)
-        RunNormalizeStage(channelCount, out, mixed);
+    mixed = RunStreamStage(channelCount, out, restart);
     mixLock.Leave();
 
+    /* if we are told to restart */
+    if (restart)
+    {
+      /* re-open the sink, and drop the frame */
+      OpenSink();
+    }
+    else
+    {
+      /* otherwise process the frame */
+      if (!m_rawPassthrough && mixed)
+        RunNormalizeStage(channelCount, out, mixed);
+    }
+
+    /* re-lock the sink for the next loop */
     sinkLock.Enter();
+
+    /* buffer the samples into the output buffer */
     if (!m_reOpened)
       RunBufferStage(out);
   }
 
-  if(out) _aligned_free(out);
+  /* free the frame storage */
+  if(out)
+    _aligned_free(out);
 }
 
 inline void CSoftAE::MixSounds(unsigned int samples)
