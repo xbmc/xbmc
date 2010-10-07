@@ -188,6 +188,7 @@ div.imgWrapper div.inner {
 
 .albumView td.albumThumb {
 	padding-left: 0px;
+	border-right: 1px solid #aeaeae;
 	}
 
 .albumView td.time,
@@ -208,12 +209,18 @@ div.imgWrapper div.inner {
 	border-bottom: 1px solid #aeaeae;
 	padding-left: 4px;
 	height: 13px;
+	padding-top: 1px;
+	}
+
+.albumView tr.headerRow {
+	background-position: 0 -1px;
 	}
 
 .albumView .albumThumb,
 .albumView .albumBG {
 	width: 120px;
 	background: #efefef;
+	border-right: 1px solid #aeaeae;
 	vertical-align: top;
 	}
 
