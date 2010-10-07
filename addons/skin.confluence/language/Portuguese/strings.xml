@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: hudo-->
-<!--Email: hudokkow [AT] gmail [DOT] com-->
-<!--Date of translation: 07/19/2010-->
-<!--$Revision$-->
-<!--Based on english strings version r31350 -->
+<!-- Date of translation: 2010/10/04 -->
+<!-- Based on english strings version r34139 -->
+<!-- Portuguese Confluence strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 
 <strings>
+  <!-- Misc labels -->
   <string id="31000">Mude o seu</string>
   <string id="31001">Adoro</string>
   <string id="31002">Odeio</string>
   <string id="31003">Opções de Power</string>
   <string id="31004">A trabalhar...</string>
   <string id="31005">Esconder INFO</string>
+
   <string id="31007">Plugins</string>
+
   <string id="31020">Adicionados recentemente</string>
   <string id="31021">Vídeo - Ficheiros</string>
   <string id="31022">Música - Ficheiros</string>
@@ -22,13 +22,18 @@
   <string id="31025">Itens</string>
   <string id="31026">Várias opções</string>
   <string id="31027">Localização</string>
+
+  <!-- View Type labels -->
   <string id="31028">Posters</string>
   <string id="31029">Fanart</string>
   <string id="31030">Lista completa</string>
   <string id="31031">Imagem de miniaturas</string>
   <string id="31032">Imagens</string>
   <string id="31033">Info</string>
+
+  <!-- Extra labels -->
   <string id="31040">A reproduzir agora</string>
+
   <string id="31042">A REPRODUZIR</string>
   <string id="31043">PAUSADO</string>
   <string id="31044">FAST FORWARD</string>
@@ -37,6 +42,8 @@
   <string id="31047">Definição corrente</string>
   <string id="31048">Definições de visualização</string>
   <string id="31049">Tempo para terminar</string>
+
+  <!-- Playlist Editor labels -->
   <string id="31055">Abrir lista de reprodução</string>
   <string id="31056">Guardar lista de reprodução</string>
   <string id="31057">Fechar lista de reprodução</string>
@@ -44,6 +51,8 @@
   <string id="31059">Lista de reprodução corrente</string>
   <string id="31060">Ficheiro multi-parte. Escolha a parte que quer reproduzir.</string>
   <string id="31061">Seleccionado neste momento</string>
+
+  <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Opções do menu principal</string>
   <string id="31102">Fundo</string>
@@ -75,14 +84,19 @@
   <string id="31128">Letras</string>
   <string id="31129">Ligar descarregar de legendas no OSD de Vídeo</string>
   <string id="31130">CAMINHO PARA ADD-ON DE LEGENDAS</string>
+
   <string id="31140">OSD de Música</string>
   <string id="31141">OSD de Vídeo</string>
+
+  <!-- Script labels -->
   <string id="31200">Atalhos</string>
   <string id="31201">Categorias</string>
   <string id="31202">Mostrar elenco</string>
   <string id="31203">Escolha a sua música</string>
   <string id="31204">Atalhos de secção</string>
   <string id="31205">Fonte das letras</string>
+
+  <!-- Extra labels -->
   <string id="31300">Temp corrente</string>
   <string id="31301">Última actualização</string>
   <string id="31302">Menu</string>
@@ -114,6 +128,8 @@
   <string id="31328">Adicionados recentemente</string>
   <string id="31329">[B]Definir temporizador![/B] [COLOR=grey2] - Sistema vai desligar em[/COLOR]</string>
   <string id="31330">Clique no botão para reproduzir o[CR][CR]Trailer do filme</string>
+
+  <!-- Video and Music OSD Labels  -->
   <string id="31351">Pausa</string>
   <string id="31352">Stop</string>
   <string id="31353">Fast Forward</string>
@@ -121,6 +137,13 @@
   <string id="31355">Menu do filme</string>
   <string id="31356">Descarregar legenda</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets --> 
+  <string id="31390">Padrão do tema</string> 
+  <string id="31391">Padrão do tema sem 'CAPS'</string> 
+  <string id="31392">Baseada em Arial</string>
+
+  <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURAR OPÇÕES DE APARÊNCIA[/B][CR][CR]Mudar o Tema · Definir Linguagem e Região · Mudar opções de listagem de ficheiros[CR]Definir protector de ecrã</string>
   <string id="31401">[B]CONFIGURAR OPÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Definir opções de reprodução de vídeo · Mudar opções de listagem de vídeo[CR]Definir fonte de legendas</string>
   <string id="31402">[B]CONFIGURAR OPÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Definir opções de reprodução de música · Mudar opções de listagem de música[CR]Definir submissão de músicas · Definir opções de karaoke</string>
@@ -130,5 +153,6 @@
   <string id="31406">[B]CONFIGURAR OPÇÕES DE SISTEMA[/B][CR][CR]Definir e calibrar ecrãs · Configurar saída de áudio · Configurar comando à distância[CR]Definir opções de poupança de energia · Ligar depuração · Definir bloqueio geral</string>
   <string id="31407">[B]CONFIGURAR OPÇÕES DO TEMA[/B][CR][CR]Gerir o tema Confluence · Adicionar ou remover itens do menu principal[CR]Mudar fundos do tema</string>
   <string id="31408">[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir Add-ons instalados · Procurar Add-ons em xbmc.org e instalar[CR]Alterar opções dos Add-ons</string>
+
   <string id="31421">Escolha o seu perfil de utilizador do XBMC[CR]para ligar e continuar</string>
 </strings>
