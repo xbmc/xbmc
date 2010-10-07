@@ -32,27 +32,6 @@
 #define ETIMEDOUT   WSAETIMEDOUT
 #define EAGAIN      WSAEWOULDBLOCK
 
-#define ERANGE 34
-
-static int gethostbyname_r(const char *name,
-                           struct hostent *ret, char *buf, size_t buflen,
-                           struct hostent **result, int *h_errnop)
-{
-  memset(buf, 0, buflen);
-
-  *result = gethostbyname(name);
-  if(*result)
-  {
-    memcpy(ret, *result, sizeof(struct hostent));
-    *result = ret;
-    *h_errnop = 0;
-  }
-  else
-    *h_errnop = HOST_NOT_FOUND;
-
-  return 0;
-}
-
 #ifndef MSG_WAITALL
 #define MSG_WAITALL 0x8
 #endif
@@ -79,73 +58,21 @@ static int recv_fixed (SOCKET s, char * buf, int len, int flags)
 }
 #define recv(s, buf, len, flags) recv_fixed(s, buf, len, flags)
 
-
-
 /**
  *
  */
 socket_t
-htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize,
+htsp_tcp_connect_addr(struct addrinfo* addr, char *errbuf, size_t errbufsize,
 	    int timeout)
 {
-  const char *errtxt;
-  struct hostent hostbuf, *hp;
-  char *tmphstbuf;
-  size_t hstbuflen;
   socket_t fd;
-  int herr, r, res, err, val;
-  struct sockaddr_in6 in6;
-  struct sockaddr_in in;
+  int r, err, val;
   socklen_t errlen = sizeof(int);
 
-  hstbuflen = 1024;
-  tmphstbuf = malloc(hstbuflen);
-
-  while((res = gethostbyname_r(hostname, &hostbuf, tmphstbuf, hstbuflen,
-			       &hp, &herr)) == ERANGE) {
-    hstbuflen *= 2;
-    tmphstbuf = realloc(tmphstbuf, hstbuflen);
-  }
-
-  if(res != 0) {
-    snprintf(errbuf, errbufsize, "Resolver internal error");
-    free(tmphstbuf);
-    return -1;
-  } else if(herr != 0) {
-    switch(herr) {
-    case HOST_NOT_FOUND:
-      errtxt = "The specified host is unknown";
-      break;
-    case NO_ADDRESS:
-      errtxt = "The requested name is valid but does not have an IP address";
-      break;
-
-    case NO_RECOVERY:
-      errtxt = "A non-recoverable name server error occurred";
-      break;
-
-    case TRY_AGAIN:
-      errtxt = "A temporary error occurred on an authoritative name server";
-      break;
-
-    default:
-      errtxt = "Unknown error";
-      break;
-    }
-
-    snprintf(errbuf, errbufsize, "%s", errtxt);
-    free(tmphstbuf);
-    return -1;
-  } else if(hp == NULL) {
-    snprintf(errbuf, errbufsize, "Resolver internal error");
-    free(tmphstbuf);
-    return -1;
-  }
-  fd = socket(hp->h_addrtype, SOCK_STREAM, 0);
+  fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
   if(fd == -1) {
     snprintf(errbuf, errbufsize, "Unable to create socket: %s",
 	     strerror(WSAGetLastError()));
-    free(tmphstbuf);
     return -1;
   }
 
@@ -155,30 +82,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   val = 1;
   ioctlsocket(fd, FIONBIO, &val);
 
-  switch(hp->h_addrtype) {
-  case AF_INET:
-    memset(&in, 0, sizeof(in));
-    in.sin_family = AF_INET;
-    in.sin_port = htons(port);
-    memcpy(&in.sin_addr, hp->h_addr_list[0], sizeof(struct in_addr));
-    r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in));
-    break;
-
-  case AF_INET6:
-    memset(&in6, 0, sizeof(in6));
-    in6.sin6_family = AF_INET6;
-    in6.sin6_port = htons(port);
-    memcpy(&in6.sin6_addr, hp->h_addr_list[0], sizeof(struct in6_addr));
-    r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in6));
-    break;
-
-  default:
-    snprintf(errbuf, errbufsize, "Invalid protocol family");
-    free(tmphstbuf);
-    return -1;
-  }
-
-  free(tmphstbuf);
+  r = connect(fd, addr->ai_addr, addr->ai_addrlen);
 
   if(r == -1) {
     if(WSAGetLastError() == EINPROGRESS ||
@@ -231,6 +135,58 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&val, sizeof(val));
 
   return fd;
+}
+
+
+socket_t
+htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize,
+	    int timeout)
+{
+  struct   addrinfo hints;
+  struct   addrinfo *result, *addr;
+  char     service[33];
+  int      res;
+  socket_t fd;
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+  sprintf(service, "%d", port);
+
+  res = getaddrinfo(hostname, service, &hints, &result);
+  if(res) {
+    switch(res) {
+    case EAI_NONAME:
+      snprintf(errbuf, errbufsize, "The specified host is unknown");
+      break;
+
+    case EAI_FAIL:
+      snprintf(errbuf, errbufsize, "A nonrecoverable failure in name resolution occurred");
+      break;
+
+    case EAI_MEMORY:
+      snprintf(errbuf, errbufsize, "A memory allocation failure occurred");
+      break;
+
+    case EAI_AGAIN:
+      snprintf(errbuf, errbufsize, "A temporary error occurred on an authoritative name server");
+      break;
+
+    default:
+      snprintf(errbuf, errbufsize, "Unknown error %d", res);
+      break;
+    }
+    return -1;
+  }
+
+  for(addr = result; addr; addr = addr->ai_next) {
+    fd = htsp_tcp_connect_addr(addr, errbuf, errbufsize, timeout);
+    if(fd != INVALID_SOCKET)
+      return fd;      
+  }
+
+  return -1;
 }
 
 
