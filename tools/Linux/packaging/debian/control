@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
  libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
  libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl,
 Standards-Version: 3.9.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
@@ -30,7 +30,6 @@ Package: xbmc
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}),
-         xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (full metapackage)
@@ -90,7 +89,6 @@ Package: xbmc-standalone
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}),
-         xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (standalone program)
@@ -223,31 +221,6 @@ Description: XBMC Media Center (Confluence skin)
  multimedia jukebox.
  .
  This package contains the XBMC Confluence Skin package.
-
-Package: xbmc-web
-Architecture: all
-Depends: xbmc-data (= ${binary:Version}),
-         ${misc:Depends}
-Description: XBMC Media Center (POC web frontend)
- XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
- open source software media-player and entertainment hub for all your digital
- media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
- and Microsoft Windows, as well as the original Xbox game console. Created in
- 2003 by a group of like minded programmers, XBMC is a non-profit project run
- and developed by volunteers located around the world. More than 50 software
- developers have contributed to XBMC, and 100-plus translators have worked to
- expand its reach, making it available in more than 30 languages.
- .
- While XBMC functions very well as a standard media player application for
- your computer, it has been designed to be the perfect companion for your
- HTPC. Supporting an almost endless range of remote controls, and combined
- with its beautiful interface and powerful skinning engine, XBMC feels very
- natural to use from the couch and is the ideal solution for your home
- theater. Once installed, your computer will become a fully functional
- multimedia jukebox.
- .
- This package contains the new POC web frontend for the XBMC web
- server.
 
 Package: xbmc-eventclients-common
 Architecture: all
