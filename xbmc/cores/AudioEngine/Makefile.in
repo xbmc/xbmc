@@ -26,7 +26,9 @@ SRCS = \
 	Engines/SoftAESound.cpp \
 	Engines/PulseAE.cpp \
 	Engines/PulseAEStream.cpp \
-	Engines/PulseAEEventThread.cpp
+	Engines/PulseAEEventThread.cpp \
+	\
+	Encoders/AEEncoderFFmpeg.cpp
 
 LIB=audioengine.a
 
