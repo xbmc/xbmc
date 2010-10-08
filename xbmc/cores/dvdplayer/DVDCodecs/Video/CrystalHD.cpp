@@ -1582,11 +1582,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
-  if (!m_has_bcm70015)
-  {
-    if (m_drop_state != bDrop)
-      m_drop_state = bDrop;
-  }
+  if (m_drop_state != bDrop)
+    m_drop_state = bDrop;
 
 /*
   if (m_drop_state)
