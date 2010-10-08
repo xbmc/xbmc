@@ -551,7 +551,7 @@ int CFileSFTP::Stat(struct __stat64* buffer)
 int64_t CFileSFTP::GetLength()
 {
   struct __stat64 buffer;
-  if (Stat(&buffer) < 0)
+  if (Stat(&buffer) != 0)
     return 0;
   else
   {

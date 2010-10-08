@@ -2345,18 +2345,14 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         }
         else
           pCdInfo->SetNoCDDBInfo();
-
-        pDialogProgress->Close();
       }
       else if (lasterror == E_NO_MATCH_FOUND)
       {
         pCdInfo->SetNoCDDBInfo();
-        pDialogProgress->Close();
       }
       else
       {
         pCdInfo->SetNoCDDBInfo();
-        pDialogProgress->Close();
         // ..no, an error occured, display it to the user
         CGUIDialogOK *pDialogOK = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
         if (pDialogOK)
@@ -2372,7 +2368,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         }
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
-    pDialogProgress->Close();
+    else
+      pDialogProgress->Close();
   } // if (pCdInfo->HasCDDBInfo() && g_settings.m_bUseCDDB)
 
   // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
