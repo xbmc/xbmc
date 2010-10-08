@@ -31,7 +31,8 @@
   #define E_PACK __pragma(pack(pop))
 #endif
 
-#define MAX_IEC958_PACKET 6144
+#define MAX_IEC958_PACKET  6144
+#define IEC958_DATA_OFFSET 8
 
 class CAEPackIEC958
 {
@@ -62,7 +63,7 @@ private:
     uint16_t m_preamble2;
     uint16_t m_type;
     uint16_t m_length;
-    uint8_t  m_data[MAX_IEC958_PACKET - 8];
+    uint8_t  m_data[MAX_IEC958_PACKET - IEC958_DATA_OFFSET];
   };
   E_PACK
 };
