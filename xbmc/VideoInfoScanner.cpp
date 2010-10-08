@@ -751,6 +751,14 @@ namespace VIDEO
       if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
         continue;
 
+      /*
+       * Check if the media source has already set the season and episode or original air date in
+       * the VideoInfoTag. If it has, do not try to parse any of them from the file path to avoid
+       * any false positive matches.
+       */
+      if (ProcessItemByVideoInfoTag(items[i], episodeList))
+        continue;
+
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
@@ -770,6 +778,66 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", items[i]->m_strPath.c_str());
 
     }
+  }
+
+  bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODES &episodeList)
+  {
+    if (!item->HasVideoInfoTag())
+      return false;
+
+    CVideoInfoTag* tag = item->GetVideoInfoTag();
+    /*
+     * First check the season and episode number. This takes precedence over the original air
+     * date.
+     */
+    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.iSeason = tag->m_iSeason;
+      episode.iEpisode = tag->m_iEpisode;
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
+                episode.strPath.c_str(), episode.iSeason, episode.iEpisode);
+      return true;
+    }
+
+    /*
+     * Check to see if the first aired date has been set. If so use that for scraping the TV Show
+     * information.
+     */
+    if (!tag->m_strFirstAired.IsEmpty())
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      /*
+       * Set season and episode to -1 to indicate to use the aired date.
+       */
+      episode.iSeason = -1;
+      episode.iEpisode = -1;
+      /*
+       * The first aired date string must be parseable.
+       */
+      episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG, "%s - found match for: %s. First Aired '%s' = '%s'", __FUNCTION__,
+                episode.strPath.c_str(), tag->m_strFirstAired.c_str(), episode.cDate.GetAsLocalizedDate().c_str());
+      return true;
+    }
+
+    /*
+     * There is no further episode information available if both the season and episode number have
+     * been set to 0. Return the match as true so no further matching is attempted, but don't add it
+     * to the episode list.
+     */
+    if (tag->m_iSeason == 0 && tag->m_iEpisode == 0)
+    {
+      CLog::Log(LOGDEBUG,"%s - found exclusion match for: %s. Both Season and Episode are 0. Item will be ignored for scanning.",
+                __FUNCTION__, item->m_strPath.c_str());
+      return true;
+    }
+
+    return false;
   }
 
   bool CVideoInfoScanner::ProcessItemNormal(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)

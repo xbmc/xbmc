@@ -222,6 +222,7 @@ namespace VIDEO
     INFO_RET OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
 
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
+    bool ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODES &episodeList);
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
 
