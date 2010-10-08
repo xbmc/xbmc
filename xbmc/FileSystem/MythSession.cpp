@@ -160,6 +160,14 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   tag->m_iEpisode         = 0;
 
   /*
+   * Original air date is used by the VideoInfoScanner to scrape the TV Show information into the
+   * Video Library. If the original air date is empty the date returned will be the epoch.
+   */
+  CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
+  if (originalairdate != "1970-01-01")
+    tag->m_strFirstAired = originalairdate;
+
+  /*
    * Video sort title is the raw title with the date appended on the end in a sortable format so
    * when the "All Recordings" listing is sorted by "Name" rather than "Date", all of the episodes
    * for a given show are still presented in date order (even though some may have a subtitle that
