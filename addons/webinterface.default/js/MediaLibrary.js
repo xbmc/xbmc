@@ -124,16 +124,8 @@ MediaLibrary.prototype = {
 				$.each($(this.albumList), jQuery.proxy(function(i, item) {
 					if (item.albumid == album.albumid) {
 						if (this.albumList.length > 1) {
-							if (i <= 0) {
-								prevAlbum = this.albumList[this.albumList.length-1];
-							} else {
-								prevAlbum = this.albumList[i-1];
-							}
-							if (i >= this.albumList.length) {
-								nextAlbum = this.albumList[0];
-							} else {
-								nextAlbum = this.albumList[i+1];
-							}
+							prevAlbum = this.albumList[i <= 0 ? this.albumList.length-1 : i-1];
+							nextAlbum = this.albumList[i >= this.albumList.length ? 0 : i+1];
 						}
 						return false; /* .each break */
 					}
@@ -253,25 +245,20 @@ MediaLibrary.prototype = {
 		},
 		playMovie: function(event) {
 			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "movieid": ' + event.data.movie.movieid + ' }, "id": 1}', jQuery.proxy(function(data) {
-				
 				this.hideOverlay();
 			}, this), 'json');
 		},
 		displayMovieDetails: function(event) {
 			var movieDetails = $('<div>').attr('id', 'movie-' + event.data.movie.movieid).addClass('moviePopoverContainer');
-			var closeButton = $('<img>').attr('src', '/images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this));
-			movieDetails.append(closeButton);
-			var movieCover = $('<img>').attr('src', this.getThumbnailPath(event.data.movie.thumbnail)).addClass('movieCover');
-			movieDetails.append(movieCover);
-			var playIcon = $('<div>').addClass('playIcon').bind('click', {movie: event.data.movie}, jQuery.proxy(this.playMovie, this));
-			movieDetails.append(playIcon);
+			movieDetails.append($('<img>').attr('src', '/images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
+			movieDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.movie.thumbnail)).addClass('movieCover'));
+			movieDetails.append($('<div>').addClass('playIcon').bind('click', {movie: event.data.movie}, jQuery.proxy(this.playMovie, this)));
 			var movieTitle = $('<p>').addClass('movieTitle');
 			var yearText = event.data.movie.year ? ' <span class="year">(' + event.data.movie.year + ')</span>' : '';
 			movieTitle.html(event.data.movie.title + yearText);
 			movieDetails.append(movieTitle);
 			if (event.data.movie.runtime) {
-				var runtime = $('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.movie.runtime + ' minutes');
-				movieDetails.append(runtime);
+				movieDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.movie.runtime + ' minutes'));
 			}
 			if (event.data.movie.plot) {
 				movieDetails.append($('<p>').addClass('plot').html(event.data.movie.plot));
@@ -320,7 +307,7 @@ MediaLibrary.prototype = {
 					}
 					data.result.movies.sort(jQuery.proxy(this.movieTitleSorter, this));
 					$.each($(data.result.movies), jQuery.proxy(function(i, item) {
-						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title, "");
+						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title);
 						floatableMovieCover.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
 						libraryContainer.append(floatableMovieCover);
 					}, this));
@@ -353,7 +340,7 @@ MediaLibrary.prototype = {
 						libraryContainer.html('');
 					}
 					$.each($(data.result.tvshows), jQuery.proxy(function(i, item) {
-						var floatableTVShowCover = this.generateThumb('tvshow', item.thumbnail, item.title, "");
+						var floatableTVShowCover = this.generateThumb('tvshow', item.thumbnail, item.title);
 						floatableTVShowCover.bind('click', { tvshow: item }, jQuery.proxy(this.displayTVShowDetails, this));
 						libraryContainer.append(floatableTVShowCover);
 					}, this));
@@ -419,7 +406,7 @@ MediaLibrary.prototype = {
 						var item = '';
 						var directoryArray = directory.split(seperator);
 						jQuery.each(directoryArray, function(i,v) {
-							if( v != '' ) {
+							if(v != '') {
 								item += v + seperator;
 								//tmp.bind('click', { directory: item }, jQuery.proxy(this.showDirectory, this));               
 								breadcrumb.append($('<div>').text(' > ' + v).css('float','left').addClass('breadcrumb'));                                                 
