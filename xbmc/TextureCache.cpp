@@ -253,7 +253,7 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
       AddJob(new CDDSJob(GetCachedPath(originalFile)));
     return GetCachedPath(originalFile);
   }
-  return url;
+  return "";
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
