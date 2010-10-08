@@ -57,6 +57,8 @@ bool CImageLoader::DoWork()
 
     // cache the image if necessary
     loadPath = CTextureCache::Get().CheckAndCacheImage(loadPath);
+    if (loadPath.IsEmpty())
+      return false;
 
     m_texture = new CTexture();
     DWORD start = CTimeUtils::GetTimeMS();
