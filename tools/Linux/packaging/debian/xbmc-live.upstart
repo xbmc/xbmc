@@ -52,7 +52,7 @@ pre-start script
 		BOOTMEDIAMOUNTPOINT="/live/image"
 	fi
 
-	BOOTHOOKSDIRECTORY="/usr/lib/xbmc"
+	BOOTHOOKSDIRECTORY="/etc/xbmc"
 
 	xbmcUser=xbmc
 	# Read configuration variable file if it is present
