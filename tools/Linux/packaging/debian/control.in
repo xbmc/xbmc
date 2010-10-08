@@ -38,7 +38,7 @@ Description: XBMC Media Center (full metapackage)
  with using XBMC Media Center.
 
 Package: xbmc-live
-Architecture: all
+Architecture: any
 Depends: #XBMC_LIVE_DEPENDS#
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
