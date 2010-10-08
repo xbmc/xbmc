@@ -100,7 +100,9 @@ override_dh_install:
 	# Delete stuff that is in other packages
 	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
 	rm -rf debian/xbmc-data/usr/share/xbmc/web
-	rm -rf debian/xbmc-bin/usr/lib/xbmc/live.d
+	# Add in live.d scripts to packaging
+	mkdir -p debian/xbmc-live/etc/xbmc
+	cp -rf tools/XBMCLive/live.d debian/xbmc-live/etc/xbmc
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg
