@@ -63,8 +63,7 @@ MediaLibrary.prototype = {
 							floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
 							libraryContainer.append(floatableAlbum);
 						}, this));
-						var footerPadding = $('<div>').addClass('footerPadding');
-						libraryContainer.append(footerPadding);
+						libraryContainer.append($('<div>').addClass('footerPadding'));
 						$('#spinner').hide();
 						//$('#libraryContainer img').lazyload();
 						libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
@@ -215,15 +214,37 @@ MediaLibrary.prototype = {
 						}
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow2);
 					}
-					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(this.generateThumb('album', albumThumbnail, albumTitle, albumArtist));
-					var footerPadding = $('<div>').addClass('footerPadding');
-					$('#albumDetails' + event.data.album.albumid + ' .albumThumb').append(footerPadding);
+					$('#albumDetails' + event.data.album.albumid + ' .albumThumb')
+						.append(this.generateThumb('album', albumThumbnail, albumTitle, albumArtist))
+						.append($('<div>').addClass('footerPadding'));
 					$('#spinner').hide();
 					myScroll = new iScroll('albumDetails' + event.data.album.albumid);
 				}, this), 'json');
 			} else {
 				$('.contentContainer').hide();
 				$('#albumDetails' + event.data.album.albumid).show();
+			}
+		},
+		displayTVShowDetails: function(event) {
+			var tvshowDetailsContainer = $('#tvShowDetails' + event.data.tvshow.tvshowid);
+			$('#topScrollFade').hide();
+			if (!tvshowDetailsContainer || tvshowDetailsContainer.length == 0) {
+				$('#spinner').show();
+				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating", "writer", "studio", "mpaa", "premiered"], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
+					tvshowDetailsContainer = $('<div>');
+					tvshowDetailsContainer.attr('id', 'tvShowDetails' + event.data.tvshow.tvshowid)
+										  .css('display', 'none')
+										  .addClass('contentContainer')
+										  .addClass('tvshowContainer');
+					tvshowDetailsContainer.append(this.generateThumb('tvshow', event.data.tvshow.thumbnail, event.data.tvshow.title));
+					$('#content').append(tvshowDetailsContainer);
+					tvshowDetailsContainer.fadeIn();
+					//console.log(data);
+					$('#spinner').hide();
+				}, this), 'json');
+			} else {
+				$('.contentContainer').hide();
+				$('#tvShowDetails' + event.data.show.showid);
 			}
 		},
 		hideOverlay: function(event) {
@@ -276,9 +297,6 @@ MediaLibrary.prototype = {
 			$('body').append(movieDetails);
 			$('#overlay').show();
 			this.updatePlayButtonLocation();
-		},
-		displayTVShowDetails: function(event) {
-
 		},
 		playTrack: function(event) {
 			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
@@ -344,6 +362,7 @@ MediaLibrary.prototype = {
 						floatableTVShowCover.bind('click', { tvshow: item }, jQuery.proxy(this.displayTVShowDetails, this));
 						libraryContainer.append(floatableTVShowCover);
 					}, this));
+					libraryContainer.append($('<div>').addClass('footerPadding'));
 					//$('#libraryContainer img').lazyload();
 					$('#spinner').hide();
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));

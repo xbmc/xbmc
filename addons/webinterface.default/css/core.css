@@ -71,6 +71,16 @@ body {
 	padding: 10px;
 	}
 
+.floatableAlbum:hover,
+.floatableTVShowCover:hover,
+.floatableMovieCover:hover {
+	background: #aeaeae;
+	}
+
+.tvshowContainer .floatableTVShowCover:hover {
+	background: #fff;
+	}
+
 .floatableTVShowCover {
 	float: left;
 	padding: 10px;
