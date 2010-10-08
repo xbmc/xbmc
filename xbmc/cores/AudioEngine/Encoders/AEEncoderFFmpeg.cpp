@@ -22,6 +22,7 @@
 #define AC3_ENCODE_BITRATE 640000
 
 #include "AEEncoderFFmpeg.h"
+#include "AEPackIEC958.h"
 #include <string.h>
 
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
@@ -33,16 +34,22 @@ CAEEncoderFFmpeg::CAEEncoderFFmpeg():
 
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
-  delete[] m_Remapped;
-
   Reset();
+
+  delete[] m_Remapped;
+  m_Remapped = NULL;
+
   m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
 bool CAEEncoderFFmpeg::Initialize(unsigned int channels, AEChLayout channelMap, unsigned int sampleRate)
 {
   Reset();
-  if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+
+  delete[] m_Remapped;
+  m_Remapped = NULL;
+
+  if (!channelMap || !m_dllAvUtil.Load() || m_dllAvFormat.Load() || !m_dllAvCodec.Load())
     return false;
 
   AVCodec *codec;
@@ -92,7 +99,7 @@ bool CAEEncoderFFmpeg::Initialize(unsigned int channels, AEChLayout channelMap, 
   }
 
   m_NeededFrames = m_CodecCtx->frame_size;
-  m_Buffer       = new uint8_t[FF_MIN_BUFFER_SIZE];
+  m_Buffer       = new uint8_t[std::max(FF_MIN_BUFFER_SIZE, MAX_IEC958_PACKET)];
   m_Remapped     = new float[m_CodecCtx->frame_size * channels];
 
   return true;
@@ -120,13 +127,19 @@ unsigned int CAEEncoderFFmpeg::GetFrames()
 
 int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
 {
-  /* remap the data and encode it in blocks */
   if (frames < m_NeededFrames)
     return 0;
 
+  /* remap the block */
   m_Remap.Remap(data, m_Remapped, m_NeededFrames);
-  m_BufferSize = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer, FF_MIN_BUFFER_SIZE, (short*)m_Remapped);
 
+  /* encode it */
+  int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC958_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)m_Remapped);
+
+  /* pack it into an IEC958 frame */
+  m_BufferSize = CAEPackIEC958::PackAC3(NULL, size, m_Buffer);
+
+  /* return the number of frames used */
   return m_NeededFrames;
 }
 

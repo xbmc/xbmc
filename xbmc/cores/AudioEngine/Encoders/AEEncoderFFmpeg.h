@@ -40,13 +40,13 @@ public:
   virtual unsigned int GetBitRate    ();
   virtual CodecID      GetCodecID    ();
   virtual unsigned int GetFrames     ();
-  virtual unsigned int GetEncodedSize();
 
   virtual int Encode (float *data, unsigned int frames);
   virtual int GetData(uint8_t **data);
 private:
-  DllAvCodec m_dllAvCodec;
-  DllAvUtil  m_dllAvUtil;
+  DllAvCodec  m_dllAvCodec;
+  DllAvFormat m_dllAvFormat;
+  DllAvUtil   m_dllAvUtil;
 
   AVCodecContext   *m_CodecCtx;
   enum AEChannel    m_ChannelMap[AE_CH_MAX+1];

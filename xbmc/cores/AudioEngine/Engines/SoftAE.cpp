@@ -41,6 +41,8 @@
 #include "AEUtil.h"
 #include "AESink.h"
 
+#include "Encoders/AEEncoderFFmpeg.h"
+
 #include "AESinkFactory.h"
 
 #ifdef __SSE__
@@ -62,6 +64,7 @@ CSoftAE::CSoftAE():
   m_sink            (NULL ),
   m_rawPassthrough  (false),
   m_passthrough     (false),
+  m_encoder         (NULL ),
   m_buffer          (NULL ),
   m_remapped        (NULL ),
   m_remappedSize    (0    ),
@@ -167,9 +170,15 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
   {
+    /* configure the encoder */
+    SetupEncoder(desiredFormat);
+
     if (driver.IsEmpty() || m_sink->GetName() == driver)
       return true;
   }
+
+  /* configure the encoder */
+  SetupEncoder(desiredFormat);
 
   /* let the thread know we have re-opened the sink */
   m_reOpened = true;
@@ -251,6 +260,27 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   return m_sink != NULL;
 }
 
+bool CSoftAE::SetupEncoder(AEAudioFormat &format)
+{
+  delete m_encoder;
+  m_encoder = NULL;
+
+  if (!m_passthrough)
+    return false;
+
+  m_encoder = new CAEEncoderFFmpeg();
+  if (m_encoder->Initialize(format.m_channelCount, format.m_channelLayout, format.m_sampleRate))
+  {
+    m_sinkFrames    = format.m_frames;
+    format.m_frames = m_encoder->GetFrames();
+    return true;
+  }
+
+  delete m_encoder;
+  m_encoder = NULL;
+  return false;
+}
+
 bool CSoftAE::Initialize()
 {
   /* get the current volume level */
@@ -324,6 +354,10 @@ void CSoftAE::OnSettingsChange(CStdString setting)
       m_device = "default";
   }
 
+  m_passthrough =
+    g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958 &&
+    g_guiSettings.GetBool("audiooutput.ac3passthrough");
+
   OpenSink();
 }
 
@@ -344,6 +378,9 @@ void CSoftAE::Deinitialize()
     delete m_sink;
     m_sink = NULL;
   }
+
+  delete m_encoder;
+  m_encoder = NULL;
 
   _aligned_free(m_buffer);
   m_buffer = NULL;
@@ -813,41 +850,52 @@ inline void CSoftAE::RunOutputStage()
           floatBuffer[i] = CAEUtil::SoftClamp(floatBuffer[i] * m_volume);
       #endif
  
-      if(m_remappedSize < rSamples)
+      if (m_passthrough && m_encoder)
       {
-        _aligned_free(m_remapped);
-        m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
-        m_remappedSize = rSamples;
-      }
-
-      m_remap.Remap(floatBuffer, m_remapped, m_format.m_frames);
-  
-      if (m_convertFn)
-      {
-        unsigned int newSize = m_format.m_frames * m_format.m_frameSize;
-        if(m_convertedSize < newSize)
-        {
-          _aligned_free(m_converted);
-          m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
-          m_convertedSize = newSize;
-        }
-        m_convertFn(m_remapped, rSamples, m_converted);
-        if (m_sink)
-          wroteFrames = m_sink->AddPackets(m_converted, m_format.m_frames);
-        else
-        {
-          wroteFrames = m_format.m_frames;
-          DelayFrames();
-        }
+        /* if encoding */
+        uint8_t *encoded;
+        wroteFrames = m_encoder->Encode(floatBuffer, m_format.m_frames);
+        unsigned int size = m_encoder->GetData(&encoded);
+        printf("%d\n", size);
       }
       else
       {
-        if (m_sink)
-          wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_format.m_frames);
+        /* if analoge */
+        if(m_remappedSize < rSamples)
+        {
+          _aligned_free(m_remapped);
+          m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
+          m_remappedSize = rSamples;
+        }
+
+        m_remap.Remap(floatBuffer, m_remapped, m_format.m_frames);
+        if (m_convertFn)
+        {
+          unsigned int newSize = m_format.m_frames * m_format.m_frameSize;
+          if(m_convertedSize < newSize)
+          {
+            _aligned_free(m_converted);
+            m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
+            m_convertedSize = newSize;
+          }
+          m_convertFn(m_remapped, rSamples, m_converted);
+          if (m_sink)
+            wroteFrames = m_sink->AddPackets(m_converted, m_format.m_frames);
+          else
+          {
+            wroteFrames = m_format.m_frames;
+            DelayFrames();
+          }
+        }
         else
         {
-          wroteFrames = m_format.m_frames;
-          DelayFrames();
+          if (m_sink)
+            wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_format.m_frames);
+          else
+          {
+            wroteFrames = m_format.m_frames;
+            DelayFrames();
+          }
         }
       }
 

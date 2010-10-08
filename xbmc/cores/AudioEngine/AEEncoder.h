@@ -77,7 +77,7 @@ public:
    * @param frames the number of audio frames in data (bytes / bits per sample = samples / channels = frames)
    * @return the number of samples consumed
    */
-  virtual int Encode (float *data, unsigned int frames) = 0;
+  virtual int Encode(float *data, unsigned int frames) = 0;
 
   /**
    * Get the encoded data

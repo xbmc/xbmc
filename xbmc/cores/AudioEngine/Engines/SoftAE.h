@@ -32,6 +32,7 @@
 #include "AERemap.h"
 #include "AESink.h"
 #include "AEAudioFormat.h"
+#include "AEEncoder.h"
 
 #include "SoftAEStream.h"
 #include "SoftAESound.h"
@@ -101,6 +102,7 @@ private:
   CThread *m_thread;
 
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
+  bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, CStdString &device);
@@ -131,6 +133,7 @@ private:
 
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
+  unsigned int              m_sinkFrames; /* used when encoding */
   AEAudioFormat             m_format;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
@@ -146,6 +149,7 @@ private:
   /* the streams, sounds, output buffer and output buffer fill size */
   bool                                      m_rawPassthrough;
   bool                                      m_passthrough;
+  IAEEncoder                               *m_encoder;
   std::list<CSoftAEStream*>                 m_streams;
   std::map<const CStdString, CSoftAESound*> m_sounds;
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */

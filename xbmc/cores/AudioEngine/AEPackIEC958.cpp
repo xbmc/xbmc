@@ -42,16 +42,17 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC958_TYPE_AC3;
   packet->m_length    = size;
 
+  if (data == NULL)
+    data = packet->m_data;
 #ifdef __BIG_ENDIAN__
-  memcpy(packet->m_data, data, size);
+  else
+    memcpy(packet->m_data, data, size);
 #else
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
-  if (size & 0x1)
-    packet->m_data[size - 1] = data[size - 1];
 #endif
 
   memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
-  return 6114;
+  return sizeof(packet);
 }
 
 int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -62,12 +63,13 @@ int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC958_TYPE_DTS1;
   packet->m_length    = size;
 
+  if (data == NULL)
+    data = packet->m_data;
 #ifdef __BIG_ENDIAN__
-  memcpy(packet->m_data, data, size);
+  else
+    memcpy(packet->m_data, data, size);
 #else
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
-  if (size & 0x1)
-    packet->m_data[size - 1] = data[size - 1];
 #endif
 
   memset(packet->m_data + size, 0, 512 - size);
@@ -82,12 +84,13 @@ int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC958_TYPE_DTS2;
   packet->m_length    = size;
 
+  if (data == NULL)
+    data = packet->m_data;
 #ifdef __BIG_ENDIAN__
-  memcpy(packet->m_data, data, size);
+  else
+    memcpy(packet->m_data, data, size);
 #else
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
-  if (size & 0x1)
-    packet->m_data[size - 1] = data[size - 1];
 #endif
 
   memset(packet->m_data + size, 0, 1024 - size);
@@ -102,12 +105,13 @@ int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC958_TYPE_DTS3;
   packet->m_length    = size;
 
+  if (data == NULL)
+    data = packet->m_data;
 #ifdef __BIG_ENDIAN__
-  memcpy(packet->m_data, data, size);
+  else
+    memcpy(packet->m_data, data, size);
 #else
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
-  if (size & 0x1)
-    packet->m_data[size - 1] = data[size - 1];
 #endif
 
   memset(packet->m_data + size, 0, 2048 - size);
