@@ -210,7 +210,7 @@ bool CSoftAESound::Initialize()
          {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
        };
 
-       /* setup the remapper */
+       /* setup the remapper to remap straight to the sink format as we inject sounds VERY late into the output */
        CAERemap remap;
        if (!remap.Initialize(layouts[m_channelCount - 1], AE.GetChannelLayout(), false))
        {

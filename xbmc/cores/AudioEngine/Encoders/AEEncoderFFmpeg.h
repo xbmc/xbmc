@@ -34,7 +34,7 @@ public:
   CAEEncoderFFmpeg();
   virtual ~CAEEncoderFFmpeg();
 
-  virtual bool Initialize(unsigned int channels, AEChLayout channelLayout, unsigned int sampleRate);
+  virtual bool Initialize(AEAudioFormat &format);
   virtual void Reset();
 
   virtual unsigned int GetBitRate    ();
@@ -49,10 +49,8 @@ private:
   DllAvUtil   m_dllAvUtil;
 
   AVCodecContext   *m_CodecCtx;
-  enum AEChannel    m_ChannelMap[AE_CH_MAX+1];
-  CAERemap          m_Remap;
+  enum AEChannel    m_Layout[AE_CH_MAX+1];
   uint8_t          *m_Buffer;
-  float            *m_Remapped;
   int               m_BufferSize;
 
   unsigned int      m_NeededFrames;

@@ -116,6 +116,16 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
+  /* if we are raw, correct the data format */
+  if (format.m_dataFormat == AE_FMT_RAW)
+  {
+    format.m_dataFormat   = AE_FMT_S16NE;
+    format.m_channelCount = 2;
+    m_passthrough         = true;
+  }
+  else
+    m_passthrough = false;
+
   m_channelLayout = new enum AEChannel[format.m_channelCount + 1];
   memcpy(m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
   m_channelLayout[format.m_channelCount] = AE_CH_NULL;
@@ -123,15 +133,6 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   /* set the channelLayout and the output device */
   format.m_channelLayout = m_channelLayout;
   m_device = device      = GetDeviceUse(format, device);
-
-  /* if we are raw, correct the data format */
-  if (format.m_dataFormat == AE_FMT_RAW)
-  {
-    format.m_dataFormat = AE_FMT_S16NE;
-    m_passthrough       = true;
-  }
-  else
-    m_passthrough = false;
 
   /* get the sound config */
   snd_config_t *config;
@@ -141,7 +142,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   error = snd_pcm_open_lconf(&m_pcm, device.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, config);
   if (error < 0)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - snd_pcm_open_lconf(%d)", error);
+    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - snd_pcm_open_lconf(%d) - %s", error, device.c_str());
     snd_config_delete(config);
     return false;
   }

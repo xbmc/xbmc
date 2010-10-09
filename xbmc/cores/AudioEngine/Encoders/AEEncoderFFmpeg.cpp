@@ -22,13 +22,13 @@
 #define AC3_ENCODE_BITRATE 640000
 
 #include "AEEncoderFFmpeg.h"
+#include "AEUtil.h"
 #include "AEPackIEC958.h"
 #include <string.h>
 
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_CodecCtx(NULL),
-  m_Buffer  (NULL),
-  m_Remapped(NULL)
+  m_Buffer  (NULL)
 {
 }
 
@@ -36,21 +36,17 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
 
-  delete[] m_Remapped;
-  m_Remapped = NULL;
-
   m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
-bool CAEEncoderFFmpeg::Initialize(unsigned int channels, AEChLayout channelMap, unsigned int sampleRate)
+bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 {
   Reset();
 
-  delete[] m_Remapped;
-  m_Remapped = NULL;
-
-  if (!channelMap || !m_dllAvUtil.Load() || m_dllAvFormat.Load() || !m_dllAvCodec.Load())
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
+
+  m_dllAvCodec.avcodec_register_all();
 
   AVCodec *codec;
   codec = m_dllAvCodec.avcodec_find_encoder(CODEC_ID_AC3);
@@ -60,7 +56,7 @@ bool CAEEncoderFFmpeg::Initialize(unsigned int channels, AEChLayout channelMap, 
   /* always assume 6 channels, 5.1... m_remap will give us what we want */
   m_CodecCtx = m_dllAvCodec.avcodec_alloc_context();
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
-  m_CodecCtx->sample_rate    = sampleRate;
+  m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channels       = 6;
   m_CodecCtx->channel_layout = CH_LAYOUT_5POINT1_BACK;
   m_CodecCtx->sample_fmt     = SAMPLE_FMT_FLT;
@@ -72,35 +68,37 @@ bool CAEEncoderFFmpeg::Initialize(unsigned int channels, AEChLayout channelMap, 
   }
 
   /* remap the channels according to the specified channel layout */
+  /* this never changes for AC3, but keep it anyway for if/when DCA encode support comes along */
   int index = 0;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_ChannelMap[index++] = AE_CH_FL  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_ChannelMap[index++] = AE_CH_FR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_ChannelMap[index++] = AE_CH_FC  ;
-  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_ChannelMap[index++] = AE_CH_LFE ;
-  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_ChannelMap[index++] = AE_CH_BL  ;
-  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_ChannelMap[index++] = AE_CH_BR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_ChannelMap[index++] = AE_CH_FLOC;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_ChannelMap[index++] = AE_CH_FROC;
-  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_ChannelMap[index++] = AE_CH_BC  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_ChannelMap[index++] = AE_CH_SL  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_ChannelMap[index++] = AE_CH_SR  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_ChannelMap[index++] = AE_CH_TC  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_ChannelMap[index++] = AE_CH_TFL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_ChannelMap[index++] = AE_CH_TFC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_ChannelMap[index++] = AE_CH_TFR ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_ChannelMap[index++] = AE_CH_TBL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_ChannelMap[index++] = AE_CH_TBC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_ChannelMap[index++] = AE_CH_TBR ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_Layout[index++] = AE_CH_FL  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_Layout[index++] = AE_CH_FR  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_Layout[index++] = AE_CH_FC  ;
+  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_Layout[index++] = AE_CH_LFE ;
+  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_Layout[index++] = AE_CH_BL  ;
+  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_Layout[index++] = AE_CH_BR  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_Layout[index++] = AE_CH_FLOC;
+  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_Layout[index++] = AE_CH_FROC;
+  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_Layout[index++] = AE_CH_BC  ;
+  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_Layout[index++] = AE_CH_SL  ;
+  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_Layout[index++] = AE_CH_SR  ;
+  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_Layout[index++] = AE_CH_TC  ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_Layout[index++] = AE_CH_TFL ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_Layout[index++] = AE_CH_TFC ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_Layout[index++] = AE_CH_TFR ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_Layout[index++] = AE_CH_TBL ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_Layout[index++] = AE_CH_TBC ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_Layout[index++] = AE_CH_TBR ;
+  m_Layout[index] = AE_CH_NULL;
 
-  if (!m_Remap.Initialize(channelMap, m_ChannelMap, false, false))
-  {
-    m_dllAvUtil.av_freep(&m_CodecCtx);
-    return false; 
-  }
+  format.m_dataFormat    = AE_FMT_FLOAT;
+  format.m_frames        = m_CodecCtx->frame_size / index;
+  format.m_frameSamples  = index;
+  format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_frameSamples;
+  format.m_channelCount  = index;
+  format.m_channelLayout = m_Layout;
 
-  m_NeededFrames = m_CodecCtx->frame_size;
+  m_NeededFrames = format.m_frames;
   m_Buffer       = new uint8_t[std::max(FF_MIN_BUFFER_SIZE, MAX_IEC958_PACKET)];
-  m_Remapped     = new float[m_CodecCtx->frame_size * channels];
 
   return true;
 }
@@ -130,11 +128,8 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   if (frames < m_NeededFrames)
     return 0;
 
-  /* remap the block */
-  m_Remap.Remap(data, m_Remapped, m_NeededFrames);
-
   /* encode it */
-  int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC958_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)m_Remapped);
+  int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC958_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)data);
 
   /* pack it into an IEC958 frame */
   m_BufferSize = CAEPackIEC958::PackAC3(NULL, size, m_Buffer);
