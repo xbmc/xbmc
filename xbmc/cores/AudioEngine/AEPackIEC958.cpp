@@ -52,7 +52,7 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 #endif
 
   memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
-  return sizeof(packet);
+  return sizeof(struct IEC958Packet);
 }
 
 int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)

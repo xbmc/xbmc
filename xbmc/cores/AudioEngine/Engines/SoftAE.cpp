@@ -167,18 +167,19 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   desiredFormat.m_sampleRate    = sampleRate;
   desiredFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_RAW : AE_FMT_FLOAT;
 
+  /* configure the encoder */
+  if (m_passthrough)
+  {
+    m_encoderFormat = desiredFormat;
+    SetupEncoder(m_encoderFormat);
+  }
+
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
   {
-    /* configure the encoder */
-    SetupEncoder(desiredFormat);
-
     if (driver.IsEmpty() || m_sink->GetName() == driver)
       return true;
   }
-
-  /* configure the encoder */
-  SetupEncoder(desiredFormat);
 
   /* let the thread know we have re-opened the sink */
   m_reOpened = true;
@@ -195,10 +196,19 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   }
 
   /* set the local members */
-  m_stdChLayout  = stdChLayout;
-  m_chLayout     = CAEUtil::GetStdChLayout(stdChLayout);
-  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-  CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
+  if (m_passthrough && m_encoder)
+  {
+    /* remap directly to the format we need for encode */
+    m_chLayout     = m_encoderFormat.m_channelLayout;
+    m_channelCount = m_encoderFormat.m_channelCount;
+    CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
+  }
+  else
+  {
+    m_chLayout     = CAEUtil::GetStdChLayout(stdChLayout);
+    m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
+    CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
+  }
 
   /* create the new sink */
   m_sink = GetSink(desiredFormat, m_passthrough || m_rawPassthrough, device);
@@ -207,8 +217,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     /* we failed, set the data format to defaults so the thread does not block */
     desiredFormat.m_dataFormat    = AE_FMT_FLOAT;
     desiredFormat.m_frames        = (sampleRate / 1000) * DELAY_FRAME_TIME;
-    desiredFormat.m_frameSamples  = m_format.m_frames * m_format.m_channelCount;
-    desiredFormat.m_frameSize     = m_format.m_frameSamples * sizeof(float);
+    desiredFormat.m_frameSamples  = m_sinkFormat.m_frames * m_sinkFormat.m_channelCount;
+    desiredFormat.m_frameSize     = m_sinkFormat.m_frameSamples * sizeof(float);
     desiredFormat.m_channelLayout = m_chLayout;
 
     delete m_sink;
@@ -228,19 +238,24 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   }
 
   /* get the sink's audio format details as it may have changed them according to what it supports */
-  m_format         = desiredFormat;
+  m_sinkFormat     = desiredFormat;
   m_frameSize      = sizeof(float) * m_channelCount;
-  m_convertFn      = CAEConvert::FrFloat(m_format.m_dataFormat);
-  m_bytesPerSample = CAEUtil::DataFormatToBits(m_rawPassthrough ? m_format.m_dataFormat : AE_FMT_FLOAT) >> 3;
+  m_convertFn      = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
+  m_bytesPerSample = CAEUtil::DataFormatToBits(m_rawPassthrough ? m_sinkFormat.m_dataFormat : AE_FMT_FLOAT) >> 3;
 
   if (m_rawPassthrough)
-    m_buffer = _aligned_malloc(m_format.m_frames * m_format.m_frameSize, 16); 
+    m_buffer = _aligned_malloc(m_sinkFormat.m_frames * m_sinkFormat.m_frameSize, 16); 
   else
-    m_buffer = _aligned_malloc(m_format.m_frames * m_frameSize, 16);
+  {
+    if (m_passthrough && m_encoder)      
+      m_buffer = _aligned_malloc(m_encoderFormat.m_frames * m_frameSize, 16);
+    else
+      m_buffer = _aligned_malloc(m_sinkFormat.m_frames * m_frameSize, 16);
+  }
   m_bufferSamples = 0;
 
   /* initialize the final stage remapper */
-  m_remap.Initialize(m_chLayout, m_format.m_channelLayout, true);
+  m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true);
 
   /* if we did not re-open or we are in raw passthrough, we are finished */
   if (m_rawPassthrough) return true;
@@ -261,7 +276,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 }
 
 bool CSoftAE::SetupEncoder(AEAudioFormat &format)
-{
+{  
   delete m_encoder;
   m_encoder = NULL;
 
@@ -269,12 +284,8 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
     return false;
 
   m_encoder = new CAEEncoderFFmpeg();
-  if (m_encoder->Initialize(format.m_channelCount, format.m_channelLayout, format.m_sampleRate))
-  {
-    m_sinkFrames    = format.m_frames;
-    format.m_frames = m_encoder->GetFrames();
+  if (m_encoder->Initialize(format))
     return true;
-  }
 
   delete m_encoder;
   m_encoder = NULL;
@@ -358,7 +369,8 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958 &&
     g_guiSettings.GetBool("audiooutput.ac3passthrough");
 
-  OpenSink();
+  if (!setting.IsEmpty())
+    OpenSink();
 }
 
 void CSoftAE::Deinitialize()
@@ -552,7 +564,7 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  return m_format.m_sampleRate;
+  return m_sinkFormat.m_sampleRate;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
@@ -604,7 +616,7 @@ float CSoftAE::GetDelay()
   sinkLock.Leave();
 
   unsigned int buffered = m_bufferSamples / m_channelCount;
-  delay += (float)buffered / (float)m_format.m_sampleRate;
+  delay += (float)buffered / (float)m_sinkFormat.m_sampleRate;
   return delay;
 }
 
@@ -736,7 +748,10 @@ void CSoftAE::Run()
     m_reOpened = false;
 
     /* output the buffer to the sink */
-    RunOutputStage();
+    if (m_passthrough && m_encoder)
+      RunTranscodeStage();
+    else
+      RunOutputStage();
 
     /* copy this value so we can unlock the sink */
     channelCount = m_channelCount;
@@ -787,7 +802,7 @@ void CSoftAE::Run()
     _aligned_free(out);
 }
 
-inline void CSoftAE::MixSounds(unsigned int samples)
+void CSoftAE::MixSounds(float *buffer, unsigned int samples)
 {
   list<SoundState>::iterator itt;
 
@@ -806,13 +821,12 @@ inline void CSoftAE::MixSounds(unsigned int samples)
     float volume = ss->owner->GetVolume();// * 0.5f; /* 0.5 to normalize */
     unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
-    float *floatBuffer = (float*)m_buffer;
     #ifdef __SSE__
-      CSoftAE::SSEMulAddArray(floatBuffer, ss->samples, volume, mixSamples);
-      CSoftAE::SSEMulArray   (floatBuffer, 0.5f, mixSamples);
+      CSoftAE::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
+      CSoftAE::SSEMulArray   (buffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
-        floatBuffer[i] = (floatBuffer[i] + (ss->samples[i] * volume)) * 0.5f;
+        buffer[i] = (buffer[i] + (ss->samples[i] * volume)) * 0.5f;
     #endif
 
     ss->sampleCount -= mixSamples;
@@ -822,10 +836,24 @@ inline void CSoftAE::MixSounds(unsigned int samples)
   }
 }
 
+void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
+{
+  MixSounds(buffer, samples);
+
+  #ifdef __SSE__
+    CSoftAE::SSEMulArray(buffer, m_volume, samples);
+    for(unsigned int i = 0; i < samples; ++i)
+      buffer[i] = CAEUtil::SoftClamp(buffer[i]);
+  #else
+    for(unsigned int i = 0; i < samples; ++i)
+      buffer[i] = CAEUtil::SoftClamp(buffer[i] * m_volume);
+  #endif
+}
+
 inline void CSoftAE::RunOutputStage()
 {
-  unsigned int rSamples = m_format.m_frames * m_format.m_channelCount;
-  unsigned int samples  = m_rawPassthrough ? rSamples : m_format.m_frames * m_channelCount;
+  unsigned int rSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelCount;
+  unsigned int samples  = m_rawPassthrough ? rSamples : m_sinkFormat.m_frames * m_channelCount;
 
   /* this normally only loops once */
   while(m_bufferSamples >= samples)
@@ -835,73 +863,48 @@ inline void CSoftAE::RunOutputStage()
     /* if we are in raw passthrough we dont touch the samples */
     if (!m_rawPassthrough)
     {
-      float *floatBuffer = (float*)m_buffer;
-
-      /* mix in gui sounds */
-      MixSounds(samples);
-
-      /* handle deamplification */
-      #ifdef __SSE__
-        CSoftAE::SSEMulArray(floatBuffer, m_volume, samples);
-        for(unsigned int i = 0; i < samples; ++i)
-          floatBuffer[i] = CAEUtil::SoftClamp(floatBuffer[i]);
-      #else
-        for(unsigned int i = 0; i < samples; ++i)
-          floatBuffer[i] = CAEUtil::SoftClamp(floatBuffer[i] * m_volume);
-      #endif
- 
-      if (m_passthrough && m_encoder)
+      if(m_remappedSize < rSamples)
       {
-        /* if encoding */
-        uint8_t *encoded;
-        wroteFrames = m_encoder->Encode(floatBuffer, m_format.m_frames);
-        unsigned int size = m_encoder->GetData(&encoded);
-        printf("%d\n", size);
+        _aligned_free(m_remapped);
+        m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
+        m_remappedSize = rSamples;
+      }
+
+      m_remap.Remap((float *)m_buffer, m_remapped, m_sinkFormat.m_frames);
+      FinalizeSamples(m_remapped, rSamples);
+
+      if (m_convertFn)
+      {
+        unsigned int newSize = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
+        if(m_convertedSize < newSize)
+        {
+          _aligned_free(m_converted);
+          m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
+          m_convertedSize = newSize;
+        }
+        m_convertFn(m_remapped, rSamples, m_converted);
+        if (m_sink)
+          wroteFrames = m_sink->AddPackets(m_converted, m_sinkFormat.m_frames);
+        else
+        {
+          wroteFrames = m_sinkFormat.m_frames;
+          DelayFrames();
+        }
       }
       else
       {
-        /* if analoge */
-        if(m_remappedSize < rSamples)
-        {
-          _aligned_free(m_remapped);
-          m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
-          m_remappedSize = rSamples;
-        }
-
-        m_remap.Remap(floatBuffer, m_remapped, m_format.m_frames);
-        if (m_convertFn)
-        {
-          unsigned int newSize = m_format.m_frames * m_format.m_frameSize;
-          if(m_convertedSize < newSize)
-          {
-            _aligned_free(m_converted);
-            m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
-            m_convertedSize = newSize;
-          }
-          m_convertFn(m_remapped, rSamples, m_converted);
-          if (m_sink)
-            wroteFrames = m_sink->AddPackets(m_converted, m_format.m_frames);
-          else
-          {
-            wroteFrames = m_format.m_frames;
-            DelayFrames();
-          }
-        }
+        if (m_sink)
+          wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_sinkFormat.m_frames);
         else
         {
-          if (m_sink)
-            wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_format.m_frames);
-          else
-          {
-            wroteFrames = m_format.m_frames;
-            DelayFrames();
-          }
+          wroteFrames = m_sinkFormat.m_frames;
+          DelayFrames();
         }
       }
 
       int wroteSamples = wroteFrames * m_channelCount;
       int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
-      memmove(floatBuffer, floatBuffer + wroteSamples, bytesLeft);
+      memmove((float*)m_buffer, (float*)m_buffer + wroteSamples, bytesLeft);
       m_bufferSamples -= wroteSamples;
     }
     else
@@ -910,9 +913,9 @@ inline void CSoftAE::RunOutputStage()
       unsigned int wroteFrames;
       uint8_t *rawBuffer = (uint8_t*)m_buffer;
       if (m_sink)
-        wroteFrames = m_sink->AddPackets(rawBuffer, m_format.m_frames);
+        wroteFrames = m_sink->AddPackets(rawBuffer, m_sinkFormat.m_frames);
       else
-        wroteFrames = m_format.m_frames;
+        wroteFrames = m_sinkFormat.m_frames;
 
       int wroteSamples = wroteFrames * m_channelCount;
       int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
@@ -922,7 +925,35 @@ inline void CSoftAE::RunOutputStage()
   }
 }
 
-inline unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
+void CSoftAE::RunTranscodeStage()
+{
+  unsigned int samples = m_encoderFormat.m_frames * m_sinkFormat.m_channelCount;
+  
+  while(m_bufferSamples >= samples)
+  {
+    FinalizeSamples((float*)m_buffer, samples);    
+    
+    int wroteFrames  = m_encoder->Encode((float*)m_buffer, samples);
+    int wroteSamples = wroteFrames * m_sinkFormat.m_channelCount;
+    int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
+    memmove((float*)m_buffer, (float*)m_buffer + wroteSamples, bytesLeft);
+    m_bufferSamples -= wroteSamples;
+
+    uint8_t *packet;
+    int size = m_encoder->GetData(&packet);
+    unsigned int frames = size / m_sinkFormat.m_frameSize;
+    while(frames)
+    {
+      unsigned int write  = std::min(m_sinkFormat.m_frames, frames);
+      unsigned int wrote  = m_sink->AddPackets(packet, write);
+      
+      packet += wrote * m_sinkFormat.m_frameSize;
+      frames -= wrote;
+    }
+  }
+}
+
+unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
   if (m_rawPassthrough)
   {
@@ -939,7 +970,7 @@ inline unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out
     uint8_t *frame = stream->GetFrame();
     if (!frame) return 0;
 
-    memcpy(out, frame, m_format.m_frameSize);
+    memcpy(out, frame, m_sinkFormat.m_frameSize);
     return 1;
   }
 
@@ -1022,7 +1053,7 @@ inline void CSoftAE::RunBufferStage(void *out)
   if (m_rawPassthrough)
   {
     uint8_t *rawBuffer = (uint8_t*)m_buffer;
-    memcpy(rawBuffer + (m_bufferSamples * m_bytesPerSample), out, m_format.m_frameSize);
+    memcpy(rawBuffer + (m_bufferSamples * m_bytesPerSample), out, m_sinkFormat.m_frameSize);
   }
   else
   {

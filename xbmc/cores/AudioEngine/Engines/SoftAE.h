@@ -80,14 +80,14 @@ public:
   virtual unsigned int   GetSampleRate   ();
   virtual unsigned int   GetChannelCount () {return m_channelCount          ;}
   virtual AEChLayout     GetChannelLayout() {return m_chLayout              ;}
-  virtual unsigned int   GetFrames       () {return m_format.m_frames       ;}
+  virtual unsigned int   GetFrames       () {return m_sinkFormat.m_frames       ;}
   virtual unsigned int   GetFrameSize    () {return m_frameSize             ;}
 
   /* these are for streams that are in RAW mode */
-  enum AEDataFormat   GetSinkDataFormat() {return m_format.m_dataFormat   ;}
-  AEChLayout          GetSinkChLayout  () {return m_format.m_channelLayout;}
-  unsigned int        GetSinkChCount   () {return m_format.m_channelCount ;}
-  unsigned int        GetSinkFrameSize () {return m_format.m_frameSize    ;}
+  enum AEDataFormat   GetSinkDataFormat() {return m_sinkFormat.m_dataFormat   ;}
+  AEChLayout          GetSinkChLayout  () {return m_sinkFormat.m_channelLayout;}
+  unsigned int        GetSinkChCount   () {return m_sinkFormat.m_channelCount ;}
+  unsigned int        GetSinkFrameSize () {return m_sinkFormat.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 
@@ -134,7 +134,8 @@ private:
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
   unsigned int              m_sinkFrames; /* used when encoding */
-  AEAudioFormat             m_format;
+  AEAudioFormat             m_sinkFormat;
+  AEAudioFormat             m_encoderFormat;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
 
@@ -164,8 +165,12 @@ private:
   size_t          m_convertedSize;
 
   /* thread run stages */
-  void         MixSounds        (unsigned int samples);
+  void         MixSounds        (float *buffer, unsigned int samples);
+  void         FinalizeSamples  (float *buffer, unsigned int samples);
+
   void         RunOutputStage   ();
+
+  void         RunTranscodeStage();
   unsigned int RunStreamStage   (unsigned int channelCount, void *out, bool &restart);
   void         RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed);
   void         RunBufferStage   (void *out);

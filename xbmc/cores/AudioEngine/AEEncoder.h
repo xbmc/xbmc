@@ -41,12 +41,10 @@ public:
 
   /**
    * Called to setup the encoder to accept data in the specified format
-   * @param channels the number of channels in the channel layout
-   * @param channelLayout the channel layout
-   * @param sampleRate the source audio sample rate
+   * @param format the desired audio format, may be changed to suit the encoder
    * @return true on success, false on failure
    */
-  virtual bool Initialize(unsigned int channels, enum AEChannel *channelLayout, unsigned int sampleRate) = 0;
+  virtual bool Initialize(AEAudioFormat &format) = 0;
 
   /**
    * Reset the encoder for new data
