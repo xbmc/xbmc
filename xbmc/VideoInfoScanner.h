@@ -44,6 +44,7 @@ namespace VIDEO
   typedef struct SEpisode
   {
     CStdString strPath;
+    CStdString strTitle;
     int iSeason;
     int iEpisode;
     CDateTime cDate;

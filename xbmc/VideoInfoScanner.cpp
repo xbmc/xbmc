@@ -788,7 +788,7 @@ namespace VIDEO
     CVideoInfoTag* tag = item->GetVideoInfoTag();
     /*
      * First check the season and episode number. This takes precedence over the original air
-     * date.
+     * date and episode title.
      */
     if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
     {
@@ -803,13 +803,14 @@ namespace VIDEO
     }
 
     /*
-     * Check to see if the first aired date has been set. If so use that for scraping the TV Show
-     * information.
+     * Next preference is the first aired date. If it exists use that for matching the TV Show
+     * information. Also set the title in case there are multiple matches for the first aired date.
      */
     if (!tag->m_strFirstAired.IsEmpty())
     {
       SEpisode episode;
       episode.strPath = item->m_strPath;
+      episode.strTitle = tag->m_strTitle;
       /*
        * Set season and episode to -1 to indicate to use the aired date.
        */
@@ -820,8 +821,29 @@ namespace VIDEO
        */
       episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
       episodeList.push_back(episode);
-      CLog::Log(LOGDEBUG, "%s - found match for: %s. First Aired '%s' = '%s'", __FUNCTION__,
-                episode.strPath.c_str(), tag->m_strFirstAired.c_str(), episode.cDate.GetAsLocalizedDate().c_str());
+      CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
+                __FUNCTION__, episode.strPath.c_str(), tag->m_strFirstAired.c_str(),
+                episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
+      return true;
+    }
+
+    /*
+     * Next preference is the episode title. If it exists use that for matching the TV Show
+     * information.
+     */
+    if (!tag->m_strTitle.IsEmpty())
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.strTitle = tag->m_strTitle;
+      /*
+       * Set season and episode to -1 to indicate to use the title.
+       */
+      episode.iSeason = -1;
+      episode.iEpisode = -1;
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG,"%s - found match for: '%s', title: '%s'", __FUNCTION__,
+                episode.strPath.c_str(), episode.strTitle.c_str());
       return true;
     }
 
@@ -1233,6 +1255,11 @@ namespace VIDEO
           bFound = true;
           break;
         }
+        if (!guide->cScraperUrl.strTitle.IsEmpty() && guide->cScraperUrl.strTitle.CompareNoCase(file->strTitle) == 0)
+        {
+          bFound = true;
+          break;
+        }
       }
 
       if (bFound)
@@ -1253,6 +1280,12 @@ namespace VIDEO
         if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
+                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
+                  file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
