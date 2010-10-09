@@ -84,6 +84,11 @@
 			<filename>DejaVuSans-Bold-Caps.ttf</filename>
 			<size>50</size>
 		</font>
+	 	<font>
+			<name>font45caps_title</name>
+			<filename>DejaVuSans-Bold-Caps.ttf</filename>
+			<size>45</size>
+		</font>
 
 	 	<font>
 			<name>WeatherTemp</name>

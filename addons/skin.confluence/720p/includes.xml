@@ -8,6 +8,9 @@
 	<include file="ViewsLiveTV.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
+	<include file="IncludesHomeVertical.xml" />
+	<include file="IncludesHomeHorizontal.xml" />
+	<include file="IncludesHomeMenuItems.xml" />
 
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
@@ -227,7 +230,7 @@
 	</include>
 	<include name="ButtonHomeSubCommonValues">
 		<height>40</height>
-		<width>221</width>
+		<width>220</width>
 		<textoffsetx>20</textoffsetx>
 		<textwidth>195</textwidth>
 		<aligny>center</aligny>
