@@ -92,6 +92,8 @@ void CAdvancedSettings::Initialize()
   m_videoNonLinStretchRatio = 0.5f;
   m_videoAllowLanczos3 = false;
   m_videoAllowMpeg4VDPAU = false;
+  m_DXVACheckCompatibility = false;
+  m_DXVACheckCompatibilityPresent = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -500,6 +502,9 @@ bool CAdvancedSettings::Load()
         pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
       }
     }
+
+    m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
+
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

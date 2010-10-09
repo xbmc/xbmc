@@ -70,6 +70,7 @@ public:
   bool    UseD3D9Ex()       { return m_useD3D9Ex; }
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
   D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
+  D3DADAPTER_IDENTIFIER9 GetAIdentifier() { return m_AIdentifier; }
 
   bool    Interlaced()      { return m_interlaced; }
 
@@ -133,6 +134,7 @@ protected:
   DWORD                       m_defaultD3DUsage;
   D3DPOOL                     m_defaultD3DPool;
   bool                        m_useWindowedDX;
+  D3DADAPTER_IDENTIFIER9      m_AIdentifier;
 
   CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
