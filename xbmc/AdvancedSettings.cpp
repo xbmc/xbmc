@@ -92,6 +92,8 @@ void CAdvancedSettings::Initialize()
   m_videoNonLinStretchRatio = 0.5f;
   m_videoAllowLanczos3 = false;
   m_videoAllowMpeg4VDPAU = false;
+  m_DXVACheckCompatibility = false;
+  m_DXVACheckCompatibilityPresent = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -417,6 +419,9 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+
+    m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
+
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

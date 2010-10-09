@@ -109,6 +109,8 @@ class CAdvancedSettings
     float m_videoNonLinStretchRatio;
     bool  m_videoAllowLanczos3;
     bool  m_videoAllowMpeg4VDPAU;
+    bool m_DXVACheckCompatibility;
+    bool m_DXVACheckCompatibilityPresent;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
