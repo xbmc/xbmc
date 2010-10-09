@@ -1079,6 +1079,14 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
+
+  if(result == CURLE_HTTP_RETURNED_ERROR)
+  {
+  long code;
+  if(curl_easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code == 404 )
+    return -1;
+  }
+
   if(result == CURLE_GOT_NOTHING 
   || result == CURLE_HTTP_RETURNED_ERROR 
   || result == CURLE_RECV_ERROR /* some silly shoutcast servers */ )
