@@ -208,8 +208,9 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
 
   CFileItemPtr item(new CFileItem(path, folder));
   item->SetLabel(addon->Name());
-  item->SetLabel2(addon->Summary());
+  item->SetLabel2(addon->Version().str);
   item->SetThumbnailImage(addon->Icon());
+  item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
   item->SetProperty("fanart_image", addon->FanArt());
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
