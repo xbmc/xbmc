@@ -189,6 +189,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_prevskipped = false;
   m_syncclock = true;
   m_errortime = CurrentHostCounter();
+  m_silence = false;
 
   m_maxspeedadjust = g_guiSettings.GetFloat("videoplayer.maxspeedadjust");
 
@@ -476,6 +477,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_dvdAudio.Pause();
       }
     }
+    else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
+    {
+      m_silence = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      if (m_silence)
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 1)", m_audioClock);
+      else
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 0)", m_audioClock);
+    }
     pMsg->Release();
   }
   return 0;
@@ -550,6 +559,10 @@ void CDVDPlayerAudio::Process()
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
       m_messageQueue.SetMaxTimeSize(8.0 - m_dvdAudio.GetCacheTotal());
     }
+
+    // Zero out the frame data if we are supposed to silence the audio
+    if (m_silence)
+      memset(audioframe.data, NULL, audioframe.size);
 
     if( result & DECODE_FLAG_DROP )
     {

@@ -392,6 +392,7 @@ protected:
       commbreak_end = -1;
       seek_to_start = false;
       reset = 0;
+      mute = false;
     }
 
     void ResetCutMarker(double timeout)
@@ -415,6 +416,7 @@ protected:
     int commbreak_end;    // end time of the last commercial break automatically skipped
     bool seek_to_start;   // whether seeking can go back to the start of a previously skipped break
     double reset;         // last actual reset time
+    bool mute;            // whether EDL mute is on
 
   } m_EdlAutoSkipMarkers;
 
