@@ -213,7 +213,7 @@ bool CDbusServer::connect(DBusConnection **conn)
   dbus_error_init( &error );
 
   /* connect to the session bus */
-  *conn = dbus_bus_get( DBUS_BUS_SESSION, &error );
+  *conn = dbus_bus_get_private( DBUS_BUS_SESSION, &error );
   if( !*conn ) {
     CLog::Log(LOGERROR, " DS: Failed to connect to the D-Bus session daemon: %s", error.message );
     dbus_error_free( &error );
@@ -280,6 +280,7 @@ void CDbusServer::StopServer(bool bWait)
   if (m_pThread && bWait)
   {
     m_pThread->WaitForThreadExit(2000);
+    dbus_connection_close(p_conn);
     dbus_connection_unref( p_conn );
     delete m_pThread;
     m_pThread = NULL;
