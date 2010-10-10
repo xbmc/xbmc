@@ -435,7 +435,10 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (!m_referer.IsEmpty())
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
+  {
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, "");
+    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
+  }
 
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
