@@ -310,7 +310,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
   if (success)
   {
     CFileOperationJob* job = (CFileOperationJob*)job2;
-    if (job->GetAction() == CFileOperationJob::ActionCopy)
+    if (job->GetAction() == CFileOperationJob::ActionReplace)
     {
       for (int i=0;i<job->GetItems().Size();++i)
       {
@@ -424,7 +424,7 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
   }
 
   list[0]->Select(true);
-  CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
+  CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionReplace,
                                                  list,dest);
   return CJobManager::GetInstance().AddJob(job,this);
 }
