@@ -268,6 +268,14 @@ void CGUIWindowAddonBrowser::ReportInstallError(const CStdString& addonID,
                                           g_localizeStrings.Get(addon2 ? 113 : 114),
                                           TOAST_DISPLAY_TIME, false);
   }
+  else
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                          CGUIDialogKaiToast::Error,
+                                          fileName,
+                                          g_localizeStrings.Get(114),
+                                          TOAST_DISPLAY_TIME, false);
+  }
 }
 
 void CGUIWindowAddonBrowser::ReportInstallErrorZip(const CStdString& zipName)
