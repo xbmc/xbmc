@@ -505,9 +505,9 @@ void CXBMCRenderManager::Recover()
 
 void CXBMCRenderManager::UpdateResolution()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
   if (m_bReconfigured)
   {
+    CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
       RESOLUTION res = GetResolution();

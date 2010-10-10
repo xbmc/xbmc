@@ -2039,8 +2039,9 @@ void CApplication::Render()
   g_graphicsContext.Flip();
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
-  g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
+
+  g_renderManager.UpdateResolution();
 
   // yield to other threads, so any thread needing
   // gfx context will get a timeslice. Newer os's
