@@ -208,14 +208,14 @@ void CWinSystemX11::UpdateResolutions()
     g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
     g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
   }
-#else
+  else
+#endif
   {
     int x11screen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, x11screen);
     int h = DisplayHeight(m_dpy, x11screen);
     UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
   }
-#endif
 
 
 #if defined(HAS_XRANDR)
