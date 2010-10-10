@@ -153,7 +153,7 @@
 					<bordersize>8</bordersize>
 				</control>
 				<control type="group">
-					<posy>290</posy>
+					<posy>280</posy>
 					<control type="label">
 						<description>Type txt</description>
 						<posx>150</posx>
@@ -226,7 +226,7 @@
 						<font>font13</font>
 						<scroll>true</scroll>
 					</control>
-					<!-- control type="label">
+					<control type="label">
 						<description>Rating txt</description>
 						<posx>150</posx>
 						<posy>90</posy>
@@ -245,10 +245,10 @@
 						<width>160</width>
 						<height>32</height>
 						<texture>LeftRating/$INFO[ListItem.Property(Addon.StarRating)]</texture>
-					</control -->
+					</control>
 					<control type="image">
 						<posx>0</posx>
-						<posy>120</posy>
+						<posy>130</posy>
 						<width>550</width>
 						<height>4</height>
 						<texture>separator.png</texture>
@@ -256,9 +256,9 @@
 					<control type="textbox">
 						<description>Description</description>
 						<posx>0</posx>
-						<posy>130</posy>
+						<posy>140</posy>
 						<width>600</width>
-						<height>200</height>
+						<height>190</height>
 						<font>font12</font>
 						<align>-</align>
 						<textcolor>white</textcolor>
