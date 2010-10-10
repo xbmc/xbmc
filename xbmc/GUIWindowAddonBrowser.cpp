@@ -318,30 +318,10 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
         }
         else
         {
-          CURL url(strFolder);
           // zip extraction job is done
-          if (url.GetProtocol() == "zip")
-          {
-            CFileItemList list;
-            CDirectory::GetDirectory(url.Get(),list);
-            CStdString dirname = "";
-            for (int i=0;i<list.Size();++i)
-            {
-              if (list[i]->m_bIsFolder)
-              {
-                dirname = list[i]->GetLabel();
-                break;
-              }
-            }
-            strFolder = CUtil::AddFileToFolder("special://home/addons/",
-                                               dirname);
-          }
-          else
-          {
-            CUtil::RemoveSlashAtEnd(strFolder);
-            strFolder = CUtil::AddFileToFolder("special://home/addons/",
-                                               CUtil::GetFileName(strFolder));
-          }
+          CUtil::RemoveSlashAtEnd(strFolder);
+          strFolder = CUtil::AddFileToFolder("special://home/addons/",
+                                             CUtil::GetFileName(strFolder));
           AddonPtr addon;
           bool update=false;
           if (CAddonMgr::Get().LoadAddonDescription(strFolder, addon))
@@ -415,7 +395,18 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
     {
       CStdString archive;
       CUtil::CreateArchivePath(archive,"zip",package,"");
-      list.Add(CFileItemPtr(new CFileItem(archive,true)));
+
+      CFileItemList archivedFiles;
+      CDirectory::GetDirectory(archive, archivedFiles);
+
+      if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+      {
+        CFile::Delete(package);
+        ReportInstallErrorZip(CUtil::GetFileName(path));
+        CLog::Log(LOGERROR, "Package %s is not a valid addon", CUtil::GetFileName(path).c_str());
+        return false;
+      }
+      list.Add(CFileItemPtr(new CFileItem(archivedFiles[0]->m_strPath,true)));
       dest = "special://home/addons/";
     }
     else
