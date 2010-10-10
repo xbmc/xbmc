@@ -242,7 +242,7 @@ static bool CheckH264L41(AVCodecContext *avctx)
 
 static bool IsL41LimitedATI()
 {
-  if(g_Windowing.GetAIdentifier().VendorId == 0x1002)
+  if(g_Windowing.GetAIdentifier().VendorId == PCIV_ATI)
   {
     for (unsigned idx = 0; UVDDeviceID[idx] != 0; idx++)
     {

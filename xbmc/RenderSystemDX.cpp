@@ -491,7 +491,7 @@ bool CRenderSystemDX::CreateDevice()
   // see ticket #9269
   if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
   && m_defaultD3DPool  == D3DPOOL_DEFAULT
-  && m_AIdentifier.VendorId == 4318)
+  && m_AIdentifier.VendorId == PCIV_nVidia)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
     m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
@@ -505,7 +505,7 @@ bool CRenderSystemDX::CreateDevice()
   // See ticket #9578
   if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
   && m_defaultD3DPool  == D3DPOOL_DEFAULT
-  && m_AIdentifier.VendorId == 32902)
+  && m_AIdentifier.VendorId == PCIV_Intel)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
     m_minDXTPitch = 128;
