@@ -88,6 +88,17 @@ protected:
    */
   void SetItemLabel2(CFileItemPtr item);
 
+  /*! \brief Queue a notification for addon installation/update failure
+   \param addonID - addon id
+   \param fileName - filename which is shown in case the addon id is unknown
+   */
+  void ReportInstallError(const CStdString& addonID, const CStdString& fileName);
+
+  /*! \brief Queue a notification for addon installation/update failure when only zip filename is known
+   \param zipName - zip filename (will try to guess addon ID from it)
+   */
+  void ReportInstallErrorZip(const CStdString& zipName);
+
   /*! \brief Check the hash of a downloaded addon with the hash in the repository
    \param addonZip - filename of the zipped addon to check
    \param hash - correct hash of the file 

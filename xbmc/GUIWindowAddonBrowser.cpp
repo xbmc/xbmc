@@ -251,6 +251,33 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   return CGUIMediaWindow::OnClick(iItem);
 }
 
+void CGUIWindowAddonBrowser::ReportInstallError(const CStdString& addonID,
+                                                const CStdString& fileName)
+{
+  AddonPtr addon;
+  CAddonDatabase database;
+  database.Open();
+  database.GetAddon(addonID, addon);
+  if (addon)
+  {
+    AddonPtr addon2;
+    CAddonMgr::Get().GetAddon(addonID, addon2);
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                          addon->Icon(),
+                                          addon->Name(),
+                                          g_localizeStrings.Get(addon2 ? 113 : 114),
+                                          TOAST_DISPLAY_TIME, false);
+  }
+}
+
+void CGUIWindowAddonBrowser::ReportInstallErrorZip(const CStdString& zipName)
+{
+  CStdStringArray arr;
+  // FIXME: this doesn't work if addon id contains dashes
+  StringUtils::SplitString(zipName, "-", arr);
+  ReportInstallError(arr[0], zipName);
+}
+
 bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
                                        const CStdString& hash)
 {
@@ -261,22 +288,7 @@ bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
   if (!md5.Equals(hash))
   {
     CFile::Delete(package);
-    CStdStringArray arr;
-    StringUtils::SplitString(zipFile,"-",arr);
-    AddonPtr addon;
-    CAddonDatabase database;
-    database.Open();
-    database.GetAddon(arr[0],addon);
-    if (addon)
-    {
-      AddonPtr addon2;
-      CAddonMgr::Get().GetAddon(arr[0],addon2);
-      g_application.m_guiDialogKaiToast.QueueNotification(
-                                           addon->Icon(),
-                                           addon->Name(),
-                                           g_localizeStrings.Get(addon2 ? 113 : 114),
-                                           TOAST_DISPLAY_TIME, false);
-    }
+    ReportInstallErrorZip(zipFile);
     CLog::Log(LOGERROR,"MD5 mismatch after download %s", zipFile.c_str());
     return false;
   }
