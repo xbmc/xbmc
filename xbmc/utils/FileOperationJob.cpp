@@ -94,7 +94,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items, "", false);
+  CDirectory::GetDirectory(strPath, items, "", false, false, DIR_CACHE_ONCE, true, false, true);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
