@@ -368,6 +368,16 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                   TOAST_DISPLAY_TIME,false);
             }
           }
+          else
+          {
+            CStdString addonID = CUtil::GetFileName(strFolder);
+            ReportInstallError(addonID, addonID);
+            CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
+            CFileItemList list;
+            list.Add(CFileItemPtr(new CFileItem(strFolder, true)));
+            list[0]->Select(true);
+            CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), this);
+          }
         }
       }
     }
