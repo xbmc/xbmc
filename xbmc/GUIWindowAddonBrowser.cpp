@@ -347,12 +347,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
               if (it->first.Equals("xbmc.metadata"))
                 continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
-              {
-                CAddonDatabase database;
-                database.Open();
-                if (database.GetAddon(it->first,addon2))
-                  AddJob(addon2->Path());
-              }
+                InstallAddon(it->first);
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
