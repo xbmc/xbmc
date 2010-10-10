@@ -4685,7 +4685,8 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  CSectionLoader::UnloadDelayed();
+  if (!IsPlayingVideo())
+    CSectionLoader::UnloadDelayed();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -4712,11 +4713,13 @@ void CApplication::ProcessSlow()
     m_bIsPaused = IsPaused();
   }
 
-  g_largeTextureManager.CleanupUnusedImages();
+  if (!IsPlayingVideo())
+    g_largeTextureManager.CleanupUnusedImages();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  m_Autorun.HandleAutorun();
+  if (!IsPlayingVideo())
+    m_Autorun.HandleAutorun();
 #endif
 
   // update upnp server/renderer states
@@ -4743,10 +4746,13 @@ void CApplication::ProcessSlow()
 
 #ifdef HAS_LCD
   // attempt to reinitialize the LCD (e.g. after resuming from sleep)
-  if (g_lcd && !g_lcd->IsConnected())
+  if (!IsPlayingVideo())
   {
-    g_lcd->Stop();
-    g_lcd->Initialize();
+    if (g_lcd && !g_lcd->IsConnected())
+    {
+      g_lcd->Stop();
+      g_lcd->Initialize();
+    }
   }
 #endif
   
