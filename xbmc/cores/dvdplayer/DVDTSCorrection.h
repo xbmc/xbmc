@@ -61,10 +61,9 @@ class CPullupCorrection
     std::vector<double> m_pattern; //the last saved pattern
     int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_ptscorrection;        //the correction needed for the last added pts
-    double m_trackingpts;          //the pts value we want to have
-    double m_frameduration;
+    double m_trackingpts;          //tracked pts for smoothing the timestamps
+    double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
-    int    m_dropped;              //nr of dropped diffs
-    CStdString GetPatternStr();   //also for the log
+    CStdString GetPatternStr();    //also for the log
 };
