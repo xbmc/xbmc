@@ -1082,9 +1082,9 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   if(result == CURLE_HTTP_RETURNED_ERROR)
   {
-  long code;
-  if(curl_easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code == 404 )
-    return -1;
+    long code;
+    if(g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code == 404 )
+      return -1;
   }
 
   if(result == CURLE_GOT_NOTHING 
