@@ -131,6 +131,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
   pSpin->AddLabel(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP);
   pSpin->AddLabel(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP);
+  pSpin->AddLabel(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH);
   pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
   pSpin->AddLabel(g_localizeStrings.Get(20172), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS);
@@ -205,6 +206,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "9982";
   else if (m_protocol == NET_PROTOCOL_VTP)
     m_port = "2004";
+  else if (m_protocol == NET_PROTOCOL_MYTH)
+    m_port = "6543";
 
   UpdateButtons();
 }
@@ -231,7 +234,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol != NET_PROTOCOL_UPNP &&
                                                    m_protocol != NET_PROTOCOL_TUXBOX &&
                                                    m_protocol != NET_PROTOCOL_HTSP &&
-                                                   m_protocol != NET_PROTOCOL_VTP);
+                                                   m_protocol != NET_PROTOCOL_VTP &&
+                                                   m_protocol != NET_PROTOCOL_MYTH);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
@@ -266,6 +270,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_TUXBOX ||
                                                    m_protocol == NET_PROTOCOL_HTSP ||
                                                    m_protocol == NET_PROTOCOL_VTP ||
+                                                   m_protocol == NET_PROTOCOL_MYTH ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP);
 
@@ -290,6 +295,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_RSS ||
                                                                               m_protocol == NET_PROTOCOL_HTSP ||
                                                                               m_protocol == NET_PROTOCOL_VTP ||
+                                                                              m_protocol == NET_PROTOCOL_MYTH ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX));
 }
 
@@ -322,6 +328,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("htsp");
   else if (m_protocol == NET_PROTOCOL_VTP)
     url.SetProtocol("vtp");
+  else if (m_protocol == NET_PROTOCOL_MYTH)
+    url.SetProtocol("myth");
   if (!m_username.IsEmpty())
   {
     url.SetUserName(m_username);
@@ -338,6 +346,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
        (m_protocol == NET_PROTOCOL_HTSP) ||
        (m_protocol == NET_PROTOCOL_VTP) ||
+       (m_protocol == NET_PROTOCOL_MYTH) ||
        (m_protocol == NET_PROTOCOL_TUXBOX))
       && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
   {
@@ -376,6 +385,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_HTSP;
   else if (protocol == "vtp")
     m_protocol = NET_PROTOCOL_VTP;
+  else if (protocol == "myth")
+    m_protocol = NET_PROTOCOL_MYTH;
   else if (protocol == "rss")
     m_protocol = NET_PROTOCOL_RSS;
   else

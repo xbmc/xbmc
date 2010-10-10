@@ -254,6 +254,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // VDR Streamdev client
   else if (url.GetProtocol() == "vtp")
     strFilename = g_localizeStrings.Get(20257);
+  
+  // MythTV client
+  else if (url.GetProtocol() == "myth")
+    strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
