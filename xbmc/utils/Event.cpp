@@ -107,7 +107,3 @@ bool CEvent::WaitMSec(unsigned int milliSeconds)
   return false;
 }
 
-void CEvent::PulseEvent()
-{
-  ::PulseEvent(m_hEvent);
-}
