@@ -33,6 +33,7 @@ public:
     ActionCopy = 1,
     ActionMove,
     ActionDelete,
+    ActionReplace, ///< Copy, emptying any existing destination directories first
     ActionCreateFolder,
     ActionDeleteFolder,
   };
