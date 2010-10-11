@@ -35,6 +35,7 @@ public:
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
+  static bool                    CompareLayouts    (const AEChLayout c1, const AEChLayout c2);
 
   static inline float SoftClamp(float x)
   {
