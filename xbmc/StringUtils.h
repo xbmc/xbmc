@@ -64,6 +64,8 @@ public:
   static void WordToDigits(CStdString &word);
   static CStdString CreateUUID();
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
+  static double CompareFuzzy(const CStdString &left, const CStdString &right);
+  static int FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore);
 private:
   static CStdString m_lastUUID;
 };
