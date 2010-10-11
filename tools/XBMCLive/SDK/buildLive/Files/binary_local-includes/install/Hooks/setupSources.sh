@@ -9,21 +9,25 @@ xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
 if [ ! -d "/home/$xbmcUser/Music" ]; then
 	mkdir /home/$xbmcUser/Music
 	chmod 755 /home/$xbmcUser/Music
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/Music
 fi
 
 if [ ! -d "/home/$xbmcUser/Pictures" ]; then
 	mkdir /home/$xbmcUser/Pictures
 	chmod 755 /home/$xbmcUser/Pictures
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/Pictures
 fi
 
 if [ ! -d "/home/$xbmcUser/TV Shows" ]; then
 	mkdir "/home/$xbmcUser/TV Shows"
 	chmod 755 "/home/$xbmcUser/TV Shows"
+	chown -R $xbmcUser:$xbmcUser "/home/$xbmcUser/TV Shows"
 fi
 
 if [ ! -d "/home/$xbmcUser/Videos" ]; then
 	mkdir /home/$xbmcUser/Videos
 	chmod 755 /home/$xbmcUser/Videos
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/Videos
 fi
 
 mkdir -p /home/$xbmcUser/.xbmc/userdata &> /dev/null
