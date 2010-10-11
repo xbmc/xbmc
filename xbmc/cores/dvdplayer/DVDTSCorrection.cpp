@@ -35,26 +35,23 @@ CPullupCorrection::CPullupCorrection()
 
 void CPullupCorrection::Flush()
 {
-  m_ringpos = 0;
-  m_ptscorrection = 0.0;
-  m_prevpts = DVD_NOPTS_VALUE;
-  m_patternpos = 0;
-  m_ringfill = 0;
   m_pattern.clear();
-  m_haspattern = false;
+  m_ringpos       = 0;
+  m_ptscorrection = 0.0;
+  m_prevpts       = DVD_NOPTS_VALUE;
+  m_patternpos    = 0;
+  m_ringfill      = 0;
+  m_haspattern    = false;
   m_patternlength = 0;
-  m_leadin = 0;
   m_frameduration = DVD_NOPTS_VALUE;
-  m_trackingpts = DVD_NOPTS_VALUE;
+  m_trackingpts   = DVD_NOPTS_VALUE;
 }
 
 void CPullupCorrection::Add(double pts)
 {
   //can't get a diff with just one pts
-  //also ignore the first 3 timestamps because they often break the pattern
-  if (m_prevpts == DVD_NOPTS_VALUE || m_leadin <= 3)
+  if (m_prevpts == DVD_NOPTS_VALUE)
   {
-    m_leadin++;
     m_prevpts = pts;
     return;
   }
@@ -106,8 +103,10 @@ void CPullupCorrection::Add(double pts)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
-      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
-                (int)pattern.size(), GetPatternStr().c_str());
+
+      double frameduration = CalcFrameDuration();
+      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",
+                (int)pattern.size(), GetPatternStr().c_str(), frameduration);
     }
   }
 
@@ -244,9 +243,8 @@ void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternle
   {
     double avgdiff = 0.0;
     for (int j = 0; j < m_ringfill / patternlength; j++)
-    {
       avgdiff += GetDiff(j * patternlength + i);
-    }
+
     avgdiff /= m_ringfill / patternlength;
     pattern.push_back(avgdiff);
   }
@@ -301,12 +299,34 @@ double CPullupCorrection::CalcFrameDuration()
 {
   if (m_pattern.size() > 0)
   {
+    //take the average of all diffs in the pattern
     double frameduration = 0.0;
     for (unsigned int i = 0; i < m_pattern.size(); i++)
-    {
       frameduration += m_pattern[i];
+
+    frameduration /= m_pattern.size();
+
+    //if the calculated duration is within 20 microseconds of a common duration, use that
+    const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
+                                DVD_TIME_BASE * 1.001 / 30.0, DVD_TIME_BASE / 30.0, DVD_TIME_BASE / 50.0,
+                                DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
+
+    double lowestdiff = DVD_TIME_BASE;
+    int    selected     = -1;
+    for (int i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
+    {
+      double diff = fabs(frameduration - durations[i]);
+      if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
+      {
+        selected = i;
+        lowestdiff = diff;
+      }
     }
-    return frameduration / m_pattern.size();
+
+    if (selected != -1)
+      return durations[selected];
+    else
+      return frameduration;
   }
 
   return DVD_NOPTS_VALUE;
@@ -318,9 +338,9 @@ CStdString CPullupCorrection::GetPatternStr()
   CStdString patternstr;
 
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-  {
     patternstr.AppendFormat("%.2f ", m_pattern[i]);
-  }
+
+  patternstr.Trim();
 
   return patternstr;
 }

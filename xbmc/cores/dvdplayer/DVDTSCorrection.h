@@ -30,10 +30,10 @@ class CPullupCorrection
   public:
     CPullupCorrection();
     void   Add(double pts);
-    double Correction() {return m_ptscorrection;}
     void   Flush(); //flush the saved pattern and the ringbuffer
 
-    int    GetPatternLength() {return m_patternlength;}
+    double GetCorrection()    { return m_ptscorrection; }
+    int    GetPatternLength() { return m_patternlength; }
     double GetFrameDuration() { return m_frameduration; }
 
   private:
@@ -41,7 +41,6 @@ class CPullupCorrection
     double m_diffring[DIFFRINGSIZE]; //ringbuffer of differences between pts'
     int    m_ringpos;                //position of last diff added to ringbuffer
     int    m_ringfill;               //how many diffs we have in the ringbuffer
-    int    m_leadin;                 //how many timestamps we ignored
     double GetDiff(int diffnr);      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern
