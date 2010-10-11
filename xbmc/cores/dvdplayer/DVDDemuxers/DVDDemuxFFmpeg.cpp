@@ -1103,9 +1103,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       memcpy(m_streams[iId]->ExtraData, pStream->codec->extradata, pStream->codec->extradata_size);
     }
 
-    //FFMPEG has an error doesn't set type properly for DTS
-    if( m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143) )
-      m_streams[iId]->codec = CODEC_ID_DTS;
 #ifdef HAVE_LIBBLURAY
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) )
       static_cast<CDVDInputStreamBluray*>(m_pInput)->GetStreamInfo(pStream->id, m_streams[iId]->language);
@@ -1113,6 +1110,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
       // this stuff is really only valid for dvd's.
+
+      //FFMPEG has an error doesn't set type properly for DTS
+      if (m_streams[iId]->codec == CODEC_ID_AC3 && (pStream->id >= 136 && pStream->id <= 143))
+        m_streams[iId]->codec = CODEC_ID_DTS;
+
       // this is so that the physicalid matches the
       // id's reported from libdvdnav
       switch(m_streams[iId]->codec)
