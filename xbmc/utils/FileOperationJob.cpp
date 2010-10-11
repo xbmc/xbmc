@@ -146,12 +146,16 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       if (pItem->m_bIsFolder)
       {
+        // in ActionReplace mode all subdirectories will be removed by the below
+        // DoProcessFolder(ActionDelete) call as well, so ActionCopy is enough when
+        // processing those
+        FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
         // create folder on dest. drive
         if (action != ActionDelete)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
         if (action == ActionReplace)
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
-        if (!DoProcessFolder(action, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
+        if (!DoProcessFolder(subdirAction, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
           return false;
         if (action == ActionDelete)
           DoProcessFile(ActionDeleteFolder, pItem->m_strPath, "", fileOperations, totalTime);
