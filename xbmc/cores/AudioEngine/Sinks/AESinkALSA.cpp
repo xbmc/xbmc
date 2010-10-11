@@ -260,8 +260,8 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate          , NULL);
   snd_pcm_hw_params_set_channels (m_pcm, hw_params, format.m_channelCount      );
 
-  unsigned int frames          = sampleRate / 1000;
-  unsigned int periods         = ALSA_PERIODS;
+  unsigned int frames  = sampleRate / 1000;
+  unsigned int periods = ALSA_PERIODS;
 
   snd_pcm_uframes_t periodSize = frames * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
   snd_pcm_uframes_t bufferSize = periodSize * periods;
