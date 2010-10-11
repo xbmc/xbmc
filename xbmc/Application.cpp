@@ -2025,17 +2025,19 @@ void CApplication::Render()
 
     lastFrameTime = CTimeUtils::GetTimeMS();
   }
-  g_graphicsContext.Lock();
+
+  CSingleLock lock(g_graphicsContext);
+  CTimeUtils::UpdateFrameTime();
+  g_infoManager.UpdateFPS();
 
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
+  lock.Leave();
+
   g_graphicsContext.Flip();
-  CTimeUtils::UpdateFrameTime();
-  g_infoManager.UpdateFPS();
-  g_graphicsContext.Unlock();
 
   g_renderManager.UpdateResolution();
 
