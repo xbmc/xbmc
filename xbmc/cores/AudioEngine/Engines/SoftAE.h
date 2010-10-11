@@ -133,7 +133,6 @@ private:
 
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
-  unsigned int              m_sinkFrames; /* used when encoding */
   AEAudioFormat             m_sinkFormat;
   AEAudioFormat             m_encoderFormat;
   unsigned int              m_bytesPerSample;
@@ -150,12 +149,17 @@ private:
   /* the streams, sounds, output buffer and output buffer fill size */
   bool                                      m_rawPassthrough;
   bool                                      m_passthrough;
-  IAEEncoder                               *m_encoder;
   std::list<CSoftAEStream*>                 m_streams;
   std::map<const CStdString, CSoftAESound*> m_sounds;
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
   void                                     *m_buffer;
   unsigned int                              m_bufferSamples;
+
+  /* the encoder */
+  IAEEncoder    *m_encoder;
+  uint8_t       *m_encodedBuffer;
+  unsigned int   m_encodedBufferSize;
+  unsigned int   m_encodedBufferPos;
 
   /* the channel remapper  */
   CAERemap        m_remap;

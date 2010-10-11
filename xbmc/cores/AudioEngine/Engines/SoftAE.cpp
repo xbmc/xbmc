@@ -58,18 +58,21 @@
 using namespace std;
 
 CSoftAE::CSoftAE():
-  m_thread          (NULL ),
-  m_running         (false),
-  m_reOpened        (false),
-  m_sink            (NULL ),
-  m_rawPassthrough  (false),
-  m_passthrough     (false),
-  m_encoder         (NULL ),
-  m_buffer          (NULL ),
-  m_remapped        (NULL ),
-  m_remappedSize    (0    ),
-  m_converted       (NULL ),
-  m_convertedSize   (0    )
+  m_thread           (NULL ),
+  m_running          (false),
+  m_reOpened         (false),
+  m_sink             (NULL ),
+  m_rawPassthrough   (false),
+  m_passthrough      (false),
+  m_buffer           (NULL ),
+  m_encoder          (NULL ),
+  m_encodedBuffer    (NULL ),
+  m_encodedBufferSize(0    ),
+  m_encodedBufferPos (0    ),
+  m_remapped         (NULL ),
+  m_remappedSize     (0    ),
+  m_converted        (NULL ),
+  m_convertedSize    (0    )
 {
 }
 
@@ -280,6 +283,10 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
   delete m_encoder;
   m_encoder = NULL;
 
+  delete[] m_encodedBuffer;
+  m_encodedBufferSize = 0;
+  m_encodedBufferPos  = 0;
+
   if (!m_passthrough)
     return false;
 
@@ -393,6 +400,10 @@ void CSoftAE::Deinitialize()
 
   delete m_encoder;
   m_encoder = NULL;
+
+  delete[] m_encodedBuffer;
+  m_encodedBufferSize = 0;
+  m_encodedBufferPos  = 0;
 
   _aligned_free(m_buffer);
   m_buffer = NULL;
@@ -926,30 +937,46 @@ inline void CSoftAE::RunOutputStage()
 }
 
 void CSoftAE::RunTranscodeStage()
-{
+{ 
+  /* if we have an encoded block to write */
+send:
+  if (m_encodedBufferPos < m_encodedBufferSize)
+  {
+    unsigned int frames = (m_encodedBufferSize - m_encodedBufferPos) / m_sinkFormat.m_frameSize;
+    unsigned int write  = std::min(m_sinkFormat.m_frames, frames);
+    unsigned int wrote  = m_sink->AddPackets(m_encodedBuffer + m_encodedBufferPos, write);
+    m_encodedBufferPos += wrote * m_sinkFormat.m_frameSize;
+    frames             -= wrote;
+
+    /* if the buffer is not empty */
+    if (m_encodedBufferPos < m_encodedBufferSize)
+      return;
+  }
+
   unsigned int samples = m_encoderFormat.m_frames * m_sinkFormat.m_channelCount;
-  
-  while(m_bufferSamples >= samples)
+  if(m_bufferSamples >= samples)
   {
     FinalizeSamples((float*)m_buffer, samples);    
     
-    int wroteFrames  = m_encoder->Encode((float*)m_buffer, samples);
-    int wroteSamples = wroteFrames * m_sinkFormat.m_channelCount;
-    int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
-    memmove((float*)m_buffer, (float*)m_buffer + wroteSamples, bytesLeft);
-    m_bufferSamples -= wroteSamples;
+    int encodedFrames  = m_encoder->Encode((float*)m_buffer, samples);
+    int encodedSamples = encodedFrames * m_sinkFormat.m_channelCount;
+    int bytesLeft      = (m_bufferSamples - encodedSamples) * m_bytesPerSample;
+
+    memmove((float*)m_buffer, (float*)m_buffer + encodedSamples, bytesLeft);
+    m_bufferSamples -= encodedSamples;
 
     uint8_t *packet;
-    int size = m_encoder->GetData(&packet);
-    unsigned int frames = size / m_sinkFormat.m_frameSize;
-    while(frames)
+    unsigned int size = m_encoder->GetData(&packet);
+    if (m_encodedBufferSize < size)
     {
-      unsigned int write  = std::min(m_sinkFormat.m_frames, frames);
-      unsigned int wrote  = m_sink->AddPackets(packet, write);
-      
-      packet += wrote * m_sinkFormat.m_frameSize;
-      frames -= wrote;
+      delete[] m_encodedBuffer;
+      m_encodedBuffer      = new uint8_t[size];
+      m_encodedBufferSize = size;
     }
+
+    memcpy(m_encodedBuffer, packet, size);
+    m_encodedBufferPos = 0;
+    goto send;
   }
 }
 
