@@ -62,16 +62,20 @@ pre-start script
 	fi
 
 	# Executes pre-hooks (if any) in the System "Hooks" directory
-	for hook in $(ls -1 $BOOTHOOKSDIRECTORY/live.d/*.sh)
-	do
-	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
-	done
+	if [ -d $BOOTHOOKSDIRECTORY/live.d ]; then
+	  for hook in $(find $BOOTHOOKSDIRECTORY/live.d -type f -perm /u=x,g=x,o=x | sort)
+	  do
+	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
+	  done
+	fi
 
 	# Executes pre-hooks (if any) in the user "Hooks" directory
-	for hook in $(ls -1 /home/$xbmcUser/.xbmc/live.d/*.sh)
-	do
-	      bash $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
-	done
+	if [ -d /home/$xbmcUser/.xbmc/live.d ]; then
+	  for hook in $(find /home/$xbmcUser/.xbmc/live.d -type f -perm /u=x,g=x,o=x | sort)
+	  do
+	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
+	  done
+	fi
 
 	if [ -f /home/xbmc/.xsession ] ; then
 		rm /home/xbmc/.xsession
