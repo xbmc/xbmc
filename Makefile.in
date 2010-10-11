@@ -555,8 +555,6 @@ install-livedatas: livedatas
 	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
 	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
 	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
-	@mkdir -p $(DESTDIR)$(libdir)/xbmc
-	@cp -r tools/XBMCLive/live.d $(DESTDIR)$(libdir)/xbmc/
 
 uninstall:
 	@echo "Removing XBMC..."
