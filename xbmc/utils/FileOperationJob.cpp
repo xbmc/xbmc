@@ -153,7 +153,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // create folder on dest. drive
         if (action != ActionDelete)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
-        if (action == ActionReplace)
+        if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
         if (!DoProcessFolder(subdirAction, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
           return false;
