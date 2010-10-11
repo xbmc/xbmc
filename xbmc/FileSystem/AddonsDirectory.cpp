@@ -29,6 +29,7 @@
 #include "addons/Repository.h"
 #include "addons/PluginSource.h"
 #include "StringUtils.h"
+#include "File.h"
 
 using namespace ADDON;
 
@@ -211,7 +212,12 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   item->SetThumbnailImage(addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
-  item->SetProperty("fanart_image", addon->FanArt());
+  if (!addon->FanArt().IsEmpty() && 
+      (CUtil::IsInternetStream(addon->FanArt()) || 
+       CFile::Exists(addon->FanArt())))
+  {
+    item->SetProperty("fanart_image", addon->FanArt());
+  }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;
 }
