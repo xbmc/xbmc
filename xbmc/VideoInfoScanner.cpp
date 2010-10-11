@@ -1290,7 +1290,7 @@ namespace VIDEO
             candidates = &matches;
 
           CStdStringArray titles;
-          for (guide = candidates->begin(); guide != candidates->end(); ++guide )
+          for (guide = candidates->begin(); guide != candidates->end(); ++guide)
             titles.push_back(guide->cScraperUrl.strTitle.ToLower());
 
           double matchscore;
