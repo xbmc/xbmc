@@ -67,9 +67,9 @@ inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
   }
 }
 
-inline CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString device)
+CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString device, bool passthrough)
 {
-  if (format.m_dataFormat == AE_FMT_RAW)
+  if (format.m_dataFormat == AE_FMT_RAW || passthrough)
   {
     if (device == "default")
       device = "iec958";
@@ -132,7 +132,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
 
   /* set the channelLayout and the output device */
   format.m_channelLayout = m_channelLayout;
-  m_device = device      = GetDeviceUse(format, device);
+  m_device = device      = GetDeviceUse(format, device, m_passthrough);
 
   /* get the sound config */
   snd_config_t *config;
@@ -169,7 +169,7 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const CStdString devi
     tmp.m_sampleRate   == m_initFormat.m_sampleRate    &&
     tmp.m_dataFormat   == m_initFormat.m_dataFormat    &&
     tmp.m_channelCount == m_initFormat.m_channelCount  &&
-    GetDeviceUse(tmp, device) == m_device
+    GetDeviceUse(tmp, device, m_passthrough) == m_device
   );
 }
 

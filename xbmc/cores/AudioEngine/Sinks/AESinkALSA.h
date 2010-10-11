@@ -46,7 +46,7 @@ public:
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
   unsigned int GetChannelCount(const AEAudioFormat format);
-  CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device);
+  CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device, bool passthrough);
 
   AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
