@@ -80,7 +80,7 @@ public:
   virtual unsigned int   GetSampleRate   ();
   virtual unsigned int   GetChannelCount () {return m_channelCount          ;}
   virtual AEChLayout     GetChannelLayout() {return m_chLayout              ;}
-  virtual unsigned int   GetFrames       () {return m_sinkFormat.m_frames       ;}
+  virtual unsigned int   GetFrames       () {return m_sinkFormat.m_frames   ;}
   virtual unsigned int   GetFrameSize    () {return m_frameSize             ;}
 
   /* these are for streams that are in RAW mode */
@@ -160,6 +160,8 @@ private:
   uint8_t       *m_encodedBuffer;
   unsigned int   m_encodedBufferSize;
   unsigned int   m_encodedBufferPos;
+  unsigned int   m_encodedBufferFrames;
+  bool           m_encodedPending;
 
   /* the channel remapper  */
   CAERemap        m_remap;

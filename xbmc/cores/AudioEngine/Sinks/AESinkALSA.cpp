@@ -40,7 +40,7 @@ CAESinkALSA::CAESinkALSA() :
 {
   /* ensure that ALSA has been initialized */
   if(!snd_config)
-    snd_config_update();
+    snd_config_update();  
 }
 
 CAESinkALSA::~CAESinkALSA()

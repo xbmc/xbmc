@@ -50,7 +50,7 @@ private:
 
   AVCodecContext   *m_CodecCtx;
   enum AEChannel    m_Layout[AE_CH_MAX+1];
-  uint8_t          *m_Buffer;
+  uint8_t           m_Buffer[FF_MIN_BUFFER_SIZE];
   int               m_BufferSize;
 
   unsigned int      m_NeededFrames;

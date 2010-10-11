@@ -24,6 +24,7 @@
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "utils/log.h"
 
 #include "cores/AudioEngine/AEFactory.h"
@@ -42,6 +43,10 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  /* we dont to raw passthrough unless forced */
+  if (!g_advancedSettings.m_audioForceRAWPassthrough)
+    return false;
+
   bool bSupportsAC3Out = false;
   bool bSupportsDTSOut = false;
   int audioMode = g_guiSettings.GetInt("audiooutput.mode");

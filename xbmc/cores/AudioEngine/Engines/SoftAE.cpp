@@ -58,21 +58,23 @@
 using namespace std;
 
 CSoftAE::CSoftAE():
-  m_thread           (NULL ),
-  m_running          (false),
-  m_reOpened         (false),
-  m_sink             (NULL ),
-  m_rawPassthrough   (false),
-  m_passthrough      (false),
-  m_buffer           (NULL ),
-  m_encoder          (NULL ),
-  m_encodedBuffer    (NULL ),
-  m_encodedBufferSize(0    ),
-  m_encodedBufferPos (0    ),
-  m_remapped         (NULL ),
-  m_remappedSize     (0    ),
-  m_converted        (NULL ),
-  m_convertedSize    (0    )
+  m_thread             (NULL ),
+  m_running            (false),
+  m_reOpened           (false),
+  m_sink               (NULL ),
+  m_rawPassthrough     (false),
+  m_passthrough        (false),
+  m_buffer             (NULL ),
+  m_encoder            (NULL ),
+  m_encodedBuffer      (NULL ),
+  m_encodedBufferSize  (0    ),
+  m_encodedBufferPos   (0    ),
+  m_encodedBufferFrames(0    ),
+  m_encodedPending     (false),
+  m_remapped           (NULL ),
+  m_remappedSize       (0    ),
+  m_converted          (NULL ),
+  m_convertedSize      (0    )
 {
 }
 
@@ -170,13 +172,6 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   desiredFormat.m_sampleRate    = sampleRate;
   desiredFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_RAW : AE_FMT_FLOAT;
 
-  /* configure the encoder */
-  if (m_passthrough)
-  {
-    m_encoderFormat = desiredFormat;
-    SetupEncoder(m_encoderFormat);
-  }
-
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(desiredFormat, device))
   {
@@ -196,21 +191,6 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 
     _aligned_free(m_buffer);
     m_buffer = NULL;
-  }
-
-  /* set the local members */
-  if (m_passthrough && m_encoder)
-  {
-    /* remap directly to the format we need for encode */
-    m_chLayout     = m_encoderFormat.m_channelLayout;
-    m_channelCount = m_encoderFormat.m_channelCount;
-    CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
-  }
-  else
-  {
-    m_chLayout     = CAEUtil::GetStdChLayout(stdChLayout);
-    m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
-    CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
   }
 
   /* create the new sink */
@@ -240,23 +220,46 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     CLog::Log(LOGINFO, "  Frame Size    : %d", desiredFormat.m_frameSize);
   }
 
-  /* get the sink's audio format details as it may have changed them according to what it supports */
-  m_sinkFormat     = desiredFormat;
-  m_frameSize      = sizeof(float) * m_channelCount;
-  m_convertFn      = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
-  m_bytesPerSample = CAEUtil::DataFormatToBits(m_rawPassthrough ? m_sinkFormat.m_dataFormat : AE_FMT_FLOAT) >> 3;
+  m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
+  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
+  m_sinkFormat   = desiredFormat;
 
+  m_bufferSamples = 0;
   if (m_rawPassthrough)
-    m_buffer = _aligned_malloc(m_sinkFormat.m_frames * m_sinkFormat.m_frameSize, 16); 
+  {
+    m_convertFn = NULL;
+    m_buffer    = _aligned_malloc(m_sinkFormat.m_frames * m_sinkFormat.m_frameSize, 16);     
+  }
   else
   {
-    if (m_passthrough && m_encoder)      
-      m_buffer = _aligned_malloc(m_encoderFormat.m_frames * m_frameSize, 16);
+    /* if we are transcoding */
+    if (m_passthrough)
+    {
+      /* configure the encoder */
+      m_encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
+      m_encoderFormat.m_dataFormat    = AE_FMT_FLOAT;
+      m_encoderFormat.m_channelLayout = m_chLayout;
+      m_encoderFormat.m_channelCount  = m_channelCount;
+      SetupEncoder(m_encoderFormat);
+      
+      /* remap directly to the format we need for encode */
+      m_chLayout     = m_encoderFormat.m_channelLayout;
+      m_channelCount = m_encoderFormat.m_channelCount;
+      m_convertFn    = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
+      m_buffer       = _aligned_malloc(m_encoderFormat.m_frames * sizeof(float) * m_channelCount, 16);
+      
+      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
+    }
     else
-      m_buffer = _aligned_malloc(m_sinkFormat.m_frames * m_frameSize, 16);
+    {
+      m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
+      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
+    }
   }
-  m_bufferSamples = 0;
-
+  
+  m_frameSize      = sizeof(float) * m_channelCount;
+  m_bytesPerSample = CAEUtil::DataFormatToBits(m_rawPassthrough ? m_sinkFormat.m_dataFormat : AE_FMT_FLOAT) >> 3;  
+  
   /* initialize the final stage remapper */
   m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true);
 
@@ -284,8 +287,11 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
   m_encoder = NULL;
 
   delete[] m_encodedBuffer;
-  m_encodedBufferSize = 0;
-  m_encodedBufferPos  = 0;
+  m_encodedBuffer       = NULL;
+  m_encodedBufferSize   = 0;
+  m_encodedBufferPos    = 0;
+  m_encodedBufferFrames = 0;
+  m_encodedPending      = false;
 
   if (!m_passthrough)
     return false;
@@ -402,8 +408,11 @@ void CSoftAE::Deinitialize()
   m_encoder = NULL;
 
   delete[] m_encodedBuffer;
-  m_encodedBufferSize = 0;
-  m_encodedBufferPos  = 0;
+  m_encodedBuffer       = NULL;
+  m_encodedBufferSize   = 0;
+  m_encodedBufferPos    = 0;
+  m_encodedBufferFrames = 0;  
+  m_encodedPending      = false;
 
   _aligned_free(m_buffer);
   m_buffer = NULL;
@@ -575,7 +584,7 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  return m_sinkFormat.m_sampleRate;
+  return m_passthrough && m_encoder ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
@@ -628,6 +637,7 @@ float CSoftAE::GetDelay()
 
   unsigned int buffered = m_bufferSamples / m_channelCount;
   delay += (float)buffered / (float)m_sinkFormat.m_sampleRate;
+
   return delay;
 }
 
@@ -936,47 +946,77 @@ inline void CSoftAE::RunOutputStage()
   }
 }
 
+/*
+  encodedPending is a flag to signify that the encoder has a packet ready for us
+  we dont pick it up however until we have finished with our current encoded
+  buffer, this allows our encoder to have a frame ready in advance.
+*/
 void CSoftAE::RunTranscodeStage()
 { 
-  /* if we have an encoded block to write */
-send:
-  if (m_encodedBufferPos < m_encodedBufferSize)
+  /* if there is not a pending block to pick up and we have enough samples to make one */
+  if (!m_encodedPending && m_bufferSamples >= m_encoderFormat.m_frameSamples)
   {
-    unsigned int frames = (m_encodedBufferSize - m_encodedBufferPos) / m_sinkFormat.m_frameSize;
-    unsigned int write  = std::min(m_sinkFormat.m_frames, frames);
-    unsigned int wrote  = m_sink->AddPackets(m_encodedBuffer + m_encodedBufferPos, write);
-    m_encodedBufferPos += wrote * m_sinkFormat.m_frameSize;
-    frames             -= wrote;
+    FinalizeSamples((float*)m_buffer, m_encoderFormat.m_frameSamples);    
 
-    /* if the buffer is not empty */
-    if (m_encodedBufferPos < m_encodedBufferSize)
-      return;
-  }
+    void *buffer;
+    if (m_convertFn)
+    {
+      unsigned int newsize = m_encoderFormat.m_frames * m_encoderFormat.m_frameSize;
+      if(m_convertedSize < newsize)
+      {
+        _aligned_free(m_converted);
+        m_converted     = (uint8_t *)_aligned_malloc(newsize, 16);
+        m_convertedSize = newsize;
+      }
+      m_convertFn((float*)m_buffer, m_encoderFormat.m_frames * m_encoderFormat.m_channelCount, m_converted);
+      buffer = m_converted;
+    }
+    else
+      buffer = m_buffer;
 
-  unsigned int samples = m_encoderFormat.m_frames * m_sinkFormat.m_channelCount;
-  if(m_bufferSamples >= samples)
-  {
-    FinalizeSamples((float*)m_buffer, samples);    
-    
-    int encodedFrames  = m_encoder->Encode((float*)m_buffer, samples);
-    int encodedSamples = encodedFrames * m_sinkFormat.m_channelCount;
+    int encodedFrames  = m_encoder->Encode((float*)buffer, m_encoderFormat.m_frames);
+    int encodedSamples = encodedFrames * m_encoderFormat.m_channelCount;
     int bytesLeft      = (m_bufferSamples - encodedSamples) * m_bytesPerSample;
 
-    memmove((float*)m_buffer, (float*)m_buffer + encodedSamples, bytesLeft);
+    memmove((float*)m_buffer, ((float*)m_buffer) + encodedSamples, bytesLeft);
     m_bufferSamples -= encodedSamples;
+    m_encodedPending = true;
+  }
 
+  /* if there is a pending block, and we need to fetch it, then fetch it */
+  if (m_encodedPending && m_encodedBufferPos == m_encodedBufferFrames)
+  {
     uint8_t *packet;
     unsigned int size = m_encoder->GetData(&packet);
     if (m_encodedBufferSize < size)
     {
       delete[] m_encodedBuffer;
-      m_encodedBuffer      = new uint8_t[size];
+      m_encodedBuffer     = new uint8_t[size];
       m_encodedBufferSize = size;
     }
 
     memcpy(m_encodedBuffer, packet, size);
-    m_encodedBufferPos = 0;
-    goto send;
+    m_encodedBufferPos    = 0;
+    m_encodedBufferFrames = size / m_sinkFormat.m_frameSize;
+    m_encodedPending      = false;
+  }
+
+  /* if we have data to write */
+  if(m_encodedBufferPos < m_encodedBufferFrames)
+  {
+    unsigned int frames = m_encodedBufferFrames - m_encodedBufferPos;
+    unsigned int write  = std::min(m_sinkFormat.m_frames, frames);
+    int wrote;
+    
+    if (m_sink)
+      wrote = m_sink->AddPackets(m_encodedBuffer + (m_encodedBufferPos * m_sinkFormat.m_frameSize), write);
+    else
+    {
+      wrote = write;
+      DelayFrames();
+    }
+
+    m_encodedBufferPos += wrote;
   }
 }
 

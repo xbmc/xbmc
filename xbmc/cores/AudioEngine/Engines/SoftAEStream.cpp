@@ -87,9 +87,8 @@ void CSoftAEStream::InitializeRemap()
 
     /*
     if the layout has changed we need to drop data that was already remapped
-    CSoftAE always uses StdChLayouts so its safe to just compare the pointers
     */
-    if (AE.GetChannelLayout() != m_aeChannelLayout)
+    if (!CAEUtil::CompareLayouts(AE.GetChannelLayout(), m_aeChannelLayout))
     {
       InternalFlush();
       m_aeChannelLayout = AE.GetChannelLayout();

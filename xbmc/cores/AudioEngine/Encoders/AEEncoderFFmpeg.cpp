@@ -26,16 +26,15 @@
 #include "AEPackIEC958.h"
 #include <string.h>
 
+int fd;
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
-  m_CodecCtx(NULL),
-  m_Buffer  (NULL)
+  m_CodecCtx(NULL)
 {
 }
 
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-
   m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
@@ -53,53 +52,49 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   if (!codec)
     return false;
 
-  /* always assume 6 channels, 5.1... m_remap will give us what we want */
   m_CodecCtx = m_dllAvCodec.avcodec_alloc_context();
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
-  m_CodecCtx->channels       = 6;
   m_CodecCtx->channel_layout = CH_LAYOUT_5POINT1_BACK;
-  m_CodecCtx->sample_fmt     = SAMPLE_FMT_FLT;
+  m_CodecCtx->sample_fmt     = SAMPLE_FMT_S16;
 
+  /* build the channel layout and count the channels */
+  m_CodecCtx->channels = 0;
+  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_FL  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_Layout[m_CodecCtx->channels++] = AE_CH_FR  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_Layout[m_CodecCtx->channels++] = AE_CH_FC  ;
+  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_Layout[m_CodecCtx->channels++] = AE_CH_LFE ;
+  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_BL  ;
+  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_BR  ;
+  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_Layout[m_CodecCtx->channels++] = AE_CH_FLOC;
+  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_Layout[m_CodecCtx->channels++] = AE_CH_FROC;
+  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_Layout[m_CodecCtx->channels++] = AE_CH_BC  ;
+  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_SL  ;
+  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_SR  ;
+  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_Layout[m_CodecCtx->channels++] = AE_CH_TC  ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFL ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFC ;
+  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFR ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBL ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBC ;
+  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBR ;
+  m_Layout[m_CodecCtx->channels] = AE_CH_NULL;
+  
+  /* open the codec */
   if (m_dllAvCodec.avcodec_open(m_CodecCtx, codec))
   {
     m_dllAvUtil.av_freep(&m_CodecCtx);
     return false;
-  }
+  }  
 
-  /* remap the channels according to the specified channel layout */
-  /* this never changes for AC3, but keep it anyway for if/when DCA encode support comes along */
-  int index = 0;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_Layout[index++] = AE_CH_FL  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_Layout[index++] = AE_CH_FR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_Layout[index++] = AE_CH_FC  ;
-  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_Layout[index++] = AE_CH_LFE ;
-  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_Layout[index++] = AE_CH_BL  ;
-  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_Layout[index++] = AE_CH_BR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_Layout[index++] = AE_CH_FLOC;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_Layout[index++] = AE_CH_FROC;
-  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_Layout[index++] = AE_CH_BC  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_Layout[index++] = AE_CH_SL  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_Layout[index++] = AE_CH_SR  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_Layout[index++] = AE_CH_TC  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_Layout[index++] = AE_CH_TFL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_Layout[index++] = AE_CH_TFC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_Layout[index++] = AE_CH_TFR ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_Layout[index++] = AE_CH_TBL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_Layout[index++] = AE_CH_TBC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_Layout[index++] = AE_CH_TBR ;
-  m_Layout[index] = AE_CH_NULL;
-
-  format.m_dataFormat    = AE_FMT_FLOAT;
-  format.m_frames        = m_CodecCtx->frame_size / index;
-  format.m_frameSamples  = index;
-  format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_frameSamples;
-  format.m_channelCount  = index;
+  format.m_dataFormat    = AE_FMT_S16NE;
+  format.m_frames        = m_CodecCtx->frame_size;
+  format.m_frameSamples  = m_CodecCtx->frame_size * m_CodecCtx->channels;
+  format.m_frameSize     = m_CodecCtx->channels * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+  format.m_channelCount  = m_CodecCtx->channels;
   format.m_channelLayout = m_Layout;
 
   m_NeededFrames = format.m_frames;
-  m_Buffer       = new uint8_t[std::max(FF_MIN_BUFFER_SIZE, MAX_IEC958_PACKET)];
-
   return true;
 }
 

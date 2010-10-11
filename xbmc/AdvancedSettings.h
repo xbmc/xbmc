@@ -77,6 +77,7 @@ class CAdvancedSettings
     // multipath testing
     bool m_useMultipaths;
 
+    bool m_audioForceRAWPassthrough;
     int m_audioHeadRoom;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;

@@ -46,6 +46,7 @@ void CAdvancedSettings::Initialize()
 {
   m_useMultipaths = true;
 
+  m_audioForceRAWPassthrough = false;
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
@@ -315,6 +316,7 @@ bool CAdvancedSettings::Load()
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "forcerawpassthrough", m_audioForceRAWPassthrough);
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);

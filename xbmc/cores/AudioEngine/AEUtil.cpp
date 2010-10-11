@@ -193,3 +193,16 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   return formats[dataFormat];
 }
 
+bool CAEUtil::CompareLayouts(const AEChLayout c1, const AEChLayout c2)
+{
+  for(int i = 0; i < AE_CH_MAX && c1[i] != AE_CH_NULL; ++i)
+    if (c1[i] != c2[i])
+      return false;
+
+  for(int i = 0; i < AE_CH_MAX && c2[i] != AE_CH_NULL; ++i)
+    if (c2[i] != c1[i])
+      return false;
+
+  return true;
+}
+
