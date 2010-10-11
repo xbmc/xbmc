@@ -253,6 +253,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     else
     {
       m_convertFn = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
+      m_buffer    = _aligned_malloc(m_sinkFormat.m_frames * sizeof(float) * m_channelCount, 16);
+      
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
     }
   }
