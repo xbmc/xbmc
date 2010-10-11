@@ -1,0 +1,205 @@
+﻿<scraperfunctions>
+	<GetIMDBRatingById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBRating&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBRatingById>
+	<GetIMDBPlotById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBPlot&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBPlotById>
+	<GetIMDBCastById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBCast&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBCastById>
+	<GetIMDBScaledCastById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBScaledCast&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBScaledCastById>
+	<GetIMDBDirectorsById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBDirectors&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBDirectorsById>
+	<GetIMDBWritersById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;ParseIMDBWriters&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBWritersById>
+	<GetIMDBFullCastById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBFullCast&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBFullCastById>
+	<GetIMDBScaledFullCastById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBScaledFullCast&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBScaledFullCastById>
+	<GetIMDBFullDirectorsById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBFullDirectors&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBFullDirectorsById>
+	<GetIMDBFullWritersById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBFullWriters&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBFullWritersById>
+	<GetIMDBThumbsById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-posters.html&quot; function=&quot;ParseIMDBThumbs&quot;&gt;http://akas.imdb.com/title/$$1/posters&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBThumbsById>
+	<GetIMDBTrailerById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-main.html&quot; function=&quot;GetIMDBTrailerPage&quot;&gt;http://akas.imdb.com/title/$$1/&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetIMDBTrailerById>
+	<ParseIMDBRating dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
+				<expression>&lt;span class="rating-rating"&gt;([0-9.]+).*?&gt;([0-9,]+) votes&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBRating>
+	<ParseIMDBPlot dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
+				<expression trim="1">&lt;h2&gt;Storyline&lt;/h2&gt;\n+&lt;p&gt;([^&lt;]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBPlot>
+	<ParseIMDBCast dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;table class="cast_list"&gt;(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX512_SY512_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBCast>
+	<ParseIMDBScaledCast dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;table class="cast_list"&gt;(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBScaledCast>
+	<ParseIMDBDirectors dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">Director[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression repeat="yes" clear="yes">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBDirectors>
+	<ParseIMDBWriters dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">Writer[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression repeat="yes">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBWriters>
+	<ParseIMDBFullCast dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;table class="cast"&gt;(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX512_SY512_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBFullCast>
+	<ParseIMDBScaledFullCast dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;table class="cast"&gt;(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBScaledFullCast>
+	<ParseIMDBFullDirectors dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">Director[s]?:&lt;/h5&gt;[^&gt;]*&gt;(.*?)&lt;/div</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression repeat="yes" clear="yes">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBFullDirectors>
+	<ParseIMDBFullWriters dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
+				<expression noclean="1">Writing credits(.*?)name="</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression repeat="yes">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBFullWriters>
+	<ParseIMDBThumbs dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2" dest="4">
+				<expression noclean="1,2">&lt;a name="poster".*?src="(.*?)_S.*?(.jpg)".*?&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$4" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="6">
+				<expression noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBThumbs>
+	<GetIMDBTrailerPage dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseIMDBTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>/vi([0-9]*)/</expression>
+		</RegExp>
+	</GetIMDBTrailerPage>
+	<ParseIMDBTrailer dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="2">
+				<expression noclean="1">"file"[^"]*"([^"]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="$$2/\1" dest="2">
+				<expression noclean="1">"id"[^"]*"([^"]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBTrailer>
+</scraperfunctions>

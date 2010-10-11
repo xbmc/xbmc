@@ -1,3 +1,9 @@
+[B]1.2.0[/B]
+- Added option to scrape rating from IMDb
+
+[B]1.1.6[/B]
+- Fix rating images to show up on default skins
+
 [B]1.1.5[/B]
 - Fix decimal separator
 

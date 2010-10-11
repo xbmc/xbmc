@@ -1,0 +1,20 @@
+[B]2.0.5[/B]
+- changed: move scraping of IMDb rating out to IMDb scraper library
+
+[B]2.0.4[/B]
+- reverted: purge fixchars from all functions, since it cause convert fails on Beta2 and Linux
+
+[B]2.0.3[/B]
+- reverted: fixchars removed from cast parsing, leads to Dharma Beta2 hanging, will be added back once next Beta is out
+
+[B]2.0.2[/B]
+- fixed: some more cast won't get scraped under certain circumtances
+
+[B]2.0.1[/B]
+- fixed: cast won't get scraped under certain circumtances
+
+[B]2.0.0[/B]
+- changed: adapted new IMDb layout
+
+[B]1.0.5[/B]
+- fixed: tack /combined onto the end of the url to work around the new layout of IMDb
