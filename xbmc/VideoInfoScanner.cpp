@@ -1242,23 +1242,66 @@ namespace VIDEO
       key.second = file->iEpisode;
       bool bFound = false;
       IMDB_EPISODELIST::iterator guide = episodes.begin();;
+      IMDB_EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
       {
-        if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
-        {
-          bFound = true;
-          break;
-        }
         if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==guide->key))
         {
           bFound = true;
           break;
         }
+        if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
+        {
+          matches.push_back(*guide);
+          continue;
+        }
         if (!guide->cScraperUrl.strTitle.IsEmpty() && guide->cScraperUrl.strTitle.CompareNoCase(file->strTitle) == 0)
         {
           bFound = true;
           break;
+        }
+      }
+
+      if (!bFound)
+      {
+        /*
+         * If there is only one match or there are matches but no title to compare with to help
+         * identify the best match, then pick the first match as the best possible candidate.
+         *
+         * Otherwise, use the title to further refine the best match.
+         */
+        if (matches.size() == 1 || (file->strTitle.IsEmpty() && matches.size() > 1))
+        {
+          guide = matches.begin();
+          bFound = true;
+        }
+        else if (!file->strTitle.IsEmpty())
+        {
+          double minscore = 0; // Default minimum score is 0 to find whatever is the best match.
+
+          IMDB_EPISODELIST *candidates;
+          if (matches.empty()) // No matches found using earlier criteria. Use fuzzy match on titles across all episodes.
+          {
+            minscore = 0.8; // 80% should ensure a good match.
+            candidates = &episodes;
+          }
+          else // Multiple matches found. Use fuzzy match on the title with already matched episodes to pick the best.
+            candidates = &matches;
+
+          CStdStringArray titles;
+          for (guide = candidates->begin(); guide != candidates->end(); ++guide )
+            titles.push_back(guide->cScraperUrl.strTitle.ToLower());
+
+          double matchscore;
+          int index = StringUtils::FindBestMatch(file->strTitle.ToLower(), titles, matchscore);
+          if (matchscore >= minscore)
+          {
+            guide = candidates->begin() + index;
+            bFound = true;
+            CLog::Log(LOGDEBUG,"%s fuzzy title match for show: '%s', title: '%s', match: '%s', score: %f >= %f",
+                      __FUNCTION__, strShowTitle.c_str(), file->strTitle.c_str(), titles[index].c_str(), matchscore, minscore);
+          }
         }
       }
 
