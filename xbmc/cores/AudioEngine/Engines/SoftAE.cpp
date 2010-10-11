@@ -165,6 +165,14 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     driver = m_driver;
   }
 
+  /*
+    try to use 48000hz if we are going to transcode, this prevents the sink
+    from being re-opened repeatedly when switching sources, which locks up
+    some receivers & crappy integrated sound drivers.
+  */
+  if (m_passthrough && !m_rawPassthrough)
+    sampleRate = 48000;
+
   /* setup the desired format */
   AEAudioFormat desiredFormat;
   desiredFormat.m_channelLayout = CAEUtil::GetStdChLayout  (stdChLayout);
