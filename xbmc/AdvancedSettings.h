@@ -82,6 +82,7 @@ class CAdvancedSettings
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
+    int m_audioResample;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -108,7 +109,6 @@ class CAdvancedSettings
     int m_musicPercentSeekBackward;
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
-    int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
     int m_videoIgnoreAtEnd;

@@ -20,7 +20,12 @@
  *
  */
 
-#include "DVDStreamInfo.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavcodec/avcodec.h>
+#else
+  #include "cores/dvdplayer/Codecs/ffmpeg/libavcodec/avcodec.h"
+#endif
+
 #include "AEAudioFormat.h"
 
 /**
@@ -83,5 +88,12 @@ public:
    * @return the size in bytes of *data
    */
   virtual int GetData(uint8_t **data) = 0;
+
+  /**
+   * Get the delay in seconds
+   * @param bufferSize how much encoded data the caller has buffered to add to the delay
+   * @return the delay in seconds including any un-fetched encoded data
+   */
+  virtual float GetDelay(unsigned int bufferSize) = 0;
 };
 

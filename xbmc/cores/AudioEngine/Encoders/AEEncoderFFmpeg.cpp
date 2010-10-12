@@ -94,7 +94,10 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   format.m_channelCount  = m_CodecCtx->channels;
   format.m_channelLayout = m_Layout;
 
-  m_NeededFrames = format.m_frames;
+  m_NeededFrames  = format.m_frames;
+  m_OutputSize    = CAEPackIEC958::PackAC3(NULL, 0, m_Buffer);
+  m_OutputRatio   = (float)m_NeededFrames / m_OutputSize;
+
   return true;
 }
 
@@ -120,7 +123,7 @@ unsigned int CAEEncoderFFmpeg::GetFrames()
 
 int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
 {
-  if (frames < m_NeededFrames)
+  if (!m_CodecCtx || frames < m_NeededFrames)
     return 0;
 
   /* encode it */
@@ -128,6 +131,11 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
 
   /* pack it into an IEC958 frame */
   m_BufferSize = CAEPackIEC958::PackAC3(NULL, size, m_Buffer);
+  if (m_BufferSize != m_OutputSize)
+  {
+    m_OutputSize  = m_BufferSize;
+    m_OutputRatio = (float)m_NeededFrames / m_OutputSize;
+  }
 
   /* return the number of frames used */
   return m_NeededFrames;
@@ -140,5 +148,17 @@ int CAEEncoderFFmpeg::GetData(uint8_t **data)
   size  = m_BufferSize;
   m_BufferSize = 0;
   return size;
+}
+
+float CAEEncoderFFmpeg::GetDelay(unsigned int bufferSize)
+{
+  if (!m_CodecCtx)
+    return 0;
+
+  int frames = m_CodecCtx->delay;
+  if (m_BufferSize)
+    frames += m_NeededFrames;
+
+  return ((float)frames + ((float)bufferSize * m_OutputRatio)) / (float)m_CodecCtx->sample_rate;
 }
 

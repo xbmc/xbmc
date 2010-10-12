@@ -43,6 +43,7 @@ public:
 
   virtual int Encode (float *data, unsigned int frames);
   virtual int GetData(uint8_t **data);
+  virtual float GetDelay(unsigned int bufferSize);
 private:
   DllAvCodec  m_dllAvCodec;
   DllAvFormat m_dllAvFormat;
@@ -52,6 +53,8 @@ private:
   enum AEChannel    m_Layout[AE_CH_MAX+1];
   uint8_t           m_Buffer[FF_MIN_BUFFER_SIZE];
   int               m_BufferSize;
+  int               m_OutputSize;
+  float             m_OutputRatio;
 
   unsigned int      m_NeededFrames;
 };
