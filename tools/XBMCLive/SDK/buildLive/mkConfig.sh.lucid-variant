@@ -24,6 +24,7 @@ makeConfig()
 	configString=""
 	configString="$configString --mode ubuntu"
 	configString="$configString --distribution lucid"
+	configString="$configString --architecture i386"
 	configString="$configString --mirror-chroot-security http://security.ubuntu.com/ubuntu/"
 	configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
 	configString="$configString --binary-images iso"
@@ -53,7 +54,7 @@ makeConfig()
 	configString="$configString --mirror-binary http://archive.ubuntu.com/ubuntu/"
 	configString="$configString --mirror-chroot http://archive.ubuntu.com/ubuntu/"
 
-	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
+	lb config --mode ubuntu --archive-areas "$CATEGORIES" $configString
 
 	# Copy files for chroot
 	cp -R "$THISDIR"/Files/chroot_* config

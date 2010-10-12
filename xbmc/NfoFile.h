@@ -85,7 +85,7 @@ private:
   ADDON::ScraperPtr m_info;
   ADDON::TYPE       m_type;
   bool DoScrape(ADDON::ScraperPtr& scraper);
-  void AddScrapers(bool any, ADDON::VECADDONS& addons,
+  void AddScrapers(ADDON::VECADDONS& addons,
                    std::vector<ADDON::ScraperPtr>& vecScrapers);
 };
 

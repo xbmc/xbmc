@@ -36,7 +36,13 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "VideoReferenceClock.h"
-#include "DXErr.h"
+#if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up use dxerr
+  #include <Dxerr.h>
+#else
+  #include <dxerr9.h>
+  #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+  #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+#endif
 
 using namespace std;
 
@@ -427,17 +433,16 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
 
-  D3DADAPTER_IDENTIFIER9 AIdentifier;
-  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
+  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &m_AIdentifier) == D3D_OK)
   {
-    m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVendor   = (const char*)AIdentifier.Driver;
-    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
-                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
+    m_RenderRenderer = (const char*)m_AIdentifier.Description;
+    m_RenderVendor   = (const char*)m_AIdentifier.Driver;
+    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(m_AIdentifier.DriverVersion.HighPart), LOWORD(m_AIdentifier.DriverVersion.HighPart),
+                                            HIWORD(m_AIdentifier.DriverVersion.LowPart) , LOWORD(m_AIdentifier.DriverVersion.LowPart));
   }
 
   CLog::Log(LOGDEBUG, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
-            m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
+            m_adapter, m_AIdentifier.Driver, m_AIdentifier.Description, m_AIdentifier.VendorId, m_AIdentifier.DeviceId);
 
   // get our render capabilities
   // re-read caps, there may be changes depending on the vertex processing type
@@ -495,7 +500,7 @@ bool CRenderSystemDX::CreateDevice()
   // see ticket #9269
   if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
   && m_defaultD3DPool  == D3DPOOL_DEFAULT
-  && AIdentifier.VendorId == 4318)
+  && m_AIdentifier.VendorId == PCIV_nVidia)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
     m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
@@ -509,7 +514,7 @@ bool CRenderSystemDX::CreateDevice()
   // See ticket #9578
   if(m_defaultD3DUsage == D3DUSAGE_DYNAMIC
   && m_defaultD3DPool  == D3DPOOL_DEFAULT
-  && AIdentifier.VendorId == 32902)
+  && m_AIdentifier.VendorId == PCIV_Intel)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
     m_minDXTPitch = 128;

@@ -5,7 +5,7 @@
 #
 # Change this to your GCC version.
 #
-CC = gcc
+CC ?= gcc
 
 ####################################################
 #

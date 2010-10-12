@@ -35,9 +35,9 @@ CPacketHELO *g_Ping = NULL;
 #endif
 std::string g_BluetoothIconPath = std::string(ICON_PATH) + std::string("/bluetooth.png");
 
-long getTicks()
+int32_t getTicks()
 {
-  long ticks;
+  int32_t ticks;
   struct timeval now;
   gettimeofday(&now, NULL);
   ticks = now.tv_sec * 1000l;

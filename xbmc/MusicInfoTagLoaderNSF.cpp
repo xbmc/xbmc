@@ -71,14 +71,14 @@ bool CMusicInfoTagLoaderNSF::Load(const CStdString& strFileName, CMusicInfoTag& 
 
   tag.SetLoaded(false);
   char* szTitle = (char*)m_dll.GetTitle(m_nsf); // no alloc
-  if( strcmp(szTitle,"<?>") )
+  if( szTitle && strcmp(szTitle,"<?>") )
   {
     tag.SetTitle(szTitle);
     tag.SetLoaded(true);
   }
 
   char* szArtist = (char*)m_dll.GetArtist(m_nsf); // no alloc
-  if( strcmp(szArtist,"<?>") && tag.Loaded() )
+  if( szArtist && strcmp(szArtist,"<?>") && tag.Loaded() )
     tag.SetArtist(szArtist);
 
   m_dll.FreeNSF(m_nsf);

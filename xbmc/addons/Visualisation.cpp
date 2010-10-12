@@ -432,6 +432,13 @@ CStdString CVisualisation::GetFriendlyName(const CStdString& strVisz,
 
 bool CVisualisation::IsLocked()
 {
+  if (!m_presets.empty())
+  {
+    if (!m_pStruct)
+      return false;
+
+    return m_pStruct->IsLocked();
+  }
   return false;
 }
 

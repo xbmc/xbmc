@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 09/27/2010-->
+<!--Date of translation: 10/11/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -73,6 +73,7 @@
   <string id="31128">가사</string>
   <string id="31129">비디오 OSD 에 자막 다운로드 사용</string>
   <string id="31130">자막 추가기능 경로</string>
+  <string id="31131">수평 홈 메뉴 사용</string>
   <string id="31140">음악 OSD</string>
   <string id="31141">비디오 OSD</string>
   <string id="31200">바로가기</string>

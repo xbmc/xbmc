@@ -25,6 +25,7 @@
 #include "utils/log.h"
 extern "C" {
 #undef strcasecmp
+#include "lib/libapetag/file_io.h"
 #include "lib/libapetag/apetaglib.h"
 }
 
@@ -33,7 +34,7 @@ class DllLibApeTagInterface
 public:
     virtual ~DllLibApeTagInterface() {}
     virtual int apetag_read (apetag *mem_cnt, char *filename, int flag)=0;
-    virtual int apetag_read_fp (apetag *mem_cnt, FILE * fp, char *filename, int flag)=0;
+    virtual int apetag_read_fp (apetag *mem_cnt, ape_file * fp, char *filename, int flag)=0;
     virtual apetag *apetag_init (void)=0;
     virtual void apetag_free (apetag *mem_cnt)=0;
     virtual int apetag_save (char *filename, apetag *mem_cnt, int flag)=0;
@@ -45,7 +46,7 @@ public:
     virtual char *apefrm_getstr (apetag *mem_cnt, char *name)=0;
     virtual void apefrm_remove_real (apetag *mem_cnt, char *name)=0;
     virtual void apefrm_remove (apetag *mem_cnt, char *name)=0;
-    virtual int readtag_id3v1_fp (apetag *mem_cnt, FILE * fp)=0;
+    virtual int readtag_id3v1_fp (apetag *mem_cnt, ape_file * fp)=0;
     virtual void libapetag_print_mem_cnt (apetag *mem_cnt)=0;
 };
 
@@ -55,7 +56,7 @@ public:
     virtual ~DllLibApeTag() {}
     virtual int apetag_read (apetag *mem_cnt, char *filename, int flag)
         { return ::apetag_read(mem_cnt, filename, flag); }
-    virtual int apetag_read_fp (apetag *mem_cnt, FILE * fp, char *filename, int flag)
+    virtual int apetag_read_fp (apetag *mem_cnt, ape_file * fp, char *filename, int flag)
         { return ::apetag_read_fp (mem_cnt, fp, filename, flag); }
     virtual apetag *apetag_init (void)
         { return ::apetag_init (); }
@@ -78,7 +79,7 @@ public:
         { return ::apefrm_remove_real (mem_cnt, name); }
     virtual void apefrm_remove (apetag *mem_cnt, char *name)
         { return ::apefrm_remove (mem_cnt, name); }
-    virtual int readtag_id3v1_fp (apetag *mem_cnt, FILE * fp)
+    virtual int readtag_id3v1_fp (apetag *mem_cnt, ape_file * fp)
         { return ::readtag_id3v1_fp (mem_cnt, fp); }
     virtual void libapetag_print_mem_cnt (apetag *mem_cnt)
         { return ::libapetag_print_mem_cnt (mem_cnt); }

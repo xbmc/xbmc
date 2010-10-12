@@ -533,6 +533,8 @@
   <string id="609">Ścieżka do katalogu nie jest ustawiona.</string>
   <string id="610">Zgraj utwór</string>
   <string id="611">Wprowadź numer</string>
+  <string id="612">Bitów/Próbkę</string>
+  <string id="613">Próbkowanie</string>
   <string id="620">Płyty CD</string>
   <string id="621">Koder</string>
   <string id="622">Jakość</string>
@@ -923,6 +925,7 @@
   <string id="13013">Uruchom ponownie</string>
   <string id="13014">Minimalizuj</string>
   <string id="13015">Działanie przycisku zasilania</string>
+  <string id="13016">Wyłącz system</string>
   <string id="13020">Czy inna sesja jest aktywna, może przez ssh?</string>
   <string id="13021">Podłączono dysk przenośny</string>
   <string id="13022">Niebezpieczne odłączenie urządzenia</string>

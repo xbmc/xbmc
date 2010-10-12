@@ -125,6 +125,7 @@ extern "C"
   FUNCTION(PyThreadState_Get)
   FUNCTION4(PyRun_SimpleString)
   FUNCTION(PyEval_InitThreads)
+  FUNCTION(PyEval_ThreadsInitialized)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)
   FUNCTION(Py_Finalize)
@@ -294,6 +295,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Get)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_ThreadsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_IsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&

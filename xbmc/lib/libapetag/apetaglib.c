@@ -32,6 +32,7 @@
 #if !defined(__BORLANDC__) && !defined(_MSC_VER)
 #    include <unistd.h>
 #endif
+#include "file_io.h"
 #include "apetaglib.h"
 
 #include "is_tag.h"
@@ -617,15 +618,15 @@ apetag_free (apetag *mem_cnt)
     \return 0 - OK else check #atl_return
 */
 int
-readtag_id3v1_fp (apetag *mem_cnt, FILE * fp)
+readtag_id3v1_fp (apetag *mem_cnt, ape_file * fp)
 {
     struct _id3v1Tag m;
     
     if (!is_id3v1(fp))
             return 0;  /* TODO:: 0 or no_id3v1*/
     
-    fseek(fp, -128, SEEK_END);
-    if (sizeof (struct _id3v1Tag)!=fread(&m, 1, sizeof (struct _id3v1Tag), fp)){
+    ape_fseek(fp, -128, SEEK_END);
+    if (sizeof (struct _id3v1Tag)!=ape_fread(&m, 1, sizeof (struct _id3v1Tag), fp)){
         PRINT_ERR( "ERROR->libapetag->readtag_id3v1_fp:fread\n");
         return ATL_FREAD;
     }
@@ -707,7 +708,7 @@ make_id3v1_tag(apetag *mem_cnt, struct _id3v1Tag *m)
     \return 0 - OK else check #atl_return
 */
 int
-apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
+apetag_read_fp(apetag *mem_cnt, ape_file * fp, char *filename, int flag)
 {
     int id3v1 = 0;
     int apeTag2 = 0;
@@ -719,20 +720,20 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
     unsigned long tagCount;
     unsigned char *p;
     
-    savedFilePosition = ftell(fp);
+    savedFilePosition = ape_ftell(fp);
     
     id3v1 = is_id3v1(fp);
     
     if (mem_cnt == NULL) {
         PRINT_ERR( ">apetaglib>READ_FP>FATAL>apetag_init()\n");
-        fseek(fp, savedFilePosition, SEEK_SET);
+        ape_fseek(fp, savedFilePosition, SEEK_SET);
         return ATL_NOINIT;
     }
     
-    fseek(fp, id3v1 ? -128 - (ssize_t)sizeof (ape_footer) : -(ssize_t)sizeof (ape_footer), SEEK_END);
-    if (sizeof (ape_footer) != fread(&ape_footer, 1, sizeof (ape_footer), fp)){
+    ape_fseek(fp, id3v1 ? -128 - (ssize_t)sizeof (ape_footer) : -(ssize_t)sizeof (ape_footer), SEEK_END);
+    if (sizeof (ape_footer) != ape_fread(&ape_footer, 1, sizeof (ape_footer), fp)){
         PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread1\n");
-        fseek(fp, savedFilePosition, SEEK_SET);
+        ape_fseek(fp, savedFilePosition, SEEK_SET);
         return ATL_FREAD;
     }
     
@@ -754,12 +755,12 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
             return ATL_MALOC;
         }
         
-        fseek(fp, id3v1 ? -(long)ape2long(ape_footer.length) -
+        ape_fseek(fp, id3v1 ? -(long)ape2long(ape_footer.length) -
               128 : -(long)ape2long(ape_footer.length), SEEK_END);
         memset(buff, 0, buffLength);
-        if (ape2long(ape_footer.length) != fread(buff, 1, ape2long(ape_footer.length), fp)) {
+        if (ape2long(ape_footer.length) != ape_fread(buff, 1, ape2long(ape_footer.length), fp)) {
             PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread2\n");
-            fseek(fp, savedFilePosition, SEEK_SET);
+            ape_fseek(fp, savedFilePosition, SEEK_SET);
             free(buff);
             return ATL_FREAD;
         }
@@ -805,7 +806,7 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
         readtag_id3v1_fp(mem_cnt, fp);
     }
     
-    fseek(fp, savedFilePosition, SEEK_SET);
+    ape_fseek(fp, savedFilePosition, SEEK_SET);
     return 0;
 }
 
@@ -825,20 +826,20 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
 int
 apetag_read (apetag *mem_cnt, char *filename,int flag)
 {
-    FILE *fp;
+    ape_file *fp = NULL;
     
     if (mem_cnt==NULL) {
         PRINT_ERR(">apetaglib>READ>FATAL>apetag_init()\n");
         return ATL_NOINIT;
     }
     
-    fp = fopen (filename, "rb");
+    fp = ape_fopen (filename, "rb");
     if (fp == NULL)
         return ATL_FOPEN;
 
     apetag_read_fp (mem_cnt, fp, filename,flag);
         
-    fclose (fp);
+    ape_fclose (fp);
         
     return 0;
 }
@@ -922,7 +923,7 @@ truncate (char *filename, size_t fileSize)
 int
 apetag_save (char *filename, apetag *mem_cnt, int flag)
 {
-    FILE *fp;
+    ape_file *fp;
     struct _id3v1Tag id3v1_tag;
     int id3v1;
     int apeTag, saveApe2;
@@ -941,7 +942,7 @@ apetag_save (char *filename, apetag *mem_cnt, int flag)
         return ATL_NOINIT;
     }
 
-    fp = fopen (filename, "rb+");
+    fp = ape_fopen (filename, "rb+");
     if (fp == NULL) {
         PRINT_ERR ( "ERROR->apetaglib->apetag_save::fopen (r+)\n");
         return ATL_FOPEN;
@@ -953,8 +954,8 @@ apetag_save (char *filename, apetag *mem_cnt, int flag)
     saveApe2 = !(flag & APE_TAG_V1); // (flag & APE_TAG_V2) ? 1 : (flag & APE_TAG_V1);
     
     if (id3v1) {
-        fseek (fp, -128, SEEK_END);
-        fread (&id3v1_tag, 1, sizeof (struct _id3v1Tag), fp);
+        ape_fseek (fp, -128, SEEK_END);
+        ape_fread (&id3v1_tag, 1, sizeof (struct _id3v1Tag), fp);
         skipBytes += id3v1;
     }
     skipBytes += apeTag;
@@ -1050,26 +1051,26 @@ apetag_save (char *filename, apetag *mem_cnt, int flag)
         size_t newFileSize;
         size_t writedBytes;
         
-        fseek (fp, 0, SEEK_END);
-        fileSize = ftell (fp);
-        fseek (fp, fileSize - skipBytes, SEEK_SET);
+        ape_fseek (fp, 0, SEEK_END);
+        fileSize = ape_ftell (fp);
+        ape_fseek (fp, fileSize - skipBytes, SEEK_SET);
         if (tagCount != 0) {
             newFileSize = (fileSize - skipBytes + tagSSize + (saveApe2 ? 32 : 0));
-            writedBytes = fwrite (buff, 1, tagSSize + (saveApe2 ? 32 : 0), fp);
+            writedBytes = ape_fwrite (buff, 1, tagSSize + (saveApe2 ? 32 : 0), fp);
             if (writedBytes != tagSSize + (saveApe2 ? 32 : 0)) {
                 PRINT_ERR ("FATAL_ERROR->libapetag->apetag_save::fwrite [data lost]");
-                fclose (fp);
+                ape_fclose (fp);
                 free (buff);
                 return ATL_FWRITE;
             }
-            fseek (fp, newFileSize, SEEK_SET);
+            ape_fseek (fp, newFileSize, SEEK_SET);
             PRINT_D4 (">apetaglib>SAVE>> write:%i == tag:%i file: %i->%i\n",
                 writedBytes, tagSSize + (saveApe2 ? 32 : 0), fileSize, newFileSize);
         } else {
             newFileSize = (fileSize - skipBytes);
         }
-        fflush (fp);
-        fclose (fp);
+        ape_fflush (fp);
+        ape_fclose (fp);
         /* ftruncate don't work */ 
         truncate (filename, newFileSize);
     } else { /* !!SAVE_FAKE_SAVE */

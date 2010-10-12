@@ -29,6 +29,7 @@
 #include "addons/Repository.h"
 #include "addons/PluginSource.h"
 #include "StringUtils.h"
+#include "File.h"
 
 using namespace ADDON;
 
@@ -51,6 +52,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   CURL path(path1);
   items.ClearProperties();
 
+  items.SetContent("addons");
+
   VECADDONS addons;
   // get info from repository
   bool reposAsFolders = true;
@@ -69,6 +72,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
+    items.SetProperty("reponame",g_localizeStrings.Get(24043));
   }
   else if (path.GetHostName().Equals("repos"))
   {
@@ -205,10 +209,17 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
 
   CFileItemPtr item(new CFileItem(path, folder));
   item->SetLabel(addon->Name());
-  item->SetLabel2(addon->Summary());
+  if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
+    item->SetLabel2(addon->Version().str);
   item->SetThumbnailImage(addon->Icon());
+  item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
-  item->SetProperty("fanart_image", addon->FanArt());
+  if (!addon->FanArt().IsEmpty() && 
+      (CUtil::IsInternetStream(addon->FanArt()) || 
+       CFile::Exists(addon->FanArt())))
+  {
+    item->SetProperty("fanart_image", addon->FanArt());
+  }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;
 }
@@ -240,14 +251,16 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
       continue;
     items.Add(FileItemFromAddon(addons[i], "script://", false));
   }
-  if (items.Size() == 0)
-  {
-    CFileItemPtr item(new CFileItem("addons://more/"+content,false));
-    item->SetLabelPreformated(true);
-    item->SetLabel(g_localizeStrings.Get(21452));
-    item->SetIconImage("DefaultAddon.png");
-    items.Add(item);
-  }
+
+  CFileItemPtr item(new CFileItem("addons://more/"+content,false));
+  item->SetLabelPreformated(true);
+  item->SetLabel(g_localizeStrings.Get(21452));
+  item->SetIconImage("DefaultAddon.png");
+  item->SetSpecialSort(SORT_ON_BOTTOM);
+  items.Add(item);
+
+  items.SetContent("addons");
+
   return items.Size() > 0;
 }
 

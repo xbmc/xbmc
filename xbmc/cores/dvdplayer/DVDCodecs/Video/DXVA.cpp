@@ -34,12 +34,13 @@
 #include "Settings.h"
 #include "boost/shared_ptr.hpp"
 #include "AutoPtrHandle.h"
+#include "AdvancedSettings.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
 using namespace DXVA;
-using namespace boost;
 using namespace AUTOPTR;
+using namespace std;
 
 typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
 static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
@@ -114,6 +115,22 @@ static const dxva2_mode_t dxva2_modes[] = {
     { NULL, NULL, 0 }
 };
 
+// List of PCI Device ID of ATI cards with UVD or UVD+ decoding block.
+static DWORD UVDDeviceID [] = {
+  0x95C0, // ATI Radeon HD 3400 Series (and others)
+  0x95C5, // ATI Radeon HD 3400 Series (and others)
+  0x94C3, // ATI Radeon HD 3410
+  0x9589, // ATI Radeon HD 3600 Series (and others)
+  0x9598, // ATI Radeon HD 3600 Series (and others)
+  0x9591, // ATI Radeon HD 3600 Series (and others)
+  0x9501, // ATI Radeon HD 3800 Series (and others)
+  0x9505, // ATI Radeon HD 3800 Series (and others)
+  0x9507, // ATI Radeon HD 3830
+  0x9513, // ATI Radeon HD 3850 X2
+  0x950F, // ATI Radeon HD 3850 X2
+  0x0000
+};
+
 static CStdString GUIDToString(const GUID& guid)
 {
   CStdString buffer;
@@ -135,7 +152,7 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
 }
 
 
-#define SCOPE(type, var) shared_ptr<type> var##_holder(var, CoTaskMemFree);
+#define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
 CDecoder::SVideoBuffer::SVideoBuffer()
 {
@@ -214,9 +231,58 @@ do { \
   } \
 } while(0);
 
+static bool CheckH264L41(AVCodecContext *avctx)
+{
+    unsigned widthmbs  = (avctx->width + 15) / 16;  // width in macroblocks
+    unsigned heightmbs = (avctx->height + 15) / 16; // height in macroblocks
+    unsigned maxdpbmbs = 32768;                     // Decoded Picture Buffer (DPB) capacity in macroblocks for L4.1
+
+    return (avctx->refs * widthmbs * heightmbs <= maxdpbmbs);
+}
+
+static bool IsL41LimitedATI()
+{
+  if(g_Windowing.GetAIdentifier().VendorId == PCIV_ATI)
+  {
+    for (unsigned idx = 0; UVDDeviceID[idx] != 0; idx++)
+    {
+      if (UVDDeviceID[idx] == g_Windowing.GetAIdentifier().DeviceId)
+        return true;
+    }
+  }
+  return false;
+}
+
+static bool CheckCompatibility(AVCodecContext *avctx)
+{
+  // Check for hardware limited to H264 L4.1 (ie Bluray).
+
+  if(avctx->codec_id != CODEC_ID_H264)
+    return true;
+
+  // No advanced settings: autodetect.
+  // The advanced setting lets the user override the autodetection (in case of false positive or negative)
+
+  bool checkcompat;
+  if (!g_advancedSettings.m_DXVACheckCompatibilityPresent)
+    checkcompat = IsL41LimitedATI();  // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
+  else
+    checkcompat = g_advancedSettings.m_DXVACheckCompatibility;
+
+  if (checkcompat && !CheckH264L41(avctx))
+  {
+      CLog::Log(LOGDEBUG, "DXVA - compatibility check: video exceeds L4.1. DXVA will not be used.");
+      return false;
+  }
+
+  return true;
+}
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
+  if (!CheckCompatibility(avctx))
+    return false;
+
   if(!LoadDXVA())
     return false;
 
@@ -416,6 +482,12 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   if(!OpenDecoder())
     return false;
 
+  // The front buffer seems to be the only one required and it seems to always be m_buffer[0] on ATI and nVidia
+  // but how reliable is that information?
+  // Not adding refs causes a crash at the end of playback because the surfaces are released with the decoder, despite the >0 D3D ref count.
+  for(unsigned i = 0; i < m_buffer_count; i++)
+    m_processor->HoldSurface(m_buffer[i].surface);
+
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
@@ -608,10 +680,6 @@ bool CDecoder::OpenDecoder()
                                     , m_context->surface_count
                                     , &m_decoder))
 
-  // CreateVideoDecoder will not addref the surfaces, but will release them when released
-  for(unsigned i = 0; i < m_buffer_count; i++)
-    m_buffer[i].surface->AddRef();
-
   m_context->decoder = m_decoder;
 
   return true;
@@ -734,8 +802,9 @@ void CProcessor::Close()
   for(unsigned i = 0; i < m_sample.size(); i++)
     SAFE_RELEASE(m_sample[i].SrcSurface);
   m_sample.clear();
+  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); it++)
+    SAFE_RELEASE(*it);
 }
-
 
 bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
 {
@@ -795,7 +864,14 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
 
   m_time = 0;
+
   return true;
+}
+
+void CProcessor::HoldSurface(IDirect3DSurface9* surface)
+{
+  surface->AddRef();
+  m_heldsurfaces.push_back(surface);
 }
 
 REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)

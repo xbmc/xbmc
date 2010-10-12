@@ -95,8 +95,10 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 }
 
 template<class INPUT,class OUTPUT>
-static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest)
 {
+  size_t retBytes = (size_t)-1;
+
   if (type == (iconv_t) - 1)
   {
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
@@ -112,27 +114,59 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     {
       size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
       size_t outBytes = (strSource.length() + 1)*multiplier;
+      size_t buf_size = outBytes;
       const char *src = (const char*)strSource.c_str();
-      char       *dst = (char*)strDest.GetBuffer(outBytes);
+      char    *outbuf = (char*)malloc(buf_size);
+      int dest_len = 0;
+      bool convert_done = false;
 
-      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+      while (!convert_done)
       {
-        CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno);
-        strDest.ReleaseBuffer();
-        return false;
+        char *dst = outbuf + dest_len;
+        retBytes = iconv_const(type, &src, &inBytes, &dst, &outBytes);
+        int errno_save = errno;
+        dest_len += dst - outbuf;
+        if (retBytes != (size_t)-1)
+        {
+          if ((retBytes = iconv_const(type, NULL, NULL, &dst, &outBytes)) == (size_t)-1)
+          {
+            CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+          }
+          convert_done = true;
+        }
+        else
+        {
+          if (errno_save != E2BIG)
+          {
+            CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno_save);
+            convert_done = true;
+          }
+          else
+          {
+            buf_size += 512;
+            outBytes = 512;
+            char *newbuf = (char*)realloc(outbuf, buf_size);
+            if (!newbuf)
+            {
+              CLog::Log(LOGERROR, "%s realloc failed", __FUNCTION__);
+              convert_done = true;
+              retBytes = (size_t)-1;
+            }
+            else
+              outbuf = newbuf;
+          }
+        }
       }
-
-      if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+      if (retBytes != (size_t)-1)
       {
-        CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+        char *p = (char*)strDest.GetBuffer(dest_len);
+        memcpy(p, outbuf, dest_len);
         strDest.ReleaseBuffer();
-        return false;
       }
-
-      strDest.ReleaseBuffer();
+      free(outbuf);
     }
   }
-  return true;
+  return retBytes != (size_t)-1;
 }
 
 template<class INPUT,class OUTPUT>
@@ -648,11 +682,4 @@ bool CCharsetConverter::isValidUtf8(const CStdString& str)
 void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest)
 {
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
-}
-
-CStdStringA CCharsetConverter::utf8Left(const CStdStringW &source, int num_chars)
-{
-  CStdStringA result;
-  wToUTF8(source.Left(num_chars), result);
-  return result;
 }

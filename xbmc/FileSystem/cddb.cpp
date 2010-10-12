@@ -42,6 +42,14 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
+#ifdef _MSC_VER
+#include <winsock2.h>
+#include <Ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#include <netdb.h>
+#endif
+
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace MEDIA_DETECT;
@@ -67,29 +75,56 @@ Xcddb::~Xcddb()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::openSocket()
 {
-  unsigned int port = CDDB_PORT;
+  char     namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
+  struct   addrinfo hints;
+  struct   addrinfo *result, *addr;
+  char     service[33];
+  int      res;
+  SOCKET   fd = INVALID_SOCKET;
 
-  sockaddr_in service;
-  service.sin_family = AF_INET;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+  sprintf(service, "%d", CDDB_PORT);
 
-  // connect to site directly
-  CStdString strIpadres;
-  CDNSNameCache::Lookup(m_cddb_ip_adress, strIpadres);
-  if (strIpadres == "")
+  res = getaddrinfo(m_cddb_ip_adress.c_str(), service, &hints, &result);
+  if(res)
   {
-    strIpadres = "130.179.31.49"; //"64.71.163.204";
-    CLog::Log(LOGERROR, "Xcddb::openSocket DNS lookup for %s failed. Trying to use %s instead", m_cddb_ip_adress.c_str(), strIpadres.c_str());
+    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup %s with error %s", m_cddb_ip_adress.c_str(), gai_strerror(res));
+    res = getaddrinfo("130.179.31.49", service, &hints, &result);
+    if(res)
+      return false;
   }
-  service.sin_addr.s_addr = inet_addr(strIpadres.c_str());
-  service.sin_port = htons(port);
-  m_cddb_socket.attach( socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
 
-  // attempt to connection
-  if (connect((SOCKET)m_cddb_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR)
+  for(addr = result; addr; addr = addr->ai_next)
   {
-    m_cddb_socket.reset();
+    if(getnameinfo(addr->ai_addr, addr->ai_addrlen, namebuf, sizeof(namebuf), portbuf, sizeof(portbuf),NI_NUMERICHOST))
+    {
+      strcpy(namebuf, "[unknown]");
+      strcpy(portbuf, "[unknown]");
+	}
+    CLog::Log(LOGDEBUG, "Xcddb::openSocket - connecting to: %s:%s ...", namebuf, portbuf);
+
+    fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+    if(fd == INVALID_SOCKET)
+      continue;
+
+    if(connect(fd, addr->ai_addr, addr->ai_addrlen) != SOCKET_ERROR)
+      break;
+
+    closesocket(fd);
+    fd = INVALID_SOCKET;
+  }
+
+  freeaddrinfo(result);
+  if(fd == INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to connect to cddb");
     return false;
   }
+
+  m_cddb_socket.attach(fd);
   return true;
 }
 

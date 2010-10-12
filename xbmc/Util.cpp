@@ -254,6 +254,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // VDR Streamdev client
   else if (url.GetProtocol() == "vtp")
     strFilename = g_localizeStrings.Get(20257);
+  
+  // MythTV client
+  else if (url.GetProtocol() == "myth")
+    strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
@@ -1968,6 +1972,21 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
     CStdString name;
     name.Format(fn_template.c_str(), i);
     if (!items.Get(name))
+      return name;
+  }
+  return "";
+}
+
+CStdString CUtil::GetNextPathname(const CStdString &path_template, int max)
+{
+  if (!path_template.Find("%04d"))
+    return "";
+  
+  for (int i = 0; i <= max; i++)
+  {
+    CStdString name;
+    name.Format(path_template.c_str(), i);
+    if (!CFile::Exists(name))
       return name;
   }
   return "";

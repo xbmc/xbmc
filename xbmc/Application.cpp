@@ -2018,26 +2018,21 @@ void CApplication::Render()
 
     lastFrameTime = CTimeUtils::GetTimeMS();
   }
-  g_graphicsContext.Lock();
+
+  CSingleLock lock(g_graphicsContext);
+  CTimeUtils::UpdateFrameTime();
+  g_infoManager.UpdateFPS();
 
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
-  g_graphicsContext.Flip();
-  CTimeUtils::UpdateFrameTime();
-  g_infoManager.UpdateFPS();
-  g_renderManager.UpdateResolution();
-  g_graphicsContext.Unlock();
+  lock.Leave();
 
-  // yield to other threads, so any thread needing
-  // gfx context will get a timeslice. Newer os's
-  // doesn't automatically prempt the unlocking thread
-  // after a mutex is released. This may cause app thread
-  // to regrab gfx lock before for example python get's
-  // access to it.
-  SleepEx(0, TRUE);
+  g_graphicsContext.Flip();
+
+  g_renderManager.UpdateResolution();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
@@ -2338,7 +2333,10 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   if (action.IsMouse())
+  {
+    g_Mouse.SetActive(true);
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
+  }
 
   // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
   // playing or ACTION_PLAYER_PLAY if we are not playing.
@@ -4013,10 +4011,7 @@ void CApplication::UpdateFileState()
 
       if (m_progressTrackingItem->IsVideo())
       {
-        if ((m_progressTrackingItem->IsDVDImage() ||
-             m_progressTrackingItem->IsDVDFile()    ) &&
-            m_pPlayer->GetTotalTime() > 15*60)
-
+        if ((m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) && m_pPlayer->GetTotalTime() > 15*60)
         {
           m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
           m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
@@ -4026,14 +4021,14 @@ void CApplication::UpdateFileState()
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
+            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
         {
           // Delete the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
         }
         else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
         {
           // Update the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
@@ -4441,7 +4436,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnoreAtEnd > 0)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
       {
         // Delete the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
@@ -4658,7 +4653,8 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  CSectionLoader::UnloadDelayed();
+  if (!IsPlayingVideo())
+    CSectionLoader::UnloadDelayed();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -4685,11 +4681,13 @@ void CApplication::ProcessSlow()
     m_bIsPaused = IsPaused();
   }
 
-  g_largeTextureManager.CleanupUnusedImages();
+  if (!IsPlayingVideo())
+    g_largeTextureManager.CleanupUnusedImages();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  m_Autorun.HandleAutorun();
+  if (!IsPlayingVideo())
+    m_Autorun.HandleAutorun();
 #endif
 
   // update upnp server/renderer states
@@ -4716,10 +4714,13 @@ void CApplication::ProcessSlow()
 
 #ifdef HAS_LCD
   // attempt to reinitialize the LCD (e.g. after resuming from sleep)
-  if (g_lcd && !g_lcd->IsConnected())
+  if (!IsPlayingVideo())
   {
-    g_lcd->Stop();
-    g_lcd->Initialize();
+    if (g_lcd && !g_lcd->IsConnected())
+    {
+      g_lcd->Stop();
+      g_lcd->Initialize();
+    }
   }
 #endif
   

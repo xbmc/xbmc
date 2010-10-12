@@ -279,7 +279,7 @@ void CRemoteControl::Update()
     m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, buttonName);
 
     char *end = NULL;
-    long repeat = strtol(repeatStr, &end, 10);
+    long repeat = strtol(repeatStr, &end, 16);
     if (!end || *end != 0)
       CLog::Log(LOGERROR, "LIRC: invalid non-numeric character in expression %s", repeatStr);
     if (repeat == 0)

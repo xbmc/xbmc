@@ -40,7 +40,6 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_glContext = NULL;
   m_SDLSurface = NULL;
   m_dpy = NULL;
-  m_bModeSet = false;
 }
 
 CWinSystemX11::~CWinSystemX11()
@@ -97,6 +96,22 @@ bool CWinSystemX11::DestroyWindowSystem()
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
+  RESOLUTION_INFO& desktop = g_settings.m_ResInfo[RES_DESKTOP];
+
+  if (fullScreen &&
+      (res.iWidth != desktop.iWidth || res.iHeight != desktop.iHeight ||
+       res.fRefreshRate != desktop.fRefreshRate || res.iScreen != desktop.iScreen))
+  {
+    //on the first call to SDL_SetVideoMode, SDL stores the current displaymode
+    //SDL restores the displaymode on SDL_QUIT(), if we change the displaymode
+    //before the first call to SDL_SetVideoMode, SDL changes the displaymode back
+    //to the wrong mode on exit
+
+    CLog::Log(LOGINFO, "CWinSystemX11::CreateNewWindow initializing to desktop resolution first");
+    if (!SetFullScreen(true, desktop, false))
+      return false;
+  }
+
   if(!SetFullScreen(fullScreen, res, false))
     return false;
 
@@ -154,18 +169,10 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   mode.hz  = res.fRefreshRate;
   mode.id  = res.strId;
  
-  //on the first call to SDL_SetVideoMode, SDL stores the current displaymode
-  //SDL restores the displaymode on SDL_QUIT(), if we change the displaymode
-  //before the first call to SDL_SetVideoMode, SDL changes the displaymode back
-  //to the wrong mode on exit
-  if (m_bModeSet)
-  {
-    if(m_bFullScreen)
-      g_xrandr.SetMode(out, mode);
-    else
-      g_xrandr.RestoreState();
-  }
-
+  if(m_bFullScreen)
+    g_xrandr.SetMode(out, mode);
+  else
+    g_xrandr.RestoreState();
 #endif
 
   int options = SDL_OPENGL;
@@ -180,18 +187,6 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       CLog::Log(LOGERROR, "CWinSystemX11::SetFullScreen SDL_OPENGL not set, SDL_GetError:%s", SDL_GetError());
 
     RefreshGlxContext();
-
-#if defined(HAS_XRANDR)
-    if (!m_bModeSet)
-    {
-      if(m_bFullScreen)
-        g_xrandr.SetMode(out, mode);
-      else
-        g_xrandr.RestoreState();
-
-      m_bModeSet = true; //first call to SDL_SetVideoMode done
-    }
-#endif
 
     return true;
   }
@@ -213,14 +208,14 @@ void CWinSystemX11::UpdateResolutions()
     g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
     g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
   }
-#else
+  else
+#endif
   {
     int x11screen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, x11screen);
     int h = DisplayHeight(m_dpy, x11screen);
     UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
   }
-#endif
 
 
 #if defined(HAS_XRANDR)

@@ -286,7 +286,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
         url.SetFileName("movies/" + path);
         break;
       case TV_SHOWS:
-        if (filter != name)
+        if (filter.CompareNoCase(name))
         {
           m_dll->ref_release(program);
           continue;
@@ -507,6 +507,16 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   if (fileName == "")
   {
+    /*
+     * If we can't get the control then we can't connect to the backend. Don't even show any of the
+     * virtual folders as none of them will work. Without this check the "Browse" functionality
+     * when adding a myth:// source is way confusing as it shows folders so it looks like it has
+     * connected successfully when it in fact hasn't.
+     */
+    cmyth_conn_t control = m_session->GetControl();
+    if (!control)
+      return false;
+
     CFileItemPtr item;
 
     item.reset(new CFileItem(base + "/recordings/", true));
@@ -598,12 +608,11 @@ bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
    * There isn't enough information exposed by libcmyth to distinguish between an episode in a series and a
    * one off TV show. See comment in IsMovie for more information.
    *
-   * Return anything that isn't a movie as per the program ID. This may result in a recording being
-   * in both the Movies and TV Shows folders if the advanced setting to choose a movie based on
-   * recording length is used, but means that at least all recorded TV Shows can be found in one
-   * place.
+   * Return anything that isn't a movie as per any advanced setting override. This may result in a
+   * recorded TV Show only being shown in the Movies directory if it's something like a double
+   * episode.
    */
-  return GetValue(m_dll->proginfo_programid(program)).Left(2) != "MV";
+  return !IsMovie(program);
 }
 
 bool CMythDirectory::SupportsFileOperations(const CStdString& strPath)

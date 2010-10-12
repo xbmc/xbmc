@@ -21,10 +21,8 @@
 
 #if _WIN32
 #define PCRE_STATIC
-#include "lib/pcre/pcrecpp.h"
-#else
-#include <pcrecpp.h>
 #endif
+#include <pcrecpp.h>
 #include <cmath>
 #include "FTPParse.h"
 

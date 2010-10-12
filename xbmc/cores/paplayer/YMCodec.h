@@ -39,7 +39,7 @@ public:
 
 private:
   DllStSound m_dll;
-  int m_ym;
+  void* m_ym;
   __int64 m_iDataPos;
 };
 

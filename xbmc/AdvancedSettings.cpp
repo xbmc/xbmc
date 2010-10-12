@@ -85,8 +85,8 @@ void CAdvancedSettings::Initialize()
   m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
-  m_videoIgnoreAtStart = 15;
-  m_videoIgnoreAtEnd = 5;
+  m_videoIgnoreSecondsAtStart = 3*60;
+  m_videoIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
@@ -94,6 +94,8 @@ void CAdvancedSettings::Initialize()
   m_videoNonLinStretchRatio = 0.5f;
   m_videoAllowLanczos3 = false;
   m_videoAllowMpeg4VDPAU = false;
+  m_DXVACheckCompatibility = false;
+  m_DXVACheckCompatibilityPresent = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -378,8 +380,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement, "defaultdvdplayer", m_videoDefaultDVDPlayer);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", m_fullScreenOnMovieStart);
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
-    XMLUtils::GetInt(pElement, "ignoreatstart", m_videoIgnoreAtStart, 0, 900);
-    XMLUtils::GetInt(pElement, "ignoreatend", m_videoIgnoreAtEnd, 0, 900);
+    XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
+    XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", m_videoSmallStepBackTries, 1, 10);
@@ -502,6 +504,9 @@ bool CAdvancedSettings::Load()
         pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
       }
     }
+
+    m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
+
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

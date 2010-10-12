@@ -92,7 +92,7 @@ echo "Creating new workarea..."
 # cp all (except svn directories) into workarea
 rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 
-if ! which lh > /dev/null ; then
+if ! which lb > /dev/null ; then
 	cd $WORKPATH/Tools
 	if [ ! -d live-build ]; then
 		if [ ! -f live-build.tar ]; then
@@ -100,6 +100,10 @@ if ! which lh > /dev/null ; then
 			if [ "$?" -ne "0" ]; then
 				exit 1
 			fi
+
+			pushd live-build > /dev/null
+			git checkout -b 2.0.1-1 debian/2.0.1-1
+			popd > /dev/null
 
 			# Saved, to avoid cloning for multiple builds
 			tar cf live-build.tar live-build  > /dev/null 2>&1
@@ -115,10 +119,10 @@ if ! which lh > /dev/null ; then
 		cd $WORKPATH/Tools
 	fi
 
-	LH_HOMEDIR=$WORKPATH/Tools/live-build
+	LB_HOMEDIR=$WORKPATH/Tools/live-build
 
-	export LH_BASE="${LH_HOMEDIR}"
-	export PATH="${PATH}:${LH_BASE}/scripts/build"
+	export LB_BASE="${LB_HOMEDIR}"
+	export PATH="${PATH}:${LB_BASE}/scripts/build"
 
 	cd $THISDIR
 fi

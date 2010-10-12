@@ -251,6 +251,41 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   return CGUIMediaWindow::OnClick(iItem);
 }
 
+void CGUIWindowAddonBrowser::ReportInstallError(const CStdString& addonID,
+                                                const CStdString& fileName)
+{
+  AddonPtr addon;
+  CAddonDatabase database;
+  database.Open();
+  database.GetAddon(addonID, addon);
+  if (addon)
+  {
+    AddonPtr addon2;
+    CAddonMgr::Get().GetAddon(addonID, addon2);
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                          addon->Icon(),
+                                          addon->Name(),
+                                          g_localizeStrings.Get(addon2 ? 113 : 114),
+                                          TOAST_DISPLAY_TIME, false);
+  }
+  else
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(
+                                          CGUIDialogKaiToast::Error,
+                                          fileName,
+                                          g_localizeStrings.Get(114),
+                                          TOAST_DISPLAY_TIME, false);
+  }
+}
+
+void CGUIWindowAddonBrowser::ReportInstallErrorZip(const CStdString& zipName)
+{
+  CStdStringArray arr;
+  // FIXME: this doesn't work if addon id contains dashes
+  StringUtils::SplitString(zipName, "-", arr);
+  ReportInstallError(arr[0], zipName);
+}
+
 bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
                                        const CStdString& hash)
 {
@@ -261,22 +296,7 @@ bool CGUIWindowAddonBrowser::CheckHash(const CStdString& zipFile,
   if (!md5.Equals(hash))
   {
     CFile::Delete(package);
-    CStdStringArray arr;
-    StringUtils::SplitString(zipFile,"-",arr);
-    AddonPtr addon;
-    CAddonDatabase database;
-    database.Open();
-    database.GetAddon(arr[0],addon);
-    if (addon)
-    {
-      AddonPtr addon2;
-      CAddonMgr::Get().GetAddon(arr[0],addon2);
-      g_application.m_guiDialogKaiToast.QueueNotification(
-                                           addon->Icon(),
-                                           addon->Name(),
-                                           g_localizeStrings.Get(addon2 ? 113 : 114),
-                                           TOAST_DISPLAY_TIME, false);
-    }
+    ReportInstallErrorZip(zipFile);
     CLog::Log(LOGERROR,"MD5 mismatch after download %s", zipFile.c_str());
     return false;
   }
@@ -290,7 +310,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
   if (success)
   {
     CFileOperationJob* job = (CFileOperationJob*)job2;
-    if (job->GetAction() == CFileOperationJob::ActionCopy)
+    if (job->GetAction() == CFileOperationJob::ActionReplace)
     {
       for (int i=0;i<job->GetItems().Size();++i)
       {
@@ -306,30 +326,10 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
         }
         else
         {
-          CURL url(strFolder);
           // zip extraction job is done
-          if (url.GetProtocol() == "zip")
-          {
-            CFileItemList list;
-            CDirectory::GetDirectory(url.Get(),list);
-            CStdString dirname = "";
-            for (int i=0;i<list.Size();++i)
-            {
-              if (list[i]->m_bIsFolder)
-              {
-                dirname = list[i]->GetLabel();
-                break;
-              }
-            }
-            strFolder = CUtil::AddFileToFolder("special://home/addons/",
-                                               dirname);
-          }
-          else
-          {
-            CUtil::RemoveSlashAtEnd(strFolder);
-            strFolder = CUtil::AddFileToFolder("special://home/addons/",
-                                               CUtil::GetFileName(strFolder));
-          }
+          CUtil::RemoveSlashAtEnd(strFolder);
+          strFolder = CUtil::AddFileToFolder("special://home/addons/",
+                                             CUtil::GetFileName(strFolder));
           AddonPtr addon;
           bool update=false;
           if (CAddonMgr::Get().LoadAddonDescription(strFolder, addon))
@@ -347,12 +347,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
               if (it->first.Equals("xbmc.metadata"))
                 continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
-              {
-                CAddonDatabase database;
-                database.Open();
-                if (database.GetAddon(it->first,addon2))
-                  AddJob(addon2->Path());
-              }
+                InstallAddon(it->first);
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
@@ -373,6 +368,16 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                   TOAST_DISPLAY_TIME,false);
             }
           }
+          else
+          {
+            CStdString addonID = CUtil::GetFileName(strFolder);
+            ReportInstallError(addonID, addonID);
+            CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
+            CFileItemList list;
+            list.Add(CFileItemPtr(new CFileItem(strFolder, true)));
+            list[0]->Select(true);
+            CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), this);
+          }
         }
       }
     }
@@ -392,7 +397,6 @@ void CGUIWindowAddonBrowser::UpdateButtons()
 
 unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
 {
-  CGUIWindowAddonBrowser* that = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
   CStdString dest="special://home/addons/packages/";
   CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
@@ -409,7 +413,18 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
     {
       CStdString archive;
       CUtil::CreateArchivePath(archive,"zip",package,"");
-      list.Add(CFileItemPtr(new CFileItem(archive,true)));
+
+      CFileItemList archivedFiles;
+      CDirectory::GetDirectory(archive, archivedFiles);
+
+      if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+      {
+        CFile::Delete(package);
+        ReportInstallErrorZip(CUtil::GetFileName(path));
+        CLog::Log(LOGERROR, "Package %s is not a valid addon", CUtil::GetFileName(path).c_str());
+        return false;
+      }
+      list.Add(CFileItemPtr(new CFileItem(archivedFiles[0]->m_strPath,true)));
       dest = "special://home/addons/";
     }
     else
@@ -419,9 +434,9 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
   }
 
   list[0]->Select(true);
-  CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
+  CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionReplace,
                                                  list,dest);
-  return CJobManager::GetInstance().AddJob(job,that);
+  return CJobManager::GetInstance().AddJob(job,this);
 }
 
 void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
@@ -461,8 +476,18 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     CURL url(strDirectory);
     CAddonsDirectory::GenerateListing(url,addons,items);
     result = true;
-    items.SetProperty("Repo.Name",g_localizeStrings.Get(24067));
+    items.SetProperty("reponame",g_localizeStrings.Get(24067));
     items.m_strPath = strDirectory;
+
+    if (m_guiState.get() && !m_guiState->HideParentDirItems())
+    {
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->m_strPath = m_history.GetParentPath();
+      pItem->m_bIsFolder = true;
+      pItem->m_bIsShareOrDrive = false;
+      items.AddFront(pItem, 0);
+    }
+
   }
   else
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
@@ -475,6 +500,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     item->SetIconImage("DefaultNetwork.png");
     items.Add(item);
   }
+
+  items.SetContent("addons");
 
   for (int i=0;i<items.Size();++i)
     SetItemLabel2(items[i]);

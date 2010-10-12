@@ -39,7 +39,7 @@ public:
 
 private:
   int m_iTrack;
-  int m_nsf;
+  void* m_nsf;
   bool m_bIsPlaying;
 
   DllNosefart m_dll;

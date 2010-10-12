@@ -61,21 +61,21 @@ int main(int argc, char *argv[])
         printf("Setting volumes at %ld%%\n", volume);
 
 	if ((err = snd_mixer_open(&handle, 0)) < 0) {
-		error("Mixer %s open error: %s", card, snd_strerror(err));
+		fprintf(stderr, "Mixer %s open error: %s", card, snd_strerror(err));
 		return err;
 	}
 	if ((err = snd_mixer_attach(handle, card)) < 0) {
-		error("Mixer attach %s error: %s", card, snd_strerror(err));
+		fprintf(stderr, "Mixer attach %s error: %s", card, snd_strerror(err));
 		snd_mixer_close(handle);
 		return err;
 	}
 	if( (err=snd_mixer_selem_register(handle,NULL,NULL)) < 0 ){
-		error("ALSA: snd_mixer_selem_register failed: %d\n",err);
+		fprintf(stderr, "ALSA: snd_mixer_selem_register failed: %d\n",err);
 		snd_mixer_close(handle);
 		return err;
 	}
 	if( (err=snd_mixer_load(handle)) < 0 ){
-		error("ALSA: snd_mixer_load failed: %d\n",err);
+		fprintf(stderr, "ALSA: snd_mixer_load failed: %d\n",err);
 		snd_mixer_close(handle);
 		return err;
 	}
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "ALSA: snd_mixer_selem_set_capture_volume_all failed: %d\n",err);
 			} else {
 				if ( verbose ) 
-					printf("    ** Volume decreased to 0\n", volume);
+					printf("    ** Volume decreased to 0\n");
 			}
 		}
 		if (snd_mixer_selem_has_capture_switch(elem)) {

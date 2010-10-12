@@ -55,8 +55,9 @@ if [ -n "$NvidiaHDMIFirstGen" ] ; then
 	# "ALC1200 Digital"
 	# "ALC662 Digital"
 	# "ALC889A Digital"
-	# "ALC888 Digital"
-	DIGITALCONTROL="VT1708S Digital\|ALC662 rev1 Digital\|ALC1200 Digital\|ALC662 Digital\|ALC889A Digital\|ALC888 Digital"
+	# "ALC888 Digital" 
+	# "ALC887 Digital"
+	DIGITALCONTROL="VT1708S Digital\|ALC662 rev1 Digital\|ALC1200 Digital\|ALC662 Digital\|ALC889A Digital\|ALC888 Digital\|ALC887 Digital"
 fi
 
 if [ -n "$NvidiaHDMISecondGen" ] ; then
@@ -93,13 +94,7 @@ if ! getent passwd $xbmcUser >/dev/null; then
 fi
 
 if [ ! -f /home/$xbmcUser/.asoundrc ] ; then
-        cat > /home/$xbmcUser/.asoundrc << 'EOF'
-pcm.!default {
-        type plug
-        slave {
-                pcm "both"
-        }
-}
+	cat > /home/$xbmcUser/.asoundrc << 'EOF'
 
 pcm.both {
         type route
@@ -181,15 +176,40 @@ pcm.analog_hw {
 }
 EOF
 
-        sed -i "s/=HDMICARD=/card $HDMICARD/g" /home/$xbmcUser/.asoundrc
-        sed -i "s/=HDMIDEVICE=/device $HDMIDEVICE/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=HDMICARD=/card $HDMICARD/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=HDMIDEVICE=/device $HDMIDEVICE/g" /home/$xbmcUser/.asoundrc
 
-        sed -i "s/=DIGITALCARD=/card $DIGITALCARD/g" /home/$xbmcUser/.asoundrc
-        sed -i "s/=DIGITALDEVICE=/device $DIGITALDEVICE/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=DIGITALCARD=/card $DIGITALCARD/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=DIGITALDEVICE=/device $DIGITALDEVICE/g" /home/$xbmcUser/.asoundrc
 
-        sed -i "s/=ANALOGCARD=/card $ANALOGCARD/g" /home/$xbmcUser/.asoundrc
-        sed -i "s/=ANALOGDEVICE=/device $ANALOGDEVICE/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=ANALOGCARD=/card $ANALOGCARD/g" /home/$xbmcUser/.asoundrc
+	sed -i "s/=ANALOGDEVICE=/device $ANALOGDEVICE/g" /home/$xbmcUser/.asoundrc
 
-        chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.asoundrc
+	chown $xbmcUser:$xbmcUser /home/$xbmcUser/.asoundrc
+
+	#
+	# Setup Triple Audiooutput
+	#
+	if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
+		cat > /home/$xbmcUser/.xbmc/userdata/guisettings.xml << 'EOF'
+<settings>
+    <audiooutput>
+	<audiodevice>custom</audiodevice>
+	<channellayout>0</channellayout>
+	<customdevice>plug:both</customdevice>
+	<mode>2</mode>
+	<passthroughdevice>alsa:hdmi</passthroughdevice>
+    </audiooutput>
+</settings>
+EOF
+	else
+		sed -i 's#\(<audiodevice>\)[0-9]*\(</audiodevice>\)#\1'custom'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
+		sed -i 's#\(<channellayout>\)[0-9]*\(</channellayout>\)#\1'0'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
+		sed -i 's#\(<customdevice>\)[0-9]*\(</customdevice>\)#\1'plug:both'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
+		sed -i 's#\(<mode>\)[0-9]*\(</mode>\)#\1'2'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
+		sed -i 's#\(<passthroughdevice>\)[0-9]*\(</passthroughdevice>\)#\1'alsa:hdmi'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
+	fi
+
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
 fi
 

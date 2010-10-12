@@ -39,17 +39,18 @@ public:
   virtual AEChLayout GetChannelMap();
   virtual int GetSampleRate();
   virtual enum AEDataFormat GetDataFormat();
+  virtual int GetBitsPerSample();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
 
 protected:
-  AVCodecContext*   m_pCodecContext;
-  AEChLayout        m_channelLayout;
-  int               m_iMapChannels;
+  AVCodecContext* m_pCodecContext;
+  AVAudioConvert* m_pConvert;;
+  AEChannel m_channelMap[AE_CH_MAX + 1];
 
   BYTE *m_pBuffer1;
   int   m_iBufferSize1;
-
+  
   bool m_bOpenedCodec;
   int m_iBuffered;
   int m_channels;

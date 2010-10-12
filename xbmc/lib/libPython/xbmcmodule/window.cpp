@@ -390,7 +390,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
       Py_BEGIN_ALLOW_THREADS
-      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 1};
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 1};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
       Py_END_ALLOW_THREADS
@@ -430,7 +430,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
       Py_BEGIN_ALLOW_THREADS
-      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 0};
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 0};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
       Py_END_ALLOW_THREADS
@@ -467,6 +467,29 @@ namespace PYXBMC
     {
       Window_Close(self, args);
     }
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(onClick__doc__,
+    "onClick(self, Control control) -- onClick method.\n"
+    "\n"
+    "This method will recieve all click events that the main program will send\n"
+    "to this window.\n");
+
+  PyDoc_STRVAR(onFocus__doc__,
+    "onFocus(self, Control control) -- onFocus method.\n"
+    "\n"
+    "This method will recieve all focus events that the main program will send\n"
+    "to this window.\n");
+
+  PyDoc_STRVAR(onInit__doc__,
+    "onInit(self) -- onInit method.\n"
+    "\n"
+    "This method will be called to initialize the window\n");
+
+  static PyObject* Window_OnNone(Window *self, PyObject *args)
+  {
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -977,6 +1000,9 @@ namespace PYXBMC
   PyMethodDef Window_methods[] = {
     //{(char*)"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
     {(char*)"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
+    {(char*)"onInit" , (PyCFunction)Window_OnNone  , METH_VARARGS, onInit__doc__},
+    {(char*)"onFocus", (PyCFunction)Window_OnNone, METH_VARARGS  , onFocus__doc__},
+    {(char*)"onClick", (PyCFunction)Window_OnNone, METH_VARARGS  , onClick__doc__},
     {(char*)"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, doModal__doc__},
     {(char*)"show", (PyCFunction)Window_Show, METH_VARARGS, show__doc__},
     {(char*)"close", (PyCFunction)Window_Close, METH_VARARGS, close__doc__},

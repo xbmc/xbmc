@@ -97,6 +97,7 @@ bool CXRandR::Query(bool force)
     if (!xoutput.isConnected)
        continue;
 
+    bool hascurrent = false;
     for (TiXmlElement* mode = output->FirstChildElement("mode"); mode; mode = mode->NextSiblingElement("mode"))
     {
       XMode xmode;
@@ -111,9 +112,13 @@ bool CXRandR::Query(bool force)
       if (xmode.isCurrent)
       {
         m_current.push_back(xoutput);
+        hascurrent = true;
       }
     }
-    m_outputs.push_back(xoutput);
+    if (hascurrent)
+      m_outputs.push_back(xoutput);
+    else
+      CLog::Log(LOGWARNING, "CXRandR::Query - output %s has no current mode, assuming disconnected", xoutput.name.c_str());
   }
   return m_outputs.size() > 0;
 }

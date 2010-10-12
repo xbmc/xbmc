@@ -223,6 +223,13 @@ CStdString AddonVersion::Print() const
   return CStdString(out);
 }
 
+#define EMPTY_IF(x,y) \
+  { \
+    CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
+    if (fan.Equals("true")) \
+      y.Empty(); \
+  }
+
 AddonProps::AddonProps(cp_plugin_info_t *props)
   : id(props->identifier)
   , version(props->version)
@@ -234,6 +241,10 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   //FIXME only considers the first registered extension for each addon
   if (props->extensions->ext_point_id)
     type = TranslateType(props->extensions->ext_point_id);
+
+  icon = "icon.png";
+  fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
+  changelog = CUtil::AddFileToFolder(path, "changelog.txt");
   // Grab more detail from the props...
   const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
   if (metadata)
@@ -243,10 +254,10 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
+    EMPTY_IF("nofanart",fanart)
+    EMPTY_IF("noicon",icon)
+    EMPTY_IF("nochangelog",changelog)
   }
-  icon = "icon.png";
-  fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
-  changelog = CUtil::AddFileToFolder(path, "changelog.txt");
 }
 
 /**

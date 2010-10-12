@@ -176,6 +176,7 @@ protected:
   bool    m_stalled;
   bool    m_started;
   double  m_duration; // last packets duration
+  bool    m_silence;
 
   CDVDPlayerResampler m_resampler;
 

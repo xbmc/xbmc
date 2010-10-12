@@ -30,12 +30,12 @@
     All is_* function restore file positon on return
 */
 
-int is_id3v1 (FILE * fp);
+int is_id3v1 (ape_file * fp);
 
-int is_id3v2 (FILE * fp);
+int is_id3v2 (ape_file * fp);
 
-int is_ape (FILE * fp);
+int is_ape (ape_file * fp);
 
-int is_ape_ver (FILE * fp);
+int is_ape_ver (ape_file * fp);
 
 #endif /* _IS_TAG_H */

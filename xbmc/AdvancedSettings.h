@@ -110,8 +110,8 @@ class CAdvancedSettings
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
     int m_videoBlackBarColour;
-    int m_videoIgnoreAtStart;
-    int m_videoIgnoreAtEnd;
+    int m_videoIgnoreSecondsAtStart;
+    float m_videoIgnorePercentAtEnd;
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
@@ -122,6 +122,8 @@ class CAdvancedSettings
     bool  m_videoAllowLanczos3;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
+    bool m_DXVACheckCompatibility;
+    bool m_DXVACheckCompatibilityPresent;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;

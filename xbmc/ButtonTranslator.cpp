@@ -453,6 +453,7 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
   lircButtonMap buttons;
+  vector<string> RemoteNames;
   map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
   if (it != lircRemotesMap.end())
   {
@@ -463,12 +464,32 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
   {
-    if (pButton->FirstChild() && pButton->FirstChild()->Value())
-      buttons[pButton->FirstChild()->Value()] = pButton->Value();
+    if (strcmpi(pButton->Value(), "altname")==0)
+      RemoteNames.push_back(string(pButton->GetText()));
+    else
+    {
+      if (pButton->FirstChild() && pButton->FirstChild()->Value())
+        buttons[pButton->FirstChild()->Value()] = pButton->Value();
+    }
+
     pButton = pButton->NextSiblingElement();
   }
 
   lircRemotesMap[szDevice] = buttons;
+  vector<string>::iterator itr = RemoteNames.begin();
+  while (itr!=RemoteNames.end())
+  {
+    it = lircRemotesMap.find(itr->c_str());
+    if (it != lircRemotesMap.end())
+    {
+      buttons = it->second;
+      lircRemotesMap.erase(it);
+    }
+    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, itr->c_str());
+    lircRemotesMap.insert(it,pair<CStdString, lircButtonMap>(itr->c_str(),buttons));
+    itr++;
+  }
+  RemoteNames.clear();
 }
 
 int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)

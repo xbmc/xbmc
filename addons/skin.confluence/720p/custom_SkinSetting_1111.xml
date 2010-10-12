@@ -386,6 +386,19 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
+					<control type="radiobutton" id="220">
+						<description>use Horizontal Home Button</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31131]</label>
+						<onclick>Skin.ToggleSetting(UseHorizontalHome)</onclick>
+						<selected>Skin.HasSetting(UseHorizontalHome)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+					</control>
 					<control type="radiobutton" id="202">
 						<description>enable video info</description>
 						<width>750</width>

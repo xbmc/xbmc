@@ -1140,8 +1140,27 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
     drop = true;
 
+  /*
+   * If CheckSceneSkip() returns true then demux point is inside an EDL cut and the packets are dropped.
+   * If not inside a hard cut, but the demux point has reached an EDL mute section then trigger the
+   * AUDIO_SILENCE state. The AUDIO_SILENCE state is reverted as soon as the demux point is outside
+   * of any EDL section while EDL mute is still active.
+   */
+  CEdl::Cut cut;
   if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
+  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts), &cut) && cut.action == CEdl::MUTE // Inside EDL mute
+  &&      !m_EdlAutoSkipMarkers.mute) // Mute not already triggered
+  {
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, true));
+    m_EdlAutoSkipMarkers.mute = true;
+  }
+  else if (!m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts), &cut) // Outside of any EDL
+  &&        m_EdlAutoSkipMarkers.mute) // But the mute hasn't been removed yet
+  {
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, false));
+    m_EdlAutoSkipMarkers.mute = false;
+  }
 
   m_dvdPlayerAudio.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 }
@@ -3549,7 +3568,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
   {
-    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && ((CStreamDetailVideo*)details.GetStreamCount(CStreamDetail::VIDEO) > 0)) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);

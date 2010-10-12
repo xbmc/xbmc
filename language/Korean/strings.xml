@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 09/27/2010-->
+<!--Date of translation: 10/11/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -534,6 +534,8 @@
   <string id="609">CDDA 추출 경로가 설정되지 않음.</string>
   <string id="610">오디오 트랙 추출</string>
   <string id="611">번호 입력</string>
+  <string id="612">비트/샘플</string>
+  <string id="613">샘플 주파수</string>
   <string id="620">오디오 CD</string>
   <string id="621">인코더</string>
   <string id="622">음질</string>
@@ -1583,6 +1585,7 @@
   <string id="20255">처음 로그인, 프로파일을 수정하세요</string>
   <string id="20256">HTS Tvheadend 클라이언트</string>
   <string id="20257">VDR Streamdev 클라이언트</string>
+  <string id="20258">MythTV 클라이언트</string>
   <string id="20300">웹 서버 디렉토리 (HTTP)</string>
   <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20302">폴더에 쓸수 없음:</string>

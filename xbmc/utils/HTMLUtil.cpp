@@ -273,7 +273,10 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
   int iPos = 0;
   strStripped = strHTML;
   while (mappings[iPos].html)
-    strStripped.Replace(mappings[iPos++].html,CStdStringW(1, mappings[iPos].w));
+  {
+    strStripped.Replace(mappings[iPos].html,CStdStringW(1, mappings[iPos].w));
+    iPos++;
+  }
 
   iPos = strStripped.Find(L"&#");
   while (iPos > 0 && iPos < (int)strStripped.size()-4)

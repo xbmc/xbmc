@@ -97,9 +97,12 @@ override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
 		-XLicence.txt -XLicense.txt -XLiberationSans-Regular.ttf \
 		-XDejaVuSans.ttf -XDejaVuSans-Bold.ttf
-	# Delete stuff in xbmc-data that is in other packages
+	# Delete stuff that is in other packages
 	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
 	rm -rf debian/xbmc-data/usr/share/xbmc/web
+	# Add in live.d scripts to packaging
+	mkdir -p debian/xbmc-live/etc/xbmc
+	cp -rf tools/XBMCLive/live.d debian/xbmc-live/etc/xbmc
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg
