@@ -29,6 +29,8 @@
 
 #define DEFAULT_HOST          "127.0.0.1"
 #define DEFAULT_MYTHXML_PORT  6544
+#define DEFAULT_PIN           0000
+#define DEFAULT_MYTHXML_CONNECTION_TIMEOUT 30000
 
 extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
 extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
@@ -38,6 +40,7 @@ extern CStdString   g_szClientPath;       ///< The Path where this driver is loc
 /* Client Settings */
 extern CStdString   g_szHostname;         ///< The Host name or IP of the mythtv server
 extern int          g_iMythXmlPort;       ///< The MYTHXML Port (default is 6544)
+extern int          g_iPin;               ///< The Mythtv server PIN (default is 0000)
 
 extern cHelper_libXBMC_addon *XBMC;
 extern cHelper_libXBMC_pvr   *PVR;

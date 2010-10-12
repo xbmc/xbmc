@@ -21,6 +21,7 @@
 
 #include "client.h"
 #include "xbmc_pvr_dll.h"
+#include "MythXml.h"
 
 using namespace std;
 
@@ -31,8 +32,9 @@ using namespace std;
  * and exported to the other source files.
  */
 CStdString   g_szHostname             = DEFAULT_HOST;         ///< The Host name or IP of MythTV
-int          g_iMythXmlPort           = DEFAULT_MYTHXML_PORT; ///< The VTP Port of MythTV (default is 6544)
-
+int          g_iMythXmlPort           = DEFAULT_MYTHXML_PORT; ///< The MyhtXML Port of MythTV (default is 6544)
+int          g_iPin                   = DEFAULT_PIN; ///< The Mythtv server PIN (default is 0000)
+int          g_iMythXmlConnectTimeout = DEFAULT_MYTHXML_CONNECTION_TIMEOUT; ///< The MYTHXML Connection Timeout value (default is 30 seconds)
 ///* Client member variables */
 
 bool         m_recordingFirstRead;
@@ -46,6 +48,7 @@ bool         g_bCreated               = false;
 int          g_iClientID              = -1;
 CStdString   g_szUserPath             = "";
 CStdString   g_szClientPath           = "";
+MythXml		 *MythXmlApi			  = NULL;
 cHelper_libXBMC_addon *XBMC           = NULL;
 cHelper_libXBMC_pvr   *PVR            = NULL;
 
@@ -100,8 +103,32 @@ ADDON_STATUS Create(void* hdl, void* props)
     XBMC->Log(LOG_ERROR, "Couldn't get 'mythXMLPort' setting, falling back to '%i' as default", DEFAULT_MYTHXML_PORT);
     g_iMythXmlPort = DEFAULT_MYTHXML_PORT;
   }
+  
+  /* Read setting "pin" from settings.xml */
+  if (!XBMC->GetSetting("mythXMLTimeout", &g_iMythXmlConnectTimeout))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'mythXMLTimeout' setting, falling back to '%i' as default", DEFAULT_MYTHXML_CONNECTION_TIMEOUT);
+    g_iMythXmlConnectTimeout = DEFAULT_MYTHXML_CONNECTION_TIMEOUT;
+  } else {
+	// we need to multiply by 1000 the value as the settings file is in seconds
+    g_iMythXmlConnectTimeout *= 1000;
+  }
+  
+  /* Read setting "pin" from settings.xml */
+  if (!XBMC->GetSetting("pin", &g_iPin))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'pin' setting, falling back to '%i' as default", DEFAULT_PIN);
+    g_iPin = DEFAULT_PIN;
+  }
 
-  /* TODO Create connection to mythtv server */
+  MythXmlApi = new MythXml();
+  if (!MythXmlApi->open(g_szHostname, g_iMythXmlPort, "", "", g_iPin, g_iMythXmlConnectTimeout))
+  {
+	m_CurStatus = STATUS_LOST_CONNECTION;
+    return m_CurStatus;
+  }
 
   m_CurStatus = STATUS_OK;
 
@@ -113,6 +140,8 @@ void Destroy()
 {
   if (g_bCreated)
   {
+	  delete MythXmlApi;
+	  MythXmlApi = NULL;
     g_bCreated = false;
   }
   m_CurStatus = STATUS_UNKNOWN;
@@ -145,16 +174,34 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (tmp_sHostname != g_szHostname)
       return STATUS_NEED_RESTART;
   }
-  else if (str == "port")
+  else if (str == "mythXMLPort")
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iMythXmlPort, *(int*) settingValue);
     if (g_iMythXmlPort != *(int*) settingValue)
     {
-    	g_iMythXmlPort = *(int*) settingValue;
+	  g_iMythXmlPort = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
-
+  else if (str == "mythXMLTimeout")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'mythXMLTimeout' from %u to %u", g_iMythXmlConnectTimeout, *(int*) settingValue);
+    if (g_iMythXmlConnectTimeout / 1000  != *(int*) settingValue)
+    {
+	  g_iMythXmlConnectTimeout = *(int*) settingValue;
+	  g_iMythXmlConnectTimeout *= 1000;
+      return STATUS_NEED_RESTART;
+    }
+  }
+  else if (str == "pin")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'pin' from %u to %u", g_iPin, *(int*) settingValue);
+    if (g_iPin != *(int*) settingValue)
+    {
+	  g_iPin = *(int*) settingValue;
+      return STATUS_NEED_RESTART;
+    }
+  }
   return STATUS_OK;
 }
 
@@ -237,7 +284,10 @@ PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
-  return PVR_ERROR_NOT_IMPLEMENTED;
+	if (MythXmlApi == NULL)
+	    return PVR_ERROR_SERVER_ERROR;
+
+	return MythXmlApi->requestEPGForChannel(handle, channel, start, end);
 }
 
 
@@ -260,12 +310,18 @@ PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
 
 int GetNumChannels()
 {
-  return 0;
+	if (MythXmlApi == NULL)
+		return PVR_ERROR_SERVER_ERROR;
+
+	return MythXmlApi->getNumChannels();
 }
 
 PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  return PVR_ERROR_NOT_IMPLEMENTED;
+	if (MythXmlApi == NULL)
+			return PVR_ERROR_SERVER_ERROR;
+
+	return MythXmlApi->requestChannelList(handle, radio);
 }
 
 PVR_ERROR DeleteChannel(unsigned int number)

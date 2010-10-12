@@ -11,11 +11,11 @@ ARCH     = @ARCH@
 DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
-LIBS     = -ldl
-INCLUDES = -I. -I../../linux -I../../ -I ../../../xbmc/addons/include
+LIBS     = libmythxml/libmythxml.a -ldl
+INCLUDES = -I. -I../../linux -I../../ -I ../../../xbmc/addons/include -I../../../guilib
 DEFINES += -D_LINUX -fPIC
 LIBDIR   = ../../../addons/pvr.mythtv
-LIB      = ../../../addons/pvr.mythtv/XBMC_MYTHTV.pvr
+LIB      = ../../../addons/pvr.mythtv/XBMC_MythTV.pvr
 
 CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall
@@ -30,7 +30,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o
+OBJS = client.o MythXml.o
 
 all: $(LIB)
 
@@ -51,6 +51,7 @@ $(DEPFILE): Makefile
 # The main library:
 
 $(LIB): $(OBJS) $(SILIB)
+	$(MAKE) -C libmythxml
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -65,4 +66,5 @@ install-lib: $(LIB)
 
 clean:
 	-rm -f $(OBJS) $(DEPFILE) $(LIB) *~
+	$(MAKE) -C libmythxml clean
 CLEAN: clean
