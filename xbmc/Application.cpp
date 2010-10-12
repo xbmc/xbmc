@@ -24,7 +24,6 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
-#include "SystemGlobals.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -292,8 +291,6 @@ using namespace ANNOUNCEMENT;
 #define USE_RELEASE_LIBS
 
 #define MAX_FFWD_SPEED 5
-
-CApplication& g_application = g_SystemGlobals.m_application;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
@@ -20,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include "system.h"
 #include "WindowingFactory.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "GraphicContext.h"
@@ -31,35 +29,28 @@
 #include "AudioContext.h"
 #include "GUISettings.h"
 
-struct CSystemGlobals
-{
-  // Classes that must be initialized/destructed in a specific order because of dependencies.
-
-  CGUISettings m_guiSettings;
+  CGUISettings g_guiSettings;
 
 #if defined(_WIN32) && defined(HAS_GL)
-  CWinSystemWin32GL  m_Windowing;
+  CWinSystemWin32GL  g_Windowing;
 #endif
 
 #if defined(_WIN32) && defined(HAS_DX)
-  CWinSystemWin32DX  m_Windowing;
+  CWinSystemWin32DX  g_Windowing;
 #endif
 
 #if defined(__APPLE__)
-  CWinSystemOSXGL    m_Windowing;
+  CWinSystemOSXGL    g_Windowing;
 #endif
 
 #if defined(HAS_GLX)
-  CWinSystemX11GL    m_Windowing;
+  CWinSystemX11GL    g_Windowing;
 #endif
 
-  CXBMCRenderManager m_renderManager;
-  CAudioContext      m_audioContext;
-  CGraphicContext    m_graphicsContext;
-  CGUITextureManager m_TextureManager;
-  CGUILargeTextureManager m_largeTextureManager;
-  CMouseStat         m_Mouse;
-  CApplication       m_application;
-};
-
-extern CSystemGlobals g_SystemGlobals;
+  CXBMCRenderManager g_renderManager;
+  CAudioContext      g_audioContext;
+  CGraphicContext    g_graphicsContext;
+  CGUITextureManager g_TextureManager;
+  CGUILargeTextureManager g_largeTextureManager;
+  CMouseStat         g_Mouse;
+  CApplication       g_application;

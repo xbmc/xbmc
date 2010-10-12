@@ -34,12 +34,10 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
-#include "SystemGlobals.h"
 #include <assert.h>
 
 using namespace std;
 
-CGUITextureManager& g_TextureManager = g_SystemGlobals.m_TextureManager;
 
 /************************************************************************/
 /*                                                                      */

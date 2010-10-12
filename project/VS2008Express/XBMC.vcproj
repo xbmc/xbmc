@@ -2133,7 +2133,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\SystemGlobals.h"
+				RelativePath="..\..\xbmc\SystemGlobals.cpp"
 				>
 			</File>
 			<Filter
