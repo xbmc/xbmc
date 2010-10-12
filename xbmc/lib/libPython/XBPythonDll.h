@@ -38,6 +38,7 @@
 #define PyTuple_Type (*((PyTypeObject*)pointer_PyTuple_Type))
 #define PyDict_Type (*((PyTypeObject*)pointer_PyDict_Type))
 
+#define PyExc_SystemExit ((PyObject*)(*(long*)pointer_PyExc_SystemExit))
 #define PyExc_SystemError ((PyObject*)(*(long*)pointer_PyExc_SystemError))
 #define PyExc_ValueError ((PyObject*)(*(long*)pointer_PyExc_ValueError))
 #define PyExc_Exception ((PyObject*)(*(long*)pointer_PyExc_Exception))
@@ -80,6 +81,7 @@ class LibraryLoader;
   extern DATA_OBJECT(PyTuple_Type)
   extern DATA_OBJECT(PyDict_Type)
 
+  extern DATA_OBJECT(PyExc_SystemExit)
   extern DATA_OBJECT(PyExc_SystemError)
   extern DATA_OBJECT(PyExc_ValueError)
   extern DATA_OBJECT(PyExc_Exception)
