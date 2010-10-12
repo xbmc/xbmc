@@ -38,8 +38,6 @@
 
 using namespace XFILE;
 
-CAdvancedSettings g_advancedSettings;
-
 CAdvancedSettings::CAdvancedSettings()
 {
 }

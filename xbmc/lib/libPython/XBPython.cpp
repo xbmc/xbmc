@@ -49,8 +49,6 @@
 #include "utils/SingleLock.h"
 #include "utils/TimeUtils.h"
 
-XBPython g_pythonParser;
-
 #ifndef _LINUX
 #define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
 #else

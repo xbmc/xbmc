@@ -67,8 +67,6 @@ static std::vector<CStdString>     m_vecBidiCharsetNames;
 static std::vector<FriBidiCharSet> m_vecBidiCharsets;
 static CCriticalSection            m_critSection;
 
-CCharsetConverter g_charsetConverter;
-
 #define UTF8_DEST_MULTIPLIER 6
 
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1

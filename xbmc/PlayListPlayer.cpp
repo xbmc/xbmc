@@ -34,8 +34,6 @@
 
 using namespace PLAYLIST;
 
-CPlayListPlayer g_playlistPlayer;
-
 CPlayListPlayer::CPlayListPlayer(void)
 {
   m_PlaylistMusic = new CPlayList;

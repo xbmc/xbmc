@@ -33,9 +33,6 @@ typedef struct LCENTRY
 extern const struct LCENTRY g_iso639_1[143];
 extern const struct LCENTRY g_iso639_2[536];
 
-
-CLangCodeExpander g_LangCodeExpander;
-
 CLangCodeExpander::CLangCodeExpander(void)
 {}
 

@@ -28,8 +28,6 @@
 
 using namespace std;
 
-CLangInfo g_langInfo;
-
 #define TEMP_UNIT_STRINGS 20027
 
 #define SPEED_UNIT_STRINGS 20200

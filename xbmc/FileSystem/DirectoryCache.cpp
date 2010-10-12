@@ -29,8 +29,6 @@
 using namespace std;
 using namespace XFILE;
 
-CDirectoryCache g_directoryCache;
-
 CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
 {
   m_cacheType = cacheType;

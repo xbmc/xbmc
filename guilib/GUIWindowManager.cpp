@@ -33,8 +33,6 @@
 
 using namespace std;
 
-CGUIWindowManager g_windowManager;
-
 CGUIWindowManager::CGUIWindowManager(void)
 {
   m_pCallback = NULL;
