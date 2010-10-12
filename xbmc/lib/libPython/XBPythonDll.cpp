@@ -145,7 +145,9 @@ extern "C"
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
   FUNCTION(PyErr_Clear)
+  FUNCTION(PyErr_ExceptionMatches)
 
+  DATA_OBJECT(PyExc_SystemExit)
   DATA_OBJECT(PyExc_SystemError)
   DATA_OBJECT(PyExc_ValueError)
   DATA_OBJECT(PyExc_Exception)
