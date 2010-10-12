@@ -51,6 +51,7 @@ void CAdvancedSettings::Initialize()
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
+  m_audioResample = 0;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -103,7 +104,6 @@ void CAdvancedSettings::Initialize()
   m_musicPercentSeekBackward = -1;
   m_musicPercentSeekForwardBig = 10;
   m_musicPercentSeekBackwardBig = -10;
-  m_musicResample = 0;
 
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
@@ -334,7 +334,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "percentseekforwardbig", m_musicPercentSeekForwardBig, 0, 100);
     XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
 
-    XMLUtils::GetInt(pElement, "resample", m_musicResample, 0, 192000);
+    XMLUtils::GetInt(pElement, "resample", m_audioResample, 0, 192000);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)

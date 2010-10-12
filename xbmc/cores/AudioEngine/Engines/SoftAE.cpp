@@ -19,6 +19,13 @@
  *
  */
 
+#if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavutil/avutil.h>
+#else
+  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+#endif
+#include <string.h>
+
 #include "system.h"
 #include "utils/TimeUtils.h"
 #include "utils/SingleLock.h"
@@ -26,24 +33,15 @@
 #include "MathUtils.h"
 #include "GUISettings.h"
 #include "Settings.h"
-
-#include <string.h>
-
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavutil/avutil.h>
-#else
-  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
-#endif
+#include "AdvancedSettings.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"
-
-#include "AEUtil.h"
-#include "AESink.h"
-
-#include "Encoders/AEEncoderFFmpeg.h"
-
+#include "SoftAEStream.h"
 #include "AESinkFactory.h"
+#include "AESink.h"
+#include "AEUtil.h"
+#include "Encoders/AEEncoderFFmpeg.h"
 
 #ifdef __SSE__
 #include <xmmintrin.h>
@@ -172,6 +170,16 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   */
   if (m_passthrough && !m_rawPassthrough)
     sampleRate = 48000;
+
+  /*
+    if there is an audio resample rate set, use it, this MAY NOT be honoured as
+    the audio sink may not support the requested format, and may change it.
+  */
+  if (g_advancedSettings.m_audioResample)
+  {
+    sampleRate = g_advancedSettings.m_audioResample;
+    CLog::Log(LOGINFO, "CSoftAE::OpenSink - Forcing samplerate to %d", sampleRate);
+  }
 
   /* setup the desired format */
   AEAudioFormat desiredFormat;
@@ -441,6 +449,15 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   CAESinkFactory::Enumerate(devices, passthrough);
 }
 
+bool CSoftAE::SupportsRaw()
+{
+  /* if we are going to encode, we dont do raw */
+  if (m_passthrough)
+    return false;
+
+  return true;
+}
+
 /* this is used when there is no sink to prevent us running too fast */
 void CSoftAE::DelayFrames()
 {
@@ -642,7 +659,13 @@ float CSoftAE::GetDelay()
 
   float delay = 0.0f;
   CSingleLock sinkLock(m_critSectionSink);
-  if (m_sink) delay = m_sink->GetDelay();
+
+  if (m_sink)
+    delay = m_sink->GetDelay();
+
+  if (m_passthrough && m_encoder)
+    delay += m_encoder->GetDelay(m_encodedBufferFrames - m_encodedBufferPos);
+
   sinkLock.Leave();
 
   unsigned int buffered = m_bufferSamples / m_channelCount;

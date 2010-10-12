@@ -19,6 +19,12 @@
  *
  */
 
+#if (defined USE_EXTERNAL_FFMPEG)
+  #include <libavutil/avutil.h>
+#else
+  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+#endif
+
 #include "AESound.h"
 
 #include <samplerate.h>
@@ -27,8 +33,6 @@
 #include "utils/EndianSwap.h"
 #include "FileSystem/FileFactory.h"
 #include "FileSystem/IFile.h"
-
-#include "libavutil/avutil.h" /* DECLARE_ALIGNED */
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"

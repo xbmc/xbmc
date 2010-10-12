@@ -19,15 +19,15 @@
  *
  */
 
-#include "system.h"
-#include "utils/SingleLock.h"
-#include "utils/log.h"
-
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
 #else
   #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
 #endif
+
+#include "system.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include "AEFactory.h"
 #include "AEUtil.h"

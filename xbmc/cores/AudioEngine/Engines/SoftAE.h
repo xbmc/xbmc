@@ -90,13 +90,12 @@ public:
   unsigned int        GetSinkFrameSize () {return m_sinkFormat.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual bool SupportsRaw();
 
 #ifdef __SSE__
   inline static void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
   inline static void SSEMulArray   (float *data, const float mul, uint32_t count);
 #endif
-
-  virtual bool SupportsRaw() { return true; }
 
 private:
   CThread *m_thread;
