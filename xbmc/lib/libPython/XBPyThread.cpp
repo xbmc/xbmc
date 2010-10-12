@@ -236,6 +236,17 @@ void XBPyThread::Process()
     }
   }
 
+  // this thread may have been asked to abort in a
+  // quick way from now on it must do stuff properly
+  Py_BEGIN_ALLOW_THREADS
+  { CSingleLock lock(m_pExecuter->m_critSection);
+    m_stopping = true;
+  }
+  Py_END_ALLOW_THREADS
+
+  state->c_tracefunc = NULL;
+  state->use_tracing = 0;
+
   if (PyErr_Occurred())
   {
     PyObject* exc_type;
@@ -317,21 +328,24 @@ void XBPyThread::Process()
   else
     CLog::Log(LOGINFO, "Scriptresult: Success");
 
-  // wait for the running threads to end
-  PyErr_Clear();
-  PyRun_SimpleString(
-        "import threading\n"
-        "import sys\n"
-        "while threading.activeCount() > 1:\n"
-        "\tthreads = list(threading.enumerate())\n"
-        "\tfor thread in threads:\n"
-        "\t\tif thread <> threading.currentThread():\n"
-        "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
-        "\t\t\tthread.join(1000)\n"
-        );
-
-  if (PyErr_Occurred())
-    CLog::Log(LOGERROR, "Failed to wait for python threads to end");
+  // make sure all sub threads have finished
+  for(PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
+  {
+    if(s == state)
+    {
+      s = s->next;
+      continue;
+    }
+    if(old != s)
+    {
+      CLog::Log(LOGINFO, "Scriptresult: Waiting on thread %"PRIu64, (uint64_t)s->thread_id);
+      old = s;
+    }
+    Py_BEGIN_ALLOW_THREADS
+    Sleep(1);
+    Py_END_ALLOW_THREADS
+    s = state->interp->tstate_head;
+  }
 
   // pending calls must be cleared out
   PyXBMC_ClearPendingCalls(state);
@@ -389,8 +403,11 @@ void XBPyThread::stop()
     PyRun_SimpleString("import xbmc\n"
                        "xbmc.abortRequested = True\n");
 
-    m_threadState->c_tracefunc = xbTrace;
-    m_threadState->use_tracing = 1;
+    for(PyThreadState* state = m_threadState->interp->tstate_head; state; state = state->next)
+    {
+      state->c_tracefunc = xbTrace;
+      state->use_tracing = 1;
+    }
 
     PyThreadState_Swap(old);
     PyEval_ReleaseLock();
