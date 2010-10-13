@@ -22,8 +22,11 @@
 #include "LangCodeExpander.h"
 #include "SectionLoader.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/log.h" 
 
-#define MAKECODE(a, b, c, d) ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
+#define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
+#define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
+
 typedef struct LCENTRY
 {
   long code;
@@ -120,6 +123,571 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const int code)
   lang[0] = (code >> 8) & 255;
 
   return Lookup(desc, lang);
+}
+
+bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode
+#ifdef _WIN32
+    , bool localeHack /*= false*/
+#endif
+    )
+{       
+  if ( strTwoCharCode.length()==2 )
+  {
+    CStdString strTwoCharCodeLower( strTwoCharCode );
+    strTwoCharCodeLower.MakeLower();
+    strTwoCharCodeLower.TrimLeft();
+    strTwoCharCodeLower.TrimRight();
+    
+    long twoCharCode = (((long)(strTwoCharCode[0]))<<8) | (long)(strTwoCharCode[1]);
+
+    switch (twoCharCode) {
+      case MAKETWOCHARCODE('a','a'): strThreeCharCode =  "aar"; break;
+      case MAKETWOCHARCODE('a','b'): strThreeCharCode =  "abk"; break;
+      case MAKETWOCHARCODE('a','f'): strThreeCharCode =  "afr"; break;
+      case MAKETWOCHARCODE('a','k'): strThreeCharCode =  "aka"; break;
+      case MAKETWOCHARCODE('a','m'): strThreeCharCode =  "amh"; break;
+      case MAKETWOCHARCODE('a','r'): strThreeCharCode =  "ara"; break;
+      case MAKETWOCHARCODE('a','n'): strThreeCharCode =  "arg"; break;
+      case MAKETWOCHARCODE('a','s'): strThreeCharCode =  "asm"; break;
+      case MAKETWOCHARCODE('a','v'): strThreeCharCode =  "ava"; break;
+      case MAKETWOCHARCODE('a','e'): strThreeCharCode =  "ave"; break;
+      case MAKETWOCHARCODE('a','y'): strThreeCharCode =  "aym"; break;
+      case MAKETWOCHARCODE('a','z'): strThreeCharCode =  "aze"; break;
+      case MAKETWOCHARCODE('b','a'): strThreeCharCode =  "bak"; break;
+      case MAKETWOCHARCODE('b','m'): strThreeCharCode =  "bam"; break;
+      case MAKETWOCHARCODE('b','e'): strThreeCharCode =  "bel"; break;
+      case MAKETWOCHARCODE('b','n'): strThreeCharCode =  "ben"; break;
+      case MAKETWOCHARCODE('b','h'): strThreeCharCode =  "bih"; break;
+      case MAKETWOCHARCODE('b','i'): strThreeCharCode =  "bis"; break;
+      case MAKETWOCHARCODE('b','o'): strThreeCharCode =  "tib"; break;  // terminology lang code: bod
+      case MAKETWOCHARCODE('b','s'): strThreeCharCode =  "bos"; break;
+      case MAKETWOCHARCODE('b','r'): strThreeCharCode =  "bre"; break;
+      case MAKETWOCHARCODE('b','g'): strThreeCharCode =  "bul"; break;
+      case MAKETWOCHARCODE('c','a'): strThreeCharCode =  "cat"; break;
+      case MAKETWOCHARCODE('c','s'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "csy";
+        else
+#endif
+          strThreeCharCode =  "cze";
+        break;  // terminology lang code: ces
+      case MAKETWOCHARCODE('c','h'): strThreeCharCode =  "cha"; break;
+      case MAKETWOCHARCODE('c','e'): strThreeCharCode =  "che"; break;
+      case MAKETWOCHARCODE('c','u'): strThreeCharCode =  "chu"; break;
+      case MAKETWOCHARCODE('c','v'): strThreeCharCode =  "chv"; break;
+      case MAKETWOCHARCODE('k','w'): strThreeCharCode =  "cor"; break;
+      case MAKETWOCHARCODE('c','o'): strThreeCharCode =  "cos"; break;
+      case MAKETWOCHARCODE('c','r'): strThreeCharCode =  "cre"; break;
+      case MAKETWOCHARCODE('c','y'): strThreeCharCode =  "wel"; break;  // terminology lang code: cym
+      case MAKETWOCHARCODE('d','a'): strThreeCharCode =  "dan"; break;
+      case MAKETWOCHARCODE('d','e'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "deu";
+        else
+#endif
+          strThreeCharCode =  "ger";
+        break;  // terminology lang code: deu
+      case MAKETWOCHARCODE('d','v'): strThreeCharCode =  "div"; break;
+      case MAKETWOCHARCODE('d','z'): strThreeCharCode =  "dzo"; break;
+      case MAKETWOCHARCODE('e','l'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "ell";
+        else
+#endif
+          strThreeCharCode =  "gre";
+        break;  // terminology lang code: ell
+      case MAKETWOCHARCODE('e','n'): strThreeCharCode =  "eng"; break;
+      case MAKETWOCHARCODE('e','o'): strThreeCharCode =  "epo"; break;
+      case MAKETWOCHARCODE('e','t'): strThreeCharCode =  "est"; break;
+      case MAKETWOCHARCODE('e','u'): strThreeCharCode =  "baq"; break;  // terminology lang code: eus
+      case MAKETWOCHARCODE('e','e'): strThreeCharCode =  "ewe"; break;
+      case MAKETWOCHARCODE('f','o'): strThreeCharCode =  "fao"; break;
+      case MAKETWOCHARCODE('f','a'): strThreeCharCode =  "per"; break;  // terminology lang code: fas
+      case MAKETWOCHARCODE('f','j'): strThreeCharCode =  "fij"; break;
+      case MAKETWOCHARCODE('f','i'): strThreeCharCode =  "fin"; break;
+      case MAKETWOCHARCODE('f','r'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "fra";
+        else
+#endif
+          strThreeCharCode =  "fre";
+        break;  // terminology lang code: fra
+      case MAKETWOCHARCODE('f','y'): strThreeCharCode =  "fry"; break;
+      case MAKETWOCHARCODE('f','f'): strThreeCharCode =  "ful"; break;
+      case MAKETWOCHARCODE('g','d'): strThreeCharCode =  "gla"; break;
+      case MAKETWOCHARCODE('g','a'): strThreeCharCode =  "gle"; break;
+      case MAKETWOCHARCODE('g','l'): strThreeCharCode =  "glg"; break;
+      case MAKETWOCHARCODE('g','v'): strThreeCharCode =  "glv"; break;
+      case MAKETWOCHARCODE('g','n'): strThreeCharCode =  "grn"; break;
+      case MAKETWOCHARCODE('g','u'): strThreeCharCode =  "guj"; break;
+      case MAKETWOCHARCODE('h','t'): strThreeCharCode =  "hat"; break;
+      case MAKETWOCHARCODE('h','a'): strThreeCharCode =  "hau"; break;
+      case MAKETWOCHARCODE('h','e'): strThreeCharCode =  "heb"; break;
+      case MAKETWOCHARCODE('h','z'): strThreeCharCode =  "her"; break;
+      case MAKETWOCHARCODE('h','i'): strThreeCharCode =  "hin"; break;
+      case MAKETWOCHARCODE('h','o'): strThreeCharCode =  "hmo"; break;
+      case MAKETWOCHARCODE('h','r'): strThreeCharCode =  "hrv"; break;
+      case MAKETWOCHARCODE('h','u'): strThreeCharCode =  "hun"; break;
+      case MAKETWOCHARCODE('h','y'): strThreeCharCode =  "arm"; break;  // terminology lang code: hye
+      case MAKETWOCHARCODE('i','g'): strThreeCharCode =  "ibo"; break;
+      case MAKETWOCHARCODE('i','o'): strThreeCharCode =  "ido"; break;
+      case MAKETWOCHARCODE('i','i'): strThreeCharCode =  "iii"; break;
+      case MAKETWOCHARCODE('i','u'): strThreeCharCode =  "iku"; break;
+      case MAKETWOCHARCODE('i','e'): strThreeCharCode =  "ile"; break;
+      case MAKETWOCHARCODE('i','a'): strThreeCharCode =  "ina"; break;
+      case MAKETWOCHARCODE('i','d'): strThreeCharCode =  "ind"; break;
+      case MAKETWOCHARCODE('i','k'): strThreeCharCode =  "ipk"; break;
+      case MAKETWOCHARCODE('i','s'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "isl";
+        else
+#endif
+          strThreeCharCode =  "ice";
+        break;  // terminology lang code: isl
+      case MAKETWOCHARCODE('i','t'): strThreeCharCode =  "ita"; break;
+      case MAKETWOCHARCODE('j','v'): strThreeCharCode =  "jav"; break;
+      case MAKETWOCHARCODE('j','a'): strThreeCharCode =  "jpn"; break;
+      case MAKETWOCHARCODE('k','l'): strThreeCharCode =  "kal"; break;
+      case MAKETWOCHARCODE('k','n'): strThreeCharCode =  "kan"; break;
+      case MAKETWOCHARCODE('k','s'): strThreeCharCode =  "kas"; break;
+      case MAKETWOCHARCODE('k','a'): strThreeCharCode =  "geo"; break;  // terminology lang code: kat
+      case MAKETWOCHARCODE('k','r'): strThreeCharCode =  "kau"; break;
+      case MAKETWOCHARCODE('k','k'): strThreeCharCode =  "kaz"; break;
+      case MAKETWOCHARCODE('k','m'): strThreeCharCode =  "khm"; break;
+      case MAKETWOCHARCODE('k','i'): strThreeCharCode =  "kik"; break;
+      case MAKETWOCHARCODE('r','w'): strThreeCharCode =  "kin"; break;
+      case MAKETWOCHARCODE('k','y'): strThreeCharCode =  "kir"; break;
+      case MAKETWOCHARCODE('k','v'): strThreeCharCode =  "kom"; break;
+      case MAKETWOCHARCODE('k','g'): strThreeCharCode =  "kon"; break;
+      case MAKETWOCHARCODE('k','o'): strThreeCharCode =  "kor"; break;
+      case MAKETWOCHARCODE('k','j'): strThreeCharCode =  "kua"; break;
+      case MAKETWOCHARCODE('k','u'): strThreeCharCode =  "kur"; break;
+      case MAKETWOCHARCODE('l','o'): strThreeCharCode =  "lao"; break;
+      case MAKETWOCHARCODE('l','a'): strThreeCharCode =  "lat"; break;
+      case MAKETWOCHARCODE('l','v'): strThreeCharCode =  "lav"; break;
+      case MAKETWOCHARCODE('l','i'): strThreeCharCode =  "lim"; break;
+      case MAKETWOCHARCODE('l','n'): strThreeCharCode =  "lin"; break;
+      case MAKETWOCHARCODE('l','t'): strThreeCharCode =  "lit"; break;
+      case MAKETWOCHARCODE('l','b'): strThreeCharCode =  "ltz"; break;
+      case MAKETWOCHARCODE('l','u'): strThreeCharCode =  "lub"; break;
+      case MAKETWOCHARCODE('l','g'): strThreeCharCode =  "lug"; break;
+      case MAKETWOCHARCODE('m','k'): strThreeCharCode =  "mac"; break;  // terminology lang code: mkd
+      case MAKETWOCHARCODE('m','h'): strThreeCharCode =  "mah"; break;
+      case MAKETWOCHARCODE('m','l'): strThreeCharCode =  "mal"; break;
+      case MAKETWOCHARCODE('m','i'): strThreeCharCode =  "mao"; break;  // terminology lang code: mri
+      case MAKETWOCHARCODE('m','r'): strThreeCharCode =  "mar"; break;
+      case MAKETWOCHARCODE('m','s'): strThreeCharCode =  "may"; break;  // terminology lang code: msa
+      case MAKETWOCHARCODE('m','g'): strThreeCharCode =  "mlg"; break;
+      case MAKETWOCHARCODE('m','t'): strThreeCharCode =  "mlt"; break;
+      case MAKETWOCHARCODE('m','n'): strThreeCharCode =  "mon"; break;
+      case MAKETWOCHARCODE('m','y'): strThreeCharCode =  "bur"; break;  // terminology lang code: mya
+      case MAKETWOCHARCODE('n','a'): strThreeCharCode =  "nau"; break;
+      case MAKETWOCHARCODE('n','v'): strThreeCharCode =  "nav"; break;
+      case MAKETWOCHARCODE('n','r'): strThreeCharCode =  "nbl"; break;
+      case MAKETWOCHARCODE('n','d'): strThreeCharCode =  "nde"; break;
+      case MAKETWOCHARCODE('n','g'): strThreeCharCode =  "ndo"; break;
+      case MAKETWOCHARCODE('n','e'): strThreeCharCode =  "nep"; break;
+      case MAKETWOCHARCODE('n','l'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "nld";
+        else
+#endif
+          strThreeCharCode =  "dut";
+        break;  // terminology lang code: nld
+      case MAKETWOCHARCODE('n','n'): strThreeCharCode =  "nno"; break;
+      case MAKETWOCHARCODE('n','b'): strThreeCharCode =  "nob"; break;
+      case MAKETWOCHARCODE('n','o'): strThreeCharCode =  "nor"; break;
+      case MAKETWOCHARCODE('n','y'): strThreeCharCode =  "nya"; break;
+      case MAKETWOCHARCODE('o','c'): strThreeCharCode =  "oci"; break;
+      case MAKETWOCHARCODE('o','j'): strThreeCharCode =  "oji"; break;
+      case MAKETWOCHARCODE('o','r'): strThreeCharCode =  "ori"; break;
+      case MAKETWOCHARCODE('o','m'): strThreeCharCode =  "orm"; break;
+      case MAKETWOCHARCODE('o','s'): strThreeCharCode =  "oss"; break;
+      case MAKETWOCHARCODE('p','a'): strThreeCharCode =  "pan"; break;
+      case MAKETWOCHARCODE('p','i'): strThreeCharCode =  "pli"; break;
+      case MAKETWOCHARCODE('p','l'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "plk";
+        else
+#endif
+          strThreeCharCode =  "pol";
+        break;
+      case MAKETWOCHARCODE('p','t'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "ptg";
+        else
+#endif
+          strThreeCharCode =  "por";
+        break;
+      case MAKETWOCHARCODE('p','s'): strThreeCharCode =  "pus"; break;
+      case MAKETWOCHARCODE('q','u'): strThreeCharCode =  "que"; break;
+      case MAKETWOCHARCODE('r','m'): strThreeCharCode =  "roh"; break;
+      case MAKETWOCHARCODE('r','o'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "ron";
+        else
+#endif
+          strThreeCharCode =  "rum";
+        break;  // terminology lang code: ron
+      case MAKETWOCHARCODE('r','n'): strThreeCharCode =  "run"; break;
+      case MAKETWOCHARCODE('r','u'): strThreeCharCode =  "rus"; break;
+      case MAKETWOCHARCODE('s','g'): strThreeCharCode =  "sag"; break;
+      case MAKETWOCHARCODE('s','a'): strThreeCharCode =  "san"; break;
+      case MAKETWOCHARCODE('s','i'): strThreeCharCode =  "sin"; break;
+      case MAKETWOCHARCODE('s','k'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "sky";
+        else
+#endif
+          strThreeCharCode =  "slo"; break;  // terminology lang code: slk
+      case MAKETWOCHARCODE('s','l'): strThreeCharCode =  "slv"; break;
+      case MAKETWOCHARCODE('s','e'): strThreeCharCode =  "sme"; break;
+      case MAKETWOCHARCODE('s','m'): strThreeCharCode =  "smo"; break;
+      case MAKETWOCHARCODE('s','n'): strThreeCharCode =  "sna"; break;
+      case MAKETWOCHARCODE('s','d'): strThreeCharCode =  "snd"; break;
+      case MAKETWOCHARCODE('s','o'): strThreeCharCode =  "som"; break;
+      case MAKETWOCHARCODE('s','t'): strThreeCharCode =  "sot"; break;
+      case MAKETWOCHARCODE('e','s'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "esp";
+        else
+#endif
+          strThreeCharCode =  "spa";
+        break;
+      case MAKETWOCHARCODE('s','q'): strThreeCharCode =  "alb"; break;  // terminology lang code: sqi
+      case MAKETWOCHARCODE('s','c'): strThreeCharCode =  "srd"; break;
+      case MAKETWOCHARCODE('s','r'): strThreeCharCode =  "srp"; break;
+      case MAKETWOCHARCODE('s','s'): strThreeCharCode =  "ssw"; break;
+      case MAKETWOCHARCODE('s','u'): strThreeCharCode =  "sun"; break;
+      case MAKETWOCHARCODE('s','w'): strThreeCharCode =  "swa"; break;
+      case MAKETWOCHARCODE('s','v'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "sve";
+        else
+#endif
+        strThreeCharCode =  "swe"; break;
+      case MAKETWOCHARCODE('t','y'): strThreeCharCode =  "tah"; break;
+      case MAKETWOCHARCODE('t','a'): strThreeCharCode =  "tam"; break;
+      case MAKETWOCHARCODE('t','t'): strThreeCharCode =  "tat"; break;
+      case MAKETWOCHARCODE('t','e'): strThreeCharCode =  "tel"; break;
+      case MAKETWOCHARCODE('t','g'): strThreeCharCode =  "tgk"; break;
+      case MAKETWOCHARCODE('t','l'): strThreeCharCode =  "tgl"; break;
+      case MAKETWOCHARCODE('t','h'): strThreeCharCode =  "tha"; break;
+      case MAKETWOCHARCODE('t','i'): strThreeCharCode =  "tir"; break;
+      case MAKETWOCHARCODE('t','o'): strThreeCharCode =  "ton"; break;
+      case MAKETWOCHARCODE('t','n'): strThreeCharCode =  "tsn"; break;
+      case MAKETWOCHARCODE('t','s'): strThreeCharCode =  "tso"; break;
+      case MAKETWOCHARCODE('t','k'): strThreeCharCode =  "tuk"; break;
+      case MAKETWOCHARCODE('t','r'):
+#ifdef _WIN32
+        if (localeHack)
+          strThreeCharCode = "trk";
+        else
+#endif
+          strThreeCharCode =  "tur";
+        break;
+      case MAKETWOCHARCODE('t','w'): strThreeCharCode =  "twi"; break;
+      case MAKETWOCHARCODE('u','g'): strThreeCharCode =  "uig"; break;
+      case MAKETWOCHARCODE('u','k'): strThreeCharCode =  "ukr"; break;
+      case MAKETWOCHARCODE('u','r'): strThreeCharCode =  "urd"; break;
+      case MAKETWOCHARCODE('u','z'): strThreeCharCode =  "uzb"; break;
+      case MAKETWOCHARCODE('v','e'): strThreeCharCode =  "ven"; break;
+      case MAKETWOCHARCODE('v','i'): strThreeCharCode =  "vie"; break;
+      case MAKETWOCHARCODE('v','o'): strThreeCharCode =  "vol"; break;
+      case MAKETWOCHARCODE('w','a'): strThreeCharCode =  "wln"; break;
+      case MAKETWOCHARCODE('w','o'): strThreeCharCode =  "wol"; break;
+      case MAKETWOCHARCODE('x','h'): strThreeCharCode =  "xho"; break;
+      case MAKETWOCHARCODE('y','i'): strThreeCharCode =  "yid"; break;
+      case MAKETWOCHARCODE('y','o'): strThreeCharCode =  "yor"; break;
+      case MAKETWOCHARCODE('z','a'): strThreeCharCode =  "zha"; break;
+      case MAKETWOCHARCODE('z','h'): strThreeCharCode =  "chi"; break;  // terminology lang code: zho
+      case MAKETWOCHARCODE('z','u'): strThreeCharCode =  "zul"; break;
+      default: return false; break;
+    }
+    // did not reach default statement
+    return true;
+  }
+  // not a 2 char code
+  return false;
+}
+
+// Based on ISO 3166
+bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& linux, CStdString& windows)
+{
+  if (linux.length() != 2)
+    return false;
+
+  CStdString strLower( linux );
+  strLower.MakeLower();
+  strLower.TrimLeft();
+  strLower.TrimRight();
+  long twoCharCode = (((long)(strLower[0])) << 8) | (long)(strLower[1]);
+
+  switch (twoCharCode)
+  {
+    case MAKETWOCHARCODE('a','f'): windows =  "afg"; break;
+    case MAKETWOCHARCODE('a','x'): windows =  "ala"; break;
+    case MAKETWOCHARCODE('a','l'): windows =  "alb"; break;
+    case MAKETWOCHARCODE('d','z'): windows =  "dza"; break;
+    case MAKETWOCHARCODE('a','s'): windows =  "asm"; break;
+    case MAKETWOCHARCODE('a','d'): windows =  "and"; break;
+    case MAKETWOCHARCODE('a','o'): windows =  "ago"; break;
+    case MAKETWOCHARCODE('a','i'): windows =  "aia"; break;
+    case MAKETWOCHARCODE('a','q'): windows =  "ata"; break;
+    case MAKETWOCHARCODE('a','g'): windows =  "atg"; break;
+    case MAKETWOCHARCODE('a','r'): windows =  "arg"; break;
+    case MAKETWOCHARCODE('a','m'): windows =  "arm"; break;
+    case MAKETWOCHARCODE('a','w'): windows =  "abw"; break;
+    case MAKETWOCHARCODE('a','u'): windows =  "aus"; break;
+    case MAKETWOCHARCODE('a','t'): windows =  "aut"; break;
+    case MAKETWOCHARCODE('a','z'): windows =  "aze"; break;
+    case MAKETWOCHARCODE('b','s'): windows =  "bhs"; break;
+    case MAKETWOCHARCODE('b','h'): windows =  "bhr"; break;
+    case MAKETWOCHARCODE('b','d'): windows =  "bgd"; break;
+    case MAKETWOCHARCODE('b','b'): windows =  "brb"; break;
+    case MAKETWOCHARCODE('b','y'): windows =  "blr"; break;
+    case MAKETWOCHARCODE('b','e'): windows =  "bel"; break;
+    case MAKETWOCHARCODE('b','z'): windows =  "blz"; break;
+    case MAKETWOCHARCODE('b','j'): windows =  "ben"; break;
+    case MAKETWOCHARCODE('b','m'): windows =  "bmu"; break;
+    case MAKETWOCHARCODE('b','t'): windows =  "btn"; break;
+    case MAKETWOCHARCODE('b','o'): windows =  "bol"; break;
+    case MAKETWOCHARCODE('b','a'): windows =  "bih"; break;
+    case MAKETWOCHARCODE('b','w'): windows =  "bwa"; break;
+    case MAKETWOCHARCODE('b','v'): windows =  "bvt"; break;
+    case MAKETWOCHARCODE('b','r'): windows =  "bra"; break;
+    case MAKETWOCHARCODE('i','o'): windows =  "iot"; break;
+    case MAKETWOCHARCODE('b','n'): windows =  "brn"; break;
+    case MAKETWOCHARCODE('b','g'): windows =  "bgr"; break;
+    case MAKETWOCHARCODE('b','f'): windows =  "bfa"; break;
+    case MAKETWOCHARCODE('b','i'): windows =  "bdi"; break;
+    case MAKETWOCHARCODE('k','h'): windows =  "khm"; break;
+    case MAKETWOCHARCODE('c','m'): windows =  "cmr"; break;
+    case MAKETWOCHARCODE('c','a'): windows =  "can"; break;
+    case MAKETWOCHARCODE('c','v'): windows =  "cpv"; break;
+    case MAKETWOCHARCODE('k','y'): windows =  "cym"; break;
+    case MAKETWOCHARCODE('c','f'): windows =  "caf"; break;
+    case MAKETWOCHARCODE('t','d'): windows =  "tcd"; break;
+    case MAKETWOCHARCODE('c','l'): windows =  "chl"; break;
+    case MAKETWOCHARCODE('c','n'): windows =  "chn"; break;
+    case MAKETWOCHARCODE('c','x'): windows =  "cxr"; break;
+    case MAKETWOCHARCODE('c','c'): windows =  "cck"; break;
+    case MAKETWOCHARCODE('c','o'): windows =  "col"; break;
+    case MAKETWOCHARCODE('k','m'): windows =  "com"; break;
+    case MAKETWOCHARCODE('c','g'): windows =  "cog"; break;
+    case MAKETWOCHARCODE('c','d'): windows =  "cod"; break;
+    case MAKETWOCHARCODE('c','k'): windows =  "cok"; break;
+    case MAKETWOCHARCODE('c','r'): windows =  "cri"; break;
+    case MAKETWOCHARCODE('c','i'): windows =  "civ"; break;
+    case MAKETWOCHARCODE('h','r'): windows =  "hrv"; break;
+    case MAKETWOCHARCODE('c','u'): windows =  "cub"; break;
+    case MAKETWOCHARCODE('c','y'): windows =  "cyp"; break;
+    case MAKETWOCHARCODE('c','z'): windows =  "cze"; break;
+    case MAKETWOCHARCODE('d','k'): windows =  "dnk"; break;
+    case MAKETWOCHARCODE('d','j'): windows =  "dji"; break;
+    case MAKETWOCHARCODE('d','m'): windows =  "dma"; break;
+    case MAKETWOCHARCODE('d','o'): windows =  "dom"; break;
+    case MAKETWOCHARCODE('e','c'): windows =  "ecu"; break;
+    case MAKETWOCHARCODE('e','g'): windows =  "egy"; break;
+    case MAKETWOCHARCODE('s','v'): windows =  "slv"; break;
+    case MAKETWOCHARCODE('g','q'): windows =  "gnq"; break;
+    case MAKETWOCHARCODE('e','r'): windows =  "eri"; break;
+    case MAKETWOCHARCODE('e','e'): windows =  "est"; break;
+    case MAKETWOCHARCODE('e','t'): windows =  "eth"; break;
+    case MAKETWOCHARCODE('f','k'): windows =  "flk"; break;
+    case MAKETWOCHARCODE('f','o'): windows =  "fro"; break;
+    case MAKETWOCHARCODE('f','j'): windows =  "fji"; break;
+    case MAKETWOCHARCODE('f','i'): windows =  "fin"; break;
+    case MAKETWOCHARCODE('f','r'): windows =  "fra"; break;
+    case MAKETWOCHARCODE('g','f'): windows =  "guf"; break;
+    case MAKETWOCHARCODE('p','f'): windows =  "pyf"; break;
+    case MAKETWOCHARCODE('t','f'): windows =  "atf"; break;
+    case MAKETWOCHARCODE('g','a'): windows =  "gab"; break;
+    case MAKETWOCHARCODE('g','m'): windows =  "gmb"; break;
+    case MAKETWOCHARCODE('g','e'): windows =  "geo"; break;
+    case MAKETWOCHARCODE('d','e'): windows =  "deu"; break;
+    case MAKETWOCHARCODE('g','h'): windows =  "gha"; break;
+    case MAKETWOCHARCODE('g','i'): windows =  "gib"; break;
+    case MAKETWOCHARCODE('g','r'): windows =  "grc"; break;
+    case MAKETWOCHARCODE('g','l'): windows =  "grl"; break;
+    case MAKETWOCHARCODE('g','d'): windows =  "grd"; break;
+    case MAKETWOCHARCODE('g','p'): windows =  "glp"; break;
+    case MAKETWOCHARCODE('g','u'): windows =  "gum"; break;
+    case MAKETWOCHARCODE('g','t'): windows =  "gtm"; break;
+    case MAKETWOCHARCODE('g','g'): windows =  "ggy"; break;
+    case MAKETWOCHARCODE('g','n'): windows =  "gin"; break;
+    case MAKETWOCHARCODE('g','w'): windows =  "gnb"; break;
+    case MAKETWOCHARCODE('g','y'): windows =  "guy"; break;
+    case MAKETWOCHARCODE('h','t'): windows =  "hti"; break;
+    case MAKETWOCHARCODE('h','m'): windows =  "hmd"; break;
+    case MAKETWOCHARCODE('v','a'): windows =  "vat"; break;
+    case MAKETWOCHARCODE('h','n'): windows =  "hnd"; break;
+    case MAKETWOCHARCODE('h','k'): windows =  "hkg"; break;
+    case MAKETWOCHARCODE('h','u'): windows =  "hun"; break;
+    case MAKETWOCHARCODE('i','s'): windows =  "isl"; break;
+    case MAKETWOCHARCODE('i','n'): windows =  "ind"; break;
+    case MAKETWOCHARCODE('i','d'): windows =  "idn"; break;
+    case MAKETWOCHARCODE('i','r'): windows =  "irn"; break;
+    case MAKETWOCHARCODE('i','q'): windows =  "irq"; break;
+    case MAKETWOCHARCODE('i','e'): windows =  "irl"; break;
+    case MAKETWOCHARCODE('i','m'): windows =  "imn"; break;
+    case MAKETWOCHARCODE('i','l'): windows =  "isr"; break;
+    case MAKETWOCHARCODE('i','t'): windows =  "ita"; break;
+    case MAKETWOCHARCODE('j','m'): windows =  "jam"; break;
+    case MAKETWOCHARCODE('j','p'): windows =  "jpn"; break;
+    case MAKETWOCHARCODE('j','e'): windows =  "jey"; break;
+    case MAKETWOCHARCODE('j','o'): windows =  "jor"; break;
+    case MAKETWOCHARCODE('k','z'): windows =  "kaz"; break;
+    case MAKETWOCHARCODE('k','e'): windows =  "ken"; break;
+    case MAKETWOCHARCODE('k','i'): windows =  "kir"; break;
+    case MAKETWOCHARCODE('k','p'): windows =  "prk"; break;
+    case MAKETWOCHARCODE('k','r'): windows =  "kor"; break;
+    case MAKETWOCHARCODE('k','w'): windows =  "kwt"; break;
+    case MAKETWOCHARCODE('k','g'): windows =  "kgz"; break;
+    case MAKETWOCHARCODE('l','a'): windows =  "lao"; break;
+    case MAKETWOCHARCODE('l','v'): windows =  "lva"; break;
+    case MAKETWOCHARCODE('l','b'): windows =  "lbn"; break;
+    case MAKETWOCHARCODE('l','s'): windows =  "lso"; break;
+    case MAKETWOCHARCODE('l','r'): windows =  "lbr"; break;
+    case MAKETWOCHARCODE('l','y'): windows =  "lby"; break;
+    case MAKETWOCHARCODE('l','i'): windows =  "lie"; break;
+    case MAKETWOCHARCODE('l','t'): windows =  "ltu"; break;
+    case MAKETWOCHARCODE('l','u'): windows =  "lux"; break;
+    case MAKETWOCHARCODE('m','o'): windows =  "mac"; break;
+    case MAKETWOCHARCODE('m','k'): windows =  "mkd"; break;
+    case MAKETWOCHARCODE('m','g'): windows =  "mdg"; break;
+    case MAKETWOCHARCODE('m','w'): windows =  "mwi"; break;
+    case MAKETWOCHARCODE('m','y'): windows =  "mys"; break;
+    case MAKETWOCHARCODE('m','v'): windows =  "mdv"; break;
+    case MAKETWOCHARCODE('m','l'): windows =  "mli"; break;
+    case MAKETWOCHARCODE('m','t'): windows =  "mlt"; break;
+    case MAKETWOCHARCODE('m','h'): windows =  "mhl"; break;
+    case MAKETWOCHARCODE('m','q'): windows =  "mtq"; break;
+    case MAKETWOCHARCODE('m','r'): windows =  "mrt"; break;
+    case MAKETWOCHARCODE('m','u'): windows =  "mus"; break;
+    case MAKETWOCHARCODE('y','t'): windows =  "myt"; break;
+    case MAKETWOCHARCODE('m','x'): windows =  "mex"; break;
+    case MAKETWOCHARCODE('f','m'): windows =  "fsm"; break;
+    case MAKETWOCHARCODE('m','d'): windows =  "mda"; break;
+    case MAKETWOCHARCODE('m','c'): windows =  "mco"; break;
+    case MAKETWOCHARCODE('m','n'): windows =  "mng"; break;
+    case MAKETWOCHARCODE('m','e'): windows =  "mne"; break;
+    case MAKETWOCHARCODE('m','s'): windows =  "msr"; break;
+    case MAKETWOCHARCODE('m','a'): windows =  "mar"; break;
+    case MAKETWOCHARCODE('m','z'): windows =  "moz"; break;
+    case MAKETWOCHARCODE('m','m'): windows =  "mmr"; break;
+    case MAKETWOCHARCODE('n','a'): windows =  "nam"; break;
+    case MAKETWOCHARCODE('n','r'): windows =  "nru"; break;
+    case MAKETWOCHARCODE('n','p'): windows =  "npl"; break;
+    case MAKETWOCHARCODE('n','l'): windows =  "nld"; break;
+    case MAKETWOCHARCODE('a','n'): windows =  "ant"; break;
+    case MAKETWOCHARCODE('n','c'): windows =  "ncl"; break;
+    case MAKETWOCHARCODE('n','z'): windows =  "nzl"; break;
+    case MAKETWOCHARCODE('n','i'): windows =  "nic"; break;
+    case MAKETWOCHARCODE('n','e'): windows =  "ner"; break;
+    case MAKETWOCHARCODE('n','g'): windows =  "nga"; break;
+    case MAKETWOCHARCODE('n','u'): windows =  "niu"; break;
+    case MAKETWOCHARCODE('n','f'): windows =  "nfk"; break;
+    case MAKETWOCHARCODE('m','p'): windows =  "mnp"; break;
+    case MAKETWOCHARCODE('n','o'): windows =  "nor"; break;
+    case MAKETWOCHARCODE('o','m'): windows =  "omn"; break;
+    case MAKETWOCHARCODE('p','k'): windows =  "pak"; break;
+    case MAKETWOCHARCODE('p','w'): windows =  "plw"; break;
+    case MAKETWOCHARCODE('p','s'): windows =  "pse"; break;
+    case MAKETWOCHARCODE('p','a'): windows =  "pan"; break;
+    case MAKETWOCHARCODE('p','g'): windows =  "png"; break;
+    case MAKETWOCHARCODE('p','y'): windows =  "pry"; break;
+    case MAKETWOCHARCODE('p','e'): windows =  "per"; break;
+    case MAKETWOCHARCODE('p','h'): windows =  "phl"; break;
+    case MAKETWOCHARCODE('p','n'): windows =  "pcn"; break;
+    case MAKETWOCHARCODE('p','l'): windows =  "pol"; break;
+    case MAKETWOCHARCODE('p','t'): windows =  "prt"; break;
+    case MAKETWOCHARCODE('p','r'): windows =  "pri"; break;
+    case MAKETWOCHARCODE('q','a'): windows =  "qat"; break;
+    case MAKETWOCHARCODE('r','e'): windows =  "reu"; break;
+    case MAKETWOCHARCODE('r','o'): windows =  "rou"; break;
+    case MAKETWOCHARCODE('r','u'): windows =  "rus"; break;
+    case MAKETWOCHARCODE('r','w'): windows =  "rwa"; break;
+    case MAKETWOCHARCODE('b','l'): windows =  "blm"; break;
+    case MAKETWOCHARCODE('s','h'): windows =  "shn"; break;
+    case MAKETWOCHARCODE('k','n'): windows =  "kna"; break;
+    case MAKETWOCHARCODE('l','c'): windows =  "lca"; break;
+    case MAKETWOCHARCODE('m','f'): windows =  "maf"; break;
+    case MAKETWOCHARCODE('p','m'): windows =  "spm"; break;
+    case MAKETWOCHARCODE('v','c'): windows =  "vct"; break;
+    case MAKETWOCHARCODE('w','s'): windows =  "wsm"; break;
+    case MAKETWOCHARCODE('s','m'): windows =  "smr"; break;
+    case MAKETWOCHARCODE('s','t'): windows =  "stp"; break;
+    case MAKETWOCHARCODE('s','a'): windows =  "sau"; break;
+    case MAKETWOCHARCODE('s','n'): windows =  "sen"; break;
+    case MAKETWOCHARCODE('r','s'): windows =  "srb"; break;
+    case MAKETWOCHARCODE('s','c'): windows =  "syc"; break;
+    case MAKETWOCHARCODE('s','l'): windows =  "sle"; break;
+    case MAKETWOCHARCODE('s','g'): windows =  "sgp"; break;
+    case MAKETWOCHARCODE('s','k'): windows =  "svk"; break;
+    case MAKETWOCHARCODE('s','i'): windows =  "svn"; break;
+    case MAKETWOCHARCODE('s','b'): windows =  "slb"; break;
+    case MAKETWOCHARCODE('s','o'): windows =  "som"; break;
+    case MAKETWOCHARCODE('z','a'): windows =  "zaf"; break;
+    case MAKETWOCHARCODE('g','s'): windows =  "sgs"; break;
+    case MAKETWOCHARCODE('e','s'): windows =  "esp"; break;
+    case MAKETWOCHARCODE('l','k'): windows =  "lka"; break;
+    case MAKETWOCHARCODE('s','d'): windows =  "sdn"; break;
+    case MAKETWOCHARCODE('s','r'): windows =  "sur"; break;
+    case MAKETWOCHARCODE('s','j'): windows =  "sjm"; break;
+    case MAKETWOCHARCODE('s','z'): windows =  "swz"; break;
+    case MAKETWOCHARCODE('s','e'): windows =  "swe"; break;
+    case MAKETWOCHARCODE('c','h'): windows =  "che"; break;
+    case MAKETWOCHARCODE('s','y'): windows =  "syr"; break;
+    case MAKETWOCHARCODE('t','w'): windows =  "twn"; break;
+    case MAKETWOCHARCODE('t','j'): windows =  "tjk"; break;
+    case MAKETWOCHARCODE('t','z'): windows =  "tza"; break;
+    case MAKETWOCHARCODE('t','h'): windows =  "tha"; break;
+    case MAKETWOCHARCODE('t','l'): windows =  "tls"; break;
+    case MAKETWOCHARCODE('t','g'): windows =  "tgo"; break;
+    case MAKETWOCHARCODE('t','k'): windows =  "tkl"; break;
+    case MAKETWOCHARCODE('t','o'): windows =  "ton"; break;
+    case MAKETWOCHARCODE('t','t'): windows =  "tto"; break;
+    case MAKETWOCHARCODE('t','n'): windows =  "tun"; break;
+    case MAKETWOCHARCODE('t','r'): windows =  "tur"; break;
+    case MAKETWOCHARCODE('t','m'): windows =  "tkm"; break;
+    case MAKETWOCHARCODE('t','c'): windows =  "tca"; break;
+    case MAKETWOCHARCODE('t','v'): windows =  "tuv"; break;
+    case MAKETWOCHARCODE('u','g'): windows =  "uga"; break;
+    case MAKETWOCHARCODE('u','a'): windows =  "ukr"; break;
+    case MAKETWOCHARCODE('a','e'): windows =  "are"; break;
+    case MAKETWOCHARCODE('g','b'): windows =  "gbr"; break;
+    case MAKETWOCHARCODE('u','s'): windows =  "usa"; break;
+    case MAKETWOCHARCODE('u','m'): windows =  "umi"; break;
+    case MAKETWOCHARCODE('u','y'): windows =  "ury"; break;
+    case MAKETWOCHARCODE('u','z'): windows =  "uzb"; break;
+    case MAKETWOCHARCODE('v','u'): windows =  "vut"; break;
+    case MAKETWOCHARCODE('v','e'): windows =  "ven"; break;
+    case MAKETWOCHARCODE('v','n'): windows =  "vnm"; break;
+    case MAKETWOCHARCODE('v','g'): windows =  "vgb"; break;
+    case MAKETWOCHARCODE('v','i'): windows =  "vir"; break;
+    case MAKETWOCHARCODE('w','f'): windows =  "wlf"; break;
+    case MAKETWOCHARCODE('e','h'): windows =  "esh"; break;
+    case MAKETWOCHARCODE('y','e'): windows =  "yem"; break;
+    case MAKETWOCHARCODE('z','m'): windows =  "zmb"; break;
+    case MAKETWOCHARCODE('z','w'): windows =  "zwe"; break;
+    default:
+      return false;
+      break;
+  }
+  return true;
 }
 
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
