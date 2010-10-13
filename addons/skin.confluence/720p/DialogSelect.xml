@@ -169,7 +169,7 @@
 					<textcolor>grey</textcolor>
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
-					<label>$INFO[ListItem.Label2]</label>
+					<label>$INFO[ListItem.Property(Addon.Summary)]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="80" width="550">
@@ -221,7 +221,7 @@
 					<textcolor>grey</textcolor>
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
-					<label>$INFO[ListItem.Label2]</label>
+					<label>$INFO[ListItem.Property(Addon.Summary)]</label>
 				</control>
 			</focusedlayout>
 		</control>
