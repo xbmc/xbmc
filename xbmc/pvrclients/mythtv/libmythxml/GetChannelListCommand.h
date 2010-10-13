@@ -11,6 +11,7 @@
 #include "MythXmlCommand.h"
 
 class GetChannelListCommand: public MythXmlCommand {
+
 public:
 	GetChannelListCommand() {};
 	virtual ~GetChannelListCommand() {};

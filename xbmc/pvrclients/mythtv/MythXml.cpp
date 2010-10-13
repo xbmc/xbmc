@@ -16,6 +16,9 @@
 #include "libmythxml/GetChannelListCommand.h"
 #include "libmythxml/GetChannelListParameters.h"
 #include "libmythxml/GetChannelListResult.h"
+#include "libmythxml/GetProgramGuideParameters.h"
+#include "libmythxml/GetProgramGuideResult.h"
+#include "libmythxml/GetProgramGuideCommand.h"
 
 
 using namespace XFILE;
@@ -80,10 +83,9 @@ PVR_ERROR MythXml::requestChannelList(PVRHANDLE handle, int radio){
 	
 	const vector<SChannel>& channellist = result.getChannels();
 	vector<SChannel>::const_iterator it;
+	PVR_CHANNEL tag;
 	for( it = channellist.begin(); it != channellist.end(); ++it){
-	  const SChannel& channel = *it;
-	  
-	  PVR_CHANNEL tag;
+	  const SChannel& channel = *it; 
 	  memset(&tag, 0 , sizeof(tag));
 	  tag.uid           = channel.id;
 	  tag.number        = channel.id;
@@ -100,7 +102,41 @@ PVR_ERROR MythXml::requestChannelList(PVRHANDLE handle, int radio){
 }
 
 PVR_ERROR MythXml::requestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end){
-	return PVR_ERROR_NOT_IMPLEMENTED;
+  if(!checkConnection())
+		return PVR_ERROR_SERVER_ERROR;
+	GetProgramGuideCommand cmd;
+	GetProgramGuideParameters params(channel.uid, CDateTime(start), CDateTime(end), true);
+	GetProgramGuideResult result;
+	
+	cmd.execute(hostname_, port_, params, result, timeout_);
+  
+	if(!result.isSuccess())
+	  return PVR_ERROR_UNKOWN;
+	
+	PVR_PROGINFO guideItem;
+	const vector<SEpg>& epgInfo = result.getEpg();
+	vector<SEpg>::const_iterator it;
+	for( it = epgInfo.begin(); it != epgInfo.end(); ++it)
+	{
+	  const SEpg& epg = *it;
+	  time_t itemStart;
+	  time_t itemEnd;
+	  epg.start_time.GetAsTime(itemStart);
+	  epg.end_time.GetAsTime(itemEnd);
+	  
+	  guideItem.channum         = epg.chan_num;
+	  guideItem.uid             = epg.id;
+	  guideItem.title           = epg.title;
+	  guideItem.subtitle        = epg.subtitle;
+	  guideItem.description     = epg.description;
+	  guideItem.genre_type      = epg.genre_type;
+	  guideItem.genre_sub_type  = epg.genre_subtype;
+	  guideItem.parental_rating = epg.parental_rating;
+	  guideItem.starttime       = itemStart;
+	  guideItem.endtime         = itemEnd;
+	  PVR->TransferEpgEntry(handle, &guideItem);
+	}
+	return PVR_ERROR_NO_ERROR;
 }
 
 bool MythXml::checkConnection(){

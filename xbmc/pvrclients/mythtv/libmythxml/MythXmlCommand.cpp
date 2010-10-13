@@ -8,6 +8,7 @@
 #include "MythXmlCommand.h"
 
 #include "FileSystem/FileCurl.h"
+
 #include "utils/log.h"
 
 using namespace XFILE;

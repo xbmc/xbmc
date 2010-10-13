@@ -224,7 +224,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 {
   props->SupportChannelLogo        = false;
   props->SupportTimeShift          = false;
-  props->SupportEPG                = false;
+  props->SupportEPG                = true;
   props->SupportRecordings         = false;
   props->SupportTimers             = false;
   props->SupportTV                 = false;
