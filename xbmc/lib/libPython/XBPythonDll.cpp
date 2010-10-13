@@ -266,7 +266,9 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
 
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemExit)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
