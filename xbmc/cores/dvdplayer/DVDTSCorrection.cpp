@@ -313,7 +313,7 @@ double CPullupCorrection::CalcFrameDuration()
 
     double lowestdiff = DVD_TIME_BASE;
     int    selected     = -1;
-    for (int i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
+    for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
     {
       double diff = fabs(frameduration - durations[i]);
       if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
