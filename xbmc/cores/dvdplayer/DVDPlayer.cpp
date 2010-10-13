@@ -458,7 +458,7 @@ bool CDVDPlayer::OpenInputStream()
       filenames.push_back(m_item.GetProperty(key));
 
     for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i]);
+      AddSubtitleFile(filenames[i], i == 0 ? CDemuxStream::FLAG_DEFAULT : CDemuxStream::FLAG_NONE);
 
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
@@ -3360,7 +3360,7 @@ int CDVDPlayer::GetSourceBitrate()
 }
 
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags)
 {
   std::string ext = CUtil::GetExtension(filename);
   if(ext == ".idx")
@@ -3369,7 +3369,9 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename)
     if(!v.Open(filename))
       return -1;
     m_SelectionStreams.Update(NULL, &v);
-    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+    int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+    m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+    return index;
   }
   if(ext == ".sub")
   {
@@ -3383,6 +3385,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename)
   s.id       = 0;
   s.filename = filename;
   s.name     = CUtil::GetFileName(filename);
+  s.flags    = flags;
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }

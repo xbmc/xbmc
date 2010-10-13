@@ -250,7 +250,7 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  int  AddSubtitleFile(const std::string& filename);
+  int  AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
   /**
    * one of the DVD_PLAYSPEED defines
    */
