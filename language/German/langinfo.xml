@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="german">
+<language locale="de">
 
   <charsets>
     <gui unicodefont="false">CP1252</gui>
@@ -13,7 +13,7 @@
   </dvd>
 
   <regions>
-    <region name="Schweiz" locale="che">
+    <region name="Schweiz" locale="CH">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -21,7 +21,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Österreich">
+    <region name="Österreich" locale="AT">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -29,7 +29,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Lichtenstein">
+    <region name="Lichtenstein" locale="LI">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -37,7 +37,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Südtirol" locale="ita">
+    <region name="Südtirol" locale="IT">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -45,7 +45,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Luxemburg" locale="ltz">
+    <region name="Luxemburg" locale="LU">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -53,7 +53,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Belgien" locale="Belgium">
+    <region name="Belgien" locale="BE">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -61,7 +61,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Deutschland" locale="germany">
+    <region name="Deutschland" locale="DE">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

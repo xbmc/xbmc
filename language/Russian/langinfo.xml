@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="Russian">
+<language locale="ru">
   <charsets>
     <gui unicodefont="true">utf-8</gui>
     <subtitle>utf-8</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>ru</subtitle>
   </dvd>
   <regions>
-    <region name="Russia" locale="Russia">
+    <region name="Russia" locale="RU">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY 'г.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

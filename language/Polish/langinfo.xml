@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="Polish">
+<language locale="pl">
   <charsets>
     <gui unicodefont="true">ISO-8859-2</gui>
     <subtitle>CP1250</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>pl</subtitle>
   </dvd>
   <regions>
-    <region name="Polska" locale="Polska">
+    <region name="Polska" locale="PL">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

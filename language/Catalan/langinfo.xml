@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="cat">
+<language locale="ca">
   <charsets>
     <gui unicodefont="false">CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -18,7 +18,6 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-  <regions>
     <region name="Principat d’Andorra" locale="ES">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D / MMMM / YYYY</datelong>

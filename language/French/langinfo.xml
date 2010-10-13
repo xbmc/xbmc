@@ -4,7 +4,7 @@
 <!-- Link:                                                -->
 <!-- http://www.worldtimezone.com/ -->
 
-<language locale="French">
+<language locale="fr">
   <charsets>
     <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -17,7 +17,7 @@
   </dvd>
 
   <regions>
-    <region name="France" locale="France">
+    <region name="France" locale="FR">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -26,7 +26,7 @@
       <timezone>CEST</timezone>
     </region>
 
-    <region name="Belgique" locale="Belgium">
+    <region name="Belgique" locale="BE">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -35,7 +35,7 @@
       <timezone>CEST</timezone>
     </region>
 
-    <region name="Luxembourg" locale="ltz">
+    <region name="Luxembourg" locale="LU">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -44,7 +44,7 @@
       <timezone>CEST</timezone>
     </region>
 
-    <region name="Suisse" locale="che">
+    <region name="Suisse" locale="CH">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -53,7 +53,7 @@
       <timezone>CEST</timezone>
     </region>
 
-    <region name="Principauté de Monaco">
+    <region name="Principauté de Monaco" locale="MC">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -62,7 +62,7 @@
       <timezone>CEST</timezone>
     </region>
 
-    <region name="Canada" locale="Canada">
+    <region name="Canada" locale="CA">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -72,7 +72,7 @@
     </region>
       
     <!-- For USA timezone is set EST, french lang only: For peoples french  stay in Florida -->
-    <region name="USA" locale="USA">
+    <region name="USA" locale="US">
       <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -81,7 +81,7 @@
       <timezone>EST</timezone>
     </region>
 
-    <region name="UK" locale="UK">
+    <region name="UK" locale="GB">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
