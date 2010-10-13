@@ -20,6 +20,7 @@
  */
 
 #include "LangInfo.h"
+#include "LangCodeExpander.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
@@ -143,9 +144,12 @@ void CLangInfo::CRegion::SetGlobalLocale()
 {
   CStdString strLocale;
   if (m_strRegionLocaleName.length() > 0)
+  {
     strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
-  else
-    strLocale = m_strLangLocaleName;
+#ifdef _LINUX
+    strLocale += ".UTF-8";
+#endif
+  }
 
   // We need to set the locale to only change the collate. Otherwise,
   // decimal separator is changed depending of the current language
@@ -162,6 +166,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
 
   } catch(...) {
     current_locale = locale::classic();
+    strLocale = "C";
   }
 
   locale::global(current_locale);
@@ -198,6 +203,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
 
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
+
+#ifdef _WIN32
+  // Windows need 3 chars isolang code
+  if (m_defaultRegion.m_strLangLocaleName.length() == 2)
+  {
+    if (! g_LangCodeExpander.ConvertTwoToThreeCharCode(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
+      m_defaultRegion.m_strLangLocaleName = "";
+  }
+#endif
 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
   if (pCharSets && !pCharSets->NoChildren())
@@ -247,6 +261,15 @@ bool CLangInfo::Load(const CStdString& strFileName)
 
       if (pRegion->Attribute("locale"))
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
+
+#ifdef _WIN32
+      // Windows need 3 chars regions code
+      if (region.m_strRegionLocaleName.length() == 2)
+      {
+        if (! g_LangCodeExpander.ConvertLinuxToWindowsRegionCodes(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
+          region.m_strRegionLocaleName = "";
+      }
+#endif
 
       const TiXmlNode *pDateLong=pRegion->FirstChild("datelong");
       if (pDateLong && !pDateLong->NoChildren())
