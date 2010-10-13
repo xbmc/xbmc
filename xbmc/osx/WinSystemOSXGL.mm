@@ -27,10 +27,8 @@
 #include "../guilib/Texture.h"
 #include "WinSystemOSXGL.h"
 #include "RenderSystemGL.h"
-#include "SystemGlobals.h"
 #undef BOOL
 
-CWinSystemOSXGL& g_Windowing = g_SystemGlobals.m_Windowing;
 
 CWinSystemOSXGL::CWinSystemOSXGL()
 {

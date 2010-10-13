@@ -301,6 +301,8 @@
 		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
 		C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
+		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
+		C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -2211,6 +2213,7 @@
 		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repository.h; path = addons/Repository.h; sourceTree = "<group>"; };
 		C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateAddonBrowser.cpp; sourceTree = "<group>"; };
 		C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateAddonBrowser.h; sourceTree = "<group>"; };
+		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-x86-osx.a"; path = "xbmc/lib/libshout/libshout-x86-osx.a"; sourceTree = "<group>"; };
@@ -4466,6 +4469,7 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */,
 				18E9C8EC11834DF600DF8B9F /* GUIDialogAddonInfo.cpp */,
 				18E9C8ED11834DF600DF8B9F /* GUIDialogAddonInfo.h */,
 				C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */,
@@ -8113,6 +8117,7 @@
 				F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
 				F5E728A51227112500B152C1 /* URIUtils.cpp in Sources */,
 				7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */,
+				C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8982,6 +8987,7 @@
 				F5BDB821120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
 				F5E728A61227112500B152C1 /* URIUtils.cpp in Sources */,
 				7CF1FB0B123B1AF000B2CBCB /* Variant.cpp in Sources */,
+				C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
