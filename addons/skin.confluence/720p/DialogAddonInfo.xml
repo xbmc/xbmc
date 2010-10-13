@@ -160,7 +160,7 @@
 					<font>font13</font>
 					<scroll>true</scroll>
 				</control>
-				<control type="label">
+				<!-- control type="label">
 					<description>Rating txt</description>
 					<posx>150</posx>
 					<posy>90</posy>
@@ -179,11 +179,11 @@
 					<width>160</width>
 					<height>32</height>
 					<texture>LeftRating/$INFO[ListItem.Property(Addon.StarRating)]</texture>
-				</control>
+				</control -->
 				<control type="label">
 					<description>Summary txt</description>
 					<posx>150</posx>
-					<posy>120</posy>
+					<posy>90</posy>
 					<width>140</width>
 					<height>25</height>
 					<label>$LOCALIZE[20037]:</label>
@@ -195,7 +195,7 @@
 				<control type="fadelabel">
 					<description>Summary Value</description>
 					<posx>160</posx>
-					<posy>120</posy>
+					<posy>90</posy>
 					<width>440</width>
 					<height>25</height>
 					<label fallback="416">$INFO[ListItem.Property(Addon.Summary)]</label>
