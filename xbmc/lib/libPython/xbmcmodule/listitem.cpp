@@ -66,8 +66,8 @@ namespace PYXBMC
 
     PyObject* label = NULL;
     PyObject* label2 = NULL;
-    char* cIconImage = NULL;
-    char* cThumbnailImage = NULL;
+    PyObject* iconImage = NULL;
+    PyObject* thumbnailImage = NULL;
     PyObject* path = NULL;
 
     // allocate new object
