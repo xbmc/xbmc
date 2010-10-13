@@ -34,12 +34,12 @@ public:
 
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
-  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode
 #ifdef _WIN32
-    , bool localeHack = false
+  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack = false);
+#else
+  bool ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode);
 #endif
-  );
-  bool ConvertLinuxToWindowsRegionCodes(const CStdString& linux, CStdString& windows);
+  bool ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode);
 
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
