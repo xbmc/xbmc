@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 34319 -->
+<!--Based on english strings version 34640 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1778,6 +1778,7 @@
   <string id="20255">首次登录，编辑您的用户配置</string>
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
+  <string id="20258">MythTV 客户端</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
