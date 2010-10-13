@@ -81,12 +81,12 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"|OOssO",
+      (char*)"|OOOOO",
       (char**)keywords,
       &label,
       &label2,
-      &cIconImage,
-      &cThumbnailImage,
+      &iconImage,
+      &thumbnailImage,
       &path))
     {
       Py_DECREF( self );
@@ -109,13 +109,13 @@ namespace PYXBMC
     {
       self->item->SetLabel2( utf8String );
     }
-    if (cIconImage)
+    if (iconImage && PyXBMCGetUnicodeString(utf8String, iconImage, 1))
     {
-      self->item->SetIconImage( cIconImage );
+      self->item->SetIconImage( utf8String );
     }
-    if (cThumbnailImage)
+    if (thumbnailImage && PyXBMCGetUnicodeString(utf8String, thumbnailImage, 1))
     {
-      self->item->SetThumbnailImage( cThumbnailImage );
+      self->item->SetThumbnailImage( utf8String );
     }
     if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
@@ -239,7 +239,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setIconImage__doc__,
     "setIconImage(icon) -- Sets the listitem's icon image.\n"
     "\n"
-    "icon            : string - image filename.\n"
+    "icon            : string or unicode - image filename.\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setIconImage('emailread.png')\n");
@@ -267,7 +267,7 @@ namespace PYXBMC
   PyDoc_STRVAR(setThumbnailImage__doc__,
     "setThumbnailImage(thumb) -- Sets the listitem's thumbnail image.\n"
     "\n"
-    "thumb           : string - image filename.\n"
+    "thumb           : string or unicode - image filename.\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setThumbnailImage('emailread.png')\n");
