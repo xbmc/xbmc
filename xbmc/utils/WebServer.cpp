@@ -133,8 +133,10 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   }
 #endif
 
-  if (methodType == GET && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
+#ifdef HAS_HTTPAPI
+  if ((methodType == GET || methodType == POST) && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
     return HttpApi(connection);
+#endif
 
   if (strURL.Left(4).Equals("/vfs"))
   {
