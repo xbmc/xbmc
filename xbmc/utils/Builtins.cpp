@@ -1073,7 +1073,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          scanner->StartScanning("");
+          scanner->StartScanning(params.size() > 1 ? params[1] : "");
       }
     }
     if (params[0].Equals("video"))
