@@ -123,7 +123,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         char *dst = outbuf + dest_len;
         retBytes = iconv_const(type, &src, &inBytes, &dst, &outBytes);
         int errno_save = errno;
-        dest_len += dst - outbuf;
+        dest_len = dst - outbuf;
         if (retBytes != (size_t)-1)
         {
           if ((retBytes = iconv_const(type, NULL, NULL, &dst, &outBytes)) == (size_t)-1)
@@ -142,7 +142,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
           else
           {
             buf_size += 512;
-            outBytes = 512;
+            outBytes += 512;
             char *newbuf = (char*)realloc(outbuf, buf_size);
             if (!newbuf)
             {
