@@ -178,7 +178,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if (!ismaster)
   {
     //integral correction, clamp to -0.5:0.5 range
-    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.5), -0.5);
+    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
     g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
   }
   else
