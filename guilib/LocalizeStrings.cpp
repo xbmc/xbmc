@@ -26,9 +26,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 
-CLocalizeStrings g_localizeStrings;
-CLocalizeStrings g_localizeStringsTemp;
-
 CLocalizeStrings::CLocalizeStrings(void)
 {
 

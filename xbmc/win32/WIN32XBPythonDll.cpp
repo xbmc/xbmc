@@ -125,6 +125,7 @@ extern "C"
   FUNCTION(PyThreadState_Get)
   FUNCTION4(PyRun_SimpleString)
   FUNCTION(PyEval_InitThreads)
+  FUNCTION(PyEval_ThreadsInitialized)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)
   FUNCTION(Py_Finalize)
@@ -258,12 +259,14 @@ extern "C"
   FUNCTION4(PyObject_Str)
   FUNCTION20(PyRun_File)
   FUNCTION16(PyRun_String)
+  FUNCTION4(PyErr_ExceptionMatches)
   FUNCTION(PyErr_Clear)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
   void* PyFloat_FromDouble(double a) { return p_PyFloat_FromDouble(a); }
 
+  DATA_OBJECT(PyExc_SystemExit)
   DATA_OBJECT(PyExc_SystemError)
   DATA_OBJECT(PyExc_ValueError)
   DATA_OBJECT(PyExc_Exception)
@@ -294,6 +297,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Get)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_ThreadsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_IsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&
@@ -359,6 +363,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
 
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemExit)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
@@ -384,6 +389,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_String)));
 
     return bResult;

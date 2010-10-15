@@ -62,6 +62,7 @@
   FUNCTION(PyRun_SimpleStringFlags)
   FUNCTION(PyRun_SimpleFileExFlags)
   FUNCTION(PyEval_InitThreads)
+  FUNCTION(PyEval_ThreadsInitialized)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)
   FUNCTION(Py_Finalize)
@@ -145,6 +146,7 @@
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
   FUNCTION(PyErr_Clear)
+  FUNCTION(PyErr_ExceptionMatches)
 #endif
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits

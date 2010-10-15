@@ -564,6 +564,8 @@
   <string id="609">Le chemin CDDA d'importation n'est pas défini.</string>
   <string id="610">Importer une piste audio</string>
   <string id="611">Entrer numéro</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Fréquence d'échantillonage</string>  
   
   <string id="620">CDs audio</string>
   <string id="621">Encodeur</string>
@@ -848,7 +850,7 @@
   <string id="1450">Passer en économie d'énergie en cas d'inactivité</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
-  <string id="2050">Durée :</string>
+  <string id="2050">Durée</string>
   
   <string id="2100">Échec du script ! : %s</string>
   <string id="2101">Nouvelle version requise - Voir le log</string>
@@ -1021,6 +1023,7 @@
   <string id="13013">Redémarrer</string>
   <string id="13014">Minimiser</string>
   <string id="13015">Action bouton Power</string>
+  <string id="13016">Arrêt du système</string>
   
   <string id="13020">Une autre session est en cours, peut être en ssh ?</string>
   <string id="13021">Disque dur externe monté</string>
@@ -1093,8 +1096,8 @@
   <string id="13170">Jamais</string>
   <string id="13171">Immédiatement</string>
   <string id="13172">Après %i secs</string>
-  <string id="13173">Installé le :</string>
-  <string id="13174">Nombre de cycles marche/arrêt complets :</string>
+  <string id="13173">HDD Installé le :</string>
+  <string id="13174">HDD Nbr. de cycles marche/arrêt complets :</string>
   
   <string id="13200">Profils</string>
   <string id="13201">Supprimer le profil '%s' ?</string>
@@ -1523,8 +1526,8 @@
   <string id="16035">Playliste Mix de soirée</string>
   
   <string id="16100">Toutes les vidéos</string>
-  <string id="16101">Vidéos non vues</string>
-  <string id="16102">Vidéos vues</string>
+  <string id="16101">Non vues</string>
+  <string id="16102">Vues</string>
   <string id="16103">Marquer comme vu</string>
   <string id="16104">Marquer comme non vu</string>
   <string id="16105">Éditer le titre</string>
@@ -1639,7 +1642,7 @@
   <string id="20071">Démarrer avec de nouvelles sources Média</string>
   <string id="20072">Vérifier que l'écriture est possible dans le dossier sélectionné</string>
   <string id="20073">et que le nom du nouveau dossier est valide</string>
-  <string id="20074">Avis MPAA :</string>
+  <string id="20074">Avis MPAA</string>
   <string id="20075">Entrer le code du mode Admin.</string>
   <string id="20076">Demander le code du mode Admin. au démarrage</string>
   <string id="20077">Param. Thèmes</string>
@@ -1775,6 +1778,7 @@
   <string id="20255">Première connexion, modifier votre profile</string>
   <string id="20256">Client HTS Tvheadend</string>
   <string id="20257">Client VDR Streamdev</string>
+  <string id="20258">Client MythTV</string>
    
   <string id="20300">Dossier Server Web (HTTP)</string>
   <string id="20301">Dossier Server Web (HTTPS)</string>

@@ -286,7 +286,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
         url.SetFileName("movies/" + path);
         break;
       case TV_SHOWS:
-        if (filter != name)
+        if (filter.CompareNoCase(name))
         {
           m_dll->ref_release(program);
           continue;
@@ -507,6 +507,16 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   if (fileName == "")
   {
+    /*
+     * If we can't get the control then we can't connect to the backend. Don't even show any of the
+     * virtual folders as none of them will work. Without this check the "Browse" functionality
+     * when adding a myth:// source is way confusing as it shows folders so it looks like it has
+     * connected successfully when it in fact hasn't.
+     */
+    cmyth_conn_t control = m_session->GetControl();
+    if (!control)
+      return false;
+
     CFileItemPtr item;
 
     item.reset(new CFileItem(base + "/recordings/", true));

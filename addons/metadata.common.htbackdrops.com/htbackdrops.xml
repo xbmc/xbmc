@@ -7,7 +7,7 @@
 	<ParseHTBThumbs dest="5">
 		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/api/7681a907c805e0670330c694e788e8e8/download/\1/thumbnail&quot;&gt;http://www.htbackdrops.com/api/7681a907c805e0670330c694e788e8e8/download/\1/fullsize&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&lt;id&gt;([^&lt;]+)&lt;/id&gt;\n[^&lt;]+&lt;album&gt;5&lt;/album&gt;</expression>
+				<expression repeat="yes" noclean="1">&lt;id&gt;([^&lt;]+)&lt;/id&gt;\n[^&lt;]+&lt;aid&gt;5&lt;/aid&gt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
@@ -20,7 +20,7 @@
 	<ParseHTBFanart dest="5">
 		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;api/7681a907c805e0670330c694e788e8e8/download/\1/thumbnail&quot;&gt;api/7681a907c805e0670330c694e788e8e8/download/\1/fullsize&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&lt;id&gt;([^&lt;]+)&lt;/id&gt;\n[^&lt;]+&lt;album&gt;1&lt;/album&gt;</expression>
+				<expression repeat="yes" noclean="1">&lt;id&gt;([^&lt;]+)&lt;/id&gt;\n[^&lt;]+&lt;aid&gt;1&lt;/aid&gt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>

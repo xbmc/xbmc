@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language locale="Hebrew">
+<language locale="he">
   <charsets>
     <gui unicodefont="true">CP1255</gui>
     <subtitle>CP1255</subtitle>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region>
+    <region locale="IL">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD DD MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

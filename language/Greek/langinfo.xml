@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language lang="Greek">
+<language locale="el">
   <charsets>
     <gui unicodefont="true">CP1253</gui>
     <subtitle>CP1253</subtitle>
@@ -10,14 +10,14 @@
     <subtitle>el</subtitle>
   </dvd>
   <regions>
-    <region name="Ελλάδα">
+    <region name="Ελλάδα" locale="GR">
       <dateshort>DD-MM-YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="πμ" symbolPM="μμ">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>beaufort</speedunit>
     </region>
-    <region name="Κύπρος">
+    <region name="Κύπρος" locale="CY">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="πμ" symbolPM="μμ">H,mm,ss</time>

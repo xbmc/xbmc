@@ -71,7 +71,6 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderDatabase.cpp \
      MusicInfoTagLoaderFactory.cpp \
      MusicInfoTagLoaderFlac.cpp \
-     MusicInfoTagLoaderGYM.cpp \
      MusicInfoTagLoaderMidi.cpp \
      MusicInfoTagLoaderMod.cpp \
      MusicInfoTagLoaderMP3.cpp \
@@ -221,6 +220,7 @@ SRCS=Application.cpp \
      TextureDatabase.cpp \
      AddonDatabase.cpp \
      URIUtils.cpp \
+     SystemGlobals.cpp \
 
 LIB=xbmc.a
 

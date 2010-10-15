@@ -44,7 +44,7 @@
   <string id="31055">Ouvrir playlist</string>
   <string id="31056">Sauvegarder playlist</string>
   <string id="31057">Fermer playlist</string>
-  <string id="31058">Système de fichiers de musique</string>
+  <string id="31058">Fichiers musique du système</string>
   <string id="31059">Playlist actuelle</string>
   <string id="31060">Ce fichier est empilé, sélectionnez la partie que vous souhaitez lire.</string>
   <string id="31061">Selection actuelle</string>
@@ -82,7 +82,8 @@
   <string id="31128">Lyrics</string>
   <string id="31129">Activer le téléchargement de sous-titre sur l'OSD Video</string>
   <string id="31130">CHEMIN DE L'ADD-ON SUBTITLE</string>
-
+  <string id="31131">Menu horizontale à l'accueil</string>
+  
   <string id="31140">OSD Musique</string>
   <string id="31141">OSD Vidéo</string>
 
@@ -100,7 +101,7 @@
   <string id="31302">Menu</string>
   <string id="31303"></string>
   <string id="31304">Image</string>
-  <string id="31305">Aucun disque détecté</string>
+  <string id="31305">Aucun disque de média détecté</string>
   <string id="31306">Éjecter</string>
   <string id="31307">Sans Fanart</string>
   <string id="31308">Détails du film</string>
@@ -109,11 +110,11 @@
   <string id="31311">Image fanart[CR][CR]Indisponible[CR][CR]Cliquer sur le bouton pour définir</string>
   <string id="31312">Scraper Actuel</string>
   <string id="31313">Choisissez un Scraper</string>
-  <string id="31314">Options catégorie du balayage</string>
+  <string id="31314">Options Contenu du Scan</string>
   <string id="31315">Basic</string>
   <string id="31316"></string>
   <string id="31317">Définir le chemin du Fanart</string>
-  <string id="31318">Fanart petit</string>
+  <string id="31318">Petit Fanart</string>
   <string id="31319">Profil sélectionné</string>
   <string id="31320">Derniers connectés</string>
   <string id="31321">Sélecteur chanson Karaoké</string>
@@ -135,6 +136,11 @@
   <string id="31355">Menu film</string>
   <string id="31356">Télécharger les sous-titres</string>
   <string id="31357"></string>
+  
+  <!-- Skin Fontsets -->
+  <string id="31390">Par défaut</string>
+  <string id="31391">Par défaut sans Majuscule</string>
+  <string id="31392">Basé sur Arial</string>
   
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le skin · Choisir la langue et la région · Changer les options de liste[CR]Changer l'économiseur d'écran</string>

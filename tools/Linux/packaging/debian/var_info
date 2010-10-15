@@ -42,7 +42,8 @@ case "$1" in
          adduser,
          sudo,
          whois,
-         \${misc:Depends},"
+         \${misc:Depends},
+         \${shlibs:Depends},"
         if [ $(lsb_release -cs) = "karmic" ]; then
             XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
          devicekit-disks,

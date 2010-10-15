@@ -74,6 +74,8 @@ private:
   bool             CanSupport(const CURL& url);
   void             Disconnect();
 
+  void             SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *season, int *epsiode);
+
   IEventListener*  m_listener;
   cmyth_conn_t     m_control;
   cmyth_conn_t     m_event;

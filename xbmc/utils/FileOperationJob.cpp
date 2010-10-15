@@ -67,14 +67,11 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const CStdString& strFi
 {
   int64_t time = 1;
 
-  if (action == ActionCopy || (action == ActionMove && !CanBeRenamed(strFileA, strFileB)))
+  if (action == ActionCopy || action == ActionReplace || (action == ActionMove && !CanBeRenamed(strFileA, strFileB)))
   {
-    CFile file;
-    if (file.Open(strFileA))
-    {
-      time += file.GetLength();
-      file.Close();
-    }
+    struct __stat64 data;
+    if(CFile::Stat(strFileA, &data) == 0)
+      time += data.st_size;
   }
 
   fileOperations.push_back(CFileOperation(action, strFileA, strFileB, time));
@@ -97,7 +94,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items, "", false);
+  CDirectory::GetDirectory(strPath, items, "", false, false, DIR_CACHE_ONCE, true, false, true);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -149,10 +146,16 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       if (pItem->m_bIsFolder)
       {
+        // in ActionReplace mode all subdirectories will be removed by the below
+        // DoProcessFolder(ActionDelete) call as well, so ActionCopy is enough when
+        // processing those
+        FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
         // create folder on dest. drive
         if (action != ActionDelete)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
-        if (!DoProcessFolder(action, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
+        if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
+          DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
+        if (!DoProcessFolder(subdirAction, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
           return false;
         if (action == ActionDelete)
           DoProcessFile(ActionDeleteFolder, pItem->m_strPath, "", fileOperations, totalTime);
@@ -184,6 +187,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   switch (m_action)
   {
     case ActionCopy:
+    case ActionReplace:
       base->m_currentOperation = g_localizeStrings.Get(115);
       break;
     case ActionMove:
@@ -209,6 +213,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   switch (m_action)
   {
     case ActionCopy:
+    case ActionReplace:
     {
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
 

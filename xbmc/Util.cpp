@@ -254,6 +254,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // VDR Streamdev client
   else if (url.GetProtocol() == "vtp")
     strFilename = g_localizeStrings.Get(20257);
+  
+  // MythTV client
+  else if (url.GetProtocol() == "myth")
+    strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
@@ -1318,7 +1322,7 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
     char temp[1024];
     int pos=0;
     int read=1;
-    while (read > 0 && pos < file.GetLength())
+    while (read > 0)
     {
       read = file.Read(temp,1024);
       pos += read;

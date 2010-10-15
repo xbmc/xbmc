@@ -30,10 +30,10 @@ class CPullupCorrection
   public:
     CPullupCorrection();
     void   Add(double pts);
-    double Correction() {return m_ptscorrection;}
     void   Flush(); //flush the saved pattern and the ringbuffer
 
-    int    GetPatternLength() {return m_patternlength;}
+    double GetCorrection()    { return m_ptscorrection; }
+    int    GetPatternLength() { return m_patternlength; }
     double GetFrameDuration() { return m_frameduration; }
 
   private:
@@ -41,7 +41,6 @@ class CPullupCorrection
     double m_diffring[DIFFRINGSIZE]; //ringbuffer of differences between pts'
     int    m_ringpos;                //position of last diff added to ringbuffer
     int    m_ringfill;               //how many diffs we have in the ringbuffer
-    int    m_leadin;                 //how many timestamps we ignored
     double GetDiff(int diffnr);      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern
@@ -61,10 +60,9 @@ class CPullupCorrection
     std::vector<double> m_pattern; //the last saved pattern
     int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_ptscorrection;        //the correction needed for the last added pts
-    double m_trackingpts;          //the pts value we want to have
-    double m_frameduration;
+    double m_trackingpts;          //tracked pts for smoothing the timestamps
+    double m_frameduration;        //frameduration exposed to dvdplayer, used for calculating the fps
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
-    int    m_dropped;              //nr of dropped diffs
-    CStdString GetPatternStr();   //also for the log
+    CStdString GetPatternStr();    //also for the log
 };

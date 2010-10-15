@@ -764,6 +764,10 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (m_framerate_tracking)
             DoFrameRateTracking((double)m_timestamp / 1000.0);
 
+          // do not let FreeList to get greater than 10
+          if (m_FreeList.Count() > 10)
+            delete m_FreeList.Pop();
+
           // Get next output buffer from the free list
           pBuffer = m_FreeList.Pop();
           if (!pBuffer)
@@ -778,7 +782,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
 #endif
-            //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
+            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
+            while (!m_bStop && m_ReadyList.Count() > 10)
+              Sleep(1);
           }
 
           pBuffer->m_width = m_width;
@@ -1459,26 +1465,29 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
     if (free_demuxer_content)
       free(demuxer_content);
 
-    if (m_reset)
+    if (!m_has_bcm70015)
     {
-      m_reset--;
-      if (!m_skip_state)
+      if (m_reset)
       {
-        m_skip_state = true;
-        m_dll->DtsSetSkipPictureMode(m_device, 1);
+        m_reset--;
+        if (!m_skip_state)
+        {
+          m_skip_state = true;
+          m_dll->DtsSetSkipPictureMode(m_device, 1);
+        }
       }
-    }
-    else
-    {
-      if (m_skip_state)
+      else
       {
-        m_skip_state = false;
-        m_dll->DtsSetSkipPictureMode(m_device, 0);
+        if (m_skip_state)
+        {
+          m_skip_state = false;
+          m_dll->DtsSetSkipPictureMode(m_device, 0);
+        }
       }
     }
 
     bool wait_state;
-    if (!m_pOutputThread->GetReadyCount())
+    if (m_pOutputThread->GetReadyCount() < 2)
       wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
@@ -1582,17 +1591,39 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
-  if (!m_has_bcm70015)
+  if (m_drop_state != bDrop)
   {
-    if (m_drop_state != bDrop)
-      m_drop_state = bDrop;
+    m_drop_state = bDrop;
+    
+    if (!m_has_bcm70015)
+    {
+      if (!m_reset)
+      {
+        if (m_drop_state)
+        {
+          if (!m_skip_state)
+          {
+            m_skip_state = true;
+            m_dll->DtsSetSkipPictureMode(m_device, 1);
+            Sleep(1);
+          }
+        }
+        else
+        {
+          if (m_skip_state)
+          {
+            m_skip_state = false;
+            m_dll->DtsSetSkipPictureMode(m_device, 0);
+            Sleep(1);
+          }
+        }
+      }
+    }
   }
-
-/*
-  if (m_drop_state)
-    CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
-      m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
-*/
+  /*
+  CLog::Log(LOGDEBUG, "%s: m_drop_state(%d), GetFreeCount(%d), GetReadyCount(%d)", __MODULE_NAME__, 
+      m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount());
+  */
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)

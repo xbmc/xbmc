@@ -15,6 +15,7 @@
 			</control>
 			<control type="wraplist" id="501">
 				<visible>Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)] | Window.IsVisible(VideoFiles)</visible>
+				<visible>!Container.Content(LiveTV)</visible>
 				<posx>-123</posx>
 				<posy>0</posy>
 				<width>1526</width>

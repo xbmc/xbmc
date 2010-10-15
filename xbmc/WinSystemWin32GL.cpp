@@ -27,7 +27,8 @@
  */
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
-#include "SystemGlobals.h"
+#include "GUISettings.h"
+#include "guilib/gui3d.h"
 
 #ifdef HAS_GL
 #include <GL/glew.h>
@@ -35,9 +36,6 @@
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
 #pragma comment (lib,"glew32.lib")
-
-
-CWinSystemWin32GL& g_Windowing = g_SystemGlobals.m_Windowing;
 
 
 CWinSystemWin32GL::CWinSystemWin32GL()

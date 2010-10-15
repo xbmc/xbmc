@@ -25,6 +25,7 @@
 #include "log.h"
 #include "AdvancedSettings.h"
 #include "utils/TimeUtils.h"
+#include <Ws2tcpip.h>
 
 #define IRSS_PORT 24000
 
@@ -101,26 +102,50 @@ void CRemoteControl::Process()
 
 bool CRemoteControl::Connect()
 {
-  m_socket = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if (m_socket == INVALID_SOCKET)
+  char     namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
+  struct   addrinfo hints = {};
+  struct   addrinfo *result, *addr;
+  char     service[33];
+  int      res;
+
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+  sprintf(service, "%d", IRSS_PORT);
+
+  res = getaddrinfo("localhost", service, &hints, &result);
+  if(res)
   {
-    return false; //Couldn't create the socket
-  }  
-  // Get the local host information
-  hostent* localHost = gethostbyname("");
-  char* localIP = inet_ntoa (*(struct in_addr *)*localHost->h_addr_list);
+    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
+    return false;
+  }
 
-  SOCKADDR_IN target;
-  memset(&target, 0, sizeof(SOCKADDR_IN));
-
-  target.sin_family = AF_INET;
-  target.sin_addr.s_addr = inet_addr(localIP);
-  target.sin_port = htons (IRSS_PORT);
-
-  if (connect(m_socket, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR)
+  for(addr = result; addr; addr = addr->ai_next)
   {
+    if(getnameinfo(addr->ai_addr, addr->ai_addrlen, namebuf, sizeof(namebuf), portbuf, sizeof(portbuf),NI_NUMERICHOST))
+    {
+      strcpy(namebuf, "[unknown]");
+      strcpy(portbuf, "[unknown]");
+	}
+    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
+
+    m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+    if(m_socket == INVALID_SOCKET)
+      continue;
+
+    if(connect(m_socket, addr->ai_addr, addr->ai_addrlen) != SOCKET_ERROR)
+      break;
+
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
+  }
+
+  freeaddrinfo(result);
+  if(m_socket == INVALID_SOCKET)
+  {
+    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
     Close();
-    return false; //Couldn't connect, irss not available
+    return false;
   }
 
   u_long iMode = 1; //non-blocking

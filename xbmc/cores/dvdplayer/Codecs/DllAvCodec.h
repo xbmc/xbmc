@@ -159,7 +159,11 @@ public:
   static CCriticalSection m_critSection;
 
   virtual ~DllAvCodec() {}
-  virtual void avcodec_register_all() { ::avcodec_register_all(); }
+  virtual void avcodec_register_all()
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    ::avcodec_register_all();
+  }
   virtual void avcodec_flush_buffers(AVCodecContext *avctx) { ::avcodec_flush_buffers(avctx); }
   virtual int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
   {

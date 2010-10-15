@@ -82,8 +82,6 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
-CGUIInfoManager g_infoManager;
-
 CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
   this->m_info = mSrc.m_info;

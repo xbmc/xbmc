@@ -20,6 +20,7 @@
 
 #include "FileISO.h"
 #include "URL.h"
+#include "iso9660.h"
 
 #include <sys/stat.h>
 

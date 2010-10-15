@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Josue Jeriel Camargo Cruz-->
 <!--Email: josue.camargo@gmail.com-->
-<language locale="spanish-mexican">
+<language locale="es">
   <charsets>
     <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -12,7 +12,7 @@
     <subtitle>es</subtitle>
   </dvd>
   <regions>
-    <region name="Mexico" locale="Mexico">
+    <region name="Mexico" locale="MX">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D de MMMM de YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>

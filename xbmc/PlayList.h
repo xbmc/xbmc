@@ -42,6 +42,7 @@ public:
   // for Party Mode
   void Insert(CPlayList& playlist, int iPosition = -1);
   void Insert(CFileItemList& items, int iPosition = -1);
+  void Insert(const CFileItemPtr& item, int iPosition = -1);
 
   int FindOrder(int iOrder) const;
   const CStdString& GetName() const;

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language locale="Swedish">
+<language locale="sv">
   <charsets>
     <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region name="Sweden" locale="Sweden">
+    <region name="Sweden" locale="SE">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>'den 'D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

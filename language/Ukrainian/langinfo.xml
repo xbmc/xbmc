@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="Ukrainian">
+<language locale="uk">
   <charsets>
     <gui unicodefont="true">CP1251</gui>
     <subtitle>CP1251</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>uk</subtitle>
   </dvd>
   <regions>
-    <region>
+    <region locale="UA">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY 'р.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

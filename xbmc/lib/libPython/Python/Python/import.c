@@ -11,6 +11,9 @@
 #include "eval.h"
 #include "osdefs.h"
 #include "importdl.h"
+#ifdef MS_WINDOWS
+  #include <direct.h>
+#endif
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -660,6 +663,8 @@ PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
    for the compiled file, or NULL if there's no space in the buffer.
    Doesn't set an exception. */
 
+#define XBMC_HOME_PATH "special://home/"
+#define XBMC_ROOT_PATH "special://xbmc/"
 static char *
 make_compiled_pathname(char *pathname, char *buf, size_t buflen)
 {
@@ -677,6 +682,13 @@ make_compiled_pathname(char *pathname, char *buf, size_t buflen)
 	buf[len] = Py_OptimizeFlag ? 'o' : 'c';
 	buf[len+1] = '\0';
 
+#ifdef MS_WINDOWS
+  /* XBMC hack:
+     We don't have write access on the XBMC_ROOT path. Redirects everything
+     to XBMC_HOME. */
+  if (strncmp(pathname, XBMC_ROOT_PATH, strlen(XBMC_ROOT_PATH)) == 0)
+    memcpy(buf + 10, "home", 4);
+#endif
 	return buf;
 }
 
@@ -798,6 +810,36 @@ open_exclusive(char *filename)
 	   writable, the file will never be written.  Oh well.
 	*/
 	int fd;
+
+#ifdef MS_WINDOWS
+  /* Since we're redirecting everything from XBMC_ROOT to
+    XBMC_HOME, there's a chance that the directory does not
+    exist. In this case, we need to create it. */
+  if (strncmp(filename, XBMC_HOME_PATH, strlen(XBMC_HOME_PATH)) == 0)
+  {
+    char *buf = filename + strlen(XBMC_HOME_PATH);
+    char *path = strdup(filename);
+    while (*(buf++))
+    {
+      if ((*buf == '/') || (*buf == '\\'))
+      {
+        memcpy(path, filename, buf - filename);
+        path[buf - filename] = '\0';
+        if (access(path, 0) == -1)
+        {
+          if (mkdir(path) != 0)
+          {
+            free(path);
+            return NULL;
+          }
+        }
+      }
+    }
+    free(path);
+  }
+#endif
+
+
 	(void) unlink(filename);
 	fd = open(filename, O_EXCL|O_CREAT|O_WRONLY|O_TRUNC
 #ifdef O_BINARY

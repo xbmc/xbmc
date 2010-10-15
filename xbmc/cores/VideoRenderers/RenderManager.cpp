@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "SystemGlobals.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -48,8 +47,6 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
-
-CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
 #define MAXPRESENTDELAY 0.500
 
@@ -184,7 +181,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if (!ismaster)
   {
     //integral correction, clamp to -0.5:0.5 range
-    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.5), -0.5);
+    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
     g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
   }
   else
@@ -570,9 +567,9 @@ void CXBMCRenderManager::Recover()
 
 void CXBMCRenderManager::UpdateResolution()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
   if (m_bReconfigured)
   {
+    CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
       RESOLUTION res = GetResolution();

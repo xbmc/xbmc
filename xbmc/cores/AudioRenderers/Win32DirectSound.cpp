@@ -25,6 +25,7 @@
 #include <initguid.h>
 #include <Mmreg.h>
 #include "SingleLock.h"
+#include "SystemInfo.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "CharsetConverter.h"
@@ -166,8 +167,10 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
-                  | DSBCAPS_CTRLVOLUME          /** volume control enabled */
-                  | DSBCAPS_LOCHARDWARE;         /** Needed for 5.1 on emu101k  */
+                  | DSBCAPS_CTRLVOLUME;         /** volume control enabled */
+
+  if (!g_sysinfo.IsVistaOrHigher())
+    dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;     /** Needed for 5.1 on emu101k, always fails on Vista, by design  */
 
   dsbdesc.dwBufferBytes = m_dwBufferLen;
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
@@ -176,7 +179,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   HRESULT res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
   if (res != DS_OK)
   {
-    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) // DSBCAPS_LOCHARDWARE Always fails on Vista, by design
+    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE)
     {
       SAFE_RELEASE(m_pBuffer);
       CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.", dserr2str(res));

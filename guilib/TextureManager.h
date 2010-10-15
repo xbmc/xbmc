@@ -137,5 +137,5 @@ protected:
  \ingroup textures
  \brief
  */
-extern CGUITextureManager& g_TextureManager;
+extern CGUITextureManager g_TextureManager;
 #endif

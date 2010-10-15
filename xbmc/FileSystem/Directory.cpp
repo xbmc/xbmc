@@ -120,7 +120,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = false */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = false */, bool getHidden /* = false */)
 {
   try
   {
@@ -208,8 +208,10 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr item = items[i];
+      // TODO: we shouldn't be checking the gui setting here;
+      // callers should use getHidden instead
       if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
-          (item->GetPropertyBOOL("file:hidden") && !g_guiSettings.GetBool("filelists.showhidden")))
+          (item->GetPropertyBOOL("file:hidden") && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
         i--; // don't confuse loop

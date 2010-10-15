@@ -1,0 +1,307 @@
+<includes>
+	<include name="HomeXBMCLogo">
+		<control type="image">
+			<description>LOGO</description>
+			<posx>10</posx>
+			<posy>10</posy>
+			<width>140</width>
+			<height>40</height>
+			<texture>XBMC_Logo.png</texture>
+		</control>
+		<control type="image">
+			<description>LOGO Mirror</description>
+			<posx>10</posx>
+			<posy>42</posy>
+			<width>140</width>
+			<height>40</height>
+			<texture diffuse="diffuse_mirror.png" flipy="true">XBMC_Logo.png</texture>
+		</control>
+	</include>
+	<include name="HomePowerButtons">
+		<control type="image">
+			<posx>0</posx>
+			<posy>100r</posy>
+			<width>256</width>
+			<height>100</height>
+			<texture>HomeButtonsBack.png</texture>
+		</control>
+		<control type="group" id="10">
+			<posx>15</posx>
+			<posy>55r</posy>
+			<control type="button" id="20">
+				<description>Power push button</description>
+				<posx>90</posx>
+				<posy>0</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power-FO.png</texturefocus>
+				<texturenofocus>home-power.png</texturenofocus>
+				<onleft>21</onleft>
+				<onright>9000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+			</control>
+			<control type="button" id="21">
+				<description>Favourites push button</description>
+				<posx>45</posx>
+				<posy>0</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>1036</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(Favourites)</onclick>
+				<texturefocus>home-favourites-FO.png</texturefocus>
+				<texturenofocus>home-favourites.png</texturenofocus>
+				<onleft>22</onleft>
+				<onright>20</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+			</control>
+			<control type="button" id="22">
+				<description>Play Disc Media push button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>16004</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(1113)</onclick>
+				<texturefocus>home-playmedia-FO.png</texturefocus>
+				<texturenofocus>home-playmedia.png</texturenofocus>
+				<onleft>9000</onleft>
+				<onright>21</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+			</control>
+		</control>
+	</include>
+	<include name="HomeSubMenuVideos">
+		<control type="button" id="90101">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>342</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieTitles,return)</onclick>
+			<visible>Library.HasContent(Movies)</visible>
+		</control>
+		<control type="button" id="90102">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>20343</label>
+			<onclick>ActivateWindow(VideoLibrary,TvShowTitles,return)</onclick>
+			<visible>Library.HasContent(TVShows)</visible>
+		</control>
+		<control type="button" id="90103">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>20389</label>
+			<onclick>ActivateWindow(VideoLibrary,MusicVideoTitles,return)</onclick>
+			<visible>Library.HasContent(MusicVideos)</visible>
+		</control>
+		<control type="button" id="90104">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>744</label>
+			<onclick>ActivateWindow(VideoFiles)</onclick>
+		</control>
+		<control type="button" id="90105">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>14022</label>
+			<onclick>ActivateWindow(VideoLibrary)</onclick>
+			<visible>Library.HasContent(Videos)</visible>
+		</control>
+		<control type="button" id="90106">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>24001</label>
+			<onclick>ActivateWindow(VideoLibrary,Addons,return)</onclick>
+			<visible>Library.HasContent(Video)</visible>
+		</control>
+		<control type="button" id="90107">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>24001</label>
+			<onclick>ActivateWindow(VideoFiles,Addons,return)</onclick>
+			<visible>!Library.HasContent(Video)</visible>
+		</control>
+	</include>
+	<include name="HomeSubMenuMusic">
+		<control type="button" id="90111">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>133</label>
+			<onclick>ActivateWindow(MusicLibrary,Artists,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</control>
+		<control type="button" id="90112">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>132</label>
+			<onclick>ActivateWindow(MusicLibrary,Albums,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</control>
+		<control type="button" id="90113">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>134</label>
+			<onclick>ActivateWindow(MusicLibrary,Songs,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</control>
+		<control type="button" id="90114">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>744</label>
+			<onclick>ActivateWindow(MusicFiles)</onclick>
+		</control>
+		<control type="button" id="90115">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>14022</label>
+			<onclick>ActivateWindow(MusicLibrary)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</control>
+		<control type="button" id="90116">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>24001</label>
+			<onclick>ActivateWindow(MusicLibrary,Addons,return)</onclick>
+			<visible>Library.HasContent(Music)</visible>
+		</control>
+		<control type="button" id="90117">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>24001</label>
+			<onclick>ActivateWindow(MusicFiles,Addons,return)</onclick>
+			<visible>!Library.HasContent(Music)</visible>
+		</control>
+	</include>
+	<include name="HomeSubMenuSystem">
+		<control type="button" id="90141">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>5</label>
+			<onclick>ActivateWindow(Settings)</onclick>
+		</control>
+		<control type="button" id="90142">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>7</label>
+			<onclick>ActivateWindow(FileManager)</onclick>
+		</control>
+		<control type="button" id="90143">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>13200</label>
+			<onclick>ActivateWindow(Profiles)</onclick>
+		</control>
+		<control type="button" id="90144">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>130</label>
+			<onclick>ActivateWindow(SystemInfo)</onclick>
+		</control>
+		<control type="button" id="90145">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>Credits</label>
+			<onclick>ActivateWindow(Credits)</onclick>
+			<visible>False</visible>
+		</control>
+	</include>
+	<include name="HomeSubMenuPrograms">
+		<control type="button" id="90151">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton1_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton1_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))</visible>
+		</control>
+		<control type="button" id="90152">
+			<description>Button2</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton2_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton2_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))</visible>
+		</control>
+		<control type="button" id="90153">
+			<description>Button3</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton3_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton3_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))</visible>
+		</control>
+		<control type="button" id="90154">
+			<description>Button4</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton4_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton4_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))</visible>
+		</control>
+		<control type="button" id="90155">
+			<description>Button5</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton5_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton5_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))</visible>
+		</control>
+		<control type="button" id="90156">
+			<description>Button6</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[Skin.String(HomeScriptButton6_label)]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton6_Path)])</onclick>
+			<visible>Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))</visible>
+		</control>
+	</include>
+	<include name="HomeSubMenuMovies">
+		<control type="button" id="90161">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>369</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieTitles,return)</onclick>
+		</control>
+		<control type="button" id="90162">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>135</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieGenres,return)</onclick>
+		</control>
+		<control type="button" id="90163">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>652</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieYears,return)</onclick>
+		</control>
+		<control type="button" id="90164">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>344</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieActors,return)</onclick>
+		</control>
+		<control type="button" id="90165">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>20348</label>
+			<onclick>ActivateWindow(VideoLibrary,MovieDirectors,return)</onclick>
+		</control>
+		<control type="button" id="90166">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31328</label>
+			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedMovies,return)</onclick>
+		</control>
+	</include>
+	<include name="HomeSubMenuTVShows">
+		<control type="button" id="90171">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>369</label>
+			<onclick>ActivateWindow(VideoLibrary,TVShowTitles,return)</onclick>
+		</control>
+		<control type="button" id="90172">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>135</label>
+			<onclick>ActivateWindow(VideoLibrary,TVShowGenres,return)</onclick>
+		</control>
+		<control type="button" id="90173">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>652</label>
+			<onclick>ActivateWindow(VideoLibrary,TVShowYears,return)</onclick>
+		</control>
+		<control type="button" id="90174">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>344</label>
+			<onclick>ActivateWindow(VideoLibrary,TVShowActors,return)</onclick>
+		</control>
+		<control type="button" id="90175">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31328</label>
+			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedEpisodes,return)</onclick>
+		</control>
+	</include>
+</includes>

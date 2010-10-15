@@ -105,6 +105,25 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
+JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
+  const Value param = ForceObject(parameterObject);
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CFileItemList items;
+  if (musicdatabase.GetGenresNav("", items))
+    HandleFileItemList("genreid", true, "genres", items, param, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
 JSON_STATUS CAudioLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");

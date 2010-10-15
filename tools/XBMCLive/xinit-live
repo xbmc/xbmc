@@ -13,7 +13,7 @@ if grep "boot=live" /proc/cmdline ; then
 	BOOTMEDIAMOUNTPOINT="/live/image"
 fi
 
-BOOTHOOKSDIRECTORY="/etc/xbmc"
+BOOTHOOKSDIRECTORY="/usr/lib/xbmc"
 
 xbmcUser=xbmc
 # Read configuration variable file if it is present

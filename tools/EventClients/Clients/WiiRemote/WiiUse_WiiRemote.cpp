@@ -182,9 +182,9 @@ float smoothDeg(float oldVal, float newVal)
   return(newVal);
 }
 
-long getTicks(void)
+int32_t getTicks(void)
 {
-  long ticks;
+  int32_t ticks;
   struct timeval now;
   gettimeofday(&now, NULL);
   ticks = now.tv_sec * 1000l;
@@ -194,7 +194,7 @@ long getTicks(void)
 
 int main(int argc, char** argv) 
 {
-  long timeout = 0;
+  int32_t timeout = 0;
   bool connected = 0;
   wiimote** wiimotes;
   wiimotes =  wiiuse_init(MAX_WIIMOTES);

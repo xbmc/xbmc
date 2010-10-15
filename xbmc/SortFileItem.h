@@ -45,6 +45,7 @@ struct SSortFileItem
   static void ByFile(CFileItemPtr &item);
   static void ByFullPath(CFileItemPtr &item);
   static void ByDate(CFileItemPtr &item);
+  static void ByDateAdded(CFileItemPtr &item);
   static void BySize(CFileItemPtr &item);
   static void ByDriveType(CFileItemPtr &item);
   static void BySongTitle(CFileItemPtr &item);
@@ -98,6 +99,7 @@ typedef enum {
   SORT_METHOD_COUNTRY,
   SORT_METHOD_YEAR,
   SORT_METHOD_VIDEO_RATING,
+  SORT_METHOD_DATEADDED,
   SORT_METHOD_PROGRAM_COUNT,
   SORT_METHOD_PLAYLIST_ORDER,
   SORT_METHOD_EPISODE,

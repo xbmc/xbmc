@@ -516,7 +516,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
 void CGUIWindowPictures::OnInfo(int itemNumber)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
+  if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
     return;
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)

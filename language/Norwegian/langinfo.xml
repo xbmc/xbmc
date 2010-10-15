@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="Norwegian">
+<language locale="no">
   <charsets>
     <gui unicodefont="false">CP1252</gui>
     <subtitle>CP1252</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>no</subtitle>
   </dvd>
   <regions>
-    <region>
+    <region locale="NO">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

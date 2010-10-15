@@ -510,9 +510,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\FLACcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\GYMCodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ModplugCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -913,9 +910,6 @@
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderFlac.cpp">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderGYM.cpp">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderMidi.cpp">
@@ -2334,6 +2328,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp">
       <Filter>cores\dsplayer\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\SystemGlobals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2708,9 +2705,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -2745,9 +2739,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\GYMCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h">
@@ -3093,9 +3084,6 @@
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderDatabase.h">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderGYM.h">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMidi.h">
@@ -4738,9 +4726,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h">
       <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\SystemGlobals.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h">
       <Filter>libraries\cdrip</Filter>

@@ -751,6 +751,14 @@ namespace VIDEO
       if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
         continue;
 
+      /*
+       * Check if the media source has already set the season and episode or original air date in
+       * the VideoInfoTag. If it has, do not try to parse any of them from the file path to avoid
+       * any false positive matches.
+       */
+      if (ProcessItemByVideoInfoTag(items[i], episodeList))
+        continue;
+
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
@@ -770,6 +778,88 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", items[i]->m_strPath.c_str());
 
     }
+  }
+
+  bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODES &episodeList)
+  {
+    if (!item->HasVideoInfoTag())
+      return false;
+
+    CVideoInfoTag* tag = item->GetVideoInfoTag();
+    /*
+     * First check the season and episode number. This takes precedence over the original air
+     * date and episode title.
+     */
+    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.iSeason = tag->m_iSeason;
+      episode.iEpisode = tag->m_iEpisode;
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
+                episode.strPath.c_str(), episode.iSeason, episode.iEpisode);
+      return true;
+    }
+
+    /*
+     * Next preference is the first aired date. If it exists use that for matching the TV Show
+     * information. Also set the title in case there are multiple matches for the first aired date.
+     */
+    if (!tag->m_strFirstAired.IsEmpty())
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.strTitle = tag->m_strTitle;
+      /*
+       * Set season and episode to -1 to indicate to use the aired date.
+       */
+      episode.iSeason = -1;
+      episode.iEpisode = -1;
+      /*
+       * The first aired date string must be parseable.
+       */
+      episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
+                __FUNCTION__, episode.strPath.c_str(), tag->m_strFirstAired.c_str(),
+                episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
+      return true;
+    }
+
+    /*
+     * Next preference is the episode title. If it exists use that for matching the TV Show
+     * information.
+     */
+    if (!tag->m_strTitle.IsEmpty())
+    {
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.strTitle = tag->m_strTitle;
+      /*
+       * Set season and episode to -1 to indicate to use the title.
+       */
+      episode.iSeason = -1;
+      episode.iEpisode = -1;
+      episodeList.push_back(episode);
+      CLog::Log(LOGDEBUG,"%s - found match for: '%s', title: '%s'", __FUNCTION__,
+                episode.strPath.c_str(), episode.strTitle.c_str());
+      return true;
+    }
+
+    /*
+     * There is no further episode information available if both the season and episode number have
+     * been set to 0. Return the match as true so no further matching is attempted, but don't add it
+     * to the episode list.
+     */
+    if (tag->m_iSeason == 0 && tag->m_iEpisode == 0)
+    {
+      CLog::Log(LOGDEBUG,"%s - found exclusion match for: %s. Both Season and Episode are 0. Item will be ignored for scanning.",
+                __FUNCTION__, item->m_strPath.c_str());
+      return true;
+    }
+
+    return false;
   }
 
   bool CVideoInfoScanner::ProcessItemNormal(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)
@@ -1152,18 +1242,66 @@ namespace VIDEO
       key.second = file->iEpisode;
       bool bFound = false;
       IMDB_EPISODELIST::iterator guide = episodes.begin();;
+      IMDB_EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
       {
-        if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
-        {
-          bFound = true;
-          break;
-        }
         if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==guide->key))
         {
           bFound = true;
           break;
+        }
+        if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
+        {
+          matches.push_back(*guide);
+          continue;
+        }
+        if (!guide->cScraperUrl.strTitle.IsEmpty() && guide->cScraperUrl.strTitle.CompareNoCase(file->strTitle) == 0)
+        {
+          bFound = true;
+          break;
+        }
+      }
+
+      if (!bFound)
+      {
+        /*
+         * If there is only one match or there are matches but no title to compare with to help
+         * identify the best match, then pick the first match as the best possible candidate.
+         *
+         * Otherwise, use the title to further refine the best match.
+         */
+        if (matches.size() == 1 || (file->strTitle.IsEmpty() && matches.size() > 1))
+        {
+          guide = matches.begin();
+          bFound = true;
+        }
+        else if (!file->strTitle.IsEmpty())
+        {
+          double minscore = 0; // Default minimum score is 0 to find whatever is the best match.
+
+          IMDB_EPISODELIST *candidates;
+          if (matches.empty()) // No matches found using earlier criteria. Use fuzzy match on titles across all episodes.
+          {
+            minscore = 0.8; // 80% should ensure a good match.
+            candidates = &episodes;
+          }
+          else // Multiple matches found. Use fuzzy match on the title with already matched episodes to pick the best.
+            candidates = &matches;
+
+          CStdStringArray titles;
+          for (guide = candidates->begin(); guide != candidates->end(); ++guide)
+            titles.push_back(guide->cScraperUrl.strTitle.ToLower());
+
+          double matchscore;
+          int index = StringUtils::FindBestMatch(file->strTitle.ToLower(), titles, matchscore);
+          if (matchscore >= minscore)
+          {
+            guide = candidates->begin() + index;
+            bFound = true;
+            CLog::Log(LOGDEBUG,"%s fuzzy title match for show: '%s', title: '%s', match: '%s', score: %f >= %f",
+                      __FUNCTION__, strShowTitle.c_str(), file->strTitle.c_str(), titles[index].c_str(), matchscore, minscore);
+          }
         }
       }
 
@@ -1185,6 +1323,12 @@ namespace VIDEO
         if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
+                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
+                  file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
@@ -1266,7 +1410,7 @@ namespace VIDEO
         }
       }
 
-      if (!nfoFile.IsEmpty() && item->IsDiskFile())
+      if (!nfoFile.IsEmpty() && item->IsOpticalMediaFile())
       {
         CStdString parent(CUtil::GetParentPath(item->m_strPath));
         CStdString parentFolder(parent);
@@ -1280,7 +1424,7 @@ namespace VIDEO
       }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
-    if (item->m_bIsFolder || item->IsDVDFile(false, true) || (bGrabAny && nfoFile.IsEmpty()))
+    if (item->m_bIsFolder || item->IsOpticalMediaFile() || (bGrabAny && nfoFile.IsEmpty()))
     {
       // see if there is a unique nfo file in this folder, and if so, use that
       CFileItemList items;

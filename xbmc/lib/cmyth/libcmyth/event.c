@@ -101,7 +101,7 @@ cmyth_event_get(cmyth_conn_t conn, char * data, int len)
 			count -= consumed;
 		}
 	} else {
-		cmyth_dbg(CMYTH_DBG_DETAIL,
+		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: unknown mythtv BACKEND_MESSAGE '%s'\n", __FUNCTION__, tmp);
 		event = CMYTH_EVENT_UNKNOWN;
 	}

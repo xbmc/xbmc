@@ -299,9 +299,9 @@ void CHTMLUtil::ConvertHTMLToW(const CStdStringW& strHTML, CStdStringW& strStrip
     num = strStripped.Mid(i,iPos-i);
     wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);
     if (base == 10)
-      num.Format(L"&#%s;",num.c_str());
+      num.Format(L"&#%ls;",num.c_str());
     else
-      num.Format(L"&#x%s;",num.c_str());
+      num.Format(L"&#x%ls;",num.c_str());
 
     strStripped.Replace(num,CStdStringW(1,val));
     iPos = strStripped.Find(L"&#", iStart);

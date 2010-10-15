@@ -147,12 +147,21 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   result["start"] = start;
   result["end"]   = end;
   result["total"] = size;
+ 
+  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
+  Json::Value validFields = Value(arrayValue);
+
+  for (unsigned int i = 0; i < fields.size(); i++)
+  {
+    if (fields[i].isString())
+      validFields.append(fields[i]);
+  }
 
   for (int i = start; i < end; i++)
   {
     Value object;
     CFileItemPtr item = items.Get(i);
-
+    
     if (allowFile)
     {
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
@@ -163,7 +172,7 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
     if (!object.isMember("file"))
       object["file"] = item->m_strPath.c_str();
     }
-
+    
     if (id)
     {
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
@@ -171,20 +180,14 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[id] = item->GetVideoInfoTag()->m_iDbId;
     }
-
+    
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
-    if (!item->GetCachedFanart().IsEmpty())
-      object["fanart"] = item->GetCachedFanart().c_str();
 
-    const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
-
-    for (unsigned int i = 0; i < fields.size(); i++)
+    for (unsigned int i = 0; i < validFields.size(); i++)
     {
-      if (!fields[i].isString())
-        continue;
-
-      CStdString field = fields[i].asString();
+      
+      CStdString field = validFields[i].asString();
 
       if (item->HasVideoInfoTag())
         FillVideoDetails(item->GetVideoInfoTag(), field, object);
@@ -197,8 +200,15 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
         else
           object[field] = item->GetProperty(field);
       }
-    }
 
+      if (field == "fanart") 
+      {
+        CStdString cachedFanArt = item->GetCachedFanart();
+        if (!cachedFanArt.IsEmpty())
+          object["fanart"] = cachedFanArt.c_str();
+      }
+    }
+    
     object["label"] = item->GetLabel().c_str();
 
     if (resultname)

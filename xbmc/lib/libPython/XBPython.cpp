@@ -49,8 +49,6 @@
 #include "utils/SingleLock.h"
 #include "utils/TimeUtils.h"
 
-XBPython g_pythonParser;
-
 #ifndef _LINUX
 #define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
 #else
@@ -390,7 +388,13 @@ void XBPython::Initialize()
 #endif /* USE_EXTERNAL_PYTHON */
 
       Py_Initialize();
-      PyEval_InitThreads();
+      // If this is not the first time we initialize Python, the interpreter
+      // lock already exists and we need to lock it as PyEval_InitThreads
+      // would not do that in that case.
+      if (PyEval_ThreadsInitialized())
+        PyEval_AcquireLock();
+      else
+        PyEval_InitThreads();
 
       char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);

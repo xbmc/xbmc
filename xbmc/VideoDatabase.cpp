@@ -415,7 +415,8 @@ bool CVideoDatabase::GetPaths(set<CStdString> &paths)
     if (!m_pDS->query("select strPath,noUpdate from path"
                        " where idPath in (select idPath from files join movie on movie.idFile=files.idFile)"
                        " and idPath NOT in (select idPath from tvshowlinkpath)"
-                       " and idPath NOT in (select idPath from files where strFileName like 'video_ts.ifo')" // dvdfolders get stacked to a single item in parent folder
+                       " and idPath NOT in (select idPath from files where strFileName like 'video_ts.ifo')" // dvd folders get stacked to a single item in parent folder
+                       " and idPath NOT in (select idPath from files where strFileName like 'index.bdmv')" // bluray folders get stacked to a single item in parent folder
                        " and strPath NOT like 'multipath://%%'"
                        " and strContent NOT in ('movies', 'tvshows', 'None')" // these have been added above
                        " order by strPath"))
@@ -3609,7 +3610,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=PrepareSQL("select sets.idSet,sets.strSet,path.strPath,files.playCount from sets join setlinkmovie on sets.idSet=setlinkmovie.idSet join movie on setlinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath");
       strSQL += where;
     }
     else
@@ -3617,8 +3618,8 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       CStdString group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=PrepareSQL("select sets.idSet,sets.strSet,count(1),count(files.playCount) from sets join setlinkmovie on sets.idSet=setlinkmovie.idSet join movie on setlinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile ");
-        group = " group by sets.idSet";
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount) FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ");
+        group = " GROUP BY sets.idSet HAVING c>1";
       }
       strSQL += where;
       strSQL += group;
@@ -4405,7 +4406,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
       if (where.size())
         strSQL += where + PrepareSQL(" and movieview.idMovie NOT in (select idMovie from setlinkmovie)");
       else
-        strSQL += PrepareSQL("where movieview.idMovie NOT in (select idMovie from setlinkmovie)");
+        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
     }
     else
       strSQL += where;
@@ -6643,7 +6644,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         {
           CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
-          if (item.IsDiskFile())
+          if (item.IsOpticalMediaFile())
           {
             nfoFile = CURIUtils::GetParentFolderURI(nfoFile, true);
           }

@@ -486,4 +486,4 @@ private:
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
 };
 
-extern CGUISettings& g_guiSettings;
+extern CGUISettings g_guiSettings;

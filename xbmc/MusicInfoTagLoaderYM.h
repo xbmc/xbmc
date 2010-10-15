@@ -33,7 +33,7 @@ namespace MUSIC_INFO
 
       virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
     private:
-      int m_ym;
+      void* m_ym;
       DllStSound m_dll;
   };
 }

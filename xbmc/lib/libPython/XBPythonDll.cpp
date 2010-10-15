@@ -61,6 +61,7 @@ extern "C"
   FUNCTION(PyRun_SimpleStringFlags)
   FUNCTION(PyRun_SimpleFileExFlags)
   FUNCTION(PyEval_InitThreads)
+  FUNCTION(PyEval_ThreadsInitialized)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)
   FUNCTION(Py_Finalize)
@@ -144,7 +145,9 @@ extern "C"
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
   FUNCTION(PyErr_Clear)
+  FUNCTION(PyErr_ExceptionMatches)
 
+  DATA_OBJECT(PyExc_SystemExit)
   DATA_OBJECT(PyExc_SystemError)
   DATA_OBJECT(PyExc_ValueError)
   DATA_OBJECT(PyExc_Exception)
@@ -177,6 +180,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleStringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFileExFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyEval_ThreadsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_IsInitialized)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Finalize)) &&
@@ -262,7 +266,9 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
 
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemExit)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&

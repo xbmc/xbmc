@@ -270,6 +270,7 @@
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
 				<visible>[Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)] | Window.IsVisible(VideoFiles)</visible>
+				<visible>!Container.Content(LiveTV)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>

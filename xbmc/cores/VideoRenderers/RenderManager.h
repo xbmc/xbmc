@@ -280,4 +280,4 @@ protected:
   OVERLAY::CRenderer m_overlays;
 };
 
-extern CXBMCRenderManager& g_renderManager;
+extern CXBMCRenderManager g_renderManager;

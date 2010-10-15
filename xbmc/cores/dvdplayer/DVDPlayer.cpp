@@ -458,7 +458,7 @@ bool CDVDPlayer::OpenInputStream()
       filenames.push_back(m_item.GetProperty(key));
 
     for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i]);
+      AddSubtitleFile(filenames[i], i == 0 ? CDemuxStream::FLAG_DEFAULT : CDemuxStream::FLAG_NONE);
 
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
@@ -1140,8 +1140,27 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
     drop = true;
 
+  /*
+   * If CheckSceneSkip() returns true then demux point is inside an EDL cut and the packets are dropped.
+   * If not inside a hard cut, but the demux point has reached an EDL mute section then trigger the
+   * AUDIO_SILENCE state. The AUDIO_SILENCE state is reverted as soon as the demux point is outside
+   * of any EDL section while EDL mute is still active.
+   */
+  CEdl::Cut cut;
   if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
+  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts), &cut) && cut.action == CEdl::MUTE // Inside EDL mute
+  &&      !m_EdlAutoSkipMarkers.mute) // Mute not already triggered
+  {
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, true));
+    m_EdlAutoSkipMarkers.mute = true;
+  }
+  else if (!m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts), &cut) // Outside of any EDL
+  &&        m_EdlAutoSkipMarkers.mute) // But the mute hasn't been removed yet
+  {
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, false));
+    m_EdlAutoSkipMarkers.mute = false;
+  }
 
   m_dvdPlayerAudio.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 }
@@ -3341,7 +3360,7 @@ int CDVDPlayer::GetSourceBitrate()
 }
 
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags)
 {
   std::string ext = CUtil::GetExtension(filename);
   if(ext == ".idx")
@@ -3350,7 +3369,9 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename)
     if(!v.Open(filename))
       return -1;
     m_SelectionStreams.Update(NULL, &v);
-    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+    int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+    m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+    return index;
   }
   if(ext == ".sub")
   {
@@ -3364,6 +3385,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename)
   s.id       = 0;
   s.filename = filename;
   s.name     = CUtil::GetFileName(filename);
+  s.flags    = flags;
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }

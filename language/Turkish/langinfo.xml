@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="Turkish">
+<language locale="tr">
   <charsets>
     <gui unicodefont="true">CP1254</gui>
     <subtitle>CP1254</subtitle>
@@ -10,7 +10,7 @@
     <subtitle>tr</subtitle>
   </dvd>
   <regions>
-    <region name="Turkiye" locale="turkey">
+    <region name="Turkiye" locale="TR">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

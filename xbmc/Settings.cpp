@@ -65,8 +65,6 @@
 using namespace std;
 using namespace XFILE;
 
-class CSettings g_settings;
-
 CSettings::CSettings(void)
 {
 }

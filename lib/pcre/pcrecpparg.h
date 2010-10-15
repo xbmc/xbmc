@@ -35,11 +35,7 @@
 #include <stdlib.h>    // for NULL
 #include <string>
 
-#ifdef PCRE_STATIC
-#include "pcre.h"
-#else
 #include <pcre.h>
-#endif
 
 namespace pcrecpp {
 

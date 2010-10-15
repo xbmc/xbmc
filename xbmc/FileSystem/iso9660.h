@@ -23,7 +23,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "utils/IoSupport.h"
 #include "system.h" // for win32 types
 
 #ifdef _WIN32

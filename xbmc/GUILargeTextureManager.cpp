@@ -30,11 +30,8 @@
 #include "GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "SystemGlobals.h"
 
 using namespace std;
-
-CGUILargeTextureManager& g_largeTextureManager = g_SystemGlobals.m_largeTextureManager;
 
 
 CImageLoader::CImageLoader(const CStdString &path)
@@ -57,6 +54,8 @@ bool CImageLoader::DoWork()
 
     // cache the image if necessary
     loadPath = CTextureCache::Get().CheckAndCacheImage(loadPath);
+    if (loadPath.IsEmpty())
+      return false;
 
     m_texture = new CTexture();
     DWORD start = CTimeUtils::GetTimeMS();

@@ -148,6 +148,8 @@ CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
 {
   m_pathContent = rhs.m_pathContent;
   m_persistence = rhs.m_persistence;
+  m_requiressettings = rhs.m_requiressettings;
+  m_language = rhs.m_language;
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const

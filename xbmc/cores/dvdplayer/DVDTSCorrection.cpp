@@ -24,8 +24,7 @@
 #include "DVDClock.h"
 #include "utils/log.h"
 
-#define MAXERR    0.01
-#define MINDIFFS 48
+#define MAXERR DVD_MSEC_TO_TIME(2.5)
 
 using namespace std;
 
@@ -36,27 +35,23 @@ CPullupCorrection::CPullupCorrection()
 
 void CPullupCorrection::Flush()
 {
-  m_ringpos = 0;
-  m_ptscorrection = 0.0;
-  m_prevpts = DVD_NOPTS_VALUE;
-  m_patternpos = 0;
-  m_ringfill = 0;
   m_pattern.clear();
-  m_haspattern = false;
+  m_ringpos       = 0;
+  m_ptscorrection = 0.0;
+  m_prevpts       = DVD_NOPTS_VALUE;
+  m_patternpos    = 0;
+  m_ringfill      = 0;
+  m_haspattern    = false;
   m_patternlength = 0;
-  m_leadin = 0;
-  m_trackingpts = DVD_NOPTS_VALUE;
   m_frameduration = DVD_NOPTS_VALUE;
-  m_dropped = 0;
+  m_trackingpts   = DVD_NOPTS_VALUE;
 }
 
 void CPullupCorrection::Add(double pts)
 {
   //can't get a diff with just one pts
-  //also ignore the first 3 timestamps because they often break the pattern
-  if (m_prevpts == DVD_NOPTS_VALUE || m_leadin <= 3)
+  if (m_prevpts == DVD_NOPTS_VALUE)
   {
-    m_leadin++;
     m_prevpts = pts;
     return;
   }
@@ -68,112 +63,81 @@ void CPullupCorrection::Add(double pts)
   //save the pts
   m_prevpts = pts;
 
-  //only search for patterns if we have at least 48 diffs
-  m_ringfill++;
-  if (m_ringfill < MINDIFFS)
+  if (m_ringfill < DIFFRINGSIZE)
+    m_ringfill++;
+
+  //only search for patterns if we have full ringbuffer
+  if (m_ringfill < DIFFRINGSIZE)
     return;
-  else if (m_ringfill > DIFFRINGSIZE)
-    m_ringfill = DIFFRINGSIZE;
 
   //get the current pattern in the ringbuffer
   vector<double> pattern;
   GetPattern(pattern);
 
-  bool setframeduration = true;
-
   //check if the pattern is the same as the saved pattern
   //and if it is actually a pattern
   if (!CheckPattern(pattern))
   {
-    m_frameduration = DVD_NOPTS_VALUE;
-    setframeduration = false;
-
-    //if the ringbuffer is full, a pattern was detected on the previous iteration
-    //and the last added diff breaks the pattern, drop this diff,
-    //future added diffs will usually fit the pattern again
-    if (m_haspattern && m_ringfill == DIFFRINGSIZE && m_dropped < DIFFRINGSIZE)
+    if (m_haspattern)
     {
-      m_dropped++;
-      m_ringfill--;
-      m_ringpos--;
-      if (m_ringpos < 0)
-        m_ringpos = DIFFRINGSIZE - 1;
+      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f", GetDiff(0));
+      Flush();
     }
-    else
-    {
-      m_ptscorrection = 0.0; //no pattern no correction
-      m_pattern = pattern;   //save the current pattern
-      m_patternpos = 0;      //reset the position
-      m_trackingpts = DVD_NOPTS_VALUE;
-      m_dropped = 0;
 
-      if (m_haspattern)
-      {
-        m_haspattern = false;
-        m_patternlength = 0;
-        CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
-      }
-      return;
-    }
+    //no pattern detected or current pattern broke/changed
+    //save detected pattern so we can check it with the next iteration
+    m_pattern = pattern;
+
+    return;
   }
   else
   {
-    if (m_dropped > 0)
-      m_dropped--;
-
     //the saved pattern should have moved 1 diff into the past
     m_patternpos = (m_patternpos + 1) % m_pattern.size();
+
+    //we save the pattern, in case it changes very slowly
+    for (unsigned int i = 0; i < m_pattern.size(); i++)
+      m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
 
     if (!m_haspattern)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
-      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
-                (int)pattern.size(), GetPatternStr().c_str());
+
+      double frameduration = CalcFrameDuration();
+      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",
+                (int)pattern.size(), GetPatternStr().c_str(), frameduration);
     }
   }
 
   //calculate where we are in the pattern
   double ptsinpattern = 0.0;
   for (int i = 0; i < m_patternpos; i++)
-  {
     ptsinpattern += m_pattern[m_pattern.size() - i - 1];
-  }
 
-  double frameduration = CalcFrameDuration();
-  if (setframeduration)
-    m_frameduration = frameduration;
+  m_frameduration = CalcFrameDuration();
 
   //correct the last pts based on where we should be according to the frame duration
-  m_ptscorrection = (frameduration * m_patternpos) - ptsinpattern;
+  m_ptscorrection = (m_frameduration * m_patternpos) - ptsinpattern;
 
-  //the pts when only corrected by the pattern detection
   double corrpts = pts + m_ptscorrection;
-
   if (m_trackingpts != DVD_NOPTS_VALUE)
   {
-    //move the tracking pts one frame forward
-    m_trackingpts += frameduration;
+    //set the tracked pts a frame duration forward
+    m_trackingpts += m_frameduration;
 
-    //reset if we drifted from the pattern corrected pts by too much
-    //dropped diffs can cause this
-    if (fabs(corrpts - m_trackingpts) > frameduration * 2.0)
-    {
-      CLog::Log(LOGDEBUG, "CPullupCorrection: tracked pts differs from actual by %f", m_trackingpts - corrpts);
-      Flush();
-    }
-    else
-    {
-      //set m_ptscorrection so that pts + m_ptscorrection becomes m_trackingpts
-      m_ptscorrection -= corrpts - m_trackingpts;
-
-      //move m_trackingpts slowly towards corrpts
+    //if the tracked pts differs too much from the corrected one,
+    //move the tracked pts slowly towards the corrected one
+    //this allows the timestamps to wobble slightly
+    if (fabs(m_trackingpts - corrpts) > MAXERR)
       m_trackingpts += (corrpts - m_trackingpts) * 0.005;
-    }
+
+    //set m_ptscorrection so that pts + m_ptscorrection = m_trackingpts
+    m_ptscorrection = m_trackingpts - pts;
   }
   else
   {
-    m_trackingpts = pts + m_ptscorrection;
+    m_trackingpts = corrpts;
   }
 }
 
@@ -279,9 +243,8 @@ void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternle
   {
     double avgdiff = 0.0;
     for (int j = 0; j < m_ringfill / patternlength; j++)
-    {
       avgdiff += GetDiff(j * patternlength + i);
-    }
+
     avgdiff /= m_ringfill / patternlength;
     pattern.push_back(avgdiff);
   }
@@ -289,13 +252,7 @@ void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternle
 
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
 {
-  if (fabs(diff1) < MAXERR && fabs(diff2) < MAXERR)
-    return true; //very close to 0.0
-
-  if (diff2 == 0.0)
-    return false; //don't want to divide by 0
-
-  return fabs(1.0 - (diff1 / diff2)) <= MAXERR;
+  return fabs(diff1 - diff2) < MAXERR;
 }
 
 //check if diffs1 is the same as diffs2
@@ -313,8 +270,14 @@ inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdif
 bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 {
   //if no pattern was detected or if the size of the patterns differ we don't have a match
-  if (pattern.size() != m_pattern.size() || pattern.size() < 1 || (pattern.size() == 1 && pattern[0] <= MAXERR))
+  if (pattern.size() != m_pattern.size() || pattern.size() < 1)
     return false;
+
+  if (pattern.size() == 1)
+  {
+    if (pattern[0] < MAXERR)
+      return false; //all diffs are too close to 0, can't use this
+  }
 
   //the saved pattern should have moved 1 diff into the past
   int patternpos = (m_patternpos + 1) % m_pattern.size();
@@ -328,25 +291,42 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
       return false;
   }
 
-  //we save the pattern, in case it changes very slowly
-  for (unsigned int i = 0; i < m_pattern.size(); i++)
-    m_pattern[i] = pattern[(patternpos + i) % pattern.size()];
-
   return true;
 }
 
 //calculate how long each frame should last from the saved pattern
 double CPullupCorrection::CalcFrameDuration()
 {
-  double frameduration = 0.0;
-
-  if (m_haspattern)
+  if (m_pattern.size() > 0)
   {
+    //take the average of all diffs in the pattern
+    double frameduration = 0.0;
     for (unsigned int i = 0; i < m_pattern.size(); i++)
-    {
       frameduration += m_pattern[i];
+
+    frameduration /= m_pattern.size();
+
+    //if the calculated duration is within 20 microseconds of a common duration, use that
+    const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
+                                DVD_TIME_BASE * 1.001 / 30.0, DVD_TIME_BASE / 30.0, DVD_TIME_BASE / 50.0,
+                                DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
+
+    double lowestdiff = DVD_TIME_BASE;
+    int    selected     = -1;
+    for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
+    {
+      double diff = fabs(frameduration - durations[i]);
+      if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
+      {
+        selected = i;
+        lowestdiff = diff;
+      }
     }
-    return frameduration / m_pattern.size();
+
+    if (selected != -1)
+      return durations[selected];
+    else
+      return frameduration;
   }
 
   return DVD_NOPTS_VALUE;
@@ -358,9 +338,9 @@ CStdString CPullupCorrection::GetPatternStr()
   CStdString patternstr;
 
   for (unsigned int i = 0; i < m_pattern.size(); i++)
-  {
     patternstr.AppendFormat("%.2f ", m_pattern[i]);
-  }
+
+  patternstr.Trim();
 
   return patternstr;
 }

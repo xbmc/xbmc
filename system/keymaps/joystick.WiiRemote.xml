@@ -60,6 +60,7 @@
   </Home>
   <MyFiles>
     <joystick name="WiiRemote">
+      <button id="6">ParentDir</button>
       <button id="7">Move</button>
       <button id="9">Copy</button>
       <button id="11">Highlight</button>

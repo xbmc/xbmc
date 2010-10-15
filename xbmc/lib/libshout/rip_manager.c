@@ -656,9 +656,9 @@ rip_manager_start (void (*status_callback)(int message, void *data),
 			     RIP_MANAGER_OPTIONS *rmo)
 {
     int ret = 0;
-    m_started_sem = threadlib_create_sem();
     if (m_ripping)
 	return SR_SUCCESS;		// to prevent reentrenty
+    m_started_sem = threadlib_create_sem();
 
     m_ripping = TRUE;
 

@@ -22,7 +22,6 @@
 #include "Skin.h"
 #include "AddonManager.h"
 #include "GUIWindowManager.h"
-#include "SystemGlobals.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "Key.h"
@@ -30,6 +29,7 @@
 #include "Settings.h"
 #include "utils/log.h"
 #include "XMLUtils.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

@@ -30,6 +30,7 @@
 #include "lib/libPython/XBPython.h"
 #endif
 #include "lib/libscrobbler/scrobbler.h"
+#include "utils/Builtins.h"
 #include "utils/Weather.h"
 #include "utils/Network.h"
 #include "addons/Skin.h"
@@ -131,10 +132,14 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 {
-  // don't allow any built in actions to act here.
+  // don't allow built in actions to act here except shutdown related ones.
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
-    return true;  // pretend we handled it
+  {
+    if (action.GetName().Find("shutdown") != 1)
+      CBuiltins::Execute(action.GetName());
+    return true;
+  }
   return CGUIWindow::OnAction(action);
 }
 

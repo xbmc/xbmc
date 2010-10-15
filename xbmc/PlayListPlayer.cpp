@@ -34,8 +34,6 @@
 
 using namespace PLAYLIST;
 
-CPlayListPlayer g_playlistPlayer;
-
 CPlayListPlayer::CPlayListPlayer(void)
 {
   m_PlaylistMusic = new CPlayList;
@@ -417,14 +415,14 @@ bool CPlayListPlayer::Repeated(int iPlaylist) const
 
 bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ONE);
   return false;
 }
 
 void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
 
   // disable shuffle in party mode
@@ -464,7 +462,7 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist) const
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     return false;
 
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
   {
     return GetPlaylist(iPlaylist).IsShuffled();
   }
@@ -473,7 +471,7 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist) const
 
 void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
 
   // disable repeat in party mode
@@ -485,7 +483,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
 
 REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
 {
-  if (iPlaylist >= PLAYLIST_MUSIC && iPlaylist <= PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return m_repeatState[iPlaylist];
   return REPEAT_NONE;
 }
@@ -520,7 +518,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
 
 void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
@@ -542,7 +540,7 @@ void CPlayListPlayer::Add(int iPlaylist, const CFileItemPtr &pItem)
 
 void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
@@ -551,20 +549,57 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
     ReShuffle(iPlaylist, iSize);
 }
 
+void CPlayListPlayer::Insert(int iPlaylist, CPlayList& playlist, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(playlist, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(pItem, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  int iSize = list.size();
+  list.Insert(items, iIndex);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
+}
+
+void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  CPlayList& list = GetPlaylist(iPlaylist);
+  list.Remove(iPosition);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
+}
+
 void CPlayListPlayer::Clear()
 {
   if (m_PlaylistMusic)
-  {
     m_PlaylistMusic->Clear();
-  }
   if (m_PlaylistVideo)
-  {
     m_PlaylistVideo->Clear();
-  }
   if (m_PlaylistEmpty)
-  {
     m_PlaylistEmpty->Clear();
-  }
 }
-
-

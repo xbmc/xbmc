@@ -543,6 +543,20 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_PLAYLISTPLAYER_INSERT:
+      if (pMsg->lpVoid)
+      {
+        CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+        g_playlistPlayer.Insert(pMsg->dwParam1, (*list), pMsg->dwParam2);
+        delete list;
+      }
+      break;
+
+    case TMSG_PLAYLISTPLAYER_REMOVE:
+      if (pMsg->dwParam1 != (DWORD) -1)
+        g_playlistPlayer.Remove(pMsg->dwParam1,pMsg->dwParam2);
+      break;
+
     case TMSG_PLAYLISTPLAYER_CLEAR:
       g_playlistPlayer.ClearPlaylist(pMsg->dwParam1);
       break;
@@ -850,6 +864,30 @@ void CApplicationMessenger::PlayListPlayerAdd(int playlist, const CFileItemList 
   listcopy->Copy(list);
   tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = playlist;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItem &item, int index)
+{
+  CFileItemList list;
+  list.Add(CFileItemPtr(new CFileItem(item)));
+  PlayListPlayerInsert(playlist, list, index);
+}
+
+void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItemList &list, int index)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_INSERT};
+  CFileItemList* listcopy = new CFileItemList();
+  listcopy->Copy(list);
+  tMsg.lpVoid = (void *)listcopy;
+  tMsg.dwParam1 = playlist;
+  tMsg.dwParam2 = index;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerRemove(int playlist, int position)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, playlist, position};
   SendMessage(tMsg, true);
 }
 

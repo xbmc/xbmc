@@ -23,9 +23,6 @@
 
 #include <assert.h>
 
-// Global instance of the download manager
-CDownloadQueueManager g_DownloadManager;
-
 CDownloadQueueManager::CDownloadQueueManager()
 {
   InitializeCriticalSection(&m_critical);

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 34028 -->
+<!--Based on english strings version 34640 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -565,6 +565,8 @@
   <string id="609">CD 压缩路径没有设置</string>
   <string id="610">压缩音轨</string>
   <string id="611">请输入序号</string>
+  <string id="612">采样位数</string>
+  <string id="613">采样率</string>
   
   <string id="620">音乐 CD</string>
   <string id="621">编码器</string>
@@ -1022,6 +1024,7 @@
   <string id="13013">重启</string>
   <string id="13014">最小化</string>
   <string id="13015">电源按钮作用</string>
+  <string id="13016">关闭电源</string>
 
   <string id="13020">是否有通过SSH连接的会话存在？</string>
   <string id="13021">挂接移动存储器</string>
@@ -1775,6 +1778,7 @@
   <string id="20255">首次登录，编辑您的用户配置</string>
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
+  <string id="20258">MythTV 客户端</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>

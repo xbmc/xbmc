@@ -119,15 +119,23 @@ bool CWINFileSMB::Exists(const CURL& url)
 int CWINFileSMB::Stat(struct __stat64* buffer)
 {
   int fd;
+  HANDLE hFileDup;
+  if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    return -1;
+  }
 
-  fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
+  fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
   if (fd == -1)
   {
     CLog::Log(LOGERROR, "CWINFileSMB Stat: fd == -1");
     return -1;
   }
 
-  return _fstat64(fd, buffer);
+  int result = _fstat64(fd, buffer);
+  _close(fd);
+  return result;
 }
 
 int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)

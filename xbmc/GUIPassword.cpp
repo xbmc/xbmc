@@ -37,8 +37,6 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 
-CGUIPassword g_passwordManager;
-
 CGUIPassword::CGUIPassword(void)
 {
   iMasterLockRetriesLeft = -1;

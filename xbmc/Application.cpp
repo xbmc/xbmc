@@ -24,7 +24,6 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
-#include "SystemGlobals.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -298,8 +297,6 @@ using namespace ANNOUNCEMENT;
 #define USE_RELEASE_LIBS
 
 #define MAX_FFWD_SPEED 5
-
-CApplication& g_application = g_SystemGlobals.m_application;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
@@ -2049,26 +2046,21 @@ void CApplication::Render()
 
     lastFrameTime = CTimeUtils::GetTimeMS();
   }
-  g_graphicsContext.Lock();
+
+  CSingleLock lock(g_graphicsContext);
+  CTimeUtils::UpdateFrameTime();
+  g_infoManager.UpdateFPS();
 
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
-  g_graphicsContext.Flip();
-  CTimeUtils::UpdateFrameTime();
-  g_infoManager.UpdateFPS();
-  g_renderManager.UpdateResolution();
-  g_graphicsContext.Unlock();
+  lock.Leave();
 
-  // yield to other threads, so any thread needing
-  // gfx context will get a timeslice. Newer os's
-  // doesn't automatically prempt the unlocking thread
-  // after a mutex is released. This may cause app thread
-  // to regrab gfx lock before for example python get's
-  // access to it.
-  SleepEx(0, TRUE);
+  g_graphicsContext.Flip();
+
+  g_renderManager.UpdateResolution();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
@@ -2369,7 +2361,10 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   if (action.IsMouse())
+  {
+    g_Mouse.SetActive(true);
     m_guiPointer.SetPosition(action.GetAmount(0), action.GetAmount(1));
+  }
 
   // The action PLAYPAUSE behaves as ACTION_PAUSE if we are currently
   // playing or ACTION_PLAYER_PLAY if we are not playing.
@@ -4063,10 +4058,7 @@ void CApplication::UpdateFileState()
 
       if (m_progressTrackingItem->IsVideo())
       {
-        if ((m_progressTrackingItem->IsDVDImage() ||
-             m_progressTrackingItem->IsDVDFile()    ) &&
-            m_pPlayer->GetTotalTime() > 15*60)
-
+        if ((m_progressTrackingItem->IsDVDImage() || m_progressTrackingItem->IsDVDFile()) && m_pPlayer->GetTotalTime() > 15*60)
         {
           m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
           m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
@@ -4708,7 +4700,8 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  CSectionLoader::UnloadDelayed();
+  if (!IsPlayingVideo())
+    CSectionLoader::UnloadDelayed();
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
@@ -4735,11 +4728,13 @@ void CApplication::ProcessSlow()
     m_bIsPaused = IsPaused();
   }
 
-  g_largeTextureManager.CleanupUnusedImages();
+  if (!IsPlayingVideo())
+    g_largeTextureManager.CleanupUnusedImages();
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
-  m_Autorun.HandleAutorun();
+  if (!IsPlayingVideo())
+    m_Autorun.HandleAutorun();
 #endif
 
   // update upnp server/renderer states
@@ -4766,10 +4761,13 @@ void CApplication::ProcessSlow()
 
 #ifdef HAS_LCD
   // attempt to reinitialize the LCD (e.g. after resuming from sleep)
-  if (g_lcd && !g_lcd->IsConnected())
+  if (!IsPlayingVideo())
   {
-    g_lcd->Stop();
-    g_lcd->Initialize();
+    if (g_lcd && !g_lcd->IsConnected())
+    {
+      g_lcd->Stop();
+      g_lcd->Initialize();
+    }
   }
 #endif
   

@@ -34,6 +34,7 @@
 #include "Settings.h"
 #include "boost/shared_ptr.hpp"
 #include "AutoPtrHandle.h"
+#include "AdvancedSettings.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -112,6 +113,22 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 
     { NULL, NULL, 0 }
+};
+
+// List of PCI Device ID of ATI cards with UVD or UVD+ decoding block.
+static DWORD UVDDeviceID [] = {
+  0x95C0, // ATI Radeon HD 3400 Series (and others)
+  0x95C5, // ATI Radeon HD 3400 Series (and others)
+  0x94C3, // ATI Radeon HD 3410
+  0x9589, // ATI Radeon HD 3600 Series (and others)
+  0x9598, // ATI Radeon HD 3600 Series (and others)
+  0x9591, // ATI Radeon HD 3600 Series (and others)
+  0x9501, // ATI Radeon HD 3800 Series (and others)
+  0x9505, // ATI Radeon HD 3800 Series (and others)
+  0x9507, // ATI Radeon HD 3830
+  0x9513, // ATI Radeon HD 3850 X2
+  0x950F, // ATI Radeon HD 3850 X2
+  0x0000
 };
 
 static CStdString GUIDToString(const GUID& guid)
@@ -214,9 +231,58 @@ do { \
   } \
 } while(0);
 
+static bool CheckH264L41(AVCodecContext *avctx)
+{
+    unsigned widthmbs  = (avctx->width + 15) / 16;  // width in macroblocks
+    unsigned heightmbs = (avctx->height + 15) / 16; // height in macroblocks
+    unsigned maxdpbmbs = 32768;                     // Decoded Picture Buffer (DPB) capacity in macroblocks for L4.1
+
+    return (avctx->refs * widthmbs * heightmbs <= maxdpbmbs);
+}
+
+static bool IsL41LimitedATI()
+{
+  if(g_Windowing.GetAIdentifier().VendorId == PCIV_ATI)
+  {
+    for (unsigned idx = 0; UVDDeviceID[idx] != 0; idx++)
+    {
+      if (UVDDeviceID[idx] == g_Windowing.GetAIdentifier().DeviceId)
+        return true;
+    }
+  }
+  return false;
+}
+
+static bool CheckCompatibility(AVCodecContext *avctx)
+{
+  // Check for hardware limited to H264 L4.1 (ie Bluray).
+
+  if(avctx->codec_id != CODEC_ID_H264)
+    return true;
+
+  // No advanced settings: autodetect.
+  // The advanced setting lets the user override the autodetection (in case of false positive or negative)
+
+  bool checkcompat;
+  if (!g_advancedSettings.m_DXVACheckCompatibilityPresent)
+    checkcompat = IsL41LimitedATI();  // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
+  else
+    checkcompat = g_advancedSettings.m_DXVACheckCompatibility;
+
+  if (checkcompat && !CheckH264L41(avctx))
+  {
+      CLog::Log(LOGDEBUG, "DXVA - compatibility check: video exceeds L4.1. DXVA will not be used.");
+      return false;
+  }
+
+  return true;
+}
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
+  if (!CheckCompatibility(avctx))
+    return false;
+
   if(!LoadDXVA())
     return false;
 

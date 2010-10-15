@@ -25,8 +25,6 @@
 #include "SingleLock.h"
 #include "log.h"
 
-CAlarmClock g_alarmClock;
-
 using namespace std;
 
 CAlarmClock::CAlarmClock() : m_bIsRunning(false)

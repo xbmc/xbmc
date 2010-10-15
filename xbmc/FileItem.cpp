@@ -623,7 +623,7 @@ bool CFileItem::IsDVDImage() const
   return (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg"));
 }
 
-bool CFileItem::IsDiskFile() const
+bool CFileItem::IsOpticalMediaFile() const
 {
   bool found = IsDVDFile(false, true);
   if (found)
@@ -970,7 +970,7 @@ void CFileItem::CleanString()
   bool bIsFolder = m_bIsFolder;
 
   // make sure we don't append the extension to stacked dvd folders
-  if (HasProperty("isstacked") && IsDVDFile(false, true))
+  if (HasProperty("isstacked") && IsOpticalMediaFile())
     bIsFolder = true;
 
   CStdString strLabel = GetLabel();
@@ -1226,7 +1226,8 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
-    CStdString path(pItem->m_strPath); path.ToLower();
+    CStdString path(pItem->m_strPath); 
+    path.ToLower();
     m_map.insert(MAPFILEITEMSPAIR(path, pItem));
   }
 }
@@ -1488,6 +1489,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_COUNTRY:
     FillSortFields(SSortFileItem::ByCountry);
+    break;
+  case SORT_METHOD_DATEADDED:
+    FillSortFields(SSortFileItem::ByDateAdded);
     break;
   case SORT_METHOD_FILE:
     FillSortFields(SSortFileItem::ByFile);
@@ -1904,16 +1908,10 @@ void CFileItemList::Stack()
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
   // stack folders
-  bool isDVDFolder(false);
   int i = 0;
   for (i = 0; i < Size(); ++i)
   {
     CFileItemPtr item = Get(i);
-    if (item->GetLabel().Equals("VIDEO_TS.IFO"))
-    {
-      isDVDFolder = true;
-      break;
-    }
     // combined the folder checks
     if (item->m_bIsFolder)
     {
@@ -1975,9 +1973,17 @@ void CFileItemList::Stack()
 #ifdef HAVE_LIBBLURAY
           if (dvdPath.IsEmpty())
           {
-            CUtil::AddFileToFolder(item->m_strPath, "BDMV/index.bdmv", path);
+            CUtil::AddFileToFolder(item->m_strPath, "index.bdmv", path);
             if (CFile::Exists(path))
               dvdPath = path;
+            else
+            {
+              CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
+              CUtil::AddFileToFolder(dvdPath, "index.bdmv", path);
+              dvdPath.Empty();
+              if (CFile::Exists(path))
+                dvdPath = path;
+            }
           }
 #endif
           if (!dvdPath.IsEmpty())
@@ -2046,16 +2052,6 @@ void CFileItemList::Stack()
       continue;
     }
 
-    if (isDVDFolder)
-    {
-      // remove any other ifo files in this folder
-      if (item1->IsDVDFile(false, true) && item1->GetLabel().Equals("VIDEO_TS.IFO"))
-      {
-        Remove(i);
-        continue;
-      }
-    }
-
     int64_t               size        = 0;
     size_t                offset      = 0;
     CStdString            stackName;
@@ -2091,16 +2087,6 @@ void CFileItemList::Stack()
             // increment index
             j++;
             continue;
-          }
-
-          if (isDVDFolder)
-          {
-            // remove any other ifo files in this folder
-            if (item2->IsDVDFile(false, true) && item2->GetLabel().Equals("VIDEO_TS.IFO"))
-            {
-              Remove(j);
-              continue;
-            }
           }
 
           CStdString file2, filePath2;
@@ -2607,7 +2593,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       (pos=strMovieName.Find("BDMV\\")) != -1)
     strMovieName = strMovieName.Mid(0,pos+5);
 
-  if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
+  if ((!m_bIsFolder || IsOpticalMediaFile() || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
   {
     CStdString name2(strMovieName);
     CUtil::GetParentPath(name2,strMovieName);
