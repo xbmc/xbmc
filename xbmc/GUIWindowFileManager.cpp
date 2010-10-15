@@ -1308,8 +1308,8 @@ void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
     m_dlgProgress->SetLine(0, 0);
     m_dlgProgress->SetLine(1, 0);
     m_dlgProgress->SetLine(2, 0);
-    m_dlgProgress->StartModal();
     m_dlgProgress->SetPercentage(0);
+    m_dlgProgress->StartModal();
     m_dlgProgress->ShowProgressBar(showProgress);
   }
 }

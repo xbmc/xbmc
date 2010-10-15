@@ -1323,7 +1323,7 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
     char temp[1024];
     int pos=0;
     int read=1;
-    while (read > 0 && pos < file.GetLength())
+    while (read > 0)
     {
       read = file.Read(temp,1024);
       pos += read;
