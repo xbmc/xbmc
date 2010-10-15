@@ -66,7 +66,8 @@ int32_t CDSGraph::m_threadID = 0;
 
 CDSGraph::CDSGraph(CDVDClock* pClock, IPlayerCallback& callback)
     : m_pGraphBuilder(NULL), m_iCurrentFrameRefreshCycle(0),
-    m_userId(0xACDCACDC), m_bReachedEnd(false), m_callback(callback)
+    m_userId(0xACDCACDC), m_bReachedEnd(false), m_callback(callback),
+    m_canSeek(-1), m_currentVolume(0)
 {
   m_threadID = 0;
 }
@@ -459,8 +460,11 @@ void CDSGraph::SetVolume(long nVolume)
 {
   CSingleLock lock(m_ObjectLock);
 
-  if (m_pBasicAudio)
-    m_pBasicAudio->put_Volume(nVolume);
+  if (m_pBasicAudio && (nVolume != m_currentVolume))
+  {
+    m_pBasicAudio->put_Volume((nVolume == VOLUME_MINIMUM) ? -10000 : nVolume);
+    m_currentVolume = nVolume;
+  }
 }
 
 void CDSGraph::Stop(bool rewind)
@@ -817,14 +821,24 @@ bool CDSGraph::CanSeek()
   //if the filter dont support seeking you would get VFW_E_DVD_OPERATION_INHIBITED on the PlayAtTime
   if (m_VideoInfo.isDVD)
     return true;
+
+  if (m_canSeek > -1)
+    return (m_canSeek == 1);
   
   if (! m_pMediaSeeking)
     return false;
 
-  DWORD seekcaps = AM_SEEKING_CanSeekForwards;
-  seekcaps |= AM_SEEKING_CanSeekBackwards;
-  seekcaps |= AM_SEEKING_CanSeekAbsolute;
-  return SUCCEEDED(m_pMediaSeeking->CheckCapabilities(&seekcaps));  
+  DWORD seekcaps = AM_SEEKING_CanSeekForwards
+    | AM_SEEKING_CanSeekBackwards
+    | AM_SEEKING_CanSeekAbsolute;
+
+  // Cache seeking capabilities. It seems to hang if it's called too quickly
+  if SUCCEEDED(m_pMediaSeeking->CheckCapabilities(&seekcaps))
+    m_canSeek = 1;
+  else
+    m_canSeek = 0;
+
+  return (m_canSeek == 1);
 }
 
 void CDSGraph::ProcessThreadMessages()

@@ -201,6 +201,8 @@ private:
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
   static int32_t m_threadID;
+  int8_t m_canSeek; //<-1: not queried; 0: false; 1: true
+  long m_currentVolume;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
