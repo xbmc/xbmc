@@ -112,12 +112,12 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     return true;
   }
 
-  //input buffer for iconv() is the buffer from strSource, but without the '\0' at the end
-  size_t      inBufSize  = strSource.length() * sizeof(strSource[0]);
+  //input buffer for iconv() is the buffer from strSource
+  size_t      inBufSize  = (strSource.length() + 1) * sizeof(strSource[0]);
   const char* inBuf      = (const char*)strSource.c_str();
 
   //allocate output buffer for iconv()
-  size_t      outBufSize = strSource.length() * multiplier;
+  size_t      outBufSize = (strSource.length() + 1) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
 
   size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
@@ -176,11 +176,10 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
   }
 
   size_t bytesWritten = outBufSize - outBytesAvail;
-  char*  dest         = (char*)strDest.GetBuffer(bytesWritten + 1);
+  char*  dest         = (char*)strDest.GetBuffer(bytesWritten);
 
-  //copy the output from iconv() into the CStdString, and put a '\0' at the end to make it a c-string
+  //copy the output from iconv() into the CStdString
   memcpy(dest, outBuf, bytesWritten);
-  dest[bytesWritten] = '\0';
 
   strDest.ReleaseBuffer();
   
