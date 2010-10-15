@@ -50,13 +50,7 @@ public:
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction(PyObject* callback)
-    : param(0), pCallbackWindow(callback), pObject(NULL), controlId(0), type(0)
-  {
-    PyEval_AcquireLock();
-    Py_INCREF(callback);
-    PyEval_ReleaseLock();
-  }
+  PyXBMCAction(PyObject*& callback);
   virtual ~PyXBMCAction() ;
 };
 
