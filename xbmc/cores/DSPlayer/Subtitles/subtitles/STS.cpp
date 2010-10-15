@@ -259,7 +259,7 @@ int FindChar(CStdStringW str, WCHAR c, int pos, bool fUnicode, int CharSet)
     WCHAR c2 = str[i];
 
     if(IsDBCSLeadByteEx(cp, (BYTE)c2)) i++;
-    else if(i >= pos)
+    else if(i >= (size_t)pos)
     {
       if(c2 == c) return(i);
     }
@@ -589,9 +589,9 @@ static bool OpenSubViewer(CTextFile* file, CSimpleTextSubtitle& ret, int CharSet
     
     if(buff[0] == '[')
     {
-      for(size_t i = 0; i < buff.GetLength() && buff[i]== '['; )
+      for(size_t i = 0; i < (size_t)buff.GetLength() && buff[i]== '['; )
       {
-        int j = buff.Find(']', ++i);
+        size_t j = buff.Find(']', ++i);
         if(j < i) break;
 
         CStdStringW tag = buff.Mid(i,j-i);
@@ -2092,7 +2092,7 @@ void CSimpleTextSubtitle::Add(CStdStringW str, bool fUnicode, int start, int end
       m_segments.insert(m_segments.begin(), stss);
     }
 
-    for(int i = 0; i < m_segments.size(); i++)
+    for(size_t i = 0; i < m_segments.size(); i++)
     {
       STSSegment& s = m_segments[i];
 
@@ -2216,7 +2216,7 @@ void CSimpleTextSubtitle::ChangeUnknownStylesToDefault()
   std::map<CStdString, STSStyle*> unknown;
   bool fReport = true;
 
-  for(int i = 0; i < size(); i++)
+  for(size_t i = 0; i < size(); i++)
   {
     STSEntry& stse = at(i);
 
@@ -2295,7 +2295,6 @@ void CSimpleTextSubtitle::AddStyle(CStdString name, STSStyle* style)
 
 bool CSimpleTextSubtitle::SetDefaultStyle(STSStyle& s)
 {
-  STSStyle* val;
   std::map<CStdString, STSStyle*>::iterator it = m_styles.find(_T("Default"));
 
   if(it == m_styles.end())
@@ -2315,7 +2314,6 @@ bool CSimpleTextSubtitle::SetDefaultStyle(STSStyle& s)
 
 bool CSimpleTextSubtitle::GetDefaultStyle(STSStyle& s)
 {
-  STSStyle* val;
   std::map<CStdString, STSStyle*>::const_iterator it = m_styles.find(_T("Default"));
 
   if(it == m_styles.end()) return false;
@@ -2460,12 +2458,12 @@ const STSSegment* CSimpleTextSubtitle::SearchSubs(int t, double fps, /*[out]*/ i
     }
   }
 
-  if(0 <= ret && ret < m_segments.size())
+  if(0 <= ret && ret < (int)m_segments.size())
   {
     if(iSegment) *iSegment = ret;
   }
 
-  if(0 <= ret && ret < m_segments.size() 
+  if(0 <= ret && ret < (int)m_segments.size() 
   && m_segments[ret].subs.size() > 0
   && TranslateSegmentStart(ret, fps) <= t && t < TranslateSegmentEnd(ret, fps))
   {
@@ -2477,7 +2475,7 @@ const STSSegment* CSimpleTextSubtitle::SearchSubs(int t, double fps, /*[out]*/ i
 
 int CSimpleTextSubtitle::TranslateStart(int i, double fps)
 {
-  return(i < 0 || size() <= i ? -1 :
+  return(i < 0 || size() <= (size_t)i ? -1 :
     m_mode == TIME ? at(i).start :  
     m_mode == FRAME ? (int)(at(i).start*1000/fps) :
     0);
@@ -2485,7 +2483,7 @@ int CSimpleTextSubtitle::TranslateStart(int i, double fps)
 
 int CSimpleTextSubtitle::TranslateEnd(int i, double fps)
 {
-  return(i < 0 || size() <= i ? -1 :
+  return(i < 0 || size() <= (size_t)i ? -1 :
     m_mode == TIME ? at(i).end :
     m_mode == FRAME ? (int)(at(i).end*1000/fps) :
     0);
@@ -2493,7 +2491,7 @@ int CSimpleTextSubtitle::TranslateEnd(int i, double fps)
 
 int CSimpleTextSubtitle::TranslateSegmentStart(int i, double fps)
 {
-  return(i < 0 || m_segments.size() <= i ? -1 :
+  return(i < 0 || m_segments.size() <= (size_t)i ? -1 :
     m_mode == TIME ? m_segments[i].start :  
     m_mode == FRAME ? (int)(m_segments[i].start*1000/fps) :
     0);
@@ -2501,7 +2499,7 @@ int CSimpleTextSubtitle::TranslateSegmentStart(int i, double fps)
 
 int CSimpleTextSubtitle::TranslateSegmentEnd(int i, double fps)
 {
-  return(i < 0 || m_segments.size() <= i ? -1 :
+  return(i < 0 || m_segments.size() <= (size_t)i ? -1 :
     m_mode == TIME ? m_segments[i].end :
     m_mode == FRAME ? (int)(m_segments[i].end*1000/fps) :
     0);
@@ -2678,7 +2676,7 @@ void CSimpleTextSubtitle::CreateSegments()
 
   std::vector<int> breakpoints;
 
-  for(i = 0; i < size(); i++)
+  for(i = 0; i < (int)size(); i++)
   {
     STSEntry& stse = at(i);
     breakpoints.push_back(stse.start);
@@ -2704,11 +2702,11 @@ void CSimpleTextSubtitle::CreateSegments()
     }
   }
 
-  for(i = 0; i < size(); i++)
+  for(i = 0; i < (int)size(); i++)
   {
     STSEntry& stse = at(i);
-    for(j = 0; j < m_segments.size() && m_segments[j].start < stse.start; j++);
-    for(; j < m_segments.size() && m_segments[j].end <= stse.end; j++) 
+    for(j = 0; j < (int)m_segments.size() && m_segments[j].start < stse.start; j++);
+    for(; j < (int)m_segments.size() && m_segments[j].end <= stse.end; j++) 
       m_segments[j].subs.push_back(i);
   }
 

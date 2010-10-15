@@ -509,7 +509,7 @@ bool CVobSubFileRipper::Create()
 {
   CAutoLock cAutoLock(&m_csAccessLock);
 
-  if(m_rd.iSelPGC < 0 || m_rd.iSelPGC >= m_rd.pgcs.size())
+  if(m_rd.iSelPGC < 0 || m_rd.iSelPGC >= (int)m_rd.pgcs.size())
   {
     Log(LOG_ERROR, _T("Invalid program chain number (%d)!"), m_rd.iSelPGC);
     return(false);
@@ -560,7 +560,7 @@ bool CVobSubFileRipper::Create()
 
   if(m_rd.fResetTime)
   {
-    for(int i = 0; i < angle.size() && ((angle[i].vob<<16)|angle[i].cell) != m_rd.selvcs[0]; i++)
+    for(size_t i = 0; i < angle.size() && ((angle[i].vob<<16)|angle[i].cell) != m_rd.selvcs[0]; i++)
       tStart += angle[i].tTime;
 
     Log(LOG_INFO, _T("Counting timestamps from %I64dms (v%02dc%02d)"), 
@@ -569,7 +569,7 @@ bool CVobSubFileRipper::Create()
 
   std::map<DWORD, int> selvcmap;
   selvcmap.clear();
-  for(int i = 0; i < m_rd.selvcs.size(); i++)
+  for(size_t i = 0; i < m_rd.selvcs.size(); i++)
     selvcmap[m_rd.selvcs[i]] = 90000;
 
   std::vector<vcchunk> chunks, foundchunks, loadedchunks;
@@ -578,7 +578,7 @@ bool CVobSubFileRipper::Create()
   {
     Log(LOG_INFO, _T("Indexing mode: DVD"));
 
-    for(int i = 0; i < angle.size(); i++)
+    for(size_t i = 0; i < angle.size(); i++)
     {
       DWORD vc = (angle[i].vob<<16)|angle[i].cell;
       std::map<DWORD, int>::iterator it = selvcmap.find(vc);
@@ -596,7 +596,7 @@ bool CVobSubFileRipper::Create()
   {
     Log(LOG_INFO, _T("Indexing mode: File"));
 
-    for(int i = 0; i < loadedchunks.size(); i++)
+    for(size_t i = 0; i < loadedchunks.size(); i++)
     {
       DWORD vcid = loadedchunks[i].vc;
       std::map<DWORD, int>::iterator it2 = selvcmap.find(vcid);
@@ -618,10 +618,10 @@ bool CVobSubFileRipper::Create()
   }
 
   __int64 sizedone = 0, sizetotal = 0;
-  for(int i = 0; i < chunks.size(); i++)
+  for(size_t i = 0; i < chunks.size(); i++)
     sizetotal += chunks[i].end - chunks[i].start;
 
-  for(int i = 0; !m_fBreakThread && i < chunks.size(); i++)
+  for(size_t i = 0; !m_fBreakThread && i < chunks.size(); i++)
   {
     __int64 curpos = chunks[i].start, endpos = chunks[i].end;
 
@@ -728,7 +728,7 @@ bool CVobSubFileRipper::Create()
 
         tOffset = tTotal = 0;
 
-        for(int i = 0; i < angle.size(); i++)
+        for(size_t i = 0; i < angle.size(); i++)
         {
           if(angle[i].vob == vob && angle[i].cell == cell)
           {
@@ -783,7 +783,7 @@ bool CVobSubFileRipper::Create()
         {
           if(PTS < minPTSframeoffset)
           {
-            selvcmap[vcid] = PTSframeoffset = PTS;
+            selvcmap[vcid] = PTSframeoffset = (int)PTS;
           }
 
           fDiscontinuity = false;
@@ -1036,7 +1036,7 @@ STDMETHODIMP CVobSubFileRipper::LoadParamFile(CStdString fn)
     else if(phase == P_PGC)
     {
       m_rd.iSelPGC = _tcstol(line, NULL, 10)-1;
-      if(m_rd.iSelPGC < 0 || m_rd.iSelPGC >= m_rd.pgcs.size()) break;
+      if(m_rd.iSelPGC < 0 || m_rd.iSelPGC >= (int)m_rd.pgcs.size()) break;
       phase = P_ANGLE;
     }
     else if(phase == 3)
@@ -1063,7 +1063,7 @@ STDMETHODIMP CVobSubFileRipper::LoadParamFile(CStdString fn)
             s++;
             if(vob != 0 && cell == 0)
             {
-              for(int i = 0; i < angle.size(); i++)
+              for(size_t i = 0; i < angle.size(); i++)
               {
                 if(angle[i].vob == vob)
                   m_rd.selvcs.push_back((angle[i].vob<<16)|angle[i].cell);
@@ -1078,7 +1078,7 @@ STDMETHODIMP CVobSubFileRipper::LoadParamFile(CStdString fn)
             s++;
             cell = _tcstol(s, &s, 10);
 
-            for(int i = 0; i < angle.size(); i++)
+            for(size_t i = 0; i < angle.size(); i++)
             {
               if(angle[i].vob == vob && angle[i].cell == cell)
               {
@@ -1095,7 +1095,7 @@ STDMETHODIMP CVobSubFileRipper::LoadParamFile(CStdString fn)
       }
       else
       {
-        for(int i = 0; i < angle.size(); i++)
+        for(size_t i = 0; i < angle.size(); i++)
           m_rd.selvcs.push_back((angle[i].vob<<16)|angle[i].cell);
       }
 

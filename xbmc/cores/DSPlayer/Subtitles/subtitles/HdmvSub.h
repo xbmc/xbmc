@@ -128,19 +128,19 @@ public:
   HRESULT      ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE* pData, long size );
 
 
-  int    GetStartPosition(REFERENCE_TIME rt, double fps);
-  int    GetNext(int pos) { return ((pos >=  m_pSubs.size()) ? NULL : ++pos); };
+  uint32_t    GetStartPosition(REFERENCE_TIME rt, double fps);
+  uint32_t    GetNext(uint32_t pos) { return ((pos >= m_pSubs.size()) ? NULL : ++pos); };
 
 
-  virtual REFERENCE_TIME GetStart(int nPos)
+  virtual REFERENCE_TIME GetStart(uint32_t nPos)
   {
     std::list<PGSSubs*>::iterator it = m_pSubs.begin();
     std::advance(it, nPos - 1);
     PGSSubs* pObject = *it;
     return pObject != NULL ? pObject->m_rtStart : INVALID_TIME; 
   };
-  virtual REFERENCE_TIME  GetStop(int nPos)  
-  { 
+  virtual REFERENCE_TIME  GetStop(uint32_t nPos)  
+  {
     std::list<PGSSubs*>::iterator it = m_pSubs.begin();
     std::advance(it, nPos - 1);
     PGSSubs*  pObject = *(it);
@@ -148,7 +148,7 @@ public:
   };
 
   void      Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox);
-  HRESULT   GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
+  HRESULT   GetTextureSize (uint32_t pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
   void      Reset();
 
 private :

@@ -45,12 +45,12 @@ public:
   virtual HRESULT ParseSample (IMediaSample* pSample) = NULL;
   virtual HRESULT ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE* pData, long size ) { return E_NOTIMPL; }
   virtual void Reset() = NULL;
-  virtual int GetStartPosition(REFERENCE_TIME rt, double fps) = NULL;
-  virtual int GetNext(int pos) = NULL;
-  virtual REFERENCE_TIME GetStart(int nPos) = NULL;
-  virtual REFERENCE_TIME GetStop(int nPos)  = NULL;
+  virtual uint32_t GetStartPosition(REFERENCE_TIME rt, double fps) = NULL;
+  virtual uint32_t GetNext(uint32_t pos) = NULL;
+  virtual REFERENCE_TIME GetStart(uint32_t nPos) = NULL;
+  virtual REFERENCE_TIME GetStop(uint32_t nPos)  = NULL;
   virtual void Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox) = NULL;
-  virtual HRESULT GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft) = NULL;
+  virtual HRESULT GetTextureSize (uint32_t pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft) = NULL;
 
 protected :
   SUBTITLE_TYPE m_nType;

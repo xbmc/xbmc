@@ -78,13 +78,13 @@ void CHdmvSub::AllocSegment(int nSize)
   m_nSegSize       = nSize;
 }
 
-__w64 int CHdmvSub::GetStartPosition(REFERENCE_TIME rt, double fps)
+uint32_t CHdmvSub::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
   PGSSubs*  pObject;
 
   // First index is 1
   // Cleanup old PG
-  int i = 0;
+  size_t i = 0;
   while (m_pSubs.size() > 0)
   {
     pObject = m_pSubs.front(); i++;
@@ -102,7 +102,7 @@ __w64 int CHdmvSub::GetStartPosition(REFERENCE_TIME rt, double fps)
       break;
   }
 
-  return i; 
+  return i;
 }
 
 HRESULT CHdmvSub::ParseData( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, BYTE* pData, long size )
@@ -307,7 +307,7 @@ void CHdmvSub::ParsePalette(CGolombBuffer* pGBuffer, USHORT nSize) // #497
 
   if (m_pCurrentSub)
   {
-    for (int i = 0; i < m_pCurrentSub->m_objects.size(); i++)
+    for (size_t i = 0; i < m_pCurrentSub->m_objects.size(); i++)
       m_pCurrentSub->m_objects[i]->SetPalette (nNbEntry, pPalette, m_pCurrentSub->m_videoDescriptor.nVideoWidth>720);
   }
 }
@@ -442,9 +442,9 @@ void CHdmvSub::Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox)
       TRACE_HDMVSUB (L"CHdmvSub:Render      size=%ld,  ObjRes=%dx%d,  SPDRes=%dx%d\n", pObject->GetObjectData()->GetRLEDataSize(), 
                pObject->GetObjectData()->m_width, pObject->GetObjectData()->m_height, spd.w, spd.h);
 
-      SHORT x = 0, y = 0;
-      x = pObject->m_horizontal_position - position.x;
-      y = pObject->m_vertical_position - position.y;
+      short x = 0, y = 0;
+      x = pObject->m_horizontal_position - (short) position.x;
+      y = pObject->m_vertical_position - (short) position.y;
       pObject->RenderHdmv(spd, x, y);
 
       bbox.left     = 0;
@@ -455,7 +455,7 @@ void CHdmvSub::Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox)
   }
 }
 
-HRESULT CHdmvSub::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft)
+HRESULT CHdmvSub::GetTextureSize (uint32_t pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft)
 {
   std::list<PGSSubs *>::iterator it = m_pSubs.begin();
   std::advance(it, pos - 1);

@@ -39,11 +39,11 @@ public:
 
   virtual HRESULT ParseSample (IMediaSample* pSample);
   virtual void Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox);
-  virtual HRESULT GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
-  virtual int GetStartPosition(REFERENCE_TIME rt, double fps);
-  virtual int GetNext(int pos);
-  virtual REFERENCE_TIME GetStart(int nPos);  
-  virtual REFERENCE_TIME GetStop(int nPos);
+  virtual HRESULT GetTextureSize (uint32_t pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
+  virtual uint32_t GetStartPosition(REFERENCE_TIME rt, double fps);
+  virtual uint32_t GetNext(uint32_t pos);
+  virtual REFERENCE_TIME GetStart(uint32_t nPos);  
+  virtual REFERENCE_TIME GetStop(uint32_t nPos);
   virtual void Reset();
 
   // EN 300-743, table 2
@@ -208,16 +208,16 @@ private:
   int          m_nBufferReadPos;
   int          m_nBufferWritePos;
   BYTE*        m_pBuffer;
-  std::list<DVB_PAGE*>  m_Pages;
-  std::auto_ptr<DVB_PAGE>  m_pCurrentPage;
-  DVB_DISPLAY      m_Display;
-  REFERENCE_TIME    m_rtStart;
-  REFERENCE_TIME    m_rtStop;
+  std::list<DVB_PAGE*>      m_Pages;
+  std::auto_ptr<DVB_PAGE>   m_pCurrentPage;
+  DVB_DISPLAY               m_Display;
+  REFERENCE_TIME            m_rtStart;
+  REFERENCE_TIME            m_rtStop;
 
-  HRESULT        AddToBuffer(BYTE* pData, int nSize);
-  DVB_PAGE*      FindPage(REFERENCE_TIME rt);
-  DVB_REGION*      FindRegion(DVB_PAGE* pPage, BYTE bRegionId);
-  DVB_CLUT*      FindClut(DVB_PAGE* pPage, BYTE bClutId);
+  HRESULT             AddToBuffer(BYTE* pData, int nSize);
+  DVB_PAGE*           FindPage(REFERENCE_TIME rt);
+  DVB_REGION*         FindRegion(DVB_PAGE* pPage, BYTE bRegionId);
+  DVB_CLUT*           FindClut(DVB_PAGE* pPage, BYTE bClutId);
   CompositionObject*  FindObject(DVB_PAGE* pPage, SHORT sObjectId);
 
   HRESULT        ParsePage(CGolombBuffer& gb, WORD wSegLength, std::auto_ptr<DVB_PAGE>& pPage);

@@ -225,7 +225,7 @@ STDMETHODIMP_(int) CRenderedHdmvSubtitleFile::GetStartPosition(REFERENCE_TIME rt
   CAutoLock cAutoLock(&m_csCritSec);
 
   // Preload 10 sec
-  ParseData(rt, rt + 10e7);
+  ParseData(rt, rt + 100000000i64);
 
   return m_pSub->GetStartPosition(rt, fps);
 }
@@ -337,7 +337,7 @@ HRESULT CRenderedHdmvSubtitleFile::ParseData( REFERENCE_TIME rtFrom, REFERENCE_T
   m_pMemBuffer.seekg(0);
   m_pSub->Reset();
 
-  while (! m_pMemBuffer.eof() && ! (m_pMemBuffer.tellg() > m_totalSize))
+  while (! m_pMemBuffer.eof() && ! ((uint32_t) m_pMemBuffer.tellg() > m_totalSize))
   {
 
     BYTE pData[4];

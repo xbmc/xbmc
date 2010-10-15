@@ -288,7 +288,7 @@ HRESULT CDVBSub::ParseSample (IMediaSample* pSample)
 //          gb.SkipBytes(wSegLength);
           break;
         }
-        nLastPos = gb.GetPos();
+        nLastPos = (int) gb.GetPos();
       }
     }
     m_nBufferReadPos += nLastPos;
@@ -331,7 +331,7 @@ void CDVBSub::Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox)
   }
 }
 
-HRESULT CDVBSub::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft)
+HRESULT CDVBSub::GetTextureSize (uint32_t pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft)
 {
   // TODO : limit size for HDTV
 
@@ -349,12 +349,12 @@ HRESULT CDVBSub::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize,
   return S_OK;
 }
 
-int CDVBSub::GetStartPosition(REFERENCE_TIME rt, double fps)
+uint32_t CDVBSub::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
   DVB_PAGE*  pPage;
 
   // Cleanup old PG
-  while (m_Pages.size()>0)
+  while (m_Pages.size() > 0)
   {
     pPage = m_Pages.front();
     if (pPage->rtStop < rt)
@@ -374,13 +374,13 @@ int CDVBSub::GetStartPosition(REFERENCE_TIME rt, double fps)
   return 0;
 }
 
-int CDVBSub::GetNext(int pos) 
+uint32_t CDVBSub::GetNext(uint32_t pos) 
 { 
   return pos + 1; 
 }
 
 
-REFERENCE_TIME CDVBSub::GetStart(int nPos)  
+REFERENCE_TIME CDVBSub::GetStart(uint32_t nPos)  
 {
   std::list<DVB_PAGE*>::const_iterator it = m_Pages.begin();
   std::advance(it, nPos);
@@ -388,7 +388,7 @@ REFERENCE_TIME CDVBSub::GetStart(int nPos)
   return pPage!=NULL ? pPage->rtStart : INVALID_TIME; 
 }
 
-REFERENCE_TIME  CDVBSub::GetStop(int nPos)  
+REFERENCE_TIME  CDVBSub::GetStop(uint32_t nPos)  
 { 
   std::list<DVB_PAGE*>::const_iterator it = m_Pages.begin();
   std::advance(it, nPos);

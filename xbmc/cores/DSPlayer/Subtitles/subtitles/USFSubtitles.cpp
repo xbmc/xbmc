@@ -93,7 +93,7 @@ static CStdStringW GetAttrib(CStdStringW attrib, IXMLDOMNodePtr pNode)
 static int TimeToInt(CStdStringW str)
 {
   std::list<CStdStringW> sl;
-  int i = 0;
+  size_t i = 0;
   std::vector<CStdStringW> tokens; str.Tokenize(L":.,", tokens);
   if (!tokens.empty())
   {

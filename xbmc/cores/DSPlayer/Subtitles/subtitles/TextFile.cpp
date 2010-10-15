@@ -152,7 +152,7 @@ ULONGLONG CTextFile::Seek(LONGLONG lOff, UINT nFrom)
   case FILE_END: lOff = len - lOff; break; //end
   }
 
-  lOff = max(min(lOff, len), 0) + m_offset;
+  lOff = max(min(lOff, (int64_t)len), 0) + m_offset;
 
   pos = __super::Seek(lOff, FILE_BEGIN) - m_offset;
 
@@ -203,7 +203,7 @@ void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
   else if(m_encoding == UTF8)
   {
     str.Replace(L"\n", L"\r\n");
-    for(size_t i = 0; i < str.GetLength(); i++)
+    for(size_t i = 0; i < (size_t)str.GetLength(); i++)
     {
       DWORD c = (WORD)str[i];
 
@@ -239,7 +239,7 @@ void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
   else if(m_encoding == BE16)
   {
     str.Replace(L"\n", L"\r\n");
-    for(size_t i = 0; i < str.GetLength(); i++)
+    for(size_t i = 0; i < (size_t)str.GetLength(); i++)
       str.SetAt(i, ((str[i]>>8)&0x00ff)|((str[i]<<8)&0xff00));
     Write((LPCWSTR)str, str.GetLength()*2);
   }

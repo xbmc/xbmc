@@ -90,7 +90,7 @@ void GetSubFileNames(CStdString fn, std::vector<CStdString>& paths, std::vector<
     WIN32_FIND_DATA wfd, wfd2;
     HANDLE hFile, hFile2;
 
-    for(int k = 0; k < paths.size(); k++)
+    for(size_t k = 0; k < paths.size(); k++)
     {
       CStdString path = paths[k];
       path.Replace('\\', '/');
