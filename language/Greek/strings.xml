@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 10/02/2010-->
+<!--Date of translation: 10/14/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 34362-->
+<!--Based on english strings version 34753-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1353,7 +1353,7 @@
   <string id="16014">Εισάγετε όνομα φακέλου</string>
   <string id="16015">Εισάγετε κατάλογο</string>
   <string id="16016">Διαθέσιμες επιλογές: %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
-  <string id="16017">Εισαγωγή σειράς αναζήτησης</string>
+  <string id="16017">Εισαγωγή συμβολοσειράς αναζήτησης</string>
   <string id="16018">Καμία</string>
   <string id="16019">Αυτόματη επιλογή</string>
   <string id="16020">Διαστρωμάτωση</string>
@@ -1373,10 +1373,10 @@
   <string id="16034">Απέτυχε η λήψη τραγουδιών από τη βάση δεδομένων.</string>
   <string id="16035">Λίστα αναπαραγωγής σε Party Μode</string>
   <string id="16100">Όλα τα βίντεο</string>
-  <string id="16101">Δεν έχουν θεαθεί</string>
-  <string id="16102">Έχουν θεαθεί</string>
-  <string id="16103">Σημείωση ως παιγμένα</string>
-  <string id="16104">Σημείωση ως μη παιγμένα</string>
+  <string id="16101">Προβληθέντα</string>
+  <string id="16102">Μη προβληθέντα</string>
+  <string id="16103">Επισήμανση ως προβληθέντα</string>
+  <string id="16104">Επισήμανση ως μη προβληθέντα</string>
   <string id="16105">Επεξεργασία τίτλου</string>
   <string id="16200">Η διαδικασία ακυρώθηκε</string>
   <string id="16201">Η αντιγραφή απέτυχε</string>
@@ -1426,7 +1426,7 @@
   <string id="20017">Τοπική μικρογραφία</string>
   <string id="20018">Χωρίς μικρογραφία</string>
   <string id="20019">Επιλογή μικρογραφίας</string>
-  <string id="20023">Σύγκρουση</string>
+  <string id="20023">Διένεξη</string>
   <string id="20024">Σάρωση καινούργιων</string>
   <string id="20025">Σάρωση όλων</string>
   <string id="20026">Περιοχή</string>
@@ -1454,9 +1454,9 @@
   <string id="20059">Ερώτημα για όλα τα άλμπουμ</string>
   <string id="20060">Πληροφορίες πολυμέσων</string>
   <string id="20061">Ξεχωριστές</string>
-  <string id="20062">Τρέχουσες</string>
-  <string id="20063">Τρέχουσες (ανάγνωση μόνο)</string>
-  <string id="20064">Τρέχουσες</string>
+  <string id="20062">Κοινόχρηστα με προεπιλεγμένα</string>
+  <string id="20063">Κοινόχρηστα με προεπιλεγμένα (ανάγνωση μόνο)</string>
+  <string id="20064">Αντιγραφή προεπιλεγμένων</string>
   <string id="20065">Εικόνα προφίλ</string>
   <string id="20066">Επιλογές κλειδώματος</string>
   <string id="20067">Επεξεργασία προφίλ</string>
@@ -1500,7 +1500,7 @@
   <string id="20105">Θέλετε να τις χρησιμοποιήσετε;</string>
   <string id="20106">Βρέθηκαν παλιές πηγές πολυμέσων.</string>
   <string id="20107">Χωρισμένο (κλειδωμένο)</string>
-  <string id="20108">Βάση</string>
+  <string id="20108">Root</string>
   <string id="20109">- Μεγέθυνση</string>
   <string id="20110">Ρυθμίσεις UPnP</string>
   <string id="20111">Αυτόματη έναρξη πελάτη UPnP</string>
@@ -1519,7 +1519,7 @@
   <string id="20124">Γεμίζοντας τα ποτήρια</string>
   <string id="20125">Συνδεμένος σαν</string>
   <string id="20126">Αποσύνδεση</string>
-  <string id="20128">Πήγαινε στη βάση</string>
+  <string id="20128">Πήγαινε στο root</string>
   <string id="20129">Ύφανση</string>
   <string id="20130">Ύφανση (αντιστροφή)</string>
   <string id="20131">Συνδυασμός </string>
@@ -1597,6 +1597,7 @@
   <string id="20255">Πρώτη σύνδεση, επεξεργαστείτε το προφίλ σας</string>
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
+  <string id="20258">MythTV client</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
@@ -1835,7 +1836,7 @@
   <string id="21450">- Επεξεργασία</string>
   <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
   <string id="21452">Λήψη περισσότερων...</string>
-  <string id="21453">Σύστημα αρχείων ρίζας</string>
+  <string id="21453">Σύστημα αρχείων root</string>
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
