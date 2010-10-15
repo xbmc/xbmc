@@ -165,7 +165,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     }
     else
     {
-      //if you know what this is for, please leave a useful comment
+      //complete the conversion, otherwise the current data will prefix the data on the next call
       returnV = iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail);
       if (returnV == (size_t)-1)
         CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
