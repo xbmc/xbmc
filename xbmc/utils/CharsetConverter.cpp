@@ -95,76 +95,96 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 template<class INPUT,class OUTPUT>
 static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest)
 {
-  size_t retBytes = (size_t)-1;
-
-  if (type == (iconv_t) - 1)
+  if (type == (iconv_t)-1)
   {
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
+    if (type == (iconv_t)-1) //iconv_open failed
+    {
+      CLog::Log(LOGERROR, "%s iconv_open() failed from %s to %s, errno=%d(%s)",
+                __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno, strerror(errno));
+      return false;
+    }
   }
 
-  if (type != (iconv_t) - 1)
+  if (strSource.IsEmpty())
   {
-    if (strSource.IsEmpty())
+    strDest.Empty(); //empty strings are easy
+    return true;
+  }
+
+  //input buffer for iconv() is the buffer from strSource, but without the '\0' at the end
+  size_t      inBufSize  = strSource.length() * sizeof(strSource[0]);
+  const char* inBuf      = (const char*)strSource.c_str();
+
+  //allocate output buffer for iconv()
+  size_t      outBufSize = strSource.length() * multiplier;
+  char*       outBuf     = (char*)malloc(outBufSize);
+
+  size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
+  size_t      outBytesAvail = outBufSize; //how many bytes iconv() can write
+  const char* inBufStart    = inBuf;      //where in our input buffer iconv() should start reading
+  char*       outBufStart   = outBuf;     //where in out output buffer iconv() should start writing
+
+  while(1)
+  {
+    //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
+    size_t returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
+
+    if (returnV == (size_t)-1)
     {
-      strDest.Empty();
+      if (errno == E2BIG) //output buffer is not big enough
+      {
+        //save where iconv() ended converting, realloc might make outBufStart invalid
+        size_t bytesConverted = outBufSize - outBytesAvail;
+
+        //make buffer twice as big
+        outBufSize   *= 2;
+        char* newBuf  = (char*)realloc(outBuf, outBufSize);
+        if (!newBuf)
+        {
+          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%u errno=%d(%s)",
+                    __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
+          free(outBuf);
+          return false;
+        }
+        outBuf = newBuf;
+
+        //update the buffer pointer and counter
+        outBufStart   = outBuf + bytesConverted;
+        outBytesAvail = outBufSize - bytesConverted;
+
+        //continue in the loop and convert the rest
+      }
+      else //iconv() had some other error
+      {
+        CLog::Log(LOGERROR, "%s iconv() failed from %s to %s, errno=%d(%s)",
+                  __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno, strerror(errno));
+        free(outBuf);
+        return false;
+      }
     }
     else
     {
-      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
-      size_t outBytes = (strSource.length() + 1)*multiplier;
-      size_t buf_size = outBytes;
-      const char *src = (const char*)strSource.c_str();
-      char    *outbuf = (char*)malloc(buf_size);
-      int dest_len = 0;
-      bool convert_done = false;
+      //if you know what this is for, please leave a useful comment
+      returnV = iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail);
+      if (returnV == (size_t)-1)
+        CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
 
-      while (!convert_done)
-      {
-        char *dst = outbuf + dest_len;
-        retBytes = iconv_const(type, &src, &inBytes, &dst, &outBytes);
-        int errno_save = errno;
-        dest_len = dst - outbuf;
-        if (retBytes != (size_t)-1)
-        {
-          if ((retBytes = iconv_const(type, NULL, NULL, &dst, &outBytes)) == (size_t)-1)
-          {
-            CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-          }
-          convert_done = true;
-        }
-        else
-        {
-          if (errno_save != E2BIG)
-          {
-            CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno_save);
-            convert_done = true;
-          }
-          else
-          {
-            buf_size += 512;
-            outBytes += 512;
-            char *newbuf = (char*)realloc(outbuf, buf_size);
-            if (!newbuf)
-            {
-              CLog::Log(LOGERROR, "%s realloc failed", __FUNCTION__);
-              convert_done = true;
-              retBytes = (size_t)-1;
-            }
-            else
-              outbuf = newbuf;
-          }
-        }
-      }
-      if (retBytes != (size_t)-1)
-      {
-        char *p = (char*)strDest.GetBuffer(dest_len);
-        memcpy(p, outbuf, dest_len);
-        strDest.ReleaseBuffer();
-      }
-      free(outbuf);
+      //we're done
+      break;
     }
   }
-  return retBytes != (size_t)-1;
+
+  size_t bytesWritten = outBufSize - outBytesAvail;
+  char*  dest         = (char*)strDest.GetBuffer(bytesWritten + 1);
+
+  //copy the output from iconv() into the CStdString, and put a '\0' at the end to make it a c-string
+  memcpy(dest, outBuf, bytesWritten);
+  dest[bytesWritten] = '\0';
+
+  strDest.ReleaseBuffer();
+  
+  return true;
 }
 
 template<class INPUT,class OUTPUT>
