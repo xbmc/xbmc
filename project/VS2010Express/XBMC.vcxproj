@@ -1135,7 +1135,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllSidplay2.h" />

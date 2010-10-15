@@ -2510,9 +2510,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
