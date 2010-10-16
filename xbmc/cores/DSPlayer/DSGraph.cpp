@@ -648,6 +648,8 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     return;
   }
 
+  CSingleLock lock(m_ObjectLock);
+
   if (showPopup)
     g_infoManager.SetDisplayAfterSeek(100000);
 

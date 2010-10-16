@@ -4971,16 +4971,13 @@ void CApplication::SetPlaySpeed(int iSpeed)
   m_iPlaySpeed = iSpeed;
 
   m_pPlayer->ToFFRW(m_iPlaySpeed);
-  if (GetCurrentPlayer() == PCID_DVDPLAYER)
-  {
-    if (m_iPlaySpeed == 1)
-    { // restore volume
-      m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
-    }
-    else
-    { // mute volume
-      m_pPlayer->SetVolume(VOLUME_MINIMUM);
-    }
+  if (m_iPlaySpeed == 1)
+  { // restore volume
+    m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
+  }
+  else
+  { // mute volume
+    m_pPlayer->SetVolume(VOLUME_MINIMUM);
   }
 }
 

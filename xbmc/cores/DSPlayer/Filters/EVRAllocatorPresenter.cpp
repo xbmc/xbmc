@@ -475,6 +475,9 @@ void CEVRAllocatorPresenter::StopWorkerThreads()
     m_bEvtFlush = true;
     SetEvent (m_hEvtQuit);
     m_bEvtQuit = true;
+
+    m_drawingIsDone.Set();
+
     if ((m_hThread != INVALID_HANDLE_VALUE) && (WaitForSingleObject (m_hThread, 10000) == WAIT_TIMEOUT))
     {
       ASSERT (FALSE);
@@ -833,6 +836,8 @@ STDMETHODIMP CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, 
   case MFVP_MESSAGE_FLUSH :          // The presenter should discard any pending samples
     SetEvent(m_hEvtFlush);
     m_bEvtFlush = true;
+    m_drawingIsDone.Set();
+
     TRACE_EVR ("EVR: MFVP_MESSAGE_FLUSH\n");
     while (WaitForSingleObject(m_hEvtFlush, 1) == WAIT_OBJECT_0);
     break;
@@ -1985,6 +1990,7 @@ void CEVRAllocatorPresenter::RenderThread()
       FlushSamples();
       m_bEvtFlush = false;
       ResetEvent(m_hEvtFlush);
+      m_drawingIsDone.Reset();
       TRACE_EVR ("EVR: Flush done!\n");
       break;
 

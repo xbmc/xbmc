@@ -733,6 +733,7 @@ void CDX9AllocatorPresenter::StopWorkerThreads()
     if ( m_hEvtQuit != NULL )
     {
       SetEvent( m_hEvtQuit );
+      m_drawingIsDone.Set();
       
       if ( m_hVSyncThread != NULL )
       {
