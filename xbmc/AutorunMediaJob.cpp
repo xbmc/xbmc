@@ -19,6 +19,7 @@
  *
  */
 #include "AutorunMediaJob.h"
+#include "Application.h"
 #include "utils/Builtins.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogSelect.h"
@@ -33,6 +34,9 @@ CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &pa
 bool CAutorunMediaJob::DoWork()
 {
   CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+  // wake up and turn off the screensaver if it's active
+  g_application.WakeUpScreenSaverAndDPMS();
 
   pDialog->Reset();
   if (m_label.size() > 0)
