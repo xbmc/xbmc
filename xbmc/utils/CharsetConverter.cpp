@@ -142,7 +142,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%u errno=%d(%s)",
+          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%ld errno=%d(%s)",
                     __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
           free(outBuf);
           return false;
