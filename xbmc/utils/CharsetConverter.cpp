@@ -138,12 +138,12 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     return true;
   }
 
-  //input buffer for iconv() is the buffer from strSource, but without the '\0' at the end
-  size_t      inBufSize  = strSource.length() * sizeof(strSource[0]);
+  //input buffer for iconv() is the buffer from strSource
+  size_t      inBufSize  = (strSource.length() + 1) * sizeof(strSource[0]);
   const char* inBuf      = (const char*)strSource.c_str();
 
   //allocate output buffer for iconv()
-  size_t      outBufSize = strSource.length() * multiplier;
+  size_t      outBufSize = (strSource.length() + 1) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
 
   size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
@@ -168,7 +168,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%u errno=%d(%s)",
+          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%zu errno=%d(%s)",
                     __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
           free(outBuf);
           return false;
@@ -178,6 +178,14 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
         //update the buffer pointer and counter
         outBufStart   = outBuf + bytesConverted;
         outBytesAvail = outBufSize - bytesConverted;
+
+        //continue in the loop and convert the rest
+      }
+      else if (errno == EILSEQ) //An invalid multibyte sequence has been encountered in the input
+      {
+        //skip invalid byte
+        inBufStart++;
+        inBytesAvail--;
 
         //continue in the loop and convert the rest
       }
@@ -191,7 +199,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     }
     else
     {
-      //if you know what this is for, please leave a useful comment
+      //complete the conversion, otherwise the current data will prefix the data on the next call
       returnV = iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail);
       if (returnV == (size_t)-1)
         CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
@@ -202,14 +210,15 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
   }
 
   size_t bytesWritten = outBufSize - outBytesAvail;
-  char*  dest         = (char*)strDest.GetBuffer(bytesWritten + 1);
+  char*  dest         = (char*)strDest.GetBuffer(bytesWritten);
 
-  //copy the output from iconv() into the CStdString, and put a '\0' at the end to make it a c-string
+  //copy the output from iconv() into the CStdString
   memcpy(dest, outBuf, bytesWritten);
-  dest[bytesWritten] = '\0';
 
   strDest.ReleaseBuffer();
   
+  free(outBuf);
+
   return true;
 }
 
@@ -541,10 +550,14 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
     CStdStringA strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
+    CSingleLock lock(m_critSection);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
+  {
+    CSingleLock lock(m_critSection);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
+  }
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
@@ -559,10 +572,7 @@ void CCharsetConverter::fromW(const CStdStringW& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strEnc = enc;
-  if (strEnc.Right(8) != "//IGNORE")
-    strEnc.append("//IGNORE");
-  convert(iconvString,4,WCHAR_CHARSET,strEnc,strSource,strDest);
+  convert(iconvString,4,WCHAR_CHARSET,enc,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -571,9 +581,7 @@ void CCharsetConverter::toW(const CStdStringA& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strWchar = WCHAR_CHARSET;
-  strWchar.append("//IGNORE");
-  convert(iconvString,sizeof(wchar_t),enc,strWchar,strSource,strDest);
+  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -643,7 +651,7 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
   }
 }
 

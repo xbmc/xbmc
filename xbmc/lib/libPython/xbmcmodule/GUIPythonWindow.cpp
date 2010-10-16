@@ -27,16 +27,31 @@
 #include "GUIWindowManager.h"
 #include "../XBPython.h"
 #include "utils/log.h"
+#include "utils/SingleLock.h"
 
 using namespace PYXBMC;
 
-PyXBMCAction::~PyXBMCAction() {
-     if (pObject) {
-       Py_DECREF(pObject);
-     }
+PyXBMCAction::PyXBMCAction(PyObject*& callback)
+  : param(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0)
+{
+  // this is ugly, but we can't grab python lock
+  // while holding gfx, that will potentially deadlock
+  CSingleExit ex(g_graphicsContext);
+  PyEval_AcquireLock();
+  // callback is a reference to a pointer in the
+  // window, that is controlled by the python lock.
+  // callback can become null while we are trying
+  // to grab python lock above, so anything using
+  // this should allow that situation
+  pCallbackWindow = callback;
+  Py_XINCREF(callback);
 
-     pObject = NULL;
-     Py_DECREF(pCallbackWindow);
+  PyEval_ReleaseLock();
+}
+
+PyXBMCAction::~PyXBMCAction() {
+  Py_XDECREF(pObject);
+  Py_XDECREF(pCallbackWindow);
 }
 
 CGUIPythonWindow::CGUIPythonWindow(int id)
@@ -214,15 +229,19 @@ void Py_MakePendingActionCalls()
  */
 int Py_XBMC_Event_OnControl(void* arg)
 {
-  if (arg != NULL)
+  if(!arg)
+    return 0;
+
+  PyXBMCAction* action = (PyXBMCAction*)arg;
+  if (action->pCallbackWindow)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onControl", (char*)"(O)", action->pObject);
     if (ret) {
        Py_DECREF(ret);
     }
-    delete action;
   }
+  delete action;
   return 0;
 }
 
@@ -231,9 +250,12 @@ int Py_XBMC_Event_OnControl(void* arg)
  */
 int Py_XBMC_Event_OnAction(void* arg)
 {
-  if (arg != NULL)
+  if(!arg)
+    return 0;
+
+  PyXBMCAction* action = (PyXBMCAction*)arg;
+  if (action->pCallbackWindow)
   {
-    PyXBMCAction* action = (PyXBMCAction*)arg;
     Action *pAction= (Action *)action->pObject;
 
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onAction", (char*)"(O)", pAction);
@@ -244,7 +266,7 @@ int Py_XBMC_Event_OnAction(void* arg)
       CLog::Log(LOGERROR,"Exception in python script's onAction");
       PyErr_Print();
     }
-    delete action;
   }
+  delete action;
   return 0;
 }
