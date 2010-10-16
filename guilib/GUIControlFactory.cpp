@@ -50,6 +50,8 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
+#include "GUIEPGGridContainer.h"
+#include "GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
@@ -108,6 +110,7 @@ static const ControlMapping controls[] =
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
+    {"epggrid",           CGUIControl::GUICONTAINER_EPGGRID},
     {"panel",             CGUIControl::GUICONTAINER_PANEL}};
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStdString &type)
@@ -713,6 +716,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   int focusPosition = 0;
   int scrollTime = 200;
+  int timeBlocks = 36;
+  int rulerUnit = 12;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
 
@@ -933,6 +938,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
+  XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
+  XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
 
@@ -1261,6 +1268,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
     ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
+  }
+  else if (type == CGUIControl::GUICONTAINER_EPGGRID)
+  {
+    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit);
+    ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
+//    ((CGUIEPGGridContainer *)control)->LoadContent(pControlNode); ///
   }
   else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
   {

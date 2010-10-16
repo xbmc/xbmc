@@ -138,6 +138,21 @@
   <string id="31405">[B]KONFIGURIERE NETZWERK EINSTELLUNGEN[/B][CR][CR]Einrichten der Steuerung von XBMC via UPnP und HTTP · Konfiguriere Datei Zugriff[CR]Setze Internet Zugriffs Optionen</string>
   <string id="31406">[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Setze und kalibriere Displays · Konfiguriere Audioausgabe · Setze Fernbedienungs Einstellungen · Setze Energiespar Optionen · Aktiviere Debugging · Einrichten Master Sperre</string>
   <string id="31407">[B]KONFIGURIERE SKIN EINSTELLUNGEN[/B][CR][CR]Einrichten des Confluence Skin · Hinzufügen und entfernen der Home Menü Einträge[CR]Wechseln der Skin Hintergründe</string>
-  <string id="31408">[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen</string>
+  <string id="31408">[B]KONFIGURIERE ERWEITERUNGEN[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen</string>
+  <string id="31409">[B]KONFIGURIERE TV EINSTELLUNGEN[/B][CR][CR]Verändere Vollbild Modus · Verwalte EPG Daten Einstellungen</string>
+
   <string id="31421">Wähle Dein XBMC Benutzer Profil[CR]Zum Anmelden und Weitermachen</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Recording Timers</string>
+  <string id="31501">Scheduled Time</string>
+  <string id="31502">Live TV</string>
+  <string id="31503">Gruppe hinzufügen</string>
+  <string id="31504">Gruppe umbenennen</string>
+  <string id="31505">Gruppe löschen</string>
+  <string id="31506">Verfügbare[CR]Gruppen</string>
+  <string id="31507">Ungruppierte[CR]Kanäle</string>
+  <string id="31508">Kanäle in Gruppe</string>
+  <string id="31509">Kanalgruppe</string>
+  <string id="31510">Timer Set</string>
 </strings>

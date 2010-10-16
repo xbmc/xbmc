@@ -28,6 +28,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/Directory.h"
+#include "AddonHelpers_local.h"
 #include "log.h"
 
 using namespace XFILE;
@@ -59,6 +60,7 @@ namespace ADDON
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
+    CAddonHelpers* m_pHelpers;
 
   private:
     TheDll* m_pDll;
@@ -109,6 +111,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
+  m_pHelpers    = NULL;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -185,9 +188,15 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   if (!LoadDll())
     return false;
 
+  /* Allocate the helper function class to allow crosstalk over
+     helper libraries */
+  m_pHelpers = new CAddonHelpers(this);
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
+    ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == STATUS_OK)
       m_initialized = true;
     else if (status == STATUS_NEED_SETTINGS)
@@ -242,6 +251,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
+  delete m_pHelpers;
+  m_pHelpers = NULL;
   delete m_pStruct;
   m_pStruct = NULL;
   delete m_pDll;

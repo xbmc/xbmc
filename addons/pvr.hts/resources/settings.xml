@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="host" type="text" label="30000" option="urlencoded" default="127.0.0.1" />
+    <setting id="http_port" type="integer" label="30001" default="9981" />
+    <setting id="htsp_port" type="integer" label="30002" default="9982" />
+    <setting id="user" type="text" label="30003" default="" />
+    <setting id="pass" type="text" label="30004" option="hidden" default="" />
+</settings>

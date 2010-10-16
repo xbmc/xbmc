@@ -42,6 +42,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 {
   m_bConfirmed = false;
   m_bCanceled = false;
+  m_autoCloseTime = 0;
 
   m_mode = INPUT_PASSWORD;
   m_block = 0;
@@ -55,6 +56,9 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
+  if (action.GetID() >= ACTION_MOVE_LEFT &&  action.GetID() <= ACTION_MOVE_DOWN)
+    m_autoClosing = false;
+
   if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
     OnCancel();
   else if (action.GetID() == ACTION_NEXT_ITEM)
@@ -98,6 +102,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
       m_bConfirmed = false;
       m_bCanceled = false;
       m_dirty = false;
+      m_autoCloseTime = 0;
       return CGUIDialog::OnMessage(message);
     }
     break;
@@ -278,6 +283,11 @@ void CGUIDialogNumeric::FrameMove()
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
 {
+  if (m_autoCloseTime)
+  {
+    SetAutoClose(m_autoCloseTime);
+  }
+
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
     m_number += num + '0';
@@ -561,16 +571,22 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
+bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int autoCloseTime)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
+  if (autoCloseTime)
+  {
+    pDialog->m_autoCloseTime = autoCloseTime;
+    pDialog->SetAutoClose(autoCloseTime);
+  }
+
   pDialog->DoModal();
 
-  if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
+  if (!autoCloseTime && (!pDialog->IsConfirmed() || pDialog->IsCanceled()))
     return false;
   pDialog->GetOutput(&strInput);
   return true;

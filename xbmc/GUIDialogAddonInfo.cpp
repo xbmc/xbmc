@@ -34,6 +34,7 @@
 #include "URL.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "Application.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -126,7 +127,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").Equals("true");
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").Equals("true");
   // TODO: System addons should be able to be disabled
-  bool canDisable = isInstalled && !isSystem && !m_localAddon->IsInUse();
+  bool canDisable = isInstalled && (!isSystem || m_localAddon->Type() == ADDON_PVRDLL) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").IsEmpty();
                      
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
@@ -178,9 +179,17 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   if (!m_localAddon.get())
     return;
 
+  CStdString xbmcPath = _P("special://xbmc/addons");
   CAddonDatabase database;
   database.Open();
-  database.DisableAddon(m_localAddon->ID(), !enable);
+  if (m_localAddon->Type() == ADDON_PVRDLL && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+    database.EnableSystemPVRAddon(m_localAddon->ID(), enable);
+  else
+    database.DisableAddon(m_localAddon->ID(), !enable);
+
+  if (m_localAddon->Type() == ADDON_PVRDLL && enable)
+    g_application.StartPVRManager();
+
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);

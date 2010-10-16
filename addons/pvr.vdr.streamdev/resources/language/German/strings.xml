@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR Hostname oder IP</string>
+    <string id="30001">Streamdev Port</string>
+    <string id="30002">Nur frei empfangbare Kanäle</string>
+    <string id="30003">Zeige Radiokanäle</string>
+    <string id="30004">Textkonvertierung (UTF-8)</string>
+    <string id="30005">Verbindungszeitüberlauf (s)</string>
+    <string id="30006">Ignoriere Känale ohne VPID und APID</string>
+    <string id="30007">VDR Nachrichten erlauben</string>
+    <string id="30008">Priorität</string>
+    <string id="30009">Aufnahmen aus Ordner lesen</string>
+    <string id="30010">VDR Aufnahmeordner</string>
+</strings>

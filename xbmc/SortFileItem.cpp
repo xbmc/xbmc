@@ -24,6 +24,8 @@
 #include "StringUtils.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "utils/PVREpg.h"
+#include "utils/PVRTimers.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -153,7 +155,13 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  if (item->IsEPG())
+    label.Format("%s %s", item->GetEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  else if (item->IsPVRTimer())
+    label.Format("%s %s", item->GetPVRTimerInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  else
+    label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+
   item->SetSortLabel(label);
 }
 
@@ -468,6 +476,16 @@ void SSortFileItem::ByProductionCode(CFileItemPtr &item)
 {
   if (!item) return;
   item->SetSortLabel(item->GetVideoInfoTag()->m_strProductionCode);
+}
+
+void SSortFileItem::ByChannel(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  if (item->IsEPG())
+    item->SetSortLabel(item->GetEPGInfoTag()->ChannelName());
+  else if (item->IsPVRChannel())
+    item->SetSortLabel(item->GetPVRChannelInfoTag()->Name());
 }
 
 void SSortFileItem::ByBitrate(CFileItemPtr &item)

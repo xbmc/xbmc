@@ -89,6 +89,18 @@ void CGUIListLabel::SetInvalid()
   CGUIControl::SetInvalid();
 }
 
+void CGUIListLabel::SetWidth(float width)
+{
+  m_width = width;
+  if (m_label.GetLabelInfo().align & XBFONT_RIGHT)
+    m_label.SetMaxRect(m_posX - m_width, m_posY, m_width, m_height);
+  else if (m_label.GetLabelInfo().align & XBFONT_CENTER_X)
+    m_label.SetMaxRect(m_posX - m_width*0.5f, m_posY, m_width, m_height);
+  else
+    m_label.SetMaxRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+  CGUIControl::SetWidth(m_width);
+}
+
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
   m_label.SetText(label);

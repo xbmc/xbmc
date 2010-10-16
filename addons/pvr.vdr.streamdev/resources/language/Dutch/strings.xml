@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR Hostnaam</string>
+    <string id="30001">Streamdev Poort</string>
+    <string id="30002">Alleen Free-to-air</string>
+    <string id="30003">Radio zenders laten zien</string>
+    <string id="30004">Karakter set conversie</string>
+    <string id="30005">Connectie timeout (s)</string>
+    <string id="30006">Negeer kanalen zonder VPID and APID</string>
+    <string id="30007">Berichten vanuit VDR toestaan</string>
+    <string id="30008">Prioriteit</string>
+    <string id="30009">Lees opnames van directory</string>
+    <string id="30010">VDR opname directory</string>
+</strings>

@@ -9,7 +9,13 @@ SRCS=Addon.cpp \
 		 Service.cpp \
 		 Skin.cpp \
 		 Visualisation.cpp \
+		 PVRClient.cpp \
 		 fft.cpp \
+		 Skin.cpp \
+		 AddonHelpers_Addon.cpp \
+		 AddonHelpers_GUI.cpp \
+		 AddonHelpers_PVR.cpp \
+		 AddonHelpers_local.cpp \
 		 Repository.cpp \
 
 LIB=addons.a

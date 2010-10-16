@@ -57,6 +57,10 @@ SRCS=AlarmClock.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
+     PVREpg.cpp \
+     PVRTimers.cpp \
+     PVRChannels.cpp \
+     PVRRecordings.cpp \
      StreamDetails.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
@@ -64,6 +68,7 @@ SRCS=AlarmClock.cpp \
      fastmemcpy.c \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
+     TextSearch.cpp \
      WebServer.cpp \
      AnnouncementManager.cpp \
      Semaphore.cpp \

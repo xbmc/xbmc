@@ -63,8 +63,8 @@ public:
 
   virtual ILiveTVInterface* GetLiveTV() {return (ILiveTVInterface*)this;}
 
-  virtual bool           NextChannel();
-  virtual bool           PrevChannel();
+  virtual bool           NextChannel(bool preview = false);
+  virtual bool           PrevChannel(bool preview = false);
   virtual bool           SelectChannel(unsigned int channel);
 
   virtual int            GetTotalTime();

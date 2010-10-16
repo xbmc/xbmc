@@ -57,6 +57,7 @@ struct SSortFileItem
   static void BySongTrackNum(CFileItemPtr &item);
   static void BySongDuration(CFileItemPtr &item);
   static void BySongRating(CFileItemPtr &item);
+  static void ByChannel(CFileItemPtr &item);
 
   static void ByProgramCount(CFileItemPtr &item);
 
@@ -118,6 +119,7 @@ typedef enum {
   SORT_METHOD_LASTPLAYED,
   SORT_METHOD_LISTENERS,
   SORT_METHOD_UNSORTED,
+  SORT_METHOD_CHANNEL,
   SORT_METHOD_BITRATE,
   SORT_METHOD_MAX
 } SORT_METHOD;

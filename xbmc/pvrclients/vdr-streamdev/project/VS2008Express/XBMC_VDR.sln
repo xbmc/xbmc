@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC_VDR", "XBMC_VDR.vcproj", "{838CDE27-AFDF-449F-9981-A78903C9C71E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug|Win32.Build.0 = Debug|Win32
+		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release|Win32.ActiveCfg = Release|Win32
+		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -47,11 +47,14 @@ using namespace std;
 using namespace ADDON;
 
 // String id's of the masks
+#define MASK_DAYS   17999
+#define MASK_HOURS  17998
 #define MASK_MINS   14044
 #define MASK_SECS   14045
 #define MASK_MS    14046
 #define MASK_PERCENT 14047
 #define MASK_KBPS   14048
+#define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
 
@@ -751,6 +754,49 @@ void CGUISettings::Initialize()
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
   AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  // tv settings (access over TV menu from home window)
+  AddGroup(8, 19180);
+  CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
+  AddBool(pvr, "pvrmanager.enabled", 449  , false);
+  AddString(pvr, "pvrmanager.channelmanager", 19199, "", BUTTON_CONTROL_STANDARD);
+  AddString(pvr, "pvrmanager.channelscan", 19117, "", BUTTON_CONTROL_STANDARD);
+  AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
+
+  CSettingsCategory* pvrm = AddCategory(8, "pvrmenu", 19181);
+  AddInt(pvrm, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(pvrm, "pvrmenu.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(pvrm, "pvrmenu.infoswitch", 19178, true);
+  AddBool(pvrm, "pvrmenu.infotimeout", 19179, true);
+  AddInt(pvrm, "pvrmenu.infotime", 19184, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(pvrm, "pvrmenu.hidevideolength", 19169, true);
+  AddSeparator(pvrm, "pvrmenu.sep1");
+  AddString(pvrm, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(pvrm, "pvrmenu.searchicons", 19167, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(pvrm, "pvrmenu.sep2");
+  AddInt(pvrm, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
+
+  CSettingsCategory* pvre = AddCategory(8, "pvrepg", 19069);
+  AddInt(pvre, "pvrepg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(pvre, "pvrepg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(pvre, "pvrepg.ignoredbforclient", 19072, false);
+  AddString(pvre, "pvrepg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
+
+  CSettingsCategory* pvrp = AddCategory(8, "pvrplayback", 19177);
+  AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);
+  AddBool(pvrp, "pvrplayback.playminimized", 19171, true);
+  AddInt(pvrp, "pvrplayback.scantime", 19170, 15, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(pvrp, "pvrplayback.channelentrytimeout", 19073, 0, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+  AddSeparator(pvrp, "pvrplayback.sep1");
+  AddBool(pvrp, "pvrplayback.signalquality", 19037, true);
+  AddInt(pvrp, "pvrplayback.startlast", 19189, START_LAST_CHANNEL_OFF, START_LAST_CHANNEL_OFF, 1, START_LAST_CHANNEL_ON, SPIN_CONTROL_TEXT);
+
+  CSettingsCategory* pvrr = AddCategory(8, "pvrrecord", 19043);
+  AddInt(pvrr, "pvrrecord.instantrecordtime", 19172, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvrr, "pvrrecord.defaultpriority", 19173, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
+  AddInt(pvrr, "pvrrecord.defaultlifetime", 19174, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvrr, "pvrrecord.marginstop", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 }
 
 CGUISettings::~CGUISettings(void)

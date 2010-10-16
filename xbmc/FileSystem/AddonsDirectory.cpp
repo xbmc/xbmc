@@ -31,6 +31,7 @@
 #include "StringUtils.h"
 #include "TextureManager.h"
 #include "File.h"
+#include "SpecialProtocol.h"
 
 using namespace ADDON;
 
@@ -175,6 +176,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
 void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items, bool reposAsFolders)
 {
+  CStdString xbmcPath = _P("special://xbmc/addons");
   items.ClearItems();
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -187,6 +189,9 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
+    else if (pItem->GetProperty("Addon.Path").Left(xbmcPath.size()).Equals(xbmcPath))
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24095));
+
     if (!addon->Props().broken.IsEmpty())
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
     if (addon2 && addon2->Version() < addon->Version())

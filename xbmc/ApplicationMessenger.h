@@ -82,8 +82,9 @@ class CGUIDialog;
 #define TMSG_GUI_PYTHON_DIALOG        605
 #define TMSG_GUI_DIALOG_CLOSE         606
 #define TMSG_GUI_ACTION               607
-#define TMSG_GUI_INFOLABEL            608
-#define TMSG_GUI_INFOBOOL             609
+#define TMSG_GUI_ADDON_DIALOG         608
+#define TMSG_GUI_INFOLABEL            609
+#define TMSG_GUI_INFOBOOL             610
 
 #define TMSG_OPTICAL_MOUNT        700
 #define TMSG_OPTICAL_UNMOUNT      701

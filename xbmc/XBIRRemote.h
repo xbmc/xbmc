@@ -88,6 +88,8 @@
 #define XINPUT_IR_REMOTE_GREEN          252
 #define XINPUT_IR_REMOTE_YELLOW         253
 #define XINPUT_IR_REMOTE_BLUE           254
+#define XINPUT_IR_REMOTE_PLAYLIST       255
+#define XINPUT_IR_REMOTE_GUIDE          256
 
 typedef struct _XINPUT_IR_REMOTE
 {

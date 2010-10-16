@@ -55,6 +55,7 @@
 #include "SingleLock.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
+#include "addons/AddonHelpers_GUI.h"
 
 #ifdef HAS_HTTPAPI
 #include "lib/libhttpapi/XBMChttp.h"
@@ -630,6 +631,15 @@ case TMSG_POWERDOWN:
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         g_windowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
+      }
+      break;
+
+    case TMSG_GUI_ADDON_DIALOG:
+      {
+        if (pMsg->lpVoid)
+        { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
+          ((ADDON::CGUIAddonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+        }
       }
       break;
 

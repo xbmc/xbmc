@@ -35,11 +35,13 @@
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogFullScreenInfo.h"
-#include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogNumeric.h"
+#include "GUIDialogAudioSubtitleSettings.h"
+#include "GUISelectButtonControl.h"
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "PVRManager.h"
 #include "VideoReferenceClock.h"
 #include "AdvancedSettings.h"
 #include "CPUInfo.h"
@@ -58,6 +60,7 @@
 #define LABEL_ROW1                       10
 #define LABEL_ROW2                       11
 #define LABEL_ROW3                       12
+#define CONTROL_GROUP_CHOOSER            503
 
 #define BTN_OSD_VIDEO                    13
 #define BTN_OSD_AUDIO                    14
@@ -119,6 +122,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   m_dwShowViewModeTimeout = 0;
   m_bShowCurrentTime = false;
   m_subsLayout = NULL;
+  m_bGroupSelectShow = false;
   m_sliderAction = 0;
   // audio
   //  - language
@@ -200,36 +204,52 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_STEP_BACK:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+    if (!g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      if (m_timeCodePosition > 0)
+        SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+      else
+        g_application.m_pPlayer->Seek(false, false);
+    }
     else
-      g_application.m_pPlayer->Seek(false, false);
+      SeekTV(false, false);
     return true;
-    break;
 
   case ACTION_STEP_FORWARD:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+    if (!g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      if (m_timeCodePosition > 0)
+        SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+      else
+        g_application.m_pPlayer->Seek(true, false);
+    }
     else
-      g_application.m_pPlayer->Seek(true, false);
+      SeekTV(true, false);
     return true;
-    break;
 
   case ACTION_BIG_STEP_BACK:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+    if (!g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      if (m_timeCodePosition > 0)
+        SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_BACKWARD);
+      else
+        g_application.m_pPlayer->Seek(false, true);
+    }
     else
-      g_application.m_pPlayer->Seek(false, true);
+      SeekTV(false, true);
     return true;
-    break;
 
   case ACTION_BIG_STEP_FORWARD:
-    if (m_timeCodePosition > 0)
-      SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+    if (!g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      if (m_timeCodePosition > 0)
+        SeekToTimeCodeStamp(SEEK_RELATIVE, SEEK_FORWARD);
+      else
+        g_application.m_pPlayer->Seek(true, true);
+    }
     else
-      g_application.m_pPlayer->Seek(true, true);
+      SeekTV(true, true);
     return true;
-    break;
 
   case ACTION_NEXT_SCENE:
     if (g_application.m_pPlayer->SeekScene(true))
@@ -271,6 +291,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
+        CFileItem item(g_application.CurrentFileItem());
         pDialog->DoModal();
         return true;
       }
@@ -401,13 +422,23 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.CurrentFileItem().IsLiveTV())
       {
         int channelNr = -1;
+        int currentChannelNr;
+        g_PVRManager.GetCurrentChannel(&currentChannelNr, NULL);
 
-        CStdString strChannel;
-        strChannel.Format("%i", action.GetID() - REMOTE_0);
-        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
-          channelNr = atoi(strChannel.c_str());
+        if (action.GetID() == REMOTE_0)
+        {
+          channelNr = g_PVRManager.GetPreviousChannel();
+        }
+        else
+        {
+          int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
+          CStdString strChannel;
+          strChannel.Format("%i", action.GetID() - REMOTE_0);
+          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
+            channelNr = atoi(strChannel.c_str());
+        }
 
-        if (channelNr > 0)
+        if (channelNr > 0 && channelNr != currentChannelNr)
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)channelNr));
       }
       else
@@ -440,6 +471,18 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
       int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
       g_application.SeekTime((double)setpos);
+    }
+    return true;
+    break;
+  case ACTION_SHOW_PLAYLIST:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasPVRChannelInfoTag())
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+      else if (item.HasVideoInfoTag())
+        g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+      else if (item.HasMusicInfoTag())
+        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
     return true;
     break;
@@ -490,6 +533,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   default:
       break;
   }
+
   return CGUIWindow::OnAction(action);
 }
 
@@ -524,6 +568,8 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     pLabel->SetVisible(true);
     pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }
+
+  FillInTVGroups();
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -542,6 +588,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_infoManager.SetShowInfo(false);
       g_infoManager.SetShowCodec(false);
       m_bShowCurrentTime = false;
+      m_bGroupSelectShow = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
@@ -588,6 +635,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (pDialog) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
+      if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
 
@@ -610,6 +665,55 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       }
 
       return true;
+    }
+  case GUI_MSG_CLICKED:
+    {
+      unsigned int iControl = message.GetSenderId();
+      if (iControl == CONTROL_GROUP_CHOOSER)
+      {
+        int iNewGroup = -1; // All Channels
+
+        cPVRChannelGroups *groups;
+        if (!g_PVRManager.IsPlayingRadio())
+          groups = &PVRChannelGroupsTV;
+        else
+          groups = &PVRChannelGroupsRadio;
+
+        // Get the currently selected label of the Select button
+        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
+        OnMessage(msg);
+        CStdString strLabel = msg.GetLabel();
+        if (msg.GetParam1() != 0)
+        {
+          // Go with the currently selected Label String from the Select button
+          // thru all Group names, if one of this names match the label load
+          // the ID of this group, if no equal name is found the default group
+          // for all channels is used.
+          for (int i = 0; i < (int) groups->size(); ++i)
+          {
+            if (strLabel == groups->at(i).GroupName())
+            {
+              iNewGroup = groups->at(i).GroupID();
+              break;
+            }
+          }
+        }
+
+        // Switch to the first channel of the new group if the new group ID is
+        // different from the current one.
+        if (iNewGroup != g_PVRManager.GetPlayingGroup())
+        {
+          g_PVRManager.SetPlayingGroup(iNewGroup);
+          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(iNewGroup)));
+        }
+
+        // hide the control and reset focus
+        m_bGroupSelectShow = false;
+        SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
+//        SET_CONTROL_FOCUS(0, 0);
+        return true;
+      }
+      break;
     }
   case GUI_MSG_SETFOCUS:
   case GUI_MSG_LOSTFOCUS:
@@ -798,6 +902,7 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_VISIBLE(LABEL_ROW2);
     SET_CONTROL_VISIBLE(LABEL_ROW3);
     SET_CONTROL_VISIBLE(BLUE_BAR);
+    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
   else if (m_timeCodeShow)
   {
@@ -805,6 +910,15 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW2);
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_VISIBLE(BLUE_BAR);
+    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
+  }
+  else if (m_bGroupSelectShow)
+  {
+    SET_CONTROL_HIDDEN(LABEL_ROW1);
+    SET_CONTROL_HIDDEN(LABEL_ROW2);
+    SET_CONTROL_HIDDEN(LABEL_ROW3);
+    SET_CONTROL_HIDDEN(BLUE_BAR);
+    SET_CONTROL_VISIBLE(CONTROL_GROUP_CHOOSER);
   }
   else
   {
@@ -812,6 +926,7 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW2);
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_HIDDEN(BLUE_BAR);
+    SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
 }
 
@@ -903,6 +1018,23 @@ void CGUIWindowFullScreen::SeekToTimeCodeStamp(SEEK_TYPE type, SEEK_DIRECTION di
   m_timeCodeShow = false;
 }
 
+void CGUIWindowFullScreen::SeekTV(bool bPlus, bool bLargeStep)
+{
+  if (bLargeStep)
+  {
+    if (bPlus)
+      OnAction(CAction(ACTION_NEXT_ITEM));
+    else
+      OnAction(CAction(ACTION_PREV_ITEM));
+    return;
+  }
+  else if (!bLargeStep)
+  {
+    ChangetheTVGroup(bPlus);
+    return;
+  }
+}
+
 double CGUIWindowFullScreen::GetTimeCodeStamp()
 {
   // Convert the timestamp into an integer
@@ -961,6 +1093,63 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
       g_settings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
     }
+  }
+}
+
+void CGUIWindowFullScreen::FillInTVGroups()
+{
+  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
+  g_windowManager.SendMessage(msgReset);
+
+  cPVRChannelGroups *groups;
+  if (!g_PVRManager.IsPlayingRadio())
+    groups = &PVRChannelGroupsTV;
+  else
+    groups = &PVRChannelGroupsRadio;
+
+  int iGroup        = 0;
+  int iCurrentGroup = 0;
+  {
+    // First Group is All channels (ID = -1)
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
+    msg.SetLabel(593);
+    g_windowManager.SendMessage(msg);
+  }
+  for (int i = 0; i < (int) groups->size(); ++i)
+  {
+    if (groups->at(i).GroupID() == g_PVRManager.GetPlayingGroup())
+      iCurrentGroup = iGroup;
+
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
+    msg.SetLabel(groups->at(i).GroupName());
+    g_windowManager.SendMessage(msg);
+  }
+  CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroup);
+  g_windowManager.SendMessage(msgSel);
+}
+
+void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
+{
+  CGUISelectButtonControl* pButton = (CGUISelectButtonControl*)GetControl(CONTROL_GROUP_CHOOSER);
+  if (!pButton)
+    return;
+
+  if (!m_bGroupSelectShow)
+  {
+    SET_CONTROL_VISIBLE(CONTROL_GROUP_CHOOSER);
+    SET_CONTROL_FOCUS(CONTROL_GROUP_CHOOSER, 0);
+
+    // fire off an event that we've pressed this button...
+    OnAction(CAction(ACTION_SELECT_ITEM));
+
+    m_bGroupSelectShow = true;
+  }
+  else
+  {
+    if (next)
+      pButton->OnRight();
+    else
+      pButton->OnLeft();
   }
 }
 
