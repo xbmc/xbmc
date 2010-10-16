@@ -155,6 +155,14 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
 
         //continue in the loop and convert the rest
       }
+      else if (errno == EILSEQ) //An invalid multibyte sequence has been encountered in the input
+      {
+        //skip invalid byte
+        inBufStart++;
+        inBytesAvail--;
+
+        //continue in the loop and convert the rest
+      }
       else //iconv() had some other error
       {
         CLog::Log(LOGERROR, "%s iconv() failed from %s to %s, errno=%d(%s)",
@@ -445,10 +453,7 @@ void CCharsetConverter::fromW(const CStdStringW& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strEnc = enc;
-  if (strEnc.Right(8) != "//IGNORE")
-    strEnc.append("//IGNORE");
-  convert(iconvString,4,WCHAR_CHARSET,strEnc,strSource,strDest);
+  convert(iconvString,4,WCHAR_CHARSET,enc,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -457,9 +462,7 @@ void CCharsetConverter::toW(const CStdStringA& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strWchar = WCHAR_CHARSET;
-  strWchar.append("//IGNORE");
-  convert(iconvString,sizeof(wchar_t),enc,strWchar,strSource,strDest);
+  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -529,7 +532,7 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
   }
 }
 
