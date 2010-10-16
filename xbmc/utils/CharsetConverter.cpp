@@ -191,6 +191,8 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
 
   strDest.ReleaseBuffer();
   
+  free(outBuf);
+
   return true;
 }
 
