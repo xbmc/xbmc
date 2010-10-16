@@ -38,14 +38,6 @@ enum DxvaDecoderType {
   DECODER_TYPE_DXVA_2    ///< IDirectXVideoDecoder
 };
 
-enum PCI_Vendors
-{
-  PCIV_ATI        = 0x1002,
-  PCIV_nVidia        = 0x10DE,
-  PCIV_Intel        = 0x8086,
-  PCIV_S3_Graphics    = 0x5333
-};
-
 typedef enum
 {
 	PICT_TOP_FIELD     = 1,
