@@ -505,7 +505,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
   REFERENCE_TIME rtBestStop = 0x7fffffffffffffffi64;
   std::list<ISubPic *>::iterator pos = m_Queue.begin();
 #if DSubPicTraceLevel > 2
-  TRACE(L"Find: ");
+  TRACE(L"Queue size: %d; Find: ", m_Queue.size());
 #endif
   while(pos != m_Queue.end())
   {

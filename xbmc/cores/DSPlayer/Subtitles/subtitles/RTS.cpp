@@ -28,6 +28,7 @@
 // WARNING: this isn't very thread safe, use only one RTS a time. We should use TLS in future.
 static HDC g_hDC;
 static int g_hDC_refcnt = 0;
+#define RTSTraceLevel 0
 
 static long revcolor(long c)
 {
@@ -3449,6 +3450,9 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
     int entry = subs[i].idx;
 
     STSEntry stse = at(entry);
+#if RTSTraceLevel > 1
+    TRACE(L"Rendering subtitle: %s", stse.str.c_str());
+#endif
 
     {
       int start = TranslateStart(entry, fps);

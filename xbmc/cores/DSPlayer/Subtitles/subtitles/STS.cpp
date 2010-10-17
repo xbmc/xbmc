@@ -2107,7 +2107,7 @@ void CSimpleTextSubtitle::Add(CStdStringW str, bool fUnicode, int start, int end
         STSSegment stss(s.start, start);
         stss.subs = s.subs;
         s.start = start;
-        m_segments.insert(m_segments.begin(), stss);
+        m_segments.insert(m_segments.begin() + i, stss);
         continue;
       }
 
