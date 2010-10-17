@@ -349,3 +349,14 @@ bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture 
   return true;
 }
 
+bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
+{
+  // Some nVidia VP3 hardware "may not support H.264 streams with the following macroblock widths" - per nVidia vdpau notes.
+  int unsupported[] = {49, 54, 59, 64, 113, 118, 123, 128};
+  for (unsigned int i = 0; i < sizeof(unsupported) / sizeof(int); i++)
+  {
+    if (unsupported[i] == (width + 15) / 16)
+      return false;
+  }
+  return true;
+}

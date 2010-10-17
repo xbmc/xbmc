@@ -27,6 +27,7 @@
 #include <dxva.h>
 #include <dxva2api.h>
 #include "libavcodec/dxva2.h"
+#include "../DVDCodecUtils.h"
 
 #include "DXVA.h"
 #include "WindowingFactory.h"
@@ -128,6 +129,57 @@ static DWORD UVDDeviceID [] = {
   0x9507, // ATI Radeon HD 3830
   0x9513, // ATI Radeon HD 3850 X2
   0x950F, // ATI Radeon HD 3850 X2
+  0x0000
+};
+
+// List of PCI Device ID of nVidia cards with the macroblock width issue. More or less the VP3 block.
+// Per NVIDIA Accelerated Linux Graphics Driver, Appendix A Supported NVIDIA GPU Products, cards with note 1.
+static DWORD VP3DeviceID [] = {
+  0x06E0, // GeForce 9300 GE
+  0x06E1, // GeForce 9300 GS
+  0x06E2, // GeForce 8400
+  0x06E4, // GeForce 8400 GS
+  0x06E5, // GeForce 9300M GS
+  0x06E6, // GeForce G100
+  0x06E8, // GeForce 9200M GS
+  0x06E9, // GeForce 9300M GS
+  0x06EC, // GeForce G 105M
+  0x06EF, // GeForce G 103M
+  0x06F1, // GeForce G105M
+  0x0844, // GeForce 9100M G
+  0x0845, // GeForce 8200M G
+  0x0846, // GeForce 9200
+  0x0847, // GeForce 9100
+  0x0848, // GeForce 8300
+  0x0849, // GeForce 8200
+  0x084A, // nForce 730a
+  0x084B, // GeForce 9200
+  0x084C, // nForce 980a/780a SLI
+  0x084D, // nForce 750a SLI
+  0x0860, // GeForce 9400
+  0x0861, // GeForce 9400
+  0x0862, // GeForce 9400M G
+  0x0863, // GeForce 9400M
+  0x0864, // GeForce 9300
+  0x0865, // ION
+  0x0866, // GeForce 9400M G
+  0x0867, // GeForce 9400
+  0x0868, // nForce 760i SLI
+  0x086A, // GeForce 9400
+  0x086C, // GeForce 9300 / nForce 730i
+  0x086D, // GeForce 9200
+  0x086E, // GeForce 9100M G
+  0x086F, // GeForce 8200M G
+  0x0870, // GeForce 9400M
+  0x0871, // GeForce 9200
+  0x0872, // GeForce G102M
+  0x0873, // GeForce G102M
+  0x0874, // ION
+  0x0876, // ION
+  0x087A, // GeForce 9400
+  0x087D, // ION
+  0x087E, // ION LE
+  0x087F, // ION LE
   0x0000
 };
 
@@ -253,12 +305,37 @@ static bool IsL41LimitedATI()
   return false;
 }
 
+static bool HasVP3WidthBug(AVCodecContext *avctx)
+{
+  // Some nVidia VP3 hardware cannot do certain macroblock widths
+
+  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+
+  if(AIdentifier.VendorId == PCIV_nVidia
+  && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->width))
+  {
+    // Find the card in a known list of problematic VP3 hardware
+    for (unsigned idx = 0; VP3DeviceID[idx] != 0; idx++)
+      if (VP3DeviceID[idx] == AIdentifier.DeviceId)
+        return true;
+  }
+  return false;
+}
+
 static bool CheckCompatibility(AVCodecContext *avctx)
 {
-  // Check for hardware limited to H264 L4.1 (ie Bluray).
-
+  // The incompatibilities are all for H264
   if(avctx->codec_id != CODEC_ID_H264)
     return true;
+
+  // Macroblock width incompatibility
+  if (HasVP3WidthBug(avctx))
+  {
+    CLog::Log(LOGWARNING,"DXVA - width %i is not supported with nVidia VP3 hardware. DXVA will not be used", avctx->width);
+    return false;
+  }
+
+  // Check for hardware limited to H264 L4.1 (ie Bluray).
 
   // No advanced settings: autodetect.
   // The advanced setting lets the user override the autodetection (in case of false positive or negative)
