@@ -963,6 +963,7 @@ void CMPCOutputThread::Process(void)
   // return immediately until decoder starts getting input packets. 
   while (!m_bStop)
   {
+    memset(&decoder_status, 0, sizeof(decoder_status));
     ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
     if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount)
     {
@@ -975,6 +976,7 @@ void CMPCOutputThread::Process(void)
   // decoder is primed so now calls in DtsProcOutputXXCopy will block
   while (!m_bStop)
   {
+    memset(&decoder_status, 0, sizeof(decoder_status));
     ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
     if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount != 0)
       GetDecoderOutput();
