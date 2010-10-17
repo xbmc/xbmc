@@ -788,9 +788,9 @@ namespace VIDEO
     CVideoInfoTag* tag = item->GetVideoInfoTag();
     /*
      * First check the season and episode number. This takes precedence over the original air
-     * date and episode title.
+     * date and episode title. Must be a valid season and episode number combination.
      */
-    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+    if (tag->m_iSeason > -1 && tag->m_iEpisode > 0)
     {
       SEpisode episode;
       episode.strPath = item->m_strPath;
