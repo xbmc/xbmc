@@ -2332,7 +2332,10 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    g_graphicsContext.ToggleFullScreenRoot();
+    //when in standalone mode, don't allow switching from fullscreen to windowed with the \ key
+    if (!g_application.IsStandAlone() || (g_application.IsStandAlone() && !g_graphicsContext.IsFullScreenRoot()))
+      g_graphicsContext.ToggleFullScreenRoot();
+
     return true;
   }
 
