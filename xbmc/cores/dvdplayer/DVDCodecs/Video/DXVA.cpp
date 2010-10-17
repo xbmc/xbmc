@@ -350,7 +350,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
 
   if (checkcompat && !CheckH264L41(avctx))
   {
-      CLog::Log(LOGDEBUG, "DXVA - compatibility check: video exceeds L4.1. DXVA will not be used.");
+      CLog::Log(LOGWARNING, "DXVA - compatibility check: video exceeds L4.1. DXVA will not be used.");
       return false;
   }
 
