@@ -352,14 +352,14 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   } 
   else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
-  END_PERFORMANCE_COUNTER
+  END_PERFORMANCE_COUNTER("Loading filters rules");
 
   START_PERFORMANCE_COUNTER
   hr = ConnectFilter(CGraphFilters::Get()->Splitter.pBF , NULL);
   //In some case its going to failed because the source filter is not the splitter
   if (hr == S_FALSE)
     hr = ConnectFilter(CGraphFilters::Get()->Source.pBF, NULL);
-  END_PERFORMANCE_COUNTER
+  END_PERFORMANCE_COUNTER("Connecting filters");
 
   if (hr != S_OK)
   {

@@ -44,8 +44,8 @@
 #endif
 
 #define START_PERFORMANCE_COUNTER { int64_t start = CurrentHostCounter();
-#define END_PERFORMANCE_COUNTER int64_t end = CurrentHostCounter(); \
-  CLog::Log(LOGINFO, "%s Elapsed time: %.2fms", __FUNCTION__, 1000.f * (end - start) / CurrentHostFrequency()); }
+#define END_PERFORMANCE_COUNTER(fn) int64_t end = CurrentHostCounter(); \
+  CLog::Log(LOGINFO, "%s %s. Elapsed time: %.2fms", __FUNCTION__, fn, 1000.f * (end - start) / CurrentHostFrequency()); }
 
 enum DSPLAYER_STATE
 {

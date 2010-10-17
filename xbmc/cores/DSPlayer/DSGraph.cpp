@@ -100,7 +100,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   START_PERFORMANCE_COUNTER
   hr = m_pGraphBuilder->RenderFileXbmc(file);
-  END_PERFORMANCE_COUNTER
+  END_PERFORMANCE_COUNTER("Rendering file");
 
   if (FAILED(hr))
     return hr;

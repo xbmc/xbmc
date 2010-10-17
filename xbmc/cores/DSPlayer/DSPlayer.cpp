@@ -199,7 +199,7 @@ void CDSPlayer::OnStartup()
   START_PERFORMANCE_COUNTER
   if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
     PlayerState = DSPLAYER_ERROR;
-  END_PERFORMANCE_COUNTER
+  END_PERFORMANCE_COUNTER("Loading file");
 
   // Start playback
   // If there's an error, the lock must be released in order to show the error dialog

@@ -278,16 +278,19 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
       CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default one", __FUNCTION__);
   }
 
-  CAudioEnumerator p_dsound;
   std::vector<DSFilterInfo> deviceList;
+  START_PERFORMANCE_COUNTER
+  CAudioEnumerator p_dsound;
   p_dsound.GetAudioRenderers(deviceList);
+  END_PERFORMANCE_COUNTER("Loaded audio renderer list");
 
   //see if there a config first 
+  const CStdString renderer = g_guiSettings.GetString("dsplayer.audiorenderer");
   for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
-    iter != deviceList.end(); ++iter)
+    !renderer.empty() && (iter != deviceList.end()); ++iter)
   {
     DSFilterInfo dev = *iter;
-    if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
+    if (renderer.Equals(dev.lpstrName))
     {
       currentGuid = dev.lpstrGuid;
       currentName = dev.lpstrName;
@@ -300,9 +303,11 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
     currentName.Format("Default DirectSound Device");
   }
 
+  START_PERFORMANCE_COUNTER
   pFGF = new CFGFilterRegistry(GUIDFromString(currentGuid));
   hr = pFGF->Create(&CGraphFilters::Get()->AudioRenderer.pBF);
   delete pFGF;
+  END_PERFORMANCE_COUNTER("Loaded audio renderer from registry");
 
   if (FAILED(hr))
   {
@@ -313,7 +318,9 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   CGraphFilters::Get()->AudioRenderer.osdname = currentName;
   CGraphFilters::Get()->AudioRenderer.guid = GUIDFromString(currentGuid);
 
+  START_PERFORMANCE_COUNTER
   hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->AudioRenderer.pBF, AnsiToUTF16(currentName));
+  END_PERFORMANCE_COUNTER("Added audio renderer to the graph");
 
   if (SUCCEEDED(hr))
     CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str());
@@ -400,9 +407,14 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 
   CStdString filter = "";
 
+  START_PERFORMANCE_COUNTER
   CFilterCoreFactory::GetAudioRendererFilter(pFileItem, filter);
   InsertAudioRenderer(filter); // First added, last connected
+  END_PERFORMANCE_COUNTER("Loading audio renderer");
+
+  START_PERFORMANCE_COUNTER
   InsertVideoRenderer();
+  END_PERFORMANCE_COUNTER("Loading video renderer");
 
   // We *need* those informations for filter loading. If the user wants it, be sure it's loaded
   // before using it.
@@ -415,6 +427,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   } else
     hasStreamDetails = pFileItem.HasVideoInfoTag() && pFileItem.GetVideoInfoTag()->HasStreamDetails();
 
+  START_PERFORMANCE_COUNTER
   if (FAILED(CFilterCoreFactory::GetSourceFilter(pFileItem, filter)))
   {
     CLog::Log(LOGERROR, __FUNCTION__" Failed to get the source filter");
@@ -426,7 +439,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     CLog::Log(LOGERROR, __FUNCTION__" Failed to insert the source filter");
     return E_FAIL;
   }
+  END_PERFORMANCE_COUNTER("Loading source filter");
 
+  START_PERFORMANCE_COUNTER
   if (! CGraphFilters::Get()->Splitter.pBF)
   {
     if ( FAILED(CFilterCoreFactory::GetSplitterFilter(pFileItem, filter)) )
@@ -437,10 +452,13 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
       return E_FAIL;
     }
   }
+  END_PERFORMANCE_COUNTER("Loading splitter filter");
 
   // Init Streams manager, and load streams
+  START_PERFORMANCE_COUNTER
   CStreamsManager::Get()->InitManager();
   CStreamsManager::Get()->LoadStreams();
+  END_PERFORMANCE_COUNTER("Loading streams informations");
 
   if (! hasStreamDetails) {
     // We will use our own stream detail
@@ -461,6 +479,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   }
 
   std::vector<CStdString> extras;
+  START_PERFORMANCE_COUNTER
   if (FAILED(CFilterCoreFactory::GetExtraFilters(pFileItem, extras, CGraphFilters::Get()->IsUsingDXVADecoder())))
   {
     //Dont want the loading to fail for an error there
@@ -475,22 +494,28 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
       CGraphFilters::Get()->Extras.push_back(f);
   }
   extras.clear();
+  END_PERFORMANCE_COUNTER("Loading extra filters");
 
+  START_PERFORMANCE_COUNTER
   if ( FAILED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
     goto clean;
 
   if ( FAILED(InsertFilter(filter, CGraphFilters::Get()->Video)))
     goto clean;
+  END_PERFORMANCE_COUNTER("Loading video filter");
 
+  START_PERFORMANCE_COUNTER
   if ( FAILED(CFilterCoreFactory::GetAudioFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
     goto clean;
 
   if ( FAILED(InsertFilter(filter, CGraphFilters::Get()->Audio)))
     goto clean;
+  END_PERFORMANCE_COUNTER("Loading audio filter");
 
   // Shaders
   {
     std::vector<uint32_t> shaders;
+    START_PERFORMANCE_COUNTER
     if (SUCCEEDED(CFilterCoreFactory::GetShaders(pFileItem, shaders, CGraphFilters::Get()->IsUsingDXVADecoder())))
     {
       for (std::vector<uint32_t>::const_iterator it = shaders.begin();
@@ -499,6 +524,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
         g_dsSettings.pixelShaderList->EnableShader(*it);
       }
     }
+    END_PERFORMANCE_COUNTER("Loading shaders");
   }
 
   CLog::Log(LOGDEBUG,"%s All filters added to the graph", __FUNCTION__);
