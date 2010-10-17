@@ -316,6 +316,7 @@ void Usage()
 {
   puts("Usage:");
   puts("  -help            Show this screen.");
+  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 }
