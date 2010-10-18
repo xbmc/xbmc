@@ -537,7 +537,11 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   unsigned bitstream = 1; //ConfigBitstreamRaw = 2 seems to be broken in current ffmpeg, so prefer mode 1 for now
   for(unsigned i = 0; i< cfg_count; i++)
   {
-    CLog::Log(LOGDEBUG, "DXVA - bitstream type %d", cfg_list[i].ConfigBitstreamRaw);
+    CLog::Log(LOGDEBUG,
+              "DXVA - config %d: bitstream type %d%s",
+              i,
+              cfg_list[i].ConfigBitstreamRaw,
+              IsEqualGUID(cfg_list[i].guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? "" : ", encrypted");
 
     // select first available
     if(config.ConfigBitstreamRaw == 0 && cfg_list[i].ConfigBitstreamRaw != 0)
