@@ -325,7 +325,9 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   return ret;
 }
 
-#if (MHD_VERSION >= 0x00040001)
+#if (MHD_VERSION >= 0x00090200)
+ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
+#elif (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 #else   //libmicrohttpd < 0.4.0
 int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
