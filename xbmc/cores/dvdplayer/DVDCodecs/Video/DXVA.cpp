@@ -1061,8 +1061,8 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
   blt.TargetRect  = samp[0].DstRect;
-  blt.ConstrictionSize.cx = blt.TargetRect.right  - blt.TargetRect.left;
-  blt.ConstrictionSize.cy = blt.TargetRect.bottom - blt.TargetRect.top;
+  blt.ConstrictionSize.cx = 0;
+  blt.ConstrictionSize.cy = 0;
 
   blt.DestFormat.VideoTransferFunction = DXVA2_VideoTransFunc_sRGB;
   blt.DestFormat.SampleFormat          = DXVA2_SampleProgressiveFrame;
