@@ -65,15 +65,21 @@ private:
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
 
-#if (MHD_VERSION >= 0x00040001)
+#if (MHD_VERSION >= 0x00090200)
+  static ssize_t ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max);
+#elif (MHD_VERSION >= 0x00040001)
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
+#else
+  static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
+#endif
+
+#if (MHD_VERSION >= 0x00040001)
   static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
 #else   //libmicrohttpd < 0.4.0
-  static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
   static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size);
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
