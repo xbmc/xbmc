@@ -96,3 +96,4 @@ if [ "$usbStatus" = "disabled" ]; then
 	echo -1 >/sys/module/usbcore/parameters/autosuspend
 fi
 
+exit 0

@@ -83,3 +83,5 @@ if [ "$GPUTYPE" = "AMD" ]; then
 		fi
 	fi
 fi
+
+exit 0
