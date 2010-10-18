@@ -1173,12 +1173,10 @@ void CApplication::StartWebServer()
     }
 #endif
     if (m_network.GetFirstConnectedInterface())
-      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
+      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
     if (m_WebServer.IsStarted())
     {
-      m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
-
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);

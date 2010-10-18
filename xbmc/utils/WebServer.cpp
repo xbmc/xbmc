@@ -373,8 +373,9 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           MHD_OPTION_END);
 }
 
-bool CWebServer::Start(const char *ip, int port)
+bool CWebServer::Start(const char *ip, int port, const CStdString &username, const CStdString &password)
 {
+  SetCredentials(username, password);
   if (!m_running)
   {
     m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port);
