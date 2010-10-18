@@ -56,7 +56,7 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/sources.xml ] ; then
     <pictures>
         <default pathversion="1"></default>
         <source>
-            <name>Music</name>
+            <name>Pictures</name>
             <path pathversion="1">/home/$xbmcUser/Pictures/</path>
         </source>
     </pictures>
