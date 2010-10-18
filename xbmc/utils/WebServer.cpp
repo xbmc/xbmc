@@ -530,6 +530,8 @@ const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
   if (strcmp(ext, ".xml") == 0)   return "text/xml";
   if (strcmp(ext, ".zip") == 0)   return "application/zip";
   if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
+  if (strcmp(ext, ".js") == 0)    return "application/javascript";
+  if (strcmp(ext, ".css") == 0)   return "text/css";
   return NULL;
 }
 
