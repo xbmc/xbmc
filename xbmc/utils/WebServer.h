@@ -47,7 +47,7 @@ class CWebServer : public JSONRPC::ITransportLayer
 public:
   CWebServer();
 
-  bool Start(const char *ip, int port, const CStdString &username, const CStdString &password);
+  bool Start(int port, const CStdString &username, const CStdString &password);
   bool Stop();
   bool IsStarted();
   void SetCredentials(const CStdString &username, const CStdString &password);

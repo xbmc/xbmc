@@ -373,7 +373,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           MHD_OPTION_END);
 }
 
-bool CWebServer::Start(const char *ip, int port, const CStdString &username, const CStdString &password)
+bool CWebServer::Start(int port, const CStdString &username, const CStdString &password)
 {
   SetCredentials(username, password);
   if (!m_running)
