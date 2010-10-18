@@ -37,8 +37,6 @@ http://ftp.uk.debian.org/debian/pool/main/e/enca/libenca0_1.9-6_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/j/jasper/libjasper-dev_1.900.1-5.1_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/libm/libmms/libmms-dev_0.4-2_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/libm/libmms/libmms0_0.4-2_armel.deb
-http://ftp.uk.debian.org/debian/pool/main/libx/libxinerama/libxinerama-dev_1.0.3-2_armel.deb
-http://ftp.uk.debian.org/debian/pool/main/x/x11proto-xinerama/x11proto-xinerama-dev_1.1.2-5_all.deb
 http://ftp.uk.debian.org/debian/pool/main/c/curl/libcurl4-gnutls-dev_7.18.2-8lenny3_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/c/curl/libcurl3-gnutls_7.18.2-8lenny3_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/libi/libidn/libidn11_1.8+20080606-1_armel.deb

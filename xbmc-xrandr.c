@@ -1075,8 +1075,7 @@ apply (void)
     /*
      * Hold the server grabbed while messing with
      * the screen so that apps which notice the resize
-     * event and ask for xinerama information from the server
-     * receive up-to-date information
+     * event receive up-to-date information
      */
     XGrabServer (dpy);
     
