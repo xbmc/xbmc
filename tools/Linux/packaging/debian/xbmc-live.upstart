@@ -27,6 +27,8 @@ start on (filesystem and stopped udevtrigger)
 
 stop on runlevel [06]
 
+emits starting-x
+
 pre-start script
 	get_opt() {
 		echo "$@" | cut -d "=" -f 2
