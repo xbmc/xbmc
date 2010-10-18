@@ -264,6 +264,7 @@ public:
   int AddSubtitle(const CStdString& subFilePath);
 
   void SetTime(REFERENCE_TIME rtNow);
+  void SetSizes(Com::SmartRect window, Com::SmartRect video);
 
   CDSStreamDetailSubtitle* GetSubtitleStreamDetail(unsigned int iIndex = 0);
   CDSStreamDetailSubtitleExternal* GetExternalSubtitleStreamDetail(unsigned int iIndex = 0);

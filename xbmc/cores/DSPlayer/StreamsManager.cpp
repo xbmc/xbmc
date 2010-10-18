@@ -980,6 +980,12 @@ HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture
   return E_FAIL;
 }
 
+void CSubtitleManager::SetSizes(Com::SmartRect window, Com::SmartRect video)
+{
+  if (m_pManager)
+    m_pManager->SetSizes(window, video);
+}
+
 std::vector<CDSStreamDetailSubtitle *>& CSubtitleManager::GetSubtitles()
 {
   return m_subtitleStreams;

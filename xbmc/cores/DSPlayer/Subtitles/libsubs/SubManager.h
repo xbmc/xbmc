@@ -22,6 +22,7 @@ public:
   void SetStyle(SSubStyle* style);
   void SetSubPicProvider(ISubStream* pSubStream);
   void SetTextureSize(Com::SmartSize& pSize);
+  void SetSizes(Com::SmartRect window, Com::SmartRect video);
 
   void StopThread();
   void StartThread(IDirect3DDevice9* pD3DDevice);

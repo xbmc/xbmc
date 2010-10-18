@@ -190,7 +190,7 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
     m_pAllocator->SetCurVidRect(renderRect);
     if (m_pSubPicQueue)
     {
-      //m_pSubPicQueue->Invalidate(m_rtNow + 100000000);
+      m_pSubPicQueue->Invalidate(m_rtNow + 100000000);
     }
     m_lastSize = renderSize;
   }
@@ -200,7 +200,10 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   {
     if (SUCCEEDED (pSubPic->GetSourceAndDest(&renderSize, pSrc, pDest)))
     {
-      return pSubPic->GetTexture(pTexture);      
+      TRACE(L"Got source/dest rect: %d %d %d %d | %d %d %d %d with render size %d %d", pSrc.left, pSrc.top, pSrc.Width(), pSrc.Height(),
+        pDest.left, pDest.top, pDest.Width(), pDest.Height(),
+        renderSize.cx, renderSize.cy);
+      return pSubPic->GetTexture(pTexture);
     }
   }
 
@@ -404,4 +407,18 @@ HRESULT CSubManager::GetStreamTitle(ISubStream* pSubStream, wchar_t **subTitle)
   }
 
   return E_FAIL;
+}
+
+void CSubManager::SetSizes(Com::SmartRect window, Com::SmartRect video)
+{
+  if(m_pAllocator)
+  {
+    m_pAllocator->SetCurSize(window.Size());
+    m_pAllocator->SetCurVidRect(video);
+  }
+
+  if(m_pSubPicQueue)
+  {
+    m_pSubPicQueue->Invalidate();
+  }
 }

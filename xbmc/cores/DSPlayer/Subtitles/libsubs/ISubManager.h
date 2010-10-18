@@ -83,6 +83,7 @@ public:
   virtual void SetEnable(bool enable) = 0;
   virtual void SetTimePerFrame(REFERENCE_TIME timePerFrame) = 0;
   virtual void SetTextureSize(Com::SmartSize& pSize) = 0;
+  virtual void SetSizes(Com::SmartRect window, Com::SmartRect video) = 0;
   virtual void SetTime(REFERENCE_TIME rtNow) = 0;
   virtual void SetSubPicProvider(ISubStream* pSubStream) = 0;
   virtual void SetStyle(SSubStyle* style) = 0;
