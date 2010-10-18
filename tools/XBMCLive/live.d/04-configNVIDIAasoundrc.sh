@@ -191,6 +191,7 @@ EOF
 	# Setup Triple Audiooutput
 	#
 	if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
+		mkdir -p /home/$xbmcUser/.xbmc/userdata &> /dev/null
 		cat > /home/$xbmcUser/.xbmc/userdata/guisettings.xml << 'EOF'
 <settings>
     <audiooutput>
@@ -202,6 +203,7 @@ EOF
     </audiooutput>
 </settings>
 EOF
+		chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
 	else
 		sed -i 's#\(<audiodevice>\)[0-9]*\(</audiodevice>\)#\1'custom'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 		sed -i 's#\(<channellayout>\)[0-9]*\(</channellayout>\)#\1'0'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
@@ -209,7 +211,5 @@ EOF
 		sed -i 's#\(<mode>\)[0-9]*\(</mode>\)#\1'2'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 		sed -i 's#\(<passthroughdevice>\)[0-9]*\(</passthroughdevice>\)#\1'alsa:hdmi'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 	fi
-
-	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
 fi
 
