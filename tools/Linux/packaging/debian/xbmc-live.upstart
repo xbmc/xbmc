@@ -65,7 +65,7 @@ pre-start script
 	if [ -d $BOOTHOOKSDIRECTORY/live.d ]; then
 	  for hook in $(find $BOOTHOOKSDIRECTORY/live.d -type f -perm /u=x,g=x,o=x | sort)
 	  do
-	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
+	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS  || true
 	  done
 	fi
 
@@ -73,7 +73,7 @@ pre-start script
 	if [ -d /home/$xbmcUser/.xbmc/live.d ]; then
 	  for hook in $(find /home/$xbmcUser/.xbmc/live.d -type f -perm /u=x,g=x,o=x | sort)
 	  do
-	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS
+	        $hook $BOOTMEDIAMOUNTPOINT $XBMC_PARAMS  || true
 	  done
 	fi
 
