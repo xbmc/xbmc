@@ -70,7 +70,7 @@ EPOCH="2"
 XBMC_VERSION="10.0~svn$SVN_REVISION~deb1"
 DEB_REVISION="1"
 XBMC_SVN_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/Dharma"
-UBUNTU_SUITES="lucid karmic jaunty hardy"
+UBUNTU_SUITES="lucid karmic jaunty hardy maverick"
 if [ -z $DPUT_HOST ]; then
   DPUT_HOST="team-xbmc-svn-ppa"
 fi

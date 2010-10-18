@@ -52,7 +52,7 @@ parse_options()
         PBUILDER=1
         LOCAL=1
       ;;
-      hardy|intrepid|jaunty|karmic|lucid)
+      hardy|intrepid|jaunty|karmic|lucid|maverick)
         BUILDALL=0
         DIST="$OPT"
         DEBUILDOPTS=$FULLDEBUILDOPTS
@@ -273,7 +273,7 @@ if [[ -z $NO_SRC_GEN ]] ; then
   preparesrc
 fi
 
-for distro in hardy jaunty karmic lucid ; do 
+for distro in hardy jaunty karmic lucid maverick ; do
   if [[ $BUILDALL -eq 1 ]] || [[ $DIST == $distro ]]; then
     builddeb $distro
   fi
