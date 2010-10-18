@@ -91,3 +91,6 @@ if [ -n "$restartALSA" ] ; then
 
 	alsactl store &> /dev/null
 fi
+
+exit 0
+

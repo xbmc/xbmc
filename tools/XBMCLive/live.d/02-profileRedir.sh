@@ -60,3 +60,5 @@ if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
 	fi
 	ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
 fi
+
+exit 0

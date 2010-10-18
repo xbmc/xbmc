@@ -32,3 +32,5 @@ if [ "$xbmcParams" = "${xbmcParams%$activationToken*}" ] ; then
 fi
 
 /usr/bin/setAlsaVolumes 90
+
+exit 0
