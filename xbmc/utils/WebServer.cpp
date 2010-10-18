@@ -378,10 +378,7 @@ bool CWebServer::Start(int port, const CStdString &username, const CStdString &p
   SetCredentials(username, password);
   if (!m_running)
   {
-    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port);
-
-    if (!m_daemon) //try IPv4
-      m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
+    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
 
     m_running = m_daemon != NULL;
     if (m_running)
