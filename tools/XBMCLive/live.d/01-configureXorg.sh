@@ -68,7 +68,7 @@ fi
 
 if [ "$GPUTYPE" = "AMD" ]; then
 	# run aticonfig
-	/usr/bin/aticonfig --initial --sync-vsync=on -f
+	/usr/lib/fglrx/bin/aticonfig --initial --sync-vsync=on -f
 	ATICONFIG_RETURN_CODE=$? 
 
 	if [ $ATICONFIG_RETURN_CODE -eq 255 ]; then
