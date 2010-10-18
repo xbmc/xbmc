@@ -32,6 +32,7 @@ mkdir -p /home/$xbmcUser/.xbmc/userdata
 # Always sync to vblank
 #
 if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
+	mkdir -p /home/$xbmcUser/.xbmc/userdata &> /dev/null
 	cat > /home/$xbmcUser/.xbmc/userdata/guisettings.xml << 'EOF'
 <settings>
     <videoscreen>
@@ -39,6 +40,7 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/guisettings.xml ] ; then
     </videoscreen>
 </settings>
 EOF
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
 else
 	sed -i 's#\(<vsync>\)[0-9]*\(</vsync>\)#\1'2'\2#g' /home/$xbmcUser/.xbmc/userdata/guisettings.xml
 fi
