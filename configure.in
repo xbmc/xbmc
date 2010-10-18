@@ -630,7 +630,7 @@ else
   AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
-  
+
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
     AC_MSG_ERROR($missing_library))
@@ -649,9 +649,7 @@ else
   PKG_CHECK_MODULES([XMU],   [xmu],
     [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([CURL],  [libcurl],
-    [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
-    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([CURL],  [libcurl],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([DBUS],  [dbus-1],
     [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
     AC_MSG_ERROR($missing_library))
