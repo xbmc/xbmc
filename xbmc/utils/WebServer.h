@@ -61,7 +61,7 @@ private:
     GET,
     HEAD
   };
-
+  struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
 
