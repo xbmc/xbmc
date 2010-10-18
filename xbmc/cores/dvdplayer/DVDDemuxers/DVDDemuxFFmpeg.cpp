@@ -938,8 +938,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
 	
-        if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
-          st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;	
+        if(m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0))
+          st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0)->value;
 
         break;
       }
@@ -1021,8 +1021,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           if(pStream->codec)
             st->identifier = pStream->codec->sub_id;
 	    
-          if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
-            st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;
+          if(m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0))
+            st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "title", NULL, 0)->value;
 	
           break;
         }
