@@ -1285,6 +1285,7 @@ static int dca_decode_frame(AVCodecContext * avctx,
     //set AVCodec values with parsed data
     avctx->sample_rate = s->sample_rate;
     avctx->bit_rate = s->bit_rate;
+    avctx->frame_size = s->sample_blocks * 32;
 
     for (i = 0; i < (s->sample_blocks / 8); i++) {
         dca_decode_block(s, 0, i);
