@@ -463,7 +463,7 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     char soap_action_name[100];
     int  ret;
     //FIXME: no sscanf
-    ret = sscanf(soap_action_header, "%[^#]#%s",
+    ret = sscanf(soap_action_header, "%199[^#]#%99s",
                  prefix, 
                  soap_action_name);
     if (ret != 2)

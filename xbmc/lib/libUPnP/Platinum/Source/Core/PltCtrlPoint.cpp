@@ -853,7 +853,7 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest&              request,
             char tmp_nt[200];
             int  ret;
             //FIXME: no sscanf!
-            ret = sscanf(((const char*)*usn)+5, "%[^::]::%s",
+            ret = sscanf(((const char*)*usn)+5, "%199[^::]::%199s",
                 tmp_uuid, 
                 tmp_nt);
             if (ret != 2)
