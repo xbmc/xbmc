@@ -115,7 +115,7 @@ httplib_parse_url(const char *url, URLINFO *urlinfo)
 
     /* search for a login '@' token */
     if (strchr(url, '@') != NULL) {
-	ret = sscanf(url, "%[^:]:%[^@]", urlinfo->username, urlinfo->password);
+	ret = sscanf(url, "%1023[^:]:%1023[^@]", urlinfo->username, urlinfo->password);
 #if defined (commentout)
 	if (ret < 2) return SR_ERROR_PARSE_FAILURE;
 #endif
@@ -132,13 +132,13 @@ httplib_parse_url(const char *url, URLINFO *urlinfo)
 
     /* search for a port seperator */
     if (strchr(url, ':') != NULL) {
-	ret = sscanf(url, "%[^:]:%hu/%s", urlinfo->host, 
+	ret = sscanf(url, "%511[^:]:%hu/%252s", urlinfo->host, 
 		     (short unsigned int*)&urlinfo->port, urlinfo->path+1);
 	if (urlinfo->port < 1) return SR_ERROR_PARSE_FAILURE;
 	ret -= 1;
     } else {
 	urlinfo->port = 80;
-	ret = sscanf(url, "%[^/]/%s", urlinfo->host, urlinfo->path+1);
+	ret = sscanf(url, "%511[^/]/%252s", urlinfo->host, urlinfo->path+1);
     }
     if (ret < 1) return SR_ERROR_INVALID_URL;
 
