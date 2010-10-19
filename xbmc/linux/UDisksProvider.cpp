@@ -327,7 +327,7 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
   if (device->m_isMounted && device->IsApproved())
   {
     CLog::Log(LOGNOTICE, "UDisks: Added %s", device->m_MountPath.c_str());
-    if (callback)
+    if (callback && !device->m_isOptical)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
   }
 }
@@ -361,7 +361,7 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   {
     bool mounted = device->m_isMounted;
     device->Update();
-    if (!mounted && device->m_isMounted && callback)
+    if (!mounted && device->m_isMounted && callback && !device->m_isOptical)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);

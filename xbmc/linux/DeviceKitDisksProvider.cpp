@@ -355,7 +355,7 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
   if (device->m_isMounted && device->IsApproved())
   {
     CLog::Log(LOGNOTICE, "DeviceKit.Disks: Added %s", device->m_MountPath.c_str());
-    if (callback)
+    if (callback && !device->m_isOptical)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
   }
 }
@@ -389,7 +389,7 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
   {
     bool mounted = device->m_isMounted;
     device->Update();
-    if (!mounted && device->m_isMounted && callback)
+    if (!mounted && device->m_isMounted && callback && !device->m_isOptical)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
