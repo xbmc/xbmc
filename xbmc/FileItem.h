@@ -241,7 +241,7 @@ public:
   virtual bool LoadMusicTag();
 
   /* returns the content type of this item if known. will lookup for http streams */
-  const CStdString& GetMimeType() const;
+  const CStdString& GetMimeType(bool lookup = true) const;
 
   /* sets the mime-type if known beforehand */
   void SetMimeType(const CStdString& mimetype) { m_mimetype = mimetype; } ;

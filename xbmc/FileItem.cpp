@@ -1018,9 +1018,9 @@ bool CFileItem::IsParentFolder() const
   return m_bIsParentFolder;
 }
 
-const CStdString& CFileItem::GetMimeType() const
+const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 {
-  if( m_mimetype.IsEmpty() )
+  if( m_mimetype.IsEmpty() && lookup)
   {
     // discard const qualifyier
     CStdString& m_ref = (CStdString&)m_mimetype;
