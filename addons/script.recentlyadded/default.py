@@ -218,6 +218,8 @@ class Main:
             self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeTitle" % ( count + 1, ), fields[ 2 ] )
             self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeNo" % ( count + 1, ), "s%02de%02d" % ( int( fields[ 14 ] ), int( fields[ 15 ] ), ) )
             self.WINDOW.setProperty( "LatestEpisode.%d.Rating" % ( count + 1, ), fields[ 5 ] )
+            self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeSeason" % ( count + 1, ), fields[ 14 ] )
+            self.WINDOW.setProperty( "LatestEpisode.%d.EpisodeNumber" % ( count + 1, ), fields[ 15 ] )
             self.WINDOW.setProperty( "LatestEpisode.%d.Plot" % ( count + 1, ), fields[ 3 ] )
             # get cache names of path to use for thumbnail/fanart and play path
             thumb_cache, fanart_cache, play_path = self._get_media( fields[ 25 ], fields[ 24 ] )

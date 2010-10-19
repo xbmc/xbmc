@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.recentlyadded"
        name="Recently Added script"
-       version="1.0.8"
+       version="1.0.9"
        provider-name="Nuka1195">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
