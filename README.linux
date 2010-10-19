@@ -37,22 +37,23 @@ You will then need the required libraries. The following is the list of packages
 that are used to build XBMC packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
-Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
- autotools-dev, autoconf, automake, unzip, libboost-dev,
- libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
- libsamplerate-dev, libogg-dev, libvorbis-dev, libvorbisenc2, libfreetype6-dev,
- libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
- libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
- libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
- libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev, libcurl3,
- libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
- libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
- libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
- libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
- libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev, libiso9660-dev, libssl-dev,
- libmicrohttpd-dev, libmodplug-dev, libssh-dev, gettext, cvs, libtool
+Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
+ autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
+ libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
+ libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
+ libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
+ libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
+ libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
+ libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
+ libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
+ libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
+ libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
+ libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libmms-dev (>= 0.4), libsmbclient-dev,
+ libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl, libfaac-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
