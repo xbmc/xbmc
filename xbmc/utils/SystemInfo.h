@@ -98,7 +98,6 @@ public:
   bool IsAppleTV();
   bool HasVDADecoder();
   bool IsAeroDisabled();
-  bool DisableAero();
   bool IsVistaOrHigher();
   static CStdString GetKernelVersion();
   CStdString GetXBVerInfo();

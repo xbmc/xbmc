@@ -37,15 +37,14 @@
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "log.h"
+#ifdef _WIN32
+#include "dwmapi.h"
+#endif
 #ifdef __APPLE__
 #include "osx/CocoaInterface.h"
 #endif
 
 CSysInfo g_sysinfo;
-
-typedef HRESULT (WINAPI* LPDWMISCOMPOSITIONENABLED)(BOOL *pfEnabled);
-typedef HRESULT (WINAPI* LPDWMENABLECOMPOSITION)(UINT uCompositionAction);
-#define DWM_EC_DISABLECOMPOSITION 0
 
 CSysInfoJob::CSysInfoJob()
 {
@@ -290,42 +289,13 @@ bool CSysInfo::IsAeroDisabled()
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    if (osvi.dwMajorVersion < 6)
+    if (osvi.dwMajorVersion == 5)
       return true; // windows XP -> no Aero
 
     BOOL aeroEnabled = FALSE;
-    HMODULE hModule = LoadLibrary("dwmapi.dll");
-    LPDWMISCOMPOSITIONENABLED lpIsCompositionEnabled = (LPDWMISCOMPOSITIONENABLED) GetProcAddress(hModule, "DwmIsCompositionEnabled");
-    if (! lpIsCompositionEnabled)
-    {
-      FreeLibrary(hModule);
-      return true;
-    }
-    HRESULT res = lpIsCompositionEnabled(&aeroEnabled);
-    FreeLibrary(hModule);
+    HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
     if (SUCCEEDED(res))
       return !aeroEnabled;
-  }
-#endif
-  return false;
-}
-
-// Aero will be reactivated as soon as XBMC exits
-bool CSysInfo::DisableAero()
-{
-#ifdef _WIN32
-  if (! IsAeroDisabled())
-  {
-    HMODULE hModule = LoadLibrary("dwmapi.dll");
-    LPDWMENABLECOMPOSITION lpEnableComposition = (LPDWMENABLECOMPOSITION) GetProcAddress(hModule, "DwmEnableComposition");
-    if (! lpEnableComposition)
-    {
-      FreeLibrary(hModule);
-      return false;
-    }
-    HRESULT res = lpEnableComposition(DWM_EC_DISABLECOMPOSITION);
-    FreeLibrary(hModule);
-    return SUCCEEDED(res);
   }
 #endif
   return false;
