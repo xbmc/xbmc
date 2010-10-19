@@ -12,8 +12,8 @@
   <string id="31007">Module</string>
 
   <string id="31020">Adăugate recent</string>
-  <string id="31021">Filme - Fișiere</string>
-  <string id="31022">Muzică - Fișiere</string>
+  <string id="31021">Fișiere video</string>
+  <string id="31022">Fișiere audio</string>
   <string id="31023">Redare</string>
   <string id="31024">Pagina</string>
   <string id="31025">Elemente</string>
@@ -24,7 +24,7 @@
   <string id="31028">Afișe</string>
   <string id="31029">Fanart</string>
   <string id="31030">Listă completă</string>
-  <string id="31031">Miniaturi imagini</string>
+  <string id="31031">Miniaturi stânga</string>
   <string id="31032">Imagini</string>
   <string id="31033">Informații</string>
 
@@ -38,7 +38,7 @@
   <string id="31046">Proprietăți audio</string>
   <string id="31047">Predefinire curentă</string>
   <string id="31048">Vizualizări predefinite</string>
-  <string id="31049">Timp de sfârșit</string>
+  <string id="31049">Se termină la</string>
 
 
   <!-- Playlist Editor labels -->
@@ -54,14 +54,14 @@
   <string id="31100"></string>
   <string id="31101">Opțiuni ecran principal</string>
   <string id="31102">Fundal</string>
-  <string id="31103">Arată "În pauză" la prezentare diapozitive</string>
-  <string id="31104">Redă trailere intr-o fereastră [COLOR=grey3](doar în dialog de informații video)[/COLOR]</string>
+  <string id="31103">Arată „În pauză” la prezentare diapozitive</string>
+  <string id="31104">Redă trailere intr-o fereastră [COLOR=grey3](doar în dialogul de informații video)[/COLOR]</string>
   <string id="31105">Arată titluri media la scanarea pe fundal</string>
   <string id="31106">Opțiuni diverse</string>
   <string id="31107">Ascunde marcare citit în nume de fișiere video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
-  <string id="31108">Ascunde butoate meniu principal</string>
+  <string id="31108">Ascundere butoane meniu principal</string>
   <string id="31109">Fundale media</string>
-  <string id="31110">Modifică fundal pentru tip media</string>
+  <string id="31110">Modificare fundal pentru</string>
   <string id="31111">Ascunde</string>
   <string id="31112">Opțiuni</string>
   <string id="31113">O singură imagine</string>
@@ -74,17 +74,18 @@
   <string id="31120">ETICHETĂ BUTON</string>
   <string id="31121">CALE CĂTRE SUPLIMENT</string>
   <string id="31122">Pagină meteo</string>
-  <string id="31123">Folosește "Afișe" în loc de "Bannere" pentru seriale</string>
-  <string id="31124">Arată fundal video "În redare"</string>
-  <string id="31125">Arată fundal vizualizare "În redare"</string>
-  <string id="31126">Activează versuri în OSD muzică</string>
+  <string id="31123">Folosește „Afișe” în loc de „Bannere” pentru seriale</string>
+  <string id="31124">Arată video „În redare” pe fundal</string>
+  <string id="31125">Arată vizualizare „În redare” pe fundal</string>
+  <string id="31126">Activează versuri în meniul audio</string>
   <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
   <string id="31128">Versuri</string>
-  <string id="31129">Activează descărcare subtitrare în OSD video</string>
+  <string id="31129">Activează descărcare subtitrări în meniul video</string>
   <string id="31130">CALE CĂTRE SUPLIMENT SUBTITRĂRI</string>
+  <string id="31131">Folosește meniu inițial orizontal</string>
 
-  <string id="31140">Afișaj audio</string>
-  <string id="31141">Afișaj video</string>
+  <string id="31140">Meniu audio</string>
+  <string id="31141">Meniu video</string>
 
   <!-- Script labels -->
   <string id="31200">Scurtături</string>
@@ -117,7 +118,7 @@
   <string id="31319">Profil selectat</string>
   <string id="31320">Ultima intrare</string>
   <string id="31321">Selector cântec karaoke</string>
-  <string id="31322">Difuzat</string>
+  <string id="31322">Difuzat pe</string>
   <string id="31323">Ultimele filme</string>
   <string id="31324">Ultimele episoade</string>
   <string id="31325">Opțiuni listă de redare</string>
@@ -137,8 +138,8 @@
   <string id="31357"></string>
   
   <!-- Skin Fontsets -->
-  <string id="31390">Implicit costum</string>
-  <string id="31391">Implicit costum fără majuscule</string>
+  <string id="31390">Standard pentru costum</string>
+  <string id="31391">Standard pentru costum fără majuscule</string>
   <string id="31392">Cu Arial la bază</string>
 
   <!-- Description Labels  -->
@@ -146,7 +147,7 @@
   <string id="31401">[B]CONFIGURAȚI SETĂRI VIDEO[/B][CR][CR]Administrați videoteca · Setați opțiuni redare video · Modificați opțiuni de listare filme[CR]Alegeți font subtitrare</string>
   <string id="31402">[B]CONFIGURAȚI SETĂRI MUZICĂ[/B][CR][CR]Administrați fonoteca · Setați opțiuni redare muzică · Modificați opțiuni de listare muzică[CR]Pregătiți trimitere cântec · Setați opțiuni karaoke</string>
   <string id="31403">[B]CONFIGURAȚI SETĂRI IMAGINE[/B][CR][CR]Modificați opțiuni de listare imagini · Configurați prezentare diapozitive</string>
-  <string id="31404">[B]CONFIGURAȚI SETĂRI VREME[/B][CR][CR]Alegeți trei orașe pentru a aduna informații despre vreme</string>
+  <string id="31404">[B]CONFIGURAȚI SETĂRI VREME[/B][CR][CR]Alegeți trei orașe pentru care se obțin informații meteo</string>
   <string id="31405">[B]CONFIGURAȚI SETĂRI REȚEA[/B][CR][CR]Configurați controlul XBMC prin UPnP și HTTP · Configurați partajare fișiere[CR]Setați opțiuni de acces Internet</string>
   <string id="31406">[B]CONFIGURAȚI SETĂRI SISTEM[/B][CR][CR]Configurați și calibrați afișaje · Configurați ieșire audio · Instalați telecomenzi[CR]Alegeți opțiuni de economisire energie · Activați depanare · Configurați blocarea principală</string>
   <string id="31407">[B]CONFIGURAȚI SETĂRI COSTUM[/B][CR][CR]Configurați costumul Confluence · Adăugați și eliminați elemente din meniul principal[CR]Schimbați fundale costum</string>

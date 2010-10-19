@@ -19,6 +19,7 @@
     <summary lang="nl">MTV-muziekvideoscraper</summary>
     <summary lang="pl">Scraper teledysków MTV</summary>
     <summary lang="pt">Scraper de videoclips MTV</summary>
+    <summary lang="ro">Scraper MTV pentru videoclipuri</summary>
     <summary lang="ru">Обработчик музыкальных видео для MTV</summary>
     <summary lang="se">MTV Musikvideoskrapa</summary>
     <summary lang="zh">MTV音乐电视刮削器</summary>
@@ -31,6 +32,7 @@
     <description lang="nl">Muziekvideo-info ophalen van MTV</description>
     <description lang="pl">Pobieraj informacje o teledyskach</description>
     <description lang="pt">Descarregar informação de videoclips de www.mtv.com</description>
+    <description lang="ro">Descărcați informații videoclipuri.</description>
     <description lang="ru">Загружать информацию о музыкальных видео с www.mtv.com</description>
     <description lang="se">Ladda ner musikvideo information från MTV.</description>
     <description lang="zh">下载音乐电视资料。</description>

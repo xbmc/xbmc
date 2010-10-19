@@ -14,7 +14,7 @@
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
     <summary lang="pt">Protecção que torna o seu ecrã preto.</summary>
-    <summary lang="ro">Ecran de veghe care afișează negru</summary>
+    <summary lang="ro">Protector ecran care afișează negru</summary>
     <summary lang="ru">Хранитель экрана который делает ваш экран чёрным</summary>
     <summary lang="zh">黑屏屏幕保护程序</summary>
     <description lang="en">Black is a simple screensaver that will turn your screen black.</description>
@@ -26,7 +26,7 @@
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
     <description lang="pt">Uma protecção que escurece o seu ecrã.</description>
-    <description lang="ro">Black este un ecran de veghe simplu care afișează negru pe ecran.</description>
+    <description lang="ro">Black este un protector de ecran simplu care afișează negru pe ecran.</description>
     <description lang="ru">Black это простой хранитель экрана, который делает его чёрным.</description>
     <description lang="zh">黑屏屏保是一个简单的屏幕保护程序，它使你的显示器进入黑屏状态。</description>
     <platform>all</platform>

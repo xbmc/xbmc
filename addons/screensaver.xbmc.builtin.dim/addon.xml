@@ -14,6 +14,7 @@
     <summary lang="nl">Schermbeveiliging die je scherm dimt</summary>
     <summary lang="pl">Wygaszacz ekranu przyciemniający ekran</summary>
     <summary lang="pt">Protecção que esvaece o seu ecrã</summary>
+    <summary lang="ro">Protector ecran care întunecă ecranul</summary>
     <summary lang="ru">Хранитель экрана затемняющий изображение</summary>
     <summary lang="zh">淡出屏幕保护程序</summary>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
@@ -26,6 +27,7 @@
     <description lang="zh">淡出屏保是一个简单的屏幕保护程序，它使你的屏幕显示内容变暗（淡出效果），暗化度可在20%至100%之间调节。</description>
     <description lang="pl">Ten wygaszacz ekranu płynnie przyciemnia ekran po upływie ustawionego czasu. Przyciemnienie jest ustawialne w przedziale 20-100%.</description>
     <description lang="pt">A protecção de ecrã esvanecente permite-lhe diminuir a intensidade luminosa do seu ecrã. Pode ser configurada para valores entre 20 e 100%.</description>
+    <description lang="ro">Dim este un protector de ecran simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru">Хранитель экрана Dim затемняет изображение на экране до заданного значения, от 20% до 100%.</description>
     <platform>all</platform>
   </extension>
