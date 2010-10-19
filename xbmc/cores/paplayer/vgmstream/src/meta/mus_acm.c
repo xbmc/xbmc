@@ -189,7 +189,7 @@ VGMSTREAM * init_vgmstream_mus_acm(STREAMFILE *streamFile) {
             if (!whole_line_read) goto fail;
             mus_offset += line_bytes;
 
-            fields_matched = sscanf(line_buffer,"%s %s %s",name,
+            fields_matched = sscanf(line_buffer,"%259s %259s %259s",name,
                     loop_name_base_temp,loop_name_temp);
 
 
