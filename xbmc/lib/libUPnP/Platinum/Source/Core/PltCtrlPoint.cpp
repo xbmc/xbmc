@@ -781,7 +781,7 @@ PLT_CtrlPoint::ProcessSsdpSearchResponse(NPT_Result                    res,
             char tmp_st[200];
             int  ret;
             // FIXME: We can't use sscanf directly!
-            ret = sscanf(((const char*)*usn)+5, "%[^::]::%s",
+            ret = sscanf(((const char*)*usn)+5, "%199[^::]::%199s",
                 tmp_uuid, 
                 tmp_st);
             if (ret != 2)

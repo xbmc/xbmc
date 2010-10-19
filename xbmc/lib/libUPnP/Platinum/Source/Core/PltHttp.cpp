@@ -343,7 +343,7 @@ PLT_HttpHelper::GetRange(NPT_HttpRequest& request,
     char s[32], e[32];
     s[0] = '\0';
     e[0] = '\0';
-    int ret = sscanf(*range, "bytes=%[^-]-%s", s, e);
+    int ret = sscanf(*range, "bytes=%31[^-]-%31s", s, e);
     if (ret < 1) {
         return NPT_FAILURE;
     }
@@ -421,7 +421,7 @@ PLT_HttpHelper::GetContentRange(NPT_HttpResponse& response,
     s[0] = '\0';
     e[0] = '\0';
     l[0] = '\0';
-    int ret = sscanf(*range, "bytes %[^-]-%s[^/]/%s", s, e, l);
+    int ret = sscanf(*range, "bytes %31[^-]-%31s[^/]/%31s", s, e, l);
     if (ret < 3) {
         return NPT_FAILURE;
     }
