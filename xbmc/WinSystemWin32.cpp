@@ -25,6 +25,7 @@
 #include "resource.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "utils/SystemInfo.h"
 #include "utils/log.h"
 
 #ifdef _WIN32
@@ -57,6 +58,7 @@ CWinSystemWin32::~CWinSystemWin32()
 
 bool CWinSystemWin32::InitWindowSystem()
 {
+  g_sysinfo.DisableAero();
   if(!CWinSystemBase::InitWindowSystem())
     return false;
 
