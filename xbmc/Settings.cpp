@@ -97,6 +97,7 @@ void CSettings::Initialize()
   m_bMyVideoNavFlatten = false;
   m_bStartVideoWindowed = false;
   m_bAddonAutoUpdate = false;
+  m_bAddonNotifications = true;
 
   m_nVolumeLevel = 0;
   m_dynamicRangeCompressionLevel = 0;
@@ -712,6 +713,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
     XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
     XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
+    XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
 
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
@@ -877,6 +879,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
   XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
+  XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
 
 
   // audio settings
