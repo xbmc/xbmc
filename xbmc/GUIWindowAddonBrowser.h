@@ -105,6 +105,8 @@ protected:
    \return true if the hash matches (or no hash is available on the repo), false otherwise
    */
   bool CheckHash(const CStdString& addonZip, const CStdString& hash);
+  
+  void PromptForActivation();
 
   void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);
@@ -118,5 +120,7 @@ protected:
 private:
   CCriticalSection m_critSection;
   CPictureThumbLoader m_thumbLoader;
+
+  ADDON::AddonPtr m_prompt;
 };
 
