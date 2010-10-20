@@ -105,6 +105,10 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     {
       CStdString strFileName = strLine;
 
+      // Skip self - do not load playlist recursively
+      if (CUtil::GetFileName(strFileName).Equals(m_strPlayListName))
+        continue;
+
       if (strFileName.length() > 0)
       {
         g_charsetConverter.unknownToUTF8(strFileName);
