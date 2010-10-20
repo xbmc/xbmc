@@ -48,6 +48,7 @@
 #include "AddonDatabase.h"
 #include "AdvancedSettings.h"
 #include "MediaManager.h"
+#include "GUISettings.h"
 
 #define CONTROL_AUTOUPDATE 5
 
@@ -361,6 +362,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             }
             else
             {
+              if (addon->Type() == ADDON_SKIN)
+                m_prompt = addon;
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   addon->Icon(),
                                                   addon->Name(),
@@ -455,6 +458,26 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
+
+  lock.Leave();
+  if (m_downloadJobs.empty() && m_prompt)
+    PromptForActivation();
+}
+
+void CGUIWindowAddonBrowser::PromptForActivation()
+{
+  if (m_prompt->Type() == ADDON_SKIN)
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(m_prompt->Name(),
+                                         g_localizeStrings.Get(24099),"",""))
+    {
+      g_guiSettings.SetString("lookandfeel.skin",m_prompt->ID().c_str());
+      g_application.m_guiDialogKaiToast.ResetTimer();
+      g_application.m_guiDialogKaiToast.Close(true);
+      g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
+    }
+  }
+  m_prompt.reset();
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
