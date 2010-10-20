@@ -4021,6 +4021,8 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
+  if (!g_settings.GetCurrentProfile().canWriteDatabases())
+    return;
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate);
