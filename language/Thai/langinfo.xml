@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language>
+<language locale="TH">
   <charsets>
     <gui unicodefont="true">CP874</gui>
     <subtitle>CP874</subtitle>
