@@ -307,10 +307,14 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
     else if (type == VIDEODB_CONTENT_MOVIES)
     {
       m_castList->SetContent("movies");
-      if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
+
+      // local trailers should always override non-local, so check 
+      // for a local one if the registered trailer is online
+      if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty() ||
+          CUtil::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
       {
-        m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
-        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
+        CStdString localTrailer = m_movieItem->FindTrailer();
+        if (!localTrailer.IsEmpty())
         {
           CVideoDatabase database;
           if(database.Open())
@@ -320,6 +324,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
                                VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
             database.Close();
             CUtil::DeleteVideoDatabaseDirectoryCache();
+            m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
           }
         }
       }
