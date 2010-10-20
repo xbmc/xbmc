@@ -514,7 +514,7 @@ cmyth_rcv_ulong(cmyth_conn_t conn, int *err, unsigned long *buf,
  *
  * Description
  *
- * Receive a long long (signed 64 bit) integer token from a list of
+ * Receive a long (signed 32 bit) integer token from a list of
  * tokens in a MythTV Protocol message.  Tokens in MythTV Protocol
  * messages are separated by the string: []:[] or terminated by
  * running out of message.  Up to 'count' Bytes will be consumed from
@@ -585,7 +585,7 @@ cmyth_rcv_long(cmyth_conn_t conn, int *err, long *buf, int count)
 		 */
 		if (val > (unsigned long)limit) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: long long out of range: '%s'\n",
+				  "%s: long out of range: '%s'\n",
 				  __FUNCTION__, num);
 			*err = ERANGE;
 			return consumed;
@@ -842,7 +842,7 @@ cmyth_rcv_short(cmyth_conn_t conn, int *err, short *buf, int count)
  *
  * Description
  *
- * Receive a long (signed 32 bit) integer token from a list of tokens
+ * Receive a long long (signed 64 bit) integer token from a list of tokens
  * in a MythTV Protocol message.  Tokens in MythTV Protocol messages
  * are separated by the string: []:[] or terminated by running out of
  * message.  Up to 'count' Bytes will be consumed from the socket
