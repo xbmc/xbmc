@@ -200,7 +200,7 @@ bool CRepositoryUpdateJob::DoWork()
           return false;
         window->AddJob(addons[i]->Path());
       }
-      else
+      else if (g_settings.m_bAddonNotifications)
       {
         g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(),
                                                             g_localizeStrings.Get(24061),
