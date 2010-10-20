@@ -268,7 +268,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_iSourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
 
-    bool bLock = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser
+    bool bLock = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
     dialog->m_locks.addonManager = bLock;
     dialog->m_locks.settings = bLock;
     dialog->m_locks.files = bLock;
