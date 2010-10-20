@@ -205,6 +205,12 @@ bool CLog::Init(const char* path)
 #endif
   }
 
+  if (m_file)
+  {
+    char BOM[3] = {0xEF, 0xBB, 0xBF};
+    fwrite(BOM, sizeof(BOM), 1, m_file);
+  }
+
   if (!m_repeatLine)
     m_repeatLine = new CStdString;
 
