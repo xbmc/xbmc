@@ -1812,12 +1812,12 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 	/*
 	 * Get proginfo_program_flags (long)
 	 */
-	consumed = cmyth_rcv_long(conn, err, &buf->proginfo_program_flags,
+	consumed = cmyth_rcv_ulong(conn, err, &buf->proginfo_program_flags,
 				  count);
 	count -= consumed;
 	total += consumed;
 	if (*err) {
-		failed = "cmyth_rcv_long";
+		failed = "cmyth_rcv_ulong";
 		goto fail;
 	}
 

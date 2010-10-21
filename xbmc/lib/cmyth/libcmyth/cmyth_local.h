@@ -266,7 +266,7 @@ struct cmyth_proginfo {
 	cmyth_timestamp_t proginfo_rec_start_ts;
 	cmyth_timestamp_t proginfo_rec_end_ts;
 	unsigned long proginfo_repeat;   /* ??? in V8 */
-	long proginfo_program_flags;
+	unsigned long proginfo_program_flags;
 	char *proginfo_rec_profile;  /* new in V8 */
 	char *proginfo_recgroup;    /* new in V8 */
 	char *proginfo_chancommfree;    /* new in V8 */
