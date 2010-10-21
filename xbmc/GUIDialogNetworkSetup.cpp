@@ -333,6 +333,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   if (((m_protocol == NET_PROTOCOL_FTP) ||
        (m_protocol == NET_PROTOCOL_HTTP) ||
        (m_protocol == NET_PROTOCOL_HTTPS) ||
+       (m_protocol == NET_PROTOCOL_DAV) ||
+       (m_protocol == NET_PROTOCOL_DAVS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||
        (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
