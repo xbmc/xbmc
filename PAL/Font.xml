@@ -325,7 +325,7 @@
 <!-- font13 needs to be kept to show debug info etc -->
     <font>
       <name>font13</name>
-      <filename>Default.ttf</filename>
+      <filename>HelveticaNeue</filename>
       <size>12</size>
     </font>
 
