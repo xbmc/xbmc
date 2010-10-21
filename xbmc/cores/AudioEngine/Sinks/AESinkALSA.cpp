@@ -27,6 +27,7 @@
 #include "StdString.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "GUISettings.h"
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 32
@@ -72,9 +73,14 @@ CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString devi
   if (format.m_dataFormat == AE_FMT_RAW || passthrough)
   {
     if (device == "default")
-      device = "iec958";
+    {
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
+        device = "hdmi";
+      else
+        device = "iec958";
+    }
 
-    if (device == "iec958")
+//    if (device == "iec958")
     {
       device += ":AES0=0x06,AES1=0x82,AES2=0x00";
            if (format.m_sampleRate == 192000) device += ",AES3=0x0e";
@@ -86,9 +92,10 @@ CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString devi
       else if (format.m_sampleRate ==  32000) device += ",AES3=0x03";
       else device += ",AES3=0x01";
     }
-
-    return device;
   }
+
+  if (device == "default" && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
+    device = "hdmi";
 
   if (device == "hdmi")
     return "plug:hdmi";

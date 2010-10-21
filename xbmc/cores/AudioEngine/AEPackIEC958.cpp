@@ -51,8 +51,30 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, sizeof(packet->m_data) - size);
-  return sizeof(struct IEC958Packet);
+  memset(packet->m_data + size, 0, AC3_FRAME_SIZE - size);
+  return AC3_FRAME_SIZE;
+}
+
+int CAEPackIEC958::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
+{
+  struct IEC958Packet *packet = (struct IEC958Packet*)dest;
+
+  packet->m_preamble1 = IEC958_PREAMBLE1;
+  packet->m_preamble2 = IEC958_PREAMBLE2;
+  packet->m_type      = IEC958_TYPE_EAC3;
+  packet->m_length    = size;
+
+  if (data == NULL)
+    data = packet->m_data;
+#ifdef __BIG_ENDIAN__
+  else
+    memcpy(packet->m_data, data, size);
+#else
+  SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
+#endif
+
+  memset(packet->m_data + size, 0, EAC3_FRAME_SIZE - size);
+  return EAC3_FRAME_SIZE;
 }
 
 int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -72,8 +94,8 @@ int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, 512 - size);
-  return 512;
+  memset(packet->m_data + size, 0, DTS1_FRAME_SIZE - size);
+  return DTS1_FRAME_SIZE;
 }
 
 int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -93,8 +115,8 @@ int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, 1024 - size);
-  return 1024;
+  memset(packet->m_data + size, 0, DTS2_FRAME_SIZE - size);
+  return DTS2_FRAME_SIZE;
 }
 
 int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -114,8 +136,7 @@ int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, 2048 - size);
-  return 2048;
+  memset(packet->m_data + size, 0, DTS3_FRAME_SIZE - size);
+  return DTS3_FRAME_SIZE;
 }
-
 

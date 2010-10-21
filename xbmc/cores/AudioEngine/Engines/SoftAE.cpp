@@ -209,6 +209,9 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     m_buffer = NULL;
   }
 
+  m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
+  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
+
   /* create the new sink */
   m_sink = GetSink(desiredFormat, m_passthrough || m_rawPassthrough, device);
   if (!m_sink)
@@ -219,6 +222,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     desiredFormat.m_frameSamples  = m_sinkFormat.m_frames * m_sinkFormat.m_channelCount;
     desiredFormat.m_frameSize     = m_sinkFormat.m_frameSamples * sizeof(float);
     desiredFormat.m_channelLayout = m_chLayout;
+    desiredFormat.m_channelCount  = m_channelCount;
 
     delete m_sink;
     m_sink = NULL;
@@ -236,9 +240,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     CLog::Log(LOGINFO, "  Frame Size    : %d", desiredFormat.m_frameSize);
   }
 
-  m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
-  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
-  m_sinkFormat   = desiredFormat;
+  m_sinkFormat = desiredFormat;
 
   m_bufferSamples = 0;
   if (m_rawPassthrough)
@@ -399,6 +401,9 @@ void CSoftAE::OnSettingsChange(CStdString setting)
   m_passthrough =
     g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958 &&
     g_guiSettings.GetBool("audiooutput.ac3passthrough");
+
+  if (m_passthrough)
+	CLog::Log(LOGINFO, "CSoftAE::OnSettingsChange - Transcode Enabled");
 
   if (!setting.IsEmpty())
     OpenSink();
