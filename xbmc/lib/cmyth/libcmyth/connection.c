@@ -51,6 +51,7 @@ typedef struct {
 
 static myth_protomap_t protomap[] = {
 	{62, 0x78B5631E},
+	{63, 0x3875641D},
 	{0, 0}
 };
 
