@@ -429,6 +429,12 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
 
 void CApplication::Preflight()
 {
+#ifdef HAS_DBUS
+  // call 'dbus_threads_init_default' before any other dbus calls in order to
+  // avoid race conditions with other threads using dbus connections
+  dbus_threads_init_default();
+#endif
+
   // run any platform preflight scripts.
 #ifdef __APPLE__
   CStdString install_path;
