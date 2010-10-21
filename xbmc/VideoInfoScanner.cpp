@@ -775,8 +775,11 @@ namespace VIDEO
       }
 
       if (!bMatched)
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", items[i]->m_strPath.c_str());
-
+      {
+        CStdString decode(items[i]->m_strPath);
+        CUtil::URLDecode(decode);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file %s", decode.c_str());
+      }
     }
   }
 
