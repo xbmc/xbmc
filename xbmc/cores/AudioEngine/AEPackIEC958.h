@@ -31,8 +31,15 @@
   #define E_PACK __pragma(pack(pop))
 #endif
 
-#define MAX_IEC958_PACKET  6144
+#define MAX_IEC958_PACKET  61440
 #define IEC958_DATA_OFFSET 8
+
+#define DTS1_FRAME_SIZE   512
+#define DTS2_FRAME_SIZE   1024
+#define DTS3_FRAME_SIZE   2048
+#define AC3_FRAME_SIZE    6144
+#define EAC3_FRAME_SIZE   24576
+#define TRUEHD_FRAME_SIZE 61440
 
 class CAEPackIEC958
 {
@@ -40,6 +47,7 @@ public:
   typedef int (*PackFunc)(uint8_t *data, unsigned int size, uint8_t *dest);
 
   static int PackAC3     (uint8_t *data, unsigned int size, uint8_t *dest);
+  static int PackEAC3    (uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackDTS_512 (uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest);

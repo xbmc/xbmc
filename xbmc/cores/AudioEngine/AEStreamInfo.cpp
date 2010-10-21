@@ -31,6 +31,7 @@
 
 static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
+static const uint8_t  AC3BlkCod     [] = {1, 2, 3, 6};
 
 static const uint32_t DTSSampleRates[DTS_SRATE_COUNT] =
 {
@@ -244,51 +245,91 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
     if(data[0] != 0x0b || data[1] != 0x77)
       continue;
 
-    uint8_t fscod      = data[4] >> 6;
-    uint8_t frmsizecod = data[4] & 0x3F;
-    uint8_t bsid       = data[5] >> 3;
+    uint8_t bsid = data[5] >> 3;
+    if (bsid > 0x11)
+      continue;
 
-    /* sanity checks on the header */
-    if (
-        fscod      ==   3 ||
-        frmsizecod >   37 ||
-        bsid       > 0x11
-    ) continue;
-
-    /* get the details we need to check crc1 and framesize */
-    unsigned int bitRate = AC3Bitrates[frmsizecod >> 1];
-    unsigned int framesize = 0;
-    switch(fscod)
+    if (bsid <= 10)
     {
-      case 0: framesize = bitRate * 2; break;
-      case 1: framesize = (320 * bitRate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
-      case 2: framesize = bitRate * 4; break;
-    }
+      /* Normal AC-3 */
 
-    m_fsize = framesize << 1;
-    m_sampleRate = AC3FSCod[fscod];
-
-    /* dont do extensive testing if we have not lost sync */
-    if (m_dataType == STREAM_TYPE_AC3 && skip == 0)
-      return 0;
-
-    unsigned int crc_size;
-    /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
-    if (framesize <= size - skip)
-         crc_size = framesize - 1;
-    else crc_size = (framesize >> 1) + (framesize >> 3) - 1;
-
-    if (crc_size <= size - skip)
-      if(m_dllAvUtil.av_crc(m_dllAvUtil.av_crc_get_table(AV_CRC_16_ANSI), 0, &data[2], crc_size * 2))
+      uint8_t fscod      = data[4] >> 6;
+      uint8_t frmsizecod = data[4] & 0x3F;
+      if (fscod == 3 || frmsizecod > 37)
         continue;
 
-    /* if we get here, we can sync */
-    m_hasSync  = true;
-    m_syncFunc = &CAEStreamInfo::SyncAC3;
-    m_dataType = STREAM_TYPE_AC3;
-    m_packFunc = &CAEPackIEC958::PackAC3;
-    CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
-    return skip;
+      /* get the details we need to check crc1 and framesize */
+      unsigned int bitRate = AC3Bitrates[frmsizecod >> 1];
+      unsigned int framesize = 0;
+      switch(fscod)
+      {
+        case 0: framesize = bitRate * 2; break;
+        case 1: framesize = (320 * bitRate / 147 + (frmsizecod & 1 ? 1 : 0)); break;
+        case 2: framesize = bitRate * 4; break;
+      }
+
+      m_fsize = framesize << 1;
+      m_sampleRate = AC3FSCod[fscod];
+
+      /* dont do extensive testing if we have not lost sync */
+      if (m_dataType == STREAM_TYPE_AC3 && skip == 0)
+        return 0;
+
+      unsigned int crc_size;
+      /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
+      if (framesize <= size - skip)
+           crc_size = framesize - 1;
+      else crc_size = (framesize >> 1) + (framesize >> 3) - 1;
+
+      if (crc_size <= size - skip)
+        if(m_dllAvUtil.av_crc(m_dllAvUtil.av_crc_get_table(AV_CRC_16_ANSI), 0, &data[2], crc_size * 2))
+          continue;
+
+      /* if we get here, we can sync */
+      m_hasSync  = true;
+      m_syncFunc = &CAEStreamInfo::SyncAC3;
+      m_dataType = STREAM_TYPE_AC3;
+      m_packFunc = &CAEPackIEC958::PackAC3;
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
+      return skip;
+    }
+    else
+    {
+      /* Enhanced AC-3 */
+      uint8_t strmtyp = data[2] >> 6;
+      if (strmtyp == 3) continue;
+
+      unsigned int framesize  = (((data[2] & 0x7) << 8) | data[3]) + 1;
+      uint8_t      fscod      = data[4] >> 6;
+      uint8_t      blocks;
+
+      if (fscod == 0x3)
+      {
+        uint8_t fscod2 = (data[4] >> 4) & 0xB;
+        if (fscod2 == 0x3)
+          continue;
+
+        blocks       = AC3BlkCod[0x3];
+        m_sampleRate = AC3FSCod[fscod2] >> 1;
+      }
+      else
+      {
+        blocks       = AC3BlkCod[(data[4] >> 4) & 0xB];
+        m_sampleRate = AC3FSCod[fscod];
+      }
+
+      m_fsize = framesize << 1;
+      if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
+        return 0;
+
+      /* if we get here, we can sync */
+      m_hasSync  = true;
+      m_syncFunc = &CAEStreamInfo::SyncAC3;
+      m_dataType = STREAM_TYPE_EAC3;
+      m_packFunc = &CAEPackIEC958::PackEAC3;
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate);
+      return skip;
+    }
   }
 
   /* if we get here, the entire packet is invalid and we have lost sync */

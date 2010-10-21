@@ -57,7 +57,14 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
   m_bufferSize = 0;
 
-  if ((hints.codec == CODEC_ID_AC3 && bSupportsAC3Out) || (hints.codec == CODEC_ID_DTS && bSupportsDTSOut))
+  if (
+    (hints.codec == CODEC_ID_AC3  && bSupportsAC3Out) ||
+    (hints.codec == CODEC_ID_DTS  && bSupportsDTSOut) ||
+    (
+      audioMode == AUDIO_HDMI &&
+      (hints.codec == CODEC_ID_EAC3 && bSupportsAC3Out)
+    )
+  )
     return true;
 
   return false;
