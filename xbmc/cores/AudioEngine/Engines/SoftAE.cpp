@@ -332,15 +332,13 @@ bool CSoftAE::Initialize()
   m_volume = g_settings.m_fVolumeLevel;
   OnSettingsChange("");
 
-  if (OpenSink())
-  {
-    m_running = true;
-    m_thread  = new CThread(this);
-    m_thread->Create();
-    return true;
-  }
+  /* we start even if we failed to open a sink */
+  OpenSink();
+  m_running = true;
+  m_thread  = new CThread(this);
+  m_thread->Create();
 
-  return false;
+  return true;
 }
 
 void CSoftAE::OnSettingsChange(CStdString setting)
