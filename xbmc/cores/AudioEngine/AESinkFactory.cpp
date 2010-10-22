@@ -21,17 +21,18 @@
 
 #include "AESinkFactory.h"
 #include "SystemInfo.h"
+#include "utils/log.h"
 
 #ifdef _WIN32
-#include "Sinks/AESinkWASAPI.h"
-#include "Sinks/AESinkDirectSound.h"
+  #include "Sinks/AESinkWASAPI.h"
+  #include "Sinks/AESinkDirectSound.h"
 #elif defined _LINUX
-#include "Sinks/AESinkALSA.h"
-#include "Sinks/AESinkOSS.h"
+  #include "Sinks/AESinkALSA.h"
+  #include "Sinks/AESinkOSS.h"
 #elif defined __APPLE__
-#include "Sinks/AESinkCoreAudio.h"
+  #include "Sinks/AESinkCoreAudio.h"
 #else
-#pragma message("NOTICE: No audio sink for target platform.  Audio output will not be available.")
+  #pragma message("NOTICE: No audio sink for target platform.  Audio output will not be available.")
 #endif
 
 #define TRY_SINK(SINK) \
@@ -41,15 +42,20 @@
   sink      = new CAESink ##SINK(); \
   if (sink->Initialize(tmpFormat, tmpDevice)) \
   { \
-    desiredFormat = tmpFormat; \
-    device        = tmpDevice; \
-    return sink; \
+    if (rawPassthrough && tmpFormat.m_sampleRate != desiredFormat.m_sampleRate) \
+      CLog::Log(LOGERROR, "CAESinkFactory::Create " #SINK " failed to open at the desired sample rate (%dHz)", tmpFormat.m_sampleRate); \
+    else \
+    { \
+      desiredFormat = tmpFormat; \
+      device        = tmpDevice; \
+      return sink; \
+    } \
   } \
   sink->Deinitialize(); \
   delete sink; \
 }
 
-IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioFormat &desiredFormat)
+IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
 {
   AEAudioFormat  tmpFormat;
   CStdString     tmpDevice;
