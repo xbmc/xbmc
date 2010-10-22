@@ -382,6 +382,9 @@ case TMSG_POWERDOWN:
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
+        if (g_application.IsPlayingVideo())
+          g_application.StopPlaying();
+
         g_graphicsContext.Lock();
         pSlideShow->Reset();
 
