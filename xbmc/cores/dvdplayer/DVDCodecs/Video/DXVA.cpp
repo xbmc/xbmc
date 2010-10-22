@@ -108,7 +108,7 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
 
-    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, 0 },
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
     { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
     { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
