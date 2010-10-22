@@ -108,10 +108,12 @@ if [ $RET -ne 0 ]; then
   exit $RET
 fi
 
-# Output warning in case ulimit is unsupported by shell
-eval ulimit -c unlimited
-if [ ! $? = "0" ]; then
-  echo "xbmc: ulimit is unsupported by this shell" 1>&2
+if which gdb >/dev/null 2>&1; then
+  # Output warning in case ulimit is unsupported by shell
+  eval ulimit -c unlimited
+  if [ ! $? = "0" ]; then
+    echo "xbmc: ulimit is unsupported by this shell" 1>&2
+  fi
 fi
 
 LOOP=1
