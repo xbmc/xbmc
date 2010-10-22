@@ -573,8 +573,8 @@ bool CMythDirectory::Exists(const char* strPath)
    * way they are implemented - by iterating over all programs and filtering out content.
    */
   CURL url(strPath);
-	CStdString fileName = url.GetFileName();
-	CUtil::RemoveSlashAtEnd(fileName);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
 
   if (fileName == ""
   ||  fileName == "channels"
