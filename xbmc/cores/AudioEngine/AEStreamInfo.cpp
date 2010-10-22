@@ -299,26 +299,28 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       uint8_t strmtyp = data[2] >> 6;
       if (strmtyp == 3) continue;
 
-      unsigned int framesize  = (((data[2] & 0x7) << 8) | data[3]) + 1;
-      uint8_t      fscod      = data[4] >> 6;
+      unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
+      uint8_t      fscod     = (data[4] >> 6) & 0xB;
+      uint8_t      cod       = (data[4] >> 4) & 0xB;
       uint8_t      blocks;
 
       if (fscod == 0x3)
       {
-        uint8_t fscod2 = (data[4] >> 4) & 0xB;
-        if (fscod2 == 0x3)
+        if (cod == 0x3)
           continue;
 
-        blocks       = AC3BlkCod[0x3];
-        m_sampleRate = AC3FSCod[fscod2] >> 1;
+        blocks       = 6;
+        m_sampleRate = AC3FSCod[cod] >> 1;
       }
       else
       {
-        blocks       = AC3BlkCod[(data[4] >> 4) & 0xB];
-        m_sampleRate = AC3FSCod[fscod];
+        blocks       = AC3BlkCod[cod  ];
+        m_sampleRate = AC3FSCod [fscod];
       }
 
-      m_fsize = framesize << 1;
+      m_fsize        = framesize << 1;
+      m_sampleRate <<= 2; /* E-AC-3 uses 4x samplerate */
+
       if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
         return 0;
 
