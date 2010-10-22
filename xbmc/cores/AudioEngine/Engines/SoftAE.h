@@ -132,7 +132,8 @@ private:
 
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
-  AEAudioFormat             m_sinkFormat;
+  AEAudioFormat             m_newFormat ; /* the current sync format */
+  AEAudioFormat             m_sinkFormat; /* the format in use outside of the sink lock */
   AEAudioFormat             m_encoderFormat;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;

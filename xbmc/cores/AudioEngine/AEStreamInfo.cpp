@@ -28,6 +28,7 @@
 #define DTS_PREAMBLE_16BE 0x7FFE8001
 #define DTS_PREAMBLE_16LE 0xFE7F0180
 #define DTS_SRATE_COUNT   16
+#define MAX_EAC3_BLOCKS   6
 
 static const uint16_t AC3Bitrates   [] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod      [] = {48000, 44100, 32000, 0};
@@ -113,7 +114,6 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
       }
 
       unsigned int copy = std::min(room, size);
-
       memcpy(m_buffer + m_bufferSize, data, copy);
       m_bufferSize += copy;
       consumed     += copy;
@@ -125,9 +125,11 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
       if (m_hasSync) break;
       else
       {
+        /* lost sync */
         m_syncFunc = &CAEStreamInfo::DetectType;
         m_dataType = STREAM_TYPE_NULL;
         m_packFunc = NULL;
+        m_repeat   = 1;
 
         /* if the buffer is full, or the offset < the buffer size */
         if (m_bufferSize == sizeof(m_buffer) || offset < m_bufferSize)
@@ -137,7 +139,7 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
           memmove(m_buffer, m_buffer + offset, m_bufferSize);
         }
       }
-    }
+    }   
 
     /* if we got here, we acquired sync on the buffer */
 
@@ -290,6 +292,8 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_syncFunc = &CAEStreamInfo::SyncAC3;
       m_dataType = STREAM_TYPE_AC3;
       m_packFunc = &CAEPackIEC958::PackAC3;
+      m_repeat   = 1;
+
       CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
       return skip;
     }
@@ -300,8 +304,8 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       if (strmtyp == 3) continue;
 
       unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
-      uint8_t      fscod     = (data[4] >> 6) & 0xB;
-      uint8_t      cod       = (data[4] >> 4) & 0xB;
+      uint8_t      fscod     = (data[4] >> 6) & 0x3;
+      uint8_t      cod       = (data[4] >> 4) & 0x3;
       uint8_t      blocks;
 
       if (fscod == 0x3)
@@ -319,6 +323,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       }
 
       m_fsize        = framesize << 1;
+      m_repeat       = MAX_EAC3_BLOCKS / blocks;
       m_sampleRate <<= 2; /* E-AC-3 uses 4x samplerate */
 
       if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
@@ -329,7 +334,8 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_syncFunc = &CAEStreamInfo::SyncAC3;
       m_dataType = STREAM_TYPE_EAC3;
       m_packFunc = &CAEPackIEC958::PackEAC3;
-      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate);
+
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate >> 2);
       return skip;
     }
   }
@@ -446,6 +452,8 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       m_dataType   = dataType;
       m_sampleRate = sampleRate;
       m_syncFunc   = &CAEStreamInfo::SyncDTS;
+      m_repeat     = 1;
+
       CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
     }
 

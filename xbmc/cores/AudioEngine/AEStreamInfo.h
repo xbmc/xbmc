@@ -68,6 +68,7 @@ private:
   bool                    m_hasSync;
   unsigned int            m_sampleRate;
   unsigned int            m_fsize;
+  unsigned int            m_repeat;
   DataType                m_dataType;
   bool                    m_dataIsLE;
   CAEPackIEC958::PackFunc m_packFunc;
