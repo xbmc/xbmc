@@ -42,6 +42,7 @@ public:
   virtual ~CMythDirectory();
 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool Exists(const char* strPath);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
 
