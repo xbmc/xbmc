@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 27/09/2010-->
-<!--Based on English strings revision 34191-->
+<!--Date of translation: 21/10/2010-->
+<!--Based on English strings revision 34887-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -570,6 +570,8 @@
   <string id="609">CDDA Aktarma Yolu ayarlanmamış</string>
   <string id="610">Parçayı aktar</string>
   <string id="611">Numara gir</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Sample Frequency</string>
 
   <string id="620">Ses CD'leri</string>
   <string id="621">Kodlayıcı</string>
@@ -1029,14 +1031,14 @@
   <string id="13015">Güç düğmesi eylemi</string>
   <string id="13016">Sistemi Kapatma</string>
 
-  <string id="13050">Düşük pil ile çalışıyor</string>
-
   <string id="13020">Başka bir oturum mu etkin, ssh üzerinden olabilir mi?</string>
   <string id="13021">Çıkarılabilir sabit disk bağlandı</string>
   <string id="13022">Aygıt güvensiz bir şekilde kaldırıldı</string>
   <string id="13023">Aygıt başarıyla kaldırıldı</string>
   <string id="13024">Joystick takılı</string>
   <string id="13025">Joystick takılı değil</string>
+
+  <string id="13050">Düşük pil ile çalışıyor</string>
 
   <string id="13100">Titreme filtresi</string>
   <string id="13101">Sürücü seçsin (yeniden başlatmak gerekir)</string>
@@ -1782,6 +1784,7 @@
   <string id="20255">İlk oturum açılışı, profilinizi düzenleyin</string>
   <string id="20256">HTS Tvheadend istemcisi</string>
   <string id="20257">VDR Streamdev istemcisi</string>
+  <string id="20258">MythTV istemcisi</string>
 
   <string id="20300">Web sunucu dizini (HTTP)</string>
   <string id="20301">Web sunucu dizini (HTTPS)</string>
@@ -1859,7 +1862,7 @@
   <string id="20373">Sezon</string>
   <string id="20374">Film bilgileri karşıdan yükleniyor</string>
   <string id="20375">Atanmamış içerik</string>
-
+  <string id="20376">Orijinal başlık</string>
   <string id="20377">TV programının bilgilerini yenile</string>
   <string id="20378">Tüm bölümlerin bilgileri yenilensin mi?</string>
   <string id="20379">Seçilen klasör tek bir TV programı içerir</string>
@@ -1879,11 +1882,11 @@
   <string id="20393">Müzik video bilgisi</string>
   <string id="20394">Müzik videosu bilgisi yükleniyor</string>
   <string id="20395">Karışık</string>
-  <string id="20396">Artiste göre albüme git</string>
+  <string id="20396">Sanatçıya göre albüme git</string>
   <string id="20397">Albüme git</string>
   <string id="20398">Şarkıyı çal</string>
   <string id="20399">Albümden müzik videosuna git</string>
-  <string id="20400">Artiste göre müzik videosuna git</string>
+  <string id="20400">Sanatçıya göre müzik videosuna git</string>
   <string id="20401">Müzik videosunu oynat</string>
   <string id="20402">Kitaplığa eklendiğinde aktör küçük resimlerini karşıdan yükle</string>
   <string id="20403">Aktör küçük resmini ayarla</string>
@@ -2261,6 +2264,8 @@
   <string id="24096">Depodaki eklenti bozuk olarak işaretlenmiş.</string>
   <string id="24097">Sisteminizde devre dışı bırakmak ister misiniz?</string>
   <string id="24098">Bozuk</string>
+  <string id="24099">Bu dış görünüme geçmek ister misiniz?</string>
+  <string id="25000">Bildirimler</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kitaplık Modu</string>

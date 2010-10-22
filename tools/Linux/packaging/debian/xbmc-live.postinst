@@ -207,7 +207,7 @@ ENDOFBLOCK
 
 	if [ -f /boot/grub/grub.cfg ]; then
 		if ! grep -q -i "xbmc=autostart" /etc/default/grub ; then
-			sed -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"\(.*\)\"/\"\1 xbmc=autostart,nodiskmount,setvolume loglevel=0\"/" /etc/default/grub
+			sed -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"\(.*\)\"/\"\1 xbmc=autostart,nodiskmount loglevel=0\"/" /etc/default/grub
 			update-grub
 		fi
 	fi

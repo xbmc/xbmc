@@ -575,6 +575,9 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString entries;
     if (setting->Attribute("entries"))
       entries = setting->Attribute("entries");
+    CStdString defaultValue;
+    if (setting->Attribute("default"))
+      defaultValue= setting->Attribute("default");
     const char *subsetting = setting->Attribute("subsetting");
     CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
 
@@ -615,7 +618,7 @@ void CGUIDialogAddonSettings::CreateControls()
             ((CGUIButtonControl *)pControl)->SetLabel2(value);
         }
         else
-          ((CGUIButtonControl *)pControl)->SetLabel2(setting->Attribute("default"));
+          ((CGUIButtonControl *)pControl)->SetLabel2(defaultValue);
       }
       else if (strcmpi(type, "bool") == 0)
       {

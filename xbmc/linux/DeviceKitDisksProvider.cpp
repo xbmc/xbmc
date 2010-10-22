@@ -390,7 +390,7 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
     bool mounted = device->m_isMounted;
     device->Update();
     if (!mounted && device->m_isMounted && callback)
-      callback->OnStorageAdded(device->m_MountPath, device->m_Label);
+      callback->OnStorageAdded(device->m_Label, device->m_MountPath);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
 

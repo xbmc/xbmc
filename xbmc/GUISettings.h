@@ -291,11 +291,23 @@ public:
 
   void SetData(int iData)
   { 
-    m_iData = iData;
     if (m_entries.empty())
     {
+      m_iData = iData;
       if (m_iData < m_iMin) m_iData = m_iMin; 
       if (m_iData > m_iMax) m_iData = m_iMax;
+    }
+    else
+    {
+      //if the setting is an std::map, check if iData is a valid value before assigning it
+      for (std::map<int,int>::iterator it = m_entries.begin(); it != m_entries.end(); it++)
+      {
+        if (it->second == iData)
+        {
+          m_iData = iData;
+          break;
+        }
+      }
     }
   }
   int GetData() const { return m_iData; };

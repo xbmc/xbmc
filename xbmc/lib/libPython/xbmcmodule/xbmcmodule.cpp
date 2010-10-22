@@ -322,7 +322,7 @@ namespace PYXBMC
 
     CUtil::URLDecode(parameter);
     return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
-	}
+  }
 #endif
 
 #ifdef HAS_JSONRPC
@@ -349,7 +349,7 @@ namespace PYXBMC
     CPythonTransport::CPythonClient client;
 
     return PyString_FromString(JSONRPC::CJSONRPC::MethodCall(method, &transport, &client).c_str());
-	}
+  }
 #endif
 
   // sleep() method

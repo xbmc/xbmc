@@ -325,7 +325,9 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   return ret;
 }
 
-#if (MHD_VERSION >= 0x00040001)
+#if (MHD_VERSION >= 0x00090200)
+ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
+#elif (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 #else   //libmicrohttpd < 0.4.0
 int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
@@ -376,10 +378,7 @@ bool CWebServer::Start(int port, const CStdString &username, const CStdString &p
   SetCredentials(username, password);
   if (!m_running)
   {
-    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port);
-
-    if (!m_daemon) //try IPv4
-      m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
+    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
 
     m_running = m_daemon != NULL;
     if (m_running)

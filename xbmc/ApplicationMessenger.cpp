@@ -382,6 +382,9 @@ case TMSG_POWERDOWN:
         CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
+        if (g_application.IsPlayingVideo())
+          g_application.StopPlaying();
+
         g_graphicsContext.Lock();
         pSlideShow->Reset();
 
@@ -434,6 +437,15 @@ case TMSG_POWERDOWN:
 
     case TMSG_MEDIA_PAUSE:
       if (g_application.m_pPlayer)
+      {
+        g_application.ResetScreenSaver();
+        g_application.WakeUpScreenSaverAndDPMS();
+        g_application.m_pPlayer->Pause();
+      }
+      break;
+
+    case TMSG_MEDIA_UNPAUSE:
+      if (g_application.IsPaused())
       {
         g_application.ResetScreenSaver();
         g_application.WakeUpScreenSaverAndDPMS();

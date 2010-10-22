@@ -610,8 +610,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       }
 
       CGUIWindow::OnMessage(message);
-      if (g_application.IsPlayingVideo())
-        g_application.StopPlaying();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
         m_ImageLib.Load();

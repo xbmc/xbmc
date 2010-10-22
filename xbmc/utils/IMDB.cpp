@@ -394,6 +394,13 @@ void CIMDB::Process()
     m_state = DO_NOTHING;
     return;
   }
+
+  if (m_url.m_url.empty())
+  {
+    // empty url when it's not supposed to be..
+    // this might happen if the previously scraped item was removed from the site (see ticket #10537)
+    CLog::Log(LOGERROR, "%s: Error getting details for %s due to an empty url", __FUNCTION__, m_strMovie.c_str());
+  }
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))

@@ -44,6 +44,17 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+typedef struct {
+	int version;
+	unsigned int token;
+} myth_protomap_t;
+
+static myth_protomap_t protomap[] = {
+	{62, 0x78B5631E},
+	{63, 0x3875641D},
+	{0, 0}
+};
+
 /*
  * cmyth_conn_destroy(cmyth_conn_t conn)
  * 
@@ -323,7 +334,21 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 	if (attempt == 0)
 		tmp_ver = conn->conn_version;
 	conn->conn_version = tmp_ver;
-	sprintf(announcement, "MYTH_PROTO_VERSION %ld", conn->conn_version);
+
+	if (tmp_ver >= 62) {
+		myth_protomap_t *map = protomap;
+		while (map->version != 0 && map->version != tmp_ver)
+			map++;
+		if (map->version == 0) {
+			cmyth_dbg(CMYTH_DBG_ERROR,
+				  "%s: failed to connect with any version\n",
+				  __FUNCTION__);
+			goto shut;
+		}
+		sprintf(announcement, "MYTH_PROTO_VERSION %ld %04X", conn->conn_version, map->token);
+	} else {
+		sprintf(announcement, "MYTH_PROTO_VERSION %ld", conn->conn_version);
+	}
 	if (cmyth_send_message(conn, announcement) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_send_message('%s') failed\n",

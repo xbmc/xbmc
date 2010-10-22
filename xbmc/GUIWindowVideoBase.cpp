@@ -1449,6 +1449,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
 
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 {
+  if (!g_settings.GetCurrentProfile().canWriteDatabases())
+    return;
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())

@@ -29,7 +29,7 @@ if [ -f /target/boot/grub/grub.cfg ]; then
 	# Set our own defaults
 	echo  >> /target/etc/default/grub
 	echo '# Defaults from XBMC Installation' >> /target/etc/default/grub
-	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount,setvolume loglevel=0 video=vesafb"' >> /target/etc/default/grub
+	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount loglevel=0 video=vesafb"' >> /target/etc/default/grub
 	echo 'GRUB_GFXMODE="800x600"' >> /target/etc/default/grub
 	echo 'GRUB_GFXPAYLOAD_LINUX="800x600"' >> /target/etc/default/grub
 

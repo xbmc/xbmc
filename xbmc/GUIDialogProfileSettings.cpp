@@ -267,9 +267,12 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_iDbMode = 2;
     dialog->m_iSourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
-    dialog->m_locks.addonManager = true;
-    dialog->m_locks.settings = true;
-    dialog->m_locks.files = true;
+
+    bool bLock = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
+    dialog->m_locks.addonManager = bLock;
+    dialog->m_locks.settings = bLock;
+    dialog->m_locks.files = bLock;
+
     dialog->m_strDirectory.Empty();
     dialog->m_strThumb.Empty();
     // prompt for a name

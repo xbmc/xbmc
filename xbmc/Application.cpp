@@ -432,6 +432,12 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
 
 void CApplication::Preflight()
 {
+#ifdef HAS_DBUS
+  // call 'dbus_threads_init_default' before any other dbus calls in order to
+  // avoid race conditions with other threads using dbus connections
+  dbus_threads_init_default();
+#endif
+
   // run any platform preflight scripts.
 #ifdef __APPLE__
   CStdString install_path;
@@ -2356,7 +2362,10 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    g_graphicsContext.ToggleFullScreenRoot();
+    //when in standalone mode, don't allow switching from fullscreen to windowed with the \ key
+    if (!g_application.IsStandAlone() || (g_application.IsStandAlone() && !g_graphicsContext.IsFullScreenRoot()))
+      g_graphicsContext.ToggleFullScreenRoot();
+
     return true;
   }
 
@@ -4021,6 +4030,8 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
+  if (!g_settings.GetCurrentProfile().canWriteDatabases())
+    return;
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate);

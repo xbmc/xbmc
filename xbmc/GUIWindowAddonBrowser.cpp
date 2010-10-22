@@ -48,8 +48,10 @@
 #include "AddonDatabase.h"
 #include "AdvancedSettings.h"
 #include "MediaManager.h"
+#include "GUISettings.h"
 
 #define CONTROL_AUTOUPDATE 5
+#define CONTROL_SHUTUP     6
 
 using namespace ADDON;
 using namespace XFILE;
@@ -100,6 +102,12 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_AUTOUPDATE)
       {
         g_settings.m_bAddonAutoUpdate = !g_settings.m_bAddonAutoUpdate;
+        g_settings.Save();
+        return true;
+      }
+      else if (iControl == CONTROL_SHUTUP)
+      {
+        g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
         g_settings.Save();
         return true;
       }
@@ -351,7 +359,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
-            if (update)
+            if (update && g_settings.m_bAddonNotifications)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   addon->Icon(),
@@ -361,11 +369,14 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             }
             else
             {
-              g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  addon->Icon(),
-                                                  addon->Name(),
-                                                  g_localizeStrings.Get(24064),
-                                                  TOAST_DISPLAY_TIME,false);
+              if (addon->Type() == ADDON_SKIN)
+                m_prompt = addon;
+             if (g_settings.m_bAddonNotifications)
+                g_application.m_guiDialogKaiToast.QueueNotification(
+                                                   addon->Icon(),
+                                                   addon->Name(),
+                                                   g_localizeStrings.Get(24064),
+                                                   TOAST_DISPLAY_TIME,false);
             }
           }
           else
@@ -392,6 +403,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -455,6 +467,26 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
+
+  lock.Leave();
+  if (m_downloadJobs.empty() && m_prompt)
+    PromptForActivation();
+}
+
+void CGUIWindowAddonBrowser::PromptForActivation()
+{
+  if (m_prompt->Type() == ADDON_SKIN)
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(m_prompt->Name(),
+                                         g_localizeStrings.Get(24099),"",""))
+    {
+      g_guiSettings.SetString("lookandfeel.skin",m_prompt->ID().c_str());
+      g_application.m_guiDialogKaiToast.ResetTimer();
+      g_application.m_guiDialogKaiToast.Close(true);
+      g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
+    }
+  }
+  m_prompt.reset();
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,

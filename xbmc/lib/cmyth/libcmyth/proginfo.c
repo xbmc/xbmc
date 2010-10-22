@@ -1691,7 +1691,7 @@ cmyth_proginfo_get_from_basename(cmyth_conn_t control, const char* basename)
 {
 	int err = 0;
 	int count, i;
-	char msg[256];
+	char msg[4096];
 	char *base;
 	cmyth_proginfo_t prog = NULL;
 	cmyth_proglist_t list = NULL;

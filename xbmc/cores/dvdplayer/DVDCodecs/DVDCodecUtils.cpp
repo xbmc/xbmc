@@ -349,3 +349,18 @@ bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture 
   return true;
 }
 
+bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
+{
+  // known hardware limitation of purevideo 3 (VP3). (the Nvidia 9400 is a purevideo 3 chip)
+  // from nvidia's linux vdpau README: All current third generation PureVideo hardware
+  // (G98, MCP77, MCP78, MCP79, MCP7A) cannot decode H.264 for the following horizontal resolutions:
+  // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
+  // This relates to the following macroblock sizes.
+  int unsupported[] = {49, 54, 59, 64, 113, 118, 123, 128};
+  for (unsigned int i = 0; i < sizeof(unsupported) / sizeof(int); i++)
+  {
+    if (unsupported[i] == (width + 15) / 16)
+      return false;
+  }
+  return true;
+}

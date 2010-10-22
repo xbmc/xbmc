@@ -28,6 +28,7 @@
 #include "GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
+#include "DVDCodecUtils.h"
 #include "DVDVideoCodecVDA.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -427,23 +428,10 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
-    if (Cocoa_GPUForDisplayIsNvidiaPureVideo3())
+    if (Cocoa_GPUForDisplayIsNvidiaPureVideo3() && !CDVDCodecUtils::IsVP3CompatibleWidth(width))
     {
-      // known hardware limitation of purevideo 3. (the Nvidia 9400 is a purevideo 3 chip)
-      // from nvidia's linux vdpau README: All current third generation PureVideo hardware
-      // (G98, MCP77, MCP78, MCP79, MCP7A) cannot decode H.264 for the following horizontal resolutions:
-      // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
-      // This relates to the following macroblock sizes.
-      int macroblocksize[] = {49, 54, 59, 64, 113, 118, 123, 128};
-      for (size_t i = 0; i < sizeof(macroblocksize)/sizeof(macroblocksize[0]); i++)
-      {
-        if (((width + 15) / 16) == macroblocksize[i])
-        {
-          CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d",
-            __FUNCTION__, width);
-          return false;
-        }
-      }
+      CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
+      return false;
     }
 
     switch (hints.codec)
