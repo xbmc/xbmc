@@ -504,9 +504,6 @@ bool CCdgReader::Start()
 void CCdgReader::SetAVDelay(float fDelay)
 {
   m_fAVDelay = fDelay;
-#ifdef _DEBUG
-  m_fAVDelay -= DEBUG_AVDELAY_MOD;
-#endif
 }
 float CCdgReader::GetAVDelay()
 {
