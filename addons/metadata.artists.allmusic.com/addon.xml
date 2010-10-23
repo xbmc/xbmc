@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.artists.allmusic.com"
        name="AllMusic"
-       version="1.0.8"
+       version="1.8.1"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
     <import addon="metadata.common.last.fm" version="1.0"/>
-    <import addon="metadata.common.allmusic.com" version="1.0"/>
+    <import addon="metadata.common.allmusic.com" version="1.8.1"/>
     <import addon="metadata.common.htbackdrops.com" version="1.0.7"/>
   </requires>
   <extension point="xbmc.metadata.scraper.artists"
@@ -18,6 +18,7 @@
     <summary lang="es">Descarga información de Artistas de AllMusic</summary>
     <summary lang="fr">Scraper d'artistes musicaux AllMusic</summary>
     <summary lang="hu">AllMusic előadó információk</summary>
+    <summary lang="nl">AllMusic-artiestinfo</summary>
     <summary lang="pl">Informacje o artystach AllMusic</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="ru">Информация об исполнителе из AllMusic</summary>
@@ -41,10 +42,10 @@ Tous les styles et tous les genres y sont représentés, allant du plus commerci
     <description lang="hu">Az AllMusic.com használata a médiatáradatok feltöltésére. Ez a webhely 1995-ben a zenerajongók szenvedélyének kiszolgálására jött létre.
 Az AMG szerkesztői csapata a szakértő közreműködőkkel együtt (mind zenei fanatikus a maga nemében), az allmusic-ot a legátfogóbb zenei információforrássá tették a világon.
 Minden létező stílus és zenei irányzat feldolgozásra kerül itt. Kezdve a legpopulárisabbtól a legismeretlenebbig. Mi kritikát mondunk a lemezekről és előadókról, az operától a garázs rock-on át a hagyományos country zenéig. Ez biztosítja, hogy bármely stílus rajongói napra készek legyenek a kedvenc előadóikkal, ugyanakkor az új hangzások is eljussanak hozzájuk.</description>
-    <description lang="nl">Gebruik AllMusic.com om de metadata van jouw collectie op te halen.
-  De AllMusic website is ontstaan in 1995 als webstek voor echte muziekfans.
-The AMG redactie, samen met honderden bijdragende experen (allen muziekfans in hun eigen gebied), hebben van allmusic het meest complete muziek naslagwerk gemaakt op deze planeet.
-Alle genres en stijlen worden gedekt, gaande van de meest commerciele tot de meest alternatieve. We bekritiseren albums en artiesten in hun eigen genre, van opera tot garagerock tot traditionele country. Dit maakt dat fans van elke muziekstijl bij ons terecht kunnen voor de laatste informatie rond hun favoriete artiesten of om nieuwe muziek te leren ontdekken.</description>
+    <description lang="nl">AllMusic.com gebruiken om de metadata van uw collectie op te halen.
+De AllMusic-website werd in 1995 opgericht om muziekfans een online thuis te bieden.
+De AMG-redactie heeft van AllMusic het meest complete muzieknaslagwerk gemaakt op deze planeet, mede dankzij de bijdragen van honderden experts. Het is hun missie om de hoogstaande inhoud te blijven aanbieden die muziekliefhebbers en professionals ondertussen van AMG verwachten.
+Alle genres en stijlen - of het nu de meest commerciële of de meest obscure zijn - krijgen hier een plaatsje. We bespreken albums en artiesten in de context van hun eigen genre, van opera over garagerock tot traditionele country. Hierdoor kunnen fans van elke muziekstijl bij ons terecht voor de laatste informatie over hun favoriete artiesten, of om nieuwe muziek te leren ontdekken.</description>
     <description lang="pl">Używa AllMusic.com do pobierania informacji o zawartości Twojej muzycznej biblioteki.</description>
     <description lang="pt">Use o AllMusic.com para obter a informação da sua Biblioteca de música. O site allmusic foi criado em 1995 para alimentar a paixão dos fans de música.
 O pessoal da redacção da AMG, em conjunto com centenas de especialistas (todos fanáticos por música à sua maneira), tornaram o allmusic o mais completo site de referência musical do planeta. Continuam dedicados a criar e manter o conhecimento, espírito e conteúdos que fans de música e profissionais da indústria se habituaram a obter da AMG.
