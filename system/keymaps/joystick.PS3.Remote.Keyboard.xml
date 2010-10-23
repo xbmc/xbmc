@@ -316,12 +316,20 @@
     </joystick>
   </PictureInfo>
  
- <FullscreenInfo>
+  <FullscreenInfo>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
       <button id="1">Close</button>
       <button id="4">OSD</button>
     </joystick>
- </FullscreenInfo>
+  </FullscreenInfo>
+
+  <NumericInput>
+    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
+      <altname>PS3 Remote Keyboard</altname>
+      <altname>MoSart PS3 Remote Keyboard</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </NumericInput>
 </keymap>

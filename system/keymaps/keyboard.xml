@@ -562,4 +562,9 @@
       <backspace>Close</backspace>
     </keyboard>
   </Favourites>
+  <NumericInput>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </NumericInput>
 </keymap>

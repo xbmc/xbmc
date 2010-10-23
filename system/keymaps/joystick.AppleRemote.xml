@@ -273,4 +273,9 @@
       <button id="6">Close</button>
     </joystick>
   </TextViewer>
+  <NumericInput>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </NumericInput>
 </keymap>
