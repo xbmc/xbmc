@@ -350,6 +350,8 @@ protected:
       timestamp     = 0;
       time          = 0;
       time_total    = 0;
+      time_offset   = 0;
+      dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
       chapter_count = 0;
@@ -360,9 +362,11 @@ protected:
     }
 
     double timestamp;         // last time of update
+    double time_offset;       // difference between time and pts
 
     double time;              // current playback time
     double time_total;        // total playback time
+    double dts;               // last known dts
 
     std::string player_state;  // full player state
 
