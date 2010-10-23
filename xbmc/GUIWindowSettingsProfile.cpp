@@ -91,6 +91,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, g_windowManager.GetActiveWindow(), iCtrlID);
     g_windowManager.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_settings.LoadMasterForLogin();
     CGUIWindowLoginScreen::LoadProfile(iItem);
     return;
   }

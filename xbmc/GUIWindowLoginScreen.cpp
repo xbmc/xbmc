@@ -280,6 +280,13 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_settings.UpdateCurrentProfileDate();
   g_settings.SaveProfiles(PROFILES_FILE);
 
+  if (g_settings.GetLastUsedProfileIndex() != profile)
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+  }
+
   g_weatherManager.Refresh();
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
