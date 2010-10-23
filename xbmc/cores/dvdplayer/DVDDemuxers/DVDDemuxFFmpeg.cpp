@@ -345,7 +345,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if (!trySPDIFonly)
         iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
 
-      if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
+      // the advancedsetting is for allowing the user to force outputting the
+      // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
+      // it (this is temporary until we handle 44.1 kHz passthrough properly)
+      if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_dvdplayerIgnoreDTSinWAV))
       {
         // check for spdif and dts
         // This is used with wav files and audio CDs that may contain

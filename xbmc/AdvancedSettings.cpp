@@ -51,6 +51,7 @@ void CAdvancedSettings::Initialize()
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
+  m_dvdplayerIgnoreDTSinWAV = false;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -340,6 +341,7 @@ bool CAdvancedSettings::Load()
 
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
+    XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
