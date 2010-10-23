@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/24/2010-->
+<!--Date of translation: 10/23/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
@@ -13,11 +13,11 @@
   <string id="31005">Ukryj info</string>
   <string id="31007">Wtyczki</string>
   <string id="31020">Ostatnio dodane</string>
-  <string id="31021">Wideo p pliki</string>
+  <string id="31021">Wideo - pliki</string>
   <string id="31022">Muzyka - pliki</string>
-  <string id="31023">Odtwarzam</string>
-  <string id="31024">strona</string>
-  <string id="31025">pozycji</string>
+  <string id="31023">Otwarzam</string>
+  <string id="31024">Strona</string>
+  <string id="31025">Pozycji</string>
   <string id="31026">Różne opcje</string>
   <string id="31027">Lokalizacja</string>
   <string id="31028">Plakaty</string>
@@ -25,7 +25,7 @@
   <string id="31030">Pełna lista</string>
   <string id="31031">Miniatury zdjęć</string>
   <string id="31032">Zawijaj obrazy</string>
-  <string id="31033">info</string>
+  <string id="31033">Info</string>
   <string id="31040">Teraz odtwarzane</string>
   <string id="31042">ODTWARZAM</string>
   <string id="31043">PAUZA</string>
@@ -71,6 +71,7 @@
   <string id="31128">Teksty piosenek</string>
   <string id="31129">Włącz pobieranie napisów w OSD</string>
   <string id="31130">ŚCIEŻKA DO WTYCZKI NAPISY DO FILMÓW</string>
+  <string id="31131">Użyj poziome menu główne</string>
   <string id="31140">Muzyka - OSD</string>
   <string id="31141">Wideo - OSD</string>
   <string id="31200">Skróty</string>
@@ -80,7 +81,7 @@
   <string id="31204">Linki sekcji</string>
   <string id="31205">Źródło tekstów piosenek</string>
   <string id="31300">Temperatura</string>
-  <string id="31301">ostatnia aktualizacja</string>
+  <string id="31301">Ostatnia aktualizacja</string>
   <string id="31302">Menu</string>
   <string id="31304">Zdjęcia</string>
   <string id="31305">Nie wykryto płyty</string>
