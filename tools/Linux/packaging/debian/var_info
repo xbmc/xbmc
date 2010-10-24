@@ -35,7 +35,6 @@ case "$1" in
         ;;
     XBMC_LIVE_DEPENDS)
         XBMC_LIVE_DEPENDS="xbmc-standalone (= \${binary:Version}),
-         policykit,
          openssh-server,
          \${python:Depends},
          python-apt,
@@ -53,6 +52,14 @@ case "$1" in
             XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
          mkpasswd,"
         fi
+        if [ $(lsb_release -cs) = "maverick" ]; then
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         policykit-1,"
+        else
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         policykit,"
+        fi
+
         printf "$XBMC_LIVE_DEPENDS"
         ;;
     LIBVDPAU_DEPENDS)
