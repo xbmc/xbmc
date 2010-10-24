@@ -804,7 +804,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       TiXmlElement *pButton = pDevice->FirstChildElement();
       while (pButton)
       {
-        uint32_t buttonCode;
+        uint32_t buttonCode=0;
         if (type == "gamepad")
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")
