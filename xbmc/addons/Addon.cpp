@@ -125,34 +125,35 @@ typedef struct
   const char* name;
   TYPE        type;
   int         pretty;
+  const char* icon;
 } TypeMapping;
 
 static const TypeMapping types[] =
-  {{"unknown",                           ADDON_UNKNOWN,                 0 },
-   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016 },
-   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017 },
-   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007 },
-   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015 },
-   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014 },
-   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0 },
-   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008 },
-   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010 },
-   {"visualization-library",             ADDON_VIZ_LIBRARY,             0 },
-   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005 },
-   {"xbmc.python.script",                ADDON_SCRIPT,              24009 },
-   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027 },
-   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012 },
-   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013 },
-   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014 },
-   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0 },
-   {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
-   {"xbmc.gui.webinterface",             ADDON_WEB_INTERFACE,         199 },
-   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
-   {"pvrclient",                         ADDON_PVRDLL,                  0 },
-   {"xbmc.addon.video",                  ADDON_VIDEO,                1037 },
-   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038 },
-   {"xbmc.addon.image",                  ADDON_IMAGE,                1039 },
-   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043 }};
+  {{"unknown",                           ADDON_UNKNOWN,                 0, "" },
+   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016, "DefaultAddonAlbumInfo.png" },
+   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017, "DefaultAddonArtistInfo.png" },
+   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007, "DefaultAddonMovieInfo.png" },
+   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015, "DefaultAddonMusicVideoInfo.png" },
+   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
+   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0, "" },
+   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "" },
+   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "" },
+   {"visualization-library",             ADDON_VIZ_LIBRARY,             0, "" },
+   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
+   {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
+   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "" },
+   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012, "DefaultAddonSubtitles.png" },
+   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
+   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014, "" },
+   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,           0, "" },
+   {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
+   {"xbmc.gui.webinterface",             ADDON_WEB_INTERFACE,         199, "" },
+   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "" },
+   {"pvrclient",                         ADDON_PVRDLL,                  0, "" },
+   {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
+   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
+   {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
+   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
@@ -179,6 +180,17 @@ const TYPE TranslateType(const CStdString &string)
       return map.type;
   }
   return ADDON_UNKNOWN;
+}
+
+const CStdString GetIcon(const ADDON::TYPE& type)
+{
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  {
+    const TypeMapping &map = types[index];
+    if (type == map.type)
+      return map.icon;
+  }
+  return "";
 }
 
 /**
