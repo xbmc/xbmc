@@ -32,7 +32,10 @@ def error(errorLine):
     elif Output == "--error-output=SDL":
         createSDL(errorLine)
     else:
-        print errorLine
+        try:
+            print(errorLine)
+        except:
+            print errorLine
 
     exit(1)
 
