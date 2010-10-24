@@ -82,10 +82,6 @@ void CEventButtonState::Load()
       {
         m_iKeyCode = CButtonTranslator::TranslateRemoteString( m_buttonName.c_str() );
       }
-      else if  ( m_mapName.compare("R2") == 0 ) // xbox unviversal remote map
-      {
-        m_iKeyCode = CButtonTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
-      }
       else if ( (m_mapName.length() > 3) &&
                 (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
       {
