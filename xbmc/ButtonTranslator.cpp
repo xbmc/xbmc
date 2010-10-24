@@ -504,10 +504,6 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   if (it2 == (*it).second.end())
     return 0;
 
-  // Convert the button to code
-  if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
-    return TranslateUniversalRemoteString((*it2).second.c_str());
-
   return TranslateRemoteString((*it2).second.c_str());
 }
 #endif
@@ -809,8 +805,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")
             buttonCode = TranslateRemoteString(pButton->Value());
-        else if (type == "universalremote")
-            buttonCode = TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
 
@@ -1014,18 +1008,6 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("subtitle")) buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
   else if (strButton.Equals("language")) buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
-  return buttonCode;
-}
-
-uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
-{
-  if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) 
-    return 0;
-  const char *szCode = szButton + 3;
-  // Button Code is 255 - OBC (Original Button Code) of the button
-  uint32_t buttonCode = 255 - atol(szCode);
-  if (buttonCode > 255) 
-    buttonCode = 0;
   return buttonCode;
 }
 
