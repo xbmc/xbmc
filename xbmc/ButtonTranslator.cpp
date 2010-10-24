@@ -814,6 +814,24 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
   }
 }
 
+enum CButtonTranslator::ButtonDeviceType CButtonTranslator::GetDeviceType(TiXmlNode *pWindow)
+{
+  TiXmlNode *firstChild = pWindow->FirstChild();
+  if (firstChild != NULL)
+  {
+    const char *value = firstChild->Value();
+    if (value == "gamepad")
+      return Gamepad;
+    if (value == "remote")
+        return Remote;
+    if (value == "universalremote")
+        return UniversalRemote;
+    if (value == "keyboard")
+        return Keyboard;
+  }
+  return Unknown;
+}
+
 void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
   if (!pWindow || windowID == WINDOW_INVALID) return;
@@ -825,46 +843,30 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     translatorMap.erase(it);
   }
   TiXmlNode* pDevice;
-  if ((pDevice = pWindow->FirstChild("gamepad")) != NULL)
-  { // map gamepad actions
+  ButtonDeviceType remoteType = GetDeviceType(pWindow);
+  if (remoteType != Unknown)
+  {
+    pDevice = pWindow->FirstChild();
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      uint32_t buttonCode = TranslateGamepadString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("remote")) != NULL)
-  { // map remote actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateRemoteString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("universalremote")) != NULL)
-  { // map universal remote actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateUniversalRemoteString(pButton->Value());
-      if (pButton->FirstChild())
-        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
-      pButton = pButton->NextSiblingElement();
-    }
-  }
-  if ((pDevice = pWindow->FirstChild("keyboard")) != NULL)
-  { // map keyboard actions
-    TiXmlElement *pButton = pDevice->FirstChildElement();
-    while (pButton)
-    {
-      uint32_t buttonCode = TranslateKeyboardButton(pButton);
-      if (pButton->FirstChild())
+      uint32_t buttonCode;
+      switch (remoteType)
+      {
+        case Gamepad:
+          buttonCode = TranslateGamepadString(pButton->Value());
+          break;
+        case Remote:
+          buttonCode = TranslateRemoteString(pButton->Value());
+          break;
+        case UniversalRemote:
+          buttonCode = TranslateUniversalRemoteString(pButton->Value());
+          break;
+        case Keyboard:
+          buttonCode = TranslateKeyboardButton(pButton);
+          break;
+      }
+      if (buttonCode && pButton->FirstChild())
         MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }

@@ -59,7 +59,15 @@ private:
   CButtonTranslator(const CButtonTranslator&);
   CButtonTranslator const& operator=(CButtonTranslator const&);
   virtual ~CButtonTranslator();
-
+  enum ButtonDeviceType
+  {
+    Unknown,
+    Gamepad,
+    Remote,
+    Keyboard,
+    UniversalRemote
+  };
+  enum ButtonDeviceType GetDeviceType(TiXmlNode *pWindow);
 public:
   ///access to singleton
   static CButtonTranslator& GetInstance();
