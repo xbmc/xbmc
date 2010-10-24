@@ -186,23 +186,25 @@ void CGUIDialogContentSettings::OnSettingChanged(SettingInfo &setting)
   CreateSettings();
 
   // crappy setting dependencies part 2
-  if (setting.id == 2) // use dir names
+  if (m_content == CONTENT_MOVIES)
   {
-    m_bSingleItem = false;
-    UpdateSetting(3); // scan recursively
-    UpdateSetting(4); // single item
+    if (setting.id == 2) // use dir names
+    {
+      m_bSingleItem = false;
+      UpdateSetting(3); // scan recursively
+      UpdateSetting(4); // single item
+    }
+    else if (setting.id == 3)
+    {
+      m_bSingleItem = false;
+      UpdateSetting(4);
+    }
+    else if (setting.id == 4)
+    {
+      m_bScanRecursive = false;
+      UpdateSetting(3);
+    }
   }
-  else if (setting.id == 3)
-  {
-    m_bSingleItem = false;
-    UpdateSetting(4);
-  }
-  else if (setting.id == 4)
-  {
-    m_bScanRecursive = false;
-    UpdateSetting(3);
-  }
-
   m_bNeedSave = true;
 }
 
