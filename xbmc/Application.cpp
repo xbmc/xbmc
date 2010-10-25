@@ -4772,13 +4772,10 @@ void CApplication::ProcessSlow()
 
 #ifdef HAS_LCD
   // attempt to reinitialize the LCD (e.g. after resuming from sleep)
-  if (!IsPlayingVideo())
+  if (g_lcd && !g_lcd->IsConnected())
   {
-    if (g_lcd && !g_lcd->IsConnected())
-    {
-      g_lcd->Stop();
-      g_lcd->Initialize();
-    }
+    g_lcd->Stop();
+    g_lcd->Initialize();
   }
 #endif
   
