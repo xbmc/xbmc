@@ -128,7 +128,8 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   if(m_bPassthrough)
   {
     /* http://www.alsa-project.org/alsa-doc/alsa-lib/group___digital___audio___interface.html */
-    deviceuse += ":AES0=0x6";
+    deviceuse += (deviceuse.Find(':') >= 0) ? ',' : ':';
+    deviceuse += "AES0=0x6";
     deviceuse += ",AES1=0x82";
     deviceuse += ",AES2=0x0";
     if(uiSamplesPerSec == 192000)
