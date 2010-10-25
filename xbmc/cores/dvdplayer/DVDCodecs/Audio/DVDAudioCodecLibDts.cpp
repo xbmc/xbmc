@@ -173,8 +173,11 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     if(m_iFrameSize > 0)
     {
 
-      if(m_iSourceFlags != flags)
+      if(!m_bFlagsInitialized || m_iSourceFlags != flags)
+      {
         SetupChannels(flags);
+        m_bFlagsInitialized = true;
+      }
 
       if(size >= m_iFrameSize)
       {
@@ -287,6 +290,7 @@ int CDVDAudioCodecLibDts::GetData(BYTE** dst)
 void CDVDAudioCodecLibDts::SetDefault()
 {
   m_iFrameSize = 0;
+  m_bFlagsInitialized = false;
   m_iSourceFlags = 0;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;

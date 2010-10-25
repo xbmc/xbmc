@@ -57,6 +57,7 @@ protected:
   int m_iFrameSize;
   float* m_fSamples;
 
+  bool m_bFlagsInitialized;
   int m_iSourceFlags;
   int m_iSourceSampleRate;
   int m_iSourceChannels;
