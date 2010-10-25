@@ -56,7 +56,6 @@ Description: XBMC Media Center (full metapackage)
 Package: xbmc-live
 Architecture: any
 Depends: xbmc-standalone (= ${binary:Version}),
-         policykit,
          openssh-server,
          ${python:Depends},
          python-apt,

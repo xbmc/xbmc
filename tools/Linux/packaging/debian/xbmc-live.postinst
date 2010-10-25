@@ -4,6 +4,7 @@
 # see: dh_installdeb(1)
 
 set -e
+release="$(lsb_release -r | cut -f2 | sed 's/\.//')"
 
 case "$1" in
     configure)
@@ -125,8 +126,18 @@ ENDOFBLOCK
 	rm $SUDOERS_TEMPFILE
 	rm $SUDOERSBLOCK_TEMPFILE
 
-	# Our set of PolicyKit actions
-
+ #Maverick no longer has polkit-auth, we have to use a .pkla file instead
+ if [ $release -ge 1010 ]; then
+   cat > /var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla <<ENDOFBLOCK
+# Policy to allow the livecd user to bypass policykit. Should be installed at /var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla
+[XBMC-Live user permissions]
+Identity=unix-user:xbmc
+Action=*
+ResultAny=no
+ResultInactive=no
+ResultActive=yes
+ENDOFBLOCK
+ else
 	# This is a list of actions that the 'xbmc' user should be allowed to
 	# do. If we missed one, or we have one that's not necessary, please
 	# submit a bug report.
@@ -191,7 +202,7 @@ ENDOFBLOCK
 			polkit-auth --user $xbmcUser --grant $ACTION
 		fi
 	done
-
+fi
 	if ! grep -i -q XBMCLive /etc/lsb-release ; then
 		sed -i -e "/^DISTRIB_DESCRIPTION/s/\"\(.*\)\"/\"\1 - XBMCLive Dharma\"/" /etc/lsb-release
 	fi
@@ -223,7 +234,6 @@ ENDOFBLOCK
 esac
 
 # Upstart scripts tested on karmic+ only (>=9.10)  and not backward compatible ATM
-release="$(lsb_release -r | cut -f2 | sed 's/\.//')"
 if [ $release -ge 910 ]; then
 	if [ -f "/etc/init.d/xbmc-live" ]; then
 		update-rc.d -f xbmc-live remove >/dev/null
