@@ -97,7 +97,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
     CLog::Log(LOGDEBUG, "%s - Assuming PAL interlaced content. Adjusted frames per second from %.3f (~50.00 fps) to %.3f",
               __FUNCTION__, fFrameRate, fFramesPerSecond);
   }
-  else if (iHeight == 1080) // Don't know of any 1080p content being broadcast so assume 1080i
+  else if (iHeight == 1080 && fFrameRate > 30.0) // Don't know of any 1080p content being broadcast at higher than 30.0 fps so assume 1080i
   {
     fFramesPerSecond = fFrameRate / 2;
     CLog::Log(LOGDEBUG, "%s - Assuming 1080i interlaced content. Adjusted frames per second from %.3f to %.3f",
