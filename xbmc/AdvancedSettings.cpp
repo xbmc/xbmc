@@ -132,6 +132,7 @@ void CAdvancedSettings::Initialize()
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
+  m_displayRemoteCodes = false;
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
@@ -696,6 +697,8 @@ bool CAdvancedSettings::Load()
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
+
+  XMLUtils::GetBoolean(pRootElement, "displayremotecodes", m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
