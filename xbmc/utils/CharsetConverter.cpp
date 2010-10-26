@@ -61,11 +61,54 @@ static iconv_t m_iconvUcs2CharsetToUtf8          = (iconv_t)-1;
 
 static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHAR_SET_NOT_FOUND;
 
-static std::vector<CStdString>     m_vecCharsetNames;
-static std::vector<CStdString>     m_vecCharsetLabels;
-static std::vector<CStdString>     m_vecBidiCharsetNames;
-static std::vector<FriBidiCharSet> m_vecBidiCharsets;
 static CCriticalSection            m_critSection;
+
+static struct SFribidMapping
+{
+  FriBidiCharSet name;
+  const char*    charset;
+} g_fribidi[] = {
+  { FRIBIDI_CHAR_SET_ISO8859_6, "ISO-8859-6"   }
+, { FRIBIDI_CHAR_SET_ISO8859_8, "ISO-8859-8"   }
+, { FRIBIDI_CHAR_SET_CP1255   , "CP1255"       }
+, { FRIBIDI_CHAR_SET_CP1255   , "Windows-1255" }
+, { FRIBIDI_CHAR_SET_CP1256   , "CP1256"       }
+, { FRIBIDI_CHAR_SET_CP1256   , "Windows-1256" }
+, { FRIBIDI_CHAR_SET_NOT_FOUND, NULL           }
+};
+
+static struct SCharsetMapping
+{
+  const char* charset;
+  const char* caption;
+} g_charsets[] = {
+   { "ISO-8859-1", "Western Europe (ISO)" }
+ , { "ISO-8859-2", "Central Europe (ISO)" }
+ , { "ISO-8859-3", "South Europe (ISO)"   }
+ , { "ISO-8859-4", "Baltic (ISO)"         }
+ , { "ISO-8859-5", "Cyrillic (ISO)"       }
+ , { "ISO-8859-6", "Arabic (ISO)"         }
+ , { "ISO-8859-7", "Greek (ISO)"          }
+ , { "ISO-8859-8", "Hebrew (ISO)"         }
+ , { "ISO-8859-9", "Turkish (ISO)"        }
+ , { "CP1250"    , "Central Europe (Windows)" }
+ , { "CP1251"    , "Cyrillic (Windows)"       }
+ , { "CP1252"    , "Western Europe (Windows)" }
+ , { "CP1253"    , "Greek (Windows)"          }
+ , { "CP1254"    , "Turkish (Windows)"        }
+ , { "CP1255"    , "Hebrew (Windows)"         }
+ , { "CP1256"    , "Arabic (Windows)"         }
+ , { "CP1257"    , "Baltic (Windows)"         }
+ , { "CP1258"    , "Vietnamesse (Windows)"    }
+ , { "CP874"     , "Thai (Windows)"           }
+ , { "BIG5"      , "Chinese Traditional (Big5)" }
+ , { "GBK"       , "Chinese Simplified (GBK)" }
+ , { "SHIFT_JIS" , "Japanese (Shift-JIS)"     }
+ , { "CP949"     , "Korean"                   }
+ , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"   }
+ , { NULL        , NULL                       }
+};
+
 
 #define UTF8_DEST_MULTIPLIER 6
 
@@ -275,126 +318,50 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
 
 CCharsetConverter::CCharsetConverter()
 {
-  m_vecCharsetNames.push_back("ISO-8859-1");
-  m_vecCharsetLabels.push_back("Western Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-2");
-  m_vecCharsetLabels.push_back("Central Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-3");
-  m_vecCharsetLabels.push_back("South Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-4");
-  m_vecCharsetLabels.push_back("Baltic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-5");
-  m_vecCharsetLabels.push_back("Cyrillic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-6");
-  m_vecCharsetLabels.push_back("Arabic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-7");
-  m_vecCharsetLabels.push_back("Greek (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-8");
-  m_vecCharsetLabels.push_back("Hebrew (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-9");
-  m_vecCharsetLabels.push_back("Turkish (ISO)");
-
-  m_vecCharsetNames.push_back("CP1250");
-  m_vecCharsetLabels.push_back("Central Europe (Windows)");
-  m_vecCharsetNames.push_back("CP1251");
-  m_vecCharsetLabels.push_back("Cyrillic (Windows)");
-  m_vecCharsetNames.push_back("CP1252");
-  m_vecCharsetLabels.push_back("Western Europe (Windows)");
-  m_vecCharsetNames.push_back("CP1253");
-  m_vecCharsetLabels.push_back("Greek (Windows)");
-  m_vecCharsetNames.push_back("CP1254");
-  m_vecCharsetLabels.push_back("Turkish (Windows)");
-  m_vecCharsetNames.push_back("CP1255");
-  m_vecCharsetLabels.push_back("Hebrew (Windows)");
-  m_vecCharsetNames.push_back("CP1256");
-  m_vecCharsetLabels.push_back("Arabic (Windows)");
-  m_vecCharsetNames.push_back("CP1257");
-  m_vecCharsetLabels.push_back("Baltic (Windows)");
-  m_vecCharsetNames.push_back("CP1258");
-  m_vecCharsetLabels.push_back("Vietnamesse (Windows)");
-  m_vecCharsetNames.push_back("CP874");
-  m_vecCharsetLabels.push_back("Thai (Windows)");
-
-  m_vecCharsetNames.push_back("BIG5");
-  m_vecCharsetLabels.push_back("Chinese Traditional (Big5)");
-  m_vecCharsetNames.push_back("GBK");
-  m_vecCharsetLabels.push_back("Chinese Simplified (GBK)");
-  m_vecCharsetNames.push_back("SHIFT_JIS");
-  m_vecCharsetLabels.push_back("Japanese (Shift-JIS)");
-  m_vecCharsetNames.push_back("CP949");
-  m_vecCharsetLabels.push_back("Korean");
-  m_vecCharsetNames.push_back("BIG5-HKSCS");
-  m_vecCharsetLabels.push_back("Hong Kong (Big5-HKSCS)");
-
-  m_vecBidiCharsetNames.push_back("ISO-8859-6");
-  m_vecBidiCharsetNames.push_back("ISO-8859-8");
-  m_vecBidiCharsetNames.push_back("CP1255");
-  m_vecBidiCharsetNames.push_back("Windows-1255");
-  m_vecBidiCharsetNames.push_back("CP1256");
-  m_vecBidiCharsetNames.push_back("Windows-1256");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_6);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_8);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
 }
 
 void CCharsetConverter::clear()
 {
-  CSingleLock lock(m_critSection);
-
-  m_vecBidiCharsetNames.clear();
-  m_vecBidiCharsets.clear();
-  m_vecCharsetNames.clear();
-  m_vecCharsetLabels.clear();
 }
 
 vector<CStdString> CCharsetConverter::getCharsetLabels()
 {
-  return m_vecCharsetLabels;
+  vector<CStdString> lab;
+  for(SCharsetMapping * c = g_charsets; c->charset; c++)
+    lab.push_back(c->caption);
+
+  return lab;
 }
 
-CStdString& CCharsetConverter::getCharsetLabelByName(const CStdString& charsetName)
+CStdString CCharsetConverter::getCharsetLabelByName(const CStdString& charsetName)
 {
-  for (unsigned int i = 0; i < m_vecCharsetNames.size(); i++)
+  for(SCharsetMapping * c = g_charsets; c->charset; c++)
   {
-    if (m_vecCharsetNames[i].Equals(charsetName))
-    {
-      return m_vecCharsetLabels[i];
-    }
+    if (charsetName.Equals(c->charset))
+      return c->caption;
   }
 
-  return EMPTY;
+  return "";
 }
 
-CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLabel)
+CStdString CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLabel)
 {
-  CSingleLock lock(m_critSection);
-
-  for (unsigned int i = 0; i < m_vecCharsetLabels.size(); i++)
+  for(SCharsetMapping *c = g_charsets; c->charset; c++)
   {
-    if (m_vecCharsetLabels[i].Equals(charsetLabel))
-    {
-      return m_vecCharsetNames[i];
-    }
+    if (charsetLabel.Equals(c->caption))
+      return c->charset;
   }
 
-  return EMPTY;
+  return "";
 }
 
 bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
-  CSingleLock lock(m_critSection);
-
-  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
+  for(SFribidMapping *c = g_fribidi; c->charset; c++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(charset))
-    {
+    if (charset.Equals(c->charset))
       return true;
-    }
   }
-
   return false;
 }
 
@@ -414,16 +381,14 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf8toW);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToUtf8);
 
+
   m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
-
-  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
+  for(SFribidMapping *c = g_fribidi; c->charset; c++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(strCharset))
-    {
-      m_stringFribidiCharset = m_vecBidiCharsets[i];
-    }
+    if (strCharset.Equals(c->charset))
+      m_stringFribidiCharset = c->name;
   }
 }
 
