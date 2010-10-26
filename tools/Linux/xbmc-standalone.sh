@@ -18,12 +18,17 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-PULSE=$(which pulseaudio)
-if [ ! -z "$PULSE" ]; then
-  $PULSE --start
-fi
-
 XBMC="xbmc --standalone \"$@\""
+
+PULSE_START="$(which start-pulseaudio-x11)"
+if [ -n "$PULSE_START" ]; then
+  $PULSE_START
+else
+  PULSE_SESSION="$(which pulse-session)"
+  if [ -n "$PULSE_SESSION" ]; then
+    XBMC="$PULSE_SESSION $XBMC"
+  fi
+fi
 
 LOOP=1
 CRASHCOUNT=0
