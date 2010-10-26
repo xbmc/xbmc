@@ -13,6 +13,7 @@ SRCS=ConvUtils.cpp \
      DeviceKitDisksProvider.cpp \
      DBusUtil.cpp \
      DBusMessage.cpp \
+     DBusReserve.cpp \
      HALManager.cpp \
      HALPowerSyscall.cpp \
      HALProvider.cpp \
