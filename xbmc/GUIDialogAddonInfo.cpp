@@ -142,7 +142,9 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID(), true); // force install
+  CStdString referer;
+  referer.Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().str.c_str());
+  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID(), true, referer); // force install
   Close();
 }
 
