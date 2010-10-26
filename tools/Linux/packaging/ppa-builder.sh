@@ -3,16 +3,16 @@
 usage()
 {
 echo "
-  This script requires debhelper, pbuilder, dput:
-  $ sudo apt-get install debhelper pbuilder dput subversion
+  This script requires debhelper, pbuilder, dput, subversion, libtool, autoconf, automake, autopoint:
+  $ sudo apt-get install debhelper pbuilder dput subversion libtool autoconf automake autopoint
 
-  The following options are supported: 
+  The following options are supported:
 	--no-export	: Ask the script to no do an SVN export (do a copy instead)
 	--ppa=<your ppa in dput.cf>
 	-t, --tag 	: svnsrc=<dir>, version=<version> (without 'xbmc-')
 	-u		: srcdir=<dir> version=<version> revision=<rev> minor=<minor>
 	-nsg		: svnsrc=<dir> revision=<rev>
-	-prev		: revision=<rev> 
+	-prev		: revision=<rev>
 	urgency=(low|medium|high)
 "
 exit 0
@@ -48,11 +48,11 @@ parse_options()
         LOCAL=1
       ;;
       --pbuilder|-p)
-        echo "-p ==> PBUILDER"	
+        echo "-p ==> PBUILDER"
         PBUILDER=1
         LOCAL=1
       ;;
-      hardy|intrepid|jaunty|karmic|lucid|maverick)
+      hardy|intrepid|jaunty|karmic|lucid)
         BUILDALL=0
         DIST="$OPT"
         DEBUILDOPTS=$FULLDEBUILDOPTS
@@ -93,22 +93,22 @@ parse_options()
 
 getrootright()
 {
-  if [[ $PBUILDER ]]; then 
+  if [[ $PBUILDER ]]; then
     echo "Give me the admin rights ... "
     sudo echo "Thank you !"
   fi
 }
 
-preparesrc() 
+preparesrc()
 {
   echo "Exporting the sources at revision $REVISION ... "
-  if [[ -z $NO_EXPORT ]]; then 
+  if [[ -z $NO_EXPORT ]]; then
     if [[ -z $HEAD_REVISION ]]; then
       # The revision given might not be the head one
-      svn export -r $REVISION $SVNSRC $DESTSRC 2>&1 
+      svn export -r $REVISION $SVNSRC $DESTSRC 2>&1
     else
-      svn cleanup $SVNSRC 
-      svn export $SVNSRC $DESTSRC 
+      svn cleanup $SVNSRC
+      svn export $SVNSRC $DESTSRC
     fi
   else
     cp $SVNSRC $DESTSRC -Rf
@@ -145,27 +145,27 @@ builddeb()
   else
     PKG_VERSION=1:${VERSION}-$1${MINOR}
   fi
-  dch --force-distribution -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1 
+  dch --force-distribution -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1
   echo "$REVISION" > debian/svnrevision
-  echo "Building the $1 debian package" 
-  
+  echo "Building the $1 debian package"
+
   echo "move the format spec to 1.0 (Ubuntu PPA doesn't support format 3.0 quilt) "
   echo "1.0" > debian/source/format
 
   if [[ $BUILT_ONCE ]]; then
     debuild $DEBUILDOPTS 2>&1
-  else 
+  else
     debuild $FULLDEBUILDOPTS  2>&1
     BUILT_ONCE=1
   fi
-  
+
   cd $OLDPWD
-  if [[ $PBUILDER ]]; then 
+  if [[ $PBUILDER ]]; then
     echo "'pbuilder' is set. Trying into pbuilder"
     $SCRIPTDIR/pbuilder-dist $1 build xbmc_${VERSION}-$1${MINOR}.dsc 2>&1 | tee -a $BUILD_LOG
     rm -rf $DESTSRC/debian
   fi
-  if [[ -z $LOCAL ]]; then 
+  if [[ -z $LOCAL ]]; then
     echo "'--local' is not set. Uploading to PPA"
     dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1
     rm -rf $DESTSRC/debian
@@ -188,7 +188,7 @@ preparevars()
   echo "Nothing" > test.txt
   gpg -s test.txt
   rm test.txt test.txt.gpg
-  
+
   echo "Preparing Vars ..."
   echo "Build directory: $BUILD_DIR"
 
@@ -228,7 +228,7 @@ preparevars()
   fi
 
   echo "Setting SVN Sources: $SVNSRC"
-  
+
   # If the version is not yet set it
   if [[ -z $REVISION ]]; then
     svn update $SVNSRC
@@ -252,7 +252,7 @@ preparevars()
 
 }
 
-# = = = = = = = = = = = = = = 
+# = = = = = = = = = = = = = =
 
 SCRIPTDIR=`pwd`
 
@@ -262,7 +262,7 @@ fi
 
 BUILD_LOG=$BUILD_DIR/debuilder_`date +%F_%T`.log
 
-parse_options $@ 
+parse_options $@
 getrootright
 preparevars
 
@@ -273,7 +273,7 @@ if [[ -z $NO_SRC_GEN ]] ; then
   preparesrc
 fi
 
-for distro in hardy jaunty karmic lucid maverick ; do 
+for distro in hardy jaunty karmic lucid ; do
   if [[ $BUILDALL -eq 1 ]] || [[ $DIST == $distro ]]; then
     builddeb $distro
   fi
