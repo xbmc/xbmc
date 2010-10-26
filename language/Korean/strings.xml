@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 10/11/2010-->
+<!--Date of translation: 10/25/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -2016,6 +2016,8 @@
   <string id="24096">추가기능이 저장소에 깨진것으로 표시되어 있습니다.</string>
   <string id="24097">시스템에서 사용안함으로 하시겠습니까?</string>
   <string id="24098">깨짐</string>
+  <string id="24099">이 스킨으로 변경 하시겠습니까?</string>
+  <string id="25000">알림</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
