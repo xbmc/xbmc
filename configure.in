@@ -1225,8 +1225,10 @@ else
 fi
 
 if test "x$use_pulse" != "xno"; then
+  XBMC_STANDALONE_SH_PULSE=tools/Linux/xbmc-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
 else
+  XBMC_STANDALONE_SH_PULSE=/dev/null
   final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
@@ -1428,6 +1430,7 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/iTunes/Makefile \
     xbmc/FileSystem/Makefile \
     tools/Linux/xbmc.sh \
+    tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile"
 
@@ -1484,6 +1487,7 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
