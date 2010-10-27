@@ -1289,7 +1289,7 @@ void CDVDPlayer::HandlePlaySpeed()
       if(error > DVD_MSEC_TO_TIME(1000))
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
-        __int64 iTime = (__int64)(m_SpeedState.lasttime + 500.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
+        __int64 iTime = (__int64)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 500000.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
         m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true));
       }
     }
@@ -3379,6 +3379,13 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   && m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
+  if     (m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+    m_State.dts = m_CurrentVideo.dts;
+  else if(m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+    m_State.dts = m_CurrentAudio.dts;
+  else
+    m_State.dts = m_clock.GetClock();
+
   if(m_pDemuxer)
   {
     m_State.chapter       = m_pDemuxer->GetChapter();
@@ -3436,6 +3443,11 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     m_State.time        = m_Edl.RemoveCutTime(llrint(m_State.time));
     m_State.time_total  = m_Edl.RemoveCutTime(llrint(m_State.time_total));
   }
+
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    m_State.time_offset = DVD_MSEC_TO_TIME(m_State.time) - m_State.dts;
+  else
+    m_State.time_offset = 0;
 
   if (m_CurrentAudio.id >= 0 && m_pDemuxer)
   {
