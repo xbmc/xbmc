@@ -131,7 +131,7 @@ ENDOFBLOCK
    cat > /var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla <<ENDOFBLOCK
 # Policy to allow the livecd user to bypass policykit. Should be installed at /var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla
 [XBMC-Live user permissions]
-Identity=unix-user:xbmc
+Identity=unix-user:${xbmcUser}
 Action=*
 ResultAny=no
 ResultInactive=no
