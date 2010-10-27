@@ -186,12 +186,14 @@ namespace PYXBMC
       utf8Line[2] += "|.rar|.zip";
 
     value = cDefault;
+    Py_BEGIN_ALLOW_THREADS
     if (browsetype == 1)
       CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
+    Py_END_ALLOW_THREADS
     return Py_BuildValue((char*)"s", value.c_str());
   }
 
