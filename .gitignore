@@ -385,6 +385,7 @@ config.log
 
 # /tools/Linux/
 /tools/Linux/xbmc.sh
+/tools/Linux/xbmc-standalone.sh
 
 # /tools/osx
 /tools/osx/XBMCHelper
