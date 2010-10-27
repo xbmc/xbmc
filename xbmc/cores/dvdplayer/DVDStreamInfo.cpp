@@ -93,7 +93,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  stills   != right.stills
   ||  level    != right.level
   ||  profile  != right.profile
-  ||  ptsinvalid != right.profile
+  ||  ptsinvalid != right.ptsinvalid
   ||  vfr      != right.vfr) return false;
 
   // AUDIO
