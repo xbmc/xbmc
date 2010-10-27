@@ -31,6 +31,7 @@
 #include <stdio.h>
 #ifdef _MSC_VER
 #include <winsock2.h>
+#include <Ws2tcpip.h>
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -166,12 +167,10 @@ sighandler(int sig)
 }
 
 static cmyth_conn_t
-cmyth_connect(char *server, unsigned short port, unsigned buflen,
-	      int tcp_rcvbuf)
+cmyth_connect_addr(struct addrinfo* addr, unsigned buflen,
+		    int tcp_rcvbuf)
 {
 	cmyth_conn_t ret = NULL;
-	struct hostent *host;
-	struct sockaddr_in addr;
 	unsigned char *buf = NULL;
 	cmyth_socket_t fd;
 #ifndef _MSC_VER
@@ -180,32 +179,9 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 #endif
 	int temp;
 	socklen_t size;
+	char namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
 
-	/*
-	 * First try to establish the connection with the server.
-	 * If this fails, we are going no further.
-	 */
-	host = gethostbyname(server);
-	if (!host) {
-		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: cannot resolve hostname '%s'\n",
-			  __FUNCTION__, server);
-		return NULL;
-	}
-	if (host->h_addrtype != AF_INET) {
-		/*
-		 * For now, this should only be IPv4, perhaps later I can
-		 * branch out...
-		 */
-		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no AF_INET address for '%s'\n",
-			  __FUNCTION__, server);
-		return NULL;
-	}
-	addr.sin_family = host->h_addrtype;
-	addr.sin_port  = htons(port);
-	memcpy(&addr.sin_addr, host->h_addr_list[0], host->h_length);
-
-	fd = socket(PF_INET, SOCK_STREAM, 0);
+	fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 	if (fd < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: cannot create socket (%d)\n",
 			  __FUNCTION__, errno);
@@ -230,22 +206,22 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	}
 	tcp_rcvbuf = temp;
 
-	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting to %d.%d.%d.%d fd = %d\n",
-		  __FUNCTION__,
-		  (ntohl(addr.sin_addr.s_addr) & 0xFF000000) >> 24,
-		  (ntohl(addr.sin_addr.s_addr) & 0x00FF0000) >> 16,
-		  (ntohl(addr.sin_addr.s_addr) & 0x0000FF00) >>  8,
-		  (ntohl(addr.sin_addr.s_addr) & 0x000000FF),
-		  fd);
+	if (getnameinfo(addr->ai_addr, addr->ai_addrlen, namebuf, sizeof(namebuf), portbuf, sizeof(portbuf), NI_NUMERICHOST)) {
+		strcpy(namebuf, "[unknown]");
+		strcpy(portbuf, "[unknown]");
+	}
+
+	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting to %s:%s fd = %d\n",
+			__FUNCTION__, namebuf, portbuf, fd);
 #ifndef _MSC_VER
 	old_sighandler = signal(SIGALRM, sighandler);
 	old_alarm = alarm(5);
 #endif
 	my_fd = fd;
-	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+	if (connect(fd, addr->ai_addr, addr->ai_addrlen) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: connect failed on port %d to '%s' (%d)\n",
-			  __FUNCTION__, port, server, errno);
+			  "%s: connect failed on port %s to '%s' (%d)\n",
+			  __FUNCTION__, portbuf, namebuf, errno);
 		closesocket(fd);
 #ifndef _MSC_VER
 		signal(SIGALRM, old_sighandler);
@@ -296,17 +272,70 @@ cmyth_connect(char *server, unsigned short port, unsigned buflen,
 	if (ret) {
 		ref_release(ret);
 	}
+
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: error connecting to "
-		  "%d.%d.%d.%d, shutdown and close fd = %d\n",
-		  __FUNCTION__,
-		  (ntohl(addr.sin_addr.s_addr) & 0xFF000000) >> 24,
-		  (ntohl(addr.sin_addr.s_addr) & 0x00FF0000) >> 16,
-		  (ntohl(addr.sin_addr.s_addr) & 0x0000FF00) >>  8,
-		  (ntohl(addr.sin_addr.s_addr) & 0x000000FF),
-		  fd);
+		  "%s, shutdown and close fd = %d\n",
+		  __FUNCTION__, namebuf, fd);
 	shutdown(fd, 2);
 	closesocket(fd);
 	return NULL;
+}
+
+static cmyth_conn_t
+cmyth_connect(char *server, unsigned short port, unsigned buflen,
+		    int tcp_rcvbuf)
+{
+	struct   addrinfo hints;
+	struct   addrinfo *result, *addr;
+	char     service[33];
+	int      res;
+	cmyth_conn_t conn = NULL;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family   = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	sprintf(service, "%d", port);
+
+	res = getaddrinfo(server, service, &hints, &result);
+	if(res) {
+		switch(res) {
+		case EAI_NONAME:
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s:- The specified host is unknown\n",
+					__FUNCTION__);
+			break;
+
+		case EAI_FAIL:
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s:- A non-recoverable failure in name resolution occurred\n",
+					__FUNCTION__);
+			break;
+
+		case EAI_MEMORY:
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s:- A memory allocation failure occurred\n",
+					__FUNCTION__);
+			break;
+
+		case EAI_AGAIN:
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s:- A temporary error occurred on an authoritative name server\n",
+					__FUNCTION__);
+			break;
+
+		default:
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s:- Unknown error %d\n",
+					__FUNCTION__, res);
+			break;
+		}
+		return NULL;
+	}
+
+	for (addr = result; addr; addr = addr->ai_next) {
+		conn = cmyth_connect_addr(addr, buflen, tcp_rcvbuf);
+		if (conn)
+			break;
+	}
+
+	freeaddrinfo(result);
+	return conn;
 }
 
 static cmyth_conn_t

@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib mysqlclient.lib"
+				AdditionalDependencies="ws2_32.lib mysqlclient.lib"
 				OutputFile="..\..\..\..\system\libcmyth.dll"
 				AdditionalLibraryDirectories="$(ProjectDir)lib"
 				IgnoreDefaultLibraryNames="LIBCMT"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib mysqlclient.lib"
+				AdditionalDependencies="ws2_32.lib mysqlclient.lib"
 				OutputFile="..\..\..\..\system\libcmyth.dll"
 				AdditionalLibraryDirectories="$(ProjectDir)lib"
 				IgnoreDefaultLibraryNames="LIBCMT"
