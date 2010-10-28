@@ -193,11 +193,13 @@
   <VisualisationSettings>
     <remote>
       <menu>Close</menu>
+      <back>Close</back>
     </remote>
   </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
       <menu>Close</menu>
+      <back>Close</back>
     </remote>
   </VisualisationPresetList>
   <SlideShow>
