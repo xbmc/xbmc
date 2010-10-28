@@ -118,7 +118,9 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   FILE *f;
   f = fopen(g_configFile.c_str(), "r");
   if (!f) f = fopen(g_configFile.c_str(), "w");
-  fclose(f);
+
+  if (f)
+    fclose(f);
 
   // save our config
   try
