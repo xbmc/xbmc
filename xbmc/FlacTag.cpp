@@ -83,7 +83,7 @@ bool CFlacTag::Read(const CStdString& strFile)
       {
         m_file->Read((void*)tag, size);
         // Process this tag info
-        ProcessVorbisComment(tag);
+        ProcessVorbisComment(tag,size);
         foundTag = true;
         delete[] tag;
       }
@@ -210,7 +210,7 @@ int CFlacTag::FindFlacHeader(void)
   return 0;
 }
 
-void CFlacTag::ProcessVorbisComment(const char *pBuffer)
+void CFlacTag::ProcessVorbisComment(const char *pBuffer, size_t bufsize)
 {
   unsigned int Pos = 0;      // position in the buffer
   unsigned int I1 = Endian_SwapLE32(*(unsigned int*)(pBuffer + Pos)); // length of vendor string
@@ -220,6 +220,11 @@ void CFlacTag::ProcessVorbisComment(const char *pBuffer)
   char C1[CHUNK_SIZE];
   for (unsigned int I2 = 0; I2 < Count; I2++) // Run through the comments
   {
+    if (Pos >= bufsize)
+    {
+      CLog::Log(LOGWARNING,"flac tag overflow");
+      return;
+    }
     I1 = Endian_SwapLE32(*(unsigned int*)(pBuffer + Pos));   // Length of comment
     if (I1 < CHUNK_SIZE)
     {
