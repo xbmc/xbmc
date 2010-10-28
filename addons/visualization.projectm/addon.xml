@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.projectm"
-  version="1.0.0"
+  version="1.0.1"
   name="projectM"
   provider-name="Team XBMC">
   <extension
@@ -11,7 +11,7 @@
     library_osx="projectM.vis">
     <settings>
       <userdirs>
-        <userdir path="special://userdata/addon_data/visualization.projectm"/>
+        <userdir path="special://profile/addon_data/visualization.projectm"/>
       </userdirs>
     </settings>
   </extension>
