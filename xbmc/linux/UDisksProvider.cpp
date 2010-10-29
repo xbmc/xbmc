@@ -292,10 +292,9 @@ bool CUDisksProvider::HasUDisks()
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-  if (!con)
-    return false;
 
-  message.Send(con, &error);
+  if (con)
+    message.Send(con, &error);
 
   if (!dbus_error_is_set(&error))
     hasUDisks = true;
@@ -303,7 +302,8 @@ bool CUDisksProvider::HasUDisks()
     CLog::Log(LOGDEBUG, "UDisks: %s - %s", error.name, error.message);
 
   dbus_error_free (&error);
-  dbus_connection_unref(con);
+  if (con)
+    dbus_connection_unref(con);
 
   return hasUDisks;
 }
