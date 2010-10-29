@@ -58,13 +58,13 @@ bool CMythFile::HandleEvents()
 
   while(!m_events.empty())
   {
-    int next        = m_events.front().first;
-    string data     = m_events.front().second;
+    int event   = m_events.front().first;
+    string data = m_events.front().second;
     m_events.pop();
 
     lock.Leave();
 
-    switch (next) {
+    switch (event) {
     case CMYTH_EVENT_CLOSE:
       Close();
       break;
