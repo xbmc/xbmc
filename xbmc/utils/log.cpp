@@ -207,7 +207,7 @@ bool CLog::Init(const char* path)
 
   if (m_file)
   {
-    char BOM[3] = {0xEF, 0xBB, 0xBF};
+    unsigned char BOM[3] = {0xEF, 0xBB, 0xBF};
     fwrite(BOM, sizeof(BOM), 1, m_file);
   }
 
