@@ -58,8 +58,6 @@ namespace XFILE
     virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
 
-    virtual int  GetChunkSize() {return m_source.GetChunkSize();}
-
     virtual CStdString GetContent();
 
   private:

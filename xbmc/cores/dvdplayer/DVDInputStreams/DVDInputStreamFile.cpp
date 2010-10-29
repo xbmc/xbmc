@@ -50,7 +50,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   m_pFile = new CFile();
   if (!m_pFile) return false;
 
-  unsigned int flags = READ_TRUNCATED | READ_BITRATE;
+  unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
 
   if( CFileItem(strFile, false).IsInternetStream() )
     flags |= READ_CACHED;
