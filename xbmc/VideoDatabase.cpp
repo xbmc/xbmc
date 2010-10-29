@@ -6207,13 +6207,9 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       CStdString fullPath;
       ConstructPath(fullPath,path,fileName);
 
+      // get the first stacked file
       if (CUtil::IsStack(fullPath))
-      { // do something?
-        CStackDirectory dir;
-        CFileItemList items;
-        if (dir.GetDirectory(fullPath, items) && items.Size())
-          fullPath = items[0]->m_strPath; // just test the first path
-      }
+        fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
 
       // check for deletion
       bool bIsSource;
