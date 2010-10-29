@@ -6213,15 +6213,24 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
           fullPath = items[0]->m_strPath; // just test the first path
       }
 
-      // delete all removable media + ftp/http streams
-      CURL url(fullPath);
-      if (CUtil::IsOnDVD(fullPath) ||
-          url.GetProtocol() == "http" ||
-          url.GetProtocol() == "https" ||
-          !CFile::Exists(fullPath, false))
-      { // mark for deletion
-        filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
+      // check for deletion
+      bool bIsSource;
+      VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+
+      // check if we have a internet related file that is part of a media source
+      if (CUtil::IsInternetStream(fullPath, true) && CUtil::GetMatchingSource(fullPath, *pShares, bIsSource) > -1)
+      {
+        if (!CFile::Exists(fullPath, false))
+          filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
       }
+      else
+      {
+        // remove optical, internet related and non-existing files
+        // note: this will also remove entries from previously existing media sources
+        if (CUtil::IsOnDVD(fullPath) || CUtil::IsInternetStream(fullPath, true) || !CFile::Exists(fullPath, false))
+          filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
+      }
+
       if (!pObserver)
       {
         if (progress)
