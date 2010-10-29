@@ -118,7 +118,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
             item->m_strPath = CUtil::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
             item->m_bIsFolder = true;
-            item->SetIconImage(GetIcon((TYPE)i));
+            item->SetThumbnailImage(GetIcon((TYPE)i));
             items.Add(item);
             break;
           }
