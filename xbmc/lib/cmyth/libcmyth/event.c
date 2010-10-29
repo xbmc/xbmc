@@ -86,7 +86,7 @@ cmyth_event_get(cmyth_conn_t conn, char * data, int len)
 	/* Sergio: Added to support the new live tv protocol */
 	} else if (strncmp(tmp, "LIVETV_CHAIN UPDATE", 19) == 0) {
 		event = CMYTH_EVENT_LIVETV_CHAIN_UPDATE;
-		strncpy(data, tmp, len);
+		strncpy(data, tmp + 20, len);
 	} else if (strncmp(tmp, "SIGNAL", 6) == 0) { 
 		event = CMYTH_EVENT_SIGNAL; 
 		/* get slock, signal, seen_pat, matching_pat */ 

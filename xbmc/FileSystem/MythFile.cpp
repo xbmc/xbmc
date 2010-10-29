@@ -59,7 +59,7 @@ bool CMythFile::HandleEvents()
   while(!m_events.empty())
   {
     int next        = m_events.front().first;
-    CStdString data = m_events.front().second;
+    string data     = m_events.front().second;
     m_events.pop();
 
     lock.Leave();
@@ -70,9 +70,8 @@ bool CMythFile::HandleEvents()
       break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
       {
-        string chainid = data.substr(strlen("LIVETV_CHAIN UPDATE "));
         if(m_recorder)
-          m_dll->livetv_chain_update(m_recorder, (char*)chainid.c_str(), 4096);
+          m_dll->livetv_chain_update(m_recorder, (char*)data.c_str(), 4096);
       }
       break;
     }
