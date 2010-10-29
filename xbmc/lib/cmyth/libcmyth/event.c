@@ -107,9 +107,7 @@ cmyth_event_get(cmyth_conn_t conn, char * data, int len)
 				consumed = cmyth_rcv_string(conn, &err, tmp, sizeof(tmp) -1, count);
 				count -= consumed;
 			}
-		}
-		else
-		{
+		} else {
 			/* receive a proginfo structure - do nothing with it (yet?)*/
 			proginfo = cmyth_proginfo_create();
 			if (!proginfo) {
