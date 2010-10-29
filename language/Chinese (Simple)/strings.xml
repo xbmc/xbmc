@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 34640 -->
+<!--Based on english strings version 34887 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2258,6 +2258,8 @@
   <string id="24096">库中的扩展功能被标记为已损坏。</string>
   <string id="24097">要在系统中禁用它吗？</string>
   <string id="24098">已损坏</string>
+  <string id="24099">要切换到此皮肤吗？</string>
+  <string id="25000">提示信息</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
