@@ -420,6 +420,15 @@ void CMythSession::Process()
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
       break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_ADD:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_ADD: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_UPDATE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_UPDATE", __FUNCTION__);
+      break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_DELETE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_DELETE: %s", __FUNCTION__, buf);
+      break;
     case CMYTH_EVENT_SCHEDULE_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
       break;
@@ -429,6 +438,9 @@ void CMythSession::Process()
     case CMYTH_EVENT_QUIT_LIVETV:
       CLog::Log(LOGDEBUG, "%s - MythTV event QUIT_LIVETV", __FUNCTION__);
       break;
+    case CMYTH_EVENT_WATCH_LIVETV:
+      CLog::Log(LOGDEBUG, "%s - MythTV event LIVETV_WATCH", __FUNCTION__);
+      break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
       CLog::Log(LOGDEBUG, "%s - MythTV event LIVETV_CHAIN_UPDATE: %s", __FUNCTION__, buf);
       break;
@@ -437,6 +449,18 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_ASK_RECORDING:
       CLog::Log(LOGDEBUG, "%s - MythTV event ASK_RECORDING", __FUNCTION__);
+      break;
+    case CMYTH_EVENT_SYSTEM_EVENT:
+      CLog::Log(LOGDEBUG, "%s - MythTV event SYSTEM_EVENT: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_UPDATE_FILE_SIZE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event UPDATE_FILE_SIZE: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_GENERATED_PIXMAP:
+      CLog::Log(LOGDEBUG, "%s - MythTV event GENERATED_PIXMAP: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_CLEAR_SETTINGS_CACHE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event CLEAR_SETTINGS_CACHE", __FUNCTION__);
       break;
     }
 
