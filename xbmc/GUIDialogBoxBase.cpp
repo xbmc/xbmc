@@ -76,7 +76,7 @@ void CGUIDialogBoxBase::SetHeading(int iString)
   else
     msg.SetLabel("");
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -104,7 +104,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
   else
     msg.SetLabel("");
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -119,7 +119,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for 
   else
     msg.SetLabel("");
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
