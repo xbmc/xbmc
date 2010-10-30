@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 10/14/2010-->
+<!--Date of translation: 10/30/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 34753-->
+<!--Based on english strings version 35007-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -936,7 +936,6 @@
   <string id="13013">Επανεκκίνηση</string>
   <string id="13014">Ελαχιστοποίηση</string>
   <string id="13015">Ενέργεια πλήκτρου λειτουργίας</string>
-  <string id="13016">Απενεργοποίηση</string>
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
@@ -1148,10 +1147,6 @@
   <string id="13508">Υψηλή</string>
   <string id="13509">Πραγματικά υψηλή (αργή!)</string>
   <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
-  <string id="13550">Παύση κατά τη διάρκεια ανανέωσης</string>
-  <string id="13551">Ανενεργή</string>
-  <string id="13552">%.1f δευτερόλεπτο</string>
-  <string id="13553">%.1f δευτερόλεπτα</string>
   <string id="13600">Apple Remote</string>
   <string id="13602">Έγκριση έναρξης του XBMC μέσου απομακρυσμένου ελέγχου</string>
   <string id="13603">Ακολουθία χρόνου καθυστέρησης</string>
@@ -1406,6 +1401,9 @@
   <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
   <string id="16319">DXVA</string>
   <string id="16400">Μετα-επεξεργασία βίντεο</string>
+  <string id="16401">Ανενεργή</string>
+  <string id="16402">Ενεργή για περιεχόμενο SD</string>
+  <string id="16403">Πάντα ενεργή</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
@@ -1597,7 +1595,6 @@
   <string id="20255">Πρώτη σύνδεση, επεξεργαστείτε το προφίλ σας</string>
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
-  <string id="20258">MythTV client</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
@@ -2028,6 +2025,8 @@
   <string id="24096">Το πρόσθετο έχει επισημανθεί ως κατεστραμμένο στο αποθετήριο.</string>
   <string id="24097">Επιθυμητέ να απενεργοποιηθεί από το σύστημά σας;</string>
   <string id="24098">Κατεστραμμένο</string>
+  <string id="24099">Επιθυμητέ να εφαρμοστεί αυτό το κέλυφος;</string>
+  <string id="25000">Ειδοποιήσεις</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>
