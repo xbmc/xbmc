@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
 <!--Date of translation: 26/09/2010-->
@@ -543,7 +543,7 @@
   <string id="585">Sestupně</string>
   <string id="586">Upravit Seznam stop</string>
   <string id="587">Filtr</string>
-  <string id="588">Zrušit párty mód</string>
+  <string id="588">Zrušit Párty mód</string>
   <string id="589">Párty mód</string>
   <string id="590">Nahodně</string>
   <string id="591">vypnuto</string>
@@ -838,7 +838,7 @@
   <string id="1414">bouřka</string>
   <string id="1415">mrholení</string>
   <string id="1416">mlhavo</string>
-  <string id="1417">Grains</string>
+  <string id="1417">kroupy</string>
   <string id="1418">bouřky</string>
   <string id="1419">bouřky s přeháňkami</string>
   <string id="1420">Střední</string>
@@ -956,7 +956,7 @@
   <string id="12326">Zadejte kód:</string>
   <string id="12327">Zadejte Hlavní kód a stiskněte Enter,</string>
   <string id="12328">Zadejte kód pro odemknutí a stiskněte Enter,</string>
-  <string id="12329">nebo stisknětě C pro zrušení</string>
+  <string id="12329">nebo stiskněte C pro zrušení</string>
   <string id="12330">Zadejte kód pomocí kombinace tlačítek a </string>
   <string id="12331">stiskněte Start. Pro zrušení stiskněte Zpět</string>
   <string id="12332">Nastavit kód uzamčení</string>
@@ -982,12 +982,12 @@
   <string id="12360">Rodičovský zámek</string>
   <string id="12362">Při překročení počtu pokusů vypnout systém</string>
   <string id="12367">Hlavní kód není správný!</string>
-  <string id="12368">Zadejte prosím správné Hlavní kód</string>
+  <string id="12368">Zadejte prosím správný Hlavní kód</string>
   <string id="12373">Nastavení &amp;  Manažer</string>
   <string id="12376">Uložit nastavení jako výchozí pro všechny videa</string>
   <string id="12377">Uložením se přepíše předchozí nastavení.</string>
   <string id="12378">Zobrazovat každý obrázek po dobu</string>
-  <string id="12379">Používat efekty přibližení a posunutí obrázku</string>
+  <string id="12379">Používat efekty přiblížení a posunutí obrázku</string>
   <string id="12380"></string>
   <string id="12381"></string>
   <string id="12382"></string>
@@ -1000,7 +1000,7 @@
   <string id="12391">minut</string>
   <string id="12392">hodin</string>
   <string id="12393">dní</string>
-  <string id="12394">Celková doba používaní</string>
+  <string id="12394">Celková doba používání</string>
 
   <string id="12600">Počasí</string>
 
@@ -1050,7 +1050,7 @@
   <string id="13115">Vždy zapnuto</string>
 
   <string id="13116">Způsob přepočtu</string>
-  <string id="13117">Bicubický</string>
+  <string id="13117">Bikubický</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
@@ -1061,9 +1061,9 @@
   <string id="13131">Vypnuto</string>
   <string id="13132">Zapnuto</string>
 
-  <string id="13140">Nalezeny aktivní spojení!</string>
+  <string id="13140">Nalezena aktivní spojení!</string>
   <string id="13141">V případě, že budete pokračovat je pravděpodobné že nebudete</string>
-  <string id="13142">moct nadále ovládat XBMC. Opravdu chcete ukončit Event Server.</string>
+  <string id="13142">moci nadále ovládat XBMC. Opravdu chcete ukončit Event Server?</string>
 
   <string id="13144">Chcete změnit mód Dálkového ovladače Apple?</string>
   <string id="13145">V případě, že používáte Dálkový ovladač Apple</string>
@@ -1097,7 +1097,7 @@
   <string id="13171">Okamžitě</string>
   <string id="13172">Po %i sekundách</string>
   <string id="13173">Datum instalace HDD:</string>
-  <string id="13174">Počet spuštení HDD:</string>
+  <string id="13174">Počet spuštění HDD:</string>
 
   <string id="13200">Profily</string>
   <string id="13201">Odstranit profil: '%s'?</string>
@@ -1233,7 +1233,7 @@
   <string id="13397">Zobrazovat titulky</string>
   <string id="13398">Záložky</string>
   <string id="13399">Při řazení ignorovat "členy" na začátku názvů položek</string>
-  <string id="13400">Plynule přecházet mezi skladami ze stejného alba</string>
+  <string id="13400">Plynule přecházet mezi skladbami ze stejného alba</string>
   <string id="13401">Hledat %s</string>
   <string id="13402">Zobrazovat pozici stopy</string>
   <string id="13403">Zrušit výchozí složku</string>
@@ -1290,11 +1290,11 @@
 
   <string id="13610">Zakázáno</string>
   <string id="13611">Standardní</string>
-  <string id="13612">Univerzální Dálkový ovladač</string>
+  <string id="13612">Univerzální dálkový ovladač</string>
   <string id="13613">Multifunkční dálkové ovládání (Harmony)</string>
 
   <string id="13620">Chyba dálkového ovladače Apple</string>
-  <string id="13621">Může být zapnuta podpora Dálkového ovladače Apple.</string>
+  <string id="13621">Může být zapnuta podpora dálkového ovladače Apple.</string>
 
   <string id="14000">Spojovat videa</string>
   <string id="14001">Nespojovat videa</string>
@@ -1320,7 +1320,7 @@
   <string id="14022">Knihovna</string>
   <string id="14023">Bez TV</string>
   <string id="14024">Zadejte nejbližší velkoměsto</string>
-  <string id="14025">Mezipaměť - Video/Audio/DVD - Harddisk</string>
+  <string id="14025">Mezipaměť - Video/Audio/DVD - HDD</string>
   <string id="14026">Mezipaměť - Video - DVDROM</string>
   <string id="14027">- Místní síť</string>
   <string id="14028">- Internet</string>
@@ -1454,7 +1454,7 @@
   <string id="15269">NEJ alba uživatele %name%</string>
   <string id="15270">NEJ skladby uživatele %name%</string>
   <string id="15271">Přátelé uživatele %name%</string>
-  <string id="15272">Sousedé užuvatele %name%</string>
+  <string id="15272">Sousedé uživatele %name%</string>
   <string id="15273">Žebříček interpretů týdne pro %name%</string>
   <string id="15274">Žebříček alb týdne pro %name%</string>
   <string id="15275">Žebříček skladeb týdne pro %name%</string>
@@ -1467,12 +1467,12 @@
   <string id="15282">Zadejte slovo pro vyhledání podobných</string>
   <string id="15283">Skladby, které naposledy poslouchal %name%</string>
   <string id="15284">Poslouchám: %name%'s doporučení Last.FM radio</string>
-  <string id="15285">Nejoblíběnější tagy uživatele %name%</string>
+  <string id="15285">Nejoblíbenější tagy uživatele %name%</string>
   <string id="15286">Poslechnout si Last.FM seznam stop uživatele %name% </string>
   <string id="15287">Chcete přidat tuto skladbu k vašim oblíbeným?</string>
   <string id="15288">Chcete zakázat aktuální skladbu?</string>
   <string id="15289">Skladba přidána do oblíbených: '%s'.</string>
-  <string id="15290">Skladba '%s' se nepodařilo přidat do oblíbených.</string>
+  <string id="15290">Skladbu '%s' se nepodařilo přidat do oblíbených.</string>
   <string id="15291">Zakázané: '%s'.</string>
   <string id="15292">Skladbu '%s' se nepodařilo přidat do zakázaných.</string>
   <string id="15293">Poslední oblíbené skladby uživatele %name%</string>
@@ -1512,7 +1512,7 @@
   <string id="16021">Bob</string>
   <string id="16022">Bob (opačný)</string>
   <string id="16023">Prokládaný materiál</string>
-  <string id="16024">Probíha zrušení...</string>
+  <string id="16024">Probíhá zrušení...</string>
   <string id="16025">Zadejte jméno interpreta</string>
   <string id="16026">Přehrávání selhalo</string>
   <string id="16027">Jednu nebo více položek se nepodařilo přehrát.</string>
@@ -1520,12 +1520,12 @@
   <string id="16029">Více informací najdete v log souboru.</string>
   <string id="16030">Párty mód byl přerušen.</string>
   <string id="16031">Žádné odpovídající skladby nebyly v knihovně nalezeny.</string>
-  <string id="16032">Incializace knihovny nebyla úspěšná.</string>
+  <string id="16032">Inicializace knihovny nebyla úspěšná.</string>
   <string id="16033">Nemohu otevřít knihovnu.</string>
   <string id="16034">Nepodařilo se načíst skladby z knihovny.</string>
-  <string id="16035">Seznam stop - Party mód</string>
+  <string id="16035">Seznam stop - Párty mód</string>
 
-  <string id="16100">Všechny videa</string>
+  <string id="16100">Všechna videa</string>
   <string id="16101">Nezhlédnuté</string>
   <string id="16102">Zhlédnuté</string>
   <string id="16103">Označit jako zhlédnuté</string>
@@ -1547,12 +1547,12 @@
 
   <string id="16300">Způsob přepočítání videa</string>
   <string id="16301">Nearest Neighbour</string>
-  <string id="16302">Bilinearní</string>
-  <string id="16303">Bicubický</string>
+  <string id="16302">Bilineární</string>
+  <string id="16303">Bikubický</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-  <string id="16307">Bicubický (softwarově)</string>
+  <string id="16307">Bikubický (softwarově)</string>
   <string id="16308">Lanczos (softwarově)</string>
   <string id="16309">Sinc (softwarově)</string>
   <string id="16310">Temporal</string>
@@ -1627,7 +1627,7 @@
 
   <string id="20057">Odebrat náhled</string>
   <string id="20058">Přidat profil...</string>
-  <string id="20059">Získat informace pro všechny alba</string>
+  <string id="20059">Získat informace pro všechna alba</string>
   <string id="20060">Media info</string>
   <string id="20061">Oddělit</string>
   <string id="20062">Sdílet se stávajícími</string>
@@ -1760,7 +1760,7 @@
   <string id="20190">Vlastní</string>
   <string id="20191">Ukládat pokročilé informace o ladění</string>
   <string id="20192">Stahovat informace o albu při aktualizaci knihovny</string>
-  <string id="20193">Výchozí služba pro Inforamce o albu</string>
+  <string id="20193">Výchozí služba pro Informace o albu</string>
   <string id="20194">Výchozí stahovač pro hudbu</string>
   <string id="20195">Změnit Stahovač</string>
   <string id="20196">Exportovat Hudební knihovnu</string>
@@ -1860,7 +1860,7 @@
   <string id="20378">Chcete aktualizovat informace pro všechny epizody?</string>
   <string id="20379">Složka obsahuje jediný seriál</string>
   <string id="20380">Nezahrnovat tuto složku při aktualizaci knihovny</string>
-  <string id="20381">Specialní epizody</string>
+  <string id="20381">Speciální epizody</string>
   <string id="20382">Stahovat náhledy řad seriálů</string>
   <string id="20383">Složka obsahuje jediné video</string>
   <string id="20384">Přiřadit k TV seriálu</string>
@@ -1881,7 +1881,7 @@
   <string id="20399">Přejít k hudebním videoklipům alba</string>
   <string id="20400">Přejít k hudebním videoklipům interpreta</string>
   <string id="20401">Přehrát hudební videoklip</string>
-  <string id="20402">Stahovat ikony herců během přidání filmu dso knihovny</string>
+  <string id="20402">Stahovat ikony herců během přidání filmu do knihovny</string>
   <string id="20403">Změnit ikonu herce</string>
 
   <string id="20405">Odstranit záložku epizody</string>
@@ -1893,7 +1893,7 @@
   <string id="20411">Jednoduchý mód</string>
   <string id="20412">Zobrazit TV seriály zjednodušeně</string>
   <string id="20413">Změnit FanArt</string>
-  <string id="20414">Povolit Fanart v knihovně videí</string>
+  <string id="20414">Povolit FanArt v knihovně videí</string>
   <string id="20415">Probíhá vyhledávání nového obsahu</string>
   <string id="20416">Premiéra</string>
   <string id="20417">Autor</string>
@@ -1904,27 +1904,27 @@
   <string id="20422">Vždy</string>
   <string id="20423">Má upoutávku</string>
   <string id="20424">Nepravdivé</string>
-  <string id="20425">Fanart prezentace</string>
+  <string id="20425">FanArt prezentace</string>
   <string id="20426">Exportovat vše do jednoho souboru nebo</string>
   <string id="20427">každou položku do samostatného souboru?</string>
   <string id="20428">1 soubor</string>
   <string id="20429">Samostatně</string>
-  <string id="20430">Exportovat náhledy a Fanart?</string>
+  <string id="20430">Exportovat náhledy a FanArt?</string>
   <string id="20431">Přepsat existující soubory?</string>
   <string id="20432">Nezahrnovat položky v tomto umístění při aktualizaci knihovny</string>
   <string id="20433">Získávat ze souborů náhledy a informace o videu</string>
   <string id="20434">Sady</string>
   <string id="20435">Přiřadit náhled sadě</string>
   <string id="20436">Exportovat náhledy herců</string>
-  <string id="20437">Vyberte fanart</string>
-  <string id="20438">Lokální fanart</string>
-  <string id="20439">Žádný fanart</string>
-  <string id="20440">Současný fanart</string>
-  <string id="20441">Internetový fanart</string>
+  <string id="20437">Vyberte FanArt</string>
+  <string id="20438">Lokální FanArt</string>
+  <string id="20439">Žádný FanArt</string>
+  <string id="20440">Současný FanArt</string>
+  <string id="20441">Internetový FanArt</string>
   <string id="20442">Změnit obsah</string>
   <string id="20443">Chcete aktualizovat informace pro</string>
   <string id="20444">všechny položky v tomto umístění?</string>
-  <string id="20445">Fanart</string>
+  <string id="20445">FanArt</string>
   <string id="20446">Byly nalezeny informace, které jsou uložené lokálně.</string>
   <string id="20447">Chcete je aktualizovat informacemi z internetu?</string>
   <string id="20448">Informace se nepodařilo stáhnout</string>
@@ -2003,7 +2003,7 @@
   <string id="21415">Výchozí stahovač pro hudební videoklipy</string>
   <string id="21416">Povolit odpověď na základě nastavení jazyka stahovače</string>
   <string id="21417">- Nastavení</string>
-  <string id="21418">Vicejazyčný</string>
+  <string id="21418">Vícejazyčný</string>
   <string id="21419">Nejsou k dispozici žádné stahovače</string>
   <string id="21420">Hodnota pro shodu</string>
   <string id="21421">Pravidlo vlastního Seznamu stop</string>
@@ -2024,12 +2024,12 @@
   <string id="21436">%i skladeb</string>
   <string id="21437">Nový vlastní Seznam stop...</string>
   <string id="21438">%c</string>
-  <string id="21439">Upravit pravidla Party módu</string>
+  <string id="21439">Upravit pravidla Párty módu</string>
   <string id="21440">Výchozí složka</string>
   <string id="21441">Počet zhlédnutí</string>
   <string id="21442">Název epizody</string>
   <string id="21443">Rozlišení videa</string>
-  <string id="21444">Počet audio kanalů</string>
+  <string id="21444">Počet audio kanálů</string>
   <string id="21445">Kodek videa</string>
   <string id="21446">Kodek audia</string>
   <string id="21447">Jazyk audia</string>
@@ -2038,7 +2038,7 @@
   <string id="21450">- Upravit</string>
   <string id="21451">Je vyžadováno internetové připojení.</string>
   <string id="21452">Získat další...</string>
-  <string id="21453">Kořenový adresař souborového systému</string>
+  <string id="21453">Kořenový adresář souborového systému</string>
 
   <string id="21800">Název souboru</string>
   <string id="21801">Cesta k souboru</string>
@@ -2101,11 +2101,11 @@
   <string id="21883">Uložená hudba</string>
   <string id="21884">Aktualizovat vše. Interprety</string>
   <string id="21885">Probíhá stahování informací k albu</string>
-  <string id="21886">Probíhá stahování informací o Interpretovi</string>
+  <string id="21886">Probíhá stahování informací o interpretovi</string>
   <string id="21887">Životopis</string>
   <string id="21888">Diskografie</string>
-  <string id="21889">Probíhá vyhledávání informací o Interptreta</string>
-  <string id="21890">Vyberte Interpreta</string>
+  <string id="21889">Probíhá vyhledávání informací o interptretovi</string>
+  <string id="21890">Vyberte interpreta</string>
   <string id="21891">Informace o interpretovi</string>
   <string id="21892">Hudební nástroje:</string>
   <string id="21893">Datum narození:</string>
@@ -2207,7 +2207,7 @@
   <string id="24027">Počasí</string>
   <string id="24028">Weather.com (standardní)</string>
   <string id="24030">Tento doplněk nelze konfigurovat</string>
-  <string id="24031">Chyba při načítaní konfigurace nastavení</string>
+  <string id="24031">Chyba při načítání konfigurace nastavení</string>
   <string id="24032">Všechny doplňky</string>
   <string id="24033">Získat nové doplňky</string>
   <string id="24034">Zkontrolovat aktualizace</string>
