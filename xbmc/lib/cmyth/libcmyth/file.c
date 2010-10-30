@@ -523,6 +523,7 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 	int ret, req, nfds, rec;
 	char *end, *cur;
 	char msg[256];
+	long long len64;
 	struct timeval tv;
 	fd_set fds;
 
@@ -605,13 +606,22 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 				goto out;
 			}
 
-			if ((ret=cmyth_rcv_ulong (file->file_control, &err, &len, count))< 0) {
+			if ((ret=cmyth_rcv_int64 (file->file_control, &err, &len64, count))< 0) {
 				cmyth_dbg (CMYTH_DBG_ERROR,
 				           "%s: cmyth_rcv_long() failed (%d)\n",
 				           __FUNCTION__, ret);
 				ret = err;
 				goto out;
 			}
+			if (len64 >= 0x100000000LL || len64 < 0) {
+				/* -1 seems to be a common result */
+				cmyth_dbg (CMYTH_DBG_DEBUG,
+				           "%s: cmyth_rcv_long() failed (%d)\n",
+				           __FUNCTION__, ret);
+				ret = -1;
+				goto out;
+			}
+			len = (unsigned long)len64;
 			req = 0;
 			file->file_req += len;
 

@@ -319,6 +319,10 @@ extern int cmyth_rcv_long_long(cmyth_conn_t conn, int *err, long long *buf,
 			       int count);
 #define cmyth_rcv_u_long_long(c, e, b, n) cmyth_rcv_long_long(c, e, (long long*)b, n)
 
+#define cmyth_rcv_int64 __cmyth_rcv_int64
+extern int cmyth_rcv_int64(cmyth_conn_t conn, int *err, long long *buf,
+			       int count);
+
 #define cmyth_rcv_ubyte __cmyth_rcv_ubyte
 extern int cmyth_rcv_ubyte(cmyth_conn_t conn, int *err, unsigned char *buf,
 			   int count);
