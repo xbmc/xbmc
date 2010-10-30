@@ -564,7 +564,9 @@
   <string id="609">CDDA-doelmap is niet ingegeven.</string>
   <string id="610">Muzieknummer rippen</string>
   <string id="611">Voer nummer in</string>
-
+  <string id="612">Bits/Sample</string> 
+  <string id="613">Sample frequentie</string>
+  
   <string id="620">CD's kopiëren</string>
   <string id="621">Encoder</string>
   <string id="622">Kwaliteit</string>
@@ -994,11 +996,11 @@
   <string id="12385">Dag/Maand</string>
   <string id="12386">Maand/Dag</string>
 
-  <string id="12390">Systeem draaitijd</string>
+  <string id="12390">Systeem actief</string>
   <string id="12391">minuten</string>
   <string id="12392">uur</string>
   <string id="12393">dagen</string>
-  <string id="12394">Totale draaitijd</string>
+  <string id="12394">Totale activiteit</string>
 
   <string id="12600">Het weer</string>
 
@@ -1022,6 +1024,7 @@
   <string id="13014">Minimaliseren</string>
   <string id="13015">Actie voor aan/uitknop</string>
   <string id="13016">Systeem uitschakelen</string> 
+
 
   <string id="13020">Er is een andere sessie actief, wellicht SSH?</string>
   <string id="13021">Verwisselbare harde schijf aankoppelen?</string>
@@ -1776,6 +1779,7 @@
   <string id="20255">Eerste login, profiel bijwerken</string>
   <string id="20256">HTS tvheadend client</string>
   <string id="20257">VDR streamdev client</string>
+  <string id="20258">MythTV client</string>
 
   <string id="20300">Webservermap (HTTP)</string>
   <string id="20301">Webservermap (HTTPS)</string>
@@ -2255,6 +2259,8 @@
   <string id="24096">Add-on is gemarkeerd als niet werkend in het repository.</string>
   <string id="24097">Wilt u de add-on uitschakelen?</string> <!--'op het systeem' is hier overbodig-->
   <string id="24098">Defect</string>
+  <string id="24099">Wilt u deze skin gebruiken?</string>
+  <string id="25000">Meldingen</string>  
   
  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Bibliotheekmodus</string>
