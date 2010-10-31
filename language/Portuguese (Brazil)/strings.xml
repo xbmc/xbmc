@@ -570,6 +570,8 @@
   <string id="609">CDDARipPath não foi definido.</string>
   <string id="610">Extrair faixa de áudio</string>
   <string id="611">Digite número</string>
+  <string id="612">Bits/Amostra</string>
+  <string id="613">Frequencia de amostra</string>
 
   <string id="620">CDs de áudio</string>
   <string id="621">Codificador</string>
@@ -1544,7 +1546,7 @@
 
   <string id="16300">Método para escalamento de vídeo</string>
   <string id="16301">Vizinho mais próximo</string>
-  <string id="16302">Bilienar</string>
+  <string id="16302">Bilinear</string>
   <string id="16303">Bicúbico</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
@@ -1775,6 +1777,7 @@
   <string id="20255">Primeiro logon, editar seu perfil</string>
   <string id="20256">Cliente HTS Tvheadend</string>
   <string id="20257">Cliente VDR Streamdev</string>
+  <string id="20258">Cliente MythTV</string>
 
   <string id="20300">Diretório do servidor Web (HTTP)</string>
   <string id="20301">Diretório do servidor Web (HTTPS)</string>
@@ -2216,7 +2219,7 @@
   <string id="24036">Log de mudança</string>
   <string id="24037">Desinstalar</string>
   <string id="24038">Instalar</string>
-  <string id="24039">Desativar Add-ons</string>
+  <string id="24039">Add-ons Desativados</string>
   <string id="24040">(Limpar configuração atual)</string>
   <string id="24041">Instalar a partir de um arquivo ZIP</string>
   <string id="24042">Baixando %i%%</string>
@@ -2230,7 +2233,7 @@
   <string id="24059">Deseja ativar este Add-on?</string>
   <string id="24060">Deseja desativar este Add-on?</string>
   <string id="24061">Atualização do Add-on Disponível!</string>
-  <string id="24062">Ativar Add-ons</string>
+  <string id="24062">Add-ons Ativados</string>
   <string id="24063">Atualização Automática</string>
   <string id="24064">Add-on ativado</string>
   <string id="24065">Add-on atualizado</string>
@@ -2258,7 +2261,8 @@
   <string id="24096">O Add-on foi marcado como indisponível no repositório.</string>
   <string id="24097">Você deseja desabilitar em seu sistema?</string>
   <string id="24098">Indisponível</string>
-
+  <string id="24099">Gostaria de trocar para esta skin?</string>
+  <string id="25000">Notificações</string>
 
   <string id="29800">Modo de coleção</string>
   <string id="29801">Teclado QWERTY</string>
