@@ -24,6 +24,7 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
+#include "utils/Variant.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -3911,7 +3912,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
+  CVariant param;
+  param["speed"] = iSpeed;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", &param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3930,7 +3933,10 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
+  CVariant param;
+  param["time"] = iTime;
+  param["seekoffset"] = seekOffset;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", &param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3950,7 +3956,9 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
+  CVariant param;
+  param["chapter"] = iChapter;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", &param);
 }
 
 bool CApplication::IsPlaying() const

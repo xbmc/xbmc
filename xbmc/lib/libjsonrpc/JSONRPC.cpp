@@ -32,6 +32,7 @@
 #include "XBMCOperations.h"
 #include "AnnouncementManager.h"
 #include "log.h"
+#include "Variant.h"
 #include <string.h>
 
 using namespace ANNOUNCEMENT;
@@ -300,7 +301,13 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
   if (!parameterObject.isObject() || !parameterObject.isMember("sender") || !parameterObject.isMember("message"))
     return InvalidParams;
 
-  CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), parameterObject.isMember("data") ? parameterObject["sender"].asString().c_str() : NULL);
+  if (!parameterObject.isMember("data"))
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str());
+  else
+  {
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(),
+      &CVariant(parameterObject["data"].asString()));
+  }
 
   return ACK;
 }
