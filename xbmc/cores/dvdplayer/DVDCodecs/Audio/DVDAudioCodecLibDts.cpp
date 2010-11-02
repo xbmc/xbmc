@@ -133,6 +133,8 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
     case DTS_MONO   : m_pChannelMap = channelMaps[chOffset + 0]; channels = 1; break;
     case DTS_CHANNEL:
     case DTS_DOLBY  :
+    case DTS_STEREO_SUMDIFF:
+    case DTS_STEREO_TOTAL:
     case DTS_STEREO : m_pChannelMap = channelMaps[chOffset + 1]; channels = 2; break;
     case DTS_3F     : m_pChannelMap = channelMaps[chOffset + 2]; channels = 3; break;
     case DTS_2F1R   : m_pChannelMap = channelMaps[chOffset + 3]; channels = 3; break;
