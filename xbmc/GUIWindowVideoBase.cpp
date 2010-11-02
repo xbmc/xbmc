@@ -1805,6 +1805,9 @@ void CGUIWindowVideoBase::OnSearch()
   CFileItemList items;
   DoSearch(strSearch, items);
 
+  if (m_dlgProgress)
+    m_dlgProgress->Close();
+
   if (items.Size())
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1821,25 +1824,14 @@ void CGUIWindowVideoBase::OnSearch()
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)
-    {
-      if (m_dlgProgress)
-        m_dlgProgress->Close();
-
-      return ;
-    }
+      return;
 
     CFileItemPtr pSelItem = items[iItem];
 
     OnSearchItemFound(pSelItem.get());
-
-    if (m_dlgProgress)
-      m_dlgProgress->Close();
   }
   else
   {
-    if (m_dlgProgress)
-      m_dlgProgress->Close();
-
     CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
 }
