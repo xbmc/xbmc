@@ -23,6 +23,7 @@
 #include "SingleLock.h"
 #include <stdio.h>
 #include "log.h"
+#include "Variant.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -49,7 +50,7 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   }
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data)
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data/* = NULL*/)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
   CSingleLock lock (m_critSection);
