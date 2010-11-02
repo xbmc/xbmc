@@ -27,6 +27,7 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
+#include "utils/Builtins.h"
 #include "AnnouncementManager.h"
 #include "LocalizeStrings.h"
 
@@ -208,6 +209,12 @@ void CPowerManager::OnSleep()
   g_lcd->SetBackLight(0);
 #endif
 
+  // stop lirc
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
+  CBuiltins::Execute("LIRC.Stop");
+#endif
+
   g_Keyboard.ResetState();
 
   g_application.StopPlaying();
@@ -241,8 +248,7 @@ void CPowerManager::OnWake()
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  g_RemoteControl.Disconnect();
-  g_RemoteControl.Initialize();
+  CBuiltins::Execute("LIRC.Start");
 #endif
 
   // restart and undim lcd
