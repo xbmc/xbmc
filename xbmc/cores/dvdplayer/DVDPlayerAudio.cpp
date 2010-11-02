@@ -562,7 +562,7 @@ void CDVDPlayerAudio::Process()
 
     // Zero out the frame data if we are supposed to silence the audio
     if (m_silence)
-      memset(audioframe.data, NULL, audioframe.size);
+      memset(audioframe.data, 0, audioframe.size);
 
     if( result & DECODE_FLAG_DROP )
     {

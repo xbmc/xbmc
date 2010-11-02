@@ -719,14 +719,12 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     color_t color = (m_label.focusedColor && iOffset == GetActiveButton()) ? m_label.focusedColor : m_label.textColor;
     color_t blendedAlpha = (alpha * ((color & 0xff000000) >> 24)) / 255;
     color_t blendedColor = (blendedAlpha << 24) | (color & 0xFFFFFF);
-    blendedAlpha = (alpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
     color_t shadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
     CGUITextLayout::DrawText(m_label.font, fPosX, fPosY, blendedColor, shadowColor, label, m_label.align);
   }
   else
   {
     float fAlpha = 255.0f;
-    float fAlpha1 = 255.0f;
     // check if we have a skinner-defined texture...
     CGUITexture *pImage = m_vecButtons[iOffset]->imageNoFocus;
     if (!pImage) pImage = &m_imgNoFocus;
@@ -737,17 +735,13 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (posX < fStartAlpha)
       {
         fAlpha -= (fStartAlpha - posX) / (fStartAlpha - m_posX) * m_iAlpha * 2.55f;
-        fAlpha1 -= (fStartAlpha - (posX + m_imgFocus.GetWidth() + m_buttonGap)) / (fStartAlpha - m_posX) * m_iAlpha * 2.55f;
       }
       if (posX >= fEndAlpha)
       {
         fAlpha -= (posX - fEndAlpha) / (m_posX + m_width - fEndAlpha) * m_iAlpha * 2.55f;
-        fAlpha1 -= ((posX + m_imgFocus.GetWidth() + m_buttonGap) - fEndAlpha) / (m_posX + m_width - fEndAlpha) * m_iAlpha * 2.55f;
       }
       if (fAlpha < 0) fAlpha = 0;
-      if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
-      if (fAlpha1 > 255) fAlpha1 = 255.0f;
       pImage->SetAlpha((unsigned char)(fAlpha + 0.5f));
     }
     else
@@ -755,17 +749,13 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (posY < fStartAlpha)
       {
         fAlpha -= (fStartAlpha - posY) / (fStartAlpha - m_posY) * m_iAlpha * 2.55f;
-        fAlpha1 -= (fStartAlpha - (posY + m_imgFocus.GetHeight() + m_buttonGap)) / (fStartAlpha - m_posY) * m_iAlpha * 2.55f;
       }
       if (posY > fEndAlpha)
       {
         fAlpha -= (posY - fEndAlpha) / (m_posY + m_height - fEndAlpha) * m_iAlpha * 2.55f;
-        fAlpha1 -= ((posY + m_imgFocus.GetHeight() + m_buttonGap) - fEndAlpha) / (m_posY + m_height - fEndAlpha) * m_iAlpha * 2.55f;
       }
       if (fAlpha < 0) fAlpha = 0;
-      if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
-      if (fAlpha1 > 255) fAlpha1 = 255.0f;
       pImage->SetAlpha((unsigned char)(fAlpha + 0.5f));
     }
     pImage->SetPosition(posX, posY);

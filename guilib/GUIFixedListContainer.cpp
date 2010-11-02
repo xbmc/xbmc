@@ -261,7 +261,7 @@ void CGUIFixedListContainer::SelectItem(int item)
     int minCursor, maxCursor;
     GetCursorRange(minCursor, maxCursor);
 
-    int cursor = m_cursor;
+    int cursor;
     if ((int)m_items.size() - 1 - item <= maxCursor - m_fixedCursor)
       cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
     else if (item <= m_fixedCursor - minCursor)

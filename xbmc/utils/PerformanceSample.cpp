@@ -62,11 +62,10 @@ void CPerformanceSample::Reset()
 
 void CPerformanceSample::CheckPoint()
 {
+#ifdef HAS_PERFORMANCE_SAMPLE
   int64_t tmNow;
   tmNow = CurrentHostCounter();
-#ifdef HAS_PERFORMANCE_SAMPLE
   double elapsed = (double)(tmNow - m_tmStart) / (double)m_tmFreq.QuadPart;
-#endif
 
   double dUser=0.0, dSys=0.0;
 #ifdef _LINUX
@@ -82,7 +81,6 @@ void CPerformanceSample::CheckPoint()
   }
 #endif
 
-#ifdef HAS_PERFORMANCE_SAMPLE
   g_application.GetPerformanceStats().AddSample(m_statName, PerformanceCounter(elapsed,dUser,dSys));
 #endif
 

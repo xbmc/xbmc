@@ -174,7 +174,6 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
   if (m_iColumns > 0)
   {
     double dBlockSize = tTotal * 0.99 / m_iColumns / iBigBlock; // mult with 0.99 to show the last bar
-    double dBlockSizeRest = (tCurrent - ((int)(tCurrent / dBlockSize) * dBlockSize));
 
     CStdString strProgressBar = "[";
     for (int i = 1;i <= m_iColumns;i++)
@@ -191,7 +190,6 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
         tmpTest = (tmpTest / dBlockSize);
         if (tmpTest >= iBigBlock) tmpTest = iBigBlock - 1;
         strProgressBar += char(cLCDsmallBlocks - (int)tmpTest);
-        dBlockSizeRest = 0;
       }
       //fill up the rest with blanks
       else

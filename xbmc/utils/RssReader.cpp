@@ -254,8 +254,6 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   typedef pair <CStdString, CStdStringW> StrPair;
   list <CStdString>::iterator i;
 
-  bool bEmpty=true;
-
   // Add the title tag in if we didn't pass any tags in at all
   // Represents default behaviour before configurability
 
@@ -264,7 +262,6 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
 
   while (itemNode > 0)
   {
-    bEmpty = false;
     TiXmlNode* childNode = itemNode->FirstChild();
     mTagElements.clear();
     while (childNode > 0)

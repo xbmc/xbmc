@@ -647,7 +647,7 @@ bool CTeletextDecoder::InitDecoder()
   m_TypeTTF.face_id   = (FTC_FaceID) m_teletextFont.c_str();
   m_TypeTTF.height    = (FT_UShort) m_RenderInfo.FontHeight;
   m_TypeTTF.flags     = FT_LOAD_MONOCHROME;
-  if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
+  if (FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face))
   {
     m_TypeTTF.face_id = (FTC_FaceID) m_teletextFont.c_str();
     if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
@@ -733,7 +733,6 @@ void CTeletextDecoder::EndDecoder()
 
 void CTeletextDecoder::PageInput(int Number)
 {
-  int zoom = 0;
   m_updateTexture = true;
 
   /* clear m_TempPage */
@@ -759,9 +758,6 @@ void CTeletextDecoder::PageInput(int Number)
     CopyBB2FB();
   }
 
-  if (m_RenderInfo.ZoomMode == 1)
-    zoom = 1<<10;
-
   m_RenderInfo.PosY = 0;
 
   switch (m_RenderInfo.InputCounter)
@@ -785,7 +781,7 @@ void CTeletextDecoder::PageInput(int Number)
   }
 
   /* generate pagenumber */
-  m_TempPage |= Number << m_RenderInfo.InputCounter*4;
+  m_TempPage |= Number << (m_RenderInfo.InputCounter*4);
 
   m_RenderInfo.InputCounter--;
 
@@ -2179,7 +2175,7 @@ void CTeletextDecoder::DrawShape(color_t *lfb, int xres, int x, int y, int shape
 void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, TextPageAttr_t *Attribute, int zoom, int yoffset)
 {
   int Row, Pitch;
-  int error, glyph;
+  int glyph;
   color_t bgcolor, fgcolor;
   int factor, xfactor;
   unsigned char *sbitbuffer;
@@ -2227,7 +2223,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
     return;
   }
 
-  if ((error = FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &m_sBit, NULL)) != 0)
+  if (FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &m_sBit, NULL) != 0)
   {
     FillRect(m_TextureBuffer, m_RenderInfo.Width, m_RenderInfo.PosX, m_RenderInfo.PosY + yoffset, curfontwidth, m_RenderInfo.FontHeight, bgcolor);
     m_RenderInfo.PosX += curfontwidth;
@@ -2254,7 +2250,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
       Char = G2table[0][0x20+ Attribute->diacrit];
     if ((glyph = FT_Get_Char_Index(m_Face, Char)))
     {
-      if ((error = FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &sbit_diacrit, NULL)) == 0)
+      if (FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &sbit_diacrit, NULL) == 0)
       {
         sbitbuffer = localbuffer;
         memcpy(sbitbuffer,m_sBit->buffer,m_sBit->pitch*m_sBit->height);
@@ -2798,7 +2794,6 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
         PageAtrb[col] = atr;
       for (col = 40; col < 24*40; col++)
         PageChar[col] = number2char(PageChar[col]);
-      boxed = false;
       return PageInfo; /* don't interpret irregular pages */
     }
     else if (PageInfo->function == FUNC_GPOP || PageInfo->function == FUNC_POP) /* object definitions */
@@ -2826,12 +2821,10 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
           }
         }
       }
-      boxed = false;
       return PageInfo; /* don't interpret irregular pages */
     }
     else if (PageInfo->function == FUNC_GDRCS || PageInfo->function == FUNC_DRCS) /* character definitions */
     {
-      boxed = false;
       return PageInfo; /* don't interpret irregular pages */
     }
     else
@@ -2865,7 +2858,6 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
       }
       if (parityerror)
       {
-        boxed = false;
         return PageInfo; /* don't interpret irregular pages */
       }
     }

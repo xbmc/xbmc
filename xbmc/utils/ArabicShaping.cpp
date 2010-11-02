@@ -192,7 +192,7 @@ static fribidi_boolean IsTransparent(FriBidiChar c)
 
 FriBidiChar* shape_arabic(FriBidiChar * str, int len)
 {
-  CharRep crep;
+  CharRep crep = { 0 };
   CombCharRep combcrep;
   FriBidiChar * shaped =
       (FriBidiChar *) malloc(sizeof(FriBidiChar) * (len + 1));

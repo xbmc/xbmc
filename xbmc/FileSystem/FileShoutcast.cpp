@@ -216,7 +216,6 @@ int64_t CFileShoutcast::GetLength()
 bool CFileShoutcast::Open(const CURL& url)
 {
   m_lastTime = CTimeUtils::GetTimeMS();
-  int ret;
 
   CGUIDialogProgress* dlgProgress = NULL;
 
@@ -260,7 +259,7 @@ bool CFileShoutcast::Open(const CURL& url)
     dlgProgress->Progress();
   }
 
-  if ((ret = rip_manager_start(rip_callback, &m_opt)) != SR_SUCCESS)
+  if (rip_manager_start(rip_callback, &m_opt) != SR_SUCCESS)
   {
     if (dlgProgress) dlgProgress->Close();
     return false;

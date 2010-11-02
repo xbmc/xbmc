@@ -254,9 +254,9 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
       {
         // Perform the scaling.
         uint8_t* src[] =       { pSrc->data[0],          pSrc->data[1],      pSrc->data[2],      NULL };
-        int      srcStride[] = { pSrc->iLineSize[0],     pSrc->iLineSize[1], pSrc->iLineSize[2], NULL };
+        int      srcStride[] = { pSrc->iLineSize[0],     pSrc->iLineSize[1], pSrc->iLineSize[2], 0    };
         uint8_t* dst[] =       { pPicture->data[0],      NULL,               NULL,               NULL };
-        int      dstStride[] = { pPicture->iLineSize[0], NULL,               NULL,               NULL };
+        int      dstStride[] = { pPicture->iLineSize[0], 0,                  0,                  0    };
 
         int dstformat;
         if (format == DVDVideoPicture::FMT_UYVY)

@@ -375,7 +375,6 @@ void CKaraokeLyricsText::Render()
     }
 
     m_preambleLayout->Update( m_currentPreamble, maxWidth * 0.9f );
-    updatePreamble = false;
   }
 
   float x = maxWidth * 0.5f + g_settings.m_ResInfo[resolution].Overscan.left;
@@ -462,7 +461,7 @@ void CKaraokeLyricsText::rescanLyrics()
   }
 
   // Second, add spaces if less than 5%, and rescan to gather more data.
-  bool add_spaces = (spaces * 100 / syllables < 5) ? true : false;
+  bool add_spaces = (syllables && (spaces * 100 / syllables < 5)) ? true : false;
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
 
