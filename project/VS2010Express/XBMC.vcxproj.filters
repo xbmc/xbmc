@@ -4436,6 +4436,9 @@
     <ClInclude Include="..\..\xbmc\utils\Variant.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ISerializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

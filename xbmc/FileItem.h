@@ -27,6 +27,7 @@
 
 #include "GUIListItem.h"
 #include "utils/Archive.h"
+#include "utils/ISerializable.h"
 #include "DateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"

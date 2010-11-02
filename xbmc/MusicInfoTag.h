@@ -25,6 +25,7 @@ class CSong;
 class CAlbum;
 
 #include "utils/Archive.h"
+#include "utils/ISerializable.h"
 
 namespace MUSIC_INFO
 {

@@ -20,6 +20,7 @@
  *
  */
 
+#include "utils/ISerializable.h"
 #include "utils/Archive.h"
 #include "DllLibExif.h"
 

@@ -2872,6 +2872,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\ISerializable.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Job.h"
 					>
 				</File>
