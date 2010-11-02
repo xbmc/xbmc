@@ -25,6 +25,7 @@
 #pragma once
 
 #include "StdString.h"
+#include "utils/ISerializable.h"
 
 #include <map>
 #include <vector>
@@ -53,13 +54,14 @@ public:
  \brief Class to store and read song information from CMusicDatabase
  \sa CAlbum, CMusicDatabase
  */
-class CSong
+class CSong: public ISerializable
 {
 public:
   CSong() ;
   CSong(MUSIC_INFO::CMusicInfoTag& tag);
   virtual ~CSong(){};
   void Clear() ;
+  virtual void Serialize(CVariant& value);
 
   bool operator<(const CSong &song) const
   {

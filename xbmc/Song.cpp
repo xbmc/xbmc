@@ -21,6 +21,7 @@
 
 #include "Song.h"
 #include "MusicInfoTag.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -57,6 +58,28 @@ CSong::CSong(CMusicInfoTag& tag)
 CSong::CSong()
 {
   Clear();
+}
+
+void CSong::Serialize(CVariant& value)
+{
+  value["filename"] = strFileName;
+  value["title"] = strTitle;
+  value["artist"] = strArtist;
+  value["album"] = strAlbum;
+  value["albumartist"] = strAlbumArtist;
+  value["genre"] = strGenre;
+  value["duration"] = iDuration;
+  value["track"] = iTrack;
+  value["year"] = iYear;
+  value["musicbrainztrackid"] = strMusicBrainzTrackID;
+  value["musicbrainzartistid"] = strMusicBrainzArtistID;
+  value["musicbrainzalbumid"] = strMusicBrainzAlbumID;
+  value["musicbrainzalbumartistid"] = strMusicBrainzAlbumArtistID;
+  value["musicbrainztrmid"] = strMusicBrainzTRMID;
+  value["comment"] = strComment;
+  value["rating"] = rating;
+  value["timesplayed"] = iTimesPlayed;
+  value["karaokenumber"] = iKaraokeNumber;
 }
 
 void CSong::Clear()
