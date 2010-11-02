@@ -79,7 +79,7 @@ void CSong::Serialize(CVariant& value)
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
-  value["karaokenumber"] = iKaraokeNumber;
+  value["karaokenumber"] = (int64_t) iKaraokeNumber;
 }
 
 void CSong::Clear()
