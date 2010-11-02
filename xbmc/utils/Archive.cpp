@@ -203,9 +203,9 @@ CArchive& CArchive::operator<<(const SYSTEMTIME& time)
   return *this;
 }
 
-CArchive& CArchive::operator<<(ISerializable& obj)
+CArchive& CArchive::operator<<(IArchivable& obj)
 {
-  obj.Serialize(*this);
+  obj.Archive(*this);
 
   return *this;
 }
@@ -290,9 +290,9 @@ CArchive& CArchive::operator>>(SYSTEMTIME& time)
   return *this;
 }
 
-CArchive& CArchive::operator>>(ISerializable& obj)
+CArchive& CArchive::operator>>(IArchivable& obj)
 {
-  obj.Serialize(*this);
+  obj.Archive(*this);
 
   return *this;
 }

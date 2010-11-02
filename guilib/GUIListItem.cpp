@@ -23,6 +23,7 @@
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Variant.h"
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -207,7 +208,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   return *this;
 }
 
-void CGUIListItem::Serialize(CArchive &ar)
+void CGUIListItem::Archive(CArchive &ar)
 {
   if (ar.IsStoring())
   {
@@ -249,6 +250,21 @@ void CGUIListItem::Serialize(CArchive &ar)
       ar >> value;
       SetProperty(key, value);
     }
+  }
+}
+void CGUIListItem::Serialize(CVariant &value)
+{
+  value["isFolder"] = m_bIsFolder;
+  value["strLabel"] = m_strLabel;
+  value["strLabel2"] = m_strLabel2;
+  value["sortLabel"] = CStdString(m_sortLabel);
+  value["strThumbnailImage"] = m_strThumbnailImage;
+  value["strIcon"] = m_strIcon;
+  value["selected"] = m_bSelected;
+
+  for (std::map<CStdString, CStdString, icompare>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+  {
+    value["properties"][it->first] = it->second;
   }
 }
 

@@ -593,7 +593,7 @@ CDateTime::operator FILETIME() const
   return m_time;
 }
 
-void CDateTime::Serialize(CArchive& ar)
+void CDateTime::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {

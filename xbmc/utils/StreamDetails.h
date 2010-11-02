@@ -21,11 +21,12 @@
  */
 
 #include "Archive.h"
+#include "ISerializable.h"
 #include <vector>
 
 class CStreamDetails;
 
-class CStreamDetail : public ISerializable
+class CStreamDetail : public IArchivable, public ISerializable
 {
 public:
   enum StreamType {
@@ -35,7 +36,8 @@ public:
   };
 
   CStreamDetail(StreamType type) : m_eType(type) {};
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   virtual bool IsWorseThan(CStreamDetail *that) { return true; };
 
   const StreamType m_eType;
@@ -49,7 +51,8 @@ class CStreamDetailVideo : public CStreamDetail
 {
 public:
   CStreamDetailVideo();
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   virtual bool IsWorseThan(CStreamDetail *that);
 
   int m_iWidth;
@@ -63,7 +66,8 @@ class CStreamDetailAudio : public CStreamDetail
 {
 public:
   CStreamDetailAudio();
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   virtual bool IsWorseThan(CStreamDetail *that);
 
   int m_iChannels;
@@ -77,13 +81,14 @@ class CStreamDetailSubtitle : public CStreamDetail
 {
 public:
   CStreamDetailSubtitle();
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   virtual bool IsWorseThan(CStreamDetail *that);
 
   CStdString m_strLanguage;
 };
 
-class CStreamDetails : public ISerializable
+class CStreamDetails : public IArchivable, public ISerializable
 {
 public:
   CStreamDetails() { Reset(); };
@@ -117,7 +122,8 @@ public:
   void Reset(void);
   void DetermineBestStreams(void);
 
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
 
   // Language to use for "best" subtitle stream
   CStdString m_strLanguage;

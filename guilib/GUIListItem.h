@@ -37,6 +37,7 @@
 //  Forward
 class CGUIListItemLayout;
 class CArchive;
+class CVariant;
 
 /*!
  \ingroup controls
@@ -112,7 +113,8 @@ public:
 
   void ClearProperties();
 
-  void Serialize(CArchive& ar);
+  void Archive(CArchive& ar);
+  void Serialize(CVariant& value);
 
   bool       HasProperty(const CStdString &strKey) const;
   bool       HasProperties() const { return m_mapProperties.size() > 0; };

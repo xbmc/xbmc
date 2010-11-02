@@ -23,6 +23,7 @@
 #include "Album.h"
 #include "StringUtils.h"
 #include "AdvancedSettings.h"
+#include "utils/Variant.h"
 
 using namespace MUSIC_INFO;
 
@@ -344,7 +345,27 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_bLoaded = true;
 }
 
-void CMusicInfoTag::Serialize(CArchive& ar)
+void CMusicInfoTag::Serialize(CVariant& value)
+{
+  value["url"] = m_strURL;
+  value["title"] = m_strTitle;
+  value["artist"] = m_strArtist;
+  value["album"] = m_strAlbum;
+  value["albumartist"] = m_strAlbumArtist;
+  value["genre"] = m_strGenre;
+  value["duration"] = m_iDuration;
+  value["track"] = m_iTrack;
+  value["loaded"] = m_bLoaded;
+  value["year"] = m_dwReleaseDate.wYear;
+  value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
+  value["musicbrainzartistid"] = m_strMusicBrainzArtistID;
+  value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
+  value["musicbrainzalbumartistid"] = m_strMusicBrainzAlbumArtistID;
+  value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
+  value["comment"] = m_strComment;
+  value["rating"] = m_rating;
+}
+void CMusicInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {

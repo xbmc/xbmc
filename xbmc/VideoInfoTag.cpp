@@ -25,6 +25,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "Picture.h"
 
@@ -243,7 +244,7 @@ bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
   return true;
 }
 
-void CVideoInfoTag::Serialize(CArchive& ar)
+void CVideoInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
@@ -299,7 +300,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
-    ar << m_streamDetails;
+    ar << dynamic_cast<IArchivable&>(m_streamDetails);
     ar << m_strShowLink;
     ar << m_fEpBookmark;
   }
@@ -364,10 +365,57 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
-    ar >> m_streamDetails;
+    ar >> dynamic_cast<IArchivable&>(m_streamDetails);
     ar >> m_strShowLink;
     ar >> m_fEpBookmark;
   }
+}
+
+void CVideoInfoTag::Serialize(CVariant& value)
+{
+  value["director"] = m_strDirector;
+  value["writingcredits"] = m_strWritingCredits;
+  value["genre"] = m_strGenre;
+  value["country"] = m_strCountry;
+  value["tagline"] = m_strTagLine;
+  value["plotoutline"] = m_strPlotOutline;
+  value["plot"] = m_strPlot;
+  value["title"] = m_strTitle;
+  value["votes"] = m_strVotes;
+  value["studio"] = m_strStudio;
+  value["trailer"] = m_strTrailer;
+  for (unsigned int i = 0; i < m_cast.size(); ++i)
+  {
+    value["cast"][i]["name"] = m_cast[i].strName;
+    value["cast"][i]["role"] = m_cast[i].strRole;
+  }
+  value["set"] = m_strSet;
+  value["runtime"] = m_strRuntime;
+  value["file"] = m_strFile;
+  value["path"] = m_strPath;
+  value["imdbnumber"] = m_strIMDBNumber;
+  value["filenameandpath"] = m_strFileNameAndPath;
+  value["originaltitle"] = m_strOriginalTitle;
+  value["episodeguide"] = m_strEpisodeGuide;
+  value["premiered"] = m_strPremiered;
+  value["status"] = m_strStatus;
+  value["productioncode"] = m_strProductionCode;
+  value["firstaired"] = m_strFirstAired;
+  value["showtitle"] = m_strShowTitle;
+  value["album"] = m_strAlbum;
+  value["artist"] = m_strArtist;
+  value["playcount"] = m_playCount;
+  value["lastPlayed"] = m_lastPlayed;
+  value["top250"] = m_iTop250;
+  value["year"] = m_iYear;
+  value["season"] = m_iSeason;
+  value["episode"] = m_iEpisode;
+  value["rating"] = m_fRating;
+  value["dbid"] = m_iDbId;
+  value["fileid"] = m_iFileId;
+  value["track"] = m_iTrack;
+  value["showlink"] = m_strShowLink;
+  m_streamDetails.Serialize(value["streamDetails"]);
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
