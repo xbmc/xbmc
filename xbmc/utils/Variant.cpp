@@ -21,6 +21,8 @@
 #include "Variant.h"
 #include "PlatformDefs.h"
 #include <string.h>
+#include "json/value.h"
+#include "ISerializable.h"
 
 using namespace std;
 
@@ -64,6 +66,12 @@ CVariant::CVariant(uint64_t unsignedinteger)
   m_data.unsignedinteger = unsignedinteger;
 }
 
+CVariant::CVariant(float fFloat)
+{
+  m_type = VariantTypeFloat;
+  m_data.fFloat = fFloat;
+}
+
 CVariant::CVariant(bool boolean)
 {
   m_type = VariantTypeBoolean;
@@ -86,6 +94,11 @@ CVariant::CVariant(const CVariant &variant)
 {
   m_type = variant.m_type;
   *this = variant;
+}
+
+CVariant::CVariant(ISerializable& serializable)
+{
+  *this = serializable;
 }
 
 CVariant::~CVariant()
@@ -120,6 +133,11 @@ bool CVariant::isUnsignedInteger() const
 bool CVariant::isBoolean() const
 {
   return m_type == VariantTypeBoolean;
+}
+
+bool CVariant::isFloat() const
+{
+  return m_type == VariantTypeFloat;
 }
 
 bool CVariant::isString() const
@@ -158,6 +176,14 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
     return fallback;
 }
 
+float CVariant::asFloat(float fallback) const
+{
+  if (isFloat())
+    return m_data.fFloat;
+  else
+    return fallback;
+}
+
 bool CVariant::asBoolean(bool fallback) const
 {
   if (isBoolean())
@@ -172,6 +198,46 @@ const char *CVariant::asString(const char *fallback) const
     return m_data.string->c_str();
   else
     return fallback;
+}
+
+void CVariant::toJsonValue(Json::Value& value)
+{
+  switch (m_type)
+  {
+  case VariantTypeInteger:
+    value = (int32_t) m_data.integer;
+    break;
+  case VariantTypeUnsignedInteger:
+    value = (uint32_t) m_data.unsignedinteger;
+    break;
+  case VariantTypeBoolean:
+    value = m_data.boolean;
+    break;
+  case VariantTypeFloat:
+    value = m_data.fFloat;
+    break;
+  case VariantTypeString:
+    value = (*m_data.string);
+    break;
+  case VariantTypeArray:
+    for (unsigned int i = 0; i < size(); i++)
+    {
+      Json::Value array;
+      (*m_data.array)[i].toJsonValue(array);
+      value.append(array);
+    }
+    break;
+  case VariantTypeObject:
+    for (VariantMap::iterator itr = m_data.map->begin(); itr != m_data.map->end(); itr++)
+    {
+      Json::Value object;
+      itr->second.toJsonValue(object);
+      value[itr->first] = object;
+    }
+    break;
+  default:
+    break;
+  }
 }
 
 CVariant &CVariant::operator[](string key)
@@ -214,6 +280,9 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   case VariantTypeBoolean:
     m_data.boolean = rhs.m_data.boolean;
     break;
+  case VariantTypeFloat:
+    m_data.fFloat = rhs.m_data.fFloat;
+    break;
   case VariantTypeString:
     m_data.string = new string(rhs.m_data.string->c_str());
     break;
@@ -227,6 +296,12 @@ CVariant &CVariant::operator=(const CVariant &rhs)
     break;
   }
 
+  return *this;
+}
+
+CVariant &CVariant::operator=(ISerializable& rhs)
+{
+  rhs.Serialize(*this);
   return *this;
 }
 
@@ -310,6 +385,9 @@ void CVariant::internaldebug()
     break;
   case VariantTypeUnsignedInteger:
     printf("uint: %"PRIu64"", m_data.unsignedinteger);
+    break;
+  case VariantTypeFloat:
+    printf("float: %f", m_data.fFloat);
     break;
   case VariantTypeBoolean:
     printf("bool: %s", m_data.boolean ? "true" : "false");
