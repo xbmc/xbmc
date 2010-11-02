@@ -73,16 +73,20 @@ print_crash_report()
   echo "############## END SYSTEM INFO ##############" >> $FILE
   echo >> $FILE
   echo "############### STACK TRACE #################" >> $FILE
-  single_stacktrace "$PWD" 1
-  # Find in plugins directories
-  if [ $XBMC_HOME ]; then
-    BASEDIR=$XBMC_HOME
+  if which gdb >/dev/null 2>&1; then
+    single_stacktrace "$PWD" 1
+    # Find in plugins directories
+    if [ $XBMC_HOME ]; then
+      BASEDIR=$XBMC_HOME
+    else
+      BASEDIR="$LIBDIR/xbmc/"
+    fi
+    single_stacktrace "$BASEDIR" 5
+    # find in user xbmc dir
+    single_stacktrace $HOME/.xbmc/ 5
   else
-    BASEDIR="$LIBDIR/xbmc/"
+    echo "gdb not installed, can't get stack trace." >> $FILE
   fi
-  single_stacktrace "$BASEDIR" 5
-  # find in user xbmc dir
-  single_stacktrace $HOME/.xbmc/ 5
   echo "############# END STACK TRACE ###############" >> $FILE
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
