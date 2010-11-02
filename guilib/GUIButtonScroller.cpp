@@ -719,7 +719,8 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     color_t color = (m_label.focusedColor && iOffset == GetActiveButton()) ? m_label.focusedColor : m_label.textColor;
     color_t blendedAlpha = (alpha * ((color & 0xff000000) >> 24)) / 255;
     color_t blendedColor = (blendedAlpha << 24) | (color & 0xFFFFFF);
-    color_t shadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
+    blendedAlpha = (alpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
+    color_t shadowColor = (blendedAlpha << 24) | (m_label.shadowColor & 0xFFFFFF);
     CGUITextLayout::DrawText(m_label.font, fPosX, fPosY, blendedColor, shadowColor, label, m_label.align);
   }
   else
