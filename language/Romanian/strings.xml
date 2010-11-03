@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- Translated by Daniel Alămiță, based on english revision 34640 -->
+<!-- Translated by Daniel Alămiță, based on english revision 34887 -->
 <strings>
   <string id="0">Programe</string>
   <string id="1">Imagini</string>
@@ -144,7 +144,7 @@
   <string id="167"></string>
   <string id="168"></string>
   <string id="169">Rezoluție</string>
-  <string id="170">Ajustare rată reîmprospătare ecran pentru potrivire cu video</string>
+  <string id="170">Ajustează rată reîmprospătare ecran pentru potrivire cu video</string>
   <string id="171"></string>
 
   <string id="172">Dată de lansare</string>
@@ -464,7 +464,7 @@
   <string id="502">Deschide</string>
   <string id="503">se verifică</string>
   <string id="504">Gol</string>
-  <string id="505">Încărcare informații media din fișiere...</string>
+  <string id="505">Extragere informații media din fișiere...</string>
   <string id="507">Sortează după: Utilizare</string>
   <string id="510">Activează vizualizări</string>
   <string id="511">Activează schimbare mod video</string>
@@ -1021,7 +1021,7 @@
   <string id="13011">Repaus</string>
   <string id="13012">Ieșire</string>
   <string id="13013">Repornire</string>
-  <string id="13014">Minimizează</string>
+  <string id="13014">Minimizare</string>
   <string id="13015">Acțiune buton de pornire (power)</string>
   <string id="13016">Închidere sistem</string>
 
@@ -1040,7 +1040,7 @@
   <string id="13106">Dezactivat</string>
   <string id="13107">Activată în timpul redării video</string>
   <string id="13108">Activat întotdeauna</string>
-  <string id="13109">Testare &amp; aplicare rezoluție</string>
+  <string id="13109">Testare și aplicare rezoluție</string>
   <string id="13110">Salvați rezoluția?</string>
   <string id="13111">Doriți să păstrați această rezoluție?</string>
 
@@ -1166,7 +1166,7 @@
   <string id="13316">Miniaturi recursive</string>
   <string id="13317">Prezentare diapozitive</string>
   <string id="13318">Prezentare diapozitive recursivă</string>
-  <string id="13319">Amestecare</string>
+  <string id="13319">Amestecă</string>
   <string id="13320">Stereo</string>
   <string id="13321">Doar în stânga</string>
   <string id="13322">Doar în dreapta</string>
@@ -1206,7 +1206,7 @@
   <string id="13357">Pixel shader de calitate înaltă</string>
   <string id="13358">Redă element</string>
   <string id="13359">Setează poză artist</string>
-  <string id="13360">Generiază miniaturi automat</string>
+  <string id="13360">Generează miniaturi automat</string>
   <string id="13361">Activează voce</string>
   <string id="13375">Activează dispozitiv</string>
   <string id="13376">Volum</string>
@@ -1234,7 +1234,7 @@
   <string id="13398">Scurtături</string>
   <string id="13399">Ignoră articolele la sortare (ex: „the”)</string>
   <string id="13400">Suprapune cântece din același album</string>
-  <string id="13401">Răsfoire după %s</string>
+  <string id="13401">Alegere %s</string>
   <string id="13402">Arată poziția pistei</string>
   <string id="13403">Elimină implicit</string>
   <string id="13404">Reia</string>
@@ -1276,7 +1276,7 @@
   <string id="13507">Mediu</string>
   <string id="13508">Înalt</string>
   <string id="13509">Foarte înalt(încet!)</string>
-  <string id="13510">Sincronizare redare cu reîmprospătare ecran</string>
+  <string id="13510">Sincronizează redarea cu reîmprospătarea ecranului</string>
   
   <string id="13550">Pauză în timp ce se schimbă rata de reîmprospătare</string>
   <string id="13551">Oprit</string>
@@ -1319,7 +1319,7 @@
   <string id="14021">Schimbare cod regiune 3</string>
   <string id="14022">Mediatecă</string>
   <string id="14023">Fără TV</string>
-  <string id="14024">Introduceți cel mai apropiat oraș mare</string>
+  <string id="14024">Introduceți cel mai mare oraș apropiat</string>
   <string id="14025">Preîncărcare Video/Audio/DVD - Disc dur</string>
   <string id="14026">Preîncărcare video - DVD-ROM</string>
   <string id="14027">- Rețea locală</string>
@@ -1482,10 +1482,10 @@
   <string id="15297">Doriți să eliminați această piesă din piesele îndrăgite?</string>
   <string id="15298">Doriți să deblocați această piesă?</string>
 
-  <string id="15300">Calea nu a putut fi găsită sau nu este validă</string>
-  <string id="15301">Nu s-a putut conecta la serverul de rețea</string>
-  <string id="15302">Niciun server găsit</string>
-  <string id="15303">Grupul de lucru nu a fost gasit</string>
+  <string id="15300">Calea nu a putut fi găsită sau nu este validă.</string>
+  <string id="15301">Nu se poate realiza conexiunea cu serverul de rețea.</string>
+  <string id="15302">Niciun server găsit.</string>
+  <string id="15303">Grupul de lucru nu a fost gasit.</string>
 
   <string id="15310">Se deschide sursă multi-căi</string>
   <string id="15311">Cale:</string>
@@ -1566,10 +1566,10 @@
   <string id="16318">Temporal/Spațial (jumătate)</string>
   <string id="16319">DXVA</string>
 
-  <string id="16400">Post-procesare</string>
-  <string id="16401"></string>
-  <string id="16402"></string>
-  <string id="16403"></string>
+  <string id="16400">Post-procesare video</string>
+  <string id="16401">Dezactivată</string>
+  <string id="16402">Activată pentru conținut SD</string>
+  <string id="16403">Activată întotdeauna</string>
 
   <string id="17500">Timp de așteptare repaus ecran</string>
 
@@ -1607,7 +1607,7 @@
 
   <string id="20037">Rezumat</string>
   <string id="20038">Blochează fereastra de muzică</string>
-  <string id="20039">Blochează fereastra de filme</string>
+  <string id="20039">Blochează fereastra de video</string>
   <string id="20040">Blochează fereastra de imagini</string>
   <string id="20041">Blochează ferestrele programe și scripturi</string>
   <string id="20042">Blochează gestionarul de fișiere</string>
@@ -1615,7 +1615,7 @@
   <string id="20044">Pornește nou</string>
   <string id="20045">Intrare în modul principal</string>
   <string id="20046">Părăsire mod principal</string>
-  <string id="20047">Creeați profilul '%s'?</string>
+  <string id="20047">Creați profilul '%s'?</string>
   <string id="20048">Porniți cu setări noi</string>
   <string id="20049">Cel mai bun disponibil</string>
   <string id="20050">Schimbă automat între 16:9 și 4:3</string>
@@ -1640,7 +1640,7 @@
   <string id="20069">Dosarul nu poate fi creat</string>
   <string id="20070">Director profil</string>
   <string id="20071">Porniți cu surse media noi</string>
-  <string id="20072">Verifică dacă în dosarul selectat se poate scrie</string>
+  <string id="20072">Verificați dacă în dosarul selectat se poate scrie.</string>
   <string id="20073">și dacă noul nume al dosarului este valid</string>
   <string id="20074">Clasă MPAA</string>
   <string id="20075">Introduceți codul de blocare principal</string>
@@ -1968,7 +1968,7 @@
   <string id="21379">Activează 720p</string>
   <string id="21380">Activează 1080i</string>
   <string id="21381">Introduceți nume pentru listă de redare nouă</string>
-  <string id="21382">Arată buton "Adaugă sursă" în listele de fișiere</string>
+  <string id="21382">Arată buton „Adaugă sursă” în listele de fișiere</string>
   <string id="21383">Activează bări de derulare</string>
   <string id="21384">Afișare filtrare privite ca un comutator în mediateca video</string>
   <string id="21385">Deschide</string>
@@ -1998,11 +1998,11 @@
   <string id="21409">înainte</string>
   <string id="21410">în ultimul</string>
   <string id="21411">nu în ultimul</string>
-  <string id="21412">Scrapers</string>
-  <string id="21413">Scraper implicit pentru filme</string>
-  <string id="21414">Scraper implicit pentru seriale tv</string>
-  <string id="21415">Scraper implicit pentru videoclipuri muzicale</string>
-  <string id="21416">Activează revenire bazată pe limbă scraper</string>
+  <string id="21412">Cataloage</string>
+  <string id="21413">Catalog (scraper) implicit pentru filme</string>
+  <string id="21414">Catalog (scraper) implicit pentru seriale tv</string>
+  <string id="21415">Catalog (scraper) implicit pentru videoclipuri</string>
+  <string id="21416">Activează revenire bazată pe limbă catalog</string>
   <string id="21417">- Setări</string>
   <string id="21418">Multilingual</string>
   <string id="21419">Niciun scraper prezent</string>
@@ -2036,7 +2036,7 @@
   <string id="21447">Limbă audio</string>
   <string id="21448">Limbă subtitrare</string>
   <string id="21449">Telecomanda trimite apăsări de taste</string>
-  <string id="21450">- Editare</string>
+  <string id="21450">- Modificare</string>
   <string id="21451">Este necesară o conexiune la Internet.</string>
   <string id="21452">Obține mai multe...</string>
   <string id="21453">Sistem de fișiere rădăcină</string>
@@ -2258,6 +2258,8 @@
   <string id="24096">Suplimentul a fost marcat ca defect în depozit.</string>
   <string id="24097">Doriți să îl dezactivați pe sistemul dumneavoastră?</string>
   <string id="24098">Defect</string>
+  <string id="24099">Doriți să folosiți acest costum?</string>
+  <string id="25000">Notificări</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mod mediatecă</string>
