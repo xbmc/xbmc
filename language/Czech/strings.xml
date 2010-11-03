@@ -566,7 +566,9 @@
   <string id="609">Není nastavena složka pro ukládání kopií CD.</string>
   <string id="610">Zkopírovat audiostopu</string>
   <string id="611">Zadejte číslo</string>
-
+  <string id="612">Bitů/Vzorek</string>
+  <string id="613">Vzorkovací frekvence</string>
+  
   <string id="620">Audio CD</string>
   <string id="621">Enkodér</string>
   <string id="622">Kvalita</string>
@@ -910,6 +912,7 @@
 
   <string id="10516">Knihovna</string>
   <string id="10517">Seznam stop - Hudba</string>
+
   <string id="10522">Seznam stop - Video</string>
   <string id="10523">Informace o albu</string>
   <string id="10524">Informace o filmu</string>
@@ -1546,7 +1549,7 @@
   <string id="16206">Minimálně 1 soubor se nepodařilo smazat</string>
 
   <string id="16300">Způsob přepočítání videa</string>
-  <string id="16301">Nearest Neighbour</string>
+  <string id="16301">"Nejbližší soused"</string>
   <string id="16302">Bilineární</string>
   <string id="16303">Bikubický</string>
   <string id="16304">Lanczos2</string>
@@ -1778,6 +1781,7 @@
   <string id="20255">První přihlášení, upravte si svůj profil</string>
   <string id="20256">HTS Tvheadend klient</string>
   <string id="20257">VDR Streamdev klient</string>
+  <string id="20258">MythTV klient</string>
 
   <string id="20300">Web server složka (HTTP)</string>
   <string id="20301">Web server složka (HTTPS)</string>
@@ -2257,6 +2261,9 @@
   <string id="24096">Doplněk byl v repozitáři označen jako nefunkční.</string>
   <string id="24097">Chcete ho deaktivovat?</string>
   <string id="24098">Nefunkční</string>
+  <string id="24099">Chcete použít tento Vzhled?</string>
+  <string id="25000">Notifikace</string>
+
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mód knihovny</string>
