@@ -129,7 +129,7 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["lyrics"] =  musicInfo->GetLyrics().c_str();
 
   if (field.Equals("rating"))
-    result["rating"] = (int)musicInfo->GetRating();
+    result["rating"] = (int)(musicInfo->GetRating() - '0');
 }
 
 void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
