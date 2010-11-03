@@ -18,7 +18,7 @@
     <summary lang="nl">TMDb-scraperfuncties</summary> 			<!--Dit gaat over de functies, niet over de mediabibliotheek!-->
     <summary lang="pl">Scraper biblioteki TMDb</summary>
     <summary lang="pt">Scraper de filmes TMDb</summary>
-    <summary lang="ro">Bibliotecă scraper TMDb</summary>
+    <summary lang="ro">Bibliotecă catalog TMDb</summary>
     <summary lang="ru">Обработчик для TMDb</summary>
     <summary lang="zh">TMDb刮削器代码库</summary>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
@@ -28,7 +28,7 @@
     <description lang="nl">Miniaturen en fanart ophalen van www.themoviedb.org</description>
     <description lang="pl">Pobieraj ikony i fanarty z www.themoviedb.org</description>
     <description lang="pt">Descarregar informação de filmes de www.themoviedb.org</description>
-    <description lang="ro">Descarcă miniaturi și fanart-uri de pe www.themoviedb.org</description>
+    <description lang="ro">Descărcați miniaturi și imagini realizate de fani de pe www.themoviedb.org</description>
     <description lang="ru">Загружать миниатюры и фанарт с www.themoviedb.org</description>
     <description lang="zh">从www.themoviedb.org下载海报和同人画</description>
   </extension>
