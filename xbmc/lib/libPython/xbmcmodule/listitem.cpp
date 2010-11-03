@@ -550,6 +550,8 @@ namespace PYXBMC
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "listeners") == 0)
+         self->item->GetMusicInfoTag()->SetListeners(PyInt_AsLong(value));       
         else
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
