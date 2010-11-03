@@ -53,7 +53,7 @@ $(DEPFILE): Makefile
 # The main library:
 
 $(LIB): $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
 

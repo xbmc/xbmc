@@ -53,7 +53,7 @@ $(DEPFILE): Makefile
 
 $(LIB): $(OBJS) $(SILIB)
 	$(MAKE) -C libhts
-	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
 
