@@ -292,7 +292,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'X': // Bitrate
-    if( !item->m_bIsFolder || item->m_dwSize != 0 )
+    if( !item->m_bIsFolder && item->m_dwSize != 0 )
       value.Format("%i kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
