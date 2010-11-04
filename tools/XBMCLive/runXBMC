@@ -48,7 +48,6 @@ do
 	fi
 
 	echo "#!/bin/bash" >  /home/$xbmcUser/.xsession
-	echo "alsactl restore -f ~/.asoundrc" >>  /home/$xbmcUser/.xsession
 	echo "/usr/bin/xbmc --standalone" >>  /home/$xbmcUser/.xsession
 
 	echo "case \"\$?\" in" >>  /home/$xbmcUser/.xsession
@@ -63,7 +62,6 @@ do
 	echo "        sleep 10 ;;"  >>  /home/$xbmcUser/.xsession
 	echo "     * ) ;;"  >>  /home/$xbmcUser/.xsession
 	echo "esac"  >>  /home/$xbmcUser/.xsession
-	echo "alsactl store -f ~/.asoundrc" >>  /home/$xbmcUser/.xsession
 
 	chown $xbmcUser:$xbmcUser /home/$xbmcUser/.xsession
 
