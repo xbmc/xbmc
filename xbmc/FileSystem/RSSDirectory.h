@@ -33,6 +33,7 @@ namespace XFILE
     CRSSDirectory();
     virtual ~CRSSDirectory();
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool Exists(const char* strPath);
     virtual bool IsAllowed(const CStdString &strFile) const { return true; };
     virtual bool ContainsFiles(const CStdString& strPath);
     virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
