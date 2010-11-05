@@ -363,10 +363,18 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       break;
+//    case XBMC_KEYDOWN:
+//    case XBMC_KEYUP:
+//      g_Keyboard.HandleEvent(newEvent);
+//      g_application.ProcessKeyboard();
+//      break;
+// New key handling code added in preparation for the major overhaul
+// of the keyboard handling
     case XBMC_KEYDOWN:
+      g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
+      break;
     case XBMC_KEYUP:
-      g_Keyboard.HandleEvent(newEvent);
-      g_application.ProcessKeyboard();
+      g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
