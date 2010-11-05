@@ -21,6 +21,7 @@
 
 #include "RSSDirectory.h"
 #include "FileItem.h"
+#include "FileCurl.h"
 #include "Settings.h"
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
@@ -620,4 +621,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   m_path  = strPath;
 
   return true;
+}
+
+bool CRSSDirectory::Exists(const char* strPath)
+{
+  CFileCurl rss;
+  CURL url(strPath);
+  return rss.Exists(url);
 }
