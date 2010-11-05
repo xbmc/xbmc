@@ -675,8 +675,10 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsRSS() const
 {
-  return m_strPath.Left(6).Equals("rss://", false)
-      || CUtil::GetExtension(m_strPath).Equals(".rss", false)
+  if (m_strPath.Left(6).Equals("rss://"))
+    return true;
+
+  return CUtil::GetExtension(m_strPath).Equals(".rss")
       || GetMimeType() == "application/rss+xml";
 }
 
