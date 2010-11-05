@@ -79,10 +79,10 @@ pre-start script
 	  done
 	fi
 
-	if [ -f /home/xbmc/.xsession ] ; then
-		rm /home/xbmc/.xsession
+	if [ -f /home/$xbmcUser/.xsession ] ; then
+		rm /home/$xbmcUser/.xsession
 	fi
-	if [ -f /tmp/noRestartXBMC ] ; then 
+	if [ -f /tmp/noRestartXBMC ] ; then
 		rm /tmp/noRestartXBMC
 	fi
 end script
