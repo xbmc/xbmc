@@ -22,8 +22,6 @@
 #include "SIDCodec.h"
 #include "cores/DllLoader/DllLoader.h"
 #include "Util.h"
-#include "MusicInfoTagLoaderSid.h"
-#include "MusicInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
 
@@ -78,17 +76,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 1;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
-  CMusicInfoTagLoaderSid tagLoader;
-  CMusicInfoTag tag;
-  CFileItem item(strFile);
-  if (tagLoader.Load(strFile,tag))
-  {
-    m_TotalTime = tag.GetDuration()*1000;
-    if (m_TotalTime == 0)
-      m_TotalTime = 4*60*1000;
-  }
-  else
-    m_TotalTime = 4*60*1000;
+  m_TotalTime = 4*60*1000;
 
   return true;
 }
