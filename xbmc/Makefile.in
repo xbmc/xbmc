@@ -79,7 +79,6 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderNSF.cpp \
      MusicInfoTagLoaderOgg.cpp \
      MusicInfoTagLoaderShn.cpp \
-     MusicInfoTagLoaderSid.cpp \
      MusicInfoTagLoaderSPC.cpp \
      MusicInfoTagLoaderWav.cpp \
      MusicInfoTagLoaderWavPack.cpp \
