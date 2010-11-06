@@ -91,6 +91,9 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
+  // set the total time - useful when info comes from a preset tag
+  virtual void SetTotalTime(__int64 totaltime) {}
+
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
