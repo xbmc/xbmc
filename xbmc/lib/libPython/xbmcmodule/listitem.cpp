@@ -663,6 +663,13 @@ namespace PYXBMC
     { // special case for mime type - don't actually stored in a property,
       self->item->SetMimeType(uText);
     }
+    else if (lowerKey.CompareNoCase("specialsort") == 0)
+    {
+      if (uText == "bottom")
+        self->item->SetSpecialSort(SORT_ON_BOTTOM);
+      else if (uText == "top")
+        self->item->SetSpecialSort(SORT_ON_TOP);
+    }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyXBMCGUIUnlock();
