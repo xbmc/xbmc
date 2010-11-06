@@ -10,7 +10,7 @@
     <subtitle>ca</subtitle>
   </dvd>
   <regions>
-    <region name="Cataluña" locale="ES">
+    <region name="Catalunya" locale="ES">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D / MMMM / YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -18,7 +18,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
-    <region name="Principat d’Andorra" locale="ES">
+    <region name="Principat d’Andorra" locale="AD">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D / MMMM / YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
