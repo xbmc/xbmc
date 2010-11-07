@@ -159,7 +159,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
 
   if (hint.fpsrate && hint.fpsscale)
-    m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
+    m_fFrameRate = (double)hint.fpsrate / hint.fpsscale;
   else
     m_fFrameRate = 25;
 
