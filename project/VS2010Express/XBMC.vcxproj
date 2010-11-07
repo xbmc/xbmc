@@ -539,7 +539,6 @@
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderNSF.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderOgg.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderShn.cpp" />
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSid.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSPC.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderWav.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderWavPack.cpp" />
@@ -1236,7 +1235,6 @@
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMPC.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderNSF.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderShn.h" />
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSid.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSPC.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderWav.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderWavPack.h" />
