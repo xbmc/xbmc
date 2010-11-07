@@ -840,9 +840,6 @@
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderShn.cpp">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSid.cpp">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSPC.cpp">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
@@ -2818,9 +2815,6 @@
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderShn.h">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSid.h">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSPC.h">
