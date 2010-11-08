@@ -500,6 +500,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 {
 	cmyth_conn_t conn = NULL;
 	char *announcement = NULL;
+	char *myth_host = NULL;
 	char reply[16];
 	int err = 0;
 	int count = 0;
@@ -529,7 +530,18 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	}
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting data connection\n",
 		  __FUNCTION__);
-	conn = cmyth_connect(prog->proginfo_host, prog->proginfo_port,
+	if (control->conn_version >= 17) {
+		myth_host = cmyth_conn_get_setting(control, prog->proginfo_host,
+		                                   "BackendServerIP");
+	}
+	if (!myth_host) {
+		cmyth_dbg(CMYTH_DBG_PROTO,
+		          "%s: BackendServerIP setting not found. Using proginfo_host: %s\n",
+		          __FUNCTION__, prog->proginfo_host);
+		myth_host = ref_alloc(strlen(prog->proginfo_host) + 1);
+		strcpy(myth_host, prog->proginfo_host);
+	}
+	conn = cmyth_connect(myth_host, prog->proginfo_port,
 			     buflen, tcp_rcvbuf);
 	cmyth_dbg(CMYTH_DBG_PROTO,
 		  "%s: done connecting data connection, conn = %d\n",
@@ -538,7 +550,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			  "%s: cmyth_connect(%s, %d, %d) failed\n",
 			  __FUNCTION__,
-			  prog->proginfo_host, prog->proginfo_port, buflen);
+			  myth_host, prog->proginfo_port, buflen);
 		goto shut;
 	}
 	ann_size += strlen(prog->proginfo_pathname) + strlen(my_hostname);
@@ -604,6 +616,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	count -= r;
 	free(announcement);
 	ref_release(conn);
+	ref_release(myth_host);
 	return ret;
 
     shut:
@@ -612,6 +625,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	}
 	ref_release(ret);
 	ref_release(conn);
+	ref_release(myth_host);
 	return NULL;
 }
 
