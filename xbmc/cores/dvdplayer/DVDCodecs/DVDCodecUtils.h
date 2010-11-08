@@ -40,6 +40,6 @@ public:
 
   static bool IsVP3CompatibleWidth(int width);
 
-  static double NormalizeFrameduration(double framerate);
+  static double NormalizeFrameduration(double frameduration);
 };
 

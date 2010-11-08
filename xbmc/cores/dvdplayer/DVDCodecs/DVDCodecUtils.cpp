@@ -374,7 +374,7 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
                               DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
 
   double lowestdiff = DVD_TIME_BASE;
-  int    selected     = -1;
+  int    selected   = -1;
   for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
   {
     double diff = fabs(frameduration - durations[i]);
