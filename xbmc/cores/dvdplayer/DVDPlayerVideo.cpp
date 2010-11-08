@@ -157,9 +157,9 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
-
+  //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
-    m_fFrameRate = (double)hint.fpsrate / hint.fpsscale;
+    m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
   else
     m_fFrameRate = 25;
 
