@@ -37,6 +37,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "TextureCache.h"
+#include "Album.h"
 
 using namespace XFILE;
 
@@ -106,7 +107,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         if (window)
         {
           CFileItem item(*m_song);
-          CUtil::GetDirectory(m_song->m_strPath,item.m_strPath);
+          item.m_strPath.Format("musicdb://3/%li",m_albumId);
           item.m_bIsFolder = true;
           window->OnInfo(&item, true);
         }
@@ -146,10 +147,23 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
 
 void CGUIDialogSongInfo::OnInitWindow()
 {
+  CMusicDatabase db;
+  db.Open();
+
+  // no known db info - check if parent dir is an album
   if (m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
-    CONTROL_DISABLE(CONTROL_ALBUMINFO);
+  {
+    CStdString path;
+    CUtil::GetDirectory(m_song->m_strPath,path);
+    m_albumId = db.GetAlbumIdByPath(path);
+  }
   else
-    CONTROL_ENABLE(CONTROL_ALBUMINFO);
+  {
+    CAlbum album;
+    db.GetAlbumFromSong(m_song->GetMusicInfoTag()->GetDatabaseId(),album);
+    m_albumId = album.idAlbum;
+  }
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > -1);
 
   CGUIDialog::OnInitWindow();
 }
