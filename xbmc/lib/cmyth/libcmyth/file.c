@@ -614,12 +614,11 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 				goto out;
 			}
 			if (len64 >= 0x100000000LL || len64 < 0) {
-				/* -1 seems to be a common result, but isn't valid so return 0 instead. */
+				/* -1 seems to be a common result, but isn't valid so use 0 instead. */
 				cmyth_dbg (CMYTH_DBG_DEBUG,
-				           "%s: byte count < 0, returning 0 instead\n",
-				           __FUNCTION__);
-				ret = 0;
-				goto out;
+				           "%s: cmyth_rcv_int64() returned out of bound value (%d). Using 0\n",
+				           __FUNCTION__, (long)len64);
+				len64 = 0;
 			}
 			len = (unsigned long)len64;
 			req = 0;
