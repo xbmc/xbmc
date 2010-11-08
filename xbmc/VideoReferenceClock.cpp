@@ -1032,12 +1032,17 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 }
 
 //dvdplayer needs to know the refreshrate for matching the fps of the video playing to it
-int CVideoReferenceClock::GetRefreshRate()
+int CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
 {
   CSingleLock SingleLock(m_CritSection);
 
   if (m_UseVblank)
+  {
+    if (interval)
+      *interval = m_ClockSpeed / m_RefreshRate;
+
     return (int)m_RefreshRate;
+  }
   else
     return -1;
 }

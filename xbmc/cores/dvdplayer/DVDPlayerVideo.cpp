@@ -1040,10 +1040,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
-  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate);
+  double interval;
+  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate, &interval);
   if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {//when using the videoreferenceclock, a frame is always presented half a vblank interval too late
-    pts -= (0.5 / refreshrate) * DVD_TIME_BASE;
+    pts -= DVD_TIME_BASE * interval;
   }
 
   //User set delay
