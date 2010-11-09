@@ -81,7 +81,7 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
-  AddAddonsSource("image", g_localizeStrings.Get(1039));
+  AddAddonsSource("image", g_localizeStrings.Get(1039), "DefaultAddonPicture.png");
   AddOrReplace(g_settings.m_pictureSources, CGUIViewState::GetSources());
   return g_settings.m_pictureSources;
 }
