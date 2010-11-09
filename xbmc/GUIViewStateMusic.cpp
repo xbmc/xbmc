@@ -63,7 +63,7 @@ CStdString CGUIViewStateWindowMusic::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowMusic::GetSources()
 {
-  AddAddonsSource("audio", g_localizeStrings.Get(1038));
+  AddAddonsSource("audio", g_localizeStrings.Get(1038), "DefaultAddonMusic.png");
   return CGUIViewState::GetSources();
 }
 

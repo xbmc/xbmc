@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "Key.h"
 #include "FileSystem/AddonsDirectory.h"
+#include "TextureManager.h"
 
 using namespace std;
 
@@ -341,7 +342,7 @@ VECSOURCES& CGUIViewState::GetSources()
   return m_sources;
 }
 
-void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
+void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
 {
   if (!g_advancedSettings.m_bVirtualShares)
     return;
@@ -352,7 +353,8 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     CMediaSource source;
     source.strPath = "addons://sources/" + content + "/";    
     source.strName = label;
-    source.m_strThumbnailImage = "";
+    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+      source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
     source.m_ignore = true;
     m_sources.push_back(source);
