@@ -6815,10 +6815,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       CFileItem item(tvshow.m_strPath, true);
       CFileItem saveItem(item);
       if (!singleFiles)
-      {
         saveItem = CFileItem(GetSafeFile(tvshowsDir, tvshow.m_strShowTitle), true);
-        CDirectory::Create(item.m_strPath);
-      }
       if (singleFiles && CUtil::IsWritable(tvshow.m_strPath))
       {
         if (!item.Exists(false))
@@ -7007,7 +7004,12 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
               CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
 
           if (actorThumbs)
-            ExportActorThumbs(episode, overwrite);
+          {
+            if (singleFiles)
+              ExportActorThumbs(episode, overwrite);
+            else
+              ExportActorThumbs(actorsDir, episode, overwrite);
+          }
         }
       }
       pDS->close();
