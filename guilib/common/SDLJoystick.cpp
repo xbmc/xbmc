@@ -148,7 +148,7 @@ void CJoystick::Update()
     {
       if (SDL_JoystickGetButton(joy, b))
       {
-        m_JoyId = j;
+        m_JoyId = SDL_JoystickIndex(joy);
         buttonId = b+1;
         j = numj-1;
         break;
@@ -160,7 +160,7 @@ void CJoystick::Update()
       hatval = SDL_JoystickGetHat(joy, h);
       if (hatval != SDL_HAT_CENTERED)
       {
-        m_JoyId = j;
+        m_JoyId = SDL_JoystickIndex(joy);
         hatId = h + 1;
         m_HatState = hatval;
         j = numj-1;
@@ -186,7 +186,7 @@ void CJoystick::Update()
     m_AxisId = GetAxisWithMaxAmount();
     if (m_AxisId)
     {
-      m_JoyId = j;
+      m_JoyId = SDL_JoystickIndex(joy);
       j = numj-1;
       break;
     }
