@@ -438,7 +438,7 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
   AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
 
-  SetSortMethod(g_settings.m_viewStateMusicFiles.m_sortMethod);
+  SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
   SetViewAsControl(g_settings.m_viewStateMusicFiles.m_viewMode);
   SetSortOrder(g_settings.m_viewStateMusicFiles.m_sortOrder);
 
