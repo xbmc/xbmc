@@ -1,6 +1,6 @@
 PREFIX = /usr/local
 
-CC = gcc -s -O2 -Wall
+CC = gcc -s -O2 -Wall -fPIC
 AR = ar rc
 PERL = perl
 XASM = xasm/xasm -q
@@ -49,7 +49,7 @@ asap-moc: libasap_decoder.so
 libasap_decoder.so: moc/libasap_decoder.c $(COMMON_C) $(COMMON_H)
 	$(CC) -shared -fPIC -o $@ -I. -I$(MOC_INCLUDE) moc/libasap_decoder.c $(COMMON_C)
 
-asap-xbmc: mads/mads xasm/xasm ../../../../system/players/paplayer/xbmc_asap-i486-linux.so
+asap-xbmc: mads/mads xasm/xasm ../../../../system/players/paplayer/xbmc_asap-@ARCH@.so
 
 xbmc/xbmc_asap.o: xbmc/xbmc_asap.c
 	$(CC) -I. -O2 -o $@ -c xbmc/xbmc_asap.c
@@ -63,7 +63,7 @@ acpu.o: acpu.c $(COMMON_H)
 apokeysnd.o: apokeysnd.c
 	$(CC) -I. -O2 -o $@ -c apokeysnd.c
 
-../../../../system/players/paplayer/xbmc_asap-i486-linux.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
+../../../../system/players/paplayer/xbmc_asap-@ARCH@.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
 	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
 
 players.h: files2anylang.pl $(PLAYERS_OBX)
@@ -149,7 +149,7 @@ players-clean:
 distclean: clean
 
 clean: players-clean
-	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so ../../../../system/players/paplayer/xbmc_asap-i486-linux.so players.h xbmc/xbmc_asap.o
+	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so ../../../../system/players/paplayer/xbmc_asap-@ARCH@.so players.h xbmc/xbmc_asap.o
 
 README.html: README INSTALL NEWS CREDITS
 	$(ASCIIDOC) -o $@ -a asapsrc -a asapports README
