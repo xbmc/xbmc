@@ -54,7 +54,7 @@
 #define HAS_HTTPAPI
 
 #define HAS_CDDA_RIPPER
-#ifdef HAVE_ASAP_CODEC
+#ifdef USE_ASAP_CODEC
 #define HAS_ASAP_CODEC
 #endif
 
