@@ -22,10 +22,10 @@
 echo
 echo "Checking availability of required packages..."
 
-REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev)
+REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev curl subversion unzip)
 NOTINSTALLED=()
 
-for k in "${REQUIREDPACKAGES[@]}" ; do 
+for k in "${REQUIREDPACKAGES[@]}" ; do
 	if [ "$( dpkg -l  | grep "ii" | grep "$k" )" = "" ] ; then
 		NOTINSTALLED+=($k)
 	fi
@@ -33,12 +33,12 @@ done
 
 if [ ${#NOTINSTALLED[@]} -gt 0 ]; then
 	echo
-	echo "FATAL: the following packages are missing, exiting." 
-	for k in "${NOTINSTALLED[@]}"; do 
-		echo "  $k"; 
-	done 
-	exit 1 
-fi 
+	echo "FATAL: the following packages are missing, exiting."
+	for k in "${NOTINSTALLED[@]}"; do
+		echo "  $k";
+	done
+	exit 1
+fi
 
 #
 # Make sure only root can run our script
@@ -52,10 +52,10 @@ cleanup()
 {
 	if [ -n "$WORKPATH" ]; then
 		if [ -z "$KEEP_WORKAREA" ]; then
-			echo "Cleaning workarea..." 
+			echo "Cleaning workarea..."
 			rm -rf $WORKPATH
 			if [ -f $THISDIR/binary.iso ]; then
-				chmod 777 $THISDIR/binary.* 
+				chmod 777 $THISDIR/binary.*
 			fi
 			echo "All clean"
 		fi
@@ -78,7 +78,7 @@ export WORKDIR
 echo ""
 
 if [ -d "$WORKPATH" ]; then
-	echo "Cleaning workarea..." 
+	echo "Cleaning workarea..."
 	rm -rf $WORKPATH
 fi
 mkdir $WORKPATH
@@ -87,7 +87,7 @@ if ls $THISDIR/binary.* > /dev/null 2>&1; then
 	rm -rf $THISDIR/binary.*
 fi
 
-echo "Creating new workarea..." 
+echo "Creating new workarea..."
 
 # cp all (except svn directories) into workarea
 rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
@@ -96,7 +96,7 @@ if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
 	if [ ! -d live-build ]; then
 		if [ ! -f live-build.tar ]; then
-			git clone git://live.debian.net/git/live-build.git 
+			git clone git://live.debian.net/git/live-build.git
 			pushd live-build > /dev/null
                         git checkout -b 2.0_a22-1 debian/2.0_a22-1
                         if [ "$?" -ne "0" ]; then
