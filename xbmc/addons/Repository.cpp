@@ -214,7 +214,7 @@ bool CRepositoryUpdateJob::DoWork()
       {
         g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(),
                                                             g_localizeStrings.Get(24061),
-                                                            addon->Name(),TOAST_DISPLAY_TIME,false);
+                                                            addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
     if (!addons[i]->Props().broken.IsEmpty())
