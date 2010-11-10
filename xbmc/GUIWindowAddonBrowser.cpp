@@ -365,7 +365,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                   addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24065),
-                                                  TOAST_DISPLAY_TIME,false);
+                                                  TOAST_DISPLAY_TIME,false,
+                                                  TOAST_DISPLAY_TIME);
             }
             else
             {
@@ -376,7 +377,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                    addon->Icon(),
                                                    addon->Name(),
                                                    g_localizeStrings.Get(24064),
-                                                   TOAST_DISPLAY_TIME,false);
+                                                   TOAST_DISPLAY_TIME,false,
+                                                   TOAST_DISPLAY_TIME);
             }
           }
           else
