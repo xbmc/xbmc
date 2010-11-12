@@ -414,9 +414,27 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasaddon("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Left(18).Equals("system.addontitle("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_TITLE: SYSTEM_ADDON_TITLE, ConditionalStringParameter(strTest.Mid(18,strTest.size()-19)), 0));
+    {
+      CStdString param = strTest.Mid(18,strTest.size()-19);
+      int info = TranslateString(param);
+      if (info > 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_TITLE: SYSTEM_ADDON_TITLE, info, 0));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+      CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
+      int compareString = ConditionalStringParameter(label);
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_TITLE: SYSTEM_ADDON_TITLE, compareString, 1));
+    }
     else if (strTest.Left(17).Equals("system.addonicon("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON: SYSTEM_ADDON_ICON, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    {
+      CStdString param = strTest.Mid(17,strTest.size()-18);
+      int info = TranslateString(param);
+      if (info > 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON: SYSTEM_ADDON_ICON, info, 0));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+      CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
+      int compareString = ConditionalStringParameter(label);
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON : SYSTEM_ADDON_ICON, compareString, 1));
+    }
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -2583,7 +2601,10 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
            info.m_info == SYSTEM_ADDON_ICON)
   {
     AddonPtr addon;
-    CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon);
+    if (info.GetData2() == 0)
+      CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon);
+    else 
+      CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
