@@ -530,7 +530,8 @@ void CDVDPlayerAudio::Process()
       m_stalled = true;
 
       // Flush as the audio output may keep looping if we don't
-      m_dvdAudio.Flush();
+      if(m_speed == DVD_PLAYSPEED_NORMAL)
+        m_dvdAudio.Flush();
 
       continue;
     }
