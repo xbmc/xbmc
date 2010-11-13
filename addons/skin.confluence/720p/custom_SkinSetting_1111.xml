@@ -1355,289 +1355,77 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-
-						<control type="radiobutton" id="401">
+						<control type="button" id="401">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]1[/B]</label>
+							<label>$LOCALIZE[24000] [B]1[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton1))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton1)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton1)</selected>
+							<onclick>Skin.SetAddon(HomeProgramButton1,xbmc.python.script)</onclick>
 						</control>
 						<control type="button" id="402">
 							<width>750</width>
 							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton1_label)][/COLOR]</label2>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]2[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton2))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton1_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton1)</visible>
+							<onclick>Skin.SetAddon(HomeProgramButton2,xbmc.python.script)</onclick>
 						</control>
 						<control type="button" id="403">
 							<width>750</width>
 							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton1_Path)][/COLOR]</label2>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]3[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton3))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton1_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton1)</visible>
+							<onclick>Skin.SetAddon(HomeProgramButton3,xbmc.python.script)</onclick>
 						</control>
-
-						<control type="radiobutton" id="404">
+						<control type="button" id="404">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]2[/B]</label>
+							<label>$LOCALIZE[24000] [B]4[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton4))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton2)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton2)</selected>
+							<onclick>Skin.SetAddon(HomeProgramButton4,xbmc.python.script)</onclick>
 						</control>
 						<control type="button" id="405">
 							<width>750</width>
 							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton2_label)][/COLOR]</label2>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]5[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton5))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton2_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton2)</visible>
+							<onclick>Skin.SetAddon(HomeProgramButton5,xbmc.python.script)</onclick>
 						</control>
 						<control type="button" id="406">
 							<width>750</width>
 							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton2_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton2_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton2)</visible>
-						</control>
-
-						<control type="radiobutton" id="407">
-							<width>750</width>
-							<height>40</height>
 							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]3[/B]</label>
+							<label>$LOCALIZE[24000] [B]6[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeProgramButton6))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton3)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton3)</selected>
-						</control>
-						<control type="button" id="408">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton3_label)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton3_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton3)</visible>
-						</control>
-						<control type="button" id="409">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton3_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton3_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton3)</visible>
-						</control>
-
-						<control type="radiobutton" id="410">
-							<width>750</width>
-							<height>40</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]4[/B]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton4)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton4)</selected>
-						</control>
-						<control type="button" id="411">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton4_label)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton4_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton4)</visible>
-						</control>
-						<control type="button" id="412">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton4_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton4_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton4)</visible>
-						</control>
-
-						<control type="radiobutton" id="413">
-							<width>750</width>
-							<height>40</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]5[/B]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton5)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton5)</selected>
-						</control>
-						<control type="button" id="414">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton5_label)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton5_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton5)</visible>
-						</control>
-						<control type="button" id="415">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton5_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton5_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton5)</visible>
-						</control>
-
-						<control type="radiobutton" id="416">
-							<width>750</width>
-							<height>40</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31119] [B]6[/B]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(HomeScriptButton6)</onclick>
-							<selected>Skin.HasSetting(HomeScriptButton6)</selected>
-						</control>
-						<control type="button" id="417">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton6_label)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(HomeScriptButton6_label)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton6)</visible>
-						</control>
-						<control type="button" id="418">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(HomeScriptButton6_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeScriptButton6_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(HomeScriptButton6)</visible>
-						</control>
-
-						<control type="label" id="419">
-							<width>750</width>
-							<height>45</height>
-							<font>font13_title</font>
-							<label>31122</label>
-							<textcolor>blue</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-
-						<control type="radiobutton" id="420">
-							<width>750</width>
-							<height>40</height>
-							<font>font13</font>
-							<label>$LOCALIZE[31119]</label>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.ToggleSetting(WeatherScript_Enable)</onclick>
-							<selected>Skin.HasSetting(WeatherScript_Enable)</selected>
-						</control>
-						<control type="button" id="421">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31120]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(WeatherScript_Label)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetString(WeatherScript_Label)</onclick>
-							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
-						</control>
-						<control type="button" id="422">
-							<width>750</width>
-							<height>40</height>
-							<font>font12</font>
-							<label> - $LOCALIZE[31121]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(WeatherScript_Path)][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(WeatherScript_Path,xbmc.python.script)</onclick>
-							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
+							<onclick>Skin.SetAddon(HomeProgramButton6,xbmc.python.script)</onclick>
 						</control>
 
 						<control type="label" id="423">
@@ -1650,13 +1438,12 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-
 						<control type="button" id="425">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
-							<label>$LOCALIZE[31127]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(LyricScript_Path)][/COLOR]</label2>
+							<label>$LOCALIZE[31132]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(LyricScript_Path))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
@@ -1674,13 +1461,12 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-
 						<control type="button" id="428">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
-							<label>$LOCALIZE[31130]</label>
-							<label2>[COLOR=selected]$INFO[Skin.String(SubtitleScript_Path)][/COLOR]</label2>
+							<label>$LOCALIZE[31133]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(SubtitleScript_Path))][/COLOR]</label2>
 							<textcolor>grey2</textcolor>
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
