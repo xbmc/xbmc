@@ -1003,8 +1003,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(
-      m_dpms->IsSupported());
+  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
@@ -1099,13 +1098,10 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   // Make sure we have at least the default skin
-  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
+  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
   {
-    if (!LoadSkin(DEFAULT_SKIN))
-    {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
       FatalErrorHandler(true, true, true);
-    }
   }
 
   SAFE_DELETE(m_splash);
@@ -1119,13 +1115,9 @@ bool CApplication::Initialize()
 
   // check if we should use the login screen
   if (g_settings.UsingLoginScreen())
-  {
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-  }
   else
-  {
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-  }
 
   g_sysinfo.Refresh();
 
