@@ -146,6 +146,7 @@ extern "C"
   FUNCTION(PyRun_StringFlags)
   FUNCTION(PyErr_Clear)
   FUNCTION(PyErr_ExceptionMatches)
+  FUNCTION(PyObject_SetAttrString)
 
   DATA_OBJECT(PyExc_SystemExit)
   DATA_OBJECT(PyExc_SystemError)
@@ -266,6 +267,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_SetAttrString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
 
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemExit)) &&
