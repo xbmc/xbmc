@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 34887 -->
+<!--Based on english strings version 35193 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1934,6 +1934,8 @@
   <string id="20451">国家</string>
   <string id="20452">集</string>
   <string id="20453">集</string>
+  <string id="20454">收听者</string>
+  <string id="20455">听众</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
