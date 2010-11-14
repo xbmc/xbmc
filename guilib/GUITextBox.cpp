@@ -58,6 +58,8 @@ CGUITextBox::CGUITextBox(const CGUITextBox &from)
   m_autoScrollTime = from.m_autoScrollTime;
   m_autoScrollDelay = from.m_autoScrollDelay;
   m_autoScrollRepeatAnim = NULL;
+  if (from.m_autoScrollRepeatAnim)
+    m_autoScrollRepeatAnim = new CAnimation(*from.m_autoScrollRepeatAnim);
   m_label = from.m_label;
   m_info = from.m_info;
   // defaults
