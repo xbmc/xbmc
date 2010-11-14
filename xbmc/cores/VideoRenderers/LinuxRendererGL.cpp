@@ -1780,7 +1780,7 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
     m_pVideoFilterShader->Disable();
 
 #if USE_VAAPI_GLX_BIND
-  status = vaEndRenderSurfaceGLX(display->get(), va.surfglx);
+  status = vaEndRenderSurfaceGLX(display->get(), va.surfglx->m_id);
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
