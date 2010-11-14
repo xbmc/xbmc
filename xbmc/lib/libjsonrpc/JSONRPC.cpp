@@ -231,7 +231,7 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
 
 JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  result["version"] = 1;
+  result["version"] = 2;
 
   return OK;
 }
