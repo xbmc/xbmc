@@ -1384,7 +1384,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
