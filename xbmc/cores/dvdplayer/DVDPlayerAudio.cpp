@@ -829,8 +829,10 @@ string CDVDPlayerAudio::GetPlayerInfo()
   s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
   s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
+  //print the inverse of the resample ratio, since that makes more sense
+  //if the resample ratio is 0.5, then we're playing twice as fast
   if (m_synctype == SYNC_RESAMPLE)
-    s << ", rr:" << fixed << setprecision(5) << m_resampleratio;
+    s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
 
   return s.str();
 }
