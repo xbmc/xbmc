@@ -105,6 +105,9 @@ CDateTime CMythSession::GetValue(cmyth_timestamp_t t)
       result = CTimeUtils::GetLocalTime(time);
     m_dll->ref_release(t);
   }
+  else // Return epoch so 0 and NULL behave the same.
+    result = CTimeUtils::GetLocalTime(0);
+
   return result;
 }
 
