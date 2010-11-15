@@ -46,6 +46,8 @@ using namespace std;
 #define MYTH_DEFAULT_PASSWORD "mythtv"
 #define MYTH_DEFAULT_DATABASE "mythconverg"
 
+#define MYTH_IDLE_TIMEOUT     5 // seconds
+
 CCriticalSection       CMythSession::m_section_session;
 vector<CMythSession*>  CMythSession::m_sessions;
 
@@ -57,7 +59,7 @@ void CMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CMythSession* session = *it;
-    if (session->m_timestamp + 5000 < CTimeUtils::GetTimeMS())
+    if (session->m_timestamp + (MYTH_IDLE_TIMEOUT * 1000) < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
