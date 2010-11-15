@@ -140,6 +140,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_stalled = true;
   m_started = false;
   m_duration = 0.0;
+  m_resampleratio = 1.0;
 
   m_freq = CurrentHostFrequency();
 
