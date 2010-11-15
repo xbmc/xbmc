@@ -369,6 +369,7 @@ CMythSession::CMythSession(const CURL& url)
     else
       m_dll->dbg_level(CMYTH_DBG_ERROR);
   }
+  m_all_recorded = NULL;
 }
 
 CMythSession::~CMythSession()
@@ -422,15 +423,19 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
+      GetAllRecordedPrograms(true);
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_ADD:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_ADD: %s", __FUNCTION__, buf);
+      GetAllRecordedPrograms(true);
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_UPDATE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_UPDATE", __FUNCTION__);
+      GetAllRecordedPrograms(true);
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_DELETE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_DELETE: %s", __FUNCTION__, buf);
+      GetAllRecordedPrograms(true);
       break;
     case CMYTH_EVENT_SCHEDULE_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
@@ -488,6 +493,8 @@ void CMythSession::Disconnect()
     m_dll->ref_release(m_event);
   if (m_database)
     m_dll->ref_release(m_database);
+  if (m_all_recorded)
+    m_dll->ref_release(m_all_recorded);
 }
 
 cmyth_conn_t CMythSession::GetControl()
@@ -545,4 +552,23 @@ DllLibCMyth* CMythSession::GetLibrary()
   if (m_dll->IsLoaded())
     return m_dll;
   return NULL;
+}
+
+cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
+{
+  if (!m_all_recorded || force)
+  {
+    CSingleLock lock(m_section);
+    if (m_all_recorded)
+    {
+      m_dll->ref_release(m_all_recorded);
+      m_all_recorded = NULL;
+    }
+    cmyth_conn_t control = GetControl();
+    if (!control)
+      return NULL;
+
+    m_all_recorded = m_dll->proglist_get_all_recorded(control);
+  }
+  return m_all_recorded;
 }
