@@ -46,7 +46,7 @@ using namespace std;
 #define MYTH_DEFAULT_PASSWORD "mythtv"
 #define MYTH_DEFAULT_DATABASE "mythconverg"
 
-#define MYTH_IDLE_TIMEOUT     5 // seconds
+#define MYTH_IDLE_TIMEOUT     5 * 60 // 5 minutes in seconds
 
 CCriticalSection       CMythSession::m_section_session;
 vector<CMythSession*>  CMythSession::m_sessions;
