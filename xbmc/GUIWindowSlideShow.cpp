@@ -861,8 +861,8 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   }
   maxWidth = (int)width;
   maxHeight = (int)height;
-  if (maxWidth > g_Windowing.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
-  if (maxHeight > g_Windowing.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
+  if (maxWidth > (int)g_Windowing.GetMaxTextureSize()) maxWidth = g_Windowing.GetMaxTextureSize();
+  if (maxHeight > (int)g_Windowing.GetMaxTextureSize()) maxHeight = g_Windowing.GetMaxTextureSize();
 #else
   maxWidth = g_Windowing.GetMaxTextureSize();
   maxHeight = g_Windowing.GetMaxTextureSize();
