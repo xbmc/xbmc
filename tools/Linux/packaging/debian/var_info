@@ -20,10 +20,6 @@ BUILD_DEPENDS="debhelper (>= 7.0.50~), python-support, cmake,
  libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
  libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl,"
 
-if [ $(lsb_release -is) = "Ubuntu" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
-fi
-
 case "$1" in
     BUILD_DEPENDS)
         printf "$BUILD_DEPENDS"

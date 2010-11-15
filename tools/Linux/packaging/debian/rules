@@ -26,7 +26,7 @@ endif
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
-  DISTRO_SPECIFIC_OPTIONS = --enable-faac
+  DISTRO_SPECIFIC_OPTIONS = 
 else
   DISTRO_SPECIFIC_OPTIONS = --enable-external-libraries --disable-dvdcss \
     --disable-non-free
