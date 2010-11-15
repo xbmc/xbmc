@@ -83,14 +83,19 @@ CMythSession* CMythSession::AquireSession(const CURL& url)
     if (session->CanSupport(url))
     {
       m_sessions.erase(it);
+      CLog::Log(LOGDEBUG, "%s - Aquired existing MythTV session: %p", __FUNCTION__, session);
       return session;
     }
   }
-  return new CMythSession(url);
+  CMythSession* session = new CMythSession(url);
+  CLog::Log(LOGINFO, "%s - Aquired new MythTV session for %s: %p", __FUNCTION__,
+            url.GetWithoutUserDetails().c_str(), session);
+  return session;
 }
 
 void CMythSession::ReleaseSession(CMythSession* session)
 {
+  CLog::Log(LOGDEBUG, "%s - Releasing MythTV session: %p", __FUNCTION__, session);
   session->SetListener(NULL);
   session->m_timestamp = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_section_session);
