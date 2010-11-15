@@ -239,6 +239,8 @@
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
+		7CBEBB8312912BA300431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
+		7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
@@ -829,7 +831,6 @@
 		E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
 		E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
-		E38E22D00D25F9FE00618676 /* fstrcmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */; };
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
@@ -1542,7 +1543,6 @@
 		F5A1CAC80F6B06CF00A96ABD /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
 		F5A1CAC90F6B06CF00A96ABD /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		F5A1CACA0F6B06CF00A96ABD /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
-		F5A1CACB0F6B06CF00A96ABD /* fstrcmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */; };
 		F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
@@ -2122,6 +2122,7 @@
 		7CAA25341085963B0096DE39 /* PasswordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordManager.h; sourceTree = "<group>"; };
 		7CAA25371085971C0096DE39 /* MusicArtistInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicArtistInfo.h; sourceTree = "<group>"; };
 		7CAA25381085971C0096DE39 /* ScraperUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperUrl.h; sourceTree = "<group>"; };
+		7CBEBB8212912BA300431822 /* fstrcmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fstrcmp.c; sourceTree = "<group>"; };
 		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
 		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
 		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
@@ -3431,7 +3432,6 @@
 		E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadQueueManager.h; sourceTree = "<group>"; };
 		E38E1E350D25F9FD00618676 /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		E38E1E360D25F9FD00618676 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
-		E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fstrcmp.cpp; sourceTree = "<group>"; };
 		E38E1E3D0D25F9FD00618676 /* fstrcmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fstrcmp.h; sourceTree = "<group>"; };
 		E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoManager.cpp; sourceTree = "<group>"; };
 		E38E1E3F0D25F9FD00618676 /* GUIInfoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoManager.h; sourceTree = "<group>"; };
@@ -6666,6 +6666,7 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				7CBEBB8212912BA300431822 /* fstrcmp.c */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
 				E38E1E240D25F9FD00618676 /* AlarmClock.h */,
 				F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */,
@@ -6713,7 +6714,6 @@
 				F5F244631110DC6B009126C6 /* FileOperationJob.h */,
 				F5F245EC1112C9AB009126C6 /* FileUtils.cpp */,
 				F5F245ED1112C9AB009126C6 /* FileUtils.h */,
-				E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */,
 				E38E1E3D0D25F9FD00618676 /* fstrcmp.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
 				E38E1E3F0D25F9FD00618676 /* GUIInfoManager.h */,
@@ -7758,7 +7758,6 @@
 				E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */,
 				E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */,
 				E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */,
-				E38E22D00D25F9FE00618676 /* fstrcmp.cpp in Sources */,
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
@@ -8111,6 +8110,7 @@
 				F5E728A51227112500B152C1 /* URIUtils.cpp in Sources */,
 				7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */,
 				C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
+				7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8629,7 +8629,6 @@
 				F5A1CAC80F6B06CF00A96ABD /* DownloadQueue.cpp in Sources */,
 				F5A1CAC90F6B06CF00A96ABD /* DownloadQueueManager.cpp in Sources */,
 				F5A1CACA0F6B06CF00A96ABD /* Event.cpp in Sources */,
-				F5A1CACB0F6B06CF00A96ABD /* fstrcmp.cpp in Sources */,
 				F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */,
 				F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */,
 				F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */,
@@ -8980,6 +8979,7 @@
 				F5E728A61227112500B152C1 /* URIUtils.cpp in Sources */,
 				7CF1FB0B123B1AF000B2CBCB /* Variant.cpp in Sources */,
 				C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
+				7CBEBB8312912BA300431822 /* fstrcmp.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
