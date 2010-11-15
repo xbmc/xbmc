@@ -960,9 +960,6 @@
     <ClCompile Include="..\..\xbmc\utils\FileUtils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\fstrcmp.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\GUIInfoManager.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -2108,6 +2105,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
