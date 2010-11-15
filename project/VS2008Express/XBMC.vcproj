@@ -2832,8 +2832,16 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\fstrcmp.cpp"
+					RelativePath="..\..\xbmc\utils\fstrcmp.c"
 					>
+					<FileConfiguration
+						Name="Debug (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\GUIInfoManager.cpp"
