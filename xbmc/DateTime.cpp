@@ -681,6 +681,12 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
+  if (date.IsEmpty())
+  {
+    SetValid(false);
+    return;
+  }
+
   const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
   int j=0;
   int iDayPos = date.Find("day");
