@@ -355,8 +355,10 @@ void XBPython::Initialize()
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
+#ifndef HAVE_LIBPYTHON2_6
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd") ||
+#endif
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
