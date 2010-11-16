@@ -38,7 +38,7 @@ CXBMCFileStream::CXBMCFileStream(CStdString filepath, HRESULT& hr)
 {
   m_pFile.Close();
 	//hr = Open(fn, modeRead|shareDenyNone|typeBinary|osSequentialScan) ? S_OK : E_FAIL;
-  if (m_pFile.Open(filepath, READ_TRUNCATED | READ_BUFFERED))
+  if (m_pFile.Open(filepath, READ_TRUNCATED))
     hr = S_OK;
   else
     hr = E_FAIL;

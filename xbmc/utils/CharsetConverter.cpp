@@ -100,53 +100,6 @@ static struct SFribidMapping
 , { FRIBIDI_CHAR_SET_NOT_FOUND, NULL           }
 };
 
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(EASTEUROPE_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(RUSSIAN_CHARSET);
-#endif  
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(ANSI_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(GREEK_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(TURKISH_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(HEBREW_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(ARABIC_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(BALTIC_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(VIETNAMESE_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(THAI_CHARSET);
-#endif
-
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(CHINESEBIG5_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(GB2312_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(SHIFTJIS_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(HANGEUL_CHARSET);
-#endif
-#ifdef _WIN32
-  m_vecCharsetIds.push_back(DEFAULT_CHARSET);
-#endif
-
 static struct SCharsetMapping
 {
   const char* charset;
