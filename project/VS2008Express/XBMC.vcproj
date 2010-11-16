@@ -5084,14 +5084,6 @@
 				Name="Karaoke"
 				>
 				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp"
 					>
 				</File>
