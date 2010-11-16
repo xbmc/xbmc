@@ -892,7 +892,6 @@
     <ClCompile Include="..\..\xbmc\utils\IoSupport.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Network.cpp" />
     <ClCompile Include="..\..\xbmc\UPnP.cpp" />
-    <ClCompile Include="..\..\xbmc\karaoke\Cdg.cpp" />
     <ClCompile Include="..\..\xbmc\karaoke\karaokelyrics.cpp" />
     <ClCompile Include="..\..\xbmc\karaoke\karaokelyricscdg.cpp" />
     <ClCompile Include="..\..\xbmc\karaoke\karaokelyricsfactory.cpp" />
@@ -1455,7 +1454,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.h" />
     <ClInclude Include="..\..\xbmc\utils\Network.h" />
     <ClInclude Include="..\..\xbmc\UPnP.h" />
-    <ClInclude Include="..\..\xbmc\karaoke\Cdg.h" />
     <ClInclude Include="..\..\xbmc\karaoke\karaokelyrics.h" />
     <ClInclude Include="..\..\xbmc\karaoke\karaokelyricscdg.h" />
     <ClInclude Include="..\..\xbmc\karaoke\karaokelyricsfactory.h" />

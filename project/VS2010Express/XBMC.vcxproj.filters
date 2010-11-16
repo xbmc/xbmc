@@ -1752,9 +1752,6 @@
     <ClCompile Include="..\..\xbmc\UPnP.cpp">
       <Filter>Source Files\UPnP</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\karaoke\Cdg.cpp">
-      <Filter>Source Files\Karaoke</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\karaoke\karaokelyrics.cpp">
       <Filter>Source Files\Karaoke</Filter>
     </ClCompile>
@@ -3448,9 +3445,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\UPnP.h">
       <Filter>Source Files\UPnP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\karaoke\Cdg.h">
-      <Filter>Source Files\Karaoke</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\karaoke\karaokelyrics.h">
       <Filter>Source Files\Karaoke</Filter>
