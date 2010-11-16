@@ -372,7 +372,7 @@ bool CKaraokeLyricsCDG::Load()
   // Parse the CD+G stream
   for ( unsigned int offset = 0; offset < cdgdata.size(); offset += sizeof( SubCode ) )
   {
-	  SubCode * sc = (SubCode *) (cdgdata.data() + offset);
+	  SubCode * sc = (SubCode *) (&cdgdata[0] + offset);
 
 	  if ( ( sc->command & CDG_MASK) == CDG_COMMAND )
 	  {
