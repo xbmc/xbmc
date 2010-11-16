@@ -267,7 +267,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_uiChunkSize = m_uiBufferLen / 16;
   m_uiSrcChunkSize = (m_uiChunkSize / m_uiBytesPerFrame) * m_uiBytesPerSrcFrame;
 
-  m_PreCacheSize = m_uiChunkSize;
+  m_PreCacheSize = m_uiBufferLen - m_uiChunkSize;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_uiChunkSize, m_uiAvgBytesPerSec);
 
