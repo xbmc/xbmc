@@ -382,6 +382,8 @@ class CDateTime;
 #define SYSTEM_RENDER_VERSION       709
 #define SYSTEM_SETTING              710
 #define SYSTEM_HAS_ADDON            711
+#define SYSTEM_ADDON_TITLE          712
+#define SYSTEM_ADDON_ICON           713
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

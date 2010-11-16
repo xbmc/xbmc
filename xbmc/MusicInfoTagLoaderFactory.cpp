@@ -30,7 +30,6 @@
 #include "MusicInfoTagLoaderApe.h"
 #include "MusicInfoTagLoaderMPC.h"
 #include "MusicInfoTagLoaderShn.h"
-#include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTagLoaderMod.h"
 #include "MusicInfoTagLoaderWav.h"
 #include "MusicInfoTagLoaderAAC.h"
@@ -119,11 +118,6 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "shn")
   {
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
-    return (IMusicInfoTagLoader*)pTagLoader;
-  }
-  else if (strExtension == "sid" || strExtension == "sidstream")
-  {
-    CMusicInfoTagLoaderSid *pTagLoader = new CMusicInfoTagLoaderSid();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
 #ifdef HAS_MOD_PLAYER

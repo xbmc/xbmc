@@ -854,7 +854,7 @@
 		</control>
 	</include>
 	<include name="ScrollOffsetLabel">
-                <control type="group">
+		<control type="group">
 			<visible>Container.Scrolling + [StringCompare(Container.SortMethod,$LOCALIZE[551]) | StringCompare(Container.SortMethod,$LOCALIZE[561]) | StringCompare(Container.SortMethod,$LOCALIZE[558]) | StringCompare(Container.SortMethod,$LOCALIZE[557]) | StringCompare(Container.SortMethod,$LOCALIZE[556])]</visible>
 			<animation effect="slide" start="0,0" end="0,-60" time="100">Visible</animation>
 			<animation effect="slide" start="0,-60" end="0,0" delay="400" time="100">Hidden</animation>
@@ -878,7 +878,7 @@
 				<textcolor>white</textcolor>
 				<font>font30_title</font>
 			</control>
-                </control>
+		</control>
 	</include>
 	<include name="Clock">
 		<control type="group">

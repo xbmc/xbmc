@@ -76,8 +76,6 @@ void CGUIProgressControl::Render()
     fScaleY = m_guiBackground.GetTextureHeight() ? m_height / m_guiBackground.GetTextureHeight() : 1.0f;
     fScaleX = m_guiBackground.GetTextureWidth() ? m_width / m_guiBackground.GetTextureWidth() : 1.0f;
 
-    float fWidth = m_fPercent;
-
     float posX = m_guiBackground.GetXPosition();
     float posY = m_guiBackground.GetYPosition();
 
@@ -104,7 +102,6 @@ void CGUIProgressControl::Render()
           m_guiMid.SetWidth(width);
           m_guiMid.Render();
         }
-        posX += fWidth * fScaleX;
       }
     }
     else

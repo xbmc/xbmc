@@ -133,6 +133,8 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
     case DTS_MONO   : m_pChannelMap = channelMaps[chOffset + 0]; channels = 1; break;
     case DTS_CHANNEL:
     case DTS_DOLBY  :
+    case DTS_STEREO_SUMDIFF:
+    case DTS_STEREO_TOTAL:
     case DTS_STEREO : m_pChannelMap = channelMaps[chOffset + 1]; channels = 2; break;
     case DTS_3F     : m_pChannelMap = channelMaps[chOffset + 2]; channels = 3; break;
     case DTS_2F1R   : m_pChannelMap = channelMaps[chOffset + 3]; channels = 3; break;
@@ -173,8 +175,11 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     if(m_iFrameSize > 0)
     {
 
-      if(m_iSourceFlags != flags)
+      if(!m_bFlagsInitialized || m_iSourceFlags != flags)
+      {
         SetupChannels(flags);
+        m_bFlagsInitialized = true;
+      }
 
       if(size >= m_iFrameSize)
       {
@@ -287,6 +292,7 @@ int CDVDAudioCodecLibDts::GetData(BYTE** dst)
 void CDVDAudioCodecLibDts::SetDefault()
 {
   m_iFrameSize = 0;
+  m_bFlagsInitialized = false;
   m_iSourceFlags = 0;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;

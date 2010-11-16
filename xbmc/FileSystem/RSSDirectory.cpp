@@ -21,6 +21,7 @@
 
 #include "RSSDirectory.h"
 #include "FileItem.h"
+#include "FileCurl.h"
 #include "Settings.h"
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
@@ -128,9 +129,9 @@ static time_t ParseDate(const CStdString & strDate)
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);
 }
-static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root);
+static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root, const CStdString& path);
 
-static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = item_child->GetText();
@@ -153,11 +154,11 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
       res.size     = _atoi64(item_child->Attribute("fileSize"));
 
     resources.push_back(res);
-    ParseItem(item, resources, item_child);
+    ParseItem(item, resources, item_child, path);
   }
   else if(name == "group")
   {
-    ParseItem(item, resources, item_child);
+    ParseItem(item, resources, item_child, path);
   }
   else if(name == "thumbnail")
   {
@@ -248,7 +249,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
 
 }
 
-static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = item_child->GetText();
@@ -273,7 +274,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
     item->SetProperty("keywords", text);
 }
 
-static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CStdString text = item_child->GetText();
   if (name == "title")
@@ -328,7 +329,7 @@ static void ParseItemRSS(CFileItem* item, SResources& resources, TiXmlElement* i
   }
 }
 
-static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -359,7 +360,7 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
   }
 }
 
-static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -384,7 +385,7 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
     item->SetProperty("boxee:releasedate", text);
 }
 
-static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -404,7 +405,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
     vtag->m_strRuntime = text;
 }
 
-static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
 {
   CStdString text = element->GetText();
   if     (name == "xmllink")
@@ -415,9 +416,21 @@ static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* e
     res.mime = "application/rss+xml";
     resources.push_back(res);
   }
+  else if (name == "broadcasts")
+  {
+    CURL url(path);
+    if(url.GetFileName().Left(3) == "v1/")
+    {
+      SResource res;
+      res.tag  = "svtplay:broadcasts";
+      res.path = url.GetWithoutFilename() + "v1/video/list/" + text;
+      res.mime = "application/rss+xml";
+      resources.push_back(res);
+    }
+  }
 }
 
-static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root)
+static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root, const CStdString& path)
 {
   for (TiXmlElement* child = root->FirstChildElement(); child; child = child->NextSiblingElement())
   {
@@ -431,19 +444,19 @@ static void ParseItem(CFileItem* item, SResources& resources, TiXmlElement* root
     }
 
     if      (xmlns == "media")
-      ParseItemMRSS   (item, resources, child, name, xmlns);
+      ParseItemMRSS   (item, resources, child, name, xmlns, path);
     else if (xmlns == "itunes")
-      ParseItemItunes (item, resources, child, name, xmlns);
+      ParseItemItunes (item, resources, child, name, xmlns, path);
     else if (xmlns == "voddler")
-      ParseItemVoddler(item, resources, child, name, xmlns);
+      ParseItemVoddler(item, resources, child, name, xmlns, path);
     else if (xmlns == "boxee")
-      ParseItemBoxee  (item, resources, child, name, xmlns);
+      ParseItemBoxee  (item, resources, child, name, xmlns, path);
     else if (xmlns == "zn")
-      ParseItemZink   (item, resources, child, name, xmlns);
+      ParseItemZink   (item, resources, child, name, xmlns, path);
     else if (xmlns == "svtplay")
-      ParseItemSVT    (item, resources, child, name, xmlns);
+      ParseItemSVT    (item, resources, child, name, xmlns, path);
     else
-      ParseItemRSS    (item, resources, child, name, xmlns);
+      ParseItemRSS    (item, resources, child, name, xmlns, path);
   }
 }
 
@@ -457,12 +470,12 @@ static bool FindMime(SResources resources, CStdString mime)
   return false;
 }
 
-static void ParseItem(CFileItem* item, TiXmlElement* root)
+static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& path)
 {
   SResources resources;
-  ParseItem(item, resources, root);
+  ParseItem(item, resources, root, path);
 
-  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:xmllink", "rss:link", "rss:guid", NULL };
+  const char* prio[] = { "media:content", "voddler:trailer", "rss:enclosure", "svtplay:broadcasts", "svtplay:xmllink", "rss:link", "rss:guid", NULL };
 
   CStdString mime;
   if     (FindMime(resources, "video/"))
@@ -486,7 +499,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
       {
         if(best == resources.end())
           best = it;
-        else if(it->width && it->height || best->width && best->height)
+        else if((it->width && it->height) || (best->width && best->height))
         {
           if(it->width*it->height > best->width*best->height)
             best = it;
@@ -582,7 +595,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   TiXmlHandle docHandle( &xmlDoc );
   TiXmlElement* channelXmlNode = docHandle.FirstChild( "rss" ).FirstChild( "channel" ).Element();
   if (channelXmlNode)
-    ParseItem(&items, channelXmlNode);
+    ParseItem(&items, channelXmlNode, path);
   else
     return false;
 
@@ -591,7 +604,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   {
     // Create new item,
     CFileItemPtr item(new CFileItem());
-    ParseItem(item.get(), child);
+    ParseItem(item.get(), child, path);
 
     item->SetProperty("isrss", "1");
 
@@ -608,4 +621,11 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   m_path  = strPath;
 
   return true;
+}
+
+bool CRSSDirectory::Exists(const char* strPath)
+{
+  CFileCurl rss;
+  CURL url(strPath);
+  return rss.Exists(url);
 }

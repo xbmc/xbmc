@@ -335,6 +335,13 @@
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp" />
     <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -606,7 +613,6 @@
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderNSF.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderOgg.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderShn.cpp" />
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSid.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSPC.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderWav.cpp" />
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderWavPack.cpp" />
@@ -650,7 +656,6 @@
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\utils\FileOperationJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\FileUtils.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\fstrcmp.cpp" />
     <ClCompile Include="..\..\xbmc\utils\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HTMLTable.cpp" />
@@ -1107,6 +1112,7 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.h" />
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h" />
     <ClInclude Include="..\..\xbmc\RenderSystemGLES.h" />
+    <ClInclude Include="..\..\xbmc\utils\ISerializable.h" />
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
@@ -1372,7 +1378,6 @@
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderMPC.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderNSF.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderShn.h" />
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSid.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSPC.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderWav.h" />
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderWavPack.h" />

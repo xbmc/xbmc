@@ -936,9 +936,6 @@
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderShn.cpp">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSid.cpp">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\MusicInfoTagLoaderSPC.cpp">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClCompile>
@@ -1063,9 +1060,6 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\FileUtils.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\fstrcmp.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\GUIInfoManager.cpp">
@@ -2331,6 +2325,9 @@
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -3099,9 +3096,6 @@
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderShn.h">
-      <Filter>Source Files\infoTagReaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSid.h">
       <Filter>Source Files\infoTagReaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\MusicInfoTagLoaderSPC.h">
@@ -4795,6 +4789,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Variant.h">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\ISerializable.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h">
       <Filter>cores\dsplayer\Utils</Filter>

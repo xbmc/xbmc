@@ -14,6 +14,7 @@
 #include "Thread.h"
 #include "CriticalSection.h"
 
+class CVariant;
 namespace JSONRPC
 {
   class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread
@@ -25,7 +26,7 @@ namespace JSONRPC
     virtual bool Download(const char *path, Json::Value *result);
     virtual int GetCapabilities();
 
-    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const char *data);
+    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data);
   protected:
     void Process();
   private:

@@ -13,7 +13,7 @@ echo wrapping libavutil
 gcc -shared -fPIC --soname,avutil-51-i486-linux.so -o avutil-51-i486-linux.so -rdynamic libavutil/*.o 
 
 echo wrapping libavcodec
-gcc -o avcodec-51-i486-linux.so --soname,avcodec-51-i486-linux.so -shared -fPIC -rdynamic /usr/lib/libfaac.a  libavcodec/*.o libavcodec/i386/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
+gcc -o avcodec-51-i486-linux.so --soname,avcodec-51-i486-linux.so -shared -fPIC -rdynamic libavcodec/*.o libavcodec/i386/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def` $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o
 
 echo wrapping libavformat
 gcc -o avformat-51-i486-linux.so --soname,avformat-51-i486-linux.so -shared  -fPIC  -rdynamic libavformat/*.o `cat $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.def`,-export-all-symbols $XBMC_ROOT/xbmc/cores/DllLoader/exports/wrapper.o

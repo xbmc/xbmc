@@ -232,8 +232,7 @@ void CGUIDialogContentSettings::FillContentTypes()
 
   if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
   {
-    FillContentTypes(CONTENT_ALBUMS);
-    FillContentTypes(CONTENT_ARTISTS);
+    FillContentTypes(m_content);
   }
   else
   {

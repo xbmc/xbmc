@@ -22,6 +22,7 @@
 #include "PictureInfoTag.h"
 #include "DateTime.h"
 #include "Util.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ bool CPictureInfoTag::Load(const CStdString &path)
   return m_isLoaded;
 }
 
-void CPictureInfoTag::Serialize(CArchive& ar)
+void CPictureInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
@@ -181,6 +182,68 @@ void CPictureInfoTag::Serialize(CArchive& ar)
     GetStringFromArchive(ar, m_iptcInfo.SupplementalCategories, sizeof(m_iptcInfo.SupplementalCategories));
     GetStringFromArchive(ar, m_iptcInfo.TransmissionReference, sizeof(m_iptcInfo.TransmissionReference));
   }
+}
+
+void CPictureInfoTag::Serialize(CVariant& value)
+{
+  value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
+  value["cameramake"] = CStdString(m_exifInfo.CameraMake);
+  value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
+  value["ccdwidth"] = m_exifInfo.CCDWidth;
+  value["comments"] = CStdString(m_exifInfo.Comments);
+  value["datetime"] = CStdString(m_exifInfo.DateTime);
+  for (int i = 0; i < 10; i++)
+    value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
+  value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
+  value["distance"] = m_exifInfo.Distance;
+  value["exposurebias"] = m_exifInfo.ExposureBias;
+  value["exposuremode"] = m_exifInfo.ExposureMode;
+  value["exposureprogram"] = m_exifInfo.ExposureProgram;
+  value["exposuretime"] = m_exifInfo.ExposureTime;
+  value["flashused"] = m_exifInfo.FlashUsed;
+  value["focallength"] = m_exifInfo.FocalLength;
+  value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
+  value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
+  value["gpsinfo"]["alt"] = CStdString(m_exifInfo.GpsAlt);
+  value["gpsinfo"]["lat"] = CStdString(m_exifInfo.GpsLat);
+  value["gpsinfo"]["long"] = CStdString(m_exifInfo.GpsLong);
+  value["height"] = m_exifInfo.Height;
+  value["iscolor"] = m_exifInfo.IsColor;
+  value["isoequivalent"] = m_exifInfo.ISOequivalent;
+  value["largestexifoffset"] = m_exifInfo.LargestExifOffset;
+  value["lightsource"] = m_exifInfo.LightSource;
+  value["meteringmode"] = m_exifInfo.MeteringMode;
+  value["numdatetimetags"] = m_exifInfo.numDateTimeTags;
+  value["orientation"] = m_exifInfo.Orientation;
+  value["process"] = m_exifInfo.Process;
+  value["thumbnailatend"] = m_exifInfo.ThumbnailAtEnd;
+  value["thumbnailoffset"] = m_exifInfo.ThumbnailOffset;
+  value["thumbnailsize"] = m_exifInfo.ThumbnailSize;
+  value["thumbnailsizeoffset"] = m_exifInfo.ThumbnailSizeOffset;
+  value["whitebalance"] = m_exifInfo.Whitebalance;
+  value["width"] = m_exifInfo.Width;
+
+  value["author"] = CStdString(m_iptcInfo.Author);
+  value["byline"] = CStdString(m_iptcInfo.Byline);
+  value["bylinetitle"] = CStdString(m_iptcInfo.BylineTitle);
+  value["caption"] = CStdString(m_iptcInfo.Caption);
+  value["category"] = CStdString(m_iptcInfo.Category);
+  value["city"] = CStdString(m_iptcInfo.City);
+  value["copyright"] = CStdString(m_iptcInfo.Copyright);
+  value["copyrightnotice"] = CStdString(m_iptcInfo.CopyrightNotice);
+  value["country"] = CStdString(m_iptcInfo.Country);
+  value["countrycode"] = CStdString(m_iptcInfo.CountryCode);
+  value["credit"] = CStdString(m_iptcInfo.Credit);
+  value["date"] = CStdString(m_iptcInfo.Date);
+  value["headline"] = CStdString(m_iptcInfo.Headline);
+  value["keywords"] = CStdString(m_iptcInfo.Keywords);
+  value["objectname"] = CStdString(m_iptcInfo.ObjectName);
+  value["referenceservice"] = CStdString(m_iptcInfo.ReferenceService);
+  value["source"] = CStdString(m_iptcInfo.Source);
+  value["specialinstructions"] = CStdString(m_iptcInfo.SpecialInstructions);
+  value["state"] = CStdString(m_iptcInfo.State);
+  value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
+  value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
 }
 
 void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t length)

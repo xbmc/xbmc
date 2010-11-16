@@ -93,8 +93,6 @@ fi
 		rm /etc/X11/Xwrapper.config.bak-xbmc-live > /dev/null
 	fi
 
-	deluser xbmc
-  
 	if [ -f "/etc/init.d/xbmc-live" ]; then
 		rm /etc/init.d/xbmc-live >/dev/null
 	fi

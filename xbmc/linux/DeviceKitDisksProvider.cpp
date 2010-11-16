@@ -318,7 +318,8 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
 
-  message.Send(con, &error);
+  if (con)
+    message.Send(con, &error);
 
   if (!dbus_error_is_set(&error))
     hasDeviceKitDisks = true;
@@ -326,7 +327,8 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
     CLog::Log(LOGDEBUG, "DeviceKit.Disks: %s - %s", error.name, error.message);
 
   dbus_error_free (&error);
-  dbus_connection_unref(con);
+  if (con)
+    dbus_connection_unref(con);
 
   return hasDeviceKitDisks;
 }

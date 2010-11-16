@@ -23,6 +23,7 @@
 #include "CodecFactory.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "MusicInfoTag.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include <math.h>
@@ -93,6 +94,10 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned i
     return false;
   }
   m_blockSize = m_codec->m_Channels * m_codec->m_BitsPerSample / 8;
+  
+  // set total time from the given tag
+  if (file.HasMusicInfoTag() && file.GetMusicInfoTag()->GetDuration())
+    m_codec->SetTotalTime(file.GetMusicInfoTag()->GetDuration());
 
   if (seekOffset)
     m_codec->Seek(seekOffset);

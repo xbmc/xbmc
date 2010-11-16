@@ -1,0 +1,78 @@
+set default=0
+set timeout=10
+
+insmod video
+insmod vbe
+insmod font
+insmod gfxterm
+set gfxmode="800x600"
+if loadfont ($root)/boot/grub/unicode.pf2 ; then
+ if terminal_output gfxterm ; then true ; else
+   # For backward compatibility with versions of terminal.mod that don't
+   # understand terminal_output
+   terminal gfxterm
+ fi
+fi
+
+insmod tga
+if background_image ($root)/boot/grub/splash.tga ; then
+ set color_normal=white/black
+ set color_highlight=cyan/black
+else
+ set menu_color_normal=cyan/blue
+ set menu_color_highlight=white/blue
+fi
+
+#echo -n "Press ESC to enter the menu... "
+#if sleep --verbose --interruptible 5 ; then
+# set timeout=0
+#else
+# set timeout=-1
+#fi
+
+menuentry "XBMCLive" {
+ set quiet=1
+ set gfxpayload="800x600"
+ linux /live/vmlinuz video=vesafb boot=live xbmc=autostart,nodiskmount splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+ initrd /live/initrd.img
+}
+
+menuentry "XBMCLive, SAFE MODE" {
+ set quiet=1
+ set gfxpayload=text
+ linux /live/vmlinuz boot=live xbmc=nodiskmount quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+ initrd /live/initrd.img
+}
+
+menuentry "  " {
+ set quiet=1
+}
+
+
+## BEGIN INSTALLER ##
+
+menuentry "Install XBMCLive" {
+ set quiet=1
+ set gfxpayload=text
+ linux /install/vmlinuz quiet preseed/file=/cdrom/install/preseed.cfg cdrom-detect/try-usb=true priority=critical --
+ initrd /install/initrd.gz
+}
+
+menuentry " ------ " {
+ set quiet=1
+}
+
+## END INSTALLER ##
+
+menuentry "Boot Operating System on Hard Disk" {
+ insmod ntfs
+ insmod chain
+ insmod drivemap
+ set root=(hd1)
+ drivemap -s (hd1) (hd0)
+ chainloader +1
+}
+
+menuentry "Memory test (memtest86+)" { 
+        linux16 /live/memtest   
+}

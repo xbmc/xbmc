@@ -41,6 +41,7 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
   if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
 
+  m_dllAvCodec.avcodec_register_all();
   AVCodec *codec;
   codec = m_dllAvCodec.avcodec_find_encoder(CODEC_ID_AC3);
   if (!codec)

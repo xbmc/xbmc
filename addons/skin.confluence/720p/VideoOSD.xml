@@ -23,8 +23,8 @@
 					<height>45</height>
 					<label>298</label>
 					<font>-</font>
-					<texturefocus>OSDBookMarksFO.png</texturefocus>
-					<texturenofocus>OSDBookMarksNF.png</texturenofocus>
+					<texturefocus>OSDBookmarksFO.png</texturefocus>
+					<texturenofocus>OSDBookmarksNF.png</texturenofocus>
 					<onleft>705</onleft>
 					<onright>701</onright>
 					<onup>600</onup>

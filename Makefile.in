@@ -139,7 +139,7 @@ INCLUDES=$(sort @INCLUDES@)
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
-        autom4te.cache config.h.in~ \
+        tools/Linux/xbmc-standalone.sh autom4te.cache config.h.in~ \
         xbmc/lib/libPython/Python/Include/pyconfig.h \
         xbmc/lib/libPython/Python/configure.lineno \
         xbmc/lib/libPython/Python/libpython2.4.so.1.0 \

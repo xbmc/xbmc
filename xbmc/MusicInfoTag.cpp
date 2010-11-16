@@ -23,6 +23,7 @@
 #include "Album.h"
 #include "StringUtils.h"
 #include "AdvancedSettings.h"
+#include "utils/Variant.h"
 
 using namespace MUSIC_INFO;
 
@@ -60,6 +61,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
   m_rating = tag.m_rating;
+  m_listeners = tag.m_listeners;
   m_iDbId = tag.m_iDbId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   return *this;
@@ -165,6 +167,11 @@ char CMusicInfoTag::GetRating() const
   return m_rating;
 }
 
+int CMusicInfoTag::GetListeners() const
+{
+ return m_listeners;
+}
+
 void CMusicInfoTag::SetURL(const CStdString& strURL)
 {
   m_strURL = strURL;
@@ -244,6 +251,11 @@ void CMusicInfoTag::SetLyrics(const CStdString& lyrics)
 void CMusicInfoTag::SetRating(char rating)
 {
   m_rating = rating;
+}
+
+void CMusicInfoTag::SetListeners(int listeners)
+{
+ m_listeners = listeners;
 }
 
 void CMusicInfoTag::SetLoaded(bool bOnOff)
@@ -344,7 +356,27 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_bLoaded = true;
 }
 
-void CMusicInfoTag::Serialize(CArchive& ar)
+void CMusicInfoTag::Serialize(CVariant& value)
+{
+  value["url"] = m_strURL;
+  value["title"] = m_strTitle;
+  value["artist"] = m_strArtist;
+  value["album"] = m_strAlbum;
+  value["albumartist"] = m_strAlbumArtist;
+  value["genre"] = m_strGenre;
+  value["duration"] = m_iDuration;
+  value["track"] = m_iTrack;
+  value["loaded"] = m_bLoaded;
+  value["year"] = m_dwReleaseDate.wYear;
+  value["musicbrainztrackid"] = m_strMusicBrainzTrackID;
+  value["musicbrainzartistid"] = m_strMusicBrainzArtistID;
+  value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
+  value["musicbrainzalbumartistid"] = m_strMusicBrainzAlbumArtistID;
+  value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
+  value["comment"] = m_strComment;
+  value["rating"] = m_rating;
+}
+void CMusicInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {

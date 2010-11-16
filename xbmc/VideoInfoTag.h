@@ -37,14 +37,15 @@ struct SActorInfo
   CScraperUrl thumbUrl;
 };
 
-class CVideoInfoTag : public ISerializable
+class CVideoInfoTag : public IArchivable, public ISerializable
 {
 public:
   CVideoInfoTag() { Reset(); };
   void Reset();
   bool Load(const TiXmlElement *movie, bool chained = false);
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   const CStdString GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;

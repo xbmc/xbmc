@@ -157,9 +157,9 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
-
+  //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
-    m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
+    m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
   else
     m_fFrameRate = 25;
 
@@ -1040,10 +1040,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
-  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate);
+  double interval;
+  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate, &interval);
   if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {//when using the videoreferenceclock, a frame is always presented half a vblank interval too late
-    pts -= (0.5 / refreshrate) * DVD_TIME_BASE;
+    pts -= DVD_TIME_BASE * interval;
   }
 
   //User set delay
@@ -1383,7 +1384,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;

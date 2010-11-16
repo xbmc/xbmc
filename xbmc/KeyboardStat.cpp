@@ -887,3 +887,158 @@ const CKey CKeyboardStat::GetKey()
 {
   return CKey(m_VKey, m_wUnicode, m_cAscii, m_Modifiers, m_keyHoldTime);
 }
+
+// New key handling code added in preparation for the major overhaul
+// of the keyboard handling
+const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
+{ uint8_t vkey;
+  wchar_t unicode;
+  char ascii;
+  uint32_t modifiers;
+  unsigned int held;
+
+  ascii = 0;
+  vkey = 0;
+  unicode = keysym.unicode;
+  held = 0;
+
+  modifiers = 0;
+  if (keysym.mod & XBMCKMOD_CTRL)
+    modifiers |= CKey::MODIFIER_CTRL;
+  if (keysym.mod & XBMCKMOD_SHIFT)
+    modifiers |= CKey::MODIFIER_SHIFT;
+  if (keysym.mod & XBMCKMOD_ALT)
+    modifiers |= CKey::MODIFIER_ALT;
+  if (keysym.mod & XBMCKMOD_RALT)
+    modifiers |= CKey::MODIFIER_RALT;
+  if (keysym.mod & XBMCKMOD_SUPER)
+    modifiers |= CKey::MODIFIER_SUPER;
+
+  CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
+
+  if ((keysym.unicode >= 'A' && keysym.unicode <= 'Z') ||
+    (keysym.unicode >= 'a' && keysym.unicode <= 'z'))
+  {
+    ascii = (char)keysym.unicode;
+    vkey = toupper(ascii);
+  }
+  else if (keysym.unicode >= '0' && keysym.unicode <= '9')
+  {
+    ascii = (char)keysym.unicode;
+    vkey = 0x60 + ascii - '0'; // xbox keyboard routine appears to return 0x60->69 (unverified). Ideally this "fixing"
+    // should be done in xbox routine, not in the sdl/directinput routines.
+    // we should just be using the unicode/ascii value in all routines (perhaps with some
+    // headroom for modifier keys?)
+  }
+  else
+  {
+    // see comment above about the weird use of vkey here...
+    if (keysym.unicode == ')') { vkey = 0x60; ascii = ')'; }
+    else if (keysym.unicode == '!') { vkey = 0x61; ascii = '!'; }
+    else if (keysym.unicode == '@') { vkey = 0x62; ascii = '@'; }
+    else if (keysym.unicode == '#') { vkey = 0x63; ascii = '#'; }
+    else if (keysym.unicode == '$') { vkey = 0x64; ascii = '$'; }
+    else if (keysym.unicode == '%') { vkey = 0x65; ascii = '%'; }
+    else if (keysym.unicode == '^') { vkey = 0x66; ascii = '^'; }
+    else if (keysym.unicode == '&') { vkey = 0x67; ascii = '&'; }
+    else if (keysym.unicode == '*') { vkey = 0x68; ascii = '*'; }
+    else if (keysym.unicode == '(') { vkey = 0x69; ascii = '('; }
+    else if (keysym.unicode == ':') { vkey = 0xba; ascii = ':'; }
+    else if (keysym.unicode == ';') { vkey = 0xba; ascii = ';'; }
+    else if (keysym.unicode == '=') { vkey = 0xbb; ascii = '='; }
+    else if (keysym.unicode == '+') { vkey = 0xbb; ascii = '+'; }
+    else if (keysym.unicode == '<') { vkey = 0xbc; ascii = '<'; }
+    else if (keysym.unicode == ',') { vkey = 0xbc; ascii = ','; }
+    else if (keysym.unicode == '-') { vkey = 0xbd; ascii = '-'; }
+    else if (keysym.unicode == '_') { vkey = 0xbd; ascii = '_'; }
+    else if (keysym.unicode == '>') { vkey = 0xbe; ascii = '>'; }
+    else if (keysym.unicode == '.') { vkey = 0xbe; ascii = '.'; }
+    else if (keysym.unicode == '?') { vkey = 0xbf; ascii = '?'; } // 0xbf is OEM 2 Why is it assigned here?
+    else if (keysym.unicode == '/') { vkey = 0xbf; ascii = '/'; }
+    else if (keysym.unicode == '~') { vkey = 0xc0; ascii = '~'; }
+    else if (keysym.unicode == '`') { vkey = 0xc0; ascii = '`'; }
+    else if (keysym.unicode == '{') { vkey = 0xeb; ascii = '{'; }
+    else if (keysym.unicode == '[') { vkey = 0xeb; ascii = '['; } // 0xeb is not defined by MS. Why is it assigned here?
+    else if (keysym.unicode == '|') { vkey = 0xec; ascii = '|'; }
+    else if (keysym.unicode == '\\') { vkey = 0xec; ascii = '\\'; }
+    else if (keysym.unicode == '}') { vkey = 0xed; ascii = '}'; }
+    else if (keysym.unicode == ']') { vkey = 0xed; ascii = ']'; } // 0xed is not defined by MS. Why is it assigned here?
+    else if (keysym.unicode == '"') { vkey = 0xee; ascii = '"'; }
+    else if (keysym.unicode == '\'') { vkey = 0xee; ascii = '\''; }
+
+    // For control key combinations, e.g. ctrl-P, the UNICODE gets set
+    // to 1 for ctrl-A, 2 for ctrl-B etc. This mapping sets the UNICODE
+    // back to 'a', 'b', etc.
+    // It isn't clear to me if this applies to Linux and Mac as well as
+    // Windows.
+    if (modifiers & CKey::MODIFIER_CTRL)
+    {
+      if (!vkey && !ascii)
+        LookupKeyMapping(&vkey, NULL, &unicode
+                       , keysym.sym
+                       , g_mapping_ctrlkeys
+                       , sizeof(g_mapping_ctrlkeys)/sizeof(g_mapping_ctrlkeys[0]));
+    }
+
+    /* Check for standard non printable keys */
+    if (!vkey && !ascii)
+      LookupKeyMapping(&vkey, NULL, &unicode
+                     , keysym.sym
+                     , g_mapping_npc
+                     , sizeof(g_mapping_npc)/sizeof(g_mapping_npc[0]));
+
+
+    if (!vkey && !ascii)
+    {
+      /* Check for linux defined non printable keys */
+        if(m_bEvdev)
+          LookupKeyMapping(&vkey, NULL, NULL
+                         , keysym.scancode
+                         , g_mapping_evdev
+                         , sizeof(g_mapping_evdev)/sizeof(g_mapping_evdev[0]));
+        else
+          LookupKeyMapping(&vkey, NULL, NULL
+                         , keysym.scancode
+                         , g_mapping_ubuntu
+                         , sizeof(g_mapping_ubuntu)/sizeof(g_mapping_ubuntu[0]));
+    }
+
+    if (!vkey && !ascii)
+    {
+      if (keysym.mod & XBMCKMOD_LSHIFT) vkey = 0xa0;
+      else if (keysym.mod & XBMCKMOD_RSHIFT) vkey = 0xa1;
+      else if (keysym.mod & XBMCKMOD_LALT) vkey = 0xa4;
+      else if (keysym.mod & XBMCKMOD_RALT) vkey = 0xa5;
+      else if (keysym.mod & XBMCKMOD_LCTRL) vkey = 0xa2;
+      else if (keysym.mod & XBMCKMOD_RCTRL) vkey = 0xa3;
+      else if (keysym.unicode > 32 && keysym.unicode < 128)
+        // only TRUE ASCII! (Otherwise XBMC crashes! No unicode not even latin 1!)
+        ascii = (char)(keysym.unicode & 0xff);
+    }
+  }
+
+  // At this point update the key hold time
+  // If XBMC_keysym was a class we could use == but memcmp it is :-(
+  if (memcmp(&keysym, &m_lastKeysym, sizeof(XBMC_keysym)) == 0)
+  {
+    held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
+  }
+  else
+  {
+    m_lastKeysym = keysym;
+    m_lastKeyTime = CTimeUtils::GetFrameTime();
+    held = 0;
+  }
+
+  // Create and return a CKey
+
+  CKey key(vkey, unicode, ascii, modifiers, held);
+    
+  return key;
+}
+
+void CKeyboardStat::ProcessKeyUp(void)
+{
+  memset(&m_lastKeysym, 0, sizeof(m_lastKeysym));
+  m_lastKeyTime = 0;
+}

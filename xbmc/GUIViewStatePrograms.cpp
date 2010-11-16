@@ -65,7 +65,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
-  AddAddonsSource("executable", g_localizeStrings.Get(1043));
+  AddAddonsSource("executable", g_localizeStrings.Get(1043), "DefaultAddonProgram.png");
   AddOrReplace(g_settings.m_programSources,CGUIViewState::GetSources());
   return g_settings.m_programSources;
 }

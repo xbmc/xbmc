@@ -30,6 +30,7 @@
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "MathUtils.h"
 
 #include <sstream>
 #include <iomanip>
@@ -140,6 +141,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_stalled = true;
   m_started = false;
   m_duration = 0.0;
+  m_resampleratio = 1.0;
 
   m_freq = CurrentHostFrequency();
 
@@ -530,7 +532,8 @@ void CDVDPlayerAudio::Process()
       m_stalled = true;
 
       // Flush as the audio output may keep looping if we don't
-      m_dvdAudio.Flush();
+      if(m_speed == DVD_PLAYSPEED_NORMAL)
+        m_dvdAudio.Flush();
 
       continue;
     }
@@ -557,12 +560,13 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
-      m_messageQueue.SetMaxTimeSize(8.0 - m_dvdAudio.GetCacheTotal());
+      if(m_speed == 0)
+        m_dvdAudio.Pause();
     }
 
     // Zero out the frame data if we are supposed to silence the audio
     if (m_silence)
-      memset(audioframe.data, NULL, audioframe.size);
+      memset(audioframe.data, 0, audioframe.size);
 
     if( result & DECODE_FLAG_DROP )
     {
@@ -767,7 +771,8 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
       proportional = m_error / DVD_TIME_BASE / proportionaldiv;
     }
-    m_resampler.SetRatio(1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral);
+    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+    m_resampler.SetRatio(m_resampleratio);
 
     //add to the resampler
     m_resampler.Add(audioframe, audioframe.pts);
@@ -824,8 +829,14 @@ void CDVDPlayerAudio::WaitForBuffers()
 string CDVDPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
   s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+
+  //print the inverse of the resample ratio, since that makes more sense
+  //if the resample ratio is 0.5, then we're playing twice as fast
+  if (m_synctype == SYNC_RESAMPLE)
+    s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
+
   return s.str();
 }
 

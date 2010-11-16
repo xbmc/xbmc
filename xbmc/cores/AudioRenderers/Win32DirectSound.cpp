@@ -156,8 +156,8 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   // unsure if these are the right values
   m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
   m_dwDataChunkSize = (m_dwChunkSize / iChannels) * m_uiDataChannels;
-  m_PreCacheSize = m_dwChunkSize;
   m_dwBufferLen = m_dwChunkSize * 16;
+  m_PreCacheSize = m_dwBufferLen - m_dwChunkSize;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_dwChunkSize, m_AvgBytesPerSec);
 
@@ -267,7 +267,7 @@ bool CWin32DirectSound::Resume()
   if (!m_bPause) // Already playing
     return true;
   m_bPause = false;
-  if (m_CacheLen > m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
+  if (m_CacheLen >= m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
     m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
   return true;
@@ -432,7 +432,7 @@ void CWin32DirectSound::CheckPlayStatus()
   DWORD status = 0;
   m_pBuffer->GetStatus(&status);
 
-  if(!m_bPause && !(status & DSBSTATUS_PLAYING) && m_CacheLen > m_PreCacheSize) // If we have some data, see if we can start playback
+  if(!m_bPause && !(status & DSBSTATUS_PLAYING) && m_CacheLen >= m_PreCacheSize) // If we have some data, see if we can start playback
   {
     m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
     CLog::Log(LOGDEBUG,__FUNCTION__ ": Resuming Playback");

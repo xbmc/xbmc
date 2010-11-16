@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Static library" />
+		<Option pch_mode="0" />
+		<Option compiler="msp430gcc" />
+		<Build>
+			<Target title="MinGW RELEASE">
+				<Option output="..\..\lib\libangelscript.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-Di386" />
+					<Add option="-DANGELSCRIPT_EXPORT" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DWIN32" />
+				</Compiler>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="MinGW RELEASE;" />
+		</VirtualTargets>
+		<Unit filename="..\..\include\angelscript.h" />
+		<Unit filename="..\..\source\as_array.h" />
+		<Unit filename="..\..\source\as_arrayobject.cpp" />
+		<Unit filename="..\..\source\as_arrayobject.h" />
+		<Unit filename="..\..\source\as_atomic.cpp" />
+		<Unit filename="..\..\source\as_atomic.h" />
+		<Unit filename="..\..\source\as_builder.cpp" />
+		<Unit filename="..\..\source\as_builder.h" />
+		<Unit filename="..\..\source\as_bytecode.cpp" />
+		<Unit filename="..\..\source\as_bytecode.h" />
+		<Unit filename="..\..\source\as_bytecodedef.h" />
+		<Unit filename="..\..\source\as_callfunc.cpp" />
+		<Unit filename="..\..\source\as_callfunc.h" />
+		<Unit filename="..\..\source\as_callfunc_mips.cpp" />
+		<Unit filename="..\..\source\as_callfunc_ppc.cpp" />
+		<Unit filename="..\..\source\as_callfunc_ppc_64.cpp" />
+		<Unit filename="..\..\source\as_callfunc_sh4.cpp" />
+		<Unit filename="..\..\source\as_callfunc_x64_gcc.cpp" />
+		<Unit filename="..\..\source\as_callfunc_x86.cpp" />
+		<Unit filename="..\..\source\as_callfunc_xenon.cpp" />
+		<Unit filename="..\..\source\as_compiler.cpp" />
+		<Unit filename="..\..\source\as_compiler.h" />
+		<Unit filename="..\..\source\as_config.h" />
+		<Unit filename="..\..\source\as_configgroup.cpp" />
+		<Unit filename="..\..\source\as_configgroup.h" />
+		<Unit filename="..\..\source\as_context.cpp" />
+		<Unit filename="..\..\source\as_context.h" />
+		<Unit filename="..\..\source\as_criticalsection.h" />
+		<Unit filename="..\..\source\as_datatype.cpp" />
+		<Unit filename="..\..\source\as_datatype.h" />
+		<Unit filename="..\..\source\as_debug.h" />
+		<Unit filename="..\..\source\as_gc.cpp" />
+		<Unit filename="..\..\source\as_gc.h" />
+		<Unit filename="..\..\source\as_generic.cpp" />
+		<Unit filename="..\..\source\as_generic.h" />
+		<Unit filename="..\..\source\as_map.h" />
+		<Unit filename="..\..\source\as_memory.cpp" />
+		<Unit filename="..\..\source\as_memory.h" />
+		<Unit filename="..\..\source\as_module.cpp" />
+		<Unit filename="..\..\source\as_module.h" />
+		<Unit filename="..\..\source\as_objecttype.cpp" />
+		<Unit filename="..\..\source\as_objecttype.h" />
+		<Unit filename="..\..\source\as_outputbuffer.cpp" />
+		<Unit filename="..\..\source\as_outputbuffer.h" />
+		<Unit filename="..\..\source\as_parser.cpp" />
+		<Unit filename="..\..\source\as_parser.h" />
+		<Unit filename="..\..\source\as_property.h" />
+		<Unit filename="..\..\source\as_restore.cpp" />
+		<Unit filename="..\..\source\as_restore.h" />
+		<Unit filename="..\..\source\as_scriptcode.cpp" />
+		<Unit filename="..\..\source\as_scriptcode.h" />
+		<Unit filename="..\..\source\as_scriptengine.cpp" />
+		<Unit filename="..\..\source\as_scriptengine.h" />
+		<Unit filename="..\..\source\as_scriptfunction.cpp" />
+		<Unit filename="..\..\source\as_scriptfunction.h" />
+		<Unit filename="..\..\source\as_scriptnode.cpp" />
+		<Unit filename="..\..\source\as_scriptnode.h" />
+		<Unit filename="..\..\source\as_scriptobject.cpp" />
+		<Unit filename="..\..\source\as_scriptobject.h" />
+		<Unit filename="..\..\source\as_string.cpp" />
+		<Unit filename="..\..\source\as_string.h" />
+		<Unit filename="..\..\source\as_string_util.cpp" />
+		<Unit filename="..\..\source\as_string_util.h" />
+		<Unit filename="..\..\source\as_structs.h" />
+		<Unit filename="..\..\source\as_texts.h" />
+		<Unit filename="..\..\source\as_thread.cpp" />
+		<Unit filename="..\..\source\as_thread.h" />
+		<Unit filename="..\..\source\as_tokendef.h" />
+		<Unit filename="..\..\source\as_tokenizer.cpp" />
+		<Unit filename="..\..\source\as_tokenizer.h" />
+		<Unit filename="..\..\source\as_typeinfo.cpp" />
+		<Unit filename="..\..\source\as_typeinfo.h" />
+		<Unit filename="..\..\source\as_variablescope.cpp" />
+		<Unit filename="..\..\source\as_variablescope.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

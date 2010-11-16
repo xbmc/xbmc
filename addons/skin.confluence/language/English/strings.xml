@@ -69,20 +69,23 @@
   <string id="31116"></string>
   <string id="31117">Show Recently added Videos</string>
   <string id="31118">Home Page Programs Submenu</string>
-  <string id="31119">Enable Custom Add-on Button</string>
+  <string id="31119"></string>  <!-- blanked 2010-11-12 -->
   <string id="31120">BUTTON LABEL</string>
-  <string id="31121">PATH TO ADD-ON</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
   <string id="31122">Weather Page</string>
   <string id="31123">Use "Posters" instead of "Banners" for TV Shows</string>
   <string id="31124">Show Background "Now Playing" Video</string>
   <string id="31125">Show Background "Now Playing" Visualization</string>
 
-  <string id="31126">Enable Lyrics in Music OSD</string>
-  <string id="31127">PATH TO LYRICS ADD-ON</string>
+  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
   <string id="31128">Lyrics</string>
-  <string id="31129">Enable Subtitle Download in Video OSD</string>
-  <string id="31130">PATH TO SUBTITLE ADD-ON</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+  
   <string id="31131">Use Horizontal Home Menu</string>
+  <string id="31132">Lyrics Add-on</string>
+  <string id="31133">Subtitle Add-on</string>
 
   <string id="31140">Music OSD</string>
   <string id="31141">Video OSD</string>

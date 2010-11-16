@@ -37,6 +37,10 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
 
+  virtual void SetTotalTime(__int64 totaltime)
+  {
+    m_TotalTime = totaltime*1000;
+  }
 private:
   DllSidplay2 m_dll;
   void* m_sid;

@@ -30,6 +30,7 @@ namespace XFILE
       CFTPDirectory(void);
       virtual ~CFTPDirectory(void);
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool Exists(const char* strPath);
     private:
   };
 }

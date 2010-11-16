@@ -59,6 +59,7 @@ public:
 
   virtual bool          Delete(const CURL& url);
   virtual bool          Exists(const CURL& url);
+  virtual int           GetChunkSize() {return 1;};
 
   virtual ILiveTVInterface* GetLiveTV() {return (ILiveTVInterface*)this;}
 

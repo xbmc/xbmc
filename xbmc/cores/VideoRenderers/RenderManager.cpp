@@ -129,7 +129,8 @@ static double wrap(double x, double minimum, double maximum)
 
 void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
-  int fps = g_VideoReferenceClock.GetRefreshRate();
+  double frametime;
+  int fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
   if(fps <= 0)
   {
     /* smooth video not enabled */
@@ -138,8 +139,6 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   }
 
   bool ismaster = CDVDClock::IsMasterClock();
-
-  double frametime = g_VideoReferenceClock.GetSpeed() / fps;
 
   //the videoreferenceclock updates its clock on every vertical blank
   //we want every frame's presenttime to end up in the middle of two vblanks

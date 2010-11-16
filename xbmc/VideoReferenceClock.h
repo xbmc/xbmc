@@ -64,7 +64,7 @@ class CVideoReferenceClock : public CThread
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
-    int     GetRefreshRate();
+    int     GetRefreshRate(double* interval = NULL);
     int64_t Wait(int64_t Target);
     bool    WaitStarted(int MSecs);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
@@ -82,7 +82,8 @@ class CVideoReferenceClock : public CThread
     int64_t TimeOfNextVblank();
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
-    int64_t m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
+    double  m_CurrTimeFract;     //fractional part that is lost due to rounding when updating the clock
+    double  m_ClockSpeed;        //the frequency of the clock set by dvdplayer
     int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
     int64_t m_LastRefreshTime;   //last time we updated the refreshrate
     int64_t m_SystemFrequency;   //frequency of the systemclock

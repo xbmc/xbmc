@@ -199,50 +199,50 @@
 		<control type="button" id="90151">
 			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton1_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton1))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton1_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton1) + !IsEmpty(Skin.String(HomeScriptButton1_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton1)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton1))</visible>
 		</control>
 		<control type="button" id="90152">
-			<description>Button2</description>
+			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton2_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton2))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton2_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton2) + !IsEmpty(Skin.String(HomeScriptButton2_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton2)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton2))</visible>
 		</control>
 		<control type="button" id="90153">
-			<description>Button3</description>
+			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton3_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton3))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton3_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton3) + !IsEmpty(Skin.String(HomeScriptButton3_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton3)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton3))</visible>
 		</control>
 		<control type="button" id="90154">
-			<description>Button4</description>
+			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton4_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton4))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton4_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton4) + !IsEmpty(Skin.String(HomeScriptButton4_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton4)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton4))</visible>
 		</control>
 		<control type="button" id="90155">
-			<description>Button5</description>
+			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton5_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton5))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton5_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton5) + !IsEmpty(Skin.String(HomeScriptButton5_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton5)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton5))</visible>
 		</control>
 		<control type="button" id="90156">
-			<description>Button6</description>
+			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
-			<label>$INFO[Skin.String(HomeScriptButton6_label)]</label>
+			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton6))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeScriptButton6_Path)])</onclick>
-			<visible>Skin.HasSetting(HomeScriptButton6) + !IsEmpty(Skin.String(HomeScriptButton6_label))</visible>
+			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton6)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeProgramButton6))</visible>
 		</control>
 	</include>
 	<include name="HomeSubMenuMovies">

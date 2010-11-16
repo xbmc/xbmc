@@ -268,3 +268,10 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   return true;
 }
+
+bool CDAVDirectory::Exists(const char* strPath)
+{
+  CFileCurl dav;
+  CURL url(strPath);
+  return dav.Exists(url);
+}

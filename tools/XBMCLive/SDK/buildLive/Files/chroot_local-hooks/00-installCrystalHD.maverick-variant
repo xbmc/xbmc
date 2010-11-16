@@ -1,0 +1,101 @@
+#!/bin/bash
+
+#      Copyright (C) 2005-2008 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+echo ""
+echo "Building CrystalHD drivers..."
+echo ""
+
+apt-get -y install g++ autoconf
+
+#
+if [ ! -f /etc/mtab ]; then
+	ln -s /proc/mounts /etc/mtab
+fi
+
+cd /root
+pushd .
+
+if [ ! -f crystalhd.tar ]; then
+	exit
+fi
+
+tar xf crystalhd.tar > /dev/null
+
+# Make libraries
+cd crystalhd/linux_lib/libcrystalhd
+make
+
+# Output is 
+# lrwxrwxrwx libcrystalhd.so -> libcrystalhd.so.1.0
+# lrwxrwxrwx libcrystalhd.so.1 -> libcrystalhd.so.1.0
+# -rwxr-xr-x libcrystalhd.so.1.0
+
+popd 
+
+cp crystalhd/firmware/fwbin/70012/*.bin /lib/firmware
+cp crystalhd/firmware/fwbin/70015/*.bin /lib/firmware
+
+mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* /usr/lib
+
+pushd .
+
+# Assuming only one kernel is installed!
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
+
+apt-get -y install linux-headers-$kernelVersion
+
+# Make kernel module
+cd crystalhd/driver/linux
+autoconf
+./configure --with-kernel-path=$modulesdir/build
+make
+
+# Output is 
+# -rw-r--r-- crystalhd.ko
+
+cp crystalhd.ko /tmp
+popd
+
+pushd .
+cd $modulesdir
+mkdir -p kernel/drivers/video/broadcom
+
+cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
+rm /tmp/crystalhd.ko 
+depmod $kernelVersion
+popd
+
+pushd .
+mkdir -p /etc/udev/rules.d/
+cp -f crystalhd/driver/linux/20-crystalhd.rules /etc/udev/rules.d/
+mkdir -p /lib/udev/rules.d/
+cp -f crystalhd/driver/linux/20-crystalhd.rules /lib/udev/rules.d/
+popd
+
+rm -rf crystalhd
+
+pushd .
+
+rm /root/crystalhd.tar
+
+apt-get -y remove g++ autoconf
+apt-get -y autoremove
+

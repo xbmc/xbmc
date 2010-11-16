@@ -268,13 +268,10 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
       return false;
     }
 
-    if (m_flags & READ_BUFFERED)
+    if (m_pFile->GetChunkSize() && !(m_flags & READ_CHUNKED))
     {
-      if (m_pFile->GetChunkSize())
-      {
-        m_pBuffer = new CFileStreamBuffer(0);
-        m_pBuffer->Attach(m_pFile);
-      }
+      m_pBuffer = new CFileStreamBuffer(0);
+      m_pBuffer->Attach(m_pFile);
     }
 
     if (m_flags & READ_BITRATE)
@@ -790,9 +787,7 @@ void CFileStreamBuffer::Attach(IFile *file)
 {
   m_file = file;
 
-  m_frontsize = m_file->GetChunkSize();
-  if(!m_frontsize)
-    m_frontsize = 1024;
+  m_frontsize = CFile::GetChunkSize(m_file->GetChunkSize(), 64*1024);
 
   m_buffer = new char[m_frontsize+m_backsize];
   setg(0,0,0);

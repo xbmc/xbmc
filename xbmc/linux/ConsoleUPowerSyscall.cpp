@@ -37,10 +37,15 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
   // TODO: do not use dbus_connection_pop_message() that requires the use of a
   // private connection
   m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
-  dbus_connection_set_exit_on_disconnect(m_connection, false);
 
-  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower'", &m_error);
-  dbus_connection_flush(m_connection);
+  if (m_connection)
+  {
+    dbus_connection_set_exit_on_disconnect(m_connection, false);
+
+    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower'", &m_error);
+    dbus_connection_flush(m_connection);
+  }
+
   if (dbus_error_is_set(&m_error))
   {
     CLog::Log(LOGERROR, "UPower: Failed to attach to signal %s", m_error.message);
@@ -124,6 +129,13 @@ bool CConsoleUPowerSyscall::HasDeviceConsoleKit()
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+
+  if (dbus_error_is_set(&error))
+  {
+    CLog::Log(LOGDEBUG, "ConsoleUPowerSyscall: %s - %s", error.name, error.message);
+    dbus_error_free(&error);
+    return false;
+  }
 
   consoleKitMessage.Send(con, &error);
 

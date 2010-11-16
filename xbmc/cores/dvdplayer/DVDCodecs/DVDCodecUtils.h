@@ -39,5 +39,7 @@ public:
   static bool CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture *pSrc);
 
   static bool IsVP3CompatibleWidth(int width);
+
+  static double NormalizeFrameduration(double frameduration);
 };
 

@@ -675,13 +675,16 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString path(item->m_strPath);
       CQueryParams params;
       CDirectoryNode::GetDatabaseInfo(item->m_strPath, params);
+      CONTENT_TYPE content = CONTENT_ALBUMS;
       if (params.GetAlbumId() != -1)
         path.Format("musicdb://3/%i/",params.GetAlbumId());
       else if (params.GetArtistId() != -1)
+      {
         path.Format("musicdb://2/%i/",params.GetArtistId());
+        content = CONTENT_ARTISTS;
+      }
 
-      CONTENT_TYPE content = CONTENT_ALBUMS;
-      if (m_vecItems->m_strPath.Left(12).Equals("musicdb://1/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
+      if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))
       {
         content = CONTENT_ARTISTS;
       }

@@ -22,6 +22,7 @@
 #include "Util.h"
 #include "DVDTSCorrection.h"
 #include "DVDClock.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
@@ -306,27 +307,8 @@ double CPullupCorrection::CalcFrameDuration()
 
     frameduration /= m_pattern.size();
 
-    //if the calculated duration is within 20 microseconds of a common duration, use that
-    const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
-                                DVD_TIME_BASE * 1.001 / 30.0, DVD_TIME_BASE / 30.0, DVD_TIME_BASE / 50.0,
-                                DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
-
-    double lowestdiff = DVD_TIME_BASE;
-    int    selected     = -1;
-    for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
-    {
-      double diff = fabs(frameduration - durations[i]);
-      if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
-      {
-        selected = i;
-        lowestdiff = diff;
-      }
-    }
-
-    if (selected != -1)
-      return durations[selected];
-    else
-      return frameduration;
+    //frameduration is not completely correct, use a common one if it's close
+    return CDVDCodecUtils::NormalizeFrameduration(frameduration);
   }
 
   return DVD_NOPTS_VALUE;

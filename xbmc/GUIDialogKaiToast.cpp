@@ -72,7 +72,7 @@ void CGUIDialogKaiToast::OnWindowLoaded()
     m_defaultIcon = image->GetFileName();
 }
 
-void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/)
+void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   CGUIImage *image    = NULL;
 
@@ -87,7 +87,7 @@ void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString&
   if (image)
     strImage = image->GetFileName();
 
-  QueueNotification(strImage, aCaption, aDescription, displayTime, withSound);
+  QueueNotification(strImage, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
@@ -95,7 +95,7 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CSt
   QueueNotification("", aCaption, aDescription);
 }
 
-void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/)
+void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
   CSingleLock lock(m_critical);
 
@@ -104,6 +104,7 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const C
   toast.caption = aCaption;
   toast.description = aDescription;
   toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
+  toast.messageTime = messageTime;
   toast.withSound = withSound;
 
   m_notifications.push(toast);
@@ -114,13 +115,14 @@ bool CGUIDialogKaiToast::DoWork()
   CSingleLock lock(m_critical);
 
   if (m_notifications.size() > 0 &&
-      CTimeUtils::GetFrameTime() - m_timer > TOAST_MESSAGE_TIME)
+      CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
   {
     Notification toast = m_notifications.front();
     m_notifications.pop();
     lock.Leave();
 
     m_toastDisplayTime = toast.displayTime;
+    m_toastMessageTime = toast.messageTime;
 
     CSingleLock lock2(g_graphicsContext);
 

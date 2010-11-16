@@ -20,6 +20,7 @@
  */
 
 #include "DVDCodecUtils.h"
+#include "DVDClock.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
@@ -254,9 +255,9 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
       {
         // Perform the scaling.
         uint8_t* src[] =       { pSrc->data[0],          pSrc->data[1],      pSrc->data[2],      NULL };
-        int      srcStride[] = { pSrc->iLineSize[0],     pSrc->iLineSize[1], pSrc->iLineSize[2], NULL };
+        int      srcStride[] = { pSrc->iLineSize[0],     pSrc->iLineSize[1], pSrc->iLineSize[2], 0    };
         uint8_t* dst[] =       { pPicture->data[0],      NULL,               NULL,               NULL };
-        int      dstStride[] = { pPicture->iLineSize[0], NULL,               NULL,               NULL };
+        int      dstStride[] = { pPicture->iLineSize[0], 0,                  0,                  0    };
 
         int dstformat;
         if (format == DVDVideoPicture::FMT_UYVY)
@@ -364,3 +365,29 @@ bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
   }
   return true;
 }
+
+double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
+{
+  //if the duration is within 20 microseconds of a common duration, use that
+  const double durations[] = {DVD_TIME_BASE * 1.001 / 24.0, DVD_TIME_BASE / 24.0, DVD_TIME_BASE / 25.0,
+                              DVD_TIME_BASE * 1.001 / 30.0, DVD_TIME_BASE / 30.0, DVD_TIME_BASE / 50.0,
+                              DVD_TIME_BASE * 1.001 / 60.0, DVD_TIME_BASE / 60.0};
+
+  double lowestdiff = DVD_TIME_BASE;
+  int    selected   = -1;
+  for (size_t i = 0; i < sizeof(durations) / sizeof(durations[0]); i++)
+  {
+    double diff = fabs(frameduration - durations[i]);
+    if (diff < DVD_MSEC_TO_TIME(0.02) && diff < lowestdiff)
+    {
+      selected = i;
+      lowestdiff = diff;
+    }
+  }
+
+  if (selected != -1)
+    return durations[selected];
+  else
+    return frameduration;
+}
+

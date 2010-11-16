@@ -7,7 +7,34 @@ endif
 
 CXXFLAGS+=-fPIC #-DHAS_SDL
 
-SRCS=ConvUtils.cpp XEventUtils.cpp XFileUtils.cpp XHandle.cpp XSyncUtils.cpp XTimeUtils.cpp XMemUtils.cpp XThreadUtils.cpp NetworkLinux.cpp LinuxResourceCounter.cpp LinuxTimezone.cpp XRandR.cpp XCriticalSection.cpp XLCDproc.cpp HALManager.cpp HALPowerSyscall.cpp ConsoleDeviceKitPowerSyscall.cpp DBusUtil.cpp DBusMessage.cpp ZeroconfAvahi.cpp ZeroconfBrowserAvahi.cpp HALProvider.cpp PosixMountProvider.cpp DeviceKitDisksProvider.cpp UDisksProvider.cpp ConsoleUPowerSyscall.cpp
+SRCS=ConvUtils.cpp \
+     ConsoleDeviceKitPowerSyscall.cpp \
+     ConsoleUPowerSyscall.cpp \
+     DeviceKitDisksProvider.cpp \
+     DBusUtil.cpp \
+     DBusMessage.cpp \
+     DBusReserve.cpp \
+     HALManager.cpp \
+     HALPowerSyscall.cpp \
+     HALProvider.cpp \
+     LinuxResourceCounter.cpp \
+     LinuxTimezone.cpp \
+     NetworkLinux.cpp \
+     PosixMountProvider.cpp \
+     UDisksProvider.cpp \
+     XCriticalSection.cpp \
+     XEventUtils.cpp \
+     XFileUtils.cpp \
+     XHandle.cpp \
+     XLCDproc.cpp \
+     XMemUtils.cpp \
+     XSyncUtils.cpp \
+     XTimeUtils.cpp \
+     XThreadUtils.cpp \
+     XRandR.cpp \
+     ZeroconfAvahi.cpp \
+     ZeroconfBrowserAvahi.cpp \
+
 
 LIB=linux.a
 

@@ -71,7 +71,7 @@ extern "C"
     if (!info->f)
     {
       free(info);
-      return NULL;
+      return 0;
     }
 
     int iResult = getwavinfo(info);
@@ -79,7 +79,7 @@ extern "C"
     {
       fclose(info->f);
       free(info);
-      return NULL;
+      return 0;
     }
 
     info->szBuf = (char*)malloc(XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4);

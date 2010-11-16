@@ -223,7 +223,7 @@ void CGUIMultiImage::LoadDirectory()
     // Load in our images from the directory specified
     // m_currentPath is relative (as are all skin paths)
     CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
-    if (realPath.IsEmpty())
+    if (realPath.IsEmpty() && m_files.empty())
       return;
 
     CUtil::AddSlashAtEnd(realPath);

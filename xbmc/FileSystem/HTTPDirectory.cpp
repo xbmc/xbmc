@@ -122,3 +122,10 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   return true;
 }
+
+bool CHTTPDirectory::Exists(const char* strPath)
+{
+  CFileCurl http;
+  CURL url(strPath);
+  return http.Exists(url);
+}

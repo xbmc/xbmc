@@ -835,14 +835,11 @@ bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte
         if ( pContext->m_dwCircBuffBegin >= CIRC_BUFFER_SIZE )
           pContext->m_dwCircBuffBegin -= CIRC_BUFFER_SIZE;
         pContext->m_dwCircBuffSectorStart++;
-        SectorsInCircBuff--;
       }
       else
       {
         pContext->m_dwCircBuffBegin = pContext->m_dwCircBuffEnd = 0;
         pContext->m_dwCircBuffSectorStart = 0;
-        SectorsInCircBuff = 0;
-        SectorIsAdjacentInBuffer = 0;
       }
     }
     // Ok, we're ready to read the sector into the cache

@@ -68,7 +68,7 @@
   <string id="31114">Mai multe imagini</string>
   <string id="31115">Personalizator</string>
   <string id="31116"></string>
-  <string id="31117">Arată filme adăugate recent</string>
+  <string id="31117">Arată filme și episoade adăugate recent</string>
   <string id="31118">Submeniu programe pagină inițială</string>
   <string id="31119">Activează buton supliment personalizat</string>
   <string id="31120">ETICHETĂ BUTON</string>
@@ -77,7 +77,7 @@
   <string id="31123">Folosește „Afișe” în loc de „Bannere” pentru seriale</string>
   <string id="31124">Arată video „În redare” pe fundal</string>
   <string id="31125">Arată vizualizare „În redare” pe fundal</string>
-  <string id="31126">Activează versuri în meniul audio</string>
+  <string id="31126">Activează descărcare versuri în meniul audio</string>
   <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
   <string id="31128">Versuri</string>
   <string id="31129">Activează descărcare subtitrări în meniul video</string>
@@ -108,8 +108,8 @@
   <string id="31309">Utilizare memorie:</string>
   <string id="31310">Număr pistă</string>
   <string id="31311">Imagine Fanart indisponibilă[CR][CR]Clic pe buton pentru setare</string>
-  <string id="31312">Scraper curent</string>
-  <string id="31313">Alegeți un scraper</string>
+  <string id="31312">Catalog curent</string>
+  <string id="31313">Alegeți un catalog (scraper)</string>
   <string id="31314">Opțiuni de scanare conținut</string>
   <string id="31315">De bază</string>
   <string id="31316"></string>
@@ -143,8 +143,8 @@
   <string id="31392">Cu Arial la bază</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGURAȚI SETĂRI ASPECT[/B][CR][CR]Schimbați costumul · Alegeți limbă și regiune · Modificați opțiuni de listare fișiere[CR]Alegeți un ecran de veghe</string>
-  <string id="31401">[B]CONFIGURAȚI SETĂRI VIDEO[/B][CR][CR]Administrați videoteca · Setați opțiuni redare video · Modificați opțiuni de listare filme[CR]Alegeți font subtitrare</string>
+  <string id="31400">[B]CONFIGURAȚI SETĂRI ASPECT[/B][CR][CR]Schimbați costumul · Alegeți limbă și regiune · Modificați opțiuni de listare fișiere[CR]Alegeți protector ecran</string>
+  <string id="31401">[B]CONFIGURAȚI SETĂRI VIDEO[/B][CR][CR]Administrați videoteca · Setați opțiuni redare video · Modificați opțiuni de listare video[CR]Alegeți font subtitrare</string>
   <string id="31402">[B]CONFIGURAȚI SETĂRI MUZICĂ[/B][CR][CR]Administrați fonoteca · Setați opțiuni redare muzică · Modificați opțiuni de listare muzică[CR]Pregătiți trimitere cântec · Setați opțiuni karaoke</string>
   <string id="31403">[B]CONFIGURAȚI SETĂRI IMAGINE[/B][CR][CR]Modificați opțiuni de listare imagini · Configurați prezentare diapozitive</string>
   <string id="31404">[B]CONFIGURAȚI SETĂRI VREME[/B][CR][CR]Alegeți trei orașe pentru care se obțin informații meteo</string>

@@ -415,7 +415,7 @@ bool CPlayListPlayer::Repeated(int iPlaylist) const
 
 bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
 {
-  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+  if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_VIDEO)
     return (m_repeatState[iPlaylist] == REPEAT_ONE);
   return false;
 }
@@ -462,10 +462,9 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist) const
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     return false;
 
-  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
-  {
+  if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_VIDEO)
     return GetPlaylist(iPlaylist).IsShuffled();
-  }
+
   return false;
 }
 
@@ -483,7 +482,7 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
 
 REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
 {
-  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+  if (iPlaylist == PLAYLIST_MUSIC || iPlaylist == PLAYLIST_VIDEO)
     return m_repeatState[iPlaylist];
   return REPEAT_NONE;
 }
@@ -529,7 +528,7 @@ void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
 
 void CPlayListPlayer::Add(int iPlaylist, const CFileItemPtr &pItem)
 {
-  if (iPlaylist < PLAYLIST_MUSIC || iPlaylist > PLAYLIST_VIDEO)
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();

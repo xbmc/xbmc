@@ -48,8 +48,6 @@ goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
-faac_not_found="== Could not find libfaac. FAAC support disabled. =="
-faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
 hal_not_found="== Could not find hal. HAL support disabled. =="
@@ -208,12 +206,6 @@ AC_ARG_ENABLE([ffmpeg_libvorbis],
   [enable FFmpeg vorbis encoding (default is no)])],
   [use_ffmpeg_libvorbis=$enableval],
   [use_ffmpeg_libvorbis=no])
-
-AC_ARG_ENABLE([faac],
-  [AS_HELP_STRING([--enable-faac],
-  [enable FAAC support (default is yes)])],
-  [use_faac=$enableval],
-  [use_faac=yes])
 
 AC_ARG_ENABLE([dvdcss],
   [AS_HELP_STRING([--enable-dvdcss],
@@ -713,19 +705,6 @@ else
   AC_MSG_RESULT($pulse_disabled)
 fi
 
-# FAAC
-if test "$host_vendor" = "apple" ; then
-  use_faac="no"
-  AC_MSG_RESULT($faac_disabled)
-else
-  if test "$use_faac" = "yes"; then
-    AC_CHECK_LIB([faac], [main],,
-      use_faac=no;AC_MSG_RESULT($faac_not_found))
-  else
-    AC_MSG_RESULT($faac_disabled)
-  fi
-fi
-
 # HAL
 if test "$host_vendor" = "apple" ; then
   use_hal="no"
@@ -1223,8 +1202,10 @@ else
 fi
 
 if test "x$use_pulse" != "xno"; then
+  XBMC_STANDALONE_SH_PULSE=tools/Linux/xbmc-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
 else
+  XBMC_STANDALONE_SH_PULSE=/dev/null
   final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
@@ -1232,12 +1213,6 @@ if test "$use_hal" = "yes"; then
   final_message="$final_message\n  HAL Support:\tYes"
 else
   final_message="$final_message\n  HAL Support:\tNo"
-fi
-
-if test "$use_faac" = "yes"; then
-  final_message="$final_message\n  FAAC:\t\tYes"
-else
-  final_message="$final_message\n  FAAC:\t\tNo"
 fi
 
 # DVDCSS
@@ -1391,6 +1366,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/paplayer/timidity/Makefile \
     xbmc/cores/paplayer/AC3Codec/Makefile \
     xbmc/cores/paplayer/ADPCMCodec/Makefile \
+    xbmc/cores/paplayer/asap/Makefile \
     xbmc/cores/paplayer/NSFCodec/Makefile \
     xbmc/cores/paplayer/SIDCodec/Makefile \
     xbmc/cores/paplayer/vgmstream/Makefile \
@@ -1426,6 +1402,7 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/iTunes/Makefile \
     xbmc/FileSystem/Makefile \
     tools/Linux/xbmc.sh \
+    tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile"
 
@@ -1482,6 +1459,7 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

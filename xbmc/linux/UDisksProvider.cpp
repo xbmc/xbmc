@@ -178,10 +178,15 @@ CUDisksProvider::CUDisksProvider()
   // TODO: do not use dbus_connection_pop_message() that requires the use of a
   // private connection
   m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
-  dbus_connection_set_exit_on_disconnect(m_connection, false);
 
-  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", &m_error);
-  dbus_connection_flush(m_connection);
+  if (m_connection)
+  {
+    dbus_connection_set_exit_on_disconnect(m_connection, false);
+
+    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", &m_error);
+    dbus_connection_flush(m_connection);
+  }
+
   if (dbus_error_is_set(&m_error))
   {
     CLog::Log(LOGERROR, "UDisks: Failed to attach to signal %s", m_error.message);
@@ -292,10 +297,9 @@ bool CUDisksProvider::HasUDisks()
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-  if (!con)
-    return false;
 
-  message.Send(con, &error);
+  if (con)
+    message.Send(con, &error);
 
   if (!dbus_error_is_set(&error))
     hasUDisks = true;
@@ -303,7 +307,8 @@ bool CUDisksProvider::HasUDisks()
     CLog::Log(LOGDEBUG, "UDisks: %s - %s", error.name, error.message);
 
   dbus_error_free (&error);
-  dbus_connection_unref(con);
+  if (con)
+    dbus_connection_unref(con);
 
   return hasUDisks;
 }

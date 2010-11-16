@@ -239,11 +239,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
 bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type,
                                     const CStdString& filter)
 {
-  cmyth_conn_t control = m_session->GetControl();
-  if (!control)
-    return false;
-
-  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  cmyth_proglist_t list = m_session->GetAllRecordedPrograms();
   if (!list)
   {
     CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
@@ -339,7 +335,6 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
   }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
-  m_dll->ref_release(list);
   return true;
 }
 
@@ -348,11 +343,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
  */
 bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &items)
 {
-  cmyth_conn_t control = m_session->GetControl();
-  if (!control)
-    return false;
-
-  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  cmyth_proglist_t list = m_session->GetAllRecordedPrograms();
   if (!list)
   {
     CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
@@ -408,7 +399,6 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
     items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("", "", "%L", "%J"));
 
-  m_dll->ref_release(list);
   return true;
 }
 

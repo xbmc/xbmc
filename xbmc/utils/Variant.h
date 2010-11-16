@@ -24,6 +24,13 @@
 #include <string>
 #include <stdint.h>
 
+namespace Json
+{
+  class Value;
+}
+
+class ISerializable;
+
 class CVariant
 {
 public:
@@ -33,6 +40,7 @@ public:
     VariantTypeUnsignedInteger,
     VariantTypeBoolean,
     VariantTypeString,
+    VariantTypeFloat,
     VariantTypeArray,
     VariantTypeObject,
     VariantTypeNull,
@@ -44,10 +52,12 @@ public:
   CVariant(int64_t integer);
   CVariant(unsigned int unsignedinteger);
   CVariant(uint64_t unsignedinteger);
+  CVariant(float fFloat);
   CVariant(bool boolean);
   CVariant(const char *str);
   CVariant(const std::string &str);
   CVariant(const CVariant &variant);
+  CVariant(ISerializable& serializable);
 
   ~CVariant();
 
@@ -55,6 +65,7 @@ public:
   bool isUnsignedInteger() const;
   bool isBoolean() const;
   bool isString() const;
+  bool isFloat() const;
   bool isArray() const;
   bool isObject() const;
   bool isNull() const;
@@ -63,11 +74,13 @@ public:
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
   const char *asString(const char *fallback = "") const;
+  float asFloat(float fallback = 0.0f) const;
 
   CVariant &operator[](std::string key);
   CVariant &operator[](unsigned int position);
 
   CVariant &operator=(const CVariant &rhs);
+  CVariant &operator=(ISerializable& rhs);
 
   void push_back(CVariant variant);
 
@@ -79,6 +92,8 @@ public:
 
   void debug();
   void internaldebug();
+
+  void toJsonValue(Json::Value& value);
 private:
   VariantType m_type;
 
@@ -90,6 +105,7 @@ private:
     int64_t integer;
     uint64_t unsignedinteger;
     bool boolean;
+    float fFloat;
     std::string *string;
     VariantArray *array;
     VariantMap *map;

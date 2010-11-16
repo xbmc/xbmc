@@ -68,11 +68,9 @@ public:
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
 
   std::vector<CStdString> getCharsetLabels();
-  CStdString& getCharsetLabelByName(const CStdString& charsetName);
-#ifdef _WIN32
+  CStdString getCharsetLabelByName(const CStdString& charsetName);
+  CStdString getCharsetNameByLabel(const CStdString& charsetLabel);
   int getCharsetIdByName(const CStdString& charsetName);
-#endif
-  CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   bool isBidiCharset(const CStdString& charset);
 
   void unknownToUTF8(CStdStringA &sourceDest);
@@ -80,9 +78,6 @@ public:
 
   void toW(const CStdStringA& source, CStdStringW& dest, const CStdStringA& enc);
   void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
-
-private:
-  CStdString EMPTY;
 };
 
 extern CCharsetConverter g_charsetConverter;

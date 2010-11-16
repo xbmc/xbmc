@@ -24,6 +24,7 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
+#include "utils/Variant.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -368,10 +369,18 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       break;
+//    case XBMC_KEYDOWN:
+//    case XBMC_KEYUP:
+//      g_Keyboard.HandleEvent(newEvent);
+//      g_application.ProcessKeyboard();
+//      break;
+// New key handling code added in preparation for the major overhaul
+// of the keyboard handling
     case XBMC_KEYDOWN:
+      g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
+      break;
     case XBMC_KEYUP:
-      g_Keyboard.HandleEvent(newEvent);
-      g_application.ProcessKeyboard();
+      g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
@@ -1005,8 +1014,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(
-      m_dpms->IsSupported());
+  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
@@ -1101,13 +1109,10 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   // Make sure we have at least the default skin
-  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
+  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
   {
-    if (!LoadSkin(DEFAULT_SKIN))
-    {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
       FatalErrorHandler(true, true, true);
-    }
   }
 
   SAFE_DELETE(m_splash);
@@ -1121,13 +1126,9 @@ bool CApplication::Initialize()
 
   // check if we should use the login screen
   if (g_settings.UsingLoginScreen())
-  {
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-  }
   else
-  {
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-  }
 
   g_sysinfo.Refresh();
 
@@ -2362,10 +2363,7 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    //when in standalone mode, don't allow switching from fullscreen to windowed with the \ key
-    if (!g_application.IsStandAlone() || (g_application.IsStandAlone() && !g_graphicsContext.IsFullScreenRoot()))
-      g_graphicsContext.ToggleFullScreenRoot();
-
+    g_graphicsContext.ToggleFullScreenRoot();
     return true;
   }
 
@@ -3938,7 +3936,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
+  CVariant param;
+  param["speed"] = iSpeed;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", &param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3957,7 +3957,10 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
+  CVariant param;
+  param["time"] = iTime;
+  param["seekoffset"] = seekOffset;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", &param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3977,7 +3980,9 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
+  CVariant param;
+  param["chapter"] = iChapter;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", &param);
 }
 
 bool CApplication::IsPlaying() const

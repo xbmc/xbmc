@@ -477,3 +477,11 @@ void SSortFileItem::ByBitrate(CFileItemPtr &item)
   label.Format("%"PRId64, item->m_dwSize);
   item->SetSortLabel(label);
 }
+
+void SSortFileItem::ByListeners(CFileItemPtr &item)
+{
+  if (!item) return;
+  CStdString label;
+  label.Format("%i", item->GetMusicInfoTag()->GetListeners());
+  item->SetSortLabel(label);
+}

@@ -2123,6 +2123,10 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
 {
   if (NULL == m_pDB.get()) return ERROR_DATABASE;
   if (NULL == m_pDS.get()) return ERROR_DATABASE;
+
+  unsigned int time = CTimeUtils::GetTimeMS();
+  CLog::Log(LOGNOTICE, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
+
   // first cleanup any songs with invalid paths
   pDlgProgress->SetHeading(700);
   pDlgProgress->SetLine(0, "");
@@ -2185,6 +2189,10 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
   pDlgProgress->SetLine(1, 331);
   pDlgProgress->SetPercentage(100);
   pDlgProgress->Progress();
+
+  time = CTimeUtils::GetTimeMS() - time;
+  CLog::Log(LOGNOTICE, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
+
   if (!Compress(false))
   {
     return ERROR_COMPRESSING;

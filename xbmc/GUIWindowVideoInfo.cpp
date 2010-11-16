@@ -461,6 +461,9 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
   CFileItemList items;
   DoSearch(strSearch, items);
 
+  if (m_dlgProgress)
+    m_dlgProgress->Close();
+
   if (items.Size())
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -477,21 +480,16 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)
-    {
-      if (m_dlgProgress) m_dlgProgress->Close();
-      return ;
-    }
+      return;
 
     CFileItem* pSelItem = new CFileItem(*items[iItem]);
 
     OnSearchItemFound(pSelItem);
 
     delete pSelItem;
-    if (m_dlgProgress) m_dlgProgress->Close();
   }
   else
   {
-    if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
 }

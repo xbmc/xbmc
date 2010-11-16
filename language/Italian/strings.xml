@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 09/16/2010-->
+<!--Date of translation: 11/07/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 33873-->
+<!--Based on english strings version 35193-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -544,6 +544,8 @@
   <string id="609">Il percorso CDDARip non è impostato</string>
   <string id="610">Rip traccia audio</string>
   <string id="611">Inserire numero</string>
+  <string id="612">Bit/Campionamento</string>
+  <string id="613">Frequenza Campionamento</string>
   <string id="620">CD Audio</string>
   <string id="621">Codificatore</string>
   <string id="622">Qualità</string>
@@ -721,7 +723,7 @@
   <string id="1042">Trovati %i di %i elementi</string>
   <string id="1043">Addon Programmi</string>
   <string id="1044">Imposta icona plugin</string>
-  <string id="1045">Impostazioni Addon</string>
+  <string id="1045">Impostazioni Add-on</string>
   <string id="1046">Access point</string>
   <string id="1047">Altro...</string>
   <string id="1048">- Nome utente</string>
@@ -977,6 +979,7 @@
   <string id="13013">Riavvia</string>
   <string id="13014">Riduci ad icona</string>
   <string id="13015">Comportamento tasto power</string>
+  <string id="13016">Spegni Sistema</string>
   <string id="13020">C'è un'altra sessione attiva, forse via SSH?</string>
   <string id="13021">Hard disk rimuovibile montato</string>
   <string id="13022">Rimozione insicura</string>
@@ -1216,6 +1219,10 @@
   <string id="13508">Alta</string>
   <string id="13509">Molto alta</string>
   <string id="13510">Sincronizza il suono all'immagine</string>
+  <string id="13550">Pausa durante il cambio di frequenza</string>
+  <string id="13551">Spento</string>
+  <string id="13552">%.1f Secondo</string>
+  <string id="13553">%.1f Secondi</string>
   <string id="13600">Telecomando Apple</string>
   <string id="13602">Permetti avvio di XBMC da telecomando</string>
   <string id="13603">Ritardo nella sequenza</string>
@@ -1667,6 +1674,7 @@
   <string id="20255">Primo login, edita il tuo profilo</string>
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
+  <string id="20258">Client Myth TV</string>
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
   <string id="20302">Impossibile scrivere nella cartella:</string>
@@ -1819,6 +1827,8 @@
   <string id="20451">Paesi</string>
   <string id="20452">episodio</string>
   <string id="20453">episodi</string>
+  <string id="20454">In Ascolto</string>
+  <string id="20455">In Ascolto</string>
   <string id="21330">Mostra i files e le cartelle nascoste</string>
   <string id="21331">TuxBox client</string>
   <string id="21332">ATTENZIONE: il dispositivo TuxBox è in modalità registrazione!</string>
@@ -2118,12 +2128,13 @@
   <string id="24096">Questo Add-on è segnalato non funzionante nel repository.</string>
   <string id="24097">Vuoi disabilitarlo nel tuo sistema?</string>
   <string id="24098">Non funzionante</string>
+  <string id="24099">Vuoi passare a questa skin?</string>
+  <string id="25000">Notifiche</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
   <string id="29802">Periferica Audio passthrough utilizzata</string>
   <string id="29999">
   </string>
-  <string id="30011">Durata della ricerca</string>
   <string id="33001">Qualità trailer</string>
   <string id="33002">Stream</string>
   <string id="33003">Scarica</string>
@@ -2134,6 +2145,7 @@
   <string id="33008">Salvataggio</string>
   <string id="33009">Copia</string>
   <string id="33010">Imposta directory download</string>
+  <string id="33011">Durata ricerca</string>
   <string id="33012">Breve</string>
   <string id="33013">Lungo</string>
   <string id="33014">Usa DVD player invece del player normale</string>

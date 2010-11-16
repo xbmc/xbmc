@@ -349,13 +349,15 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             CAddonMgr::Get().FindAddons();
             CAddonMgr::Get().GetAddon(addon->ID(),addon);
             ADDONDEPS deps = addon->GetDeps();
+            CStdString referer;
+            referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
             for (ADDONDEPS::iterator it  = deps.begin();
                                      it != deps.end();++it)
             {
               if (it->first.Equals("xbmc.metadata"))
                 continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
-                InstallAddon(it->first);
+                InstallAddon(it->first,false,referer);
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
@@ -365,7 +367,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                   addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24065),
-                                                  TOAST_DISPLAY_TIME,false);
+                                                  TOAST_DISPLAY_TIME,false,
+                                                  TOAST_DISPLAY_TIME);
             }
             else
             {
@@ -376,7 +379,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                    addon->Icon(),
                                                    addon->Name(),
                                                    g_localizeStrings.Get(24064),
-                                                   TOAST_DISPLAY_TIME,false);
+                                                   TOAST_DISPLAY_TIME,false,
+                                                   TOAST_DISPLAY_TIME);
             }
           }
           else
@@ -623,7 +627,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   return 0;
 }
 
-void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/)
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/, const CStdString &referer)
 {
   // check whether we already have the addon installed
   AddonPtr addon;
@@ -646,7 +650,14 @@ void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force 
     CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
     if (!window)
       return;
-    unsigned int jobID = window->AddJob(addon->Path());
+    CStdString path(addon->Path());
+    if (!referer.IsEmpty() && CUtil::IsInternetStream(path))
+    {
+      CURL url(path);
+      url.SetProtocolOptions(referer);
+      path = url.Get();
+    }
+    unsigned int jobID = window->AddJob(path);
     window->RegisterJob(addon->ID(), jobID, hash);
   }
 }

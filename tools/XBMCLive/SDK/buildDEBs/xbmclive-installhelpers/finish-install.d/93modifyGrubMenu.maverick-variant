@@ -1,0 +1,37 @@
+#!/bin/sh
+
+#      Copyright (C) 2005-2008 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+if [ -f /target/boot/grub/grub.cfg ]; then
+	# Modify /etc/default/grub on target
+
+	# Comment out defaults if not done already
+	sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT/' /target/etc/default/grub
+	sed -i -e 's/^GRUB_GFXMODE/#GRUB_GFXMODE/' /target/etc/default/grub
+	sed -i -e 's/^GRUB_GFXPAYLOAD_LINUX/#GRUB_GFXPAYLOAD_LINUX/' /target/etc/default/grub
+
+	# Set our own defaults
+	echo  >> /target/etc/default/grub
+	echo '# Defaults from XBMC Installation' >> /target/etc/default/grub
+	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount loglevel=0 video=vesafb"' >> /target/etc/default/grub
+	echo 'GRUB_GFXMODE="800x600"' >> /target/etc/default/grub
+	echo 'GRUB_GFXPAYLOAD_LINUX="800x600"' >> /target/etc/default/grub
+
+	in-target update-grub
+fi

@@ -550,6 +550,8 @@ namespace PYXBMC
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "listeners") == 0)
+         self->item->GetMusicInfoTag()->SetListeners(PyInt_AsLong(value));       
         else
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
@@ -660,6 +662,13 @@ namespace PYXBMC
     else if (lowerKey.CompareNoCase("mimetype") == 0)
     { // special case for mime type - don't actually stored in a property,
       self->item->SetMimeType(uText);
+    }
+    else if (lowerKey.CompareNoCase("specialsort") == 0)
+    {
+      if (uText == "bottom")
+        self->item->SetSpecialSort(SORT_ON_BOTTOM);
+      else if (uText == "top")
+        self->item->SetSpecialSort(SORT_ON_TOP);
     }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());

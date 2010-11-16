@@ -511,8 +511,7 @@ public:
 
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
-  void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
-  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
+  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
   void ImportFromXML(const CStdString &path);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;

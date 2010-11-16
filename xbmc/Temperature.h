@@ -22,7 +22,7 @@
 
 #include "utils/Archive.h"
 
-class CTemperature : public ISerializable
+class CTemperature : public IArchivable
 {
 public:
   CTemperature();
@@ -75,7 +75,7 @@ public:
   CTemperature operator ++(int);
   CTemperature operator --(int);
 
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
 
   typedef enum _STATE
   {

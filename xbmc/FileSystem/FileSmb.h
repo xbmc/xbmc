@@ -106,6 +106,7 @@ public:
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
+  virtual int  GetChunkSize() {return 1;}
 
 protected:
   CURL m_url;

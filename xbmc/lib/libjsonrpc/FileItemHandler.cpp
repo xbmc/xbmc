@@ -129,7 +129,7 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CS
     result["lyrics"] =  musicInfo->GetLyrics().c_str();
 
   if (field.Equals("rating"))
-    result["rating"] = (int)musicInfo->GetRating();
+    result["rating"] = (int)(musicInfo->GetRating() - '0');
 }
 
 void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
@@ -250,7 +250,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
   if (method.Equals("none"))
     sortmethod = SORT_METHOD_NONE;
   else if (method.Equals("label"))
-    sortmethod = ignorethe ? SORT_METHOD_LABEL : SORT_METHOD_LABEL_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_LABEL_IGNORE_THE : SORT_METHOD_LABEL;
   else if (method.Equals("date"))
     sortmethod = SORT_METHOD_DATE;
   else if (method.Equals("size"))
