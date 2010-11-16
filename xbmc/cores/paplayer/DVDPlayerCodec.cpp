@@ -130,7 +130,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint);
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, false);
   if (!m_pAudioCodec)
   {
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);

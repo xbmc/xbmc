@@ -289,4 +289,11 @@
     </joystick>
   </TextViewer>
 
+  <NumericInput>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </NumericInput>
+
 </keymap>

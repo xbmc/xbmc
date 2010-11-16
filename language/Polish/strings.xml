@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 09/19/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 10/23/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 33901-->
+<!--Based on english strings version 34887-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -1124,6 +1124,9 @@
   <string id="13430">Sprzętowa akceleracja (OpenMax)</string>
   <string id="13431">Pixel shadery</string>
   <string id="13500">Metoda synchronizacji A/V</string>
+  <string id="13501">Zegar audio</string>
+  <string id="13502">Zegar wideo (porzucaj/duplikuj dźwięk)</string>
+  <string id="13503">Zegar wideo (resampluj dźwięk)</string>
   <string id="13504">Maks. wielkość resamplingu (%)</string>
   <string id="13505">Jakoś resamplingu</string>
   <string id="13506">Niska (szybkie)</string>
@@ -1437,6 +1440,8 @@
   <string id="20058">Dodaj profil...</string>
   <string id="20059">Info do wszystkich albumów</string>
   <string id="20060">o mediach</string>
+  <string id="20062">Współdzieli z domyślnymi</string>
+  <string id="20063">Współdzieli z domyślnymi (tylko odczyt)</string>
   <string id="20064">Skopiuj domyślne</string>
   <string id="20065">Awatar profilu</string>
   <string id="20066">Ustawienia blokad dostępu</string>
@@ -1480,6 +1485,7 @@
   <string id="20104">Znaleziono poprzednie ustawienia.</string>
   <string id="20105">Czy chcesz je przywrócić?</string>
   <string id="20106">Znaleziono poprzednie źródła mediów.</string>
+  <string id="20108">Główny</string>
   <string id="20109">- Powiększenie</string>
   <string id="20110">Ustawienia UPnP</string>
   <string id="20111">Autostart klienta UPnP</string>
@@ -1576,6 +1582,7 @@
   <string id="20255">Pierwsze logowanie, ustaw swój profil</string>
   <string id="20256">Klient HTS Tvheadend</string>
   <string id="20257">Klient VDR Streamdev</string>
+  <string id="20258">Klient MythTV</string>
   <string id="20300">Katalog serwera web (HTTP)</string>
   <string id="20301">Katalog serwera web (HTTPS)</string>
   <string id="20302">Nie powiódł się zapis do folderu:</string>
@@ -1812,6 +1819,7 @@
   <string id="21450">- Edytuj</string>
   <string id="21451">Wymagane połączenie z Internetem.</string>
   <string id="21452">Pobierz więcej...</string>
+  <string id="21453">Główny system plików</string>
   <string id="21800">Nazwa pliku</string>
   <string id="21801">Lokalizacja</string>
   <string id="21802">Rozmiar</string>
@@ -2002,6 +2010,8 @@
   <string id="24096">Wtyczkę oznaczono jako uszkodzona w repozytorium.</string>
   <string id="24097">Czy chcesz ją wyłączyć?</string>
   <string id="24098">Uszkodzona</string>
+  <string id="24099">Chcesz przełączyć się na tę skórę?</string>
+  <string id="25000">Powiadomienia</string>
   <string id="29800">Tryb biblioteki</string>
   <string id="29801">Klawiatura QWERTY</string>
   <string id="29802">Używasz bezpośredniego przejścia dźwięku</string>

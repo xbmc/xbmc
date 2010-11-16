@@ -81,6 +81,7 @@ class CAdvancedSettings
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
+    bool m_dvdplayerIgnoreDTSinWAV;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -156,7 +157,6 @@ class CAdvancedSettings
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
-    bool m_displayRemoteCodes;
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;

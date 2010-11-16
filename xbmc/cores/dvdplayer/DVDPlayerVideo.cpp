@@ -619,6 +619,8 @@ void CDVDPlayerVideo::Process()
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
 #elif 0
             // testing YUY2 or UYVY rendering functions
+            // WARNING: since this scales a full YV12 frame, weaving artifacts will show on interlaced content
+            // even with the deinterlacer on
             DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_UYVY);
             //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_YUY2);
             int iResult = OutputPicture(pTempYUVPackedPicture, pts);

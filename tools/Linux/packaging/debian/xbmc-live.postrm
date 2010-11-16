@@ -4,6 +4,7 @@
 # see: dh_installdeb(1)
 
 set -e
+release="$(lsb_release -r | cut -f2 | sed 's/\.//')"
 if [ "$1" = "purge" ]; then
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
@@ -27,6 +28,11 @@ if [ "$1" = "purge" ]; then
 	# Remove XBMC sudoers files
 	rm $SUDOERS_TEMPFILE
 
+if [ $release -ge 1010 ]; then
+        if [ -f " /var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla" ]; then
+             rm  "/var/lib/polkit-1/localauthority/50-local.d/20-xbmclive.pkla" > /dev/null
+        fi
+else
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
 		org.freedesktop.hal.wol.enable
@@ -81,7 +87,7 @@ if [ "$1" = "purge" ]; then
 			polkit-auth --user xbmc --revoke $ACTION
 		fi
 	done
-
+fi
 	sed -i s/allowed_users=anybody/allowed_users=console/ /etc/X11/Xwrapper.config
 	if [ -f "/etc/X11/Xwrapper.config.bak-xbmc-live" ]; then
 		rm /etc/X11/Xwrapper.config.bak-xbmc-live > /dev/null

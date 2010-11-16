@@ -183,7 +183,6 @@ protected:
 // CDG data on cd :
 //4 packets/sector*75 sectors/second=300 packets/second = 300 Hz
 #define PARSING_FREQ 300.0f
-#define DEBUG_AVDELAY_MOD 0.3f  //Adjustment for AV delay  in debug mode
 
 class CKaraokeLyrics;
 

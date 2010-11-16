@@ -331,9 +331,6 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
-  if (iWindowID == WINDOW_ADDON_BROWSER)
-    iSwitch = WINDOW_SETTINGS_MENU;
-
   if (iWindowID == WINDOW_MUSIC_FILES)
     if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
       iSwitch = WINDOW_HOME;
@@ -356,6 +353,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   {
     case WINDOW_SETTINGS_MENU:  // Settings
       bCheckPW = g_settings.GetCurrentProfile().settingsLocked();
+      break;
+    case WINDOW_ADDON_BROWSER:  // Addons
+      bCheckPW = g_settings.GetCurrentProfile().addonmanagerLocked();
       break;
     case WINDOW_FILES:          // Files
       bCheckPW = g_settings.GetCurrentProfile().filesLocked();

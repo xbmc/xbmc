@@ -49,6 +49,7 @@ void CAdvancedSettings::Initialize()
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
+  m_dvdplayerIgnoreDTSinWAV = false;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -131,7 +132,6 @@ void CAdvancedSettings::Initialize()
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
-  m_displayRemoteCodes = false;
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
@@ -341,6 +341,7 @@ bool CAdvancedSettings::Load()
 
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
+    XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -695,8 +696,6 @@ bool CAdvancedSettings::Load()
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
-
-  XMLUtils::GetBoolean(pRootElement, "displayremotecodes", m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??

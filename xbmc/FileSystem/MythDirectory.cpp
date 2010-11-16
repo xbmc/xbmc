@@ -565,6 +565,30 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   return false;
 }
 
+bool CMythDirectory::Exists(const char* strPath)
+{
+  /*
+   * Return true for any virtual folders that are known to exist. Don't check for explicit
+   * existence using GetDirectory() as most methods will return true with empty content due to the
+   * way they are implemented - by iterating over all programs and filtering out content.
+   */
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName == ""
+  ||  fileName == "channels"
+  ||  fileName == "guide"
+  ||  fileName.Left(6) == "guide/"
+  ||  fileName == "movies"
+  ||  fileName == "recordings"
+  ||  fileName == "tvshows"
+  ||  fileName.Left(8) == "tvshows/")
+    return true;
+
+  return false;
+}
+
 bool CMythDirectory::IsVisible(const cmyth_proginfo_t program)
 {
   CStdString group = GetValue(m_dll->proginfo_recgroup(program));
