@@ -24,8 +24,8 @@
 
 // C++ Interface: karaokelyricscdg
 
+#include "cdgdata.h"
 #include "karaokelyrics.h"
-#include "Cdg.h"
 
 class CBaseTexture;
 typedef uint32_t color_t;
@@ -33,7 +33,7 @@ typedef uint32_t color_t;
 class CKaraokeLyricsCDG : public CKaraokeLyrics
 {
   public:
-      CKaraokeLyricsCDG( const CStdString& cdgFile );
+	CKaraokeLyricsCDG( const CStdString& cdgFile );
     ~CKaraokeLyricsCDG();
 
     //! Parses the lyrics or song file, and loads the lyrics into memory. Returns true if the
@@ -62,24 +62,36 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     virtual void Render();
 
   protected:
-    void RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const;
-    SubCode* GetCurSubCode() const;
-    bool SetNextSubCode();
+	void cmdMemoryPreset( const char * data );
+	void cmdBorderPreset( const char * data );
+	void cmdLoadColorTable( const char * data, int index );
+	void cmdTileBlockXor( const char * data );
+	bool UpdateBuffer( unsigned int packets_due );
+	void RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const;
 
   private:
-    //! CDG file name
-    CStdString  m_cdgFile;
+	BYTE getPixel( int x, int y );
+	void setPixel( int x, int y, BYTE color );
 
-    //! CDG parser
-    CCdg    * m_pCdg;
-    CCdgReader  * m_pReader;
-    CCdgLoader  * m_pLoader;
-    errCode      m_FileState;
+    //! CDG file name
+	CStdString         m_cdgFile;
+
+	typedef struct
+	{
+		unsigned int	packetnum;
+		SubCode			subcode;
+	} CDGPacket;
+
+	std::vector<CDGPacket>  m_cdgStream;  //!< Parsed CD+G stream storage
+	int                m_streamIdx;       //!< Packet about to be rendered
+	DWORD              m_colorTable[16];  //!< CD+G color table; color format is A8R8G8B8
+	BYTE			   m_bgColor;         //!< Background color index
+	BYTE			   m_cdgScreen[CDG_FULL_WIDTH*CDG_FULL_HEIGHT];	//!< Image state for CD+G stream
 
     //! Rendering stuff
-    CBaseTexture* m_pCdgTexture;
-    color_t  m_bgAlpha;  //!< background alpha
-    color_t  m_fgAlpha;  //!< foreground alpha
+	CBaseTexture *     m_pCdgTexture;
+	color_t            m_bgAlpha;  //!< background alpha
+	color_t            m_fgAlpha;  //!< foreground alpha
 };
 
 #endif
