@@ -30,6 +30,7 @@
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "MathUtils.h"
 
 #include <sstream>
 #include <iomanip>
@@ -559,7 +560,6 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
-      m_messageQueue.SetMaxTimeSize(8.0 - m_dvdAudio.GetCacheTotal());
       if(m_speed == 0)
         m_dvdAudio.Pause();
     }
@@ -829,7 +829,7 @@ void CDVDPlayerAudio::WaitForBuffers()
 string CDVDPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
   s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
   //print the inverse of the resample ratio, since that makes more sense
