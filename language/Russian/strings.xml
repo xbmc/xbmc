@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Translator: Anton Tarabrin aka TaN-->
-<!--Email: tarabanton@gmail.com-->
+<!--Language file translated with Team XBMC Translator-->
+<!--Date of translation: 11/15/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">Программы</string>
@@ -82,6 +82,8 @@
   <string id="110">Создавать эскизы</string>
   <string id="111">Ярлыки</string>
   <string id="112">На паузе</string>
+  <string id="113">Не удалось обновить</string>
+  <string id="114">Не удалось установить</string>
   <string id="115">Копировать</string>
   <string id="116">Переместить</string>
   <string id="117">Удалить</string>
@@ -354,8 +356,10 @@
   <string id="404">Ветер</string>
   <string id="405">Точка росы</string>
   <string id="406">Влажность</string>
-  <string id="407"></string>
-  <string id="408"></string>
+  <string id="407">
+  </string>
+  <string id="408">
+  </string>
   <string id="409">По умолчанию</string>
   <string id="410">Подключение к Гидрометеоцентру</string>
   <string id="411">Получение прогноза для:</string>
@@ -379,7 +383,7 @@
   <string id="431">Не кэшировать</string>
   <string id="432">Удалить фильм из медиатеки</string>
   <string id="433">Действительно удалить '%s'?</string>
-  <string id="434">С %s на %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">С %s на %i %s</string>
   <string id="437">Съемный диск</string>
   <string id="438">Открытие файла</string>
   <string id="439">Буферизация</string>
@@ -533,6 +537,8 @@
   <string id="609">Значение CDDARipPath не задано</string>
   <string id="610">Оцифровать аудиотрек</string>
   <string id="611">Введите номер</string>
+  <string id="612">Бит/Сэмпл</string>
+  <string id="613">Частота Сэмплирования</string>
   <string id="620">Оцифровка CD</string>
   <string id="621">Кодировщик</string>
   <string id="622">Качество</string>
@@ -916,6 +922,7 @@
   <string id="13013">Перезагрузка</string>
   <string id="13014">Свернуть</string>
   <string id="13015">Реакция на кнопку питания</string>
+  <string id="13016">Выключить Систему</string>
   <string id="13020">Активна другая сессия, возможно через SSH?</string>
   <string id="13021">Подключен переносной жесткий диск</string>
   <string id="13022">Небезопасное отключение устройства</string>
@@ -938,6 +945,8 @@
   <string id="13115">Всегда включено</string>
   <string id="13116">Метод масштабирования</string>
   <string id="13117">Бикубический</string>
+  <string id="13121">Высококачественное масштабирование VDPAU</string>
+  <string id="13122">Преобразование цветов в VDPAU</string>
   <string id="13130">Гашение экрана</string>
   <string id="13131">Отключено</string>
   <string id="13132">Погасить экраны</string>
@@ -967,8 +976,8 @@
   <string id="13210">Запущен, сработает в %im</string>
   <string id="13211">НАПОМИНАНИЕ!</string>
   <string id="13212">Отменено за %im%is до срабатывания</string>
-  <string id="13213">%2.0fм</string> <!--minutes (left from countdown)--> 
-  <string id="13214">%2.0fс</string> <!--seconds (left from countdown)--> 
+  <string id="13213">%2.0fм</string>
+  <string id="13214">%2.0fс</string>
   <string id="13249">Искать субтитры в rar-архивах</string>
   <string id="13250">Укажите субтитры...</string>
   <string id="13251">Переместить объект</string>
@@ -1121,6 +1130,10 @@
   <string id="13508">Высокое</string>
   <string id="13509">Действительно высокое</string>
   <string id="13510">Синхронизировать с частотой экрана</string>
+  <string id="13550">Приостанавливать при изменении частоты обновления</string>
+  <string id="13551">Выкл.</string>
+  <string id="13552">%.1f Секунда</string>
+  <string id="13553">%.1f Секунд</string>
   <string id="13600">Пульт Apple</string>
   <string id="13602">Всегда работает</string>
   <string id="13603">Время задержки последовательности</string>
@@ -1548,6 +1561,9 @@
   <string id="20253">WebDAV сервер (HTTP)</string>
   <string id="20254">WebDAV сервер (HTTPS)</string>
   <string id="20255">Первый вход, отредактируйте свой профиль</string>
+  <string id="20256">Клиент HTS Tvheadend</string>
+  <string id="20257">Клиент VDR Streamdev</string>
+  <string id="20258">Клиент MythTV</string>
   <string id="20300">Папка Web-сервера (HTTP)</string>
   <string id="20301">Папка Web-сервера (HTTPS)</string>
   <string id="20302">Невозможно записать в папку:</string>
@@ -1688,6 +1704,8 @@
   <string id="20451">Страны</string>
   <string id="20452">эпизод</string>
   <string id="20453">эпизоды</string>
+  <string id="20454">Слушатель</string>
+  <string id="20455">Слушателей</string>
   <string id="21330">Показывать скрытые файлы и папки</string>
   <string id="21331">Клиент TuxBox</string>
   <string id="21332">ВНИМАНИЕ: Целевое устройство TuxBox находится в режиме записи!</string>
@@ -1977,10 +1995,11 @@
   <string id="24096">Аддон помечен в репозитории как испорченый.</string>
   <string id="24097">Вы желаете отключить его в вашей системе?</string>
   <string id="24098">Испорчен</string>
+  <string id="24099">Вы желаете переключиться на эту обложку?</string>
+  <string id="25000">Уведомления</string>
   <string id="29800">Режим медиатеки</string>
   <string id="29801">Клавиатура QWERTY</string>
   <string id="29802">Включен режим Passthrough Audio</string>
-  <string id="30011">Длительность поиска</string>
   <string id="33001">Качество трейлера</string>
   <string id="33002">Поток</string>
   <string id="33003">Скачать</string>
@@ -1991,6 +2010,7 @@
   <string id="33008">Сохраняем</string>
   <string id="33009">Копируем</string>
   <string id="33010">Установка пути для скачивания</string>
+  <string id="33011">Длительность поиска</string>
   <string id="33012">Короткая</string>
   <string id="33013">Длинная</string>
   <string id="33014">Использовать DVD player вместо обычного</string>
