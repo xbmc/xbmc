@@ -279,12 +279,15 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   }
 }
 
-bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, int label3)
+bool CGUIWindowVideoFiles::OnUnAssignContent(const CStdString &path, int label1, int label2, int label3)
 {
   bool bCanceled;
+  CVideoDatabase db;
+  db.Open();
   if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
   {
-    m_database.RemoveContentForPath(m_vecItems->Get(iItem)->m_strPath,m_dlgProgress);
+    db.RemoveContentForPath(path);
+    db.Close();
     CUtil::DeleteVideoDatabaseDirectoryCache();
     return true;
   }
@@ -295,20 +298,22 @@ bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, 
       ADDON::ScraperPtr info;
       SScanSettings settings;
       settings.exclude = true;
-      m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
+      db.SetScraperForPath(path,info,settings);
     }
   }
+  db.Close();
 
   return false;
 }
 
-void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
+void CGUIWindowVideoFiles::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
 {
-  CFileItemPtr item = m_vecItems->Get(iItem);
   bool bScan=false;
+  CVideoDatabase db;
+  db.Open();
   if (iFound == 0)
   {
-    info = m_database.GetScraperForPath(item->m_strPath, settings);
+    info = db.GetScraperForPath(path, settings);
   }
 
   ADDON::ScraperPtr info2(info);
@@ -317,21 +322,21 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
   {
     if(settings.exclude || !info)
     {
-      OnUnAssignContent(iItem,20375,20340,20341);
+      OnUnAssignContent(path,20375,20340,20341);
     }
     else if (info2)
     {
-      if (OnUnAssignContent(iItem,20442,20443,20444))
+      if (OnUnAssignContent(path,20442,20443,20444))
         bScan = true;
     }
 
-    m_database.Open();
-    m_database.SetScraperForPath(item->m_strPath,info,settings);
-    m_database.Close();
+    db.SetScraperForPath(path,info,settings);
 
     if (bScan)
     {
-      OnScan(item->m_strPath, true);
+      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (pDialog)
+        pDialog->StartScanning(path, true);
     }
   }
 }
@@ -523,7 +528,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
       //TODO should we search DB for entries from plugins?
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin())
       {
-          OnUnAssignContent(itemNumber,20375,20340,20341);
+        OnUnAssignContent(item->m_strPath,20375,20340,20341);
       }
       Update("");
       return true;
@@ -540,7 +545,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     {
       SScanSettings settings;
       ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
-      OnAssignContent(itemNumber,0, info, settings);
+      OnAssignContent(item->m_strPath,0, info, settings);
       return true;
     }
 

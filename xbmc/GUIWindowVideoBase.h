@@ -71,8 +71,6 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings) {};
-  virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
