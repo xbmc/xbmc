@@ -381,7 +381,7 @@ void CGUIDialogMediaSource::OnOK()
     Close();
   }
 
-  if (m_type == "video")
+  if (m_type == "video" && !CUtil::IsLiveTV(share.strPath))
     CGUIWindowVideoFiles::OnAssignContent(share.strPath, 0, m_info, m_settings);
 
   // and remove the share again
