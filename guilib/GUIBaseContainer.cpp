@@ -85,7 +85,8 @@ void CGUIBaseContainer::Render()
   if ((int)m_items.size() > m_itemsPerPage + cacheBefore + cacheAfter)
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
 
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  {
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
   float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
@@ -138,6 +139,7 @@ void CGUIBaseContainer::Render()
   }
 
   g_graphicsContext.RestoreClipRegion();
+  }
 
   UpdatePageControl(offset);
 
