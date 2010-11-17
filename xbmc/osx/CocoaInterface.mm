@@ -232,9 +232,9 @@ void Cocoa_DoAppleScript(const char* scriptSource)
 void Cocoa_DoAppleScriptFile(const char* filePath)
 {
   NSString* scriptFile = [NSString stringWithUTF8String:filePath];
-  NSString* userScriptsPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
-  NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
-  NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/system/AppleScripts"];
+  NSString* userScriptsPath = [@"~/Library/Application Support/XBMC/scripts" stringByExpandingTildeInPath];
+  NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/XBMC/scripts"];
+  NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/XBMC/system/AppleScripts"];
 
   // Check whether a script exists in the app bundle's AppleScripts folder
   if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
