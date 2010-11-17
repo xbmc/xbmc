@@ -29,7 +29,7 @@
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 
-static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
+static const char * DEFAULT_SOUNDFONT_FILE = "special://masterprofile/timidity/soundfont.sf2";
 
 TimidityCodec::TimidityCodec()
 {
