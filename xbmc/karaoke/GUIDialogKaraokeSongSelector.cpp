@@ -73,6 +73,8 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
     if ( m_startPlaying )
     {
       g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+      g_playlistPlayer.SetRepeat( PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE );
+      g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false );
       g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
       g_playlistPlayer.Play();
