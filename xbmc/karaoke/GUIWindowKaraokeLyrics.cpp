@@ -56,21 +56,6 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
 
   switch(action.GetID())
   {
-    case REMOTE_0:
-    case REMOTE_1:
-    case REMOTE_2:
-    case REMOTE_3:
-    case REMOTE_4:
-    case REMOTE_5:
-    case REMOTE_6:
-    case REMOTE_7:
-    case REMOTE_8:
-    case REMOTE_9:
-      // Offset from key codes back to button number
-      if ( songSelector && !songSelector->IsActive() )
-        songSelector->DoModal( action.GetID() - REMOTE_0 );
-      break;
-
     case ACTION_SUBTITLE_DELAY_MIN:
       m_Lyrics->lyricsDelayDecrease();
       return true;
@@ -78,6 +63,12 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
     case ACTION_SUBTITLE_DELAY_PLUS:
       m_Lyrics->lyricsDelayIncrease();
       return true;
+  
+    default:
+      if ( CGUIDialogKaraokeSongSelector::GetKeyNumber( action.GetID() ) != -1 && songSelector && !songSelector->IsActive() )
+        songSelector->DoModal( CGUIDialogKaraokeSongSelector::GetKeyNumber( action.GetID() ) );
+
+      break;
   }
 
   // If our background control could handle the action, let it do it
