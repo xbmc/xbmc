@@ -22,7 +22,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIDialogContentSettings.h"
+#include "GUIWindowVideoFiles.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
@@ -382,7 +382,7 @@ void CGUIDialogMediaSource::OnOK()
   }
 
   if (m_type == "video")
-    CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
+    CGUIWindowVideoFiles::OnAssignContent(share.strPath, 0, m_info, m_settings);
 
   // and remove the share again
   if (shares)
