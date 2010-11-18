@@ -29,6 +29,7 @@
 #include "addons/IAddon.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowVideoNav.h"
+#include "GUIWindowVideoFiles.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -956,10 +957,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
       if (pDialog && pDialog->IsScanning())
         return true;
 
-      CStdString strOldPath = item->m_strPath;
-      item->m_strPath = strDir;
-      OnAssignContent(iItem,1, scraper, settings);
-      item->m_strPath = strOldPath;
+      CGUIWindowVideoFiles::OnAssignContent(strDir,1, scraper, settings);
       return true;
     }
 
