@@ -92,13 +92,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
-      else if (iControl == CONTROL_CONTENT)
-      {
-        CMediaSource share;
-        share.FromNameAndPaths("video", m_name, GetPaths());
-
-        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
-      }
       return true;
     }
     break;
@@ -388,17 +381,8 @@ void CGUIDialogMediaSource::OnOK()
     Close();
   }
 
-  // Special handling of multipath:// shares.
-  // * GetScraperForPath takes the first path of the multipath:// element to fetch needed scraper and scan settings.
-  // * SetScraperForPath loops through all elements and adds the appropriate settings for each path.
-  if (CUtil::IsMultiPath(share.strPath))
-  {
-    CVideoDatabase database;
-    database.Open();
-    m_info = database.GetScraperForPath(share.strPath, m_settings);
-    database.SetScraperForPath(share.strPath, m_info, m_settings);
-    database.Close();
-  }
+  if (m_type == "video")
+    CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
 
   // and remove the share again
   if (shares)
@@ -437,15 +421,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
-  if (m_type.Equals("video"))
-  {
-    SET_CONTROL_VISIBLE(CONTROL_CONTENT);
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_CONTENT, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
-  }
-  else
-  {
-    SET_CONTROL_HIDDEN(CONTROL_CONTENT);
-  }
+  SET_CONTROL_HIDDEN(CONTROL_CONTENT);
 }
 
 void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
@@ -540,4 +516,3 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
       paths.push_back(m_paths->Get(i)->m_strPath);
   return paths;
 }
-
