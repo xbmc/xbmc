@@ -10,7 +10,7 @@ SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's
 
 # Set this variable to yes for release builds to disable debugging and enable
 # optimizations.
-XBMC_RELEASE ?= no
+XBMC_RELEASE ?= yes
 
 # If not set already, try to set from debian/svnrevision
 ifeq (,$(SVNVERSION))
@@ -19,7 +19,7 @@ endif
 
 # Whether we're building for release or not
 ifeq (yes,$(XBMC_RELEASE))
-  DEBUG_OPTIONS = --disable-debug --enable-optimizations
+  DEBUG_OPTIONS = --disable-debug
 else
   DEBUG_OPTIONS = --enable-debug
 endif
