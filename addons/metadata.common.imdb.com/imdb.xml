@@ -81,7 +81,7 @@
 				<expression noclean="1">&lt;table class="cast_list"&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX512_SY512_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+				<expression repeat="yes" clear="yes" fixchars="3,4" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
@@ -95,7 +95,7 @@
 				<expression noclean="1">&lt;table class="cast_list"&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+				<expression repeat="yes" clear="yes" fixchars="3,4" trim="3,4" noclean="1,2">&lt;img\n[^\n]*\n[^\n]*\n\s+src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"[^"]*"&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class="character"&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
@@ -109,7 +109,7 @@
 				<expression clear="yes" noclean="1">Director[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
-				<expression repeat="yes" clear="yes">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="1" clear="yes">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -120,7 +120,7 @@
 				<expression noclean="1">Writer[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
-				<expression repeat="yes">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="1">&lt;a  href="/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -131,7 +131,7 @@
 				<expression noclean="1">&lt;table class="cast"&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX512_SY512_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
+				<expression repeat="yes" clear="yes" fixchars="3,5" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
@@ -145,7 +145,7 @@
 				<expression noclean="1">&lt;table class="cast"&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
+				<expression repeat="yes" clear="yes" fixchars="3,5" trim="3,5" noclean="1,2">&lt;img src="(?:([^"]*\.)[^"]*(\.jpg))?[^&gt;]*[^"]*"nm"&gt;&lt;a href="[^"]*[^&gt;]*&gt;([^&lt;]*)&lt;[^"]*"ddd"&gt;([^&lt;]&lt;)?[^"]*"char"&gt;(.*?)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
 				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
@@ -159,7 +159,7 @@
 				<expression clear="yes" noclean="1">Director[s]?:&lt;/h5&gt;[^&gt;]*&gt;(.*?)&lt;/div</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
-				<expression repeat="yes" clear="yes">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="1" clear="yes">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -170,7 +170,7 @@
 				<expression noclean="1">Writing credits(.*?)name="</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
-				<expression repeat="yes">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+				<expression repeat="yes" fixchars="1">&lt;a href="/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

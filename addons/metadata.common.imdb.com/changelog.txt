@@ -1,3 +1,6 @@
+[B]2.0.6[/B]
+- changed: re-added fixchars
+
 [B]2.0.5[/B]
 - changed: move scraping of IMDb rating out to IMDb scraper library
 
