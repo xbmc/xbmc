@@ -176,8 +176,8 @@ void CGUITextBox::Render()
 
   int offset = (int)(m_scrollOffset / m_itemHeight);
 
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-
+  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  {
   // we offset our draw position to take into account scrolling and whether or not our focused
   // item is offscreen "above" the list.
   float posX = m_posX;
@@ -206,6 +206,7 @@ void CGUITextBox::Render()
   }
 
   g_graphicsContext.RestoreClipRegion();
+  }
 
   if (m_pageControl)
   {
