@@ -4857,12 +4857,15 @@ void CApplication::Mute(void)
   { // muted - unmute.
     // In case our premutevolume is 0, return to 100% volume
     if( g_settings.m_iPreMuteVolumeLevel == 0 )
+    {
       SetVolume(100);
+    }
     else
     {
       SetVolume(g_settings.m_iPreMuteVolumeLevel);
       g_settings.m_iPreMuteVolumeLevel = 0;
     }
+    m_guiDialogVolumeBar.Show();
   }
   else
   { // mute
