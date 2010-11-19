@@ -380,10 +380,7 @@ bool CALSADirectSound::Resume()
   if(state == SND_PCM_STATE_PREPARED)
   {
     snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
-    snd_pcm_sframes_t delay = 0;
-    if(avail > 0)
-      delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
-    if(delay > 0)
+    if(avail >= 0 && avail < snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize))
       snd_pcm_start(m_pPlayHandle);
   }
 
@@ -529,7 +526,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 
   if (writeResult > 0)
   {
-    if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause)
+    if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause && GetSpace() / m_uiDataChannels * m_uiChannels <= m_dwPacketSize)
       snd_pcm_start(m_pPlayHandle);
     
     return writeResult * (m_uiBitsPerSample / 8) * m_uiDataChannels;
