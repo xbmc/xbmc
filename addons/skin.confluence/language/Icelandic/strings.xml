@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2010-05-20-->
+<!--Date of translation: 2010-11-18-->
 <!--$Revision$-->
-<!--Based on english strings version 29568-->
+<!--Based on english strings version 35254-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Breyta -</string>
@@ -62,7 +62,7 @@
   <string id="31104">Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]</string>
   <string id="31105">Sýna myndatitla í bakgrunnsleit</string>
   <string id="31106">Ýmsir valkostir</string>
-  <string id="31107"/>
+  <string id="31107">Fela flagg lesið frá skráarnöfnum [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Fela hnapp í aðalvalmynd</string>
   <string id="31109">Bakgrunnar heimasvæðis</string>
   <string id="31110">Breyta bakgrunni fyrir heimahnapp</string>
@@ -71,22 +71,26 @@
   <string id="31113">Einföld mynd</string>
   <string id="31114">Margföld mynd</string>
   <string id="31115">Sérsníðari</string>
-  <string id="31116">Viðbótarskriftur</string>
+  <string id="31116"/>
   <string id="31117">Sýna myndbönd sem var nýlega bætt við</string>
   <string id="31118">Undirvalmynd heimasíðu</string>
-  <string id="31119">Virkja hnapp fyrir sérsniðna skriftu</string>
+  <string id="31119"/>  <!-- blanked 2010-11-12 -->
   <string id="31120">HNAPPAHEITI</string>
-  <string id="31121">SLÓÐ Á SKRIFTU</string>
+  <string id="31121"/>  <!-- blanked 2010-11-12 -->
   <string id="31122">Veðursíða</string>
   <string id="31123">Nota "Veggspjöld" í staðinn fyrir "Borða" fyrir sjónvarpsþætti</string>
   <string id="31124">Sýna "Í spilun" myndband í bakgrunni</string>
   <string id="31125">Sýna "Í spilun" myndskreytingu í bakgrunni</string>
 
-  <string id="31126">Virkja lagatexta á tónlistarskjá</string>
-  <string id="31127">SLÓÐ Á LAGATEXTASKRIFTU</string>
-  <string id="31128">XBMC lagatextar</string>
-  <string id="31129">Virkja niðurhal á þýðingartexta í myndbandaskjá</string>
-  <string id="31130">SLÓÐ Á ÞÝÐINGARTEXTA SKRIFTU</string>
+  <string id="31126"/>  <!-- blanked 2010-11-12 -->
+  <string id="31127"/>  <!-- blanked 2010-11-12 -->
+  <string id="31128">Lagatextar</string>
+  <string id="31129"/>  <!-- blanked 2010-11-12 -->
+  <string id="31130"/>  <!-- blanked 2010-11-12 -->
+
+  <string id="31131">Nota lárétta heimavalmynd</string>
+  <string id="31132">Viðbót fyrir lagatexta</string>
+  <string id="31133">Viðbót fyrir þýðingartexta</string>
 
   <string id="31140">Tónlistarskjár</string>
   <string id="31141">Myndbandaskjár</string>
@@ -98,11 +102,6 @@
   <string id="31203">Veldu þitt lag</string>
   <string id="31204">Tenglar svæðis</string>
   <string id="31205">Frumkóði lagatexta</string>
-
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Ratsjá og Veðurspá</string>
-  <string id="31251">Veðurspá</string>
-  <string id="31252">TWC skrifta</string>
 
   <!-- Extra labels -->
   <string id="31300">Núverandi hiti</string>
@@ -146,15 +145,19 @@
   <string id="31356">Niðurhala þýðingartextum</string>
   <string id="31357"/>
 
+  <!-- Skin Fontsets -->
+  <string id="31390">Sjálfgildi útlits</string>
+  <string id="31391">Sjálfgildi útlits með engum hástöfum</string>
+  <string id="31392">Byggt á Arial</string>
+
   <!-- Description Labels  -->
   <string id="31400">[B]BREYTA VIÐMÓTSSTILLINGUM[/B][CR][CR]Breyta útlitinu · Breyta tungumáli og svæði · Breyta stillingum skráarlista[CR]Breyta skjáhvílu</string>
-  <string id="31401">[B]BREYTA SKJÁSTILLINGUM[/B][CR][CR]Sýsla með myndabandasafn · Breyta myndbandaspilun · Breyta stillingum myndbandalista[CR]Breyta leturgerðum skjátexta</string>
+  <string id="31401">[B]BREYTA SKJÁSTILLINGUM[/B][CR][CR]Sýsla með myndabandasafn · Breyta myndbandaspilun · Breyta stillingum myndbandalista[CR]Breyta leturgerðum þýðingartexta</string>
   <string id="31402">[B]BREYTA TÓNLISTARSTILLINGUM[/B][CR][CR]Sýsla með tónlistarsafn · Breyta stillingum tónlistarspilara · Breyta stillingum tónlistarlista[CR]Skilgreina laga upphal · Breyta karaoke stillingum</string>
   <string id="31403">[B]BREYTA LJÓSMYNDASTILLINGUM[/B][CR][CR]Breyta stillingum ljósmyndalista · Stilla myndasýningar</string>
   <string id="31404">[B]BREYTA VEÐURSTILLINGUM[/B][CR][CR]Skilgreindu þrjár borgir til að ná í veðurupplýsingar fyrir</string>
   <string id="31405">[B]BREYTA NETSTILLINGUM[/B][CR][CR]Breyta hvernig XBMC er stjórnað með UPnP eða HTTP · Breyta skráardeilingu[CR]Breyta Internet stillingum</string>
-  <string id="31406">[B]BREYTA KERFISSTILLINGUM[/B][CR][CR]Breyta og stilla skjái · Breyta hljóðúttaki · 
-Skilgreina fjarstýringar[CR]Breyta orkukostum · Virkja aflúsun · Skilgreina aðallykilorð</string>
+  <string id="31406">[B]BREYTA KERFISSTILLINGUM[/B][CR][CR]Breyta og stilla skjái · Breyta hljóðúttaki · Skilgreina fjarstýringar[CR]Breyta orkukostum · Virkja aflúsun · Skilgreina aðallykilorð</string>
   <string id="31407">[B]BREYTA ÚTLITSSTILLINGUM[/B][CR][CR]Breyta útliti Confluence · Bæta við og fjarlægja hluti úr aðalvamynd[CR]Breyta bakgrunni</string>
   <string id="31408">[B]BREYTA VIÐBÓTUM[/B][CR][CR]Breyttu uppsettum viðbótum · Leitaðu að og settu upp viðbætur frá xbmc.org[CR]Breyta stillingum viðbóta</string>
 
