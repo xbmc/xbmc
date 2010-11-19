@@ -2835,7 +2835,32 @@
 					RelativePath="..\..\xbmc\utils\fstrcmp.c"
 					>
 					<FileConfiguration
+						Name="Release (OpenGL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Debug (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="2"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (OpenGL)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
