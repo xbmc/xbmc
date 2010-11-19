@@ -2985,6 +2985,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           // when a packet comes out of demuxer that has
           // pts values outside that boundary, it belongs
           // to the new vobunit, wich has new timestamps
+          UpdatePlayState(0);
       }
       break;
     case DVDNAV_HOP_CHANNEL:
