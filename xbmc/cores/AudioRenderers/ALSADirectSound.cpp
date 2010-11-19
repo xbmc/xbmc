@@ -382,7 +382,7 @@ bool CALSADirectSound::Pause()
 
   if(!m_bCanPause)
   {
-    snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
+    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
     snd_pcm_sframes_t delay = 0;
     if(avail >= 0)
       delay = (snd_pcm_sframes_t)m_uiBufferSize - avail;
@@ -496,6 +496,25 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 
   int writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
 
+  int writeResult;
+  if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
+  {
+    char dummy[bytesToWrite];
+    memset(dummy,0,sizeof(dummy));
+    writeResult = snd_pcm_writei(m_pPlayHandle, dummy, framesToWrite);
+  }
+  else
+  {
+    if (m_remap.CanRemap())
+    {
+      /* remap the data to the correct channels */
+      uint8_t outData[bytesToWrite];
+      m_remap.Remap((void *)data, outData, framesToWrite);
+      writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
+    }
+    else
+      writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+  }
   if (  writeResult == -EPIPE  )
   {
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
