@@ -146,7 +146,7 @@ void CDVDClock::SetSpeed(int iSpeed)
     m_pauseClock = 0;
   }
 
-  m_startClock = current - ( newfreq * (current - m_startClock) ) / m_systemUsed;
+  m_startClock = current - (int64_t)((double)(current - m_startClock) * newfreq / m_systemUsed);
   m_systemUsed = newfreq;
 }
 
