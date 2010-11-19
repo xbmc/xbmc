@@ -399,7 +399,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         MD5Update(&ctx,(const uint8_t*)image->pixels,image->h*image->pitch);
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("duplicate, skipping compression\n");
+          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
                                   files[dupes[i]].GetFrames().begin(),
                                   files[dupes[i]].GetFrames().end());
@@ -435,7 +435,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("duplicate, skipping compression\n");
+          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
                                   files[dupes[i]].GetFrames().begin(),
                                   files[dupes[i]].GetFrames().end());
