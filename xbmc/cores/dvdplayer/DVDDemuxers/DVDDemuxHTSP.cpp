@@ -290,6 +290,9 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     if(!strcmp(type, "AC3")) {
       st.a = new CDemuxStreamAudioHTSP(this, type);
       st.a->codec = CODEC_ID_AC3;
+    } else if(!strcmp(type, "EAC3")) {
+      st.a = new CDemuxStreamAudioHTSP(this, type);
+      st.a->codec = CODEC_ID_EAC3;
     } else if(!strcmp(type, "MPEG2AUDIO")) {
       st.a = new CDemuxStreamAudioHTSP(this, type);
       st.a->codec = CODEC_ID_MP2;
