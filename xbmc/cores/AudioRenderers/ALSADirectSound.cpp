@@ -91,9 +91,13 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
 
-  snd_pcm_uframes_t dwFrameCount = 512;
-  unsigned int      dwNumPackets = 16;
-  snd_pcm_uframes_t dwBufferSize = 0;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  if (!m_bPassthrough)
+     m_amp.SetVolume(m_nCurrentVolume);
+
+  m_dwFrameCount = 512;
+  m_dwNumPackets = 16;
+  m_uiBufferSize = 0;
 
   snd_pcm_hw_params_t *hw_params=NULL;
   snd_pcm_sw_params_t *sw_params=NULL;
@@ -438,7 +442,36 @@ bool CALSADirectSound::Stop()
 }
 
 //***********************************************************************************************
-unsigned int CALSADirectSound::GetSpace()
+long CALSADirectSound::GetCurrentVolume() const
+{
+  return m_nCurrentVolume;
+}
+
+//***********************************************************************************************
+void CALSADirectSound::Mute(bool bMute)
+{
+  if (!m_bIsAllocated)
+    return;
+
+  if (bMute)
+    SetCurrentVolume(VOLUME_MINIMUM);
+  else
+    SetCurrentVolume(m_nCurrentVolume);
+
+}
+
+//***********************************************************************************************
+bool CALSADirectSound::SetCurrentVolume(long nVolume)
+{
+  if (!m_bIsAllocated) return -1;
+  m_nCurrentVolume = nVolume;
+  m_amp.SetVolume(nVolume);
+  return true;
+}
+
+
+//***********************************************************************************************
+unsigned int CALSADirectSound::GetSpaceFrames()
 {
   if (!m_bIsAllocated) return 0;
 
@@ -480,11 +513,12 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   if(m_bPause)
     return 0;
 
-  int framesToWrite;
+  int framesToWrite, bytesToWrite;
 
-  framesToWrite  = len / m_dwPacketSize;
-  framesToWrite *= m_dwPacketSize;
-  framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
+  framesToWrite  = std::min(GetSpaceFrames(), len / ( m_uiDataChannels * m_uiBitsPerSample / 8 ) );
+  framesToWrite /= m_dwFrameCount;
+  framesToWrite *= m_dwFrameCount;
+  bytesToWrite   = snd_pcm_frames_to_bytes(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
   {
@@ -494,7 +528,9 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     return 0;
   }
 
-  int writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+  // handle volume de-amp
+  if (!m_bPassthrough)
+    m_amp.DeAmplify((short *)data, framesToWrite);
 
   int writeResult;
   if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
@@ -535,7 +571,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause && GetSpaceFrames()  <= m_dwFrameCount)
       snd_pcm_start(m_pPlayHandle);
     
-    return snd_pcm_frames_to_bytes(m_pPlayHandle, writeResult);
+    return writeResult * m_uiBitsPerSample * m_uiDataChannels / 8;
   }
 
   return 0;
@@ -581,7 +617,11 @@ float CALSADirectSound::GetCacheTotal()
 //***********************************************************************************************
 unsigned int CALSADirectSound::GetChunkLen()
 {
+<<<<<<< HEAD
   return m_dwPacketSize;
+=======
+  return m_dwFrameCount * m_uiDataChannels * m_uiBitsPerSample / 8;
+>>>>>>> b0db0aa... changed: simplify ALSADirectSound code by keeping all variables in frames instead of bytes
 }
 //***********************************************************************************************
 int CALSADirectSound::SetPlaySpeed(int iSpeed)
