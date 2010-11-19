@@ -347,9 +347,9 @@ bool CALSADirectSound::Pause()
 
   if(!m_bCanPause)
   {
-    snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
+    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
     snd_pcm_sframes_t delay = 0;
-    if(avail > 0)
+    if(avail >= 0 && snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_RUNNING)
       delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
 
     CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - device is not able to pause playback, will flush and prefix with %d frames", (int)delay);
@@ -447,15 +447,16 @@ unsigned int CALSADirectSound::GetSpace()
     {
       CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - buffer underun (%d)", state);
       Flush();
+      return m_uiBufferSize / m_uiChannels * m_uiDataChannels;
     }
   }
   if (nSpace < 0)
   {
      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
-     nSpace = 0;
      Flush();
+     return m_uiBufferSize / m_uiChannels * m_uiDataChannels;
   }
-  return snd_pcm_frames_to_bytes(m_pPlayHandle, nSpace);
+  return nSpace * m_uiDataChannels * m_uiBitsPerSample / 8;
 }
 
 //***********************************************************************************************
@@ -473,7 +474,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 
   int framesToWrite;
 
-  framesToWrite     = std::min(GetSpace(), (len / m_uiDataChannels) * m_uiChannels);
+  framesToWrite     = std::min(GetSpace(), len) / m_uiDataChannels * m_uiChannels;
   framesToWrite    /= m_dwPacketSize;
   framesToWrite    *= m_dwPacketSize;
   int bytesToWrite  = framesToWrite;
@@ -566,7 +567,7 @@ float CALSADirectSound::GetDelay()
 
 float CALSADirectSound::GetCacheTime()
 {
-  return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
+  return (float)(m_uiBufferSize - GetSpace() / m_uiDataChannels * m_uiChannels) / (float)m_uiBytesPerSecond;
 }
 
 float CALSADirectSound::GetCacheTotal()
