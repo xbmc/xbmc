@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/11/2010-->
+<!--Date of translation: 11/19/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 33648-->
+<!--Based on english strings version 35193-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -84,6 +84,8 @@
   <string id="110">Skapa miniatyrbilder</string>
   <string id="111">Genvägar</string>
   <string id="112">Pausad</string>
+  <string id="113">Uppdatering misslyckades</string>
+  <string id="114">Installation misslyckades</string>
   <string id="115">Kopiera</string>
   <string id="116">Flytta</string>
   <string id="117">Radera</string>
@@ -533,6 +535,8 @@
   <string id="609">CDDA-sökväg inte angiven.</string>
   <string id="610">Rippa ljudspår</string>
   <string id="611">Ange nummer</string>
+  <string id="612">Bitar/Sampling</string>
+  <string id="613">Samplingsfrekvens</string>
   <string id="620">Ljud-CD</string>
   <string id="621">Omkodare</string>
   <string id="622">Kvalitet</string>
@@ -922,6 +926,7 @@
   <string id="13013">Starta om</string>
   <string id="13014">Minimera</string>
   <string id="13015">Funktion för avstängningsknapp</string>
+  <string id="13016">Stäng av systemet</string>
   <string id="13020">Är en annan session aktiv, kanske över ssh?</string>
   <string id="13021">Monterade flyttbar hårddisk</string>
   <string id="13022">Osäker borttagning av enhet</string>
@@ -1133,6 +1138,10 @@ den här visualiseringen</string>
   <string id="13508">Hög</string>
   <string id="13509">Riktigt hög (långsam!)</string>
   <string id="13510">Synkronisera uppspelning till display</string>
+  <string id="13550">Pausa under uppdateringsfrekvensändring</string>
+  <string id="13551">Av</string>
+  <string id="13552">%.1f sekund</string>
+  <string id="13553">%.1f sekunder</string>
   <string id="13600">Apple-fjärrkontroll</string>
   <string id="13602">Tillåt start av XBMC med fjärrkontroll</string>
   <string id="13603">Sekvensfördröjningstid</string>
@@ -1577,6 +1586,7 @@ den här visualiseringen</string>
   <string id="20255">Första inloggningen, ändra din profil</string>
   <string id="20256">HTS Tvheadend-klient</string>
   <string id="20257">VDR Streamdev-klient</string>
+  <string id="20258">MythTV-klient</string>
   <string id="20300">Webserver katalog (HTTP)</string>
   <string id="20301">Webserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
@@ -1717,6 +1727,8 @@ den här visualiseringen</string>
   <string id="20451">Länder</string>
   <string id="20452">avsnitt</string>
   <string id="20453">avsnitt</string>
+  <string id="20454">Lyssnare</string>
+  <string id="20455">Lyssnare</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
@@ -2007,10 +2019,11 @@ den här visualiseringen</string>
   <string id="24096">Tillägget har markerats som trasigt i förrådet.</string>
   <string id="24097">Vill du inaktivera det på ditt system?</string>
   <string id="24098">Trasigt</string>
+  <string id="24099">Vill du byta till detta skal?</string>
+  <string id="25000">Notifieringar</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY-tangentbord</string>
   <string id="29802">Ljudgenomströmning används</string>
-  <string id="30011">Söklängd</string>
   <string id="33001">Trailerkvalitet</string>
   <string id="33002">Strömma</string>
   <string id="33003">Ladda ned</string>
@@ -2021,6 +2034,7 @@ den här visualiseringen</string>
   <string id="33008">Sparar</string>
   <string id="33009">Kopierar</string>
   <string id="33010">Ange nedladdningsmapp</string>
+  <string id="33011">Söklängd</string>
   <string id="33012">Kort</string>
   <string id="33013">Lång</string>
   <string id="33014">Använd DVD-spelare istället för den vanliga spelaren</string>
