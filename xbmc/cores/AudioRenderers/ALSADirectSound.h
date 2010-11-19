@@ -71,6 +71,7 @@ public:
   virtual void Flush();
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
+  unsigned int GetSpaceFrames();
   static bool SoundDeviceExists(const CStdString& device);
   static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard);
   snd_pcm_t 		*m_pPlayHandle;
@@ -78,14 +79,13 @@ private:
   IAudioCallback* m_pCallback;
   CPCMAmplifier 	m_amp;
   long m_nCurrentVolume;
-  snd_pcm_uframes_t m_dwPacketSize;
+  snd_pcm_uframes_t m_dwFrameCount;
+  snd_pcm_uframes_t m_uiBufferSize;
   unsigned int      m_dwNumPackets;
   bool m_bPause;
   bool m_bIsAllocated;
   bool m_bCanPause;
 
-  unsigned int m_uiBytesPerSecond;
-  unsigned int m_uiBufferSize;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiDataChannels;
