@@ -24,7 +24,7 @@
     <description lang="pl">Domyślny interfejs WWW dla XBMC; Zaprojektowany dla urządzeń z dowolną rozdzielczością</description>
     <description lang="pt">Interface Web padrão do XBMC. Desenhada para dispositivos com qualquer resolução</description>
     <description lang="ro">Interfață web implicită pentru XBMC, realizată de echipa XBMC pentru dispozitive cu orice rezoluție</description>
-    <description lang="zh">XBMC's standardwebbgränsnitt; Designat för alla upplösningar</description>
+    <description lang="se">XBMC's standardwebbgränsnitt; Designat för alla upplösningar</description>
     <description lang="zh">XBMC 的默认 web 界面；适应所有分辨率模式</description>
     <platform>all</platform>
   </extension>
