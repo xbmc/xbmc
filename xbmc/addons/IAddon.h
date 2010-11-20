@@ -47,6 +47,7 @@ namespace ADDON
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_WEB_INTERFACE,
+    ADDON_SERVICE,
     ADDON_VIDEO, // virtual addon types
     ADDON_AUDIO,
     ADDON_IMAGE,

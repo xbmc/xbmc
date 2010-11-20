@@ -48,6 +48,7 @@
 #include "PluginSource.h"
 #include "Repository.h"
 #include "Skin.h"
+#include "Service.h"
 
 using namespace std;
 
@@ -89,6 +90,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_MODULE:
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(props));
+    case ADDON_SERVICE:
+      return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -481,6 +484,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_MODULE:
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(addonProps));
+    case ADDON_SERVICE:
+      return AddonPtr(new CService(addonProps));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
@@ -702,6 +707,41 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
   }
   m_cpluff->destroy_context(context);
   return true;
+}
+
+bool CAddonMgr::StartServices()
+{
+  CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
+
+  VECADDONS services;
+  if (!GetAddons(ADDON_SERVICE, services))
+    return false;
+
+  bool ret = true;
+  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
+    if (service)
+      ret &= service->Start();
+  }
+
+  return ret;
+}
+
+void CAddonMgr::StopServices()
+{
+  CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
+
+  VECADDONS services;
+  if (!GetAddons(ADDON_SERVICE, services))
+    return;
+
+  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
+    if (service)
+      service->Stop();
+  }
 }
 
 int cp_to_clog(cp_log_severity_t lvl)
