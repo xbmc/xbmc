@@ -16,6 +16,7 @@
     <summary lang="pt">Protecção de ecrã que mostra uma apresentação de fotografias</summary>
     <summary lang="ro">Protector ecran care afișează o prezentare de diapozitive</summary>
     <summary lang="ru">Хранитель экрана показывающий слайдшоу из изображений</summary>
+    <summary lang="se">Skärmsläckare som visar ett bildspel</summary>
     <summary lang="zh">幻灯片屏幕保护程序</summary>
     <description lang="en">The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
     <description lang="de">Der Slideshow-Bildschirmschoner zeigt eine Bilder-Slideshow mit verschiedenen Übergangseffekten. Er kann so konfiguriert werden, dass Musik oder Video Fanarts aus der Bibliothek, oder Bilder eines bestimmten Ordners angezeigt werden.  </description>
@@ -28,6 +29,7 @@
     <description lang="pt">Protecção de ecrã que lhe mostra fotografias usando vários efeitos de transição. Pode ser configurado para visualizar fanart das bibliotecas de música e vídeo ou uma pasta com as suas imagens.</description>
     <description lang="ro">Protectorul de ecran Slideshow va afișa imagini folosind diferite efecte de tranziție. Poate fi configurat să afișeze imagini fanart din mediateca audio sau video sau dintr-un dosar personalizat.</description>
     <description lang="ru">Хранитель экрана Slideshow покажет вам слайдшоу из изображений используя различные эффекты переходов. Он может быть настроен для показа фанарта музыки и видео из вашей библиотеки мультимедиа, или папки с изображениям.</description>
+    <description lang="se">Bildspelsskärmsläckaren visar ett bildspel med en variation av övergångseffekter. Den kan konfigureras att visa ditt biblioteks musik eller videofanart, eller en egen mapp med bilder</description>
     <description lang="zh">幻灯片屏保将使用各种过渡效果以幻灯片形式显示您的图片。你可以设置它显示音乐或视频资料库同人画，或某个文件夹中的图片。</description>
     <platform>all</platform>
   </extension>

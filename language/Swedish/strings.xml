@@ -165,7 +165,7 @@
   <string id="196">Välj film:</string>
   <string id="197">Hämtar info för %s</string>
   <string id="198">Laddar filmdetaljer</string>
-  <string id="199">Webgränssnitt</string>
+  <string id="199">Webbgränssnitt</string>
   <string id="202">Slogan</string>
   <string id="203">Handling</string>
   <string id="205">Röster:</string>
@@ -1587,8 +1587,8 @@ den här visualiseringen</string>
   <string id="20256">HTS Tvheadend-klient</string>
   <string id="20257">VDR Streamdev-klient</string>
   <string id="20258">MythTV-klient</string>
-  <string id="20300">Webserver katalog (HTTP)</string>
-  <string id="20301">Webserver katalog (HTTPS)</string>
+  <string id="20300">Webbserver katalog (HTTP)</string>
+  <string id="20301">Webbserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20304">RSS-flöde</string>

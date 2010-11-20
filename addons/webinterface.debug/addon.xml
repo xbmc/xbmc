@@ -11,7 +11,9 @@
     point="xbmc.gui.webinterface"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Team XBMC Debug Web Interface</summary>
+    <summary lang="se">Team XBMC's debubwebbgränssnitt</summary>
     <description lang="en">Provides test harness and debug samples for the JSONRPC</description>
+    <description lang="se">Tillhandahåller provutrustning och prover för JSONRPC</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -22,6 +22,7 @@
     <summary lang="pt">Scraper de filmes TMDb</summary>
     <summary lang="ro">Catalog de filme TMDb</summary>
     <summary lang="ru">Обработчик Фильмов для TMDB</summary>
+    <summary lang="se">Filmskrapa för TMDB</summary>
     <summary lang="zh">TMDB电影刮削器</summary>
     <description lang="en">themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like XBMC to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience.</description>
     <description lang="de">TheMovieDB.org ist eine freie und offene Film-Datenbank. Sie wird nur User wie dir betrieben. TheMovieDB wird zur Zeit monatlich von Millionen genutzt. Mit der mächtigen API wird sie auch von vielen Media-Center, wie z.B. XBMC, genutzt um Filme-Meta-Daten, Poster und Fanrts zu beziehen, damit der User sein Media-Center verschönern kann</description>

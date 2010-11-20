@@ -15,6 +15,7 @@
     <summary lang="ko">최근 추가 스크립트</summary>
     <summary lang="nl">Onlangs toegevoegd-script</summary>
     <summary lang="pt">Script de adicionados recentemente</summary>
+    <summary lang="se">Nyligen tillagda-skript</summary>
     <summary lang="zh">最新加入脚本</summary>
     <description lang="en">Recently Added script</description>
     <description lang="fr">Scripts ajoutés récemment</description>
@@ -22,6 +23,7 @@
     <description lang="nl">Script dat onlangs toegevoegde media weergeeft</description>
     <description lang="ko">최근 추가 스크립트</description>
     <description lang="pt">Script que mostra a categoria 'Adicionados Recentemente'</description>
+    <description lang="se">Nyligen tillagda-skript</description>
     <description lang="zh">取得最新加入资料库项目的脚本</description>
     <platform>all</platform>
   </extension>
