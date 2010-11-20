@@ -301,7 +301,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     m_dwPacketSize = a->minreq;
     CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     pa_buffer_attr b;
-    b.prebuf = a->minreq * 10;
+    b.prebuf = (uint32_t)-1;
     b.minreq = a->minreq;
     b.tlength = m_uiBufferSize = a->tlength;
     b.maxlength = a->maxlength;
