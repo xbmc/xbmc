@@ -22,7 +22,6 @@
 #include "PlatformDefs.h"
 #include <string.h>
 #include "json/value.h"
-#include "ISerializable.h"
 
 using namespace std;
 
@@ -94,11 +93,6 @@ CVariant::CVariant(const CVariant &variant)
 {
   m_type = variant.m_type;
   *this = variant;
-}
-
-CVariant::CVariant(ISerializable& serializable)
-{
-  *this = serializable;
 }
 
 CVariant::~CVariant()
@@ -296,12 +290,6 @@ CVariant &CVariant::operator=(const CVariant &rhs)
     break;
   }
 
-  return *this;
-}
-
-CVariant &CVariant::operator=(ISerializable& rhs)
-{
-  rhs.Serialize(*this);
   return *this;
 }
 
