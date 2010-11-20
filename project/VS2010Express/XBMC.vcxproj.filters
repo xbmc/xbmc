@@ -2106,6 +2106,9 @@
     <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Service.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4426,6 +4429,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ISerializable.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Service.h">
+      <Filter>Source Files\Addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
