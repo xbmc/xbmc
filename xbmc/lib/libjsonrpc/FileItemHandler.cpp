@@ -25,111 +25,69 @@
 #include "VideoLibrary.h"
 #include "FileOperations.h"
 #include "../Util.h"
+#include "utils/ISerializable.h"
+#include "utils/Variant.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
 
-void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const CStdString &field, Value &result)
+void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const Value& fields, Value &result)
 {
-  if (videoInfo->IsEmpty())
+  if (info == NULL || fields.size() == 0)
     return;
 
-  if (field.Equals("genre") && !videoInfo->m_strGenre.IsEmpty())
-    result["genre"] = videoInfo->m_strGenre.c_str();
-  if (field.Equals("director") && !videoInfo->m_strDirector.IsEmpty())
-    result["director"] = videoInfo->m_strDirector.c_str();
-  if (field.Equals("trailer") && !videoInfo->m_strTrailer.IsEmpty())
-    result["trailer"] = videoInfo->m_strTrailer.c_str();
-  if (field.Equals("tagline") && !videoInfo->m_strTagLine.IsEmpty())
-    result["tagline"] = videoInfo->m_strTagLine.c_str();
-  if (field.Equals("plot") && !videoInfo->m_strPlot.IsEmpty())
-    result["plot"] = videoInfo->m_strPlot.c_str();
-  if (field.Equals("plotoutline") && !videoInfo->m_strPlotOutline.IsEmpty())
-    result["plotoutline"] = videoInfo->m_strPlotOutline.c_str();
-  if (field.Equals("title") && !videoInfo->m_strTitle.IsEmpty())
-    result["title"] = videoInfo->m_strTitle.c_str();
-  if (field.Equals("originaltitle") && !videoInfo->m_strOriginalTitle.IsEmpty())
-    result["originaltitle"] = videoInfo->m_strOriginalTitle.c_str();
-  if (field.Equals("lastplayed") && !videoInfo->m_lastPlayed.IsEmpty())
-    result["lastplayed"] = videoInfo->m_lastPlayed.c_str();
-  if (field.Equals("showtitle") && !videoInfo->m_strShowTitle.IsEmpty())
-    result["showtitle"] = videoInfo->m_strShowTitle.c_str();
-  if (field.Equals("firstaired") && !videoInfo->m_strFirstAired.IsEmpty())
-    result["firstaired"] = videoInfo->m_strFirstAired.c_str();
-  if (field.Equals("duration"))
-    result["duration"] = videoInfo->m_streamDetails.GetVideoDuration();
-  if (field.Equals("season") && videoInfo->m_iSeason > 0)
-    result["season"] = videoInfo->m_iSeason;
-  if (field.Equals("episode") && videoInfo->m_iEpisode > 0)
-    result["episode"] = videoInfo->m_iEpisode;
-  if (field.Equals("runtime") && !videoInfo->m_strRuntime.IsEmpty())
-    result["runtime"] = videoInfo->m_strRuntime.c_str();
-  if (field.Equals("year") && videoInfo->m_iYear > 0)
-    result["year"] = videoInfo->m_iYear;
-  if (field.Equals("playcount") && videoInfo->m_playCount >= 0)
-    result["playcount"] = videoInfo->m_playCount;
-  if (field.Equals("rating"))
-    result["rating"] = (double)videoInfo->m_fRating;
-  if (field.Equals("writer") && !videoInfo->m_strWritingCredits.IsEmpty())
-    result["writer"] = videoInfo->m_strWritingCredits.c_str();
-  if (field.Equals("studio") && !videoInfo->m_strStudio.IsEmpty())
-    result["studio"] = videoInfo->m_strStudio.c_str();
-  if (field.Equals("mpaa") && !videoInfo->m_strMPAARating.IsEmpty())
-    result["mpaa"] = videoInfo->m_strMPAARating.c_str();
-  if (field.Equals("premiered") && !videoInfo->m_strPremiered.IsEmpty())
-    result["premiered"] = videoInfo->m_strPremiered.c_str();
-  if (field.Equals("album") && !videoInfo->m_strAlbum.IsEmpty())
-    result["album"] = videoInfo->m_strAlbum.c_str();
-  if (field.Equals("artist") && !videoInfo->m_strArtist.IsEmpty())
-    result["artist"] = videoInfo->m_strArtist.c_str();
+  CVariant data;
+  info->Serialize(data);
+
+  Value serialization;
+  data.toJsonValue(serialization);
+  
+  for (unsigned int i = 0; i < fields.size(); i++)
+  {
+    CStdString field = fields[i].asString();
+
+    if (item)
+    {
+      if (item->IsAlbum() && item->HasProperty(field))
+      {
+        if (field == "album_rating")
+          result[field] = item->GetPropertyInt(field);
+        else
+          result[field] = item->GetProperty(field);
+
+        continue;
+      }
+
+      if (field == "fanart") 
+      {
+        CStdString cachedFanArt = item->GetCachedFanart();
+        if (!cachedFanArt.IsEmpty())
+        {
+          result["fanart"] = cachedFanArt.c_str();
+          continue;
+        }
+      }
+    }
+
+    if (serialization.isMember(field))
+    {
+      Value value = serialization[field];
+      if (!value.isString() || (value.isString() && !value.asString().empty()))
+        result[field] = value;
+    }
+  }
 }
 
-void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const CStdString &field, Value &result)
+void CFileItemHandler::MakeFieldsList(const Json::Value &parameterObject, Json::Value &validFields)
 {
-  if (field.Equals("title") && !musicInfo->GetTitle().IsEmpty())
-    result["title"] =  musicInfo->GetTitle().c_str();
-  if (field.Equals("album") && !musicInfo->GetAlbum().IsEmpty())
-    result["album"] =  musicInfo->GetAlbum().c_str();
-  if (field.Equals("artist") && !musicInfo->GetArtist().IsEmpty())
-    result["artist"] =  musicInfo->GetArtist().c_str();
-  if (field.Equals("albumartist") && !musicInfo->GetAlbumArtist().IsEmpty())
-    result["albumartist"] =  musicInfo->GetAlbumArtist().c_str();
+  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 
-  if (field.Equals("genre") && !musicInfo->GetGenre().IsEmpty())
-    result["genre"] =  musicInfo->GetGenre().c_str();
-
-  if (field.Equals("tracknumber"))
-    result["tracknumber"] = (int)musicInfo->GetTrackNumber();
-  if (field.Equals("discnumber"))
-    result["discnumber"] = (int)musicInfo->GetDiscNumber();
-  if (field.Equals("trackanddiscnumber"))
-    result["trackanddiscnumber"] = (int)musicInfo->GetTrackAndDiskNumber();
-  if (field.Equals("duration"))
-    result["duration"] = (int)musicInfo->GetDuration();
-  if (field.Equals("year"))
-    result["year"] = (int)musicInfo->GetYear();
-
-//  void GetReleaseDate(SYSTEMTIME& dateTime) const;
-
-  if (field.Equals("musicbrainztrackid") && !musicInfo->GetMusicBrainzTrackID().IsEmpty())
-    result["musicbrainztrackid"] =  musicInfo->GetMusicBrainzTrackID().c_str();
-  if (field.Equals("musicbrainzartistid") && !musicInfo->GetMusicBrainzArtistID().IsEmpty())
-    result["musicbrainzartistid"] =  musicInfo->GetMusicBrainzArtistID().c_str();
-  if (field.Equals("musicbrainzalbumid") && !musicInfo->GetMusicBrainzAlbumID().IsEmpty())
-    result["musicbrainzalbumid"] =  musicInfo->GetMusicBrainzAlbumID().c_str();
-  if (field.Equals("musicbrainzalbumartistid") && !musicInfo->GetMusicBrainzAlbumArtistID().IsEmpty())
-    result["musicbrainzalbumartistid"] =  musicInfo->GetMusicBrainzAlbumArtistID().c_str();
-  if (field.Equals("musicbrainztrmidid") && !musicInfo->GetMusicBrainzTRMID().IsEmpty())
-    result["musicbrainztrmidid"] =  musicInfo->GetMusicBrainzTRMID().c_str();
-
-  if (field.Equals("comment") && !musicInfo->GetComment().IsEmpty())
-    result["comment"] =  musicInfo->GetComment().c_str();
-  if (field.Equals("lyrics") && !musicInfo->GetLyrics().IsEmpty())
-    result["lyrics"] =  musicInfo->GetLyrics().c_str();
-
-  if (field.Equals("rating"))
-    result["rating"] = (int)(musicInfo->GetRating() - '0');
+  for (unsigned int i = 0; i < fields.size(); i++)
+  {
+    if (fields[i].isString())
+      validFields.append(fields[i]);
+  }
 }
 
 void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
@@ -148,72 +106,51 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   result["end"]   = end;
   result["total"] = size;
  
-  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
   Json::Value validFields = Value(arrayValue);
-
-  for (unsigned int i = 0; i < fields.size(); i++)
-  {
-    if (fields[i].isString())
-      validFields.append(fields[i]);
-  }
+  MakeFieldsList(parameterObject, validFields);
 
   for (int i = start; i < end; i++)
   {
     Value object;
     CFileItemPtr item = items.Get(i);
-    
-    if (allowFile)
-    {
-      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
-      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
-        object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
-
-      if (!object.isMember("file"))
-        object["file"] = item->m_strPath.c_str();
-    }
-    
-    if (id)
-    {
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
-        object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
-      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
-        object[id] = item->GetVideoInfoTag()->m_iDbId;
-    }
-    
-    if (!item->GetThumbnailImage().IsEmpty())
-      object["thumbnail"] = item->GetThumbnailImage().c_str();
-
-    for (unsigned int i = 0; i < validFields.size(); i++)
-    {
-      
-      CStdString field = validFields[i].asString();
-
-      if (item->HasVideoInfoTag())
-        FillVideoDetails(item->GetVideoInfoTag(), field, object);
-      if (item->HasMusicInfoTag())
-        FillMusicDetails(item->GetMusicInfoTag(), field, object);
-      if (item->IsAlbum() && item->HasProperty(field))
-      {
-        if (field == "album_rating")
-          object[field] = item->GetPropertyInt(field);
-        else
-          object[field] = item->GetProperty(field);
-      }
-
-      if (field == "fanart") 
-      {
-        CStdString cachedFanArt = item->GetCachedFanart();
-        if (!cachedFanArt.IsEmpty())
-          object["fanart"] = cachedFanArt.c_str();
-      }
-    }
-    
-    object["label"] = item->GetLabel().c_str();
-
-    if (resultname)
-      result[resultname].append(object);
+    HandleFileItem(id, allowFile, resultname, item, parameterObject, validFields, result);
   }
+}
+
+void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result)
+{
+  Value object;
+  if (allowFile)
+  {
+    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+      object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+    if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+      object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+
+    if (!object.isMember("file"))
+      object["file"] = item->m_strPath.c_str();
+  }
+    
+  if (id)
+  {
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+      object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
+    else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
+      object[id] = item->GetVideoInfoTag()->m_iDbId;
+  }
+    
+  if (!item->GetThumbnailImage().IsEmpty())
+    object["thumbnail"] = item->GetThumbnailImage().c_str();
+
+  if (item->HasVideoInfoTag())
+    FillDetails(item->GetVideoInfoTag(), item, validFields, object);
+  if (item->HasMusicInfoTag())
+    FillDetails(item->GetMusicInfoTag(), item, validFields, object);
+
+  object["label"] = item->GetLabel().c_str();
+
+  if (resultname)
+    result[resultname].append(object);
 }
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
