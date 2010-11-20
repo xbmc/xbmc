@@ -942,7 +942,7 @@ extern const LCENTRY g_iso639_2[536] =
   { MAKECODE('\0','z','u','n'), "Zuni" },
 };
 
-static const CharCodeConvertionWithHack CharCode2To3[184] =
+const CharCodeConvertionWithHack CharCode2To3[184] =
 {
   { "aa", "aar", NULL },
   { "ab", "abk", NULL },
@@ -1131,7 +1131,7 @@ static const CharCodeConvertionWithHack CharCode2To3[184] =
 };
 
 // Based on ISO 3166
-static const CharCodeConvertion RegionCode2To3[246] =
+const CharCodeConvertion RegionCode2To3[246] =
 {
   { "af", "afg" },
   { "ax", "ala" },
