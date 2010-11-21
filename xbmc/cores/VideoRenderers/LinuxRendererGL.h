@@ -186,6 +186,10 @@ protected:
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
 
+  void UploadRGBTexture(int index);
+  void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
+  void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -266,6 +270,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
+
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
@@ -275,11 +280,12 @@ protected:
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil   *m_dllAvUtil;
-  DllAvCodec  *m_dllAvCodec;
-  DllSwScale  *m_dllSwScale;
-  BYTE        *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int m_rgbBufferSize;
+  DllAvUtil         *m_dllAvUtil;
+  DllAvCodec        *m_dllAvCodec;
+  DllSwScale        *m_dllSwScale;
+  BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  unsigned int       m_rgbBufferSize;
+  struct SwsContext *m_context;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
