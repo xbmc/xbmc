@@ -58,6 +58,7 @@
 #include "utils/TimeUtils.h"
 #include "TextureCache.h"
 #include "GUIWindowAddonBrowser.h"
+#include "AutoPtrHandle.h"
 
 using namespace std;
 using namespace AUTOPTR;

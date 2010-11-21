@@ -87,8 +87,11 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace MEDIA_DETECT;
 using namespace ADDON;
+
+#ifdef HAS_DVD_DRIVE
+using namespace MEDIA_DETECT;
+#endif
 
 typedef struct
 {
@@ -764,10 +767,12 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_playlistPlayer.Clear();
   }
+#ifdef HAS_DVD_DRIVE
   else if (execute.Equals("ejecttray"))
   {
     CIoSupport::ToggleTray();
   }
+#endif
   else if( execute.Equals("alarmclock") && params.size() > 1 )
   {
     // format is alarmclock(name,command[,seconds,true]);
