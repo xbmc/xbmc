@@ -543,6 +543,8 @@ public:
     case VIDEODB_CONTENT_MUSICVIDEOS:
       out = "musicvideo";
       break;
+    default:
+      break;
     }
   }
 
