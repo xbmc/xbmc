@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "DVDInputStreamMMS.h"
 #include "FileSystem/IFile.h"
+#include "GUISettings.h"
 
 #ifndef _WIN32
 // work around for braindead usage of "this" keyword as parameter name in libmms headers
@@ -68,6 +69,10 @@ struct mmsx_s {
 
 bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
 {
+  int bandwidth = g_guiSettings.GetInt("network.bandwidth") * 1024;
+  if(bandwidth == 0)
+    bandwidth = 2000*1000;
+
   // TODO: remove this code if upstream accepts my patch
   // tracked at https://bugs.launchpad.net/libmms/+bug/512089
   // also see the struct definition further up (needed due to opaqueness)
@@ -78,12 +83,12 @@ bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
     return false;
   
   m_mms->connection_h = mmsh_connect((mms_io_t*)mms_get_default_io_impl(),
-                                     NULL,strFile,2000*1000);
+                                     NULL,strFile,bandwidth);
   if (m_mms->connection_h)
     return true;
     
   m_mms->connection = mms_connect((mms_io_t*)mms_get_default_io_impl(),
-                                  NULL,strFile,2000*1000);
+                                  NULL,strFile,bandwidth);
   if (m_mms->connection)
     return true;
     
@@ -91,7 +96,7 @@ bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
   m_mms = NULL;
   return false;
 #else
-  m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000); // TODO: what to do with bandwidth?
+  m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,bandwidth); // TODO: what to do with bandwidth?
   return (m_mms != NULL);
 #endif
 }
