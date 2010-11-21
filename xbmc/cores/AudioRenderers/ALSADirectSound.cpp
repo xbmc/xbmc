@@ -502,7 +502,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 
   // handle volume de-amp
   if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)data, framesToWrite);
+    m_amp.DeAmplify((short *)data, framesToWrite * m_uiDataChannels);
 
   int writeResult;
   if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
