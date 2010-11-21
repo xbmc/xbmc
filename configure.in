@@ -249,6 +249,12 @@ AC_ARG_ENABLE([webserver],
   [use_webserver=$enableval],
   [use_webserver=yes])
 
+AC_ARG_ENABLE([optical-drive],
+  [AS_HELP_STRING([--disable-optical-drive],
+  [disable optical drive])],
+  [use_optical_drive=$enableval],
+  [use_optical_drive=yes])
+
 AC_ARG_ENABLE([libdts],
   [AS_HELP_STRING([--enable-libdts],
   [enable deprecated libdts support])],
@@ -681,6 +687,11 @@ else
   if test "$use_webserver" = "yes"; then
     AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
   fi
+fi
+
+# Optical
+if test "$use_optical_drive" = "yes"; then
+  AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
 fi
 
 # PulseAudio
@@ -1290,6 +1301,12 @@ if test "$use_librtmp" != "no"; then
   final_message="$final_message\n  libRTMP support:\tYes"
 else
   final_message="$final_message\n  libRTMP support:\tNo"
+fi
+
+if test "$use_optical_drive" = "yes"; then
+  final_message="$final_message\n  Optical drive:\tYes"
+else
+  final_message="$final_message\n  Optical drive:\tNo"
 fi
 
 if test "$use_libdts" = "yes"; then

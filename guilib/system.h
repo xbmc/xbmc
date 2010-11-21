@@ -32,7 +32,6 @@
 #define HAS_SDL
 #endif
 
-#define HAS_DVD_DRIVE
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
@@ -87,6 +86,7 @@
  *****************/
 
 #ifdef _WIN32
+#define HAS_DVD_DRIVE
 #define HAS_SDL_JOYSTICK
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
