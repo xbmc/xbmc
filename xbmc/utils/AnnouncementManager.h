@@ -22,6 +22,7 @@
 
 #include "IAnnouncer.h"
 #include "CriticalSection.h"
+#include "boost/shared_ptr.hpp"
 #include <vector>
 
 class CFileItem;
