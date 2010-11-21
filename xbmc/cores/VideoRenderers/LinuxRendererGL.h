@@ -97,7 +97,6 @@ enum RenderQuality
   RQ_LOW=1,
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
-  RQ_SOFTWARE
 };
 
 #define PLANE_Y 0

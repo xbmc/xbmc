@@ -1297,11 +1297,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
       RenderMultiPass(renderBuffer, m_currentField);
       VerifyGLState();
       break;
-
-    case RQ_SOFTWARE:
-      RenderSoftware(renderBuffer, m_currentField);
-      VerifyGLState();
-      break;
     }
   }
   else if (m_renderMethod & RENDER_ARB)
