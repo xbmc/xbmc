@@ -527,6 +527,25 @@ public:
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
   bool GetRandomMusicVideo(CFileItem* item, int& idSong, const CStdString& strWhere);
 
+  static void VideoContentTypeToString(VIDEODB_CONTENT_TYPE type, CStdString& out)
+  {
+    switch (type)
+    {
+    case VIDEODB_CONTENT_MOVIES:
+      out = "movie";
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      out = "tvshow";
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      out = "episode";
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      out = "musicvideo";
+      break;
+    }
+  }
+
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);

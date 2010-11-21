@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include "log.h"
 #include "Variant.h"
+#include "FileItem.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -56,4 +58,29 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
   CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
     m_announcers[i]->Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant *_data /*= NULL*/)
+{
+  // Extract db id of item
+  CVariant data = (_data && _data->isObject()) ? *_data : CVariant(CVariant::VariantTypeObject);
+  CStdString type;
+  int id = 0;
+  if (item->HasVideoInfoTag())
+  {
+    CVideoDatabase::VideoContentTypeToString(item->GetVideoContentType(), type);
+    id = item->GetVideoInfoTag()->m_iDbId;
+  } else if (item->HasMusicInfoTag())
+  {
+    type = "music";
+    id = item->GetMusicInfoTag()->GetDatabaseId();
+  }
+
+  if (id > 0)
+  {
+    type += "id";
+    data[type] = id;
+    Announce(flag, sender, message, &data);
+  } else
+    Announce(flag, sender, message, _data);
 }

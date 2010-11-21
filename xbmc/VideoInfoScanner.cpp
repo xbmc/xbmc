@@ -1040,6 +1040,7 @@ namespace VIDEO
         movieDetails.m_strTrailer = strTrailer;
 
       lResult = m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+      movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
       if (!movieDetails.m_strShowLink.IsEmpty())
@@ -1061,7 +1062,8 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        lResult=m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
+        lResult = m_database.SetDetailsForTvShow(pItem->m_strPath, movieDetails);
+        movieDetails.m_iDbId = lResult;
       }
       else
       {
@@ -1069,6 +1071,7 @@ namespace VIDEO
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
         lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+        movieDetails.m_iDbId = lResult;
         if (movieDetails.m_fEpBookmark > 0)
         {
           movieDetails.m_strFileNameAndPath = pItem->m_strPath;
@@ -1083,6 +1086,7 @@ namespace VIDEO
     else if (content == CONTENT_MUSICVIDEOS)
     {
       lResult = m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
+      movieDetails.m_iDbId = lResult;
     }
 
     if (g_advancedSettings.m_bVideoLibraryImportWatchedState)
@@ -1091,7 +1095,7 @@ namespace VIDEO
     // Announce the world a new video was added
     CVariant param;
     param["content"] = TranslateContent(content);
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "OnNewVideo", &param);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "OnNewVideo", CFileItemPtr( new CFileItem(*pItem) ), &param);
 
     m_database.Close();
     return lResult;

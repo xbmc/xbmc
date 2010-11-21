@@ -33,6 +33,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "utils/CriticalSection.h"
+#include "VideoDatabase.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -146,6 +147,7 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
+  VIDEODB_CONTENT_TYPE GetVideoContentType() const;
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }

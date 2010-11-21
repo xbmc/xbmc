@@ -3033,4 +3033,15 @@ CStdString CFileItem::FindTrailer() const
   return strTrailer;
 }
 
+VIDEODB_CONTENT_TYPE CFileItem::GetVideoContentType() const
+{
+  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+    type = VIDEODB_CONTENT_TVSHOWS;
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_iSeason > -1 && !m_bIsFolder) // episode
+    type = VIDEODB_CONTENT_EPISODES;
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strArtist.IsEmpty())
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  return type;
+}
 
