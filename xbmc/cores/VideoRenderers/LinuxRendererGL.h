@@ -158,10 +158,6 @@ public:
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
 
-  void ChooseUpscalingMethod();
-  bool IsSoftwareUpscaling();
-  void InitializeSoftwareUpscaling();
-
   virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
@@ -214,12 +210,6 @@ protected:
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
-
-  // Software upscaling.
-  int m_upscalingWidth;
-  int m_upscalingHeight;
-  YV12Image m_imScaled;
-  bool m_isSoftwareUpscaling;
 
   // Raw data used by renderer
   int m_currentField;
