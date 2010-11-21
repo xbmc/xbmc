@@ -31,6 +31,7 @@
 #include "MusicInfoTag.h"
 #include "utils/log.h"
 #include "URL.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 using namespace std;
@@ -487,6 +488,10 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   else if(FindMime(resources, "image/"))
     mime = "image/";
 
+  int maxrate = g_guiSettings.GetInt("network.bandwidth");
+  if(maxrate == 0)
+    maxrate = INT_MAX;
+
   SResources::iterator best = resources.end();
   for(const char** type = prio; *type && best == resources.end(); type++)
   {
@@ -498,14 +503,30 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
       if(it->tag == *type)
       {
         if(best == resources.end())
+        {
           best = it;
-        else if((it->width && it->height) || (best->width && best->height))
+          continue;
+        }
+
+        if(it->bitrate == best->bitrate)
         {
           if(it->width*it->height > best->width*best->height)
             best = it;
+          continue;
         }
-        else if(it->bitrate > best->bitrate)
+
+        if(it->bitrate > maxrate)
+        {
+          if(it->bitrate < best->bitrate)
+            best = it;
+          continue;
+        }
+
+        if(it->bitrate > best->bitrate)
+        {
           best = it;
+          continue;
+        }
       }
     }
   }
