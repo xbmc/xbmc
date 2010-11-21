@@ -36,6 +36,7 @@ CBaseRenderer::CBaseRenderer()
   m_sourceWidth = 720;
   m_sourceHeight = 480;
   m_resolution = RES_DESKTOP;
+  m_fps = 0.0f;
 }
 
 CBaseRenderer::~CBaseRenderer()

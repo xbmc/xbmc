@@ -118,6 +118,7 @@ class CAdvancedSettings
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
     bool  m_videoAllowLanczos3;
+    float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     bool m_DXVACheckCompatibility;

@@ -229,6 +229,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_fps = fps;
 
   // Save the flags.
   m_iFlags = flags;
@@ -774,8 +775,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
     bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
+    bool scaleFps = m_fps < g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f;
 
-    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp)
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
