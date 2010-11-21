@@ -438,7 +438,7 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
         float offset_y = 0.5;
         if(plane != 0)
           offset_y += 0.5;
-        if(field == FIELD_EVEN)
+        if(field == FIELD_BOT)
           offset_y *= -1;
 
         p.rect.y1 += offset_y;
@@ -648,11 +648,11 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
     // Load RGB image
     if (deinterlacing)
     {
-      LoadPlane( fields[FIELD_ODD][0] , GL_BGRA, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][0] , GL_BGRA, buf.flipindex
                , im->width, im->height >> 1
                , m_sourceWidth*2, m_rgbBuffer );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_BGRA, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
                , im->width, im->height >> 1
                , m_sourceWidth*2, m_rgbBuffer + m_sourceWidth*4);
     }
@@ -682,11 +682,11 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] + im->stride[0]) ;
     }
@@ -708,20 +708,20 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] );
 
-      LoadPlane( fields[FIELD_ODD][2], GL_ALPHA, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
 
       // Load Odd U & V Fields
-      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
-      LoadPlane( fields[FIELD_EVEN][2], GL_ALPHA, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] + im->stride[2] );
 
@@ -819,15 +819,15 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
 
-  if( (flags & RENDER_FLAG_ODD)
-   && (flags & RENDER_FLAG_EVEN) )
+  if( (flags & RENDER_FLAG_TOP)
+   && (flags & RENDER_FLAG_BOT) )
   {
     glEnable(GL_POLYGON_STIPPLE);
 
     glPolygonStipple(stipple_weave);
-    Render(flags & ~RENDER_FLAG_EVEN, index);
+    Render(flags & ~RENDER_FLAG_BOT, index);
     glPolygonStipple(stipple_weave+4);
-    Render(flags & ~RENDER_FLAG_ODD , index);
+    Render(flags & ~RENDER_FLAG_TOP , index);
 
     glDisable(GL_POLYGON_STIPPLE);
   }
@@ -1257,22 +1257,22 @@ void CLinuxRendererGL::UnInit()
 void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 {
   // obtain current field, if interlaced
-  if( flags & RENDER_FLAG_ODD)
-    m_currentField = FIELD_ODD;
+  if( flags & RENDER_FLAG_TOP)
+    m_currentField = FIELD_TOP;
 
-  else if (flags & RENDER_FLAG_EVEN)
-    m_currentField = FIELD_EVEN;
+  else if (flags & RENDER_FLAG_BOT)
+    m_currentField = FIELD_BOT;
 
   else if (flags & RENDER_FLAG_LAST)
   {
     switch(m_currentField)
     {
-    case FIELD_ODD:
-      flags = RENDER_FLAG_ODD;
+    case FIELD_TOP:
+      flags = RENDER_FLAG_TOP;
       break;
 
-    case FIELD_EVEN:
-      flags = RENDER_FLAG_EVEN;
+    case FIELD_BOT:
+      flags = RENDER_FLAG_BOT;
       break;
     }
   }
@@ -1376,9 +1376,9 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   else
     m_pYUVShader->SetNonLinStretch(pow(g_settings.m_fPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
 
-  if     (field == FIELD_ODD)
+  if     (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
-  else if(field == FIELD_EVEN)
+  else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
   m_pYUVShader->Enable();
@@ -1477,9 +1477,9 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
-  if     (field == FIELD_ODD)
+  if     (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
-  else if(field == FIELD_EVEN)
+  else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
   VerifyGLState();
@@ -1982,7 +1982,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   }
 
   // YUV
-  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
@@ -2091,11 +2091,11 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
   if (deinterlacing)
   {
     // Load Y fields
-    LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+    LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
              , im->width, im->height >> 1
              , im->stride[0]*2, im->plane[0] );
 
-    LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, buf.flipindex
+    LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
              , im->width, im->height >> 1
              , im->stride[0]*2, im->plane[0] + im->stride[0]) ;
   }
@@ -2114,12 +2114,12 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
   if (deinterlacing)
   {
     // Load Even UV Fields
-    LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE_ALPHA, buf.flipindex
+    LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1], im->plane[1] );
 
     // Load Odd UV Fields
-    LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE_ALPHA, buf.flipindex
+    LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1], im->plane[1] + im->stride[1] );
   }
@@ -2202,7 +2202,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   }
 
   // YUV
-  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
@@ -2413,9 +2413,9 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
     colorspace = VA_SRC_BT601;
 
   int field;
-  if      (m_currentField == FIELD_ODD)
+  if      (m_currentField == FIELD_TOP)
     field = VA_TOP_FIELD;
-  else if (m_currentField == FIELD_EVEN)
+  else if (m_currentField == FIELD_BOT)
     field = VA_BOTTOM_FIELD;
   else
     field = VA_FRAME_PICTURE;
@@ -2479,11 +2479,11 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
   if (deinterlacing)
   {
     // Load YUYV fields
-    LoadPlane( fields[FIELD_ODD][0], GL_BGRA, buf.flipindex
+    LoadPlane( fields[FIELD_TOP][0], GL_BGRA, buf.flipindex
              , im->width / 2, im->height >> 1
              , im->stride[0] / 2, im->plane[0] );
 
-    LoadPlane( fields[FIELD_EVEN][0], GL_BGRA, buf.flipindex
+    LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
              , im->width / 2, im->height >> 1
              , im->stride[0] / 2, im->plane[0] + im->stride[0]) ;
   }
@@ -2612,7 +2612,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   }
 
   // YUV
-  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
@@ -2667,7 +2667,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
   {
     YUVFIELDS &fields = m_buffers[i].fields;
 
-    for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+    for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
     {
       for (int p = 0; p < 3; p++)
       {

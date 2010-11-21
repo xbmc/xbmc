@@ -1170,9 +1170,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( pPicture->iFlags & DVP_FLAG_INTERLACED )
   {
     if( pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
-      mDisplayField = FS_ODD;
+      mDisplayField = FS_TOP;
     else
-      mDisplayField = FS_EVEN;
+      mDisplayField = FS_BOT;
   }
 
   // copy picture to overlay

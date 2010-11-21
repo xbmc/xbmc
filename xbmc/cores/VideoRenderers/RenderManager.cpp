@@ -393,16 +393,16 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     /* default to odd field if we want to deinterlace and don't know better */
     if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
-      m_presentfield = FS_ODD;
+      m_presentfield = FS_TOP;
 
     /* invert present field if we have one of those methods */
     if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
      || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
     {
-      if( m_presentfield == FS_EVEN )
-        m_presentfield = FS_ODD;
+      if( m_presentfield == FS_BOT )
+        m_presentfield = FS_TOP;
       else
-        m_presentfield = FS_EVEN;
+        m_presentfield = FS_BOT;
     }
   }
 
@@ -488,19 +488,19 @@ void CXBMCRenderManager::PresentBob()
 
   if(m_presentstep == PRESENT_FRAME)
   {
-    if( m_presentfield == FS_EVEN)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    if( m_presentfield == FS_BOT)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
     m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
   {
-    if( m_presentfield == FS_ODD)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    if( m_presentfield == FS_TOP)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
     m_presentstep = PRESENT_IDLE;
   }
 }
@@ -509,15 +509,15 @@ void CXBMCRenderManager::PresentBlend()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if( m_presentfield == FS_EVEN )
+  if( m_presentfield == FS_BOT )
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_ODD, 128);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_TOP, 128);
   }
   else
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_BOT, 128);
   }
   m_presentstep = PRESENT_IDLE;
 }

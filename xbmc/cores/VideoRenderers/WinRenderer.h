@@ -49,9 +49,9 @@
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
 
 
-#define RENDER_FLAG_EVEN        0x01
-#define RENDER_FLAG_ODD         0x02
-#define RENDER_FLAG_BOTH (RENDER_FLAG_EVEN | RENDER_FLAG_ODD)
+#define RENDER_FLAG_BOT         0x01
+#define RENDER_FLAG_TOP         0x02
+#define RENDER_FLAG_BOTH (RENDER_FLAG_BOT | RENDER_FLAG_TOP)
 #define RENDER_FLAG_FIELDMASK   0x03
 
 #define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
@@ -91,8 +91,8 @@ struct DRAWRECT
 enum EFIELDSYNC
 {
   FS_NONE,
-  FS_ODD,
-  FS_EVEN,
+  FS_TOP,
+  FS_BOT,
   FS_BOTH,
 };
 
@@ -117,8 +117,8 @@ enum RenderMethod
 #define PLANE_V 2
 
 #define FIELD_FULL 0
-#define FIELD_ODD 1
-#define FIELD_EVEN 2
+#define FIELD_TOP 1
+#define FIELD_BOT 2
 
 struct SVideoBuffer
 {

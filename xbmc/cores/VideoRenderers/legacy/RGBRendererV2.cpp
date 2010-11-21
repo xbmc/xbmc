@@ -154,7 +154,7 @@ void CRGBRendererV2::Render(DWORD flags)
     D3DSurface* p444PSourceFull = NULL;
     D3DSurface* p444PSourceField = NULL;
 
-    if( flags & (RENDER_FLAG_ODD|RENDER_FLAG_EVEN) )
+    if( flags & (RENDER_FLAG_TOP|RENDER_FLAG_BOT) )
     {
       if(!m_444PTextureField)
       {
@@ -242,10 +242,10 @@ void CRGBRendererV2::Render(DWORD flags)
     m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA);
 #endif
 
-    if( flags & RENDER_FLAG_ODD )
+    if( flags & RENDER_FLAG_TOP )
     {
       InterleaveYUVto444P(
-          m_YUVTexture[index][FIELD_ODD],
+          m_YUVTexture[index][FIELD_TOP],
           m_444PTextureFull, // use a downscaled motion value from the full frame,
           p444PSourceField,
           rsf, rs, rsf,
@@ -253,10 +253,10 @@ void CRGBRendererV2::Render(DWORD flags)
           0.0f, 0.0f,
           CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
     }
-    else if( flags & RENDER_FLAG_EVEN )
+    else if( flags & RENDER_FLAG_BOT )
     {
       InterleaveYUVto444P(
-          m_YUVTexture[index][FIELD_EVEN],
+          m_YUVTexture[index][FIELD_BOT],
           m_444PTextureFull, // use a downscaled motion value from the full frame,
           p444PSourceField,
           rsf, rs, rsf,
@@ -296,7 +296,7 @@ void CRGBRendererV2::Render(DWORD flags)
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
 
-        if(flags & RENDER_FLAG_ODD)
+        if(flags & RENDER_FLAG_TOP)
           RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, 0.25);
         else
           RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, -0.25);
@@ -314,7 +314,7 @@ void CRGBRendererV2::Render(DWORD flags)
       if(m_444PTextureField && p444PSourceField)
       {
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-        if(flags & RENDER_FLAG_ODD)
+        if(flags & RENDER_FLAG_TOP)
           RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, 0.25);
         else
           RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, -0.25);

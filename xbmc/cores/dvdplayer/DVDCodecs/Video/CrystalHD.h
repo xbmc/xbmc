@@ -108,8 +108,8 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 #define CRYSTALHD_FIELD_FULL        0x00
-#define CRYSTALHD_FIELD_EVEN        0x01
-#define CRYSTALHD_FIELD_ODD         0x02
+#define CRYSTALHD_FIELD_BOT         0x01
+#define CRYSTALHD_FIELD_TOP         0x02
 
 typedef struct CHD_CODEC_PARAMS {
   uint8_t   *sps_pps_buf;

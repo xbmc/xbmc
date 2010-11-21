@@ -22,9 +22,9 @@
  *
  */
 
-#define RENDER_FLAG_EVEN        0x01
-#define RENDER_FLAG_ODD         0x02
-#define RENDER_FLAG_BOTH (RENDER_FLAG_EVEN | RENDER_FLAG_ODD)
+#define RENDER_FLAG_BOT         0x01
+#define RENDER_FLAG_TOP         0x02
+#define RENDER_FLAG_BOTH (RENDER_FLAG_BOT | RENDER_FLAG_TOP)
 #define RENDER_FLAG_FIELDMASK   0x03
 #define RENDER_FLAG_LAST        0x40
 
