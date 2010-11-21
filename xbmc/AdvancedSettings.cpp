@@ -88,7 +88,7 @@ void CAdvancedSettings::Initialize()
   m_videoVDPAUScaling = false;
   m_videoNonLinStretchRatio = 0.5f;
   m_videoAllowLanczos3 = false;
-  m_videoAutoScaleMaxFps = 25.0f;
+  m_videoAutoScaleMaxFps = 30.0f;
   m_videoAllowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
