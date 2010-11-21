@@ -1419,7 +1419,7 @@ den här visualiseringen</string>
   <string id="20024">Skanna nya</string>
   <string id="20025">Skanna alla</string>
   <string id="20026">Region</string>
-  <string id="20037">Sammanfattning</string>
+  <string id="20037">Översikt</string>
   <string id="20038">Lås musikfönster</string>
   <string id="20039">Lås filmfönster</string>
   <string id="20040">Lås bildfönster</string>
@@ -1677,7 +1677,7 @@ den här visualiseringen</string>
   <string id="20399">Gå till musikvideor från album</string>
   <string id="20400">Gå till musikvideor av artist</string>
   <string id="20401">Spela musikvideo</string>
-  <string id="20402">Hämta automatiskt skådespelarminiatyrer under tilläggning till biblioteket</string>
+  <string id="20402">Hämta skådespelarminiatyrer vid tilläggning till biblioteket</string>
   <string id="20403">Ange skådespelarminiatyr</string>
   <string id="20405">Ta bort avsnittsbokmärke</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
@@ -1826,7 +1826,7 @@ den här visualiseringen</string>
   <string id="21449">Fjärrkontroll sänder tangentbordstryckningar</string>
   <string id="21450">- Redigera</string>
   <string id="21451">Internetuppkoppling krävs.</string>
-  <string id="21452">Få mer...</string>
+  <string id="21452">Hämta fler...</string>
   <string id="21453">Rotfilsystem</string>
   <string id="21800">Filnamn</string>
   <string id="21801">Filsökväg</string>

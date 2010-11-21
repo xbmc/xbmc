@@ -23,6 +23,7 @@
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="ro">Catalog AllMusic pentru informații artiști</summary>
     <summary lang="ru">Информация об исполнителе из AllMusic</summary>
+    <summary lang="se">AllMusic artistinformation + HTBackdrops artistbilder</summary>
     <summary lang="zh">AllMusic艺术家信息</summary>
     <description lang="en">Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion. All genres and styles of music are covered here, ranging from the most commercially popular to the most obscure. We critique albums and artists within the context of their own genres - from opera to garage rock to traditional country.
@@ -59,6 +60,11 @@ Home Theater Backdrops (HTBackdrops.com) este o bază de date de imagini realiza
 Сайт allmusic был создан в 1995 как место для фанатов музыки, где они могли бы удовлетворять свою страсть.
 Редакторский состав AMG, вместе с сотнями участников-экспертов (каждый по-своему фанат музыки), сделали allmusic самым полным источником информации о музыке на планете. Все они посвятили себя созданию и поддержке полезного, и познавательного, контента который любители музыки, и профессионалы индустрии, ожидают от AMG.
 Здесь представлены все стили и жанры музыки, от самых коммерчески популярных до наиболее неизвестных. Мы критикуем альбомы и исполнителей в контексте их собственного жанра - от оперы и гаражного рока до традиционного кантри. Это обеспечивает то, что фанат любого стиля музыки может полагаться на нас в поддержке актуальности своих познаний о любимом исполнителе и также расширять свои знания.</description>
+    <description lang="se">Låt AllMusic.com fylla dina mappar med metadatainformation.
+AllMusic's webbplats skapades 1995 som en plats för musikälskare där de kunde njuta av sin passion. Alla genrer och stilar av musik behandlas här, allt från det mest kommersiellt populära till det mest suspekta. De kritiserar album och artister inom ramen för sina egna genrer, allt från opera, garagerock till traditionell countrymusik.
+
+Home Theater Backdrops (HTBackdrops.com) är en gemenskapsdriven bilddatabas för högkvalitativa miniatyrer och fanart på artister. Alla bilder har skapats eller bidragits från medlemmarna. Överväg att ladda upp dina egna bilder av dina favoritartister.</description>
+</description>
     <description lang="zh">从AllMusic.com网站获取音乐资料。
 allmusic网站创建于1995年，它是音乐爱好者的乐园。
 AMG的编辑和许多专业撰稿人（都是音乐狂热分子）共同把allmusic建成世界上最全面的音乐资料库。他们致力于创造和维护音乐爱好者和业内专业人士期望从AMG得到的知识和精神产品。
