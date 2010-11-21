@@ -2492,8 +2492,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
     src[0]       = im->plane[0];
     srcStride[0] = im->stride[0];
   }
-
-  if (srcFormat == -1) //should never happen
+  else //should never happen
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFrame: called with unsupported format %i", CONF_FLAGS_FORMAT_MASK(m_iFlags));
     return;
@@ -2563,8 +2562,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     srcBot[0]       = im->plane[0] + im->stride[0];
     srcStrideBot[0] = im->stride[0] * 2;
   }
-
-  if (srcFormat == -1) //should never happen
+  else //should never happen
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFields: called with unsupported format %i", CONF_FLAGS_FORMAT_MASK(m_iFlags));
     return;
