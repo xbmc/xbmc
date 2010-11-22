@@ -315,10 +315,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     if ( bHasKaraoke )
       AddKaraokeData( song );
 
-    CVariant data;
-    data["content"] = "song";
-    data["songid"] = idSong;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewAudio", data);
+    AnnounceUpdate("song", idSong);
   }
   catch (...)
   {
@@ -3793,12 +3790,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
       m_pDS->exec(sql.c_str());
 
       for (unsigned int i = 0; i < ids.size(); i++)
-      {
-        CVariant data;
-        data["content"] = "song";
-        data["songid"] = ids[i];
-        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveAudio", data);
-      }
+        AnnounceRemove("song", ids[i]);
     }
     // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
     sql = PrepareSQL("delete from path where strPath like '%s%s'", path.c_str(), (exact?"":"%"));
@@ -4747,4 +4739,20 @@ int CMusicDatabase::GetVariousArtistsAlbumsCount()
   }
 
   return result;
+}
+
+void CMusicDatabase::AnnounceRemove(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveAudio", data);
+}
+
+void CMusicDatabase::AnnounceUpdate(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewAudio", data);
 }
