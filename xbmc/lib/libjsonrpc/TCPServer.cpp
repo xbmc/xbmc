@@ -24,12 +24,18 @@ using namespace Json;
 
 CTCPServer *CTCPServer::ServerInstance = NULL;
 
-void CTCPServer::StartServer(int port, bool nonlocal)
+bool CTCPServer::StartServer(int port, bool nonlocal)
 {
   StopServer(true);
 
   ServerInstance = new CTCPServer(port, nonlocal);
-  ServerInstance->Create();
+  if (ServerInstance->Initialize())
+  {
+    ServerInstance->Create();
+    return true;
+  }
+  else
+    return false;
 }
 
 void CTCPServer::StopServer(bool bWait)
@@ -54,7 +60,7 @@ CTCPServer::CTCPServer(int port, bool nonlocal)
 
 void CTCPServer::Process()
 {
-  m_bStop = !Initialize();
+  m_bStop = false;
 
   while (!m_bStop)
   {
