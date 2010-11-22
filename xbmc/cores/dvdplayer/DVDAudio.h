@@ -83,6 +83,7 @@ protected:
   int m_iBitrate;
   int m_iBitsPerSample;
   bool m_bPassthrough;
+  bool m_bPaused;
 
   volatile bool& m_bStop;
   //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
