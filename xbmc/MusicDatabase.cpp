@@ -315,9 +315,10 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     if ( bHasKaraoke )
       AddKaraokeData( song );
 
-    CVariant param;
-    param["songid"] = idSong;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewSong", param);
+    CVariant data;
+    data["content"] = "song";
+    data["songid"] = idSong;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewAudio", data);
   }
   catch (...)
   {
