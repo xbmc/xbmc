@@ -242,7 +242,7 @@ void CTCPServer::Deinitialize()
 
 CTCPServer::CTCPClient::CTCPClient()
 {
-  m_announcementflags = 0;
+  m_announcementflags = ANNOUNCE_ALL;
   m_socket = -1;
   m_beginBrackets = 0;
   m_endBrackets = 0;
