@@ -6243,6 +6243,11 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     CStdString moviesToDelete = "";
     CStdString episodesToDelete = "";
     CStdString musicVideosToDelete = "";
+
+    std::vector<int> movieIDs;
+    std::vector<int> episodeIDs;
+    std::vector<int> musicVideoIDs;
+
     int total = m_pDS->num_rows();
     int current = 0;
     while (!m_pDS->eof())
@@ -6304,6 +6309,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        movieIDs.push_back(m_pDS->fv(0).get_asInt());
         moviesToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6313,6 +6319,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
        m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        episodeIDs.push_back(m_pDS->fv(0).get_asInt());
         episodesToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6323,6 +6330,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        musicVideoIDs.push_back(m_pDS->fv(0).get_asInt());
         musicVideosToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6445,6 +6453,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     sql = "delete from tvshow where idShow not in (select idShow from tvshowlinkpath)";
     m_pDS->exec(sql.c_str());
 
+    std::vector<int> tvshowIDs;
     CStdString showsToDelete;
     sql = "select tvshow.idShow from tvshow "
             "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
@@ -6454,6 +6463,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
+      tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
       showsToDelete += m_pDS->fv(0).get_asString() + ",";
       m_pDS->next();
     }
@@ -6547,6 +6557,17 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     time = CTimeUtils::GetTimeMS() - time;
     CLog::Log(LOGNOTICE, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
 
+    for (unsigned int i = 0; i < movieIDs.size(); i++)
+      AnnounceRemove("movie", movieIDs[i]);
+
+    for (unsigned int i = 0; i < episodeIDs.size(); i++)
+      AnnounceRemove("episode", episodeIDs[i]);
+
+    for (unsigned int i = 0; i < tvshowIDs.size(); i++)
+      AnnounceRemove("tvshow", tvshowIDs[i]);
+
+    for (unsigned int i = 0; i < musicVideoIDs.size(); i++)
+      AnnounceRemove("musicvideo", musicVideoIDs[i]);
   }
   catch (...)
   {
