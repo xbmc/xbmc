@@ -7546,5 +7546,5 @@ void CVideoDatabase::AnnounceUpdate(std::string content, int id)
   CVariant data;
   data["content"] = content;
   data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "UpdateVideo", data);
 }
