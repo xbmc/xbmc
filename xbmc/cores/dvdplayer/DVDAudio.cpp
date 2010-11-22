@@ -38,7 +38,6 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
-  m_iSpeed = 0;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
   m_iBitrate = 0;
@@ -115,23 +114,10 @@ void CDVDAudio::Destroy()
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
-  m_iSpeed = 1;
-}
-
-void CDVDAudio::SetSpeed(int iSpeed)
-{
-  m_iSpeed = abs(iSpeed);
-
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
 {
-  //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
-  //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
-  //if( m_iSpeedStep )
-  //  return m_dwPacketSize;
-  //else
-
   if(!m_pAudioDecoder)
     return 0;
 
