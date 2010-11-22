@@ -529,7 +529,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
     // Announce the world a new song was added
     CVariant param;
-    param["musicid"] = (int64_t)song.idSong;
+    param["songid"] = (int64_t)song.idSong;
     ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewSong", param);
 
     artistsToScan.insert(song.strArtist);
