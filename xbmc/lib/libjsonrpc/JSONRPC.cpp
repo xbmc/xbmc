@@ -272,10 +272,7 @@ JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportL
   int flags = client->GetAnnouncementFlags();
   
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-  {
-    if (flags & i)
-      result["permission"].append(AnnouncementFlagToString((EAnnouncementFlag)(flags & i)));
-  }
+    result[AnnouncementFlagToString((EAnnouncementFlag)(flags & i))] = (flags & i) > 0;
 
   return OK;
 }
