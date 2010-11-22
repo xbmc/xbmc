@@ -1714,7 +1714,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     CVariant data;
     data["content"] = "movie";
     data["movieid"] = idMovie;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
 
     return idMovie;
   }
@@ -1778,7 +1778,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     CVariant data;
     data["content"] = "tvshow";
     data["tvshowid"] = idTvShow;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
 
     return idTvShow;
   }
@@ -1857,7 +1857,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     CVariant data;
     data["content"] = "episode";
     data["episodeid"] = idEpisode;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
 
     return idEpisode;
   }
@@ -1934,7 +1934,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     CVariant data;
     data["content"] = "musicvideo";
     data["musicvideoid"] = idMVideo;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
 
     return idMVideo;
   }

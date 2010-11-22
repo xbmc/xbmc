@@ -318,7 +318,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     CVariant data;
     data["content"] = "song";
     data["songid"] = idSong;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewAudio", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewAudio", data);
   }
   catch (...)
   {
