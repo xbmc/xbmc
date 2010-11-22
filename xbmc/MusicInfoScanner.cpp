@@ -47,7 +47,6 @@
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "utils/AnnouncementManager.h"
 
 #include <algorithm>
 
@@ -526,11 +525,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
-
-    // Announce the world a new song was added
-    CVariant param;
-    param["songid"] = (int64_t)song.idSong;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewSong", param);
 
     artistsToScan.insert(song.strArtist);
     albumsToScan.insert(make_pair(song.strAlbum, song.strArtist));

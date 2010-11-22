@@ -43,7 +43,6 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
-#include "utils/AnnouncementManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1091,11 +1090,6 @@ namespace VIDEO
 
     if (g_advancedSettings.m_bVideoLibraryImportWatchedState)
       m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
-
-    // Announce the world a new video was added
-    CVariant param;
-    param["content"] = TranslateContent(content);
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", CFileItemPtr( new CFileItem(*pItem) ), param);
 
     m_database.Close();
     return lResult;

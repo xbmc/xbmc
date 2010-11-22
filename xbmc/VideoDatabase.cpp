@@ -47,6 +47,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "GUIWindowAddonBrowser.h"
+#include "utils/AnnouncementManager.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -971,6 +972,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
 
     strSQL=PrepareSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,idEpisode);
     m_pDS->exec(strSQL.c_str());
+
 //    CommitTransaction();
 
     return idEpisode;
@@ -1708,6 +1710,12 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    CVariant data;
+    data["content"] = "movie";
+    data["movieid"] = idMovie;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+
     return idMovie;
   }
   catch (...)
@@ -1766,6 +1774,12 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     sql += PrepareSQL("where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    CVariant data;
+    data["content"] = "tvshow";
+    data["tvshowid"] = idTvShow;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+
     return idTvShow;
   }
   catch (...)
@@ -1839,6 +1853,12 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     sql += PrepareSQL("where idEpisode=%i", idEpisode);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    CVariant data;
+    data["content"] = "episode";
+    data["episodeid"] = idEpisode;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+
     return idEpisode;
   }
   catch (...)
@@ -1910,6 +1930,12 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     sql += PrepareSQL(" where idMVideo=%i", idMVideo);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    CVariant data;
+    data["content"] = "musicvideo";
+    data["musicvideoid"] = idMVideo;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", data);
+
     return idMVideo;
   }
   catch (...)

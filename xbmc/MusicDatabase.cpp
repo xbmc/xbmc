@@ -59,6 +59,7 @@
 #include "TextureCache.h"
 #include "GUIWindowAddonBrowser.h"
 #include "AutoPtrHandle.h"
+#include "AnnouncementManager.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -313,6 +314,10 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     // Add karaoke information (if any)
     if ( bHasKaraoke )
       AddKaraokeData( song );
+
+    CVariant param;
+    param["songid"] = idSong;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewSong", param);
   }
   catch (...)
   {
