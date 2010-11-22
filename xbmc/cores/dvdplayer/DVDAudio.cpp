@@ -85,8 +85,10 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   m_bPassthrough = audioframe.passthrough;
 
   m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
-  if (m_pBuffer) delete[] m_pBuffer;
-  m_pBuffer = new BYTE[m_dwPacketSize];
+  if(m_bPaused)
+    m_pAudioDecoder->Pause();
+
+  m_iBufferSize = 0;
 
   if(m_pCallback && !m_bPassthrough)
     m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
@@ -169,14 +171,26 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   if(m_pCallback && !m_bPassthrough)
     m_pCallback->OnAudioData(data, len);
 
+  // When paused, we need to buffer all data as renderers don't need to accept it
+  if (m_bPaused)
+  {
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + len);
+    memcpy(m_pBuffer+m_iBufferSize, data, len);
+    m_iBufferSize += len;
+    return len;
+  }
+
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
-
-    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
-    data += copied; // Move forward in caller's data
-    len -= copied; // Decrease amount of data available from caller
-    m_iBufferSize += copied; // Increase amount of data available in buffer
+    copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
+    if(copied)
+    {
+      m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
+      memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+      data += copied; // Move forward in caller's data
+      len -= copied; // Decrease amount of data available from caller
+      m_iBufferSize += copied; // Increase amount of data available in buffer
+    }
 
     if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;
@@ -200,15 +214,11 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   // if we have more data left, save it for the next call to this funtion
   if (len > 0 && !m_bStop)
   {
-    if(len > m_dwPacketSize)
-      CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
-
-    m_iBufferSize = std::min(len, m_dwPacketSize);
-    memcpy(m_pBuffer, data, m_iBufferSize);
-    len  -= m_iBufferSize;
-    data += m_iBufferSize;
+    m_pBuffer     = (BYTE*)realloc(m_pBuffer, len);
+    m_iBufferSize = len;
+    memcpy(m_pBuffer, data, len);
   }
-  return total - len;
+  return total;
 }
 
 void CDVDAudio::Finish()
@@ -255,12 +265,14 @@ void CDVDAudio::SetDynamicRangeCompression(long drc)
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);
+  m_bPaused = true;
   if (m_pAudioDecoder) m_pAudioDecoder->Pause();
 }
 
 void CDVDAudio::Resume()
 {
   CSingleLock lock (m_critSection);
+  m_bPaused = false;
   if (m_pAudioDecoder) m_pAudioDecoder->Resume();
 }
 
