@@ -159,7 +159,9 @@ Command CJSONRPC::m_commands[] = {
 // Music library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
   { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre, Fields: album_description, album_theme, album_mood, album_style, album_type, album_label, album_artist, album_genre, album_rating, album_title" },
+  { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails,                      Response,     ReadData,        "Retrieve details about a specific album. Parameter example { \"fields\": [\"review\"], \"albumid\": 12}. fields is optional"},
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails,                       Response,     ReadData,        "Retrieve details about a specific song. Parameter example { \"fields\": [\"title\"], \"songid\": 12}. fields is optional"},
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres,                            Response,     ReadData,        "Retrieve all genres" },
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
