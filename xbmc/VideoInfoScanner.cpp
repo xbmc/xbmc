@@ -1095,7 +1095,7 @@ namespace VIDEO
     // Announce the world a new video was added
     CVariant param;
     param["content"] = TranslateContent(content);
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "OnNewVideo", CFileItemPtr( new CFileItem(*pItem) ), param);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "NewVideo", CFileItemPtr( new CFileItem(*pItem) ), param);
 
     m_database.Close();
     return lResult;
