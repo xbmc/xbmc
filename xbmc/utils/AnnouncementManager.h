@@ -22,11 +22,8 @@
 
 #include "IAnnouncer.h"
 #include "CriticalSection.h"
-#include "boost/shared_ptr.hpp"
+#include "FileItem.h"
 #include <vector>
-
-class CFileItem;
-typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace ANNOUNCEMENT
 {
