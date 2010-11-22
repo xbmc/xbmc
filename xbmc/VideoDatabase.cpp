@@ -1711,10 +1711,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    CVariant data;
-    data["content"] = "movie";
-    data["movieid"] = idMovie;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
+    AnnounceUpdate("movie", idMovie);
 
     return idMovie;
   }
@@ -1775,10 +1772,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    CVariant data;
-    data["content"] = "tvshow";
-    data["tvshowid"] = idTvShow;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
+    AnnounceUpdate("tvshow", idTvShow);
 
     return idTvShow;
   }
@@ -1854,10 +1848,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    CVariant data;
-    data["content"] = "episode";
-    data["episodeid"] = idEpisode;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
+    AnnounceUpdate("episode", idEpisode);
 
     return idEpisode;
   }
@@ -1931,10 +1922,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    CVariant data;
-    data["content"] = "musicvideo";
-    data["musicvideoid"] = idMVideo;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
+    AnnounceUpdate("musicvideo", idMVideo);
 
     return idMVideo;
   }
@@ -2374,12 +2362,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     CommitTransaction();
 
     if (!bKeepId)
-    {
-      CVariant data;
-      data["content"] = "movie";
-      data["movieid"] = idMovie;
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
-    }
+      AnnounceRemove("movie", idMovie);
   }
   catch (...)
   {
@@ -2447,12 +2430,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     CommitTransaction();
 
     if (!bKeepId)
-    {
-      CVariant data;
-      data["content"] = "tvshow";
-      data["tvshowid"] = idTvShow;
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
-    }
+      AnnounceRemove("tvshow", idTvShow);
   }
   catch (...)
   {
@@ -2504,12 +2482,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     }
 
     if (!bKeepId)
-    {
-      CVariant data;
-      data["content"] = "episode";
-      data["episodeid"] = idEpisode;
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
-    }
+      AnnounceRemove("episode", idEpisode);
   }
   catch (...)
   {
@@ -2574,12 +2547,7 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     CommitTransaction();
 
     if (!bKeepId)
-    {
-      CVariant data;
-      data["content"] = "musicvideo";
-      data["musicvideoid"] = idMVideo;
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
-    }
+      AnnounceRemove("musicvideo", idMVideo);
   }
   catch (...)
   {
@@ -7525,4 +7493,20 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
   CStdString safeThumb(name);
   safeThumb.Replace(' ', '_');
   return CUtil::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
+}
+
+void CVideoDatabase::AnnounceRemove(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+}
+
+void CVideoDatabase::AnnounceUpdate(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewVideo", data);
 }

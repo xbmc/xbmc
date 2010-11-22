@@ -639,4 +639,7 @@ private:
    \return safe filename based on this title
    */
   CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
+
+  void AnnounceRemove(std::string content, int id);
+  void AnnounceUpdate(std::string content, int id);
 };
