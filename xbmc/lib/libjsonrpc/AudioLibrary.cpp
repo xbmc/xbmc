@@ -147,7 +147,7 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
-    HandleFileItemList("songid", true, "songdetails", items, param, result);
+    HandleFileItemList("songid", true, "songs", items, param, result);
 
   musicdatabase.Close();
   return OK;
@@ -179,7 +179,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
 
   Json::Value validFields;
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("songid", false, "songs", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result);
 
   musicdatabase.Close();
   return OK;
