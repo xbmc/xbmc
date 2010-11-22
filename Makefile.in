@@ -280,9 +280,9 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,$(ARCH)), osx)
   ifeq ($(ARCH), powerpc-osx)
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -lbundle1.o -o $@ $<
   else
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
