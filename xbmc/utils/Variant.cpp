@@ -194,7 +194,7 @@ const char *CVariant::asString(const char *fallback) const
     return fallback;
 }
 
-void CVariant::toJsonValue(Json::Value& value)
+void CVariant::toJsonValue(Json::Value& value) const
 {
   switch (m_type)
   {

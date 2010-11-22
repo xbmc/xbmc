@@ -89,7 +89,7 @@ public:
   void debug();
   void internaldebug();
 
-  void toJsonValue(Json::Value& value);
+  void toJsonValue(Json::Value& value) const;
 private:
   VariantType m_type;
 
