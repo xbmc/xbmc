@@ -291,6 +291,8 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
     flags |= GUI;
   else if (parameterObject.get("system", false).asBool())
     flags |= System;
+  else if (parameterObject.get("library", false).asBool())
+    flags |= Library;
   else if (parameterObject.get("other", false).asBool())
     flags |= Other;
 
@@ -427,6 +429,8 @@ inline const char *CJSONRPC::AnnouncementFlagToString(const EAnnouncementFlag &a
     return "GUI";
   case System:
     return "System";
+  case Library:
+    return "Library";
   case Other:
     return "Other";
   default:

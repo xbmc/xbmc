@@ -28,10 +28,11 @@ namespace ANNOUNCEMENT
     Playback = 0x1,
     GUI = 0x2,
     System = 0x4,
-    Other = 0x8
+    Library = 0x8,
+    Other = 0x10
   };
 
-  #define ANNOUNCE_ALL (Playback | GUI | System | Other)
+  #define ANNOUNCE_ALL (Playback | GUI | System | Library | Other)
 
   class IAnnouncer
   {
