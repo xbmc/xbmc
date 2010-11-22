@@ -2372,6 +2372,14 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
     CommitTransaction();
+
+    if (!bKeepId)
+    {
+      CVariant data;
+      data["content"] = "movie";
+      data["movieid"] = idMovie;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+    }
   }
   catch (...)
   {
@@ -2437,6 +2445,14 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     InvalidatePathHash(strPath);
 
     CommitTransaction();
+
+    if (!bKeepId)
+    {
+      CVariant data;
+      data["content"] = "tvshow";
+      data["tvshowid"] = idTvShow;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+    }
   }
   catch (...)
   {
@@ -2487,6 +2503,13 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
       m_pDS->exec(strSQL.c_str());
     }
 
+    if (!bKeepId)
+    {
+      CVariant data;
+      data["content"] = "episode";
+      data["episodeid"] = idEpisode;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+    }
   }
   catch (...)
   {
@@ -2549,6 +2572,14 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
     CommitTransaction();
+
+    if (!bKeepId)
+    {
+      CVariant data;
+      data["content"] = "musicvideo";
+      data["musicvideoid"] = idMVideo;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+    }
   }
   catch (...)
   {
