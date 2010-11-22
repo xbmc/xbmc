@@ -3423,6 +3423,10 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
     }
 
     m_pDS->exec(strSQL.c_str());
+
+    CVariant data;
+    data["playcount"] = count;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewPlayCount", CFileItemPtr(new CFileItem(item)), data);
   }
   catch (...)
   {
