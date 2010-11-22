@@ -3767,12 +3767,14 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound > 0)
     {
+      std::vector<int> ids;
       CStdString songIds = "(";
       while (!m_pDS->eof())
       {
         CSong song = GetSongFromDataset();
         songs.Add(song.strFileName, song);
         songIds += PrepareSQL("%i,", song.idSong);
+        ids.push_back(song.idSong);
         m_pDS->next();
       }
       songIds.TrimRight(",");
@@ -3789,6 +3791,14 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
       m_pDS->exec(sql.c_str());
       sql = "delete from karaokedata where idSong in " + songIds;
       m_pDS->exec(sql.c_str());
+
+      for (unsigned int i = 0; i < ids.size(); i++)
+      {
+        CVariant data;
+        data["content"] = "song";
+        data["songid"] = ids[i];
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveAudio", data);
+      }
     }
     // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
     sql = PrepareSQL("delete from path where strPath like '%s%s'", path.c_str(), (exact?"":"%"));
