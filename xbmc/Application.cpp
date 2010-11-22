@@ -3919,7 +3919,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
   CVariant param;
   param["speed"] = iSpeed;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", m_itemCurrentFile, &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3941,7 +3941,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   CVariant param;
   param["time"] = iTime;
   param["seekoffset"] = seekOffset;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3963,7 +3963,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
   CVariant param;
   param["chapter"] = iChapter;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", param);
 }
 
 bool CApplication::IsPlaying() const

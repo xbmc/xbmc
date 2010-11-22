@@ -139,15 +139,15 @@ int CTCPServer::GetCapabilities()
   return Response | Announcing;
 }
 
-void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data)
+void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   Value root;
   root["jsonrpc"] = "2.0";
   root["method"]  = "Announcement";
   root["params"]["sender"] = sender;
   root["params"]["message"] = message;
-  if (data)
-    data->toJsonValue(root["params"]["data"]);
+  if (!data.isNull())
+    data.toJsonValue(root["params"]["data"]);
 
   StyledWriter writer;
   std::string str = writer.write(root);

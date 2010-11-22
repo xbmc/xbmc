@@ -38,6 +38,6 @@ namespace ANNOUNCEMENT
   public:
     IAnnouncer() { };
     virtual ~IAnnouncer() { };
-    virtual void Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data) = 0;
+    virtual void Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
   };
 }

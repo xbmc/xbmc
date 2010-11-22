@@ -309,8 +309,8 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
     CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str());
   else
   {
-    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(),
-      &CVariant(parameterObject["data"].asString()));
+    CVariant data(parameterObject["data"].asString());
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), data);
   }
 
   return ACK;

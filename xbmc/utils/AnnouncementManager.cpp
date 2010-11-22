@@ -52,7 +52,13 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   }
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data/* = NULL*/)
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message)
+{
+  CVariant data;
+  Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
   CSingleLock lock (m_critSection);
@@ -60,17 +66,25 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
     m_announcers[i]->Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant *_data /*= NULL*/)
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
+{
+  CVariant data;
+  Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
   // Extract db id of item
-  CVariant data = (_data && _data->isObject()) ? *_data : CVariant(CVariant::VariantTypeObject);
+  CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
   CStdString type;
   int id = 0;
+
   if (item->HasVideoInfoTag())
   {
     CVideoDatabase::VideoContentTypeToString(item->GetVideoContentType(), type);
     id = item->GetVideoInfoTag()->m_iDbId;
-  } else if (item->HasMusicInfoTag())
+  }
+  else if (item->HasMusicInfoTag())
   {
     type = "music";
     id = item->GetMusicInfoTag()->GetDatabaseId();
@@ -79,8 +93,8 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
   if (id > 0)
   {
     type += "id";
-    data[type] = id;
-    Announce(flag, sender, message, &data);
-  } else
-    Announce(flag, sender, message, _data);
+    object[type] = id;
+  }
+
+  Announce(flag, sender, message, object);
 }
