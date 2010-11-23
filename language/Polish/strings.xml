@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 10/23/2010-->
+<!--Date of translation: 11/19/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 34887-->
+<!--Based on english strings version 35193-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -1723,6 +1723,8 @@
   <string id="20451">Kraje</string>
   <string id="20452">odcinek</string>
   <string id="20453">odcinki</string>
+  <string id="20454">Słuchacz</string>
+  <string id="20455">Słuchaczy</string>
   <string id="21330">Pokazuj ukryte pliki i foldery</string>
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>

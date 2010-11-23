@@ -1935,6 +1935,8 @@
   <string id="20451">Landen</string>
   <string id="20452">Aflevering</string>
   <string id="20453">Afleveringen</string>
+  <string id="20454">Luisteraar</string> 
+  <string id="20455">Luisteraars</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
