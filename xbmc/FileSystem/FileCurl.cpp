@@ -491,6 +491,9 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   else
     SetRequestHeader("Connection", "keep-alive");
 
+  if (g_advancedSettings.m_curlDisableIPV6)
+    g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
   if (m_proxy.length() > 0)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
