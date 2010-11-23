@@ -261,7 +261,7 @@ JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportL
   int flags = client->GetAnnouncementFlags();
   
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result[AnnouncementFlagToString((EAnnouncementFlag)(flags & i))] = (flags & i) > 0;
+    result[AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }
