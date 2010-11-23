@@ -3245,6 +3245,8 @@ void CApplication::Stop()
 {
   try
   {
+    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
+
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
@@ -3259,7 +3261,6 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
-    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
