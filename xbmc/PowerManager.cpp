@@ -223,7 +223,6 @@ void CPowerManager::OnSleep()
 
 void CPowerManager::OnWake()
 {
-  CAnnouncementManager::Announce(System, "xbmc", "Wake");
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   // reset out timers
@@ -262,7 +261,7 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Announce(System, "xbmc", "Resume");
+  CAnnouncementManager::Announce(System, "xbmc", "Wake");
 }
 
 void CPowerManager::OnLowBattery()
