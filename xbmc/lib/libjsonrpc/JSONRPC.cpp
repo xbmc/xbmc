@@ -411,7 +411,7 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
   case ScanLibrary:
     return "ScanLibrary";
   default:
-    return "Unkown";
+    return "Unknown";
   }
 }
 
@@ -430,7 +430,7 @@ inline const char *CJSONRPC::AnnouncementFlagToString(const EAnnouncementFlag &a
   case Other:
     return "Other";
   default:
-    return "Unkown";
+    return "Unknown";
   }
 }
 
