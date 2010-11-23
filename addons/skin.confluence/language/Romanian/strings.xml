@@ -74,8 +74,8 @@
   <string id="31120">ETICHETĂ BUTON</string>
   <string id="31121">CALE CĂTRE SUPLIMENT</string>
   <string id="31122">Pagină meteo</string>
-  <string id="31123">Folosește „Afișe” în loc de „Bannere” pentru seriale</string>
-  <string id="31124">Arată video „În redare” pe fundal</string>
+  <string id="31124">Arată video „Acum în redare” pe fundal</string>
+  <string id="31125">Arată vizualizare „Acum în redare” pe fundal</string>
   <string id="31125">Arată vizualizare „În redare” pe fundal</string>
   <string id="31126">Activează descărcare versuri în meniul audio</string>
   <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
@@ -134,7 +134,7 @@
   <string id="31353">Derulează înainte</string>
   <string id="31354">Derulează înapoi</string>
   <string id="31355">Meniu film</string>
-  <string id="31356">Descarcă subtitrări</string>
+  <string id="31356">Descărcare subtitrare</string>
   <string id="31357"></string>
   
   <!-- Skin Fontsets -->
