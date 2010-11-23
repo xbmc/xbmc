@@ -17,6 +17,7 @@
     <summary lang="pl">Wizualizacja pokazująca obracający się analizator widma w 3D (DirectX)</summary>
     <summary lang="pt">Visualização que mostra um analisador espectral rotativo em 3D (DirectX)</summary>
     <summary lang="ro">Vizualizare care afișează un analizator de spectre 3D rotativ</summary>
+    <summary lang="se">Visualisering som visar en roterande 3D-spektrumanalysator</summary>
     <summary lang="zh">显示旋转三维频谱分析图像的可视化效果</summary>
     <description lang="en">DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
@@ -34,6 +35,8 @@ U kunt de hoogte, snelheid en weergave (vol, stippen, ...) van de spectrumbalk z
 Pode-se definir a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que utiliza pouco o CPU e com um visual fantástico.</description>
     <description lang="ro">Spectrul DirectX este o vizualizare care afișează un analizator de spectre 3D rotativ randat în DirectX care se mișcă după bătăile muzicii creând un val dea-lungul grilei spectrale.
 De asemenea, are setări pentru ajustarea înălțimii bărilor spectrale, a vitezei, și a modului în care bările sunt randate (umplere, puncte, wire frame). Este o vizualizare cu consum redus al procesorului care arată fantastic de bine</description>
+    <description lang="se">DirectX Spectrum är en visualisering som visar en roterande 3D-spektrumanalysator renderad i DirectX som rör sig i takt med musiken och skapar vågor av effekter över spektrumområdet.
+Det har också inställningar för att justera spektrumhöjden, hastigheten och hur staplarna är renderade (solida, punkter, ramverk) och det är lätt, liten cpuanvändning samt ser bra ut</description>
     <description lang="zh">DirectX Spectrum可视化效果是DirectX渲染的一个旋转的三维频谱分析图像，频谱矩阵随着音乐节拍而象波浪起伏。
 你还可以设置频谱棒的高度、变换速度、以及呈现效果（固体、点、框架）。这是一个不错的轻量级，低CPU使用率的可视化效果。</description>
     <platform>windx</platform>
