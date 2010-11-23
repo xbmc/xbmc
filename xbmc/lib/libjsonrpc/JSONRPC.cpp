@@ -241,10 +241,7 @@ JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *tran
   int flags = client->GetPermissionFlags();
   
   for (int i = 1; i <= OPERATION_PERMISSION_ALL; i *= 2)
-  {
-    if (flags & i)
-      result["permission"].append(PermissionToString((OperationPermission)(flags & i)));
-  }
+    result[PermissionToString((OperationPermission)i)] = (flags & i) > 0;
 
   return OK;
 }
