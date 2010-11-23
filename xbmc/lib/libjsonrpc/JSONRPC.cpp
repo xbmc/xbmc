@@ -270,13 +270,13 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
 
   int flags = 0;
 
-  if (parameterObject.get("playback", false).asBool())
+  if (parameterObject.get("Playback", false).asBool())
     flags |= Playback;
-  if (parameterObject.get("gui", false).asBool())
+  if (parameterObject.get("GUI", false).asBool())
     flags |= GUI;
-  if (parameterObject.get("system", false).asBool())
+  if (parameterObject.get("System", false).asBool())
     flags |= System;
-  if (parameterObject.get("other", false).asBool())
+  if (parameterObject.get("Other", false).asBool())
     flags |= Other;
 
   if (client->SetAnnouncementFlags(flags))
