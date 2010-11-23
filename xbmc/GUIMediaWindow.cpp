@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -945,50 +946,63 @@ bool CGUIMediaWindow::OnClick(int iItem)
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
     bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
+    bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
+    int iPlaylist = m_guiState.get()?m_guiState->GetPlaylist():PLAYLIST_MUSIC;
 
-    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
+    if (pItem->IsPlugin())
     {
-      //play and add current directory to temporary playlist
-      int iPlaylist=m_guiState->GetPlaylist();
-      if (iPlaylist != PLAYLIST_NONE)
+      CURL url(pItem->m_strPath);
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
       {
-        g_playlistPlayer.ClearPlaylist(iPlaylist);
-        g_playlistPlayer.Reset();
-        int songToPlay = 0;
-        CFileItemList queueItems;
-        for ( int i = 0; i < m_vecItems->Size(); i++ )
+        PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
+        if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
-          CFileItemPtr item = m_vecItems->Get(i);
-
-          if (item->m_bIsFolder)
-            continue;
-
-          if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
-            queueItems.Add(item);
-
-          if (item == pItem)
-          { // item that was clicked
-            songToPlay = queueItems.Size() - 1;
-          }
+          iPlaylist = PLAYLIST_MUSIC;
+          autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");
         }
-        g_playlistPlayer.Add(iPlaylist, queueItems);
-
-        // Save current window and directory to know where the selected item was
-        if (m_guiState.get())
-          m_guiState->SetPlaylistDirectory(m_vecItems->m_strPath);
-
-        // figure out where we start playback
-        if (g_playlistPlayer.IsShuffled(iPlaylist))
-        {
-          int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(songToPlay);
-          g_playlistPlayer.GetPlaylist(iPlaylist).Swap(0, iIndex);
-          songToPlay = 0;
-        }
-
-        // play
-        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-        g_playlistPlayer.Play(songToPlay);
       }
+    }
+
+    if (autoplay && !g_partyModeManager.IsEnabled() && 
+        !pItem->IsPlayList() && !do_not_add_karaoke)
+    {
+      g_playlistPlayer.ClearPlaylist(iPlaylist);
+      g_playlistPlayer.Reset();
+      int songToPlay = 0;
+      CFileItemList queueItems;
+      for ( int i = 0; i < m_vecItems->Size(); i++ )
+      {
+        CFileItemPtr item = m_vecItems->Get(i);
+
+        if (item->m_bIsFolder)
+          continue;
+
+        if (!item->IsPlayList() && !item->IsZIP() && !item->IsRAR())
+          queueItems.Add(item);
+
+        if (item == pItem)
+        { // item that was clicked
+          songToPlay = queueItems.Size() - 1;
+        }
+      }
+      g_playlistPlayer.Add(iPlaylist, queueItems);
+
+      // Save current window and directory to know where the selected item was
+      if (m_guiState.get())
+        m_guiState->SetPlaylistDirectory(m_vecItems->m_strPath);
+
+      // figure out where we start playback
+      if (g_playlistPlayer.IsShuffled(iPlaylist))
+      {
+        int iIndex = g_playlistPlayer.GetPlaylist(iPlaylist).FindOrder(songToPlay);
+        g_playlistPlayer.GetPlaylist(iPlaylist).Swap(0, iIndex);
+        songToPlay = 0;
+      }
+
+      // play
+      g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+      g_playlistPlayer.Play(songToPlay);
       return true;
     }
     else
