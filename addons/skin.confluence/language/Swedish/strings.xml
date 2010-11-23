@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/11/2010-->
+<!--Date of translation: 11/19/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Ändra din</string>
@@ -59,18 +59,15 @@
   <string id="31115">Anpassare</string>
   <string id="31117">Visa nyligen tillagda filmer</string>
   <string id="31118">Hemsidans undermeny</string>
-  <string id="31119">Aktivera egen skriptknapp</string>
   <string id="31120">KNAPPETIKETT</string>
-  <string id="31121">SÖKVÄG TILL SKRIPT</string>
   <string id="31122">Vädersida</string>
   <string id="31123">Använd omslag istället för banner för TV-serier</string>
   <string id="31124">Visa bakgrund "Nu spelas" filmer</string>
   <string id="31125">Visa bakgrund "Nu spelas" visualisering</string>
-  <string id="31126">Aktivera sångtexter i musik-OSD</string>
-  <string id="31127">SÖKVÄG TILL SÅNGTEXTSKRIPT</string>
   <string id="31128">Sångtexter</string>
-  <string id="31129">Aktivera undertextsnedladdning i video-OSD</string>
-  <string id="31130">SÖKVÄG TILL UNDERTEXT-TILLÄGG</string>
+  <string id="31131">Använd horisontell hemmeny</string>
+  <string id="31132">Sångtextstillägg</string>
+  <string id="31133">Undertextstillägg</string>
   <string id="31140">Musik-OSD</string>
   <string id="31141">Video-OSD</string>
   <string id="31200">Genvägar</string>
@@ -114,6 +111,9 @@
   <string id="31354">Spola bakåt</string>
   <string id="31355">Filmmeny</string>
   <string id="31356">Ladda ner undertexter</string>
+  <string id="31390">Skalstandard</string>
+  <string id="31391">Skalstandard utan VERSAL</string>
+  <string id="31392">Arialbaserad</string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
   <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
