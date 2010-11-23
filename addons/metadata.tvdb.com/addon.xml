@@ -21,6 +21,7 @@
     <summary lang="pt">Scraper de séries de TV TVDB.com</summary>
     <summary lang="ro">Catalog de seriale TheTVDB.com</summary>
     <summary lang="ru">Загрузка информации о ТВ-шоу с TheTVDB.com</summary>
+    <summary lang="ru">Hämta TV-serieinformation från TheTVDB.com</summary>
     <summary lang="zh">从TheTVDB.com获取电视剧集信息</summary>
     <description lang="en">TheTVDB.com is a TV Scraper. The site is a massive open database that can be modified by anybody and contains full meta data for many shows in different languages. All content and images on the site have been contributed by their users for users and have a high standard or quality. The database schema and website are open source under the GPL.</description>
     <description lang="de">TheTVDB.com ist ein Scraper für TV-Serien. Die Seite hat eine riesige offene Datenbank, welche von jedem geändert werden kann. Sie enthält weitreichende Meta-Daten für viele TV-Serien in verschiedenen Sprachen. Alle Inhalte und Bilder dieser Seite stammen von User für User und haben eine hohe Qualität. Das Datenbankschema und die Webseite sind OpenSource unter dem GPL-Recht</description>
