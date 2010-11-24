@@ -198,6 +198,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     m_iYV12RenderBuffer = 0;
   }
 
+  m_fps = fps;
   m_flags = flags;
 
   // calculate the input frame aspect ratio
@@ -516,15 +517,18 @@ void CWinRenderer::SelectPSVideoFilter()
     break;
   }
 
-  // Scaler auto + SD + capable HW -> Lanczos3 optim. Otherwise bilinear.
-  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO
-  && m_sourceWidth < 1280
-  && Supports(VS_SCALINGMETHOD_LANCZOS3_FAST))
+  if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
-    m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
-    m_bUseHQScaler = true;
-  }
+    bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
+    bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
+    bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
 
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
+    {
+      m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
+      m_bUseHQScaler = true;
+    }
+  }
 }
 
 void CWinRenderer::UpdatePSVideoFilter()
