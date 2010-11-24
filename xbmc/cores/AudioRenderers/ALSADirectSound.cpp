@@ -451,7 +451,7 @@ unsigned int CALSADirectSound::GetSpaceFrames()
   if (nSpace == 0)
   {
     snd_pcm_state_t state = snd_pcm_state(m_pPlayHandle);
-    if(state != SND_PCM_STATE_RUNNING && !m_bPause)
+    if(state != SND_PCM_STATE_RUNNING && state != SND_PCM_STATE_PREPARED && !m_bPause)
     {
       CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - buffer underun (%d)", state);
       Flush();
