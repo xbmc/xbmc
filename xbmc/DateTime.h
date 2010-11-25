@@ -165,6 +165,7 @@ public:
   void SetDate(int year, int month, int day);
   void SetTime(int hour, int minute, int second);
   void SetFromDBDate(const CStdString &date);
+  void SetFromDBTime(const CStdString &time);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()

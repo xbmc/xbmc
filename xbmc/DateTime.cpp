@@ -897,6 +897,19 @@ void CDateTime::SetFromDBDate(const CStdString &date)
   SetDate(year, month, day);
 }
 
+void CDateTime::SetFromDBTime(const CStdString &time)
+{
+  // assumes format:
+  // HH:MM:SS
+  int hour, minute, second;
+
+  hour   = atoi(time.Mid(0,2).c_str());
+  minute = atoi(time.Mid(3,2).c_str());
+  second = atoi(time.Mid(6,2).c_str());
+
+  SetTime(hour, minute, second);
+}
+
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
 {
   CStdString strOut;
