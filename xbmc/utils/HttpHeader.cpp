@@ -98,6 +98,7 @@ void CHttpHeader::GetHeader(CStdString& strHeader) const
   while (iter != m_params.end())
   {
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+    iter++;
   }
 
   strHeader += "\n";
