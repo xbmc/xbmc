@@ -1058,7 +1058,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
   return strOut;
 }
 
-CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
+CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShortNames/*=true*/) const
 {
   CStdString strOut;
 
@@ -1120,16 +1120,9 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wDay);
       else // Day of week string
       {
-        switch (dateTime.wDayOfWeek)
-        {
-          case 1 : str = g_localizeStrings.Get(11); break;
-          case 2 : str = g_localizeStrings.Get(12); break;
-          case 3 : str = g_localizeStrings.Get(13); break;
-          case 4 : str = g_localizeStrings.Get(14); break;
-          case 5 : str = g_localizeStrings.Get(15); break;
-          case 6 : str = g_localizeStrings.Get(16); break;
-          default: str = g_localizeStrings.Get(17); break;
-        }
+        int wday = dateTime.wDayOfWeek;
+        if (wday < 1 || wday > 7) wday = 7;
+        str = g_localizeStrings.Get((withShortNames ? 40 : 10) + wday);
       }
       strOut+=str;
     }
@@ -1159,21 +1152,9 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wMonth);
       else // Month string
       {
-        switch (dateTime.wMonth)
-        {
-          case 1 : str = g_localizeStrings.Get(21); break;
-          case 2 : str = g_localizeStrings.Get(22); break;
-          case 3 : str = g_localizeStrings.Get(23); break;
-          case 4 : str = g_localizeStrings.Get(24); break;
-          case 5 : str = g_localizeStrings.Get(25); break;
-          case 6 : str = g_localizeStrings.Get(26); break;
-          case 7 : str = g_localizeStrings.Get(27); break;
-          case 8 : str = g_localizeStrings.Get(28); break;
-          case 9 : str = g_localizeStrings.Get(29); break;
-          case 10: str = g_localizeStrings.Get(30); break;
-          case 11: str = g_localizeStrings.Get(31); break;
-          default: str = g_localizeStrings.Get(32); break;
-        }
+        int wmonth = dateTime.wMonth;
+        if (wmonth < 1 || wmonth > 12) wmonth = 12;
+        str = g_localizeStrings.Get((withShortNames ? 50 : 20) + wmonth);
       }
       strOut+=str;
     }
