@@ -268,6 +268,7 @@ void CAddonMgr::DeInit()
 {
   if (m_cpluff)
     m_cpluff->destroy();
+  delete m_cpluff;
   m_cpluff = NULL;
   m_database.Close();
 }
