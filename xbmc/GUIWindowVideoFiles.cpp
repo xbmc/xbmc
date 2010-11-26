@@ -320,11 +320,11 @@ void CGUIWindowVideoFiles::OnAssignContent(const CStdString &path, int iFound, A
 
   if (CGUIDialogContentSettings::Show(info, settings, bScan))
   {
-    if(settings.exclude || !info)
+    if(settings.exclude || (!info && info2))
     {
       OnUnAssignContent(path,20375,20340,20341);
     }
-    else if (info2)
+    else if (info != info2)
     {
       if (OnUnAssignContent(path,20442,20443,20444))
         bScan = true;
