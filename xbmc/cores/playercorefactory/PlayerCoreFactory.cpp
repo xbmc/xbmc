@@ -47,7 +47,12 @@ std::vector<CPlayerSelectionRule *> CPlayerCoreFactory::s_vecCoreSelectionRules;
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
 CPlayerCoreFactory::~CPlayerCoreFactory()
-{}
+{
+  for(std::vector<CPlayerCoreConfig *>::iterator it = s_vecCoreConfigs.begin(); it != s_vecCoreConfigs.end(); it++)
+    delete *it;
+  for(std::vector<CPlayerSelectionRule *>::iterator it = s_vecCoreSelectionRules.begin(); it != s_vecCoreSelectionRules.end(); it++)
+    delete *it;
+}
 
 /* generic function to make a vector unique, removes later duplicates */
 template<typename T> void unique (T &con)
