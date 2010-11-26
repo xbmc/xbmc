@@ -1402,7 +1402,6 @@ OUTPUT_FILES="Makefile \
     xbmc/lib/libhttpapi/Makefile \
     lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
     xbmc/lib/libjsonrpc/Makefile \
-    xbmc/lib/libshout/Makefile \
     xbmc/lib/libsquish/Makefile \
     xbmc/lib/libid3tag/Makefile \
     xbmc/lib/cximage-6.0/Makefile \

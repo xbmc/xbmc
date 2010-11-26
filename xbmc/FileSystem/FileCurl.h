@@ -152,6 +152,7 @@ namespace XFILE
       bool            m_useOldHttpVersion;
       bool            m_seekable;
       bool            m_multisession;
+      bool            m_skipshout;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer

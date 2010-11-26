@@ -4301,10 +4301,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\SIDFileDirectory.cpp"
 					>
 				</File>
@@ -5939,10 +5935,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Shortcut.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.h"
 				>
 			</File>
 			<File
