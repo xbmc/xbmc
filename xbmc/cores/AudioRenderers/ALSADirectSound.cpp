@@ -272,11 +272,12 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   nErr = snd_pcm_sw_params(m_pPlayHandle, sw_params);
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
 
+  m_bCanPause    = !!snd_pcm_hw_params_can_pause(hw_params);
+
   snd_pcm_hw_params_free (hw_params);
   snd_pcm_sw_params_free (sw_params);
 
 
-  m_bCanPause    = !!snd_pcm_hw_params_can_pause(hw_params);
   m_dwPacketSize = snd_pcm_frames_to_bytes(m_pPlayHandle, dwFrameCount);
   m_dwNumPackets = dwNumPackets;
   m_uiBufferSize = snd_pcm_frames_to_bytes(m_pPlayHandle, dwBufferSize);
