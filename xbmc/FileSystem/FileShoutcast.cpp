@@ -71,6 +71,7 @@ bool CFileShoutcast::Open(const CURL& url)
 {
   CURL url2(url);
   url2.SetProtocolOptions("noshout=true&Icy-MetaData=1");
+  url2.SetProtocol("http");
 
   bool result=false;
   if ((result=m_file.Open(url2.Get())))
