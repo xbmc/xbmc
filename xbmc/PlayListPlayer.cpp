@@ -169,13 +169,8 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   }
 
   if (bAutoPlay)
-  {
     CFileItemPtr item = playlist[iSong];
-    if ( item->IsShoutCast() )
-    {
-      return ;
-    }
-  }
+
   Play(iSong, bAutoPlay);
   if (iSong < playlist.size())
   {
@@ -326,20 +321,6 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   m_failedSongsStart = 0;
   m_bPlaybackStarted = true;
   m_bPlayedFirstFile = true;
-
-  if (!item->IsShoutCast())
-  {
-    if (iPreviousSong < 0)
-    {
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STARTED, 0, 0, m_iCurrentPlayList, m_iCurrentSong, item);
-      g_windowManager.SendThreadMessage( msg );
-    }
-    else
-    {
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, m_iCurrentPlayList, MAKELONG(m_iCurrentSong, iPreviousSong), item);
-      g_windowManager.SendThreadMessage(msg);
-    }
-  }
 }
 
 void CPlayListPlayer::SetCurrentSong(int iSong)

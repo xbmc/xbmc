@@ -1181,11 +1181,6 @@ bool CUtil::IsVideoDb(const CStdString& strFile)
   return strFile.Left(8).Equals("videodb:");
 }
 
-bool CUtil::IsShoutCast(const CStdString& strFile)
-{
-  return strFile.Left(6).Equals("shout:");
-}
-
 bool CUtil::IsLastFM(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("lastfm:");

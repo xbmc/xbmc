@@ -94,7 +94,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   {
     CMediaSource& share = shares[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->IsLastFM() || pItem->IsShoutCast() || (pItem->m_strPath.Left(14).Equals("musicsearch://")))
+    if (pItem->IsLastFM() || (pItem->m_strPath.Left(14).Equals("musicsearch://")))
       pItem->SetCanQueue(false);
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
@@ -112,7 +112,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     else if (pItem->m_strPath.Left(9) == "addons://")
       strIcon = "DefaultHardDisk.png";
     else if (pItem->IsLastFM()
-          || pItem->IsShoutCast()
           || pItem->IsVideoDb()
           || pItem->IsMusicDb()
           || pItem->IsPlugin()
