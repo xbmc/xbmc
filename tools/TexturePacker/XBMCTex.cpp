@@ -40,7 +40,7 @@
 #endif
 
 #ifdef _LINUX
-#include <lzo1x.h>
+#include <lzo/lzo1x.h>
 #else
 #include "../../xbmc/lib/liblzo/LZO1X.H"
 #endif

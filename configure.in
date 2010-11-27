@@ -1073,7 +1073,6 @@ AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([lzo/lzo1.h])
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
@@ -1185,12 +1184,6 @@ if test "$use_mid" = "yes"; then
   SDL_DEFINES="$SDL_DEFINES -DMID"
 else
   final_message="$final_message\n  MID Support:\tNo"
-fi
-
-if test -d "/usr/include/lzo"; then
-  INCLUDES="$INCLUDES -I/usr/include/lzo"
-else
-  INCLUDES="$INCLUDES"
 fi
 
 if test "x$use_ccache" != "xno"; then
