@@ -1572,9 +1572,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
@@ -3940,9 +3937,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Shortcut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h">

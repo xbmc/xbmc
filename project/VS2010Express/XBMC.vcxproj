@@ -793,7 +793,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SAPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SAPFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocol.cpp" />
@@ -1612,7 +1611,6 @@
     <ClInclude Include="..\..\xbmc\SettingsControls.h" />
     <ClInclude Include="..\..\xbmc\utils\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\Shortcut.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h" />
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\Song.h" />
     <ClInclude Include="..\..\xbmc\SortFileItem.h" />
@@ -1817,10 +1815,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\xbmc\lib\libsamplerate\libsamplerate_win32\libsamplerate_win32.vcxproj">
       <Project>{5013769a-0784-4ce8-9d9d-09ac7f731b4f}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\xbmc\lib\libshout\libshout\libshout.vcxproj">
-      <Project>{76850a99-4ec7-4196-b3ea-e4120a00e8a6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\xbmc\lib\libsquish\vs7\squish\squish_2010.vcxproj">

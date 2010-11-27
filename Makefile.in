@@ -37,7 +37,6 @@ BIN_DIRS=	\
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTV \
 	xbmc/lib/libscrobbler \
-	xbmc/lib/libshout \
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
@@ -242,8 +241,6 @@ xbmc/lib/libscrobbler/scrobbler.a: force
 	$(MAKE) -C xbmc/lib/libscrobbler
 xbmc/lib/libRTV/librtv-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libRTV
-xbmc/lib/libshout/libshout-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libshout
 xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
 xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
@@ -389,7 +386,6 @@ xcode_depends: \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \
 	xbmc/lib/libhttpapi/libhttpapi.a \
 	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
@@ -427,7 +423,6 @@ OBJSXBMC=	\
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
-	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \
