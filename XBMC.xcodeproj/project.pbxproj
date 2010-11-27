@@ -1727,7 +1727,6 @@
 		F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */; };
 		F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */; };
 		F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */; };
-		F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */; };
 		F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */; };
 		F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */; };
 		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
@@ -3694,7 +3693,6 @@
 		F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-powerpc-osx.a"; path = "xbmc/lib/libRTV/librtv-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-powerpc-osx.a"; path = "xbmc/lib/libXBMS/libxbms-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-powerpc-osx.a"; path = "xbmc/lib/libXDAAP/libxdaap-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
-		F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-powerpc-osx.a"; path = "xbmc/lib/libshout/libshout-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-powerpc-osx.a"; path = "lib/libSDL-OSX/libSDL-powerpc-osx.a"; sourceTree = "<group>"; };
 		F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-powerpc-osx.a"; path = "lib/libSDL-OSX/libSDL_mixer-powerpc-osx.a"; sourceTree = "<group>"; };
 		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
@@ -3919,7 +3917,6 @@
 				F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */,
 				F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */,
 				F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */,
-				F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */,
 				F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */,
 				F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */,
 				F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
@@ -6902,7 +6899,6 @@
 				F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */,
 				F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */,
 				F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */,
-				F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */,
 				F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */,
 				F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */,
 			);
@@ -8991,7 +8987,6 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
-					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libXBMS,
 					xbmc/lib/cmyth/libcmyth,
@@ -9069,7 +9064,6 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
-					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libXBMS,
 					xbmc/lib/cmyth/libcmyth,
@@ -9205,7 +9199,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
 					xbmc/lib/libcdio,
-					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libXBMS,
 					xbmc/lib/cmyth/libcmyth,
@@ -9285,7 +9278,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
 					xbmc/lib/libcdio,
-					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libXBMS,
 					xbmc/lib/cmyth/libcmyth,
