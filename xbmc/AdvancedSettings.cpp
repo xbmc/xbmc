@@ -235,6 +235,8 @@ void CAdvancedSettings::Initialize()
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 20;
   m_curlretries = 2;
+  m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
+                                  //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
 
@@ -496,6 +498,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
+    XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
