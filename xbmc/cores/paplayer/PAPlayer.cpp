@@ -830,7 +830,7 @@ int PAPlayer::GetAudioBitrate()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)
-    return (int)((codec->m_Bitrate / 1000) + 0.5); // in kbits/s, rounded to the nearest int
+    return codec->m_Bitrate;
   return 0;
 }
 
