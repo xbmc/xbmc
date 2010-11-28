@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 18/10/2010-->
-<!--Turkish strings based on English strings revision 34584-->
+<!--Date of translation: 26/11/2010-->
+<!--Turkish strings based on English strings revision 35254-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -61,7 +61,7 @@
   <string id="31104">Fragmanları pencere içinde oynat [COLOR=grey3](Sadece Video Bilgisi İletişim Kutusu İçin)[/COLOR]</string>
   <string id="31105">Ortam başlıklarını arkaplan tarayıcısında göster</string>
   <string id="31106">Çeşitli seçenekler</string>
-  <string id="31107">Etiket okumayı video dosya adlarında gizle?? [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31107">Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ana Menü Tuşlarını Gizle</string>
   <string id="31109">Medya arka planları</string>
   <string id="31110">Medya Türü için Arka planı değiştir</string>
@@ -73,20 +73,23 @@
   <string id="31116"></string>
   <string id="31117">Son Eklenen Videoları Göster</string>
   <string id="31118">Ana Sayfa Programlar Altmenüsü</string>
-  <string id="31119">Özel Eklenti Tuşunu Etkinleştir</string>
+  <string id="31119"></string>  <!-- blanked 2010-11-12 -->
   <string id="31120">TUŞ ETİKETİ</string>
-  <string id="31121">EKLENTİ YOLU</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
   <string id="31122">Hava Durumu Sayfası</string>
   <string id="31123">TV Programları için "Afiş" yerine "Poster" kullan</string>
   <string id="31124">Arkaplanda Oynatılan Videoyu göster</string>
   <string id="31125">Arkaplanda Görsel Ögeyi göster</string>
 
-  <string id="31126">Müzik OSD'de Lyrics'i etkinleştir</string>
-  <string id="31127">LYRICS EKLENTİ YOLU</string>
+  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
   <string id="31128">Lyrics</string>
-  <string id="31129">Video OSD'de Altyazı İndirmesini etkinleştir</string>
-  <string id="31130">ALTYAZI EKLENTİ YOLU</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+  
   <string id="31131">Yatay Ana Menü</string>
+  <string id="31132">Lyrics Eklentisi</string>
+  <string id="31133">Altyazı Eklentisi</string>
 
   <string id="31140">Müzik OSD</string>
   <string id="31141">Video OSD</string>
