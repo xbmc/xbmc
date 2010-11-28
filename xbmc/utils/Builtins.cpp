@@ -41,6 +41,7 @@
 #include "GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -122,6 +123,7 @@ const BUILT_IN commands[] = {
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
+  { "RunAddon",                   true,   "Run the specified plugin/script" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
@@ -438,6 +440,37 @@ int CBuiltins::Execute(const CStdString& execString)
     else
     {
       CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
+    }
+  }
+  else if (execute.Equals("runaddon"))
+  {
+    if (params.size())
+    {
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(params[0],addon) && addon)
+      {
+        PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
+        CStdString cmd;
+        if (plugin && addon->Type() == ADDON_PLUGIN)
+        {
+          if (plugin->Provides(CPluginSource::VIDEO))
+            cmd.Format("ActivateWindow(Video,plugin://%s)",params[0]);
+          if (plugin->Provides(CPluginSource::AUDIO))
+            cmd.Format("ActivateWindow(Music,plugin://%s)",params[0]);
+          if (plugin->Provides(CPluginSource::EXECUTABLE))
+            cmd.Format("ActivateWindow(Programs,plugin://%s)",params[0]);
+          if (plugin->Provides(CPluginSource::IMAGE))
+            cmd.Format("ActivateWindow(Pictures,plugin://%s)",params[0]);
+        }
+        if (addon->Type() == ADDON_SCRIPT)
+          cmd.Format("RunScript(%s)",params[0]);
+
+        return Execute(cmd);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
     }
   }
   else if (execute.Equals("playmedia"))
