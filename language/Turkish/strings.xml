@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 21/10/2010-->
-<!--Based on English strings revision 34887-->
+<!--Date of translation: 26/11/2010-->
+<!--Based on English strings revision 35368-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -1340,7 +1340,7 @@
   <string id="14038">Ağ ayarları değişti</string>
   <string id="14039">Ayarların etkili olabilmesi için yeniden başlatmak gerekli.</string>
   <string id="14040">XBMC'yi yeniden başlatmak istiyor musunuz?</string>
-  <string id="14041"></string>
+  <string id="14041">İnternet bağlantısı bant genişliği sınırlaması</string>
 
   <string id="14043">- Ortam oynatılıyor olsa bile kapat</string>
   <string id="14044">%i dk</string>
@@ -1940,6 +1940,8 @@
   <string id="20451">Ülkeler</string>
   <string id="20452">bölüm</string>
   <string id="20453">bölüm</string>
+  <string id="20454">Dinleyici</string>
+  <string id="20455">Dinleyiciler</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -2206,6 +2208,7 @@
   <string id="24015">Müzik videosu bilgisi</string>
   <string id="24016">Albüm bilgisi</string>
   <string id="24017">Sanatçı bilgisi</string>
+  <string id="24018">Hizmetler</string>
 
   <string id="24020">Yapılandır</string>
   <string id="24021">Devre dışı bırak</string>
