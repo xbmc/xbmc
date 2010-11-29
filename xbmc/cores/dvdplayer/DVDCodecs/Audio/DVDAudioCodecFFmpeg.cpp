@@ -38,10 +38,13 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   memset(m_pBuffer2, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
 
   m_iBuffered = 0;
-  m_channels = 0;
   m_pCodecContext = NULL;
   m_pConvert = NULL;
   m_bOpenedCodec = false;
+
+  m_channelMap[0] = PCM_INVALID;
+  m_channels = 0;
+  m_layout = 0;
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
@@ -226,9 +229,7 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  if (m_channels != m_pCodecContext->channels)
-    BuildChannelMap();
-  return m_channels;
+  return m_pCodecContext->channels;
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
@@ -252,6 +253,12 @@ static unsigned count_bits(int64_t value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
+  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
+    return; //nothing to do here
+
+  m_channels = m_pCodecContext->channels;
+  m_layout   = m_pCodecContext->channel_layout;
+
   int64_t layout;
 
   int bits = count_bits(m_pCodecContext->channel_layout);
@@ -285,14 +292,14 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
 
   //terminate the channel map
   m_channelMap[index] = PCM_INVALID;
-  m_channels     = m_pCodecContext->channels;
 }
 
 enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
 {
-  if (m_channels != m_pCodecContext->channels)
-    BuildChannelMap();
+  BuildChannelMap();
+
   if (m_channelMap[0] == PCM_INVALID)
     return NULL;
+
   return m_channelMap;
 }
