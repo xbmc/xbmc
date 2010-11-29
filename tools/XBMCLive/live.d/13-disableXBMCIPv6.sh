@@ -27,7 +27,7 @@ activationToken="doNotDisableIPv6InXBMC"
 
 # if strings are the same the token is NOT part of the parameters list
 # here we want to stop script if the token is NOT there
-if [ "$xbmcParams" = "${xbmcParams%$activationToken*}" ] ; then
+if [ "$xbmcParams" != "${xbmcParams%$activationToken*}" ] ; then
 	exit
 fi
 
@@ -47,16 +47,15 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ] ; then
   </network>
 </advancedsettings>
 EOF
-		chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
+	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
+else
+	if grep -i -q disableipv6 /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
+		sed -i 's#\(<disableipv6>\)[a-z]*\(</disableipv6>\)#\1'true'\2#g' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
 	else
-		if grep -i -q disableipv6 /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
-			sed -i 's#\(<disableipv6>\)[a-z]*\(</disableipv6>\)#\1'true'\2#g' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
+		if grep -i -q "<network>" /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
+			sed -i -e 's%<network>%&\n<disableipv6>true</disableipv6>%' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
 		else
-			if grep -i -q "<network>" /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
-				sed -i -e 's%<network>%&\n<disableipv6>true</disableipv6>%' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
-			else
-				sed -i -e 's%<advancedsettings>%&\n<network>\n<disableipv6>true</disableipv6>\n</network>%' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
-			fi
+			sed -i -e 's%<advancedsettings>%&\n<network>\n<disableipv6>true</disableipv6>\n</network>%' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
 		fi
 	fi
 fi
