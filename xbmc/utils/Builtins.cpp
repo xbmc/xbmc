@@ -454,13 +454,13 @@ int CBuiltins::Execute(const CStdString& execString)
         if (plugin && addon->Type() == ADDON_PLUGIN)
         {
           if (plugin->Provides(CPluginSource::VIDEO))
-            cmd.Format("ActivateWindow(Video,plugin://%s)",params[0]);
+            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
           if (plugin->Provides(CPluginSource::AUDIO))
-            cmd.Format("ActivateWindow(Music,plugin://%s)",params[0]);
+            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
           if (plugin->Provides(CPluginSource::EXECUTABLE))
-            cmd.Format("ActivateWindow(Programs,plugin://%s)",params[0]);
+            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
           if (plugin->Provides(CPluginSource::IMAGE))
-            cmd.Format("ActivateWindow(Pictures,plugin://%s)",params[0]);
+            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
         }
         if (addon->Type() == ADDON_SCRIPT)
           cmd.Format("RunScript(%s)",params[0]);
