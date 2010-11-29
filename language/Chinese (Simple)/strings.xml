@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 35193 -->
+<!--Based on english strings version 35368 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1334,7 +1334,7 @@
   <string id="14038">网络设置已改变</string>
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
-  <string id="14041"></string>
+  <string id="14041">互联网连接带宽限制</string>
 
   <string id="14043">- 播放时关机</string>
   <string id="14044">%i分</string>
@@ -2202,6 +2202,7 @@
   <string id="24015">音乐电视资料</string>
   <string id="24016">专辑资料</string>
   <string id="24017">艺人资料</string>
+  <string id="24018">服务程序</string>
 
   <string id="24020">设置</string>
   <string id="24021">禁用</string>
