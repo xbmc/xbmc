@@ -1,10 +1,11 @@
 import xbmc
 import xbmcgui
-import os
+import os, sys
 from xmlParser import XMLParser
 
 #enable localization
-getLS = xbmc.Language(os.getcwd()).getLocalizedString
+getLS   = sys.modules[ "__main__" ].__language__
+__cwd__ = sys.modules[ "__main__" ].__cwd__
 
 
 class GUI(xbmcgui.WindowXMLDialog):
@@ -57,7 +58,7 @@ class GUI(xbmcgui.WindowXMLDialog):
     def closeDialog(self):
         """Close the Set Editor Dialog and open RSS Editor Dialog"""
         import rssEditor
-        rssEditorUI = rssEditor.GUI("script-RSS_Editor-rssEditor.xml", os.getcwd(), "default", setNum = self.setNum)
+        rssEditorUI = rssEditor.GUI("script-RSS_Editor-rssEditor.xml", __cwd__, "default", setNum = self.setNum)
         self.close()
         del rssEditorUI
 

@@ -4,8 +4,8 @@ import os, sys
 from xmlParser import XMLParser
 
 #enable localization
-getLS = sys.modules[ "__main__" ].__language__
-
+getLS   = sys.modules[ "__main__" ].__language__
+__cwd__ = sys.modules[ "__main__" ].__cwd__
 
 class GUI(xbmcgui.WindowXMLDialog):
 
@@ -79,7 +79,7 @@ class GUI(xbmcgui.WindowXMLDialog):
         #change/modify set
         elif controlId == self.control_changeSet_button_id:
             import setEditor
-            setEditorUI = setEditor.GUI("script-RSS_Editor-setEditor.xml", os.getcwd(), "default", setNum = self.setNum)
+            setEditorUI = setEditor.GUI("script-RSS_Editor-setEditor.xml", __cwd__, "default", setNum = self.setNum)
             self.close()
             del setEditorUI
         #save xml

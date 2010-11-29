@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.rss.editor"
        name="RSS Editor"
-       version="1.5.9"
+       version="1.6.0"
        provider-name="rwparris2">
   <requires>
     <import addon="xbmc.python" version="1.0"/>
@@ -16,6 +16,6 @@
     <summary lang="de">Skript zum Bearbeiten des XBMC internen RSS Tickers</summary>
     <description lang="en">A Script for editing XBMC's built in RSS Ticker</description>
     <description lang="hu">A szkript képes szerkeszteni az XBMC beépített RSS forrás készletét</description>
-        <description lang="de">Skript zum Bearbeiten des XBMC internen RSS Tickers</description>
+    <description lang="de">Skript zum Bearbeiten des XBMC internen RSS Tickers</description>
   </extension>
 </addon>
