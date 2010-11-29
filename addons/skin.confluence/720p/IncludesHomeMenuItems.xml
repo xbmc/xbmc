@@ -123,6 +123,30 @@
 			<onclick>ActivateWindow(VideoFiles,Addons,return)</onclick>
 			<visible>!Library.HasContent(Video)</visible>
 		</control>
+		<control type="button" id="90108">
+			<description>Custom Addon Button 1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeVideosButton1))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeVideosButton1)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeVideosButton1))</visible>
+		</control>
+		<control type="button" id="90109">
+			<description>Custom Addon Button 2</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeVideosButton2))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeVideosButton2)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeVideosButton2))</visible>
+		</control>
+		<control type="button" id="90110">
+			<description>Custom Addon Button 3</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeVideosButton3))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeVideosButton3)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeVideosButton3))</visible>
+		</control>
 	</include>
 	<include name="HomeSubMenuMusic">
 		<control type="button" id="90111">
@@ -166,6 +190,30 @@
 			<onclick>ActivateWindow(MusicFiles,Addons,return)</onclick>
 			<visible>!Library.HasContent(Music)</visible>
 		</control>
+		<control type="button" id="90118">
+			<description>Custom Addon Button 1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeMusicButton1))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeMusicButton1)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeMusicButton1))</visible>
+		</control>
+		<control type="button" id="90119">
+			<description>Custom Addon Button 2</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeMusicButton2))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeMusicButton2)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeMusicButton2))</visible>
+		</control>
+		<control type="button" id="90120">
+			<description>Custom Addon Button 3</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomeMusicButton3))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeMusicButton3)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomeMusicButton3))</visible>
+		</control>
 	</include>
 	<include name="HomeSubMenuSystem">
 		<control type="button" id="90141">
@@ -195,13 +243,63 @@
 			<visible>False</visible>
 		</control>
 	</include>
+	<include name="HomeSubMenuPictures">
+		<control type="button" id="90131">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton1))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton1)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton1))</visible>
+		</control>
+		<control type="button" id="90132">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton2))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton2)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton2))</visible>
+		</control>
+		<control type="button" id="90133">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton3))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton3)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton3))</visible>
+		</control>
+		<control type="button" id="90134">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton4))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton4)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton4))</visible>
+		</control>
+		<control type="button" id="90135">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton5))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton5)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton5))</visible>
+		</control>
+		<control type="button" id="90136">
+			<description>Button1</description>
+			<include>ButtonHomeSubCommonValues</include>
+			<label>$INFO[system.addontitle(Skin.String(HomePictureButton6))]</label>
+			<onclick>Setfocus(9000)</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomePictureButton6)])</onclick>
+			<visible>!IsEmpty(Skin.String(HomePictureButton6))</visible>
+		</control>
+	</include>
 	<include name="HomeSubMenuPrograms">
 		<control type="button" id="90151">
 			<description>Button1</description>
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton1))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton1)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton1)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton1))</visible>
 		</control>
 		<control type="button" id="90152">
@@ -209,7 +307,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton2))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton2)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton2)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton2))</visible>
 		</control>
 		<control type="button" id="90153">
@@ -217,7 +315,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton3))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton3)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton3)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton3))</visible>
 		</control>
 		<control type="button" id="90154">
@@ -225,7 +323,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton4))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton4)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton4)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton4))</visible>
 		</control>
 		<control type="button" id="90155">
@@ -233,7 +331,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton5))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton5)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton5)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton5))</visible>
 		</control>
 		<control type="button" id="90156">
@@ -241,7 +339,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>$INFO[system.addontitle(Skin.String(HomeProgramButton6))]</label>
 			<onclick>Setfocus(9000)</onclick>
-			<onclick>XBMC.RunScript($INFO[Skin.String(HomeProgramButton6)])</onclick>
+			<onclick>RunAddon($INFO[Skin.String(HomeProgramButton6)])</onclick>
 			<visible>!IsEmpty(Skin.String(HomeProgramButton6))</visible>
 		</control>
 	</include>

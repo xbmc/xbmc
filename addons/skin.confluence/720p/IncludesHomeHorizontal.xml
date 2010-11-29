@@ -378,6 +378,22 @@
 				<visible>Container(9000).HasFocus(3)</visible>
 				<include>HomeSubMenuMusic</include> <!-- Buttons for the grouplist -->
 			</control>
+			<control type="grouplist" id="9013">
+				<posx>20</posx>
+				<posy>30</posy>
+				<width>220</width>
+				<height>240</height>
+				<align>top</align>
+				<onleft>Control.Setfocus(9000)</onleft>
+				<onleft>Control.Move(9000,-1)</onleft>
+				<onright>Control.Setfocus(9000)</onright>
+				<onright>Control.Move(9000,1)</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<itemgap>0</itemgap>
+				<visible>Container(9000).HasFocus(4) + [!IsEmpty(Skin.String(HomePictureButton1)) | !IsEmpty(Skin.String(HomePictureButton2)) | !IsEmpty(Skin.String(HomePictureButton3)) | !IsEmpty(Skin.String(HomePictureButton4)) | !IsEmpty(Skin.String(HomePictureButton5)) | !IsEmpty(Skin.String(HomePictureButton6))]</visible>
+				<include>HomeSubMenuPictures</include> <!-- Buttons for the grouplist -->
+			</control>
 			<control type="grouplist" id="9014">
 				<posx>20</posx>
 				<posy>30</posy>
@@ -621,7 +637,7 @@
 				<width>18</width>
 				<height>18</height>
 				<texture>HomeHasSub.png</texture>
-				<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(3) | Container(9000).HasFocus(5) | Container(9000).HasFocus(7) | Container(9000).HasFocus(9) | [Container(9000).HasFocus(1) + [!IsEmpty(Skin.String(HomeProgramButton1)) | !IsEmpty(Skin.String(HomeProgramButton2)) | !IsEmpty(Skin.String(HomeProgramButton3)) | !IsEmpty(Skin.String(HomeProgramButton4)) | !IsEmpty(Skin.String(HomeProgramButton5)) | !IsEmpty(Skin.String(HomeProgramButton6))]] | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
+				<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(3) | Container(9000).HasFocus(5) | Container(9000).HasFocus(7) | Container(9000).HasFocus(9) | [Container(9000).HasFocus(4) + [!IsEmpty(Skin.String(HomePictureButton1)) | !IsEmpty(Skin.String(HomePictureButton2)) | !IsEmpty(Skin.String(HomePictureButton3)) | !IsEmpty(Skin.String(HomePictureButton4)) | !IsEmpty(Skin.String(HomePictureButton5)) | !IsEmpty(Skin.String(HomePictureButton6))]] | [Container(9000).HasFocus(1) + [!IsEmpty(Skin.String(HomeProgramButton1)) | !IsEmpty(Skin.String(HomeProgramButton2)) | !IsEmpty(Skin.String(HomeProgramButton3)) | !IsEmpty(Skin.String(HomeProgramButton4)) | !IsEmpty(Skin.String(HomeProgramButton5)) | !IsEmpty(Skin.String(HomeProgramButton6))]] | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
 				<animation effect="rotate" start="90" end="90" center="auto" time="0" condition="true">Conditional</animation>
 				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
 				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>

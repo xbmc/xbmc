@@ -13,7 +13,7 @@
 			<animation type="WindowClose" reversible="false">
 				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
 				<effect type="fade" start="100" end="0" time="300" />
-			</animation>			
+			</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -1345,7 +1345,184 @@
 						<onright>61</onright>
 						<onup>9004</onup>
 						<ondown>9004</ondown>
-						<control type="label" id="400">
+						<control type="label" id="410">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31134</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="411">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]1[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeVideosButton1))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeVideosButton1,xbmc.addon.video)</onclick>
+						</control>
+						<control type="button" id="412">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]2[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeVideosButton2))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeVideosButton2,xbmc.addon.video)</onclick>
+						</control>
+						<control type="button" id="413">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]3[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeVideosButton3))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeVideosButton3,xbmc.addon.video)</onclick>
+						</control>
+
+						<control type="label" id="420">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31135</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="421">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]1[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeMusicButton1))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeMusicButton1,xbmc.addon.audio)</onclick>
+						</control>
+						<control type="button" id="422">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]2[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeMusicButton2))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeMusicButton2,xbmc.addon.audio)</onclick>
+						</control>
+						<control type="button" id="423">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]3[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeMusicButton3))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeMusicButton3,xbmc.addon.audio)</onclick>
+						</control>
+
+						<control type="label" id="430">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31136</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="431">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]1[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton1))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton1,xbmc.addon.image)</onclick>
+						</control>
+						<control type="button" id="432">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]2[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton2))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton2,xbmc.addon.image)</onclick>
+						</control>
+						<control type="button" id="433">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]3[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton3))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton3,xbmc.addon.image)</onclick>
+						</control>
+						<control type="button" id="434">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]4[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton4))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton4,xbmc.addon.image)</onclick>
+						</control>
+						<control type="button" id="435">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]5[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton5))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton5,xbmc.addon.image)</onclick>
+						</control>
+						<control type="button" id="436">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]6[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton6))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomePictureButton6,xbmc.addon.image)</onclick>
+						</control>
+
+						<control type="label" id="440">
 							<width>750</width>
 							<height>45</height>
 							<font>font13_title</font>
@@ -1355,7 +1532,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-						<control type="button" id="401">
+						<control type="button" id="441">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1365,9 +1542,9 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton1,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton1,xbmc.addon.executable)</onclick>
 						</control>
-						<control type="button" id="402">
+						<control type="button" id="442">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1377,9 +1554,9 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton2,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton2,xbmc.addon.executable)</onclick>
 						</control>
-						<control type="button" id="403">
+						<control type="button" id="443">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1389,9 +1566,9 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton3,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton3,xbmc.addon.executable)</onclick>
 						</control>
-						<control type="button" id="404">
+						<control type="button" id="444">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1401,9 +1578,9 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton4,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton4,xbmc.addon.executable)</onclick>
 						</control>
-						<control type="button" id="405">
+						<control type="button" id="445">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1413,9 +1590,9 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton5,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton5,xbmc.addon.executable)</onclick>
 						</control>
-						<control type="button" id="406">
+						<control type="button" id="446">
 							<width>750</width>
 							<height>40</height>
 							<font>font13</font>
@@ -1425,10 +1602,10 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomeProgramButton6,xbmc.python.script)</onclick>
+							<onclick>Skin.SetAddon(HomeProgramButton6,xbmc.addon.executable)</onclick>
 						</control>
 
-						<control type="label" id="423">
+						<control type="label" id="453">
 							<width>750</width>
 							<height>45</height>
 							<font>font13_title</font>
@@ -1438,7 +1615,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-						<control type="button" id="425">
+						<control type="button" id="455">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
@@ -1451,7 +1628,7 @@
 							<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
 						</control>
 
-						<control type="label" id="426">
+						<control type="label" id="456">
 							<width>750</width>
 							<height>45</height>
 							<font>font13_title</font>
@@ -1461,7 +1638,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 						</control>
-						<control type="button" id="428">
+						<control type="button" id="458">
 							<width>750</width>
 							<height>35</height>
 							<font>font12</font>
