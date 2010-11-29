@@ -56,7 +56,9 @@ protected:
 
   bool m_bOpenedCodec;
   int m_iBuffered;
-  int m_channels;
+
+  int     m_channels;
+  int64_t m_layout;
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil m_dllAvUtil;
