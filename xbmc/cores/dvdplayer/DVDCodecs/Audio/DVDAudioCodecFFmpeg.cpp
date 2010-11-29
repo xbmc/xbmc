@@ -38,7 +38,7 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_pConvert = NULL;
   m_bOpenedCodec = false;
 
-  m_channelLayout[0] = PCM_INVALID;
+  m_channelLayout[0] = AE_CH_NULL;
   m_channels = 0;
   m_layout = 0;
 }
@@ -202,6 +202,12 @@ static unsigned count_bits(int64_t value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
+  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
+    return; //nothing to do here
+
+  m_channels = m_pCodecContext->channels;
+  m_layout   = m_pCodecContext->channel_layout;
+
   int64_t layout;
 
   int bits = count_bits(m_pCodecContext->channel_layout);
