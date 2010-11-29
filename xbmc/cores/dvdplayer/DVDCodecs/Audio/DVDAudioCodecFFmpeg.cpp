@@ -242,7 +242,7 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
   return 16;
 }
 
-static unsigned count_bits(unsigned value)
+static unsigned count_bits(int64_t value)
 {
   unsigned bits = 0;
   for(;value;++bits)
@@ -252,7 +252,7 @@ static unsigned count_bits(unsigned value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
-  int layout;
+  int64_t layout;
 
   int bits = count_bits(m_pCodecContext->channel_layout);
   if (bits == m_pCodecContext->channels)
