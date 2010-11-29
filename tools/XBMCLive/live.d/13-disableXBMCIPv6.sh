@@ -49,9 +49,7 @@ if [ ! -f /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ] ; then
 EOF
 	chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.xbmc
 else
-	if grep -i -q disableipv6 /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
-		sed -i 's#\(<disableipv6>\)[a-z]*\(</disableipv6>\)#\1'true'\2#g' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
-	else
+	if ! grep -i -q disableipv6 /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
 		if grep -i -q "<network>" /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml ; then
 			sed -i -e 's%<network>%&\n<disableipv6>true</disableipv6>%' /home/$xbmcUser/.xbmc/userdata/advancedsettings.xml
 		else
