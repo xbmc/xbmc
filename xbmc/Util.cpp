@@ -2460,6 +2460,28 @@ bool CUtil::IsUsingTTFSubtitles()
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
 
+#ifdef UNIT_TESTING
+bool TestSplitExec()
+{
+  CStdString function;
+  vector<CStdString> params;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo")
+    return false;
+  params.clear();
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\"")
+    return false;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\test\\\\foo\\\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\\")
+    return false;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\\\test\\\\foo\\")
+    return false;
+  return true;
+}
+#endif
+
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
   CStdString paramString;
