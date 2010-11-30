@@ -206,6 +206,10 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
 
+#ifdef UNIT_TESTING
+  static bool TestSplitExec();
+#endif
+
   static void InitRandomSeed();
 
   // Get decimal integer representation of roman digit, ivxlcdm are valid
