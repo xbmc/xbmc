@@ -39,7 +39,6 @@
 #define HAS_KARAOKE
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
-#define HAS_SHOUTCAST
 #define HAS_SYSINFO
 #define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK

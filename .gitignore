@@ -1126,11 +1126,6 @@ config.log
 /xbmc/lib/libsamplerate/libsamplerate_win32/Debug
 /xbmc/lib/libsamplerate/libsamplerate_win32/Release
 
-# /xbmc/lib/libshout/
-/xbmc/lib/libshout/Makefile
-/xbmc/lib/libshout/libshout/Debug
-/xbmc/lib/libshout/libshout/Release
-
 /xbmc/lib/libsquish/Makefile
 /xbmc/lib/libsquish/lib/squishd.lib
 /xbmc/lib/libsquish/lib/squish.lib
