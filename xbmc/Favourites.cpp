@@ -152,6 +152,7 @@ bool CFavourites::IsFavourite(CFileItem *item, int contextWindow)
 static CStdString Paramify(const CStdString& param)
 {
   CStdString result(param);
+  result.Replace("\\", "\\\\");
   result.Replace("\"", "\\\"");
   return "\"" + result + "\"";
 }

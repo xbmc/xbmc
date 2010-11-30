@@ -2488,7 +2488,12 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   for (size_t pos = 0; pos < paramString.size(); pos++)
   {
     char ch = paramString[pos];
-    bool escaped = (pos > 0 && paramString[pos - 1] == '\\');
+    // count back slashes to find if ch is escaped or not (even number is not escaped)
+    size_t numBackSlash = 0;
+    for (; numBackSlash < pos; ++numBackSlash)
+      if (paramString[pos-numBackSlash-1] != '\\')
+        break;
+    bool escaped = (numBackSlash % 2) != 0;
     if (inQuotes)
     { // if we're in a quote, we accept everything until the closing quote
       if (ch == '\"' && !escaped)
@@ -2522,8 +2527,8 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
         continue;
       }
     }
-    if (ch == '\"' && escaped)
-    { // escape quote
+    if ((ch == '\"' || ch == '\\') && escaped)
+    { // escaped quote or backslash
       parameter[parameter.size()-1] = ch;
       continue;
     }
