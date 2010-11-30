@@ -15,6 +15,14 @@
 # *
 # *  this file was taken from http://xbmc-addons.googlecode.com/svn/packages/scripts/RecentlyAdded.py
 # *  and modified to be a XBMC Add-on under gpl2 license on 20. November 2010.
+# *
+# *  Thanks to:
+# *
+# *  Nuka for the original RecentlyAdded.py
+# *
+# *  ronie and Hitcher for the improvements made while in official repo
+# *  
+# *  Team XBMC
 
 import xbmc
 from xbmcgui import Window
