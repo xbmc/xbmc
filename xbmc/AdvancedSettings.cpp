@@ -434,8 +434,8 @@ bool CAdvancedSettings::Load()
         float fps;
         if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
         {
-          override.fpsmin = fps - 0.01;
-          override.fpsmax = fps + 0.01;
+          override.fpsmin = fps - 0.01f;
+          override.fpsmax = fps + 0.01f;
         }
 
         float fpsmin, fpsmax;
@@ -449,8 +449,8 @@ bool CAdvancedSettings::Load()
         float refresh;
         if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
         {
-          override.refreshmin = refresh - 0.01;
-          override.refreshmax = refresh + 0.01;
+          override.refreshmin = refresh - 0.01f;
+          override.refreshmax = refresh + 0.01f;
         }
 
         float refreshmin, refreshmax;
@@ -482,8 +482,8 @@ bool CAdvancedSettings::Load()
         float refresh;
         if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
         {
-          fallback.refreshmin = refresh - 0.01;
-          fallback.refreshmax = refresh + 0.01;
+          fallback.refreshmin = refresh - 0.01f;
+          fallback.refreshmax = refresh + 0.01f;
         }
 
         float refreshmin, refreshmax;

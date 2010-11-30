@@ -59,11 +59,11 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"ModplugCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  char *data = new char[file.GetLength()];
+  char *data = new char[(unsigned int)file.GetLength()];
   file.Read(data,file.GetLength());
 
   // Now load the module
-  m_module = m_dll.ModPlug_Load(data,file.GetLength());
+  m_module = m_dll.ModPlug_Load(data,(int)file.GetLength());
   delete[] data;
   if (!m_module)
   {

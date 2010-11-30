@@ -104,6 +104,6 @@ CStdString CGUIDialogBoxBase::GetLocalized(const CVariant &var) const
   if (var.isString())
     return var.asString();
   else if (var.isInteger() && var.asInteger())
-    return g_localizeStrings.Get(var.asInteger());
+    return g_localizeStrings.Get((uint32_t)var.asInteger());
   return "";
 }

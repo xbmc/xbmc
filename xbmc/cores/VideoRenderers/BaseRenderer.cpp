@@ -137,7 +137,7 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight)
 
 void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 {
-  const float maxWeight = 0.0021;
+  const float maxWeight = 0.0021f;
 
   m_resolution = FindClosestResolution(fps, 1.0, m_resolution, weight);
 
@@ -226,7 +226,7 @@ float CBaseRenderer::RefreshWeight(float refresh, float fps)
   if (round < 1)
     return (fps - refresh) / fps;
   else
-    return fabs(div / round - 1.0);
+    return (float)fabs(div / round - 1.0);
 }
 
 RESOLUTION CBaseRenderer::GetResolution() const
