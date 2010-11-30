@@ -2461,7 +2461,7 @@ bool CUtil::IsUsingTTFSubtitles()
 }
 
 #ifdef UNIT_TESTING
-bool TestSplitExec()
+bool CUtil::TestSplitExec()
 {
   CStdString function;
   vector<CStdString> params;
@@ -2503,6 +2503,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 
   // now split up our parameters - we may have quotes to deal with as well as brackets and whitespace
   bool inQuotes = false;
+  bool lastEscaped = false; // only every second character can be escaped
   int inFunction = 0;
   size_t whiteSpacePos = 0;
   CStdString parameter;
@@ -2510,12 +2511,8 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   for (size_t pos = 0; pos < paramString.size(); pos++)
   {
     char ch = paramString[pos];
-    // count back slashes to find if ch is escaped or not (even number is not escaped)
-    size_t numBackSlash = 0;
-    for (; numBackSlash < pos; ++numBackSlash)
-      if (paramString[pos-numBackSlash-1] != '\\')
-        break;
-    bool escaped = (numBackSlash % 2) != 0;
+    bool escaped = (pos > 0 && paramString[pos - 1] == '\\' && !lastEscaped);
+    lastEscaped = escaped;
     if (inQuotes)
     { // if we're in a quote, we accept everything until the closing quote
       if (ch == '\"' && !escaped)
