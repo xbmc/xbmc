@@ -164,7 +164,10 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         UpdateFileList();*/
         return true;
       }
-
+      else if (iControl == CONTROL_BTNVIEWASICONS)
+      { // base class handles this one
+        break;
+      }
       if(pCallbackWindow && iControl && iControl != (int)this->GetID()) // pCallbackWindow &&  != this->GetID())
       {
         CGUIControl* controlClicked = (CGUIControl*)this->GetControl(iControl);
