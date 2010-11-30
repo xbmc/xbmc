@@ -42,7 +42,6 @@ CKeyboardStat g_Keyboard;
 /* Global keystate information */
 static uint8_t  XBMC_KeyState[XBMCK_LAST];
 static XBMCMod XBMC_ModState;
-static const char *keynames[XBMCK_LAST];	/* Array of keycode names */
 
 static uint8_t XBMC_NoLockKeys;
 
@@ -253,6 +252,267 @@ static XBMC_KeyMapping g_mapping_npc[] =
 , { XBMCK_RSHIFT, 0xa1 }
 };
 
+#define NUM_KEYNAMES 0x100
+static const char *keynames[NUM_KEYNAMES] =
+{
+  NULL,                 // 0x0
+  NULL,                 // 0x1
+  NULL,                 // 0x2
+  NULL,                 // 0x3
+  NULL,                 // 0x4
+  NULL,                 // 0x5
+  NULL,                 // 0x6
+  NULL,                 // 0x7
+  "backspace",          // 0x8
+  "tab",                // 0x9
+  NULL,                 // 0xA
+  NULL,                 // 0xB
+  NULL,                 // 0xC
+  "return",             // 0xD
+  NULL,                 // 0xE
+  NULL,                 // 0xF
+  NULL,                 // 0x10
+  NULL,                 // 0x11
+  NULL,                 // 0x12
+  NULL,                 // 0x13
+  NULL,                 // 0x14
+  NULL,                 // 0x15
+  NULL,                 // 0x16
+  NULL,                 // 0x17
+  NULL,                 // 0x18
+  NULL,                 // 0x19
+  NULL,                 // 0x1A
+  "escape",             // 0x1B
+  NULL,                 // 0x1C
+  NULL,                 // 0x1D
+  NULL,                 // 0x1E
+  NULL,                 // 0x1F
+  "space",              // 0x20
+  "pageup",             // 0x21
+  "pagedown",           // 0x22
+  "end",                // 0x23
+  "home",               // 0x24
+  "left",               // 0x25
+  "up",                 // 0x26
+  "right",              // 0x27
+  "down",               // 0x28
+  NULL,                 // 0x29
+  "printscreen",        // 0x2A
+  NULL,                 // 0x2B
+  NULL,                 // 0x2C
+  "insert",             // 0x2D
+  "delete",             // 0x2E
+  NULL,                 // 0x2F
+  NULL,                 // 0x30
+  NULL,                 // 0x31
+  NULL,                 // 0x32
+  NULL,                 // 0x33
+  NULL,                 // 0x34
+  NULL,                 // 0x35
+  NULL,                 // 0x36
+  NULL,                 // 0x37
+  NULL,                 // 0x38
+  NULL,                 // 0x39
+  NULL,                 // 0x3A
+  NULL,                 // 0x3B
+  NULL,                 // 0x3C
+  NULL,                 // 0x3D
+  NULL,                 // 0x3E
+  NULL,                 // 0x3F
+  NULL,                 // 0x40
+  "A",                  // 0x41
+  "B",                  // 0x42
+  "C",                  // 0x43
+  "D",                  // 0x44
+  "E",                  // 0x45
+  "F",                  // 0x46
+  "G",                  // 0x47
+  "H",                  // 0x48
+  "I",                  // 0x49
+  "J",                  // 0x4A
+  "K",                  // 0x4B
+  "L",                  // 0x4C
+  "M",                  // 0x4D
+  "N",                  // 0x4E
+  "O",                  // 0x4F
+  "P",                  // 0x50
+  "Q",                  // 0x51
+  "R",                  // 0x52
+  "S",                  // 0x53
+  "T",                  // 0x54
+  "U",                  // 0x55
+  "V",                  // 0x56
+  "W",                  // 0x57
+  "X",                  // 0x58
+  "Y",                  // 0x59
+  "Z",                  // 0x5A
+  NULL,                 // 0x5B
+  NULL,                 // 0x5C
+  "menu",               // 0x5D
+  NULL,                 // 0x5E
+  NULL,                 // 0x5F
+  "0",                  // 0x60
+  "1",                  // 0x61
+  "2",                  // 0x62
+  "3",                  // 0x63
+  "4",                  // 0x64
+  "5",                  // 0x65
+  "6",                  // 0x66
+  "7",                  // 0x67
+  "8",                  // 0x68
+  "9",                  // 0x69
+  NULL,                 // 0x6A
+  NULL,                 // 0x6B
+  "enter",              // 0x6C
+  NULL,                 // 0x6D
+  NULL,                 // 0x6E
+  NULL,                 // 0x6F
+  "f1",                 // 0x70
+  "f2",                 // 0x71
+  "f3",                 // 0x72
+  "f4",                 // 0x73
+  "f5",                 // 0x74
+  "f6",                 // 0x75
+  "f7",                 // 0x76
+  "f8",                 // 0x77
+  "f9",                 // 0x78
+  "f10",                // 0x79
+  "f11",                // 0x7A
+  "f12",                // 0x7B
+  NULL,                 // 0x7C
+  NULL,                 // 0x7D
+  NULL,                 // 0x7E
+  NULL,                 // 0x7F
+  NULL,                 // 0x80
+  NULL,                 // 0x81
+  NULL,                 // 0x82
+  NULL,                 // 0x83
+  NULL,                 // 0x84
+  NULL,                 // 0x85
+  NULL,                 // 0x86
+  NULL,                 // 0x87
+  NULL,                 // 0x88
+  NULL,                 // 0x89
+  NULL,                 // 0x8A
+  NULL,                 // 0x8B
+  NULL,                 // 0x8C
+  NULL,                 // 0x8D
+  NULL,                 // 0x8E
+  NULL,                 // 0x8F
+  NULL,                 // 0x90
+  NULL,                 // 0x91
+  NULL,                 // 0x92
+  NULL,                 // 0x93
+  NULL,                 // 0x94
+  NULL,                 // 0x95
+  NULL,                 // 0x96
+  NULL,                 // 0x97
+  NULL,                 // 0x98
+  NULL,                 // 0x99
+  NULL,                 // 0x9A
+  NULL,                 // 0x9B
+  NULL,                 // 0x9C
+  NULL,                 // 0x9D
+  NULL,                 // 0x9E
+  NULL,                 // 0x9F
+  "lshift",             // 0xA0
+  "rshift",             // 0xA1
+  "lcontrol",           // 0xA2
+  "rcontrol",           // 0xA3
+  "lalt",               // 0xA4
+  "ralt",               // 0xA5
+  NULL,                 // 0xA6
+  NULL,                 // 0xA7
+  NULL,                 // 0xA8
+  NULL,                 // 0xA9
+  NULL,                 // 0xAA
+  NULL,                 // 0xAB
+  NULL,                 // 0xAC
+  NULL,                 // 0xAD
+  NULL,                 // 0xAE
+  NULL,                 // 0xAF
+  NULL,                 // 0xB0
+  NULL,                 // 0xB1
+  NULL,                 // 0xB2
+  NULL,                 // 0xB3
+  NULL,                 // 0xB4
+  NULL,                 // 0xB5
+  NULL,                 // 0xB6
+  NULL,                 // 0xB7
+  NULL,                 // 0xB8
+  NULL,                 // 0xB9
+  "semicolon",          // 0xBA
+  "equals",             // 0xBB
+  "comma",              // 0xBC
+  "minus",              // 0xBD
+  "period",             // 0xBE
+  "slash",              // 0xBF
+  "leftquote",          // 0xC0
+  NULL,                 // 0xC1
+  NULL,                 // 0xC2
+  NULL,                 // 0xC3
+  NULL,                 // 0xC4
+  NULL,                 // 0xC5
+  NULL,                 // 0xC6
+  NULL,                 // 0xC7
+  NULL,                 // 0xC8
+  NULL,                 // 0xC9
+  NULL,                 // 0xCA
+  NULL,                 // 0xCB
+  NULL,                 // 0xCC
+  NULL,                 // 0xCD
+  NULL,                 // 0xCE
+  NULL,                 // 0xCF
+  NULL,                 // 0xD0
+  NULL,                 // 0xD1
+  NULL,                 // 0xD2
+  NULL,                 // 0xD3
+  NULL,                 // 0xD4
+  NULL,                 // 0xD5
+  NULL,                 // 0xD6
+  NULL,                 // 0xD7
+  NULL,                 // 0xD8
+  NULL,                 // 0xD9
+  NULL,                 // 0xDA
+  NULL,                 // 0xDB
+  NULL,                 // 0xDC
+  NULL,                 // 0xDD
+  NULL,                 // 0xDE
+  NULL,                 // 0xDF
+  NULL,                 // 0xE0
+  NULL,                 // 0xE1
+  NULL,                 // 0xE2
+  NULL,                 // 0xE3
+  NULL,                 // 0xE4
+  NULL,                 // 0xE5
+  NULL,                 // 0xE6
+  NULL,                 // 0xE7
+  NULL,                 // 0xE8
+  NULL,                 // 0xE9
+  NULL,                 // 0xEA
+  "opensquarebracket",  // 0xEB
+  "backslash",          // 0xEC
+  "closesquarebracket", // 0xED
+  "'",                  // 0xEE
+  NULL,                 // 0xEF
+  NULL,                 // 0xF0
+  NULL,                 // 0xF1
+  NULL,                 // 0xF2
+  NULL,                 // 0xF3
+  NULL,                 // 0xF4
+  NULL,                 // 0xF5
+  NULL,                 // 0xF6
+  NULL,                 // 0xF7
+  NULL,                 // 0xF8
+  NULL,                 // 0xF9
+  NULL,                 // 0xFA
+  NULL,                 // 0xFB
+  NULL,                 // 0xFC
+  NULL,                 // 0xFD
+  NULL,                 // 0xFE
+  NULL                  // 0xFF
+};
+
 static bool LookupKeyMapping(BYTE* VKey, char* Ascii, WCHAR* Unicode, int source, XBMC_KeyMapping* map, int count)
 {
   for(int i = 0; i < count; i++)
@@ -275,252 +535,11 @@ CKeyboardStat::CKeyboardStat()
 {
   /* Initialize the tables */
   XBMC_ModState = XBMCKMOD_NONE;
-  memset((void*)keynames, 0, sizeof(keynames));
   memset(XBMC_KeyState, 0, sizeof(XBMC_KeyState));
 
   XBMC_EnableKeyRepeat(0, 0);
 
   XBMC_NoLockKeys = 0;
-
-  /* Fill in the blanks in keynames */
-  keynames[XBMCK_BACKSPACE] = "backspace";
-  keynames[XBMCK_TAB] = "tab";
-  keynames[XBMCK_CLEAR] = "clear";
-  keynames[XBMCK_RETURN] = "return";
-  keynames[XBMCK_PAUSE] = "pause";
-  keynames[XBMCK_ESCAPE] = "escape";
-  keynames[XBMCK_SPACE] = "space";
-  keynames[XBMCK_EXCLAIM]  = "!";
-  keynames[XBMCK_QUOTEDBL]  = "\"";
-  keynames[XBMCK_HASH]  = "#";
-  keynames[XBMCK_DOLLAR]  = "$";
-  keynames[XBMCK_AMPERSAND]  = "&";
-  keynames[XBMCK_QUOTE] = "'";
-  keynames[XBMCK_LEFTPAREN] = "(";
-  keynames[XBMCK_RIGHTPAREN] = ")";
-  keynames[XBMCK_ASTERISK] = "*";
-  keynames[XBMCK_PLUS] = "+";
-  keynames[XBMCK_COMMA] = ",";
-  keynames[XBMCK_MINUS] = "-";
-  keynames[XBMCK_PERIOD] = ".";
-  keynames[XBMCK_SLASH] = "/";
-  keynames[XBMCK_0] = "0";
-  keynames[XBMCK_1] = "1";
-  keynames[XBMCK_2] = "2";
-  keynames[XBMCK_3] = "3";
-  keynames[XBMCK_4] = "4";
-  keynames[XBMCK_5] = "5";
-  keynames[XBMCK_6] = "6";
-  keynames[XBMCK_7] = "7";
-  keynames[XBMCK_8] = "8";
-  keynames[XBMCK_9] = "9";
-  keynames[XBMCK_COLON] = ":";
-  keynames[XBMCK_SEMICOLON] = ";";
-  keynames[XBMCK_LESS] = "<";
-  keynames[XBMCK_EQUALS] = "=";
-  keynames[XBMCK_GREATER] = ">";
-  keynames[XBMCK_QUESTION] = "?";
-  keynames[XBMCK_AT] = "@";
-  keynames[XBMCK_LEFTBRACKET] = "[";
-  keynames[XBMCK_BACKSLASH] = "\\";
-  keynames[XBMCK_RIGHTBRACKET] = "]";
-  keynames[XBMCK_CARET] = "^";
-  keynames[XBMCK_UNDERSCORE] = "_";
-  keynames[XBMCK_BACKQUOTE] = "`";
-  keynames[XBMCK_a] = "a";
-  keynames[XBMCK_b] = "b";
-  keynames[XBMCK_c] = "c";
-  keynames[XBMCK_d] = "d";
-  keynames[XBMCK_e] = "e";
-  keynames[XBMCK_f] = "f";
-  keynames[XBMCK_g] = "g";
-  keynames[XBMCK_h] = "h";
-  keynames[XBMCK_i] = "i";
-  keynames[XBMCK_j] = "j";
-  keynames[XBMCK_k] = "k";
-  keynames[XBMCK_l] = "l";
-  keynames[XBMCK_m] = "m";
-  keynames[XBMCK_n] = "n";
-  keynames[XBMCK_o] = "o";
-  keynames[XBMCK_p] = "p";
-  keynames[XBMCK_q] = "q";
-  keynames[XBMCK_r] = "r";
-  keynames[XBMCK_s] = "s";
-  keynames[XBMCK_t] = "t";
-  keynames[XBMCK_u] = "u";
-  keynames[XBMCK_v] = "v";
-  keynames[XBMCK_w] = "w";
-  keynames[XBMCK_x] = "x";
-  keynames[XBMCK_y] = "y";
-  keynames[XBMCK_z] = "z";
-  keynames[XBMCK_DELETE] = "delete";
-
-  keynames[XBMCK_WORLD_0] = "world 0";
-  keynames[XBMCK_WORLD_1] = "world 1";
-  keynames[XBMCK_WORLD_2] = "world 2";
-  keynames[XBMCK_WORLD_3] = "world 3";
-  keynames[XBMCK_WORLD_4] = "world 4";
-  keynames[XBMCK_WORLD_5] = "world 5";
-  keynames[XBMCK_WORLD_6] = "world 6";
-  keynames[XBMCK_WORLD_7] = "world 7";
-  keynames[XBMCK_WORLD_8] = "world 8";
-  keynames[XBMCK_WORLD_9] = "world 9";
-  keynames[XBMCK_WORLD_10] = "world 10";
-  keynames[XBMCK_WORLD_11] = "world 11";
-  keynames[XBMCK_WORLD_12] = "world 12";
-  keynames[XBMCK_WORLD_13] = "world 13";
-  keynames[XBMCK_WORLD_14] = "world 14";
-  keynames[XBMCK_WORLD_15] = "world 15";
-  keynames[XBMCK_WORLD_16] = "world 16";
-  keynames[XBMCK_WORLD_17] = "world 17";
-  keynames[XBMCK_WORLD_18] = "world 18";
-  keynames[XBMCK_WORLD_19] = "world 19";
-  keynames[XBMCK_WORLD_20] = "world 20";
-  keynames[XBMCK_WORLD_21] = "world 21";
-  keynames[XBMCK_WORLD_22] = "world 22";
-  keynames[XBMCK_WORLD_23] = "world 23";
-  keynames[XBMCK_WORLD_24] = "world 24";
-  keynames[XBMCK_WORLD_25] = "world 25";
-  keynames[XBMCK_WORLD_26] = "world 26";
-  keynames[XBMCK_WORLD_27] = "world 27";
-  keynames[XBMCK_WORLD_28] = "world 28";
-  keynames[XBMCK_WORLD_29] = "world 29";
-  keynames[XBMCK_WORLD_30] = "world 30";
-  keynames[XBMCK_WORLD_31] = "world 31";
-  keynames[XBMCK_WORLD_32] = "world 32";
-  keynames[XBMCK_WORLD_33] = "world 33";
-  keynames[XBMCK_WORLD_34] = "world 34";
-  keynames[XBMCK_WORLD_35] = "world 35";
-  keynames[XBMCK_WORLD_36] = "world 36";
-  keynames[XBMCK_WORLD_37] = "world 37";
-  keynames[XBMCK_WORLD_38] = "world 38";
-  keynames[XBMCK_WORLD_39] = "world 39";
-  keynames[XBMCK_WORLD_40] = "world 40";
-  keynames[XBMCK_WORLD_41] = "world 41";
-  keynames[XBMCK_WORLD_42] = "world 42";
-  keynames[XBMCK_WORLD_43] = "world 43";
-  keynames[XBMCK_WORLD_44] = "world 44";
-  keynames[XBMCK_WORLD_45] = "world 45";
-  keynames[XBMCK_WORLD_46] = "world 46";
-  keynames[XBMCK_WORLD_47] = "world 47";
-  keynames[XBMCK_WORLD_48] = "world 48";
-  keynames[XBMCK_WORLD_49] = "world 49";
-  keynames[XBMCK_WORLD_50] = "world 50";
-  keynames[XBMCK_WORLD_51] = "world 51";
-  keynames[XBMCK_WORLD_52] = "world 52";
-  keynames[XBMCK_WORLD_53] = "world 53";
-  keynames[XBMCK_WORLD_54] = "world 54";
-  keynames[XBMCK_WORLD_55] = "world 55";
-  keynames[XBMCK_WORLD_56] = "world 56";
-  keynames[XBMCK_WORLD_57] = "world 57";
-  keynames[XBMCK_WORLD_58] = "world 58";
-  keynames[XBMCK_WORLD_59] = "world 59";
-  keynames[XBMCK_WORLD_60] = "world 60";
-  keynames[XBMCK_WORLD_61] = "world 61";
-  keynames[XBMCK_WORLD_62] = "world 62";
-  keynames[XBMCK_WORLD_63] = "world 63";
-  keynames[XBMCK_WORLD_64] = "world 64";
-  keynames[XBMCK_WORLD_65] = "world 65";
-  keynames[XBMCK_WORLD_66] = "world 66";
-  keynames[XBMCK_WORLD_67] = "world 67";
-  keynames[XBMCK_WORLD_68] = "world 68";
-  keynames[XBMCK_WORLD_69] = "world 69";
-  keynames[XBMCK_WORLD_70] = "world 70";
-  keynames[XBMCK_WORLD_71] = "world 71";
-  keynames[XBMCK_WORLD_72] = "world 72";
-  keynames[XBMCK_WORLD_73] = "world 73";
-  keynames[XBMCK_WORLD_74] = "world 74";
-  keynames[XBMCK_WORLD_75] = "world 75";
-  keynames[XBMCK_WORLD_76] = "world 76";
-  keynames[XBMCK_WORLD_77] = "world 77";
-  keynames[XBMCK_WORLD_78] = "world 78";
-  keynames[XBMCK_WORLD_79] = "world 79";
-  keynames[XBMCK_WORLD_80] = "world 80";
-  keynames[XBMCK_WORLD_81] = "world 81";
-  keynames[XBMCK_WORLD_82] = "world 82";
-  keynames[XBMCK_WORLD_83] = "world 83";
-  keynames[XBMCK_WORLD_84] = "world 84";
-  keynames[XBMCK_WORLD_85] = "world 85";
-  keynames[XBMCK_WORLD_86] = "world 86";
-  keynames[XBMCK_WORLD_87] = "world 87";
-  keynames[XBMCK_WORLD_88] = "world 88";
-  keynames[XBMCK_WORLD_89] = "world 89";
-  keynames[XBMCK_WORLD_90] = "world 90";
-  keynames[XBMCK_WORLD_91] = "world 91";
-  keynames[XBMCK_WORLD_92] = "world 92";
-  keynames[XBMCK_WORLD_93] = "world 93";
-  keynames[XBMCK_WORLD_94] = "world 94";
-  keynames[XBMCK_WORLD_95] = "world 95";
-
-  keynames[XBMCK_KP0] = "[0]";
-  keynames[XBMCK_KP1] = "[1]";
-  keynames[XBMCK_KP2] = "[2]";
-  keynames[XBMCK_KP3] = "[3]";
-  keynames[XBMCK_KP4] = "[4]";
-  keynames[XBMCK_KP5] = "[5]";
-  keynames[XBMCK_KP6] = "[6]";
-  keynames[XBMCK_KP7] = "[7]";
-  keynames[XBMCK_KP8] = "[8]";
-  keynames[XBMCK_KP9] = "[9]";
-  keynames[XBMCK_KP_PERIOD] = "[.]";
-  keynames[XBMCK_KP_DIVIDE] = "[/]";
-  keynames[XBMCK_KP_MULTIPLY] = "[*]";
-  keynames[XBMCK_KP_MINUS] = "[-]";
-  keynames[XBMCK_KP_PLUS] = "[+]";
-  keynames[XBMCK_KP_ENTER] = "enter";
-  keynames[XBMCK_KP_EQUALS] = "equals";
-
-  keynames[XBMCK_UP] = "up";
-  keynames[XBMCK_DOWN] = "down";
-  keynames[XBMCK_RIGHT] = "right";
-  keynames[XBMCK_LEFT] = "left";
-  keynames[XBMCK_DOWN] = "down";
-  keynames[XBMCK_INSERT] = "insert";
-  keynames[XBMCK_HOME] = "home";
-  keynames[XBMCK_END] = "end";
-  keynames[XBMCK_PAGEUP] = "page up";
-  keynames[XBMCK_PAGEDOWN] = "page down";
-
-  keynames[XBMCK_F1] = "f1";
-  keynames[XBMCK_F2] = "f2";
-  keynames[XBMCK_F3] = "f3";
-  keynames[XBMCK_F4] = "f4";
-  keynames[XBMCK_F5] = "f5";
-  keynames[XBMCK_F6] = "f6";
-  keynames[XBMCK_F7] = "f7";
-  keynames[XBMCK_F8] = "f8";
-  keynames[XBMCK_F9] = "f9";
-  keynames[XBMCK_F10] = "f10";
-  keynames[XBMCK_F11] = "f11";
-  keynames[XBMCK_F12] = "f12";
-  keynames[XBMCK_F13] = "f13";
-  keynames[XBMCK_F14] = "f14";
-  keynames[XBMCK_F15] = "f15";
-
-  keynames[XBMCK_NUMLOCK] = "numlock";
-  keynames[XBMCK_CAPSLOCK] = "caps lock";
-  keynames[XBMCK_SCROLLOCK] = "scroll lock";
-  keynames[XBMCK_RSHIFT] = "right shift";
-  keynames[XBMCK_LSHIFT] = "left shift";
-  keynames[XBMCK_RCTRL] = "right ctrl";
-  keynames[XBMCK_LCTRL] = "left ctrl";
-  keynames[XBMCK_RALT] = "right alt";
-  keynames[XBMCK_LALT] = "left alt";
-  keynames[XBMCK_RMETA] = "right meta";
-  keynames[XBMCK_LMETA] = "left meta";
-  keynames[XBMCK_LSUPER] = "left super";	/* "Windows" keys */
-  keynames[XBMCK_RSUPER] = "right super";
-  keynames[XBMCK_MODE] = "alt gr";
-  keynames[XBMCK_COMPOSE] = "compose";
-
-  keynames[XBMCK_HELP] = "help";
-  keynames[XBMCK_PRINT] = "print screen";
-  keynames[XBMCK_SYSREQ] = "sys req";
-  keynames[XBMCK_BREAK] = "break";
-  keynames[XBMCK_MENU] = "menu";
-  keynames[XBMCK_POWER] = "power";
-  keynames[XBMCK_EURO] = "euro";
-  keynames[XBMCK_UNDO] = "undo";
 
   Reset();
   m_lastKey = XBMCK_UNKNOWN;
@@ -1042,3 +1061,40 @@ void CKeyboardStat::ProcessKeyUp(void)
   memset(&m_lastKeysym, 0, sizeof(m_lastKeysym));
   m_lastKeyTime = 0;
 }
+
+// Return the key name given a key ID
+// Used to make the debug log more intelligable
+// The KeyID includes the flags for ctrl, alt etc
+
+const char* CKeyboardStat::GetKeyName(int KeyID, CStdString& KeyName)
+{ int keyid;
+
+  KeyName.clear();
+
+// Get modifiers
+
+  if (KeyID & CKey::MODIFIER_CTRL)
+    KeyName.append("ctrl-");
+  if (KeyID & CKey::MODIFIER_SHIFT)
+    KeyName.append("shift-");
+  if (KeyID & CKey::MODIFIER_ALT)
+    KeyName.append("alt-");
+  if (KeyID & CKey::MODIFIER_SUPER)
+    KeyName.append("win-");
+
+// Now get the key name
+  
+  keyid = KeyID & 0x0FFF;
+  if (keyid > NUM_KEYNAMES)
+    KeyName.AppendFormat("%i", keyid);
+  else if (!keynames[keyid])
+    KeyName.AppendFormat("%i", keyid);
+  else
+    KeyName.append(keynames[keyid]);
+
+  KeyName.AppendFormat(" (%02x)", KeyID);
+
+  return KeyName.c_str();
+}
+
+
