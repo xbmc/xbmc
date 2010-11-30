@@ -28,6 +28,9 @@
 #endif
 #include "MouseStat.h"
 #include "WindowingFactory.h"
+#if defined(__APPLE__)
+#include "osx/CocoaInterface.h"
+#endif
 
 #ifdef HAS_SDL_WIN_EVENTS
 
@@ -149,6 +152,11 @@ bool CWinEventsSDL::MessagePump()
         if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
         {
           g_Mouse.SetActive(false);
+#if defined(__APPLE__)
+          // See CApplication::ProcessSlow() for a description as to why we call Cocoa_HideMouse.
+          // this is here to restore the pointer when toggling back to window mode from fullscreen.
+          Cocoa_ShowMouse();
+#endif
           break;
         }
         XBMC_Event newEvent;
