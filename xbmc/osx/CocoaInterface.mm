@@ -421,6 +421,11 @@ void Cocoa_HideMouse()
   [NSCursor hide];
 }
 
+void Cocoa_ShowMouse()
+{
+  [NSCursor unhide];
+}
+
 void Cocoa_HideDock()
 {
   // Find which display we are on
