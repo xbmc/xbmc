@@ -216,7 +216,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
     CStdStringW strRawDevName(varName.pwszVal);
     CStdString strDevName;
-    g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName);
+    g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
     if(device == strDevName)
       i = uiCount;
