@@ -39,5 +39,6 @@ public:
 
     // class methods
     static const char* GetFriendlyName(const char* url);
+    static bool        GetResource(const CURL &path, CFileItem& item);
 };
 }

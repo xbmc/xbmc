@@ -3535,6 +3535,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
+  if (CUtil::IsUPnP(item.m_strPath))
+  {
+    CFileItem item_new(item);
+    if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
+      return PlayFile(item_new, false);
+    return false;
+  }
+
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
