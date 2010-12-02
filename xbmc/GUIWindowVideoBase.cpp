@@ -952,13 +952,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
           m_database.HasTvShowInfo(strDir)           ||
           m_database.HasEpisodeInfo(item->m_strPath)))
     {
-      // hack
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog && pDialog->IsScanning())
-        return true;
-
-      CGUIWindowVideoFiles::OnAssignContent(strDir,1, scraper, settings);
-      return true;
+      return false;
     }
 
     if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
