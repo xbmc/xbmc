@@ -247,6 +247,18 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_PLAYBACK_STARTED:
+  case GUI_MSG_PLAYBACK_ENDED:
+  case GUI_MSG_PLAYBACK_STOPPED:
+  case GUI_MSG_PLAYLIST_CHANGED:
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+  case GUI_MSG_PLAYLISTPLAYER_STARTED:
+  case GUI_MSG_PLAYLISTPLAYER_CHANGED:
+    { // send a notify all to all controls on this window
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_LIST);
+      OnMessage(msg);
+      break;
+    }
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIWindow::OnMessage(message);
