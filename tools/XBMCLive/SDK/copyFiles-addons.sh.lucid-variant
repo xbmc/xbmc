@@ -20,7 +20,7 @@
 
 echo "Retrieving addons..."
 
-repoURL="http://mirrors.xbmc.org/addons/dharma-pre/"
+repoURL="http://mirrors.xbmc.org/addons/dharma/"
 ADDONSLIST=(script.bootable.disk.wizard script.rss.editor script.xbmc.audio.mixer)
 
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-includes/usr/share/xbmc/addons &> /dev/null
