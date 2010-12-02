@@ -40,7 +40,6 @@
 #define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 #define DEFAULT_PAGE        "index.html"
-#define HEAD_RESPONSE       ""
 
 using namespace ADDON;
 using namespace XFILE;
@@ -259,15 +258,21 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
-  void *payload = methodType == HEAD ? (void *)HEAD_RESPONSE : file;
 
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    response = MHD_create_response_from_callback ( file->GetLength(),
-                                                   2048,
-                                                   &CWebServer::ContentReaderCallback, payload,
-                                                   &CWebServer::ContentReaderFreeCallback); 
+    if (methodType == HEAD)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback); 
+    } else {
+      file->Close();
+      delete file;
+      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+    }
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
