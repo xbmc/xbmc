@@ -262,7 +262,7 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    if (methodType == HEAD)
+    if (methodType != HEAD)
     {
       response = MHD_create_response_from_callback ( file->GetLength(),
                                                      2048,
