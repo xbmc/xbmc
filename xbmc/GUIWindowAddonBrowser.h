@@ -106,7 +106,7 @@ protected:
    */
   bool CheckHash(const CStdString& addonZip, const CStdString& hash);
   
-  void PromptForActivation();
+  void PromptForActivation(const ADDON::AddonPtr &prompt);
 
   void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);

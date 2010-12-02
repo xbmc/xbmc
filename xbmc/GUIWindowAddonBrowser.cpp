@@ -371,7 +371,10 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             else
             {
               if (addon->Type() == ADDON_SKIN)
+              {
+                CSingleLock lock(m_critSection);
                 m_prompt = addon;
+              }
              if (g_settings.m_bAddonNotifications)
                 g_application.m_guiDialogKaiToast.QueueNotification(
                                                    addon->Icon(),
@@ -470,25 +473,29 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
 
-  lock.Leave();
+  AddonPtr prompt;
   if (m_downloadJobs.empty() && m_prompt)
-    PromptForActivation();
+  {
+    prompt = m_prompt;
+    m_prompt.reset();
+  }
+  lock.Leave();
+  PromptForActivation(prompt);
 }
 
-void CGUIWindowAddonBrowser::PromptForActivation()
+void CGUIWindowAddonBrowser::PromptForActivation(const AddonPtr &prompt)
 {
-  if (m_prompt->Type() == ADDON_SKIN)
+  if (prompt && prompt->Type() == ADDON_SKIN)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(m_prompt->Name(),
+    if (CGUIDialogYesNo::ShowAndGetInput(prompt->Name(),
                                          g_localizeStrings.Get(24099),"",""))
     {
-      g_guiSettings.SetString("lookandfeel.skin",m_prompt->ID().c_str());
+      g_guiSettings.SetString("lookandfeel.skin",prompt->ID().c_str());
       g_application.m_guiDialogKaiToast.ResetTimer();
       g_application.m_guiDialogKaiToast.Close(true);
       g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
     }
   }
-  m_prompt.reset();
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
