@@ -2161,7 +2161,6 @@ void CApplication::RenderMemoryStatus()
 
 bool CApplication::OnKey(const CKey& key)
 {
-  CStdString keyname;
 
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetActive(false);
@@ -2183,7 +2182,7 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode(), keyname));
+    CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
 
@@ -2197,7 +2196,7 @@ bool CApplication::OnKey(const CKey& key)
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode(), keyname), action.GetName().c_str());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
     if (OnAction(action))
       return true;
@@ -2280,7 +2279,7 @@ bool CApplication::OnKey(const CKey& key)
         }
       }
 
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode(), keyname), action.GetID());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
 
       if (OnAction(action))
         return true;
@@ -2295,7 +2294,7 @@ bool CApplication::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode(), keyname), action.GetName().c_str());
+    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);

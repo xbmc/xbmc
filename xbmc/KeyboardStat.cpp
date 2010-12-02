@@ -1066,35 +1066,36 @@ void CKeyboardStat::ProcessKeyUp(void)
 // Used to make the debug log more intelligable
 // The KeyID includes the flags for ctrl, alt etc
 
-const char* CKeyboardStat::GetKeyName(int KeyID, CStdString& KeyName)
+CStdString CKeyboardStat::GetKeyName(int KeyID)
 { int keyid;
+  CStdString keyname;
 
-  KeyName.clear();
+  keyname.clear();
 
 // Get modifiers
 
   if (KeyID & CKey::MODIFIER_CTRL)
-    KeyName.append("ctrl-");
+    keyname.append("ctrl-");
   if (KeyID & CKey::MODIFIER_SHIFT)
-    KeyName.append("shift-");
+    keyname.append("shift-");
   if (KeyID & CKey::MODIFIER_ALT)
-    KeyName.append("alt-");
+    keyname.append("alt-");
   if (KeyID & CKey::MODIFIER_SUPER)
-    KeyName.append("win-");
+    keyname.append("win-");
 
 // Now get the key name
   
   keyid = KeyID & 0x0FFF;
   if (keyid > NUM_KEYNAMES)
-    KeyName.AppendFormat("%i", keyid);
+    keyname.AppendFormat("%i", keyid);
   else if (!keynames[keyid])
-    KeyName.AppendFormat("%i", keyid);
+    keyname.AppendFormat("%i", keyid);
   else
-    KeyName.append(keynames[keyid]);
+    keyname.append(keynames[keyid]);
 
-  KeyName.AppendFormat(" (%02x)", KeyID);
+  keyname.AppendFormat(" (%02x)", KeyID);
 
-  return KeyName.c_str();
+  return keyname;
 }
 
 

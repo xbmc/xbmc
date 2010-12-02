@@ -56,7 +56,7 @@ public:
 
   const CKey GetKey();
 
-  const char* GetKeyName(int KeyID, CStdString& KeyName);
+  CStdString GetKeyName(int KeyID);
 
 // New key handling code added in preparation for the major overhaul
 // of the keyboard handling
