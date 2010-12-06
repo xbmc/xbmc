@@ -203,9 +203,6 @@ ENDOFBLOCK
 		fi
 	done
 fi
-	if ! grep -i -q XBMCLive /etc/lsb-release ; then
-		sed -i -e "/^DISTRIB_DESCRIPTION/s/\"\(.*\)\"/\"\1 - XBMCLive Dharma\"/" /etc/lsb-release
-	fi
 
 	# Add <xbmc=autostart,nodiskmount,setvolume loglevel=0> to grub's kernel entries
 	if [ -f /boot/grub/menu.lst ]; then
