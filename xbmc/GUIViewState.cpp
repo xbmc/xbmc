@@ -74,6 +74,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   {
     if (items.GetContent() == "songs")
       return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "albums")
+      return new CGUIViewStateMusicSmartPlaylist(items);
     else if (items.GetContent() == "musicvideos") // TODO: Update this
       return new CGUIViewStateMusicSmartPlaylist(items);
     else if (items.GetContent() == "tvshows")
