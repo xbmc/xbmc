@@ -104,7 +104,7 @@ fi
 	fi
 
 	# Remove distro description customization
-	if ! grep -i -q XBMCLive /etc/lsb-release ; then
+	if grep -i -q XBMCLive /etc/lsb-release ; then
 		sed -i -e 's/\(\d*\) - XBMCLive Dharma/\1/' /etc/lsb-release
 	fi
 
