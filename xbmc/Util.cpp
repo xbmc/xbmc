@@ -273,6 +273,9 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     RemoveExtension(strFilename);
     return strFilename;
   }
+  
+  // URLDecode since the original path may be an URL
+  URLDecode(strFilename);
   return strFilename;
 }
 
