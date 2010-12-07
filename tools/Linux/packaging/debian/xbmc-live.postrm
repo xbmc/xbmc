@@ -105,7 +105,7 @@ fi
 
 	# Remove distro description customization
 	if grep -i -q XBMCLive /etc/lsb-release ; then
-		sed -i -e 's/\(\d*\) - XBMCLive Dharma/\1/' /etc/lsb-release
+		sed 's/ - XBMCLive Dharma//' /etc/lsb-release
 	fi
 
 	# Remove <xbmc=* > from grub's kernel entries
