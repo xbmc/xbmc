@@ -103,6 +103,10 @@ fi
 		rm /etc/init/xbmc-live-install.conf >/dev/null
 	fi
 
+	# Remove distro description customization
+	if ! grep -i -q XBMCLive /etc/lsb-release ; then
+		sed -i -e 's/\(\d*\) - XBMCLive Dharma/\1/' /etc/lsb-release
+	fi
 
 	# Remove <xbmc=* > from grub's kernel entries
 	if [ -f /boot/grub/menu.lst ]; then
