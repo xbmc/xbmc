@@ -3083,7 +3083,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return g_application.m_pPlayer->GetPlayingTitle();
     if (!m_currentFile->GetLabel().IsEmpty())
       return m_currentFile->GetLabel();
-    return CUtil::GetTitleFromPath(m_currentFile->m_strPath);
+    // Fallback to the filename for the title/label name. URLDecode since the path may be an URL
+    CStdString strVideoLabel = CUtil::GetTitleFromPath(m_currentFile->m_strPath);
+    CUtil::URLDecode(strVideoLabel);
+    return strVideoLabel;
   }
   else if (item == VIDEOPLAYER_PLAYLISTLEN)
   {
