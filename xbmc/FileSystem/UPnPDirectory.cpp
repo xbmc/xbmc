@@ -73,6 +73,9 @@ CUPnPDirectory::GetFriendlyName(const char* url)
     NPT_String uuid = path.SubString(7, next_slash-7);
     NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
 
+    if (!CUPnP::GetInstance()->IsClientStarted())
+        return NULL;
+
     // look for device
     PLT_DeviceDataReference device;
     if (NPT_FAILED(CUPnP::GetInstance()->m_MediaBrowser->FindServer(uuid, device)) || device.IsNull())
