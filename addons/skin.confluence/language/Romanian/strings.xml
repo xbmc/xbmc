@@ -24,8 +24,8 @@
   <string id="31028">Afișe</string>
   <string id="31029">Fanart</string>
   <string id="31030">Listă completă</string>
-  <string id="31031">Miniaturi stânga</string>
-  <string id="31032">Imagini</string>
+  <string id="31031">Detalii</string>
+  <string id="31032">Ciclu imagini</string>
   <string id="31033">Informații</string>
 
   <!-- Extra labels -->
@@ -36,7 +36,7 @@
   <string id="31044">DERULARE ÎNAINTE</string>
   <string id="31045">DERULARE ÎNAPOI</string>
   <string id="31046">Proprietăți audio</string>
-  <string id="31047">Predefinire curentă</string>
+  <string id="31047">Viz. predefinită curentă</string>
   <string id="31048">Vizualizări predefinite</string>
   <string id="31049">Se termină la</string>
 
@@ -74,9 +74,9 @@
   <string id="31120">ETICHETĂ BUTON</string>
   <string id="31121">CALE CĂTRE SUPLIMENT</string>
   <string id="31122">Pagină meteo</string>
+  <string id="31123">Folosește „Afișe” în loc de „Bannere” pentru seriale</string>
   <string id="31124">Arată video „Acum în redare” pe fundal</string>
   <string id="31125">Arată vizualizare „Acum în redare” pe fundal</string>
-  <string id="31125">Arată vizualizare „În redare” pe fundal</string>
   <string id="31126">Activează descărcare versuri în meniul audio</string>
   <string id="31127">CALE CĂTRE SUPLIMENT VERSURI</string>
   <string id="31128">Versuri</string>

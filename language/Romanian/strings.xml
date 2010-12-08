@@ -247,7 +247,7 @@
   <string id="274">Poziționare subtitrare</string>
   <string id="275">Ajustare raport pixel</string>
   <string id="276">Ajustați săgeata pentru a modifica gradul de suprascanare</string>
-  <string id="277">Ajustați bara pentru a modifica poziția afișării subtitrărilor</string>
+  <string id="277">Ajustați bara pe verticală pentru a modifica poziția afișării subtitrărilor</string>
   <string id="278">Ajustați dreptunghiul până ce devine un pătrat perfect</string>
   <string id="279">Nu s-au putut încărca setăriile</string>
   <string id="280">Se folosesc setările implicite</string>
@@ -321,7 +321,7 @@
   <string id="353">Negru</string>
   <string id="354">Matrix</string>
   <string id="355">Așteptare pentru activare protector ecran</string>
-  <string id="356">Mod protector ecran</string>
+  <string id="356">Protector ecran</string>
   <string id="357">Timp de așteptare pentru închidere</string>
   <string id="358">Toate albumele</string>
   <string id="359">Albume adăugate recent</string>
@@ -456,7 +456,7 @@
   <string id="494">Headroom audio per total</string>
   <string id="495">Mărește fișierele videos pâna la rezoluția GUI</string>
   <string id="496">Calibrare</string>
-  <string id="497">Arată extensii fișiere</string>
+  <string id="497">Arată extensiile fișierelor</string>
   <string id="498">Sortează după: Tip</string>
   <string id="499">Imposibil de conectat la serviciul de căutare online</string>
   <string id="500">Descărcarea informațiilor album a eșuat</string>
@@ -715,7 +715,7 @@
   <string id="1000">- Previzualizare</string>
   <string id="1001">Imposibil de conectat</string>
   <string id="1002">XBMC nu s-a putut conecta la locația rețelei.</string>
-  <string id="1003">Acest lucru poate fi din cauză că rețeaua nu este conectată.</string>
+  <string id="1003">Este posibil ca rețeaua să nu fie conectată.</string>
   <string id="1004">Doriți să îl adăugați oricum?</string>
 
   <string id="1006">Adresă IP</string>
@@ -985,7 +985,7 @@
   <string id="12368">Introduceți un cod principal valid</string>
   <string id="12373">Setări și gestionar de fișiere</string>
   <string id="12376">Setează ca implicit pentru toate filmele</string>
-  <string id="12377">Vor fi resetate toate valorile salvate anterior</string>
+  <string id="12377">Vor fi resetate toate valorile salvate anterior.</string>
   <string id="12378">Durată de afișare pentru fiecare imagine</string>
   <string id="12379">Folosește efecte de mișcare și mărire</string>
   <string id="12380"></string>
@@ -1041,7 +1041,7 @@
   <string id="13107">Activată în timpul redării video</string>
   <string id="13108">Activat întotdeauna</string>
   <string id="13109">Testare și aplicare rezoluție</string>
-  <string id="13110">Salvați rezoluția?</string>
+  <string id="13110">Salvare rezoluție</string>
   <string id="13111">Doriți să păstrați această rezoluție?</string>
 
   <string id="13112">Mărire cu calitate înaltă</string>
@@ -1153,7 +1153,7 @@
   <string id="13303">- Fonturi</string>
   <string id="13304">Activează inversare pentru textele bi-direcționale</string>
   <string id="13305">Afișează fluxuri de știri RSS</string>
-  <string id="13306">Arată elemente dosar părinte</string>
+  <string id="13306">Arată elementele dosarului părinte</string>
   <string id="13307">Model de numire piste</string>
   <string id="13308">Doriți să reporniți sistemul</string>
   <string id="13309">în loc de XBMC?</string>
@@ -1374,10 +1374,10 @@
   <string id="14079">Țară fus orar</string>
   <string id="14080">Fus orar</string>
   <string id="14081">Liste de fișiere</string>
-  <string id="14082">Afișează informații EXIF pentru imagini</string>
+  <string id="14082">Arată informațiile EXIF ale imaginilor</string>
   <string id="14083">Folosește o fereastră pe tot ecranul în loc de ecran complet adevărat</string>
   <string id="14084">La selectare pune cântecele la coadă</string>
-  <string id="14085">Redă CD-urile audio automat</string>
+  <string id="14085">Redă automat CD-urile audio</string>
   <string id="14086">Redare</string>
   <string id="14087">DVD-uri</string>
   <string id="14088">Redă DVD-urile automat</string>
@@ -1387,7 +1387,7 @@
   <string id="14092">Depanare</string>
   <string id="14093">Securitate</string>
   <string id="14094">Dispozitive intrare</string>
-  <string id="14095">Economie energie</string>
+  <string id="14095">Reducere consum</string>
 
   <string id="15015">Elimină</string>
   <string id="15016">Jocuri</string>
@@ -1530,7 +1530,7 @@
   <string id="16102">privite</string>
   <string id="16103">Marchează ca privit</string>
   <string id="16104">Marchează ca neprivit</string>
-  <string id="16105">Modifică titlu</string>
+  <string id="16105">Modifică titlul</string>
   <string id="16106"></string>
   <string id="16107"></string>
   <string id="16108"></string>
@@ -1545,7 +1545,7 @@
   <string id="16205">Ștergerea a eșuat</string>
   <string id="16206">Cel puțin un fișier nu a putut fi șters</string>
 
-  <string id="16300">Metodă scalare video</string>
+  <string id="16300">Metodă de scalare video</string>
   <string id="16301">Nearest neighbour</string>
   <string id="16302">Bilinear</string>
   <string id="16303">Bicubic</string>
@@ -1627,7 +1627,7 @@
 
   <string id="20057">Elimină miniatură</string>
   <string id="20058">Adaugă profil...</string>
-  <string id="20059">Obține info pt. toate albumele</string>
+  <string id="20059">Cere info pt. toate albumele</string>
   <string id="20060">Informații media</string>
   <string id="20061">Separă</string>
   <string id="20062">Partajări implicite</string>
@@ -1892,7 +1892,7 @@
   <string id="20409">Descărcare informații serial</string>
   <string id="20410">Trailer</string>
   <string id="20411">Netezește</string>
-  <string id="20412">Netezire seriale</string>
+  <string id="20412">Netezește seriale</string>
   <string id="20413">Obține Fanart</string>
   <string id="20414">Arată Fanart în mediateciile de filme și muzică</string>
   <string id="20415">Se scanează pentru conținut nou</string>
@@ -1923,7 +1923,7 @@
   <string id="20440">Fanart curent</string>
   <string id="20441">Fanart la distanță</string>
   <string id="20442">Schimbare conținut</string>
-  <string id="20443">Doriți să reîmprospătații informațiile pentru toate</string>
+  <string id="20443">Doriți să reîmprospătați informațiile pentru toate</string>
   <string id="20444">elementele din această cale?</string>
   <string id="20445">Fanart</string>
   <string id="20446">Au fost găsite informații stocate local.</string>
@@ -1938,7 +1938,7 @@
   <string id="20455">Ascultători</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
-  <string id="21330">Arată fișierele și directoarele ascunse</string>
+  <string id="21330">Arată dosarele și fișierele ascunse</string>
 
   <string id="21331">Client TuxBox</string>
   <string id="21332">AVERTISMENT: Dispozitivul țintă TuxBox este în modul înregistrare!</string>
@@ -1950,7 +1950,7 @@
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
   <string id="21359">Adaugă partajare media...</string>
-  <string id="21360">Partajează mediateciile de filme și muzică prin UPnP</string>
+  <string id="21360">Partajează mediateca video și audio prin UPnP</string>
 
   <string id="21364">Modifică partajare media</string>
   <string id="21365">Elimină partajare media</string>
@@ -2102,7 +2102,7 @@
   <string id="21881">Permite controlul XBMC prin UPnP</string>
   <string id="21882">Încearcă să sari peste introducere înainte de meniul DVD</string>
   <string id="21883">Muzică salvată</string>
-  <string id="21884">Obține info pt. toți artiștii</string>
+  <string id="21884">Cere info pt. toți artiștii</string>
   <string id="21885">Descărcare informații albume</string>
   <string id="21886">Descărcare informații artiști</string>
   <string id="21887">Biografie</string>
@@ -2123,7 +2123,7 @@
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">Actualizează mediateca la pornire</string>
-  <string id="22001">Ascunde progres pentru actualizări mediatecă</string>
+  <string id="22001">Ascunde progresul când se actualizează mediateca</string>
   <string id="22002">- Sufix DNS</string>
 
   <string id="22003">%2.3fs</string>
@@ -2171,7 +2171,7 @@
   <string id="22082">Mai multe...</string>
   <string id="22083">Redă toate</string>
 
-  <string id="23049">Teletextul nu este disponibil</string>
+  <string id="23049">Teletextul nu este disponibil!</string>
   <string id="23050">Activează Teletext</string>
   <string id="23051">Parte %i</string>
   <string id="23052">Preîncărcare %i octeți</string>

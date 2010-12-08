@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/11/2010-->
-<!--Turkish strings based on English strings revision 35254-->
+<!--Date of translation: 29/11/2010-->
+<!--Turkish strings based on English strings revision 35510-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -72,7 +72,7 @@
   <string id="31115">Özelleştir</string>
   <string id="31116"></string>
   <string id="31117">Son Eklenen Videoları Göster</string>
-  <string id="31118">Ana Sayfa Programlar Altmenüsü</string>
+  <string id="31118">Ana Sayfa Programlar Alt Menüsü</string>
   <string id="31119"></string>  <!-- blanked 2010-11-12 -->
   <string id="31120">TUŞ ETİKETİ</string>
   <string id="31121"></string>  <!-- blanked 2010-11-12 -->
@@ -90,6 +90,9 @@
   <string id="31131">Yatay Ana Menü</string>
   <string id="31132">Lyrics Eklentisi</string>
   <string id="31133">Altyazı Eklentisi</string>
+  <string id="31134">Ana Sayfa Videolar Alt Menüsü</string>
+  <string id="31135">Ana Sayfa Müzik Alt Menüsü</string>
+  <string id="31136">Ana Sayfa Resimler Alt Menüsü</string>
 
   <string id="31140">Müzik OSD</string>
   <string id="31141">Video OSD</string>
