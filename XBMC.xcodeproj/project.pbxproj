@@ -1025,6 +1025,8 @@
 		F599CD2C108E65370010EC2A /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD29108E65370010EC2A /* IoSupport.cpp */; };
 		F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
 		F599CD75108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */; };
+		F59FC1A712AF11E70063D9F2 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59FC1A612AF11E70063D9F2 /* libvorbisfile.dylib */; };
+		F59FC1A812AF11E70063D9F2 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59FC1A612AF11E70063D9F2 /* libvorbisfile.dylib */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
 		F5A1C8750F6B06CF00A96ABD /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
@@ -3685,6 +3687,7 @@
 		F599CD2A108E65370010EC2A /* IoSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IoSupport.h; sourceTree = "<group>"; };
 		F599CD72108E6A7A0010EC2A /* DarwinStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinStorageProvider.h; sourceTree = "<group>"; };
 		F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DarwinStorageProvider.cpp; sourceTree = "<group>"; };
+		F59FC1A612AF11E70063D9F2 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = /opt/local/lib/libvorbisfile.dylib; sourceTree = "<absolute>"; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
@@ -3882,6 +3885,7 @@
 				F5A7A6F4112893440059D6AA /* libjsonrpc.a in Frameworks */,
 				F5A7A6F71128934C0059D6AA /* libhttpapi.a in Frameworks */,
 				F5A7A8131128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
+				F59FC1A712AF11E70063D9F2 /* libvorbisfile.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3941,6 +3945,7 @@
 				F5A7A6F5112893440059D6AA /* libjsonrpc.a in Frameworks */,
 				F5A7A6F81128934D0059D6AA /* libhttpapi.a in Frameworks */,
 				F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
+				F59FC1A812AF11E70063D9F2 /* libvorbisfile.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6866,6 +6871,7 @@
 				F5F241D7110BFCF4009126C6 /* libwavpack.dylib */,
 				F5D8F88B104CD47D004A11AB /* libmms.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
+				F59FC1A612AF11E70063D9F2 /* libvorbisfile.dylib */,
 				E38E24240D26317D00618676 /* libfribidi.dylib */,
 				F57E213E0E3C3AB200700C9D /* libiconv.dylib */,
 				E38E24230D26317D00618676 /* libfreetype.dylib */,
