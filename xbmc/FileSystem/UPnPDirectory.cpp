@@ -80,40 +80,6 @@ static CStdString GetContentMapping(NPT_String& objectClass)
     return "unknown";
 }
 
-/*----------------------------------------------------------------------
-|   CUPnPDirectory::GetFriendlyName
-+---------------------------------------------------------------------*/
-const char*
-CUPnPDirectory::GetFriendlyName(const char* url)
-{
-    NPT_String path = url;
-    if (!path.EndsWith("/")) path += "/";
-
-    if (path.Left(7).Compare("upnp://", true) != 0) {
-        return NULL;
-    } else if (path.Compare("upnp://", true) == 0) {
-        return "UPnP Media Servers (Auto-Discover)";
-    }
-
-    // look for nextslash
-    int next_slash = path.Find('/', 7);
-    if (next_slash == -1)
-        return NULL;
-
-    NPT_String uuid = path.SubString(7, next_slash-7);
-    NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
-
-    if (!CUPnP::GetInstance()->IsClientStarted())
-        return NULL;
-
-    // look for device
-    PLT_DeviceDataReference device;
-    if (NPT_FAILED(CUPnP::GetInstance()->m_MediaBrowser->FindServer(uuid, device)) || device.IsNull())
-        return NULL;
-
-    return (const char*)device->GetFriendlyName();
-}
-
 static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReference& device)
 {
     bool client_started = upnp->IsClientStarted();
@@ -144,6 +110,37 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
     }
 
     return !device.IsNull();
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPDirectory::GetFriendlyName
++---------------------------------------------------------------------*/
+const char*
+CUPnPDirectory::GetFriendlyName(const char* url)
+{
+    NPT_String path = url;
+    if (!path.EndsWith("/")) path += "/";
+
+    if (path.Left(7).Compare("upnp://", true) != 0) {
+        return NULL;
+    } else if (path.Compare("upnp://", true) == 0) {
+        return "UPnP Media Servers (Auto-Discover)";
+    }
+
+    // look for nextslash
+    int next_slash = path.Find('/', 7);
+    if (next_slash == -1)
+        return NULL;
+
+    NPT_String uuid = path.SubString(7, next_slash-7);
+    NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
+
+    // look for device
+    PLT_DeviceDataReference device;
+    if(!FindDeviceWait(CUPnP::GetInstance(), uuid, device))
+        return NULL;
+
+    return (const char*)device->GetFriendlyName();
 }
 
 /*----------------------------------------------------------------------
