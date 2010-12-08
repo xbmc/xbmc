@@ -336,6 +336,10 @@ void XBPyThread::Process()
     Py_XDECREF(pystring);
   }
 
+  PyObject *m = PyImport_AddModule("xbmc");
+  if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+    CLog::Log(LOGERROR, "Scriptresult: failed to set abortRequested");
+
   // make sure all sub threads have finished
   for(PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
   {
@@ -350,7 +354,7 @@ void XBPyThread::Process()
       old = s;
     }
     Py_BEGIN_ALLOW_THREADS
-    Sleep(1);
+    Sleep(100);
     Py_END_ALLOW_THREADS
     s = state->interp->tstate_head;
   }
