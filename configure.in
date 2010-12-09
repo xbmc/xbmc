@@ -17,11 +17,29 @@ tolower(){
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
-  AC_MSG_CHECKING([for lib$2 soname])
-  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
-    while read output; do objdump -p $output | \
-      grep "SONAME" | \
-      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ "$host_vendor" != "apple" ]]; then
+    AC_MSG_CHECKING([for lib$2 soname])
+    $1_SONAME=$( $CC -print-file-name=lib$2.so | \
+      while read output; do objdump -p $output | \
+        grep "SONAME" | \
+        sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  else
+    AC_MSG_CHECKING([for lib$2 dylib])
+    gcc_lib_path=[`$CC -print-search-dirs 2>/dev/null | fgrep libraries: | sed 's/[^=]*=\(.*\)/\1/' | sed 's/:/ /g'`]
+    env_lib_path=[`echo $LDFLAGS | sed 's/-L[ ]*//g'`]
+    if test "$cross_compiling" = yes; then
+      host_lib_path=""
+    else
+      host_lib_path="/usr/lib /usr/local/lib"
+    fi
+    for path in $gcc_lib_path $env_lib_path $host_lib_path; do
+      lib=[`ls -- $path/lib$2.dylib 2>/dev/null`]
+      if test x$lib != x; then
+        # we want the path/name that is embedded in the dylib 
+        $1_SONAME=[`otool -L $lib | grep -v lib$2.dylib | grep lib$2 | awk '{V=1; print $V}'`]
+      fi
+    done
+  fi
   if [[ -z "$$1_SONAME" ]]; then
     AC_MSG_RESULT([no])
     if test -z "$3" || test "x${$3}" = "xyes"; then
@@ -669,14 +687,14 @@ fi
 if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([CURL],        [curl])
   XB_FIND_SONAME([FLAC],        [FLAC])
-  XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
   XB_FIND_SONAME([MODPLUG],     [modplug])
   XB_FIND_SONAME([FAAD],        [faad])
   XB_FIND_SONAME([MAD],         [mad])
-  XB_FIND_SONAME([OGG],         [ogg])
-  XB_FIND_SONAME([VORBISENC],   [vorbisenc])
-  XB_FIND_SONAME([VORBIS],      [vorbis])
 fi
+XB_FIND_SONAME([OGG],         [ogg])
+XB_FIND_SONAME([VORBIS],      [vorbis])
+XB_FIND_SONAME([VORBISENC],   [vorbisenc])
+XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 
 # WebServer
 if test "$host_vendor" != "apple" ; then
