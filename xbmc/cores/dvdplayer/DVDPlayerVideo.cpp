@@ -163,17 +163,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     m_fFrameRate = 25;
 
-  //if adjust refreshrate is used, or if sync playback to display is on,
-  //we try to calculate the framerate from the pts', because the codec fps
-  //is not always correct
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
                       g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
-
-  m_fStableFrameRate = 0.0;
-  m_iFrameRateCount = 0;
-  m_bAllowDrop = !m_bCalcFrameRate; //we start with not allowing drops to calculate the framerate
-  m_iFrameRateLength = 1;
-  m_iFrameRateErr = 0;
+  ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
   m_iLateFrames = 0;
@@ -408,9 +400,8 @@ void CDVDPlayerVideo::Process()
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
       //TODO: this needs to be set on a streamchange instead
-      m_iFrameRateLength = 1;
-      m_bAllowDrop = !m_bCalcFrameRate;
-      m_iFrameRateErr = 0;
+      ResetFrameRateCalc();
+
       m_stalled = true;
       m_started = false;
     }
@@ -1035,8 +1026,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.GetCorrection();
 
   //try to calculate the framerate
-  if (m_bCalcFrameRate)
-    CalcFrameRate();
+  CalcFrameRate();
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -1404,17 +1394,33 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
+void CDVDPlayerVideo::ResetFrameRateCalc()
+{
+  m_fStableFrameRate = 0.0;
+  m_iFrameRateCount  = 0;
+  m_bAllowDrop       = !m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO;
+  m_iFrameRateLength = 1;
+  m_iFrameRateErr    = 0;
+}
+
 #define MAXFRAMERATEDIFF   0.01
 #define MAXFRAMESERR    1000
 
 void CDVDPlayerVideo::CalcFrameRate()
 {
-  if (m_iFrameRateLength >= 128) //we've calculated the framerate long enough
-  {                              //it's probably correct now
-    m_fStableFrameRate = 0.0;
-    m_iFrameRateCount = 0;
+  if (m_iFrameRateLength >= 128)
+    return; //we're done calculating
+
+  //only calculate the framerate if sync playback to display is on, adjust refreshrate is on,
+  //or scaling method is set to auto
+  if (!m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
+  {
+    ResetFrameRateCalc();
     return;
   }
+
+  if (!m_pullupCorrection.HasFullBuffer())
+    return; //we can only calculate the frameduration if m_pullupCorrection has a full buffer
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it

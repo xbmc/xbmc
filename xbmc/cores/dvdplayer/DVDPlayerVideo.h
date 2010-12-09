@@ -130,6 +130,7 @@ protected:
   int m_iDroppedFrames;
   int m_iDroppedRequest;
 
+  void   ResetFrameRateCalc();
   void   CalcFrameRate();
 
   double m_fFrameRate;       //framerate of the video currently playing
