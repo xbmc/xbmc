@@ -44,7 +44,7 @@
 //
 // For details, see the script.aculo.us web site: http://script.aculo.us/
 
-var DEBUG_MODE = false; /* Set to false to enable cached javascript */
+var DEBUG_MODE = true; /* Set to false to enable cached javascript */
 
 var Launcher = {
 	VERSION: '1.0.0',
