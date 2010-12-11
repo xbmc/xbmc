@@ -646,7 +646,7 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
     m_prevsynctype = m_synctype;
   }
 
-  CDVDClock::SetMasterClock(m_synctype == SYNC_DISCON);
+  CDVDClock::SetMasterClock(false);
 }
 
 void CDVDPlayerAudio::HandleSyncError(double duration)
@@ -696,11 +696,33 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_errorbuff = 0;
     m_errorcount = 0;
 
-    if (m_synctype == SYNC_DISCON && fabs(m_error) > DVD_MSEC_TO_TIME(10))
+    if (m_synctype == SYNC_DISCON)
     {
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+m_error, 0);
-      if(m_speed == DVD_PLAYSPEED_NORMAL)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
+      double limit, error;
+      if (g_VideoReferenceClock.GetRefreshRate(&limit) > 0)
+      {
+        //when the videoreferenceclock is running, the discontinuity limit is one vblank period
+        limit *= DVD_TIME_BASE;
+
+        //make error a multiple of limit, rounded towards zero,
+        //so it won't interfere with the sync methods in CXBMCRenderManager::WaitPresentTime
+        if (m_error > 0.0)
+          error = limit * floor(m_error / limit);
+        else
+          error = limit * ceil(m_error / limit);
+      }
+      else
+      {
+        limit = DVD_MSEC_TO_TIME(10);
+        error = m_error;
+      }
+
+      if (fabs(error) > limit - 0.001)
+      {
+        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
+        if(m_speed == DVD_PLAYSPEED_NORMAL)
+          CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
+      }
     }
     else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
     {
