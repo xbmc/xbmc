@@ -76,12 +76,16 @@ static struct SInterlaceMapping
             return value; \
         } while(0);
 
+//since libvdpau 0.4, vdp_device_create_x11() installs a callback on the Display*,
+//if we unload libvdpau with dlclose(), we segfault on XCloseDisplay,
+//so we just keep a static handle to libvdpau around
+void* CVDPAU::dl_handle;
+
 CVDPAU::CVDPAU()
 {
   glXBindTexImageEXT = NULL;
   glXReleaseTexImageEXT = NULL;
   vdp_device = VDP_INVALID_HANDLE;
-  dl_handle  = NULL;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
@@ -125,17 +129,20 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     return false;
   }
 
-  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle)
   {
-    const char* error = dlerror();
-    if (!error)
-      error = "dlerror() returned NULL";
+    dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+    if (!dl_handle)
+    {
+      const char* error = dlerror();
+      if (!error)
+        error = "dlerror() returned NULL";
 
-    CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
-    //g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+      CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
+      //g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
 
-    return false;
+      return false;
+    }
   }
 
   InitVDPAUProcs();
@@ -226,11 +233,6 @@ void CVDPAU::Close()
     CLog::Log(LOGINFO, "GLX: Destroying glContext");
     glXDestroyContext(m_Display, m_glContext);
     m_glContext = NULL;
-  }
-  if (dl_handle)
-  {
-    dlclose(dl_handle);
-    dl_handle = NULL;
   }
 }
 
