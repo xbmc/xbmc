@@ -150,7 +150,7 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_TOP_BACK_RIGHT */
   {
-    {PCM_BACK_LEFT            , 1.0},
+    {PCM_BACK_RIGHT           , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_BACK_CENTER */
