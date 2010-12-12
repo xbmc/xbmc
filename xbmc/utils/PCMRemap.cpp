@@ -164,6 +164,7 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
 CPCMRemap::CPCMRemap() :
   m_inSet       (false),
   m_outSet      (false),
+  m_ignoreLayout(false),
   m_inChannels  (0),
   m_outChannels (0),
   m_inSampleSize(0)
@@ -265,6 +266,16 @@ void CPCMRemap::ResolveChannels()
           break;
         }
     }
+  }
+
+  /* force mono audio to front left and front right */
+  if (!m_ignoreLayout && m_inChannels == 1 && m_inMap[0] == PCM_FRONT_CENTER
+      && m_useable[PCM_FRONT_LEFT] && m_useable[PCM_FRONT_RIGHT])
+  {
+    CLog::Log(LOGDEBUG, "CPCMRemap: Mapping mono audio to front left and front right");
+    m_useable[PCM_FRONT_CENTER] = false;
+    m_useable[PCM_FRONT_LEFT_OF_CENTER] = false;
+    m_useable[PCM_FRONT_RIGHT_OF_CENTER] = false;
   }
 
   /* see if our input has side/back channels */
