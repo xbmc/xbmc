@@ -30,6 +30,7 @@
 #include "GUIEditControl.h"
 #include "LocalizeStrings.h"
 #include "Settings.h"
+#include "MediaManager.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -189,7 +190,17 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PATH)
   {
-    CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_musicSources,g_localizeStrings.Get(657),m_rule.m_parameter,false);
+    VECSOURCES sources;
+    if (m_type == "songs" || m_type == "mixed")
+      sources = *g_settings.GetSourcesFromType("music");
+    if (m_type != "songs")
+    {
+      VECSOURCES sources2 = *g_settings.GetSourcesFromType("video");
+      sources.insert(sources.end(),sources2.begin(),sources2.end());
+    }
+    g_mediaManager.GetLocalDrives(sources);
+    
+    CGUIDialogFileBrowser::ShowAndGetDirectory(sources,g_localizeStrings.Get(657),m_rule.m_parameter,false);
     UpdateButtons();
     return;
   }
