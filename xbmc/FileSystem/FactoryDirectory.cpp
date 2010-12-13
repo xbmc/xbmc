@@ -39,6 +39,7 @@
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
+#include "UDFDirectory.h"
 #include "Application.h"
 #include "StringUtils.h"
 #include "addons/Addon.h"
@@ -125,6 +126,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
 #endif
+  if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
 #ifdef HAS_FILESYSTEM_RAR
