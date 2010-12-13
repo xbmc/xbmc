@@ -295,10 +295,14 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
   {
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
-    m_processing.erase(i);
     lock.Leave();
     if (item.m_callback)
       item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    lock.Enter();
+    Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
+    if (j != m_processing.end())
+      m_processing.erase(j);
+    lock.Leave();
     item.FreeJob();
   }
 }
