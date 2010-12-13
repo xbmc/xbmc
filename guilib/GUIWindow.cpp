@@ -650,6 +650,8 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
+  if (!g_windowManager.Initialized())
+    return false;     // can't load if we have no skin yet
   return Load(GetProperty("xmlfile"));
 }
 
