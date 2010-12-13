@@ -107,7 +107,7 @@ protected:
    */
   bool CheckHash(const CStdString& addonZip, const CStdString& hash);
   
-  void PromptForActivation(const ADDON::AddonPtr &prompt);
+  void PromptForActivation(const ADDON::AddonPtr &addon, bool dontPrompt);
 
   void RegisterJob(const CStdString& id, unsigned int jobid, const CStdString& hash="");
   void UnRegisterJob(unsigned int jobID);
@@ -123,5 +123,6 @@ private:
   CPictureThumbLoader m_thumbLoader;
 
   ADDON::AddonPtr m_prompt;
+  bool            m_promptReload;
 };
 
