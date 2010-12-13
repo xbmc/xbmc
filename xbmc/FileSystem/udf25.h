@@ -218,5 +218,4 @@ protected:
   XFILE::CFile* m_fp;
 };
 
-extern class udf25 m_udfIsoReader;
 #endif

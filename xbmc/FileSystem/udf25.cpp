@@ -51,9 +51,6 @@
 /* This is wrong with regard to endianess */
 #define GETN(p, n, target) memcpy(target, &data[p], n)
 
-
-static CRITICAL_SECTION m_critSection;
-class udf25 m_udfIsoReader;
 using namespace XFILE;
 
 static int Unicodedecode( uint8_t *data, int len, char *target )
