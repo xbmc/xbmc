@@ -997,6 +997,12 @@
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
+		F57A83E912D3C713000525C5 /* FileUDF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A83E812D3C713000525C5 /* FileUDF.cpp */; };
+		F57A83F812D3C764000525C5 /* UDFDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A83F712D3C764000525C5 /* UDFDirectory.cpp */; };
+		F57A840112D3C775000525C5 /* udf25.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A840012D3C775000525C5 /* udf25.cpp */; };
+		F57A840C12D3C7CD000525C5 /* udf25.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A840012D3C775000525C5 /* udf25.cpp */; };
+		F57A840D12D3C7D5000525C5 /* UDFDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A83F712D3C764000525C5 /* UDFDirectory.cpp */; };
+		F57A840E12D3C7E1000525C5 /* FileUDF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A83E812D3C713000525C5 /* FileUDF.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
@@ -3663,6 +3669,12 @@
 		F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITexture.cpp; sourceTree = "<group>"; };
 		F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureGL.cpp; sourceTree = "<group>"; };
 		F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureGL.h; sourceTree = "<group>"; };
+		F57A83E712D3C713000525C5 /* FileUDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUDF.h; sourceTree = "<group>"; };
+		F57A83E812D3C713000525C5 /* FileUDF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUDF.cpp; sourceTree = "<group>"; };
+		F57A83F612D3C764000525C5 /* UDFDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDFDirectory.h; sourceTree = "<group>"; };
+		F57A83F712D3C764000525C5 /* UDFDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDFDirectory.cpp; sourceTree = "<group>"; };
+		F57A83FF12D3C775000525C5 /* udf25.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = udf25.h; sourceTree = "<group>"; };
+		F57A840012D3C775000525C5 /* udf25.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = udf25.cpp; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
@@ -5539,6 +5551,8 @@
 				F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */,
 				E38E16DE0D25F9FA00618676 /* FileTuxBox.cpp */,
 				E38E16DF0D25F9FA00618676 /* FileTuxBox.h */,
+				F57A83E812D3C713000525C5 /* FileUDF.cpp */,
+				F57A83E712D3C713000525C5 /* FileUDF.h */,
 				F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */,
 				F5DC880D110A4A0B00EE1B15 /* FileXBMSP.h */,
 				E38E16E20D25F9FA00618676 /* FileZip.cpp */,
@@ -5606,6 +5620,10 @@
 				E38E17560D25F9FA00618676 /* SMBDirectory.h */,
 				E38E17590D25F9FA00618676 /* StackDirectory.cpp */,
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
+				F57A840012D3C775000525C5 /* udf25.cpp */,
+				F57A83FF12D3C775000525C5 /* udf25.h */,
+				F57A83F712D3C764000525C5 /* UDFDirectory.cpp */,
+				F57A83F612D3C764000525C5 /* UDFDirectory.h */,
 				E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */,
 				E38E175C0D25F9FA00618676 /* UPnPDirectory.h */,
 				F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */,
@@ -8096,6 +8114,9 @@
 				C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
 				7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */,
 				184C472F1296BC6E0006DB3E /* Service.cpp in Sources */,
+				F57A83E912D3C713000525C5 /* FileUDF.cpp in Sources */,
+				F57A83F812D3C764000525C5 /* UDFDirectory.cpp in Sources */,
+				F57A840112D3C775000525C5 /* udf25.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8964,6 +8985,9 @@
 				C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
 				7CBEBB8312912BA300431822 /* fstrcmp.c in Sources */,
 				184C47301296BC6E0006DB3E /* Service.cpp in Sources */,
+				F57A840C12D3C7CD000525C5 /* udf25.cpp in Sources */,
+				F57A840D12D3C7D5000525C5 /* UDFDirectory.cpp in Sources */,
+				F57A840E12D3C7E1000525C5 /* FileUDF.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

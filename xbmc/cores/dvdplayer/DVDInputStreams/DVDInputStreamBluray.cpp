@@ -127,6 +127,22 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
 using namespace std;
 using namespace XFILE;
 
+static bool is_udf_iso_path(const char* filename)
+{
+  bool bResult = false;
+
+  const char* ptr = strcasestr(filename, ".iso");
+  if(ptr)
+  {
+    ptr += strlen(".iso");
+    if(*ptr == '/' && strlen(++ptr) > 0)
+    {
+      bResult = true;
+    }
+  }
+  return bResult;
+}
+
 static void file_close(BD_FILE_H *file)
 {
   if (file)
@@ -170,7 +186,19 @@ static BD_FILE_H *file_open(const char* filename, const char *mode)
 {
     BD_FILE_H *file = new BD_FILE_H;
 
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file %s... (%p)", filename, file);
+    CStdString strFilename(filename);
+
+    if(is_udf_iso_path(filename))
+    {
+      CUtil::URLEncode(strFilename);
+      strFilename.Format("udf://%s", strFilename);
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file udf iso file %s... (%p)", strFilename.c_str(), file);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file %s... (%p)", strFilename.c_str(), file);
+    }
+
     file->close = file_close;
     file->seek  = file_seek;
     file->read  = file_read;
@@ -179,7 +207,7 @@ static BD_FILE_H *file_open(const char* filename, const char *mode)
     file->eof   = file_eof;
 
     CFile* fp = new CFile();
-    if(fp->Open(filename))
+    if(fp->Open(strFilename))
     {
       file->internal = (void*)fp;
       return file;
@@ -195,7 +223,7 @@ static BD_FILE_H *file_open(const char* filename, const char *mode)
 
 struct SDirState
 {
-  SDirState() 
+  SDirState()
     : curr(0)
   {}
 
@@ -231,11 +259,17 @@ static int dir_read(BD_DIR_H *dir, BD_DIRENT *entry)
 static BD_DIR_H *dir_open(const char* dirname)
 {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", dirname);
-
-
     SDirState *st = new SDirState();
 
-    if(!CDirectory::GetDirectory(dirname, st->list))
+    CStdString strDirname(dirname);
+    if(is_udf_iso_path(dirname))
+    {
+      CUtil::URLEncode(strDirname);
+      strDirname.Format("udf://%s", strDirname);
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening udf dir %s...", strDirname.c_str());
+    }
+
+    if(!CDirectory::GetDirectory(strDirname, st->list))
     {
       CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", dirname);
       delete st;
@@ -348,7 +382,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
         t = m_dll->bd_get_title_info(m_bd, i);;
         if(!t)
         {
-          CLog::Log(LOGDEBUG, "get_playlist_title - unable to get title %d", i);        
+          CLog::Log(LOGDEBUG, "get_playlist_title - unable to get title %d", i);
           continue;
         }
         if(t->playlist == playlist)
@@ -466,12 +500,12 @@ __int64 CDVDInputStreamBluray::Seek(__int64 offset, int whence)
   int64_t pos = m_dll->bd_seek(m_bd, offset);
   if(pos < 0)
   {
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Seek - seek to %"PRId64", failed with %"PRId64, offset, pos); 
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Seek - seek to %"PRId64", failed with %"PRId64, offset, pos);
     return -1;
   }
 
   if(pos != offset)
-    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Seek - seek to %"PRId64", ended at %"PRId64, offset, pos); 
+    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Seek - seek to %"PRId64", ended at %"PRId64, offset, pos);
 
   return offset;
 #else

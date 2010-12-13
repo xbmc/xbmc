@@ -426,7 +426,7 @@ bool CDVDPlayer::OpenInputStream()
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
-
+retry:
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
   if(m_pInputStream == NULL)
   {
@@ -438,6 +438,19 @@ bool CDVDPlayer::OpenInputStream()
 
   if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
   {
+      if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      {
+        CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - failed to open [%s] as DVD ISO, trying Bluray", m_filename.c_str());
+        m_mimetype = "bluray/iso";
+        filename = m_filename;
+        filename = filename + "/BDMV/index.bdmv";
+        int title = m_item.GetPropertyInt("BlurayStartingTitle");
+        if( title )
+          filename.AppendFormat("?title=%d",title);
+        
+        m_filename = filename;
+        goto retry;
+      }
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;
   }

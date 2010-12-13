@@ -285,6 +285,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp" />
     <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\GUIDialogTextViewer.cpp" />
@@ -998,6 +1001,9 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\udf25.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h" />

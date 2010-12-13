@@ -1420,3 +1420,29 @@ void CWinIdleTimer::StartZero()
   SetThreadExecutionState(ES_SYSTEM_REQUIRED);
   CStopWatch::StartZero();
 }
+
+extern "C"
+{
+  /* case-independent string matching, similar to strstr but
+  * matching */
+  char * strcasestr(const char* haystack, const char* needle) 
+  {
+    int i;
+    int nlength = (int) strlen (needle);
+    int hlength = (int) strlen (haystack);
+
+    if (nlength > hlength) return NULL;
+    if (hlength <= 0) return NULL;
+    if (nlength <= 0) return (char *)haystack;
+    /* hlength and nlength > 0, nlength <= hlength */
+    for (i = 0; i <= (hlength - nlength); i++) 
+    {
+      if (strncasecmp (haystack + i, needle, nlength) == 0) 
+      {
+        return (char *)haystack + i;
+      }
+    }
+    /* substring not found */
+    return NULL;
+  }
+}

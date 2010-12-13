@@ -2106,6 +2106,15 @@
     <ClCompile Include="..\..\xbmc\addons\Service.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp">
+      <Filter>Source Files\Filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp">
+      <Filter>Source Files\Filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp">
+      <Filter>Source Files\Filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4426,6 +4435,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Service.h">
       <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h">
+      <Filter>Source Files\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\udf25.h">
+      <Filter>Source Files\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h">
+      <Filter>Source Files\Filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
