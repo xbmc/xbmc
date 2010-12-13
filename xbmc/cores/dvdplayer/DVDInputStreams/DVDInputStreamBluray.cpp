@@ -207,7 +207,7 @@ static BD_FILE_H *file_open(const char* filename, const char *mode)
     file->eof   = file_eof;
 
     CFile* fp = new CFile();
-    if(fp->Open(strFilename))
+    if(fp->Open(strFilename,READ_CHUNKED))
     {
       file->internal = (void*)fp;
       return file;
