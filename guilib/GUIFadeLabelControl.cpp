@@ -90,7 +90,7 @@ void CGUIFadeLabelControl::UpdateColors()
 
 void CGUIFadeLabelControl::Render()
 {
-  if (m_infoLabels.size() == 0)
+  if (m_infoLabels.size() == 0 || !m_label.font)
   { // nothing to render
     CGUIControl::Render();
     return ;
