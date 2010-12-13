@@ -78,7 +78,14 @@ public:
    on screen. It should only be called from the application thread.
    */
   void FrameMove();
-  
+
+  /*! \brief Return whether the window manager is initialized.
+   The window manager is initialized on skin load - if the skin isn't yet loaded,
+   no windows should be able to be initialized.
+   \return true if the window manager is initialized, false otherwise.
+   */
+  bool Initialized() const { return m_initialized; };
+
   CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
@@ -140,6 +147,7 @@ private:
 
   bool m_bShowOverlay;
   int  m_iNested;
+  bool m_initialized;
 };
 
 /*!

@@ -38,6 +38,7 @@ CGUIWindowManager::CGUIWindowManager(void)
   m_pCallback = NULL;
   m_bShowOverlay = true;
   m_iNested = 0;
+  m_initialized = false;
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
@@ -47,6 +48,7 @@ CGUIWindowManager::~CGUIWindowManager(void)
 void CGUIWindowManager::Initialize()
 {
   LoadNotOnDemandWindows();
+  m_initialized = true;
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
@@ -618,6 +620,8 @@ void CGUIWindowManager::DeInitialize()
   // clear our vectors of windows
   m_vecCustomWindows.clear();
   m_activeDialogs.clear();
+
+  m_initialized = false;
 }
 
 /// \brief Route to a window
