@@ -129,6 +129,7 @@ const BUILT_IN commands[] = {
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
+  { "UnloadSkin",                 false,  "Unload XBMC's skin" },
   { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
@@ -556,6 +557,10 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     //  Reload the skin
     g_application.ReloadSkin();
+  }
+  else if (execute.Equals("unloadskin"))
+  {
+    g_application.UnloadSkin();
   }
   else if (execute.Equals("refreshrss"))
   {

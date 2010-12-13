@@ -760,11 +760,11 @@ void CApplicationMessenger::HttpApi(string cmd, bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
+void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
   tMsg.strParam = command;
-  SendMessage(tMsg);
+  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::MediaPlay(string filename)
