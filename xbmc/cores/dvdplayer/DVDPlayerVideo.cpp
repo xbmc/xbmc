@@ -102,6 +102,23 @@ private:
 };
 
 
+class CDVDMsgVideoCodecChange : public CDVDMsg
+{
+public:
+  CDVDMsgVideoCodecChange(const CDVDStreamInfo &hints, CDVDVideoCodec* codec)
+    : CDVDMsg(GENERAL_STREAMCHANGE)
+    , m_codec(codec)
+    , m_hints(hints)
+  {}
+ ~CDVDMsgVideoCodecChange()
+  {
+    delete m_codec;
+  }
+  CDVDVideoCodec* m_codec;
+  CDVDStreamInfo  m_hints;
+};
+
+
 CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
                                 , CDVDOverlayContainer* pOverlayContainer
                                 , CDVDMessageQueue& parent)
@@ -157,6 +174,36 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
+  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec( hint );
+  if(!codec)
+  {
+    CLog::Log(LOGERROR, "Unsupported video codec");
+    return false;
+  }
+
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  {
+    g_VideoReferenceClock.Create();
+    //we have to wait for the clock to start otherwise alsa can cause trouble
+    if (!g_VideoReferenceClock.WaitStarted(2000))
+      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
+  }
+
+  if(m_messageQueue.IsInited())
+    m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
+  else
+  {
+    OpenStream(hint, codec);
+    CLog::Log(LOGNOTICE, "Creating video thread");
+    m_messageQueue.Init();
+    Create();
+  }
+  return true;
+}
+
+void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
+{
   //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
@@ -180,41 +227,14 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   // use aspect in stream if available
   m_fForcedAspectRatio = hint.aspect;
 
-  // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
-  {
-    CLog::Log(LOGFATAL, "CDVDPlayerVideo::OpenStream() m_pVideoCodec != NULL");
-    return false;
-  }
+    delete m_pVideoCodec;
 
-  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
-
-  if( !m_pVideoCodec )
-  {
-    CLog::Log(LOGERROR, "Unsupported video codec");
-    return false;
-  }
-
+  m_pVideoCodec = codec;
   m_hints   = hint;
-  m_stalled = false;
+  m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_started = false;
   m_codecname = m_pVideoCodec->GetName();
-
-  m_messageQueue.Init();
-
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
-  {
-    g_VideoReferenceClock.Create();
-    //we have to wait for the clock to start otherwise alsa can cause trouble
-    if (!g_VideoReferenceClock.WaitStarted(2000))
-      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
-  }
-
-  CLog::Log(LOGNOTICE, "Creating video thread");
-  Create();
-
-  return true;
 }
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -423,6 +443,12 @@ void CDVDPlayerVideo::Process()
     {
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
+    {
+      CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
+      OpenStream(msg->m_hints, msg->m_codec);
+      msg->m_codec = NULL;
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
