@@ -2187,6 +2187,15 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   __int64 time = GetTime();
+  if(g_application.CurrentFileItem().IsStack() 
+  && (seek > GetTotalTimeInMsec() || seek < 0))
+  {
+    g_application.SeekTime((seek - time) * 0.001 + g_application.GetTime());
+    // warning, don't access any dvdplayer variables here as
+    // the dvdplayer object may have been destroyed
+    return;
+  }
+
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SynchronizeDemuxer(100);
   if (seek < 0) seek = 0;
