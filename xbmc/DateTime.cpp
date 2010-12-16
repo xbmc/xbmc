@@ -862,6 +862,49 @@ CStdString CDateTime::GetAsDBDateTime() const
   return date;
 }
 
+void CDateTime::SetFromW3CDate(const CStdString &dateTime)
+{
+  CStdString date, time, zone;
+
+  int posT = dateTime.Find("T");
+  if(posT >= 0)
+  {
+    date = dateTime.Left(posT);
+    CStdString::size_type posZ = dateTime.find_first_of("+-Z", posT);
+    if(posZ == CStdString::npos)
+      time = dateTime.Mid(posT+1);
+    else
+    {
+      time = dateTime.Mid(posT+1, posZ-posT-1);
+      zone = dateTime.Mid(posZ);
+    }
+  }
+  else
+    date = dateTime;
+
+  int year = 0, month = 1, day = 1, hour = 0, min = 0, sec = 0;
+
+  if (date.size() >= 4)
+    year  = atoi(date.Mid(0,4).c_str());
+
+  if (date.size() >= 10)
+  {
+    month = atoi(date.Mid(5,2).c_str());
+    day   = atoi(date.Mid(8,2).c_str());
+  }
+
+  if (time.length() >= 5)
+  {
+    hour = atoi(time.Mid(0,2).c_str());
+    min  = atoi(time.Mid(3,2).c_str());
+  }
+
+  if (time.length() >= 8)
+    sec  = atoi(time.Mid(6,2).c_str());
+
+  SetDateTime(year, month, day, hour, min, sec);
+}
+
 void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
 {
   // assumes format YYYY-MM-DD HH:MM:SS
