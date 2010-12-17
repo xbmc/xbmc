@@ -22,14 +22,13 @@
 #ifdef _LINUX
 #include "../linux/PlatformDefs.h"
 #endif
+#include "AdvancedSettings.h"
 #include "CacheMemBuffer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "utils/TimeUtils.h"
 
 #include <math.h>
-
-#define CACHE_BUFFER_SIZE (1048576 * 5)
 
 using namespace XFILE;
 
@@ -39,9 +38,9 @@ CacheMemBuffer::CacheMemBuffer()
  : CCacheStrategy()
 {
   m_nStartPosition = 0;
-  m_buffer.Create(CACHE_BUFFER_SIZE + 1);
-  m_HistoryBuffer.Create(CACHE_BUFFER_SIZE + 1);
-  m_forwardBuffer.Create(CACHE_BUFFER_SIZE + 1);
+  m_buffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
+  m_HistoryBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
+  m_forwardBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
 }
 
 

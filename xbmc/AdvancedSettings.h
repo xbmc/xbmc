@@ -269,6 +269,8 @@ class CAdvancedSettings
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
+
+    unsigned int m_cacheMemBufferSize;
 };
 
 extern CAdvancedSettings g_advancedSettings;
