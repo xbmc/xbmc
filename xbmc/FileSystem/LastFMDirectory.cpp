@@ -524,9 +524,7 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     AddEntry(15294, "lastfm://xbmc/user/%name%/recentbannedtracks/", "", true, items);
     AddEntry(15276, "lastfm://user/%name%/neighbours", "", false, items);
     AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
-    AddEntry(15278, "lastfm://user/%name%/loved", "", false, items);
     AddEntry(15284, "lastfm://user/%name%/recommended/100", "", false, items);
-    AddEntry(15286, "lastfm://user/%name%/playlist", "", false, items);
   }
   else
     return false;

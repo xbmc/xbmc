@@ -1460,7 +1460,7 @@
   <string id="15275">Weekly track chart for %name%</string>
   <string id="15276">Listen to %name%'s neighbours Last.fm radio</string>
   <string id="15277">Listen to %name%'s personal Last.fm radio</string>
-  <string id="15278">Listen to %name%'s loved tracks Last.fm radio</string>
+  <string id="15278"></string>
   <string id="15279">Retrieving list from Last.fm...</string>
   <string id="15280">Can't retrieve list from Last.fm...</string>
   <string id="15281">Enter an artist name to find related ones</string>
@@ -1468,7 +1468,7 @@
   <string id="15283">Tracks recently listened by %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.fm radio</string>
   <string id="15285">Top tags for user %name%</string>
-  <string id="15286">Listen to %name%'s playlist Last.fm radio</string>
+  <string id="15286"></string>
   <string id="15287">Do you want to add the current track to your loved tracks?</string>
   <string id="15288">Do you want to ban the current track?</string>
   <string id="15289">Added to your loved tracks: '%s'.</string>
