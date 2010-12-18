@@ -173,7 +173,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
     size_t returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
 
-    if (returnV == (size_t)-1)
+    if ((returnV == (size_t)-1) && (errno != EINVAL))
     {
       if (errno == E2BIG) //output buffer is not big enough
       {
