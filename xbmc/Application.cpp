@@ -1762,24 +1762,10 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-// DXMERGE: This might have been important (do we allow the vsync mode to change
-//          while not updating the UI setting?
-//  int vsync_mode = g_videoConfig.GetVSyncMode();
-  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
-
-  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode != VSYNC_DRIVER)
-    g_Windowing.SetVSync(false);
-
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-
-  g_windowManager.UpdateModelessVisibility();
 
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
@@ -1830,14 +1816,7 @@ void CApplication::RenderNoPresent()
   RenderMemoryStatus();
   RenderScreenSaver();
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_graphicsContext.Unlock();
-
-  // reset our info cache - we do this at the end of Render so that it is
-  // fresh for the next process(), or after a windowclose animation (where process()
-  // isn't called)
-  g_infoManager.ResetCache();
 }
 
 static int screenSaverFadeAmount = 0;
@@ -2037,11 +2016,29 @@ void CApplication::Render()
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode == VSYNC_ALWAYS)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode != VSYNC_DRIVER)
+    g_Windowing.SetVSync(false);
+
+  g_windowManager.UpdateModelessVisibility();
+
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
+
+  g_TextureManager.FreeUnusedTextures();
+
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
+
   lock.Leave();
 
   g_graphicsContext.Flip();
