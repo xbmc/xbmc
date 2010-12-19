@@ -757,10 +757,6 @@ void CGraphicContext::RestoreHardwareTransform()
   g_Windowing.RestoreHardwareTransform();
 }
 
-void CGraphicContext::ClipToViewWindow()
-{
-}
-
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
 {
   res.clear();

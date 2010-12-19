@@ -664,10 +664,6 @@ void CWinRenderer::Render(DWORD flags)
     */
   CSingleLock lock(g_graphicsContext);
 
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   if (m_renderMethod == RENDER_SW)
     RenderSW(flags);
   else if (m_renderMethod == RENDER_PS)

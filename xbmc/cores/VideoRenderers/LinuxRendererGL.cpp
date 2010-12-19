@@ -1105,10 +1105,6 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
@@ -1199,10 +1195,6 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 void CLinuxRendererGL::RenderMultiPass(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
 
   if (m_reloadShaders)
   {
@@ -1400,9 +1392,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   if (!vdpau)
     return;
 
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   glEnable(m_textureTarget);
 
   if (!vdpau->m_glPixmapTexture)
@@ -1491,9 +1480,6 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
   VAAPI::CDisplayPtr& display(va.surface->m_display);
   CSingleLock lock(*display);
 
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-      g_graphicsContext.ClipToViewWindow();
-
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
@@ -1567,10 +1553,6 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
 
   glDisable(GL_DEPTH_TEST);
 
