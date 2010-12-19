@@ -33,17 +33,8 @@
 #define DVD_SEC_TO_TIME(x)  ((double)(x) * DVD_TIME_BASE)
 #define DVD_MSEC_TO_TIME(x) ((double)(x) * DVD_TIME_BASE / 1000)
 
-#define DVD_PLAYSPEED_RW_2X       -2000
-#define DVD_PLAYSPEED_REVERSE     -1000
 #define DVD_PLAYSPEED_PAUSE       0       // frame stepping
 #define DVD_PLAYSPEED_NORMAL      1000
-#define DVD_PLAYSPEED_FF_2X       2000
-
-enum ClockDiscontinuityType
-{
-  CLOCK_DISC_FULL,  // pts is starting form 0 again
-  CLOCK_DISC_NORMAL // after a pause
-};
 
 class CDVDClock
 {
@@ -53,12 +44,9 @@ public:
 
   double GetClock();
 
-  /* delay should say how long in the future we expect to display this frame */
-  void Discontinuity(ClockDiscontinuityType type, double currentPts = 0LL, double delay = 0LL);
+  void Discontinuity(double currentPts = 0LL);
 
-  /* will return how close we are to a discontinuity */
-  double DistanceToDisc();
-
+  void Reset() { m_bReset = true; }
   void Pause();
   void Resume();
   void SetSpeed(int iSpeed);

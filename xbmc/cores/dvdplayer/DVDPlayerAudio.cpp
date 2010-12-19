@@ -402,7 +402,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (pMsgGeneralResync->m_clock)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 1)", m_audioClock);
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, m_ptsOutput.Current(), 0);
+        m_pClock->Discontinuity(m_ptsOutput.Current());
       }
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
@@ -545,7 +545,7 @@ void CDVDPlayerAudio::Process()
     }
 
 #ifdef PROFILE /* during profiling we just drop all packets, after having decoded */
-    m_pClock->Discontinuity(CLOCK_DISC_NORMAL, audioframe.pts, 0);
+    m_pClock->Discontinuity(audioframe.pts);
     continue;
 #endif
 
@@ -657,7 +657,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
-    m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
+    m_pClock->Discontinuity(clock+error);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
@@ -719,7 +719,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
       if (fabs(error) > limit - 0.001)
       {
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
+        m_pClock->Discontinuity(clock+error);
         if(m_speed == DVD_PLAYSPEED_NORMAL)
           CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
       }

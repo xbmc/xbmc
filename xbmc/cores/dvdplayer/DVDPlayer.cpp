@@ -464,7 +464,7 @@ bool CDVDPlayer::OpenInputStream()
 
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
-  m_clock.Discontinuity(CLOCK_DISC_FULL);
+  m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
 
@@ -2839,7 +2839,7 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     }
 
     if(pts != DVD_NOPTS_VALUE)
-      m_clock.Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
+      m_clock.Discontinuity(pts);
     UpdatePlayState(0);
   }
 }

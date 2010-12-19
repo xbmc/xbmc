@@ -376,7 +376,7 @@ void CDVDPlayerVideo::Process()
       if(pMsgGeneralResync->m_clock)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        m_pClock->Discontinuity(pts - delay);
       }
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);

@@ -150,25 +150,12 @@ void CDVDClock::SetSpeed(int iSpeed)
   m_systemUsed = newfreq;
 }
 
-void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, double delay)
+void CDVDClock::Discontinuity(double currentPts)
 {
   CExclusiveLock lock(m_critSection);
-  switch (type)
-  {
-  case CLOCK_DISC_FULL:
-    {
-      m_bReset = true;
-      break;
-    }
-  case CLOCK_DISC_NORMAL:
-    {
-      m_startClock = g_VideoReferenceClock.GetTime();
-      m_startClock += (int64_t)(delay * m_systemUsed / DVD_TIME_BASE);
-      m_iDisc = currentPts;
-      m_bReset = false;
-      break;
-    }
-  }
+  m_startClock = g_VideoReferenceClock.GetTime();
+  m_iDisc = currentPts;
+  m_bReset = false;
 }
 
 void CDVDClock::Pause()
@@ -189,12 +176,6 @@ void CDVDClock::Resume()
     m_startClock += current - m_pauseClock;
     m_pauseClock = 0;
   }
-}
-
-double CDVDClock::DistanceToDisc()
-{
-  // GetClock will lock. if we lock the shared lock here there's potentialy a chance that another thread will try exclusive lock on the section and we'll deadlock
-  return GetClock() - m_iDisc;
 }
 
 bool CDVDClock::SetMaxSpeedAdjust(double speed)
