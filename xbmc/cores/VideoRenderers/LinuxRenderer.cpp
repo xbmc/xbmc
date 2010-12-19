@@ -171,7 +171,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
 
   // scale to fit screen
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const CRect rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs

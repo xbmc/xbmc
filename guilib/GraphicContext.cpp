@@ -226,32 +226,26 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
-const CRect& CGraphicContext::GetViewWindow() const
+const CRect CGraphicContext::GetViewWindow() const
 {
+  if (m_bCalibrating || m_bFullScreenVideo)
+  {
+    CRect rect;
+    rect.x1 = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
+    rect.y1 = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
+    rect.x2 = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right;
+    rect.y2 = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom;
+    return rect;
+  }
   return m_videoRect;
 }
 
 void CGraphicContext::SetViewWindow(float left, float top, float right, float bottom)
 {
-  if (m_bCalibrating)
-  {
-    SetFullScreenViewWindow(m_Resolution);
-  }
-  else
-  {
-    m_videoRect.x1 = ScaleFinalXCoord(left, top);
-    m_videoRect.y1 = ScaleFinalYCoord(left, top);
-    m_videoRect.x2 = ScaleFinalXCoord(right, bottom);
-    m_videoRect.y2 = ScaleFinalYCoord(right, bottom);
-  }
-}
-
-void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
-{
-  m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
-  m_videoRect.y1 = (float)g_settings.m_ResInfo[res].Overscan.top;
-  m_videoRect.x2 = (float)g_settings.m_ResInfo[res].Overscan.right;
-  m_videoRect.y2 = (float)g_settings.m_ResInfo[res].Overscan.bottom;
+  m_videoRect.x1 = ScaleFinalXCoord(left, top);
+  m_videoRect.y1 = ScaleFinalYCoord(left, top);
+  m_videoRect.x2 = ScaleFinalXCoord(right, bottom);
+  m_videoRect.y2 = ScaleFinalYCoord(right, bottom);
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -273,7 +267,6 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
     g_graphicsContext.SetVideoResolution(RES_WINDOW);
 #endif
 
-  SetFullScreenViewWindow(m_Resolution);
   Unlock();
 }
 
@@ -364,8 +357,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   g_renderManager.Recover();
   g_Mouse.SetResolution(m_iScreenWidth, m_iScreenHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
-
-  SetFullScreenViewWindow(res);
 
   Unlock();
 }

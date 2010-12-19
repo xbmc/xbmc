@@ -79,7 +79,7 @@ public:
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
-  const CRect& GetViewWindow() const;
+  const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
@@ -189,8 +189,6 @@ public:
   }
 
 protected:
-  void SetFullScreenViewWindow(RESOLUTION &res);
-
   std::stack<CRect> m_viewStack;
 
   int m_iScreenHeight;
