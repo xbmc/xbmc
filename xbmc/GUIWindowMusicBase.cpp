@@ -1177,7 +1177,9 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
     // turned on, but we still want to use the playlist player in order to handle more queued items
     // following etc.
-    if (g_guiSettings.GetBool("musicplayer.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
+    // Karaoke items also can be added in runtime (while the song is played), so it should be queued too.
+    if ( (g_guiSettings.GetBool("musicplayer.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
+       || pItem->IsKaraoke() )
     {
       // TODO: Should the playlist be cleared if nothing is already playing?
       OnQueueItem(iItem);
