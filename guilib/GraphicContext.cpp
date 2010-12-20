@@ -32,6 +32,7 @@
 #include "MouseStat.h"
 #include "GUIWindowManager.h"
 #include "utils/JobManager.h"
+#include "VideoReferenceClock.h"
 
 using namespace std;
 
@@ -338,6 +339,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
   m_Resolution    = res;
+
+  //tell the videoreferenceclock that we're about to change the refreshrate
+  g_VideoReferenceClock.RefreshChanged();
 
   if (g_advancedSettings.m_fullScreen)
   {

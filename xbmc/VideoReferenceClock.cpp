@@ -149,6 +149,7 @@ void CVideoReferenceClock::Process()
     m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
     m_fineadjust = 1.0;
+    m_RefreshChanged = 0;
     m_Started.Set();
 
     if (SetupSuccess)
@@ -943,6 +944,14 @@ double CVideoReferenceClock::GetSpeed()
 
 bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 {
+  //if the graphicscontext signaled that the refreshrate changed, we check it about one second later
+  if (m_RefreshChanged == 1 && !Forced)
+  {
+    m_LastRefreshTime = m_CurrTime;
+    m_RefreshChanged = 2;
+    return false;
+  }
+
   //update the refreshrate about once a second, or update immediately if a forced update is required
   if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency && !Forced)
     return false;
@@ -954,9 +963,9 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
 
-  bool   GotEvent = Forced;
-  XEvent Event;
   //check for RandR events
+  bool   GotEvent = Forced || m_RefreshChanged == 2;
+  XEvent Event;
   while (XCheckTypedEvent(m_Dpy, m_RREventBase + RRScreenChangeNotify, &Event))
   {
     if (Event.type == m_RREventBase + RRScreenChangeNotify)
@@ -966,6 +975,9 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     }
     XRRUpdateConfiguration(&Event);
   }
+
+  if (!Forced)
+    m_RefreshChanged = 0;
 
   if (!GotEvent) //refreshrate did not change
     return false;
