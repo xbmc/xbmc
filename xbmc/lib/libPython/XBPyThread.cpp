@@ -92,6 +92,7 @@ XBPyThread::~XBPyThread()
 {
   stop();
   g_pythonParser.PulseGlobalEvent();
+  CLog::Log(LOGDEBUG,"waiting for python thread %d to stop", m_id);
   StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
   delete [] m_source;
