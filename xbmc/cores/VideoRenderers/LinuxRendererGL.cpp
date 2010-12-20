@@ -1947,21 +1947,45 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
+  bool pboSetup = false;
   if (m_pboused)
   {
+    pboSetup = true;
     glGenBuffersARB(3, pbo);
 
     for (int i = 0; i < 3; i++)
     {
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
       glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-      memset(im.plane[i], 0, im.planesize[i]);
+      void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      if (pboPtr)
+      {
+        im.plane[i] = (BYTE*) pboPtr + PBO_OFFSET;
+        memset(im.plane[i], 0, im.planesize[i]);
+      }
+      else
+      {
+        CLog::Log(LOGWARNING,"GL: failed to set up pixel buffer object");
+        pboSetup = false;
+        break;
+      }
+    }
+
+    if (!pboSetup)
+    {
+      for (int i = 0; i < 3; i++)
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      }
+      glDeleteBuffersARB(3, pbo);
+      memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
     }
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
   }
-  else
+
+  if (!pboSetup)
   {
     for (int i = 0; i < 3; i++)
       im.plane[i] = new BYTE[im.planesize[i]];
@@ -2166,21 +2190,45 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   // third plane is not used
   im.planesize[2] = 0;
 
+  bool pboSetup = false;
   if (m_pboused)
   {
+    pboSetup = true;
     glGenBuffersARB(2, pbo);
 
     for (int i = 0; i < 2; i++)
     {
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
       glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-      memset(im.plane[i], 0, im.planesize[i]);
+      void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      if (pboPtr)
+      {
+        im.plane[i] = (BYTE*)pboPtr + PBO_OFFSET;
+        memset(im.plane[i], 0, im.planesize[i]);
+      }
+      else
+      {
+        CLog::Log(LOGWARNING,"GL: failed to set up pixel buffer object");
+        pboSetup = false;
+        break;
+      }
+    }
+
+    if (!pboSetup)
+    {
+      for (int i = 0; i < 2; i++)
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      }
+      glDeleteBuffersARB(2, pbo);
+      memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
     }
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
   }
-  else
+
+  if (!pboSetup)
   {
     for (int i = 0; i < 2; i++)
       im.plane[i] = new BYTE[im.planesize[i]];
@@ -2582,18 +2630,38 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   // third plane is not used
   im.planesize[2] = 0;
 
+  bool pboSetup = false;
   if (m_pboused)
   {
+    pboSetup = true;
     glGenBuffersARB(1, pbo);
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[0]);
     glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[0] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-    im.plane[0] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-    memset(im.plane[0], 0, im.planesize[0]);
+    void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+    if (pboPtr)
+    {
+      im.plane[0] = (BYTE*)pboPtr + PBO_OFFSET;
+      memset(im.plane[0], 0, im.planesize[0]);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING,"GL: failed to set up pixel buffer object");
+      pboSetup = false;
+    }
+
+    if (!pboSetup)
+    {
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, *pbo);
+      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      glDeleteBuffersARB(1, pbo);
+      memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
+    }
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
   }
-  else
+
+  if (!pboSetup)
   {
     im.plane[0] = new BYTE[im.planesize[0]];
   }
