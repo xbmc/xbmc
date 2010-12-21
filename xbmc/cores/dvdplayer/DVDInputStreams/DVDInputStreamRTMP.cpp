@@ -146,13 +146,17 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
     if (!m_libRTMP.SetupURL(m_rtmp, m_sStreamPlaying))
       return false;
 
+  // SetOpt and SetAVal copy pointers to the value. librtmp doesn't use the values until the Connect() call,
+  // so value objects must stay allocated until then.
+  vector<CStdString> values;
     for (int i=0; options[i].name; i++)
     {
-      string tmp = m_item.GetProperty(options[i].name);
+    CStdString tmp = m_item.GetProperty(options[i].name);
       if (!tmp.empty())
       {
+      values.push_back(tmp);
         AVal av_tmp;
-        SetAVal(av_tmp, tmp);
+      SetAVal(av_tmp, values.back());
         m_libRTMP.SetOpt(m_rtmp, &options[i].key, &av_tmp);
       }
     }
