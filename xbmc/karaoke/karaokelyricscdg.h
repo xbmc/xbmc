@@ -65,7 +65,9 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 	void cmdMemoryPreset( const char * data );
 	void cmdBorderPreset( const char * data );
 	void cmdLoadColorTable( const char * data, int index );
+	void cmdTileBlock( const char * data );
 	void cmdTileBlockXor( const char * data );
+	void cmdTransparentColor( const char * data );
 	bool UpdateBuffer( unsigned int packets_due );
 	void RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const;
 

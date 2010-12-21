@@ -147,12 +147,18 @@ void CKaraokeLyricsCDG::Render()
 		  BYTE colorindex = getPixel( x, y );
 		  DWORD TexColor = m_colorTable[ colorindex ];
 
-		  TexColor &= 0x00FFFFFF;
+		  // Is it transparent color?
+		  if ( TexColor != 0xFFFFFFFF )
+		  {
+			TexColor &= 0x00FFFFFF;
 
-		  if ( colorindex == m_bgColor )
-			TexColor |= m_bgAlpha;
+			if ( colorindex == m_bgColor )
+				TexColor |= m_bgAlpha;
+			else
+				TexColor |= m_fgAlpha;
+		  }
 		  else
-			TexColor |= m_fgAlpha;
+			  TexColor = 0x00000000;
 
 		  *texel++ = TexColor;
 		}
@@ -220,6 +226,12 @@ void CKaraokeLyricsCDG::cmdBorderPreset( const char * data )
   //CLog::Log( LOGDEBUG, "CDG: border color set to %d", borderColor );
 }
 
+void CKaraokeLyricsCDG::cmdTransparentColor( const char * data )
+{
+	int index = data[0] & 0x0F;
+	m_colorTable[index] = 0xFFFFFFFF;
+}
+
 void CKaraokeLyricsCDG::cmdLoadColorTable( const char * data, int index )
 {
   CDG_LoadColorTable* table = (CDG_LoadColorTable*) data;
@@ -237,6 +249,40 @@ void CKaraokeLyricsCDG::cmdLoadColorTable( const char * data, int index )
 	m_colorTable[index+i] = (red << 16) | (green << 8) | blue;
 
 	//CLog::Log( LOGDEBUG, "CDG: loadColors: color %d -> %02X %02X %02X (%08X)", index + i, red, green, blue, m_colorTable[index+i] );
+  }
+}
+
+void CKaraokeLyricsCDG::cmdTileBlock( const char * data )
+{
+  CDG_Tile* tile = (CDG_Tile*) data;
+  UINT offset_y = (tile->row & 0x1F) * 12;
+  UINT offset_x = (tile->column & 0x3F) * 6;
+
+  //CLog::Log( LOGERROR, "TileBlockXor: %d, %d", offset_x, offset_y );
+
+  if ( offset_x + 6 >= CDG_FULL_WIDTH || offset_y + 12 >= CDG_FULL_HEIGHT )
+	return;
+
+  // In the XOR variant, the color values are combined with the color values that are
+  // already onscreen using the XOR operator.  Since CD+G only allows a maximum of 16
+  // colors, we are XORing the pixel values (0-15) themselves, which correspond to
+  // indexes into a color lookup table.  We are not XORing the actual R,G,B values.
+  BYTE color_0 = tile->color0 & 0x0F;
+  BYTE color_1 = tile->color1 & 0x0F;
+
+  BYTE mask[6] = { 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+
+  for ( int i = 0; i < 12; i++ )
+  {
+	BYTE bTemp = tile->tilePixels[i] & 0x3F;
+
+	for ( int j = 0; j < 6; j++ )
+	{
+	  if ( bTemp & mask[j] )
+		setPixel( offset_x + j, offset_y + i, color_1 );
+	  else
+		setPixel( offset_x + j, offset_y + i, color_0 );
+	}
   }
 }
 
@@ -319,6 +365,15 @@ bool CKaraokeLyricsCDG::UpdateBuffer( unsigned int packets_due )
 			cmdLoadColorTable( sc.data, 8 );
 			break;
 
+		case CDG_INST_DEF_TRANSP_COL:
+			cmdTransparentColor( sc.data );
+			break;
+
+		case CDG_INST_TILE_BLOCK:
+			cmdTileBlock( sc.data );
+			screen_changed = true;
+			break;
+
 		case CDG_INST_TILE_BLOCK_XOR:
 			cmdTileBlockXor( sc.data );
 			screen_changed = true;
@@ -370,6 +425,8 @@ bool CKaraokeLyricsCDG::Load()
   file.Close();
 
   // Parse the CD+G stream
+  int buggy_commands = 0;
+  
   for ( unsigned int offset = 0; offset < cdgdata.size(); offset += sizeof( SubCode ) )
   {
 	  SubCode * sc = (SubCode *) (&cdgdata[0] + offset);
@@ -386,22 +443,25 @@ bool CKaraokeLyricsCDG::Load()
 			  case CDG_INST_LOAD_COL_TBL_0_7:
 			  case CDG_INST_LOAD_COL_TBL_8_15:
 			  case CDG_INST_TILE_BLOCK_XOR:
+			  case CDG_INST_TILE_BLOCK:
+			  case CDG_INST_DEF_TRANSP_COL:
 				memcpy( &packet.subcode, sc, sizeof(SubCode) );
 				packet.packetnum = offset / sizeof( SubCode );
 				m_cdgStream.push_back( packet );
 				break;
 
 			  // We do not support those commands since I have never seen a CD+G file which has them.
-			  //case CDG_INST_SCROLL_PRESET:
-			  //case CDG_INST_SCROLL_COPY:
-			  //case CDG_INST_DEF_TRANSP_COL:
-			  //case CDG_INST_TILE_BLOCK:
+			  case CDG_INST_SCROLL_PRESET:
+			  case CDG_INST_SCROLL_COPY:
+				CLog::Log( LOGERROR, "CDG loader: Unsupported CD+G instruction %d found in file %s, "
+					 "please report to oldnemesis together with the file!",
+						sc->instruction & CDG_MASK, m_cdgFile.c_str() );
+				m_cdgStream.clear();
+				return false;
+				
 			  default:
-				  CLog::Log( LOGERROR, "CDG loader: Unsupported CD+G instruction %d found in file %s, "
-							 "please report to oldnemesis together with the file!",
-								sc->instruction & CDG_MASK, m_cdgFile.c_str() );
-				  m_cdgStream.clear();
-				  return false;
+				  buggy_commands++;
+				  break;
 		  }
 	  }
   }
@@ -414,8 +474,13 @@ bool CKaraokeLyricsCDG::Load()
 	m_colorTable[i] = 0;
 
   m_streamIdx = 0;
-  CLog::Log( LOGDEBUG, "CDG loader: CDG file %s has been loading successfully, %d useful packets, %dKb used",
-			 m_cdgFile.c_str(), m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
+  
+  if ( buggy_commands == 0 )
+	CLog::Log( LOGDEBUG, "CDG loader: CDG file %s has been loading successfully, %d useful packets, %dKb used",
+				m_cdgFile.c_str(), m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
+ else
+	CLog::Log( LOGDEBUG, "CDG loader: CDG file %s was damaged, %d errors ignored, %d useful packets, %dKb used",
+				m_cdgFile.c_str(), buggy_commands, m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
 
   return true;
 }
