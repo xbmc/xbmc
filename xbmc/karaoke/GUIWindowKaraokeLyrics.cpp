@@ -115,6 +115,7 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
 void CGUIWindowKaraokeLyrics::Render()
 {
   g_application.ResetScreenSaver();
+  CGUIWindow::Render();
 
   CSingleLock lock (m_CritSection);
 
@@ -123,8 +124,6 @@ void CGUIWindowKaraokeLyrics::Render()
     m_Background->Render();
     m_Lyrics->Render();
   }
-
-  CGUIWindow::Render();
 }
 
 
