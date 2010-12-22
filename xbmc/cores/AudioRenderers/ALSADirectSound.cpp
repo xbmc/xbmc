@@ -150,9 +150,9 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   }
   else
   {
-    if(deviceuse == "hdmi"
-    || deviceuse == "iec958"
-    || deviceuse == "spdif")
+    if((deviceuse + ":").Left(5) == "hdmi:"
+    || (deviceuse + ":").Left(7) == "iec958:"
+    || (deviceuse + ":").Left(6) == "spdif:")
       deviceuse = "plug:" + deviceuse;
 
     if(deviceuse == "default")
@@ -706,7 +706,7 @@ void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink
   {
     CStdString finalSink;
     finalSink.Format("alsa:%s", deviceString.c_str());
-    CStdString label = readableCard + " " + sink;
+    CStdString label = readableCard + " " + sink + " (ALSA)";
     vAudioSinks.push_back(AudioSink(label, finalSink));
   }
 }
