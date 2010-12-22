@@ -23,7 +23,7 @@
   #include "config.h"
 #elif defined(_WIN32)
 #include "system.h"
-#include "../DllAvCodec.h"
+#include "Codecs/DllAvCodec.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
