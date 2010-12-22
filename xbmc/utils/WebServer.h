@@ -65,7 +65,7 @@ private:
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
 
-#if (MHD_VERSION >= 0x00090000)
+#if (MHD_VERSION >= 0x00090200)
   static ssize_t ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max);
 #elif (MHD_VERSION >= 0x00040001)
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
