@@ -36,6 +36,9 @@
 
 #pragma comment(lib, "Avrt.lib")
 
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+
 const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
 const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
@@ -267,7 +270,7 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
   wfxex.Format.nSamplesPerSec  = 48000;
   wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
   wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-  wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+  wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
   wfxex.Format.wBitsPerSample  = 16;
   wfxex.Samples.wValidBitsPerSample = 16;
   wfxex.Format.nChannels       = 2;
@@ -405,7 +408,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-    wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
     wfxex.Format.wBitsPerSample  = 16;
     wfxex.Format.nChannels       = 2;
   } 
@@ -413,7 +416,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   {
     wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
     wfxex.Format.wBitsPerSample  = 32;
   }
 

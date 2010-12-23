@@ -8,6 +8,7 @@
 #include "CharsetConverter.h"
 #include "SystemGlobals.h"
 
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
 #define SPEAKER_COUNT 8
@@ -108,7 +109,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   {
     wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
     wfxex.Format.wBitsPerSample  = 32;
   }
 
