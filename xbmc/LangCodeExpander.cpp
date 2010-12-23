@@ -36,6 +36,23 @@ typedef struct LCENTRY
 extern const struct LCENTRY g_iso639_1[143];
 extern const struct LCENTRY g_iso639_2[536];
 
+struct CharCodeConvertionWithHack
+{
+  const char* old;
+  const char* id;
+  const char* win_id;
+};
+
+struct CharCodeConvertion
+{
+  const char* old;
+  const char* id;
+};
+
+// declared as extern to allow forward declaration
+extern const CharCodeConvertionWithHack CharCode2To3[184];
+extern const CharCodeConvertion RegionCode2To3[246];
+
 CLangCodeExpander::CLangCodeExpander(void)
 {}
 
@@ -131,299 +148,34 @@ bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, 
 bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode)
 #endif
 {       
-  if ( strTwoCharCode.length()==2 )
+  if ( strTwoCharCode.length() == 2 )
   {
     CStdString strTwoCharCodeLower( strTwoCharCode );
     strTwoCharCodeLower.MakeLower();
     strTwoCharCodeLower.TrimLeft();
     strTwoCharCodeLower.TrimRight();
-    
-    long twoCharCode = (((long)(strTwoCharCode[0]))<<8) | (long)(strTwoCharCode[1]);
 
-    switch (twoCharCode) {
-      case MAKETWOCHARCODE('a','a'): strThreeCharCode =  "aar"; break;
-      case MAKETWOCHARCODE('a','b'): strThreeCharCode =  "abk"; break;
-      case MAKETWOCHARCODE('a','f'): strThreeCharCode =  "afr"; break;
-      case MAKETWOCHARCODE('a','k'): strThreeCharCode =  "aka"; break;
-      case MAKETWOCHARCODE('a','m'): strThreeCharCode =  "amh"; break;
-      case MAKETWOCHARCODE('a','r'): strThreeCharCode =  "ara"; break;
-      case MAKETWOCHARCODE('a','n'): strThreeCharCode =  "arg"; break;
-      case MAKETWOCHARCODE('a','s'): strThreeCharCode =  "asm"; break;
-      case MAKETWOCHARCODE('a','v'): strThreeCharCode =  "ava"; break;
-      case MAKETWOCHARCODE('a','e'): strThreeCharCode =  "ave"; break;
-      case MAKETWOCHARCODE('a','y'): strThreeCharCode =  "aym"; break;
-      case MAKETWOCHARCODE('a','z'): strThreeCharCode =  "aze"; break;
-      case MAKETWOCHARCODE('b','a'): strThreeCharCode =  "bak"; break;
-      case MAKETWOCHARCODE('b','m'): strThreeCharCode =  "bam"; break;
-      case MAKETWOCHARCODE('b','e'): strThreeCharCode =  "bel"; break;
-      case MAKETWOCHARCODE('b','n'): strThreeCharCode =  "ben"; break;
-      case MAKETWOCHARCODE('b','h'): strThreeCharCode =  "bih"; break;
-      case MAKETWOCHARCODE('b','i'): strThreeCharCode =  "bis"; break;
-      case MAKETWOCHARCODE('b','o'): strThreeCharCode =  "tib"; break;  // terminology lang code: bod
-      case MAKETWOCHARCODE('b','s'): strThreeCharCode =  "bos"; break;
-      case MAKETWOCHARCODE('b','r'): strThreeCharCode =  "bre"; break;
-      case MAKETWOCHARCODE('b','g'): strThreeCharCode =  "bul"; break;
-      case MAKETWOCHARCODE('c','a'): strThreeCharCode =  "cat"; break;
-      case MAKETWOCHARCODE('c','s'):
+    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    {
+      if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
+      {
 #ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "csy";
-        else
+        if (localeHack && CharCode2To3[index].win_id)
+        {
+          strThreeCharCode = CharCode2To3[index].win_id;
+          return true;
+        }
 #endif
-          strThreeCharCode =  "cze";
-        break;  // terminology lang code: ces
-      case MAKETWOCHARCODE('c','h'): strThreeCharCode =  "cha"; break;
-      case MAKETWOCHARCODE('c','e'): strThreeCharCode =  "che"; break;
-      case MAKETWOCHARCODE('c','u'): strThreeCharCode =  "chu"; break;
-      case MAKETWOCHARCODE('c','v'): strThreeCharCode =  "chv"; break;
-      case MAKETWOCHARCODE('k','w'): strThreeCharCode =  "cor"; break;
-      case MAKETWOCHARCODE('c','o'): strThreeCharCode =  "cos"; break;
-      case MAKETWOCHARCODE('c','r'): strThreeCharCode =  "cre"; break;
-      case MAKETWOCHARCODE('c','y'): strThreeCharCode =  "wel"; break;  // terminology lang code: cym
-      case MAKETWOCHARCODE('d','a'): strThreeCharCode =  "dan"; break;
-      case MAKETWOCHARCODE('d','e'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "deu";
-        else
-#endif
-          strThreeCharCode =  "ger";
-        break;  // terminology lang code: deu
-      case MAKETWOCHARCODE('d','v'): strThreeCharCode =  "div"; break;
-      case MAKETWOCHARCODE('d','z'): strThreeCharCode =  "dzo"; break;
-      case MAKETWOCHARCODE('e','l'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "ell";
-        else
-#endif
-          strThreeCharCode =  "gre";
-        break;  // terminology lang code: ell
-      case MAKETWOCHARCODE('e','n'): strThreeCharCode =  "eng"; break;
-      case MAKETWOCHARCODE('e','o'): strThreeCharCode =  "epo"; break;
-      case MAKETWOCHARCODE('e','t'): strThreeCharCode =  "est"; break;
-      case MAKETWOCHARCODE('e','u'): strThreeCharCode =  "baq"; break;  // terminology lang code: eus
-      case MAKETWOCHARCODE('e','e'): strThreeCharCode =  "ewe"; break;
-      case MAKETWOCHARCODE('f','o'): strThreeCharCode =  "fao"; break;
-      case MAKETWOCHARCODE('f','a'): strThreeCharCode =  "per"; break;  // terminology lang code: fas
-      case MAKETWOCHARCODE('f','j'): strThreeCharCode =  "fij"; break;
-      case MAKETWOCHARCODE('f','i'): strThreeCharCode =  "fin"; break;
-      case MAKETWOCHARCODE('f','r'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "fra";
-        else
-#endif
-          strThreeCharCode =  "fre";
-        break;  // terminology lang code: fra
-      case MAKETWOCHARCODE('f','y'): strThreeCharCode =  "fry"; break;
-      case MAKETWOCHARCODE('f','f'): strThreeCharCode =  "ful"; break;
-      case MAKETWOCHARCODE('g','d'): strThreeCharCode =  "gla"; break;
-      case MAKETWOCHARCODE('g','a'): strThreeCharCode =  "gle"; break;
-      case MAKETWOCHARCODE('g','l'): strThreeCharCode =  "glg"; break;
-      case MAKETWOCHARCODE('g','v'): strThreeCharCode =  "glv"; break;
-      case MAKETWOCHARCODE('g','n'): strThreeCharCode =  "grn"; break;
-      case MAKETWOCHARCODE('g','u'): strThreeCharCode =  "guj"; break;
-      case MAKETWOCHARCODE('h','t'): strThreeCharCode =  "hat"; break;
-      case MAKETWOCHARCODE('h','a'): strThreeCharCode =  "hau"; break;
-      case MAKETWOCHARCODE('h','e'): strThreeCharCode =  "heb"; break;
-      case MAKETWOCHARCODE('h','z'): strThreeCharCode =  "her"; break;
-      case MAKETWOCHARCODE('h','i'): strThreeCharCode =  "hin"; break;
-      case MAKETWOCHARCODE('h','o'): strThreeCharCode =  "hmo"; break;
-      case MAKETWOCHARCODE('h','r'): strThreeCharCode =  "hrv"; break;
-      case MAKETWOCHARCODE('h','u'): strThreeCharCode =  "hun"; break;
-      case MAKETWOCHARCODE('h','y'): strThreeCharCode =  "arm"; break;  // terminology lang code: hye
-      case MAKETWOCHARCODE('i','g'): strThreeCharCode =  "ibo"; break;
-      case MAKETWOCHARCODE('i','o'): strThreeCharCode =  "ido"; break;
-      case MAKETWOCHARCODE('i','i'): strThreeCharCode =  "iii"; break;
-      case MAKETWOCHARCODE('i','u'): strThreeCharCode =  "iku"; break;
-      case MAKETWOCHARCODE('i','e'): strThreeCharCode =  "ile"; break;
-      case MAKETWOCHARCODE('i','a'): strThreeCharCode =  "ina"; break;
-      case MAKETWOCHARCODE('i','d'): strThreeCharCode =  "ind"; break;
-      case MAKETWOCHARCODE('i','k'): strThreeCharCode =  "ipk"; break;
-      case MAKETWOCHARCODE('i','s'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "isl";
-        else
-#endif
-          strThreeCharCode =  "ice";
-        break;  // terminology lang code: isl
-      case MAKETWOCHARCODE('i','t'): strThreeCharCode =  "ita"; break;
-      case MAKETWOCHARCODE('j','v'): strThreeCharCode =  "jav"; break;
-      case MAKETWOCHARCODE('j','a'): strThreeCharCode =  "jpn"; break;
-      case MAKETWOCHARCODE('k','l'): strThreeCharCode =  "kal"; break;
-      case MAKETWOCHARCODE('k','n'): strThreeCharCode =  "kan"; break;
-      case MAKETWOCHARCODE('k','s'): strThreeCharCode =  "kas"; break;
-      case MAKETWOCHARCODE('k','a'): strThreeCharCode =  "geo"; break;  // terminology lang code: kat
-      case MAKETWOCHARCODE('k','r'): strThreeCharCode =  "kau"; break;
-      case MAKETWOCHARCODE('k','k'): strThreeCharCode =  "kaz"; break;
-      case MAKETWOCHARCODE('k','m'): strThreeCharCode =  "khm"; break;
-      case MAKETWOCHARCODE('k','i'): strThreeCharCode =  "kik"; break;
-      case MAKETWOCHARCODE('r','w'): strThreeCharCode =  "kin"; break;
-      case MAKETWOCHARCODE('k','y'): strThreeCharCode =  "kir"; break;
-      case MAKETWOCHARCODE('k','v'): strThreeCharCode =  "kom"; break;
-      case MAKETWOCHARCODE('k','g'): strThreeCharCode =  "kon"; break;
-      case MAKETWOCHARCODE('k','o'): strThreeCharCode =  "kor"; break;
-      case MAKETWOCHARCODE('k','j'): strThreeCharCode =  "kua"; break;
-      case MAKETWOCHARCODE('k','u'): strThreeCharCode =  "kur"; break;
-      case MAKETWOCHARCODE('l','o'): strThreeCharCode =  "lao"; break;
-      case MAKETWOCHARCODE('l','a'): strThreeCharCode =  "lat"; break;
-      case MAKETWOCHARCODE('l','v'): strThreeCharCode =  "lav"; break;
-      case MAKETWOCHARCODE('l','i'): strThreeCharCode =  "lim"; break;
-      case MAKETWOCHARCODE('l','n'): strThreeCharCode =  "lin"; break;
-      case MAKETWOCHARCODE('l','t'): strThreeCharCode =  "lit"; break;
-      case MAKETWOCHARCODE('l','b'): strThreeCharCode =  "ltz"; break;
-      case MAKETWOCHARCODE('l','u'): strThreeCharCode =  "lub"; break;
-      case MAKETWOCHARCODE('l','g'): strThreeCharCode =  "lug"; break;
-      case MAKETWOCHARCODE('m','k'): strThreeCharCode =  "mac"; break;  // terminology lang code: mkd
-      case MAKETWOCHARCODE('m','h'): strThreeCharCode =  "mah"; break;
-      case MAKETWOCHARCODE('m','l'): strThreeCharCode =  "mal"; break;
-      case MAKETWOCHARCODE('m','i'): strThreeCharCode =  "mao"; break;  // terminology lang code: mri
-      case MAKETWOCHARCODE('m','r'): strThreeCharCode =  "mar"; break;
-      case MAKETWOCHARCODE('m','s'): strThreeCharCode =  "may"; break;  // terminology lang code: msa
-      case MAKETWOCHARCODE('m','g'): strThreeCharCode =  "mlg"; break;
-      case MAKETWOCHARCODE('m','t'): strThreeCharCode =  "mlt"; break;
-      case MAKETWOCHARCODE('m','n'): strThreeCharCode =  "mon"; break;
-      case MAKETWOCHARCODE('m','y'): strThreeCharCode =  "bur"; break;  // terminology lang code: mya
-      case MAKETWOCHARCODE('n','a'): strThreeCharCode =  "nau"; break;
-      case MAKETWOCHARCODE('n','v'): strThreeCharCode =  "nav"; break;
-      case MAKETWOCHARCODE('n','r'): strThreeCharCode =  "nbl"; break;
-      case MAKETWOCHARCODE('n','d'): strThreeCharCode =  "nde"; break;
-      case MAKETWOCHARCODE('n','g'): strThreeCharCode =  "ndo"; break;
-      case MAKETWOCHARCODE('n','e'): strThreeCharCode =  "nep"; break;
-      case MAKETWOCHARCODE('n','l'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "nld";
-        else
-#endif
-          strThreeCharCode =  "dut";
-        break;  // terminology lang code: nld
-      case MAKETWOCHARCODE('n','n'): strThreeCharCode =  "nno"; break;
-      case MAKETWOCHARCODE('n','b'): strThreeCharCode =  "nob"; break;
-      case MAKETWOCHARCODE('n','o'): strThreeCharCode =  "nor"; break;
-      case MAKETWOCHARCODE('n','y'): strThreeCharCode =  "nya"; break;
-      case MAKETWOCHARCODE('o','c'): strThreeCharCode =  "oci"; break;
-      case MAKETWOCHARCODE('o','j'): strThreeCharCode =  "oji"; break;
-      case MAKETWOCHARCODE('o','r'): strThreeCharCode =  "ori"; break;
-      case MAKETWOCHARCODE('o','m'): strThreeCharCode =  "orm"; break;
-      case MAKETWOCHARCODE('o','s'): strThreeCharCode =  "oss"; break;
-      case MAKETWOCHARCODE('p','a'): strThreeCharCode =  "pan"; break;
-      case MAKETWOCHARCODE('p','i'): strThreeCharCode =  "pli"; break;
-      case MAKETWOCHARCODE('p','l'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "plk";
-        else
-#endif
-          strThreeCharCode =  "pol";
-        break;
-      case MAKETWOCHARCODE('p','t'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "ptg";
-        else
-#endif
-          strThreeCharCode =  "por";
-        break;
-      case MAKETWOCHARCODE('p','s'): strThreeCharCode =  "pus"; break;
-      case MAKETWOCHARCODE('q','u'): strThreeCharCode =  "que"; break;
-      case MAKETWOCHARCODE('r','m'): strThreeCharCode =  "roh"; break;
-      case MAKETWOCHARCODE('r','o'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "ron";
-        else
-#endif
-          strThreeCharCode =  "rum";
-        break;  // terminology lang code: ron
-      case MAKETWOCHARCODE('r','n'): strThreeCharCode =  "run"; break;
-      case MAKETWOCHARCODE('r','u'): strThreeCharCode =  "rus"; break;
-      case MAKETWOCHARCODE('s','g'): strThreeCharCode =  "sag"; break;
-      case MAKETWOCHARCODE('s','a'): strThreeCharCode =  "san"; break;
-      case MAKETWOCHARCODE('s','i'): strThreeCharCode =  "sin"; break;
-      case MAKETWOCHARCODE('s','k'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "sky";
-        else
-#endif
-          strThreeCharCode =  "slo"; break;  // terminology lang code: slk
-      case MAKETWOCHARCODE('s','l'): strThreeCharCode =  "slv"; break;
-      case MAKETWOCHARCODE('s','e'): strThreeCharCode =  "sme"; break;
-      case MAKETWOCHARCODE('s','m'): strThreeCharCode =  "smo"; break;
-      case MAKETWOCHARCODE('s','n'): strThreeCharCode =  "sna"; break;
-      case MAKETWOCHARCODE('s','d'): strThreeCharCode =  "snd"; break;
-      case MAKETWOCHARCODE('s','o'): strThreeCharCode =  "som"; break;
-      case MAKETWOCHARCODE('s','t'): strThreeCharCode =  "sot"; break;
-      case MAKETWOCHARCODE('e','s'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "esp";
-        else
-#endif
-          strThreeCharCode =  "spa";
-        break;
-      case MAKETWOCHARCODE('s','q'): strThreeCharCode =  "alb"; break;  // terminology lang code: sqi
-      case MAKETWOCHARCODE('s','c'): strThreeCharCode =  "srd"; break;
-      case MAKETWOCHARCODE('s','r'): strThreeCharCode =  "srp"; break;
-      case MAKETWOCHARCODE('s','s'): strThreeCharCode =  "ssw"; break;
-      case MAKETWOCHARCODE('s','u'): strThreeCharCode =  "sun"; break;
-      case MAKETWOCHARCODE('s','w'): strThreeCharCode =  "swa"; break;
-      case MAKETWOCHARCODE('s','v'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "sve";
-        else
-#endif
-        strThreeCharCode =  "swe"; break;
-      case MAKETWOCHARCODE('t','y'): strThreeCharCode =  "tah"; break;
-      case MAKETWOCHARCODE('t','a'): strThreeCharCode =  "tam"; break;
-      case MAKETWOCHARCODE('t','t'): strThreeCharCode =  "tat"; break;
-      case MAKETWOCHARCODE('t','e'): strThreeCharCode =  "tel"; break;
-      case MAKETWOCHARCODE('t','g'): strThreeCharCode =  "tgk"; break;
-      case MAKETWOCHARCODE('t','l'): strThreeCharCode =  "tgl"; break;
-      case MAKETWOCHARCODE('t','h'): strThreeCharCode =  "tha"; break;
-      case MAKETWOCHARCODE('t','i'): strThreeCharCode =  "tir"; break;
-      case MAKETWOCHARCODE('t','o'): strThreeCharCode =  "ton"; break;
-      case MAKETWOCHARCODE('t','n'): strThreeCharCode =  "tsn"; break;
-      case MAKETWOCHARCODE('t','s'): strThreeCharCode =  "tso"; break;
-      case MAKETWOCHARCODE('t','k'): strThreeCharCode =  "tuk"; break;
-      case MAKETWOCHARCODE('t','r'):
-#ifdef _WIN32
-        if (localeHack)
-          strThreeCharCode = "trk";
-        else
-#endif
-          strThreeCharCode =  "tur";
-        break;
-      case MAKETWOCHARCODE('t','w'): strThreeCharCode =  "twi"; break;
-      case MAKETWOCHARCODE('u','g'): strThreeCharCode =  "uig"; break;
-      case MAKETWOCHARCODE('u','k'): strThreeCharCode =  "ukr"; break;
-      case MAKETWOCHARCODE('u','r'): strThreeCharCode =  "urd"; break;
-      case MAKETWOCHARCODE('u','z'): strThreeCharCode =  "uzb"; break;
-      case MAKETWOCHARCODE('v','e'): strThreeCharCode =  "ven"; break;
-      case MAKETWOCHARCODE('v','i'): strThreeCharCode =  "vie"; break;
-      case MAKETWOCHARCODE('v','o'): strThreeCharCode =  "vol"; break;
-      case MAKETWOCHARCODE('w','a'): strThreeCharCode =  "wln"; break;
-      case MAKETWOCHARCODE('w','o'): strThreeCharCode =  "wol"; break;
-      case MAKETWOCHARCODE('x','h'): strThreeCharCode =  "xho"; break;
-      case MAKETWOCHARCODE('y','i'): strThreeCharCode =  "yid"; break;
-      case MAKETWOCHARCODE('y','o'): strThreeCharCode =  "yor"; break;
-      case MAKETWOCHARCODE('z','a'): strThreeCharCode =  "zha"; break;
-      case MAKETWOCHARCODE('z','h'): strThreeCharCode =  "chi"; break;  // terminology lang code: zho
-      case MAKETWOCHARCODE('z','u'): strThreeCharCode =  "zul"; break;
-      default: return false; break;
+        strThreeCharCode = CharCode2To3[index].id;
+        return true;
+      }
     }
-    // did not reach default statement
-    return true;
   }
+
   // not a 2 char code
   return false;
 }
 
-// Based on ISO 3166
 bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode)
 {
   if (strTwoCharCode.length() != 2)
@@ -433,260 +185,15 @@ bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTw
   strLower.MakeLower();
   strLower.TrimLeft();
   strLower.TrimRight();
-  long twoCharCode = (((long)(strLower[0])) << 8) | (long)(strLower[1]);
-
-  switch (twoCharCode)
+  for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
   {
-    case MAKETWOCHARCODE('a','f'): strThreeCharCode =  "afg"; break;
-    case MAKETWOCHARCODE('a','x'): strThreeCharCode =  "ala"; break;
-    case MAKETWOCHARCODE('a','l'): strThreeCharCode =  "alb"; break;
-    case MAKETWOCHARCODE('d','z'): strThreeCharCode =  "dza"; break;
-    case MAKETWOCHARCODE('a','s'): strThreeCharCode =  "asm"; break;
-    case MAKETWOCHARCODE('a','d'): strThreeCharCode =  "and"; break;
-    case MAKETWOCHARCODE('a','o'): strThreeCharCode =  "ago"; break;
-    case MAKETWOCHARCODE('a','i'): strThreeCharCode =  "aia"; break;
-    case MAKETWOCHARCODE('a','q'): strThreeCharCode =  "ata"; break;
-    case MAKETWOCHARCODE('a','g'): strThreeCharCode =  "atg"; break;
-    case MAKETWOCHARCODE('a','r'): strThreeCharCode =  "arg"; break;
-    case MAKETWOCHARCODE('a','m'): strThreeCharCode =  "arm"; break;
-    case MAKETWOCHARCODE('a','w'): strThreeCharCode =  "abw"; break;
-    case MAKETWOCHARCODE('a','u'): strThreeCharCode =  "aus"; break;
-    case MAKETWOCHARCODE('a','t'): strThreeCharCode =  "aut"; break;
-    case MAKETWOCHARCODE('a','z'): strThreeCharCode =  "aze"; break;
-    case MAKETWOCHARCODE('b','s'): strThreeCharCode =  "bhs"; break;
-    case MAKETWOCHARCODE('b','h'): strThreeCharCode =  "bhr"; break;
-    case MAKETWOCHARCODE('b','d'): strThreeCharCode =  "bgd"; break;
-    case MAKETWOCHARCODE('b','b'): strThreeCharCode =  "brb"; break;
-    case MAKETWOCHARCODE('b','y'): strThreeCharCode =  "blr"; break;
-    case MAKETWOCHARCODE('b','e'): strThreeCharCode =  "bel"; break;
-    case MAKETWOCHARCODE('b','z'): strThreeCharCode =  "blz"; break;
-    case MAKETWOCHARCODE('b','j'): strThreeCharCode =  "ben"; break;
-    case MAKETWOCHARCODE('b','m'): strThreeCharCode =  "bmu"; break;
-    case MAKETWOCHARCODE('b','t'): strThreeCharCode =  "btn"; break;
-    case MAKETWOCHARCODE('b','o'): strThreeCharCode =  "bol"; break;
-    case MAKETWOCHARCODE('b','a'): strThreeCharCode =  "bih"; break;
-    case MAKETWOCHARCODE('b','w'): strThreeCharCode =  "bwa"; break;
-    case MAKETWOCHARCODE('b','v'): strThreeCharCode =  "bvt"; break;
-    case MAKETWOCHARCODE('b','r'): strThreeCharCode =  "bra"; break;
-    case MAKETWOCHARCODE('i','o'): strThreeCharCode =  "iot"; break;
-    case MAKETWOCHARCODE('b','n'): strThreeCharCode =  "brn"; break;
-    case MAKETWOCHARCODE('b','g'): strThreeCharCode =  "bgr"; break;
-    case MAKETWOCHARCODE('b','f'): strThreeCharCode =  "bfa"; break;
-    case MAKETWOCHARCODE('b','i'): strThreeCharCode =  "bdi"; break;
-    case MAKETWOCHARCODE('k','h'): strThreeCharCode =  "khm"; break;
-    case MAKETWOCHARCODE('c','m'): strThreeCharCode =  "cmr"; break;
-    case MAKETWOCHARCODE('c','a'): strThreeCharCode =  "can"; break;
-    case MAKETWOCHARCODE('c','v'): strThreeCharCode =  "cpv"; break;
-    case MAKETWOCHARCODE('k','y'): strThreeCharCode =  "cym"; break;
-    case MAKETWOCHARCODE('c','f'): strThreeCharCode =  "caf"; break;
-    case MAKETWOCHARCODE('t','d'): strThreeCharCode =  "tcd"; break;
-    case MAKETWOCHARCODE('c','l'): strThreeCharCode =  "chl"; break;
-    case MAKETWOCHARCODE('c','n'): strThreeCharCode =  "chn"; break;
-    case MAKETWOCHARCODE('c','x'): strThreeCharCode =  "cxr"; break;
-    case MAKETWOCHARCODE('c','c'): strThreeCharCode =  "cck"; break;
-    case MAKETWOCHARCODE('c','o'): strThreeCharCode =  "col"; break;
-    case MAKETWOCHARCODE('k','m'): strThreeCharCode =  "com"; break;
-    case MAKETWOCHARCODE('c','g'): strThreeCharCode =  "cog"; break;
-    case MAKETWOCHARCODE('c','d'): strThreeCharCode =  "cod"; break;
-    case MAKETWOCHARCODE('c','k'): strThreeCharCode =  "cok"; break;
-    case MAKETWOCHARCODE('c','r'): strThreeCharCode =  "cri"; break;
-    case MAKETWOCHARCODE('c','i'): strThreeCharCode =  "civ"; break;
-    case MAKETWOCHARCODE('h','r'): strThreeCharCode =  "hrv"; break;
-    case MAKETWOCHARCODE('c','u'): strThreeCharCode =  "cub"; break;
-    case MAKETWOCHARCODE('c','y'): strThreeCharCode =  "cyp"; break;
-    case MAKETWOCHARCODE('c','z'): strThreeCharCode =  "cze"; break;
-    case MAKETWOCHARCODE('d','k'): strThreeCharCode =  "dnk"; break;
-    case MAKETWOCHARCODE('d','j'): strThreeCharCode =  "dji"; break;
-    case MAKETWOCHARCODE('d','m'): strThreeCharCode =  "dma"; break;
-    case MAKETWOCHARCODE('d','o'): strThreeCharCode =  "dom"; break;
-    case MAKETWOCHARCODE('e','c'): strThreeCharCode =  "ecu"; break;
-    case MAKETWOCHARCODE('e','g'): strThreeCharCode =  "egy"; break;
-    case MAKETWOCHARCODE('s','v'): strThreeCharCode =  "slv"; break;
-    case MAKETWOCHARCODE('g','q'): strThreeCharCode =  "gnq"; break;
-    case MAKETWOCHARCODE('e','r'): strThreeCharCode =  "eri"; break;
-    case MAKETWOCHARCODE('e','e'): strThreeCharCode =  "est"; break;
-    case MAKETWOCHARCODE('e','t'): strThreeCharCode =  "eth"; break;
-    case MAKETWOCHARCODE('f','k'): strThreeCharCode =  "flk"; break;
-    case MAKETWOCHARCODE('f','o'): strThreeCharCode =  "fro"; break;
-    case MAKETWOCHARCODE('f','j'): strThreeCharCode =  "fji"; break;
-    case MAKETWOCHARCODE('f','i'): strThreeCharCode =  "fin"; break;
-    case MAKETWOCHARCODE('f','r'): strThreeCharCode =  "fra"; break;
-    case MAKETWOCHARCODE('g','f'): strThreeCharCode =  "guf"; break;
-    case MAKETWOCHARCODE('p','f'): strThreeCharCode =  "pyf"; break;
-    case MAKETWOCHARCODE('t','f'): strThreeCharCode =  "atf"; break;
-    case MAKETWOCHARCODE('g','a'): strThreeCharCode =  "gab"; break;
-    case MAKETWOCHARCODE('g','m'): strThreeCharCode =  "gmb"; break;
-    case MAKETWOCHARCODE('g','e'): strThreeCharCode =  "geo"; break;
-    case MAKETWOCHARCODE('d','e'): strThreeCharCode =  "deu"; break;
-    case MAKETWOCHARCODE('g','h'): strThreeCharCode =  "gha"; break;
-    case MAKETWOCHARCODE('g','i'): strThreeCharCode =  "gib"; break;
-    case MAKETWOCHARCODE('g','r'): strThreeCharCode =  "grc"; break;
-    case MAKETWOCHARCODE('g','l'): strThreeCharCode =  "grl"; break;
-    case MAKETWOCHARCODE('g','d'): strThreeCharCode =  "grd"; break;
-    case MAKETWOCHARCODE('g','p'): strThreeCharCode =  "glp"; break;
-    case MAKETWOCHARCODE('g','u'): strThreeCharCode =  "gum"; break;
-    case MAKETWOCHARCODE('g','t'): strThreeCharCode =  "gtm"; break;
-    case MAKETWOCHARCODE('g','g'): strThreeCharCode =  "ggy"; break;
-    case MAKETWOCHARCODE('g','n'): strThreeCharCode =  "gin"; break;
-    case MAKETWOCHARCODE('g','w'): strThreeCharCode =  "gnb"; break;
-    case MAKETWOCHARCODE('g','y'): strThreeCharCode =  "guy"; break;
-    case MAKETWOCHARCODE('h','t'): strThreeCharCode =  "hti"; break;
-    case MAKETWOCHARCODE('h','m'): strThreeCharCode =  "hmd"; break;
-    case MAKETWOCHARCODE('v','a'): strThreeCharCode =  "vat"; break;
-    case MAKETWOCHARCODE('h','n'): strThreeCharCode =  "hnd"; break;
-    case MAKETWOCHARCODE('h','k'): strThreeCharCode =  "hkg"; break;
-    case MAKETWOCHARCODE('h','u'): strThreeCharCode =  "hun"; break;
-    case MAKETWOCHARCODE('i','s'): strThreeCharCode =  "isl"; break;
-    case MAKETWOCHARCODE('i','n'): strThreeCharCode =  "ind"; break;
-    case MAKETWOCHARCODE('i','d'): strThreeCharCode =  "idn"; break;
-    case MAKETWOCHARCODE('i','r'): strThreeCharCode =  "irn"; break;
-    case MAKETWOCHARCODE('i','q'): strThreeCharCode =  "irq"; break;
-    case MAKETWOCHARCODE('i','e'): strThreeCharCode =  "irl"; break;
-    case MAKETWOCHARCODE('i','m'): strThreeCharCode =  "imn"; break;
-    case MAKETWOCHARCODE('i','l'): strThreeCharCode =  "isr"; break;
-    case MAKETWOCHARCODE('i','t'): strThreeCharCode =  "ita"; break;
-    case MAKETWOCHARCODE('j','m'): strThreeCharCode =  "jam"; break;
-    case MAKETWOCHARCODE('j','p'): strThreeCharCode =  "jpn"; break;
-    case MAKETWOCHARCODE('j','e'): strThreeCharCode =  "jey"; break;
-    case MAKETWOCHARCODE('j','o'): strThreeCharCode =  "jor"; break;
-    case MAKETWOCHARCODE('k','z'): strThreeCharCode =  "kaz"; break;
-    case MAKETWOCHARCODE('k','e'): strThreeCharCode =  "ken"; break;
-    case MAKETWOCHARCODE('k','i'): strThreeCharCode =  "kir"; break;
-    case MAKETWOCHARCODE('k','p'): strThreeCharCode =  "prk"; break;
-    case MAKETWOCHARCODE('k','r'): strThreeCharCode =  "kor"; break;
-    case MAKETWOCHARCODE('k','w'): strThreeCharCode =  "kwt"; break;
-    case MAKETWOCHARCODE('k','g'): strThreeCharCode =  "kgz"; break;
-    case MAKETWOCHARCODE('l','a'): strThreeCharCode =  "lao"; break;
-    case MAKETWOCHARCODE('l','v'): strThreeCharCode =  "lva"; break;
-    case MAKETWOCHARCODE('l','b'): strThreeCharCode =  "lbn"; break;
-    case MAKETWOCHARCODE('l','s'): strThreeCharCode =  "lso"; break;
-    case MAKETWOCHARCODE('l','r'): strThreeCharCode =  "lbr"; break;
-    case MAKETWOCHARCODE('l','y'): strThreeCharCode =  "lby"; break;
-    case MAKETWOCHARCODE('l','i'): strThreeCharCode =  "lie"; break;
-    case MAKETWOCHARCODE('l','t'): strThreeCharCode =  "ltu"; break;
-    case MAKETWOCHARCODE('l','u'): strThreeCharCode =  "lux"; break;
-    case MAKETWOCHARCODE('m','o'): strThreeCharCode =  "mac"; break;
-    case MAKETWOCHARCODE('m','k'): strThreeCharCode =  "mkd"; break;
-    case MAKETWOCHARCODE('m','g'): strThreeCharCode =  "mdg"; break;
-    case MAKETWOCHARCODE('m','w'): strThreeCharCode =  "mwi"; break;
-    case MAKETWOCHARCODE('m','y'): strThreeCharCode =  "mys"; break;
-    case MAKETWOCHARCODE('m','v'): strThreeCharCode =  "mdv"; break;
-    case MAKETWOCHARCODE('m','l'): strThreeCharCode =  "mli"; break;
-    case MAKETWOCHARCODE('m','t'): strThreeCharCode =  "mlt"; break;
-    case MAKETWOCHARCODE('m','h'): strThreeCharCode =  "mhl"; break;
-    case MAKETWOCHARCODE('m','q'): strThreeCharCode =  "mtq"; break;
-    case MAKETWOCHARCODE('m','r'): strThreeCharCode =  "mrt"; break;
-    case MAKETWOCHARCODE('m','u'): strThreeCharCode =  "mus"; break;
-    case MAKETWOCHARCODE('y','t'): strThreeCharCode =  "myt"; break;
-    case MAKETWOCHARCODE('m','x'): strThreeCharCode =  "mex"; break;
-    case MAKETWOCHARCODE('f','m'): strThreeCharCode =  "fsm"; break;
-    case MAKETWOCHARCODE('m','d'): strThreeCharCode =  "mda"; break;
-    case MAKETWOCHARCODE('m','c'): strThreeCharCode =  "mco"; break;
-    case MAKETWOCHARCODE('m','n'): strThreeCharCode =  "mng"; break;
-    case MAKETWOCHARCODE('m','e'): strThreeCharCode =  "mne"; break;
-    case MAKETWOCHARCODE('m','s'): strThreeCharCode =  "msr"; break;
-    case MAKETWOCHARCODE('m','a'): strThreeCharCode =  "mar"; break;
-    case MAKETWOCHARCODE('m','z'): strThreeCharCode =  "moz"; break;
-    case MAKETWOCHARCODE('m','m'): strThreeCharCode =  "mmr"; break;
-    case MAKETWOCHARCODE('n','a'): strThreeCharCode =  "nam"; break;
-    case MAKETWOCHARCODE('n','r'): strThreeCharCode =  "nru"; break;
-    case MAKETWOCHARCODE('n','p'): strThreeCharCode =  "npl"; break;
-    case MAKETWOCHARCODE('n','l'): strThreeCharCode =  "nld"; break;
-    case MAKETWOCHARCODE('a','n'): strThreeCharCode =  "ant"; break;
-    case MAKETWOCHARCODE('n','c'): strThreeCharCode =  "ncl"; break;
-    case MAKETWOCHARCODE('n','z'): strThreeCharCode =  "nzl"; break;
-    case MAKETWOCHARCODE('n','i'): strThreeCharCode =  "nic"; break;
-    case MAKETWOCHARCODE('n','e'): strThreeCharCode =  "ner"; break;
-    case MAKETWOCHARCODE('n','g'): strThreeCharCode =  "nga"; break;
-    case MAKETWOCHARCODE('n','u'): strThreeCharCode =  "niu"; break;
-    case MAKETWOCHARCODE('n','f'): strThreeCharCode =  "nfk"; break;
-    case MAKETWOCHARCODE('m','p'): strThreeCharCode =  "mnp"; break;
-    case MAKETWOCHARCODE('n','o'): strThreeCharCode =  "nor"; break;
-    case MAKETWOCHARCODE('o','m'): strThreeCharCode =  "omn"; break;
-    case MAKETWOCHARCODE('p','k'): strThreeCharCode =  "pak"; break;
-    case MAKETWOCHARCODE('p','w'): strThreeCharCode =  "plw"; break;
-    case MAKETWOCHARCODE('p','s'): strThreeCharCode =  "pse"; break;
-    case MAKETWOCHARCODE('p','a'): strThreeCharCode =  "pan"; break;
-    case MAKETWOCHARCODE('p','g'): strThreeCharCode =  "png"; break;
-    case MAKETWOCHARCODE('p','y'): strThreeCharCode =  "pry"; break;
-    case MAKETWOCHARCODE('p','e'): strThreeCharCode =  "per"; break;
-    case MAKETWOCHARCODE('p','h'): strThreeCharCode =  "phl"; break;
-    case MAKETWOCHARCODE('p','n'): strThreeCharCode =  "pcn"; break;
-    case MAKETWOCHARCODE('p','l'): strThreeCharCode =  "pol"; break;
-    case MAKETWOCHARCODE('p','t'): strThreeCharCode =  "prt"; break;
-    case MAKETWOCHARCODE('p','r'): strThreeCharCode =  "pri"; break;
-    case MAKETWOCHARCODE('q','a'): strThreeCharCode =  "qat"; break;
-    case MAKETWOCHARCODE('r','e'): strThreeCharCode =  "reu"; break;
-    case MAKETWOCHARCODE('r','o'): strThreeCharCode =  "rou"; break;
-    case MAKETWOCHARCODE('r','u'): strThreeCharCode =  "rus"; break;
-    case MAKETWOCHARCODE('r','w'): strThreeCharCode =  "rwa"; break;
-    case MAKETWOCHARCODE('b','l'): strThreeCharCode =  "blm"; break;
-    case MAKETWOCHARCODE('s','h'): strThreeCharCode =  "shn"; break;
-    case MAKETWOCHARCODE('k','n'): strThreeCharCode =  "kna"; break;
-    case MAKETWOCHARCODE('l','c'): strThreeCharCode =  "lca"; break;
-    case MAKETWOCHARCODE('m','f'): strThreeCharCode =  "maf"; break;
-    case MAKETWOCHARCODE('p','m'): strThreeCharCode =  "spm"; break;
-    case MAKETWOCHARCODE('v','c'): strThreeCharCode =  "vct"; break;
-    case MAKETWOCHARCODE('w','s'): strThreeCharCode =  "wsm"; break;
-    case MAKETWOCHARCODE('s','m'): strThreeCharCode =  "smr"; break;
-    case MAKETWOCHARCODE('s','t'): strThreeCharCode =  "stp"; break;
-    case MAKETWOCHARCODE('s','a'): strThreeCharCode =  "sau"; break;
-    case MAKETWOCHARCODE('s','n'): strThreeCharCode =  "sen"; break;
-    case MAKETWOCHARCODE('r','s'): strThreeCharCode =  "srb"; break;
-    case MAKETWOCHARCODE('s','c'): strThreeCharCode =  "syc"; break;
-    case MAKETWOCHARCODE('s','l'): strThreeCharCode =  "sle"; break;
-    case MAKETWOCHARCODE('s','g'): strThreeCharCode =  "sgp"; break;
-    case MAKETWOCHARCODE('s','k'): strThreeCharCode =  "svk"; break;
-    case MAKETWOCHARCODE('s','i'): strThreeCharCode =  "svn"; break;
-    case MAKETWOCHARCODE('s','b'): strThreeCharCode =  "slb"; break;
-    case MAKETWOCHARCODE('s','o'): strThreeCharCode =  "som"; break;
-    case MAKETWOCHARCODE('z','a'): strThreeCharCode =  "zaf"; break;
-    case MAKETWOCHARCODE('g','s'): strThreeCharCode =  "sgs"; break;
-    case MAKETWOCHARCODE('e','s'): strThreeCharCode =  "esp"; break;
-    case MAKETWOCHARCODE('l','k'): strThreeCharCode =  "lka"; break;
-    case MAKETWOCHARCODE('s','d'): strThreeCharCode =  "sdn"; break;
-    case MAKETWOCHARCODE('s','r'): strThreeCharCode =  "sur"; break;
-    case MAKETWOCHARCODE('s','j'): strThreeCharCode =  "sjm"; break;
-    case MAKETWOCHARCODE('s','z'): strThreeCharCode =  "swz"; break;
-    case MAKETWOCHARCODE('s','e'): strThreeCharCode =  "swe"; break;
-    case MAKETWOCHARCODE('c','h'): strThreeCharCode =  "che"; break;
-    case MAKETWOCHARCODE('s','y'): strThreeCharCode =  "syr"; break;
-    case MAKETWOCHARCODE('t','w'): strThreeCharCode =  "twn"; break;
-    case MAKETWOCHARCODE('t','j'): strThreeCharCode =  "tjk"; break;
-    case MAKETWOCHARCODE('t','z'): strThreeCharCode =  "tza"; break;
-    case MAKETWOCHARCODE('t','h'): strThreeCharCode =  "tha"; break;
-    case MAKETWOCHARCODE('t','l'): strThreeCharCode =  "tls"; break;
-    case MAKETWOCHARCODE('t','g'): strThreeCharCode =  "tgo"; break;
-    case MAKETWOCHARCODE('t','k'): strThreeCharCode =  "tkl"; break;
-    case MAKETWOCHARCODE('t','o'): strThreeCharCode =  "ton"; break;
-    case MAKETWOCHARCODE('t','t'): strThreeCharCode =  "tto"; break;
-    case MAKETWOCHARCODE('t','n'): strThreeCharCode =  "tun"; break;
-    case MAKETWOCHARCODE('t','r'): strThreeCharCode =  "tur"; break;
-    case MAKETWOCHARCODE('t','m'): strThreeCharCode =  "tkm"; break;
-    case MAKETWOCHARCODE('t','c'): strThreeCharCode =  "tca"; break;
-    case MAKETWOCHARCODE('t','v'): strThreeCharCode =  "tuv"; break;
-    case MAKETWOCHARCODE('u','g'): strThreeCharCode =  "uga"; break;
-    case MAKETWOCHARCODE('u','a'): strThreeCharCode =  "ukr"; break;
-    case MAKETWOCHARCODE('a','e'): strThreeCharCode =  "are"; break;
-    case MAKETWOCHARCODE('g','b'): strThreeCharCode =  "gbr"; break;
-    case MAKETWOCHARCODE('u','s'): strThreeCharCode =  "usa"; break;
-    case MAKETWOCHARCODE('u','m'): strThreeCharCode =  "umi"; break;
-    case MAKETWOCHARCODE('u','y'): strThreeCharCode =  "ury"; break;
-    case MAKETWOCHARCODE('u','z'): strThreeCharCode =  "uzb"; break;
-    case MAKETWOCHARCODE('v','u'): strThreeCharCode =  "vut"; break;
-    case MAKETWOCHARCODE('v','e'): strThreeCharCode =  "ven"; break;
-    case MAKETWOCHARCODE('v','n'): strThreeCharCode =  "vnm"; break;
-    case MAKETWOCHARCODE('v','g'): strThreeCharCode =  "vgb"; break;
-    case MAKETWOCHARCODE('v','i'): strThreeCharCode =  "vir"; break;
-    case MAKETWOCHARCODE('w','f'): strThreeCharCode =  "wlf"; break;
-    case MAKETWOCHARCODE('e','h'): strThreeCharCode =  "esh"; break;
-    case MAKETWOCHARCODE('y','e'): strThreeCharCode =  "yem"; break;
-    case MAKETWOCHARCODE('z','m'): strThreeCharCode =  "zmb"; break;
-    case MAKETWOCHARCODE('z','w'): strThreeCharCode =  "zwe"; break;
-    default:
-      return false;
-      break;
+    if (strLower.Equals(RegionCode2To3[index].old))
+    {
+      strThreeCharCode = RegionCode2To3[index].id;
+      return true;
+    }
   }
+
   return true;
 }
 
@@ -1433,4 +940,443 @@ extern const LCENTRY g_iso639_2[536] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
+};
+
+const CharCodeConvertionWithHack CharCode2To3[184] =
+{
+  { "aa", "aar", NULL },
+  { "ab", "abk", NULL },
+  { "af", "afr", NULL },
+  { "ak", "aka", NULL },
+  { "am", "amh", NULL },
+  { "ar", "ara", NULL },
+  { "an", "arg", NULL },
+  { "as", "asm", NULL },
+  { "av", "ava", NULL },
+  { "ae", "ave", NULL },
+  { "ay", "aym", NULL },
+  { "az", "aze", NULL },
+  { "ba", "bak", NULL },
+  { "bm", "bam", NULL },
+  { "be", "bel", NULL },
+  { "bn", "ben", NULL },
+  { "bh", "bih", NULL },
+  { "bi", "bis", NULL },
+  { "bo", "tib", NULL },
+  { "bs", "bos", NULL },
+  { "br", "bre", NULL },
+  { "bg", "bul", NULL },
+  { "ca", "cat", NULL },
+  { "cs", "cze", "csy" },
+  { "ch", "cha", NULL },
+  { "ce", "che", NULL },
+  { "cu", "chu", NULL },
+  { "cv", "chv", NULL },
+  { "kw", "cor", NULL },
+  { "co", "cos", NULL },
+  { "cr", "cre", NULL },
+  { "cy", "wel", NULL },
+  { "da", "dan", NULL },
+  { "de", "ger", "deu" },
+  { "dv", "div", NULL },
+  { "dz", "dzo", NULL },
+  { "el", "gre", "ell" },
+  { "en", "eng", NULL },
+  { "eo", "epo", NULL },
+  { "et", "est", NULL },
+  { "eu", "baq", NULL },
+  { "ee", "ewe", NULL },
+  { "fo", "fao", NULL },
+  { "fa", "per", NULL },
+  { "fj", "fij", NULL },
+  { "fi", "fin", NULL },
+  { "fr", "fre", "fra" },
+  { "fy", "fry", NULL },
+  { "ff", "ful", NULL },
+  { "gd", "gla", NULL },
+  { "ga", "gle", NULL },
+  { "gl", "glg", NULL },
+  { "gv", "glv", NULL },
+  { "gn", "grn", NULL },
+  { "gu", "guj", NULL },
+  { "ht", "hat", NULL },
+  { "ha", "hau", NULL },
+  { "he", "heb", NULL },
+  { "hz", "her", NULL },
+  { "hi", "hin", NULL },
+  { "ho", "hmo", NULL },
+  { "hr", "hrv", NULL },
+  { "hu", "hun", NULL },
+  { "hy", "arm", NULL },
+  { "ig", "ibo", NULL },
+  { "io", "ido", NULL },
+  { "ii", "iii", NULL },
+  { "iu", "iku", NULL },
+  { "ie", "ile", NULL },
+  { "ia", "ina", NULL },
+  { "id", "ind", NULL },
+  { "ik", "ipk", NULL },
+  { "is", "ice", "isl" },
+  { "it", "ita", NULL },
+  { "jv", "jav", NULL },
+  { "ja", "jpn", NULL },
+  { "kl", "kal", NULL },
+  { "kn", "kan", NULL },
+  { "ks", "kas", NULL },
+  { "ka", "geo", NULL },
+  { "kr", "kau", NULL },
+  { "kk", "kaz", NULL },
+  { "km", "khm", NULL },
+  { "ki", "kik", NULL },
+  { "rw", "kin", NULL },
+  { "ky", "kir", NULL },
+  { "kv", "kom", NULL },
+  { "kg", "kon", NULL },
+  { "ko", "kor", NULL },
+  { "kj", "kua", NULL },
+  { "ku", "kur", NULL },
+  { "lo", "lao", NULL },
+  { "la", "lat", NULL },
+  { "lv", "lav", NULL },
+  { "li", "lim", NULL },
+  { "ln", "lin", NULL },
+  { "lt", "lit", NULL },
+  { "lb", "ltz", NULL },
+  { "lu", "lub", NULL },
+  { "lg", "lug", NULL },
+  { "mk", "mac", NULL },
+  { "mh", "mah", NULL },
+  { "ml", "mal", NULL },
+  { "mi", "mao", NULL },
+  { "mr", "mar", NULL },
+  { "ms", "may", NULL },
+  { "mg", "mlg", NULL },
+  { "mt", "mlt", NULL },
+  { "mn", "mon", NULL },
+  { "my", "bur", NULL },
+  { "na", "nau", NULL },
+  { "nv", "nav", NULL },
+  { "nr", "nbl", NULL },
+  { "nd", "nde", NULL },
+  { "ng", "ndo", NULL },
+  { "ne", "nep", NULL },
+  { "nl", "dut", "nld" },
+  { "nn", "nno", NULL },
+  { "nb", "nob", NULL },
+  { "no", "nor", NULL },
+  { "ny", "nya", NULL },
+  { "oc", "oci", NULL },
+  { "oj", "oji", NULL },
+  { "or", "ori", NULL },
+  { "om", "orm", NULL },
+  { "os", "oss", NULL },
+  { "pa", "pan", NULL },
+  { "pi", "pli", NULL },
+  { "pl", "pol", "plk" },
+  { "pt", "por", "ptg" },
+  { "ps", "pus", NULL },
+  { "qu", "que", NULL },
+  { "rm", "roh", NULL },
+  { "ro", "rum", "ron" },
+  { "rn", "run", NULL },
+  { "ru", "rus", NULL },
+  { "sg", "sag", NULL },
+  { "sa", "san", NULL },
+  { "si", "sin", NULL },
+  { "sk", "slo", "sky" },
+  { "sl", "slv", NULL },
+  { "se", "sme", NULL },
+  { "sm", "smo", NULL },
+  { "sn", "sna", NULL },
+  { "sd", "snd", NULL },
+  { "so", "som", NULL },
+  { "st", "sot", NULL },
+  { "es", "spa", "esp" },
+  { "sq", "alb", NULL },
+  { "sc", "srd", NULL },
+  { "sr", "srp", NULL },
+  { "ss", "ssw", NULL },
+  { "su", "sun", NULL },
+  { "sw", "swa", NULL },
+  { "sv", "swe", "sve" },
+  { "ty", "tah", NULL },
+  { "ta", "tam", NULL },
+  { "tt", "tat", NULL },
+  { "te", "tel", NULL },
+  { "tg", "tgk", NULL },
+  { "tl", "tgl", NULL },
+  { "th", "tha", NULL },
+  { "ti", "tir", NULL },
+  { "to", "ton", NULL },
+  { "tn", "tsn", NULL },
+  { "ts", "tso", NULL },
+  { "tk", "tuk", NULL },
+  { "tr", "tur", "trk" },
+  { "tw", "twi", NULL },
+  { "ug", "uig", NULL },
+  { "uk", "ukr", NULL },
+  { "ur", "urd", NULL },
+  { "uz", "uzb", NULL },
+  { "ve", "ven", NULL },
+  { "vi", "vie", NULL },
+  { "vo", "vol", NULL },
+  { "wa", "wln", NULL },
+  { "wo", "wol", NULL },
+  { "xh", "xho", NULL },
+  { "yi", "yid", NULL },
+  { "yo", "yor", NULL },
+  { "za", "zha", NULL },
+  { "zh", "chi", NULL },
+  { "zu", "zul", NULL }
+};
+
+// Based on ISO 3166
+const CharCodeConvertion RegionCode2To3[246] =
+{
+  { "af", "afg" },
+  { "ax", "ala" },
+  { "al", "alb" },
+  { "dz", "dza" },
+  { "as", "asm" },
+  { "ad", "and" },
+  { "ao", "ago" },
+  { "ai", "aia" },
+  { "aq", "ata" },
+  { "ag", "atg" },
+  { "ar", "arg" },
+  { "am", "arm" },
+  { "aw", "abw" },
+  { "au", "aus" },
+  { "at", "aut" },
+  { "az", "aze" },
+  { "bs", "bhs" },
+  { "bh", "bhr" },
+  { "bd", "bgd" },
+  { "bb", "brb" },
+  { "by", "blr" },
+  { "be", "bel" },
+  { "bz", "blz" },
+  { "bj", "ben" },
+  { "bm", "bmu" },
+  { "bt", "btn" },
+  { "bo", "bol" },
+  { "ba", "bih" },
+  { "bw", "bwa" },
+  { "bv", "bvt" },
+  { "br", "bra" },
+  { "io", "iot" },
+  { "bn", "brn" },
+  { "bg", "bgr" },
+  { "bf", "bfa" },
+  { "bi", "bdi" },
+  { "kh", "khm" },
+  { "cm", "cmr" },
+  { "ca", "can" },
+  { "cv", "cpv" },
+  { "ky", "cym" },
+  { "cf", "caf" },
+  { "td", "tcd" },
+  { "cl", "chl" },
+  { "cn", "chn" },
+  { "cx", "cxr" },
+  { "cc", "cck" },
+  { "co", "col" },
+  { "km", "com" },
+  { "cg", "cog" },
+  { "cd", "cod" },
+  { "ck", "cok" },
+  { "cr", "cri" },
+  { "ci", "civ" },
+  { "hr", "hrv" },
+  { "cu", "cub" },
+  { "cy", "cyp" },
+  { "cz", "cze" },
+  { "dk", "dnk" },
+  { "dj", "dji" },
+  { "dm", "dma" },
+  { "do", "dom" },
+  { "ec", "ecu" },
+  { "eg", "egy" },
+  { "sv", "slv" },
+  { "gq", "gnq" },
+  { "er", "eri" },
+  { "ee", "est" },
+  { "et", "eth" },
+  { "fk", "flk" },
+  { "fo", "fro" },
+  { "fj", "fji" },
+  { "fi", "fin" },
+  { "fr", "fra" },
+  { "gf", "guf" },
+  { "pf", "pyf" },
+  { "tf", "atf" },
+  { "ga", "gab" },
+  { "gm", "gmb" },
+  { "ge", "geo" },
+  { "de", "deu" },
+  { "gh", "gha" },
+  { "gi", "gib" },
+  { "gr", "grc" },
+  { "gl", "grl" },
+  { "gd", "grd" },
+  { "gp", "glp" },
+  { "gu", "gum" },
+  { "gt", "gtm" },
+  { "gg", "ggy" },
+  { "gn", "gin" },
+  { "gw", "gnb" },
+  { "gy", "guy" },
+  { "ht", "hti" },
+  { "hm", "hmd" },
+  { "va", "vat" },
+  { "hn", "hnd" },
+  { "hk", "hkg" },
+  { "hu", "hun" },
+  { "is", "isl" },
+  { "in", "ind" },
+  { "id", "idn" },
+  { "ir", "irn" },
+  { "iq", "irq" },
+  { "ie", "irl" },
+  { "im", "imn" },
+  { "il", "isr" },
+  { "it", "ita" },
+  { "jm", "jam" },
+  { "jp", "jpn" },
+  { "je", "jey" },
+  { "jo", "jor" },
+  { "kz", "kaz" },
+  { "ke", "ken" },
+  { "ki", "kir" },
+  { "kp", "prk" },
+  { "kr", "kor" },
+  { "kw", "kwt" },
+  { "kg", "kgz" },
+  { "la", "lao" },
+  { "lv", "lva" },
+  { "lb", "lbn" },
+  { "ls", "lso" },
+  { "lr", "lbr" },
+  { "ly", "lby" },
+  { "li", "lie" },
+  { "lt", "ltu" },
+  { "lu", "lux" },
+  { "mo", "mac" },
+  { "mk", "mkd" },
+  { "mg", "mdg" },
+  { "mw", "mwi" },
+  { "my", "mys" },
+  { "mv", "mdv" },
+  { "ml", "mli" },
+  { "mt", "mlt" },
+  { "mh", "mhl" },
+  { "mq", "mtq" },
+  { "mr", "mrt" },
+  { "mu", "mus" },
+  { "yt", "myt" },
+  { "mx", "mex" },
+  { "fm", "fsm" },
+  { "md", "mda" },
+  { "mc", "mco" },
+  { "mn", "mng" },
+  { "me", "mne" },
+  { "ms", "msr" },
+  { "ma", "mar" },
+  { "mz", "moz" },
+  { "mm", "mmr" },
+  { "na", "nam" },
+  { "nr", "nru" },
+  { "np", "npl" },
+  { "nl", "nld" },
+  { "an", "ant" },
+  { "nc", "ncl" },
+  { "nz", "nzl" },
+  { "ni", "nic" },
+  { "ne", "ner" },
+  { "ng", "nga" },
+  { "nu", "niu" },
+  { "nf", "nfk" },
+  { "mp", "mnp" },
+  { "no", "nor" },
+  { "om", "omn" },
+  { "pk", "pak" },
+  { "pw", "plw" },
+  { "ps", "pse" },
+  { "pa", "pan" },
+  { "pg", "png" },
+  { "py", "pry" },
+  { "pe", "per" },
+  { "ph", "phl" },
+  { "pn", "pcn" },
+  { "pl", "pol" },
+  { "pt", "prt" },
+  { "pr", "pri" },
+  { "qa", "qat" },
+  { "re", "reu" },
+  { "ro", "rou" },
+  { "ru", "rus" },
+  { "rw", "rwa" },
+  { "bl", "blm" },
+  { "sh", "shn" },
+  { "kn", "kna" },
+  { "lc", "lca" },
+  { "mf", "maf" },
+  { "pm", "spm" },
+  { "vc", "vct" },
+  { "ws", "wsm" },
+  { "sm", "smr" },
+  { "st", "stp" },
+  { "sa", "sau" },
+  { "sn", "sen" },
+  { "rs", "srb" },
+  { "sc", "syc" },
+  { "sl", "sle" },
+  { "sg", "sgp" },
+  { "sk", "svk" },
+  { "si", "svn" },
+  { "sb", "slb" },
+  { "so", "som" },
+  { "za", "zaf" },
+  { "gs", "sgs" },
+  { "es", "esp" },
+  { "lk", "lka" },
+  { "sd", "sdn" },
+  { "sr", "sur" },
+  { "sj", "sjm" },
+  { "sz", "swz" },
+  { "se", "swe" },
+  { "ch", "che" },
+  { "sy", "syr" },
+  { "tw", "twn" },
+  { "tj", "tjk" },
+  { "tz", "tza" },
+  { "th", "tha" },
+  { "tl", "tls" },
+  { "tg", "tgo" },
+  { "tk", "tkl" },
+  { "to", "ton" },
+  { "tt", "tto" },
+  { "tn", "tun" },
+  { "tr", "tur" },
+  { "tm", "tkm" },
+  { "tc", "tca" },
+  { "tv", "tuv" },
+  { "ug", "uga" },
+  { "ua", "ukr" },
+  { "ae", "are" },
+  { "gb", "gbr" },
+  { "us", "usa" },
+  { "um", "umi" },
+  { "uy", "ury" },
+  { "uz", "uzb" },
+  { "vu", "vut" },
+  { "ve", "ven" },
+  { "vn", "vnm" },
+  { "vg", "vgb" },
+  { "vi", "vir" },
+  { "wf", "wlf" },
+  { "eh", "esh" },
+  { "ye", "yem" },
+  { "zm", "zmb" },
+  { "zw", "zwe" }
 };

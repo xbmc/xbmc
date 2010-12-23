@@ -3432,7 +3432,32 @@
 					RelativePath="..\..\xbmc\utils\fstrcmp.c"
 					>
 					<FileConfiguration
+						Name="Release (OpenGL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Debug (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="2"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (OpenGL)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4889,10 +4914,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\SIDFileDirectory.cpp"
 					>
 				</File>
@@ -5697,14 +5718,6 @@
 				Name="Karaoke"
 				>
 				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp"
 					>
 				</File>
@@ -6026,6 +6039,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Service.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Service.h"
 					>
 				</File>
 				<File
@@ -6527,10 +6548,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Shortcut.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.h"
 				>
 			</File>
 			<File

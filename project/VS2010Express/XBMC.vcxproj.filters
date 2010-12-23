@@ -1665,9 +1665,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
@@ -1853,9 +1850,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\UPnP.cpp">
       <Filter>Source Files\UPnP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\karaoke\Cdg.cpp">
-      <Filter>Source Files\Karaoke</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\karaoke\karaokelyrics.cpp">
       <Filter>Source Files\Karaoke</Filter>
@@ -2327,6 +2321,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Service.cpp">
+      <Filter>Source Files\Addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3740,9 +3737,6 @@
     <ClInclude Include="..\..\xbmc\UPnP.h">
       <Filter>Source Files\UPnP</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\karaoke\Cdg.h">
-      <Filter>Source Files\Karaoke</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\karaoke\karaokelyrics.h">
       <Filter>Source Files\Karaoke</Filter>
     </ClInclude>
@@ -4221,9 +4215,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Shortcut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h">
@@ -4792,6 +4783,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ISerializable.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Service.h">
+      <Filter>Source Files\Addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h">
       <Filter>cores\dsplayer\Utils</Filter>

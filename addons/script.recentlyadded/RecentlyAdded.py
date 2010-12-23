@@ -1,3 +1,29 @@
+# *  This Program is free software; you can redistribute it and/or modify
+# *  it under the terms of the GNU General Public License as published by
+# *  the Free Software Foundation; either version 2, or (at your option)
+# *  any later version.
+# *
+# *  This Program is distributed in the hope that it will be useful,
+# *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+# *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# *  GNU General Public License for more details.
+# *
+# *  You should have received a copy of the GNU General Public License
+# *  along with XBMC; see the file COPYING.  If not, write to
+# *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# *  http://www.gnu.org/copyleft/gpl.html
+# *
+# *  this file was taken from http://xbmc-addons.googlecode.com/svn/packages/scripts/RecentlyAdded.py
+# *  and modified to be a XBMC Add-on under gpl2 license on 20. November 2010.
+# *
+# *  Thanks to:
+# *
+# *  Nuka for the original RecentlyAdded.py
+# *
+# *  ronie and Hitcher for the improvements made while in official repo
+# *  
+# *  Team XBMC
+
 import xbmc
 from xbmcgui import Window
 from urllib import quote_plus, unquote_plus
@@ -152,7 +178,7 @@ class Main:
 
     def _fetch_movie_info( self ):
         # set our unplayed query
-        unplayed = ( "", "where playCount isnull ", )[ self.UNPLAYED ]
+        unplayed = ( "", "where playCount is null ", )[ self.UNPLAYED ]
         # sql statement
         if ( self.RANDOM_ORDER ):
             # random order
@@ -194,7 +220,7 @@ class Main:
 
     def _fetch_tvshow_info( self ):
         # set our unplayed query
-        unplayed = ( "", "where playCount isnull ", )[ self.UNPLAYED ]
+        unplayed = ( "", "where playCount is null ", )[ self.UNPLAYED ]
         # sql statement
         if ( self.RANDOM_ORDER ):
             # random order
@@ -245,7 +271,7 @@ class Main:
             # separate the records
             albums = re.findall( "<record>(.+?)</record>", music_xml, re.DOTALL )
             # set our unplayed query
-            unplayed = ( "(idAlbum = %s)", "(idAlbum = %s and lastplayed isnull)", )[ self.UNPLAYED ]
+            unplayed = ( "(idAlbum = %s)", "(idAlbum = %s and lastplayed is null)", )[ self.UNPLAYED ]
             # sql statement
             sql_music = "select songview.* from songview where %s limit 1" % ( unplayed, )
             # clear our xml data
@@ -256,7 +282,7 @@ class Main:
                 music_xml += xbmc.executehttpapi( "QueryMusicDatabase(%s)" % quote_plus( sql_music % ( album.replace( "<field>", "" ).replace( "</field>", "" ), ) ), )
         else:
             # set our unplayed query
-            unplayed = ( "", "where lastplayed isnull ", )[ self.UNPLAYED ]
+            unplayed = ( "", "where lastplayed is null ", )[ self.UNPLAYED ]
             # sql statement
             sql_music = "select * from songview %sorder by idSong desc limit %d" % ( unplayed, self.LIMIT, )
             # query the database

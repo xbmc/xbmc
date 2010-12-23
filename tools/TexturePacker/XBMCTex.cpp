@@ -40,7 +40,7 @@
 #endif
 
 #ifdef _LINUX
-#include <lzo1x.h>
+#include <lzo/lzo1x.h>
 #else
 #include "../../xbmc/lib/liblzo/LZO1X.H"
 #endif
@@ -325,17 +325,24 @@ static bool checkDupe(struct MD5Context* ctx,
                       map<string,unsigned int>& hashes,
                       vector<unsigned int>& dupes, unsigned int pos)
 {
-  char digest[17];
-  MD5Final((unsigned char*)digest,ctx);
+  unsigned char digest[17];
+  MD5Final(digest,ctx);
   digest[16] = 0;
-  map<string,unsigned int>::iterator it = hashes.find(digest);
+  char hex[33];
+  sprintf(hex, "%02X%02X%02X%02X%02X%02X%02X%02X"\
+      "%02X%02X%02X%02X%02X%02X%02X%02X", digest[0], digest[1], digest[2],
+      digest[3], digest[4], digest[5], digest[6], digest[7], digest[8],
+      digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
+      digest[15]);
+  hex[32] = 0;
+  map<string,unsigned int>::iterator it = hashes.find(hex);
   if (it != hashes.end())
   {
     dupes[pos] = it->second; 
     return true;
   }
 
-  hashes.insert(make_pair(digest,pos));
+  hashes.insert(make_pair(hex,pos));
   dupes[pos] = pos;
 
   return false;
@@ -392,7 +399,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         MD5Update(&ctx,(const uint8_t*)image->pixels,image->h*image->pitch);
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("duplicate, skipping compression\n");
+          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
                                   files[dupes[i]].GetFrames().begin(),
                                   files[dupes[i]].GetFrames().end());
@@ -428,7 +435,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("duplicate, skipping compression\n");
+          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
                                   files[dupes[i]].GetFrames().begin(),
                                   files[dupes[i]].GetFrames().end());

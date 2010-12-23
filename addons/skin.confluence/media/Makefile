@@ -1,24 +1,6 @@
 TARGET=Textures.xbt
 XBMCTEX=../../../tools/TexturePacker/TexturePacker
 IMAGES= \
-	amt-blank-poster.png \
-	amt-generic-actor.png \
-	amt-generic-genre-i.png \
-	amt-generic-genre.png \
-	amt-generic-noactor.png \
-	amt-generic-studio.png \
-	amt-generic-trailer-w.png \
-	amt-generic-trailer.png \
-	amt-overlay-favorite.png \
-	amt-overlay-saved.png \
-	amt-overlay-watched.png \
-	Apple\ Movie\ Trailers/G.png \
-	Apple\ Movie\ Trailers/NC-17.png \
-	Apple\ Movie\ Trailers/NR.png \
-	Apple\ Movie\ Trailers/PG-13.png \
-	Apple\ Movie\ Trailers/PG.png \
-	Apple\ Movie\ Trailers/R.png \
-	AppleLogo.png \
 	ArrowDown.png \
 	ArrowUp.png \
 	black-back.png \

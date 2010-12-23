@@ -92,7 +92,11 @@ JSON_STATUS CSystemOperations::GetInfoLabels(const CStdString &method, ITranspor
   {
     std::vector<CStdString> infoLabels = g_application.getApplicationMessenger().GetInfoLabels(info);
     for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
       result[info[i].c_str()] = infoLabels[i];
+    }
   }
 
   return OK;
@@ -135,7 +139,11 @@ JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransp
   {
     std::vector<bool> infoLabels = g_application.getApplicationMessenger().GetInfoBooleans(info);
     for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
       result[info[i].c_str()] = Value(infoLabels[i]);
+    }
   }
 
   return OK;

@@ -16,6 +16,7 @@
     <summary lang="pt">Protecção que esvaece o seu ecrã</summary>
     <summary lang="ro">Protector ecran care întunecă ecranul</summary>
     <summary lang="ru">Хранитель экрана затемняющий изображение</summary>
+    <summary lang="se">Skärmsläckare som dimmar din skärm</summary>
     <summary lang="zh">淡出屏幕保护程序</summary>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="de">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
@@ -29,6 +30,7 @@
     <description lang="pt">A protecção de ecrã esvanecente permite-lhe diminuir a intensidade luminosa do seu ecrã. Pode ser configurada para valores entre 20 e 100%.</description>
     <description lang="ro">Dim este un protector de ecran simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru">Хранитель экрана Dim затемняет изображение на экране до заданного значения, от 20% до 100%.</description>
+    <description lang="se">Dimma är en enkel skärmsläckare som dimmrar din skärm till ett inställbart värde mellan 20% och 100%.</description>
     <platform>all</platform>
   </extension>
 </addon>

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language locale="uk">
   <charsets>
-    <gui unicodefont="true">CP1251</gui>
-    <subtitle>CP1251</subtitle>
+    <gui unicodefont="false">CP1252</gui>
+    <subtitle>CP1252</subtitle>
   </charsets>
   <dvd>
     <menu>uk</menu>
@@ -10,12 +10,12 @@
     <subtitle>uk</subtitle>
   </dvd>
   <regions>
-    <region locale="UA">
-      <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY 'р.'</datelong>
+    <region name="Ukraine" locale="UA">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>mps</speedunit>
+      <speedunit>kmh</speedunit>
     </region>
   </regions>
 </language>

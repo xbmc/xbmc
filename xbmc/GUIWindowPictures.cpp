@@ -342,10 +342,21 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
+  {   
+    CStdString strExtensions;
+    CFileItemList items;
+    CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
+    if (viewState)
+    {
+      strExtensions = viewState->GetExtensions();
+      delete viewState;
+    }
     pSlideShow->RunSlideShow(strPicture, true,
                              g_guiSettings.GetBool("slideshow.shuffle"),false,
                              m_guiState->GetSortMethod(),
-                             m_guiState->GetSortOrder());
+                             m_guiState->GetSortOrder(),
+                             strExtensions);
+  }
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive()
@@ -363,9 +374,20 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
+  {    
+    CStdString strExtensions;
+    CFileItemList items;
+    CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
+    if (viewState)
+    {
+      strExtensions = viewState->GetExtensions();
+      delete viewState;
+    }
     pSlideShow->RunSlideShow(strPicture, false ,false, false,
                              m_guiState->GetSortMethod(),
-                             m_guiState->GetSortOrder());
+                             m_guiState->GetSortOrder(),
+                             strExtensions);
+  }
 }
 
 void CGUIWindowPictures::OnRegenerateThumbs()

@@ -80,6 +80,38 @@ static CStdString GetContentMapping(NPT_String& objectClass)
     return "unknown";
 }
 
+static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReference& device)
+{
+    bool client_started = upnp->IsClientStarted();
+    upnp->StartClient();
+
+    // look for device in our list
+    // (and wait for it to respond for 5 secs if we're just starting upnp client)
+    NPT_TimeStamp watchdog;
+    NPT_System::GetCurrentTimeStamp(watchdog);
+    watchdog += 5.f;
+
+    for (;;) {
+        if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())
+            break;
+
+        // fail right away if device not found and upnp client was already running
+        if (client_started)
+            return false;
+
+        // otherwise check if we've waited long enough without success
+        NPT_TimeStamp now;
+        NPT_System::GetCurrentTimeStamp(now);
+        if (now > watchdog)
+            return false;
+
+        // sleep a bit and try again
+        NPT_System::Sleep(NPT_TimeInterval(1, 0));
+    }
+
+    return !device.IsNull();
+}
+
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
@@ -105,12 +137,99 @@ CUPnPDirectory::GetFriendlyName(const char* url)
 
     // look for device
     PLT_DeviceDataReference device;
-    if (NPT_FAILED(CUPnP::GetInstance()->m_MediaBrowser->FindServer(uuid, device)) || device.IsNull())
+    if(!FindDeviceWait(CUPnP::GetInstance(), uuid, device))
         return NULL;
 
     return (const char*)device->GetFriendlyName();
 }
 
+/*----------------------------------------------------------------------
+|   CUPnPDirectory::GetDirectory
++---------------------------------------------------------------------*/
+bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
+{
+    if(path.GetProtocol() != "upnp")
+      return false;
+
+    CUPnP* upnp = CUPnP::GetInstance();
+    if(!upnp)
+        return false;
+
+    CStdString uuid   = path.GetHostName();
+    CStdString object = path.GetFileName();
+    object.TrimRight("/");
+    CUtil::URLDecode(object);
+
+    PLT_DeviceDataReference device;
+    if(!FindDeviceWait(upnp, uuid.c_str(), device))
+        return false;
+
+    PLT_MediaObjectListReference list;
+    if (NPT_FAILED(upnp->m_MediaBrowser->BrowseSync(device, object.c_str(), list, true)))
+        return false;
+
+    PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
+    if (entry == NULL)
+        return false;
+
+    PLT_MediaItemResource resource;
+
+    // look for a resource with "xbmc-get" protocol
+    // if we can't find one, keep the first resource
+    if(NPT_FAILED(NPT_ContainerFind((*entry)->m_Resources,
+                      CProtocolFinder("xbmc-get"), resource))) {
+        if((*entry)->m_Resources.GetItemCount())
+            resource = (*entry)->m_Resources[0];
+        else
+            return false;
+    }
+
+    // store original path so we remember it
+    item.SetProperty("original_listitem_url",  item.m_strPath);
+    item.SetProperty("original_listitem_mime", item.GetMimeType(false));
+
+    // if it's an item, path is the first url to the item
+    // we hope the server made the first one reachable for us
+    // (it could be a format we dont know how to play however)
+    item.m_strPath = (const char*) resource.m_Uri;
+
+    // look for content type in protocol info
+    if (resource.m_ProtocolInfo.IsValid()) {
+        CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
+            (const char*)(resource.m_ProtocolInfo.ToString()));
+
+        if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
+            item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
+        }
+    } else {
+        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
+            (const char*)(resource.m_ProtocolInfo.ToString()));
+    }
+
+    // look for subtitles
+    unsigned subs = 0;
+    for(unsigned r = 0; r < (*entry)->m_Resources.GetItemCount(); r++)
+    {
+        PLT_MediaItemResource& res  = (*entry)->m_Resources[r];
+        PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
+        static const char* allowed[] = { "text/srt"
+                                       , "text/ssa"
+                                       , "text/sub"
+                                       , "text/idx" };
+        for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
+        {
+            if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
+            {
+                CStdString prop;
+                prop.Format("upnp:subtitle:%d", ++subs);
+                item.SetProperty(prop, (const char*)res.m_Uri);
+                break;
+            }
+        }
+    }
+
+    return true;
+}
 
 
 /*----------------------------------------------------------------------
@@ -124,10 +243,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     /* upnp should never be cached, it has internal cache */
     items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
-    // start client if it hasn't been done yet
-    bool client_started = upnp->IsClientStarted();
-    upnp->StartClient();
-
     // We accept upnp://devuuid/[item_id/]
     NPT_String path = strPath.c_str();
     if (!path.StartsWith("upnp://", true)) {
@@ -135,6 +250,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
 
     if (path.Compare("upnp://", true) == 0) {
+        upnp->StartClient();
+
         // root -> get list of devices
         const NPT_Lock<PLT_DeviceDataReferenceList>& devices = upnp->m_MediaBrowser->GetMediaServers();
         NPT_List<PLT_DeviceDataReference>::Iterator device = devices.GetFirstItem();
@@ -166,30 +283,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             object_id = tmp;
         }
 
-        // look for device in our list
-        // (and wait for it to respond for 5 secs if we're just starting upnp client)
-        NPT_TimeStamp watchdog;
-        NPT_System::GetCurrentTimeStamp(watchdog);
-        watchdog += 5.f;
-
+        // try to find the device with wait on startup
         PLT_DeviceDataReference device;
-        for (;;) {
-            if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())
-                break;
-
-            // fail right away if device not found and upnp client was already running
-            if (client_started)
-                goto failure;
-
-            // otherwise check if we've waited long enough without success
-            NPT_TimeStamp now;
-            NPT_System::GetCurrentTimeStamp(now);
-            if (now > watchdog)
-                goto failure;
-
-            // sleep a bit and try again
-            NPT_System::Sleep(NPT_TimeInterval(1, 0));
-        }
+        if (!FindDeviceWait(upnp, uuid, device))
+            goto failure;
 
         // issue a browse request with object_id
         // if object_id is empty use "0" for root
@@ -282,59 +379,32 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             pItem->m_strTitle = (const char*)(*entry)->m_Title;
             pItem->m_bIsFolder = (*entry)->IsContainer();
 
+            CStdString id = (char*) (*entry)->m_ObjectID;
+            CUtil::URLEncode(id);
+            pItem->m_strPath = (const char*) "upnp://" + uuid + "/" + id.c_str() + "/";
+
             // if it's a container, format a string as upnp://uuid/object_id
             if (pItem->m_bIsFolder) {
                 CStdString id = (char*) (*entry)->m_ObjectID;
                 CUtil::URLEncode(id);
-                pItem->m_strPath = (const char*) "upnp://" + uuid + "/" + id.c_str() + "/";
+                pItem->m_strPath += "/";
             } else {
+
+                // set a general content type
+                CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
+                if (type.Equals("object.item.videoitem"))
+                    pItem->SetMimeType("video/octet-stream");
+                else if(type.Equals("object.item.audioitem"))
+                    pItem->SetMimeType("audio/octet-stream");
+                else if(type.Equals("object.item.imageitem"))
+                    pItem->SetMimeType("image/octet-stream");
+
                 if ((*entry)->m_Resources.GetItemCount()) {
                     PLT_MediaItemResource& resource = (*entry)->m_Resources[0];
-
-                    // look for a resource with "xbmc-get" protocol
-                    // if we can't find one, keep the first resource
-                    NPT_ContainerFind((*entry)->m_Resources,
-                                      CProtocolFinder("xbmc-get"),
-                                      resource);
-
-                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'",
-                        (const char*)(resource.m_ProtocolInfo.ToString()));
-
-                    // if it's an item, path is the first url to the item
-                    // we hope the server made the first one reachable for us
-                    // (it could be a format we dont know how to play however)
-                    pItem->m_strPath = (const char*) resource.m_Uri;
 
                     // set metadata
                     if (resource.m_Size != (NPT_LargeSize)-1) {
                         pItem->m_dwSize  = resource.m_Size;
-                    }
-
-                    // set a general content type
-                    CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
-                    if (type.Equals("object.item.videoitem"))
-                        pItem->SetMimeType("video/octet-stream");
-                    else if(type.Equals("object.item.audioitem"))
-                        pItem->SetMimeType("audio/octet-stream");
-                    else if(type.Equals("object.item.imageitem"))
-                        pItem->SetMimeType("image/octet-stream");
-
-                    // look for content type in protocol info
-                    if (resource.m_ProtocolInfo.IsValid()) {
-                        if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
-                            pItem->SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
-                        }
-                    } else {
-                        CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'",
-                            (const char*)(resource.m_ProtocolInfo.ToString()));
-                    }
-
-                    // look for date?
-                    if((*entry)->m_Description.date.GetLength()) {
-                        SYSTEMTIME time = {};
-                        sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
-                               &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
-                        pItem->m_dateTime = time;
                     }
 
                     // look for metadata
@@ -348,28 +418,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
                     }
                 }
+            }
 
-                // look for subtitles
-                unsigned subs = 0;
-                for(unsigned r = 0; r < (*entry)->m_Resources.GetItemCount(); r++)
-                {
-                    PLT_MediaItemResource& res  = (*entry)->m_Resources[r];
-                    PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
-                    static const char* allowed[] = { "text/srt"
-                                                   , "text/ssa"
-                                                   , "text/sub"
-                                                   , "text/idx" };
-                    for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
-                    {
-                        if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
-                        {
-                            CStdString prop;
-                            prop.Format("upnp:subtitle:%d", ++subs);
-                            pItem->SetProperty(prop, (const char*)res.m_Uri);
-                            break;
-                        }
-                    }
-                }
+            // look for date?
+            if((*entry)->m_Description.date.GetLength()) {
+                SYSTEMTIME time = {};
+                sscanf((*entry)->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+                       &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
+                pItem->m_dateTime = time;
             }
 
             // if there is a thumbnail available set it here

@@ -781,6 +781,7 @@ bool CApplication::InitDirectoriesLinux()
 
   if (xbmcPath.IsEmpty())
   {
+    xbmcPath = INSTALL_PATH;
     /* Check if xbmc binaries and arch independent data files are being kept in
      * separate locations. */
     if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
@@ -1164,6 +1165,8 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
+  CAddonMgr::Get().StartServices();
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1233,8 +1236,8 @@ void CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces"));
-    CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+    if (CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces")))
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
   }
 #endif
 }
@@ -1695,72 +1698,72 @@ bool CApplication::LoadUserWindows()
       for (int i = 0; i < items.Size(); ++i)
       {
         if (items[i]->m_bIsFolder)
-        continue;
+          continue;
         CStdString skinFile = CUtil::GetFileName(items[i]->m_strPath);
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
-      TiXmlDocument xmlDoc;
+          TiXmlDocument xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->m_strPath))
-      {
+          {
             CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-        continue;
-      }
+            continue;
+          }
 
-      // Root element should be <window>
-      TiXmlElement* pRootElement = xmlDoc.RootElement();
-      CStdString strValue = pRootElement->Value();
-      if (!strValue.Equals("window"))
-      {
+         // Root element should be <window>
+         TiXmlElement* pRootElement = xmlDoc.RootElement();
+         CStdString strValue = pRootElement->Value();
+         if (!strValue.Equals("window"))
+         {
             CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
-        continue;
-      }
+            continue;
+         }
 
-      // Read the <type> element to get the window type to create
-      // If no type is specified, create a CGUIWindow as default
-      CGUIWindow* pWindow = NULL;
-      CStdString strType;
-      if (pRootElement->Attribute("type"))
-        strType = pRootElement->Attribute("type");
-      else
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("type");
-        if (pType && pType->FirstChild())
-          strType = pType->FirstChild()->Value();
-      }
-      int id = WINDOW_INVALID;
-      if (!pRootElement->Attribute("id", &id))
-      {
-        const TiXmlNode *pType = pRootElement->FirstChild("id");
-        if (pType && pType->FirstChild())
-          id = atol(pType->FirstChild()->Value());
-      }
-      int visibleCondition = 0;
-      CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
+          // Read the <type> element to get the window type to create
+          // If no type is specified, create a CGUIWindow as default
+          CGUIWindow* pWindow = NULL;
+          CStdString strType;
+          if (pRootElement->Attribute("type"))
+            strType = pRootElement->Attribute("type");
+          else
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("type");
+            if (pType && pType->FirstChild())
+              strType = pType->FirstChild()->Value();
+          }
+          int id = WINDOW_INVALID;
+          if (!pRootElement->Attribute("id", &id))
+          {
+            const TiXmlNode *pType = pRootElement->FirstChild("id");
+            if (pType && pType->FirstChild())
+              id = atol(pType->FirstChild()->Value());
+          }
+          int visibleCondition = 0;
+          CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-      if (strType.Equals("dialog"))
+          if (strType.Equals("dialog"))
             pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
-      else if (strType.Equals("submenu"))
+          else if (strType.Equals("submenu"))
             pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
-      else if (strType.Equals("buttonmenu"))
+          else if (strType.Equals("buttonmenu"))
             pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
-      else
+          else
             pWindow = new CGUIStandardWindow(id + WINDOW_HOME, skinFile);
 
-      // Check to make sure the pointer isn't still null
-      if (pWindow == NULL)
-      {
-        CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-        return false;
+          // Check to make sure the pointer isn't still null
+          if (pWindow == NULL)
+          {
+            CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+            return false;
+          }
+          if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
+          {
+            delete pWindow;
+            continue;
+          }
+          pWindow->SetVisibleCondition(visibleCondition, false);
+          g_windowManager.AddCustomWindow(pWindow);
+        }
       }
-      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
-      {
-        delete pWindow;
-        continue;
-      }
-      pWindow->SetVisibleCondition(visibleCondition, false);
-      g_windowManager.AddCustomWindow(pWindow);
-    }
-  }
     }
   }
   return true;
@@ -1770,37 +1773,10 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-// DXMERGE: This might have been important (do we allow the vsync mode to change
-//          while not updating the UI setting?
-//  int vsync_mode = g_videoConfig.GetVSyncMode();
-  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
-
-  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO
-#ifdef HAS_DS_PLAYER
-    && !g_dsSettings.pRendererSettings->vSync
-#endif
-    )
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS)
-#ifdef HAS_DS_PLAYER
-  {
-    if (IsPlaying() && g_dsSettings.pRendererSettings->vSync)
-      g_Windowing.SetVSync(false); // Disable XBMC vsync and use DSplayer one
-    else
-      g_Windowing.SetVSync(true);
-  }
-#else
-    g_Windowing.SetVSync(true);
-#endif
-  else if (vsync_mode != VSYNC_DRIVER)
-    g_Windowing.SetVSync(false);
-
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-
-  g_windowManager.UpdateModelessVisibility();
 
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
@@ -1851,14 +1827,7 @@ void CApplication::RenderNoPresent()
   RenderMemoryStatus();
   RenderScreenSaver();
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_graphicsContext.Unlock();
-
-  // reset our info cache - we do this at the end of Render so that it is
-  // fresh for the next process(), or after a windowclose animation (where process()
-  // isn't called)
-  g_infoManager.ResetCache();
 }
 
 static int screenSaverFadeAmount = 0;
@@ -2057,12 +2026,41 @@ void CApplication::Render()
   CSingleLock lock(g_graphicsContext);
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
+  
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO
+#ifdef HAS_DS_PLAYER
+    && !g_dsSettings.pRendererSettings->vSync
+#endif
+    )
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode == VSYNC_ALWAYS)
+#ifdef HAS_DS_PLAYER
+  {
+    if (IsPlaying() && g_dsSettings.pRendererSettings->vSync)
+      g_Windowing.SetVSync(false); // Disable XBMC vsync and use DSplayer one
+    else
+      g_Windowing.SetVSync(true);
+  }
+#else
+    g_Windowing.SetVSync(true);
+#endif
+  else if (vsync_mode != VSYNC_DRIVER)
+    g_Windowing.SetVSync(false);
 
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
+
+  g_TextureManager.FreeUnusedTextures();
+
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
+
   lock.Leave();
 
   g_graphicsContext.Flip();
@@ -2182,6 +2180,7 @@ void CApplication::RenderMemoryStatus()
 
 bool CApplication::OnKey(const CKey& key)
 {
+
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetActive(false);
 
@@ -2202,7 +2201,7 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    CLog::Log(LOGDEBUG, "%s: %i pressed, screen saver/dpms woken up", __FUNCTION__, (int) key.GetButtonCode());
+    CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
 
@@ -2216,7 +2215,7 @@ bool CApplication::OnKey(const CKey& key)
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
     if (OnAction(action))
       return true;
@@ -2299,7 +2298,7 @@ bool CApplication::OnKey(const CKey& key)
         }
       }
 
-      CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.GetID());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
 
       if (OnAction(action))
         return true;
@@ -2314,7 +2313,7 @@ bool CApplication::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
+    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -2735,6 +2734,8 @@ void CApplication::FrameMove()
 bool CApplication::ProcessGamepad(float frameTime)
 {
 #ifdef HAS_SDL_JOYSTICK
+  if (!m_AppFocused)
+    return false;
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
   if (g_windowManager.HasModalDialog())
   {
@@ -3238,6 +3239,8 @@ void CApplication::Stop()
 {
   try
   {
+    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
+
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
@@ -3252,7 +3255,6 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
-    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
@@ -3336,6 +3338,9 @@ void CApplication::Stop()
 #endif
 
   g_mediaManager.Stop();
+
+  // Stop services before unloading Python
+  CAddonMgr::Get().StopServices();
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
@@ -3544,6 +3549,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+      return PlayFile(item_new, false);
+    return false;
+  }
+
+  if (CUtil::IsUPnP(item.m_strPath))
+  {
+    CFileItem item_new(item);
+    if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
       return PlayFile(item_new, false);
     return false;
   }
@@ -3832,7 +3845,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted", m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3881,7 +3894,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped", m_itemCurrentFile);
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -3902,7 +3915,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused", m_itemCurrentFile);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3917,7 +3930,7 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed", m_itemCurrentFile);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3938,7 +3951,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
   CVariant param;
   param["speed"] = iSpeed;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3960,7 +3973,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   CVariant param;
   param["time"] = iTime;
   param["seekoffset"] = seekOffset;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3982,7 +3995,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
   CVariant param;
   param["chapter"] = iChapter;
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", &param);
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", param);
 }
 
 bool CApplication::IsPlaying() const
@@ -4690,6 +4703,16 @@ void CApplication::ProcessSlow()
 {
   g_powerManager.ProcessEvents();
 
+#if defined(__APPLE__)
+  // There is an issue on OS X that several system services ask the cursor to become visible
+  // during their startup routines.  Given that we can't control this, we hack it in by
+  // forcing the
+  if (g_Windowing.IsFullScreen())
+  { // SDL thinks it's hidden
+    Cocoa_HideMouse();
+  }
+#endif
+
   // Store our file state for use on close()
   UpdateFileState();
 
@@ -4881,12 +4904,15 @@ void CApplication::Mute(void)
   { // muted - unmute.
     // In case our premutevolume is 0, return to 100% volume
     if( g_settings.m_iPreMuteVolumeLevel == 0 )
+    {
       SetVolume(100);
+    }
     else
     {
       SetVolume(g_settings.m_iPreMuteVolumeLevel);
       g_settings.m_iPreMuteVolumeLevel = 0;
     }
+    m_guiDialogVolumeBar.Show();
   }
   else
   { // mute

@@ -38,6 +38,7 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_CurrentStream=0;
   m_TotalTime = 0;
   m_VorbisFile.datasource = NULL;
+  m_inited = false;
 }
 
 OGGCodec::~OGGCodec()
@@ -47,6 +48,8 @@ OGGCodec::~OGGCodec()
 
 bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 {
+  if (m_inited)
+    return true;
   CStdString strFile=strFile1;
   if (!m_dll.Load())
     return false;
@@ -157,6 +160,7 @@ void OGGCodec::DeInit()
   if (m_VorbisFile.datasource)
     m_dll.ov_clear(&m_VorbisFile);
   m_VorbisFile.datasource = NULL;
+  m_inited = false;
 }
 
 __int64 OGGCodec::Seek(__int64 iSeekTime)

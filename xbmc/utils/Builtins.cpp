@@ -41,6 +41,7 @@
 #include "GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -87,8 +88,11 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace MEDIA_DETECT;
 using namespace ADDON;
+
+#ifdef HAS_DVD_DRIVE
+using namespace MEDIA_DETECT;
+#endif
 
 typedef struct
 {
@@ -119,11 +123,13 @@ const BUILT_IN commands[] = {
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
+  { "RunAddon",                   true,   "Run the specified plugin/script" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
+  { "UnloadSkin",                 false,  "Unload XBMC's skin" },
   { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
@@ -437,6 +443,37 @@ int CBuiltins::Execute(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
     }
   }
+  else if (execute.Equals("runaddon"))
+  {
+    if (params.size())
+    {
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(params[0],addon) && addon)
+      {
+        PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
+        CStdString cmd;
+        if (plugin && addon->Type() == ADDON_PLUGIN)
+        {
+          if (plugin->Provides(CPluginSource::VIDEO))
+            cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
+          if (plugin->Provides(CPluginSource::AUDIO))
+            cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
+          if (plugin->Provides(CPluginSource::EXECUTABLE))
+            cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
+          if (plugin->Provides(CPluginSource::IMAGE))
+            cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+        }
+        if (addon->Type() == ADDON_SCRIPT)
+          cmd.Format("RunScript(%s)",params[0]);
+
+        return Execute(cmd);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "XBMC.RunAddon called with no arguments.");
+    }
+  }
   else if (execute.Equals("playmedia"))
   {
     if (!params.size())
@@ -520,6 +557,10 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     //  Reload the skin
     g_application.ReloadSkin();
+  }
+  else if (execute.Equals("unloadskin"))
+  {
+    g_application.UnloadSkin();
   }
   else if (execute.Equals("refreshrss"))
   {
@@ -764,10 +805,12 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_playlistPlayer.Clear();
   }
+#ifdef HAS_DVD_DRIVE
   else if (execute.Equals("ejecttray"))
   {
     CIoSupport::ToggleTray();
   }
+#endif
   else if( execute.Equals("alarmclock") && params.size() > 1 )
   {
     // format is alarmclock(name,command[,seconds,true]);

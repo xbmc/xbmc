@@ -32,6 +32,9 @@ public:
   CGUIDialogKaraokeSongSelector( int id, const char *xmlFile );
   virtual ~CGUIDialogKaraokeSongSelector(void);
 
+  //! Key/button parser; returns 0-9 for a numeric button action, and -1 for anything else
+  static int  GetKeyNumber( int actionid );
+
 protected:
   // Those functions control the selection process
   virtual void OnInitWindow();

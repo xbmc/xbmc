@@ -80,24 +80,25 @@ void CHttpHeader::Parse(CStdString strData)
   }
 }
 
-CStdString CHttpHeader::GetValue(CStdString strParam)
+CStdString CHttpHeader::GetValue(CStdString strParam) const
 {
   strParam.ToLower();
 
-  HeaderParamsIter pIter = m_params.find(strParam);
+  std::map<CStdString,CStdString>::const_iterator pIter = m_params.find(strParam);
   if (pIter != m_params.end()) return pIter->second;
 
   return "";
 }
 
-void CHttpHeader::GetHeader(CStdString& strHeader)
+void CHttpHeader::GetHeader(CStdString& strHeader) const
 {
   strHeader.clear();
 
-  HeaderParamsIter iter = m_params.begin();
+  std::map<CStdString,CStdString>::const_iterator iter = m_params.begin();
   while (iter != m_params.end())
   {
     strHeader += ((*iter).first + ": " + (*iter).second + "\n");
+    iter++;
   }
 
   strHeader += "\n";

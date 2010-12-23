@@ -165,6 +165,8 @@ public:
   void SetDate(int year, int month, int day);
   void SetTime(int hour, int minute, int second);
   void SetFromDBDate(const CStdString &date);
+  void SetFromDBTime(const CStdString &time);
+  void SetFromW3CDate(const CStdString &date);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()
@@ -179,7 +181,7 @@ public:
   CDateTime GetAsUTCDateTime() const;
   CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
-  CStdString GetAsLocalizedDate(bool longDate=false) const;
+  CStdString GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   CStdString GetAsRFC1123DateTime() const;

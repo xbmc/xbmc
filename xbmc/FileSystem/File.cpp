@@ -844,25 +844,26 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   ios_base::openmode mode)
 {
   // calculate relative offset
+  off_type pos  = m_file->GetPosition() - (egptr() - gptr());
   off_type offset2;
   if(way == ios_base::cur)
     offset2 = offset;
   else if(way == ios_base::beg)
-    offset2 = offset - m_file->GetPosition();
+    offset2 = offset - pos;
   else if(way == ios_base::end)
-    offset2 = m_file->GetLength() + offset - 1;
+    offset2 = offset + m_file->GetLength() - pos;
   else
-    offset2 = 0;
+    return streampos(-1);
 
   // a non seek shouldn't modify our buffer
   if(offset2 == 0)
-    return m_file->GetPosition() - (egptr() - gptr());
+    return pos;
 
   // try to seek within buffer
   if(gptr()+offset2 >= eback() && gptr()+offset2 < egptr())
   {
     gbump(offset2);
-    return m_file->GetPosition() - (egptr() - gptr());
+    return pos + offset2;
   }
 
   // reset our buffer pointer, will

@@ -70,20 +70,26 @@
   <string id="31116"></string>
   <string id="31117">显示最新加入视频</string>
   <string id="31118">主页面程序子菜单</string>
-  <string id="31119">启用自定义扩展功能按钮</string>
+  <string id="31119"></string>
   <string id="31120">按钮标签</string>
-  <string id="31121">扩展功能路径</string>
+  <string id="31121"></string>
   <string id="31122">天气页面</string>
   <string id="31123">剧集中以“海报”代替“宽幅图标”</string>
   <string id="31124">在背景显示“正在播放”视频</string>
   <string id="31125">在背景显示“正在播放”可视效果</string>
 
-  <string id="31126">在音乐OSD菜单启用歌词按钮</string>
-  <string id="31127">歌词扩展功能路径</string>
+  <string id="31126"></string>
+  <string id="31127"></string>
   <string id="31128">歌词</string>
-  <string id="31129">在视频OSD菜单启用字幕下载</string>
-  <string id="31130">字幕扩展功能路径</string>
+  <string id="31129"></string>
+  <string id="31130"></string>
+
   <string id="31131">使用横向主菜单</string>
+  <string id="31132">歌词扩展功能</string>
+  <string id="31133">字幕扩展功能</string>
+  <string id="31134">主界面视频子菜单</string>
+  <string id="31135">主界面音乐子菜单</string>
+  <string id="31136">主界面图片子菜单</string>
 
   <string id="31140">音乐OSD</string>
   <string id="31141">视频OSD</string>

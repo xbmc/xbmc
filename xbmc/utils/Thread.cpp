@@ -378,7 +378,7 @@ int CThread::GetMinPriority(void)
 
   return(min);
 #else
-  return(THREAD_PRIORITY_LOWEST);
+  return(THREAD_PRIORITY_IDLE);
 #endif
 }
 

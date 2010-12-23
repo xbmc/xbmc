@@ -81,7 +81,10 @@ bool CWinSystemX11::DestroyWindowSystem()
   if (m_dpy)
   {
     if (m_glContext)
+    {
+      glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glContext);
+    }
 
     m_glContext = 0;
 
@@ -362,7 +365,10 @@ bool CWinSystemX11::RefreshGlxContext()
   {
     CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
     if (m_glContext)
+    {
+      glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glContext);
+    }
 
     if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
     {

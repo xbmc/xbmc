@@ -36,6 +36,7 @@ CBaseRenderer::CBaseRenderer()
   m_sourceWidth = 720;
   m_sourceHeight = 480;
   m_resolution = RES_DESKTOP;
+  m_fps = 0.0f;
 }
 
 CBaseRenderer::~CBaseRenderer()
@@ -136,7 +137,7 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight)
 
 void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 {
-  const float maxWeight = 0.0021;
+  const float maxWeight = 0.0021f;
 
   m_resolution = FindClosestResolution(fps, 1.0, m_resolution, weight);
 
@@ -225,7 +226,7 @@ float CBaseRenderer::RefreshWeight(float refresh, float fps)
   if (round < 1)
     return (fps - refresh) / fps;
   else
-    return fabs(div / round - 1.0);
+    return (float)fabs(div / round - 1.0);
 }
 
 RESOLUTION CBaseRenderer::GetResolution() const
@@ -251,6 +252,13 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
 
 void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
 {
+  // if view window is empty, set empty destination
+  if(screenHeight == 0 || screenWidth == 0)
+  {
+    m_destRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
+    return;
+  }
+
   // scale up image as much as possible
   // and keep the aspect ratio (introduces with black bars)
   // calculate the correct output frame ratio (using the users pixel ratio setting
@@ -375,7 +383,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 
 void CBaseRenderer::ManageDisplay()
 {
-  const CRect& view = g_graphicsContext.GetViewWindow();
+  const CRect view = g_graphicsContext.GetViewWindow();
 
   m_sourceRect.x1 = (float)g_settings.m_currentVideoSettings.m_CropLeft;
   m_sourceRect.y1 = (float)g_settings.m_currentVideoSettings.m_CropTop;

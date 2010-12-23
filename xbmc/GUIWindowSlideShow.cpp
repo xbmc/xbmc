@@ -42,8 +42,10 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "PlayList.h"
 
 using namespace XFILE;
+using namespace PLAYLIST;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
@@ -119,8 +121,9 @@ void CBackgroundPicLoader::Process()
       }
     }
   }
-  CLog::Log(LOGDEBUG, "Time for loading %u images: %u ms, average %u ms",
-            count, totalTime, totalTime / count);
+  if (count > 0)
+    CLog::Log(LOGDEBUG, "Time for loading %u images: %u ms, average %u ms",
+              count, totalTime, totalTime / count);
 }
 
 void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString &strFileName, const int maxWidth, const int maxHeight)
@@ -160,6 +163,7 @@ void CGUIWindowSlideShow::Reset()
   g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
   m_bPause = false;
+  m_bPlayingVideo = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
   m_bScreensaver = false;
@@ -290,7 +294,7 @@ void CGUIWindowSlideShow::Render()
     m_pBackgroundLoader->Create(this);
   }
 
-  bool bSlideShow = m_bSlideShow && !m_bPause;
+  bool bSlideShow = m_bSlideShow && !m_bPause && !m_bPlayingVideo;
 
   if (m_bErrorMessage)
   { // we have an error when loading either the current or next picture
@@ -341,7 +345,8 @@ void CGUIWindowSlideShow::Render()
     GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                     (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                     maxWidth, maxHeight);
-    m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
+    if (!m_slides->Get(m_iCurrentSlide)->IsVideo())
+      m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, m_slides->Get(m_iCurrentSlide)->m_strPath, maxWidth, maxHeight);
   }
 
   // check if we should discard an already loaded next slide
@@ -384,7 +389,8 @@ void CGUIWindowSlideShow::Render()
       GetCheckedSize((float)g_settings.m_ResInfo[m_Resolution].iWidth * zoomamount[m_iZoomFactor - 1],
                      (float)g_settings.m_ResInfo[m_Resolution].iHeight * zoomamount[m_iZoomFactor - 1],
                      maxWidth, maxHeight);
-      m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->m_strPath, maxWidth, maxHeight);
+      if (!m_slides->Get(m_iNextSlide)->IsVideo())
+        m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, m_slides->Get(m_iNextSlide)->m_strPath, maxWidth, maxHeight);
     }
   }
 
@@ -396,6 +402,22 @@ void CGUIWindowSlideShow::Render()
     m_Image[m_iCurrentPic].Render();
   }
 
+  if (m_slides->Get(m_iCurrentSlide)->IsVideo() && bSlideShow)
+  { 
+    CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str());
+    m_bPlayingVideo = true;
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    playlist.Clear();
+    playlist.Add(m_slides->Get(m_iCurrentSlide));
+    // play movie...
+    g_playlistPlayer.Play(0);
+    m_iCurrentSlide = m_iNextSlide;
+    m_iNextSlide++;
+    if (m_iNextSlide >= m_slides->Size())
+      m_iNextSlide = 0;
+  } 
   // Check if we should be transistioning immediately
   if (m_bLoadNextPic)
   {
@@ -643,6 +665,24 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       RunSlideShow(strFolder, bRecursive, bRandom, bNotRandom);
     }
     break;
+    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+    {
+      m_bPlayingVideo = false;
+      if (m_bSlideShow)
+        g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    }
+    break;
+    case GUI_MSG_PLAYBACK_STARTED:
+    {
+      g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+    }
+    break;
+    case GUI_MSG_PLAYBACK_STOPPED:
+    {
+      m_bSlideShow = false;
+      g_windowManager.PreviousWindow();
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -778,12 +818,13 @@ int CGUIWindowSlideShow::CurrentSlide() const
 
 void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
                                       bool bRecursive, 
-                                      SORT_METHOD method, SORT_ORDER order)
+                                      SORT_METHOD method, SORT_ORDER order, const CStdString &strExtensions)
 {
   if (strPath!="")
   {
     // reset the slideshow
     Reset();
+    m_strExtensions = strExtensions;
     if (bRecursive)
     {
       path_set recursivePaths;
@@ -794,13 +835,16 @@ void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath,
   }
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */, SORT_METHOD method /* = SORT_METHOD_LABEL */, SORT_ORDER order /* = SORT_ORDER_ASC */)
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, 
+                                       bool bRecursive /* = false */, bool bRandom /* = false */, 
+                                       bool bNotRandom /* = false */, SORT_METHOD method /* = SORT_METHOD_LABEL */, 
+                                       SORT_ORDER order /* = SORT_ORDER_ASC */, const CStdString &strExtensions)
 {
   // stop any video
   if (g_application.IsPlayingVideo())
     g_application.StopPlaying();
 
-  AddFromPath(strPath, bRecursive, method, order);
+  AddFromPath(strPath, bRecursive, method, order, strExtensions);
 
   // mutually exclusive options
   // if both are set, clear both and use the gui setting
@@ -830,7 +874,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
 
   // fetch directory and sort accordingly
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions,false,false,DIR_CACHE_ONCE,true,true))
+  if (!CDirectory::GetDirectory(strPath, items, m_strExtensions.IsEmpty()?g_settings.m_pictureExtensions:m_strExtensions,false,false,DIR_CACHE_ONCE,true,true))
     return;
 
   items.Sort(method, order);

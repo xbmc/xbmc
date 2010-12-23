@@ -29,8 +29,6 @@ namespace Json
   class Value;
 }
 
-class ISerializable;
-
 class CVariant
 {
 public:
@@ -57,7 +55,6 @@ public:
   CVariant(const char *str);
   CVariant(const std::string &str);
   CVariant(const CVariant &variant);
-  CVariant(ISerializable& serializable);
 
   ~CVariant();
 
@@ -80,7 +77,6 @@ public:
   CVariant &operator[](unsigned int position);
 
   CVariant &operator=(const CVariant &rhs);
-  CVariant &operator=(ISerializable& rhs);
 
   void push_back(CVariant variant);
 
@@ -93,7 +89,7 @@ public:
   void debug();
   void internaldebug();
 
-  void toJsonValue(Json::Value& value);
+  void toJsonValue(Json::Value& value) const;
 private:
   VariantType m_type;
 

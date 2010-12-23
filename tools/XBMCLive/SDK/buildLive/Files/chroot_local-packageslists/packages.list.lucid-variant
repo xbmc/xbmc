@@ -29,3 +29,4 @@ fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1
 wpasupplicant wireless-tools
 linux-backports-modules-alsa-lucid-generic linux-backports-modules-wireless-2.6.35-lucid-generic
+avahi-daemon

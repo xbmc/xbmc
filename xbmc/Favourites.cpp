@@ -152,9 +152,19 @@ bool CFavourites::IsFavourite(CFileItem *item, int contextWindow)
 static CStdString Paramify(const CStdString& param)
 {
   CStdString result(param);
+  result.Replace("\\", "\\\\");
   result.Replace("\"", "\\\"");
   return "\"" + result + "\"";
 }
+
+#ifdef UNIT_TESTING
+bool CFavourites::TestParamify()
+{
+  return (Paramify("test") == "\"test\"" &&
+          Paramify("test\"foo\"test") == "\"test\\\"foo\\\"test\"" &&
+          Paramify("C:\\foo\\bar\\") == "\"C:\\\\foo\\\\bar\\\\\"");
+}
+#endif
 
 CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
 {

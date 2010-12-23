@@ -323,8 +323,6 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   
-  double m_subLastPts;
-  
   struct SDVDInfo
   {
     void Clear()
@@ -345,6 +343,7 @@ protected:
 
   struct SPlayerState
   {
+    SPlayerState() { Clear(); }
     void Clear()
     {
       timestamp     = 0;

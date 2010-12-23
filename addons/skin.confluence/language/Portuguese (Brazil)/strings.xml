@@ -1,171 +1,134 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-<!--Language file for skin\Confluence -->
-<!--Translated: manually -->
-<!--Translator: bugre (werner), Fabiano Santiago (fabianosan) -->
-<!--Email: wxxx333@gmail.com, fabianosan@hotmail.com -->
+ï»¿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator[wm]-->
+<!--File for addons/skin.confluence/language/Portuguese (Brazil)/ -->
+<!--Translator: bugre (wm), Fabiano Santiago (fabianosan) -->
+<!--Email: wxxx333-nospam-at-gmail.com, fabianosan@hotmail.com -->
 <!--Date of translation: 11/23/2009-->
+<!--Updated on 15/11/2010 bugre -->
 <!--$Revision$-->
-<!--Based on english strings version 24877 -->
-
+<!--Based on english strings version 35254 -->
 <strings>
-  <!-- Misc labels -->
   <string id="31000">Alterar seu</string>
   <string id="31001">Amor</string>
-  <string id="31002">Ódio</string>
-  <string id="31003">Opções de energia</string>
+  <string id="31002">Ã“dio</string>
+  <string id="31003">OpÃ§Ãµes de energia</string>
   <string id="31004">Executando...</string>
   <string id="31005">Esconder INFO</string>
-
   <string id="31007">Plugins</string>
-
   <string id="31020">Adicionado recentemente</string>
   <string id="31021">Video - Arquivos</string>
-  <string id="31022">Música - Arquivos</string>
+  <string id="31022">MÃºsica - Arquivos</string>
   <string id="31023">Executando</string>
-  <string id="31024">Página</string>
+  <string id="31024">PÃ¡gina</string>
   <string id="31025">Itens</string>
-  <string id="31026">Opções diversas</string>
-  <string id="31027">Localização</string>
- 
-  <!-- View Type labels -->
+  <string id="31026">OpÃ§Ãµes diversas</string>
+  <string id="31027">LocalizaÃ§Ã£o</string>
   <string id="31028">Vitrine</string>
   <string id="31029">Fanart</string>
   <string id="31030">Lista Completa</string>
-  <string id="31031">Ícones de imagens</string>
+  <string id="31031">Ãcones de imagens</string>
   <string id="31032">Vitrine de Imagens</string>
   <string id="31033">Info</string>
-
-  <!-- Extra labels -->
   <string id="31040">Tocando agora</string>
-
   <string id="31042">TOCANDO</string>
   <string id="31043">PAUSADO</string>
-  <string id="31044">AVANÇO RÁPIDO</string>
+  <string id="31044">AVANÃ‡O RÃPIDO</string>
   <string id="31045">RETROCEDER</string>
-  <string id="31046">Propriedades de áudio</string>
-  <string id="31047">Preconfiguração atual</string>
-  <string id="31048">Visualizar preconfigurações</string>
-  <string id="31049">Tempo de término</string>
-
-
-  <!-- Playlist Editor labels -->
+  <string id="31046">Propriedades de Ã¡udio</string>
+  <string id="31047">PreconfiguraÃ§Ã£o atual</string>
+  <string id="31048">Visualizar pre-configuraÃ§Ãµes</string>
+  <string id="31049">Tempo de tÃ©rmino</string>
   <string id="31055">Abrir playlist</string>
   <string id="31056">Salvar playlist</string>
   <string id="31057">Fechar playlist</string>
-  <string id="31058">Arquivos de música do sistema</string>
+  <string id="31058">Arquivos de mÃºsica do sistema</string>
   <string id="31059">Playlist atual</string>
-  <string id="31060">Este arquivo está empilhado, selecione a parte de onde executar.</string>
+  <string id="31060">Este arquivo estÃ¡ empilhado, selecione a parte de onde executar.</string>
   <string id="31061">Selecionado</string>
-
-  <!-- Skin Settings labels -->
   <string id="31100"></string>
-  <string id="31101">Opções da tela principal (home)</string>
+  <string id="31101">OpÃ§Ãµes da tela principal (home)</string>
   <string id="31102">Fundo</string>
-  <string id="31103">Exibir "Pausado" em exibição de imagens (slideshow)</string>
-  <string id="31104"></string>
-  <string id="31105">Exibir títulos de mídia em busca secudária</string>
-  <string id="31106">Opções diversas</string>
-  <string id="31107"></string>
-  <string id="31108">Ocultar botões do Menu Principal</string>
+  <string id="31103">Exibir "Pausado" em exibiÃ§Ã£o de imagens (slideshow)</string>
+  <string id="31104">Tocar trailers em uma janela [COLOR=grey3](SÃ³ DiÃ¡logo de InformaÃ§Ãµes do VÃ­deo)[/COLOR]</string>
+  <string id="31105">Exibir tÃ­tulos de mÃ­dia em busca secudÃ¡ria</string>
+  <string id="31106">OpÃ§Ãµes diversas</string>
+  <string id="31107">Ocultar marcadores lidos do arquivo de vÃ­deo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Ocultar botÃµes do Menu Principal</string>
   <string id="31109">Fundos da tela principal (home)</string>
-  <string id="31110">Editar fundo para botão principal (home)</string>
+  <string id="31110">Editar fundo para botÃ£o principal (home)</string>
   <string id="31111">Ocultar</string>
-  <string id="31112">Opções</string>
-  <string id="31113">Imagem única</string>
-  <string id="31114">Image múltipla</string>
+  <string id="31112">OpÃ§Ãµes</string>
+  <string id="31113">Imagem Ãºnica</string>
+  <string id="31114">Multi imagens</string>
   <string id="31115">Personalizador</string>
-  <string id="31116">Scripts</string>
-  <string id="31117">Exibir vídeos adicionados recentemente</string>
-  <string id="31118">Submenu da Página Principal</string>
-  <string id="31119">Habilitar botão de Script Personalizado</string>
-  <string id="31120">RÓTULO DE BOTÃO</string>
-  <string id="31121">CAMINHO PARA O SCRIPT</string>
-  <string id="31122">Página do Tempo</string>
-  <string id="31123">Usar "Pôsters" ao invés de "Faixas" para Seriados</string>
-  <string id="31124">Exibir fundo Vídeo "Tocando Agora"</string>
-  <string id="31125">Exibir fundo Visualização "Tocando Agora"</string>
-
-  <string id="31126">Habilitar Letras no OSD de Música</string>
-  <string id="31127">CAMINHO PARA SCRIPT DE LETRAS</string>
-  <string id="31128">Letras XBMC</string>
-  <string id="31129">Ativar Download de Legendas no OSD de Video</string>
-  <string id="31130">CAMINHO PARA SCRIPT DE LEGENDA</string>
+  <string id="31117">Exibir vÃ­deos adicionados recentemente</string>
+  <string id="31118">Submenu Programas da PÃ¡gina Principal</string>
+  <string id="31120">RÃ“TULO DE BOTÃƒO</string>
+  <string id="31122">PÃ¡gina do Tempo</string>
+  <string id="31123">Usar "PÃ´sters" ao invÃ©s de "Faixas" para Seriados</string>
+  <string id="31124">Exibir fundo VÃ­deo "Tocando Agora"</string>
+  <string id="31125">Exibir fundo VisualizaÃ§Ã£o "Tocando Agora"</string>
+  <string id="31128">Letras</string>
   <string id="31131">Usar Menu Horizontal na Tela Inicial</string>
-
-  <string id="31140">OSD de Música</string>
+  <string id="31132">Add-on de Letras</string>
+  <string id="31133">Add-on de legendas</string>
+  <string id="31140">OSD de MÃºsica</string>
   <string id="31141">OSD de Video</string>
-
-  <!-- Script labels -->
   <string id="31200">Atalhos</string>
   <string id="31201">Categorias</string>
   <string id="31202">Elenco do Seriado</string>
-  <string id="31203">Escolha sua música</string>
-  <string id="31204">Seção de Links</string>
+  <string id="31203">Escolha sua mÃºsica</string>
+  <string id="31204">SeÃ§Ã£o de Links</string>
   <string id="31205">Origem das Letras</string>
-
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Radar &amp; Previsão</string>
-  <string id="31251">Previsão</string>
-  <string id="31252">Script TWC (The Weather Channel)</string>
-
-  <!-- Extra labels -->
   <string id="31300">Temp. Atual</string>
-  <string id="31301">Última atualização</string>
+  <string id="31301">Ãšltima atualizaÃ§Ã£o</string>
   <string id="31302">Menu</string>
   <string id="31303"></string>
   <string id="31304">Imagem</string>
-  <string id="31305">Nenhum disco de mídia detectado</string>
+  <string id="31305">Nenhum disco de mÃ­dia detectado</string>
   <string id="31306">Ejetar</string>
   <string id="31307">Ocultar Fanart</string>
-  <string id="31308">Detalhes do vídeo</string>
-  <string id="31309">Memória usada:</string>
-  <string id="31310">Número da faixa</string>
-  <string id="31311">IMAGEM DE FANART[CR][CR]INDISPONÍVEL[CR][CR] CLIQUE O BOTÃO PARA DEFINIR</string>
+  <string id="31308">Detalhes do vÃ­deo</string>
+  <string id="31309">MemÃ³ria usada:</string>
+  <string id="31310">NÃºmero da faixa</string>
+  <string id="31311">Imagem de Fanart[CR][CR]IndisponÃ­vel[CR][CR] Clique no botÃ£o para definir</string>
   <string id="31312">Scraper Atual</string>
   <string id="31313">Escolha um Scraper</string>
-  <string id="31314">Opções de busca de conteúdo</string>
-  <string id="31315">Básico</string>
+  <string id="31314">OpÃ§Ãµes de busca de conteÃºdo</string>
+  <string id="31315">BÃ¡sico</string>
   <string id="31316"></string>
   <string id="31317">Definir caminho do Fanart</string>
   <string id="31318">Fanart Pequeno</string>
   <string id="31319">Perfil selecionado</string>
-  <string id="31320">Última conexão</string>
-  <string id="31321">Selecionador de Música Karaoke</string>
+  <string id="31320">Ãšltima conexÃ£o</string>
+  <string id="31321">Selecionador de MÃºsica Karaoke</string>
   <string id="31322">Transmitido</string>
-  <string id="31323">Últimos Filmes</string>
-  <string id="31324">Últimos Episódios</string>
-  <string id="31325">Opções do Playlist</string>
+  <string id="31323">Ãšltimos Filmes</string>
+  <string id="31324">Ãšltimos EpisÃ³dios</string>
+  <string id="31325">OpÃ§Ãµes do Playlist</string>
   <string id="31326">Criado</string>
-  <string id="31327">Resolução</string>
+  <string id="31327">ResoluÃ§Ã£o</string>
   <string id="31328">Adicionado Recentemente</string>
-  <string id="31329">[B]DEFINIR TIMER![/B] [COLOR=grey2] - SISTEMA SE AUTO-DESLIGARÁ EM[/COLOR]</string>
-  <string id="31330">Clique no botão para tocar o[CR][CR]trailer</string>
-
-  <!-- Video and Music OSD Labels  -->
+  <string id="31329">[B]Timer definido![/B] [COLOR=grey2] - Sistema se desligarÃ¡ em[/COLOR]</string>
+  <string id="31330">Clique no botÃ£o para tocar o[CR][CR]trailer</string>
   <string id="31351">Pausar</string>
   <string id="31352">Parar</string>
-  <string id="31353">Avançar</string>
+  <string id="31353">AvanÃ§ar</string>
   <string id="31354">Voltar</string>
   <string id="31355">Menu do Filme</string>
   <string id="31356">Download de Legendas</string>
   <string id="31357"></string>
-  
-  <!-- Skin Fontsets -->
-  <string id="31390">Padrão da skin</string>
-  <string id="31391">Padrão da skin sem capslock</string>
+  <string id="31390">PadrÃ£o da skin</string>
+  <string id="31391">PadrÃ£o da skin sem capslock</string>
   <string id="31392">Baseado em Arial</string>
-
-  <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGURAR AJUSTES DE APARÊNCIA[/B][CR][CR]Mudar o skin · Definir idioma e região · Definir opções de listagem de arquivos · Definir um descanso de tela</string>
-  <string id="31401">[B]CONFIGURAR AJUSTES DE VÍDEO[/B][CR][CR]Gerenciar sua coleção de vídeos · Definir opções de execução de vídeo · Alterar opções de listagem de vídeo · Definir fonte para legendas</string>
-  <string id="31402">[B]CONFIGURAR AJUSTES DE MÚSICAS[/B][CR][CR]Gerenciar sua coleção de músicas · Definir opções de execução de música · Alterar opções de listagem de música · Configurar submissão de música · Definir opções de karaoke</string>
-  <string id="31403">[B]CONFIGURAR AJUSTES DE IMAGENS[/B][CR][CR]Definir opções de listagem de imagens · Configurar exibição de imagens(slideshow)</string>
-  <string id="31404">[B]CONFIGURAR AJUSTES DE TEMPO[/B][CR][CR]Definir três cidades para buscar informações sobre o tempo</string>
-  <string id="31405">[B]CONFIGURAR AJUSTES DE REDE[/B][CR][CR]Configurar controle do XBMC através de UPnP e HTTP · Configurar compartilhamento de arquivo · Definir opções de acesso de internet</string>
-  <string id="31406">[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas · Configurar saída de áudio · Configurar controles remotos · Definir opções para economia de energia · Habilitar depuração · Configurar bloqueio mestre</string>
-  <string id="31407">[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence · Adicionar e remover itens no menu principal(home) · Alterar fundos do skin</string>
-  <string id="31408">[B]CONFIGURAR AJUSTES DE ADD-ONS[/B][CR][CR]Configurar Add-ons existentes · Procurar e instalar novos Add-ons de xbmc.org[CR]Alterar configurações do Add-on</string>
-
-  <string id="31420">[B][COLOR=white]XBMC não detectou um disco.[/COLOR][/B][CR][CR]Insira um disco no drive e tente novamente ou Cancele</string>
-  <string id="31421">Selecione seu Perfil de usuário XBMC[CR]para conectar e continue</string>
+  <string id="31400">[B]CONFIGURAR AJUSTES DE APARÃŠNCIA[/B][CR][CR]Mudar o skin Â· Definir idioma e regiÃ£o Â· Definir opÃ§Ãµes de listagem de arquivos Â· Definir um descanso de tela</string>
+  <string id="31401">[B]CONFIGURAR AJUSTES DE VÃDEO[/B][CR][CR]Gerenciar sua coleÃ§Ã£o de vÃ­deos Â· Definir opÃ§Ãµes de execuÃ§Ã£o de vÃ­deo Â· Alterar opÃ§Ãµes de listagem de vÃ­deo Â· Definir fonte para legendas</string>
+  <string id="31402">[B]CONFIGURAR AJUSTES DE MÃšSICAS[/B][CR][CR]Gerenciar sua coleÃ§Ã£o de mÃºsicas Â· Definir opÃ§Ãµes de execuÃ§Ã£o de mÃºsica Â· Alterar opÃ§Ãµes de listagem de mÃºsica Â· Configurar submissÃ£o de mÃºsica Â· Definir opÃ§Ãµes de karaoke</string>
+  <string id="31403">[B]CONFIGURAR AJUSTES DE IMAGENS[/B][CR][CR]Definir opÃ§Ãµes de listagem de imagens Â· Configurar exibiÃ§Ã£o de imagens(slideshow)</string>
+  <string id="31404">[B]CONFIGURAR AJUSTES DE TEMPO[/B][CR][CR]Definir trÃªs cidades para buscar informaÃ§Ãµes sobre o tempo</string>
+  <string id="31405">[B]CONFIGURAR AJUSTES DE REDE[/B][CR][CR]Configurar controle do XBMC atravÃ©s de UPnP e HTTP Â· Configurar compartilhamento de arquivo Â· Definir opÃ§Ãµes de acesso de internet</string>
+  <string id="31406">[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas Â· Configurar saÃ­da de Ã¡udio Â· Configurar controles remotos Â· Definir opÃ§Ãµes para economia de energia Â· Habilitar depuraÃ§Ã£o Â· Configurar bloqueio mestre</string>
+  <string id="31407">[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence Â· Adicionar e remover itens no menu principal(home) Â· Alterar fundos do skin</string>
+  <string id="31408">[B]CONFIGURAR AJUSTES DE ADD-ONS[/B][CR][CR]Configurar Add-ons existentes Â· Procurar e instalar novos Add-ons de xbmc.org[CR]Alterar configuraÃ§Ãµes do Add-on</string>
+  <string id="31421">Selecione seu Perfil de usuÃ¡rio XBMC[CR]para conectar e continue</string>
 </strings>

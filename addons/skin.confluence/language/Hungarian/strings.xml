@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 15/07/2010-->
-<!--Based on English r31818-->
+<!--Date of translation: 25/11/2010-->
+<!--Based on English r35254-->
 <!--$Revision$-->
 <strings>
   <!-- Vegyes feliratok -->
@@ -74,19 +74,23 @@
   <string id="31116"></string>
   <string id="31117">Nemrég hozzáadott videók mutatása</string>
   <string id="31118">Sajátképernyő programok almenü</string>
-  <string id="31119">Egyedi kiegészítő-gomb engedélyezése</string>
+  <string id="31119"></string>
   <string id="31120">GOMBFELIRAT</string>
-  <string id="31121">KIEGÉSZÍTŐ ÚTVONALA</string>
+  <string id="31121"></string>
   <string id="31122">Időjárás oldal</string>
   <string id="31123">Poszterek használata keskeny szalagcímek helyett a TV műsoroknál</string>
   <string id="31124">A háttérben az éppen játszott videó megjelenítése</string>
   <string id="31125">A háttérben az éppen futó vizualizáció megjelenítése</string>
 
-  <string id="31126">Dalszöveg gomb engedélyezése a zene navigációs-tálcán</string>
-  <string id="31127">DALSZÖVEG PROGRAM ÚTVONALA</string>
+  <string id="31126"></string>
+  <string id="31127"></string>
   <string id="31128">Dalszöveg</string>
-  <string id="31129">Felirat-letöltés gomb engedélyezése a videó navigációs-tálcán</string>
-  <string id="31130">FELIRAT-PROGRAM ELÉRÉSI ÚTVONALA</string>
+  <string id="31129"></string>
+  <string id="31130"></string>
+
+  <string id="31131">Vízszintes Főmenü használata</string>
+  <string id="31132">Dalszöveg kiegészítő</string>
+  <string id="31133">Filmfelirat kiegészítő</string>
 
   <string id="31140">Zene tálca</string>
   <string id="31141">Videó tálca</string>

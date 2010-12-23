@@ -1334,7 +1334,7 @@
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
-  <string id="14041"></string>
+  <string id="14041">Internet connection bandwidth limitation</string>
 
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i min</string>
@@ -1460,7 +1460,7 @@
   <string id="15275">Weekly track chart for %name%</string>
   <string id="15276">Listen to %name%'s neighbours Last.fm radio</string>
   <string id="15277">Listen to %name%'s personal Last.fm radio</string>
-  <string id="15278">Listen to %name%'s loved tracks Last.fm radio</string>
+  <string id="15278"></string>
   <string id="15279">Retrieving list from Last.fm...</string>
   <string id="15280">Can't retrieve list from Last.fm...</string>
   <string id="15281">Enter an artist name to find related ones</string>
@@ -1468,7 +1468,7 @@
   <string id="15283">Tracks recently listened by %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.fm radio</string>
   <string id="15285">Top tags for user %name%</string>
-  <string id="15286">Listen to %name%'s playlist Last.fm radio</string>
+  <string id="15286"></string>
   <string id="15287">Do you want to add the current track to your loved tracks?</string>
   <string id="15288">Do you want to ban the current track?</string>
   <string id="15289">Added to your loved tracks: '%s'.</string>
@@ -2202,6 +2202,7 @@
   <string id="24015">Music video information</string>
   <string id="24016">Album information</string>
   <string id="24017">Artist information</string>
+  <string id="24018">Services</string>
 
   <string id="24020">Configure</string>
   <string id="24021">Disable</string>

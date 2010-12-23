@@ -21,6 +21,7 @@
     <summary lang="pl">Wygaszacz hipnotyzujący efektami cząsteczek</summary>
     <summary lang="pt">Protecção de ecrã com um efeito de partículas</summary>
     <summary lang="ru">Завораживающий скринсейвер с эффектами частиц</summary>
+    <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
     <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>
@@ -31,6 +32,7 @@
     <description lang="pl">Bardzo hipnotyzujący wygaszacz. Przekonaj się, ile niespotykanch wzorów da się osiągnąć.</description>
     <description lang="pt">Protecção de ecrã fantástica com um efeito de partículas. Vai reparar que consegue um número quase infinito de padrões.</description>
     <description lang="ru">Это - очень завораживающий хранитель экрана. Доступно огромное количество вариаций эффектов.</description>
+    <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
     <description lang="zh">这是一个非常迷人的粒子效果屏幕保护程序。你会发现你能看到惊人数量的不同图案。</description>
     <platform>linux osx</platform>
   </extension>

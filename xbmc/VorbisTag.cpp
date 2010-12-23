@@ -116,7 +116,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
     tag.SetMusicBrainzTRMID(strTagValue);
   }
 
-  if ( strTagType == "COMMENT" )
+  if ( strTagType == "COMMENT" || strTagType == "DESCRIPTION" )
     tag.SetComment(strTagValue);
 
   if ( strTagType == "LYRICS" )

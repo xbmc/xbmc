@@ -146,6 +146,15 @@ namespace ADDON
      */
     bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
     ADDONDEPS GetDeps(const CStdString& id);
+
+    /*! \brief Start all services addons.
+        \return True is all addons are started, false otherwise
+    */
+    bool StartServices();
+    /*! \brief Stop all services addons.
+    */
+    void StopServices();
+
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);

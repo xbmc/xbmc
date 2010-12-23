@@ -37,7 +37,6 @@ BIN_DIRS=	\
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTV \
 	xbmc/lib/libscrobbler \
-	xbmc/lib/libshout \
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
@@ -241,8 +240,6 @@ xbmc/lib/libscrobbler/scrobbler.a: force
 	$(MAKE) -C xbmc/lib/libscrobbler
 xbmc/lib/libRTV/librtv-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libRTV
-xbmc/lib/libshout/libshout-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libshout
 xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
 xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
@@ -280,9 +277,9 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,$(ARCH)), osx)
   ifeq ($(ARCH), powerpc-osx)
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -lbundle1.o -o $@ $<
   else
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
@@ -388,7 +385,6 @@ xcode_depends: \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \
 	xbmc/lib/libhttpapi/libhttpapi.a \
 	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
@@ -426,7 +422,6 @@ OBJSXBMC=	\
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
-	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \

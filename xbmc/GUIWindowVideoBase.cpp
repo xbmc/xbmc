@@ -1500,10 +1500,6 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
         database.ClearBookMarksOfFile(pItem->m_strPath, CBookmark::RESUME);
 
       database.SetPlayCount(*pItem, bMark ? 1 : 0);
-
-      CVariant value;
-      value["markwatched"] = bMark;
-      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Other, "xbmc", "MarkedWatched", &value);
     }
     
     database.Close(); 

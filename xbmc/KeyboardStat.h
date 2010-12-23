@@ -56,6 +56,8 @@ public:
 
   const CKey GetKey();
 
+  CStdString GetKeyName(int KeyID);
+
 // New key handling code added in preparation for the major overhaul
 // of the keyboard handling
   const CKey ProcessKeyDown(XBMC_keysym& keysym);

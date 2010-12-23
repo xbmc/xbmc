@@ -84,6 +84,7 @@ protected:
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
+  float m_fps;
 
   CRect m_destRect;
   CRect m_sourceRect;

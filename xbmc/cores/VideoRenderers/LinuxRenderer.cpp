@@ -171,7 +171,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
 
   // scale to fit screen
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const CRect rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -269,14 +269,6 @@ void CLinuxRenderer::RenderOSD()
 
   //copy all static vars to local vars because they might change during this function by mplayer callbacks
   DRAWRECT osdRect = m_OSDRect;
-
-  // Set state to render the image
-
-  // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
-    g_graphicsContext.ClipToViewWindow();
-  }
 
   // Render the image
   SDL_Rect rect;
@@ -656,12 +648,6 @@ void CLinuxRenderer::Render(DWORD flags)
 void CLinuxRenderer::RenderLowMem(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
-    g_graphicsContext.ClipToViewWindow();
-  }
 
 #if defined (USE_SDL_OVERLAY)
 

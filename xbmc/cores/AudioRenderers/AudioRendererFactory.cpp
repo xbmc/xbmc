@@ -157,8 +157,6 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 {
 #ifdef HAS_PULSEAUDIO
   CPulseAudioDirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
-  if (vAudioSinks.size() > 0)
-    return;
 #endif
 
 #ifdef WIN32

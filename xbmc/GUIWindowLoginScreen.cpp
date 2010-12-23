@@ -268,7 +268,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(profile);
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
   }
   else
   {
@@ -276,6 +275,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     if (pWindow)
       pWindow->ResetControlStates();
   }
+  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
 
   g_settings.UpdateCurrentProfileDate();
   g_settings.SaveProfiles(PROFILES_FILE);

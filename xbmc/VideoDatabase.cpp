@@ -47,6 +47,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "GUIWindowAddonBrowser.h"
+#include "utils/AnnouncementManager.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -971,6 +972,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
 
     strSQL=PrepareSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,idEpisode);
     m_pDS->exec(strSQL.c_str());
+
 //    CommitTransaction();
 
     return idEpisode;
@@ -1708,6 +1710,9 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    AnnounceUpdate("movie", idMovie);
+
     return idMovie;
   }
   catch (...)
@@ -1766,6 +1771,9 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     sql += PrepareSQL("where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    AnnounceUpdate("tvshow", idTvShow);
+
     return idTvShow;
   }
   catch (...)
@@ -1839,6 +1847,9 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     sql += PrepareSQL("where idEpisode=%i", idEpisode);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    AnnounceUpdate("episode", idEpisode);
+
     return idEpisode;
   }
   catch (...)
@@ -1910,6 +1921,9 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     sql += PrepareSQL(" where idMVideo=%i", idMVideo);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+
+    AnnounceUpdate("musicvideo", idMVideo);
+
     return idMVideo;
   }
   catch (...)
@@ -2346,6 +2360,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
     CommitTransaction();
+
+    if (!bKeepId)
+      AnnounceRemove("movie", idMovie);
   }
   catch (...)
   {
@@ -2411,6 +2428,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     InvalidatePathHash(strPath);
 
     CommitTransaction();
+
+    if (!bKeepId)
+      AnnounceRemove("tvshow", idTvShow);
   }
   catch (...)
   {
@@ -2461,6 +2481,8 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
       m_pDS->exec(strSQL.c_str());
     }
 
+    if (!bKeepId)
+      AnnounceRemove("episode", idEpisode);
   }
   catch (...)
   {
@@ -2523,6 +2545,9 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     SplitPath(strFilenameAndPath,strPath,strFileName);
     InvalidatePathHash(strPath);
     CommitTransaction();
+
+    if (!bKeepId)
+      AnnounceRemove("musicvideo", idMVideo);
   }
   catch (...)
   {
@@ -3362,6 +3387,11 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   try
   {
     m_pDS->exec(exec.c_str());
+
+    if (type == VIDEODB_CONTENT_TVSHOWS)
+      AnnounceUpdate("tvshow", item.GetVideoInfoTag()->m_iDbId);
+    else if (type == VIDEODB_CONTENT_MOVIES)
+      AnnounceUpdate("movie", item.GetVideoInfoTag()->m_iDbId);
   }
   catch (...)
   {
@@ -3398,6 +3428,10 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
     }
 
     m_pDS->exec(strSQL.c_str());
+
+    CVariant data;
+    data["playcount"] = count;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "NewPlayCount", CFileItemPtr(new CFileItem(item)), data);
   }
   catch (...)
   {
@@ -3421,26 +3455,31 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovie
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
+    CStdString content;
     CStdString strSQL;
     if (iType == VIDEODB_CONTENT_MOVIES)
     {
       CLog::Log(LOGINFO, "Changing Movie:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
       strSQL = PrepareSQL("UPDATE movie SET c%02d='%s' WHERE idMovie=%i", VIDEODB_ID_TITLE, strNewMovieTitle.c_str(), idMovie );
+      content = "movie";
     }
     else if (iType == VIDEODB_CONTENT_EPISODES)
     {
       CLog::Log(LOGINFO, "Changing Episode:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
       strSQL = PrepareSQL("UPDATE episode SET c%02d='%s' WHERE idEpisode=%i", VIDEODB_ID_EPISODE_TITLE, strNewMovieTitle.c_str(), idMovie );
+      content = "episode";
     }
     else if (iType == VIDEODB_CONTENT_TVSHOWS)
     {
       CLog::Log(LOGINFO, "Changing TvShow:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
       strSQL = PrepareSQL("UPDATE tvshow SET c%02d='%s' WHERE idShow=%i", VIDEODB_ID_TV_TITLE, strNewMovieTitle.c_str(), idMovie );
+      content = "tvshow";
     }
     else if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     {
       CLog::Log(LOGINFO, "Changing MusicVideo:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
       strSQL = PrepareSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), idMovie );
+      content = "musicvideo";
     }
     else if (iType == VIDEODB_CONTENT_MOVIE_SETS)
     {
@@ -3448,6 +3487,9 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovie
       strSQL = PrepareSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", strNewMovieTitle.c_str(), idMovie );
     }
     m_pDS->exec(strSQL.c_str());
+
+    if (content.size() > 0)
+      AnnounceUpdate(content, idMovie);
   }
   catch (...)
   {
@@ -3749,7 +3791,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     CStdString strSQL;
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      strSQL=PrepareSQL("select musicvideo.c%02d,musicvideo.idMVideo,actors.strActor,path.strPath from musicvideo,path,files join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideo.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath",VIDEODB_ID_MUSICVIDEO_ALBUM);
+      strSQL=PrepareSQL("select musicvideo.c%02d,musicvideo.idMVideo,actors.strActor,path.strPath from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idMVideo=musicvideo.idMVideo join actors on actors.idActor=artistlinkmusicvideo.idArtist join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath",VIDEODB_ID_MUSICVIDEO_ALBUM);
     }
     else
     {
@@ -6201,6 +6243,11 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     CStdString moviesToDelete = "";
     CStdString episodesToDelete = "";
     CStdString musicVideosToDelete = "";
+
+    std::vector<int> movieIDs;
+    std::vector<int> episodeIDs;
+    std::vector<int> musicVideoIDs;
+
     int total = m_pDS->num_rows();
     int current = 0;
     while (!m_pDS->eof())
@@ -6262,6 +6309,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        movieIDs.push_back(m_pDS->fv(0).get_asInt());
         moviesToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6271,6 +6319,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
        m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        episodeIDs.push_back(m_pDS->fv(0).get_asInt());
         episodesToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6281,6 +6330,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       m_pDS->query(sql.c_str());
       while (!m_pDS->eof())
       {
+        musicVideoIDs.push_back(m_pDS->fv(0).get_asInt());
         musicVideosToDelete += m_pDS->fv(0).get_asString() + ",";
         m_pDS->next();
       }
@@ -6403,6 +6453,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     sql = "delete from tvshow where idShow not in (select idShow from tvshowlinkpath)";
     m_pDS->exec(sql.c_str());
 
+    std::vector<int> tvshowIDs;
     CStdString showsToDelete;
     sql = "select tvshow.idShow from tvshow "
             "join tvshowlinkpath on tvshow.idShow=tvshowlinkpath.idShow "
@@ -6412,6 +6463,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
+      tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
       showsToDelete += m_pDS->fv(0).get_asString() + ",";
       m_pDS->next();
     }
@@ -6505,6 +6557,17 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     time = CTimeUtils::GetTimeMS() - time;
     CLog::Log(LOGNOTICE, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
 
+    for (unsigned int i = 0; i < movieIDs.size(); i++)
+      AnnounceRemove("movie", movieIDs[i]);
+
+    for (unsigned int i = 0; i < episodeIDs.size(); i++)
+      AnnounceRemove("episode", episodeIDs[i]);
+
+    for (unsigned int i = 0; i < tvshowIDs.size(); i++)
+      AnnounceRemove("tvshow", tvshowIDs[i]);
+
+    for (unsigned int i = 0; i < musicVideoIDs.size(); i++)
+      AnnounceRemove("musicvideo", musicVideoIDs[i]);
   }
   catch (...)
   {
@@ -7468,4 +7531,20 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
   CStdString safeThumb(name);
   safeThumb.Replace(' ', '_');
   return CUtil::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
+}
+
+void CVideoDatabase::AnnounceRemove(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveVideo", data);
+}
+
+void CVideoDatabase::AnnounceUpdate(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "UpdateVideo", data);
 }

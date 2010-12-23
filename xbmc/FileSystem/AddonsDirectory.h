@@ -43,6 +43,13 @@ namespace XFILE
     virtual bool Exists(const char* strPath) { return true; }
     virtual bool IsAllowed(const CStdString& strFile) const { return true; }
 
+    /*! \brief Fetch script and plugin addons of a given content type
+     \param content the content type to fetch
+     \param addons the list of addons to fill with scripts and plugin content
+     \return true if content is valid, false if it's invalid.
+     */
+    static bool GetScriptsAndPlugins(const CStdString &content, ADDON::VECADDONS &addons);
+
     /*! \brief Fetch scripts and plugins of a given content type
      \param content the content type to fetch
      \param items the list to fill with scripts and content

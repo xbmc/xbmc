@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include "log.h"
 #include "Variant.h"
+#include "FileItem.h"
+#include "MusicInfoTag.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -50,10 +52,49 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   }
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data/* = NULL*/)
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message)
+{
+  CVariant data;
+  Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
   CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
     m_announcers[i]->Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
+{
+  CVariant data;
+  Announce(flag, sender, message, data);
+}
+
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+{
+  // Extract db id of item
+  CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
+  CStdString type;
+  int id = 0;
+
+  if (item->HasVideoInfoTag())
+  {
+    CVideoDatabase::VideoContentTypeToString(item->GetVideoContentType(), type);
+    id = item->GetVideoInfoTag()->m_iDbId;
+  }
+  else if (item->HasMusicInfoTag())
+  {
+    type = "music";
+    id = item->GetMusicInfoTag()->GetDatabaseId();
+  }
+
+  if (id > 0)
+  {
+    type += "id";
+    object[type] = id;
+  }
+
+  Announce(flag, sender, message, object);
 }

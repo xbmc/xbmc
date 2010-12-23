@@ -45,4 +45,5 @@ private:
   OggVorbis_File m_VorbisFile;
   double m_TimeOffset;
   int m_CurrentStream;
+  bool m_inited;
 };

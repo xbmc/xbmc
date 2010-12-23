@@ -24,21 +24,6 @@
 #include "DVDStreamInfo.h"
 #include "utils/TimeUtils.h"
 
-/**
- * CDVDMsgGeneralStreamChange --- GENERAL_STREAMCHANGE
- */
-CDVDMsgGeneralStreamChange::CDVDMsgGeneralStreamChange(CDVDStreamInfo* pInfo) : CDVDMsg(GENERAL_STREAMCHANGE)
-{
-  m_pInfo = pInfo;
-}
-
-CDVDMsgGeneralStreamChange::~CDVDMsgGeneralStreamChange()
-{
-  if (m_pInfo)
-  {
-    delete m_pInfo;
-  }
-}
 
 /**
  * CDVDMsgGeneralSynchronize --- GENERAL_SYNCRONIZR

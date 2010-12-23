@@ -145,7 +145,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
-    return new OGGCodec();
+    return CreateOGGCodec(strFile,filecache);
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {
@@ -234,24 +234,28 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
 #endif
   }
   else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
-  {
-    // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec it provides better
-    //  timings for Karaoke. However OGGCodec() cannot handle ogg-flac and ogg videos, that's why this block.
-    ICodec* codec = new OGGCodec();
-    try
-    {
-      if (codec->Init(strFile, filecache))
-      {
-        delete codec; // class can't be inited twice - deinit doesn't properly deinit some members.
-        return new OGGCodec;
-      }
-    }
-    catch( ... )
-    {
-    }
-    delete codec;
-    return new DVDPlayerCodec();
-  }
+    return CreateOGGCodec(strFile,filecache);
+
   //default
   return CreateCodec(urlFile.GetFileType());
 }
+
+ICodec* CodecFactory::CreateOGGCodec(const CStdString& strFile,
+                                     unsigned int filecache)
+{
+  // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec 
+  // it provides better timings for Karaoke. However OGGCodec() cannot handle 
+  // ogg-flac and ogg videos, that's why this block.
+  ICodec* codec = new OGGCodec();
+  try
+  {
+    if (codec->Init(strFile, filecache))
+      return codec;
+  }
+  catch( ... )
+  {
+  }
+  delete codec;
+  return new DVDPlayerCodec();
+}
+

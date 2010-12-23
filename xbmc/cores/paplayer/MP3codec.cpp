@@ -167,7 +167,8 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
       goto error;
     }
-    if (bTags) m_Bitrate = m_Formatdata[4];
+    if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
+      m_Bitrate = m_Formatdata[4];
   } ;
   return true;
 

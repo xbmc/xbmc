@@ -20,13 +20,13 @@ namespace JSONRPC
   class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread
   {
   public:
-    static void StartServer(int port, bool nonlocal);
+    static bool StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
 
     virtual bool Download(const char *path, Json::Value *result);
     virtual int GetCapabilities();
 
-    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, CVariant *data);
+    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   protected:
     void Process();
   private:

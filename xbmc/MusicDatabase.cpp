@@ -58,6 +58,8 @@
 #include "utils/TimeUtils.h"
 #include "TextureCache.h"
 #include "GUIWindowAddonBrowser.h"
+#include "AutoPtrHandle.h"
+#include "AnnouncementManager.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -199,7 +201,7 @@ bool CMusicDatabase::CreateTables()
   return true;
 }
 
-void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
+void CMusicDatabase::AddSong(CSong& song, bool bCheck)
 {
   CStdString strSQL;
   try
@@ -307,14 +309,13 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       AddExtraAlbumArtists(vecArtists, idAlbum);
     AddExtraGenres(vecGenres, idSong, idAlbum, bCheck);
 
+    song.idSong = idSong;
+
     // Add karaoke information (if any)
     if ( bHasKaraoke )
-    {
-      // song argument is const :(
-      CSong mysong = song;
-      mysong.idSong = idSong;
-      AddKaraokeData( mysong );
-    }
+      AddKaraokeData( song );
+
+    AnnounceUpdate("song", idSong);
   }
   catch (...)
   {
@@ -3763,12 +3764,14 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound > 0)
     {
+      std::vector<int> ids;
       CStdString songIds = "(";
       while (!m_pDS->eof())
       {
         CSong song = GetSongFromDataset();
         songs.Add(song.strFileName, song);
         songIds += PrepareSQL("%i,", song.idSong);
+        ids.push_back(song.idSong);
         m_pDS->next();
       }
       songIds.TrimRight(",");
@@ -3785,6 +3788,9 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
       m_pDS->exec(sql.c_str());
       sql = "delete from karaokedata where idSong in " + songIds;
       m_pDS->exec(sql.c_str());
+
+      for (unsigned int i = 0; i < ids.size(); i++)
+        AnnounceRemove("song", ids[i]);
     }
     // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
     sql = PrepareSQL("delete from path where strPath like '%s%s'", path.c_str(), (exact?"":"%"));
@@ -4733,4 +4739,20 @@ int CMusicDatabase::GetVariousArtistsAlbumsCount()
   }
 
   return result;
+}
+
+void CMusicDatabase::AnnounceRemove(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveAudio", data);
+}
+
+void CMusicDatabase::AnnounceUpdate(std::string content, int id)
+{
+  CVariant data;
+  data["content"] = content;
+  data[content + "id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "UpdateAudio", data);
 }

@@ -24,6 +24,7 @@
     <summary lang="pl">Confluence autorstwa Jezz_X</summary>
     <summary lang="pt">Tema Confluence desenvolvido por Jezz_X. (Tema padrão do XBMC)</summary>
     <summary lang="ro">Costum Confluence de Jezz_X. (costum implicit)</summary>
+    <summary lang="se">Confluence-skalet av Jezz_X. (XBMC standardskal)s</summary>
     <summary lang="zh">Jezz_X开发的Confluence皮肤</summary>
     <description lang="en">Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
     <description lang="fr">Confluence est le skin par défaut de XBMC 9.11 ou supérieur. C'est un condensé d'idées de plusieurs skins populaires. Il tente d'englober et intégrer toutes les bonnes idées que n'importe quel débutant sur XBMC pourrait utiliser avec facilité.</description>
@@ -42,6 +43,7 @@
     <disclaimer lang="pl">Confluence jest domyślną skórą XBMC. Jej usunięcie może powodować problemy.</disclaimer>
     <disclaimer lang="pt">O tema Confluence é o tema padrão do XBMC. Removê-lo pode causar problemas. A sério! Deixe-o instalado, mesmo que não o use.</disclaimer>
     <disclaimer lang="ro">Confluence este costumul implicit pentru XBMC, dacă îl eliminați pot apărea probleme!</disclaimer>
+    <disclaimer lang="se">Confluence är standardskalet för XBMC 9.11 och över. Det är en kombination av koncept från många populära skal och försöker fånga och integrera alla goda ideer i ett skal som ska vara enkelt att förstå och använda för förstagångsanvändaren av XBMC.</disclaimer>
     <disclaimer lang="zh">Confluence是XMBC的默认皮肤，删除它可能导致故障。</disclaimer>
     <platform>all</platform>
   </extension>

@@ -29,3 +29,4 @@ fglrx fglrx-amdcccle
 nvidia-current libvdpau1
 wpasupplicant wireless-tools
 linux-backports-modules-alsa-maverick-generic linux-backports-modules-wireless-maverick-generic
+avahi-daemon

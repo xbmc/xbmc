@@ -32,9 +32,10 @@ class CPullupCorrection
     void   Add(double pts);
     void   Flush(); //flush the saved pattern and the ringbuffer
 
-    double GetCorrection()    { return m_ptscorrection; }
-    int    GetPatternLength() { return m_patternlength; }
-    double GetFrameDuration() { return m_frameduration; }
+    double GetCorrection()    { return m_ptscorrection;            }
+    int    GetPatternLength() { return m_patternlength;            }
+    double GetFrameDuration() { return m_frameduration;            }
+    bool   HasFullBuffer()    { return m_ringfill == DIFFRINGSIZE; }
 
   private:
     double m_prevpts;                //last pts added

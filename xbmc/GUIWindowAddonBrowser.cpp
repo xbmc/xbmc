@@ -71,6 +71,7 @@ CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
   m_thumbLoader.SetNumOfWorkers(1);
+  m_promptReload = false;
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
@@ -373,7 +374,10 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             else
             {
               if (addon->Type() == ADDON_SKIN)
+              {
+                CSingleLock lock(m_critSection);
                 m_prompt = addon;
+              }
              if (g_settings.m_bAddonNotifications)
                 g_application.m_guiDialogKaiToast.QueueNotification(
                                                    addon->Icon(),
@@ -441,6 +445,17 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
         return false;
       }
       list.Add(CFileItemPtr(new CFileItem(archivedFiles[0]->m_strPath,true)));
+      // check whether this is an active skin - we need to unload it if so
+      CURL url(archivedFiles[0]->m_strPath);
+      CStdString addon = url.GetFileName();
+      CUtil::RemoveSlashAtEnd(addon);
+      if (g_guiSettings.GetString("lookandfeel.skin") == addon)
+      { // we're updating the current skin - we have to unload it first
+        CSingleLock lock(m_critSection);
+        CAddonMgr::Get().GetAddon(addon, m_prompt);
+        m_promptReload = true;
+        g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
+      }
       dest = "special://home/addons/";
     }
     else
@@ -472,25 +487,32 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
 
-  lock.Leave();
+  AddonPtr prompt;
+  bool reload = false;
   if (m_downloadJobs.empty() && m_prompt)
-    PromptForActivation();
+  {
+    prompt = m_prompt;
+    reload = m_promptReload;
+    m_prompt.reset();
+    m_promptReload = false;
+  }
+  lock.Leave();
+  PromptForActivation(prompt, reload);
 }
 
-void CGUIWindowAddonBrowser::PromptForActivation()
+void CGUIWindowAddonBrowser::PromptForActivation(const AddonPtr &addon, bool dontPrompt)
 {
-  if (m_prompt->Type() == ADDON_SKIN)
+  if (addon && addon->Type() == ADDON_SKIN)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(m_prompt->Name(),
+    if (dontPrompt || CGUIDialogYesNo::ShowAndGetInput(addon->Name(),
                                          g_localizeStrings.Get(24099),"",""))
     {
-      g_guiSettings.SetString("lookandfeel.skin",m_prompt->ID().c_str());
+      g_guiSettings.SetString("lookandfeel.skin",addon->ID().c_str());
       g_application.m_guiDialogKaiToast.ResetTimer();
       g_application.m_guiDialogKaiToast.Close(true);
       g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
     }
   }
-  m_prompt.reset();
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -585,12 +607,25 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
 
   int selectedIdx = 0;
   ADDON::VECADDONS addons;
-  CAddonMgr::Get().GetAddons(type, addons);
+  if (type == ADDON_AUDIO)
+    CAddonsDirectory::GetScriptsAndPlugins("audio",addons);
+  else if (type == ADDON_EXECUTABLE)
+    CAddonsDirectory::GetScriptsAndPlugins("executable",addons);
+  else if (type == ADDON_IMAGE)
+    CAddonsDirectory::GetScriptsAndPlugins("image",addons);
+  else if (type == ADDON_VIDEO)
+    CAddonsDirectory::GetScriptsAndPlugins("video",addons);
+  else
+    CAddonMgr::Get().GetAddons(type, addons);
+
+  CFileItemList items;
+  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
+    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
+
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
   dialog->SetUseDetails(true);
   dialog->EnableButton(true, 21452);
-  CFileItemList items;
   if (showNone)
   {
     CFileItemPtr item(new CFileItem("", false));
@@ -600,8 +635,6 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
     item->SetSpecialSort(SORT_ON_TOP);
     items.Add(item);
   }
-  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
-    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   for (int i = 0; i < items.Size(); ++i)
   {

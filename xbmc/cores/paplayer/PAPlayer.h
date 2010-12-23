@@ -89,9 +89,6 @@ public:
   virtual void SeekTime(__int64 iTime = 0);
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext();
-  virtual bool CanRecord() ;
-  virtual bool IsRecording();
-  virtual bool Record(bool bOnOff) ;
 
   void StreamCallback( LPVOID pPacketContext );
 

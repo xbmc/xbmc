@@ -126,6 +126,7 @@ public:
         return true;
     }
     virtual void Unload() {}
+    virtual bool IsLoaded() { return true; }
 };
 
 #else

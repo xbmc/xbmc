@@ -145,6 +145,9 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
+  if (!g_windowManager.Initialized())
+    return; // don't do anything
+
   m_dialogClosing = false;
   m_bModal = true;
   // set running before it's added to the window manager, else the auto-show code
@@ -183,6 +186,9 @@ void CGUIDialog::Show_Internal()
   CSingleLock lock(g_graphicsContext);
 
   if (m_bRunning && !m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
+
+  if (!g_windowManager.Initialized())
+    return; // don't do anything
 
   m_bModal = false;
 

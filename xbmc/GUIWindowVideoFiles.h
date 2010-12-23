@@ -37,6 +37,10 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
+
+  static void OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
+
 protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
@@ -48,8 +52,6 @@ protected:
   virtual CStdString GetStartFolder(const CStdString &dir);
 
   virtual void OnQueueItem(int iItem);
-  virtual void OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  virtual bool OnUnAssignContent(int iItem, int label1, int label2, int label3);
 
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);

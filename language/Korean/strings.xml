@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 10/25/2010-->
+<!--Date of translation: 11/29/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1186,6 +1186,7 @@
   <string id="14038">네트워크 설정이 변경되었습니다</string>
   <string id="14039">네트워크 설정을 변경하려면 XBMC</string>
   <string id="14040">재시작이 필요합니다. 지금 재시작 하시겠습니까?</string>
+  <string id="14041">인터넷 연결 대역폭 제한</string>
   <string id="14043">- 재생중에도 종료</string>
   <string id="14044">%i 분</string>
   <string id="14045">%i 초</string>
@@ -1726,6 +1727,8 @@
   <string id="20451">국가</string>
   <string id="20452">에피소드</string>
   <string id="20453">에피소드</string>
+  <string id="20454">청취자</string>
+  <string id="20455">청취자</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>
@@ -1968,6 +1971,7 @@
   <string id="24015">뮤직비디오 정보</string>
   <string id="24016">앨범 정보</string>
   <string id="24017">아티스트 정보</string>
+  <string id="24018">서비스</string>
   <string id="24020">설정</string>
   <string id="24021">사용안함</string>
   <string id="24022">사용함</string>
