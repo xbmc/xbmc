@@ -479,7 +479,7 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  format.m_dataFormat = wfxex.Samples.wValidBitsPerSample == 24 ? AE_FMT_S24NE : AE_FMT_S16NE;
+  format.m_dataFormat = wfxex.Samples.wValidBitsPerSample == 24 ? AE_FMT_S24NE4 : AE_FMT_S16NE;
   format.m_sampleRate = wfxex.Format.nSamplesPerSec;
   format.m_channelLayout = m_channelLayout;
   format.m_frameSize = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
