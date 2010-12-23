@@ -22,6 +22,7 @@
 #include "AESinkFactory.h"
 #include "SystemInfo.h"
 #include "utils/log.h"
+#include "AdvancedSettings.h"
 
 #ifdef _WIN32
   #include "Sinks/AESinkWASAPI.h"
@@ -67,7 +68,7 @@ IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioF
   else if(driver == "DIRECTSOUND")
     TRY_SINK(DirectSound)
 
-  if(g_sysinfo.IsVistaOrHigher())
+  if(g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound)
     TRY_SINK(WASAPI)
   else
     TRY_SINK(DirectSound)
@@ -93,7 +94,7 @@ void CAESinkFactory::Enumerate(AEDeviceList &devices, bool passthrough)
 {
 #ifdef _WIN32
 
-  if(g_sysinfo.IsVistaOrHigher())
+  if(g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound)
     CAESinkWASAPI::EnumerateDevices(devices, passthrough);
   else
     CAESinkDirectSound::EnumerateDevices(devices, passthrough);

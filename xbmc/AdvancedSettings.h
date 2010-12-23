@@ -114,6 +114,7 @@ class CAdvancedSettings
     float m_videoIgnorePercentAtEnd;
     CStdString m_audioHost;
     bool m_audioApplyDrc;
+    bool m_audioForceDirectSound;
 
     int   m_videoHighQualityScaling;
     int   m_videoHighQualityScalingMethod;
