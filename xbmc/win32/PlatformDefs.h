@@ -52,6 +52,10 @@ typedef unsigned long ThreadIdentifier;
 #define INT32_MAX INT_MAX
 #define INT32_MIN INT_MIN
 
+#define UINT8_MAX UCHAR_MAX
+#define UINT16_MAX USHRT_MAX
+#define UINT32_MAX UINT_MAX
+
 #ifndef PRIdS
 #define PRIdS "Id"
 #endif
