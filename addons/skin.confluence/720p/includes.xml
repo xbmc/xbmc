@@ -8,8 +8,6 @@
 	<include file="ViewsLiveTV.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
-	<include file="IncludesHomeVertical.xml" />
-	<include file="IncludesHomeHorizontal.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
 
 	<constant name="FanartCrossfadeTime">500</constant>
