@@ -66,7 +66,7 @@
   <string id="31113">Одно изобр.</string>
   <string id="31114">Много изобр.</string>
   <string id="31115">Настройки</string>
-  <string id="31116">Доп. скрипты</string>
+  <string id="31116"></string>
   <string id="31117">Показывать недавно добавленное Видео</string>
   <string id="31118">Подменю Главного Экрана</string>
   <string id="31119"></string>  <!-- blanked 2010-11-12 -->
@@ -83,7 +83,7 @@
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
 
-  <string id="31131">Использовать Горизонтальное Главное Меню</string>
+  <string id="31131"></string>
   <string id="31132">Дополнение Текстов Песен</string>
   <string id="31133">Дополнение Субтитров</string>
 
