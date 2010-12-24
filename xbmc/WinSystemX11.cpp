@@ -88,8 +88,8 @@ bool CWinSystemX11::DestroyWindowSystem()
 
     m_glContext = 0;
 
-    XCloseDisplay(m_dpy);
-    m_dpy = NULL;
+    //we don't call XCloseDisplay() here, since ati keeps a pointer to our m_dpy
+    //so instead we just let m_dpy die on exit
   }
 
   // m_SDLSurface is free()'d by SDL_Quit().
