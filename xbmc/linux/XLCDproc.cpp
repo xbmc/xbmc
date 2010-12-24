@@ -111,7 +111,7 @@ bool XLCDproc::Connect()
 
   if (connect(m_sockfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr)) == -1)
   {
-    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host.", __FUNCTION__);
+    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host, LCDd not running?", __FUNCTION__);
     return false;
   }
 
@@ -316,7 +316,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 
     if (write(m_sockfd, cmd.c_str(), cmd.size()) == -1)
     {
-      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket, LCDd not running?", __FUNCTION__);
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
       CloseSocket();
       return;
     }
