@@ -196,6 +196,12 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   CSingleLock lock(m_runLock);
   if(!m_initialized) return false;
 
+  //Shared mode has one mix format used to open the device and used internally by Windows.
+  //Don't change unless we are switching to passthrough or changing output modes. 
+  if(!m_isExclusive && g_guiSettings.GetBool("audiooutput.useexclusivemode") ==  m_isExclusive &&
+    format.m_dataFormat != AE_FMT_RAW)
+    return true;
+
   if(m_device == device &&
      m_isExclusive == g_guiSettings.GetBool("audiooutput.useexclusivemode") &&
      m_format.m_sampleRate   == format.m_sampleRate  &&
