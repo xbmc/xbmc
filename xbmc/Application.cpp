@@ -554,6 +554,11 @@ bool CApplication::Create()
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
+  //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
+  //this might bring the monitor out of standby, so we have to disable it explicitly
+  //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
+  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
+
 #endif // HAS_SDL
 
 #ifdef _LINUX
