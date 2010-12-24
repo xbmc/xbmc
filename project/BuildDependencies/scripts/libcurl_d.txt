@@ -1,2 +1,2 @@
 ; filename                        source of the file
-curl-7.21.1-devel-mingw32.zip           http://www.gknw.de/mirror/curl/win32/
+curl-7.21.1-devel-mingw32.zip           http://www.gknw.de/mirror/curl/win32/old_releases/
