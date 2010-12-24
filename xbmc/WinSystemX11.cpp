@@ -34,7 +34,7 @@
 
 using namespace std;
 
-CWinSystemX11::CWinSystemX11() : CWinSystemBase()
+CWinSystemX11::CWinSystemX11() : CWinSystemBase(), m_screensaverReset(true)
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_glContext = NULL;
@@ -383,6 +383,27 @@ bool CWinSystemX11::RefreshGlxContext()
 void CWinSystemX11::ShowOSMouse(bool show)
 {
   SDL_ShowCursor(show ? 1 : 0);
+}
+
+void CWinSystemX11::ResetX11Screensaver()
+{
+  if (m_bFullScreen)
+  {
+    //disallow the screensaver when we're fullscreen by periodically calling XResetScreenSaver(),
+    //normally SDL does this but we disable that in CApplication::Create()
+    //for some reason setting a 0 timeout with XSetScreenSaver doesn't work with gnome
+    if (!m_screensaverReset.IsRunning() || m_screensaverReset.GetElapsedSeconds() > 5.0f)
+    {
+      m_screensaverReset.StartZero();
+      XResetScreenSaver(m_dpy);
+      //need to flush the output buffer, since we don't check for events on m_dpy
+      XFlush(m_dpy);
+    }
+  }
+  else
+  {
+    m_screensaverReset.Stop();
+  }
 }
 
 void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
