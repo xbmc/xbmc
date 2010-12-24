@@ -406,6 +406,8 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, hnsRequestedDuration, 0, &wfxex->Format, NULL);
 
+  CoTaskMemFree(wfxex);
+
   return true;
 }
 
