@@ -59,5 +59,6 @@ private:
 
   bool                m_running;
   bool                m_initialized;
+  bool                m_isExclusive;
   CCriticalSection    m_runLock;
 };
