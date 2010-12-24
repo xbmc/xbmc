@@ -133,14 +133,16 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 
   /* remove any deleted streams */
   list<CSoftAEStream*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end(); itt != m_streams.end() ? ++itt : itt)
+  for(itt = m_streams.begin(); itt != m_streams.end();)
   {
     if ((*itt)->IsDestroyed())
     {
       CSoftAEStream *stream = *itt;
       itt = m_streams.erase(itt);
       delete stream;
+      continue;
     }
+    ++itt;
   }
 
   if (forceRaw)
