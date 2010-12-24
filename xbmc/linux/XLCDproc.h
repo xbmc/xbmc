@@ -44,6 +44,8 @@ public:
 protected:
   virtual void Process();
   virtual void SetLine(int iLine, const CStdString& strLine);
+  bool         Connect();
+  void         CloseSocket();
   unsigned int m_iColumns;        // display columns for each line
   unsigned int m_iRows;           // total number of rows
   unsigned int m_iRow1adr;
@@ -58,12 +60,12 @@ protected:
   int          m_iPos[MAX_ROWS];
   DWORD        m_dwSleep[MAX_ROWS];
   CEvent       m_event;
-  int          sockfd;
+  int          m_sockfd;
 
 private:
   int          m_lastInitAttempt;
   int          m_initRetryInterval;
-  bool         m_used;
+  bool         m_used; //set to false when trying to connect has failed
 };
 
 #endif
