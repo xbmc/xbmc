@@ -59,7 +59,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_pRenderClient(NULL),
   m_pDevice(NULL),
   m_initialized(false),
-  m_running(false)
+  m_running(false),
+  m_isExclusive(false)
 {
   m_channelLayout[0] = AE_CH_NULL;
 }
@@ -144,11 +145,15 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
   {
     if(!InitializeExclusive(format))
       goto failed;
+
+    m_isExclusive = true;
   }
   else
   {
     if(!InitializeShared(format))
       goto failed;
+
+    m_isExclusive = false;
   }
 
   UINT32 m_uiBufferLen;
@@ -192,6 +197,7 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   if(!m_initialized) return false;
 
   if(m_device == device &&
+     m_isExclusive == g_guiSettings.GetBool("audiooutput.useexclusivemode") &&
      m_format.m_sampleRate   == format.m_sampleRate  &&
      ((format.m_dataFormat   == AE_FMT_RAW           && 
        m_format.m_dataFormat == AE_FMT_RAW)          ||
