@@ -391,7 +391,6 @@ void ILCD::Initialize()
   lcdPath = g_settings.GetUserDataItem("LCD.xml");
   LoadSkin(lcdPath);
   m_eCurrentCharset = CUSTOM_CHARSET_DEFAULT;
-  m_disableOnPlay = 0;
 
   // Big number blocks, used for screensaver clock
   // Note, the big block isn't here, it's in the LCD's ROM
