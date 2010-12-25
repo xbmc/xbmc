@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 35368 -->
+<!--Based on english strings version 35649 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1460,7 +1460,7 @@
   <string id="15275">%name% 歌曲周排行</string>
   <string id="15276">收听 %name% 在 Last.fm 的同好</string>
   <string id="15277">收听 %name% 的个人 Last.fm</string>
-  <string id="15278">收听 %name% 在 Last.fm 的最爱</string>
+  <string id="15278"></string>
   <string id="15279">正在从 Last.fm 获取列表</string>
   <string id="15280">不能从 Last.fm 获取列表...</string>
   <string id="15281">输入艺人名来寻找相关资料</string>
@@ -1468,7 +1468,7 @@
   <string id="15283">%name% 最近听过的歌曲</string>
   <string id="15284">收听 %name% 在 Last.fm 的推荐</string>
   <string id="15285">%name% 的排行</string>
-  <string id="15286">收听 %name% 在 Last.fm 的播放列表</string>
+  <string id="15286"></string>
   <string id="15287">你想把目前歌曲加入你的最爱吗？</string>
   <string id="15288">你想封锁目前的歌曲吗？</string>
   <string id="15289">加入你的最爱歌曲：'%s'</string>
@@ -2106,7 +2106,7 @@
   <string id="21885">下载专辑信息</string>
   <string id="21886">下载艺人信息</string>
   <string id="21887">传记</string>
-  <string id="21888">唱片分类</string>
+  <string id="21888">唱片集</string>
   <string id="21889">搜索艺人</string>
   <string id="21890">选择艺人</string>
   <string id="21891">艺人信息</string>
