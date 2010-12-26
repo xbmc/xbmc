@@ -115,7 +115,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
 
     CStdStringW strRawDevName(varName.pwszVal);
     CStdString strDevName;
-    g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName);
+    g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
     if(device == strDevName)
       i = uiCount;
