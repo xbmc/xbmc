@@ -32,6 +32,13 @@
 
 using namespace std;
 
+static CStdString QuoteDevice(const CStdString& device)
+{
+  CStdString result(device);
+  result.Replace("'", "\\'");
+  return "'" + result + "'";
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -153,7 +160,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     if((deviceuse + ":").Left(5) == "hdmi:"
     || (deviceuse + ":").Left(7) == "iec958:"
     || (deviceuse + ":").Left(6) == "spdif:")
-      deviceuse = "plug:" + deviceuse;
+      deviceuse = "plug:" + QuoteDevice(deviceuse);
 
     if(deviceuse == "default")
       switch(iChannels)
