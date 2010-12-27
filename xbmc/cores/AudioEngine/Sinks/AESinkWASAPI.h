@@ -48,6 +48,7 @@ private:
   bool         InitializeExclusive(AEAudioFormat &format);
   void         AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD        SpeakerMaskFromAEChannels(AEChLayout channels);
+  void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
 
   IMMDevice          *m_pDevice;
   IAudioClient       *m_pAudioClient;
