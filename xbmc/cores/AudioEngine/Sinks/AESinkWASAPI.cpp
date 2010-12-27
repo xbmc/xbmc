@@ -51,6 +51,19 @@ static const unsigned int WASAPISampleRates[] = {192000, 176400, 96000, 88200, 4
 static const unsigned int WASAPIChannelOrder[] = {SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT};
 static const enum AEChannel AEChannelNames[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
+struct sampleFormat
+{
+  GUID subFormat;
+  unsigned int bitsPerSample;
+  unsigned int validBitsPerSample;
+};
+
+//Sample formats go from float -> 32 bit int -> 24 bit int (packed in 32) -> 16 bit int 
+static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32, 32},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 32},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 32, 24},
+                                            {KSDATAFORMAT_SUBTYPE_PCM, 16, 16} }; 
+
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
 
 
@@ -411,32 +424,50 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   return true;
 }
 
-bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
+void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
 {
-  WAVEFORMATEXTENSIBLE wfxex = {0};
+  wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
 
-  wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-  wfxex.Format.nChannels       = format.m_channelCount;
-  wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
-  if (format.m_dataFormat == AE_FMT_RAW) 
+  if (format.m_dataFormat != AE_FMT_RAW) // PCM data
+  {
+    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
+    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.Format.nChannels       = format.m_channelCount;
+    wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
+    wfxex.Format.wBitsPerSample  = 32;
+  }
+  else //format.m_dataFormat == AE_FMT_RAW
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
     wfxex.Format.wBitsPerSample  = 16;
     wfxex.Format.nChannels       = 2;
-  } 
-  else
-  {
-    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
-    wfxex.Format.wBitsPerSample  = 32;
+    wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
   }
 
   wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
-  wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
-  wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+  wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+  wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+}
+
+/*
+void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex)
+{
+  //Fill the common structure.
+  BuildWaveFormatExtensible(format, wfxex.FormatExt);
+  wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
+  wfxex.dwEncodedChannelCount   = format.m_channelCount;
+  wfxex.dwEncodedSamplesPerSec  = format.m_sampleRate;
+  wfxex.dwAverageBytesPerSec    = 0; //Ignored
+}
+*/
+
+bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
+{
+  WAVEFORMATEXTENSIBLE wfxex;
+  BuildWaveFormatExtensible(format, wfxex);
 
   HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
@@ -448,10 +479,15 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   int closestMatch;
 
   //The requested format is not supported by the device.  Find something that works.
-  //Try float -> 24 bit int -> 16 bit int
-  for(int j = 0; j < 3; j++)
+  //Try other formats
+  for(int j = 0; j < sizeof(testFormats)/sizeof(sampleFormat); j++)
   {
     closestMatch = -1;
+
+    wfxex.SubFormat                   = testFormats[j].subFormat;
+    wfxex.Format.wBitsPerSample       = testFormats[j].bitsPerSample;
+    wfxex.Samples.wValidBitsPerSample = testFormats[j].validBitsPerSample;
+    wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
 
     for(int i = 0 ; i < WASAPISampleRateCount; i++)
     {
@@ -477,13 +513,6 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
       wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
       goto initialize;
     }
-
-    //The device doesn't like floats so try ints.
-    wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-
-    wfxex.Format.wBitsPerSample       = wfxex.Samples.wValidBitsPerSample == 32 ? 32 : 16;
-    wfxex.Samples.wValidBitsPerSample -= 8;
-    wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   }
 
   CLog::Log(LOGERROR, __FUNCTION__": Unable to locate a supported output format for the device.  Check the speaker settings in the control panel."); 
@@ -496,7 +525,21 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  format.m_dataFormat = wfxex.Samples.wValidBitsPerSample == 24 ? AE_FMT_S24NE4 : AE_FMT_S16NE;
+  if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+  {
+    if(wfxex.Format.wBitsPerSample == 32)
+    {
+      if(wfxex.Samples.wValidBitsPerSample == 32)
+        format.m_dataFormat = AE_FMT_S32NE;
+      else // wfxex->Samples.wValidBitsPerSample == 24
+        format.m_dataFormat = AE_FMT_S24NE4;
+    }
+    else // wfxex->Samples.wBitsPerSample == 16
+    {
+      format.m_dataFormat = AE_FMT_S16BE;
+    }
+  }
+
   format.m_sampleRate = wfxex.Format.nSamplesPerSec;
   format.m_channelLayout = m_channelLayout;
   format.m_frameSize = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
