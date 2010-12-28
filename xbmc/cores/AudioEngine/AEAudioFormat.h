@@ -100,6 +100,22 @@ enum AEDataFormat
   AE_FMT_MAX
 };
 
+/* Future HD audio support.
+
+enum AEEncodedDataFormat
+{
+  AE_ENCFMT_INVALID = -1,
+
+  AE_ENCFMT_AC3,   //Dolby Digital
+  AE_ENCFMT_DTS,   //DTS
+  AE_ENCFMT_EAC3,  //DD+
+  AE_ENCFMT_MLP,   //Meridian Lossless Packing (Dolby TrueHD)
+  AE_ENCFMT_DTSHD, //DTS-HD (aka DTS-MA)
+
+  AE_ENCFMT_MAX
+};
+*/
+
 /**
  * The audio format structure that fully defines a stream's audio information
  */
@@ -108,6 +124,12 @@ typedef struct {
    * The stream's data format (eg, AE_FMT_S16LE)
    */
   enum AEDataFormat  m_dataFormat;
+
+  /** Future HD audio support
+   * The raw stream's encoded data format
+
+  enum AEEncodedDataFormat m_encodedFormat;
+   */
 
   /**
    * The stream's sample rate (eg, 48000)

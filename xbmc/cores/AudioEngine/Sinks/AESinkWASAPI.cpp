@@ -422,7 +422,7 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
 void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
 {
-  wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
+  wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
 
   if (format.m_dataFormat != AE_FMT_RAW) // PCM data
   {
@@ -435,12 +435,57 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
   }
   else //format.m_dataFormat == AE_FMT_RAW
   {
+    /* Future HD audio support
+    if(format.m_encodedFormat == AE_ENCFMT_AC3 || format.m_encodedFormat == AE_ENCFMT_DTS)
+    {*/
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
     wfxex.Format.wBitsPerSample  = 16;
     wfxex.Format.nChannels       = 2;
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
+    /*}
+    else if(format.m_encodedFormat == AE_ENCFMT_EAC3 || format.m_encodedFormat == AE_ENCFMT_MLP || format.m_encodedFormat == AE_ENCFMT_DTSHD)
+    {
+      // code here assumes that format.m_sampleRate and format.m_channelCount describe the decoded stream.
+
+      wfxex.Format.wFormatTag     = WAVE_FORMAT_EXTENSIBLE;
+      wfxex.Format.wBitsPerSample = 16;     //Link is always 16 bits.
+      wfxex.dwChannelMask         = 0;
+
+      switch(format.m_encodedFormat)
+      {
+      case AE_ENCFMT_EAC3:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
+        wfxex.Format.nSamplesPerSec = 4 * format.m_sampleRate;
+        wfxex.Format.nChannels      = 2;
+        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1; // what about 7.1 DD+?
+        break;
+      case AE_ENCFMT_MLP:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
+        wfxex.Format.nSamplesPerSec = 192000; //Link always runs at 192Khz
+        wfxex.Format.nChannels      = 8;
+        break;
+      case AE_ENCFMT_DTSHD:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
+        wfxex.Format.nSamplesPerSec = 192000; //Link always runs at 192Khz
+        wfxex.Format.nChannels      = 8;
+        break;
+      }
+
+      if (wfxex.dwChannelMask == 0)
+      {
+        switch(format.m_channelCount)
+        {
+        case 8:
+          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1;
+          break;
+        case 6:
+          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+          break;
+        }
+      }
+    }*/
   }
 
   wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
