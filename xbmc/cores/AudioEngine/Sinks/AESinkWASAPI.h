@@ -62,4 +62,6 @@ private:
   bool                m_initialized;
   bool                m_isExclusive;
   CCriticalSection    m_runLock;
+
+  unsigned int        m_uiBufferLen; // wasapi endpoint buffer size, in frames
 };
