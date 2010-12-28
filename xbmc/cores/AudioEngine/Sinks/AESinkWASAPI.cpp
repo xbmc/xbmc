@@ -536,7 +536,7 @@ initialize:
     }
     else // wfxex->Samples.wBitsPerSample == 16
     {
-      format.m_dataFormat = AE_FMT_S16BE;
+      format.m_dataFormat = AE_FMT_S16NE;
     }
   }
 
