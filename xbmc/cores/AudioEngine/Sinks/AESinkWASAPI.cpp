@@ -73,7 +73,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_pDevice(NULL),
   m_initialized(false),
   m_running(false),
-  m_isExclusive(false)
+  m_isExclusive(false),
+  m_uiBufferLen(0)
 {
   m_channelLayout[0] = AE_CH_NULL;
 }
@@ -169,7 +170,6 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
     m_isExclusive = false;
   }
 
-  UINT32 m_uiBufferLen;
   hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
   format.m_frames = m_uiBufferLen/8;
   format.m_frameSamples = format.m_frames * format.m_channelCount;
@@ -254,17 +254,13 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   CSingleLock lock(m_runLock);
   if(!m_initialized) return 0;
 
-  UINT32 total, waitFor, count, copied;
-  count = frames;
-  copied = 0;
+  UINT32 waitFor;
 
-  m_pAudioClient->GetBufferSize(&total);
   m_pAudioClient->GetCurrentPadding(&waitFor);
 
-  while(total - waitFor < frames)
+  while(m_uiBufferLen - waitFor < frames)
   {
     Sleep(1);
-    m_pAudioClient->GetBufferSize(&total);
     m_pAudioClient->GetCurrentPadding(&waitFor);
   }
 
