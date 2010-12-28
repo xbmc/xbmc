@@ -294,7 +294,10 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
   {
     const uint32_t odd = count - even;
     if (odd == 1)
+    {
+      _mm_empty();
       dest[0] = MathUtils::round_int((data[0] + 1.0f) * ((float)INT8_MAX+.5f));
+    }
     else
     {
       __m128 in;
@@ -359,7 +362,10 @@ unsigned int CAEConvert::Float_S8(float *data, const unsigned int samples, uint8
   {
     const uint32_t odd = count - even;
     if (odd == 1)
+    {
+      _mm_empty();
       dest[0] = MathUtils::round_int(data[0] * ((float)INT8_MAX+.5f));
+    }
     else
     {
       __m128 in;
@@ -423,6 +429,7 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
     const uint32_t odd = samples - even;
     if (odd == 1)
     {
+      _mm_empty();
       dst[0] = MathUtils::round_int(data[0] * ((float)INT16_MAX+.5f));
       #ifdef __BIG_ENDIAN__
       dst[0] = Endian_Swap16(dst[0]);
@@ -505,6 +512,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
     const uint32_t odd = samples - even;
     if (odd == 1)
     {
+      _mm_empty();
       dst[0] = MathUtils::round_int(data[0] * ((float)INT16_MAX+.5f));
       #ifndef __BIG_ENDIAN__
       dst[0] = Endian_Swap16(dst[0]);
