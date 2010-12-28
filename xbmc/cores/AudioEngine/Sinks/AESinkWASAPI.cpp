@@ -271,7 +271,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   BYTE *buf;
   HRESULT hr = m_pRenderClient->GetBuffer(frames, &buf);
 
-  memcpy(buf, data, frames*8);
+  memcpy(buf, data, frames*m_format.m_frameSize);
 
   m_pRenderClient->ReleaseBuffer(frames, 0);
 
