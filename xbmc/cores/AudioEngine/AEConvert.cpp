@@ -156,7 +156,7 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
     *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
 #else
     int16_t value;
-    swab(data, &value, 2);
+    swab((char *)data, (char *)&value, 2);
     *dest = m_LookupS16[value + INT16_MAX];
 #endif
   }
@@ -170,11 +170,11 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
 #ifdef __BIG_ENDIAN__
-    *(int32_t*)dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
+    *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
 #else
     int16_t value;
     swab((char *)data, (char *)&value, 2);
-    *(int32_t*)dest = m_LookupS16[value + INT16_MAX];
+    *dest = m_LookupS16[value + INT16_MAX];
 #endif
   }
 
@@ -284,10 +284,10 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
 
     int16_t temp[4];
     memcpy(temp, &con, sizeof(temp));
-    dest[0] = temp[0];
-    dest[1] = temp[1];
-    dest[2] = temp[2];
-    dest[3] = temp[3];
+    dest[0] = (uint8_t)temp[0];
+    dest[1] = (uint8_t)temp[1];
+    dest[2] = (uint8_t)temp[2];
+    dest[3] = (uint8_t)temp[3];
   }
 
   if (count != even)
@@ -306,8 +306,8 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
 
         int16_t temp[2];
         memcpy(temp, &con, sizeof(temp));
-        dest[0] = temp[0];
-        dest[1] = temp[1];
+        dest[0] = (uint8_t)temp[0];
+        dest[1] = (uint8_t)temp[1];
       }
       else
       {
@@ -317,9 +317,9 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
 
         int16_t temp[3];
         memcpy(temp, &con, sizeof(temp));
-        dest[0] = temp[0];
-        dest[1] = temp[1];
-        dest[2] = temp[2];
+        dest[0] = (uint8_t)temp[0];
+        dest[1] = (uint8_t)temp[1];
+        dest[2] = (uint8_t)temp[2];
       }
     }
   }

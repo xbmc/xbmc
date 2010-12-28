@@ -69,9 +69,9 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_initSampleRate    = sampleRate;
   m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
-  m_freeOnDrain       = options & AESTREAM_FREE_ON_DRAIN;
-  m_ownsPostProc      = options & AESTREAM_OWNS_POST_PROC;
-  m_forceResample     = options & AESTREAM_FORCE_RESAMPLE;
+  m_freeOnDrain       = (options & AESTREAM_FREE_ON_DRAIN) != 0;
+  m_ownsPostProc      = (options & AESTREAM_OWNS_POST_PROC) != 0;
+  m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
 
   Initialize();
 }
