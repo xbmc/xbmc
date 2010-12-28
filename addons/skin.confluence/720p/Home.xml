@@ -26,7 +26,7 @@
 			<onfocus>SetFocus(9000)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
-			<visible>Skin.HasSetting(homepageHideRecentlyAdded)</visible>
+			<visible>Skin.HasSetting(homepageShowRecentlyAdded)</visible>
 		</control>
 		<control type="button" id="8999">
 			<description>Don't run Recently added</description>
@@ -39,7 +39,7 @@
 			<onfocus>SetFocus(9000)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
-			<visible>!Skin.HasSetting(homepageHideRecentlyAdded)</visible>
+			<visible>!Skin.HasSetting(homepageShowRecentlyAdded)</visible>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
@@ -360,7 +360,7 @@
 				</control>
 			</control>
 		</control>
-		<include condition="Skin.HasSetting(homepageHideRecentlyAdded)">HomeRecentlyAddedInfo</include>
+		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
 		<control type="group">
 			<animation effect="slide" end="-400,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-400,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
