@@ -1632,6 +1632,10 @@ void CCrystalHD::SetDropState(bool bDrop)
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
 {
+  // based on gstbcmdec.c (bcmdec_insert_sps_pps)
+  // which is Copyright(c) 2008 Broadcom Corporation.
+  // and Licensed LGPL 2.1
+
   uint8_t *data = (uint8_t*)extradata;
   uint32_t data_size = extradata_size;
   int profile;
