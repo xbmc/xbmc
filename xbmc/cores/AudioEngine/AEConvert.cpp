@@ -323,7 +323,7 @@ unsigned int CAEConvert::Float_U8(float *data, const unsigned int samples, uint8
       }
     }
   }
-
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dest)
     dest[0] = MathUtils::round_int((data[0] + 1.0f) * ((float)INT8_MAX+.5f));
@@ -379,7 +379,7 @@ unsigned int CAEConvert::Float_S8(float *data, const unsigned int samples, uint8
       }
     }
   }
-
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dest)
     dest[0] = MathUtils::round_int(data[0] * ((float)INT8_MAX+.5f));
@@ -456,6 +456,7 @@ unsigned int CAEConvert::Float_S16LE(float *data, const unsigned int samples, ui
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
@@ -537,6 +538,7 @@ unsigned int CAEConvert::Float_S16BE(float *data, const unsigned int samples, ui
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
@@ -602,6 +604,7 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
     *dst = MathUtils::round_int(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF;
@@ -670,6 +673,7 @@ unsigned int CAEConvert::Float_S24NE3(float *data, const unsigned int samples, u
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, dest += 3)
     *((uint32_t*)(dest)) = (MathUtils::round_int(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
@@ -746,6 +750,7 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
@@ -832,6 +837,7 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
       }
     }
   }
+  _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
