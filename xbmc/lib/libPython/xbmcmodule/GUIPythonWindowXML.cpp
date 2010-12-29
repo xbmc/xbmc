@@ -124,7 +124,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     }
     break;
 
-    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_FOCUSED:
     {
       if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != (int)message.GetControlId())
       {
@@ -164,7 +164,10 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         UpdateFileList();*/
         return true;
       }
-
+      else if (iControl == CONTROL_BTNVIEWASICONS)
+      { // base class handles this one
+        break;
+      }
       if(pCallbackWindow && iControl && iControl != (int)this->GetID()) // pCallbackWindow &&  != this->GetID())
       {
         CGUIControl* controlClicked = (CGUIControl*)this->GetControl(iControl);
@@ -180,6 +183,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             // aquire lock?
             PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnClick, inf);
             PulseActionEvent();
+            return true;
           }
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
@@ -189,6 +193,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             // aquire lock?
             PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
+            return true;
           }
         }
       }
@@ -351,24 +356,30 @@ void CGUIPythonWindowXML::Render()
 
 int Py_XBMC_Event_OnClick(void* arg)
 {
-  if (arg != NULL)
+  if(!arg)
+    return 0;
+
+  PyXBMCAction* action = (PyXBMCAction*)arg;
+  if (action->pCallbackWindow)
   {
-    PyXBMCAction* action = (PyXBMCAction*)arg;
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
     if (ret)
     {
       Py_DECREF(ret);
     }
-    delete action;
   }
+  delete action;
   return 0;
 }
 
 int Py_XBMC_Event_OnFocus(void* arg)
 {
-  if (arg != NULL)
+  if(!arg)
+    return 0;
+
+  PyXBMCAction* action = (PyXBMCAction*)arg;
+  if (action->pCallbackWindow)
   {
-    PyXBMCAction* action = (PyXBMCAction*)arg;
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onFocus", (char*)"(i)", action->controlId);
     if (ret)
     {
@@ -381,16 +392,19 @@ int Py_XBMC_Event_OnFocus(void* arg)
 
 int Py_XBMC_Event_OnInit(void* arg)
 {
-  if (arg != NULL)
+  if(!arg)
+    return 0;
+
+  PyXBMCAction* action = (PyXBMCAction*)arg;
+  if (action->pCallbackWindow)
   {
-    PyXBMCAction* action = (PyXBMCAction*)arg;
     PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onInit", (char*)"()"); //, (char*)"O", &self);
     if (ret)
     {
-      Py_DECREF(ret);
+      Py_XDECREF(ret);
     }
-    delete action;
   }
+  delete action;
   return 0;
 }
 

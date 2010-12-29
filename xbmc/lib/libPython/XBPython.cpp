@@ -49,10 +49,12 @@
 #include "utils/SingleLock.h"
 #include "utils/TimeUtils.h"
 
-XBPython g_pythonParser;
-
 #ifndef _LINUX
+#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmcbin/system/python/python26.dll"
+#else
 #define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
+#endif
 #else
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
@@ -353,8 +355,10 @@ void XBPython::Initialize()
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
+#ifndef HAVE_LIBPYTHON2_6
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd") ||
+#endif
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
@@ -380,7 +384,7 @@ void XBPython::Initialize()
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
 #endif /* _LINUX */
-#else
+#elif !defined(_WIN32)
       /* PYTHONOPTIMIZE is set off intentionally when using external Python.
          Reason for this is because we cannot be sure what version of Python
          was used to compile the various Python object files (i.e. .pyo,

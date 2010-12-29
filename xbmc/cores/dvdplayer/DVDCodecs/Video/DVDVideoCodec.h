@@ -33,7 +33,7 @@
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CProcessor; }
-namespace VAAPI { class CHolder; }
+namespace VAAPI { struct CHolder; }
 class CVDPAU;
 
 // should be entirely filled by all codecs

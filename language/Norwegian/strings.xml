@@ -42,8 +42,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="45">Fre</string>
   <string id="46">Lør</string>
   <string id="47">Søn</string>
-  <string id="51">Jan</string>
   
+  <string id="51">Jan</string>
   <string id="52">Feb</string>
   <string id="53">Mar</string>
   <string id="54">Apr</string>
@@ -176,6 +176,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="197">Spør etter %s informasjon</string>
   <string id="198">Laster filmdetaljer</string>
   <string id="199">Webgrensesnitt</string>
+  
   <string id="202">Slagord</string>
   <string id="203">Handling</string>
   
@@ -565,6 +566,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="609">CDDA-sti for ripping er ikke satt</string>
   <string id="610">Ripp musikkspor</string>
   <string id="611">Skriv inn nummer</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Samplingsfrekvens</string>
   
   <string id="620">CD-ripping</string>
   <string id="621">Koder</string>
@@ -856,9 +859,6 @@ the English template, and make it easier for translators to see which line belon
   <string id="2102"></string>
   <string id="2103"></string>
   
-  <string id="2102"></string>
-  <string id="2103"></string>
-  
   <string id="4501">Aktiver LCD/VFD</string>
   
   <string id="10000">Forside</string>
@@ -885,12 +885,10 @@ the English template, and make it easier for translators to see which line belon
   <string id="10021">Nettleser</string>
   
   <string id="10028">Videoer/Spilleliste</string>
-
   <string id="10034">Innstillinger - Profiler</string>
   
   <string id="10100">Ja/Nei dialog</string>
   <string id="10101">Forløpsdialgboks</string>
-  
   
   <string id="10210">Leter etter undertekster...</string>
   <string id="10211">Leter etter eller henter undertekster...</string>
@@ -1094,6 +1092,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="13167"></string>
   <string id="13168"></string>
   <string id="13169"></string>
+  
+  
   <string id="13170">Aldri</string>
   <string id="13171">Umiddelbart</string>
   <string id="13172">Etter %i sek</string>
@@ -1267,7 +1267,6 @@ the English template, and make it easier for translators to see which line belon
   <string id="13430">Tillat maskinvareakselerasjon (OpenMax)</string>
   <string id="13431">Piksel shader</string> <!-- improve here -->
   
-  
   <string id="13500">A/V synkmetode</string>
   <string id="13501">Lydklokking</string>
   <string id="13502">Videoklokking (dropp/dupliser lyd)</string>
@@ -1281,6 +1280,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="13510">Synkroniser avspilling til skjerm</string>
   
   <string id="13600">Apple fjernkontroll</string>
+  
   <string id="13602">Tillat oppstart av XBMC fra fjernkontrollen</string>
   <string id="13603">Sekvensforsinkelse</string>
   
@@ -2177,6 +2177,7 @@ the English template, and make it easier for translators to see which line belon
   
   <string id="23104">Trykk OK når avspilling er ferdig</string>
   
+  
   <string id="24000">Tillegg</string>
   <string id="24001">Tillegg</string>
   <string id="24002">Alternativer for tillegg</string>
@@ -2218,7 +2219,7 @@ the English template, and make it easier for translators to see which line belon
   
   <string id="24050">Tilgjengelige tillegg</string>
   <string id="24051">Versjon:</string>
-  <string id="24052">Dementi:</string>
+  <string id="24052">Fraskrivelse:</string>
   <string id="24053">Lisens:</string>
   <string id="24054">Endringslogg</string>
   <string id="24059">Vil du aktivere dette tillegget?</string>
@@ -2239,7 +2240,6 @@ the English template, and make it easier for translators to see which line belon
   <string id="24073">Kunne ikke koble til</string>
   <string id="24074">Må startes på nytt</string>
   <string id="24075">Deaktivere</string>
-
   <string id="24080">Forsøk ny oppkobling?</string>
   <string id="24089">Tillegg starter på nytt</string>
   <string id="24090">Lås tilleggsbehandler</string>
@@ -2253,6 +2253,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="24096">Tillegget er markert som ødelagt i pakkebrønnen.</string>
   <string id="24097">Vil du deaktivere tillegget?</string>
   <string id="24098">Ødelagt</string>
+  <string id="24099">Ønsker du å bytte til dette skinnet nå?</string>
+  <string id="25000">Varslinger</string>
   
   
   <string id="29800">Biblioteksmodus</string>

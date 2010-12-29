@@ -75,3 +75,10 @@ void CGUISound::SetVolume(float level)
   if (m_sound) m_sound->SetVolume(level);
 }
 
+void CGUISound::Wait(uint32_t millis/*=500*/)
+{
+  millis /= 10;
+  while (IsPlaying() && millis--)
+    Sleep(10);
+}
+

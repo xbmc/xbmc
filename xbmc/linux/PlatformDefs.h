@@ -184,7 +184,7 @@
 
 typedef pthread_t ThreadIdentifier;
 
-class CXHandle; // foward declaration
+struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
 
 typedef void* HINSTANCE;

@@ -32,6 +32,7 @@
 #include "XBMCOperations.h"
 #include "AnnouncementManager.h"
 #include "log.h"
+#include "Variant.h"
 #include <string.h>
 
 using namespace ANNOUNCEMENT;
@@ -158,18 +159,24 @@ Command CJSONRPC::m_commands[] = {
 // Music library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
   { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre, Fields: album_description, album_theme, album_mood, album_style, album_type, album_label, album_artist, album_genre, album_rating, album_title" },
+  { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails,                      Response,     ReadData,        "Retrieve details about a specific album. Parameter example { \"fields\": [\"review\"], \"albumid\": 12}. fields is optional"},
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails,                       Response,     ReadData,        "Retrieve details about a specific song. Parameter example { \"fields\": [\"title\"], \"songid\": 12}. fields is optional"},
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres,                            Response,     ReadData,        "Retrieve all genres" },
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // Video library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails,                      Response,     ReadData,        "Retrieve details about a specific movie. Parameter example { \"fields\": [\"plot\"], \"movieid\": 12}. fields is optional" },
 
   { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows,                           Response,     ReadData,        "Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails,                     Response,     ReadData,        "Retrieve details about a specific tv show. Parameter example { \"fields\": [\"plot\"], \"tvshowid\": 12}. fields is optional" },
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons,                           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"season\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
   { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes,                          Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"season\": 1, \"fields\": [\"plot\"], \"sortmethod\": \"episode\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails,                    Response,     ReadData,        "Retrieve details about a specific tv show episode. Parameter example { \"fields\": [\"plot\"], \"episodeid\": 12}. fields is optional" },
 
   { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos,                       Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetMusicVideoDetails",            CVideoLibrary::GetMusicVideoDetails,                 Response,     ReadData,        "Retrieve details about a specific music video. Parameter example { \"fields\": [\"plot\"], \"musicvideoid\": 12}. fields is optional" },
 
   { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies,               Response,     ReadData,        "Retrieve all recently added movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
   { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes,             Response,     ReadData,        "Retrieve all recently added episodes. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
@@ -235,7 +242,7 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
 
 JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  result["version"] = 1;
+  result["version"] = 3;
 
   return OK;
 }
@@ -245,10 +252,7 @@ JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *tran
   int flags = client->GetPermissionFlags();
   
   for (int i = 1; i <= OPERATION_PERMISSION_ALL; i *= 2)
-  {
-    if (flags & i)
-      result["permission"].append(PermissionToString((OperationPermission)(flags & i)));
-  }
+    result[PermissionToString((OperationPermission)i)] = (flags & i) > 0;
 
   return OK;
 }
@@ -265,10 +269,7 @@ JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportL
   int flags = client->GetAnnouncementFlags();
   
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-  {
-    if (flags & i)
-      result["permission"].append(AnnouncementFlagToString((EAnnouncementFlag)(flags & i)));
-  }
+    result[AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }
@@ -280,13 +281,15 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
 
   int flags = 0;
 
-  if (parameterObject.get("playback", false).asBool())
+  if (parameterObject.get("Playback", false).asBool())
     flags |= Playback;
-  else if (parameterObject.get("gui", false).asBool())
+  if (parameterObject.get("GUI", false).asBool())
     flags |= GUI;
-  else if (parameterObject.get("system", false).asBool())
+  if (parameterObject.get("System", false).asBool())
     flags |= System;
-  else if (parameterObject.get("other", false).asBool())
+  if (parameterObject.get("Library", false).asBool())
+    flags |= Library;
+  if (parameterObject.get("Other", false).asBool())
     flags |= Other;
 
   if (client->SetAnnouncementFlags(flags))
@@ -300,7 +303,13 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
   if (!parameterObject.isObject() || !parameterObject.isMember("sender") || !parameterObject.isMember("message"))
     return InvalidParams;
 
-  CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), parameterObject.isMember("data") ? parameterObject["sender"].asString().c_str() : NULL);
+  if (!parameterObject.isMember("data"))
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str());
+  else
+  {
+    CVariant data(parameterObject["data"].asString());
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), data);
+  }
 
   return ACK;
 }
@@ -402,7 +411,7 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
   case ScanLibrary:
     return "ScanLibrary";
   default:
-    return "Unkown";
+    return "Unknown";
   }
 }
 
@@ -416,10 +425,12 @@ inline const char *CJSONRPC::AnnouncementFlagToString(const EAnnouncementFlag &a
     return "GUI";
   case System:
     return "System";
+  case Library:
+    return "Library";
   case Other:
     return "Other";
   default:
-    return "Unkown";
+    return "Unknown";
   }
 }
 

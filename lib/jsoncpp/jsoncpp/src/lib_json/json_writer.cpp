@@ -71,7 +71,17 @@ std::string valueToString( double value )
 #else	
    sprintf(buffer, "%#.16g", value); 
 #endif
-   char* ch = buffer + strlen(buffer) - 1;
+   char* ch = buffer;
+   // Incase sprintf have written ',' as decimal point switch it to '.'
+   while (*ch != '\0'){
+     if (*ch == ','){
+       *ch = '.';
+       break;
+     }
+     ch++;
+   }
+
+   ch = buffer + strlen(buffer) - 1;
    if (*ch != '0') return buffer; // nothing to truncate, so save time
    while(ch > buffer && *ch == '0'){
      --ch;

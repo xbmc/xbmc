@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language locale="czech">
+<language locale="cs">
   <charsets>
     <gui>CP1250</gui>
     <subtitle>CP1250</subtitle>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region name="CZ" locale="CZE">
+    <region name="CZ" locale="CZ">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

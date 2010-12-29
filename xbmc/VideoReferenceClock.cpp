@@ -107,7 +107,7 @@ using namespace std;
 CVideoReferenceClock::CVideoReferenceClock()
 {
   m_SystemFrequency = CurrentHostFrequency();
-  m_AdjustedFrequency = m_SystemFrequency;
+  m_ClockSpeed = 1.0;
   m_ClockOffset = 0;
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
@@ -145,9 +145,11 @@ void CVideoReferenceClock::Process()
     CSingleLock SingleLock(m_CritSection);
     Now = CurrentHostCounter();
     m_CurrTime = Now + m_ClockOffset; //add the clock offset from the previous time we stopped
-    m_AdjustedFrequency = m_SystemFrequency;
+    m_CurrTimeFract = 0.0;
+    m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
     m_fineadjust = 1.0;
+    m_RefreshChanged = 0;
     m_Started.Set();
 
     if (SetupSuccess)
@@ -868,7 +870,17 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
-    m_CurrTime += (int64_t)NrVBlanks * (int64_t)((double)m_AdjustedFrequency * m_fineadjust) / m_RefreshRate;
+  {
+    double increment = (double)NrVBlanks * m_ClockSpeed * m_fineadjust / m_RefreshRate * m_SystemFrequency;
+    double integer   = floor(increment);
+    m_CurrTime      += (int64_t)(integer + 0.5); //make sure it gets correctly converted to int
+
+    //accumulate what we lost due to rounding in m_CurrTimeFract, then add the integer part of that to m_CurrTime
+    m_CurrTimeFract += increment - integer;
+    integer          = floor(m_CurrTimeFract);
+    m_CurrTime      += (int64_t)(integer + 0.5);
+    m_CurrTimeFract -= integer;
+  }
 }
 
 //called from dvdclock to get the time
@@ -911,28 +923,35 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   //dvdplayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
-    int64_t Frequency = (int64_t)((double)m_SystemFrequency * Speed);
-    if (Frequency != m_AdjustedFrequency)
+    if (Speed != m_ClockSpeed)
     {
-      m_AdjustedFrequency = Frequency;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100);
+      m_ClockSpeed = Speed;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100.0);
     }
   }
 }
 
 double CVideoReferenceClock::GetSpeed()
 {
-  double Speed = 1.0;
   CSingleLock SingleLock(m_CritSection);
 
   //dvdplayer needs to know the speed for the resampler
-  if (m_UseVblank) Speed = (double)m_AdjustedFrequency / (double)m_SystemFrequency;
-
-  return Speed;
+  if (m_UseVblank)
+    return m_ClockSpeed;
+  else
+    return 1.0;
 }
 
 bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 {
+  //if the graphicscontext signaled that the refreshrate changed, we check it about one second later
+  if (m_RefreshChanged == 1 && !Forced)
+  {
+    m_LastRefreshTime = m_CurrTime;
+    m_RefreshChanged = 2;
+    return false;
+  }
+
   //update the refreshrate about once a second, or update immediately if a forced update is required
   if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency && !Forced)
     return false;
@@ -944,9 +963,9 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
 
-  bool   GotEvent = Forced;
-  XEvent Event;
   //check for RandR events
+  bool   GotEvent = Forced || m_RefreshChanged == 2;
+  XEvent Event;
   while (XCheckTypedEvent(m_Dpy, m_RREventBase + RRScreenChangeNotify, &Event))
   {
     if (Event.type == m_RREventBase + RRScreenChangeNotify)
@@ -956,6 +975,9 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     }
     XRRUpdateConfiguration(&Event);
   }
+
+  if (!Forced)
+    m_RefreshChanged = 0;
 
   if (!GotEvent) //refreshrate did not change
     return false;
@@ -1022,12 +1044,17 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 }
 
 //dvdplayer needs to know the refreshrate for matching the fps of the video playing to it
-int CVideoReferenceClock::GetRefreshRate()
+int CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
 {
   CSingleLock SingleLock(m_CritSection);
 
   if (m_UseVblank)
+  {
+    if (interval)
+      *interval = m_ClockSpeed / m_RefreshRate;
+
     return (int)m_RefreshRate;
+  }
   else
     return -1;
 }
@@ -1110,7 +1137,7 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
   if (m_UseVblank)
   {
     MissedVblanks = m_TotalMissedVblanks;
-    ClockSpeed = (double)m_AdjustedFrequency / (double)m_SystemFrequency * 100.0;
+    ClockSpeed = m_ClockSpeed * 100.0;
     RefreshRate = (int)m_RefreshRate;
     return true;
   }

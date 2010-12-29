@@ -59,7 +59,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   {
     while (fgets(line, sizeof line, fp))
     {
-      if (sscanf(line, "%s *<00>\n", nmb_ip))
+      if (sscanf(line, "%99s *<00>\n", nmb_ip))
       {
         if (inet_addr(nmb_ip) != INADDR_NONE)
           strIpAddress = nmb_ip;

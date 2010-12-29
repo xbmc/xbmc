@@ -34,7 +34,7 @@
 
 using namespace std;
 
-CWinSystemX11::CWinSystemX11() : CWinSystemBase()
+CWinSystemX11::CWinSystemX11() : CWinSystemBase(), m_screensaverReset(true)
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_glContext = NULL;
@@ -81,12 +81,15 @@ bool CWinSystemX11::DestroyWindowSystem()
   if (m_dpy)
   {
     if (m_glContext)
+    {
+      glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glContext);
+    }
 
     m_glContext = 0;
 
-    XCloseDisplay(m_dpy);
-    m_dpy = NULL;
+    //we don't call XCloseDisplay() here, since ati keeps a pointer to our m_dpy
+    //so instead we just let m_dpy die on exit
   }
 
   // m_SDLSurface is free()'d by SDL_Quit().
@@ -362,7 +365,10 @@ bool CWinSystemX11::RefreshGlxContext()
   {
     CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
     if (m_glContext)
+    {
+      glXMakeCurrent(m_dpy, None, NULL);
       glXDestroyContext(m_dpy, m_glContext);
+    }
 
     if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
     {
@@ -383,6 +389,27 @@ bool CWinSystemX11::RefreshGlxContext()
 void CWinSystemX11::ShowOSMouse(bool show)
 {
   SDL_ShowCursor(show ? 1 : 0);
+}
+
+void CWinSystemX11::ResetX11Screensaver()
+{
+  if (m_bFullScreen)
+  {
+    //disallow the screensaver when we're fullscreen by periodically calling XResetScreenSaver(),
+    //normally SDL does this but we disable that in CApplication::Create()
+    //for some reason setting a 0 timeout with XSetScreenSaver doesn't work with gnome
+    if (!m_screensaverReset.IsRunning() || m_screensaverReset.GetElapsedSeconds() > 5.0f)
+    {
+      m_screensaverReset.StartZero();
+      XResetScreenSaver(m_dpy);
+      //need to flush the output buffer, since we don't check for events on m_dpy
+      XFlush(m_dpy);
+    }
+  }
+  else
+  {
+    m_screensaverReset.Stop();
+  }
 }
 
 void CWinSystemX11::NotifyAppActiveChange(bool bActivated)

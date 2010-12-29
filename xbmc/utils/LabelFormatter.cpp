@@ -91,9 +91,10 @@ using namespace MUSIC_INFO;
  *  %Q - file time
  *  %U - studio
  *  %X - Bitrate
+ *  %W - Listeners
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUX"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUXW"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -291,9 +292,13 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'X': // Bitrate
-    if( !item->m_bIsFolder || item->m_dwSize != 0 )
+    if( !item->m_bIsFolder && item->m_dwSize != 0 )
       value.Format("%i kbps", item->m_dwSize);
-    break;           
+    break;
+   case 'W': // Listeners
+    if( !item->m_bIsFolder && music->GetListeners() != 0 )
+     value.Format("%i %s", music->GetListeners(), g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
+    break;    
   }
   if (!value.IsEmpty())
     return mask.m_prefix + value + mask.m_postfix;

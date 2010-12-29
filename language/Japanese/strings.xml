@@ -2,8 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: kyouhei-->
 <!--Email: Twitter: @kyouhei-->
-<!--Date of translation: 09/19/2010-->
+<!--Date of translation: 11/28/2010-->
 <!--$Revision$-->
+<!--Based on english strings version 35208-->
 <strings>
   <string id="0">プログラム</string>
   <string id="1">ピクチャ</string>
@@ -207,7 +208,7 @@
   <string id="290">Dynamic Range Compression</string>
   <string id="291">ビデオ</string>
   <string id="292">オーディオ</string>
-  <string id="293">字幕をブラウズする</string>
+  <string id="293">字幕を参照する</string>
   <string id="294">ブックマークの作成</string>
   <string id="296">ブックマークの削除</string>
   <string id="297">音声オフセット</string>
@@ -517,18 +518,19 @@
   <string id="648">Import Video Library</string>
   <string id="649">Importing</string>
   <string id="650">Exporting</string>
-  <string id="651">ライブラリをブラウズする</string>
+  <string id="651">ライブラリを参照する</string>
   <string id="652">製作年</string>
   <string id="653">ライブラリを更新</string>
   <string id="654">Show Debug Info</string>
   <string id="655">Browse for Executable</string>
-  <string id="656">Browse for Playlist</string>
-  <string id="657">Browse for Folder</string>
+  <string id="656">プレイリストを参照する</string>
+  <string id="657">フォルダを参照する</string>
   <string id="658">楽曲情報</string>
   <string id="660">Volume Amplification</string>
   <string id="661">Choose Export Folder</string>
   <string id="662">このファイルは存在しません。</string>
   <string id="663">ライブラリから削除しますか？</string>
+  <string id="664">スクリプトを参照する</string>
   <string id="700">ライブラリの整理</string>
   <string id="701">ライブラリから古い曲を削除します</string>
   <string id="702">このパスは以前にスキャンしました</string>
@@ -616,25 +618,25 @@
   <string id="1012">Shared Folder</string>
   <string id="1013">Port</string>
   <string id="1014">Username</string>
-  <string id="1015">Browse for Network Server</string>
+  <string id="1015">ネットワークサーバを参照する</string>
   <string id="1016">Enter the network address of the server</string>
   <string id="1017">Enter the path on the server</string>
   <string id="1018">Enter the port number</string>
   <string id="1019">Enter the username</string>
   <string id="1020">Add %s Source</string>
-  <string id="1021">Enter the paths or browse for the media locations.</string>
-  <string id="1022">Enter a name for this Media Source.</string>
+  <string id="1021">メディアロケーションのパスを入力するか、参照してください。</string>
+  <string id="1022">メディアソースの名前を入力してください。</string>
   <string id="1023">Browse for new share</string>
-  <string id="1024">Browse</string>
+  <string id="1024">参照</string>
   <string id="1025">Could not retrieve directory information.</string>
   <string id="1026">ソースを追加</string>
   <string id="1027">ソースを編集</string>
   <string id="1028">Edit %s Source</string>
   <string id="1029">Enter the new label</string>
-  <string id="1030">Browse for Image</string>
-  <string id="1031">Browse for Image Folder</string>
+  <string id="1030">イメージを参照する</string>
+  <string id="1031">イメージフォルダを参照する</string>
   <string id="1032">Add Network Location...</string>
-  <string id="1033">Browse for file</string>
+  <string id="1033">ファイルを参照する</string>
   <string id="1034">Submenu</string>
   <string id="1035">Enable Submenu Buttons</string>
   <string id="1036">お気に入り</string>
@@ -911,7 +913,7 @@
   <string id="13211">アラーム!</string>
   <string id="13212">%im%is でキャンセル</string>
   <string id="13249">RARファイル内から字幕を探す</string>
-  <string id="13250">字幕をブラウズする...</string>
+  <string id="13250">字幕を参照する...</string>
   <string id="13251">Move Item</string>
   <string id="13252">Move Item Here</string>
   <string id="13253">Cancel Move</string>
@@ -1025,9 +1027,9 @@
   <string id="13398">ショートカット</string>
   <string id="13399">冠詞(theなど)をソート対象から外す</string>
   <string id="13400">アルバム内クロスフェード</string>
-  <string id="13401">Browse for %s</string>
+  <string id="13401">%sを参照する</string>
   <string id="13402">Show track position</string>
-  <string id="13403">Clear Default</string>
+  <string id="13403">デフォルトをクリア</string>
   <string id="13404">Resume</string>
   <string id="13405">サムネイルを取得</string>
   <string id="13406">画像情報</string>
@@ -1113,7 +1115,10 @@
   <string id="14076">お気に入りに追加</string>
   <string id="14077">お気に入りから削除</string>
   <string id="14078">スキンカラー</string>
+  <string id="14080">タイムゾーン</string>
+  <string id="14081">ファイルリスト</string>
   <string id="14082">EXIF情報を表示</string>
+  <string id="14089">字幕に使用するフォント</string>
   <string id="15015">Remove</string>
   <string id="15016">Games</string>
   <string id="15019">追加</string>
@@ -1386,7 +1391,7 @@
   <string id="20150">シャットダウンタイマを設定</string>
   <string id="20151">シャットダウンタイマをキャンセル</string>
   <string id="20152">Lock preferences for %s</string>
-  <string id="20153">Browse...</string>
+  <string id="20153">参照...</string>
   <string id="20155">Storage Information</string>
   <string id="20156">Hard Disk Information</string>
   <string id="20157">DVD-ROM Information</string>
@@ -1535,18 +1540,18 @@
   <string id="20407">Scraper Settings</string>
   <string id="20408">クリップ情報を取得中</string>
   <string id="20409">TV番組情報を取得中</string>
-  <string id="20410">Trailer</string>
-  <string id="20411">Flatten</string>
-  <string id="20412">Flatten TV Shows</string>
+  <string id="20410">予告</string>
+  <string id="20411">フラット化</string>
+  <string id="20412">TV番組のフラット化</string>
   <string id="20413">Fanartを取得</string>
   <string id="20414">ビデオ及び音楽ライブラリでFanartを表示する</string>
   <string id="20415">新しいコンテンツをスキャン中</string>
   <string id="20416">初回放映</string>
-  <string id="20417">Writer</string>
+  <string id="20417">脚本家</string>
   <string id="20418">Clean File and Folder Names</string>
   <string id="20420">Never</string>
-  <string id="20421">If Only One Season</string>
-  <string id="20422">Always</string>
+  <string id="20421">1シーズンのみの場合</string>
+  <string id="20422">常に</string>
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
   <string id="20425">Fanart Slideshow</string>
@@ -1731,6 +1736,7 @@
   <string id="22018">Live Channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
+  <string id="22079">デフォルトの動作</string>
   <string id="22082">さらに...</string>
   <string id="24067">現在ダウンロード中のAdd-on</string>
   <string id="29800">Library Mode</string>

@@ -29,6 +29,7 @@
 #include "addons/Repository.h"
 #include "addons/PluginSource.h"
 #include "StringUtils.h"
+#include "TextureManager.h"
 #include "File.h"
 
 using namespace ADDON;
@@ -118,6 +119,9 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
             item->m_strPath = CUtil::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
             item->m_bIsFolder = true;
+            CStdString thumb = GetIcon((TYPE)i);
+            if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+              item->SetThumbnailImage(thumb);
             items.Add(item);
             break;
           }
@@ -224,32 +228,45 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   return item;
 }
 
-bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItemList &items)
+bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, VECADDONS &addons)
 {
-  items.Clear();
-
   CPluginSource::Content type = CPluginSource::Translate(content);
   if (type == CPluginSource::UNKNOWN)
     return false;
 
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_PLUGIN, addons);
-  for (unsigned i=0; i<addons.size(); i++)
+  VECADDONS tempAddons;
+  CAddonMgr::Get().GetAddons(ADDON_PLUGIN, tempAddons);
+  for (unsigned i=0; i<tempAddons.size(); i++)
   {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
-    if (!plugin || !plugin->Provides(type))
-      continue;
-    items.Add(FileItemFromAddon(addons[i], "plugin://", true));
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
+    if (plugin && plugin->Provides(type))
+      addons.push_back(tempAddons[i]);
   }
+  tempAddons.clear();
+  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, tempAddons);
+  for (unsigned i=0; i<tempAddons.size(); i++)
+  {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(tempAddons[i]);
+    if (plugin && plugin->Provides(type))
+      addons.push_back(tempAddons[i]);
+  }
+  return true;
+}
 
-  addons.clear();
-  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItemList &items)
+{
+  items.Clear();
+
+  VECADDONS addons;
+  if (!GetScriptsAndPlugins(content, addons))
+    return false;
+
   for (unsigned i=0; i<addons.size(); i++)
   {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
-    if (!plugin || !plugin->Provides(type))
-      continue;
-    items.Add(FileItemFromAddon(addons[i], "script://", false));
+    if (addons[i]->Type() == ADDON_PLUGIN)
+      items.Add(FileItemFromAddon(addons[i], "plugin://", true));
+    else
+      items.Add(FileItemFromAddon(addons[i], "script://", false));
   }
 
   CFileItemPtr item(new CFileItem("addons://more/"+content,false));

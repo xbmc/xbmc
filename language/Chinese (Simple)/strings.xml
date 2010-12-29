@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 34319 -->
+<!--Based on english strings version 35649 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1334,7 +1334,7 @@
   <string id="14038">网络设置已改变</string>
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
-  <string id="14041"></string>
+  <string id="14041">互联网连接带宽限制</string>
 
   <string id="14043">- 播放时关机</string>
   <string id="14044">%i分</string>
@@ -1460,7 +1460,7 @@
   <string id="15275">%name% 歌曲周排行</string>
   <string id="15276">收听 %name% 在 Last.fm 的同好</string>
   <string id="15277">收听 %name% 的个人 Last.fm</string>
-  <string id="15278">收听 %name% 在 Last.fm 的最爱</string>
+  <string id="15278"></string>
   <string id="15279">正在从 Last.fm 获取列表</string>
   <string id="15280">不能从 Last.fm 获取列表...</string>
   <string id="15281">输入艺人名来寻找相关资料</string>
@@ -1468,7 +1468,7 @@
   <string id="15283">%name% 最近听过的歌曲</string>
   <string id="15284">收听 %name% 在 Last.fm 的推荐</string>
   <string id="15285">%name% 的排行</string>
-  <string id="15286">收听 %name% 在 Last.fm 的播放列表</string>
+  <string id="15286"></string>
   <string id="15287">你想把目前歌曲加入你的最爱吗？</string>
   <string id="15288">你想封锁目前的歌曲吗？</string>
   <string id="15289">加入你的最爱歌曲：'%s'</string>
@@ -1778,6 +1778,7 @@
   <string id="20255">首次登录，编辑您的用户配置</string>
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
+  <string id="20258">MythTV 客户端</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1933,6 +1934,8 @@
   <string id="20451">国家</string>
   <string id="20452">集</string>
   <string id="20453">集</string>
+  <string id="20454">收听者</string>
+  <string id="20455">听众</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2103,7 +2106,7 @@
   <string id="21885">下载专辑信息</string>
   <string id="21886">下载艺人信息</string>
   <string id="21887">传记</string>
-  <string id="21888">唱片分类</string>
+  <string id="21888">唱片集</string>
   <string id="21889">搜索艺人</string>
   <string id="21890">选择艺人</string>
   <string id="21891">艺人信息</string>
@@ -2199,6 +2202,7 @@
   <string id="24015">音乐电视资料</string>
   <string id="24016">专辑资料</string>
   <string id="24017">艺人资料</string>
+  <string id="24018">服务程序</string>
 
   <string id="24020">设置</string>
   <string id="24021">禁用</string>
@@ -2257,6 +2261,8 @@
   <string id="24096">库中的扩展功能被标记为已损坏。</string>
   <string id="24097">要在系统中禁用它吗？</string>
   <string id="24098">已损坏</string>
+  <string id="24099">要切换到此皮肤吗？</string>
+  <string id="25000">提示信息</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>

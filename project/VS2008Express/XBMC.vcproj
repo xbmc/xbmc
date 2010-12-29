@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -46,8 +46,8 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\AudioEngine;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;__SSE__"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -142,8 +142,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\AudioEngine;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;__SSE__"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="0"
@@ -238,8 +238,8 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\AudioEngine;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;__SSE__"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -334,8 +334,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\AudioEngine;..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED;__STDC_CONSTANT_MACROS;__SSE__"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include;..\..\lib\liblame\include;..\..\lib\libbluray_win32;..\..\lib\pcre"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED;__STDC_CONSTANT_MACROS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="0"
@@ -838,11 +838,11 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp"
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h"
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.h"
 							>
 						</File>
 						<File
@@ -853,6 +853,22 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h"
 							>
 						</File>
+						<Filter
+							Name="Encoders"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\IDVDAudioEncoder.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Video"
@@ -2013,168 +2029,56 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="AudioEngine"
+				Name="AudioRenderers"
 				>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AE.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEConvert.cpp"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEConvert.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEEncoder.h"
+					RelativePath="..\..\xbmc\utils\PCMRemap.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEFactory.cpp"
+					RelativePath="..\..\xbmc\utils\PCMRemap.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEFactory.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEPostProc.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AERemap.cpp"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AERemap.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AESink.h"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp"
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AESinkFactory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AESound.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEStream.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEStreamInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEStreamInfo.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEUtil.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\AEUtil.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioEngine\ThreadedAE.h"
-					>
-				</File>
-				<Filter
-					Name="Packetizers"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\AEPackIEC958.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\AEPackIEC958.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Sinks"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="PostProc"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Encoders"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="ExternalPlayer"
@@ -2229,7 +2133,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\SystemGlobals.h"
+				RelativePath="..\..\xbmc\SystemGlobals.cpp"
 				>
 			</File>
 			<Filter
@@ -2640,14 +2544,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderSid.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderSid.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderSPC.cpp"
 					>
 				</File>
@@ -2936,8 +2832,41 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\fstrcmp.cpp"
+					RelativePath="..\..\xbmc\utils\fstrcmp.c"
 					>
+					<FileConfiguration
+						Name="Release (OpenGL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="2"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (OpenGL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\GUIInfoManager.cpp"
@@ -2965,6 +2894,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\InfoLoader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ISerializable.h"
 					>
 				</File>
 				<File
@@ -4368,10 +4301,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\SIDFileDirectory.cpp"
 					>
 				</File>
@@ -5176,14 +5105,6 @@
 				Name="Karaoke"
 				>
 				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\karaoke\Cdg.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp"
 					>
 				</File>
@@ -5505,6 +5426,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Service.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Service.h"
 					>
 				</File>
 				<File
@@ -6006,10 +5935,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Shortcut.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.h"
 				>
 			</File>
 			<File

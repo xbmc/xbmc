@@ -1533,7 +1533,6 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
   // MODE: 0 = TV, 1 = Radio, 2 = Data, 3 = Movies, 4 = Root
   // SUBMODE: 0 = n/a, 1 = All, 2 = Satellites, 2 = Providers, 4 = Bouquets
   // Default Submode
-  int iSubmode = 4;
   CStdString strSubMode;
 
   if(iMode <0 || iMode >4)
@@ -1559,23 +1558,23 @@ CStdString CTuxBoxUtil::GetSubMode(int iMode, CStdString& strXMLRootString, CStd
     strXMLRootString.Format("services");
     strXMLChildString.Format("service");
   }
-  else if (iSubmode == 2)
+  else if (iSubMode == 2)
   {
     strXMLRootString.Format("satellites");
     strXMLChildString.Format("satellite");
   }
-  else if (iSubmode == 3)
+  else if (iSubMode == 3)
   {
     strXMLRootString.Format("providers");
     strXMLChildString.Format("provider");
   }
-  else // if (iSubmode == 4 || iSubMode < 0)
+  else // if (iSubMode == 4 || iSubMode < 0)
   {
     iSubMode = 4;
     strXMLRootString.Format("bouquets");
     strXMLChildString.Format("bouquet");
   }
-  strSubMode.Format("xml/services?mode=%i&submode=%i",iMode,iSubmode);
+  strSubMode.Format("xml/services?mode=%i&submode=%i",iMode,iSubMode);
   return strSubMode;
 }
 //Input: url/path of share/item file/folder

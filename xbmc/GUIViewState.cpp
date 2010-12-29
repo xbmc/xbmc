@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "Key.h"
 #include "FileSystem/AddonsDirectory.h"
+#include "TextureManager.h"
 
 using namespace std;
 
@@ -57,6 +58,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   const CURL url=items.GetAsUrl();
 
+  if (items.IsAddonsPath())
+    return new CGUIViewStateAddonBrowser(items);
+
   if (items.HasSortDetails())
     return new CGUIViewStateFromItems(items);
 
@@ -69,6 +73,8 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.IsSmartPlayList())
   {
     if (items.GetContent() == "songs")
+      return new CGUIViewStateMusicSmartPlaylist(items);
+    else if (items.GetContent() == "albums")
       return new CGUIViewStateMusicSmartPlaylist(items);
     else if (items.GetContent() == "musicvideos") // TODO: Update this
       return new CGUIViewStateMusicSmartPlaylist(items);
@@ -143,7 +149,7 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
   SORT_METHOD sortMethod = GetSortMethod();
   if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE ||
       sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
-      sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE)
+      sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE || sortMethod == SORT_METHOD_LISTENERS)
   {
     if (m_sortOrder == SORT_ORDER_ASC) return SORT_ORDER_DESC;
     if (m_sortOrder == SORT_ORDER_DESC) return SORT_ORDER_ASC;
@@ -338,7 +344,7 @@ VECSOURCES& CGUIViewState::GetSources()
   return m_sources;
 }
 
-void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
+void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
 {
   if (!g_advancedSettings.m_bVirtualShares)
     return;
@@ -349,7 +355,8 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     CMediaSource source;
     source.strPath = "addons://sources/" + content + "/";    
     source.strName = label;
-    source.m_strThumbnailImage = "";
+    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+      source.m_strThumbnailImage = thumb;
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
     source.m_ignore = true;
     m_sources.push_back(source);

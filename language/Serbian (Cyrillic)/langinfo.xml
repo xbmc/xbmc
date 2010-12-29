@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<language locale="Serbian (Cyrillic)">
+<language locale="sr">
   <charsets>
     <gui>CP1250</gui>
     <subtitle>CP1250</subtitle>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region name="Србија - пуни приказ" locale="Serbia">
+    <region name="Србија - пуни приказ" locale="RS">
       <dateshort>DD.M.YYYY.</dateshort>
       <datelong>DDDD, DD. MMMM YYYY. г.</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -20,7 +20,7 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone> 
     </region>
-    <region name="Србија - скраћени приказ" locale="Serbia">
+    <region name="Србија - скраћени приказ" locale="RS">
       <dateshort>D.M.YYYY.</dateshort>
       <datelong>DD. M. YYYY. г.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

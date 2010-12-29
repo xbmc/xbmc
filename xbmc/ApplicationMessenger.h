@@ -42,6 +42,7 @@ class CGUIDialog;
 #define TMSG_MEDIA_STOP           201
 #define TMSG_MEDIA_PAUSE          202
 #define TMSG_MEDIA_RESTART        203
+#define TMSG_MEDIA_UNPAUSE        204
 
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
@@ -164,7 +165,7 @@ public:
   CStdString GetResponse();
   int SetResponse(CStdString response);
   void HttpApi(std::string cmd, bool wait = false);
-  void ExecBuiltIn(const CStdString &command);
+  void ExecBuiltIn(const CStdString &command, bool wait = false);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
 

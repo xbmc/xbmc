@@ -36,6 +36,7 @@ DEFINES+= \
 	-D_LINUX \
 	-D_FILE_DEFINED \
 	-D__STDC_CONSTANT_MACROS \
+	-D__STDC_LIMIT_MACROS \
 	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \

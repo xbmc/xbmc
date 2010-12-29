@@ -176,17 +176,6 @@ public:
   bool m_clock;
 };
 
-class CDVDStreamInfo;
-class CDVDMsgGeneralStreamChange : public CDVDMsg
-{
-public:
-  CDVDMsgGeneralStreamChange(CDVDStreamInfo* pInfo);
-  virtual ~CDVDMsgGeneralStreamChange();
-  CDVDStreamInfo* GetStreamInfo()       { return m_pInfo; }
-private:
-  CDVDStreamInfo* m_pInfo;
-};
-
 #define SYNCSOURCE_AUDIO  0x00000001
 #define SYNCSOURCE_VIDEO  0x00000002
 #define SYNCSOURCE_SUB    0x00000004

@@ -48,8 +48,8 @@ public:
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
 #define READ_TRUNCATED 0x01
 
-/* use buffered io during reading, ( hint to make all protocols buffered, some might be internal anyway ) */
-#define READ_BUFFERED  0x02
+/* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
+#define READ_CHUNKED   0x02
 
 /* use cache to access this file */
 #define READ_CACHED     0x04
@@ -80,6 +80,17 @@ public:
   int64_t GetLength();
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
+
+  // will return a size, that is aligned to chunk size
+  // but always greater or equal to the file's chunk size
+  static int GetChunkSize(int chunk, int minimum)
+  {
+    if(chunk)
+      return chunk * ((minimum + chunk - 1) / chunk);
+    else
+      return minimum;
+  }
+
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
   BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 

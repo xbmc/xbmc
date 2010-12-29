@@ -199,6 +199,7 @@ public:
   bool m_bMyVideoNavFlatten;
   bool m_bStartVideoWindowed;
   bool m_bAddonAutoUpdate;
+  bool m_bAddonNotifications;
 
   int m_iVideoStartWindow;
 

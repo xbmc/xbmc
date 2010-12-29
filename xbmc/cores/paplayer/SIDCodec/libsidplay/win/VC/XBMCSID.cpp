@@ -55,7 +55,7 @@ extern "C"
       {
         ReSIDBuilder* rs = new ReSIDBuilder("Resid Builder");
         rs->create (result->player.info().maxsids);
-        rs->filter(false);
+        rs->filter(true);
         rs->sampling(48000);
         result->config.sidEmulation = rs;
       }

@@ -665,6 +665,7 @@ bool CHALManager::UnMount(CStorageDevice volume)
       if (dbus_error_is_set(&error))
       {
         CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
+        dbus_error_free(&error);
         return false;
       }
       // Need to create a reader for the Message
@@ -682,6 +683,7 @@ bool CHALManager::UnMount(CStorageDevice volume)
   else
   {
     CLog::Log(LOGERROR, "DBus: Failed to connect to Systembus");
+    dbus_error_free(&error);
     return false;
   }
 }
@@ -744,6 +746,7 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
       if (dbus_error_is_set(&error))
       {
         CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
+        dbus_error_free(&error);
         return false;
       }
       // Need to create a reader for the Message
@@ -762,6 +765,7 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
   else
   {
     CLog::Log(LOGERROR, "DBus: Failed to connect to Systembus");
+    dbus_error_free(&error);
     return false;
   }
 }

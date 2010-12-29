@@ -277,6 +277,9 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     RemoveExtension(strFilename);
     return strFilename;
   }
+  
+  // URLDecode since the original path may be an URL
+  URLDecode(strFilename);
   return strFilename;
 }
 
@@ -1322,7 +1325,7 @@ CStdString CUtil::GetFileMD5(const CStdString& strPath)
     char temp[1024];
     int pos=0;
     int read=1;
-    while (read > 0 && pos < file.GetLength())
+    while (read > 0)
     {
       read = file.Read(temp,1024);
       pos += read;
@@ -1939,7 +1942,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD(const CStdString& strProtocol)
 {
-#ifdef HAS_DVDPLAYER
+#if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CStdString strPath;
@@ -2460,6 +2463,28 @@ bool CUtil::IsUsingTTFSubtitles()
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
 }
 
+#ifdef UNIT_TESTING
+bool CUtil::TestSplitExec()
+{
+  CStdString function;
+  vector<CStdString> params;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo")
+    return false;
+  params.clear();
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\"")
+    return false;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\test\\\\foo\\\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\\")
+    return false;
+  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
+  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\\\test\\\\foo\\")
+    return false;
+  return true;
+}
+#endif
+
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
   CStdString paramString;
@@ -2481,6 +2506,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 
   // now split up our parameters - we may have quotes to deal with as well as brackets and whitespace
   bool inQuotes = false;
+  bool lastEscaped = false; // only every second character can be escaped
   int inFunction = 0;
   size_t whiteSpacePos = 0;
   CStdString parameter;
@@ -2488,7 +2514,8 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   for (size_t pos = 0; pos < paramString.size(); pos++)
   {
     char ch = paramString[pos];
-    bool escaped = (pos > 0 && paramString[pos - 1] == '\\');
+    bool escaped = (pos > 0 && paramString[pos - 1] == '\\' && !lastEscaped);
+    lastEscaped = escaped;
     if (inQuotes)
     { // if we're in a quote, we accept everything until the closing quote
       if (ch == '\"' && !escaped)
@@ -2522,8 +2549,8 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
         continue;
       }
     }
-    if (ch == '\"' && escaped)
-    { // escape quote
+    if ((ch == '\"' || ch == '\\') && escaped)
+    { // escaped quote or backslash
       parameter[parameter.size()-1] = ch;
       continue;
     }

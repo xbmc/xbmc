@@ -91,6 +91,8 @@ CDVDSubtitlesLibass::~CDVDSubtitlesLibass()
 {
   if(m_dll.IsLoaded())
   {
+    if(m_track)
+      m_dll.ass_free_track(m_track);
     m_dll.ass_renderer_done(m_renderer);
     m_dll.ass_library_done(m_library);
     m_dll.Unload();

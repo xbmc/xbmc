@@ -65,8 +65,6 @@
 using namespace std;
 using namespace XFILE;
 
-class CSettings g_settings;
-
 CSettings::CSettings(void)
 {
 }
@@ -96,7 +94,8 @@ void CSettings::Initialize()
   m_bMyVideoPlaylistShuffle = false;
   m_bMyVideoNavFlatten = false;
   m_bStartVideoWindowed = false;
-  m_bAddonAutoUpdate = false;
+  m_bAddonAutoUpdate = true;
+  m_bAddonNotifications = true;
 
   m_fVolumeLevel = 1.0f;
   m_bMute = false;
@@ -105,7 +104,7 @@ void CSettings::Initialize()
   m_bNonLinStretch = false;
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
-  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm";
+  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm";
   m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.bdmv";
   // internal music extensions
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
@@ -682,6 +681,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
     GetInteger(pElement, "httpapibroadcastlevel", m_HttpApiBroadcastLevel, 0, 0, 255);
     GetInteger(pElement, "httpapibroadcastport", m_HttpApiBroadcastPort, 8278, 1, 65535);
+    XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
+    XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
   }
 
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
@@ -710,7 +711,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
     XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
     XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
-    XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
 
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
@@ -852,6 +852,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
   XMLUtils::SetInt(pNode, "httpapibroadcastport", m_HttpApiBroadcastPort);
   XMLUtils::SetInt(pNode, "httpapibroadcastlevel", m_HttpApiBroadcastLevel);
+  XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
+  XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
 
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
@@ -875,7 +877,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
-  XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
 
 
   // audio settings

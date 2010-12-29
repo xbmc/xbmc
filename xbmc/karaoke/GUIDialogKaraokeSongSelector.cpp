@@ -73,6 +73,8 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
     if ( m_startPlaying )
     {
       g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+      g_playlistPlayer.SetRepeat( PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE );
+      g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false );
       g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
       g_playlistPlayer.Play();
@@ -89,60 +91,64 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
   }
 }
 
+int CGUIDialogKaraokeSongSelector::GetKeyNumber( int actionid )
+{
+  switch( actionid )
+  {
+    case REMOTE_0:
+      return 0;
+
+    case REMOTE_1:
+      return 1;
+
+    case REMOTE_2:
+    case ACTION_JUMP_SMS2:
+      return 2;
+
+    case REMOTE_3:
+    case ACTION_JUMP_SMS3:
+      return 3;
+
+    case REMOTE_4:
+    case ACTION_JUMP_SMS4:
+      return 4;
+
+    case REMOTE_5:
+    case ACTION_JUMP_SMS5:
+      return 5;
+
+    case REMOTE_6:
+    case ACTION_JUMP_SMS6:
+      return 6;
+
+    case REMOTE_7:
+    case ACTION_JUMP_SMS7:
+      return 7;
+
+    case REMOTE_8:
+    case ACTION_JUMP_SMS8:
+      return 8;
+
+    case REMOTE_9:
+    case ACTION_JUMP_SMS9:
+      return 9;
+  }
+  
+  return -1;
+}
 
 bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
 {
   CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.GetID());
+  
+  if ( GetKeyNumber( action.GetID() ) != -1 )
+  {
+    OnButtonNumeric( GetKeyNumber( action.GetID() ) );
+    return true;
+  }
+  
   switch(action.GetID())
   {
-    case REMOTE_0:
-      OnButtonNumeric( 0 );
-      return true;
-
-    case REMOTE_1:
-      OnButtonNumeric( 1 );
-      return true;
-
-    case REMOTE_2:
-    case ACTION_JUMP_SMS2:
-      OnButtonNumeric( 2 );
-      return true;
-
-    case REMOTE_3:
-    case ACTION_JUMP_SMS3:
-      OnButtonNumeric( 3 );
-      return true;
-
-    case REMOTE_4:
-    case ACTION_JUMP_SMS4:
-      OnButtonNumeric( 4 );
-      return true;
-
-    case REMOTE_5:
-    case ACTION_JUMP_SMS5:
-      OnButtonNumeric( 5 );
-      return true;
-
-    case REMOTE_6:
-    case ACTION_JUMP_SMS6:
-      OnButtonNumeric( 6 );
-      return true;
-
-    case REMOTE_7:
-    case ACTION_JUMP_SMS7:
-      OnButtonNumeric( 7 );
-      return true;
-
-    case REMOTE_8:
-    case ACTION_JUMP_SMS8:
-      OnButtonNumeric( 8 );
-      return true;
-
-    case REMOTE_9:
-    case ACTION_JUMP_SMS9:
-      OnButtonNumeric( 9 );
-      return true;
-
     case ACTION_SELECT_ITEM:
       OnButtonSelect();
       break;

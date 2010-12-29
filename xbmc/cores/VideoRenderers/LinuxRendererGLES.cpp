@@ -350,7 +350,7 @@ void CLinuxRendererGLES::CalculateTextureSourceRects(int source, int num_planes)
         float offset_y = 0.5;
         if(plane != 0)
           offset_y += 0.5;
-        if(field == FIELD_EVEN)
+        if(field == FIELD_BOT)
           offset_y *= -1;
 
         p.rect.y1 += offset_y;
@@ -513,11 +513,11 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     // Load RGB image
     if (deinterlacing)
     {
-      LoadPlane( fields[FIELD_ODD][0] , GL_RGBA, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][0] , GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
                , m_sourceWidth*2, m_rgbBuffer );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_RGBA, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
                , m_sourceWidth*2, m_rgbBuffer + m_sourceWidth*4);      
     }
@@ -535,11 +535,11 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][0] , GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][0], GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] + im->stride[0]) ;
     }
@@ -561,20 +561,20 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] );
 
-      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_TOP][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
       
       // Load Odd U & V Fields
-      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
-      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_BOT][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] + im->stride[2] );
 
@@ -672,7 +672,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_pYUVShader->SetAlpha(1.0f);
   }
 
-  if ((flags & RENDER_FLAG_ODD) && (flags & RENDER_FLAG_EVEN))
+  if ((flags & RENDER_FLAG_TOP) && (flags & RENDER_FLAG_BOT))
     CLog::Log(LOGERROR, "GLES: Cannot render stipple!");
   else
     Render(flags, index);
@@ -947,22 +947,22 @@ void CLinuxRendererGLES::UnInit()
 void CLinuxRendererGLES::Render(DWORD flags, int renderBuffer)
 {
   // obtain current field, if interlaced
-  if( flags & RENDER_FLAG_ODD)
-    m_currentField = FIELD_ODD;
+  if( flags & RENDER_FLAG_TOP)
+    m_currentField = FIELD_TOP;
 
-  else if (flags & RENDER_FLAG_EVEN)
-    m_currentField = FIELD_EVEN;
+  else if (flags & RENDER_FLAG_BOT)
+    m_currentField = FIELD_BOT;
 
   else if (flags & RENDER_FLAG_LAST)
   {
     switch(m_currentField)
     {
-    case FIELD_ODD:
-      flags = RENDER_FLAG_ODD;
+    case FIELD_TOP:
+      flags = RENDER_FLAG_TOP;
       break;
 
-    case FIELD_EVEN:
-      flags = RENDER_FLAG_EVEN;
+    case FIELD_BOT:
+      flags = RENDER_FLAG_BOT;
       break;
     }
   }
@@ -1041,9 +1041,9 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
-  if     (field == FIELD_ODD)
+  if     (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
-  else if(field == FIELD_EVEN)
+  else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
   m_pYUVShader->SetMatrices(g_matrices.GetMatrix(MM_PROJECTION), g_matrices.GetMatrix(MM_MODELVIEW));
@@ -1166,9 +1166,9 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
-  if     (field == FIELD_ODD)
+  if     (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
-  else if(field == FIELD_EVEN)
+  else if(field == FIELD_BOT)
     m_pYUVShader->SetField(0);
 
   VerifyGLState();
@@ -1471,7 +1471,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   }
 
   // YUV
-  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
@@ -1555,7 +1555,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
   {
     YUVFIELDS &fields = m_buffers[i].fields;
 
-    for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+    for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
     {
       glBindTexture(m_textureTarget, fields[f][0].id);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);

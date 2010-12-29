@@ -66,8 +66,8 @@ namespace PYXBMC
 
     PyObject* label = NULL;
     PyObject* label2 = NULL;
-    char* cIconImage = NULL;
-    char* cThumbnailImage = NULL;
+    PyObject* iconImage = NULL;
+    PyObject* thumbnailImage = NULL;
     PyObject* path = NULL;
 
     // allocate new object
@@ -81,12 +81,12 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"|OOssO",
+      (char*)"|OOOOO",
       (char**)keywords,
       &label,
       &label2,
-      &cIconImage,
-      &cThumbnailImage,
+      &iconImage,
+      &thumbnailImage,
       &path))
     {
       Py_DECREF( self );
@@ -109,13 +109,13 @@ namespace PYXBMC
     {
       self->item->SetLabel2( utf8String );
     }
-    if (cIconImage)
+    if (iconImage && PyXBMCGetUnicodeString(utf8String, iconImage, 1))
     {
-      self->item->SetIconImage( cIconImage );
+      self->item->SetIconImage( utf8String );
     }
-    if (cThumbnailImage)
+    if (thumbnailImage && PyXBMCGetUnicodeString(utf8String, thumbnailImage, 1))
     {
-      self->item->SetThumbnailImage( cThumbnailImage );
+      self->item->SetThumbnailImage( utf8String );
     }
     if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
@@ -239,21 +239,25 @@ namespace PYXBMC
   PyDoc_STRVAR(setIconImage__doc__,
     "setIconImage(icon) -- Sets the listitem's icon image.\n"
     "\n"
-    "icon            : string - image filename.\n"
+    "icon            : string or unicode - image filename.\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setIconImage('emailread.png')\n");
 
   PyObject* ListItem_SetIconImage(ListItem *self, PyObject *args)
   {
-    char *cLine = NULL;
+    PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
+
+    string utf8Line;
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
+      return NULL;
 
     // set label
     PyXBMCGUILock();
-    self->item->SetIconImage(cLine ? cLine : "");
+    self->item->SetIconImage(utf8Line);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -263,21 +267,25 @@ namespace PYXBMC
   PyDoc_STRVAR(setThumbnailImage__doc__,
     "setThumbnailImage(thumb) -- Sets the listitem's thumbnail image.\n"
     "\n"
-    "thumb           : string - image filename.\n"
+    "thumb           : string or unicode - image filename.\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setThumbnailImage('emailread.png')\n");
 
   PyObject* ListItem_SetThumbnailImage(ListItem *self, PyObject *args)
   {
-    char *cLine = NULL;
+    PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
+
+    string utf8Line;
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
+      return NULL;
 
     // set label
     PyXBMCGUILock();
-    self->item->SetThumbnailImage(cLine ? cLine : "");
+    self->item->SetThumbnailImage(utf8Line);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -542,6 +550,8 @@ namespace PYXBMC
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "listeners") == 0)
+         self->item->GetMusicInfoTag()->SetListeners(PyInt_AsLong(value));       
         else
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
@@ -652,6 +662,13 @@ namespace PYXBMC
     else if (lowerKey.CompareNoCase("mimetype") == 0)
     { // special case for mime type - don't actually stored in a property,
       self->item->SetMimeType(uText);
+    }
+    else if (lowerKey.CompareNoCase("specialsort") == 0)
+    {
+      if (uText == "bottom")
+        self->item->SetSpecialSort(SORT_ON_BOTTOM);
+      else if (uText == "top")
+        self->item->SetSpecialSort(SORT_ON_TOP);
     }
     else
       self->item->SetProperty(lowerKey.ToLower(), uText.c_str());

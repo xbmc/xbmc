@@ -9,7 +9,7 @@ SRCS=AlarmClock.cpp \
      DownloadQueue.cpp \
      DownloadQueueManager.cpp \
      Event.cpp \
-     fstrcmp.cpp \
+     fstrcmp.c \
      GUIInfoManager.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \

@@ -62,8 +62,8 @@ struct DRAWRECT
 enum EFIELDSYNC
 {
   FS_NONE,
-  FS_ODD,
-  FS_EVEN
+  FS_TOP,
+  FS_BOT
 };
 
 struct YUVRANGE
@@ -100,8 +100,8 @@ enum RenderQuality
 #define PLANE_V 2
 
 #define FIELD_FULL 0
-#define FIELD_ODD 1
-#define FIELD_EVEN 2
+#define FIELD_TOP 1
+#define FIELD_BOT 2
 
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;

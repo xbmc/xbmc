@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="visWaveform"
 	ProjectGUID="{D450FE9A-CE56-4496-B4AB-379094E642F2}"
 	RootNamespace="visWaveform"
@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="../../addons/visualization..waveform/Waveform_win32.vis"
+				OutputFile="../../../addons/visualization.waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Waveform.pdb"
@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib glu32.lib"
-				OutputFile="../../addons/visualization..waveform/Waveform_win32.vis"
+				OutputFile="../../../addons/visualization.waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -294,7 +294,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib glu32.lib"
-				OutputFile="../../addons/visualization.waveform/Waveform_win32.vis"
+				OutputFile="../../../addons/visualization.waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"

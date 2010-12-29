@@ -34,12 +34,10 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
-#include "SystemGlobals.h"
 #include <assert.h>
 
 using namespace std;
 
-CGUITextureManager& g_TextureManager = g_SystemGlobals.m_TextureManager;
 
 /************************************************************************/
 /*                                                                      */
@@ -477,6 +475,7 @@ void CGUITextureManager::Cleanup()
   }
   for (int i = 0; i < 2; i++)
     m_TexBundle[i].Cleanup();
+  FreeUnusedTextures();
 }
 
 void CGUITextureManager::Dump() const

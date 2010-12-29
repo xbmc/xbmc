@@ -8,14 +8,14 @@
 			<onfocus>SetFocus(10)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
-			<visible>system.getbool(videolibrary.updateonstartup) + !Skin.HasSetting(homepageHideRecentlyAdded)</visible>
+			<visible>system.getbool(videolibrary.updateonstartup) + Skin.HasSetting(homepageShowRecentlyAdded)</visible>
 		</control>
 		<control type="button" id="9">
 			<description>Don't run anything is scan on startup is Disabled and jump to the startup playlist</description>
 			<onfocus>SetFocus(10)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>
-			<visible>!system.getbool(videolibrary.updateonstartup) | Skin.HasSetting(homepageHideRecentlyAdded)</visible>
+			<visible>!system.getbool(videolibrary.updateonstartup) | !Skin.HasSetting(homepageShowRecentlyAdded)</visible>
 		</control>
 
 		<control type="button" id="10">

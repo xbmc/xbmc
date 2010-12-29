@@ -27,11 +27,13 @@
 
 #include "GUIListItem.h"
 #include "utils/Archive.h"
+#include "utils/ISerializable.h"
 #include "DateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "utils/CriticalSection.h"
+#include "VideoDatabase.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -60,7 +62,7 @@ class CMediaSource;
   \sa CFileItemList
   */
 class CFileItem :
-      public CGUIListItem, public ISerializable
+  public CGUIListItem, public IArchivable, public ISerializable
 {
 public:
   CFileItem(void);
@@ -79,7 +81,8 @@ public:
 
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
+  virtual void Serialize(CVariant& value);
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;
@@ -144,6 +147,7 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
+  VIDEODB_CONTENT_TYPE GetVideoContentType() const;
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
@@ -242,7 +246,7 @@ public:
   virtual bool LoadMusicTag();
 
   /* returns the content type of this item if known. will lookup for http streams */
-  const CStdString& GetMimeType() const;
+  const CStdString& GetMimeType(bool lookup = true) const;
 
   /* sets the mime-type if known beforehand */
   void SetMimeType(const CStdString& mimetype) { m_mimetype = mimetype; } ;
@@ -339,7 +343,7 @@ public:
   CFileItemList();
   CFileItemList(const CStdString& strPath);
   virtual ~CFileItemList();
-  virtual void Serialize(CArchive& ar);
+  virtual void Archive(CArchive& ar);
   CFileItemPtr operator[] (int iItem);
   const CFileItemPtr operator[] (int iItem) const;
   CFileItemPtr operator[] (const CStdString& strPath);

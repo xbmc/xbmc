@@ -36,7 +36,7 @@ public:
   void        Stop();
   bool        IsPlaying();
   void        SetVolume(float level);
-
+  void        Wait(uint32_t millis = 500);
 private:
   CStdString   m_file;
   IAESound    *m_sound;

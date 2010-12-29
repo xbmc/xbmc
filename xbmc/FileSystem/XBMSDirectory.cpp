@@ -61,7 +61,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 {
   unsigned long handle;
   char *filename, *fileinfo;
-  bool rv = false;
 
   CStdString strPath=strPathUtf8;
   g_charsetConverter.utf8ToStringCharset(strPath);
@@ -87,7 +86,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       dc_context.username = ((strUserName.c_str() != NULL) && (strlen(strUserName.c_str()) > 0)) ? strUserName.c_str() : NULL;
       dc_context.password = ((strPassword.c_str() != NULL) && (strlen(strPassword.c_str()) > 0)) ? strPassword.c_str() : NULL;
       ccx_client_discover_servers(DiscoveryCallback, (void *)(&dc_context));
-      rv = S_OK;
 
       return (items.Size()>iOldSize);
     }
@@ -230,7 +228,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
     free(fileinfo);
   }
   cc_xstream_client_close_all(conn);
-  rv = true;
 
   if (conn != 0)
     cc_xstream_client_disconnect(conn);

@@ -114,6 +114,10 @@ class CVaPassNext{
     void* (__cdecl* p_##function)(void* a, void* b, void* c, void* d, void* e); \
     void* function(void* a, void* b, void* c, void* d, void* e) { return p_##function(a, b, c, d, e); }
 
+#define FUNCTION28(function) \
+    void* (__cdecl* p_##function)(void* a, void* b, void* c, void* d, void* e, void* f, void* g); \
+    void* function(void* a, void* b, void* c, void* d, void* e, void* f, void* g) { return p_##function(a, b, c, d, e, f, g); }
+
 extern "C"
 {
   /*****************************************
@@ -259,12 +263,21 @@ extern "C"
   FUNCTION4(PyObject_Str)
   FUNCTION20(PyRun_File)
   FUNCTION16(PyRun_String)
+  FUNCTION4(PyErr_ExceptionMatches)
   FUNCTION(PyErr_Clear)
+  FUNCTION12(PyObject_SetAttrString)
+
+#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+  FUNCTION8(PyRun_SimpleStringFlags)
+  FUNCTION20(PyRun_StringFlags)
+  FUNCTION28(PyRun_FileExFlags)
+#endif
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
   void* PyFloat_FromDouble(double a) { return p_PyFloat_FromDouble(a); }
 
+  DATA_OBJECT(PyExc_SystemExit)
   DATA_OBJECT(PyExc_SystemError)
   DATA_OBJECT(PyExc_ValueError)
   DATA_OBJECT(PyExc_Exception)
@@ -361,6 +374,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
 
+      dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemExit)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_Exception)) &&
@@ -386,6 +400,13 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_SetAttrString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
+#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+      dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleStringFlags)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(PyRun_String)));
 
     return bResult;

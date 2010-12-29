@@ -76,12 +76,6 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
-{
-  PyErr_SetString(PyExc_KeyboardInterrupt, "script interrupted by user\n");
-  return -1;
-}
-
 XBPyThread::XBPyThread(XBPython *pExecuter, int id)
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
@@ -98,6 +92,7 @@ XBPyThread::~XBPyThread()
 {
   stop();
   g_pythonParser.PulseGlobalEvent();
+  CLog::Log(LOGDEBUG,"waiting for python thread %d to stop", m_id);
   StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
   delete [] m_source;
@@ -181,7 +176,36 @@ void XBPyThread::Process()
 
   // and add on whatever our default path is
   path += PY_PATH_SEP;
+
+#if (defined USE_EXTERNAL_PYTHON)
+  {
+    // we want to use sys.path so it includes site-packages
+    // if this fails, default to using Py_GetPath
+    PyObject *sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
+    PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
+    PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
+
+    if( pathObj && PyList_Check(pathObj) )
+    {
+      for( int i = 0; i < PyList_Size(pathObj); i++ )
+      {
+        PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
+        if( e && PyString_Check(e) )
+        {
+            path += PyString_AsString(e); // returns internal data, don't delete or modify
+            path += PY_PATH_SEP;
+        }
+      }
+    }
+    else
+    {
+      path += Py_GetPath();
+    }
+    Py_DECREF(sysMod); // release ref to sysMod
+  }
+#else
   path += Py_GetPath();
+#endif
 
   // set current directory and python's path.
   if (m_argv != NULL)
@@ -236,7 +260,11 @@ void XBPyThread::Process()
     }
   }
 
-  if (PyErr_Occurred())
+  if (!PyErr_Occurred())
+    CLog::Log(LOGINFO, "Scriptresult: Success");
+  else if (PyErr_ExceptionMatches(PyExc_SystemExit))
+    CLog::Log(LOGINFO, "Scriptresult: Aborted");
+  else
   {
     PyObject* exc_type;
     PyObject* exc_value;
@@ -253,10 +281,6 @@ void XBPyThread::Process()
     {
       if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && (PyString_Check(pystring)))
       {
-        if (strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) == 0)
-          CLog::Log(LOGINFO, "Scriptresult: Interrupted by user");
-        else
-        {
           PyObject *tracebackModule;
 
           CLog::Log(LOGINFO, "-->Python script returned the following error<--");
@@ -281,16 +305,13 @@ void XBPyThread::Process()
             Py_DECREF(tracebackModule);
           }
           CLog::Log(LOGINFO, "-->End of Python script error report<--");
-        }
       }
       else
       {
         pystring = NULL;
         CLog::Log(LOGINFO, "<unknown exception type>");
       }
-    }
-    if (pystring != NULL && strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) != 0)
-    {
+
       CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
       if (pDlgToast)
       {
@@ -309,29 +330,35 @@ void XBPyThread::Process()
         pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
       }
     }
+
     Py_XDECREF(exc_type);
     Py_XDECREF(exc_value); // caller owns all 3
     Py_XDECREF(exc_traceback); // already NULL'd out
     Py_XDECREF(pystring);
   }
-  else
-    CLog::Log(LOGINFO, "Scriptresult: Success");
 
-  // wait for the running threads to end
-  PyErr_Clear();
-  PyRun_SimpleString(
-        "import threading\n"
-        "import sys\n"
-        "while threading.activeCount() > 1:\n"
-        "\tthreads = list(threading.enumerate())\n"
-        "\tfor thread in threads:\n"
-        "\t\tif thread <> threading.currentThread():\n"
-        "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
-        "\t\t\tthread.join(1000)\n"
-        );
+  PyObject *m = PyImport_AddModule("xbmc");
+  if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+    CLog::Log(LOGERROR, "Scriptresult: failed to set abortRequested");
 
-  if (PyErr_Occurred())
-    CLog::Log(LOGERROR, "Failed to wait for python threads to end");
+  // make sure all sub threads have finished
+  for(PyThreadState* s = state->interp->tstate_head, *old = NULL; s;)
+  {
+    if(s == state)
+    {
+      s = s->next;
+      continue;
+    }
+    if(old != s)
+    {
+      CLog::Log(LOGINFO, "Scriptresult: Waiting on thread %"PRIu64, (uint64_t)s->thread_id);
+      old = s;
+    }
+    Py_BEGIN_ALLOW_THREADS
+    Sleep(100);
+    Py_END_ALLOW_THREADS
+    s = state->interp->tstate_head;
+  }
 
   // pending calls must be cleared out
   PyXBMC_ClearPendingCalls(state);
@@ -386,11 +413,18 @@ void XBPyThread::stop()
   {
     PyEval_AcquireLock();
     PyThreadState* old = PyThreadState_Swap(m_threadState);
-    PyRun_SimpleString("import xbmc\n"
-                       "xbmc.abortRequested = True\n");
 
-    m_threadState->c_tracefunc = xbTrace;
-    m_threadState->use_tracing = 1;
+    PyObject *m;
+    m = PyImport_AddModule("xbmc");
+    if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+      CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
+
+    for(PyThreadState* state = m_threadState->interp->tstate_head; state; state = state->next)
+    {
+      Py_XDECREF(state->async_exc);
+      state->async_exc = PyExc_SystemExit;
+      Py_XINCREF(state->async_exc);
+    }
 
     PyThreadState_Swap(old);
     PyEval_ReleaseLock();

@@ -24,6 +24,7 @@
  *
  */
 #include "WinSystem.h"
+#include "utils/Stopwatch.h"
 #include <GL/glx.h>
 
 class CWinSystemX11 : public CWinSystemBase
@@ -42,6 +43,7 @@ public:
   virtual void UpdateResolutions();
   virtual int  GetNumScreens() { return 1; }
   virtual void ShowOSMouse(bool show);
+  virtual void ResetX11Screensaver();
 
   virtual void NotifyAppActiveChange(bool bActivated);
 
@@ -66,6 +68,8 @@ protected:
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
+
+  CStopWatch m_screensaverReset;
 };
 
 #endif // WINDOW_SYSTEM_H

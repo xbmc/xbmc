@@ -593,7 +593,7 @@ CDateTime::operator FILETIME() const
   return m_time;
 }
 
-void CDateTime::Serialize(CArchive& ar)
+void CDateTime::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
@@ -681,6 +681,12 @@ void CDateTime::FromULargeInt(const ULARGE_INTEGER& time)
 
 void CDateTime::SetFromDateString(const CStdString &date)
 {
+  if (date.IsEmpty())
+  {
+    SetValid(false);
+    return;
+  }
+
   const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december",NULL};
   int j=0;
   int iDayPos = date.Find("day");
@@ -856,17 +862,60 @@ CStdString CDateTime::GetAsDBDateTime() const
   return date;
 }
 
+void CDateTime::SetFromW3CDate(const CStdString &dateTime)
+{
+  CStdString date, time, zone;
+
+  int posT = dateTime.Find("T");
+  if(posT >= 0)
+  {
+    date = dateTime.Left(posT);
+    CStdString::size_type posZ = dateTime.find_first_of("+-Z", posT);
+    if(posZ == CStdString::npos)
+      time = dateTime.Mid(posT+1);
+    else
+    {
+      time = dateTime.Mid(posT+1, posZ-posT-1);
+      zone = dateTime.Mid(posZ);
+    }
+  }
+  else
+    date = dateTime;
+
+  int year = 0, month = 1, day = 1, hour = 0, min = 0, sec = 0;
+
+  if (date.size() >= 4)
+    year  = atoi(date.Mid(0,4).c_str());
+
+  if (date.size() >= 10)
+  {
+    month = atoi(date.Mid(5,2).c_str());
+    day   = atoi(date.Mid(8,2).c_str());
+  }
+
+  if (time.length() >= 5)
+  {
+    hour = atoi(time.Mid(0,2).c_str());
+    min  = atoi(time.Mid(3,2).c_str());
+  }
+
+  if (time.length() >= 8)
+    sec  = atoi(time.Mid(6,2).c_str());
+
+  SetDateTime(year, month, day, hour, min, sec);
+}
+
 void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
 {
   // assumes format YYYY-MM-DD HH:MM:SS
   if (dateTime.size() == 19)
   {
-    int year = atoi(dateTime.Mid(0,4).c_str());
+    int year  = atoi(dateTime.Mid(0,4).c_str());
     int month = atoi(dateTime.Mid(5,2).c_str());
-    int day = atoi(dateTime.Mid(8,2).c_str());
-    int hour = atoi(dateTime.Mid(11,2).c_str());
-    int min = atoi(dateTime.Mid(14,2).c_str());
-    int sec = atoi(dateTime.Mid(17,2).c_str());
+    int day   = atoi(dateTime.Mid(8,2).c_str());
+    int hour  = atoi(dateTime.Mid(11,2).c_str());
+    int min   = atoi(dateTime.Mid(14,2).c_str());
+    int sec   = atoi(dateTime.Mid(17,2).c_str());
     SetDateTime(year, month, day, hour, min, sec);
   }
 }
@@ -889,6 +938,19 @@ void CDateTime::SetFromDBDate(const CStdString &date)
     day = atoi(date.Mid(8,2).c_str());
   }
   SetDate(year, month, day);
+}
+
+void CDateTime::SetFromDBTime(const CStdString &time)
+{
+  // assumes format:
+  // HH:MM:SS
+  int hour, minute, second;
+
+  hour   = atoi(time.Mid(0,2).c_str());
+  minute = atoi(time.Mid(3,2).c_str());
+  second = atoi(time.Mid(6,2).c_str());
+
+  SetTime(hour, minute, second);
 }
 
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
@@ -1052,7 +1114,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
   return strOut;
 }
 
-CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
+CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShortNames/*=true*/) const
 {
   CStdString strOut;
 
@@ -1114,16 +1176,9 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wDay);
       else // Day of week string
       {
-        switch (dateTime.wDayOfWeek)
-        {
-          case 1 : str = g_localizeStrings.Get(11); break;
-          case 2 : str = g_localizeStrings.Get(12); break;
-          case 3 : str = g_localizeStrings.Get(13); break;
-          case 4 : str = g_localizeStrings.Get(14); break;
-          case 5 : str = g_localizeStrings.Get(15); break;
-          case 6 : str = g_localizeStrings.Get(16); break;
-          default: str = g_localizeStrings.Get(17); break;
-        }
+        int wday = dateTime.wDayOfWeek;
+        if (wday < 1 || wday > 7) wday = 7;
+        str = g_localizeStrings.Get((withShortNames ? 40 : 10) + wday);
       }
       strOut+=str;
     }
@@ -1153,21 +1208,9 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wMonth);
       else // Month string
       {
-        switch (dateTime.wMonth)
-        {
-          case 1 : str = g_localizeStrings.Get(21); break;
-          case 2 : str = g_localizeStrings.Get(22); break;
-          case 3 : str = g_localizeStrings.Get(23); break;
-          case 4 : str = g_localizeStrings.Get(24); break;
-          case 5 : str = g_localizeStrings.Get(25); break;
-          case 6 : str = g_localizeStrings.Get(26); break;
-          case 7 : str = g_localizeStrings.Get(27); break;
-          case 8 : str = g_localizeStrings.Get(28); break;
-          case 9 : str = g_localizeStrings.Get(29); break;
-          case 10: str = g_localizeStrings.Get(30); break;
-          case 11: str = g_localizeStrings.Get(31); break;
-          default: str = g_localizeStrings.Get(32); break;
-        }
+        int wmonth = dateTime.wMonth;
+        if (wmonth < 1 || wmonth > 12) wmonth = 12;
+        str = g_localizeStrings.Get((withShortNames ? 50 : 20) + wmonth);
       }
       strOut+=str;
     }

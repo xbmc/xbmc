@@ -16,7 +16,6 @@
 <!--    <universalremote>             -->
 <!--       <obc45>Stop</obc45>         -->
 <!--    </universalremote>            -->
-<!-- To find out the OBC's of your remote, try enabling the <displayremotecodes> tag in AdvancedSettings.xml -->
 
 <!-- Note that the action can be a built-in function.                 -->
 <!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
@@ -86,7 +85,6 @@
   </global>
   <Home>
     <remote>
-      <menu>XBMC.Skin.ToggleSetting(HomeViewToggle)</menu>
       <info>XBMC.ActivateWindow(SystemInfo)</info>
       <clear>XBMC.ActivateWindow(Weather)</clear>
       <hash>XBMC.ActivateWindow(Settings)</hash>
@@ -195,11 +193,13 @@
   <VisualisationSettings>
     <remote>
       <menu>Close</menu>
+      <back>Close</back>
     </remote>
   </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
       <menu>Close</menu>
+      <back>Close</back>
     </remote>
   </VisualisationPresetList>
   <SlideShow>

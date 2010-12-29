@@ -76,6 +76,8 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // create our settings
   m_volume = g_settings.m_fVolumeLevel;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, FormatDecibel, false);
+  if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
+    EnableSettings(AUDIO_SETTINGS_VOLUME,false);
 #if 0
   AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
 #endif
@@ -230,6 +232,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     {
       g_settings.m_currentVideoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
+      EnableSettings(AUDIO_SETTINGS_VOLUME, !g_application.m_pPlayer->IsPassthrough());
     }
   }
   else if (setting.id == AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS)
@@ -249,6 +252,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
     EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, bitstream);
     g_application.Restart();
+    EnableSettings(AUDIO_SETTINGS_VOLUME, !g_application.m_pPlayer->IsPassthrough());
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
   {

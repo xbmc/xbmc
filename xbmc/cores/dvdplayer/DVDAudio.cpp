@@ -37,7 +37,6 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
-  m_iSpeed = 0;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
   m_iBitrate = 0;
@@ -51,7 +50,7 @@ CDVDAudio::~CDVDAudio()
   {
     m_pAudioStream->Destroy();
   }
-  if (m_pBuffer) delete[] m_pBuffer;
+  free(m_pBuffer);
 }
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
@@ -94,8 +93,7 @@ void CDVDAudio::Destroy()
   {
     m_pAudioStream->Destroy();
   }
-
-  if (m_pBuffer) delete[] m_pBuffer;
+  free(m_pBuffer);
   m_pBuffer = NULL;
   m_dwPacketSize = 0;
   m_pAudioStream = NULL;
@@ -104,13 +102,6 @@ void CDVDAudio::Destroy()
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
-  m_iSpeed = 1;
-}
-
-void CDVDAudio::SetSpeed(int iSpeed)
-{
-  m_iSpeed = abs(iSpeed);
-
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
@@ -170,12 +161,23 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + len);
+    memcpy(m_pBuffer+m_iBufferSize, data, len);
+    m_iBufferSize += len;
+    return len;
+  }
 
-    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
-    data += copied; // Move forward in caller's data
-    len -= copied; // Decrease amount of data available from caller
-    m_iBufferSize += copied; // Increase amount of data available in buffer
+  if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
+  {
+    copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
+    if(copied)
+    {
+      m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
+      memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+      data += copied; // Move forward in caller's data
+      len -= copied; // Decrease amount of data available from caller
+      m_iBufferSize += copied; // Increase amount of data available in buffer
+    }
 
     if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;
@@ -199,15 +201,11 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   // if we have more data left, save it for the next call to this funtion
   if (len > 0 && !m_bStop)
   {
-    if(len > m_dwPacketSize)
-      CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
-
-    m_iBufferSize = std::min(len, m_dwPacketSize);
-    memcpy(m_pBuffer, data, m_iBufferSize);
-    len  -= m_iBufferSize;
-    data += m_iBufferSize;
+    m_pBuffer     = (BYTE*)realloc(m_pBuffer, len);
+    m_iBufferSize = len;
+    memcpy(m_pBuffer, data, len);
   }
-  return total - len;
+  return total;
 }
 
 void CDVDAudio::Finish()
@@ -221,6 +219,7 @@ void CDVDAudio::Finish()
   if(silence > 0 && m_iBufferSize > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_dwPacketSize);
     memset(m_pBuffer+m_iBufferSize, 0, silence);
     m_iBufferSize += silence;
   }

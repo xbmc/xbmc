@@ -45,6 +45,7 @@
 #include "Settings.h"
 #include "GUIInfoManager.h"
 #include "GUIDialogSelect.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace ADDON;
@@ -288,7 +289,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(networkShares);
             localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
-            shares = &localShares;
+          }
+          else // always append local drives
+          {
+            localShares = *shares;
+            g_mediaManager.GetLocalDrives(localShares);
           }
 
           if (strcmpi(type, "folder") == 0)
@@ -298,12 +303,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (option)
               bWriteOnly = (strcmpi(option, "writeable") == 0);
 
-            if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, label, value, bWriteOnly))
+            if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, label, value, bWriteOnly))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
           else if (strcmpi(type, "image") == 0)
           {
-            if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, label, value))
+            if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, label, value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
           else
@@ -348,7 +353,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bUseFileDirectories = find(options.begin(), options.end(), "treatasfolder") != options.end();
             }
 
-            if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, label, value))
+            if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, label, value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
         }
@@ -575,6 +580,9 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString entries;
     if (setting->Attribute("entries"))
       entries = setting->Attribute("entries");
+    CStdString defaultValue;
+    if (setting->Attribute("default"))
+      defaultValue= setting->Attribute("default");
     const char *subsetting = setting->Attribute("subsetting");
     CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
 
@@ -615,7 +623,7 @@ void CGUIDialogAddonSettings::CreateControls()
             ((CGUIButtonControl *)pControl)->SetLabel2(value);
         }
         else
-          ((CGUIButtonControl *)pControl)->SetLabel2(setting->Attribute("default"));
+          ((CGUIButtonControl *)pControl)->SetLabel2(defaultValue);
       }
       else if (strcmpi(type, "bool") == 0)
       {
@@ -739,6 +747,11 @@ void CGUIDialogAddonSettings::CreateControls()
 
     setting = setting->NextSiblingElement("setting");
     controlId++;
+    if (controlId >= CONTROL_START_SECTION)
+    {
+      CLog::Log(LOGERROR, "%s - cannot have more than %d controls per category - simplify your addon!", __FUNCTION__, CONTROL_START_SECTION - CONTROL_START_SETTING);
+      break;
+    }
   }
   EnableControls();
 }

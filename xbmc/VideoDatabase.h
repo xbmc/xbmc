@@ -511,8 +511,7 @@ public:
 
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
-  void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
-  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
+  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
   void ImportFromXML(const CStdString &path);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
@@ -527,6 +526,27 @@ public:
   int GetMusicVideoCount(const CStdString& strWhere);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
   bool GetRandomMusicVideo(CFileItem* item, int& idSong, const CStdString& strWhere);
+
+  static void VideoContentTypeToString(VIDEODB_CONTENT_TYPE type, CStdString& out)
+  {
+    switch (type)
+    {
+    case VIDEODB_CONTENT_MOVIES:
+      out = "movie";
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      out = "tvshow";
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      out = "episode";
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      out = "musicvideo";
+      break;
+    default:
+      break;
+    }
+  }
 
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
@@ -619,4 +639,7 @@ private:
    \return safe filename based on this title
    */
   CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
+
+  void AnnounceRemove(std::string content, int id);
+  void AnnounceUpdate(std::string content, int id);
 };

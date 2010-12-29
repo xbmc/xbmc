@@ -59,6 +59,7 @@ public:
   cmyth_conn_t     GetControl();
   cmyth_database_t GetDatabase();
   DllLibCMyth*     GetLibrary();
+  cmyth_proglist_t GetAllRecordedPrograms(bool force = false);
 
   void             SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program);
 
@@ -87,6 +88,7 @@ private:
   DllLibCMyth*     m_dll;
   CCriticalSection m_section;
   unsigned int     m_timestamp;
+  cmyth_proglist_t m_all_recorded; // Cache of all_recorded programs.
 
   static CCriticalSection            m_section_session;
   static std::vector<CMythSession*>  m_sessions;

@@ -396,6 +396,7 @@ config.log
 
 # /tools/Linux/
 /tools/Linux/xbmc.sh
+/tools/Linux/xbmc-standalone.sh
 
 # /tools/osx
 /tools/osx/XBMCHelper
@@ -1132,11 +1133,6 @@ config.log
 # /xbmc/lib/libsamplerate
 /xbmc/lib/libsamplerate/libsamplerate_win32/Debug
 /xbmc/lib/libsamplerate/libsamplerate_win32/Release
-
-# /xbmc/lib/libshout/
-/xbmc/lib/libshout/Makefile
-/xbmc/lib/libshout/libshout/Debug
-/xbmc/lib/libshout/libshout/Release
 
 /xbmc/lib/libsquish/Makefile
 /xbmc/lib/libsquish/lib/squishd.lib

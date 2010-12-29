@@ -30,7 +30,7 @@
 #include "system.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
-#include "SystemGlobals.h"
+#include "Application.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #ifdef _LINUX
@@ -43,8 +43,6 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
-
-CSystemGlobals g_SystemGlobals;
 
 int main(int argc, char* argv[])
 {

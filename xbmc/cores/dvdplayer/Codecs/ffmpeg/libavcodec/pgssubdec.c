@@ -44,9 +44,8 @@ enum SegmentType {
 typedef struct PGSSubPresentation {
     int x;
     int y;
-    int video_w;
-    int video_h;
     int id_number;
+    int object_number;
 } PGSSubPresentation;
 
 typedef struct PGSSubPicture {
@@ -186,7 +185,7 @@ static int parse_picture_segment(AVCodecContext *avctx,
     height = bytestream_get_be16(&buf);
 
     /* Make sure the bitmap is not too large */
-    if (ctx->presentation.video_w < width || ctx->presentation.video_h < height) {
+    if (avctx->width < width || avctx->height < height) {
         av_log(avctx, AV_LOG_ERROR, "Bitmap dimensions larger then video.\n");
         return -1;
     }
@@ -256,7 +255,6 @@ static void parse_palette_segment(AVCodecContext *avctx,
  * @param buf_size size of packet to process
  * @todo TODO: Implement cropping
  * @todo TODO: Implement forcing of subtitles
- * @todo TODO: Blanking of subtitle
  */
 static void parse_presentation_segment(AVCodecContext *avctx,
                                        const uint8_t *buf, int buf_size)
@@ -264,56 +262,56 @@ static void parse_presentation_segment(AVCodecContext *avctx,
     PGSSubContext *ctx = avctx->priv_data;
 
     int x, y;
-    uint8_t block;
 
-    ctx->presentation.video_w = bytestream_get_be16(&buf);
-    ctx->presentation.video_h = bytestream_get_be16(&buf);
+    int w = bytestream_get_be16(&buf);
+    int h = bytestream_get_be16(&buf);
 
     dprintf(avctx, "Video Dimensions %dx%d\n",
-            ctx->presentation.video_w, ctx->presentation.video_h);
+            w, h);
+    if (avcodec_check_dimensions(avctx, w, h) >= 0)
+        avcodec_set_dimensions(avctx, w, h);
 
     /* Skip 1 bytes of unknown, frame rate? */
     buf++;
 
     ctx->presentation.id_number = bytestream_get_be16(&buf);
 
-    /* Next byte is the state. */
-    block = bytestream_get_byte(&buf);;
-    if (block == 0x80) {
-        /*
-         * Skip 7 bytes of unknown:
-         *     palette_update_flag (0x80),
-         *     palette_id_to_use,
-         *     Object Number (if > 0 determines if more data to process),
-         *     object_id_ref (2 bytes),
-         *     window_id_ref,
-         *     composition_flag (0x80 - object cropped, 0x40 - object forced)
-         */
-        buf += 7;
+    /*
+     * Skip 3 bytes of unknown:
+     *     state
+     *     palette_update_flag (0x80),
+     *     palette_id_to_use,
+     */
+    buf += 3;
 
-        x = bytestream_get_be16(&buf);
-        y = bytestream_get_be16(&buf);
+    ctx->presentation.object_number = bytestream_get_byte(&buf);
+    if (!ctx->presentation.object_number)
+        return;
 
-        /* TODO If cropping, cropping_x, cropping_y, cropping_width, cropping_height (all 2 bytes).*/
+    /*
+     * Skip 4 bytes of unknown:
+     *     object_id_ref (2 bytes),
+     *     window_id_ref,
+     *     composition_flag (0x80 - object cropped, 0x40 - object forced)
+     */
+    buf += 4;
 
-        dprintf(avctx, "Subtitle Placement x=%d, y=%d\n", x, y);
+    x = bytestream_get_be16(&buf);
+    y = bytestream_get_be16(&buf);
 
-        if (x > ctx->presentation.video_w || y > ctx->presentation.video_h) {
-            av_log(avctx, AV_LOG_ERROR, "Subtitle out of video bounds. x = %d, y = %d, video width = %d, video height = %d.\n",
-                   x, y, ctx->presentation.video_w, ctx->presentation.video_h);
-            x = 0; y = 0;
-        }
+    /* TODO If cropping, cropping_x, cropping_y, cropping_width, cropping_height (all 2 bytes).*/
 
-        /* Fill in dimensions */
-        ctx->presentation.x = x;
-        ctx->presentation.y = y;
-    } else if (block == 0x00) {
-        /* TODO: Blank context as subtitle should not be displayed.
-         *       If the subtitle is blanked now the subtitle is not
-         *       on screen long enough to read, due to a delay in
-         *       initial display timing.
-         */
+    dprintf(avctx, "Subtitle Placement x=%d, y=%d\n", x, y);
+
+    if (x > avctx->width || y > avctx->height) {
+        av_log(avctx, AV_LOG_ERROR, "Subtitle out of video bounds. x = %d, y = %d, video width = %d, video height = %d.\n",
+               x, y, avctx->width, avctx->height);
+        x = 0; y = 0;
     }
+
+    /* Fill in dimensions */
+    ctx->presentation.x = x;
+    ctx->presentation.y = y;
 }
 
 /**
@@ -344,6 +342,10 @@ static int display_end_segment(AVCodecContext *avctx, void *data,
      */
 
     memset(sub, 0, sizeof(*sub));
+    // Blank if last object_number was 0.
+    // Note that this may be wrong for more complex subtitles.
+    if (!ctx->presentation.object_number)
+        return 1;
     sub->start_display_time = 0;
     sub->end_display_time   = 20000;
     sub->format             = 0;

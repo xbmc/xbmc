@@ -112,8 +112,7 @@ MediaLibrary.prototype = {
 					code = '<p class="album" title="' + album_title + '">' + title + '</p>';
 					break;
 			}
-			floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="" /></div></div>' + code);
-			return floatableAlbum;
+			return floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="" /></div></div>' + code);
 		},
 		showAlbumSelectorBlock: function(album) {
 			if (album) {
@@ -172,11 +171,15 @@ MediaLibrary.prototype = {
 					var albumArtist = event.data.album.album_artist||'Unknown Artist';
 					var trackCount = data.result.total;
 					$.each($(data.result.songs), jQuery.proxy(function(i, item) {
-						var trackRow = $('<tr>').addClass('trackRow');
 						if (i == 0) {
-							var albumTD = $('<td>').attr('rowspan', ++trackCount).addClass('albumThumb');
-							trackRow.append(albumTD);
+							var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
+							trackRow.append($('<td>').attr('rowspan', ++trackCount + 1).addClass('albumThumb'));
+							for (var a = 0; a < 5; a++) {
+								trackRow.append($('<td>').html('&nbsp').attr('style', 'display: none'));
+							}
+							$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 						}
+						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
 						var trackNumberTD = $('<td>')
 							.html(item.tracknumber)
 							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
@@ -237,14 +240,70 @@ MediaLibrary.prototype = {
 										  .addClass('contentContainer')
 										  .addClass('tvshowContainer');
 					tvshowDetailsContainer.append(this.generateThumb('tvshow', event.data.tvshow.thumbnail, event.data.tvshow.title));
-					$('#content').append(tvshowDetailsContainer);
-					tvshowDetailsContainer.fadeIn();
-					//console.log(data);
+					if (data && data.result && data.result.seasons && data.result.seasons.length > 0) {
+						var absWrapper = $('<div>').addClass('showDetailsWrapper');
+						var showDetails = $('<div>').addClass('showDetails');
+						showDetails.append($('<p>').html(data.result.seasons[0].showtitle).addClass('showTitle'));
+						showDetails.append($('<p>').html('<span class="heading">Genre:</span> ' + data.result.seasons[0].genre));
+						showDetails.append($('<p>').html('<span class="heading">Studio:</span> ' + data.result.seasons[0].studio));
+						absWrapper.append(showDetails);
+						var seasonSelectionContainer = $('<div>').addClass('seasonPicker');
+						var seasonSelectionList = $('<ul>');
+						var episodeCount = 0;
+						var firstSeason;
+						$.each($(data.result.seasons), jQuery.proxy(function(i, item) {
+							episodeCount += item.episode;
+							var season = $('<li>').html(item.title);
+							if (i == 0) {
+								season.addClass('activeSeason');
+								firstSeason = season;
+								this.tvActiveShowContainer = tvshowDetailsContainer;
+							}
+							season.bind('click', {tvshow: event.data.tvshow.tvshowid, season: item, element: season}, jQuery.proxy(this.displaySeasonListings, this));
+							seasonSelectionList.append(season);
+						}, this));
+						showDetails.append($('<p>').html('<span class="heading">Episodes:</span> ' + episodeCount));
+						seasonSelectionContainer.append(seasonSelectionList);
+						absWrapper.append(seasonSelectionContainer);
+						tvshowDetailsContainer.append(absWrapper);
+						if (firstSeason) {
+							firstSeason.trigger('click');
+						}
+						$('#content').append(tvshowDetailsContainer);
+						tvshowDetailsContainer.fadeIn();
+					}
 					$('#spinner').hide();
 				}, this), 'json');
 			} else {
 				$('.contentContainer').hide();
 				$('#tvShowDetails' + event.data.show.showid);
+			}
+		},
+		displaySeasonListings: function(event) {
+			if (event.data.element != this.tvActiveSeason) {
+				//Remove style from old season.
+				if (this.tvActiveSeason) {
+					$(this.tvActiveSeason).removeClass('activeSeason');
+				}
+				//Hide old listings
+				var oldListings = $('.episodeListingsContainer', this.tvActiveShowContainer).fadeOut();
+				//Update ActiveSeason
+				this.tvActiveSeason = event.data.element;
+				$(this.tvActiveSeason).addClass('activeSeason');			
+				//Populate new listings
+				jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating", "writer", "studio", "mpaa", "premiered"], "season" : ' + event.data.season.season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
+					var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
+					var list = $('<ul>');
+					$.each($(data.result.episodes), jQuery.proxy(function(i, item) {
+						var episodePicture = $('<img>');
+						episodePicture.attr('src', this.getThumbnailPath(item.thumbnail));
+						var episodeTitle = $('<p>').html(item.title);
+						var episode = $('<li>').append(episodePicture).append(episodeTitle);
+						list.append(episode);
+					}, this));
+					episodeListingsContainer.append(list);
+					$(this.tvActiveShowContainer).prepend(episodeListingsContainer);
+				}, this), 'json');
 			}
 		},
 		hideOverlay: function(event) {

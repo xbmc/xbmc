@@ -33,6 +33,8 @@
 #include "AdvancedSettings.h"
 #include "Application.h"
 #include "MathUtils.h"
+#include "DVDCodecUtils.h"
+
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU::Desc decoder_profiles[] = {
@@ -77,12 +79,16 @@ static struct SInterlaceMapping
             return value; \
         } while(0);
 
+//since libvdpau 0.4, vdp_device_create_x11() installs a callback on the Display*,
+//if we unload libvdpau with dlclose(), we segfault on XCloseDisplay,
+//so we just keep a static handle to libvdpau around
+void* CVDPAU::dl_handle;
+
 CVDPAU::CVDPAU()
 {
   glXBindTexImageEXT = NULL;
   glXReleaseTexImageEXT = NULL;
   vdp_device = VDP_INVALID_HANDLE;
-  dl_handle  = NULL;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
@@ -126,17 +132,20 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     return false;
   }
 
-  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle)
   {
-    const char* error = dlerror();
-    if (!error)
-      error = "dlerror() returned NULL";
+    dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+    if (!dl_handle)
+    {
+      const char* error = dlerror();
+      if (!error)
+        error = "dlerror() returned NULL";
 
-    CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
-    //g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+      CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
+      //g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
 
-    return false;
+      return false;
+    }
   }
 
   InitVDPAUProcs();
@@ -154,19 +163,8 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
 #endif
     if(profile)
     {
-      /* VDPAU Features Note 1
-         GPUs with this note may not support H.264 streams with the following widths:
-         49, 54, 59, 64, 113, 118, 123, 128 macroblocks
-         (769-784, 849-864, 929-944, 1009-1024, 1793-1808, 1873-1888, 1953-1968, 2033-2048 pixels). */
-      int unsupported[] = {49, 54, 59, 64, 113, 118, 123, 128};
-      for (unsigned int i = 0; i < sizeof(unsupported) / sizeof(int); i++)
-      {
-        if (unsupported[i] == (avctx->width + 15) / 16)
-        {
-          CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
-          break;
-        }
-      }
+      if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->width))
+        CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
    
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
@@ -227,11 +225,6 @@ void CVDPAU::Close()
     CLog::Log(LOGINFO, "GLX: Destroying glContext");
     glXDestroyContext(m_Display, m_glContext);
     m_glContext = NULL;
-  }
-  if (dl_handle)
-  {
-    dlclose(dl_handle);
-    dl_handle = NULL;
   }
 }
 

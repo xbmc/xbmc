@@ -70,19 +70,6 @@ static inline __int64 atoll(const char* s)
     return 0;
 }
 
-static const char *inet_ntop(int af, const void *src, char *dst, socklen_t size)
-{
-  char* addr;
-  if(af != AF_INET)
-    return NULL;
-  addr = inet_ntoa(*(struct in_addr*)src);
-  if(!addr)
-    return NULL;
-  if((socklen_t)strlen(addr)+1 > size)
-    return NULL;
-  return strcpy(dst, addr);
-}
-
 #else
 #include <pthread.h>
 #define mutex __cmyth_mutex
@@ -266,7 +253,7 @@ struct cmyth_proginfo {
 	cmyth_timestamp_t proginfo_rec_start_ts;
 	cmyth_timestamp_t proginfo_rec_end_ts;
 	unsigned long proginfo_repeat;   /* ??? in V8 */
-	long proginfo_program_flags;
+	unsigned long proginfo_program_flags;
 	char *proginfo_rec_profile;  /* new in V8 */
 	char *proginfo_recgroup;    /* new in V8 */
 	char *proginfo_chancommfree;    /* new in V8 */
@@ -331,6 +318,10 @@ extern int cmyth_rcv_long(cmyth_conn_t conn, int *err, long *buf, int count);
 extern int cmyth_rcv_long_long(cmyth_conn_t conn, int *err, long long *buf,
 			       int count);
 #define cmyth_rcv_u_long_long(c, e, b, n) cmyth_rcv_long_long(c, e, (long long*)b, n)
+
+#define cmyth_rcv_int64 __cmyth_rcv_int64
+extern int cmyth_rcv_int64(cmyth_conn_t conn, int *err, long long *buf,
+			       int count);
 
 #define cmyth_rcv_ubyte __cmyth_rcv_ubyte
 extern int cmyth_rcv_ubyte(cmyth_conn_t conn, int *err, unsigned char *buf,

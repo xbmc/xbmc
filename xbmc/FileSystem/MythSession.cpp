@@ -46,6 +46,8 @@ using namespace std;
 #define MYTH_DEFAULT_PASSWORD "mythtv"
 #define MYTH_DEFAULT_DATABASE "mythconverg"
 
+#define MYTH_IDLE_TIMEOUT     5 * 60 // 5 minutes in seconds
+
 CCriticalSection       CMythSession::m_section_session;
 vector<CMythSession*>  CMythSession::m_sessions;
 
@@ -57,7 +59,7 @@ void CMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CMythSession* session = *it;
-    if (session->m_timestamp + 5000 < CTimeUtils::GetTimeMS())
+    if (session->m_timestamp + (MYTH_IDLE_TIMEOUT * 1000) < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
@@ -81,14 +83,19 @@ CMythSession* CMythSession::AquireSession(const CURL& url)
     if (session->CanSupport(url))
     {
       m_sessions.erase(it);
+      CLog::Log(LOGDEBUG, "%s - Aquired existing MythTV session: %p", __FUNCTION__, session);
       return session;
     }
   }
-  return new CMythSession(url);
+  CMythSession* session = new CMythSession(url);
+  CLog::Log(LOGINFO, "%s - Aquired new MythTV session for %s: %p", __FUNCTION__,
+            url.GetWithoutUserDetails().c_str(), session);
+  return session;
 }
 
 void CMythSession::ReleaseSession(CMythSession* session)
 {
+  CLog::Log(LOGDEBUG, "%s - Releasing MythTV session: %p", __FUNCTION__, session);
   session->SetListener(NULL);
   session->m_timestamp = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_section_session);
@@ -103,8 +110,13 @@ CDateTime CMythSession::GetValue(cmyth_timestamp_t t)
     time_t time = m_dll->timestamp_to_unixtime(t); // Returns NULL if error
     if (time)
       result = CTimeUtils::GetLocalTime(time);
+    else
+      result = CTimeUtils::GetLocalTime(0);
     m_dll->ref_release(t);
   }
+  else // Return epoch so 0 and NULL behave the same.
+    result = CTimeUtils::GetLocalTime(0);
+
   return result;
 }
 
@@ -164,7 +176,8 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    * Video Library. If the original air date is empty the date returned will be the epoch.
    */
   CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
-  if (originalairdate != "1970-01-01")
+  if (originalairdate != "1970-01-01"
+  &&  originalairdate != "1969-12-31")
     tag->m_strFirstAired = originalairdate;
 
   /*
@@ -366,6 +379,7 @@ CMythSession::CMythSession(const CURL& url)
     else
       m_dll->dbg_level(CMYTH_DBG_ERROR);
   }
+  m_all_recorded = NULL;
 }
 
 CMythSession::~CMythSession()
@@ -419,6 +433,19 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
+      GetAllRecordedPrograms(true);
+      break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_ADD:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_ADD: %s", __FUNCTION__, buf);
+      GetAllRecordedPrograms(true);
+      break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_UPDATE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_UPDATE", __FUNCTION__);
+      GetAllRecordedPrograms(true);
+      break;
+    case CMYTH_EVENT_RECORDING_LIST_CHANGE_DELETE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_DELETE: %s", __FUNCTION__, buf);
+      GetAllRecordedPrograms(true);
       break;
     case CMYTH_EVENT_SCHEDULE_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
@@ -429,6 +456,9 @@ void CMythSession::Process()
     case CMYTH_EVENT_QUIT_LIVETV:
       CLog::Log(LOGDEBUG, "%s - MythTV event QUIT_LIVETV", __FUNCTION__);
       break;
+    case CMYTH_EVENT_WATCH_LIVETV:
+      CLog::Log(LOGDEBUG, "%s - MythTV event LIVETV_WATCH", __FUNCTION__);
+      break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
       CLog::Log(LOGDEBUG, "%s - MythTV event LIVETV_CHAIN_UPDATE: %s", __FUNCTION__, buf);
       break;
@@ -437,6 +467,18 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_ASK_RECORDING:
       CLog::Log(LOGDEBUG, "%s - MythTV event ASK_RECORDING", __FUNCTION__);
+      break;
+    case CMYTH_EVENT_SYSTEM_EVENT:
+      CLog::Log(LOGDEBUG, "%s - MythTV event SYSTEM_EVENT: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_UPDATE_FILE_SIZE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event UPDATE_FILE_SIZE: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_GENERATED_PIXMAP:
+      CLog::Log(LOGDEBUG, "%s - MythTV event GENERATED_PIXMAP: %s", __FUNCTION__, buf);
+      break;
+    case CMYTH_EVENT_CLEAR_SETTINGS_CACHE:
+      CLog::Log(LOGDEBUG, "%s - MythTV event CLEAR_SETTINGS_CACHE", __FUNCTION__);
       break;
     }
 
@@ -461,6 +503,8 @@ void CMythSession::Disconnect()
     m_dll->ref_release(m_event);
   if (m_database)
     m_dll->ref_release(m_database);
+  if (m_all_recorded)
+    m_dll->ref_release(m_all_recorded);
 }
 
 cmyth_conn_t CMythSession::GetControl()
@@ -518,4 +562,23 @@ DllLibCMyth* CMythSession::GetLibrary()
   if (m_dll->IsLoaded())
     return m_dll;
   return NULL;
+}
+
+cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
+{
+  if (!m_all_recorded || force)
+  {
+    CSingleLock lock(m_section);
+    if (m_all_recorded)
+    {
+      m_dll->ref_release(m_all_recorded);
+      m_all_recorded = NULL;
+    }
+    cmyth_conn_t control = GetControl();
+    if (!control)
+      return NULL;
+
+    m_all_recorded = m_dll->proglist_get_all_recorded(control);
+  }
+  return m_all_recorded;
 }

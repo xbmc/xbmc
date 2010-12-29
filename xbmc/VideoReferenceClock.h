@@ -64,11 +64,12 @@ class CVideoReferenceClock : public CThread
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
-    int     GetRefreshRate();
+    int     GetRefreshRate(double* interval = NULL);
     int64_t Wait(int64_t Target);
     bool    WaitStarted(int MSecs);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
     void    SetFineAdjust(double fineadjust);
+    void    RefreshChanged() { m_RefreshChanged = 1; }
 
 #if defined(__APPLE__)
     void VblankHandler(int64_t nowtime, double fps);
@@ -82,7 +83,8 @@ class CVideoReferenceClock : public CThread
     int64_t TimeOfNextVblank();
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
-    int64_t m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
+    double  m_CurrTimeFract;     //fractional part that is lost due to rounding when updating the clock
+    double  m_ClockSpeed;        //the frequency of the clock set by dvdplayer
     int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
     int64_t m_LastRefreshTime;   //last time we updated the refreshrate
     int64_t m_SystemFrequency;   //frequency of the systemclock
@@ -92,6 +94,7 @@ class CVideoReferenceClock : public CThread
     int64_t m_RefreshRate;       //current refreshrate
     int     m_PrevRefreshRate;   //previous refreshrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
+    int     m_RefreshChanged;    //1 = we changed the refreshrate, 2 = we should check the refreshrate forced
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 

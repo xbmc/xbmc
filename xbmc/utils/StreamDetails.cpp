@@ -21,8 +21,13 @@
 
 #include <math.h>
 #include "StreamDetails.h"
+#include "Variant.h"
 
-void CStreamDetail::Serialize(CArchive &ar)
+void CStreamDetail::Archive(CArchive &ar)
+{
+  // there's nothing to do here, the type is stored externally and parent isn't stored
+}
+void CStreamDetail::Serialize(CVariant &value)
 {
   // there's nothing to do here, the type is stored externally and parent isn't stored
 }
@@ -32,9 +37,9 @@ CStreamDetailVideo::CStreamDetailVideo() :
 {
 }
 
-void CStreamDetailVideo::Serialize(CArchive& ar)
+void CStreamDetailVideo::Archive(CArchive& ar)
 {
-  CStreamDetail::Serialize(ar);
+  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strCodec;
@@ -52,6 +57,14 @@ void CStreamDetailVideo::Serialize(CArchive& ar)
     ar >> m_iDuration;
   }
 }
+void CStreamDetailVideo::Serialize(CVariant& value)
+{
+  value["codec"] = m_strCodec;
+  value["aspect"] = m_fAspect;
+  value["height"] = m_iHeight;
+  value["width"] = m_iWidth;
+  value["duration"] = m_iDuration;
+}
 
 bool CStreamDetailVideo::IsWorseThan(CStreamDetail *that)
 {
@@ -68,9 +81,9 @@ CStreamDetailAudio::CStreamDetailAudio() :
 {
 }
 
-void CStreamDetailAudio::Serialize(CArchive& ar)
+void CStreamDetailAudio::Archive(CArchive& ar)
 {
-  CStreamDetail::Serialize(ar);
+  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strCodec;
@@ -83,6 +96,12 @@ void CStreamDetailAudio::Serialize(CArchive& ar)
     ar >> m_strLanguage;
     ar >> m_iChannels;
   }
+}
+void CStreamDetailAudio::Serialize(CVariant& value)
+{
+  value["codec"] = m_strCodec;
+  value["language"] = m_strLanguage;
+  value["channels"] = m_iChannels;
 }
 
 int CStreamDetailAudio::GetCodecPriority() const
@@ -124,9 +143,9 @@ CStreamDetailSubtitle::CStreamDetailSubtitle() :
 {
 }
 
-void CStreamDetailSubtitle::Serialize(CArchive& ar)
+void CStreamDetailSubtitle::Archive(CArchive& ar)
 {
-  CStreamDetail::Serialize(ar);
+  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strLanguage;
@@ -135,6 +154,10 @@ void CStreamDetailSubtitle::Serialize(CArchive& ar)
   {
     ar >> m_strLanguage;
   }
+}
+void CStreamDetailSubtitle::Serialize(CVariant& value)
+{
+  value["language"] = m_strLanguage;
 }
 
 bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
@@ -365,7 +388,7 @@ CStdString CStreamDetails::GetSubtitleLanguage(int idx) const
     return "";
 }
 
-void CStreamDetails::Serialize(CArchive& ar)
+void CStreamDetails::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
@@ -398,6 +421,28 @@ void CStreamDetails::Serialize(CArchive& ar)
     }
 
     DetermineBestStreams();
+  }
+}
+void CStreamDetails::Serialize(CVariant& value)
+{
+  std::vector<CStreamDetail *>::const_iterator iter;
+  CVariant v;
+  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); iter++)
+  {
+    v.clear();
+    (*iter)->Serialize(v);
+    switch ((*iter)->m_eType)
+    {
+    case CStreamDetail::AUDIO:
+      value["audio"].push_back(v);
+      break;
+    case CStreamDetail::VIDEO:
+      value["video"].push_back(v);
+      break;
+    case CStreamDetail::SUBTITLE:
+      value["subtitle"].push_back(v);
+      break;
+    }
   }
 }
 

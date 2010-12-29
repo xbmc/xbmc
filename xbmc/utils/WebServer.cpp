@@ -120,8 +120,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
 
-  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
-    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
+//  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
+//    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
 
 #ifdef HAS_JSONRPC
   if (strURL.Equals("/jsonrpc"))
@@ -133,14 +133,16 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   }
 #endif
 
-  if (methodType == GET && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
+#ifdef HAS_HTTPAPI
+  if ((methodType == GET || methodType == POST) && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
     return HttpApi(connection);
+#endif
 
   if (strURL.Left(4).Equals("/vfs"))
   {
     strURL = strURL.Right(strURL.length() - 5);
     CUtil::URLDecode(strURL);
-    return CreateFileDownloadResponse(connection, strURL);
+    return CreateFileDownloadResponse(connection, strURL, methodType);
   }
 
 #ifdef HAS_WEB_INTERFACE
@@ -158,7 +160,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else
       return CreateRedirect(connection, originalURL += "/");
   }
-  return CreateFileDownloadResponse(connection, strURL);
+  return CreateFileDownloadResponse(connection, strURL, methodType);
 
 #endif
 
@@ -252,7 +254,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdStri
   return ret;
 }
 
-int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType)
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
@@ -260,10 +262,17 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    response = MHD_create_response_from_callback ( file->GetLength(),
-                                                   2048,
-                                                   &CWebServer::ContentReaderCallback, file,
-                                                   &CWebServer::ContentReaderFreeCallback); 
+    if (methodType != HEAD)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback); 
+    } else {
+      file->Close();
+      delete file;
+      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+    }
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
@@ -323,7 +332,9 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   return ret;
 }
 
-#if (MHD_VERSION >= 0x00040001)
+#if (MHD_VERSION >= 0x00090200)
+ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
+#elif (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 #else   //libmicrohttpd < 0.4.0
 int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
@@ -374,10 +385,7 @@ bool CWebServer::Start(int port, const CStdString &username, const CStdString &p
   SetCredentials(username, password);
   if (!m_running)
   {
-    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port);
-
-    if (!m_daemon) //try IPv4
-      m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
+    m_daemon = StartMHD(MHD_USE_SELECT_INTERNALLY, port);
 
     m_running = m_daemon != NULL;
     if (m_running)

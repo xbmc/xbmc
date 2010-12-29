@@ -146,6 +146,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.m_strPath);
     resultItem.m_strPath = newDir->m_fileResult->m_strPath;
+    resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
   }
   delete newDir;
 
@@ -378,6 +379,12 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
         dir->m_listItems->AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
         break;
       }
+    case SORT_METHOD_LISTENERS:
+      {
+       dir->m_listItems->AddSortMethod(SORT_METHOD_LISTENERS,20455,LABEL_MASKS("%T","%W"));
+       break;
+      }
+   
     default:
       break;
   }

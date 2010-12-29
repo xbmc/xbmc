@@ -5,9 +5,9 @@
 		provider-name="Team XBMC">
 	<extension point="xbmc.addon.repository"
 		name="Official XBMC.org Add-on Repository">
-		<info compressed="true">http://mirrors.xbmc.org/addons/dharma-pre/addons.xml</info>
-		<checksum>http://mirrors.xbmc.org/addons/dharma-pre/addons.xml.md5</checksum>
-		<datadir zip="true">http://mirrors.xbmc.org/addons/dharma-pre</datadir>
+		<info compressed="true">http://mirrors.xbmc.org/addons/dharma/addons.xml</info>
+		<checksum>http://mirrors.xbmc.org/addons/dharma/addons.xml.md5</checksum>
+		<datadir zip="true">http://mirrors.xbmc.org/addons/dharma</datadir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
@@ -22,6 +22,7 @@
 		<summary lang="pt">Install Add-ons from XBMC.org</summary>
 		<summary lang="ro">Instalați suplimente de la XBMC.org</summary>
 		<summary lang="ru">Установить Дополнения с XBMC.org</summary>
+		<summary lang="se">Installera tillägg från XBMC.org</summary>
 		<summary lang="zh">从XBMC.org安装扩展功能</summary>
 		<description lang="en">Download and install add-ons from the Official XBMC.org addon repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All addons on this repository have under gone basic testing, if you find a broken or not working addon please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="de">Download und installiere Add-Ons aus dem offiziellen XBMC.org Add-On Repository.[CR]  Durch die Nutzung des offiziellen Repository hat man Zugriff auf das große Datei Mirror System welches schnelle Downloads aus der Nähe bereit stellt.[CR]  Alle Add-Ons im Repository wurden getestet, sollte dennoch ein Add-On Fehler haben oder gar nicht funktionieren, sollte dieser Fehler an das Team XBMC gemeldet werden, damit die nötigen Schritte getroffen werden können</description>
@@ -34,6 +35,7 @@
 		<description lang="pt">Descarregue e instale add-ons do repositório oficial XBMC.org.[CR]  Ao usar o repositório oficial, poderá tirar partido do extenso serviço de imagens espalhado pelo mundo, que garante sempre downloads mais rápidos de uma localização próxima da sua.[CR]  Todos os add-ons deste repositório foram alvo de exaustivos testes. Na improvável hipótese de encontrar um add-on que não funcione, por favor reporte à equipa do XBMC, para que se possa proceder à resolução da situação.</description>
 		<description lang="ro">Descărcați și instalați suplimente din depozitul de suplimente XBMC.org oficial.[CR]  Folosind depozitul (repository) oficial puteți beneficia de serviciul nostru de găzduire distribuită pentru a vă ajuta să descărcați mai repede dintr-o regiune mai apropiată de dumneavoastră.[CR]  Toate suplimentele din acest depozit au trecut testele de bază, în caz că găsiți un supliment defect vă rugăm să îl raportați echipei XBMC pentru a lua măsurile necesare.</description>
 		<description lang="ru">Загружайте и устанавливайте обновления с официального репозитория XBMC.org[CR]  Используя официальный репозиторый вы сможете использовать преимущества распределенного хранилища для быстройй загрузки файлов из ближайшего к вам региона.[CR] Все дополнения в данном репозитории прошли тестирование. Если вы обнаружили не рабочее дополнение, пожалуйста сообщите об этом Команде XBMC.</description>
+		<description lang="se">Ladda ner och installera tillägg från det officiella XBMC.org tilläggsförrådet.[CR]  Genom att använda det officiella förrådet kan du utnyttja fördelarna med vår utökade filspeglinstjänst för att få snabbare nedladdningar från en region nära dig.[CR]  Alla tillägg på detta förråd har genomgått en enkel testprocedur, om du hittar ett trasigt eller icke fungerande tillägg uppskattar vi om du är vänlig och rapporterar det till Team XBMC så vi kan vidta nödvändiga åtgärder.</description>
 		<description lang="zh">从官方XBMC.org扩展功能库下载和安装扩展功能。[CR]　通过官方程序库你将能利用我们广泛的镜像服务优势，使你能够就近下载资源。[CR]　官方库中的所有扩展功能模块都经过了基本的测试，如果你发现有损坏或不能正常工作的插件请向XBMC开发团队报告，以便及时处理。</description>
 		<disclaimer lang="en">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
 		<disclaimer lang="de">Team XBMC hat nicht alle Add-Ons aus dem Repository erstellt und ist für deren Inhalt nicht verantwortlich</disclaimer>
@@ -46,6 +48,7 @@
 		<disclaimer lang="pt">A equipa XBMC não desenvolveu todos os add-ons neste repositório e não é responsável pelo seu conteúdo.</disclaimer>
 		<disclaimer lang="ro">Echipa XBMC nu a creat toate aceste suplimente din acest depozit și nu este responsabilă pentru conținutul lor.</disclaimer>
 		<disclaimer lang="ru">Команда XBMC не является автором всех дополнений в данном репозитории и не ответственна за их содержимое.</disclaimer>
+		<disclaimer lang="se">Team XBMC har inte skapat alla tillägg på detta förråd och är inte ansvariga för deras innehåll</disclaimer>
 		<disclaimer lang="zh">本库中扩展功能模块并非完全由XBMC开发团队开发，因此不对相关内容承担责任</disclaimer>
 		<platform>all</platform>
 	</extension>

@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "GUIDialogBoxBase.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
@@ -61,7 +62,7 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
   msg.SetLabel(GetLocalized(heading));
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -73,7 +74,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, const CVariant& line)
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(GetLocalized(line));
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -85,7 +86,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButto
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 10+iButton);
   msg.SetLabel(GetLocalized(choice));
 
-  if(OwningCriticalSection(g_graphicsContext))
+  if(g_application.IsCurrentThread())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -103,6 +104,6 @@ CStdString CGUIDialogBoxBase::GetLocalized(const CVariant &var) const
   if (var.isString())
     return var.asString();
   else if (var.isInteger() && var.asInteger())
-    return g_localizeStrings.Get(var.asInteger());
+    return g_localizeStrings.Get((uint32_t)var.asInteger());
   return "";
 }

@@ -32,9 +32,6 @@ using namespace XCURL;
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
 static unsigned int g_curlTimeout = 0;
-DllLibCurlGlobal g_curlInterface;
-
-
 
 bool DllLibCurlGlobal::Load()
 {

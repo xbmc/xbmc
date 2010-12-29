@@ -48,4 +48,5 @@ protected:
   char m_startRating;
   bool m_cancelled;
   bool m_needsUpdate;
+  long m_albumId;
 };

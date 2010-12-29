@@ -168,7 +168,8 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
       goto error;
     }
-    if (bTags) m_Bitrate = m_Formatdata[4];
+    if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
+      m_Bitrate = m_Formatdata[4];
   } ;
 
   return true;
@@ -204,12 +205,7 @@ __int64 MP3Codec::Seek(__int64 iSeekTime)
 
 int MP3Codec::Read(int size, bool init)
 {
-  // First read in any extra info we need from our MP3
-  int nChunkSize = m_file.GetChunkSize();
-  if (nChunkSize == 0)
-    nChunkSize = DEFAULT_CHUNK_SIZE;
-
-  int inputBufferToRead = std::min(nChunkSize, (int)(m_InputBufferSize - m_InputBufferPos));
+  int inputBufferToRead = (int)(m_InputBufferSize - m_InputBufferPos);
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof )
   {
     if (m_file.GetLength() > 0)
@@ -402,8 +398,10 @@ int MP3Codec::Decode(int *out_len) {
     {
       int skip;
       skip = 2;
-      do {
-        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) {
+      do
+	  {
+        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) 
+		{
           if (--skip == 0)
             m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
         }
@@ -512,7 +510,7 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
 
   m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
   
-  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)(BITSPERSAMPLE >> 3);
+  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)BITSPERSAMPLE/8;
   mxhouse->frame_cnt++;
   m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
   float *data_f = (float *)mxhouse->output_ptr;

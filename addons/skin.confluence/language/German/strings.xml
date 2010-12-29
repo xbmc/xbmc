@@ -1,9 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: pgoeri-->
-<!--Email: pgoeri@chello.at-->
-<!--Date of translation: 11/05/2010-->
-<!--$Revision$-->
 <strings>
   <string id="31000">Ändern der</string>
   <string id="31001">Liebe</string>
@@ -68,18 +63,19 @@
   <string id="31116"></string>
   <string id="31117">Zeige kürzlich hinzugefüge Videos</string>
   <string id="31118">Hauptfenster Programme-Untermenü</string>
-  <string id="31119">Aktiviere individuellen Add-on Button</string>
+  <string id="31119"></string>
   <string id="31120">BUTTON BESCHRIFTUNG</string>
-  <string id="31121">PFAD ZUM ADD-ON</string>
+  <string id="31121"></string>
   <string id="31122">Wetter Seite</string>
   <string id="31123">Verwende "Posters" anstelle von "Banners" für TV Shows</string>
   <string id="31124">Zeige Hintergrund "Aktuell abgespielt" Video</string>
   <string id="31125">Zeige Hintergrund "Aktuell abgespielt" Visualisierung</string>
-  <string id="31126">Aktiviere Lyrics in Musik OSD</string>
-  <string id="31127">PFAD ZUM LYRICS ADD-ON</string>
+  <string id="31126"></string>
+  <string id="31127"></string>
   <string id="31128">Lyrics</string>
-  <string id="31129">Aktiviere Untertitel-Download im Video OSD </string>
-  <string id="31130">PFAD ZUM UNTERTITEL ADD-ON</string>
+  <string id="31129"></string>
+  <string id="31130"></string>
+  <string id="31131"></string>
 
   <string id="31140">Musik OSD</string>
   <string id="31141">Video OSD</string>
@@ -129,6 +125,10 @@
   <string id="31354">Rückspulen</string>
   <string id="31355">Filmmenü</string>
   <string id="31356">Untertitel herunterladen</string>
+
+  <string id="31390">Skin Standard</string>
+  <string id="31391">Skin Standard ohne Großbuchstaben</string>
+  <string id="31392">Arial basiert</string>
 
   <string id="31400">[B]KONFIGURIERE DIE DARSTELLUNGS EINSTELLUNGEN[/B][CR][CR]Wechsel den Skin · Wähle Sprache und Region · Wechsel Dateilisten Optionen[CR]Setze Bildschirmschoner</string>
   <string id="31401">[B]KONFIGURIERE VIDEO EINSTELLUNGEN[/B][CR][CR]Organisiere die Video DB · Setze die Abspiel Optionen · Wechsel die Video Auflistungs Optionen · Setze Untertitel Schrift</string>

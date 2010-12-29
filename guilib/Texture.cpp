@@ -33,8 +33,8 @@
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
  : m_hasAlpha( true )
 {
-#ifndef HAS_DX
-  m_texture = NULL;
+#ifndef HAS_DX 
+  m_texture = NULL; 
 #endif
   m_pixels = NULL;
   m_loadedToGPU = false;

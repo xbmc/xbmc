@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "utils/md5.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/Variant.h"
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
@@ -524,6 +525,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
+
     artistsToScan.insert(song.strArtist);
     albumsToScan.insert(make_pair(song.strAlbum, song.strArtist));
   }

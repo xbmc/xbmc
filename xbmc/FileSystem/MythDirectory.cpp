@@ -239,11 +239,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
 bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type,
                                     const CStdString& filter)
 {
-  cmyth_conn_t control = m_session->GetControl();
-  if (!control)
-    return false;
-
-  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  cmyth_proglist_t list = m_session->GetAllRecordedPrograms();
   if (!list)
   {
     CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
@@ -339,7 +335,6 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
   }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
-  m_dll->ref_release(list);
   return true;
 }
 
@@ -348,11 +343,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
  */
 bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &items)
 {
-  cmyth_conn_t control = m_session->GetControl();
-  if (!control)
-    return false;
-
-  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  cmyth_proglist_t list = m_session->GetAllRecordedPrograms();
   if (!list)
   {
     CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
@@ -408,7 +399,6 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
     items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("", "", "%L", "%J"));
 
-  m_dll->ref_release(list);
   return true;
 }
 
@@ -562,6 +552,30 @@ bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return GetTvShowFolders(base, items);
   else if (fileName.Left(8) == "tvshows/")
     return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
+  return false;
+}
+
+bool CMythDirectory::Exists(const char* strPath)
+{
+  /*
+   * Return true for any virtual folders that are known to exist. Don't check for explicit
+   * existence using GetDirectory() as most methods will return true with empty content due to the
+   * way they are implemented - by iterating over all programs and filtering out content.
+   */
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName == ""
+  ||  fileName == "channels"
+  ||  fileName == "guide"
+  ||  fileName.Left(6) == "guide/"
+  ||  fileName == "movies"
+  ||  fileName == "recordings"
+  ||  fileName == "tvshows"
+  ||  fileName.Left(8) == "tvshows/")
+    return true;
+
   return false;
 }
 

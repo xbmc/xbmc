@@ -102,6 +102,23 @@ private:
 };
 
 
+class CDVDMsgVideoCodecChange : public CDVDMsg
+{
+public:
+  CDVDMsgVideoCodecChange(const CDVDStreamInfo &hints, CDVDVideoCodec* codec)
+    : CDVDMsg(GENERAL_STREAMCHANGE)
+    , m_codec(codec)
+    , m_hints(hints)
+  {}
+ ~CDVDMsgVideoCodecChange()
+  {
+    delete m_codec;
+  }
+  CDVDVideoCodec* m_codec;
+  CDVDStreamInfo  m_hints;
+};
+
+
 CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
                                 , CDVDOverlayContainer* pOverlayContainer
                                 , CDVDMessageQueue& parent)
@@ -157,23 +174,45 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
+  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec( hint );
+  if(!codec)
+  {
+    CLog::Log(LOGERROR, "Unsupported video codec");
+    return false;
+  }
 
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  {
+    g_VideoReferenceClock.Create();
+    //we have to wait for the clock to start otherwise alsa can cause trouble
+    if (!g_VideoReferenceClock.WaitStarted(2000))
+      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
+  }
+
+  if(m_messageQueue.IsInited())
+    m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
+  else
+  {
+    OpenStream(hint, codec);
+    CLog::Log(LOGNOTICE, "Creating video thread");
+    m_messageQueue.Init();
+    Create();
+  }
+  return true;
+}
+
+void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
+{
+  //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
-    m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
+    m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
   else
     m_fFrameRate = 25;
 
-  //if adjust refreshrate is used, or if sync playback to display is on,
-  //we try to calculate the framerate from the pts', because the codec fps
-  //is not always correct
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
                       g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
-
-  m_fStableFrameRate = 0.0;
-  m_iFrameRateCount = 0;
-  m_bAllowDrop = !m_bCalcFrameRate; //we start with not allowing drops to calculate the framerate
-  m_iFrameRateLength = 1;
-  m_iFrameRateErr = 0;
+  ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
   m_iLateFrames = 0;
@@ -188,41 +227,14 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   // use aspect in stream if available
   m_fForcedAspectRatio = hint.aspect;
 
-  // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
-  {
-    CLog::Log(LOGFATAL, "CDVDPlayerVideo::OpenStream() m_pVideoCodec != NULL");
-    return false;
-  }
+    delete m_pVideoCodec;
 
-  CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
-
-  if( !m_pVideoCodec )
-  {
-    CLog::Log(LOGERROR, "Unsupported video codec");
-    return false;
-  }
-
+  m_pVideoCodec = codec;
   m_hints   = hint;
-  m_stalled = false;
+  m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_started = false;
   m_codecname = m_pVideoCodec->GetName();
-
-  m_messageQueue.Init();
-
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
-  {
-    g_VideoReferenceClock.Create();
-    //we have to wait for the clock to start otherwise alsa can cause trouble
-    if (!g_VideoReferenceClock.WaitStarted(2000))
-      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
-  }
-
-  CLog::Log(LOGNOTICE, "Creating video thread");
-  Create();
-
-  return true;
 }
 
 void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -364,7 +376,7 @@ void CDVDPlayerVideo::Process()
       if(pMsgGeneralResync->m_clock)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
-        m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, delay);
+        m_pClock->Discontinuity(pts - delay);
       }
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
@@ -408,9 +420,8 @@ void CDVDPlayerVideo::Process()
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
       //TODO: this needs to be set on a streamchange instead
-      m_iFrameRateLength = 1;
-      m_bAllowDrop = !m_bCalcFrameRate;
-      m_iFrameRateErr = 0;
+      ResetFrameRateCalc();
+
       m_stalled = true;
       m_started = false;
     }
@@ -432,6 +443,12 @@ void CDVDPlayerVideo::Process()
     {
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
+    {
+      CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
+      OpenStream(msg->m_hints, msg->m_codec);
+      msg->m_codec = NULL;
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -619,6 +636,8 @@ void CDVDPlayerVideo::Process()
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
 #elif 0
             // testing YUY2 or UYVY rendering functions
+            // WARNING: since this scales a full YV12 frame, weaving artifacts will show on interlaced content
+            // even with the deinterlacer on
             DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_UYVY);
             //DVDVideoPicture* pTempYUVPackedPicture = CDVDCodecUtils::ConvertToYUV422PackedPicture(&picture, DVDVideoPicture::FMT_YUY2);
             int iResult = OutputPicture(pTempYUVPackedPicture, pts);
@@ -1033,15 +1052,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.GetCorrection();
 
   //try to calculate the framerate
-  if (m_bCalcFrameRate)
-    CalcFrameRate();
+  CalcFrameRate();
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
-  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate);
+  double interval;
+  int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate, &interval);
   if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {//when using the videoreferenceclock, a frame is always presented half a vblank interval too late
-    pts -= (0.5 / refreshrate) * DVD_TIME_BASE;
+    pts -= DVD_TIME_BASE * interval;
   }
 
   //User set delay
@@ -1167,9 +1186,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( pPicture->iFlags & DVP_FLAG_INTERLACED )
   {
     if( pPicture->iFlags & DVP_FLAG_TOP_FIELD_FIRST )
-      mDisplayField = FS_ODD;
+      mDisplayField = FS_TOP;
     else
-      mDisplayField = FS_EVEN;
+      mDisplayField = FS_BOT;
   }
 
   // copy picture to overlay
@@ -1179,7 +1198,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // video device might not be done yet
   while (index < 0 && !CThread::m_bStop &&
-         CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime )
+         CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
   {
     Sleep(1);
     index = g_renderManager.GetImage(&image);
@@ -1381,7 +1400,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
@@ -1400,17 +1420,33 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
+void CDVDPlayerVideo::ResetFrameRateCalc()
+{
+  m_fStableFrameRate = 0.0;
+  m_iFrameRateCount  = 0;
+  m_bAllowDrop       = !m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO;
+  m_iFrameRateLength = 1;
+  m_iFrameRateErr    = 0;
+}
+
 #define MAXFRAMERATEDIFF   0.01
 #define MAXFRAMESERR    1000
 
 void CDVDPlayerVideo::CalcFrameRate()
 {
-  if (m_iFrameRateLength >= 128) //we've calculated the framerate long enough
-  {                              //it's probably correct now
-    m_fStableFrameRate = 0.0;
-    m_iFrameRateCount = 0;
+  if (m_iFrameRateLength >= 128)
+    return; //we're done calculating
+
+  //only calculate the framerate if sync playback to display is on, adjust refreshrate is on,
+  //or scaling method is set to auto
+  if (!m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
+  {
+    ResetFrameRateCalc();
     return;
   }
+
+  if (!m_pullupCorrection.HasFullBuffer())
+    return; //we can only calculate the frameduration if m_pullupCorrection has a full buffer
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it

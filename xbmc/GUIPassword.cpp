@@ -37,8 +37,6 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 
-CGUIPassword g_passwordManager;
-
 CGUIPassword::CGUIPassword(void)
 {
   iMasterLockRetriesLeft = -1;
@@ -358,6 +356,9 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   {
     case WINDOW_SETTINGS_MENU:  // Settings
       bCheckPW = g_settings.GetCurrentProfile().settingsLocked();
+      break;
+    case WINDOW_ADDON_BROWSER:  // Addons
+      bCheckPW = g_settings.GetCurrentProfile().addonmanagerLocked();
       break;
     case WINDOW_FILES:          // Files
       bCheckPW = g_settings.GetCurrentProfile().filesLocked();

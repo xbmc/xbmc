@@ -4,7 +4,7 @@
 <!--Email: josue.camargo@gmail.com-->
 <!--Date of translation: 04/24/2009-->
 <!--$Revision$-->
-<!--fixed to R33901 by Juanjo Armellino-->
+<!--updated to 34760 by Juanjo Armellino (juanjo at ajjar dot com dot ar)-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imágenes</string>
@@ -130,7 +130,7 @@
   <string id="148">DHCP</string>
   <string id="149">MAC</string>
   <string id="150">IP</string>
-  <string id="151">Estado del enlace: </string>
+  <string id="151">Estado de la conexión: </string>
   <string id="152">Half duplex</string>
   <string id="153">Full duplex</string>
   <string id="154">Almacenamiento</string>
@@ -138,7 +138,7 @@
   <string id="156">Libres</string>
   <string id="157">Vídeo</string>
   <string id="158">Memoria libre</string>
-  <string id="159">Sin enlace</string>
+  <string id="159">Sin conexión</string>
   <string id="160">Libres</string>
   <string id="161">No disponible</string>
   <string id="162">Bandeja abierta</string>
@@ -344,7 +344,7 @@
   <string id="371">Parcialmente</string>
   <string id="372">Mayormente</string>
   <string id="373">Soleado</string>
-  <string id="374">Nuboso</string>
+  <string id="374">Nublado</string>
   <string id="375">Nieve</string>
   <string id="376">Lluvia</string>
   <string id="377">Débil</string>
@@ -357,7 +357,7 @@
   <string id="384">Fuerte</string>
   <string id="385">Bueno</string>
   <string id="386">Despejado</string>
-  <string id="387">Nuboso</string>
+  <string id="387">Nublado</string>
   <string id="388">Temprano</string>
   <string id="389">Chubascos</string>
   <string id="390">Ráfagas de aire</string>
@@ -509,7 +509,7 @@
   <string id="545">Dispositivo de salida de sonido</string>
   <string id="546">Dispositivo de salida passthrough</string>
   <string id="547">No hay biografía para este artista</string>
-  <string id="548">Canal de bajada a stereo</string>
+  <string id="548">Convertir audio multicanal a stereo</string>
 
   <string id="550">Ordenar por: %s</string>
   <string id="551">Nombre</string>
@@ -569,6 +569,8 @@
   <string id="609">CDDARipPath no está definido.</string>
   <string id="610">Copiar pista de audio</string>
   <string id="611">Introducir número</string>
+  <string id="612">Bits/Muestra</string> 
+  <string id="613">Frecuencia de muestreo</string> 
 
   <string id="620">Ripear CD</string>
   <string id="621">Codificador</string>
@@ -584,8 +586,8 @@
   <string id="634">Adaptar a 16:9</string>
   <string id="635">Tamaño Original</string>
   <string id="636">Personalizado</string>
-  <string id="637">Replay gain</string>
-  <string id="638">Modo Replay gain</string>
+  <string id="637">Replaygain</string>
+  <string id="638">Ajuste de volumen Replaygain</string>
   <string id="639">Usar volumen de la pista</string>
   <string id="640">Usar volumen del álbum</string>
   <string id="641">Nivel PreAmp - archivos con ReplayGain</string>
@@ -850,7 +852,7 @@
   
   <!-- strings through to 1450 reserved for weather translation -->
 
-	<string id="1450">Apagar pantalla cuando esté desocupado</string>
+  <string id="1450">Apagar pantalla cuando esté desocupado</string>
   <!-- strings through to 1470 reserved for power-saving -->
   
   <string id="2050">Duración:</string>
@@ -1026,6 +1028,7 @@
   <string id="13013">Reiniciar</string>
   <string id="13014">Minimizar</string>
   <string id="13015">Acción del boton de Encendido</string>
+  <string id="13016">Apagar sistema</string> 
 
   <string id="13020">Existe otra sesión activa, ¿tal vez ssh?</string>
   <string id="13021">Disco duro remoto montado</string>
@@ -1780,7 +1783,8 @@
   <string id="20255">Primer login, cargue su perfil</string>
   <string id="20256">Cliente HTS Tvheadend</string>
   <string id="20257">Cliente VDR Streamdev</string>
-
+   <string id="20258">Cliente MythTV</string> 
+ 
   <string id="20300">Carpeta Servidor Web (HTTP)</string>
   <string id="20301">Carpeta Servidor Web (HTTPS)</string>
   <string id="20302">Imposible escribir en carpeta:</string>
@@ -2281,7 +2285,7 @@
   <string id="33008">Guardando</string>
   <string id="33009">Copiando</string>
   <string id="33010">Establecer directorio de descargas</string>
-  <string id="30011">Duración de búsqueda</string>
+  <string id="33011">Duración de búsqueda</string>
   <string id="33012">Corto</string>
   <string id="33013">Largo</string>
   <string id="33014">Usar reproductor de DVD en vez del reproductor regular</string>

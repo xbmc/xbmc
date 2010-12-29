@@ -97,3 +97,10 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   return true;
 }
+
+bool CFTPDirectory::Exists(const char* strPath)
+{
+  CFileCurl ftp;
+  CURL url(strPath);
+  return ftp.Exists(url);
+}

@@ -61,13 +61,54 @@ static iconv_t m_iconvUcs2CharsetToUtf8          = (iconv_t)-1;
 
 static FriBidiCharSet m_stringFribidiCharset     = FRIBIDI_CHAR_SET_NOT_FOUND;
 
-static std::vector<CStdString>     m_vecCharsetNames;
-static std::vector<CStdString>     m_vecCharsetLabels;
-static std::vector<CStdString>     m_vecBidiCharsetNames;
-static std::vector<FriBidiCharSet> m_vecBidiCharsets;
 static CCriticalSection            m_critSection;
 
-CCharsetConverter g_charsetConverter;
+static struct SFribidMapping
+{
+  FriBidiCharSet name;
+  const char*    charset;
+} g_fribidi[] = {
+  { FRIBIDI_CHAR_SET_ISO8859_6, "ISO-8859-6"   }
+, { FRIBIDI_CHAR_SET_ISO8859_8, "ISO-8859-8"   }
+, { FRIBIDI_CHAR_SET_CP1255   , "CP1255"       }
+, { FRIBIDI_CHAR_SET_CP1255   , "Windows-1255" }
+, { FRIBIDI_CHAR_SET_CP1256   , "CP1256"       }
+, { FRIBIDI_CHAR_SET_CP1256   , "Windows-1256" }
+, { FRIBIDI_CHAR_SET_NOT_FOUND, NULL           }
+};
+
+static struct SCharsetMapping
+{
+  const char* charset;
+  const char* caption;
+} g_charsets[] = {
+   { "ISO-8859-1", "Western Europe (ISO)" }
+ , { "ISO-8859-2", "Central Europe (ISO)" }
+ , { "ISO-8859-3", "South Europe (ISO)"   }
+ , { "ISO-8859-4", "Baltic (ISO)"         }
+ , { "ISO-8859-5", "Cyrillic (ISO)"       }
+ , { "ISO-8859-6", "Arabic (ISO)"         }
+ , { "ISO-8859-7", "Greek (ISO)"          }
+ , { "ISO-8859-8", "Hebrew (ISO)"         }
+ , { "ISO-8859-9", "Turkish (ISO)"        }
+ , { "CP1250"    , "Central Europe (Windows)" }
+ , { "CP1251"    , "Cyrillic (Windows)"       }
+ , { "CP1252"    , "Western Europe (Windows)" }
+ , { "CP1253"    , "Greek (Windows)"          }
+ , { "CP1254"    , "Turkish (Windows)"        }
+ , { "CP1255"    , "Hebrew (Windows)"         }
+ , { "CP1256"    , "Arabic (Windows)"         }
+ , { "CP1257"    , "Baltic (Windows)"         }
+ , { "CP1258"    , "Vietnamesse (Windows)"    }
+ , { "CP874"     , "Thai (Windows)"           }
+ , { "BIG5"      , "Chinese Traditional (Big5)" }
+ , { "GBK"       , "Chinese Simplified (GBK)" }
+ , { "SHIFT_JIS" , "Japanese (Shift-JIS)"     }
+ , { "CP949"     , "Korean"                   }
+ , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"   }
+ , { NULL        , NULL                       }
+};
+
 
 #define UTF8_DEST_MULTIPLIER 6
 
@@ -97,76 +138,105 @@ size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 template<class INPUT,class OUTPUT>
 static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource, OUTPUT& strDest)
 {
-  size_t retBytes = (size_t)-1;
-
-  if (type == (iconv_t) - 1)
+  if (type == (iconv_t)-1)
   {
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
+    if (type == (iconv_t)-1) //iconv_open failed
+    {
+      CLog::Log(LOGERROR, "%s iconv_open() failed from %s to %s, errno=%d(%s)",
+                __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno, strerror(errno));
+      return false;
+    }
   }
 
-  if (type != (iconv_t) - 1)
+  if (strSource.IsEmpty())
   {
-    if (strSource.IsEmpty())
+    strDest.Empty(); //empty strings are easy
+    return true;
+  }
+
+  //input buffer for iconv() is the buffer from strSource
+  size_t      inBufSize  = (strSource.length() + 1) * sizeof(strSource[0]);
+  const char* inBuf      = (const char*)strSource.c_str();
+
+  //allocate output buffer for iconv()
+  size_t      outBufSize = (strSource.length() + 1) * multiplier;
+  char*       outBuf     = (char*)malloc(outBufSize);
+
+  size_t      inBytesAvail  = inBufSize;  //how many bytes iconv() can read
+  size_t      outBytesAvail = outBufSize; //how many bytes iconv() can write
+  const char* inBufStart    = inBuf;      //where in our input buffer iconv() should start reading
+  char*       outBufStart   = outBuf;     //where in out output buffer iconv() should start writing
+
+  while(1)
+  {
+    //iconv() will update inBufStart, inBytesAvail, outBufStart and outBytesAvail
+    size_t returnV = iconv_const(type, &inBufStart, &inBytesAvail, &outBufStart, &outBytesAvail);
+
+    if ((returnV == (size_t)-1) && (errno != EINVAL))
     {
-      strDest.Empty();
+      if (errno == E2BIG) //output buffer is not big enough
+      {
+        //save where iconv() ended converting, realloc might make outBufStart invalid
+        size_t bytesConverted = outBufSize - outBytesAvail;
+
+        //make buffer twice as big
+        outBufSize   *= 2;
+        char* newBuf  = (char*)realloc(outBuf, outBufSize);
+        if (!newBuf)
+        {
+          CLog::Log(LOGERROR, "%s realloc failed with buffer=%p size=%zu errno=%d(%s)",
+                    __FUNCTION__, outBuf, outBufSize, errno, strerror(errno));
+          free(outBuf);
+          return false;
+        }
+        outBuf = newBuf;
+
+        //update the buffer pointer and counter
+        outBufStart   = outBuf + bytesConverted;
+        outBytesAvail = outBufSize - bytesConverted;
+
+        //continue in the loop and convert the rest
+      }
+      else if (errno == EILSEQ) //An invalid multibyte sequence has been encountered in the input
+      {
+        //skip invalid byte
+        inBufStart++;
+        inBytesAvail--;
+
+        //continue in the loop and convert the rest
+      }
+      else //iconv() had some other error
+      {
+        CLog::Log(LOGERROR, "%s iconv() failed from %s to %s, errno=%d(%s)",
+                  __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno, strerror(errno));
+        free(outBuf);
+        return false;
+      }
     }
     else
     {
-      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
-      size_t outBytes = (strSource.length() + 1)*multiplier;
-      size_t buf_size = outBytes;
-      const char *src = (const char*)strSource.c_str();
-      char    *outbuf = (char*)malloc(buf_size);
-      int dest_len = 0;
-      bool convert_done = false;
+      //complete the conversion, otherwise the current data will prefix the data on the next call
+      returnV = iconv_const(type, NULL, NULL, &outBufStart, &outBytesAvail);
+      if (returnV == (size_t)-1)
+        CLog::Log(LOGERROR, "%s failed cleanup errno=%d(%s)", __FUNCTION__, errno, strerror(errno));
 
-      while (!convert_done)
-      {
-        char *dst = outbuf + dest_len;
-        retBytes = iconv_const(type, &src, &inBytes, &dst, &outBytes);
-        int errno_save = errno;
-        dest_len += dst - outbuf;
-        if (retBytes != (size_t)-1)
-        {
-          if ((retBytes = iconv_const(type, NULL, NULL, &dst, &outBytes)) == (size_t)-1)
-          {
-            CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-          }
-          convert_done = true;
-        }
-        else
-        {
-          if (errno_save != E2BIG)
-          {
-            CLog::Log(LOGERROR, "%s failed from %s to %s, errno=%d", __FUNCTION__, strFromCharset.c_str(), strToCharset.c_str(), errno_save);
-            convert_done = true;
-          }
-          else
-          {
-            buf_size += 512;
-            outBytes = 512;
-            char *newbuf = (char*)realloc(outbuf, buf_size);
-            if (!newbuf)
-            {
-              CLog::Log(LOGERROR, "%s realloc failed", __FUNCTION__);
-              convert_done = true;
-              retBytes = (size_t)-1;
-            }
-            else
-              outbuf = newbuf;
-          }
-        }
-      }
-      if (retBytes != (size_t)-1)
-      {
-        char *p = (char*)strDest.GetBuffer(dest_len);
-        memcpy(p, outbuf, dest_len);
-        strDest.ReleaseBuffer();
-      }
-      free(outbuf);
+      //we're done
+      break;
     }
   }
-  return retBytes != (size_t)-1;
+
+  size_t bytesWritten = outBufSize - outBytesAvail;
+  char*  dest         = (char*)strDest.GetBuffer(bytesWritten);
+
+  //copy the output from iconv() into the CStdString
+  memcpy(dest, outBuf, bytesWritten);
+
+  strDest.ReleaseBuffer();
+  
+  free(outBuf);
+
+  return true;
 }
 
 template<class INPUT,class OUTPUT>
@@ -248,126 +318,50 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
 
 CCharsetConverter::CCharsetConverter()
 {
-  m_vecCharsetNames.push_back("ISO-8859-1");
-  m_vecCharsetLabels.push_back("Western Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-2");
-  m_vecCharsetLabels.push_back("Central Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-3");
-  m_vecCharsetLabels.push_back("South Europe (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-4");
-  m_vecCharsetLabels.push_back("Baltic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-5");
-  m_vecCharsetLabels.push_back("Cyrillic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-6");
-  m_vecCharsetLabels.push_back("Arabic (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-7");
-  m_vecCharsetLabels.push_back("Greek (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-8");
-  m_vecCharsetLabels.push_back("Hebrew (ISO)");
-  m_vecCharsetNames.push_back("ISO-8859-9");
-  m_vecCharsetLabels.push_back("Turkish (ISO)");
-
-  m_vecCharsetNames.push_back("CP1250");
-  m_vecCharsetLabels.push_back("Central Europe (Windows)");
-  m_vecCharsetNames.push_back("CP1251");
-  m_vecCharsetLabels.push_back("Cyrillic (Windows)");
-  m_vecCharsetNames.push_back("CP1252");
-  m_vecCharsetLabels.push_back("Western Europe (Windows)");
-  m_vecCharsetNames.push_back("CP1253");
-  m_vecCharsetLabels.push_back("Greek (Windows)");
-  m_vecCharsetNames.push_back("CP1254");
-  m_vecCharsetLabels.push_back("Turkish (Windows)");
-  m_vecCharsetNames.push_back("CP1255");
-  m_vecCharsetLabels.push_back("Hebrew (Windows)");
-  m_vecCharsetNames.push_back("CP1256");
-  m_vecCharsetLabels.push_back("Arabic (Windows)");
-  m_vecCharsetNames.push_back("CP1257");
-  m_vecCharsetLabels.push_back("Baltic (Windows)");
-  m_vecCharsetNames.push_back("CP1258");
-  m_vecCharsetLabels.push_back("Vietnamesse (Windows)");
-  m_vecCharsetNames.push_back("CP874");
-  m_vecCharsetLabels.push_back("Thai (Windows)");
-
-  m_vecCharsetNames.push_back("BIG5");
-  m_vecCharsetLabels.push_back("Chinese Traditional (Big5)");
-  m_vecCharsetNames.push_back("GBK");
-  m_vecCharsetLabels.push_back("Chinese Simplified (GBK)");
-  m_vecCharsetNames.push_back("SHIFT_JIS");
-  m_vecCharsetLabels.push_back("Japanese (Shift-JIS)");
-  m_vecCharsetNames.push_back("CP949");
-  m_vecCharsetLabels.push_back("Korean");
-  m_vecCharsetNames.push_back("BIG5-HKSCS");
-  m_vecCharsetLabels.push_back("Hong Kong (Big5-HKSCS)");
-
-  m_vecBidiCharsetNames.push_back("ISO-8859-6");
-  m_vecBidiCharsetNames.push_back("ISO-8859-8");
-  m_vecBidiCharsetNames.push_back("CP1255");
-  m_vecBidiCharsetNames.push_back("Windows-1255");
-  m_vecBidiCharsetNames.push_back("CP1256");
-  m_vecBidiCharsetNames.push_back("Windows-1256");
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_6);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_ISO8859_8);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1255);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
-  m_vecBidiCharsets.push_back(FRIBIDI_CHAR_SET_CP1256);
 }
 
 void CCharsetConverter::clear()
 {
-  CSingleLock lock(m_critSection);
-
-  m_vecBidiCharsetNames.clear();
-  m_vecBidiCharsets.clear();
-  m_vecCharsetNames.clear();
-  m_vecCharsetLabels.clear();
 }
 
 vector<CStdString> CCharsetConverter::getCharsetLabels()
 {
-  return m_vecCharsetLabels;
+  vector<CStdString> lab;
+  for(SCharsetMapping * c = g_charsets; c->charset; c++)
+    lab.push_back(c->caption);
+
+  return lab;
 }
 
-CStdString& CCharsetConverter::getCharsetLabelByName(const CStdString& charsetName)
+CStdString CCharsetConverter::getCharsetLabelByName(const CStdString& charsetName)
 {
-  for (unsigned int i = 0; i < m_vecCharsetNames.size(); i++)
+  for(SCharsetMapping * c = g_charsets; c->charset; c++)
   {
-    if (m_vecCharsetNames[i].Equals(charsetName))
-    {
-      return m_vecCharsetLabels[i];
-    }
+    if (charsetName.Equals(c->charset))
+      return c->caption;
   }
 
-  return EMPTY;
+  return "";
 }
 
-CStdString& CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLabel)
+CStdString CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLabel)
 {
-  CSingleLock lock(m_critSection);
-
-  for (unsigned int i = 0; i < m_vecCharsetLabels.size(); i++)
+  for(SCharsetMapping *c = g_charsets; c->charset; c++)
   {
-    if (m_vecCharsetLabels[i].Equals(charsetLabel))
-    {
-      return m_vecCharsetNames[i];
-    }
+    if (charsetLabel.Equals(c->caption))
+      return c->charset;
   }
 
-  return EMPTY;
+  return "";
 }
 
 bool CCharsetConverter::isBidiCharset(const CStdString& charset)
 {
-  CSingleLock lock(m_critSection);
-
-  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
+  for(SFribidMapping *c = g_fribidi; c->charset; c++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(charset))
-    {
+    if (charset.Equals(c->charset))
       return true;
-    }
   }
-
   return false;
 }
 
@@ -387,16 +381,14 @@ void CCharsetConverter::reset(void)
   ICONV_SAFE_CLOSE(m_iconvUtf8toW);
   ICONV_SAFE_CLOSE(m_iconvUcs2CharsetToUtf8);
 
+
   m_stringFribidiCharset = FRIBIDI_CHAR_SET_NOT_FOUND;
 
   CStdString strCharset=g_langInfo.GetGuiCharSet();
-
-  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
+  for(SFribidMapping *c = g_fribidi; c->charset; c++)
   {
-    if (m_vecBidiCharsetNames[i].Equals(strCharset))
-    {
-      m_stringFribidiCharset = m_vecBidiCharsets[i];
-    }
+    if (strCharset.Equals(c->charset))
+      m_stringFribidiCharset = c->name;
   }
 }
 
@@ -410,10 +402,14 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
     CStdStringA strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
+    CSingleLock lock(m_critSection);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
+  {
+    CSingleLock lock(m_critSection);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
+  }
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
@@ -428,10 +424,7 @@ void CCharsetConverter::fromW(const CStdStringW& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strEnc = enc;
-  if (strEnc.Right(8) != "//IGNORE")
-    strEnc.append("//IGNORE");
-  convert(iconvString,4,WCHAR_CHARSET,strEnc,strSource,strDest);
+  convert(iconvString,4,WCHAR_CHARSET,enc,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -440,9 +433,7 @@ void CCharsetConverter::toW(const CStdStringA& strSource,
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  CStdString strWchar = WCHAR_CHARSET;
-  strWchar.append("//IGNORE");
-  convert(iconvString,sizeof(wchar_t),enc,strWchar,strSource,strDest);
+  convert(iconvString,sizeof(wchar_t),enc,WCHAR_CHARSET,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -512,7 +503,7 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   else
   {
     CSingleLock lock(m_critSection);
-    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8//IGNORE", source, dest);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
   }
 }
 

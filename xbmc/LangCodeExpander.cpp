@@ -22,8 +22,11 @@
 #include "LangCodeExpander.h"
 #include "SectionLoader.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/log.h" 
 
-#define MAKECODE(a, b, c, d) ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
+#define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
+#define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
+
 typedef struct LCENTRY
 {
   long code;
@@ -33,8 +36,22 @@ typedef struct LCENTRY
 extern const struct LCENTRY g_iso639_1[143];
 extern const struct LCENTRY g_iso639_2[536];
 
+struct CharCodeConvertionWithHack
+{
+  const char* old;
+  const char* id;
+  const char* win_id;
+};
 
-CLangCodeExpander g_LangCodeExpander;
+struct CharCodeConvertion
+{
+  const char* old;
+  const char* id;
+};
+
+// declared as extern to allow forward declaration
+extern const CharCodeConvertionWithHack CharCode2To3[184];
+extern const CharCodeConvertion RegionCode2To3[246];
 
 CLangCodeExpander::CLangCodeExpander(void)
 {}
@@ -123,6 +140,61 @@ bool CLangCodeExpander::Lookup(CStdString& desc, const int code)
   lang[0] = (code >> 8) & 255;
 
   return Lookup(desc, lang);
+}
+
+#ifdef _WIN32
+bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode, bool localeHack /*= false*/)
+#else
+bool CLangCodeExpander::ConvertTwoToThreeCharCode(CStdString& strThreeCharCode, const CStdString& strTwoCharCode)
+#endif
+{       
+  if ( strTwoCharCode.length() == 2 )
+  {
+    CStdString strTwoCharCodeLower( strTwoCharCode );
+    strTwoCharCodeLower.MakeLower();
+    strTwoCharCodeLower.TrimLeft();
+    strTwoCharCodeLower.TrimRight();
+
+    for (unsigned int index = 0; index < sizeof(CharCode2To3) / sizeof(CharCode2To3[0]); ++index)
+    {
+      if (strTwoCharCodeLower.Equals(CharCode2To3[index].old))
+      {
+#ifdef _WIN32
+        if (localeHack && CharCode2To3[index].win_id)
+        {
+          strThreeCharCode = CharCode2To3[index].win_id;
+          return true;
+        }
+#endif
+        strThreeCharCode = CharCode2To3[index].id;
+        return true;
+      }
+    }
+  }
+
+  // not a 2 char code
+  return false;
+}
+
+bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const CStdString& strTwoCharCode, CStdString& strThreeCharCode)
+{
+  if (strTwoCharCode.length() != 2)
+    return false;
+
+  CStdString strLower( strTwoCharCode );
+  strLower.MakeLower();
+  strLower.TrimLeft();
+  strLower.TrimRight();
+  for (unsigned int index = 0; index < sizeof(RegionCode2To3) / sizeof(RegionCode2To3[0]); ++index)
+  {
+    if (strLower.Equals(RegionCode2To3[index].old))
+    {
+      strThreeCharCode = RegionCode2To3[index].id;
+      return true;
+    }
+  }
+
+  return true;
 }
 
 bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code)
@@ -868,4 +940,443 @@ extern const LCENTRY g_iso639_2[536] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
+};
+
+const CharCodeConvertionWithHack CharCode2To3[184] =
+{
+  { "aa", "aar", NULL },
+  { "ab", "abk", NULL },
+  { "af", "afr", NULL },
+  { "ak", "aka", NULL },
+  { "am", "amh", NULL },
+  { "ar", "ara", NULL },
+  { "an", "arg", NULL },
+  { "as", "asm", NULL },
+  { "av", "ava", NULL },
+  { "ae", "ave", NULL },
+  { "ay", "aym", NULL },
+  { "az", "aze", NULL },
+  { "ba", "bak", NULL },
+  { "bm", "bam", NULL },
+  { "be", "bel", NULL },
+  { "bn", "ben", NULL },
+  { "bh", "bih", NULL },
+  { "bi", "bis", NULL },
+  { "bo", "tib", NULL },
+  { "bs", "bos", NULL },
+  { "br", "bre", NULL },
+  { "bg", "bul", NULL },
+  { "ca", "cat", NULL },
+  { "cs", "cze", "csy" },
+  { "ch", "cha", NULL },
+  { "ce", "che", NULL },
+  { "cu", "chu", NULL },
+  { "cv", "chv", NULL },
+  { "kw", "cor", NULL },
+  { "co", "cos", NULL },
+  { "cr", "cre", NULL },
+  { "cy", "wel", NULL },
+  { "da", "dan", NULL },
+  { "de", "ger", "deu" },
+  { "dv", "div", NULL },
+  { "dz", "dzo", NULL },
+  { "el", "gre", "ell" },
+  { "en", "eng", NULL },
+  { "eo", "epo", NULL },
+  { "et", "est", NULL },
+  { "eu", "baq", NULL },
+  { "ee", "ewe", NULL },
+  { "fo", "fao", NULL },
+  { "fa", "per", NULL },
+  { "fj", "fij", NULL },
+  { "fi", "fin", NULL },
+  { "fr", "fre", "fra" },
+  { "fy", "fry", NULL },
+  { "ff", "ful", NULL },
+  { "gd", "gla", NULL },
+  { "ga", "gle", NULL },
+  { "gl", "glg", NULL },
+  { "gv", "glv", NULL },
+  { "gn", "grn", NULL },
+  { "gu", "guj", NULL },
+  { "ht", "hat", NULL },
+  { "ha", "hau", NULL },
+  { "he", "heb", NULL },
+  { "hz", "her", NULL },
+  { "hi", "hin", NULL },
+  { "ho", "hmo", NULL },
+  { "hr", "hrv", NULL },
+  { "hu", "hun", NULL },
+  { "hy", "arm", NULL },
+  { "ig", "ibo", NULL },
+  { "io", "ido", NULL },
+  { "ii", "iii", NULL },
+  { "iu", "iku", NULL },
+  { "ie", "ile", NULL },
+  { "ia", "ina", NULL },
+  { "id", "ind", NULL },
+  { "ik", "ipk", NULL },
+  { "is", "ice", "isl" },
+  { "it", "ita", NULL },
+  { "jv", "jav", NULL },
+  { "ja", "jpn", NULL },
+  { "kl", "kal", NULL },
+  { "kn", "kan", NULL },
+  { "ks", "kas", NULL },
+  { "ka", "geo", NULL },
+  { "kr", "kau", NULL },
+  { "kk", "kaz", NULL },
+  { "km", "khm", NULL },
+  { "ki", "kik", NULL },
+  { "rw", "kin", NULL },
+  { "ky", "kir", NULL },
+  { "kv", "kom", NULL },
+  { "kg", "kon", NULL },
+  { "ko", "kor", NULL },
+  { "kj", "kua", NULL },
+  { "ku", "kur", NULL },
+  { "lo", "lao", NULL },
+  { "la", "lat", NULL },
+  { "lv", "lav", NULL },
+  { "li", "lim", NULL },
+  { "ln", "lin", NULL },
+  { "lt", "lit", NULL },
+  { "lb", "ltz", NULL },
+  { "lu", "lub", NULL },
+  { "lg", "lug", NULL },
+  { "mk", "mac", NULL },
+  { "mh", "mah", NULL },
+  { "ml", "mal", NULL },
+  { "mi", "mao", NULL },
+  { "mr", "mar", NULL },
+  { "ms", "may", NULL },
+  { "mg", "mlg", NULL },
+  { "mt", "mlt", NULL },
+  { "mn", "mon", NULL },
+  { "my", "bur", NULL },
+  { "na", "nau", NULL },
+  { "nv", "nav", NULL },
+  { "nr", "nbl", NULL },
+  { "nd", "nde", NULL },
+  { "ng", "ndo", NULL },
+  { "ne", "nep", NULL },
+  { "nl", "dut", "nld" },
+  { "nn", "nno", NULL },
+  { "nb", "nob", NULL },
+  { "no", "nor", NULL },
+  { "ny", "nya", NULL },
+  { "oc", "oci", NULL },
+  { "oj", "oji", NULL },
+  { "or", "ori", NULL },
+  { "om", "orm", NULL },
+  { "os", "oss", NULL },
+  { "pa", "pan", NULL },
+  { "pi", "pli", NULL },
+  { "pl", "pol", "plk" },
+  { "pt", "por", "ptg" },
+  { "ps", "pus", NULL },
+  { "qu", "que", NULL },
+  { "rm", "roh", NULL },
+  { "ro", "rum", "ron" },
+  { "rn", "run", NULL },
+  { "ru", "rus", NULL },
+  { "sg", "sag", NULL },
+  { "sa", "san", NULL },
+  { "si", "sin", NULL },
+  { "sk", "slo", "sky" },
+  { "sl", "slv", NULL },
+  { "se", "sme", NULL },
+  { "sm", "smo", NULL },
+  { "sn", "sna", NULL },
+  { "sd", "snd", NULL },
+  { "so", "som", NULL },
+  { "st", "sot", NULL },
+  { "es", "spa", "esp" },
+  { "sq", "alb", NULL },
+  { "sc", "srd", NULL },
+  { "sr", "srp", NULL },
+  { "ss", "ssw", NULL },
+  { "su", "sun", NULL },
+  { "sw", "swa", NULL },
+  { "sv", "swe", "sve" },
+  { "ty", "tah", NULL },
+  { "ta", "tam", NULL },
+  { "tt", "tat", NULL },
+  { "te", "tel", NULL },
+  { "tg", "tgk", NULL },
+  { "tl", "tgl", NULL },
+  { "th", "tha", NULL },
+  { "ti", "tir", NULL },
+  { "to", "ton", NULL },
+  { "tn", "tsn", NULL },
+  { "ts", "tso", NULL },
+  { "tk", "tuk", NULL },
+  { "tr", "tur", "trk" },
+  { "tw", "twi", NULL },
+  { "ug", "uig", NULL },
+  { "uk", "ukr", NULL },
+  { "ur", "urd", NULL },
+  { "uz", "uzb", NULL },
+  { "ve", "ven", NULL },
+  { "vi", "vie", NULL },
+  { "vo", "vol", NULL },
+  { "wa", "wln", NULL },
+  { "wo", "wol", NULL },
+  { "xh", "xho", NULL },
+  { "yi", "yid", NULL },
+  { "yo", "yor", NULL },
+  { "za", "zha", NULL },
+  { "zh", "chi", NULL },
+  { "zu", "zul", NULL }
+};
+
+// Based on ISO 3166
+const CharCodeConvertion RegionCode2To3[246] =
+{
+  { "af", "afg" },
+  { "ax", "ala" },
+  { "al", "alb" },
+  { "dz", "dza" },
+  { "as", "asm" },
+  { "ad", "and" },
+  { "ao", "ago" },
+  { "ai", "aia" },
+  { "aq", "ata" },
+  { "ag", "atg" },
+  { "ar", "arg" },
+  { "am", "arm" },
+  { "aw", "abw" },
+  { "au", "aus" },
+  { "at", "aut" },
+  { "az", "aze" },
+  { "bs", "bhs" },
+  { "bh", "bhr" },
+  { "bd", "bgd" },
+  { "bb", "brb" },
+  { "by", "blr" },
+  { "be", "bel" },
+  { "bz", "blz" },
+  { "bj", "ben" },
+  { "bm", "bmu" },
+  { "bt", "btn" },
+  { "bo", "bol" },
+  { "ba", "bih" },
+  { "bw", "bwa" },
+  { "bv", "bvt" },
+  { "br", "bra" },
+  { "io", "iot" },
+  { "bn", "brn" },
+  { "bg", "bgr" },
+  { "bf", "bfa" },
+  { "bi", "bdi" },
+  { "kh", "khm" },
+  { "cm", "cmr" },
+  { "ca", "can" },
+  { "cv", "cpv" },
+  { "ky", "cym" },
+  { "cf", "caf" },
+  { "td", "tcd" },
+  { "cl", "chl" },
+  { "cn", "chn" },
+  { "cx", "cxr" },
+  { "cc", "cck" },
+  { "co", "col" },
+  { "km", "com" },
+  { "cg", "cog" },
+  { "cd", "cod" },
+  { "ck", "cok" },
+  { "cr", "cri" },
+  { "ci", "civ" },
+  { "hr", "hrv" },
+  { "cu", "cub" },
+  { "cy", "cyp" },
+  { "cz", "cze" },
+  { "dk", "dnk" },
+  { "dj", "dji" },
+  { "dm", "dma" },
+  { "do", "dom" },
+  { "ec", "ecu" },
+  { "eg", "egy" },
+  { "sv", "slv" },
+  { "gq", "gnq" },
+  { "er", "eri" },
+  { "ee", "est" },
+  { "et", "eth" },
+  { "fk", "flk" },
+  { "fo", "fro" },
+  { "fj", "fji" },
+  { "fi", "fin" },
+  { "fr", "fra" },
+  { "gf", "guf" },
+  { "pf", "pyf" },
+  { "tf", "atf" },
+  { "ga", "gab" },
+  { "gm", "gmb" },
+  { "ge", "geo" },
+  { "de", "deu" },
+  { "gh", "gha" },
+  { "gi", "gib" },
+  { "gr", "grc" },
+  { "gl", "grl" },
+  { "gd", "grd" },
+  { "gp", "glp" },
+  { "gu", "gum" },
+  { "gt", "gtm" },
+  { "gg", "ggy" },
+  { "gn", "gin" },
+  { "gw", "gnb" },
+  { "gy", "guy" },
+  { "ht", "hti" },
+  { "hm", "hmd" },
+  { "va", "vat" },
+  { "hn", "hnd" },
+  { "hk", "hkg" },
+  { "hu", "hun" },
+  { "is", "isl" },
+  { "in", "ind" },
+  { "id", "idn" },
+  { "ir", "irn" },
+  { "iq", "irq" },
+  { "ie", "irl" },
+  { "im", "imn" },
+  { "il", "isr" },
+  { "it", "ita" },
+  { "jm", "jam" },
+  { "jp", "jpn" },
+  { "je", "jey" },
+  { "jo", "jor" },
+  { "kz", "kaz" },
+  { "ke", "ken" },
+  { "ki", "kir" },
+  { "kp", "prk" },
+  { "kr", "kor" },
+  { "kw", "kwt" },
+  { "kg", "kgz" },
+  { "la", "lao" },
+  { "lv", "lva" },
+  { "lb", "lbn" },
+  { "ls", "lso" },
+  { "lr", "lbr" },
+  { "ly", "lby" },
+  { "li", "lie" },
+  { "lt", "ltu" },
+  { "lu", "lux" },
+  { "mo", "mac" },
+  { "mk", "mkd" },
+  { "mg", "mdg" },
+  { "mw", "mwi" },
+  { "my", "mys" },
+  { "mv", "mdv" },
+  { "ml", "mli" },
+  { "mt", "mlt" },
+  { "mh", "mhl" },
+  { "mq", "mtq" },
+  { "mr", "mrt" },
+  { "mu", "mus" },
+  { "yt", "myt" },
+  { "mx", "mex" },
+  { "fm", "fsm" },
+  { "md", "mda" },
+  { "mc", "mco" },
+  { "mn", "mng" },
+  { "me", "mne" },
+  { "ms", "msr" },
+  { "ma", "mar" },
+  { "mz", "moz" },
+  { "mm", "mmr" },
+  { "na", "nam" },
+  { "nr", "nru" },
+  { "np", "npl" },
+  { "nl", "nld" },
+  { "an", "ant" },
+  { "nc", "ncl" },
+  { "nz", "nzl" },
+  { "ni", "nic" },
+  { "ne", "ner" },
+  { "ng", "nga" },
+  { "nu", "niu" },
+  { "nf", "nfk" },
+  { "mp", "mnp" },
+  { "no", "nor" },
+  { "om", "omn" },
+  { "pk", "pak" },
+  { "pw", "plw" },
+  { "ps", "pse" },
+  { "pa", "pan" },
+  { "pg", "png" },
+  { "py", "pry" },
+  { "pe", "per" },
+  { "ph", "phl" },
+  { "pn", "pcn" },
+  { "pl", "pol" },
+  { "pt", "prt" },
+  { "pr", "pri" },
+  { "qa", "qat" },
+  { "re", "reu" },
+  { "ro", "rou" },
+  { "ru", "rus" },
+  { "rw", "rwa" },
+  { "bl", "blm" },
+  { "sh", "shn" },
+  { "kn", "kna" },
+  { "lc", "lca" },
+  { "mf", "maf" },
+  { "pm", "spm" },
+  { "vc", "vct" },
+  { "ws", "wsm" },
+  { "sm", "smr" },
+  { "st", "stp" },
+  { "sa", "sau" },
+  { "sn", "sen" },
+  { "rs", "srb" },
+  { "sc", "syc" },
+  { "sl", "sle" },
+  { "sg", "sgp" },
+  { "sk", "svk" },
+  { "si", "svn" },
+  { "sb", "slb" },
+  { "so", "som" },
+  { "za", "zaf" },
+  { "gs", "sgs" },
+  { "es", "esp" },
+  { "lk", "lka" },
+  { "sd", "sdn" },
+  { "sr", "sur" },
+  { "sj", "sjm" },
+  { "sz", "swz" },
+  { "se", "swe" },
+  { "ch", "che" },
+  { "sy", "syr" },
+  { "tw", "twn" },
+  { "tj", "tjk" },
+  { "tz", "tza" },
+  { "th", "tha" },
+  { "tl", "tls" },
+  { "tg", "tgo" },
+  { "tk", "tkl" },
+  { "to", "ton" },
+  { "tt", "tto" },
+  { "tn", "tun" },
+  { "tr", "tur" },
+  { "tm", "tkm" },
+  { "tc", "tca" },
+  { "tv", "tuv" },
+  { "ug", "uga" },
+  { "ua", "ukr" },
+  { "ae", "are" },
+  { "gb", "gbr" },
+  { "us", "usa" },
+  { "um", "umi" },
+  { "uy", "ury" },
+  { "uz", "uzb" },
+  { "vu", "vut" },
+  { "ve", "ven" },
+  { "vn", "vnm" },
+  { "vg", "vgb" },
+  { "vi", "vir" },
+  { "wf", "wlf" },
+  { "eh", "esh" },
+  { "ye", "yem" },
+  { "zm", "zmb" },
+  { "zw", "zwe" }
 };

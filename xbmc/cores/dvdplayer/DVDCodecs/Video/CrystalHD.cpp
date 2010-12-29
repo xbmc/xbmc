@@ -963,6 +963,7 @@ void CMPCOutputThread::Process(void)
   // return immediately until decoder starts getting input packets. 
   while (!m_bStop)
   {
+    memset(&decoder_status, 0, sizeof(decoder_status));
     ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
     if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount)
     {
@@ -975,6 +976,7 @@ void CMPCOutputThread::Process(void)
   // decoder is primed so now calls in DtsProcOutputXXCopy will block
   while (!m_bStop)
   {
+    memset(&decoder_status, 0, sizeof(decoder_status));
     ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
     if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount != 0)
       GetDecoderOutput();
@@ -1187,6 +1189,8 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       StreamType = BCM::BC_STREAM_TYPE_ES;
       if (!m_new_lib)
         m_convert_bitstream = bitstream_convert_init((uint8_t*)hints.extradata, hints.extrasize);
+      else
+        m_convert_bitstream = false;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
@@ -1487,7 +1491,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
     }
 
     bool wait_state;
-    if (m_pOutputThread->GetReadyCount() < 2)
+    if (m_pOutputThread->GetReadyCount() < 1)
       wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
@@ -1628,6 +1632,10 @@ void CCrystalHD::SetDropState(bool bDrop)
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
 {
+  // based on gstbcmdec.c (bcmdec_insert_sps_pps)
+  // which is Copyright(c) 2008 Broadcom Corporation.
+  // and Licensed LGPL 2.1
+
   uint8_t *data = (uint8_t*)extradata;
   uint32_t data_size = extradata_size;
   int profile;

@@ -68,10 +68,6 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
-#include "cores/AudioRenderers/AudioRendererFactory.h"
-#ifndef __APPLE__
-#include "cores/AudioRenderers/ALSADirectSound.h"
-#endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
@@ -2855,7 +2851,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
   {
-    AudioSinkList::const_iterator iter = sinkList.begin();
+    AEDeviceList::const_iterator iter = sinkList.begin();
     for (int i=0; iter != sinkList.end(); iter++)
     {
       CStdString label = (*iter).first;

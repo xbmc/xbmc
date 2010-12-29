@@ -80,6 +80,54 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   return OK;
 }
 
+JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "albumid")))
+    return InvalidParams;
+
+  int albumID = ParameterAsInt(param, -1, "albumid");
+  if (albumID <= 0)
+    return InvalidParams;
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CAlbum album;
+  if (!musicdatabase.GetAlbumInfo(albumID, album, NULL))
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  Json::Value validFields;
+  MakeFieldsList(parameterObject, validFields);
+
+  CStdString path;
+  musicdatabase.GetAlbumPath(albumID, path);
+
+  CFileItemPtr m_albumItem( new CFileItem(path, true) );
+  m_albumItem->SetLabel(album.strAlbum);
+  m_albumItem->GetMusicInfoTag()->SetAlbum(album.strAlbum);
+  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(album.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetArtist(album.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetYear(album.iYear);
+  m_albumItem->GetMusicInfoTag()->SetLoaded(true);
+  m_albumItem->GetMusicInfoTag()->SetRating('0' + (album.iRating + 1) / 2);
+  m_albumItem->GetMusicInfoTag()->SetGenre(album.strGenre);
+  m_albumItem->GetMusicInfoTag()->SetDatabaseId(albumID);
+  CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem, album);
+  m_albumItem->SetMusicThumb();
+  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, validFields, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
 JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
@@ -100,6 +148,38 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
     HandleFileItemList("songid", true, "songs", items, param, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
+JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "songid")))
+    return InvalidParams;
+
+  int idSong = ParameterAsInt(param, -1, "songid");
+  if (idSong <= 0)
+    return InvalidParams;
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CSong song;
+  if (!musicdatabase.GetSongById(idSong, song))
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  Json::Value validFields;
+  MakeFieldsList(parameterObject, validFields);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result);
 
   musicdatabase.Close();
   return OK;

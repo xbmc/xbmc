@@ -47,6 +47,7 @@ public:
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
+  void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
   void StepFrame();
@@ -130,9 +131,10 @@ protected:
   int m_iDroppedFrames;
   int m_iDroppedRequest;
 
+  void   ResetFrameRateCalc();
   void   CalcFrameRate();
 
-  float  m_fFrameRate;       //framerate of the video currently playing
+  double m_fFrameRate;       //framerate of the video currently playing
   bool   m_bCalcFrameRate;  //if we should calculate the framerate from the timestamps
   double m_fStableFrameRate; //place to store calculated framerates
   int    m_iFrameRateCount;  //how many calculated framerates we stored in m_fStableFrameRate
@@ -150,7 +152,7 @@ protected:
     unsigned int color_format;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
-    float        framerate;
+    double       framerate;
     bool         inited;
   } m_output; //holds currently configured output
 

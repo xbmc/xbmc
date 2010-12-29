@@ -404,14 +404,14 @@ int CDVDInputStreamBluray::Read(BYTE* buf, int buf_size)
 int CDVDInputStreamBluray::GetTotalTime()
 {
   if(m_title)
-    return m_title->duration / 90;
+    return (int)(m_title->duration / 90);
   else
     return 0;
 }
 
 int CDVDInputStreamBluray::GetTime()
 {
-  return m_dll->bd_tell_time(m_bd) / 90;
+  return (int)(m_dll->bd_tell_time(m_bd) / 90);
 }
 
 bool CDVDInputStreamBluray::SeekTime(int ms)

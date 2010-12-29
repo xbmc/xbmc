@@ -108,11 +108,9 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 
 void CGUIMultiImage::Render()
 {
-  if (!m_files.empty())
+  // Set a viewport so that we don't render outside the defined area
+  if (!m_files.empty() && g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
-    // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-
     unsigned int nextImage = m_currentImage + 1;
     if (nextImage >= m_files.size())
       nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
@@ -223,7 +221,7 @@ void CGUIMultiImage::LoadDirectory()
     // Load in our images from the directory specified
     // m_currentPath is relative (as are all skin paths)
     CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
-    if (realPath.IsEmpty())
+    if (realPath.IsEmpty() && m_files.empty())
       return;
 
     CUtil::AddSlashAtEnd(realPath);

@@ -141,11 +141,9 @@
   <string id="164">No disc</string>
   <string id="165">Disc present</string>
   <string id="166">Skin</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
-  <string id="171"></string>
 
   <string id="172">Release date</string>
   <string id="173">Display 4:3 videos as</string>
@@ -255,7 +253,7 @@
   <string id="282">Found %i items</string>
   <string id="283">Search results</string>
   <string id="284">No results found</string>
-  <string id="286"></string>
+
   <string id="287">Subtitles</string>
   <string id="288">Font</string>
   <string id="289">- Size</string>
@@ -275,11 +273,7 @@
   <string id="304">Language</string>
   <string id="305">Enabled</string>
   <string id="306">Non-interleaved</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=auto)</string>
   <string id="313">Cleaning database</string>
   <string id="314">Preparing...</string>
@@ -315,7 +309,6 @@
   <string id="344">Actors</string>
   <string id="345">Year</string>
   <string id="346">Boost volume level on downmix</string>
-  <string id="347">Use exclusive mode</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -373,8 +366,7 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>
   <string id="411">Getting weather for:</string>
@@ -477,7 +469,7 @@
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
-  <string id="520"></string>
+
   <string id="521">Compilations</string>
   <string id="522">Remove source</string>
   <string id="523">Switch media</string>
@@ -628,7 +620,7 @@
   <string id="715">- Assignment</string>
   <string id="716">Automatic (DHCP)</string>
   <string id="717">Manual (Static)</string>
-  <string id="718"></string>
+
   <string id="719">- IP address</string>
   <string id="720">- Netmask</string>
   <string id="721">- Default gateway</string>
@@ -639,9 +631,9 @@
   <string id="726">Changes not saved. Continue without saving?</string>
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
-  <string id="729"></string>
+
   <string id="730">- Port</string>
-  <string id="731"></string>
+
   <string id="732">Save &amp; apply</string>
   <string id="733">- Password</string>
   <string id="734">No pass</string>
@@ -680,7 +672,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Error %i: share not available</string>
-  <string id="771"></string>
+
   <string id="772">Audio output</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow folder</string>
@@ -758,7 +750,7 @@
   <string id="1042">Retrieved %i of %i items</string>
   <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
-  <string id="1045">Addon settings</string>
+  <string id="1045">Add-on settings</string>
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
   <string id="1048">- Username</string>
@@ -798,10 +790,6 @@
   <string id="1233">Programs &amp; video &amp; music</string>
   <string id="1234">Programs &amp; pictures &amp; music</string>
   <string id="1235">Programs &amp; pictures &amp; video</string>
-
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
 
   <string id="1250">Auto-detection</string>
   <string id="1251">Auto-detect system</string>
@@ -855,8 +843,6 @@
 
   <string id="2100">Script failed! : %s</string>
   <string id="2101">Newer version needed - See log</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
   <string id="4501">Enable LCD/VFD</string>
 
@@ -927,18 +913,9 @@
   <string id="12009">Rebuild index...</string>
   <string id="12010">Return to music window</string>
   <string id="12011">Return to videos window</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
-  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -989,9 +966,7 @@
   <string id="12377">This will reset any previously saved values</string>
   <string id="12378">Amount of time to display each image</string>
   <string id="12379">Use pan and zoom effects</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">12 hour clock</string>
   <string id="12384">24 hour clock</string>
   <string id="12385">Day/Month</string>
@@ -1014,8 +989,7 @@
   <string id="13003">- Delay</string>
   <string id="13004">- Minimum file duration</string>
   <string id="13005">Shutdown</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Shutdown function</string>
   <string id="13009">Quit</string>
   <string id="13010">Hibernate</string>
@@ -1071,28 +1045,10 @@
   <string id="13146">XBMC, changing this setting might affect your ability</string>
   <string id="13147">to continue controlling it. Do you want to proceed?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
   <string id="13159">Subnet mask</string>
   <string id="13160">Gateway</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Initialize failed</string>
-
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-
 
   <string id="13170">Never</string>
   <string id="13171">Immediately</string>
@@ -1133,20 +1089,17 @@
 
   <string id="13283">Operating system:</string>
   <string id="13284">CPU speed:</string>
-  <string id="13285"></string>
+
   <string id="13286">Video encoder:</string>
   <string id="13287">Screen resolution:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">A/V cable:</string>
-  <string id="13293"></string>
+
   <string id="13294">DVD region:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Connected</string>
   <string id="13297">Not connected. Check network settings.</string>
-  <string id="13298"></string>
+
   <string id="13299">Target temperature</string>
   <string id="13300">Fan speed</string>
   <string id="13301">Auto temperature control</string>
@@ -1185,8 +1138,7 @@
   <string id="13334">Edit label</string>
   <string id="13335">Make default</string>
   <string id="13336">Remove button</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Leave as is</string>
   <string id="13341">Green</string>
   <string id="13342">Orange</string>
@@ -1335,7 +1287,7 @@
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
-  <string id="14041"></string>
+  <string id="14041">Internet connection bandwidth limitation</string>
 
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i min</string>
@@ -1461,7 +1413,7 @@
   <string id="15275">Weekly track chart for %name%</string>
   <string id="15276">Listen to %name%'s neighbours Last.fm radio</string>
   <string id="15277">Listen to %name%'s personal Last.fm radio</string>
-  <string id="15278">Listen to %name%'s loved tracks Last.fm radio</string>
+
   <string id="15279">Retrieving list from Last.fm...</string>
   <string id="15280">Can't retrieve list from Last.fm...</string>
   <string id="15281">Enter an artist name to find related ones</string>
@@ -1469,7 +1421,7 @@
   <string id="15283">Tracks recently listened by %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.fm radio</string>
   <string id="15285">Top tags for user %name%</string>
-  <string id="15286">Listen to %name%'s playlist Last.fm radio</string>
+
   <string id="15287">Do you want to add the current track to your loved tracks?</string>
   <string id="15288">Do you want to ban the current track?</string>
   <string id="15289">Added to your loved tracks: '%s'.</string>
@@ -1532,11 +1484,6 @@
   <string id="16103">Mark as watched</string>
   <string id="16104">Mark as unwatched</string>
   <string id="16105">Edit title</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
 
   <string id="16200">Operation was aborted</string>
   <string id="16201">Copy failed</string>
@@ -1568,9 +1515,6 @@
   <string id="16319">DXVA</string>
 
   <string id="16400">Post-processing</string>
-  <string id="16401"></string>
-  <string id="16402"></string>
-  <string id="16403"></string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -1755,8 +1699,7 @@
   <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
@@ -1787,24 +1730,17 @@
   <string id="20303">Do you want to skip and proceed?</string>
   <string id="20304">RSS Feed</string>
 
-  <string id="20306"></string>
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP server:</string>
   <string id="20309">Make new folder</string>
   <string id="20310">Dim LCD on playback</string>
   <string id="20311">Unknown or onboard (protected)</string>
   <string id="20312">Dim LCD on paused</string>
-  <string id="20313"></string>
+
   <string id="20314">Videos - Library</string>
-  <string id="20315"></string>
+
   <string id="20316">Sort by: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Play part...</string>
   <string id="20325">Calibration reset</string>
   <string id="20326">This will reset the calibration values for %s</string>
@@ -1935,6 +1871,8 @@
   <string id="20451">Countries</string>
   <string id="20452">episode</string>
   <string id="20453">episodes</string>
+  <string id="20454">Listener</string>
+  <string id="20455">Listeners</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2201,6 +2139,7 @@
   <string id="24015">Music video information</string>
   <string id="24016">Album information</string>
   <string id="24017">Artist information</string>
+  <string id="24018">Services</string>
 
   <string id="24020">Configure</string>
   <string id="24021">Disable</string>
@@ -2250,22 +2189,16 @@
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
-
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>
+  <string id="24099">Would you like to switch to this skin?</string>
+  <string id="25000">Notifications</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
   <string id="29802">Passthrough Audio in use</string>
-
-  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->

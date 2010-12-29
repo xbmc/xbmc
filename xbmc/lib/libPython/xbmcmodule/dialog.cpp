@@ -186,12 +186,14 @@ namespace PYXBMC
       utf8Line[2] += "|.rar|.zip";
 
     value = cDefault;
+    Py_BEGIN_ALLOW_THREADS
     if (browsetype == 1)
       CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
+    Py_END_ALLOW_THREADS
     return Py_BuildValue((char*)"s", value.c_str());
   }
 
@@ -237,7 +239,11 @@ namespace PYXBMC
           timedate.wMonth = atoi(sDefault.Mid(3,4));
           timedate.wYear = atoi(sDefault.Right(4));
         }
-        if (CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading))
+        bool gotDate;
+        Py_BEGIN_ALLOW_THREADS
+        gotDate = CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading);
+        Py_END_ALLOW_THREADS
+        if (gotDate)
           value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
         else
         {
@@ -253,7 +259,11 @@ namespace PYXBMC
           timedate.wHour = atoi(sDefault.Left(2));
           timedate.wMinute = atoi(sDefault.Right(2));
         }
-        if (CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading))
+        bool gotTime;
+        Py_BEGIN_ALLOW_THREADS
+        gotTime = CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading);
+        Py_END_ALLOW_THREADS
+        if (gotTime)
           value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
         else
         {
@@ -264,7 +274,11 @@ namespace PYXBMC
       else if (inputtype == 3)
       {
         value = cDefault;
-        if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading))
+        bool gotIPAddress;
+        Py_BEGIN_ALLOW_THREADS
+        gotIPAddress = CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading);
+        Py_END_ALLOW_THREADS
+        if (!gotIPAddress)
         {
           Py_INCREF(Py_None);
           return Py_None;
@@ -273,7 +287,11 @@ namespace PYXBMC
       else
       {
         value = cDefault;
-        if (!CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading))
+        bool gotNumber;
+        Py_BEGIN_ALLOW_THREADS
+        gotNumber = CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+        Py_END_ALLOW_THREADS
+        if (!gotNumber)
         {
           Py_INCREF(Py_None);
           return Py_None;

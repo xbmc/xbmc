@@ -268,7 +268,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(profile);
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
   }
   else
   {
@@ -276,9 +275,17 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     if (pWindow)
       pWindow->ResetControlStates();
   }
+  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
 
   g_settings.UpdateCurrentProfileDate();
   g_settings.SaveProfiles(PROFILES_FILE);
+
+  if (g_settings.GetLastUsedProfileIndex() != profile)
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+  }
 
   g_weatherManager.Refresh();
 #ifdef HAS_PYTHON

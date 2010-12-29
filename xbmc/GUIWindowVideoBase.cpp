@@ -25,6 +25,7 @@
 #include "utils/IMDB.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/Variant.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "GUIWindowVideoInfo.h"
@@ -61,6 +62,7 @@
 #include "StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
+#include "utils/AnnouncementManager.h"
 
 #include "addons/Skin.h"
 #include "MediaManager.h"
@@ -1449,6 +1451,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
 
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 {
+  if (!g_settings.GetCurrentProfile().canWriteDatabases())
+    return;
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())
@@ -1797,6 +1801,9 @@ void CGUIWindowVideoBase::OnSearch()
   CFileItemList items;
   DoSearch(strSearch, items);
 
+  if (m_dlgProgress)
+    m_dlgProgress->Close();
+
   if (items.Size())
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1813,25 +1820,14 @@ void CGUIWindowVideoBase::OnSearch()
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)
-    {
-      if (m_dlgProgress)
-        m_dlgProgress->Close();
-
-      return ;
-    }
+      return;
 
     CFileItemPtr pSelItem = items[iItem];
 
     OnSearchItemFound(pSelItem.get());
-
-    if (m_dlgProgress)
-      m_dlgProgress->Close();
   }
   else
   {
-    if (m_dlgProgress)
-      m_dlgProgress->Close();
-
     CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
   }
 }

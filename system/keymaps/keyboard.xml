@@ -16,7 +16,6 @@
 <!--    <universalremote>             -->
 <!--       <obc45>Stop</obc45>         -->
 <!--    </universalremote>            -->
-<!-- To find out the OBC's of your remote, try enabling the <displayremotecodes> tag in AdvancedSettings.xml -->
 
 <!-- Note that the action can be a built-in function.                 -->
 <!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
@@ -563,4 +562,9 @@
       <backspace>Close</backspace>
     </keyboard>
   </Favourites>
+  <NumericInput>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </NumericInput>
 </keymap>

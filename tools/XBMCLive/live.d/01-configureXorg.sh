@@ -67,19 +67,28 @@ if [ "$GPUTYPE" = "NVIDIA" ]; then
 fi
 
 if [ "$GPUTYPE" = "AMD" ]; then
+	# Try fglrx first
+	if [ $LSBRELEASE -gt 910 ]; then
+		# only on lucid!
+		update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
+		ldconfig
+	fi
+
 	# run aticonfig
-	/usr/bin/aticonfig --initial --sync-vsync=on -f
+	/usr/lib/fglrx/bin/aticonfig --initial --sync-vsync=on -f
 	ATICONFIG_RETURN_CODE=$? 
 
 	if [ $ATICONFIG_RETURN_CODE -eq 255 ]; then
 		# aticonfig returns 255 on old unsuported ATI cards 
 		# Let the X default ati driver handle the card 
-		modprobe radeon # Required to permit KMS switching and support hardware GL  
-	else
 		if [ $LSBRELEASE -gt 910 ]; then
 			# only on lucid!
-			update-alternatives --set gl_conf /usr/lib/fglrx/ld.so.conf
+			# revert to mesa
+			update-alternatives --set gl_conf /usr/lib/mesa/ld.so.conf
 			ldconfig
 		fi
+		modprobe radeon # Required to permit KMS switching and support hardware GL  
 	fi
 fi
+
+exit 0

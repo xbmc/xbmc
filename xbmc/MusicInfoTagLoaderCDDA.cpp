@@ -27,9 +27,11 @@
 #include "MediaManager.h"
 #include "utils/log.h"
 
-using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
+#ifdef HAS_DVD_DRIVE
+using namespace MEDIA_DETECT;
 using namespace CDDB;
+#endif
 
 CMusicInfoTagLoaderCDDA::CMusicInfoTagLoaderCDDA(void)
 {

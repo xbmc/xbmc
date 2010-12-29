@@ -83,6 +83,7 @@ class CAdvancedSettings
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     int m_audioResample;
+    bool m_dvdplayerIgnoreDTSinWAV;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -116,11 +117,10 @@ class CAdvancedSettings
     bool m_audioApplyDrc;
     bool m_audioForceDirectSound;
 
-    int   m_videoHighQualityScaling;
-    int   m_videoHighQualityScalingMethod;
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
     bool  m_videoAllowLanczos3;
+    float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     bool m_DXVACheckCompatibility;
@@ -158,7 +158,6 @@ class CAdvancedSettings
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
-    bool m_displayRemoteCodes;
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
@@ -246,6 +245,7 @@ class CAdvancedSettings
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
     int m_curlretries;
+    bool m_curlDisableIPV6;
 
     bool m_fullScreen;
     bool m_startFullScreen;
@@ -282,6 +282,8 @@ class CAdvancedSettings
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
+
+    unsigned int m_cacheMemBufferSize;
 };
 
 extern CAdvancedSettings g_advancedSettings;

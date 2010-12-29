@@ -54,7 +54,7 @@ int CGUIViewStateWindowVideo::GetPlaylist()
 VECSOURCES& CGUIViewStateWindowVideo::GetSources()
 {
   AddLiveTVSources();
-  AddAddonsSource("video", g_localizeStrings.Get(1037));
+  AddAddonsSource("video", g_localizeStrings.Get(1037), "DefaultAddonVideo.png");
   return CGUIViewState::GetSources();
 }
 

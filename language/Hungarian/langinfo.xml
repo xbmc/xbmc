@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<language locale="hungarian">
+<language locale="hu">
   <charsets>
     <gui unicodefont="true">CP1250</gui>
     <subtitle>CP1250</subtitle>
@@ -10,21 +10,21 @@
     <subtitle>hu</subtitle>
   </dvd>
   <regions>
-    <region name="Budapest, Hungary" locale="hungary">
+    <region name="Budapest, Hungary" locale="HU">
       <dateshort>YYYY.MM.DD.</dateshort>
       <datelong>YYYY. MMMM D.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
-    <region name="Debrecen, Hungary" locale="hungary">
+    <region name="Debrecen, Hungary" locale="HU">
       <dateshort>YYYY.MM.DD.</dateshort>
       <datelong>YYYY. MMMM D.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
-    <region name="Nagykanizsa, Hungary" locale="hungary">
+    <region name="Nagykanizsa, Hungary" locale="HU">
       <dateshort>YYYY.MM.DD.</dateshort>
       <datelong>YYYY. MMMM D.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -32,7 +32,7 @@
       <speedunit>kmh</speedunit>
     </region>
 
-    <region name="Pecs/Pogany, Hungary" locale="hungary">
+    <region name="Pecs/Pogany, Hungary" locale="HU">
       <dateshort>YYYY.MM.DD.</dateshort>
       <datelong>YYYY. MMMM D.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

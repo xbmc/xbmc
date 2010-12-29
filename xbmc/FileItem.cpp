@@ -53,6 +53,7 @@
 #include "Settings.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
@@ -331,9 +332,9 @@ void CFileItem::Reset()
   SetInvalid();
 }
 
-void CFileItem::Serialize(CArchive& ar)
+void CFileItem::Archive(CArchive& ar)
 {
-  CGUIListItem::Serialize(ar);
+  CGUIListItem::Archive(ar);
 
   if (ar.IsStoring())
   {
@@ -421,6 +422,27 @@ void CFileItem::Serialize(CArchive& ar)
 
     SetInvalid();
   }
+}
+void CFileItem::Serialize(CVariant& value)
+{
+  //CGUIListItem::Serialize(value["CGUIListItem"]);
+
+  value["strPath"] = m_strPath;
+  value["dateTime"] = (m_dateTime.IsValid()) ? m_dateTime.GetAsRFC1123DateTime() : "";
+  value["size"] = (int) m_dwSize / 1000;
+  value["DVDLabel"] = m_strDVDLabel;
+  value["title"] = m_strTitle;
+  value["mimetype"] = m_mimetype;
+  value["extrainfo"] = m_extrainfo;
+
+  if (m_musicInfoTag)
+    (*m_musicInfoTag).Serialize(value["musicInfoTag"]);
+
+  if (m_videoInfoTag)
+    (*m_videoInfoTag).Serialize(value["videoInfoTag"]);
+
+  if (m_pictureInfoTag)
+    (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
 }
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
@@ -676,8 +698,10 @@ bool CFileItem::IsCBR() const
 
 bool CFileItem::IsRSS() const
 {
-  return m_strPath.Left(6).Equals("rss://", false)
-      || CUtil::GetExtension(m_strPath).Equals(".rss", false)
+  if (m_strPath.Left(6).Equals("rss://"))
+    return true;
+
+  return CUtil::GetExtension(m_strPath).Equals(".rss")
       || GetMimeType() == "application/rss+xml";
 }
 
@@ -1019,9 +1043,9 @@ bool CFileItem::IsParentFolder() const
   return m_bIsParentFolder;
 }
 
-const CStdString& CFileItem::GetMimeType() const
+const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 {
-  if( m_mimetype.IsEmpty() )
+  if( m_mimetype.IsEmpty() && lookup)
   {
     // discard const qualifyier
     CStdString& m_ref = (CStdString&)m_mimetype;
@@ -1540,6 +1564,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_LASTPLAYED:
     FillSortFields(SSortFileItem::ByLastPlayed);
     break;
+  case SORT_METHOD_LISTENERS:
+    FillSortFields(SSortFileItem::ByListeners);
+    break;    
   default:
     break;
   }
@@ -1561,12 +1588,12 @@ void CFileItemList::Randomize()
   random_shuffle(m_items.begin(), m_items.end());
 }
 
-void CFileItemList::Serialize(CArchive& ar)
+void CFileItemList::Archive(CArchive& ar)
 {
   CSingleLock lock(m_lock);
   if (ar.IsStoring())
   {
-    CFileItem::Serialize(ar);
+    CFileItem::Archive(ar);
 
     int i = 0;
     if (m_items.size() > 0 && m_items[0]->IsParentFolder())
@@ -1614,7 +1641,7 @@ void CFileItemList::Serialize(CArchive& ar)
     Clear();
 
 
-    CFileItem::Serialize(ar);
+    CFileItem::Archive(ar);
 
     int iSize = 0;
     ar >> iSize;
@@ -3006,4 +3033,15 @@ CStdString CFileItem::FindTrailer() const
   return strTrailer;
 }
 
+VIDEODB_CONTENT_TYPE CFileItem::GetVideoContentType() const
+{
+  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
+    type = VIDEODB_CONTENT_TVSHOWS;
+  if (HasVideoInfoTag() && GetVideoInfoTag()->m_iSeason > -1 && !m_bIsFolder) // episode
+    type = VIDEODB_CONTENT_EPISODES;
+  if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strArtist.IsEmpty())
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
+  return type;
+}
 

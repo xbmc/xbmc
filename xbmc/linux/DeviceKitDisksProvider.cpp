@@ -318,7 +318,8 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
 
-  message.Send(con, &error);
+  if (con)
+    message.Send(con, &error);
 
   if (!dbus_error_is_set(&error))
     hasDeviceKitDisks = true;
@@ -326,7 +327,8 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
     CLog::Log(LOGDEBUG, "DeviceKit.Disks: %s - %s", error.name, error.message);
 
   dbus_error_free (&error);
-  dbus_connection_unref(con);
+  if (con)
+    dbus_connection_unref(con);
 
   return hasDeviceKitDisks;
 }
@@ -390,7 +392,7 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
     bool mounted = device->m_isMounted;
     device->Update();
     if (!mounted && device->m_isMounted && callback)
-      callback->OnStorageAdded(device->m_MountPath, device->m_Label);
+      callback->OnStorageAdded(device->m_Label, device->m_MountPath);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
 

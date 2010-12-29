@@ -98,6 +98,7 @@ public:
   virtual ~CDVDPlayerAudio();
 
   bool OpenStream(CDVDStreamInfo &hints);
+  void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   void CloseStream(bool bWaitForBuffers);
 
   void SetSpeed(int speed);
@@ -132,9 +133,6 @@ protected:
   virtual void Process();
 
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
-
-  // tries to open a decoder for the given data.
-  bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
 
   double m_audioClock;
 
@@ -202,5 +200,6 @@ protected:
   int    m_skipdupcount; //counter for skip/duplicate synctype
   bool   m_prevskipped;
   double m_maxspeedadjust;
+  double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
 };
 

@@ -29,12 +29,18 @@
 #include "TextureCache.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "GUIWindowManager.h"
+#include "GUIUserMessages.h"
+#include "GUISettings.h"
 #include "Util.h"
 #include "Settings.h"
 
-using namespace XFILE;
+#include "cores/dvdplayer/DVDFileInfo.h"
 
-CPictureThumbLoader::CPictureThumbLoader()
+using namespace XFILE;
+using namespace std;
+
+CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(1), CJobQueue(true)
 {
   m_regenerateThumbs = false;
 }
@@ -64,6 +70,37 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     CStdString image = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->m_strPath);
     thumb = CTextureCache::Get().CheckAndCacheImage(image);
   }
+  else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
+  { // video
+    thumb = pItem->GetCachedVideoThumb();
+    if (CFile::Exists(thumb))
+    {
+      thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+    }
+    else
+    {
+      CStdString strPath, strFileName;
+      CUtil::Split(thumb, strPath, strFileName);
+
+      thumb = strPath + "auto-" + strFileName;
+
+      // this is abit of a hack to avoid loading zero sized images
+      // which we know will fail. They will just display empty image
+      // we should really have some way for the texture loader to
+      // do fallbacks to default images for a failed image instead
+      struct __stat64 st;
+      if (CFile::Exists(thumb) && CFile::Stat(thumb, &st) == 0 && st.st_size > 0)
+      {
+        thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+      }
+      else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
+      {
+        CFileItem item(*pItem);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, thumb);
+        AddJob(extract);
+      }
+    }
+  }
   else if (!pItem->HasThumbnail())
   { // folder, zip, cbz, rar, cbr, playlist
     thumb = GetCachedThumb(*pItem);
@@ -75,6 +112,20 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   pItem->FillInDefaultIcon();
   return true;
 }
+
+void CPictureThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  if (success)
+  {
+    CThumbExtractor* loader = (CThumbExtractor*)job;
+    loader->m_item.m_strPath = loader->m_listpath;
+    CFileItemPtr pItem(new CFileItem(loader->m_item));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    g_windowManager.SendThreadMessage(msg);
+  }
+  CJobQueue::OnJobComplete(jobID, success, job);
+}
+
 
 void CPictureThumbLoader::OnLoaderFinish()
 {

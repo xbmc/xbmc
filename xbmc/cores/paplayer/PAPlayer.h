@@ -94,9 +94,6 @@ public:
   virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);
   virtual bool SkipNext();
-  virtual bool CanRecord() ;
-  virtual bool IsRecording();
-  virtual bool Record(bool bOnOff) ;
 
   static bool HandlesType(const CStdString &type);
 protected:

@@ -24,7 +24,10 @@
 #include "GUISettings.h"
 #include "log.h"
 #include "NullDirectSound.h"
-#include "AudioEngine/AEUtil.h"
+
+#ifdef HAS_PULSEAUDIO
+#include "PulseAudioDirectSound.h"
+#endif
 
 #ifdef _WIN32
 #include "Win32WASAPI.h"
@@ -38,7 +41,7 @@
 
 #define ReturnOnValidInitialize(rendererName)    \
 {                                                \
-  if (audioSink->Initialize(pCallback, device, channelLayout, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
+  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
   {                                              \
     CLog::Log(LOGDEBUG, "%s::Initialize"         \
       " - Channels: %i"                          \
@@ -49,7 +52,7 @@
       " - IsPassthrough %s"                      \
       " - audioDevice: %s",                      \
       rendererName,                              \
-      CAEUtil::GetChLayoutCount(channelLayout),  \
+      iChannels,                                 \
       uiSamplesPerSec,                           \
       uiBitsPerSample,                           \
       bResample ? "true" : "false",              \
@@ -79,7 +82,7 @@
   return new rendererClass(); \
 }
 
-IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLayout channelLayout, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   IAudioRenderer* audioSink = NULL;
   CStdString renderer;
@@ -129,6 +132,12 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLay
 
   device = deviceString;
 
+/* First pass creation */
+#ifdef HAS_PULSEAUDIO
+  CreateAndReturnOnValidInitialize(CPulseAudioDirectSound);
+#endif
+
+/* incase none in the first pass was able to be created, fall back to os specific */
 #ifdef WIN32
   CreateAndReturnOnValidInitialize(CWin32DirectSound);
 #endif
@@ -146,6 +155,10 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, AEChLay
 
 void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
 {
+#ifdef HAS_PULSEAUDIO
+  CPulseAudioDirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
+#endif
+
 #ifdef WIN32
   CWin32DirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
   CWin32WASAPI::EnumerateAudioSinks(vAudioSinks, passthrough);
@@ -160,6 +173,11 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 
 IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsystem, CStdString &renderer)
 {
+#ifdef HAS_PULSEAUDIO
+  if (soundsystem.Equals("pulse"))
+    ReturnNewRenderer(CPulseAudioDirectSound);
+#endif
+
 #ifdef WIN32
   if (soundsystem.Equals("wasapi"))
     ReturnNewRenderer(CWin32WASAPI)

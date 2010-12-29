@@ -247,7 +247,7 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  int  AddSubtitleFile(const std::string& filename);
+  int  AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
   /**
    * one of the DVD_PLAYSPEED defines
    */
@@ -320,8 +320,6 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   
-  double m_subLastPts;
-  
   struct SDVDInfo
   {
     void Clear()
@@ -342,11 +340,14 @@ protected:
 
   struct SPlayerState
   {
+    SPlayerState() { Clear(); }
     void Clear()
     {
       timestamp     = 0;
       time          = 0;
       time_total    = 0;
+      time_offset   = 0;
+      dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
       chapter_count = 0;
@@ -357,9 +358,11 @@ protected:
     }
 
     double timestamp;         // last time of update
+    double time_offset;       // difference between time and pts
 
     double time;              // current playback time
     double time_total;        // total playback time
+    double dts;               // last known dts
 
     std::string player_state;  // full player state
 

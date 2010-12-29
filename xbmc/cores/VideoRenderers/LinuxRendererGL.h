@@ -64,8 +64,8 @@ struct DRAWRECT
 enum EFIELDSYNC
 {
   FS_NONE,
-  FS_ODD,
-  FS_EVEN
+  FS_TOP,
+  FS_BOT
 };
 
 struct YUVRANGE
@@ -97,7 +97,6 @@ enum RenderQuality
   RQ_LOW=1,
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
-  RQ_SOFTWARE
 };
 
 #define PLANE_Y 0
@@ -105,8 +104,8 @@ enum RenderQuality
 #define PLANE_V 2
 
 #define FIELD_FULL 0
-#define FIELD_ODD 1
-#define FIELD_EVEN 2
+#define FIELD_TOP 1
+#define FIELD_BOT 2
 
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
@@ -159,10 +158,6 @@ public:
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
 
-  void ChooseUpscalingMethod();
-  bool IsSoftwareUpscaling();
-  void InitializeSoftwareUpscaling();
-
   virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
@@ -191,6 +186,10 @@ protected:
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
 
+  void UploadRGBTexture(int index);
+  void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
+  void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -215,12 +214,6 @@ protected:
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
-
-  // Software upscaling.
-  int m_upscalingWidth;
-  int m_upscalingHeight;
-  YV12Image m_imScaled;
-  bool m_isSoftwareUpscaling;
 
   // Raw data used by renderer
   int m_currentField;
@@ -277,6 +270,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
+
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
@@ -286,11 +280,12 @@ protected:
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil   *m_dllAvUtil;
-  DllAvCodec  *m_dllAvCodec;
-  DllSwScale  *m_dllSwScale;
-  BYTE        *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int m_rgbBufferSize;
+  DllAvUtil         *m_dllAvUtil;
+  DllAvCodec        *m_dllAvCodec;
+  DllSwScale        *m_dllSwScale;
+  BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  unsigned int       m_rgbBufferSize;
+  struct SwsContext *m_context;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 

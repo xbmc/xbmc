@@ -48,8 +48,10 @@
 #include "AddonDatabase.h"
 #include "AdvancedSettings.h"
 #include "MediaManager.h"
+#include "GUISettings.h"
 
 #define CONTROL_AUTOUPDATE 5
+#define CONTROL_SHUTUP     6
 
 using namespace ADDON;
 using namespace XFILE;
@@ -69,6 +71,7 @@ CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
   m_thumbLoader.SetNumOfWorkers(1);
+  m_promptReload = false;
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
@@ -100,6 +103,12 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_AUTOUPDATE)
       {
         g_settings.m_bAddonAutoUpdate = !g_settings.m_bAddonAutoUpdate;
+        g_settings.Save();
+        return true;
+      }
+      else if (iControl == CONTROL_SHUTUP)
+      {
+        g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
         g_settings.Save();
         return true;
       }
@@ -341,31 +350,41 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             CAddonMgr::Get().FindAddons();
             CAddonMgr::Get().GetAddon(addon->ID(),addon);
             ADDONDEPS deps = addon->GetDeps();
+            CStdString referer;
+            referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
             for (ADDONDEPS::iterator it  = deps.begin();
                                      it != deps.end();++it)
             {
               if (it->first.Equals("xbmc.metadata"))
                 continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
-                InstallAddon(it->first);
+                InstallAddon(it->first,false,referer);
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
-            if (update)
+            if (update && g_settings.m_bAddonNotifications)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   addon->Icon(),
                                                   addon->Name(),
                                                   g_localizeStrings.Get(24065),
-                                                  TOAST_DISPLAY_TIME,false);
+                                                  TOAST_DISPLAY_TIME,false,
+                                                  TOAST_DISPLAY_TIME);
             }
             else
             {
-              g_application.m_guiDialogKaiToast.QueueNotification(
-                                                  addon->Icon(),
-                                                  addon->Name(),
-                                                  g_localizeStrings.Get(24064),
-                                                  TOAST_DISPLAY_TIME,false);
+              if (addon->Type() == ADDON_SKIN)
+              {
+                CSingleLock lock(m_critSection);
+                m_prompt = addon;
+              }
+             if (g_settings.m_bAddonNotifications)
+                g_application.m_guiDialogKaiToast.QueueNotification(
+                                                   addon->Icon(),
+                                                   addon->Name(),
+                                                   g_localizeStrings.Get(24064),
+                                                   TOAST_DISPLAY_TIME,false,
+                                                   TOAST_DISPLAY_TIME);
             }
           }
           else
@@ -392,6 +411,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -425,6 +445,17 @@ unsigned int CGUIWindowAddonBrowser::AddJob(const CStdString& path)
         return false;
       }
       list.Add(CFileItemPtr(new CFileItem(archivedFiles[0]->m_strPath,true)));
+      // check whether this is an active skin - we need to unload it if so
+      CURL url(archivedFiles[0]->m_strPath);
+      CStdString addon = url.GetFileName();
+      CUtil::RemoveSlashAtEnd(addon);
+      if (g_guiSettings.GetString("lookandfeel.skin") == addon)
+      { // we're updating the current skin - we have to unload it first
+        CSingleLock lock(m_critSection);
+        CAddonMgr::Get().GetAddon(addon, m_prompt);
+        m_promptReload = true;
+        g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
+      }
       dest = "special://home/addons/";
     }
     else
@@ -455,6 +486,33 @@ void CGUIWindowAddonBrowser::UnRegisterJob(unsigned int jobID)
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
+
+  AddonPtr prompt;
+  bool reload = false;
+  if (m_downloadJobs.empty() && m_prompt)
+  {
+    prompt = m_prompt;
+    reload = m_promptReload;
+    m_prompt.reset();
+    m_promptReload = false;
+  }
+  lock.Leave();
+  PromptForActivation(prompt, reload);
+}
+
+void CGUIWindowAddonBrowser::PromptForActivation(const AddonPtr &addon, bool dontPrompt)
+{
+  if (addon && addon->Type() == ADDON_SKIN)
+  {
+    if (dontPrompt || CGUIDialogYesNo::ShowAndGetInput(addon->Name(),
+                                         g_localizeStrings.Get(24099),"",""))
+    {
+      g_guiSettings.SetString("lookandfeel.skin",addon->ID().c_str());
+      g_application.m_guiDialogKaiToast.ResetTimer();
+      g_application.m_guiDialogKaiToast.Close(true);
+      g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
+    }
+  }
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -549,12 +607,25 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
 
   int selectedIdx = 0;
   ADDON::VECADDONS addons;
-  CAddonMgr::Get().GetAddons(type, addons);
+  if (type == ADDON_AUDIO)
+    CAddonsDirectory::GetScriptsAndPlugins("audio",addons);
+  else if (type == ADDON_EXECUTABLE)
+    CAddonsDirectory::GetScriptsAndPlugins("executable",addons);
+  else if (type == ADDON_IMAGE)
+    CAddonsDirectory::GetScriptsAndPlugins("image",addons);
+  else if (type == ADDON_VIDEO)
+    CAddonsDirectory::GetScriptsAndPlugins("video",addons);
+  else
+    CAddonMgr::Get().GetAddons(type, addons);
+
+  CFileItemList items;
+  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
+    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
+
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
   dialog->SetUseDetails(true);
   dialog->EnableButton(true, 21452);
-  CFileItemList items;
   if (showNone)
   {
     CFileItemPtr item(new CFileItem("", false));
@@ -564,8 +635,6 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
     item->SetSpecialSort(SORT_ON_TOP);
     items.Add(item);
   }
-  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
-    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -591,7 +660,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   return 0;
 }
 
-void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/)
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/, const CStdString &referer)
 {
   // check whether we already have the addon installed
   AddonPtr addon;
@@ -614,7 +683,14 @@ void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force 
     CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
     if (!window)
       return;
-    unsigned int jobID = window->AddJob(addon->Path());
+    CStdString path(addon->Path());
+    if (!referer.IsEmpty() && CUtil::IsInternetStream(path))
+    {
+      CURL url(path);
+      url.SetProtocolOptions(referer);
+      path = url.Get();
+    }
+    unsigned int jobID = window->AddJob(path);
     window->RegisterJob(addon->ID(), jobID, hash);
   }
 }

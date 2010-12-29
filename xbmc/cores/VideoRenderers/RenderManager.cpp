@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "SystemGlobals.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -48,8 +47,6 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
-
-CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
 #define MAXPRESENTDELAY 0.500
 
@@ -129,7 +126,8 @@ static double wrap(double x, double minimum, double maximum)
 
 void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
-  int fps = g_VideoReferenceClock.GetRefreshRate();
+  double frametime;
+  int fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
   if(fps <= 0)
   {
     /* smooth video not enabled */
@@ -138,8 +136,6 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   }
 
   bool ismaster = CDVDClock::IsMasterClock();
-
-  double frametime = g_VideoReferenceClock.GetSpeed() / fps;
 
   //the videoreferenceclock updates its clock on every vertical blank
   //we want every frame's presenttime to end up in the middle of two vblanks
@@ -181,7 +177,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if (!ismaster)
   {
     //integral correction, clamp to -0.5:0.5 range
-    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.5), -0.5);
+    m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
     g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
   }
   else
@@ -397,16 +393,16 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     /* default to odd field if we want to deinterlace and don't know better */
     if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
-      m_presentfield = FS_ODD;
+      m_presentfield = FS_TOP;
 
     /* invert present field if we have one of those methods */
     if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
      || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
     {
-      if( m_presentfield == FS_EVEN )
-        m_presentfield = FS_ODD;
+      if( m_presentfield == FS_BOT )
+        m_presentfield = FS_TOP;
       else
-        m_presentfield = FS_EVEN;
+        m_presentfield = FS_BOT;
     }
   }
 
@@ -492,19 +488,19 @@ void CXBMCRenderManager::PresentBob()
 
   if(m_presentstep == PRESENT_FRAME)
   {
-    if( m_presentfield == FS_EVEN)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    if( m_presentfield == FS_BOT)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
     m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
   {
-    if( m_presentfield == FS_ODD)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    if( m_presentfield == FS_TOP)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
     m_presentstep = PRESENT_IDLE;
   }
 }
@@ -513,15 +509,15 @@ void CXBMCRenderManager::PresentBlend()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if( m_presentfield == FS_EVEN )
+  if( m_presentfield == FS_BOT )
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_ODD, 128);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_TOP, 128);
   }
   else
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
+    m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, 255);
+    m_pRenderer->RenderUpdate(false, RENDER_FLAG_BOT, 128);
   }
   m_presentstep = PRESENT_IDLE;
 }

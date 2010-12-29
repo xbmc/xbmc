@@ -104,10 +104,15 @@ bool CDBusMessage::SendAsync(DBusBusType type)
   dbus_error_init (&error);
   DBusConnection *con = dbus_bus_get(type, &error);
 
+  bool result;
   if (con && m_message)
-    return dbus_connection_send(con, m_message, NULL);
+    result = dbus_connection_send(con, m_message, NULL);
   else
-    return false;
+    result = false;
+
+  dbus_error_free (&error);
+  dbus_connection_unref(con);
+  return result;
 }
 
 DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)

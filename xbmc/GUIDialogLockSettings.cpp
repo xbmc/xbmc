@@ -62,7 +62,7 @@ void CGUIDialogLockSettings::SetupPage()
 
 void CGUIDialogLockSettings::EnableDetails(bool bEnable)
 {
-  for (int i=2;i<8;++i)
+  for (int i=2;i<9;++i)
   {
     m_settings[i].enabled = bEnable || !m_bConditionalDetails;
     UpdateSetting(i+1);

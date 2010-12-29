@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 19/09/2010-->
-<!--Based on English r33901-->
+<!--Date of translation: 25/11/2010-->
+<!--Based on English r35368-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -1027,6 +1027,7 @@
   <string id="13013">Újraindítás</string>
   <string id="13014">Kicsinyítés</string>
   <string id="13015">Be(ki)kapcsoló gomb művelet</string>
+  <string id="13016">Gép kikapcsolása</string>
 
   <string id="13020">Lehet hogy egy másik bejelentkezés aktív (ssh)?</string>
   <string id="13021">Külső meghajtó csatlakozott</string>
@@ -1337,7 +1338,7 @@
   <string id="14038">A hálózati beállítások megváltoztatva</string>
   <string id="14039">Az XBMC-t újra kell indítani, a hálózati beállítások</string>
   <string id="14040">megváltoztatásához. Újraindítás most?</string>
-  <string id="14041"></string>
+  <string id="14041">Internetkapcsolat sávszélesség-korlátozás</string>
 
   <string id="14043">- Leállítás lejátszás közben</string>
   <string id="14044">%i perc</string>
@@ -1781,6 +1782,7 @@
   <string id="20255">Első bejelentkezés, profilod szerkesztése</string>
   <string id="20256">HTS Tvheadend TV kliens</string>
   <string id="20257">VDR Streamdev TV kliens</string>
+  <string id="20258">MythTV kliens</string>
 
   <string id="20300">Webkiszolgáló könyvtár (HTTP)</string>
   <string id="20301">Webkiszolgáló könyvtár (HTTPS)</string>
@@ -2042,6 +2044,8 @@
   <string id="21451">Internet kapcsolat szükséges.</string>
   <string id="21452">Több beszerzése...</string>
   <string id="21453">Fájlrendszer</string>
+  <string id="21454">Hallgató</string>
+  <string id="21455">Hallgató</string>
 
   <string id="21800">Fájlnév</string>
   <string id="21801">Fájl helye</string>
@@ -2201,6 +2205,7 @@
   <string id="24015">Zenei videóklip információ</string>
   <string id="24016">Album információ</string>
   <string id="24017">Előadó információ</string>
+  <string id="24018">Szolgáltatások</string>
 
   <string id="24020">Beállítás</string>
   <string id="24021">Kikapcsolás</string>
@@ -2259,6 +2264,8 @@
   <string id="24096">A kiegészítőt működésképtelennek jelölték a tárhelyen.</string>
   <string id="24097">Akarod letiltani a számítógépeden?</string>
   <string id="24098">Működésképtelen</string>
+  <string id="24099">Átváltasz erre az arculatra ?</string>
+  <string id="25000">Értesítések</string>
 
   <!-- 29800-tól 29998 a default PM3 arculat-hoz foglalva -->
   <string id="29800">Médiatár mód</string>
@@ -2281,7 +2288,7 @@
   <string id="33008">Mentés</string>
   <string id="33009">Másolás</string>
   <string id="33010">Letöltési mappa megadása</string>
-  <string id="30011">Keresési idő</string>
+  <string id="33011">Keresési idő</string>
   <string id="33012">Rövid</string>
   <string id="33013">Hosszú</string>
   <string id="33014">DVD lejátszó használata az általános lejátszó helyett</string>

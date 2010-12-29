@@ -38,6 +38,10 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_pCodecContext = NULL;
   m_pConvert = NULL;
   m_bOpenedCodec = false;
+
+  m_channelMap[0] = AE_CH_NULL;
+  m_channels = 0;
+  m_layout = 0;
 }
 
 CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
@@ -173,9 +177,7 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
-  if (m_channels != m_pCodecContext->channels)
-    BuildChannelMap();
-  return m_channels;
+  return m_pCodecContext->channels;
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
@@ -189,7 +191,7 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
   return 16;
 }
 
-static unsigned count_bits(unsigned value)
+static unsigned count_bits(int64_t value)
 {
   unsigned bits = 0;
   for(;value;++bits)
@@ -237,8 +239,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
 
 AEChLayout CDVDAudioCodecFFmpeg::GetChannelMap()
 {
-  if (m_channels != m_pCodecContext->channels)
-    BuildChannelMap();
+  BuildChannelMap();
 
   if (m_channelMap[0] == AE_CH_NULL)
     return NULL;

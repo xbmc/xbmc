@@ -60,7 +60,6 @@ HANDLE WINAPI CreateThread(
   // the event would mark if the thread is running or not. it will be used in the Wait functions.
   HANDLE h = CreateEvent(NULL, TRUE, FALSE, NULL);
   h->ChangeType(CXHandle::HND_THREAD);
-  h->m_nRefCount++;
 #ifdef __APPLE__
   h->m_machThreadPort = MACH_PORT_NULL;
 #endif

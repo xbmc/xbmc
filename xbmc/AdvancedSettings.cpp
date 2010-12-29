@@ -38,8 +38,6 @@
 
 using namespace XFILE;
 
-CAdvancedSettings g_advancedSettings;
-
 CAdvancedSettings::CAdvancedSettings()
 {
 }
@@ -54,6 +52,7 @@ void CAdvancedSettings::Initialize()
   m_audioApplyDrc = true;
   m_audioResample = 0;
   m_audioForceDirectSound = false;
+  m_dvdplayerIgnoreDTSinWAV = false;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -89,11 +88,10 @@ void CAdvancedSettings::Initialize()
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
-  m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
-  m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
   m_videoVDPAUScaling = false;
   m_videoNonLinStretchRatio = 0.5f;
   m_videoAllowLanczos3 = false;
+  m_videoAutoScaleMaxFps = 30.0f;
   m_videoAllowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
@@ -135,7 +133,6 @@ void CAdvancedSettings::Initialize()
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
-  m_displayRemoteCodes = false;
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
@@ -143,8 +140,8 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ \\/]");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ \\/]");
+  m_moviesExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -239,6 +236,8 @@ void CAdvancedSettings::Initialize()
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 20;
   m_curlretries = 2;
+  m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
+                                  //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
 
@@ -273,6 +272,8 @@ void CAdvancedSettings::Initialize()
   m_bgInfoLoaderMaxThreads = 5;
 
   m_measureRefreshrate = false;
+
+  m_cacheMemBufferSize = (1048576 * 5);
 }
 
 bool CAdvancedSettings::Load()
@@ -320,7 +321,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
-    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
+    // 101 on purpose - can be used to never automark as watched
+    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);
@@ -346,6 +348,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
     XMLUtils::GetBoolean(pElement, "forcedirectsound", m_audioForceDirectSound);
+    XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -381,7 +384,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement, "defaultplayer", m_videoDefaultPlayer);
     XMLUtils::GetString(pElement, "defaultdvdplayer", m_videoDefaultDVDPlayer);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", m_fullScreenOnMovieStart);
-    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
+    // 101 on purpose - can be used to never automark as watched
+    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
     XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
     XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
 
@@ -419,11 +423,10 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
-    XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
-    XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
+    XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
@@ -437,8 +440,8 @@ bool CAdvancedSettings::Load()
         float fps;
         if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
         {
-          override.fpsmin = fps - 0.01;
-          override.fpsmax = fps + 0.01;
+          override.fpsmin = fps - 0.01f;
+          override.fpsmax = fps + 0.01f;
         }
 
         float fpsmin, fpsmax;
@@ -452,8 +455,8 @@ bool CAdvancedSettings::Load()
         float refresh;
         if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
         {
-          override.refreshmin = refresh - 0.01;
-          override.refreshmax = refresh + 0.01;
+          override.refreshmin = refresh - 0.01f;
+          override.refreshmax = refresh + 0.01f;
         }
 
         float refreshmin, refreshmax;
@@ -485,8 +488,8 @@ bool CAdvancedSettings::Load()
         float refresh;
         if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
         {
-          fallback.refreshmin = refresh - 0.01;
-          fallback.refreshmax = refresh + 0.01;
+          fallback.refreshmin = refresh - 0.01f;
+          fallback.refreshmax = refresh + 0.01f;
         }
 
         float refreshmin, refreshmax;
@@ -579,6 +582,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
+    XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
+    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
@@ -699,8 +704,6 @@ bool CAdvancedSettings::Load()
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
-
-  XMLUtils::GetBoolean(pRootElement, "displayremotecodes", m_displayRemoteCodes);
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??

@@ -39,8 +39,6 @@ using namespace PLAYLIST;
 
 #define QUEUE_DEPTH       10
 
-CPartyModeManager g_partyModeManager;
-
 CPartyModeManager::CPartyModeManager(void)
 {
   m_bIsVideo = false;

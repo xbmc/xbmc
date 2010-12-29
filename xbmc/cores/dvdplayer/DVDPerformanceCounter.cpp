@@ -51,7 +51,7 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
 {
   numerator->QuadPart = 0LL;
   //g_dvdPerformanceCounter.Lock();
-  if (g_dvdPerformanceCounter.m_pAudioQueue)
+  if (g_dvdPerformanceCounter.m_pVideoQueue)
   {
     int iSize     = g_dvdPerformanceCounter.m_pVideoQueue->GetDataSize();
     int iMaxSize  = g_dvdPerformanceCounter.m_pVideoQueue->GetMaxDataSize();

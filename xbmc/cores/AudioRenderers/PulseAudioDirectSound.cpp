@@ -128,7 +128,7 @@ static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userda
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
   if (i && i->name)
   {
-    CStdString descr = i->description;
+    CStdString descr = i->description + CStdString(" (PulseAudio)");
     CStdString sink;
     sink.Format("pulse:%s@default", i->name);
     sinkStruct->list->push_back(AudioSink(descr, sink));
@@ -301,7 +301,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     m_dwPacketSize = a->minreq;
     CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     pa_buffer_attr b;
-    b.prebuf = a->minreq * 10;
+    b.prebuf = (uint32_t)-1;
     b.minreq = a->minreq;
     b.tlength = m_uiBufferSize = a->tlength;
     b.maxlength = a->maxlength;
@@ -627,7 +627,7 @@ void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, boo
     SinkInfoStruct sinkStruct;
     sinkStruct.mainloop = mainloop;
     sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409), "pulse:default@default"));
+    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
     WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
     pa_threaded_mainloop_unlock(mainloop);

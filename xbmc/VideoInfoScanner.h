@@ -33,7 +33,7 @@ namespace VIDEO
 {
   typedef struct SScanSettings
   {
-    SScanSettings() { parent_name = parent_name_root = noupdate = exclude = false; recurse = -1;}
+    SScanSettings() { parent_name = parent_name_root = noupdate = exclude = false; recurse = 1;}
     bool parent_name;       /* use the parent dirname as name of lookup */
     bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
     int  recurse;           /* recurse into sub folders (indicate levels) */

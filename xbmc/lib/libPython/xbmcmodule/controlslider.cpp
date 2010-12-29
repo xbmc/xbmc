@@ -139,7 +139,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"f", &fPercent)) return NULL;
         
     if (self->pGUIControl)
-      ((CGUISliderControl*)self->pGUIControl)->SetPercentage(fPercent);
+      ((CGUISliderControl*)self->pGUIControl)->SetPercentage((int)fPercent);
         
     Py_INCREF(Py_None);
     return Py_None;

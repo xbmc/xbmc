@@ -24,7 +24,7 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
-#include "SystemGlobals.h"
+#include "utils/Variant.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -291,8 +291,6 @@ using namespace ANNOUNCEMENT;
 
 #define MAX_FFWD_SPEED 5
 
-CApplication& g_application = g_SystemGlobals.m_application;
-
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
@@ -363,10 +361,18 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       break;
+//    case XBMC_KEYDOWN:
+//    case XBMC_KEYUP:
+//      g_Keyboard.HandleEvent(newEvent);
+//      g_application.ProcessKeyboard();
+//      break;
+// New key handling code added in preparation for the major overhaul
+// of the keyboard handling
     case XBMC_KEYDOWN:
+      g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
+      break;
     case XBMC_KEYUP:
-      g_Keyboard.HandleEvent(newEvent);
-      g_application.ProcessKeyboard();
+      g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
@@ -427,6 +433,12 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
 
 void CApplication::Preflight()
 {
+#ifdef HAS_DBUS
+  // call 'dbus_threads_init_default' before any other dbus calls in order to
+  // avoid race conditions with other threads using dbus connections
+  dbus_threads_init_default();
+#endif
+
   // run any platform preflight scripts.
 #ifdef __APPLE__
   CStdString install_path;
@@ -493,6 +505,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
+  CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
 #endif
   CSpecialProtocol::LogPaths();
 
@@ -539,6 +552,13 @@ bool CApplication::Create()
 
 #ifdef HAS_SDL_JOYSTICK
   sdlFlags |= SDL_INIT_JOYSTICK;
+#endif
+
+  //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
+  //this might bring the monitor out of standby, so we have to disable it explicitly
+  //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
+#if defined(_LINUX) && !defined(__APPLE__)
+  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
 #endif
 
 #endif // HAS_SDL
@@ -984,8 +1004,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(
-      m_dpms->IsSupported());
+  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
@@ -1080,13 +1099,10 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   // Make sure we have at least the default skin
-  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
+  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
   {
-    if (!LoadSkin(DEFAULT_SKIN))
-    {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
       FatalErrorHandler(true, true, true);
-    }
   }
 
   SAFE_DELETE(m_splash);
@@ -1100,13 +1116,9 @@ bool CApplication::Initialize()
 
   // check if we should use the login screen
   if (g_settings.UsingLoginScreen())
-  {
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-  }
   else
-  {
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-  }
 
   g_sysinfo.Refresh();
 
@@ -1141,6 +1153,8 @@ bool CApplication::Initialize()
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
 #endif
+
+  CAddonMgr::Get().StartServices();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -1211,8 +1225,8 @@ void CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces"));
-    CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+    if (CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces")))
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
   }
 #endif
 }
@@ -1748,24 +1762,10 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-// DXMERGE: This might have been important (do we allow the vsync mode to change
-//          while not updating the UI setting?
-//  int vsync_mode = g_videoConfig.GetVSyncMode();
-  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
-
-  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode != VSYNC_DRIVER)
-    g_Windowing.SetVSync(false);
-
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-
-  g_windowManager.UpdateModelessVisibility();
 
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
@@ -1816,14 +1816,7 @@ void CApplication::RenderNoPresent()
   RenderMemoryStatus();
   RenderScreenSaver();
 
-  g_TextureManager.FreeUnusedTextures();
-
   g_graphicsContext.Unlock();
-
-  // reset our info cache - we do this at the end of Render so that it is
-  // fresh for the next process(), or after a windowclose animation (where process()
-  // isn't called)
-  g_infoManager.ResetCache();
 }
 
 static int screenSaverFadeAmount = 0;
@@ -2023,11 +2016,29 @@ void CApplication::Render()
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode == VSYNC_ALWAYS)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode != VSYNC_DRIVER)
+    g_Windowing.SetVSync(false);
+
+  g_windowManager.UpdateModelessVisibility();
+
   if(!g_Windowing.BeginRender())
     return;
 
   RenderNoPresent();
   g_Windowing.EndRender();
+
+  g_TextureManager.FreeUnusedTextures();
+
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
+
   lock.Leave();
 
   g_graphicsContext.Flip();
@@ -2088,12 +2099,12 @@ void CApplication::RenderMemoryStatus()
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #if !defined(_LINUX)
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+    info.Format("LOG: %sxbmc.log\nMEM: %d/%d KB - FPS: %2.1f fps\nCPU: %s%s", g_settings.m_logFolder.c_str(),
+              stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %"PRIu64"/%"PRIu64" Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
+    info.Format("LOG: %sxbmc.log\nMEM: %"PRIu64"/%"PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-XBMC %4.2f%%%s)", g_settings.m_logFolder.c_str(),
+              stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
 
@@ -2147,6 +2158,7 @@ void CApplication::RenderMemoryStatus()
 
 bool CApplication::OnKey(const CKey& key)
 {
+
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetActive(false);
 
@@ -2167,7 +2179,7 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    CLog::Log(LOGDEBUG, "%s: %i pressed, screen saver/dpms woken up", __FUNCTION__, (int) key.GetButtonCode());
+    CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
 
@@ -2181,7 +2193,7 @@ bool CApplication::OnKey(const CKey& key)
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
     if (OnAction(action))
       return true;
@@ -2264,7 +2276,7 @@ bool CApplication::OnKey(const CKey& key)
         }
       }
 
-      CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.GetID());
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
 
       if (OnAction(action))
         return true;
@@ -2279,7 +2291,7 @@ bool CApplication::OnKey(const CKey& key)
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %s", __FUNCTION__, (int) key.GetButtonCode(), action.GetName().c_str());
+    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -2678,6 +2690,8 @@ void CApplication::FrameMove()
 bool CApplication::ProcessGamepad(float frameTime)
 {
 #ifdef HAS_SDL_JOYSTICK
+  if (!m_AppFocused)
+    return false;
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
   if (g_windowManager.HasModalDialog())
   {
@@ -3181,6 +3195,8 @@ void CApplication::Stop()
 {
   try
   {
+    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
+
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
@@ -3195,7 +3211,6 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
-    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
@@ -3279,6 +3294,9 @@ void CApplication::Stop()
 #endif
 
   g_mediaManager.Stop();
+
+  // Stop services before unloading Python
+  CAddonMgr::Get().StopServices();
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
@@ -3490,6 +3508,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+      return PlayFile(item_new, false);
+    return false;
+  }
+
+  if (CUtil::IsUPnP(item.m_strPath))
+  {
+    CFileItem item_new(item);
+    if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
       return PlayFile(item_new, false);
     return false;
   }
@@ -3778,7 +3804,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted", m_itemCurrentFile);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3827,7 +3853,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped", m_itemCurrentFile);
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -3848,7 +3874,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused", m_itemCurrentFile);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3863,7 +3889,7 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed", m_itemCurrentFile);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3882,7 +3908,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
+  CVariant param;
+  param["speed"] = iSpeed;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3901,7 +3929,10 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
+  CVariant param;
+  param["time"] = iTime;
+  param["seekoffset"] = seekOffset;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek", param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3921,7 +3952,9 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
+  CVariant param;
+  param["chapter"] = iChapter;
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter", param);
 }
 
 bool CApplication::IsPlaying() const
@@ -3974,6 +4007,8 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
+  if (!g_settings.GetCurrentProfile().canWriteDatabases())
+    return;
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate);
@@ -4181,6 +4216,11 @@ bool CApplication::WakeUpScreenSaver()
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
+#if defined(_LINUX) && !defined(__APPLE__)
+  if (!m_dpmsIsActive)
+    g_Windowing.ResetX11Screensaver();
+#endif
+
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
       && !g_guiSettings.GetString("screensaver.mode").IsEmpty();
@@ -4626,6 +4666,16 @@ void CApplication::Process()
 void CApplication::ProcessSlow()
 {
   g_powerManager.ProcessEvents();
+
+#if defined(__APPLE__)
+  // There is an issue on OS X that several system services ask the cursor to become visible
+  // during their startup routines.  Given that we can't control this, we hack it in by
+  // forcing the
+  if (g_Windowing.IsFullScreen())
+  { // SDL thinks it's hidden
+    Cocoa_HideMouse();
+  }
+#endif
 
   // Store our file state for use on close()
   UpdateFileState();
