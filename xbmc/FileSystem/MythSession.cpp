@@ -176,7 +176,8 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    * Video Library. If the original air date is empty the date returned will be the epoch.
    */
   CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
-  if (originalairdate != "1970-01-01")
+  if (originalairdate != "1970-01-01"
+  &&  originalairdate != "1969-12-31")
     tag->m_strFirstAired = originalairdate;
 
   /*
