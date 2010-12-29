@@ -84,10 +84,11 @@ public:
   virtual unsigned int   GetFrameSize    () {return m_frameSize             ;}
 
   /* these are for streams that are in RAW mode */
-  enum AEDataFormat   GetSinkDataFormat() {return m_sinkFormat.m_dataFormat   ;}
-  AEChLayout          GetSinkChLayout  () {return m_sinkFormat.m_channelLayout;}
-  unsigned int        GetSinkChCount   () {return m_sinkFormat.m_channelCount ;}
-  unsigned int        GetSinkFrameSize () {return m_sinkFormat.m_frameSize    ;}
+  const AEAudioFormat* GetSinkAudioFormat() {return &m_sinkFormat               ;}
+  enum AEDataFormat    GetSinkDataFormat () {return m_sinkFormat.m_dataFormat   ;}
+  AEChLayout           GetSinkChLayout   () {return m_sinkFormat.m_channelLayout;}
+  unsigned int         GetSinkChCount    () {return m_sinkFormat.m_channelCount ;}
+  unsigned int         GetSinkFrameSize  () {return m_sinkFormat.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual bool SupportsRaw();
@@ -118,7 +119,7 @@ private:
 
   /* internal vars */
   bool m_running, m_reOpened;
-  CCriticalSection m_runLock;         /* released when the thread exits */
+  CCriticalSection m_runningLock;     /* released when the thread exits */
   CCriticalSection m_critSection;     /* generic lock */
   CCriticalSection m_critSectionSink; /* sink & configuration lock */
   CCriticalSection m_soundLock;       /* sound lock */
@@ -132,8 +133,7 @@ private:
 
   /* the sink, its format information, and conversion function */
   IAESink                  *m_sink;
-  AEAudioFormat             m_newFormat ; /* the current sync format */
-  AEAudioFormat             m_sinkFormat; /* the format in use outside of the sink lock */
+  AEAudioFormat             m_sinkFormat;
   AEAudioFormat             m_encoderFormat;
   unsigned int              m_bytesPerSample;
   CAEConvert::AEConvertFrFn m_convertFn;
