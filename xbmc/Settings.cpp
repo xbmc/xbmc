@@ -1863,7 +1863,7 @@ const CProfile &CSettings::GetCurrentProfile() const
 {
   if (m_currentProfile < m_vecProfiles.size())
     return m_vecProfiles[m_currentProfile];
-  CLog::Log(LOGERROR, "%s - last profile index (%u) is outside the valid range (%ld)", __FUNCTION__, m_currentProfile, m_vecProfiles.size());
+  CLog::Log(LOGERROR, "%s - last profile index (%u) is outside the valid range (%zu)", __FUNCTION__, m_currentProfile, m_vecProfiles.size());
   return emptyProfile;
 }
 
