@@ -47,12 +47,13 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
 	int version;
-	unsigned int token;
+	char token[9]; // 8 characters + the terminating NULL character
 } myth_protomap_t;
 
 static myth_protomap_t protomap[] = {
-	{62, 0x78B5631E},
-	{63, 0x3875641D},
+	{62, "78B5631E"},
+	{63, "3875641D"},
+	{64, "8675309J"},
 	{0, 0}
 };
 
@@ -374,7 +375,7 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 				  __FUNCTION__);
 			goto shut;
 		}
-		sprintf(announcement, "MYTH_PROTO_VERSION %ld %04X", conn->conn_version, map->token);
+		sprintf(announcement, "MYTH_PROTO_VERSION %ld %s", conn->conn_version, map->token);
 	} else {
 		sprintf(announcement, "MYTH_PROTO_VERSION %ld", conn->conn_version);
 	}
