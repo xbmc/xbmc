@@ -698,7 +698,14 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   if(m_vertex_count >= m_vertex_size)
   {
     m_vertex_size *= 2;
+    void* old      = m_vertex;
     m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
+    if (!m_vertex)
+    {
+      free(old);
+      printf("realloc failed in CGUIFontTTF::RenderCharacter. aborting\n");
+      abort();
+    }
   }
 
   m_color = color;
