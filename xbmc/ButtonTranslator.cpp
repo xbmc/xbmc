@@ -487,7 +487,7 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
       lircRemotesMap.erase(it);
     }
     CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, itr->c_str());
-    lircRemotesMap.insert(it,pair<CStdString, lircButtonMap>(itr->c_str(),buttons));
+    lircRemotesMap[itr->c_str()] = buttons;
     itr++;
   }
   RemoteNames.clear();
