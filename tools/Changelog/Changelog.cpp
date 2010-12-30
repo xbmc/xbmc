@@ -116,6 +116,7 @@ int _tmain(int argc, _TCHAR* argv[])
   TiXmlDocument doc;
   if (!doc.LoadFile(input.c_str()))
   {
+    fclose(file);
     return 1;
   }
 
