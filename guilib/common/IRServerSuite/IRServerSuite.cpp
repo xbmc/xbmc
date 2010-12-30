@@ -334,6 +334,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
       if (datalen < 8 + devicenamelength)
       {
         CLog::Log(LOGERROR, "IRServerSuite: invalid data in remote message (size: %u).", datalen);
+        delete[] deviceName;
         return false;
       }
       //next 4 bytes is keycode length
