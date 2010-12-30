@@ -982,6 +982,7 @@ extern "C"
       dirData->curr_index++;
       return entry;
     }
+    free(entry);
     return NULL;
   }
 
