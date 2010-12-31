@@ -38,6 +38,10 @@ CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   m_streamIdx = -1;
   m_bgAlpha = 0xff000000;
   m_fgAlpha = 0xff000000;
+  m_hOffset = 0;
+  m_vOffset = 0;
+  
+  memset( m_cdgScreen, 0, sizeof(m_cdgScreen) );
 }
 
 CKaraokeLyricsCDG::~CKaraokeLyricsCDG()
@@ -477,6 +481,8 @@ bool CKaraokeLyricsCDG::Load()
 	m_colorTable[i] = 0;
 
   m_streamIdx = 0;
+  m_hOffset = 0;
+  m_vOffset = 0;
   
   if ( buggy_commands == 0 )
 	CLog::Log( LOGDEBUG, "CDG loader: CDG file %s has been loading successfully, %d useful packets, %dKb used",
@@ -518,6 +524,9 @@ void CKaraokeLyricsCDG::cmdScroll( const char * data, bool isloop )
 		scrollUp( color);
 		break;
   }
+
+  m_hOffset = scroll->hScroll & 0x07;
+  m_vOffset = scroll->vScroll & 0x0F;
 }
 
 void CKaraokeLyricsCDG::scrollLeft( int color )
@@ -525,16 +534,16 @@ void CKaraokeLyricsCDG::scrollLeft( int color )
   BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
   UINT i, j;
 
-  for (i = 0;i < CDG_BORDER_WIDTH;i++)
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = 0; i < CDG_BORDER_WIDTH; i++ )
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color);
   
-  for (i = 0;i < CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i++)   //Fill scrolled area
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i++ )   //Fill scrolled area
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, getPixel( j, i + CDG_BORDER_WIDTH ) );
   
-	for (i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i < CDG_FULL_WIDTH;i++) //Fill uncovered area
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i < CDG_FULL_WIDTH; i++ ) //Fill uncovered area
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, PixelTemp[j][i + CDG_BORDER_WIDTH - CDG_FULL_WIDTH] );
 }
 
@@ -543,16 +552,16 @@ void CKaraokeLyricsCDG::scrollRight( int color )
   BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
   UINT i, j;
 
-  for (i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i < CDG_FULL_WIDTH;i++)
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i < CDG_FULL_WIDTH; i++ )
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       PixelTemp[j][CDG_BORDER_WIDTH - CDG_FULL_WIDTH + i] = (color == -1 ? getPixel( j, i ) : color);
   
-  for (i = CDG_BORDER_WIDTH ; i < CDG_FULL_WIDTH ; i++)   //Fill scrolled area
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = CDG_BORDER_WIDTH ; i < CDG_FULL_WIDTH; i++ )
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, getPixel( j, i - CDG_BORDER_WIDTH ) );
 	
-  for (i = 0;i < CDG_BORDER_WIDTH;i++)      //Fill uncovered area
-    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+  for ( i = 0; i < CDG_BORDER_WIDTH; i++ )      //Fill uncovered area
+    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, PixelTemp[j][i] );
 }
 
@@ -561,16 +570,16 @@ void CKaraokeLyricsCDG::scrollUp( int color )
   BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
   UINT i, j;
 
-  for (i = 0;i < CDG_FULL_WIDTH;i++)
-    for (j = 0 ; j < CDG_BORDER_HEIGHT ;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH; i++ )
+    for ( j = 0 ; j < CDG_BORDER_HEIGHT; j++ )
       PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color );
 
-  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill scrolled area
-    for (j = 0;j < CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill scrolled area
+    for ( j = 0; j < CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT; j++ )
       setPixel( j, i, getPixel( j + CDG_BORDER_HEIGHT, i ) );
   
-  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill uncovered area
-    for (j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill uncovered area
+    for ( j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT; j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] );
 }
 
@@ -579,15 +588,15 @@ void CKaraokeLyricsCDG::scrollDown( int color )
   BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
   UINT i, j;
 
-  for (i = 0;i < CDG_FULL_WIDTH;i++)
-    for (j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH; i++ )
+    for ( j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT; j++ )
       PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] = (color == -1 ? getPixel( j, i ) : color );
  
-  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill scrolled area
-    for (j = CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+  for (i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill scrolled area
+    for ( j = CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT; j++ )
       setPixel( j, i, getPixel( j - CDG_BORDER_HEIGHT, i ) );
 
-  for (i = 0;i < CDG_FULL_WIDTH;i++)  //Fill uncovered area
-    for (j = 0;j < CDG_BORDER_HEIGHT;j++)
+  for ( i = 0; i < CDG_FULL_WIDTH; i++ )  //Fill uncovered area
+    for ( j = 0; j < CDG_BORDER_HEIGHT; j++ )
       setPixel( j, i, PixelTemp[j][i] );
 }
