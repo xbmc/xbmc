@@ -68,6 +68,13 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 	void cmdTileBlock( const char * data );
 	void cmdTileBlockXor( const char * data );
 	void cmdTransparentColor( const char * data );
+
+	void cmdScroll( const char * data, bool loop );
+	void scrollLeft( int color );
+	void scrollRight( int color );
+	void scrollUp( int color );
+	void scrollDown( int color );
+	
 	bool UpdateBuffer( unsigned int packets_due );
 	void RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const;
 

@@ -379,6 +379,16 @@ bool CKaraokeLyricsCDG::UpdateBuffer( unsigned int packets_due )
 			screen_changed = true;
 			break;
 
+		case CDG_INST_SCROLL_PRESET:
+			cmdScroll( sc.data, false );
+			screen_changed = true;
+			break;
+
+		case CDG_INST_SCROLL_COPY:
+			cmdScroll( sc.data, true );
+			screen_changed = true;
+			break;
+
 		default: // this shouldn't happen as we validated the stream in Load()
 			break;
 	}
@@ -445,21 +455,14 @@ bool CKaraokeLyricsCDG::Load()
 			  case CDG_INST_TILE_BLOCK_XOR:
 			  case CDG_INST_TILE_BLOCK:
 			  case CDG_INST_DEF_TRANSP_COL:
+			  case CDG_INST_SCROLL_PRESET:
+			  case CDG_INST_SCROLL_COPY:
 				memcpy( &packet.subcode, sc, sizeof(SubCode) );
 				packet.packetnum = offset / sizeof( SubCode );
 				m_cdgStream.push_back( packet );
 				break;
-
-			  // We do not support those commands since I have never seen a CD+G file which has them.
-			  case CDG_INST_SCROLL_PRESET:
-			  case CDG_INST_SCROLL_COPY:
-				CLog::Log( LOGERROR, "CDG loader: Unsupported CD+G instruction %d found in file %s, "
-					 "please report to oldnemesis together with the file!",
-						sc->instruction & CDG_MASK, m_cdgFile.c_str() );
-				m_cdgStream.clear();
-				return false;
-				
-			  default:
+			  
+                          default:
 				  buggy_commands++;
 				  break;
 		  }
@@ -483,4 +486,108 @@ bool CKaraokeLyricsCDG::Load()
 				m_cdgFile.c_str(), buggy_commands, m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
 
   return true;
+}
+
+void CKaraokeLyricsCDG::cmdScroll( const char * data, bool isloop )
+{
+  CDG_Scroll * scroll = (CDG_Scroll*) & data;
+  scroll->color &= 0x0F;
+  int color = isloop ? -1 : scroll->color;
+ 
+  BYTE hSCmd = (scroll->hScroll & 0x30) >> 4;
+  BYTE vSCmd = (scroll->vScroll & 0x30) >> 4;
+
+  switch (hSCmd)
+  {
+	  case 1: 
+		 scrollRight( color );
+		 break;
+		 
+	  case 2: 
+		 scrollLeft( color ); 
+		 break;
+  }
+  
+  switch (vSCmd)
+  {
+	  case 1: 
+		scrollDown( color );
+		break;
+		
+	  case 2: 
+		scrollUp( color);
+		break;
+  }
+}
+
+void CKaraokeLyricsCDG::scrollLeft( int color )
+{
+  BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
+  UINT i, j;
+
+  for (i = 0;i < CDG_BORDER_WIDTH;i++)
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color);
+  
+  for (i = 0;i < CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i++)   //Fill scrolled area
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, getPixel( j, i + CDG_BORDER_WIDTH ) );
+  
+	for (i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i < CDG_FULL_WIDTH;i++) //Fill uncovered area
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, PixelTemp[j][i + CDG_BORDER_WIDTH - CDG_FULL_WIDTH] );
+}
+
+void CKaraokeLyricsCDG::scrollRight( int color )
+{
+  BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
+  UINT i, j;
+
+  for (i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH;i < CDG_FULL_WIDTH;i++)
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      PixelTemp[j][CDG_BORDER_WIDTH - CDG_FULL_WIDTH + i] = (color == -1 ? getPixel( j, i ) : color);
+  
+  for (i = CDG_BORDER_WIDTH ; i < CDG_FULL_WIDTH ; i++)   //Fill scrolled area
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, getPixel( j, i - CDG_BORDER_WIDTH ) );
+	
+  for (i = 0;i < CDG_BORDER_WIDTH;i++)      //Fill uncovered area
+    for (j = 0;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, PixelTemp[j][i] );
+}
+
+void CKaraokeLyricsCDG::scrollUp( int color )
+{
+  BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
+  UINT i, j;
+
+  for (i = 0;i < CDG_FULL_WIDTH;i++)
+    for (j = 0 ; j < CDG_BORDER_HEIGHT ;j++)
+      PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color );
+
+  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill scrolled area
+    for (j = 0;j < CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j++)
+      setPixel( j, i, getPixel( j + CDG_BORDER_HEIGHT, i ) );
+  
+  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill uncovered area
+    for (j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] );
+}
+
+void CKaraokeLyricsCDG::scrollDown( int color )
+{
+  BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
+  UINT i, j;
+
+  for (i = 0;i < CDG_FULL_WIDTH;i++)
+    for (j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+      PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] = (color == -1 ? getPixel( j, i ) : color );
+ 
+  for (i = 0;i < CDG_FULL_WIDTH;i++)   //Fill scrolled area
+    for (j = CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT;j++)
+      setPixel( j, i, getPixel( j - CDG_BORDER_HEIGHT, i ) );
+
+  for (i = 0;i < CDG_FULL_WIDTH;i++)  //Fill uncovered area
+    for (j = 0;j < CDG_BORDER_HEIGHT;j++)
+      setPixel( j, i, PixelTemp[j][i] );
 }

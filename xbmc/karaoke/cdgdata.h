@@ -62,5 +62,12 @@ typedef struct
   char colorSpec[16]; // AND with 0x3F3F to clear P and Q channel
 } CDG_LoadColorTable;
 
+typedef struct
+{
+  char color;    // Only lower 4 bits are used, mask with 0x0F
+  char hScroll;   // Only lower 6 bits are used, mask with 0x3F
+  char vScroll;    // Only lower 6 bits are used, mask with 0x3F
+}
+CDG_Scroll;
 
 #endif // CDG_H
