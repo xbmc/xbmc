@@ -52,8 +52,8 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, AC3_FRAME_SIZE - size);
-  return AC3_FRAME_SIZE;
+  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(AC3_FRAME_SIZE) - size);
+  return OUT_FRAMESTOBYTES(AC3_FRAME_SIZE);
 }
 
 int CAEPackIEC958::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
