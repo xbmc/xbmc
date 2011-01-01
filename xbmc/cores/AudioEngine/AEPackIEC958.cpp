@@ -39,11 +39,12 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
-  packet->m_type      = IEC958_TYPE_AC3;
-  packet->m_length    = size << 3;
-
   if (data == NULL)
     data = packet->m_data;
+  int bitstream_mode = data[5] & 0x7;
+  packet->m_type      = IEC958_TYPE_AC3 | (bitstream_mode << 8);
+  packet->m_length    = size << 3;
+
 #ifdef __BIG_ENDIAN__
   else
     memcpy(packet->m_data, data, size);
