@@ -40,8 +40,13 @@ CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   m_fgAlpha = 0xff000000;
   m_hOffset = 0;
   m_vOffset = 0;
+  m_borderColor = 0;
+  m_bgColor = 0;
   
   memset( m_cdgScreen, 0, sizeof(m_cdgScreen) );
+
+  for ( int i = 0; i < 16; i++ )
+    m_colorTable[i] = 0;
 }
 
 CKaraokeLyricsCDG::~CKaraokeLyricsCDG()
@@ -68,12 +73,15 @@ BYTE CKaraokeLyricsCDG::getPixel( int x, int y )
 {
   unsigned int offset = x + y * CDG_FULL_WIDTH;
 
+  if ( x >= (int) CDG_FULL_WIDTH || y >= (int) CDG_FULL_HEIGHT )
+	  return m_borderColor;
+  
   if ( x < 0 || y < 0 || offset > CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
   {
 	CLog::Log( LOGERROR, "CDG renderer: requested pixel (%d,%d) is out of boundary", x, y );
 	return 0;
   }
-
+  
   return m_cdgScreen[offset];
 }
 
@@ -83,7 +91,7 @@ void CKaraokeLyricsCDG::setPixel( int x, int y, BYTE color )
 
   if ( x < 0 || y < 0 || offset > CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
   {
-	CLog::Log( LOGERROR, "CDG renderer: requested pixel (%d,%d) is out of boundary", x, y );
+	CLog::Log( LOGERROR, "CDG renderer: set pixel (%d,%d) is out of boundary", x, y );
 	return;
   }
 
@@ -148,7 +156,7 @@ void CKaraokeLyricsCDG::Render()
 
 		for ( UINT x = 0; x < CDG_FULL_WIDTH; x++ )
 		{
-		  BYTE colorindex = getPixel( x, y );
+		  BYTE colorindex = getPixel( x + m_hOffset, y + m_vOffset );
 		  DWORD TexColor = m_colorTable[ colorindex ];
 
 		  // Is it transparent color?
@@ -207,14 +215,14 @@ void CKaraokeLyricsCDG::cmdBorderPreset( const char * data )
 {
   CDG_BorderPreset* preset = (CDG_BorderPreset*) data;
 
-  UINT borderColor = preset->color & 0x0F;
+  m_borderColor = preset->color & 0x0F;
 
   for ( unsigned int i = 0; i < CDG_BORDER_WIDTH; i++ )
   {
 	for ( unsigned int j = 0; j < CDG_FULL_HEIGHT; j++ )
 	{
-	  setPixel( i, j, borderColor );
-	  setPixel( CDG_FULL_WIDTH - i - 1, j, borderColor );
+	  setPixel( i, j, m_borderColor );
+	  setPixel( CDG_FULL_WIDTH - i - 1, j, m_borderColor );
 	}
   }
 
@@ -222,8 +230,8 @@ void CKaraokeLyricsCDG::cmdBorderPreset( const char * data )
   {
 	for ( unsigned int j = 0; j < CDG_BORDER_HEIGHT; j++ )
 	{
-	  setPixel( i, j, borderColor );
-	  setPixel( i, CDG_FULL_HEIGHT - j - 1, borderColor );
+	  setPixel( i, j, m_borderColor );
+	  setPixel( i, CDG_FULL_HEIGHT - j - 1, m_borderColor );
 	}
   }
 
@@ -325,6 +333,124 @@ void CKaraokeLyricsCDG::cmdTileBlockXor( const char * data )
 		setPixel( offset_x + j, offset_y + i, origindex ^ color_0 );
 	}
   }
+}
+
+// Based on http://cdg2video.googlecode.com/svn/trunk/cdgfile.cpp
+void CKaraokeLyricsCDG::cmdScroll( const char * data, bool copy )
+{
+    int colour, hScroll, vScroll;
+    int hSCmd, hOffset, vSCmd, vOffset;
+    int vScrollPixels, hScrollPixels;
+    
+    // Decode the scroll command parameters
+    colour  = data[0] & 0x0F;
+    hScroll = data[1] & 0x3F;
+    vScroll = data[2] & 0x3F;
+
+    hSCmd = (hScroll & 0x30) >> 4;
+    hOffset = (hScroll & 0x07);
+    vSCmd = (vScroll & 0x30) >> 4;
+    vOffset = (vScroll & 0x0F);
+
+    m_hOffset = hOffset < 5 ? hOffset : 5;
+    m_vOffset = vOffset < 11 ? vOffset : 11;
+
+    // Scroll Vertical - Calculate number of pixels
+    vScrollPixels = 0;
+	
+    if (vSCmd == 2) 
+    {
+        vScrollPixels = - 12;
+    } 
+    else  if (vSCmd == 1) 
+    {
+        vScrollPixels = 12;
+    }
+
+    // Scroll Horizontal- Calculate number of pixels
+    hScrollPixels = 0;
+
+	if (hSCmd == 2) 
+    {
+        hScrollPixels = - 6;
+    } 
+    else if (hSCmd == 1) 
+    {
+        hScrollPixels = 6;
+    }
+
+    if (hScrollPixels == 0 && vScrollPixels == 0) 
+    {
+        return;
+    }
+
+    // Perform the actual scroll.
+    unsigned char temp[CDG_FULL_HEIGHT][CDG_FULL_WIDTH];
+    int vInc = vScrollPixels + CDG_FULL_HEIGHT;
+    int hInc = hScrollPixels + CDG_FULL_WIDTH;
+    int ri; // row index
+    int ci; // column index
+
+    for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) 
+    {
+        for (ci = 0; ci < CDG_FULL_WIDTH; ++ci) 
+        {   
+            temp[(ri + vInc) % CDG_FULL_HEIGHT][(ci + hInc) % CDG_FULL_WIDTH] = getPixel( ci, ri );
+        }
+    }
+
+    // if copy is false, we were supposed to fill in the new pixels
+    // with a new colour. Go back and do that now.
+
+    if (!copy)
+    {
+        if (vScrollPixels > 0) 
+        {
+            for (ci = 0; ci < CDG_FULL_WIDTH; ++ci) 
+            {
+                for (ri = 0; ri < vScrollPixels; ++ri) {
+                    temp[ri][ci] = colour;
+                }
+            }
+        }
+        else if (vScrollPixels < 0) 
+        {
+            for (ci = 0; ci < CDG_FULL_WIDTH; ++ci) 
+            {
+                for (ri = CDG_FULL_HEIGHT + vScrollPixels; ri < CDG_FULL_HEIGHT; ++ri) {
+                    temp[ri][ci] = colour;
+                }
+            }
+        }
+        
+        if (hScrollPixels > 0) 
+        {
+            for (ci = 0; ci < hScrollPixels; ++ci) 
+            {
+                for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) {
+                    temp[ri][ci] = colour;
+                }
+            }
+        } 
+        else if (hScrollPixels < 0) 
+        {
+            for (ci = CDG_FULL_WIDTH + hScrollPixels; ci < CDG_FULL_WIDTH; ++ci) 
+            {
+                for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) {
+                    temp[ri][ci] = colour;
+                }
+            }
+        }
+    }
+
+    // Now copy the temporary buffer back to our array
+    for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) 
+    {
+        for (ci = 0; ci < CDG_FULL_WIDTH; ++ci) 
+        {
+			setPixel( ci, ri, temp[ri][ci] );
+        }
+    }
 }
 
 bool CKaraokeLyricsCDG::UpdateBuffer( unsigned int packets_due )
@@ -481,6 +607,8 @@ bool CKaraokeLyricsCDG::Load()
 	m_colorTable[i] = 0;
 
   m_streamIdx = 0;
+  m_borderColor = 0;
+  m_bgColor = 0;
   m_hOffset = 0;
   m_vOffset = 0;
   
@@ -492,111 +620,4 @@ bool CKaraokeLyricsCDG::Load()
 				m_cdgFile.c_str(), buggy_commands, m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
 
   return true;
-}
-
-void CKaraokeLyricsCDG::cmdScroll( const char * data, bool isloop )
-{
-  CDG_Scroll * scroll = (CDG_Scroll*) & data;
-  scroll->color &= 0x0F;
-  int color = isloop ? -1 : scroll->color;
- 
-  BYTE hSCmd = (scroll->hScroll & 0x30) >> 4;
-  BYTE vSCmd = (scroll->vScroll & 0x30) >> 4;
-
-  switch (hSCmd)
-  {
-	  case 1: 
-		 scrollRight( color );
-		 break;
-		 
-	  case 2: 
-		 scrollLeft( color ); 
-		 break;
-  }
-  
-  switch (vSCmd)
-  {
-	  case 1: 
-		scrollDown( color );
-		break;
-		
-	  case 2: 
-		scrollUp( color);
-		break;
-  }
-
-  m_hOffset = scroll->hScroll & 0x07;
-  m_vOffset = scroll->vScroll & 0x0F;
-}
-
-void CKaraokeLyricsCDG::scrollLeft( int color )
-{
-  BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
-  UINT i, j;
-
-  for ( i = 0; i < CDG_BORDER_WIDTH; i++ )
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color);
-  
-  for ( i = 0; i < CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i++ )   //Fill scrolled area
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, getPixel( j, i + CDG_BORDER_WIDTH ) );
-  
-  for ( i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i < CDG_FULL_WIDTH; i++ ) //Fill uncovered area
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, PixelTemp[j][i + CDG_BORDER_WIDTH - CDG_FULL_WIDTH] );
-}
-
-void CKaraokeLyricsCDG::scrollRight( int color )
-{
-  BYTE PixelTemp[CDG_FULL_HEIGHT][CDG_BORDER_WIDTH];
-  UINT i, j;
-
-  for ( i = CDG_FULL_WIDTH - CDG_BORDER_WIDTH; i < CDG_FULL_WIDTH; i++ )
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      PixelTemp[j][CDG_BORDER_WIDTH - CDG_FULL_WIDTH + i] = (color == -1 ? getPixel( j, i ) : color);
-  
-  for ( i = CDG_BORDER_WIDTH ; i < CDG_FULL_WIDTH; i++ )
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, getPixel( j, i - CDG_BORDER_WIDTH ) );
-	
-  for ( i = 0; i < CDG_BORDER_WIDTH; i++ )      //Fill uncovered area
-    for ( j = 0; j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, PixelTemp[j][i] );
-}
-
-void CKaraokeLyricsCDG::scrollUp( int color )
-{
-  BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
-  UINT i, j;
-
-  for ( i = 0; i < CDG_FULL_WIDTH; i++ )
-    for ( j = 0 ; j < CDG_BORDER_HEIGHT; j++ )
-      PixelTemp[j][i] = (color == -1 ? getPixel( j, i ) : color );
-
-  for ( i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill scrolled area
-    for ( j = 0; j < CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT; j++ )
-      setPixel( j, i, getPixel( j + CDG_BORDER_HEIGHT, i ) );
-  
-  for ( i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill uncovered area
-    for ( j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT; j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] );
-}
-
-void CKaraokeLyricsCDG::scrollDown( int color )
-{
-  BYTE PixelTemp[CDG_BORDER_HEIGHT][CDG_FULL_WIDTH];
-  UINT i, j;
-
-  for ( i = 0; i < CDG_FULL_WIDTH; i++ )
-    for ( j = CDG_FULL_HEIGHT - CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT; j++ )
-      PixelTemp[CDG_BORDER_HEIGHT - CDG_FULL_HEIGHT + j][i] = (color == -1 ? getPixel( j, i ) : color );
- 
-  for (i = 0; i < CDG_FULL_WIDTH; i++ )   //Fill scrolled area
-    for ( j = CDG_BORDER_HEIGHT;j < CDG_FULL_HEIGHT; j++ )
-      setPixel( j, i, getPixel( j - CDG_BORDER_HEIGHT, i ) );
-
-  for ( i = 0; i < CDG_FULL_WIDTH; i++ )  //Fill uncovered area
-    for ( j = 0; j < CDG_BORDER_HEIGHT; j++ )
-      setPixel( j, i, PixelTemp[j][i] );
 }

@@ -95,6 +95,7 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 	int                m_streamIdx;       //!< Packet about to be rendered
 	DWORD              m_colorTable[16];  //!< CD+G color table; color format is A8R8G8B8
 	BYTE			   m_bgColor;         //!< Background color index
+	BYTE               m_borderColor;     //!< Border color index
 	BYTE			   m_cdgScreen[CDG_FULL_WIDTH*CDG_FULL_HEIGHT];	//!< Image state for CD+G stream
 
 	// These values are used to implement screen shifting.  The CDG specification allows the entire 
