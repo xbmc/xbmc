@@ -588,7 +588,12 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+  if(format.m_dataFormat == AE_FMT_RAW)
+  {
+    format.m_dataFormat = AE_FMT_S16NE;
+    format.m_channelCount = 2;
+  }
+  else if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
   {
     if(wfxex.Format.wBitsPerSample == 32)
     {
