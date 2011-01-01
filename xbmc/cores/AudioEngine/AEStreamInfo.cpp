@@ -386,7 +386,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       /* 16bit BE */
       case DTS_PREAMBLE_16BE:
         m_dataIsLE = false;
-        blocks = (data[4] >> 2) & 0x7f;
+        blocks = (data[5] >> 2) & 0x7f;
         srate_code = (data[8] >> 2) & 0xf;
         m_dataIsLE = false;
         break;
