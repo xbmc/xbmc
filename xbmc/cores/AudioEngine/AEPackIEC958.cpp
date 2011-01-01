@@ -74,8 +74,8 @@ int CAEPackIEC958::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, EAC3_FRAME_SIZE - size);
-  return EAC3_FRAME_SIZE;
+  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(EAC3_FRAME_SIZE) - size);
+  return OUT_FRAMESTOBYTES(EAC3_FRAME_SIZE);
 }
 
 int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
