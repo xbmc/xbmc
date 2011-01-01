@@ -96,7 +96,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
   IMMDeviceCollection* pEnumDevices = NULL;
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %i", hr)
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
 
   //Get our device.
   //First try to find the named device.
@@ -254,6 +254,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   CSingleLock lock(m_runLock);
   if(!m_initialized) return 0;
 
+  HRESULT hr;
   UINT32 waitFor;
 
   m_pAudioClient->GetCurrentPadding(&waitFor);
@@ -265,11 +266,17 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   }
 
   BYTE *buf;
-  HRESULT hr = m_pRenderClient->GetBuffer(frames, &buf);
 
-  memcpy(buf, data, frames*m_format.m_frameSize);
-
-  m_pRenderClient->ReleaseBuffer(frames, 0);
+  if (SUCCEEDED(hr = m_pRenderClient->GetBuffer(frames, &buf)))
+  {
+    memcpy(buf, data, frames*m_format.m_frameSize);
+    if (FAILED(hr = m_pRenderClient->ReleaseBuffer(frames, 0)))
+      CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%li)", hr);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%li)", hr);
+  }
 
   if(!m_running)
   {
@@ -299,7 +306,7 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
   wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %i", hr)
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
 
   UINT uiCount = 0;
 
@@ -379,7 +386,7 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
 failed:
 
   if(FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices.");
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices (%li).", hr);
 
   SAFE_RELEASE(pEnumDevices);
   SAFE_RELEASE(pEnumerator);
@@ -394,15 +401,28 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   //In shared mode Windows tells us what format the audio must be in.
   HRESULT hr = m_pAudioClient->GetMixFormat((WAVEFORMATEX **)&wfxex);
   if(FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetMixFormat failed (%li)", hr);
     return false;
+  }
+
+  //The windows mixer uses floats and that should be the mix format returned.
+  if (wfxex->Format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT &&
+    (wfxex->Format.wFormatTag != WAVE_FORMAT_EXTENSIBLE ||  wfxex->SubFormat != _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Windows mixer format is not float (%i)", wfxex->Format.wFormatTag);
+    return false;
+  }
 
   AEChannelsFromSpeakerMask(wfxex->dwChannelMask);
 
   format.m_channelCount = wfxex->Format.nChannels;
   format.m_channelLayout = m_channelLayout;
-  format.m_dataFormat = AE_FMT_FLOAT; //The windows mixer always uses floats.
+  format.m_dataFormat = AE_FMT_FLOAT;
   format.m_frameSize = sizeof(float) * format.m_channelCount;
   format.m_sampleRate = wfxex->Format.nSamplesPerSec;
+
+  CoTaskMemFree(wfxex);
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
   hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
@@ -413,9 +433,11 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
   hnsRequestedDuration = hnsPeriodicity*8;
 
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, hnsRequestedDuration, 0, &wfxex->Format, NULL);
-
-  CoTaskMemFree(wfxex);
+  if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, hnsRequestedDuration, 0, &wfxex->Format, NULL)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%li)", hr);
+    return false;
+  }
 
   return true;
 }
@@ -597,7 +619,11 @@ initialize:
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
 
   if(FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode.");
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode (%li).", hr);
+    return false;
+  }
+
   return true;
 }
 
