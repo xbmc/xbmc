@@ -95,8 +95,8 @@ int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, DTS1_FRAME_SIZE - size);
-  return DTS1_FRAME_SIZE;
+  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(DTS1_FRAME_SIZE) - size);
+  return OUT_FRAMESTOBYTES(DTS1_FRAME_SIZE);
 }
 
 int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -116,8 +116,8 @@ int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, DTS2_FRAME_SIZE - size);
-  return DTS2_FRAME_SIZE;
+  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(DTS2_FRAME_SIZE) - size);
+  return OUT_FRAMESTOBYTES(DTS2_FRAME_SIZE);
 }
 
 int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
@@ -137,7 +137,7 @@ int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, DTS3_FRAME_SIZE - size);
-  return DTS3_FRAME_SIZE;
+  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(DTS3_FRAME_SIZE) - size);
+  return OUT_FRAMESTOBYTES(DTS3_FRAME_SIZE);
 }
 
