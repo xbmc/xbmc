@@ -520,17 +520,17 @@ IAEStream *CSoftAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat,
 IAESound *CSoftAE::GetSound(CStdString file)
 {
   CSingleLock lock(m_critSection);
-  CSoftAESound *sound;
 
   /* see if we have a valid sound */
-  if ((sound = m_sounds[file]))
+  map<const CStdString, CSoftAESound*>::iterator itt = m_sounds.find(file);
+  if (itt != m_sounds.end())
   {
     /* increment the reference count */
-    ((CSoftAESound*)sound)->IncRefCount();
-    return sound;
+    itt->second->IncRefCount();
+    return itt->second;
   }
 
-  sound = new CSoftAESound(file);
+  CSoftAESound *sound = new CSoftAESound(file);
   if (!sound->Initialize())
   {
     delete sound;
