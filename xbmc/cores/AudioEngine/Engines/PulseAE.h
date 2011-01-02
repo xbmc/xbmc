@@ -24,14 +24,17 @@
 
 #include "AE.h"
 #include "PulseAEStream.h"
+#include "PulseAESound.h"
 #include "utils/CriticalSection.h"
 #include <list>
+#include <map>
 
 struct pa_context;
 struct pa_threaded_mainloop;
 struct pa_stream;
 
 class CPulseAEStream;
+class CPulseAESound;
 class CPulseAE : public IAE
 {
 public:
@@ -60,6 +63,7 @@ public:
 private:
   CCriticalSection m_lock;
   std::list<CPulseAEStream*> m_streams;
+  std::map<const CStdString, CPulseAESound*> m_sounds;
 
   static void ContextStateCallback(pa_context *c, void *userdata);
 

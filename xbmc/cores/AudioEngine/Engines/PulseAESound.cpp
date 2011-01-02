@@ -26,6 +26,7 @@
 #include "AEFactory.h"
 #include "utils/log.h"
 #include "MathUtils.h"
+#include "StringUtils.h"
 
 CPulseAESound::CPulseAESound(const CStdString &filename, pa_context *context, pa_threaded_mainloop *mainLoop) :
   IAESound  (filename),
@@ -35,6 +36,7 @@ CPulseAESound::CPulseAESound(const CStdString &filename, pa_context *context, pa
   m_mainLoop(mainLoop),
   m_stream  (NULL    )
 {
+  m_pulseName = StringUtils::CreateUUID();
 }
 
 CPulseAESound::~CPulseAESound()
@@ -48,8 +50,6 @@ bool CPulseAESound::Initialize()
   if (!m_wavLoader.IsValid() && !m_wavLoader.Initialize(m_filename, 0))
     return false;
 
-  pa_threaded_mainloop_lock(m_mainLoop);
-
   m_sampleSpec.format   = PA_SAMPLE_FLOAT32NE;
   m_sampleSpec.rate     = m_wavLoader.GetSampleRate();
   m_sampleSpec.channels = m_wavLoader.GetChannelCount();
@@ -57,7 +57,6 @@ bool CPulseAESound::Initialize()
   if (!pa_sample_spec_valid(&m_sampleSpec))
   {
     CLog::Log(LOGERROR, "CPulseAESound::Initialize - Invalid sample spec");
-    pa_threaded_mainloop_unlock(m_mainLoop);
     return false;
   }
 
@@ -84,7 +83,9 @@ bool CPulseAESound::Initialize()
 
   pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
   pa_cvolume_set(&m_chVolume, m_sampleSpec.channels, paVolume);
-  if ((m_stream = pa_stream_new(m_context, m_filename.c_str(), &m_sampleSpec, &map)) == NULL)
+
+  pa_threaded_mainloop_lock(m_mainLoop);
+  if ((m_stream = pa_stream_new(m_context, m_pulseName.c_str(), &m_sampleSpec, &map)) == NULL)
   {
     CLog::Log(LOGERROR, "CPulseAESound::Initialize - Could not create a stream");
     pa_threaded_mainloop_unlock(m_mainLoop);
@@ -132,7 +133,7 @@ void CPulseAESound::DeInitialize()
 void CPulseAESound::Play()
 {
   pa_threaded_mainloop_lock(m_mainLoop);
-  pa_operation *o = pa_context_play_sample(m_context, m_filename.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
+  pa_operation *o = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
   if (o)
     pa_operation_unref(o);
   pa_threaded_mainloop_unlock(m_mainLoop);
@@ -177,14 +178,14 @@ void CPulseAESound::StreamStateCallback(pa_stream *s, void *userdata)
 
 void CPulseAESound::StreamWriteCallback(pa_stream *s, size_t length, void *userdata)
 {
-  printf("Write CB: %d\n", length);
   CPulseAESound *sound = (CPulseAESound*)userdata;
   sound->Upload(length);
 }
 
-void CPulseAESound::Upload(size_t length) {
+void CPulseAESound::Upload(size_t length)
+{
   float *samples = m_wavLoader.GetSamples();
-  size_t left    = m_wavLoader.GetSampleCount() * sizeof(float);
+  size_t left    = (m_wavLoader.GetSampleCount() * sizeof(float)) - m_dataSent;
   size_t send    = std::min(length, left);
 
   if (pa_stream_write(m_stream, samples + m_dataSent, send, 0, 0, PA_SEEK_RELATIVE) == 0)
