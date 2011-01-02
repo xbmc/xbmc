@@ -278,33 +278,36 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
   snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
   snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
-  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
+  if (snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
+  {
+    /* try to set the period size then the buffer size */
+    snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+    snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
+    snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
+    snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+    if (snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
+    {
+      /* try to just set the buffer size */
+      snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+      snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
+      snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+      if (snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
+      {
+        /* try to just set the period size */
+        snd_pcm_hw_params_copy(hw_params_copy, hw_params);
+        snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
+        snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
+        if (snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
+        {
+          CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Failed to set the parameters");
+          snd_pcm_hw_params_free(hw_params_copy);
+          snd_pcm_hw_params_free(hw_params     );
+          return false;
+	}
+      }
+    }
+  }
 
-  /* try to set the period size then the buffer size */
-  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
-  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
-  snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
-  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
-  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
-
-  /* try to just set the buffer size */
-  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
-  snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize);
-  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
-  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
-
-  /* try to just set the period size */
-  snd_pcm_hw_params_copy(hw_params_copy, hw_params);
-  snd_pcm_hw_params_set_period_size_near(m_pcm, hw_params_copy, &periodSize, NULL);
-  snd_pcm_hw_params_set_periods_near    (m_pcm, hw_params_copy, &periods   , NULL);
-  if (snd_pcm_hw_params(m_pcm, hw_params_copy) == 0) goto success;
-
-  CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Failed to set the parameters");
-  snd_pcm_hw_params_free(hw_params_copy);
-  snd_pcm_hw_params_free(hw_params     );
-  return false;
-
-success:
   snd_pcm_hw_params_get_period_size(hw_params_copy, &periodSize, NULL);
   snd_pcm_hw_params_get_buffer_size(hw_params_copy, &bufferSize);
 
