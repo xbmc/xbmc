@@ -47,6 +47,7 @@ public:
 
   /* returns a new stream for data in the specified format */
   virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
+  virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
 
   /* returns a new sound object */
   virtual IAESound *GetSound(CStdString file);

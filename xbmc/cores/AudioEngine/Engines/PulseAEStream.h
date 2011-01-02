@@ -75,6 +75,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
+  void SetFreeOnDrain() { m_options |= AESTREAM_FREE_ON_DRAIN; }
+
   /* trigger the stream to update its volume relative to AE */
   void UpdateVolume(float max);
 private:
