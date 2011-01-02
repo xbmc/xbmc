@@ -19,6 +19,7 @@ SRCS = \
 	AEUtil.cpp \
 	AEStreamInfo.cpp \
 	AEPackIEC958.cpp \
+	AEWAVLoader.cpp \
 	PostProc/AEPPAnimationFade.cpp \
 	\
 	Engines/SoftAE.cpp \
@@ -27,6 +28,7 @@ SRCS = \
 	Engines/PulseAE.cpp \
 	Engines/PulseAEStream.cpp \
 	Engines/PulseAEEventThread.cpp \
+	Engines/PulseAESound.cpp \
 	\
 	Encoders/AEEncoderFFmpeg.cpp
 
