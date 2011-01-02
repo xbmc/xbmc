@@ -268,6 +268,16 @@ bool CAEWAVLoader::Remap(AEChLayout to) {
   return true;
 }
 
+unsigned int CAEWAVLoader::GetChannelCount()
+{
+  return m_channelCount;
+}
+
+unsigned int CAEWAVLoader::GetSampleRate()
+{
+  return m_sampleRate;
+}
+
 unsigned int CAEWAVLoader::GetSampleCount()
 {
   return m_sampleCount;

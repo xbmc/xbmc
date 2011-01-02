@@ -31,7 +31,7 @@ IAE& CAEFactory::GetAE()
     return *m_ae;
 
 #ifdef HAS_PULSEAUDIO
-//  m_ae = (IAE*)new CPulseAE();
+  m_ae = (IAE*)new CPulseAE();
 #endif
 
   /* CSoftAE - this should always be the fallback */
