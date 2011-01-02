@@ -90,6 +90,7 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
   }
 
   m_blockSize = m_codec->m_Channels * m_codec->m_BitsPerSample / 8;
+  m_pcmBuffer.Create(2 * m_blockSize * m_codec->m_SampleRate);
   
   // set total time from the given tag
   if (file.HasMusicInfoTag() && file.GetMusicInfoTag()->GetDuration())

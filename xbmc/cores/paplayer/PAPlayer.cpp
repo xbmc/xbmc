@@ -155,6 +155,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
       }
       if (!si->m_stream->IsDraining())
         si->m_stream->Drain();
+      
       return;
     }
   }
