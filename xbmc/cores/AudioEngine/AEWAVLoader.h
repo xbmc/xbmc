@@ -34,6 +34,8 @@ public:
 
   bool IsValid() { return m_valid; }
   bool Remap(AEChLayout to);
+  unsigned int GetChannelCount();
+  unsigned int GetSampleRate();
   unsigned int GetSampleCount();
   unsigned int GetFrameCount();
   float* GetSamples();

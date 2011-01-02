@@ -140,7 +140,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   float useVolume = m_Volume * m_MaxVolume;
 
   pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
-  printf("%f %f %f %d\n", m_Volume, m_MaxVolume, useVolume, paVolume);
 
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)

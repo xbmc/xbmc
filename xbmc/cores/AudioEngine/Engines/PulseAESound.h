@@ -24,12 +24,14 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "AESound.h"
+#include "AEWAVLoader.h"
+#include <pulse/pulseaudio.h>
 
 class CPulseAESound : public IAESound
 {
 public:
   /* this should NEVER be called directly, use AE.GetSound */
-  CPulseAESound(const CStdString &filename);
+  CPulseAESound(const CStdString &filename, pa_context *context, pa_threaded_mainloop *mainLoop);
   virtual ~CPulseAESound();
 
   virtual void DeInitialize();
@@ -41,6 +43,23 @@ public:
 
   virtual void  SetVolume(float volume);
   virtual float GetVolume();
+
+private:
+  static void StreamStateCallback(pa_stream *s, void *userdata);
+  static void StreamWriteCallback(pa_stream *s, size_t length, void *userdata);
+  void Upload(size_t length);
+
+  CStdString    m_filename;
+  CAEWAVLoader  m_wavLoader;
+  size_t        m_dataSent;
+
+  pa_context           *m_context;
+  pa_threaded_mainloop *m_mainLoop;
+  pa_stream            *m_stream;
+  pa_sample_spec        m_sampleSpec;
+  pa_cvolume            m_chVolume;
+
+  float m_maxVolume, m_volume;
 };
 
 #endif
