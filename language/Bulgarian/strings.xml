@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--File used for translation: English, Revision: 33299 -->
+<!--File used for translation: English, Revision: 35647 -->
 <!--Translator: tonywoolf-->
 <!--Email: tonywoolf@gmail.com-->
-<!--Date of translation: 09/02/2010-->
+<!--Date of translation: Dec/11/2010-->
 
 <strings>
   <string id="0">Програми</string>
@@ -58,8 +58,25 @@
   <string id="61">Ное</string>
   <string id="62">Дек</string>
 
-  <string id="98">Вид: Атоматичен</string>
-  <string id="99">Вид: Атоматичен едър</string>
+  <string id="71">N</string>
+  <string id="72">NNE</string>
+  <string id="73">NE</string>
+  <string id="74">ENE</string>
+  <string id="75">E</string>
+  <string id="76">ESE</string>
+  <string id="77">SE</string>
+  <string id="78">SSE</string>
+  <string id="79">S</string>
+  <string id="80">SSW</string>
+  <string id="81">SW</string>
+  <string id="82">WSW</string>
+  <string id="83">W</string>
+  <string id="84">WNW</string>
+  <string id="85">NW</string>
+  <string id="86">NNW</string>
+  <string id="87">VAR</string>
+  <string id="98">Вид: Автоматичен</string>
+  <string id="99">Вид: Автоматичен едър</string>
   <string id="100">Вид: Икони</string>
   <string id="101">Вид: Списък</string>
   <string id="102">Анализиране</string>
@@ -83,7 +100,7 @@
   <string id="120">Потвърди копиране на файл</string>
   <string id="121">Потвърди преместване на файл</string>
   <string id="122">Потвърди изтриване на файл?</string>
-  <string id="123">Копираи тези файлове?</string>
+  <string id="123">Копирай тези файлове?</string>
   <string id="124">Премести тези файлове?</string>
   <string id="125">Изтрий тези файлове? - Файловете не могат да се върнат!</string>
   <string id="126">Положение</string>
@@ -98,7 +115,7 @@
   <string id="135">Жанр</string>
   <string id="136">Плейлисти</string>
   <string id="137">Търсачка</string>
-  <string id="138">Информаця за Системата</string>
+  <string id="138">Информация за Системата</string>
   <string id="139">Температури:</string>
   <string id="140">Процесор:</string>
   <string id="141">Графичен Процесор:</string>
@@ -149,7 +166,7 @@
   <string id="186">ОК</string>
   <string id="187">Не е намерен албум!</string>
   <string id="188">Избери всичко</string>
-  <string id="189">Анализиранеning media info</string>
+  <string id="189">Сканиране инфо от медия</string>
   <string id="190">Запиши</string>
   <string id="191">Разместени</string>
   <string id="192">Изчисти</string>
@@ -159,6 +176,7 @@
   <string id="196">Избери филм:</string>
   <string id="197">Заявка %s информация</string>
   <string id="198">Търсене информация за филма</string>
+  <string id="199">Уеб интерфейс</string>
 
   <string id="202">Етикет</string>
   <string id="203">Резюме</string>
@@ -198,7 +216,9 @@
   <string id="240">Режим на екрана</string>
   <string id="241">Цял екран #%d</string>
   <string id="242">Прозорец</string>
-  <string id="243">Опресняване</string>
+  <string id="243">Честота на опресняване</string>
+  <string id="244">Цял екран</string>
+  <string id="245">Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
 
   <string id="247">Скриптове</string>
   <string id="248">Език</string>
@@ -233,7 +253,7 @@
   <string id="277">Регулиране на лента, за да промените позицията на субтитрите</string>
   <string id="278">Регулиране на правоъгълник, така че е напълно квадрат</string>
   <string id="279">Не мога да заредя настройки</string>
-  <string id="280">Използвам настройки по подразиране</string>
+  <string id="280">Използвам настройки по подразбиране</string>
   <string id="281">Моля проверете XML файловете</string>
   <string id="282">Намерен %i позиции</string>
   <string id="283">Резултати от търсене</string>
@@ -294,9 +314,10 @@
   <string id="340">Различни изпълнители</string>
   <string id="341">Възпроизведи диск</string>
   <string id="342">Филми</string>
-  <string id="343">Настройте кадри</string>
+  <string id="343">Настрой кадри</string>
   <string id="344">Изпълнители</string>
   <string id="345">Години</string>
+  <string id="346">Усили нивото на звука при миксиране</string>
   <string id="350">Програми</string>
   <string id="351">Изкл</string>
   <string id="352">Затъмнява</string>
@@ -378,9 +399,10 @@
   <string id="428">Поставете правилно CD/DVD</string>
   <string id="429">Моля, въведете следното CD/DVD</string>
   <string id="430">Сорт: DVD#</string>
-  <string id="431">Няма кешe</string>
+  <string id="431">Няма кеш</string>
   <string id="432">Премахни филм от библиотеката</string>
   <string id="433">Наистина да премахна '%s'?</string>
+    <string id="434">От %s at %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Сменяем диск</string>
   <string id="438">Отварям файл</string>
@@ -392,7 +414,7 @@
   <string id="444">Видео</string>
   <string id="445">Аудио</string>
   <string id="446">DVD</string>
-  <string id="447">Атоматиченplay</string>
+  <string id="447">Автоматично възпроизвеждане</string>
   <string id="448">LCD</string>
   <string id="449">Включено</string>
   <string id="450">Колони</string>
@@ -435,7 +457,7 @@
   <string id="492">Преоразмеряване VobSubs</string>
   <string id="493">Допълнителни опции (Само за експерти!)</string>
   <string id="494">Пълна звукова височина</string>
-  <string id="495">Upsample videos to GUI resolution</string>
+  <string id="495">Пусни видео с резолюция на GUI</string>
   <string id="496">Калибриране</string>
   <string id="497">Скрий разширенията на файловете</string>
   <string id="498">Сорт: Тип</string>
@@ -456,7 +478,7 @@
 
   <string id="517">Наскоро възпроизвеждани албуми</string>
   <string id="518">Старт</string>
-  <string id="519">Стартирй със...</string>
+  <string id="519">Стартирай със...</string>
   <string id="520"></string>
   <string id="521">Компилации</string>
   <string id="522">Премахни източник</string>
@@ -500,7 +522,7 @@
   <string id="560">ID</string>
   <string id="561">Файл</string>
   <string id="562">Година</string>
-  <string id="563">Райтинг</string>
+  <string id="563">Рейтинг</string>
   <string id="564">Тип</string>
   <string id="565">Използване</string>
   <string id="566">Албум изпълнител</string>
@@ -511,6 +533,8 @@
   <string id="571">Подразбиране</string>
   <string id="572">Студио</string>
   <string id="573">Път</string>
+  <string id="574">Държава</string>
+  <string id="575">В процес</string>
 
   <string id="580">Посока на сортиране</string>
   <string id="581">Метод на сортиране</string>
@@ -518,7 +542,7 @@
   <string id="583">Запомни изгледа на различните папки</string>
   <string id="584">Възходящ</string>
   <string id="585">Низходящ</string>
-  <string id="586">Радактирай плейлист</string>
+  <string id="586">Редактирай плейлист</string>
   <string id="587">Филтър</string>
   <string id="588">Отказ Парти режим</string>
   <string id="589">Парти</string>
@@ -539,7 +563,7 @@
   <string id="605">Извличане...</string>
 
   <string id="607">Към:</string>
-  <string id="608">Не мога да извлеса CD или песен</string>
+  <string id="608">Не мога да извлека CD или песен</string>
   <string id="609">CDDA път за извличане не е зададен.</string>
   <string id="610">Извличам аудио пътека</string>
   <string id="611">Въведи номер</string>
@@ -596,14 +620,11 @@
   <string id="706">- Сървър</string>
 
   <string id="708">Ползвай HTTP proxy сървър за достъп до интернет</string>
-  <string id="709">HTTP proxy потребителско име</string>
-  <string id="710">HTTP proxy парола</string>
   <string id="711">Интернет Протокол (IP)</string>
   <string id="712">Избран невалиден порт. Стойността може да е между 1 и 65535.</string>
   <string id="713">HTTP proxy</string>
-  <string id="714"></string>
   <string id="715">- Задаване</string>
-  <string id="716">Атоматично (DHCP)</string>
+  <string id="716">Автоматично (DHCP)</string>
   <string id="717">Ръчно (Статично)</string>
   <string id="718"></string>
   <string id="719">- IP address</string>
@@ -787,7 +808,7 @@
   <string id="1254">Изискай свързване</string>
   <string id="1255">Изпрати FTP потребител и парола</string>
   <string id="1256">Ping интервал</string>
-  <string id="1257">Желаете ли да се свъжете към автоматично откриваща система?</string>
+  <string id="1257">Желаете ли да се свържете към автоматично откриваща система?</string>
 
   <string id="1260">Обяви тези услуги за други системи през Zeroconf</string>
 
@@ -819,6 +840,9 @@
   <string id="1418">Гръмотевична буря</string>
   <string id="1419">Дъжд с гръмотевици</string>
   <string id="1420">Умерено</string>
+  <string id="1421">Много високо</string>
+  <string id="1422">Ветровито</string>
+  <string id="1423">Мъгла</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -949,7 +973,7 @@
   <string id="12345">Достъп забранен</string>
   <string id="12346">Лимитът на пробваните пароли достигнат.</string>
   <string id="12347">Системата сега ще се изключи.</string>
-  <string id="12348">Заключеа позиция</string>
+  <string id="12348">Заключена позиция</string>
   <string id="12353">Реактивирай заключване</string>
   <string id="12356">Смени заключване</string>
   <string id="12357">Източник заключване</string>
@@ -1074,7 +1098,7 @@
   <string id="13174">HDD брой цикли на включване:</string>
 
   <string id="13200">Профили</string>
-  <string id="13201">Изтрей профил '%s'?</string>
+  <string id="13201">Изтрий профил '%s'?</string>
   <string id="13204">Последно зареден профил:</string>
   <string id="13205">Непознат</string>
   <string id="13206">Презапиши</string>
@@ -1083,6 +1107,8 @@
   <string id="13210">Стартирана, аларма в %im</string>
   <string id="13211">Аларма!</string>
   <string id="13212">Прекъсната с %im%is оставащи</string>
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Търси субтитри в RAR</string>
   <string id="13250">Търси субтитри...</string>
@@ -1102,7 +1128,7 @@
   <string id="13280">Видео</string>
   <string id="13281">Хардуер</string>
 
-  <string id="13283">Операциона Система:</string>
+  <string id="13283">Операционна Система:</string>
   <string id="13284">CPU скорост:</string>
   <string id="13285"></string>
   <string id="13286">Видео енкодер:</string>
@@ -1120,7 +1146,7 @@
   <string id="13298"></string>
   <string id="13299">Целева температура</string>
   <string id="13300">Скорост на вентилатор</string>
-  <string id="13301">Атоматичен temperature control</string>
+  <string id="13301">Атоматичен температурен контрол</string>
   <string id="13302">Замени скоростта на вентилатора</string>
   <string id="13303">- Шрифт</string>
   <string id="13304">Включи обръщане на двупосочен низ</string>
@@ -1131,7 +1157,7 @@
   <string id="13309">Вместо само XBMC?</string>
   <string id="13310">Ефект увеличаване</string>
   <string id="13311">Плуващ ефект</string>
-  <string id="13312">Намаляне на черните барове</string>
+  <string id="13312">Намаляване на черните барове</string>
   <string id="13313">Рестарт</string>
   <string id="13314">Кръстосване</string>
   <string id="13315">Регенерирай картинки</string>
@@ -1225,8 +1251,7 @@
   <string id="13417">Основни шейдъри (ARB)</string>
   <string id="13418">Допълнителни шейдъри (GLSL)</string>
   <string id="13419">Софтуер</string>
-  <string id="13421">VDPAU</string>
-  <string id="13420">Премахни безопасно</string>
+  <string id="13420">Безопасно премахване</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Започни слайдшоу тук</string>
   <string id="13423">Запомни за този път</string>
@@ -1243,7 +1268,7 @@
   <string id="13501">Аудио честота</string>
   <string id="13502">Видео честота (Drop/Dupe audio)</string>
   <string id="13503">Видео честота (Resample audio)</string>
-  <string id="13504">Раксимално количество мостри (%)</string>
+  <string id="13504">Максимално количество мостри (%)</string>
   <string id="13505">Качество на мострите</string>
   <string id="13506">Ниско(бързо)</string>
   <string id="13507">Средно</string>
@@ -1322,7 +1347,7 @@
   <string id="14058">Зърнест ефект</string>
   <string id="14059">Търси картинки на споделени медии</string>
   <string id="14060">Непознат тип кеш - Интернет</string>
-  <string id="14061">Атоматичен</string>
+  <string id="14061">Автоматичен</string>
   <string id="14062">Въведи потребителско име за</string>
   <string id="14063">Дата &amp; час</string>
   <string id="14064">Задай дата</string>
@@ -1357,7 +1382,6 @@
   <string id="14094">Устройства Вход</string>
   <string id="14095">Пестене енергия</string>
 
-
   <string id="15015">Премахни</string>
   <string id="15016">Игри</string>
 
@@ -1383,8 +1407,8 @@
   <string id="15202">Last.fm потребител</string>
   <string id="15203">Last.fm парола</string>
   <string id="15204">Невъзможност за здрависване: заспиване...</string>
-  <string id="15205">Мола опреснете XBMC</string>
-  <string id="15206">Лоша оторизация: Проверете име и парола</string>
+  <string id="15205">Моля обновете XBMC</string>
+  <string id="15206">Невалидна оторизация: Проверете име и парола</string>
   <string id="15207">Свързан</string>
   <string id="15208">Не свързан</string>
   <string id="15209">Подаване на интервал %i</string>
@@ -1483,7 +1507,7 @@
   <string id="16023">Interlaced handling</string>
   <string id="16024">Отказване...</string>
   <string id="16025">Въведете името на изпълнителя</string>
-  <string id="16026">Неуспешно въвпроизвеждане</string>
+  <string id="16026">Неуспешно възпроизвеждане</string>
   <string id="16027">Неуспешно възпроизвеждане на една или повече позиции</string>
   <string id="16028">Въведете стойност</string>
   <string id="16029">Проверете лог файла за детайли.</string>
@@ -1506,7 +1530,7 @@
   <string id="16109"></string>
   <string id="16110"></string>
 
-  <string id="16200">Операциата беше отхвърлена</string>
+  <string id="16200">Операцията беше отхвърлена</string>
   <string id="16201">Копирането неуспешно</string>
   <string id="16202">Неуспех при копиране най-малко един файл</string>
   <string id="16203">Преместване неуспешно</string>
@@ -1526,7 +1550,7 @@
   <string id="16309">Sinc (software)</string>
   <string id="16310">(VDPAU)Времева</string>
   <string id="16311">(VDPAU)Времева/Пространствена</string>
-  <string id="16312">(VDPAU)Намаляне на шум</string>
+  <string id="16312">(VDPAU)Намаляване на шум</string>
   <string id="16313">(VDPAU)Острота</string>
   <string id="16314">Обратен Telecine</string>
   <string id="16315">Lanczos3 оптимизиран</string>
@@ -1574,6 +1598,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">Обобщение</string>
   <string id="20038">Заключване на прозореца за музика </string>
   <string id="20039">Заключване на прозореца за видео</string>
   <string id="20040">Заключване на прозореца за снимки</string>
@@ -1602,7 +1627,7 @@
   <string id="20063">Споделяне с подразбиращ(четене)</string>
   <string id="20064">Копиране</string>
   <string id="20065">Картинка на профила</string>
-  <string id="20066">Lock preferences</string>
+  <string id="20066">Заключи предпочитания</string>
   <string id="20067">Редактиране профил</string>
   <string id="20068">Профил заключване</string>
   <string id="20069">Не мога да създам папка</string>
@@ -1615,13 +1640,13 @@
   <string id="20076">Питай за главния код при стартиране</string>
   <string id="20077">Настройки на кожи</string>
   <string id="20078">- няма зададена връзка -</string>
-  <string id="20079">Включ анимациите</string>
+  <string id="20079">Включи анимациите</string>
   <string id="20080">Изключи RSS по време на музика</string>
   <string id="20081">Включи бутоните на кратките пътища</string>
   <string id="20082">Показвай програмите в главното меню</string>
   <string id="20083">Показвай музикалната информация</string>
   <string id="20084">Показвай информация за времето</string>
-  <string id="20085">Посазвай системна информация</string>
+  <string id="20085">Показвай системна информация</string>
   <string id="20086">Покажи достъпно дисково пространство C: E: F:</string>
   <string id="20087">Покажи достъпно дисково пространство E: F: G:</string>
   <string id="20088">Информация за ВРЕМЕТО</string>
@@ -1720,11 +1745,11 @@
   <string id="20182">Space</string>
   <string id="20183">Презареди кожа</string>
   <string id="20184">Завърти, ползвайки EXIF инфо</string>
-  <string id="20185">Използвай стил плакат за ТВ Шоу</string>
+  <string id="20185">Използвай стил плакат за ТВ Сериали</string>
   <string id="20186">Моля почакайте</string>
   <string id="20187"></string>
   <string id="20188"></string>
-  <string id="20189">Включви авто скрол за резюме &amp; преглед</string>
+  <string id="20189">Включи автоскрол за резюме &amp; преглед</string>
   <string id="20190">Потребителски</string>
   <string id="20191">Включи дебъг запис</string>
   <string id="20192">Изтегляне инфо за албума при добавяне в библиотеката</string>
@@ -1790,7 +1815,7 @@
   <string id="20340">Искате ли да премахнете всички позиции в рамките на</string>
   <string id="20341">този път в библиотеката?</string>
   <string id="20342">Филми</string>
-  <string id="20343">ТВ Шоу</string>
+  <string id="20343">ТВ Сериали</string>
   <string id="20344">Тази папка съдържа</string>
   <string id="20345">Пусни автоматизирано сканиране</string>
   <string id="20346">Анализиране рекурсивно</string>
@@ -1798,24 +1823,24 @@
   <string id="20348">Режисьори</string>
   <string id="20349">Не са намерени видео файлове в този път!</string>
   <string id="20350">гласове</string>
-  <string id="20351">ТВ Шоу информация</string>
+  <string id="20351">ТВ Сериал информация</string>
   <string id="20352">Епизод информация</string>
-  <string id="20353">Зареждане на детайли за ТВ Шоу</string>
-  <string id="20354">Изтегляне на ръководктво за епизода</string>
+  <string id="20353">Зареждане на детайли за ТВ Сериал</string>
+  <string id="20354">Изтегляне на ръководство за епизода</string>
   <string id="20355">Зареждане на инфо за епизода в папката</string>
-  <string id="20356">Избери ТВ Шоу:</string>
-  <string id="20357">Въведи името на ТВ Шоуто</string>
+  <string id="20356">Избери ТВ Сериал:</string>
+  <string id="20357">Въведи името на ТВ Сериал</string>
   <string id="20358">Сезон %i</string>
   <string id="20359">Епизод</string>
   <string id="20360">Епизода</string>
   <string id="20361">Зареждане детайли за епизода</string>
   <string id="20362">Премахни епизод от библиотеката</string>
-  <string id="20363">Премахни ТВ Шоу от библиотеката</string>
-  <string id="20364">ТВ Шоу</string>
+  <string id="20363">Премахни ТВ Сериал от библиотеката</string>
+  <string id="20364">ТВ Сериал</string>
   <string id="20365">Епизод Резюме</string>
   <string id="20366">* Всички сезони</string>
   <string id="20367">Скрий гледани</string>
-  <string id="20368">Prod код</string>
+  <string id="20368">Прод. код</string>
   <string id="20369">Покажи резюме за неизгледани</string>
   <string id="20370">* Скрити</string>
   <string id="20371">Картинка на сезона</string>
@@ -1824,15 +1849,15 @@
   <string id="20374">Свалям информация за филма</string>
   <string id="20375">Безцелно съдържание</string>
 
-  <string id="20377">Опресни информация за ТВ Шоу</string>
+  <string id="20377">Опресни информация за ТВ Сериал</string>
   <string id="20378">Обновяване на информацията за всички епизоди?</string>
-  <string id="20379">Избраната папка съдържа едно ТВ Шоу</string>
+  <string id="20379">Избраната папка съдържа един ТВ Сериал</string>
   <string id="20380">Изключи избраната папка от сканиране</string>
   <string id="20381">Промоции</string>
   <string id="20382">Автоматично изтегляне на обложка за сезона</string>
   <string id="20383">Избраната папка съдържа единично видео</string>
-  <string id="20384">Връзка към ТВ Шоу</string>
-  <string id="20385">Премахване на връзка към ТВ Шоу</string>
+  <string id="20384">Връзка към ТВ Сериал</string>
+  <string id="20385">Премахване на връзка към ТВ Сериал</string>
   <string id="20386">Последно добавени филми</string>
   <string id="20387">Последно добавени епизоди</string>
   <string id="20388">Студио</string>
@@ -1856,10 +1881,10 @@
   <string id="20406">Отметка на епизода</string>
   <string id="20407">Настройки на инфо сайт</string>
   <string id="20408">Сваляне на информация за музикално видео</string>
-  <string id="20409">Сваляне на информация за ТВ Шоу</string>
+  <string id="20409">Сваляне на информация за ТВ Сериал</string>
   <string id="20410">Трейлър</string>
   <string id="20411">Опростен</string>
-  <string id="20412">Опростени ТВ ШОУ</string>
+  <string id="20412">Опростени ТВ Сериали</string>
   <string id="20413">Свали плакат</string>
   <string id="20414">Покажи плакат във видео и музикална библиотека</string>
   <string id="20415">Анализ ново съдържание</string>
@@ -1967,12 +1992,12 @@
   <string id="21411">не в последния</string>
   <string id="21412">Инфо сайт</string>
   <string id="21413">Инфо сайт за филми по подразбиране</string>
-  <string id="21414">Инфо сайт за ТВ Шоу по подразбиране</string>
+  <string id="21414">Инфо сайт за ТВ Сериал по подразбиране</string>
   <string id="21415">Инфо сайт за Музикално видео по подразбиране</string>
   <string id="21416">Включи резервиране базирано на езика на Инфо сайта</string>
   <string id="21417">- Инфо сайт настройки</string>
-  <string id="21418">Могоезичен</string>
-  <string id="21419">Няма скрейпъри</string>
+  <string id="21418">Многоезичен</string>
+  <string id="21419">Няма инфо сайт</string>
   <string id="21420">Стойност за съвпадане</string>
   <string id="21421">Правило на умен плейлист</string>
   <string id="21422">Съвпадение позиции където</string>
@@ -2010,7 +2035,7 @@
 
   <string id="21800">Име на файл</string>
   <string id="21801">Път на файл</string>
-  <string id="21802">Размер н афайл</string>
+  <string id="21802">Размер на файл</string>
   <string id="21803">Файл дата/час</string>
   <string id="21804">Слайд индекс</string>
   <string id="21805">Резолюция</string>
@@ -2020,9 +2045,9 @@
 
   <string id="21820">Дата/Час</string>
   <string id="21821">Описание</string>
-  <string id="21822">Camera make</string>
-  <string id="21823">Camera model</string>
-  <string id="21824">EXIF comment</string>
+  <string id="21822">Камера</string>
+  <string id="21823">Камера модел</string>
+  <string id="21824">EXIF коментар</string>
   <string id="21825">Фирмуер</string>
   <string id="21826">Отвор</string>
   <string id="21827">Фокусно дължина</string>
@@ -2091,6 +2116,7 @@
   <string id="22001">Винаги опреснявай библиотеката във фонов режим</string>
   <string id="22002">- DNS наставка</string>
 
+  <string id="22003">%2.3fs</string>
   <string id="22004">Забавен с: %2.3fs</string>
   <string id="22005">Напред с: %2.3fs</string>
   <string id="22006">Отместване на субтитри</string>
@@ -2119,7 +2145,7 @@
   <string id="22034">Изнасяне заглавията на караоке като HTML</string>
   <string id="22035">Изнасяне заглавията на караоке като CSV</string>
   <string id="22036">Внасяне на заглавия на караоке...</string>
-  <string id="22037">Атоматично излизащ избирател на песни</string>
+  <string id="22037">Автоматично излизащ избирател на песни</string>
   <string id="22038">Изнасяне заглавията на караоке...</string>
   <string id="22039">Въведи номер на песен</string>
   <string id="22040">бял/зелен</string>
@@ -2131,10 +2157,7 @@
   <string id="22080">Избери</string>
   <string id="22081">Покажи информация</string>
   <string id="22082">Още...</string>
-  <string id="22083">Възпроизведи всичкиl</string>
-
-  <string id="23000">Добавка за Времето</string>
-  <string id="23001">- Настройка на добавка</string>
+  <string id="22083">Възпроизведи всички</string>
 
   <string id="23049">Телетекстът не е достъпен</string>
   <string id="23050">Активирай телетекст</string>
@@ -2142,7 +2165,6 @@
   <string id="23052">Буфериране %i байта</string>
   <string id="23053">Спиране</string>
   <string id="23054">В ход</string>
-
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Външен плейър активен</string>
@@ -2172,7 +2194,7 @@
   <string id="24020">Конфигурация</string>
   <string id="24021">Изключено</string>
   <string id="24022">Включено</string>
-  <string id="24023">Add-on disabled</string>
+  <string id="24023">Добавка изключена</string>
   <string id="24027">Времето</string>
   <string id="24028">Weather.com (стандартно)</string>
   <string id="24030">Тази добавка не може да бъде конфигурирана</string>
@@ -2199,7 +2221,7 @@
   <string id="24060">Да изключа ли тази добавка?</string>
   <string id="24061">Достъпно обновление за добавка!</string>
   <string id="24062">Включени добавки</string>
-  <string id="24063">Автоматично обновление</string>
+  <string id="24063">Авто обновяване</string>
   <string id="24064">Включена добавка</string>
   <string id="24065">Обновена добавка</string>
   <string id="24066">Прекъсване на сваляне добавка?</string>
@@ -2226,6 +2248,8 @@
   <string id="24096">Добавка маркирана като повредена в хранилището.</string>
   <string id="24097">Желаете ли да я изключите от системата?</string>
   <string id="24098">Повреден</string>
+  <string id="24099">Желаете ли да превключите на тази кожа?</string>
+  <string id="25000">Известия</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Библиотека</string>
@@ -2258,7 +2282,7 @@
   <string id="33018">Тази Вечер</string>
   <string id="33019">Утре Вечер</string>
   <string id="33020">Състояние</string>
-  <string id="33021">Утаяване</string>
+  <string id="33021">Валеж</string>
   <string id="33022">Дъжд</string>
   <string id="33023">Влажен</string>
   <string id="33024">Усеща</string>
@@ -2287,7 +2311,7 @@
   <string id="33057">Слушай</string>
   <string id="33058">Преглед на</string>
   <string id="33059">Конфигуриране на</string>
-  <string id="33060">Power</string>
+  <string id="33060">Мрежово захранване</string>
   <string id="33061">Меню</string>
   <string id="33062">Възпроизвеждане на</string>
   <string id="33063">Опции</string>

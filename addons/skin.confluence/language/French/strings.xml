@@ -68,7 +68,7 @@
   <string id="31115">Personnaliser</string>
   <string id="31116"></string>
   <string id="31117">Afficher les vidéos récemment ajoutées</string>
-  <string id="31118">Sous-menu de la page d'accueil</string>
+  <string id="31118">Sous-menu Programmes de la page d'accueil</string>
   <string id="31119"></string>
   <string id="31120">ÉTIQUETTE DU BOUTON</string>
   <string id="31121"></string>
@@ -82,7 +82,13 @@
   <string id="31128">Lyrics</string>
   <string id="31129"></string>
   <string id="31130"></string>
+  
   <string id="31131"></string>
+  <string id="31132">Add-on Lyrics</string>
+  <string id="31133">Add-on Sous-titres</string>
+  <string id="31134">Sous-menu Videos de la page d'acceuil</string>
+  <string id="31135">Sous-menu Musique de la page d'acceuil</string>
+  <string id="31136">Sous-menu Images de la page d'acceuil</string>
   
   <string id="31140">OSD Musique</string>
   <string id="31141">OSD Vidéo</string>
