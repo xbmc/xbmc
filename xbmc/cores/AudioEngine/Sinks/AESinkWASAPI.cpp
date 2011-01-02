@@ -422,8 +422,6 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   format.m_frameSize = sizeof(float) * format.m_channelCount;
   format.m_sampleRate = wfxex->Format.nSamplesPerSec;
 
-  CoTaskMemFree(wfxex);
-
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
   hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
   
@@ -436,9 +434,11 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, hnsRequestedDuration, 0, &wfxex->Format, NULL)))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%li)", hr);
+    CoTaskMemFree(wfxex);
     return false;
   }
 
+  CoTaskMemFree(wfxex);
   return true;
 }
 
