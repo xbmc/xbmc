@@ -94,7 +94,7 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString
   device = passthrough ? m_passthroughDevice : m_device;
   CStdString driver = passthrough ? m_passthroughDriver : m_driver;
 
-  IAESink *sink = CAESinkFactory::Create(driver, device, newFormat, true);
+  IAESink *sink = CAESinkFactory::Create(driver, device, newFormat, passthrough);
 
   if (sink)
   {
