@@ -43,12 +43,12 @@ public:
 
   virtual void  SetVolume(float volume);
   virtual float GetVolume();
-
 private:
   static void StreamStateCallback(pa_stream *s, void *userdata);
   static void StreamWriteCallback(pa_stream *s, size_t length, void *userdata);
   void Upload(size_t length);
 
+  CStdString    m_pulseName;
   CStdString    m_filename;
   CAEWAVLoader  m_wavLoader;
   size_t        m_dataSent;

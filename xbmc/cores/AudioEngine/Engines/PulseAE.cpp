@@ -180,18 +180,25 @@ IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat
 
 IAESound *CPulseAE::GetSound(CStdString file)
 {
+  /* see if we have a valid sound */
+  std::map<const CStdString, CPulseAESound*>::iterator itt = m_sounds.find(file);
+  if (itt != m_sounds.end())
+    return itt->second;
+
   CPulseAESound *sound = new CPulseAESound(file, m_Context, m_MainLoop);
   if (!sound->Initialize())
   {
     delete sound;
     return NULL;
   }
+
+  m_sounds[file] = sound;
   return sound;
 }
 
 void CPulseAE::FreeSound(IAESound *sound)
 {
-  delete (CPulseAESound*)sound;
+  //delete (CPulseAESound*)sound;
 }
 
 void CPulseAE::GarbageCollect()
