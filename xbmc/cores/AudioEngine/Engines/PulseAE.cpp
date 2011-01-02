@@ -164,6 +164,7 @@ void CPulseAE::SetVolume(float volume)
 IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
   CPulseAEStream *st = new CPulseAEStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelCount, channelLayout, options);
+
   CSingleLock lock(m_lock);
   m_streams.push_back(st);
   return st;
@@ -180,6 +181,8 @@ IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat
 
 IAESound *CPulseAE::GetSound(CStdString file)
 {
+  CSingleLock lock(m_lock);
+
   /* see if we have a valid sound */
   std::map<const CStdString, CPulseAESound*>::iterator itt = m_sounds.find(file);
   if (itt != m_sounds.end())
