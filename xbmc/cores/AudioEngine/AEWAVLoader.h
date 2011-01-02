@@ -20,27 +20,32 @@
  *
  */
 
-#include "system.h"
-#ifdef HAS_PULSEAUDIO
+#include "StdString.h"
+#include "AEAudioFormat.h"
 
-#include "AESound.h"
-
-class CPulseAESound : public IAESound
+class CAEWAVLoader
 {
 public:
-  /* this should NEVER be called directly, use AE.GetSound */
-  CPulseAESound(const CStdString &filename);
-  virtual ~CPulseAESound();
+  CAEWAVLoader();
+  ~CAEWAVLoader();
 
-  virtual void DeInitialize();
-  virtual bool Initialize();
+  bool Initialize  (const CStdString &filename, unsigned int resampleRate = 0);
+  void DeInitialize();
 
-  virtual void Play();
-  virtual void Stop();
-  virtual bool IsPlaying();
+  bool IsValid() { return m_valid; }
+  bool Remap(AEChLayout to);
+  unsigned int GetSampleCount();
+  unsigned int GetFrameCount();
+  float* GetSamples();
 
-  virtual void  SetVolume(float volume);
-  virtual float GetVolume();
+private:
+  CStdString   m_filename;
+  bool         m_valid;
+
+  unsigned int m_sampleRate;
+  unsigned int m_channelCount;
+  unsigned int m_frameCount;
+  unsigned int m_sampleCount;
+  float       *m_samples;
 };
 
-#endif

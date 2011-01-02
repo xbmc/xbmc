@@ -180,13 +180,11 @@ IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat
 
 IAESound *CPulseAE::GetSound(CStdString file)
 {
-  printf("GetSound %s\n", file.c_str());
   return new CPulseAESound(file);
 }
 
 void CPulseAE::FreeSound(IAESound *sound)
 {
-  printf("FreeSound\n");
   delete (CPulseAESound*)sound;
 }
 

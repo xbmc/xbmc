@@ -23,7 +23,9 @@
 #include "StdString.h"
 #include "utils/CriticalSection.h"
 #include "AESound.h"
+#include "AEWAVLoader.h"
 
+class CWAVLoader;
 class CSoftAESound : public IAESound
 {
 public:
@@ -39,7 +41,7 @@ public:
 
   virtual void         SetVolume     (float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   virtual float        GetVolume     ()             { return m_volume      ; }
-  virtual unsigned int GetSampleCount()             { return m_sampleCount ; }
+  virtual unsigned int GetSampleCount();
   virtual float*       GetSamples    ();
 
   int          GetRefCount() { return m_refcount; }
@@ -51,13 +53,9 @@ public:
 private:
   CCriticalSection m_critSection;
   CStdString       m_filename;
+  CAEWAVLoader     m_wavLoader;
   int              m_refcount; /* used for GC */
   unsigned int     m_ts;       /* used for GC */
-  bool             m_valid;
-  unsigned int     m_channelCount;
-  float           *m_samples;
-  unsigned int     m_frameCount;
-  unsigned int     m_sampleCount;
   float            m_volume;
 };
 

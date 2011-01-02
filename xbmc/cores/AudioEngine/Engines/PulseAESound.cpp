@@ -18,62 +18,50 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "AEFactory.h"
-#include "Engines/SoftAE.h"
-#include "Engines/PulseAE.h"
 
-IAE     *CAEFactory::m_ae       = NULL;
-bool     CAEFactory::m_ready    = false;
-
-IAE& CAEFactory::GetAE()
-{
-  if (m_ae)
-    return *m_ae;
-
+#include "system.h"
 #ifdef HAS_PULSEAUDIO
-//  m_ae = (IAE*)new CPulseAE();
+
+#include "PulseAESound.h"
+
+CPulseAESound::CPulseAESound(const CStdString &filename) :
+  IAESound(filename)
+{
+}
+
+CPulseAESound::~CPulseAESound()
+{
+}
+
+bool CPulseAESound::Initialize()
+{
+  return true;
+}
+
+void CPulseAESound::DeInitialize()
+{
+}
+
+void CPulseAESound::Play()
+{
+}
+
+void CPulseAESound::Stop()
+{
+}
+
+bool CPulseAESound::IsPlaying()
+{
+  return false;
+}
+
+void CPulseAESound::SetVolume(float volume)
+{
+}
+
+float CPulseAESound::GetVolume()
+{
+  return 1.0f;
+}
+
 #endif
-
-  /* CSoftAE - this should always be the fallback */
-  if (m_ae == NULL)
-    m_ae = (IAE*)new CSoftAE();
-
-  return *m_ae;
-}
-
-/*
-  We cant just initialize instantly as guisettings need loading first
-  CApplication will call this when its ready 
-*/
-bool CAEFactory::Start()
-{
-  m_ready = true;
-  if (!AE.Initialize())
-  {
-    Shutdown();
-    return false;
-  }
-
-  return true;
-}
-
-void CAEFactory::Shutdown()
-{
-  if (!m_ae)
-    return;
-
-  /* destruct the engine */
-  delete m_ae;
-  m_ae = NULL;
-}
-
-bool CAEFactory::Restart()
-{
-  Shutdown();
-  GetAE();
-  if (m_ready)
-    return Start();
-
-  return true;
-}
-
