@@ -58,6 +58,7 @@ private:
   pa_stream            *m_stream;
   pa_sample_spec        m_sampleSpec;
   pa_cvolume            m_chVolume;
+  pa_operation         *m_op;
 
   float m_maxVolume, m_volume;
 };
