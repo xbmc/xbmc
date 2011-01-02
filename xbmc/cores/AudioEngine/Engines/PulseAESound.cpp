@@ -34,7 +34,8 @@ CPulseAESound::CPulseAESound(const CStdString &filename, pa_context *context, pa
   m_dataSent(0       ),
   m_context (context ),
   m_mainLoop(mainLoop),
-  m_stream  (NULL    )
+  m_stream  (NULL    ),
+  m_op      (NULL    )
 {
   m_pulseName = StringUtils::CreateUUID();
 }
@@ -103,10 +104,6 @@ bool CPulseAESound::Initialize()
     return false;
   }
 
-  /* Wait until the stream is ready */
-  while (pa_stream_get_state(m_stream) != PA_STREAM_READY && pa_stream_get_state(m_stream) != PA_STREAM_FAILED)
-    pa_threaded_mainloop_wait(m_mainLoop);
-
   /* check if the stream failed */
   if (pa_stream_get_state(m_stream) == PA_STREAM_FAILED)
   {
@@ -123,28 +120,46 @@ bool CPulseAESound::Initialize()
 
 void CPulseAESound::DeInitialize()
 {
+  pa_threaded_mainloop_lock(m_mainLoop);
+  pa_operation *op = pa_context_remove_sample(m_context, m_pulseName.c_str(), NULL, NULL);
+  if (op)
+    pa_operation_unref(op);
+  pa_threaded_mainloop_unlock(m_mainLoop);
+
   m_wavLoader.DeInitialize();
-  if (m_stream) {
-    pa_stream_disconnect(m_stream);
-    m_stream = NULL;
-  }
 }
 
 void CPulseAESound::Play()
 {
   pa_threaded_mainloop_lock(m_mainLoop);
-  pa_operation *o = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
-  if (o)
-    pa_operation_unref(o);
+  /* we only keep the most recent operation as it is the only one needed for IsPlaying to function */
+  if (m_op)
+    pa_operation_unref(m_op);
+  m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
   pa_threaded_mainloop_unlock(m_mainLoop);
 }
 
 void CPulseAESound::Stop()
 {
+  if (m_op)
+  {
+    pa_operation_cancel(m_op);
+    pa_operation_unref(m_op);
+    m_op = NULL;
+  }
 }
 
 bool CPulseAESound::IsPlaying()
 {
+  if (m_op)
+  {
+    if (pa_operation_get_state(m_op) == PA_OPERATION_RUNNING)
+      return true;
+
+    pa_operation_unref(m_op);
+    m_op = NULL;
+  }
+
   return false;
 }
 
@@ -199,6 +214,10 @@ void CPulseAESound::Upload(size_t length)
       CLog::Log(LOGERROR, "CPulseAESound::Upload - Error occured");
       /* FIXME: Better error handling */
     }
+
+    /* disconnect the stream as we dont need it anymore */
+    pa_stream_disconnect(m_stream);
+    m_stream = NULL;   
   }
 }
 
