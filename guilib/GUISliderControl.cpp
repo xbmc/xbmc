@@ -34,6 +34,7 @@ CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, fl
   m_iPercent = 0;
   m_iStart = 0;
   m_iEnd = 100;
+  m_iInterval = 1;
   m_fStart = 0.0f;
   m_fEnd = 1.0f;
   m_fInterval = 0.1f;
@@ -138,13 +139,13 @@ void CGUISliderControl::Move(int iNumSteps)
     break;
 
   case SPIN_CONTROL_TYPE_INT:
-    m_iValue += iNumSteps;
+    m_iValue += m_iInterval * iNumSteps;
     if (m_iValue < m_iStart) m_iValue = m_iStart;
     if (m_iValue > m_iEnd) m_iValue = m_iEnd;
     break;
 
   default:
-    m_iPercent += iNumSteps;
+    m_iPercent += m_iInterval * iNumSteps;
     if (m_iPercent < 0) m_iPercent = 0;
     if (m_iPercent > 100) m_iPercent = 100;
     break;
@@ -204,9 +205,20 @@ float CGUISliderControl::GetFloatValue() const
     return (float)m_iPercent;
 }
 
+void CGUISliderControl::SetIntInterval(int iInterval)
+{
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    m_fInterval = (float)iInterval;
+  else
+    m_iInterval = iInterval;
+}
+
 void CGUISliderControl::SetFloatInterval(float fInterval)
 {
-  m_fInterval = fInterval;
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    m_fInterval = fInterval;
+  else
+    m_iInterval = (int)fInterval;
 }
 
 void CGUISliderControl::SetRange(int iStart, int iEnd)
