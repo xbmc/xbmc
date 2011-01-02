@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAE.h"
@@ -166,6 +167,15 @@ IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sample
   CSingleLock lock(m_lock);
   m_streams.push_back(st);
   return st;
+}
+
+IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
+{
+  /* FIXME: Pulse can alter a stream I think */
+  ((CPulseAEStream*)stream)->SetFreeOnDrain();
+  stream->Drain();
+
+  return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
 IAESound *CPulseAE::GetSound(CStdString file)

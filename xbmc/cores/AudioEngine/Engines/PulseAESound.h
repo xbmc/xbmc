@@ -20,6 +20,7 @@
  *
  */
 
+#include "system.h"
 #ifdef HAS_PULSEAUDIO
 
 #include "AESound.h"

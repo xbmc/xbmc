@@ -11,7 +11,7 @@ endif
 
 SRCS = \
 	AEFactory.cpp \
-        AESinkFactory.cpp \
+  AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
 	AEConvert.cpp \

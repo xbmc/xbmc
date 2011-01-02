@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAEEventThread.h"
