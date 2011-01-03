@@ -355,10 +355,11 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   else
     event.content = content;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseEvent - id:%u, chan_id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseEvent - id:%u, chan_id:%u, title:'%s', type:%u, desc:'%s', start:%u, stop:%u, next:%u"
                     , event.id
                     , event.chan_id
                     , event.title.c_str()
+                    , event.content
                     , event.descs.c_str()
                     , event.start
                     , event.stop
