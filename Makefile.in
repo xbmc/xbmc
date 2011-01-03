@@ -20,7 +20,6 @@ BIN_DIRS=	\
 	xbmc/cores/dvdplayer/DVDSubtitles/ \
 	xbmc/cores/paplayer \
 	xbmc/cores/AudioEngine \
-	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
 	xbmc/cores/ExternalPlayer \
@@ -211,8 +210,6 @@ xbmc/cores/paplayer/paplayer.a: force papcodecs
 	$(MAKE) -C xbmc/cores/paplayer
 xbmc/cores/AudioEngine/audioengine.a: force
 	$(MAKE) -C xbmc/cores/AudioEngine
-xbmc/cores/AudioRenderers/audiorenderers.a: force
-	$(MAKE) -C xbmc/cores/AudioRenderers
 xbmc/cores/VideoRenderers/VideoRenderer.a: force
 	$(MAKE) -C xbmc/cores/VideoRenderers
 xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: force
@@ -417,7 +414,6 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
 	xbmc/cores/AudioEngine/audioengine.a \
-	xbmc/cores/AudioRenderers/audiorenderers.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
 	xbmc/FileSystem/filesystem.a \
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \

@@ -35,7 +35,6 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 
   m_iBuffered = 0;
   m_pCodecContext = NULL;
-  m_pConvert = NULL;
   m_bOpenedCodec = false;
 
   m_channelLayout[0] = AE_CH_NULL;
@@ -219,7 +218,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
     layout = m_dllAvCodec.avcodec_guess_channel_layout(m_pCodecContext->channels, m_pCodecContext->codec_id, NULL);
   }
 
-  index = 0;
+  int index = 0;
   if (layout & CH_FRONT_LEFT           ) m_channelLayout[index++] = AE_CH_FL  ;
   if (layout & CH_FRONT_RIGHT          ) m_channelLayout[index++] = AE_CH_FR  ;
   if (layout & CH_FRONT_CENTER         ) m_channelLayout[index++] = AE_CH_FC  ;

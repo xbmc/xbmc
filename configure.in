@@ -1383,7 +1383,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
     xbmc/cores/AudioEngine/Makefile \
-    xbmc/cores/AudioRenderers/Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/paplayer/timidity/Makefile \
     xbmc/cores/paplayer/AC3Codec/Makefile \
