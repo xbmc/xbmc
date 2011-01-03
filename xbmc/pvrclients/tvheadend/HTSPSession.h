@@ -109,6 +109,7 @@ struct SChannel
   int              event;
   int              num;
   bool             radio;
+  int              caid;
   std::vector<int> tags;
 
   SChannel() { Clear(); }
@@ -118,6 +119,7 @@ struct SChannel
     event = 0;
     num   = 0;
     radio = false;
+    caid  = 0;
     name.clear();
     icon.clear();
     tags.clear();

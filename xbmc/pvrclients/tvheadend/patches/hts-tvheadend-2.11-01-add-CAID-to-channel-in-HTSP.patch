@@ -1,0 +1,87 @@
+From 9582827fdd59f3d6679f82c38b9916562ead5b25 Mon Sep 17 00:00:00 2001
+From: Lars Op den Kamp <lars@opdenkamp.eu>
+Date: Sat, 9 Oct 2010 00:27:58 +0200
+Subject: [PATCH 1/2] add CAID to channel in HTSP
+
+---
+ src/htsp.c       |    6 ++++++
+ src/transports.c |   28 ++++++++++++++++++++++++++++
+ src/transports.h |    2 ++
+ 3 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/src/htsp.c b/src/htsp.c
+index 7a6cd9b..55a94e0 100644
+--- a/src/htsp.c
++++ b/src/htsp.c
+@@ -297,6 +297,7 @@ htsp_build_channel(channel_t *ch, const char *method)
+   channel_tag_mapping_t *ctm;
+   channel_tag_t *ct;
+   th_transport_t *t;
++  uint16_t caid = 0;
+ 
+   htsmsg_t *out = htsmsg_create_map();
+   htsmsg_t *tags = htsmsg_create_list();
+@@ -323,8 +324,13 @@ htsp_build_channel(channel_t *ch, const char *method)
+     htsmsg_add_str(svcmsg, "name", transport_nicename(t));
+     htsmsg_add_str(svcmsg, "type", transport_servicetype_txt(t));
+     htsmsg_add_msg(services, NULL, svcmsg);
++
++    if (caid == 0) {
++    	caid = get_encryption_from_transport(t);
++    }
+   }
+ 
++  htsmsg_add_u32(out, "channelCaid", caid);
+   htsmsg_add_msg(out, "services", services);
+   htsmsg_add_msg(out, "tags", tags);
+   htsmsg_add_str(out, "method", method);
+diff --git a/src/transports.c b/src/transports.c
+index 92f9a6e..801e30a 100644
+--- a/src/transports.c
++++ b/src/transports.c
+@@ -1022,3 +1022,31 @@ transport_refresh_channel(th_transport_t *t)
+   if(t->tht_ch != NULL)
+     htsp_channel_update(t->tht_ch);
+ }
++
++/**
++ * Get the encryption CAID from a transport
++ *
++ * only the first CA stream in a transport is returned
++ */
++uint16_t
++get_encryption_from_transport(th_transport_t *t)
++{
++  th_stream_t *st;
++  caid_t *c;
++
++  TAILQ_FOREACH(st, &t->tht_components, st_link) {
++    switch(st->st_type) {
++      case SCT_CA:
++    	while((c = LIST_FIRST(&st->st_caids)) != NULL) {
++          if (c->caid) {
++            return c->caid;
++          }
++    	}
++    	break;
++      default:
++        break;
++	}
++  }
++
++  return 0;
++}
+diff --git a/src/transports.h b/src/transports.h
+index 75892b8..21caa61 100644
+--- a/src/transports.h
++++ b/src/transports.h
+@@ -98,4 +98,6 @@ void transport_refresh_channel(th_transport_t *t);
+ 
+ int tss2errcode(int tss);
+ 
++uint16_t get_encryption_from_transport(th_transport_t *t);
++
+ #endif /* TRANSPORTS_H */
+-- 
+1.7.0.4
+

@@ -369,7 +369,7 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 
 void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
-  uint32_t id, event = 0, num = 0;
+  uint32_t id, event = 0, num = 0, caid = 0;
   const char *name, *icon;
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
@@ -389,6 +389,9 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 
   if((icon = htsmsg_get_str(msg, "channelIcon")))
     channel.icon = icon;
+
+  if(htsmsg_get_u32(msg, "channelCaid", &caid) == 0)
+    channel.caid = caid;
 
   if(htsmsg_get_u32(msg, "channelNumber", &num) == 0)
   {

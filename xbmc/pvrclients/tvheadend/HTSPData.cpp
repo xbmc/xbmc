@@ -173,6 +173,7 @@ PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
     tag.name          = channel.name.c_str();
     tag.callsign      = channel.name.c_str();
     tag.radio         = channel.radio;
+    tag.encryption    = channel.caid;
     tag.input_format  = "";
     tag.stream_url    = "";
     tag.bouquet       = 0;
