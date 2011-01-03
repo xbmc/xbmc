@@ -5,4 +5,5 @@
     <setting id="htsp_port" type="integer" label="30002" default="9982" />
     <setting id="user" type="text" label="30003" default="" />
     <setting id="pass" type="text" label="30004" option="hidden" default="" />
+    <setting id="skip_I_frame" type="bool" label="30005"  default="true" />
 </settings>

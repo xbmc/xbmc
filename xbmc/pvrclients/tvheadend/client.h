@@ -27,10 +27,11 @@
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
 
-#define DEFAULT_HOST        "127.0.0.1"
-#define DEFAULT_HTTP_PORT   9981
-#define DEFAULT_HTSP_PORT   9982
-#define DEFAULT_TIMEOUT     30000
+#define DEFAULT_HOST           "127.0.0.1"
+#define DEFAULT_HTTP_PORT      9981
+#define DEFAULT_HTSP_PORT      9982
+#define DEFAULT_TIMEOUT        30000
+#define DEFAULT_SKIP_I_FRAME   true
 
 extern bool         m_bCreated;
 extern CStdString   g_szHostname;
@@ -39,6 +40,7 @@ extern int          g_iPortHTTP;
 extern CStdString   g_szUsername;
 extern CStdString   g_szPassword;
 extern int          g_iConnectTimout;
+extern bool         g_bSkipIFrame;
 extern int          g_clientID;
 extern CStdString   g_szUserPath;
 extern CStdString   g_szClientPath;

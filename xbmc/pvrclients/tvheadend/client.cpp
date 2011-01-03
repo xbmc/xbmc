@@ -39,6 +39,7 @@ CStdString g_szHostname       = DEFAULT_HOST;
 int g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int g_iConnectTimout          = DEFAULT_TIMEOUT;
+bool g_bSkipIFrame            = DEFAULT_SKIP_I_FRAME;
 CStdString g_szUsername       = "";
 CStdString g_szPassword       = "";
 CStdString g_szUserPath       = "";
@@ -127,6 +128,14 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_iPortHTTP = DEFAULT_HTTP_PORT;
   }
 
+  /* Read setting "skip_I_frame" from settings.xml */
+  if (!XBMC->GetSetting("skip_I_frame", &g_bSkipIFrame))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'skip_I_frame' setting, falling back to 'true' as default");
+    g_bSkipIFrame = DEFAULT_SKIP_I_FRAME;
+  }
+
   HTSPData = new cHTSPData;
   if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimout))
   {
@@ -207,6 +216,15 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (g_iPortHTTP != *(int*) settingValue)
     {
       g_iPortHTTP = *(int*) settingValue;
+      return STATUS_NEED_RESTART;
+    }
+  }
+  else if (str == "skip_I_frame")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'skip_I_frame' from %u to %u", g_bSkipIFrame, *(bool*) settingValue);
+    if (g_bSkipIFrame != *(bool*) settingValue)
+    {
+      g_bSkipIFrame = *(bool*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
