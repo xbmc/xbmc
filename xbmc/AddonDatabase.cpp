@@ -154,6 +154,9 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     if (version < 12)
     {
       m_pDS->exec("alter table addon add disclaimer text");
+    }
+    if (version < 13)
+    {
       m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
       m_pDS->exec("CREATE INDEX idxPVREnabled ON pvrenabled(addonID)");
     }
