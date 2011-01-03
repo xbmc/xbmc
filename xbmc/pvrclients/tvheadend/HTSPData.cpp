@@ -194,6 +194,10 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
 
   SChannels channels = GetChannels();
 
+  time_t localTime;
+  int gmtOffset;
+  GetTime(&localTime, &gmtOffset);
+
   if (channels.find(channel.uid) != channels.end())
   {
     time_t stop;
@@ -216,8 +220,8 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
         broadcast.title           = event.title.c_str();
         broadcast.subtitle        = event.title.c_str();
         broadcast.description     = event.descs.c_str();
-        broadcast.starttime       = event.start;
-        broadcast.endtime         = event.stop;
+        broadcast.starttime       = event.start + gmtOffset;
+        broadcast.endtime         = event.stop + gmtOffset;
         broadcast.genre_type      = event.content & 0xF0;
         broadcast.genre_sub_type  = event.content & 0x0F;
         PVR->TransferEpgEntry(handle, &broadcast);
@@ -249,8 +253,8 @@ SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
   {
     SRecording recording = it->second;
 
-    bool recordedOrRecording   = (unsigned int)localTime >= recording.start;
-    bool scheduledOrRecording  = (unsigned int)localTime <= recording.stop;
+    bool recordedOrRecording   = (unsigned int)localTime >= recording.start + gmtOffset;
+    bool scheduledOrRecording  = (unsigned int)localTime <= recording.stop + gmtOffset;
 
     if ((scheduledOrRecording && scheduled) || (recordedOrRecording && recorded))
       recordings[recording.id] = recording;
@@ -360,8 +364,8 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
     PVR_TIMERINFO tag;
     tag.index       = recording.id;
     tag.channelNum  = recording.channel;
-    tag.starttime   = recording.start;
-    tag.endtime     = recording.stop;
+    tag.starttime   = recording.start + gmtOffset;
+    tag.endtime     = recording.stop + gmtOffset;
     tag.active      = true;
     tag.recording   = (localTime > tag.starttime) && (localTime < tag.endtime);
     tag.title       = recording.title.c_str();
