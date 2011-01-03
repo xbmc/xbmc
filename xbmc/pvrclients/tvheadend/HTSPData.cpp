@@ -222,8 +222,8 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
         broadcast.description     = event.descs.c_str();
         broadcast.starttime       = event.start + gmtOffset;
         broadcast.endtime         = event.stop + gmtOffset;
-        broadcast.genre_type      = event.content & 0xF0;
-        broadcast.genre_sub_type  = event.content & 0x0F;
+        broadcast.genre_type      = (event.content & 0x0F) << 4;
+        broadcast.genre_sub_type  = event.content & 0xF0;
         PVR->TransferEpgEntry(handle, &broadcast);
 
         event.id = event.next;
