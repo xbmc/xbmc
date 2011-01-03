@@ -474,7 +474,7 @@ void cHTSPData::Action()
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Signal();
     else if(strstr(method, "dvrEntryAdd") || strstr(method, "dvrEntryUpdate"))
-      cHTSPSession::ParseDVREntryAdd(msg, m_recordings);
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryDelete"))
       cHTSPSession::ParseDVREntryDelete(msg, m_recordings);
     else

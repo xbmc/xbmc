@@ -250,7 +250,7 @@ public:
   static void ParseTagUpdate     (htsmsg_t* msg, STags &tags);
   static void ParseTagRemove     (htsmsg_t* msg, STags &tags);
   static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality);
-  static void ParseDVREntryAdd   (htsmsg_t* msg, SRecordings &recordings);
+  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
 private:

@@ -553,7 +553,7 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQualit
   return true;
 }
 
-void cHTSPSession::ParseDVREntryAdd(htsmsg_t* msg, SRecordings &recordings)
+void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
 {
   SRecording recording;
 
@@ -562,7 +562,7 @@ void cHTSPSession::ParseDVREntryAdd(htsmsg_t* msg, SRecordings &recordings)
   || htsmsg_get_u32(msg, "start",   &recording.start)
   || htsmsg_get_u32(msg, "stop",    &recording.stop))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryAdd - malformed message received");
+    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryUpdate - malformed message received");
     htsmsg_print(msg);
     return;
   }
@@ -578,7 +578,17 @@ void cHTSPSession::ParseDVREntryAdd(htsmsg_t* msg, SRecordings &recordings)
   else
     recording.description = str;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryAdd - id:%u title '%s'\ndescription '%s'", recording.id, recording.title.c_str(), recording.description.c_str());
+  if((str = htsmsg_get_str(msg, "state")) == NULL)
+    recording.state = "";
+  else
+    recording.state = str;
+
+  if((str = htsmsg_get_str(msg, "error")) == NULL)
+    recording.error = "";
+  else
+    recording.error = str;
+
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryUpdate - id:%u title '%s'\ndescription '%s'", recording.id, recording.title.c_str(), recording.description.c_str());
 
   recordings[recording.id] = recording;
 }
