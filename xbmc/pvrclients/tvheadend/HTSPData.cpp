@@ -146,8 +146,8 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
   if (htsmsg_get_s32(msg, "timezone", &offset) != 0)
     return false;
 
-  *localTime = secs;
-  *gmtOffset = -offset*60; /* XBMC need timezone difference in minutes from GMT */
+  *localTime = secs + offset * 60;
+  *gmtOffset = -offset*60; /* XBMC need timezone difference in seconds from GMT */
   return true;
 }
 
