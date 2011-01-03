@@ -143,6 +143,9 @@ ADDON_STATUS Create(void* hdl, void* props)
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'epg_offset_correction' setting, falling back to '%i' as default", DEFAULT_EPG_OFFSET_CORRECTION);
     g_iEpgOffsetCorrection = DEFAULT_EPG_OFFSET_CORRECTION;
+  }else
+  {
+    g_iEpgOffsetCorrection -= 12;
   }
 
   HTSPData = new cHTSPData;
@@ -240,9 +243,9 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "epg_offset_correction")
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'epg_offset_correction' from %d to %d", g_iEpgOffsetCorrection, *(int*) settingValue);
-    if (g_iEpgOffsetCorrection != *(int*) settingValue)
+    if (g_iEpgOffsetCorrection != *(int*) settingValue - 12)
     {
-      g_iEpgOffsetCorrection = *(int*) settingValue;
+      g_iEpgOffsetCorrection = *(int*) settingValue - 12;
       return STATUS_NEED_RESTART;
     }
   }
