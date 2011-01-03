@@ -134,7 +134,7 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
   htsmsg_add_str(msg, "method", "getSysTime");
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::GetTime - failed to get sysTime");
+    XBMC->Log(LOG_ERROR, "cHTSPData::GetTime - failed to get sysTime");
     return false;
   }
 
@@ -146,8 +146,11 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
   if (htsmsg_get_s32(msg, "timezone", &offset) != 0)
     return false;
 
+  XBMC->Log(LOG_DEBUG, "cHTSPData::GetTime - tvheadend reported time=%u, timezone=%d, correction=%d",
+      secs, offset, g_iEpgOffsetCorrection * 60);
+
   /* XBMC needs the timezone difference in seconds from GMT */
-  offset = (offset + g_iEpgOffsetCorrection) * 60;
+  offset = (offset + (g_iEpgOffsetCorrection * 60)) * 60;
 
   *localTime = secs + offset;
   *gmtOffset = -offset;
