@@ -201,7 +201,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
     marginstop  = 10;  /* Default stop 10 minutes later */
 
   /* Set timer based on EPG entry */
-  m_clientIndex   = -1;
+  m_clientIndex   = tag->GetUniqueBroadcastID();
   m_Active        = true;
   m_strTitle      = tag->Title();
   m_channelNum    = channel->Number();

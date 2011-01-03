@@ -453,6 +453,14 @@ PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
   return HTSPData->DeleteTimer(timerinfo, force);
 }
 
+PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
+{
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->AddTimer(timerinfo);
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
@@ -469,7 +477,6 @@ PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENT
 PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR StartCut() { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool SwapLiveTVSecondaryStream() { return false; }

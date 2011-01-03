@@ -404,6 +404,29 @@ PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
+PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
+{
+  XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer()");
+
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "addDvrEntry");
+  htsmsg_add_u32(msg, "eventId", timerinfo.index);
+  if ((msg = ReadResult(msg)) == NULL)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer - Failed to get addDvrEntry");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  unsigned int success;
+  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer - Failed to parse param");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
+}
+
 void cHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "cHTSPData::Action() - Starting");
