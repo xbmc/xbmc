@@ -150,7 +150,7 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
       secs, offset, g_iEpgOffsetCorrection * 60);
 
   /* XBMC needs the timezone difference in seconds from GMT */
-  offset = (offset + (g_iEpgOffsetCorrection * 60)) * 60;
+  offset = (offset - (g_iEpgOffsetCorrection * 60)) * 60;
 
   *localTime = secs + offset;
   *gmtOffset = -offset;
