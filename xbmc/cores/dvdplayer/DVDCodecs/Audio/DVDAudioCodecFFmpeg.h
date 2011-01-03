@@ -44,7 +44,7 @@ public:
 
 protected:
   AVCodecContext*   m_pCodecContext;
-  AEChLayout        m_channelLayout;
+  AEChannel         m_channelLayout[AE_CH_MAX];
   int               m_iMapChannels;
 
   BYTE *m_pBuffer1;

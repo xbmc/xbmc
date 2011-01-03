@@ -27,7 +27,8 @@
 #include "utils/log.h"
 #include "GUISettings.h"
 
-CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
+CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() :
+  CDVDAudioCodec()
 {
   m_iBufferSize1 = 0;
   m_pBuffer1     = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
