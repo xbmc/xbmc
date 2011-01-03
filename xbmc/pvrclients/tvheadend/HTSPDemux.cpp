@@ -94,6 +94,8 @@ bool cHTSPDemux::GetStreamProperties(PVR_STREAMPROPS* props)
     props->stream[i].physid       = m_Streams.stream[i].physid;
     props->stream[i].codec_type   = m_Streams.stream[i].codec_type;
     props->stream[i].codec_id     = m_Streams.stream[i].codec_id;
+    props->stream[i].height       = m_Streams.stream[i].height;
+	props->stream[i].width        = m_Streams.stream[i].width;
     props->stream[i].language[0]  = m_Streams.stream[i].language[0];
     props->stream[i].language[1]  = m_Streams.stream[i].language[1];
     props->stream[i].language[2]  = m_Streams.stream[i].language[2];
@@ -375,6 +377,8 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MPEG2VIDEO;
+      m_Streams.stream[m_Streams.nstreams].width      = htsmsg_get_u32_or_default(sub, "width" , 0);
+      m_Streams.stream[m_Streams.nstreams].height     = htsmsg_get_u32_or_default(sub, "height" , 0);
       m_Streams.stream[m_Streams.nstreams].language[0]= 0;
       m_Streams.stream[m_Streams.nstreams].language[1]= 0;
       m_Streams.stream[m_Streams.nstreams].language[2]= 0;
@@ -388,6 +392,8 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_H264;
+      m_Streams.stream[m_Streams.nstreams].width      = htsmsg_get_u32_or_default(sub, "width" , 0);
+      m_Streams.stream[m_Streams.nstreams].height     = htsmsg_get_u32_or_default(sub, "height" , 0);
       m_Streams.stream[m_Streams.nstreams].language[0]= 0;
       m_Streams.stream[m_Streams.nstreams].language[1]= 0;
       m_Streams.stream[m_Streams.nstreams].language[2]= 0;
