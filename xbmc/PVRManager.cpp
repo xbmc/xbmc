@@ -1875,8 +1875,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
     EnterCriticalSection(&m_critSection);
 
     /* Store current settings inside Database */
-    if (!preview)
-      SaveCurrentChannelSettings();
+    SaveCurrentChannelSettings();
 
     unsigned int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
@@ -1898,6 +1897,10 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
+
+        /* Load now the new channel settings from Database */
+        LoadCurrentChannelSettings();
+
         *newchannel = currentTVChannel;
         LeaveCriticalSection(&m_critSection);
         return true;
@@ -1939,8 +1942,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
     EnterCriticalSection(&m_critSection);
 
     /* Store current settings inside Database */
-    if (!preview)
-      SaveCurrentChannelSettings();
+    SaveCurrentChannelSettings();
 
     int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
@@ -1962,6 +1964,10 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
+
+        /* Load now the new channel settings from Database */
+        LoadCurrentChannelSettings();
+
         *newchannel = currentTVChannel;
         LeaveCriticalSection(&m_critSection);
         return true;
