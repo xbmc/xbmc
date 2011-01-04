@@ -188,14 +188,12 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   len -= copied;
 
   // if we have more data left, save it for the next call to this funtion
-  /*
   if (len > 0 && !m_bStop)
   {
     m_pBuffer     = (BYTE*)realloc(m_pBuffer, len);
     m_iBufferSize = len;
     memcpy(m_pBuffer, data, len);
   }
-  */
   return total;
 }
 
