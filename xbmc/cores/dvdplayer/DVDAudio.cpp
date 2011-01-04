@@ -79,8 +79,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   m_bPassthrough   = audioframe.passthrough;
   m_dwPacketSize   = m_pAudioStream->GetFrameSize();
 
-  if (m_pBuffer) delete[] m_pBuffer;
-  m_pBuffer = new BYTE[m_dwPacketSize];
+  if (m_pBuffer) free(m_pBuffer);
+  m_pBuffer = (BYTE*)malloc(m_dwPacketSize);
 
   return true;
 }
@@ -188,12 +188,14 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   len -= copied;
 
   // if we have more data left, save it for the next call to this funtion
+  /*
   if (len > 0 && !m_bStop)
   {
     m_pBuffer     = (BYTE*)realloc(m_pBuffer, len);
     m_iBufferSize = len;
     memcpy(m_pBuffer, data, len);
   }
+  */
   return total;
 }
 
