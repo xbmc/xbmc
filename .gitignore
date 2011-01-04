@@ -1182,9 +1182,9 @@ autom4te.cache
 /xbmc/osx/Makefile
 
 # /xbmc/pvrclients
+/xbmc/pvrclients/Makefile.include
 /xbmc/pvrclients/*/.dependencies
-/xbmc/pvrclients/mythtv/Makefile
-/xbmc/pvrclients/vdr-streamdev/Makefile
+/xbmc/pvrclients/*/Makefile
 
 /xbmc/screensavers/Makefile
 

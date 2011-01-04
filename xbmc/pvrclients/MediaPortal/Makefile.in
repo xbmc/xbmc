@@ -1,0 +1,21 @@
+#
+# Makefile for the XBMC MediaPortal PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
+
+LIBS   =-ldl
+LIBDIR = ../../../addons/pvr.team-mediaportal.tvserver
+LIB    = ../../../addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
+
+SRCS   = channels.cpp \
+	client.cpp \
+	epg.cpp \
+	pvrclient-mediaportal.cpp \
+	recordings.cpp \
+	timers.cpp \
+	utils.cpp \
+	Socket.cpp
+
+include ../Makefile.include

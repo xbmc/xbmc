@@ -5,21 +5,23 @@
 # how to reach the author.
 #
 
-LIBS   = -ldl
+LIBS   = ../../../xbmc/lib/libhts/libhts.a -ldl
 LIBDIR = ../../../addons/pvr.hts
 LIB    = ../../../addons/pvr.hts/XBMC_Tvheadend.pvr
 
 SRCS=client.cpp \
-	MythXml.cpp
+	HTSPSession.cpp \
+	HTSPData.cpp \
+	HTSPDemux.cpp \
+	thread.cpp \
+	tools.cpp
 
 include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *~
-	$(MAKE) -C libmythxml clean
-
-INCLUDES += -I../../linux
+	$(MAKE) -C ../../../xbmc/lib/libhts clean
 
 $(LIB): $(OBJS)
-	$(MAKE) -C libmythxml
+	${MAKE} -C ../../../xbmc/lib/libhts
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
