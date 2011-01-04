@@ -70,33 +70,6 @@ unsigned int CFileUDF::Read(void *lpBuf, int64_t uiBufSize)
   if (!m_bOpened) return 0;
   char *pData = (char *)lpBuf;
 
-  if (m_cache.getSize() > 0)
-  {
-    long lTotalBytesRead = 0;
-    while (uiBufSize > 0)
-    {
-      if (m_cache.getMaxReadSize() )
-      {
-        long lBytes2Read = m_cache.getMaxReadSize();
-        if (lBytes2Read > uiBufSize) lBytes2Read = (long)uiBufSize;
-        m_cache.ReadData(pData, lBytes2Read );
-        uiBufSize -= lBytes2Read ;
-        pData += lBytes2Read;
-        lTotalBytesRead += lBytes2Read ;
-      }
-
-      if (m_cache.getMaxWriteSize() > 5000)
-      {
-        unsigned char buffer[5000];
-        long lBytesRead = m_udfIsoReaderLocal.ReadFile( m_hFile, buffer, sizeof(buffer));
-        if (lBytesRead > 0)
-          m_cache.WriteData((char*)buffer, lBytesRead);
-        else
-          return 0;
-      }
-    }
-    return lTotalBytesRead;
-  }
   int iResult = m_udfIsoReaderLocal.ReadFile( m_hFile, (unsigned char*)pData, (long)uiBufSize);
   if (iResult == -1)
     return 0;
@@ -115,8 +88,6 @@ int64_t CFileUDF::Seek(int64_t iFilePosition, int iWhence)
 {
   if (!m_bOpened) return -1;
   int64_t lNewPos = m_udfIsoReaderLocal.Seek(m_hFile, iFilePosition, iWhence);
-  if(lNewPos >= 0)
-    m_cache.Clear();
   return lNewPos;
 }
 

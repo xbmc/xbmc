@@ -24,7 +24,6 @@
 
 #include "IFile.h"
 #include "udf25.h"
-#include "RingBuffer.h"
 
 namespace XFILE
 {
@@ -45,7 +44,6 @@ public:
 protected:
   bool m_bOpened;
   HANDLE m_hFile;
-  CRingBuffer m_cache;
   udf25 m_udfIsoReaderLocal;
 };
 }
