@@ -385,7 +385,7 @@ void PAPlayer::Pause()
   if (m_isPaused)
   {
     m_current->m_stream->Pause();
-    list<StreamInfo*>::iterator itt;
+    std::list<StreamInfo*>::iterator itt;
     for(itt = m_finishing.begin(); itt != m_finishing.end(); ++itt)
       (*itt)->m_stream->Pause();
     m_callback.OnPlayBackPaused();
@@ -394,7 +394,7 @@ void PAPlayer::Pause()
   else
   {
     m_current->m_stream->Resume();
-    list<StreamInfo*>::iterator itt;
+    std::list<StreamInfo*>::iterator itt;
     for(itt = m_finishing.begin(); itt != m_finishing.end(); ++itt)
       (*itt)->m_stream->Resume();
     m_callback.OnPlayBackResumed();
