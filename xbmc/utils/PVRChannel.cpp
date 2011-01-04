@@ -121,6 +121,7 @@ void CPVRChannel::SetChannelID(long iDatabaseId)
 void CPVRChannel::SetChannelNumber(int iChannelNumber)
 {
   m_iChannelNumber = iChannelNumber;
+  UpdatePath();
   SetChanged();
 }
 
@@ -133,6 +134,7 @@ void CPVRChannel::SetGroupID(int iChannelGroupId)
 void CPVRChannel::SetRadio(bool bIsRadio)
 {
   m_bIsRadio = bIsRadio;
+  UpdatePath();
   SetChanged();
 }
 
@@ -156,6 +158,10 @@ void CPVRChannel::SetIconPath(CStdString strIconPath)
 
 void CPVRChannel::SetChannelName(CStdString strChannelName)
 {
+  if (strChannelName.IsEmpty())
+  {
+    strChannelName.Format(g_localizeStrings.Get(19085), ClientChannelNumber());
+  }
   m_strChannelName = strChannelName;
   SetChanged();
 }
@@ -210,9 +216,9 @@ void CPVRChannel::SetStreamURL(CStdString strStreamURL)
   SetChanged();
 }
 
-void CPVRChannel::SetPath(CStdString strFileNameAndPath)
+void CPVRChannel::UpdatePath(void)
 {
-  m_strFileNameAndPath = strFileNameAndPath;
+  m_strFileNameAndPath.Format("pvr://channels/%s/all/%i.pvr", (m_bIsRadio ? "radio" : "tv"), m_iChannelNumber);
   SetChanged();
 }
 

@@ -258,6 +258,13 @@ public:
    */
   void SetPath(CStdString strFileNameAndPath);
 
+private:
+  /**
+   * Updates the path after the channel number or radio flag has changed
+   */
+  void UpdatePath(void);
+
+public:
   /**
    * Return true if this channel is encrypted. Does not inform whether XBMC can play the file.
    * Decryption should be done by the client.

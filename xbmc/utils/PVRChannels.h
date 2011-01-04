@@ -66,6 +66,8 @@ private:
    */
   bool SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb = false);
 
+  void RemoveInvalidChannels(void);
+
 public:
   CPVRChannels(bool bRadio);
 
@@ -89,6 +91,16 @@ public:
    * Search missing channel icons for all known channels.
    */
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
+
+  /**
+   * Sorts the current channel list by client channel number
+   */
+  void SortByClientChannelNumber(void);
+
+  /**
+   * Sorts the current channel list by channel number
+   */
+  void SortByChannelNumber(void);
 
   void ReNumberAndCheck(void);
   int GetNumChannels() const { return size(); }

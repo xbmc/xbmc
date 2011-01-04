@@ -38,6 +38,22 @@ using namespace MUSIC_INFO;
 CPVRChannels PVRChannelsTV(false);
 CPVRChannels PVRChannelsRadio(true);
 
+struct sortByClientChannelNumber
+{
+  bool operator()(const CPVRChannel &channel1, const CPVRChannel &channel2)
+  {
+    return channel1.ClientChannelNumber() < channel2.ClientChannelNumber();
+  }
+};
+
+struct sortByChannelNumber
+{
+  bool operator()(const CPVRChannel &channel1, const CPVRChannel &channel2)
+  {
+    return channel1.ChannelNumber() < channel2.ChannelNumber();
+  }
+};
+
 CPVRChannels::CPVRChannels(bool bRadio)
 {
   m_bRadio          = bRadio;
@@ -58,6 +74,7 @@ int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
     database->Compress(true);
 
   Update();
+  SortByChannelNumber();
   ReNumberAndCheck();
 
   database->Close();
@@ -83,6 +100,7 @@ int CPVRChannels::LoadFromClients(void)
     itrClients++;
   }
 
+  SortByClientChannelNumber();
   ReNumberAndCheck();
   SearchAndSetChannelIcons();
 
@@ -216,6 +234,7 @@ bool CPVRChannels::Update()
     itr++;
   }
 
+  PVRChannels_tmp.SortByClientChannelNumber();
   PVRChannels_tmp.ReNumberAndCheck();
   bReturn = Update(&PVRChannels_tmp);
 
@@ -286,48 +305,58 @@ void CPVRChannels::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   database->Close();
 }
 
-////////////////////////////////////////////////////////
+void CPVRChannels::SortByClientChannelNumber(void)
+{
+  sort(begin(), end(), sortByClientChannelNumber());
+}
+
+void CPVRChannels::SortByChannelNumber(void)
+{
+  sort(begin(), end(), sortByChannelNumber());
+}
+
+void CPVRChannels::RemoveInvalidChannels(void)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr--)
+  {
+    if (at(ptr).IsVirtual())
+      continue;
+
+    if (at(ptr).ClientChannelNumber() <= 0)
+    {
+      CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid channel number",
+          __FUNCTION__, at(ptr).ChannelName().c_str(), at(ptr).ClientID());
+      erase(begin() + ptr);
+      ptr--;
+      continue;
+    }
+
+    if (at(ptr).UniqueID() <= 0)
+    {
+      CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid unique ID",
+          __FUNCTION__, at(ptr).ChannelName().c_str(), at(ptr).ClientID());
+      erase(begin() + ptr);
+      ptr--;
+      continue;
+    }
+  }
+}
 
 void CPVRChannels::ReNumberAndCheck(void)
 {
-  int Number = 1;
-  m_iHiddenChannels = 0;
-  for (unsigned int i = 0; i < size(); i++)
+  RemoveInvalidChannels();
+
+  int iChannelNumber = 1;
+  for (unsigned int ptr = 0; ptr < size();  ptr++)
   {
-    if (at(i).ClientChannelNumber() <= 0 && !at(i).IsVirtual())
-    {
-      CLog::Log(LOGERROR, "PVR: Channel '%s' from client '%i' is invalid, removing from list", at(i).ChannelName().c_str(), at(i).ClientID());
-      erase(begin()+i);
-      i--;
-      break;
-    }
-
-    if (at(i).UniqueID() <= 0 && !at(i).IsVirtual())
-      CLog::Log(LOGNOTICE, "PVR: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).ChannelName().c_str(), at(i).ClientID());
-
-    if (at(i).ChannelName().IsEmpty())
-    {
-      CStdString name;
-      CLog::Log(LOGERROR, "PVR: Client channel '%i' from client '%i' have no channel name", at(i).ClientChannelNumber(), at(i).ClientID());
-      name.Format(g_localizeStrings.Get(19085), at(i).ClientChannelNumber());
-      at(i).SetChannelName(name);
-    }
-
-    if (at(i).IsHidden())
+    if (at(ptr).IsHidden())
       m_iHiddenChannels++;
-
-    at(i).SetChannelNumber(Number);
-
-    CStdString path;
-    if (!m_bRadio)
-      path.Format("pvr://channels/tv/all/%i.pvr", Number);
     else
-      path.Format("pvr://channels/radio/all/%i.pvr", Number);
-
-    at(i).SetPath(path);
-    Number++;
+      at(ptr).SetChannelNumber(iChannelNumber++);
   }
 }
+
+////////////////////////////////////////////////////////
 
 int CPVRChannels::GetChannels(CFileItemList* results, int group_id)
 {
@@ -388,13 +417,6 @@ void CPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
     {
       CStdString path;
       at(i).SetChannelNumber(i+1);
-
-      if (!m_bRadio)
-        path.Format("pvr://channels/tv/all/%i.pvr", at(i).ChannelNumber());
-      else
-        path.Format("pvr://channels/radio/all/%i.pvr", at(i).ChannelNumber());
-
-      at(i).SetPath(path);
       database->UpdateDBChannel(at(i));
     }
   }
