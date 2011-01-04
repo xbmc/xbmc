@@ -94,7 +94,7 @@ public:
   /**
    * Update the EPG pointers for all channels
    */
-  void UpdateAllChannelEPGPointers();
+  bool UpdateAllChannelEPGPointers();
 
   /**
    * Clear all EPG entries

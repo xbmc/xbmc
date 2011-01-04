@@ -410,7 +410,7 @@ bool CPVREpg::LoadFromDb()
   return bReturn;
 }
 
-bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
+bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
 {
   if (!m_Channel)
       return false;
