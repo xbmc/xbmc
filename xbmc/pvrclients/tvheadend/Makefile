@@ -10,8 +10,8 @@
 DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
-LIBS     = libhts/libhts.a -ldl
-INCLUDES = -I. -I../../../xbmc/cores/dvdplayer/DVDDemuxers -I../../../xbmc/addons/include -I../../../xbmc/cores/dvdplayer/Codecs/ffmpeg
+LIBS     = ../../../xbmc/lib/libhts/libhts.a -ldl
+INCLUDES = -I. -I../../../xbmc/cores/dvdplayer/DVDDemuxers -I../../../xbmc/addons/include -I../../../xbmc/cores/dvdplayer/Codecs/ffmpeg -I../../../xbmc/lib
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include
 endif
@@ -52,7 +52,7 @@ $(DEPFILE): Makefile
 # The main library:
 
 $(LIB): $(OBJS) $(SILIB)
-	$(MAKE) -C libhts
+ 	$(MAKE) -C ../../../xbmc/lib/libhts
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -67,5 +67,4 @@ install-lib: $(LIB)
 
 clean:
 	-rm -f $(OBJS) $(DEPFILE) $(LIB) *~
-	$(MAKE) -C libhts clean
 CLEAN: clean
