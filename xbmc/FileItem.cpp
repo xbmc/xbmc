@@ -171,7 +171,6 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   SetLabel(channel.ChannelName());
   m_strLabel2 = channel.GetEpgNow()->Title();
   SetThumbnailImage(channel.Icon());
-  ((CPVRChannel) channel).AddObserver(*this);
 
   SetInvalid();
 }
@@ -353,9 +352,6 @@ CFileItem::~CFileItem(void)
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
-  if (IsPVRChannel() && m_pvrChannelInfoTag)
-    m_pvrChannelInfoTag->RemoveObserver(*this);
-
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
   m_epgInfoTag = NULL;
@@ -531,21 +527,6 @@ void CFileItem::Reset()
   m_extrainfo.Empty();
   m_specialSort = SORT_NORMALLY;
   SetInvalid();
-}
-
-void CFileItem::Notify(const Observable& obs, const CStdString& msg)
-{
-  if (m_pvrChannelInfoTag)
-  {
-    m_strLabel2 = m_pvrChannelInfoTag->GetEpgNow()->Title();
-  }
-
-  if (m_epgInfoTag)
-  {
-    SetLabel(m_epgInfoTag->Title());
-    SetThumbnailImage(m_epgInfoTag->Icon());
-    m_strLabel2 = m_epgInfoTag->Plot();
-  }
 }
 
 void CFileItem::Archive(CArchive& ar)

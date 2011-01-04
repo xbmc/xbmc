@@ -31,16 +31,16 @@ Observable::~Observable()
   erase(begin(), end());
 }
 
-void Observable::AddObserver(Observer &o)
+void Observable::AddObserver(Observer *o)
 {
-  push_back(&o);
+  push_back(o);
 }
 
-void Observable::RemoveObserver(Observer &o)
+void Observable::RemoveObserver(Observer *o)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (at(ptr) == &o)
+    if (at(ptr) == o)
     {
       erase(begin() + ptr);
       break;

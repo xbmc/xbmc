@@ -100,7 +100,7 @@ void CGUIDialogPVRGuideOSD::Update()
 
   CPVRChannel CurrentChannel;
   if (g_PVRManager.GetCurrentChannel(&CurrentChannel))
-    PVREpgs.GetEPGForChannel(CurrentChannel, m_vecItems);
+    PVREpgs.GetEPGForChannel(&CurrentChannel, m_vecItems);
 
   m_viewControl.SetItems(*m_vecItems);
   g_graphicsContext.Unlock();

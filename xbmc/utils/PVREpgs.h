@@ -53,11 +53,6 @@ private:
   CDateTime        m_TVLast;             /* the latest EPG date in our tv channel tables */
 
   /**
-   * Get the EPG for a channel
-   */
-  bool GetEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t start, time_t end);
-
-  /**
    * Load the EPG for a channel using the pvr client
    */
   bool GrabEPGForChannelFromClient(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end);
@@ -94,6 +89,8 @@ public:
   void Start();
   void Stop();
 
+  void Clear();
+
   /**
    * Update the EPG pointers for all channels
    */
@@ -117,11 +114,11 @@ public:
   /**
    * Update the EPG data for a single channel
    */
-  bool UpdateEPGForChannel(const CPVRChannel &channel, time_t start, time_t end, bool bUpdate = false);
+  bool UpdateEPG(CPVREpg *epg, time_t start, time_t end, bool bUpdate = false);
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool bRadio = false);
-  int GetEPGForChannel(const CPVRChannel &channel, CFileItemList *results);
+  int GetEPGForChannel(CPVRChannel *channel, CFileItemList *results);
   int GetEPGNow(CFileItemList* results, bool bRadio = false);
   int GetEPGNext(CFileItemList* results, bool bRadio = false);
   CDateTime GetFirstEPGDate(bool bRadio = false);

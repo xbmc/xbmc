@@ -32,9 +32,9 @@ class CPVREpg : public std::vector<CPVREpgInfoTag*>
   friend class CPVREpgs;
 
 private:
-  const CPVRChannel *m_Channel;        /* the channel this EPG belongs to */
-  bool               m_bUpdateRunning; /* true if EPG is currently being updated */
-  bool               m_bIsSorted;      /* remember if we're sorted or not */
+  CPVRChannel * m_Channel;        /* the channel this EPG belongs to */
+  bool          m_bUpdateRunning; /* true if EPG is currently being updated */
+  bool          m_bIsSorted;      /* remember if we're sorted or not */
 
   /**
    * Update the EPG from a scraper set in the channel tag
@@ -48,7 +48,7 @@ private:
   bool UpdateFromClient(time_t start, time_t end);
 
 public:
-  CPVREpg(const CPVRChannel &channel);
+  CPVREpg(CPVRChannel *channel);
   ~CPVREpg(void);
 
   /**
@@ -59,7 +59,7 @@ public:
   /**
    * The channel this EPG belongs to
    */
-  const CPVRChannel *Channel(void) const { return m_Channel; }
+  CPVRChannel *Channel(void) const { return m_Channel; }
 
   /**
    * Delete an infotag from this EPG
@@ -133,5 +133,5 @@ public:
   /**
    * Update the EPG from 'start' till 'end'
    */
-  bool Update(time_t start, time_t end);
+  bool Update(time_t start, time_t end, bool bLoadFromDb = false, bool bStoreInDb = true);
 };

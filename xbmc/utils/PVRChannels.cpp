@@ -557,8 +557,7 @@ void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
 void CPVRChannels::Clear()
 {
   /* Clear all current present Channels inside list */
-  erase(begin(), end());
-  return;
+  clear();
 }
 
 int CPVRChannels::GetNumChannelsFromAll()

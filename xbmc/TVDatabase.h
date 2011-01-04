@@ -54,7 +54,7 @@ public:
   bool UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
   bool RemoveEPGEntry(const CPVREpgInfoTag &info);
   bool RemoveEPGEntries(unsigned int channelID, const CDateTime &start, const CDateTime &end);
-  bool GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg, const CDateTime &start, const CDateTime &end);
+  bool GetEPGForChannel(CPVREpg *epg, const CDateTime &start, const CDateTime &end);
   CDateTime GetEPGDataStart(int channelID);
   CDateTime GetEPGDataEnd(int channelID);
 

@@ -1554,7 +1554,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
 
-    if (PVREpgs.GetEPGForChannel(CurrentChannel, m_vecItems) == 0)
+    if (PVREpgs.GetEPGForChannel(&CurrentChannel, m_vecItems) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/" + CurrentChannel.ChannelName() + "/empty.epg", false));

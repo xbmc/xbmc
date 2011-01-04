@@ -74,7 +74,7 @@ public:
   bool IsEmpty() const;
        ///< True if no required data is present inside the tag.
 
-  const CPVREpg *GetEpg() const { return m_Epg; }
+  CPVREpg *GetEpg();
 
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;

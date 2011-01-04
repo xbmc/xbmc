@@ -99,16 +99,15 @@ CPVRChannel::CPVRChannel()
   m_strFileNameAndPath      = "";
   m_strStreamURL            = "";
 
-  m_Epg                     = new CPVREpg(*this);
+  m_Epg                     = NULL;
   m_epgNow                  = NULL;
-  PVREpgs.push_back(m_Epg);
 }
 
 CPVRChannel::~CPVRChannel()
 {
   m_epgNow                  = NULL;
-  if (m_Epg)
-    delete m_Epg;
+//  if (m_Epg)
+//    delete m_Epg;
 };
 
 void CPVRChannel::UpdateEpgPointers(void)
@@ -116,12 +115,14 @@ void CPVRChannel::UpdateEpgPointers(void)
   if (m_bIsHidden || !m_bGrabEpg)
     return;
 
-  if (!m_Epg->IsUpdateRunning() &&
+  CPVREpg *epg = GetEpg();
+
+  if (!epg->IsUpdateRunning() &&
       (m_epgNow == NULL ||
        m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
     SetChanged();
-    m_epgNow  = m_Epg->InfoTagNow();
+    m_epgNow  = epg->InfoTagNow();
     if (m_epgNow)
     {
       CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",
@@ -135,6 +136,17 @@ void CPVRChannel::UpdateEpgPointers(void)
   }
 
   NotifyObservers("epg");
+}
+
+CPVREpg *CPVRChannel::GetEpg(void)
+{
+  if (m_Epg == NULL)
+  {
+    m_Epg = new CPVREpg(this);
+    PVREpgs.push_back(m_Epg);
+  }
+
+  return m_Epg;
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEpgNow(void) const
@@ -279,7 +291,7 @@ bool CPVRChannel::ClearEPG()
 {
   CLog::Log(LOGINFO, "%s - clearing the EPG for channel %s", __FUNCTION__, m_strChannelName.c_str());
 
-  m_Epg->Clear();
+  GetEpg()->Clear();
   m_epgNow = NULL;
 
   return true;

@@ -594,15 +594,19 @@ bool CTVDatabase::RemoveEPGEntries(unsigned int channelID, const CDateTime &star
   }
 }
 
-bool CTVDatabase::GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg, const CDateTime &start, const CDateTime &end)
+bool CTVDatabase::GetEPGForChannel(CPVREpg *epg, const CDateTime &start, const CDateTime &end)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    CPVRChannel *channel = epg->Channel();
+    if (!channel)
+      return false;
+
     CStdString SQL=FormatSQL("select * from GuideData WHERE GuideData.idChannel = '%u' AND GuideData.EndTime > '%s' "
-                             "AND GuideData.StartTime < '%s' ORDER BY GuideData.StartTime;", channelinfo.ChannelID(), start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
+                             "AND GuideData.StartTime < '%s' ORDER BY GuideData.StartTime;", channel->ChannelID(), start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
     m_pDS->query( SQL.c_str() );
 
     if (m_pDS->num_rows() <= 0)
@@ -627,7 +631,11 @@ bool CTVDatabase::GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg,
       broadcast.starttime = startTime_t;
       broadcast.endtime = endTime_t;
 
-      ((CPVREpg *) channelinfo.GetEpg())->UpdateEntry(&broadcast, epg);
+      CPVREpg *epg = channel->GetEpg();
+      if (!epg)
+        continue;
+
+      epg->UpdateEntry(&broadcast, false);
 
       m_pDS->next();
     }

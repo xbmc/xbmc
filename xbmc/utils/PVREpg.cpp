@@ -39,9 +39,9 @@ struct sortEPGbyDate
   }
 };
 
-CPVREpg::CPVREpg(const CPVRChannel &channel)
+CPVREpg::CPVREpg(CPVRChannel *channel)
 {
-  m_Channel        = &channel;
+  m_Channel        = channel;
   m_bUpdateRunning = false;
   m_bIsSorted      = false;
 }
@@ -75,7 +75,6 @@ bool CPVREpg::DeleteInfoTag(CPVREpgInfoTag *tag)
     CPVREpgInfoTag *entry = at(i);
     if (entry == tag)
     {
-      delete entry;
       erase(begin()+i);
       m_bIsSorted = false;
       return true;
@@ -121,18 +120,7 @@ void CPVREpg::Sort(void)
 
 void CPVREpg::Clear(void)
 {
-  m_bUpdateRunning = true;
-
-  while (size() > 0)
-  {
-    CPVREpgInfoTag *tag = at(0);
-    if (tag)
-      delete tag;
-  }
-
-  erase(begin(), end());
-
-  m_bUpdateRunning = false;
+  clear();
 }
 
 void CPVREpg::Cleanup(void)
@@ -344,18 +332,42 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CPVREpg::Update(time_t start, time_t end)
+bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, bool bStoreInDb /* = true */)
 {
-  bool bGrabSuccess = false;
+  if (!m_Channel)
+      return false;
 
-  if (m_Channel->Grabber() == "client")
+  bool bGrabSuccess     = true;
+  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+
+  /* check if this channel is marked for grabbing */
+  if (!m_Channel->GrabEpg())
+    return false;
+
+  /* mark the EPG as being updated */
+  m_bUpdateRunning = true;
+
+  /* request the epg for this channel from the database */
+  if (bLoadFromDb)
+    bGrabSuccess = database->GetEPGForChannel(this, start, end);
+
+  bGrabSuccess = (m_Channel->Grabber() == "client") ?
+      UpdateFromClient(start, end) || bGrabSuccess:
+      UpdateFromScraper(start, end) || bGrabSuccess;
+
+  /* store the loaded EPG entries in the database */
+  if (bGrabSuccess)
   {
-      bGrabSuccess = UpdateFromClient(start, end);
+    RemoveOverlappingEvents();
+
+    if (bStoreInDb)
+    {
+      for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+        database->UpdateEPGEntry(*at(iTagPtr), false, (iTagPtr==0), (iTagPtr == size()-1));
+    }
   }
-  else
-  {
-      bGrabSuccess = UpdateFromScraper(start, end);
-  }
+
+  m_bUpdateRunning = false;
 
   return bGrabSuccess;
 }

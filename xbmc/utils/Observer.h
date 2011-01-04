@@ -38,8 +38,8 @@ public:
   Observable();
   virtual ~Observable();
 
-  void AddObserver(Observer &o);
-  void RemoveObserver(Observer &o);
+  void AddObserver(Observer *o);
+  void RemoveObserver(Observer *o);
   void NotifyObservers(const CStdString& msg = CStdString());
   void SetChanged(bool bSetTo = true);
 
