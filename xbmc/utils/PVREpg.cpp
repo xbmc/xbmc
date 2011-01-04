@@ -27,6 +27,17 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+struct sortEPGbyDate
+{
+  bool operator()(CPVREpgInfoTag* strItem1, CPVREpgInfoTag* strItem2)
+  {
+    if (!strItem1 || !strItem2)
+      return false;
+
+    return strItem1->Start() < strItem2->Start();
+  }
+};
+
 CPVREpg::CPVREpg(long ChannelID)
 {
   m_channelID       = ChannelID;
@@ -243,14 +254,3 @@ bool CPVREpg::AddDB(const PVR_PROGINFO *data, CPVREpg *Epg)
   }
   return false;
 }
-
-struct sortEPGbyDate
-{
-  bool operator()(CPVREpgInfoTag* strItem1, CPVREpgInfoTag* strItem2)
-  {
-    if (!strItem1 || !strItem2)
-      return false;
-
-    return strItem1->Start() < strItem2->Start();
-  }
-};
