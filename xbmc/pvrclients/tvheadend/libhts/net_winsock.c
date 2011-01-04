@@ -133,7 +133,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
       break;
     }
 
-    snprintf(errbuf, errbufsize, "%s", errtxt);
+    snprintf(errbuf, errbufsize, "%s (%d)", errtxt, herr);
     free(tmphstbuf);
     return -1;
   } else if(hp == NULL) {
