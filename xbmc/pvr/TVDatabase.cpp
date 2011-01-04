@@ -624,22 +624,17 @@ long CTVDatabase::AddClient(const CStdString &strClientName, const CStdString &s
     return iReturn;
   }
 
-  CStdString strWhereClause = FormatSQL("ClientId = '%s'", strClientUid.c_str());
-  CStdString strResult = GetSingleValue("Clients", "ClientDbId", strWhereClause);
-
-  if (strResult.IsEmpty())
+  /* only add this client if it's not already in the database */
+  iReturn = GetClientId(strClientUid);
+  if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO Clients (ClientDbId, Name, ClientId) VALUES (NULL, '%s', '%s')\n",
+    CStdString strQuery = FormatSQL("INSERT INTO Clients (Name, ClientId) VALUES ('%s', '%s')\n",
         strClientName.c_str(), strClientUid.c_str());
 
     if (ExecuteQuery(strQuery))
     {
       iReturn = (long) m_pDS->lastinsertid();
     }
-  }
-  else
-  {
-    iReturn = atol(strResult.c_str());
   }
 
   return iReturn;
@@ -666,7 +661,7 @@ long CTVDatabase::GetClientId(const CStdString &strClientUid)
   if (strValue.IsEmpty())
     return -1;
 
-  return atoi(strValue.c_str());
+  return atol(strValue.c_str());
 }
 
 /********** EPG methods **********/
