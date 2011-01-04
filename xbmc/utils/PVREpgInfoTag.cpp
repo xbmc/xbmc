@@ -62,6 +62,14 @@ void CPVREpgInfoTag::Reset()
   m_episodeName         = "";
 }
 
+void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *Timer)
+{
+  if (!Timer)
+    m_Timer = NULL;
+
+  m_Timer = Timer;
+}
+
 bool CPVREpgInfoTag::HasTimer(void) const
 {
   for (unsigned int i = 0; i < PVRTimers.size(); ++i)

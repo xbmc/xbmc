@@ -54,7 +54,9 @@ void Observable::NotifyObservers(const CStdString& msg)
   {
     for(unsigned int ptr = 0; ptr < size(); ptr++)
     {
-      at(ptr)->Notify(*this, msg);
+      Observer *obs = at(ptr);
+      if (obs)
+        at(ptr)->Notify(*this, msg);
     }
   }
 }

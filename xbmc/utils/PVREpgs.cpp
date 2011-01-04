@@ -68,6 +68,7 @@ void CPVREpgs::Start()
 {
   /* make sure the EPG is loaded before starting the thread */
   UpdateEPG(true /* show progress */);
+  UpdateTimers();
   UpdateAllChannelEPGPointers();
 
   Create();
@@ -85,6 +86,7 @@ void CPVREpgs::Process()
 {
   int iNow               = 0;
   int iLastPointerUpdate = 0;
+  int iLastTimerUpdate   = 0;
   int iLastEpgUpdate     = 0;
 
   while (!m_bStop)
@@ -101,10 +103,17 @@ void CPVREpgs::Process()
     }
 
     /* update the "now playing" pointers */
-    if (iNow > iLastPointerUpdate + 10)
+    if (iNow > iLastPointerUpdate + 180)
     {
       iLastPointerUpdate = iNow;
       UpdateAllChannelEPGPointers();
+    }
+
+    /* update the timers */
+    if (iNow > iLastTimerUpdate + 60)
+    {
+      iLastTimerUpdate = iNow;
+      UpdateTimers();
     }
 
     Sleep(1000);
@@ -317,7 +326,7 @@ int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
       GetEPGForChannel(channel, results);
   }
 
-  SetVariableData(results);
+//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -448,7 +457,7 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
     }
   }
 
-  SetVariableData(results);
+//  SetVariableData(results);
 
   return results->Size();
 }
@@ -472,7 +481,7 @@ int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
     results->Add(channelFile);
   }
 
-  SetVariableData(results);
+//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -501,7 +510,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
     entry->SetThumbnailImage(channel->Icon());
     results->Add(entry);
   }
-  SetVariableData(results);
+//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -530,48 +539,86 @@ int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
     entry->SetThumbnailImage(channel->Icon());
     results->Add(entry);
   }
-  SetVariableData(results);
+//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-// XXX shouldn't this be done elsewhere and not be updated on each query??
-void CPVREpgs::SetVariableData(CFileItemList* results)
+void CPVREpgs::UpdateTimers()
 {
-  /* Reload Timers */
+  CSingleLock lock(m_critSection);
+
+  /* clear timers */
+  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+  {
+    CPVREpgInfoTag *tag = (CPVREpgInfoTag *)PVRTimers[iTimerPtr].EpgInfoTag();
+    if (tag)
+      tag->SetTimer(NULL);
+  }
+
+  /* update timers */
   PVRTimers.Update();
 
-  /* Clear first all Timers set inside the EPG tags */
-  for (int j = 0; j < results->Size(); j++)
+  /* set timers */
+  for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
   {
-    CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
-    if (epg)
-      epg->SetTimer(NULL);
-  }
+    /* get the timer tag */
+    CPVRTimerInfoTag *timerTag = &PVRTimers.at(ptr);
+    if (!timerTag || !timerTag->Active())
+      continue;
 
-  /* Now go with the timers thru the EPG and set the Timer Tag for every matching item */
-  for (unsigned int i = 0; i < PVRTimers.size(); i++)
-  {
-    for (int j = 0; j < results->Size(); j++)
-    {
-      CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
-      if (epg)
-      {
-        if (!PVRTimers[i].Active())
-          continue;
+    /* try to get the channel */
+    CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
+    if (!channel)
+      continue;
 
-        if (epg->ChannelTag()->ChannelNumber() != PVRTimers[i].ChannelNumber())
-          continue;
+    /* try to get the EPG */
+    CPVREpg *epg = channel->GetEpg();
+    if (!epg)
+      continue;
 
-        CDateTime timeAround = CDateTime(time_t((PVRTimers[i].StopTime() - PVRTimers[i].StartTime())/2 + PVRTimers[i].StartTime()));
-        if ((epg->Start() <= timeAround) && (epg->End() >= timeAround))
-        {
-          epg->SetTimer(&PVRTimers[i]);
-          break;
-        }
-      }
-    }
+    /* try to set the timer on the epg tag that matches */
+    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) epg->InfoTagBetween(timerTag->Start(), timerTag->Stop());
+    if (epgTag)
+      epgTag->SetTimer(timerTag);
   }
 }
+
+// XXX shouldn't this be done elsewhere and not be updated on each query??
+//void CPVREpgs::SetVariableData(CFileItemList* results)
+//{
+//  /* Reload Timers */
+//  PVRTimers.Update();
+//
+//  /* Clear first all Timers set inside the EPG tags */
+//  for (int j = 0; j < results->Size(); j++)
+//  {
+//    CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
+//    if (epg)
+//      epg->SetTimer(NULL);
+//  }
+//
+//  /* Now go with the timers thru the EPG and set the Timer Tag for every matching item */
+//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
+//  {
+//    for (int j = 0; j < results->Size(); j++)
+//    {
+//      CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
+//      if (epg)
+//      {
+//        if (!PVRTimers[i].Active())
+//          continue;
+//
+//        if (epg->ChannelTag()->ChannelNumber() != PVRTimers[i].ChannelNumber())
+//          continue;
+//
+//        CDateTime timeAround = CDateTime(time_t((PVRTimers[i].StopTime() - PVRTimers[i].StartTime())/2 + PVRTimers[i].StartTime()));
+//        if ((epg->Start() <= timeAround) && (epg->End() >= timeAround))
+//        {
+//          epg->SetTimer(&PVRTimers[i]);
+//          break;
+//        }
+//      }
+//    }
+//  }
+//}

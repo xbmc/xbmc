@@ -184,15 +184,24 @@ const CPVREpgInfoTag *CPVREpg::InfoTag(long uniqueID, CDateTime StartTime) const
   return NULL;
 }
 
+const CPVREpgInfoTag *CPVREpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVREpgInfoTag *tag = at(ptr);
+    if (tag->Start() >= BeginTime && tag->End() <= EndTime)
+      return tag;
+  }
+  return NULL;
+}
+
 const CPVREpgInfoTag *CPVREpg::InfoTagAround(CDateTime Time) const
 {
-  if (size() == 0)
-    return NULL;
-
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if ((at(i)->Start() <= Time) && (at(i)->End() >= Time))
-      return at(i);
+    CPVREpgInfoTag *tag = at(ptr);
+    if ((tag->Start() <= Time) && (tag->End() >= Time))
+      return tag;
   }
   return NULL;
 }

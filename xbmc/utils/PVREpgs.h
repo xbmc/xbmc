@@ -118,7 +118,8 @@ public:
   int GetEPGNext(CFileItemList* results, bool bRadio = false);
   CDateTime GetFirstEPGDate(bool bRadio = false);
   CDateTime GetLastEPGDate(bool bRadio = false);
-  void SetVariableData(CFileItemList* results);
+  void UpdateTimers();
+//  void SetVariableData(CFileItemList* results);
 };
 
 extern CPVREpgs PVREpgs;

@@ -110,6 +110,11 @@ public:
   const CPVREpgInfoTag *InfoTagAround(CDateTime Time) const;
 
   /**
+   * Get the event that occurs between the given begin and end time
+   */
+  const CPVREpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
+
+  /**
    * True if this EPG is currently being updated, false otherwise
    */
   bool IsUpdateRunning(void) const { return m_bUpdateRunning; }

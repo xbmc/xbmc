@@ -305,7 +305,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CFileItem *item = new CFileItem(*newtimer);
 
             if (CPVRTimers::AddTimer(*item))
-              PVREpgs.SetVariableData(m_vecItems);
+//              PVREpgs.SetVariableData(m_vecItems);
+              PVREpgs.UpdateTimers();
           }
           else
           {
@@ -602,7 +603,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CFileItem *item = new CFileItem(*newtimer);
 
             if (CPVRTimers::AddTimer(*item))
-              PVREpgs.SetVariableData(m_vecItems);
+//              PVREpgs.SetVariableData(m_vecItems);
+              PVREpgs.UpdateTimers();
           }
           else
             CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
@@ -1211,7 +1213,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               CFileItem *item = new CFileItem(*newtimer);
 
               if (CPVRTimers::AddTimer(*item))
-                PVREpgs.SetVariableData(m_vecItems);
+//                PVREpgs.SetVariableData(m_vecItems);
+                PVREpgs.UpdateTimers();
             }
           }
         }
@@ -1244,7 +1247,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                   (timerlist[i]->GetPVRTimerInfoTag()->IsRepeating() != true))
               {
                 if (CPVRTimers::DeleteTimer(*timerlist[i]))
-                  PVREpgs.SetVariableData(m_vecItems);
+//                  PVREpgs.SetVariableData(m_vecItems);
+                  PVREpgs.UpdateTimers();
               }
             }
           }
@@ -1424,7 +1428,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 
     /* inform dialog about the file item */
     pDlgInfo->SetProgInfo(item);
-    PVREpgs.SetVariableData(m_vecItems);
+//    PVREpgs.SetVariableData(m_vecItems);
 
     /* Open dialog window */
     pDlgInfo->DoModal();

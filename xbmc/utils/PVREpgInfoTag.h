@@ -120,15 +120,14 @@ public:
   void SetPath(CStdString Path) { m_strFileNameAndPath = Path; }
   void UpdatePath();
 
-  bool HasTimer() const;
-
   /*! \brief Get the CPVRChannel class associated to this epg entry
    \return the pointer to the info tag
    */
   const CPVRChannel *ChannelTag(void) const { return m_Epg->Channel(); }
 
   /* Scheduled recording related Data */
-  void SetTimer(const CPVRTimerInfoTag *Timer) { m_Timer = Timer; }
+  bool HasTimer() const;
+  void SetTimer(const CPVRTimerInfoTag *Timer);
   const CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 
   CStdString ConvertGenreIdToString(int ID, int subID) const;
