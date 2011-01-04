@@ -43,52 +43,57 @@ CPVREpg::CPVREpg(const CPVRChannel &channel)
 {
   m_Channel        = &channel;
   m_bUpdateRunning = false;
-  m_bValid         = m_Channel->ChannelID() != -1;
   m_bIsSorted      = false;
 }
 
-CPVREpg::~CPVREpg()
+CPVREpg::~CPVREpg(void)
 {
   Clear();
 }
 
-bool CPVREpg::IsValid(void) const
+bool CPVREpg::HasValidEntries(void) const
 {
-  if (!m_bValid || size() == 0)
-    return false;
+  ((CPVREpg *) this)->Sort();
 
-  if (at(size()-1)->m_endTime < CDateTime::GetCurrentDateTime())
+  if (m_Channel->ChannelID() > 0 || /* valid channel ID */
+      size() == 0 || /* contains at least 1 tag */
+      at(size()-1)->m_endTime < CDateTime::GetCurrentDateTime()) /* the last end time hasn't passed yet */
     return false;
 
   return true;
 }
 
-void CPVREpg::DelInfoTag(CPVREpgInfoTag *tag)
+bool CPVREpg::DeleteInfoTag(CPVREpgInfoTag *tag)
 {
-  if (tag->m_Epg == this)
+  /* check if we're the "owner" of this tag */
+  if (tag->m_Epg != this)
+    return false;
+
+  /* remove the tag */
+  for (unsigned int i = 0; i < size(); i++)
   {
-    for (unsigned int i = 0; i < size(); i++)
+    CPVREpgInfoTag *entry = at(i);
+    if (entry == tag)
     {
-      CPVREpgInfoTag *entry = at(i);
-      if (entry == tag)
-      {
-        delete entry;
-        erase(begin()+i);
-        m_bIsSorted = false;
-        return;
-      }
+      delete entry;
+      erase(begin()+i);
+      return true;
     }
   }
+
+  return false;
 }
 
 void CPVREpg::Sort(void)
 {
+  /* no need to sort twice */
   if (m_bIsSorted) return;
 
+  /* sort the EPG */
   sort(begin(), end(), sortEPGbyDate());
 
+  /* reset the previous and next pointers on each tag */
   int iTagAmount = size();
-
   for (int ptr = 0; ptr < iTagAmount; ptr++)
   {
     CPVREpgInfoTag *tag = at(ptr);
@@ -113,7 +118,7 @@ void CPVREpg::Sort(void)
   m_bIsSorted = true;
 }
 
-void CPVREpg::Clear()
+void CPVREpg::Clear(void)
 {
   m_bUpdateRunning = true;
 
@@ -140,23 +145,21 @@ void CPVREpg::Cleanup(const CDateTime Time)
   for (unsigned int i = 0; i < size(); i++)
   {
     CPVREpgInfoTag *tag = at(i);
-    if (tag && !tag->HasTimer() && (tag->End()+CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60 + 1, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0) < Time)) // adding one hour for safety
+    if ( tag && /* valid tag */
+        !tag->HasTimer() && /* no time set */
+        (tag->End() + CDateTimeSpan(0, PVREpgs.m_iLingerTime / 60 + 1, PVREpgs.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
     {
-      DelInfoTag(tag);
+      DeleteInfoTag(tag);
     }
-    else
-      break;
   }
   m_bUpdateRunning = false;
 }
 
-const CPVREpgInfoTag *CPVREpg::GetInfoTagNow(void) const
+const CPVREpgInfoTag *CPVREpg::InfoTagNow(void) const
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  if (size() == 0)
-    return NULL;
-
+  /* one of the first items will always match */
   for (unsigned int i = 0; i < size(); i++)
   {
     if ((at(i)->Start() <= now) && (at(i)->End() > now))
@@ -165,15 +168,16 @@ const CPVREpgInfoTag *CPVREpg::GetInfoTagNow(void) const
   return NULL;
 }
 
-const CPVREpgInfoTag *CPVREpg::GetInfoTagNext(void) const
+const CPVREpgInfoTag *CPVREpg::InfoTagNext(void) const
 {
-  const CPVREpgInfoTag *nowTag = GetInfoTagNow();
+  const CPVREpgInfoTag *nowTag = InfoTagNow();
 
   return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
-const CPVREpgInfoTag *CPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) const
+const CPVREpgInfoTag *CPVREpg::InfoTag(long uniqueID, CDateTime StartTime) const
 {
+  /* try to find the tag by UID */
   if (uniqueID > 0)
   {
     for (unsigned int i = 0; i < size(); i++)
@@ -182,19 +186,18 @@ const CPVREpgInfoTag *CPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) co
         return at(i);
     }
   }
-  else
+
+  /* if we haven't found it, search by start time */
+  for (unsigned int i = 0; i < size(); i++)
   {
-    for (unsigned int i = 0; i < size(); i++)
-    {
-      if (at(i)->Start() == StartTime)
-        return at(i);
-    }
+    if (at(i)->Start() == StartTime)
+      return at(i);
   }
 
   return NULL;
 }
 
-const CPVREpgInfoTag *CPVREpg::GetInfoTagAround(CDateTime Time) const
+const CPVREpgInfoTag *CPVREpg::InfoTagAround(CDateTime Time) const
 {
   if (size() == 0)
     return NULL;
@@ -207,70 +210,56 @@ const CPVREpgInfoTag *CPVREpg::GetInfoTagAround(CDateTime Time) const
   return NULL;
 }
 
-CDateTime CPVREpg::GetLastEPGDate()
+bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
 {
-  CDateTime last = CDateTime::GetCurrentDateTime();
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (at(i)->End() >= last)
-      last = at(i)->End();
-  }
-  return last;
-}
+  if (!data)
+    return false;
 
-bool CPVREpg::Add(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
-{
-  if (data)
-  {
-    long uniqueBroadcastID      = data->uid;
-    CPVREpgInfoTag *InfoTag     = (CPVREpgInfoTag *)GetInfoTag(uniqueBroadcastID, data->starttime);
+  long uniqueBroadcastID      = data->uid;
+  CPVREpgInfoTag *InfoTag     = (CPVREpgInfoTag *) this->InfoTag(uniqueBroadcastID, data->starttime);
 
+  /* create a new tag if no tag with this ID exists */
+  if (!InfoTag)
+  {
+    InfoTag = new CPVREpgInfoTag(uniqueBroadcastID);
     if (!InfoTag)
     {
-      InfoTag = new CPVREpgInfoTag(uniqueBroadcastID);
-      if (!InfoTag)
-      {
-        CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
-        return false;
-      }
-
-      push_back(InfoTag);
+      CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
+      return false;
     }
-
-    CStdString path;
-    path.Format("pvr://guide/channel-%04i/%s.epg", m_Channel->ChannelNumber(), InfoTag->Start().GetAsDBDateTime().c_str());
-    InfoTag->SetPath(path);
-    InfoTag->SetStart((time_t)data->starttime);
-    InfoTag->SetEnd((time_t)data->endtime);
-    InfoTag->SetTitle(data->title);
-    InfoTag->SetPlotOutline(data->subtitle);
-    InfoTag->SetPlot(data->description);
-    InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
-    InfoTag->SetParentalRating(data->parental_rating);
-    InfoTag->SetIcon(m_Channel->Icon());
-    InfoTag->m_Epg = this;
-
-    PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
-
-    m_bIsSorted = false;
-
-    if (bUpdateDatabase)
-    {
-      bool retval;
-      CTVDatabase *database = g_PVRManager.GetTVDatabase();
-      database->Open();
-      retval = database->UpdateEPGEntry(*InfoTag);
-      database->Close();
-      return retval;
-    }
-
-    return true;
+    push_back(InfoTag);
   }
 
-  return false;
+  /* update the tag's values */
+  InfoTag->m_Epg = this;
+  InfoTag->SetStart((time_t)data->starttime);
+  InfoTag->SetEnd((time_t)data->endtime);
+  InfoTag->SetTitle(data->title);
+  InfoTag->SetPlotOutline(data->subtitle);
+  InfoTag->SetPlot(data->description);
+  InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
+  InfoTag->SetParentalRating(data->parental_rating);
+  InfoTag->SetIcon(m_Channel->Icon());
+
+  /* update the cached first and last date in the table */
+  PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
+
+  m_bIsSorted = false;
+
+  if (bUpdateDatabase)
+  {
+    bool retval;
+    CTVDatabase *database = g_PVRManager.GetTVDatabase();
+    database->Open();
+    retval = database->UpdateEPGEntry(*InfoTag);
+    database->Close();
+    return retval;
+  }
+
+  return true;
 }
 
-bool CPVREpg::RemoveOverlappingEvents()
+bool CPVREpg::RemoveOverlappingEvents(void)
 {
   /// This will check all programs in the list and
   /// will remove any overlapping programs
@@ -283,6 +272,7 @@ bool CPVREpg::RemoveOverlappingEvents()
   CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   Sort();
+
   CStdString previousName = "";
   CDateTime previousStart;
   CDateTime previousEnd(1980, 1, 1, 0, 0, 0);
@@ -290,7 +280,7 @@ bool CPVREpg::RemoveOverlappingEvents()
   {
     if (previousEnd > at(ptr)->Start())
     {
-      //remove this program
+      /* remove this program */
       CLog::Log(LOGNOTICE, "PVR: Removing Overlapped TV Event '%s' on channel '%s' at date '%s' to '%s'",
           at(ptr)->Title().c_str(),
           at(ptr)->ChannelTag()->ChannelName().c_str(),
@@ -302,7 +292,7 @@ bool CPVREpg::RemoveOverlappingEvents()
           previousEnd.GetAsLocalizedDateTime(false, false).c_str());
 
       database->RemoveEPGEntry(*at(ptr));
-      DelInfoTag(at(ptr));
+      DeleteInfoTag(at(ptr));
     }
     else
     {

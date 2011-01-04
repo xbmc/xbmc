@@ -1187,7 +1187,7 @@ int CPVRManager::GetPreviousChannel()
   return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
 }
 
-bool CPVRManager::CanInstantRecording()
+bool CPVRManager::CanRecordInstantly()
 {
   if (!m_currentPlayingChannel)
     return false;

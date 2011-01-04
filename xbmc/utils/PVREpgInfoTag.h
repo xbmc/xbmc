@@ -68,7 +68,7 @@ public:
   long UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
 
   CDateTime Start(void) const { return m_startTime; }
-  void SetStart(CDateTime Start) { m_startTime = Start; }
+  void SetStart(CDateTime Start);
 
   CDateTime End(void) const { return m_endTime; }
   void SetEnd(CDateTime Stop) { m_endTime = Stop; }
@@ -118,13 +118,14 @@ public:
 
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString Path) { m_strFileNameAndPath = Path; }
+  void UpdatePath();
 
   bool HasTimer() const;
 
   /*! \brief Get the CPVRChannel class associated to this epg entry
    \return the pointer to the info tag
    */
-  const CPVRChannel *ChannelTag(void) const { return m_Epg->ChannelTag(); }
+  const CPVRChannel *ChannelTag(void) const { return m_Epg->Channel(); }
 
   /* Scheduled recording related Data */
   void SetTimer(const CPVRTimerInfoTag *Timer) { m_Timer = Timer; }

@@ -627,7 +627,7 @@ bool CTVDatabase::GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg,
       broadcast.starttime = startTime_t;
       broadcast.endtime = endTime_t;
 
-      ((CPVREpg *) channelinfo.GetEpg())->Add(&broadcast, epg);
+      ((CPVREpg *) channelinfo.GetEpg())->UpdateEntry(&broadcast, epg);
 
       m_pDS->next();
     }

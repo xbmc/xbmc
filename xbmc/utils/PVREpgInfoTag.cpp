@@ -100,6 +100,22 @@ const CPVREpgInfoTag *CPVREpgInfoTag::GetPreviousEvent() const
   return m_previousEvent;
 }
 
+void CPVREpgInfoTag::SetStart(CDateTime Start)
+{
+  m_startTime = Start;
+  UpdatePath();
+}
+
+void CPVREpgInfoTag::UpdatePath()
+{
+  if (!m_Epg)
+    return;
+
+  CStdString path;
+  path.Format("pvr://guide/channel-%04i/%s.epg", m_Epg->Channel()->ChannelNumber(), m_startTime.GetAsDBDateTime().c_str());
+  SetPath(path);
+}
+
 CStdString CPVREpgInfoTag::ConvertGenreIdToString(int ID, int subID) const
 {
   CStdString str = g_localizeStrings.Get(19499);

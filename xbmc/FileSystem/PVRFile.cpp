@@ -278,7 +278,7 @@ bool CPVRFile::CanRecord()
     return false;
   }
 
-  return g_PVRManager.CanInstantRecording();
+  return g_PVRManager.CanRecordInstantly();
 }
 
 bool CPVRFile::IsRecording()

@@ -121,7 +121,7 @@ void CPVRChannel::UpdateEpgPointers(void)
        m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
     SetChanged();
-    m_epgNow  = m_Epg->GetInfoTagNow();
+    m_epgNow  = m_Epg->InfoTagNow();
     if (m_epgNow)
     {
       CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",

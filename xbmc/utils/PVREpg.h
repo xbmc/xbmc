@@ -32,38 +32,106 @@ class CPVREpg : public std::vector<CPVREpgInfoTag*>
   friend class CPVREpgs;
 
 private:
-  const CPVRChannel *m_Channel;
-  bool m_bUpdateRunning;
-  bool m_bValid;
-  bool m_bIsSorted;
+  const CPVRChannel *m_Channel;        /* the channel this EPG belongs to */
+  bool               m_bUpdateRunning; /* true if EPG is currently being updated */
+  bool               m_bIsSorted;      /* remember if we're sorted or not */
 
+  /**
+   * Update the EPG from a scraper set in the channel tag
+   * TODO: not implemented yet
+   */
   bool UpdateFromScraper(time_t start, time_t end);
+
+  /**
+   * Update the EPG from a client
+   */
   bool UpdateFromClient(time_t start, time_t end);
 
 public:
   CPVREpg(const CPVRChannel &channel);
-  ~CPVREpg();
-  bool IsValid(void) const;
-  const CPVRChannel *ChannelTag(void) const { return m_Channel; }
-  void DelInfoTag(CPVREpgInfoTag *tag);
-  void Cleanup(const CDateTime Time);
-  void Cleanup(void);
-  void Clear();
-  void Sort(void);
-  const CPVREpgInfoTag *GetInfoTagNow(void) const;
-  const CPVREpgInfoTag *GetInfoTagNext(void) const;
-  const CPVREpgInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
-  const CPVREpgInfoTag *GetInfoTagAround(CDateTime Time) const;
-  CDateTime GetLastEPGDate();
-  bool IsUpdateRunning() const { return m_bUpdateRunning; }
-  void SetUpdate(bool OnOff) { m_bUpdateRunning = OnOff; }
+  ~CPVREpg(void);
 
-  bool Add(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
+  /**
+   * Check if this EPG contains valid entries
+   */
+  bool HasValidEntries(void) const;
+
+  /**
+   * The channel this EPG belongs to
+   */
+  const CPVRChannel *Channel(void) const { return m_Channel; }
+
+  /**
+   * Delete an infotag from this EPG
+   */
+  bool DeleteInfoTag(CPVREpgInfoTag *tag);
+
+  /**
+   * Remove all entries from this EPG that finished before the given time
+   * and that have no timers set
+   */
+  void Cleanup(const CDateTime Time);
+
+  /**
+   * Remove all entries from this EPG that finished before the current time
+   * and that have no timers set
+   */
+  void Cleanup(void);
+
+  /**
+   * Remove all entries from this EPG
+   */
+  void Clear(void);
+
+  /**
+   * Sort all entries in this EPG by date
+   */
+  void Sort(void);
+
+  /**
+   * Get the event that is occurring now
+   */
+  const CPVREpgInfoTag *InfoTagNow(void) const;
+
+  /**
+   * Get the event that will occur next
+   */
+  const CPVREpgInfoTag *InfoTagNext(void) const;
+
+  /**
+   * Get the infotag with the given ID
+   * If it wasn't'found, try finding the event with the given start time
+   */
+  const CPVREpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime) const;
+
+  /**
+   * Get the event that occurs at the given time
+   */
+  const CPVREpgInfoTag *InfoTagAround(CDateTime Time) const;
+
+  /**
+   * True if this EPG is currently being updated, false otherwise
+   */
+  bool IsUpdateRunning(void) const { return m_bUpdateRunning; }
+
+  /**
+   * Mark the EPG as being update or no longer being updated
+   */
+  void SetUpdateRunning(bool OnOff) { m_bUpdateRunning = OnOff; }
+
+  /**
+   * Update an entry in this EPG
+   * If bUpdateDatabase is set to true, this event will be persisted in the database
+   */
+  bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
   /**
    * Remove overlapping events from the tables
    */
-  bool RemoveOverlappingEvents();
+  bool RemoveOverlappingEvents(void);
 
+  /**
+   * Update the EPG from 'start' till 'end'
+   */
   bool Update(time_t start, time_t end);
 };

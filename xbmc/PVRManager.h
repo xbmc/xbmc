@@ -174,7 +174,7 @@ public:
    channel.
    \return true if a recording can be started
    */
-  bool CanInstantRecording();
+  bool CanRecordInstantly();
 
   /*! \brief Get the presence of timers.
    \return true if timers are present
