@@ -60,7 +60,6 @@
 #include "Renderer.hpp"
 #include "PresetFrameIO.hpp"
 #include "PresetChooser.hpp"
-#include "ConfigFile.h"
 #include "TextureManager.hpp"
 #include "TimeKeeper.hpp"
 #ifdef USE_THREADS
@@ -117,118 +116,39 @@ DLLEXPORT void projectM::projectM_resetTextures()
 }
 
 
-DLLEXPORT  projectM::projectM ( std::string config_file, int flags) :
+DLLEXPORT  projectM::projectM ( Settings config_pm, int flags) :
 		beatDetect ( 0 ), renderer ( 0 ), m_presetPos(0),  _pcm(0), m_flags(flags)
 {
-	readConfig ( config_file );	
+	readConfig ( config_pm );
 	projectM_reset();
 	projectM_resetGL ( _settings.windowWidth, _settings.windowHeight);
 
 }
 
-
-bool projectM::writeConfig(const std::string & configFile, const Settings & settings) {
-	
-	ConfigFile config ( configFile );
-	
-	config.add("Mesh X", settings.meshX);
-	config.add("Mesh Y", settings.meshY);
-	config.add("Texture Size", settings.textureSize);
-	config.add("FPS", settings.fps);
-	config.add("Window Width", settings.windowWidth);
-	config.add("Window Height", settings.windowHeight);
-	config.add("Smooth Preset Duration", settings.smoothPresetDuration);
-	config.add("Preset Duration", settings.presetDuration);
-	config.add("Preset Path", settings.presetURL);
-	config.add("Title Font", settings.titleFontURL);
-	config.add("Menu Font", settings.menuFontURL);
-	config.add("Hard Cut Sensitivity", settings.beatSensitivity);
-	config.add("Aspect Correction", settings.aspectCorrection);
-	config.add("Easter Egg Parameter", settings.easterEgg);
-	config.add("Shuffle Enabled", settings.shuffleEnabled);
-	config.add("Use FBO", settings.useFBO);
-	config.add("Window Left", settings.windowLeft);
-	config.add("Window Bottom", settings.windowBottom);
-	
-	std::fstream file(configFile.c_str());	
-	if (file.is_open()) {
-		file << config;
-		return true;
-	} else
-		return false;
-}
-
-
-
-void projectM::readConfig (const std::string & configFile )
+void projectM::readConfig (const Settings configpm )
 {
-	ConfigFile config ( configFile );
-	_settings.meshX = config.read<int> ( "Mesh X", 32 );
-	_settings.meshY = config.read<int> ( "Mesh Y", 24 );
-	_settings.textureSize = config.read<int> ( "Texture Size", 512 );
-	_settings.fps = config.read<int> ( "FPS", 35 );
-	_settings.windowWidth  = config.read<int> ( "Window Width", 512 );
-	_settings.windowHeight = config.read<int> ( "Window Height", 512 );
-	_settings.windowLeft  = config.read<int> ( "Window Left", 0 );
-	_settings.windowBottom = config.read<int> ( "Window Bottom", 0 );
-	_settings.smoothPresetDuration =  config.read<int> 
-			( "Smooth Preset Duration", config.read<int>("Smooth Transition Duration", 10));
-	_settings.presetDuration = config.read<int> ( "Preset Duration", 15 );
-	
-	#ifdef LINUX
-	_settings.presetURL = config.read<string> ( "Preset Path", CMAKE_INSTALL_PREFIX "/share/projectM/presets" );
-	#endif
-	
-	#ifdef __APPLE__
-	/// @bug awful hardcoded hack- need to add intelligence to cmake wrt bundling - carm
-	_settings.presetURL = config.read<string> ( "Preset Path", "../Resources/presets" );
-	#endif
-		
-	#ifdef WIN32
-	_settings.presetURL = config.read<string> ( "Preset Path", CMAKE_INSTALL_PREFIX "/share/projectM/presets" );
-	#endif
-	
-	#ifdef __APPLE__
-	_settings.titleFontURL = config.read<string> 
-			( "Title Font",  "../Resources/fonts/Vera.tff");
-	_settings.menuFontURL = config.read<string> 
-			( "Menu Font", "../Resources/fonts/VeraMono.ttf");
-	#endif
-	
-	#ifdef LINUX
-	_settings.titleFontURL = config.read<string> 
-			( "Title Font", CMAKE_INSTALL_PREFIX  "/share/projectM/fonts/Vera.ttf" );
-	_settings.menuFontURL = config.read<string> 
-			( "Menu Font", CMAKE_INSTALL_PREFIX  "/share/projectM/fonts/VeraMono.ttf" );			
-	#endif
-	
-	#ifdef WIN32
-	_settings.titleFontURL = config.read<string> 
-			( "Title Font", CMAKE_INSTALL_PREFIX  "/share/projectM/fonts/Vera.ttf" );
-	_settings.menuFontURL = config.read<string> 
-			( "Menu Font", CMAKE_INSTALL_PREFIX  "/share/projectM/fonts/VeraMono.ttf" );			
-	#endif
-	
-	
-	_settings.shuffleEnabled = config.read<bool> ( "Shuffle Enabled", true);
-	_settings.useFBO = config.read<bool> ( "Use FBO", false);
-			
-	_settings.easterEgg = config.read<float> ( "Easter Egg Parameter", 0.0);
-	
-	
-	 projectM_init ( _settings.meshX, _settings.meshY, _settings.fps,
-			 _settings.textureSize, _settings.windowWidth,_settings.windowHeight,
-			 _settings.windowLeft, _settings.windowBottom, _settings.useFBO );
-
-	
-	 _settings.beatSensitivity = beatDetect->beat_sensitivity = config.read<float> ( "Hard Cut Sensitivity", 10.0 );
-	
-	if ( config.read ( "Aspect Correction", true ) )
-		_settings.aspectCorrection = renderer->correction = true;
-	else 
-		_settings.aspectCorrection = renderer->correction = false;
-
-	
+    _settings.meshX = configpm.meshX;
+    _settings.meshY = configpm.meshY;
+    _settings.textureSize = configpm.textureSize;
+    _settings.fps = configpm.fps;
+    _settings.windowWidth  = configpm.windowWidth;
+    _settings.windowHeight = configpm.windowHeight;
+    _settings.windowLeft  = configpm.windowLeft;
+    _settings.windowBottom = configpm.windowBottom;
+    _settings.smoothPresetDuration =  configpm.smoothPresetDuration;
+    _settings.presetDuration = configpm.presetDuration;
+    _settings.presetURL = configpm.presetURL;
+    _settings.shuffleEnabled = configpm.shuffleEnabled;
+    _settings.useFBO = false;
+    _settings.easterEgg = configpm.easterEgg;
+     projectM_init ( _settings.meshX, _settings.meshY, _settings.fps,
+             _settings.textureSize, _settings.windowWidth,_settings.windowHeight,
+             _settings.windowLeft, _settings.windowBottom, _settings.useFBO );
+     _settings.beatSensitivity = beatDetect->beat_sensitivity = configpm.beatSensitivity;
+    if ( configpm.aspectCorrection )
+        _settings.aspectCorrection = renderer->correction = true;
+    else
+        _settings.aspectCorrection = renderer->correction = false;
 }
 
 #ifdef USE_THREADS

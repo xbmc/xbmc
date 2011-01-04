@@ -55,9 +55,7 @@ d4rk@xbmc.org
 */
 
 #include "xbmc_vis_dll.h"
-#include "xbmc_addon_cpp_dll.h"
 #include <GL/glew.h>
-#include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
 #include <string>
 
@@ -73,12 +71,11 @@ char g_visName[512];
 char **g_presets=NULL;
 unsigned int g_numPresets = 0;
 projectM::Settings g_configPM;
-std::string g_configFile;
 
-// settings vector
-std::vector<DllSetting> g_vecSettings;
-StructSetting** g_structSettings;
-unsigned int g_uiVisElements;
+bool g_UserPackFolder;
+char lastPresetDir[1024];
+bool lastLockStatus;
+int lastPresetIdx;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
@@ -88,122 +85,21 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   if (!props)
     return STATUS_UNKNOWN;
 
-  g_vecSettings.clear();
-  g_uiVisElements = 0;
-
-
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
   strcpy(g_visName, visprops->name);
-  g_configFile = string(visprops->profile) + string("/projectm.conf");
-  std::string presetsDir = "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization%2Eprojectm%2Fresources%2Fpresets%2Ezip";
-
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
   g_configPM.fps = fps;
   g_configPM.textureSize = texsize;
   g_configPM.windowWidth = visprops->width;
   g_configPM.windowHeight = visprops->height;
-  g_configPM.presetURL = presetsDir;
-  g_configPM.smoothPresetDuration = 5;
-  g_configPM.presetDuration = 15;
-  g_configPM.beatSensitivity = 10.0;
   g_configPM.aspectCorrection = true;
   g_configPM.easterEgg = 0.0;
-  g_configPM.shuffleEnabled = true;
   g_configPM.windowLeft = visprops->x;
   g_configPM.windowBottom = visprops->y;
 
-  // if no config file exists, create a blank one as Config ctor throws an exception!
-  FILE *f;
-  f = fopen(g_configFile.c_str(), "r");
-  if (!f) f = fopen(g_configFile.c_str(), "w");
-
-  if (f)
-    fclose(f);
-
-  // save our config
-  try
-  {
-    projectM::writeConfig(g_configFile, g_configPM);
-  }
-  catch (...)
-  {
-    printf("exception in projectM::WriteConfig");
-    return STATUS_UNKNOWN;
-  }
-
-  if (globalPM)
-    delete globalPM;
-
-  try
-  {
-    globalPM = new projectM(g_configFile);
-  }
-  catch (...)
-  {
-    printf("exception in projectM ctor");
-    return STATUS_UNKNOWN;
-  }
-
-  DllSetting quality(DllSetting::SPIN, "quality", "30000");
-  quality.AddEntry("30001");
-  quality.AddEntry("30002");
-  quality.AddEntry("30003");
-  quality.AddEntry("30004");
-  if (g_configPM.textureSize == 2048)
-  {
-    quality.current = 3;
-  }
-  else if (g_configPM.textureSize == 1024)
-  {
-    quality.current = 2;
-  }
-  else if (g_configPM.textureSize == 512)
-  {
-    quality.current = 1;
-  }
-  else if (g_configPM.textureSize == 256)
-  {
-    quality.current = 0;
-  }
-  g_vecSettings.push_back(quality);
-
-  DllSetting shuffleMode(DllSetting::CHECK, "shuffle", "30005");
-  shuffleMode.current = globalPM->isShuffleEnabled();
-  g_vecSettings.push_back(shuffleMode);
-
-  DllSetting smoothPresetDuration(DllSetting::SPIN, "smooth_duration", "30006");
-  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    smoothPresetDuration.AddEntry(temp);
-  }
-  smoothPresetDuration.current = (int)(g_configPM.smoothPresetDuration);
-  g_vecSettings.push_back(smoothPresetDuration);
-
-  DllSetting presetDuration(DllSetting::SPIN, "preset_duration", "30007");
-  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    presetDuration.AddEntry(temp);
-  }
-  presetDuration.current = (int)(g_configPM.presetDuration);
-  g_vecSettings.push_back(presetDuration);
-
-  DllSetting beatSensitivity(DllSetting::SPIN, "beat_sens", "30008");
-  for (int i=0; i <= 100; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%2.1f", (float)(i + 1)/5);
-    beatSensitivity.AddEntry(temp);
-  }
-  beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
-  g_vecSettings.push_back(beatSensitivity);
-
-  return STATUS_NEED_SETTINGS;
+  return STATUS_NEED_SAVEDSETTINGS;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -284,6 +180,9 @@ extern "C" bool OnAction(long flags, const void *param)
   else if (flags == VIS_ACTION_LOCK_PRESET)
   {
     globalPM->setPresetLock(!globalPM->isPresetLocked());
+    unsigned preset;
+    globalPM->selectedPresetIndex(preset);
+    globalPM->selectPreset(preset);
     ret = true;
   }
   return ret;
@@ -342,7 +241,6 @@ extern "C" void Stop()
 {
   if (globalPM)
   {
-    projectM::writeConfig(g_configFile,globalPM->settings());
     delete globalPM;
     globalPM = NULL;
   }
@@ -390,9 +288,7 @@ extern "C" ADDON_STATUS GetStatus()
 
 extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
-  g_uiVisElements = DllUtils::VecToStruct(g_vecSettings, &g_structSettings);
-  *sSet = g_structSettings;
-  return g_uiVisElements;
+  return 0;
 }
 
 //-- FreeSettings --------------------------------------------------------------
@@ -401,7 +297,68 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 
 extern "C" void FreeSettings()
 {
-  DllUtils::FreeStruct(g_uiVisElements, &g_structSettings);
+}
+
+void ChooseQuality (int pvalue)
+{
+  switch (pvalue)
+  {
+    case 0:
+      g_configPM.textureSize = 256;
+      break;
+    case 1:
+      g_configPM.textureSize = 512;
+      break;
+    case 2:
+      g_configPM.textureSize = 1024;
+      break;
+    case 3:
+      g_configPM.textureSize = 2048;
+      break;
+  }
+}
+
+void ChoosePresetPack(int pvalue)
+{
+  g_UserPackFolder = false;
+  if (pvalue == 0)
+    g_configPM.presetURL = "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization%2Eprojectm%2Fresources%2Fpresets%2Ezip";
+  else if (pvalue == 1) //User preset folder has been chosen
+    g_UserPackFolder = true;
+}
+
+void ChooseUserPresetFolder(std::string pvalue)
+{
+  if (g_UserPackFolder)
+  {
+    pvalue.erase(pvalue.length()-1,1);  //Remove "/" from the end
+    g_configPM.presetURL = pvalue;
+  }
+}
+
+bool InitProjectM()
+{
+  if (globalPM) delete globalPM; //We are re-initalizing the engine
+  try
+  {
+    globalPM = new projectM(g_configPM);
+    if (g_configPM.presetURL == lastPresetDir)  //If it is not the first run AND if this is the same preset pack as last time
+    {
+      globalPM->setPresetLock(lastLockStatus);
+      globalPM->selectPreset(lastPresetIdx);
+    }
+    else
+    {
+      //If it is the first run or a newly chosen preset pack we choose a random preset as first
+      globalPM->selectPreset((rand() % (globalPM->getPlaylistSize())));
+    }
+    return true;
+  }
+  catch (...)
+  {
+    printf("exception in projectM ctor");
+    return false;
+  }
 }
 
 //-- UpdateSetting ------------------------------------------------------------
@@ -412,37 +369,58 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
   if (!id || !value)
     return STATUS_UNKNOWN;
 
-  if (strcmp(id, "quality")==0)
+  if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
   {
-    switch (*(int*) value)
+    if (strcmp((char*)value, "0") == 0)
     {
-      case 0:
-        g_configPM.textureSize = 256;
-        break;
-      case 1:
-        g_configPM.textureSize = 512;
-        break;
-      case 2:
-        g_configPM.textureSize = 1024;
-        break;
-      case 3:
-        g_configPM.textureSize = 2048;
-        break;
+      strcpy((char*)id, "lastpresetfolder");
+      strcpy((char*)value, globalPM->settings().presetURL.c_str());
     }
+    if (strcmp((char*)value, "1") == 0)
+    {
+      strcpy((char*)id, "lastlockedstatus");
+      strcpy((char*)value, (globalPM->isPresetLocked() ? "true" : "false"));
+    }
+    if (strcmp((char*)value, "2") == 0)
+    {
+      strcpy((char*)id, "lastpresetidx");
+      unsigned int lastindex;
+      globalPM->selectedPresetIndex(lastindex);
+      sprintf ((char*)value, "%i", (int)lastindex);
+    }
+    if (strcmp((char*)value, "3") == 0)
+    {
+      strcpy((char*)id, "###End");
+    }
+    return STATUS_OK;
   }
+  // It is now time to set the settings got from xmbc
+  if (strcmp(id, "quality")==0)
+    ChooseQuality (*(int*)value);
   else if (strcmp(id, "shuffle")==0)
-  {
-    g_configPM.shuffleEnabled = !g_configPM.shuffleEnabled;
-    if (globalPM)
-      OnAction(VIS_ACTION_RANDOM_PRESET, value);
-  }
+    g_configPM.shuffleEnabled = *(bool*)value;
+  
+  else if (strcmp(id, "lastpresetidx")==0)
+    lastPresetIdx = *(int*)value;
+  else if (strcmp(id, "lastlockedstatus")==0)
+    lastLockStatus = *(bool*)value;
+  else if (strcmp(id, "lastpresetfolder")==0)
+    strcpy(lastPresetDir, (char*)value);
+  
   else if (strcmp(id, "smooth_duration")==0)
-    g_configPM.smoothPresetDuration = *(int*)value;
+    g_configPM.smoothPresetDuration = (*(int*)value * 5 + 5);
   else if (strcmp(id, "preset_duration")==0)
-    g_configPM.presetDuration = *(int*)value;
+    g_configPM.presetDuration = (*(int*)value * 5 + 5);
+  else if (strcmp(id, "preset pack")==0)
+    ChoosePresetPack(*(int*)value);
+  else if (strcmp(id, "user preset folder") == 0)
+    ChooseUserPresetFolder((char*)value);
   else if (strcmp(id, "beat_sens")==0)
-    g_configPM.beatSensitivity = *(int*)value;
-
+  {
+    g_configPM.beatSensitivity = *(int*)value * 2;
+    if (!InitProjectM())    //The last setting value is already set so we (re)initalize
+      return STATUS_UNKNOWN;
+  }
   return STATUS_OK;
 }
 

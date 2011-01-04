@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <!-- settings labels -->
-    <string id="30000">Megjelen�t�s min�s�ge</string>
+    <string id="30000">Megjelenítés minősége</string>
     <string id="30001">Alacsony</string>
-    <string id="30002">K�zepes</string>
+    <string id="30002">Közepes</string>
     <string id="30003">Magas</string>
     <string id="30004">Maximum</string>
-    <string id="30005">Kever�si m�d</string>
-    <string id="30006">Finom �tmenet id�tartama</string>
-    <string id="30007">�tmenet id�tartama</string>
-    <string id="30008">Ritmus �rz�kenys�g</string>
+    <string id="30005">Altípus keverési mód</string>
+    <string id="30006">Finom átmenet időtartama</string>
+    <string id="30007">Átmenet időtartama</string>
+    <string id="30008">Ritmus érzékenység</string>
+    <string id="30009">Beállításkészlet</string>
+    <string id="30010">Alapértelmezett készlet</string>
+    <string id="30011">Felhasználói beállításkészlet</string>
+    <string id="30012">Beállításkészlet mappája</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f mp</string>
+    <string id="30051">%2.0f %%</string>
 </strings>
