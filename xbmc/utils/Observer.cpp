@@ -58,6 +58,8 @@ void Observable::NotifyObservers(const CStdString& msg)
       if (obs)
         at(ptr)->Notify(*this, msg);
     }
+
+    m_bObservableChanged = false;
   }
 }
 

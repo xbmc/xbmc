@@ -848,6 +848,9 @@ void CGUISettings::AddBool(CSettingsCategory* cat, const char *strSetting, int i
   CSettingBool* pSetting = new CSettingBool(iOrder, CStdString(strSetting).ToLower(), iLabel, bData, iControlType);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 bool CGUISettings::GetBool(const char *strSetting) const
 {
@@ -874,6 +877,10 @@ void CGUISettings::SetBool(const char *strSetting, bool bSetting)
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(bSetting);
+
+    SetChanged();
+    NotifyObservers("settings");
+
     return ;
   }
   // Assert here and write debug output
@@ -887,6 +894,10 @@ void CGUISettings::ToggleBool(const char *strSetting)
   if (it != settingsMap.end())
   { // old category
     ((CSettingBool*)(*it).second)->SetData(!((CSettingBool *)(*it).second)->GetData());
+
+    SetChanged();
+    NotifyObservers("settings");
+
     return ;
   }
   // Assert here and write debug output
@@ -899,6 +910,9 @@ void CGUISettings::AddFloat(CSettingsCategory* cat, const char *strSetting, int 
   CSettingFloat* pSetting = new CSettingFloat(iOrder, CStdString(strSetting).ToLower(), iLabel, fData, fMin, fStep, fMax, iControlType);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 float CGUISettings::GetFloat(const char *strSetting) const
@@ -922,6 +936,10 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
   if (it != settingsMap.end())
   {
     ((CSettingFloat *)(*it).second)->SetData(fSetting);
+
+    SetChanged();
+    NotifyObservers("settings");
+
     return ;
   }
   // Assert here and write debug output
@@ -946,6 +964,9 @@ void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iL
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin/*=-1*/)
@@ -954,6 +975,9 @@ void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iL
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, iFormat, iLabelMin);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting,
@@ -964,6 +988,9 @@ void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting,
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, entries, iControlType);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
@@ -972,6 +999,9 @@ void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iL
   CSettingHex* pSetting = new CSettingHex(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 int CGUISettings::GetInt(const char *strSetting) const
@@ -995,6 +1025,10 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
+
+    SetChanged();
+    NotifyObservers("settings");
+
     return ;
   }
   // Assert here and write debug output
@@ -1007,6 +1041,9 @@ void CGUISettings::AddString(CSettingsCategory* cat, const char *strSetting, int
   CSettingString* pSetting = new CSettingString(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
@@ -1015,6 +1052,9 @@ void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int i
   CSettingPath* pSetting = new CSettingPath(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type)
@@ -1023,6 +1063,9 @@ void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSettin
   CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
@@ -1066,6 +1109,10 @@ void CGUISettings::SetString(const char *strSetting, const char *strData)
   if (it != settingsMap.end())
   {
     ((CSettingString *)(*it).second)->SetData(strData);
+
+    SetChanged();
+    NotifyObservers("settings");
+
     return ;
   }
   // Assert here and write debug output
@@ -1196,6 +1243,9 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
       }
     }
   }
+
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 void CGUISettings::SaveXML(TiXmlNode *pRootNode)
@@ -1242,6 +1292,15 @@ void CGUISettings::Clear()
   for (unsigned int i = 0; i < settingsGroups.size(); i++)
     delete settingsGroups[i];
   settingsGroups.clear();
+
+  SetChanged();
+  NotifyObservers("settings");
+}
+
+void CGUISettings::SetChangedAndNotify(void)
+{
+  SetChanged();
+  NotifyObservers("settings");
 }
 
 float square_error(float x, float y)
@@ -1308,4 +1367,7 @@ void CGUISettings::SetResolution(RESOLUTION res)
   }
   SetString("videoscreen.screenmode", mode);
   m_LookAndFeelResolution = res;
+
+  SetChanged();
+  NotifyObservers("settings");
 }

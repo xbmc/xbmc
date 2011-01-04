@@ -86,6 +86,8 @@ void CPVREpgs::Start()
 {
   Clear();
 
+  g_guiSettings.AddObserver(this);
+
   /* make sure the EPG is loaded before starting the thread */
   CreateChannelEpgs();
   LoadFromDb(true /* show progress */);
@@ -100,6 +102,8 @@ void CPVREpgs::Start()
 bool CPVREpgs::Stop()
 {
   StopThread();
+
+  g_guiSettings.RemoveObserver(this);
 
   if (!WaitForThreadExit(5000))
   {
@@ -133,6 +137,13 @@ bool CPVREpgs::Reset(bool bClearDb /* = false */)
   return true;
 }
 
+void CPVREpgs::Notify(const Observable &obs, const CStdString& msg)
+{
+  /* settings were updated */
+  if (msg == "settings")
+    LoadSettings();
+}
+
 void CPVREpgs::Process()
 {
   time_t iNow          = 0;
@@ -153,12 +164,11 @@ void CPVREpgs::Process()
   database->GetLastEpgScanTime().GetAsTime(m_iLastEpgUpdate);
   database->Close();
 
+  LoadSettings();
+
   while (!m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
-
-    /* make sure we got the latest settings */
-    LoadSettings(); // XXX we should only do this once and change settings both in this class and in the config file while running
 
     /* update the EPG */
     if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))

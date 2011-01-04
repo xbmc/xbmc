@@ -156,6 +156,7 @@ void CSettings::Save() const
     //for every screen when the application is stopping.
     return ;
   }
+  g_guiSettings.SetChangedAndNotify();
   if (!SaveSettings(GetSettingsFile()))
   {
     CLog::Log(LOGERROR, "Unable to save settings to %s", GetSettingsFile().c_str());

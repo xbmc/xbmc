@@ -25,6 +25,7 @@
 #include <map>
 #include "Resolution.h"
 #include "addons/IAddon.h"
+#include "utils/Observer.h"
 
 class TiXmlNode;
 class TiXmlElement;
@@ -436,7 +437,7 @@ private:
 
 typedef std::vector<CSetting *> vecSettings;
 
-class CGUISettings
+class CGUISettings : public Observable
 {
 public:
   CGUISettings();
@@ -492,6 +493,8 @@ public:
   ReplayGainSettings m_replayGain;
 
   void Clear();
+
+  void SetChangedAndNotify(void);
 
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;

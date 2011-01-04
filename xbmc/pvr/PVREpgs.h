@@ -24,6 +24,7 @@
 #include "DateTime.h"
 #include "Thread.h"
 #include "CriticalSection.h"
+#include "Observer.h"
 #include "../addons/include/xbmc_pvr_types.h"
 #include "utils/Thread.h"
 
@@ -35,6 +36,7 @@ class CFileItemList;
 struct PVREpgSearchFilter;
 
 class CPVREpgs : public std::vector<CPVREpg*>,
+                 public Observer,
                  private CThread
 {
   friend class CPVREpg;
@@ -129,6 +131,7 @@ public:
   void Start();
   bool Stop();
   bool Reset(bool bClearDb = false);
+  void Notify(const Observable &obs, const CStdString& msg);
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool bRadio = false);
