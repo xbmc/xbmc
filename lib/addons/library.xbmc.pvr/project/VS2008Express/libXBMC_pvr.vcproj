@@ -113,7 +113,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc;..\..\..\..\xbmc\addons\include;..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers"
+				AdditionalIncludeDirectories="..\..\..\..\..\xbmc;..\..\..\..\..\xbmc\addons\include;..\..\..\..\..\xbmc\cores\dvdplayer\DVDDemuxers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
