@@ -318,7 +318,7 @@ bool CPVREpg::UpdateFromClient(time_t start, time_t end)
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - client '%s' on client '%li' does not support EPGs",
+    CLog::Log(LOGINFO, "%s - client '%s' on client '%i' does not support EPGs",
         __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
   }
 

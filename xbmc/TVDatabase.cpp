@@ -844,10 +844,7 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
     long channelId = info.m_iDatabaseId;
 
     CStdString SQL;
-    SQL=FormatSQL("select * from Channels WHERE Channels.idChannel = '%u'", channelId);
-    m_pDS->query(SQL.c_str());
-
-    if (m_pDS->num_rows() > 0)
+    if (channelId > 0)
     {
       m_pDS->close();
       // update the item

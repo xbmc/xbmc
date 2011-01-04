@@ -70,6 +70,12 @@ public:
   /********** XBMC related channel methods **********/
 
   /**
+   * Updates this channel tag with the data of the given channel tag.
+   * Returns true if something changed, false otherwise.
+   */
+  bool UpdateFromClient(const CPVRChannel &channel);
+
+  /**
    * The identifier given to this channel by the TV database.
    */
   long ChannelID(void) const { return m_iDatabaseId; }
@@ -205,7 +211,7 @@ public:
    * Set the channel number on the client.
    * It will only be changed in this tag and won't change anything on the client.
    */
-  void SetClientNumber(int iClientChannelNumber);
+  void SetClientChannelNumber(int iClientChannelNumber);
 
   /**
    * The name of this channel on the client.

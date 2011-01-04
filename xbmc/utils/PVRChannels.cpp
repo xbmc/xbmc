@@ -73,6 +73,7 @@ int CPVRChannels::LoadFromClients(void)
   if (!clients || !database || !database->Open())
     return -1;
 
+  /* get the channel list from each client */
   CLIENTMAPITR itrClients = clients->begin();
   while (itrClients != clients->end())
   {
@@ -117,16 +118,94 @@ void CPVRChannels::Unload()
   Clear();
 }
 
-////////////////////////////////////////////////////////
+bool CPVRChannels::RemoveByUniqueID(long iUniqueID)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    if (at(ptr).UniqueID() == iUniqueID)
+    {
+      erase(begin() + ptr);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CPVRChannels::Update(CPVRChannels *channels)
+{
+  /* the database has already been opened */
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+
+  int iSize = size();
+  for (int ptr = 0; ptr < iSize; ptr++)
+  {
+    CPVRChannel *channel = &at(ptr);
+
+    /* ignore virtual channels */
+    if (channel->IsVirtual())
+      continue;
+
+    /* check if this channel is still present */
+    CPVRChannel *existingChannel = channels->GetByUniqueID(channel->UniqueID());
+    if (existingChannel)
+    {
+      /* if it's present, update the current tag */
+      if (channel->UpdateFromClient(*existingChannel))
+      {
+        database->UpdateDBChannel(*channel);
+        CLog::Log(LOGINFO,"%s - updated %s channel '%s'",
+            __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
+      }
+
+      /* remove this tag from the temporary channel list */
+      channels->RemoveByUniqueID(channel->UniqueID());
+    }
+    else
+    {
+      /* channel is no longer present */
+      CLog::Log(LOGINFO,"%s - removing %s channel '%s'",
+          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
+      database->RemoveDBChannel(*channel);
+      erase(begin() + ptr);
+      ptr--;
+      iSize--;
+    }
+  }
+
+  /* the temporary channel list only contains new channels now */
+  for (unsigned int ptr = 0; ptr < channels->size(); ptr++)
+  {
+    CPVRChannel channel = channels->at(ptr);
+
+    channel.SetChannelID(database->AddDBChannel(channel));
+    push_back(channel);
+
+    CLog::Log(LOGINFO,"%s - added %s channel '%s'",
+        __FUNCTION__, m_bRadio ? "radio" : "TV", channel.ChannelName().c_str());
+  }
+
+  /* recount hidden channels */
+  m_iHiddenChannels = 0;
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).IsHidden())
+      m_iHiddenChannels++;
+  }
+
+  return true;
+}
 
 bool CPVRChannels::Update()
 {
+  bool         bReturn  = false;
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   CLIENTMAP   *clients  = g_PVRManager.Clients();
   CPVRChannels PVRChannels_tmp(m_bRadio);
 
   database->Open();
 
+  /* get the channel list from all clients */
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
@@ -138,86 +217,14 @@ bool CPVRChannels::Update()
   }
 
   PVRChannels_tmp.ReNumberAndCheck();
-
-  /*
-   * First whe look for moved channels on backend (other backend number)
-   * and delete no more present channels inside database.
-   * Problem:
-   * If a channel on client is renamed, it is deleted from Database
-   * and later added as new channel and loose his Group Information
-   */
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    bool found = false;
-    bool changed = false;
-
-    if (!at(i).IsVirtual())
-    {
-      for (unsigned int j = 0; j < PVRChannels_tmp.size(); j++)
-      {
-        if (at(i).UniqueID() == PVRChannels_tmp[j].UniqueID() &&
-            at(i).ClientID() == PVRChannels_tmp[j].ClientID())
-        {
-          if (at(i).ClientChannelNumber() != PVRChannels_tmp[j].ClientChannelNumber())
-          {
-            at(i).SetClientNumber(PVRChannels_tmp[j].ClientChannelNumber());
-            changed = true;
-          }
-
-          if (at(i).ClientChannelName() != PVRChannels_tmp[j].ClientChannelName())
-          {
-            at(i).SetClientChannelName(PVRChannels_tmp[j].ClientChannelName());
-            at(i).SetChannelName(PVRChannels_tmp[j].ClientChannelName());
-            changed = true;
-          }
-
-          found = true;
-          PVRChannels_tmp.erase(PVRChannels_tmp.begin()+j);
-          break;
-        }
-      }
-
-      if (changed)
-      {
-        database->UpdateDBChannel(at(i));
-        CLog::Log(LOGINFO,"PVR: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).ChannelName().c_str());
-      }
-
-      if (!found)
-      {
-        CLog::Log(LOGINFO,"PVR: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).ChannelName().c_str());
-        database->RemoveDBChannel(at(i));
-        erase(begin()+i);
-        i--;
-      }
-    }
-  }
-
-  /*
-   * Now whe add new channels to frontend
-   * All entries now present in the temp lists, are new entries
-   */
-  for (unsigned int i = 0; i < PVRChannels_tmp.size(); i++)
-  {
-    PVRChannels_tmp[i].SetChannelID(database->AddDBChannel(PVRChannels_tmp[i]));
-    push_back(PVRChannels_tmp[i]);
-    CLog::Log(LOGINFO,"PVR: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].ChannelName().c_str());
-  }
+  bReturn = Update(&PVRChannels_tmp);
 
   database->Close();
 
-  m_iHiddenChannels = 0;
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (at(i).IsHidden())
-      m_iHiddenChannels++;
-
-
-
-  }
-
-  return false;
+  return bReturn;
 }
+
+////////////////////////////////////////////////////////
 
 void CPVRChannels::SearchAndSetChannelIcons(bool writeDB)
 {

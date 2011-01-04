@@ -87,7 +87,7 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
 
   tag.SetChannelID(-1);
   tag.SetChannelNumber(-1);
-  tag.SetClientNumber(channel->number);
+  tag.SetClientChannelNumber(channel->number);
   tag.SetGroupID(0);
   tag.SetClientID(client->GetClientID());
   tag.SetUniqueID(channel->uid);

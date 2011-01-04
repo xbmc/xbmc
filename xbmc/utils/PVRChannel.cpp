@@ -93,6 +93,25 @@ CPVRChannel::CPVRChannel()
 
 /********** XBMC related channel methods **********/
 
+bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
+{
+  bool bChanged = false;
+
+  if (m_iClientId != channel.ClientID())
+  {
+    bChanged = true;
+    SetClientID(channel.ClientID());
+  }
+
+  if (m_iClientChannelNumber != channel.ClientChannelNumber())
+  {
+    bChanged = true;
+    SetClientChannelNumber(channel.ClientChannelNumber());
+  }
+
+  return bChanged;
+}
+
 void CPVRChannel::SetChannelID(long iDatabaseId)
 {
   m_iDatabaseId = iDatabaseId;
@@ -167,7 +186,7 @@ void CPVRChannel::SetClientID(int iClientId)
   SetChanged();
 }
 
-void CPVRChannel::SetClientNumber(int iClientChannelNumber)
+void CPVRChannel::SetClientChannelNumber(int iClientChannelNumber)
 {
   m_iClientChannelNumber = iClientChannelNumber;
   SetChanged();

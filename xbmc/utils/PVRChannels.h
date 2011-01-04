@@ -48,6 +48,19 @@ private:
    */
   int LoadFromClients(void);
 
+  /**
+   * Removes a channel.
+   * Returns true if the channel was found and removed, false otherwise
+   */
+  bool RemoveByUniqueID(long iUniqueID);
+
+  /**
+   * Updates the current channel list with the given list.
+   * Only the new channels will be present in the passed list after this call.
+   * Return true if everything went well, false otherwise.
+   */
+  bool Update(CPVRChannels *channels);
+
 public:
   CPVRChannels(bool bRadio);
 
@@ -57,8 +70,16 @@ public:
    */
   int Load();
 
+  /**
+   * Unloads all channels.
+   */
   void Unload();
+
+  /**
+   * Refresh the channel list from the clients.
+   */
   bool Update();
+
   void ReNumberAndCheck(void);
   void SearchAndSetChannelIcons(bool writeDB = false);
   int GetNumChannels() const { return size(); }
