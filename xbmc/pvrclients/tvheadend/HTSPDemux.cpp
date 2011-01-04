@@ -19,7 +19,6 @@
  *
  */
 
-#define __STDC_CONSTANT_MACROS
 #include <stdint.h>
 #include <limits.h>
 #include <libavcodec/avcodec.h> // For codec id's
