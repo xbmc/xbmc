@@ -231,7 +231,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
   InfoTag->Update(tag);
 
   /* update the cached first and last date in the table */
-//  XXX PVREpgs.UpdateFirstAndLastEPGDates(tag);
+  PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
 
   m_bIsSorted = false;
 
@@ -240,7 +240,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
     bool retval;
     CTVDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
-    retval = database->UpdateEpgEntry(tag);
+    retval = database->UpdateEpgEntry(*InfoTag);
     database->Close();
     return retval;
   }
