@@ -38,7 +38,7 @@ CPVRChannelsContainer::~CPVRChannelsContainer()
 
 const CPVRChannels *CPVRChannelsContainer::Get(int iChannelsId)
 {
-  if (iChannelsId > size() - 1)
+  if (iChannelsId < 0 || (unsigned int) iChannelsId > size() - 1)
     return NULL;
 
   return at(iChannelsId);
