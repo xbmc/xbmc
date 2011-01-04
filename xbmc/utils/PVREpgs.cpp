@@ -349,15 +349,8 @@ int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
-    CFileItemList *channelResults = new CFileItemList();
-
-    int iNewEntries = GetEPGForChannel(channel, channelResults);
-    for (int iTagPtr = 0; iTagPtr < iNewEntries; iTagPtr++)
-    {
-      results->Add(channelResults->Get(iTagPtr));
-    }
-
-    delete channelResults;
+    if (channel)
+      GetEPGForChannel(channel, results);
   }
 
   SetVariableData(results);

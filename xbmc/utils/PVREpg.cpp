@@ -55,12 +55,10 @@ bool CPVREpg::HasValidEntries(void) const
 {
   ((CPVREpg *) this)->Sort();
 
-  if (m_Channel->ChannelID() > 0 || /* valid channel ID */
-      size() == 0 || /* contains at least 1 tag */
-      at(size()-1)->m_endTime < CDateTime::GetCurrentDateTime()) /* the last end time hasn't passed yet */
-    return false;
-
-  return true;
+  return (m_Channel &&
+          m_Channel->ChannelID() > 0 && /* valid channel ID */
+          size() > 0 && /* contains at least 1 tag */
+          at(size()-1)->m_endTime >= CDateTime::GetCurrentDateTime()); /* the last end time hasn't passed yet */
 }
 
 bool CPVREpg::DeleteInfoTag(CPVREpgInfoTag *tag)
