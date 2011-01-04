@@ -69,6 +69,8 @@ bool CPVRTimers::Update()
 bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
 {
   push_back(timer);
+
+  return true;
 }
 
 int CPVRTimers::GetNumTimers()
