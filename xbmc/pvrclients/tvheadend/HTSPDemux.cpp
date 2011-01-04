@@ -244,10 +244,10 @@ bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 bool cHTSPDemux::GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo)
 {
-  if (m_Quality.fe_name.IsEmpty() || m_Quality.fe_status.IsEmpty())
+  if (m_SourceInfo.si_adapter.IsEmpty() || m_Quality.fe_status.IsEmpty())
     return false;
 
-  strncpy(qualityinfo.frontend_name, m_Quality.fe_name.c_str(), sizeof(qualityinfo.frontend_name));
+  strncpy(qualityinfo.frontend_name, m_SourceInfo.si_adapter.c_str(), sizeof(qualityinfo.frontend_name));
   strncpy(qualityinfo.frontend_status, m_Quality.fe_status.c_str(), sizeof(qualityinfo.frontend_status));
   qualityinfo.signal = (uint16_t)m_Quality.fe_signal;
   qualityinfo.snr = (uint16_t)m_Quality.fe_snr;
@@ -269,13 +269,6 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
     XBMC->Log(LOG_ERROR, "cHTSPDemux::SubscriptionStart - malformed message");
     return;
   }
-
-  const char* fe_name;
-  if((fe_name = htsmsg_get_str(m, "adapter")))
-    m_Quality.fe_name = fe_name;
-  else
-    m_Quality.fe_name = "(unknown)";
-  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on adapter %s", fe_name);
 
   m_Streams.nstreams = 0;
 
@@ -480,20 +473,38 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       break;
     }
   }
+
+  if (cHTSPSession::ParseSourceInfo(m, m_SourceInfo))
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on adapter %s, mux %s, network %s, provider %s, service %s",
+        m_SourceInfo.si_adapter.c_str(), m_SourceInfo.si_mux.c_str(),
+        m_SourceInfo.si_network.c_str(), m_SourceInfo.si_provider.c_str(),
+        m_SourceInfo.si_service.c_str());
+  }
+  else
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on an unknown device");
+  }
 }
 
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_Quality.fe_name.c_str());
+  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_SourceInfo.si_adapter.c_str());
   m_Streams.nstreams = 0;
 
   /* reset the signal status */
-  m_Quality.fe_name   = "(unknown)";
-  m_Quality.fe_status = "(unknown)";
+  m_Quality.fe_status = "";
   m_Quality.fe_ber    = -2;
   m_Quality.fe_signal = -2;
   m_Quality.fe_snr    = -2;
   m_Quality.fe_unc    = -2;
+
+  /* reset the source info */
+  m_SourceInfo.si_adapter = "";
+  m_SourceInfo.si_mux = "";
+  m_SourceInfo.si_network = "";
+  m_SourceInfo.si_provider = "";
+  m_SourceInfo.si_service = "";
 }
 
 void cHTSPDemux::SubscriptionStatus(htsmsg_t *m)

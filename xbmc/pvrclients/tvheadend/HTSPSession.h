@@ -203,12 +203,22 @@ struct SQueueStatus
 
 struct SQuality
 {
-  CStdString  fe_name;
+//  CStdString  fe_name; // get the adapter name from the mux instead
   CStdString  fe_status;
   uint32_t    fe_snr;
   uint32_t    fe_signal;
   uint32_t    fe_ber;
   uint32_t    fe_unc;
+};
+
+struct SSourceInfo
+{
+//  CStdString si_device; // currently not sent by tvheadend
+  CStdString si_adapter;
+  CStdString si_network;
+  CStdString si_mux;
+  CStdString si_provider;
+  CStdString si_service;
 };
 
 typedef std::map<int, SChannel> SChannels;
@@ -251,6 +261,7 @@ public:
   static void ParseTagRemove     (htsmsg_t* msg, STags &tags);
   static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue);
   static bool ParseSignalStatus  (htsmsg_t* msg, SQuality &quality);
+  static bool ParseSourceInfo    (htsmsg_t* msg, SSourceInfo &si);
   static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 

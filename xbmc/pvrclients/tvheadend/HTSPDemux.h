@@ -58,4 +58,5 @@ private:
   SChannels       m_channels;
   SQueueStatus    m_QueueStatus;
   SQuality        m_Quality;
+  SSourceInfo     m_SourceInfo;
 };

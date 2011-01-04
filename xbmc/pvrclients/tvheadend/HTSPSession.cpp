@@ -533,7 +533,45 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
 
   XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseSignalStatus - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
                     , quality.fe_snr, quality.fe_signal, quality.fe_ber
-                    , quality.fe_unc, quality.fe_status);
+                    , quality.fe_unc, quality.fe_status.c_str());
+
+  return true;
+}
+
+bool cHTSPSession::ParseSourceInfo (htsmsg_t* msg, SSourceInfo &si)
+{
+  htsmsg_t       *sourceinfo;
+  if((sourceinfo = htsmsg_get_map(msg, "sourceinfo")) == NULL)
+  {
+    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseSourceInfo - malformed message");
+    return false;
+  }
+
+  const char* str;
+  if((str = htsmsg_get_str(sourceinfo, "adapter")) == NULL)
+    si.si_adapter = "";
+  else
+    si.si_adapter = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "mux")) == NULL)
+    si.si_mux = "";
+  else
+    si.si_mux = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "network")) == NULL)
+    si.si_network = "";
+  else
+    si.si_network = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "provider")) == NULL)
+    si.si_provider = "";
+  else
+    si.si_provider = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "service")) == NULL)
+    si.si_service = "";
+  else
+    si.si_service = str;
 
   return true;
 }
