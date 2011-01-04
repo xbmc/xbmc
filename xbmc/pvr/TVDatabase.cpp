@@ -678,7 +678,7 @@ bool CTVDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTime
     return false;
   }
 
-  CLog::Log(LOGERROR, "PVRDB - %s - clearing the EPG for channel '%s'",
+  CLog::Log(LOGDEBUG, "PVRDB - %s - clearing the EPG for channel '%s'",
       __FUNCTION__, channel.ChannelName().c_str());
 
   CStdString strWhereClause;
