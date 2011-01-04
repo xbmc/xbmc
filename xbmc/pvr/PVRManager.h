@@ -51,6 +51,7 @@ public:
    */
   void Start();
   void Stop();
+  void Restart(void);
 
   /*! \name External Client access functions
    */

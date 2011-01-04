@@ -815,7 +815,10 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
   }
 
   if (bHasChangedItems)
+  {
     database->CommitInsertQueries();
+    g_PVRManager.Restart(); // XXX not a nice way to refresh the channels, but works for now
+  }
 
   database->Close();
 

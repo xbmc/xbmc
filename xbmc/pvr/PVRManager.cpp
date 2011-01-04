@@ -89,6 +89,12 @@ CPVRManager::~CPVRManager()
   CLog::Log(LOGDEBUG,"PVR: destroyed");
 }
 
+void CPVRManager::Restart(void)
+{
+  Stop();
+  Start();
+}
+
 /********************************************************************
  * CPVRManager Start
  *
