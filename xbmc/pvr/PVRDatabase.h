@@ -24,6 +24,7 @@
 #include "DateTime.h"
 
 class CPVRChannels;
+class CPVRChannelsContainer;
 class CPVRChannel;
 class CPVRChannelGroups;
 class CPVREpg;

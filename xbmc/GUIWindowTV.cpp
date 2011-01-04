@@ -57,6 +57,7 @@
 #include "pvr/PVRChannelGroups.h"
 #include "pvr/PVRChannelGroup.h"
 #include "pvr/PVRTimerInfoTag.h"
+#include "pvr/PVRChannelsContainer.h"
 
 using namespace std;
 
@@ -315,12 +316,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_PLAY)
       {
-        CPVRChannels *channels;
-        if (!pItem->GetEPGInfoTag()->ChannelTag()->IsRadio())
-          channels = &PVRChannelsTV;
-        else
-          channels = &PVRChannelsRadio;
-
+        const CPVRChannels *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
         if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -396,12 +392,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
             {
-              PVRChannelsTV.HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannels *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsTV();
             }
             else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
             {
-              PVRChannelsRadio.HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannels *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsRadio();
             }
           }
@@ -749,8 +745,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
         buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
 
-      if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
-          (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
+      if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && g_PVRChannels.GetTV()->GetNumHiddenChannels() > 0) ||
+          (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && g_PVRChannels.GetRadio()->GetNumHiddenChannels() > 0) ||
           m_bShowHiddenChannels)
         buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051);  /* SHOW HIDDEN CHANNELS */
 
@@ -908,12 +904,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      CPVRChannels *channels;
-      if (!pItem->GetEPGInfoTag()->ChannelTag()->IsRadio())
-        channels = &PVRChannelsTV;
-      else
-        channels = &PVRChannelsRadio;
-
+      const CPVRChannels *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
       if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
       {
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -933,12 +924,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        PVRChannelsTV.MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannels *) g_PVRChannels.GetTV())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        PVRChannelsRadio.MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannels *) g_PVRChannels.GetRadio())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsRadio();
       }
     }
@@ -960,12 +951,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        PVRChannelsTV.HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannels *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        PVRChannelsRadio.HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannels *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsRadio();
       }
     }

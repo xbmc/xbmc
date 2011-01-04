@@ -44,6 +44,7 @@
 #include "PVRManager.h"
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
+#include "PVRChannelsContainer.h"
 #include "PVREpgInfoTag.h"
 #include "PVRTimerInfoTag.h"
 
@@ -395,8 +396,7 @@ bool CPVRManager::ContinueLastChannel()
     if (!tag)
       return false;
 
-    CPVRChannels *channels = tag->IsRadio() ?
-        &PVRChannelsRadio : &PVRChannelsTV;
+    const CPVRChannels *channels = g_PVRChannels.Get(tag->IsRadio());
 
     if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
       g_settings.m_bStartVideoWindowed = true;
@@ -425,10 +425,10 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  PVRChannelsTV.Load();             /* Load the TV channels */
-  PVRChannelsRadio.Load();          /* Load the radio channels */
-  PVRChannelGroupsTV.Load(false);   /* Load the TV channel group lists */
-  PVRChannelGroupsRadio.Load(true); /* Load the radio Channel group lists */
+  ((CPVRChannels *) g_PVRChannels.GetTV())->Load();    /* Load the TV channels */
+  ((CPVRChannels *) g_PVRChannels.GetRadio())->Load(); /* Load the radio channels */
+  PVRChannelGroupsTV.Load(false);                      /* Load the TV channel group lists */
+  PVRChannelGroupsRadio.Load(true);                    /* Load the radio Channel group lists */
 
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
@@ -453,7 +453,7 @@ void CPVRManager::Process()
     if (Now - m_LastTVChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
       CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
-      PVRChannelsTV.Update();
+      ((CPVRChannels *) g_PVRChannels.GetTV())->Update();
       m_LastTVChannelCheck = Now;
     }
 
@@ -461,7 +461,7 @@ void CPVRManager::Process()
     if (Now - m_LastRadioChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
       CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
-      PVRChannelsRadio.Update();
+      ((CPVRChannels *) g_PVRChannels.GetTV())->Update();
       m_LastRadioChannelCheck = Now;
     }
 
@@ -508,8 +508,8 @@ void CPVRManager::Process()
   PVRTimers.Unload();
   PVRChannelGroupsTV.Unload();
   PVRChannelGroupsRadio.Unload();
-  PVRChannelsRadio.Unload();
-  PVRChannelsTV.Unload();
+  ((CPVRChannels *) g_PVRChannels.GetRadio())->Unload();
+  ((CPVRChannels *) g_PVRChannels.GetTV())->Unload();
 }
 
 
@@ -1200,11 +1200,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
   if (m_clientsProps[tag->ClientID()].SupportTimers)
   {
-    CPVRChannels *channels;
-    if (!m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio())
-      channels = &PVRChannelsTV;
-    else
-      channels = &PVRChannelsRadio;
+    const CPVRChannels *channels = g_PVRChannels.Get(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
     if (bOnOff && tag->IsRecording() == false)
     {
@@ -1768,11 +1764,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   if (!m_currentPlayingChannel)
     return false;
 
-  CPVRChannels *channels;
-  if (!m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio())
-    channels = &PVRChannelsTV;
-  else
-    channels = &PVRChannelsRadio;
+  const CPVRChannels *channels = g_PVRChannels.Get(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
   if (iChannel > channels->size()+1)
   {
@@ -1816,11 +1808,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
 {
    if (m_currentPlayingChannel)
    {
-    CPVRChannels *channels;
-    if (!m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio())
-      channels = &PVRChannelsTV;
-    else
-      channels = &PVRChannelsRadio;
+     const CPVRChannels *channels = g_PVRChannels.Get(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
     EnterCriticalSection(&m_critSection);
 
@@ -1883,11 +1871,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
 {
   if (m_currentPlayingChannel)
   {
-    CPVRChannels *channels;
-    if (!m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio())
-      channels = &PVRChannelsTV;
-    else
-      channels = &PVRChannelsRadio;
+    const CPVRChannels *channels = g_PVRChannels.Get(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
     EnterCriticalSection(&m_critSection);
 

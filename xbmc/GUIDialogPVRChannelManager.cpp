@@ -42,7 +42,7 @@
 
 #include "pvr/PVRChannelGroups.h"
 #include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRChannels.h"
+#include "pvr/PVRChannelsContainer.h"
 #include "pvr/PVREpg.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
@@ -668,103 +668,60 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  if (!m_bIsRadio)
+  const CPVRChannels *channels = g_PVRChannels.Get(m_bIsRadio);
+  for (unsigned int i = 0; i < channels->size(); i++)
   {
-    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+    CPVRChannel *channel = channels->at(i);
+    CFileItemPtr channelFile(new CFileItem(*channel));
+    channelFile->SetProperty("ActiveChannel", !channel->IsHidden());
+    channelFile->SetProperty("Name", channel->ChannelName());
+    channelFile->SetProperty("UseEPG", channel->EPGEnabled());
+    channelFile->SetProperty("GroupId", channel->GroupID());
+    channelFile->SetProperty("Icon", channel->IconPath());
+    channelFile->SetProperty("EPGSource", (int)0);
+    CStdString number; number.Format("%i", channel->ChannelNumber());
+    channelFile->SetProperty("Number", number);
+
+    if (channel->IsVirtual())
     {
-      CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
-      channel->SetProperty("ActiveChannel", !PVRChannelsTV[i]->IsHidden());
-      channel->SetProperty("Name", PVRChannelsTV[i]->ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsTV[i]->EPGEnabled());
-      channel->SetProperty("GroupId", PVRChannelsTV[i]->GroupID());
-      channel->SetProperty("Icon", PVRChannelsTV[i]->IconPath());
-      channel->SetProperty("EPGSource", (int)0);
-      CStdString number; number.Format("%i", PVRChannelsTV[i]->ChannelNumber());
-      channel->SetProperty("Number", number);
-
-      if (PVRChannelsTV[i]->IsVirtual())
-      {
-        channel->SetProperty("Virtual", true);
-        channel->SetProperty("StreamURL", PVRChannelsTV[i]->StreamURL());
-      }
-
-      CStdString clientName;
-      if (PVRChannelsTV[i]->ClientID() == 999) /* XBMC internal */
-        clientName = g_localizeStrings.Get(19209);
-      else
-        clientName = g_PVRManager.Clients()->find(PVRChannelsTV[i]->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsTV[i]->ClientID())->second->GetConnectionString();
-      channel->SetProperty("ClientName", clientName);
-
-      m_channelItems->Add(channel);
+      channelFile->SetProperty("Virtual", true);
+      channelFile->SetProperty("StreamURL", channel->StreamURL());
     }
 
-    CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-    if (pSpin)
+    CStdString clientName;
+    if (channel->ClientID() == 999) /* XBMC internal */
+      clientName = g_localizeStrings.Get(19209);
+    else
+      clientName = g_PVRManager.Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(channel->ClientID())->second->GetConnectionString();
+    channelFile->SetProperty("ClientName", clientName);
+
+    m_channelItems->Add(channelFile);
+  }
+
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
+  if (pSpin)
+  {
+    pSpin->Clear();
+    pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+
+    if (m_bIsRadio)
     {
-      pSpin->Clear();
-      pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+      for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
+        pSpin->AddLabel(PVRChannelGroupsRadio[i].GroupName(), PVRChannelGroupsRadio[i].GroupID());
+    }
+    else
+    {
       for (unsigned int i = 0; i < PVRChannelGroupsTV.size(); i++)
-      {
         pSpin->AddLabel(PVRChannelGroupsTV[i].GroupName(), PVRChannelGroupsTV[i].GroupID());
-      }
-    }
-
-    pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-    if (pSpin)
-    {
-      pSpin->Clear();
-      pSpin->AddLabel(g_localizeStrings.Get(19210), 0);
-      /// TODO: Add Labels for EPG scrapers here
     }
   }
-  else
+
+  pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
+  if (pSpin)
   {
-    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-    {
-      CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
-      channel->SetProperty("ActiveChannel", !PVRChannelsRadio[i]->IsHidden());
-      channel->SetProperty("Name", PVRChannelsRadio[i]->ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsRadio[i]->EPGEnabled());
-      channel->SetProperty("GroupId", (int)PVRChannelsRadio[i]->GroupID());
-      channel->SetProperty("Icon", PVRChannelsRadio[i]->IconPath());
-      channel->SetProperty("EPGSource", (int)0);
-      CStdString number; number.Format("%i", PVRChannelsRadio[i]->ChannelNumber());
-      channel->SetProperty("Number", number);
-
-      if (PVRChannelsRadio[i]->IsVirtual())
-      {
-        channel->SetProperty("Virtual", true);
-        channel->SetProperty("StreamURL", PVRChannelsRadio[i]->StreamURL());
-      }
-
-      CStdString clientName;
-      if (PVRChannelsRadio[i]->ClientID() == 999) /* XBMC internal */
-        clientName = g_localizeStrings.Get(19209);
-      else
-        clientName = g_PVRManager.Clients()->find(PVRChannelsRadio[i]->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsRadio[i]->ClientID())->second->GetConnectionString();
-      channel->SetProperty("ClientName", clientName);
-
-      m_channelItems->Add(channel);
-    }
-
-    CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-    if (pSpin)
-    {
-      pSpin->Clear();
-      pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
-      for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
-      {
-        pSpin->AddLabel(PVRChannelGroupsRadio[i].GroupName(), PVRChannelGroupsRadio[i].GroupID());
-      }
-    }
-
-    pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-    if (pSpin)
-    {
-      pSpin->Clear();
-      pSpin->AddLabel(g_localizeStrings.Get(19210), 0);
-      /// TODO: Add Labels for EPG scrapers here
-    }
+    pSpin->Clear();
+    pSpin->AddLabel(g_localizeStrings.Get(19210), 0);
+    /// TODO: Add Labels for EPG scrapers here
   }
 
   Renumber();

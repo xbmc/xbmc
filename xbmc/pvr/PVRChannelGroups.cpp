@@ -31,6 +31,7 @@
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
 
+#include "PVRChannelsContainer.h"
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
 #include "PVRDatabase.h"
@@ -82,11 +83,7 @@ int CPVRChannelGroups::GetFirstChannelForGroupID(int GroupId)
   if (GroupId == -1)
     return 1;
 
-  CPVRChannels *channels;
-  if (!m_bRadio)
-    channels = &PVRChannelsTV;
-  else
-    channels = &PVRChannelsRadio;
+  const CPVRChannels *channels = g_PVRChannels.Get(m_bRadio);
 
   for (unsigned int i = 0; i < channels->size(); i++)
   {
@@ -172,17 +169,17 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
 
   Clear();
 
-  CPVRChannels channels = m_bRadio ? PVRChannelsRadio : PVRChannelsTV;
+  const CPVRChannels *channels = g_PVRChannels.Get(m_bRadio);
 
   /* Delete the group inside Database */
   database->DeleteChannelGroup(GroupId, m_bRadio);
 
   /* Set all channels with this group to undefined */
-  for (unsigned int i = 0; i < channels.size(); i++)
+  for (unsigned int i = 0; i < channels->size(); i++)
   {
-    if (channels[i]->GroupID() == GroupId)
+    if (channels->at(i)->GroupID() == GroupId)
     {
-      channels[i]->SetGroupID(0, true);
+      channels->at(i)->SetGroupID(0, true);
     }
   }
 
@@ -222,12 +219,7 @@ int CPVRChannelGroups::GetGroupId(CStdString GroupName)
 
 bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
 {
-  CPVRChannels *channels;
-  if (!channel.IsRadio())
-    channels = &PVRChannelsTV;
-  else
-    channels = &PVRChannelsRadio;
-
+  const CPVRChannels *channels = g_PVRChannels.Get(channel.IsRadio());
   channels->at(channel.ChannelNumber()-1)->SetGroupID(GroupId);
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }

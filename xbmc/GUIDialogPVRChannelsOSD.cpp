@@ -28,6 +28,7 @@
 #include "ViewState.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/PVRChannelsContainer.h"
 #include "pvr/PVREpg.h"
 #include "pvr/PVRTimerInfoTag.h"
 
@@ -112,10 +113,8 @@ void CGUIDialogPVRChannelsOSD::Update()
   int CurrentChannel;
   g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
-  if (!RadioPlaying)
-    PVRChannelsTV.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
-  else
-    PVRChannelsRadio.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
+  CPVRChannels *channels = (CPVRChannels *)g_PVRChannels.Get(RadioPlaying);
+  channels->GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
 
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(CurrentChannel-1);

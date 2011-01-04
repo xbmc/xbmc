@@ -4,6 +4,7 @@ SRCS=PVRChannel.cpp \
 	PVRChannelGroup.cpp \
 	PVRChannelGroups.cpp \
 	PVRChannels.cpp \
+	PVRChannelsContainer.cpp \
 	PVREpg.cpp \
 	PVREpgInfoTag.cpp \
 	PVREpgs.cpp \

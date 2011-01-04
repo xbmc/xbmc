@@ -29,7 +29,7 @@
 #include "LocalizeStrings.h"
 
 #include "pvr/PVRChannelGroups.h"
-#include "pvr/PVRChannels.h"
+#include "pvr/PVRChannelsContainer.h"
 
 using namespace std;
 
@@ -258,10 +258,8 @@ void CGUIDialogPVRGroupManager::Update()
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
-  if (!m_bIsRadio)
-    PVRChannelsTV.GetChannels(m_channelLeftItems, 0);
-  else
-    PVRChannelsRadio.GetChannels(m_channelLeftItems, 0);
+  CPVRChannels *channels = (CPVRChannels *)g_PVRChannels.Get(m_bIsRadio);
+  channels->GetChannels(m_channelLeftItems, 0);
   m_viewControlLeft.SetItems(*m_channelLeftItems);
   m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);
 
@@ -271,10 +269,7 @@ void CGUIDialogPVRGroupManager::Update()
     m_CurrentGroupName = pItem->m_strTitle;
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
 
-    if (!m_bIsRadio)
-      PVRChannelsTV.GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
-    else
-      PVRChannelsRadio.GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
+    channels->GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
     m_viewControlRight.SetItems(*m_channelRightItems);
     m_viewControlRight.SetSelectedItem(m_iSelectedRight);
   }

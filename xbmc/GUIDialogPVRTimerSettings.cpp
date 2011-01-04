@@ -27,7 +27,7 @@
 
 #include "pvr/PVRTimerInfoTag.h"
 #include "pvr/PVRChannel.h"
-#include "pvr/PVRChannels.h"
+#include "pvr/PVRChannelsContainer.h"
 
 using namespace std;
 
@@ -67,7 +67,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    PVRChannelsTV.GetChannels(&channelslist_tv, -1);
+    ((CPVRChannels *) g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, -1);
 
     channelstrings_tv.push_back("0 dummy");
 
@@ -85,7 +85,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    PVRChannelsRadio.GetChannels(&channelslist_radio, -1);
+    ((CPVRChannels *) g_PVRChannels.GetRadio())->GetChannels(&channelslist_radio, -1);
 
     channelstrings_radio.push_back("0 dummy");
 
@@ -232,13 +232,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = PVRChannelsTV.GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannels *) g_PVRChannels.GetTV())->GetByChannelNumber(tag->Number());
     }
     else
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, false);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = PVRChannelsRadio.GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannels *) g_PVRChannels.GetRadio())->GetByChannelNumber(tag->Number());
     }
 
     if (channeltag)
@@ -251,11 +251,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    CPVRChannel* channeltag = NULL;
-    if (!tag->IsRadio())
-      channeltag = PVRChannelsTV.GetByChannelNumber(tag->Number());
-    else
-      channeltag = PVRChannelsRadio.GetByChannelNumber(tag->Number());
+    CPVRChannel* channeltag = ((CPVRChannels *) g_PVRChannels.Get(tag->IsRadio()))->GetByChannelNumber(tag->Number());
 
     if (channeltag)
     {

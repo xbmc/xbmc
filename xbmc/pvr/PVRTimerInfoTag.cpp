@@ -25,6 +25,7 @@
 
 #include "PVRTimerInfoTag.h"
 #include "PVRChannel.h"
+#include "PVRChannelsContainer.h"
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
 
@@ -368,7 +369,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::InstantTimer()
   if (!channel)
   {
     CLog::Log(LOGDEBUG, "%s - couldn't find current playing channel", __FUNCTION__);
-    channel = PVRChannelsTV.GetByChannelNumber(1);
+    channel = ((CPVRChannels *) g_PVRChannels.GetTV())->GetByChannelNumber(1);
 
     if (!channel)
     {
