@@ -244,7 +244,7 @@ bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 bool cHTSPDemux::GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo)
 {
-  if (m_Quality.fe_name.IsEmpty())
+  if (m_Quality.fe_name.IsEmpty() || m_Quality.fe_status.IsEmpty())
     return false;
 
   strncpy(qualityinfo.frontend_name, m_Quality.fe_name.c_str(), sizeof(qualityinfo.frontend_name));
@@ -271,10 +271,11 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
   }
 
   const char* fe_name;
-  if((fe_name = htsmsg_get_str(m, "adapter")) == NULL)
-    m_Quality.fe_name = "";
-  else
+  if((fe_name = htsmsg_get_str(msg, "adapter")))
     m_Quality.fe_name = fe_name;
+  else
+    m_Quality.fe_name = "(unknown)";
+  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on adapter %s", fe_name);
 
   m_Streams.nstreams = 0;
 
@@ -483,8 +484,16 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
-  m_Quality.fe_name = "";
+  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_Quality.fe_name);
   m_Streams.nstreams = 0;
+
+  /* reset the signal status */
+  m_Quality.fe_name   = "(unknown)";
+  m_Quality.fe_status = "(unknown)";
+  m_Quality.fe_ber    = -2;
+  m_Quality.fe_signal = -2;
+  m_Quality.fe_snr    = -2;
+  m_Quality.fe_unc    = -2;
 }
 
 void cHTSPDemux::SubscriptionStatus(htsmsg_t *m)

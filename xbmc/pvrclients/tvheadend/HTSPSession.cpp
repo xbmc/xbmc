@@ -526,10 +526,10 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
     quality.fe_unc = -2;
 
   const char* status;
-  if((status = htsmsg_get_str(msg, "feStatus")) == NULL)
-    quality.fe_status = "";
-  else
+  if((status = htsmsg_get_str(msg, "feStatus")))
     quality.fe_status = status;
+  else
+    quality.fe_status = "(unknown)";
 
   XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseSignalStatus - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
                     , quality.fe_snr, quality.fe_signal, quality.fe_ber
