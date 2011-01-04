@@ -158,6 +158,13 @@ struct SEvent
   }
 };
 
+typedef enum recording_state {
+  ST_SCHEDULED,
+  ST_RECORDING,
+  ST_COMPLETED,
+  ST_INVALID
+} ERecordingState;
+
 struct SRecording
 {
   uint32_t         id;
@@ -166,7 +173,7 @@ struct SRecording
   uint32_t         stop;
   std::string      title;
   std::string      description;
-  std::string      state;
+  ERecordingState  state;
   std::string      error;
 
   SRecording() { Clear(); }
@@ -175,7 +182,7 @@ struct SRecording
     id = channel = start = stop = 0;
     title.clear();
     description.clear();
-    state.clear();
+    state = ST_INVALID;
     error.clear();
   }
 };

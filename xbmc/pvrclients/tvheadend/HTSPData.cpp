@@ -258,10 +258,8 @@ SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
   {
     SRecording recording = it->second;
 
-    bool recordedOrRecording   = (unsigned int)localTime >= recording.start;
-    bool scheduledOrRecording  = (unsigned int)localTime <= recording.stop;
-
-    if ((scheduledOrRecording && scheduled) || (recordedOrRecording && recorded))
+    if ((recorded && recording.state == ST_COMPLETED) ||
+        (scheduled && (recording.state == ST_SCHEDULED || recording.state == ST_RECORDING)))
       recordings[recording.id] = recording;
   }
 
@@ -371,8 +369,8 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
     tag.channelNum  = recording.channel;
     tag.starttime   = recording.start;
     tag.endtime     = recording.stop;
-    tag.active      = true;
-    tag.recording   = (localTime > tag.starttime) && (localTime < tag.endtime);
+    tag.active      = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
+    tag.recording   = recording.state == ST_RECORDING;
     tag.title       = recording.title.c_str();
     tag.directory   = "/";
     tag.priority    = 0;

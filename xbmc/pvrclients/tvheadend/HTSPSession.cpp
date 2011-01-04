@@ -620,7 +620,15 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
     return;
   }
 
-  recording.state = state;
+  /* parse the dvr entry's state */
+  if     (strstr(state, "scheduled"))
+    recording.state = ST_SCHEDULED;
+  else if(strstr(state, "recording"))
+    recording.state = ST_RECORDING;
+  else if(strstr(state, "completed"))
+    recording.state = ST_COMPLETED;
+  else if(strstr(state, "invalid"))
+    recording.state = ST_INVALID;
 
   const char* str;
   if((str = htsmsg_get_str(msg, "title")) == NULL)
@@ -638,7 +646,8 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   else
     recording.error = str;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryUpdate - id:%u title '%s'\ndescription '%s'", recording.id, recording.title.c_str(), recording.description.c_str());
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryUpdate - id:%u, state:'%s', title:'%s', description: '%s'",
+      recording.id, state, recording.title.c_str(), recording.description.c_str());
 
   recordings[recording.id] = recording;
 }
