@@ -1,48 +1,7 @@
-From d1495e2e1864d7445fe580ab01028cf3e8e32a57 Mon Sep 17 00:00:00 2001
-From: Lars Op den Kamp <lars@opdenkamp.eu>
-Date: Sat, 9 Oct 2010 10:11:21 +0200
-Subject: [PATCH] add signal status in HTSP
-
----
- src/dvb/dvb.h           |    6 ++++++
- src/dvb/dvb_adapter.c   |   13 +++++++++++++
- src/dvb/dvb_fe.c        |   26 +++++++++++++++++++++++++-
- src/dvb/dvb_transport.c |   28 ++++++++++++++++++++++++++++
- src/htsp.c              |   41 ++++++++++++++++++++++++++++++++++++++++-
- src/transports.c        |   25 +++++++++++++++++++++++++
- src/transports.h        |    3 +++
- src/tvhead.h            |   14 ++++++++++++++
- 8 files changed, 154 insertions(+), 2 deletions(-)
-
-diff --git a/src/dvb/dvb.h b/src/dvb/dvb.h
-index 9f155fe..240722d 100644
---- a/src/dvb/dvb.h
-+++ b/src/dvb/dvb.h
-@@ -200,6 +200,10 @@ typedef struct th_dvb_adapter {
-   int tda_allpids_dmx_fd;
-   int tda_dump_fd;
- 
-+
-+  pthread_mutex_t sig_status_update_mutex;
-+  signal_status_t *sig_status; /* current signal status */
-+
- } th_dvb_adapter_t;
- 
- 
-@@ -307,6 +311,8 @@ void dvb_transport_notify_by_adapter(th_dvb_adapter_t *tda);
- 
- htsmsg_t *dvb_transport_build_msg(th_transport_t *t);
- 
-+void dvb_transport_get_signal_status(th_transport_t *current_transport,
-+                   signal_status_t *status);
- 
- /**
-  * DVB Frontend
-diff --git a/src/dvb/dvb_adapter.c b/src/dvb/dvb_adapter.c
-index 6f909bf..5f9605a 100644
---- a/src/dvb/dvb_adapter.c
-+++ b/src/dvb/dvb_adapter.c
-@@ -64,6 +64,19 @@ tda_alloc(void)
+diff -Naur tvheadend-orig/src/dvb/dvb_adapter.c tvheadend-patch/src/dvb/dvb_adapter.c
+--- tvheadend-orig/src/dvb/dvb_adapter.c	2010-11-06 14:37:14.999505279 +0100
++++ tvheadend-patch/src/dvb/dvb_adapter.c	2010-11-06 14:50:26.043504304 +0100
+@@ -64,6 +64,19 @@
    tda->tda_allpids_dmx_fd = -1;
    tda->tda_dump_fd = -1;
  
@@ -62,11 +21,10 @@ index 6f909bf..5f9605a 100644
    return tda;
  }
  
-diff --git a/src/dvb/dvb_fe.c b/src/dvb/dvb_fe.c
-index c68876e..eeda9cb 100644
---- a/src/dvb/dvb_fe.c
-+++ b/src/dvb/dvb_fe.c
-@@ -51,7 +51,7 @@ dvb_fe_monitor(void *aux)
+diff -Naur tvheadend-orig/src/dvb/dvb_fe.c tvheadend-patch/src/dvb/dvb_fe.c
+--- tvheadend-orig/src/dvb/dvb_fe.c	2010-11-06 14:37:14.999505279 +0100
++++ tvheadend-patch/src/dvb/dvb_fe.c	2010-11-06 14:50:26.043504304 +0100
+@@ -51,7 +51,7 @@
  {
    th_dvb_adapter_t *tda = aux;
    fe_status_t fe_status;
@@ -75,7 +33,7 @@ index c68876e..eeda9cb 100644
    th_dvb_mux_instance_t *tdmi = tda->tda_mux_current;
    char buf[50];
  
-@@ -112,6 +112,18 @@ dvb_fe_monitor(void *aux)
+@@ -112,6 +112,18 @@
      } else {
        status = TDMI_FE_CONSTANT_FEC;
      }
@@ -94,7 +52,7 @@ index c68876e..eeda9cb 100644
    }
  
    if(status != tdmi->tdmi_fe_status) {
-@@ -137,6 +149,18 @@ dvb_fe_monitor(void *aux)
+@@ -137,6 +149,18 @@
      }
    } 
  
@@ -113,11 +71,33 @@ index c68876e..eeda9cb 100644
    if(update) {
      htsmsg_t *m = htsmsg_create_map();
  
-diff --git a/src/dvb/dvb_transport.c b/src/dvb/dvb_transport.c
-index 48650d8..e6d7e4d 100644
---- a/src/dvb/dvb_transport.c
-+++ b/src/dvb/dvb_transport.c
-@@ -460,3 +460,31 @@ dvb_transport_notify(th_transport_t *t)
+diff -Naur tvheadend-orig/src/dvb/dvb.h tvheadend-patch/src/dvb/dvb.h
+--- tvheadend-orig/src/dvb/dvb.h	2010-11-06 14:37:14.999505279 +0100
++++ tvheadend-patch/src/dvb/dvb.h	2010-11-06 14:50:26.043504304 +0100
+@@ -200,6 +200,10 @@
+   int tda_allpids_dmx_fd;
+   int tda_dump_fd;
+ 
++
++  pthread_mutex_t sig_status_update_mutex;
++  signal_status_t *sig_status; /* current signal status */
++
+ } th_dvb_adapter_t;
+ 
+ 
+@@ -307,6 +311,8 @@
+ 
+ htsmsg_t *dvb_transport_build_msg(th_transport_t *t);
+ 
++void dvb_transport_get_signal_status(th_transport_t *current_transport,
++                   signal_status_t *status);
+ 
+ /**
+  * DVB Frontend
+diff -Naur tvheadend-orig/src/dvb/dvb_transport.c tvheadend-patch/src/dvb/dvb_transport.c
+--- tvheadend-orig/src/dvb/dvb_transport.c	2010-11-06 14:37:14.999505279 +0100
++++ tvheadend-patch/src/dvb/dvb_transport.c	2010-11-06 14:50:26.043504304 +0100
+@@ -460,3 +460,31 @@
    htsmsg_add_str(m, "adapterId", tdmi->tdmi_adapter->tda_identifier);
    notify_by_msg("dvbService", m);
  }
@@ -149,11 +129,10 @@ index 48650d8..e6d7e4d 100644
 +    pthread_mutex_unlock(&tda->sig_status_update_mutex);
 +  }
 +}
-diff --git a/src/htsp.c b/src/htsp.c
-index 55a94e0..55af13d 100644
---- a/src/htsp.c
-+++ b/src/htsp.c
-@@ -166,6 +166,8 @@ typedef struct htsp_subscription {
+diff -Naur tvheadend-orig/src/htsp.c tvheadend-patch/src/htsp.c
+--- tvheadend-orig/src/htsp.c	2010-11-06 14:45:50.311506646 +0100
++++ tvheadend-patch/src/htsp.c	2010-11-06 14:50:26.095507576 +0100
+@@ -166,6 +166,8 @@
  } htsp_subscription_t;
  
  
@@ -162,7 +141,7 @@ index 55a94e0..55af13d 100644
  
  /**
   *
-@@ -1387,6 +1389,7 @@ htsp_stream_deliver(htsp_subscription_t *hs, th_pkt_t *pkt)
+@@ -1392,6 +1394,7 @@
    htsp_connection_t *htsp = hs->hs_htsp;
    int64_t ts;
    int qlen = hs->hs_q.hmq_payload;
@@ -170,7 +149,7 @@ index 55a94e0..55af13d 100644
  
    if((qlen > 500000 && pkt->pkt_frametype == PKT_B_FRAME) ||
       (qlen > 750000 && pkt->pkt_frametype == PKT_P_FRAME) || 
-@@ -1431,7 +1434,9 @@ htsp_stream_deliver(htsp_subscription_t *hs, th_pkt_t *pkt)
+@@ -1436,7 +1439,9 @@
    htsp_send(htsp, m, pkt->pkt_payload, &hs->hs_q, pktbuf_len(pkt->pkt_payload));
  
    if(hs->hs_last_report != dispatch_clock) {
@@ -181,7 +160,7 @@ index 55a94e0..55af13d 100644
  
      hs->hs_last_report = dispatch_clock;
  
-@@ -1460,6 +1465,18 @@ htsp_stream_deliver(htsp_subscription_t *hs, th_pkt_t *pkt)
+@@ -1465,6 +1470,18 @@
      htsmsg_add_u32(m, "Pdrops", hs->hs_dropstats[PKT_P_FRAME]);
      htsmsg_add_u32(m, "Idrops", hs->hs_dropstats[PKT_I_FRAME]);
  
@@ -200,7 +179,7 @@ index 55a94e0..55af13d 100644
      /* We use a special queue for queue status message so they're not
         blocked by anything else */
  
-@@ -1611,3 +1628,25 @@ htsp_streaming_input(void *opaque, streaming_message_t *sm)
+@@ -1613,3 +1630,25 @@
    }
    streaming_msg_free(sm);
  }
@@ -226,15 +205,13 @@ index 55a94e0..55af13d 100644
 +    return get_signal_status_from_transport(hs->hs_s->ths_transport, status);
 +  }
 +}
-diff --git a/src/transports.c b/src/transports.c
-index 801e30a..7cfd6dd 100644
---- a/src/transports.c
-+++ b/src/transports.c
-@@ -1050,3 +1050,28 @@ get_encryption_from_transport(th_transport_t *t)
- 
+diff -Naur tvheadend-orig/src/transports.c tvheadend-patch/src/transports.c
+--- tvheadend-orig/src/transports.c	2010-11-06 14:46:40.579505415 +0100
++++ tvheadend-patch/src/transports.c	2010-11-06 14:51:44.015507336 +0100
+@@ -1054,3 +1054,29 @@
    return 0;
  }
-+
+ 
 +
 +/**
 + * Get the signal status from a transport
@@ -250,6 +227,7 @@ index 801e30a..7cfd6dd 100644
 +    {
 +      case TRANSPORT_DVB:
 +        dvb_transport_get_signal_status(current_transport, status);
++        break;
 +      case TRANSPORT_V4L:
 +        //TODO add signal status from a V4L adapter
 +        break;
@@ -259,11 +237,11 @@ index 801e30a..7cfd6dd 100644
 +    }
 +  }
 +}
-diff --git a/src/transports.h b/src/transports.h
-index 21caa61..acbdfe9 100644
---- a/src/transports.h
-+++ b/src/transports.h
-@@ -100,4 +100,7 @@ int tss2errcode(int tss);
++
+diff -Naur tvheadend-orig/src/transports.h tvheadend-patch/src/transports.h
+--- tvheadend-orig/src/transports.h	2010-11-06 14:45:50.311506646 +0100
++++ tvheadend-patch/src/transports.h	2010-11-06 14:50:26.095507576 +0100
+@@ -100,4 +100,7 @@
  
  uint16_t get_encryption_from_transport(th_transport_t *t);
  
@@ -271,11 +249,10 @@ index 21caa61..acbdfe9 100644
 +                 signal_status_t *status);
 +
  #endif /* TRANSPORTS_H */
-diff --git a/src/tvhead.h b/src/tvhead.h
-index 3b4737e..660ca28 100644
---- a/src/tvhead.h
-+++ b/src/tvhead.h
-@@ -166,6 +166,20 @@ typedef enum {
+diff -Naur tvheadend-orig/src/tvhead.h tvheadend-patch/src/tvhead.h
+--- tvheadend-orig/src/tvhead.h	2010-11-06 14:37:15.015505279 +0100
++++ tvheadend-patch/src/tvhead.h	2010-11-06 14:50:26.095507576 +0100
+@@ -168,6 +168,20 @@
  #define SCT_ISVIDEO(t) ((t) == SCT_MPEG2VIDEO || (t) == SCT_H264)
  #define SCT_ISAUDIO(t) ((t) == SCT_MPEG2AUDIO || (t) == SCT_AC3 || \
                          (t) == SCT_AAC)
@@ -296,6 +273,3 @@ index 3b4737e..660ca28 100644
  /**
   * A streaming pad generates data.
   * It has one or more streaming targets attached to it.
--- 
-1.7.0.4
-
