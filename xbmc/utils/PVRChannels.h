@@ -71,6 +71,11 @@ private:
    */
   void RemoveInvalidChannels(void);
 
+  /**
+   * Called by GetDirectory to get the directory for a group
+   */
+  static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
+
 public:
   CPVRChannels(bool bRadio);
 
@@ -196,7 +201,10 @@ public:
    */
   static void SearchMissingChannelIcons();
 
-  static bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  /**
+   * Get the directory for a path
+   */
+  static bool GetDirectory(const CStdString& strPath, CFileItemList &results);
 };
 
 extern CPVRChannels PVRChannelsTV;

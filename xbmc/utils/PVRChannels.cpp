@@ -24,7 +24,6 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "log.h"
-#include "MusicInfoTag.h"
 
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
@@ -631,13 +630,46 @@ CPVRChannel *CPVRChannels::GetByPath(const CStdString &strPath)
   return channels ? channels->GetByChannelNumber(iChannelNumber) : NULL;
 }
 
-////////////////////////////////////////////////////////
-
-bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPVRChannels::GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio)
 {
-  CStdString base(strPath);
-  CUtil::RemoveSlashAtEnd(base);
+  CPVRChannels *     channels      = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
+  CPVRChannelGroups *channelGroups = bRadio ? &PVRChannelGroupsRadio : &PVRChannelGroupsTV;
+  CFileItemPtr item;
 
+  item.reset(new CFileItem(strBase + "/all/", true));
+  item->SetLabel(g_localizeStrings.Get(593));
+  item->SetLabelPreformated(true);
+  results->Add(item);
+
+  /* container has hidden channels */
+  if (channels->GetNumHiddenChannels() > 0)
+  {
+    item.reset(new CFileItem(strBase + "/.hidden/", true));
+    item->SetLabel(g_localizeStrings.Get(19022));
+    item->SetLabelPreformated(true);
+    results->Add(item);
+  }
+
+  /* add all groups */
+  for (unsigned int ptr = 0; ptr < channelGroups->size(); ptr++)
+  {
+    CPVRChannelGroup group = channelGroups->at(ptr);
+    CStdString strGroup = strBase + "/" + group.GroupName() + "/";
+    item.reset(new CFileItem(strGroup, true));
+    item->SetLabel(group.GroupName());
+    item->SetLabelPreformated(true);
+    results->Add(item);
+  }
+
+  return true;
+}
+
+bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &results)
+{
+  CStdString strBase(strPath);
+  CUtil::RemoveSlashAtEnd(strBase);
+
+  /* get the filename from curl */
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
   CUtil::RemoveSlashAtEnd(fileName);
@@ -646,102 +678,38 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
   {
     CFileItemPtr item;
 
-    item.reset(new CFileItem(base + "/tv/", true));
+    /* all tv channels */
+    item.reset(new CFileItem(strBase + "/tv/", true));
     item->SetLabel(g_localizeStrings.Get(19020));
     item->SetLabelPreformated(true);
-    items.Add(item);
+    results.Add(item);
 
-    item.reset(new CFileItem(base + "/radio/", true));
+    /* all radio channels */
+    item.reset(new CFileItem(strBase + "/radio/", true));
     item->SetLabel(g_localizeStrings.Get(19021));
     item->SetLabelPreformated(true);
-    items.Add(item);
+    results.Add(item);
 
     return true;
   }
   else if (fileName == "channels/tv")
   {
-    CFileItemPtr item;
-
-    item.reset(new CFileItem(base + "/all/", true));
-    item->SetLabel(g_localizeStrings.Get(593));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    if (PVRChannelsTV.GetNumHiddenChannels() > 0)
-    {
-      item.reset(new CFileItem(base + "/.hidden/", true));
-      item->SetLabel(g_localizeStrings.Get(19022));
-      item->SetLabelPreformated(true);
-      items.Add(item);
-    }
-
-    for (unsigned int i = 0; i < PVRChannelGroupsTV.size(); i++)
-    {
-      base += "/" + PVRChannelGroupsTV[i].GroupName() + "/";
-      item.reset(new CFileItem(base, true));
-      item->SetLabel(PVRChannelGroupsTV[i].GroupName());
-      item->SetLabelPreformated(true);
-      items.Add(item);
-    }
-
-    return true;
+    return GetGroupsDirectory(strBase, &results, false);
   }
   else if (fileName == "channels/radio")
   {
-    CFileItemPtr item;
-
-    item.reset(new CFileItem(base + "/all/", true));
-    item->SetLabel(g_localizeStrings.Get(593));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    if (PVRChannelsTV.GetNumHiddenChannels() > 0)
-    {
-      item.reset(new CFileItem(base + "/.hidden/", true));
-      item->SetLabel(g_localizeStrings.Get(19022));
-      item->SetLabelPreformated(true);
-      items.Add(item);
-    }
-
-    for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
-    {
-      base += "/" + PVRChannelGroupsRadio[i].GroupName() + "/";
-      item.reset(new CFileItem(base, true));
-      item->SetLabel(PVRChannelGroupsRadio[i].GroupName());
-      item->SetLabelPreformated(true);
-      items.Add(item);
-    }
-
-    return true;
+    return GetGroupsDirectory(strBase, &results, true);
   }
   else if (fileName.Left(12) == "channels/tv/")
   {
     if (fileName.substr(12) == ".hidden")
     {
-      for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-      {
-        if (!PVRChannelsTV[i]->IsHidden())
-          continue;
-
-        CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
-        items.Add(channel);
-      }
+      PVRChannelsTV.GetChannels(&results, -1, true);
     }
     else
     {
-      int groupID = PVRChannelGroupsTV.GetGroupId(fileName.substr(12));
-
-      for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-      {
-        if (PVRChannelsTV[i]->IsHidden())
-          continue;
-
-        if ((groupID != -1) && (PVRChannelsTV[i]->GroupID() != groupID))
-          continue;
-
-        CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
-        items.Add(channel);
-      }
+      int iGroupID = PVRChannelGroupsTV.GetGroupId(fileName.substr(12));
+      PVRChannelsTV.GetChannels(&results, iGroupID, false);
     }
     return true;
   }
@@ -749,45 +717,12 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
   {
     if (fileName.substr(15) == ".hidden")
     {
-      for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-      {
-        if (!PVRChannelsRadio[i]->IsHidden())
-          continue;
-
-        CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
-        items.Add(channel);
-      }
+      PVRChannelsRadio.GetChannels(&results, -1, true);
     }
     else
     {
-      int groupID = PVRChannelGroupsRadio.GetGroupId(fileName.substr(15));
-
-      for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-      {
-        if (PVRChannelsRadio[i]->IsHidden())
-          continue;
-
-        if ((groupID != -1) && (PVRChannelsRadio[i]->GroupID() != groupID))
-          continue;
-
-        CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
-        CMusicInfoTag* musictag = channel->GetMusicInfoTag();
-        if (musictag)
-        {
-          const CPVRChannel *channel = PVRChannelsRadio[i];
-          const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
-          musictag->SetURL(channel->Path());
-          musictag->SetTitle(epgNow->Title());
-          musictag->SetArtist(channel->ChannelName());
-          musictag->SetAlbumArtist(channel->ChannelName());
-          musictag->SetGenre(epgNow->Genre());
-          musictag->SetDuration(epgNow->GetDuration());
-          musictag->SetLoaded(true);
-          musictag->SetComment("");
-          musictag->SetLyrics("");
-        }
-        items.Add(channel);
-      }
+      int iGroupID = PVRChannelGroupsRadio.GetGroupId(fileName.substr(15));
+      PVRChannelsRadio.GetChannels(&results, iGroupID, true);
     }
     return true;
   }
