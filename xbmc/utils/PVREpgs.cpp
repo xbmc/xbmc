@@ -262,6 +262,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
         continue;
 
       bUpdateSuccess = epg->Update(start, end, (!m_bIgnoreDbForClient && !m_bDatabaseLoaded), !m_bIgnoreDbForClient) || bUpdateSuccess;
+      epg->Sort();
 
       if (bShowProgress)
       {
@@ -291,44 +292,6 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
       __FUNCTION__, lUpdateTime / 1000, lUpdateTime % 1000);
 
   return bUpdateSuccess;
-}
-
-bool CPVREpgs::UpdateEPG(CPVREpg *epg, time_t start, time_t end, bool bUpdate /* = false */)
-{
-  if (!epg || !epg->Channel())
-    return false;
-
-  bool bGrabSuccess     = true;
-  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
-
-  CSingleLock lock(m_critSection);
-
-  /* check if this channel is marked for grabbing */
-  if (!epg->Channel()->GrabEpg())
-    return false;
-
-  /* mark the EPG as being updated */
-  epg->SetUpdateRunning(true);
-
-  /* request the epg for this channel from the database */
-  if (!m_bIgnoreDbForClient && !m_bDatabaseLoaded)
-    bGrabSuccess = database->GetEPGForChannel(epg, start, end);
-
-  /* store the loaded EPG entries in the database */
-  if (bGrabSuccess)
-  {
-    epg->RemoveOverlappingEvents();
-
-    if (!m_bIgnoreDbForClient)
-    {
-      for (unsigned int iTagPtr = 0; iTagPtr < epg->size(); iTagPtr++)
-        database->UpdateEPGEntry(*epg->at(iTagPtr), false, (iTagPtr==0), (iTagPtr == epg->size()-1));
-    }
-  }
-
-  epg->SetUpdateRunning(false);
-
-  return bGrabSuccess;
 }
 
 void CPVREpgs::UpdateAllChannelEPGPointers()

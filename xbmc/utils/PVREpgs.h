@@ -111,11 +111,6 @@ public:
    */
   void InihibitUpdate(bool bSetTo) { m_bInihibitUpdate = bSetTo; }
 
-  /**
-   * Update the EPG data for a single channel
-   */
-  bool UpdateEPG(CPVREpg *epg, time_t start, time_t end, bool bUpdate = false);
-
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool bRadio = false);
   int GetEPGForChannel(CPVRChannel *channel, CFileItemList *results);
