@@ -616,7 +616,9 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timerinfo)
 
       //Workaround for string transfer to PVRclient
       CStdString myTitle = timerinfo.Title();
+      CStdString myDirectory = timerinfo.Dir();
       tag.title = myTitle.c_str();
+      tag.directory = myDirectory.c_str();
 
       ret = m_pStruct->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -721,7 +723,9 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
 
       //Workaround for string transfer to PVRclient
       CStdString myTitle = timerinfo.Title();
+      CStdString myDirectory = timerinfo.Dir();
       tag.title = myTitle.c_str();
+      tag.directory = myDirectory.c_str();
 
       ret = m_pStruct->UpdateTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
