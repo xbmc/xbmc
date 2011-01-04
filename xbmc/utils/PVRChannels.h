@@ -36,10 +36,27 @@ private:
   bool m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
   int  m_iHiddenChannels; /* the amount of hidden channels in this container */
 
+  /**
+   * Loads the channels stored in the database.
+   * Returns the amount of channels that were added.
+   */
+  int LoadFromDb(bool bCompress = false);
+
+  /**
+   * Loads the channels from the clients.
+   * Returns the amount of channels that were added.
+   */
+  int LoadFromClients(void);
+
 public:
   CPVRChannels(bool bRadio);
 
-  bool Load();
+  /**
+   * Loads the channels from the database. If no channels are stored in the database, then the channels will be loaded from the clients.
+   * Returns the amount of channels that were added.
+   */
+  int Load();
+
   void Unload();
   bool Update();
   void ReNumberAndCheck(void);

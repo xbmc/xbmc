@@ -44,54 +44,80 @@ CPVRChannels::CPVRChannels(bool bRadio)
   m_iHiddenChannels = 0;
 }
 
-////////////////////////////////////////////////////////
+int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  if (!database || !database->Open())
+    return -1;
 
-bool CPVRChannels::Load()
+  int iChannelCount = size();
+
+  database->GetDBChannelList(*this, m_bRadio);
+
+  if (bCompress)
+    database->Compress(true);
+
+  Update();
+  ReNumberAndCheck();
+
+  database->Close();
+
+  return size() - iChannelCount;
+}
+
+int CPVRChannels::LoadFromClients(void)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   CLIENTMAP   *clients  = g_PVRManager.Clients();
 
+  if (!clients || !database || !database->Open())
+    return -1;
+
+  CLIENTMAPITR itrClients = clients->begin();
+  while (itrClients != clients->end())
+  {
+    if ((*itrClients).second->ReadyToUse() && (*itrClients).second->GetNumChannels() > 0)
+      (*itrClients).second->GetChannelList(*this, m_bRadio);
+
+    itrClients++;
+  }
+
+  ReNumberAndCheck();
+  SearchAndSetChannelIcons();
+
+  /* add all channels to the database */
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+    database->AddDBChannel(at(ptr), false, (ptr==0), (ptr >= size() - 1));
+
+  database->Close();
+
+  clear();
+  return LoadFromDb(true);
+}
+
+int CPVRChannels::Load(void)
+{
   Clear();
 
-  database->Open();
-  if (database->GetDBNumChannels(m_bRadio) > 0)
-  {
-    database->GetDBChannelList(*this, m_bRadio);
-    database->Close();
-    Update();
-    ReNumberAndCheck();
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "PVR: TV Database holds no %s channels, reading channels from clients", m_bRadio ? "Radio" : "TV");
+  int iChannelCount = LoadFromDb();
 
-    CLIENTMAPITR itr = clients->begin();
-    while (itr != clients->end())
-    {
-      if ((*itr).second->ReadyToUse() && (*itr).second->GetNumChannels() > 0)
-      {
-        (*itr).second->GetChannelList(*this, m_bRadio);
-      }
-      itr++;
-    }
-    ReNumberAndCheck();
-    SearchAndSetChannelIcons();
-    for (unsigned int i = 0; i < size(); i++)
-      database->AddDBChannel(at(i), false, (i==0), (i >= size()-1));
+  if (iChannelCount <= 0)
+  {
+    CLog::Log(LOGNOTICE, "%s - No %s channels stored in the database. Reading channels from clients",
+        __FUNCTION__, m_bRadio ? "Radio" : "TV");
 
-    clear();
-    database->GetDBChannelList(*this, m_bRadio);
-    database->Compress(true);
-    database->Close();
-    ReNumberAndCheck();
+    return LoadFromClients();
   }
-  return false;
+
+  return iChannelCount;
 }
 
 void CPVRChannels::Unload()
 {
   Clear();
 }
+
+////////////////////////////////////////////////////////
 
 bool CPVRChannels::Update()
 {
