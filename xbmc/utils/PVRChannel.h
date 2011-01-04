@@ -90,7 +90,7 @@ public:
    * Set the identifier for this channel.
    * Nothing will be changed in the database.
    */
-  void SetChannelID(long iDatabaseId);
+  void SetChannelID(long iDatabaseId, bool bSaveInDb = false);
 
   /**
    * The channel number used by XBMC.
@@ -101,7 +101,7 @@ public:
    * Change the channel number used by XBMC.
    * Nothing will be changed in the database.
    */
-  void SetChannelNumber(int iChannelNumber);
+  void SetChannelNumber(int iChannelNumber, bool bSaveInDb = false);
 
   /**
    * The identifier of the group this channel belongs to.
@@ -113,7 +113,7 @@ public:
    * Set the identifier of the group this channel belongs to.
    * Nothing will be changed in the database.
    */
-  void SetGroupID(int iChannelGroupId);
+  void SetGroupID(int iChannelGroupId, bool bSaveInDb = false);
 
   /**
    * True if this channel is a radio channel, false if not.
@@ -124,7 +124,7 @@ public:
    * Set to true if this channel is a radio channel. Set to false if not.
    * Nothing will be changed in the database.
    */
-  void SetRadio(bool bIsRadio);
+  void SetRadio(bool bIsRadio, bool bSaveInDb = false);
 
   /**
    * True if this channel is hidden. False if not.
@@ -136,7 +136,7 @@ public:
    * The EPG of hidden channels won't be updated.
    * Nothing will be changed in the database.
    */
-  void SetHidden(bool bIsHidden);
+  void SetHidden(bool bIsHidden, bool bSaveInDb = false);
 
   /**
    * True if a recording is currently running on this channel. False if not.
@@ -157,7 +157,7 @@ public:
   /**
    * Set the path to the icon for this channel.
    */
-  bool SetIconPath(CStdString strIconPath, bool bSaveInDb = false);
+  bool SetIconPath(const CStdString &strIconPath, bool bSaveInDb = false);
 
   /**
    * The name for this channel used by XBMC.
@@ -167,7 +167,7 @@ public:
   /**
    * Set the name for this channel used by XBMC.
    */
-  void SetChannelName(CStdString strChannelName);
+  void SetChannelName(const CStdString &strChannelName, bool bSaveInDb = false);
 
   /**
    * True if this channel is marked as virtual. False if not.
@@ -177,7 +177,7 @@ public:
   /**
    * True if this channel is marked as virtual. False if not.
    */
-  void SetVirtual(bool bIsVirtual);
+  void SetVirtual(bool bIsVirtual, bool bSaveInDb = false);
 
   /**
    * True if this channel has no file or stream name
@@ -195,7 +195,7 @@ public:
   /**
    * Change the unique identifier for this channel.
    */
-  void SetUniqueID(int iUniqueId);
+  void SetUniqueID(int iUniqueId, bool bSaveInDb = false);
 
   /**
    * The identifier of the client that serves this channel.
@@ -205,7 +205,7 @@ public:
   /**
    * Set the identifier of the client that serves this channel.
    */
-  void SetClientID(int iClientId);
+  void SetClientID(int iClientId, bool bSaveInDb = false);
 
   /**
    * The channel number on the client.
@@ -216,7 +216,7 @@ public:
    * Set the channel number on the client.
    * It will only be changed in this tag and won't change anything on the client.
    */
-  void SetClientChannelNumber(int iClientChannelNumber);
+  void SetClientChannelNumber(int iClientChannelNumber, bool bSaveInDb = false);
 
   /**
    * The name of this channel on the client.
@@ -226,7 +226,7 @@ public:
    * Set the name of this channel on the client.
    * It will only be changed in this tag and won't change anything on the client.
    */
-  void SetClientChannelName(CStdString strClientChannelName);
+  void SetClientChannelName(const CStdString &strClientChannelName, bool bSaveInDb = false);
 
   /**
    * The stream input type
@@ -239,7 +239,7 @@ public:
   /**
    * Set the stream input type
    */
-  void SetInputFormat(CStdString strInputFormat);
+  void SetInputFormat(const CStdString &strInputFormat, bool bSaveInDb = false);
 
   /**
    * The stream URL to access this channel.
@@ -251,17 +251,12 @@ public:
    * Set the stream URL to access this channel.
    * If this is empty, then the client should be used to read from the channel.
    */
-  void SetStreamURL(CStdString strStreamURL);
+  void SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb = false);
 
   /**
    * The path in the XBMC VFS to be used by PVRManager to open and read the stream.
    */
   CStdString Path(void) const { return m_strFileNameAndPath; }
-
-  /**
-   * Set the path in the XBMC VFS to be used by PVRManager to open and read the stream.
-   */
-  void SetPath(CStdString strFileNameAndPath);
 
 private:
   /**
@@ -285,7 +280,7 @@ public:
   /**
    * Set the encryption ID (CAID) for this channel.
    */
-  void SetEncryptionSystem(int iClientEncryptionSystem);
+  void SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInDb = false);
 
   /**
    * Return a friendly name for the used encryption system.
@@ -325,7 +320,7 @@ public:
   /**
    * Set to true if an EPG should be used for this channel. Set to false otherwise.
    */
-  void SetEPGEnabled(bool EPGEnabled = true);
+  void SetEPGEnabled(bool bEPGEnabled = true, bool bSaveInDb = false);
 
   /**
    * Get the name of the scraper to be used for this channel
@@ -336,7 +331,7 @@ public:
    * Set the name of the scraper to be used for this channel.
    * Set to "client" to load the EPG from the backend
    */
-  void SetEPGScraper(CStdString Grabber);
+  void SetEPGScraper(const CStdString &strScraper, bool bSaveInDb = false);
 
 private:
   /**

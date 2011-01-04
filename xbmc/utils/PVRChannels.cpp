@@ -30,6 +30,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
+#include "MusicInfoTag.h"
 #include "log.h"
 
 #include "PVRChannelGroups.h"
@@ -38,6 +39,8 @@
 #include "TVDatabase.h"
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
+
+using namespace MUSIC_INFO;
 
 CPVRChannels PVRChannelsTV(false);
 CPVRChannels PVRChannelsRadio(true);
@@ -339,6 +342,20 @@ int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, b
       continue;
 
     CFileItemPtr channelFile(new CFileItem(*channel));
+    CMusicInfoTag* musictag = channelFile->GetMusicInfoTag();
+    if (musictag)
+    {
+      const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
+      musictag->SetURL(channel->Path());
+      musictag->SetTitle(epgNow->Title());
+      musictag->SetArtist(channel->ChannelName());
+      musictag->SetAlbumArtist(channel->ChannelName());
+      musictag->SetGenre(epgNow->Genre());
+      musictag->SetDuration(epgNow->GetDuration());
+      musictag->SetLoaded(true);
+      musictag->SetComment("");
+      musictag->SetLyrics("");
+    }
 
     results->Add(channelFile);
     iAmount++;

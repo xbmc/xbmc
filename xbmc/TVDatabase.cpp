@@ -841,7 +841,7 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    long channelId = info.m_iDatabaseId;
+    long channelId = info.ChannelID();
 
     CStdString SQL;
     if (channelId > 0)
@@ -852,9 +852,9 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
                       "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encryption=%i,radio=%i,"
                       "hide=%i,grabEpg=%i,EpgGrabber='%s',Virtual=%i,strInputFormat='%s',strStreamURL='%s' where idChannel=%i",
                       info.ClientID(), info.ChannelNumber(), info.ChannelName().c_str(), info.ClientChannelName().c_str(),
-                      info.ClientChannelNumber(), info.UniqueID(), info.m_strIconPath.c_str(), info.m_iChannelGroupId,
-                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bIsHidden, info.m_bEPGEnabled, info.m_strEPGScraper.c_str(),
-                      info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str(), channelId);
+                      info.ClientChannelNumber(), info.UniqueID(), info.IconPath().c_str(), info.GroupID(),
+                      info.EncryptionSystem(), info.IsRadio(), info.IsHidden(), info.EPGEnabled(), info.EPGScraper().c_str(),
+                      info.IsVirtual(), info.InputFormat().c_str(), info.StreamURL().c_str(), channelId);
 
       m_pDS->exec(SQL.c_str());
       return channelId;
@@ -867,9 +867,9 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
                       "grabEpg, EpgGrabber, hide, Virtual, strInputFormat, strStreamURL) "
                       "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s', '%s')\n",
                       info.ClientID(), info.ChannelNumber(), info.ChannelName().c_str(), info.ClientChannelName().c_str(),
-                      info.ClientChannelNumber(), info.UniqueID(), info.m_strIconPath.c_str(), info.m_iChannelGroupId,
-                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bEPGEnabled, info.m_strEPGScraper.c_str(),
-                      info.m_bIsHidden, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
+                      info.ClientChannelNumber(), info.UniqueID(), info.IconPath().c_str(), info.GroupID(),
+                      info.EncryptionSystem(), info.IsRadio(), info.EPGEnabled(), info.EPGScraper().c_str(),
+                      info.IsHidden(), info.IsVirtual(), info.InputFormat().c_str(), info.StreamURL().c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)m_pDS->lastinsertid();
