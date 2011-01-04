@@ -342,19 +342,23 @@ int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, b
       continue;
 
     CFileItemPtr channelFile(new CFileItem(*channel));
-    CMusicInfoTag* musictag = channelFile->GetMusicInfoTag();
-    if (musictag)
+
+    if (channel->IsRadio())
     {
-      const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
-      musictag->SetURL(channel->Path());
-      musictag->SetTitle(epgNow->Title());
-      musictag->SetArtist(channel->ChannelName());
-      musictag->SetAlbumArtist(channel->ChannelName());
-      musictag->SetGenre(epgNow->Genre());
-      musictag->SetDuration(epgNow->GetDuration());
-      musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
+      CMusicInfoTag* musictag = channelFile->GetMusicInfoTag();
+      if (musictag)
+      {
+        const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
+        musictag->SetURL(channel->Path());
+        musictag->SetTitle(epgNow->Title());
+        musictag->SetArtist(channel->ChannelName());
+        musictag->SetAlbumArtist(channel->ChannelName());
+        musictag->SetGenre(epgNow->Genre());
+        musictag->SetDuration(epgNow->GetDuration());
+        musictag->SetLoaded(true);
+        musictag->SetComment("");
+        musictag->SetLyrics("");
+      }
     }
 
     results->Add(channelFile);
