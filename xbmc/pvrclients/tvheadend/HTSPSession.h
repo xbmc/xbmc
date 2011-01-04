@@ -249,7 +249,8 @@ public:
   static void ParseChannelRemove (htsmsg_t* msg, SChannels &channels);
   static void ParseTagUpdate     (htsmsg_t* msg, STags &tags);
   static void ParseTagRemove     (htsmsg_t* msg, STags &tags);
-  static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality);
+  static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue);
+  static bool ParseSignalStatus  (htsmsg_t* msg, SQuality &quality);
   static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 

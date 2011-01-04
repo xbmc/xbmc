@@ -135,7 +135,9 @@ DemuxPacket* cHTSPDemux::Read()
     else if(strcmp("subscriptionStatus", method) == 0)
       SubscriptionStatus(msg);
     else if(strcmp("queueStatus"       , method) == 0)
-      cHTSPSession::ParseQueueStatus(msg, m_QueueStatus, m_Quality);
+      cHTSPSession::ParseQueueStatus(msg, m_QueueStatus);
+    else if(strcmp("signalStatus"       , method) == 0)
+      cHTSPSession::ParseSignalStatus(msg, m_Quality);
     else if(strcmp("muxpkt"            , method) == 0)
     {
       uint32_t    index, duration, frametype;

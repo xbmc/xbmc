@@ -511,23 +511,8 @@ void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   tags.erase(id);
 }
 
-bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality)
+bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
 {
-  if(htsmsg_get_u32(msg, "packets", &queue.packets)
-  || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
-  || htsmsg_get_u32(msg, "Bdrops",  &queue.bdrops)
-  || htsmsg_get_u32(msg, "Pdrops",  &queue.pdrops)
-  || htsmsg_get_u32(msg, "Idrops",  &queue.idrops))
-  {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseQueueStatus - malformed message received");
-    htsmsg_print(msg);
-    return false;
-  }
-
-  /* delay isn't always transmitted */
-  if(htsmsg_get_u32(msg, "delay", &queue.delay))
-    queue.delay = 0;
-
   if(htsmsg_get_u32(msg, "feSNR", &quality.fe_snr))
     quality.fe_snr = -2;
 
@@ -551,6 +536,26 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQualit
     quality.fe_status = "";
   else
     quality.fe_status = status;
+
+  return true;
+}
+
+bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
+{
+  if(htsmsg_get_u32(msg, "packets", &queue.packets)
+  || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
+  || htsmsg_get_u32(msg, "Bdrops",  &queue.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.pdrops)
+  || htsmsg_get_u32(msg, "Idrops",  &queue.idrops))
+  {
+    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseQueueStatus - malformed message received");
+    htsmsg_print(msg);
+    return false;
+  }
+
+  /* delay isn't always transmitted */
+  if(htsmsg_get_u32(msg, "delay", &queue.delay))
+    queue.delay = 0;
 
   return true;
 }
