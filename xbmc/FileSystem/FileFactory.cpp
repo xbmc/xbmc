@@ -73,6 +73,7 @@
 #include "MultiPathFile.h"
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
+#include "FileUDF.h"
 #include "HDHomeRun.h"
 #include "MythFile.h"
 #include "Application.h"
@@ -116,6 +117,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM
   else if (strProtocol == "iso9660") return new CFileISO();
 #endif
+  else if(strProtocol == "udf") return new CFileUDF();
   if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "http"

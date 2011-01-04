@@ -47,11 +47,11 @@
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
   CFileItem item(file.c_str(), false);
-  if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
+  if (content != "bluray/iso" && (item.IsDVDFile(false, true) || item.IsDVDImage() ||
 #ifdef HAS_DVD_DRIVE
-    file.compare(g_mediaManager.TranslateDevicePath("")) == 0 )
+    file.compare(g_mediaManager.TranslateDevicePath("")) == 0 ))
 #else
-  0 )
+  0 ))
 #endif
   {
     return (new CDVDInputStreamNavigator(pPlayer));
@@ -59,7 +59,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
 #ifdef HAVE_LIBBLURAY
-  else if (item.IsType(".bdmv") || item.IsType(".mpls"))
+  else if (item.IsType(".bdmv") || item.IsType(".mpls") || content == "bluray/iso")
     return new CDVDInputStreamBluray();
 #endif
   else if(file.substr(0, 6) == "rtp://"
