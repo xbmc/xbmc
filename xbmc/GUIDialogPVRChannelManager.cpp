@@ -672,27 +672,27 @@ void CGUIDialogPVRChannelManager::Update()
   {
     for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
     {
-      CFileItemPtr channel(new CFileItem(PVRChannelsTV[i]));
-      channel->SetProperty("ActiveChannel", (bool)!PVRChannelsTV[i].IsHidden());
-      channel->SetProperty("Name", PVRChannelsTV[i].ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsTV[i].EPGEnabled());
-      channel->SetProperty("GroupId", (int)PVRChannelsTV[i].GroupID());
-      channel->SetProperty("Icon", PVRChannelsTV[i].IconPath());
+      CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
+      channel->SetProperty("ActiveChannel", !PVRChannelsTV[i]->IsHidden());
+      channel->SetProperty("Name", PVRChannelsTV[i]->ChannelName());
+      channel->SetProperty("UseEPG", PVRChannelsTV[i]->EPGEnabled());
+      channel->SetProperty("GroupId", PVRChannelsTV[i]->GroupID());
+      channel->SetProperty("Icon", PVRChannelsTV[i]->IconPath());
       channel->SetProperty("EPGSource", (int)0);
-      CStdString number; number.Format("%i", PVRChannelsTV[i].ChannelNumber());
+      CStdString number; number.Format("%i", PVRChannelsTV[i]->ChannelNumber());
       channel->SetProperty("Number", number);
 
-      if (PVRChannelsTV[i].IsVirtual())
+      if (PVRChannelsTV[i]->IsVirtual())
       {
         channel->SetProperty("Virtual", true);
-        channel->SetProperty("StreamURL", PVRChannelsTV[i].StreamURL());
+        channel->SetProperty("StreamURL", PVRChannelsTV[i]->StreamURL());
       }
 
       CStdString clientName;
-      if (PVRChannelsTV[i].ClientID() == 999) /* XBMC internal */
+      if (PVRChannelsTV[i]->ClientID() == 999) /* XBMC internal */
         clientName = g_localizeStrings.Get(19209);
       else
-        clientName = g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetConnectionString();
+        clientName = g_PVRManager.Clients()->find(PVRChannelsTV[i]->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsTV[i]->ClientID())->second->GetConnectionString();
       channel->SetProperty("ClientName", clientName);
 
       m_channelItems->Add(channel);
@@ -721,27 +721,27 @@ void CGUIDialogPVRChannelManager::Update()
   {
     for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
     {
-      CFileItemPtr channel(new CFileItem(PVRChannelsRadio[i]));
-      channel->SetProperty("ActiveChannel", (bool)!PVRChannelsRadio[i].IsHidden());
-      channel->SetProperty("Name", PVRChannelsRadio[i].ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsRadio[i].EPGEnabled());
-      channel->SetProperty("GroupId", (int)PVRChannelsRadio[i].GroupID());
-      channel->SetProperty("Icon", PVRChannelsRadio[i].IconPath());
+      CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
+      channel->SetProperty("ActiveChannel", !PVRChannelsRadio[i]->IsHidden());
+      channel->SetProperty("Name", PVRChannelsRadio[i]->ChannelName());
+      channel->SetProperty("UseEPG", PVRChannelsRadio[i]->EPGEnabled());
+      channel->SetProperty("GroupId", (int)PVRChannelsRadio[i]->GroupID());
+      channel->SetProperty("Icon", PVRChannelsRadio[i]->IconPath());
       channel->SetProperty("EPGSource", (int)0);
-      CStdString number; number.Format("%i", PVRChannelsRadio[i].ChannelNumber());
+      CStdString number; number.Format("%i", PVRChannelsRadio[i]->ChannelNumber());
       channel->SetProperty("Number", number);
 
-      if (PVRChannelsRadio[i].IsVirtual())
+      if (PVRChannelsRadio[i]->IsVirtual())
       {
         channel->SetProperty("Virtual", true);
-        channel->SetProperty("StreamURL", PVRChannelsRadio[i].StreamURL());
+        channel->SetProperty("StreamURL", PVRChannelsRadio[i]->StreamURL());
       }
 
       CStdString clientName;
-      if (PVRChannelsRadio[i].ClientID() == 999) /* XBMC internal */
+      if (PVRChannelsRadio[i]->ClientID() == 999) /* XBMC internal */
         clientName = g_localizeStrings.Get(19209);
       else
-        clientName = g_PVRManager.Clients()->find(PVRChannelsRadio[i].ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsRadio[i].ClientID())->second->GetConnectionString();
+        clientName = g_PVRManager.Clients()->find(PVRChannelsRadio[i]->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(PVRChannelsRadio[i]->ClientID())->second->GetConnectionString();
       channel->SetProperty("ClientName", clientName);
 
       m_channelItems->Add(channel);

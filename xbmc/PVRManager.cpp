@@ -391,7 +391,7 @@ bool CPVRManager::ContinueLastChannel()
     if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
       g_settings.m_bStartVideoWindowed = true;
 
-    if (g_application.PlayFile(CFileItem(channels->at(tag->ChannelNumber()-1))))
+    if (g_application.PlayFile(CFileItem(*channels->at(tag->ChannelNumber()-1))))
     {
       CLog::Log(LOGNOTICE,"PVR: Continuing channel '%s'", tag->ChannelName().c_str());
       bReturn = true;
@@ -1217,7 +1217,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
         return false;
       }
 
-      channels->at(tag->ChannelNumber()-1).SetRecording(true); /* Set in channel list */
+      channels->at(tag->ChannelNumber()-1)->SetRecording(true); /* Set in channel list */
       tag->SetRecording(true);                          /* and also in current playing item */
       return true;
     }
@@ -1232,7 +1232,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
         {
           if (CPVRTimers::DeleteTimer(PVRTimers[i], true))
           {
-            channels->at(tag->ChannelNumber()-1).SetRecording(false);  /* Set in channel list */
+            channels->at(tag->ChannelNumber()-1)->SetRecording(false);  /* Set in channel list */
             tag->SetRecording(false);                           /* and also in current playing item */
             return true;
           }
@@ -1781,7 +1781,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 
   EnterCriticalSection(&m_critSection);
 
-  const CPVRChannel* tag = &channels->at(iChannel-1);
+  const CPVRChannel* tag = channels->at(iChannel-1);
 
   /* Store current settings inside Database */
   SaveCurrentChannelSettings();
@@ -1835,7 +1835,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
       if (currentTVChannel > channels->size())
         currentTVChannel = 1;
 
-      tag = &channels->at(currentTVChannel-1);
+      tag = channels->at(currentTVChannel-1);
 
       if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != tag->GroupID()))
         continue;
@@ -1902,7 +1902,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
       if (currentTVChannel <= 0)
         currentTVChannel = channels->size();
 
-      tag = &channels->at(currentTVChannel-1);
+      tag = channels->at(currentTVChannel-1);
 
       if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != tag->GroupID()))
         continue;

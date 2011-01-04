@@ -973,25 +973,25 @@ bool CTVDatabase::GetDBChannelList(CPVRChannels &results, bool radio)
 
     while (!m_pDS->eof())
     {
-      CPVRChannel channel;
+      CPVRChannel *channel = new CPVRChannel();
 
-      channel.m_iClientId               = m_pDS->fv("idClient").get_asInt();
-      channel.m_iDatabaseId             = m_pDS->fv("idChannel").get_asInt();
-      channel.m_iChannelNumber          = m_pDS->fv("Number").get_asInt();
-      channel.m_strChannelName          = m_pDS->fv("Name").get_asString();
-      channel.m_strClientChannelName    = m_pDS->fv("ClientName").get_asString();
-      channel.m_iClientChannelNumber    = m_pDS->fv("ClientNumber").get_asInt();
-      channel.m_iUniqueId               = m_pDS->fv("UniqueId").get_asInt();
-      channel.m_strIconPath             = m_pDS->fv("IconPath").get_asString();
-      channel.m_iChannelGroupId         = m_pDS->fv("GroupID").get_asInt();
-      channel.m_iClientEncryptionSystem = m_pDS->fv("encryption").get_asInt();
-      channel.m_bIsRadio                = m_pDS->fv("radio").get_asBool();
-      channel.m_bIsHidden               = m_pDS->fv("hide").get_asBool();
-      channel.m_bEPGEnabled             = m_pDS->fv("grabEpg").get_asBool();
-      channel.m_strEPGScraper           = m_pDS->fv("EpgGrabber").get_asString();
-      channel.m_strInputFormat          = m_pDS->fv("strInputFormat").get_asString();
-      channel.m_strStreamURL            = m_pDS->fv("strStreamURL").get_asString();
-      channel.m_bIsVirtual              = m_pDS->fv("Virtual").get_asBool();
+      channel->m_iClientId               = m_pDS->fv("idClient").get_asInt();
+      channel->m_iDatabaseId             = m_pDS->fv("idChannel").get_asInt();
+      channel->m_iChannelNumber          = m_pDS->fv("Number").get_asInt();
+      channel->m_strChannelName          = m_pDS->fv("Name").get_asString();
+      channel->m_strClientChannelName    = m_pDS->fv("ClientName").get_asString();
+      channel->m_iClientChannelNumber    = m_pDS->fv("ClientNumber").get_asInt();
+      channel->m_iUniqueId               = m_pDS->fv("UniqueId").get_asInt();
+      channel->m_strIconPath             = m_pDS->fv("IconPath").get_asString();
+      channel->m_iChannelGroupId         = m_pDS->fv("GroupID").get_asInt();
+      channel->m_iClientEncryptionSystem = m_pDS->fv("encryption").get_asInt();
+      channel->m_bIsRadio                = m_pDS->fv("radio").get_asBool();
+      channel->m_bIsHidden               = m_pDS->fv("hide").get_asBool();
+      channel->m_bEPGEnabled             = m_pDS->fv("grabEpg").get_asBool();
+      channel->m_strEPGScraper           = m_pDS->fv("EpgGrabber").get_asString();
+      channel->m_strInputFormat          = m_pDS->fv("strInputFormat").get_asString();
+      channel->m_strStreamURL            = m_pDS->fv("strStreamURL").get_asString();
+      channel->m_bIsVirtual              = m_pDS->fv("Virtual").get_asBool();
 
       results.push_back(channel);
       m_pDS->next();

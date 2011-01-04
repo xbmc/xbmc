@@ -94,7 +94,7 @@ int CPVRChannelGroups::GetFirstChannelForGroupID(int GroupId)
 
   for (unsigned int i = 0; i < channels->size(); i++)
   {
-    if (channels->at(i).GroupID() == GroupId)
+    if (channels->at(i)->GroupID() == GroupId)
       return i+1;
   }
   return 1;
@@ -202,10 +202,10 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
 
     for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
     {
-      if (PVRChannelsTV[i].GroupID() == GroupId)
+      if (PVRChannelsTV[i]->GroupID() == GroupId)
       {
-        PVRChannelsTV[i].SetGroupID(0);
-        database->UpdateDBChannel(PVRChannelsTV[i]);
+        PVRChannelsTV[i]->SetGroupID(0);
+        database->UpdateDBChannel(*PVRChannelsTV[i]);
       }
     }
 
@@ -219,10 +219,10 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
 
     for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
     {
-      if (PVRChannelsRadio[i].GroupID() == GroupId)
+      if (PVRChannelsRadio[i]->GroupID() == GroupId)
       {
-        PVRChannelsRadio[i].SetGroupID(0);
-        database->UpdateDBChannel(PVRChannelsRadio[i]);
+        PVRChannelsRadio[i]->SetGroupID(0);
+        database->UpdateDBChannel(*PVRChannelsRadio[i]);
       }
     }
 
@@ -272,8 +272,8 @@ bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
   else
     channels = &PVRChannelsRadio;
 
-  channels->at(channel.ChannelNumber()-1).SetGroupID(GroupId);
-  database->UpdateDBChannel(channels->at(channel.ChannelNumber()-1));
+  channels->at(channel.ChannelNumber()-1)->SetGroupID(GroupId);
+  database->UpdateDBChannel(*channels->at(channel.ChannelNumber()-1));
 
   database->Close();
   return true;

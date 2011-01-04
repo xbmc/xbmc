@@ -30,7 +30,7 @@
 class CPVRChannelGroups;
 class CPVREpg;
 
-class CPVRChannels : public std::vector<CPVRChannel>
+class CPVRChannels : public std::vector<CPVRChannel *>
 {
 private:
   bool m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
@@ -115,19 +115,28 @@ public:
    */
   void Clear();
 
+  /**
+   * Hides a channel
+   */
+  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
+
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+
   int GetChannels(CFileItemList* results, int group_id = -1);
   int GetHiddenChannels(CFileItemList* results);
-  void HideChannel(unsigned int number);
+
   CPVRChannel *GetByNumber(int Number);
   CPVRChannel *GetByClient(int Number, int ClientID);
   CPVRChannel *GetByChannelID(long ChannelID);
-  CPVRChannel *GetByUniqueID(long UniqueID);
+  CPVRChannel *GetByUniqueID(int UniqueID);
   CPVRChannel *GetByIndex(unsigned int index);
+
   CStdString GetNameForChannel(unsigned int Number);
+
   CStdString GetChannelIcon(unsigned int Number);
   void SetChannelIcon(unsigned int Number, CStdString Icon);
+
   void ResetChannelEPGLinks();
 
   static int GetNumChannelsFromAll();

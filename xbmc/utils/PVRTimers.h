@@ -59,6 +59,9 @@ public:
 
   static bool UpdateTimer(const CFileItem &item);
   static bool UpdateTimer(const CPVRTimerInfoTag &item);
+
+  bool ChannelHasTimers(const CPVRChannel &channel);
+  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce = false);
 };
 
 extern CPVRTimers PVRTimers;

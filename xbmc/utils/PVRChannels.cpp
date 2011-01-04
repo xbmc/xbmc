@@ -40,17 +40,17 @@ CPVRChannels PVRChannelsRadio(true);
 
 struct sortByClientChannelNumber
 {
-  bool operator()(const CPVRChannel &channel1, const CPVRChannel &channel2)
+  bool operator()(CPVRChannel *channel1, CPVRChannel *channel2)
   {
-    return channel1.ClientChannelNumber() < channel2.ClientChannelNumber();
+    return channel1->ClientChannelNumber() < channel2->ClientChannelNumber();
   }
 };
 
 struct sortByChannelNumber
 {
-  bool operator()(const CPVRChannel &channel1, const CPVRChannel &channel2)
+  bool operator()(CPVRChannel *channel1, CPVRChannel *channel2)
   {
-    return channel1.ChannelNumber() < channel2.ChannelNumber();
+    return channel1->ChannelNumber() < channel2->ChannelNumber();
   }
 };
 
@@ -106,7 +106,7 @@ int CPVRChannels::LoadFromClients(void)
 
   /* add all channels to the database */
   for (unsigned int ptr = 0; ptr < size(); ptr++)
-    database->AddDBChannel(at(ptr), false, (ptr==0), (ptr >= size() - 1));
+    database->AddDBChannel(*at(ptr), false, (ptr==0), (ptr >= size() - 1));
 
   database->Close();
 
@@ -135,7 +135,7 @@ bool CPVRChannels::RemoveByUniqueID(long iUniqueID)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (at(ptr).UniqueID() == iUniqueID)
+    if (at(ptr)->UniqueID() == iUniqueID)
     {
       erase(begin() + ptr);
       return true;
@@ -153,7 +153,7 @@ bool CPVRChannels::Update(CPVRChannels *channels)
   int iSize = size();
   for (int ptr = 0; ptr < iSize; ptr++)
   {
-    CPVRChannel *channel = &at(ptr);
+    CPVRChannel *channel = at(ptr);
 
     /* ignore virtual channels */
     if (channel->IsVirtual())
@@ -189,20 +189,20 @@ bool CPVRChannels::Update(CPVRChannels *channels)
   /* the temporary channel list only contains new channels now */
   for (unsigned int ptr = 0; ptr < channels->size(); ptr++)
   {
-    CPVRChannel channel = channels->at(ptr);
+    CPVRChannel *channel = channels->at(ptr);
 
-    channel.SetChannelID(database->AddDBChannel(channel));
+    channel->SetChannelID(database->AddDBChannel(*channel));
     push_back(channel);
 
     CLog::Log(LOGINFO,"%s - added %s channel '%s'",
-        __FUNCTION__, m_bRadio ? "radio" : "TV", channel.ChannelName().c_str());
+        __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
   }
 
   /* recount hidden channels */
   m_iHiddenChannels = 0;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).IsHidden())
+    if (at(i)->IsHidden())
       m_iHiddenChannels++;
   }
 
@@ -266,33 +266,33 @@ void CPVRChannels::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRChannel channel = at(ptr);
+    CPVRChannel *channel = at(ptr);
 
     /* skip if an icon is already set */
-    if (channel.IconPath() != "")
+    if (channel->IconPath() != "")
       continue;
 
     CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
 
-    CStdString strIconPath = strBasePath + channel.ClientChannelName();
-    CStdString strIconPathLower = strBasePath + channel.ClientChannelName().ToLower();
+    CStdString strIconPath = strBasePath + channel->ClientChannelName();
+    CStdString strIconPathLower = strBasePath + channel->ClientChannelName().ToLower();
     CStdString strIconPathUid;
-    strIconPathUid.Format("%s/%08d", strBasePath, channel.UniqueID());
+    strIconPathUid.Format("%s/%08d", strBasePath, channel->UniqueID());
 
-    SetIconIfValid(&channel, strIconPath      + ".tbn", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPath      + ".jpg", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPath      + ".png", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPath      + ".tbn", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPath      + ".tbn", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPath      + ".jpg", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPath      + ".png", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPath      + ".tbn", bUpdateDb) ||
 
-    SetIconIfValid(&channel, strIconPathLower + ".tbn", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathLower + ".jpg", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathLower + ".png", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathLower + ".tbn", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathLower + ".tbn", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathLower + ".jpg", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathLower + ".png", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathLower + ".tbn", bUpdateDb) ||
 
-    SetIconIfValid(&channel, strIconPathUid   + ".tbn", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathUid   + ".jpg", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathUid   + ".png", bUpdateDb) ||
-    SetIconIfValid(&channel, strIconPathUid   + ".tbn", bUpdateDb);
+    SetIconIfValid(channel, strIconPathUid   + ".tbn", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathUid   + ".jpg", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathUid   + ".png", bUpdateDb) ||
+    SetIconIfValid(channel, strIconPathUid   + ".tbn", bUpdateDb);
 
     /* TODO: start channel icon scraper here if nothing was found */
   }
@@ -314,22 +314,22 @@ void CPVRChannels::RemoveInvalidChannels(void)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr--)
   {
-    if (at(ptr).IsVirtual())
+    if (at(ptr)->IsVirtual())
       continue;
 
-    if (at(ptr).ClientChannelNumber() <= 0)
+    if (at(ptr)->ClientChannelNumber() <= 0)
     {
       CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid channel number",
-          __FUNCTION__, at(ptr).ChannelName().c_str(), at(ptr).ClientID());
+          __FUNCTION__, at(ptr)->ChannelName().c_str(), at(ptr)->ClientID());
       erase(begin() + ptr);
       ptr--;
       continue;
     }
 
-    if (at(ptr).UniqueID() <= 0)
+    if (at(ptr)->UniqueID() <= 0)
     {
       CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid unique ID",
-          __FUNCTION__, at(ptr).ChannelName().c_str(), at(ptr).ClientID());
+          __FUNCTION__, at(ptr)->ChannelName().c_str(), at(ptr)->ClientID());
       erase(begin() + ptr);
       ptr--;
       continue;
@@ -344,10 +344,10 @@ void CPVRChannels::ReNumberAndCheck(void)
   int iChannelNumber = 1;
   for (unsigned int ptr = 0; ptr < size();  ptr++)
   {
-    if (at(ptr).IsHidden())
+    if (at(ptr)->IsHidden())
       m_iHiddenChannels++;
     else
-      at(ptr).SetChannelNumber(iChannelNumber++);
+      at(ptr)->SetChannelNumber(iChannelNumber++);
   }
 }
 
@@ -372,12 +372,12 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
   /* update the channel numbers */
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRChannel channel = at(ptr);
+    CPVRChannel *channel = at(ptr);
 
-    if (channel.ChannelNumber() != (int) ptr + 1)
+    if (channel->ChannelNumber() != (int) ptr + 1)
     {
-      channel.SetChannelNumber(ptr + 1);
-      database->UpdateDBChannel(channel);
+      channel->SetChannelNumber(ptr + 1);
+      database->UpdateDBChannel(*channel);
     }
   }
 
@@ -401,6 +401,83 @@ void CPVRChannels::Clear()
   clear();
 }
 
+bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
+{
+  if (!channel)
+    return false;
+
+  /* check if there are active timers on this channel if we are hiding it */
+  if (!channel->IsHidden() && PVRTimers.ChannelHasTimers(*channel))
+  {
+    if (bShowDialog)
+    {
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      if (!pDialog)
+        return false;
+
+      pDialog->SetHeading(19098);
+      pDialog->SetLine(0, 19099);
+      pDialog->SetLine(1, "");
+      pDialog->SetLine(2, 19100);
+      pDialog->DoModal();
+
+      if (!pDialog->IsConfirmed())
+        return false;
+    }
+
+    /* delete the timers */
+    PVRTimers.DeleteTimersOnChannel(*channel, true);
+  }
+
+  /* check if this channel is currently playing if we are hiding it */
+  if (!channel->IsHidden() &&
+      (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
+      (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag() == channel))
+  {
+    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
+    return false;
+  }
+
+  /* switch the hidden flag */
+  channel->SetHidden(!channel->IsHidden());
+
+  /* update the hidden channel counter */
+  if (channel->IsHidden())
+    ++m_iHiddenChannels;
+  else
+    --m_iHiddenChannels;
+
+  /* update the database entry */
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+  database->UpdateDBChannel(*channel);
+  database->Close();
+
+  /* move the channel to the end of the list */
+  MoveChannel(channel->ChannelNumber(), size());
+
+  return true;
+}
+
+CPVRChannel *CPVRChannels::GetByUniqueID(long UniqueID)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRChannel *channel = at(ptr);
+    if (channel->UniqueID() != 0)
+    {
+      if (channel->UniqueID() == UniqueID)
+        return channel;
+    }
+    else
+    {
+      if (channel->ChannelID() == UniqueID)
+        return channel;
+    }
+  }
+  return NULL;
+}
+
 ////////////////////////////////////////////////////////
 
 int CPVRChannels::GetChannels(CFileItemList* results, int group_id)
@@ -409,13 +486,13 @@ int CPVRChannels::GetChannels(CFileItemList* results, int group_id)
 
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).IsHidden())
+    if (at(i)->IsHidden())
       continue;
 
-    if ((group_id != -1) && (at(i).GroupID() != group_id))
+    if ((group_id != -1) && (at(i)->GroupID() != group_id))
       continue;
 
-    CFileItemPtr channel(new CFileItem(at(i)));
+    CFileItemPtr channel(new CFileItem(*at(i)));
 
     results->Add(channel);
     cnt++;
@@ -429,73 +506,22 @@ int CPVRChannels::GetHiddenChannels(CFileItemList* results)
 
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (!at(i).IsHidden())
+    if (!at(i)->IsHidden())
       continue;
 
-    CFileItemPtr channel(new CFileItem(at(i)));
+    CFileItemPtr channel(new CFileItem(*at(i)));
     results->Add(channel);
     cnt++;
   }
   return cnt;
 }
 
-void CPVRChannels::HideChannel(unsigned int number)
-{
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
-
-  for (unsigned int i = 0; i < PVRTimers.size(); i++)
-  {
-    if ((PVRTimers[i].ChannelNumber() == (int) number) && (PVRTimers[i].IsRadio() == m_bRadio))
-    {
-      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      if (!pDialog)
-        return;
-
-      pDialog->SetHeading(19098);
-      pDialog->SetLine(0, 19099);
-      pDialog->SetLine(1, "");
-      pDialog->SetLine(2, 19100);
-      pDialog->DoModal();
-
-      if (!pDialog->IsConfirmed())
-        return;
-
-      PVRTimers.DeleteTimer(PVRTimers[i], true);
-    }
-  }
-
-  if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) && (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->ChannelNumber() == (int) number))
-  {
-    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
-    return;
-  }
-
-  if (at(number-1).IsHidden())
-  {
-    at(number-1).SetHidden(false);
-    database->Open();
-    database->UpdateDBChannel(at(number-1));
-    m_iHiddenChannels = database->GetNumHiddenChannels();
-    database->Close();
-  }
-  else
-  {
-    at(number-1).SetHidden(true);
-    ((CPVREpg *) at(number-1).GetEPG())->Clear();
-    database->Open();
-    database->UpdateDBChannel(at(number-1));
-    m_iHiddenChannels = database->GetNumHiddenChannels();
-    database->Close();
-    MoveChannel(number, size());
-  }
-}
-
 CPVRChannel *CPVRChannels::GetByNumber(int Number)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).ChannelNumber() == Number)
-      return &at(i);
+    if (at(i)->ChannelNumber() == Number)
+      return at(i);
   }
   return NULL;
 }
@@ -504,8 +530,8 @@ CPVRChannel *CPVRChannels::GetByClient(int Number, int ClientID)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).ClientChannelNumber() == Number && at(i).ClientID() == ClientID)
-      return &at(i);
+    if (at(i)->ClientChannelNumber() == Number && at(i)->ClientID() == ClientID)
+      return at(i);
   }
   return NULL;
 }
@@ -513,7 +539,7 @@ CPVRChannel *CPVRChannels::GetByClient(int Number, int ClientID)
 CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)
 {
   return iIndex < size() ?
-    &at(iIndex) :
+    at(iIndex) :
     NULL;
 }
 
@@ -521,26 +547,8 @@ CPVRChannel *CPVRChannels::GetByChannelID(long ChannelID)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).ChannelID() == ChannelID)
-      return &at(i);
-  }
-  return NULL;
-}
-
-CPVRChannel *CPVRChannels::GetByUniqueID(long UniqueID)
-{
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (at(i).UniqueID() != 0)
-    {
-      if (at(i).UniqueID() == UniqueID)
-        return &at(i);
-    }
-    else
-    {
-      if (at(i).ChannelID() == UniqueID)
-        return &at(i);
-    }
+    if (at(i)->ChannelID() == ChannelID)
+      return at(i);
   }
   return NULL;
 }
@@ -549,8 +557,8 @@ CStdString CPVRChannels::GetNameForChannel(unsigned int Number)
 {
   if ((Number <= size()+1) && (Number > 0))
   {
-    if (at(Number-1).ChannelName() != NULL)
-      return at(Number-1).ChannelName();
+    if (at(Number-1)->ChannelName() != NULL)
+      return at(Number-1)->ChannelName();
     else
       return g_localizeStrings.Get(13205);
   }
@@ -562,7 +570,7 @@ CStdString CPVRChannels::GetChannelIcon(unsigned int Number)
   if (Number > 0 && Number <= size()+1)
     return "";
 
-  return at(Number-1).IconPath();
+  return at(Number-1)->IconPath();
 }
 
 void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
@@ -570,12 +578,12 @@ void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
   if (Number > size()+1)
     return;
 
-  if (at(Number-1).IconPath() != Icon)
+  if (at(Number-1)->IconPath() != Icon)
   {
     CTVDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
-    at(Number-1).SetIconPath(Icon);
-    database->UpdateDBChannel(at(Number-1));
+    at(Number-1)->SetIconPath(Icon);
+    database->UpdateDBChannel(*at(Number-1));
     database->Close();
   }
 }
@@ -726,10 +734,10 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
     {
       for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
       {
-        if (!PVRChannelsTV[i].IsHidden())
+        if (!PVRChannelsTV[i]->IsHidden())
           continue;
 
-        CFileItemPtr channel(new CFileItem(PVRChannelsTV[i]));
+        CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
         items.Add(channel);
       }
     }
@@ -739,13 +747,13 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
       for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
       {
-        if (PVRChannelsTV[i].IsHidden())
+        if (PVRChannelsTV[i]->IsHidden())
           continue;
 
-        if ((groupID != -1) && (PVRChannelsTV[i].GroupID() != groupID))
+        if ((groupID != -1) && (PVRChannelsTV[i]->GroupID() != groupID))
           continue;
 
-        CFileItemPtr channel(new CFileItem(PVRChannelsTV[i]));
+        CFileItemPtr channel(new CFileItem(*PVRChannelsTV[i]));
         items.Add(channel);
       }
     }
@@ -757,10 +765,10 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
     {
       for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
       {
-        if (!PVRChannelsRadio[i].IsHidden())
+        if (!PVRChannelsRadio[i]->IsHidden())
           continue;
 
-        CFileItemPtr channel(new CFileItem(PVRChannelsRadio[i]));
+        CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
         items.Add(channel);
       }
     }
@@ -770,17 +778,17 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
       for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
       {
-        if (PVRChannelsRadio[i].IsHidden())
+        if (PVRChannelsRadio[i]->IsHidden())
           continue;
 
-        if ((groupID != -1) && (PVRChannelsRadio[i].GroupID() != groupID))
+        if ((groupID != -1) && (PVRChannelsRadio[i]->GroupID() != groupID))
           continue;
 
-        CFileItemPtr channel(new CFileItem(PVRChannelsRadio[i]));
+        CFileItemPtr channel(new CFileItem(*PVRChannelsRadio[i]));
         CMusicInfoTag* musictag = channel->GetMusicInfoTag();
         if (musictag)
         {
-          const CPVRChannel *channel = &PVRChannelsRadio[i];
+          const CPVRChannel *channel = PVRChannelsRadio[i];
           const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
           musictag->SetURL(channel->Path());
           musictag->SetTitle(epgNow->Title());
@@ -814,8 +822,8 @@ CPVRChannel *CPVRChannels::GetByPath(CStdString &path)
 
     for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
     {
-      if (PVRChannelsTV[i].ChannelNumber() == channelNr)
-        return &PVRChannelsTV[i];
+      if (PVRChannelsTV[i]->ChannelNumber() == channelNr)
+        return PVRChannelsTV[i];
     }
   }
   else if (fileName.Left(19) == "channels/radio/all/")
@@ -825,8 +833,8 @@ CPVRChannel *CPVRChannels::GetByPath(CStdString &path)
 
     for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
     {
-      if (PVRChannelsRadio[i].ChannelNumber() == channelNr)
-        return &PVRChannelsRadio[i];
+      if (PVRChannelsRadio[i]->ChannelNumber() == channelNr)
+        return PVRChannelsRadio[i];
     }
   }
 

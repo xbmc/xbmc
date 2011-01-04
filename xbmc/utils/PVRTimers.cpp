@@ -295,3 +295,36 @@ void CPVRTimers::Clear()
 {
   clear();
 }
+
+bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRTimerInfoTag timer = at(ptr);
+
+    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+      return true;
+  }
+
+  return false;
+}
+
+
+bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce /* = false */)
+{
+  bool bReturn = true;
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRTimerInfoTag timer = at(ptr);
+
+    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+    {
+      bReturn = timer.DeleteFromClient(bForce) && bReturn;
+      erase(begin() + ptr);
+      ptr--;
+    }
+  }
+
+  return bReturn;
+}

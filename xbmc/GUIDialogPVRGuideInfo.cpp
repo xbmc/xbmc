@@ -107,7 +107,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
         else
           channels = &PVRChannelsRadio;
 
-        if (!g_application.PlayFile(CFileItem(channels->at(m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
+        if (!g_application.PlayFile(CFileItem(*channels->at(m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;

@@ -268,7 +268,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
     CPVRChannels *channels = &PVRChannelsTV;
     for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
     {
-      CPVRChannel *channel = &channels->at(channelPtr);
+      CPVRChannel *channel = channels->at(channelPtr);
       CPVREpg *epg = channel->GetEPG();
       if (!epg)
         continue;

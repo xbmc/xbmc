@@ -83,23 +83,23 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
 
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRChannels *xbmcChannels = (CPVRChannels*) handle->DATA_ADDRESS;
-  CPVRChannel tag;
+  CPVRChannel *tag           = new CPVRChannel();
 
-  tag.SetChannelID(-1);
-  tag.SetChannelNumber(-1);
-  tag.SetClientChannelNumber(channel->number);
-  tag.SetGroupID(0);
-  tag.SetClientID(client->GetClientID());
-  tag.SetUniqueID(channel->uid);
-  tag.SetChannelName(channel->name);
-  tag.SetClientChannelName(channel->callsign);
-  tag.SetIconPath(channel->iconpath);
-  tag.SetEncryptionSystem(channel->encryption);
-  tag.SetRadio(channel->radio);
-  tag.SetHidden(channel->hide);
-  tag.SetRecording(channel->recording);
-  tag.SetInputFormat(channel->input_format);
-  tag.SetStreamURL(channel->stream_url);
+  tag->SetChannelID(-1);
+  tag->SetChannelNumber(-1);
+  tag->SetClientChannelNumber(channel->number);
+  tag->SetGroupID(0);
+  tag->SetClientID(client->GetClientID());
+  tag->SetUniqueID(channel->uid);
+  tag->SetChannelName(channel->name);
+  tag->SetClientChannelName(channel->callsign);
+  tag->SetIconPath(channel->iconpath);
+  tag->SetEncryptionSystem(channel->encryption);
+  tag->SetRadio(channel->radio);
+  tag->SetHidden(channel->hide);
+  tag->SetRecording(channel->recording);
+  tag->SetInputFormat(channel->input_format);
+  tag->SetStreamURL(channel->stream_url);
 
   xbmcChannels->push_back(tag);
   return;
