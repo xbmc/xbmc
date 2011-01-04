@@ -28,9 +28,12 @@
  */
 
 
+#define __STDC_LIMIT_MACROS
+
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
+#include <stdint.h>
 #include <GL/glew.h>
 
 #define NUM_BANDS 16
@@ -206,7 +209,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   z_angle = 0.0;
 }
 
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -229,7 +232,7 @@ extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *
       if (c<iAudioDataLength)
       {
         if(pAudioData[c] > y)
-          y = (int)pAudioData[c];
+          y = (int)(pAudioData[c] * (INT16_MAX+.5f));
       }
       else
         continue;
