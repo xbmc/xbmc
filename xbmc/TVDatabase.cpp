@@ -657,10 +657,10 @@ CDateTime CTVDatabase::GetEPGDataStart(int channelID)
 
     if (channelID != -1)
     {
-      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData WHERE GuideData.idChannel = '%u' ORDER BY Guidedata.StartTime DESC;", channelID);
+      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData WHERE GuideData.idChannel = '%u' ORDER BY GuideData.StartTime DESC;", channelID);
     }
     else {
-      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData ORDER BY Guidedata.StartTime DESC;");
+      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData ORDER BY GuideData.StartTime DESC;");
     }
     m_pDS->query( SQL.c_str() );
     if (!m_pDS->eof())
@@ -693,11 +693,11 @@ CDateTime CTVDatabase::GetEPGDataEnd(int channelID)
 
     if (channelID != -1)
     {
-      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData WHERE GuideData.idChannel = '%u' ORDER BY Guidedata.EndTime DESC;", channelID);
+      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData WHERE GuideData.idChannel = '%u' ORDER BY GuideData.EndTime DESC;", channelID);
     }
     else
     {
-      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData ORDER BY Guidedata.EndTime DESC;");
+      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData ORDER BY GuideData.EndTime DESC;");
     }
     m_pDS->query( SQL.c_str() );
     if (!m_pDS->eof())
