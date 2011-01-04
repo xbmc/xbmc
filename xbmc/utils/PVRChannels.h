@@ -21,8 +21,6 @@
  *
  */
 
-#include "VideoInfoTag.h"
-#include "DateTime.h"
 #include "FileItem.h"
 #include "PVRChannel.h"
 #include "../addons/include/xbmc_pvr_types.h"
@@ -46,7 +44,13 @@ private:
    * Load the channels from the clients.
    * Returns the amount of channels that were added.
    */
-  int LoadFromClients(void);
+  int LoadFromClients(bool bAddToDb = true);
+
+  /**
+   * Get the channels from the clients and add them to this container. Does not sort, renumber or add channels to the database.
+   * Returns the amount of channels that were added.
+   */
+  int GetFromClients(void);
 
   /**
    * Remove a channel.
@@ -62,11 +66,6 @@ private:
   bool Update(CPVRChannels *channels);
 
   /**
-   * Update the icon path of a channel if the path is valid.
-   */
-  bool SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb = false);
-
-  /**
    * Remove invalid channels from this container.
    */
   void RemoveInvalidChannels(void);
@@ -75,6 +74,11 @@ private:
    * Called by GetDirectory to get the directory for a group
    */
   static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
+
+  /**
+   * Remove invalid channels and updates the channel numbers.
+   */
+  void ReNumberAndCheck(void);
 
 public:
   CPVRChannels(bool bRadio);
@@ -86,14 +90,32 @@ public:
   int Load();
 
   /**
+   * Clear this channel list.
+   */
+  void Unload();
+
+  /**
    * Refresh the channel list from the clients.
    */
   bool Update();
 
   /**
+   * Move a channel from position iOldIndex to iNewIndex.
+   */
+  void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
+
+  /**
+   * Show a hidden channel or hide a visible channel.
+   */
+  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
+
+  /**
    * Search missing channel icons for all known channels.
    */
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
+
+
+  /********** sort methods **********/
 
   /**
    * Sort the current channel list by client channel number.
@@ -105,35 +127,7 @@ public:
    */
   void SortByChannelNumber(void);
 
-  /**
-   * Move a channel from position iOldIndex to iNewIndex.
-   */
-  void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
-
-  /**
-   * Remove invalid channels and updates the channel numbers.
-   */
-  void ReNumberAndCheck(void);
-
-  /**
-   * Clear this channel list.
-   */
-  void Clear();
-
-  /**
-   * Show a hidden channel or hide a visible channel.
-   */
-  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
-
-  /**
-   * Get a channel given it's unique ID.
-   */
-  CPVRChannel *GetByUniqueID(int iUniqueID);
-
-  /**
-   * Get a channel given it's channel number.
-   */
-  CPVRChannel *GetByChannelNumber(int iChannelNumber);
+  /********** getters **********/
 
   /**
    * Get a channel given the channel number on the client.
@@ -146,15 +140,29 @@ public:
   CPVRChannel *GetByChannelID(long iChannelID);
 
   /**
+   * Get a channel given it's unique ID.
+   */
+  CPVRChannel *GetByUniqueID(int iUniqueID);
+
+  /**
+   * Get a channel given it's channel number.
+   */
+  CPVRChannel *GetByChannelNumber(int iChannelNumber);
+
+  /**
    * Get a channel given it's index in this container.
    */
   CPVRChannel *GetByIndex(unsigned int index);
 
   /**
    * Get the list of channels in a group.
-   * XXX move this to PVRChannelGroup.
    */
   int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false);
+
+  /**
+   * The amount of channels in this container.
+   */
+  int GetNumChannels() const { return size(); }
 
   /**
    * Get the list of hidden channels.
@@ -164,12 +172,26 @@ public:
   /**
    * The amount of channels in this container.
    */
-  int GetNumChannels() const { return size(); }
+  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+
+  /********** operations on all channels **********/
 
   /**
-   * The amount of channels in this container.
+   * Try to find missing channel icons automatically
    */
-  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+  static void SearchMissingChannelIcons();
+
+  /********** static getters **********/
+
+  /**
+   * Get a channel given it's path.
+   */
+  static CPVRChannel *GetByPath(const CStdString &strPath);
+
+  /**
+   * Get the directory for a path
+   */
+  static bool GetDirectory(const CStdString& strPath, CFileItemList &results);
 
   /**
    * The total amount of channels in all containers.
@@ -190,21 +212,6 @@ public:
    * Get a channel given it's unique ID.
    */
   static CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
-
-  /**
-   * Get a channel given it's path.
-   */
-  static CPVRChannel *GetByPath(const CStdString &strPath);
-
-  /**
-   * Try to find missing channel icons automatically
-   */
-  static void SearchMissingChannelIcons();
-
-  /**
-   * Get the directory for a path
-   */
-  static bool GetDirectory(const CStdString& strPath, CFileItemList &results);
 };
 
 extern CPVRChannels PVRChannelsTV;

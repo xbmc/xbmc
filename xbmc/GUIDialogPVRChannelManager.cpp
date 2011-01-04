@@ -839,16 +839,12 @@ void CGUIDialogPVRChannelManager::SaveList()
   }
 
   database->Close();
+
   if (!m_bIsRadio)
-  {
-    PVRChannelsTV.Clear();
     PVRChannelsTV.Load();
-  }
   else
-  {
-    PVRChannelsRadio.Clear();
     PVRChannelsRadio.Load();
-  }
+
   m_bContainsChanges = false;
   pDlgProgress->Close();
 }

@@ -114,6 +114,21 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   return bChanged;
 }
 
+bool CPVRChannel::Persist(void)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  if (database)
+  {
+    database->Open();
+    database->UpdateDBChannel(*this);
+    database->Close();
+
+    return true;
+  }
+
+  return false;
+}
+
 void CPVRChannel::SetChannelID(long iDatabaseId)
 {
   m_iDatabaseId = iDatabaseId;
@@ -152,21 +167,24 @@ void CPVRChannel::SetRecording(bool bClientIsRecording)
   SetChanged();
 }
 
-void CPVRChannel::SetIconPath(CStdString strIconPath, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetIconPath(CStdString strIconPath, bool bSaveInDb /* = false */)
 {
+  /* check if the path is valid */
+  if (!CFile::Exists(strIconPath))
+    return false;
+
   if (m_strIconPath != strIconPath)
   {
+    /* update the path */
     m_strIconPath = strIconPath;
     SetChanged();
 
+    /* persist the changes */
     if (bSaveInDb)
-    {
-      CTVDatabase *database = g_PVRManager.GetTVDatabase();
-      database->Open();
-      database->UpdateDBChannel(*this);
-      database->Close();
-    }
+      Persist();
   }
+
+  return true;
 }
 
 void CPVRChannel::SetChannelName(CStdString strChannelName)

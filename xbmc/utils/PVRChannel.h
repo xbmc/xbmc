@@ -76,6 +76,12 @@ public:
   bool UpdateFromClient(const CPVRChannel &channel);
 
   /**
+   * Persists the changes in the database.
+   * Returns true if the changes were saved succesfully, false otherwise.
+   */
+  bool Persist(void);
+
+  /**
    * The identifier given to this channel by the TV database.
    */
   long ChannelID(void) const { return m_iDatabaseId; }
@@ -151,7 +157,7 @@ public:
   /**
    * Set the path to the icon for this channel.
    */
-  void SetIconPath(CStdString strIconPath, bool bSaveInDb = false);
+  bool SetIconPath(CStdString strIconPath, bool bSaveInDb = false);
 
   /**
    * The name for this channel used by XBMC.

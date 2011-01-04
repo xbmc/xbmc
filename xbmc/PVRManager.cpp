@@ -415,8 +415,8 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  PVRChannelsTV.Load();        /* Load the TV channels */
-  PVRChannelsRadio.Load();      /* Load the radio channels */
+  PVRChannelsTV.Load();             /* Load the TV channels */
+  PVRChannelsRadio.Load();          /* Load the radio channels */
   PVRChannelGroupsTV.Load(false);   /* Load the TV channel group lists */
   PVRChannelGroupsRadio.Load(true); /* Load the radio Channel group lists */
 
@@ -498,8 +498,8 @@ void CPVRManager::Process()
   PVRTimers.Unload();
   PVRChannelGroupsTV.Unload();
   PVRChannelGroupsRadio.Unload();
-  PVRChannelsRadio.Clear();
-  PVRChannelsTV.Clear();
+  PVRChannelsRadio.Unload();
+  PVRChannelsTV.Unload();
 }
 
 
