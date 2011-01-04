@@ -367,8 +367,14 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::InstantTimer()
   CPVRChannel *channel = (curPlayingChannel) ? curPlayingChannel->GetPVRChannelInfoTag(): NULL;
   if (!channel)
   {
-    CLog::Log(LOGERROR, "%s - couldn't find current playing channel", __FUNCTION__);
-    return NULL;
+    CLog::Log(LOGDEBUG, "%s - couldn't find current playing channel", __FUNCTION__);
+    channel = PVRChannelsTV.GetByChannelNumber(1);
+
+    if (!channel)
+    {
+      CLog::Log(LOGERROR, "%s - cannot find any channels",
+          __FUNCTION__);
+    }
   }
 
   int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");

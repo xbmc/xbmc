@@ -492,6 +492,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
         if (pItem->m_strPath == "pvr://timers/add.timer")
         {
           CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
+          if (!newtimer)
+          {
+            CLog::Log(LOGWARNING,"%s - could not create instant timer",
+                __FUNCTION__);
+            return false;
+          }
           CFileItem *item = new CFileItem(*newtimer);
 
           if (ShowTimerSettings(item))
