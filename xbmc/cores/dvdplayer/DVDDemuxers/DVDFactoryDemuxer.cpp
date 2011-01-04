@@ -67,6 +67,21 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
+    CDVDInputStreamPVRManager* pInputStreamPVR = (CDVDInputStreamPVRManager*)pInputStream;
+    CDVDInputStream* pOtherStream = pInputStreamPVR->GetOtherStream();
+    if(pOtherStream)
+    {
+      /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
+      if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+      {
+        auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+        if(demuxer->Open(pOtherStream))
+          return demuxer.release();
+        else
+          return NULL;
+      }
+    }
+
     std::string filename = pInputStream->GetFileName();
     /* Use PVR demuxer only for live streams */
     if (filename.substr(0, 14) == "pvr://channels")

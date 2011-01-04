@@ -1564,7 +1564,7 @@ void CPVRManager::CloseStream()
     ResetQualityData();
 
     /* Close the Client connection */
-    if (m_currentPlayingChannel->GetPVRChannelInfoTag()->StreamURL().IsEmpty())
+    if ((m_currentPlayingChannel->GetPVRChannelInfoTag()->StreamURL().IsEmpty()) || (m_currentPlayingChannel->GetPVRChannelInfoTag()->StreamURL().compare(0,13, "pvr://stream/") == 0))
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->CloseLiveStream();
     delete m_currentPlayingChannel;
     m_currentPlayingChannel = NULL;

@@ -387,17 +387,6 @@ bool CDVDPlayer::CloseFile()
   // we are done after the StopThread call
   StopThread();
 
-  // Added to stop live TV streams from the PVR addons at the backend side
-  // Used for the MediaPortal PVR addon to stop the rtsp timeshift stream
-  if (m_item.HasPVRChannelInfoTag())
-  {
-    if (m_item.GetPVRChannelInfoTag()->StreamURL().compare(0,13, "pvr://stream/") == 0)
-    {
-      m_filename = m_item.m_strPath; //Restore the original pvr path
-      g_PVRManager.CloseStream();
-    }
-  }
-
   m_Edl.Clear();
   m_EdlAutoSkipMarkers.Clear();
 
@@ -3530,6 +3519,12 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   if(m_pInputStream)
   {
     // override from input stream if needed
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    {
+      m_State.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
+      m_State.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
+    }
 
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
     if (pDisplayTime)
