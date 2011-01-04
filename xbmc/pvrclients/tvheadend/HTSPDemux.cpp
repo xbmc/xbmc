@@ -271,7 +271,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
   }
 
   const char* fe_name;
-  if((fe_name = htsmsg_get_str(msg, "adapter")))
+  if((fe_name = htsmsg_get_str(m, "adapter")))
     m_Quality.fe_name = fe_name;
   else
     m_Quality.fe_name = "(unknown)";
@@ -484,7 +484,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_Quality.fe_name);
+  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_Quality.fe_name.c_str());
   m_Streams.nstreams = 0;
 
   /* reset the signal status */
