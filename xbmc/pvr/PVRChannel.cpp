@@ -99,17 +99,12 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 {
   bool bChanged = false;
 
-  if (m_iClientId != channel.ClientID())
-  {
-    bChanged = true;
-    SetClientID(channel.ClientID());
-  }
-
-  if (m_iClientChannelNumber != channel.ClientChannelNumber())
-  {
-    bChanged = true;
-    SetClientChannelNumber(channel.ClientChannelNumber());
-  }
+  bChanged = SetClientID(channel.ClientID()) || bChanged;
+  bChanged = SetClientChannelNumber(channel.ClientChannelNumber()) || bChanged;
+  bChanged = SetClientChannelName(channel.ClientChannelName()) || bChanged;
+  bChanged = SetInputFormat(channel.InputFormat()) || bChanged;
+  bChanged = SetStreamURL(channel.StreamURL()) || bChanged;
+  bChanged = SetEncryptionSystem(channel.EncryptionSystem()) || bChanged;
 
   return bChanged;
 }
@@ -129,8 +124,10 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   return false;
 }
 
-void CPVRChannel::SetChannelID(long iChannelId, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetChannelID(long iChannelId, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iChannelId != iChannelId)
   {
     /* update the id */
@@ -140,11 +137,17 @@ void CPVRChannel::SetChannelID(long iChannelId, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iChannelNumber != iChannelNumber)
   {
     /* update the channel number */
@@ -154,13 +157,19 @@ void CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
 
   UpdatePath();
+
+  return bReturn;
 }
 
-void CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iChannelGroupId != iChannelGroupId)
   {
     /* update the group id */
@@ -170,11 +179,17 @@ void CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetRadio(bool bIsRadio, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetRadio(bool bIsRadio, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_bIsRadio != bIsRadio)
   {
     /* update the radio flag */
@@ -184,13 +199,19 @@ void CPVRChannel::SetRadio(bool bIsRadio, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
 
   UpdatePath();
+
+  return bReturn;
 }
 
-void CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_bIsHidden != bIsHidden)
   {
     /* update the hidden flag */
@@ -200,17 +221,33 @@ void CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetRecording(bool bClientIsRecording)
+bool CPVRChannel::SetRecording(bool bClientIsRecording)
 {
-  m_bClientIsRecording = bClientIsRecording;
-  SetChanged();
+  bool bReturn = false;
+
+  if (m_bClientIsRecording != bClientIsRecording)
+  {
+    /* update the recording false */
+    m_bClientIsRecording = bClientIsRecording;
+    SetChanged();
+
+    bReturn = true;
+  }
+
+  return bReturn;
 }
 
 bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* = false */)
 {
+  bool bReturn = true; // different from the behaviour of the rest of this class
+
   /* check if the path is valid */
   if (!CFile::Exists(strIconPath))
     return false;
@@ -224,13 +261,16 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
 
-  return true;
+  return bReturn;
 }
 
-void CPVRChannel::SetChannelName(const CStdString &strChannelName, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetChannelName(const CStdString &strChannelName, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
   CStdString strName(strChannelName);
 
   if (strName.IsEmpty())
@@ -247,11 +287,17 @@ void CPVRChannel::SetChannelName(const CStdString &strChannelName, bool bSaveInD
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetVirtual(bool bIsVirtual, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetVirtual(bool bIsVirtual, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_bIsVirtual != bIsVirtual)
   {
     /* update the virtual flag */
@@ -261,7 +307,11 @@ void CPVRChannel::SetVirtual(bool bIsVirtual, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
 bool CPVRChannel::IsEmpty() const
@@ -272,8 +322,10 @@ bool CPVRChannel::IsEmpty() const
 
 /********** Client related channel methods **********/
 
-void CPVRChannel::SetUniqueID(int iUniqueId, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetUniqueID(int iUniqueId, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iUniqueId != iUniqueId)
   {
     /* update the unique ID */
@@ -283,11 +335,17 @@ void CPVRChannel::SetUniqueID(int iUniqueId, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetClientID(int iClientId, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetClientID(int iClientId, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iClientId != iClientId)
   {
     /* update the client ID */
@@ -297,11 +355,17 @@ void CPVRChannel::SetClientID(int iClientId, bool bSaveInDb /* = false */)
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetClientChannelNumber(int iClientChannelNumber, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetClientChannelNumber(int iClientChannelNumber, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iClientChannelNumber != iClientChannelNumber)
   {
     /* update the client channel number */
@@ -311,11 +375,17 @@ void CPVRChannel::SetClientChannelNumber(int iClientChannelNumber, bool bSaveInD
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_strClientChannelName != strClientChannelName)
   {
     /* update the client channel name */
@@ -325,11 +395,17 @@ void CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName, b
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetInputFormat(const CStdString &strInputFormat, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_strInputFormat != strInputFormat)
   {
     /* update the input format */
@@ -339,11 +415,17 @@ void CPVRChannel::SetInputFormat(const CStdString &strInputFormat, bool bSaveInD
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_strStreamURL != strStreamURL)
   {
     /* update the stream url */
@@ -353,7 +435,11 @@ void CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /*
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
 void CPVRChannel::UpdatePath(void)
@@ -367,8 +453,10 @@ void CPVRChannel::UpdatePath(void)
   }
 }
 
-void CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_iClientEncryptionSystem != iClientEncryptionSystem)
   {
     /* update the client encryption system */
@@ -378,7 +466,11 @@ void CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInD
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
 CStdString CPVRChannel::EncryptionName() const
@@ -528,8 +620,10 @@ const CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
       nextTag;
 }
 
-void CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_bEPGEnabled != bEPGEnabled)
   {
     /* update the EPG flag */
@@ -539,11 +633,17 @@ void CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /*
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
-void CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* = false */)
 {
+  bool bReturn = false;
+
   if (m_strEPGScraper != strScraper)
   {
     /* update the scraper name */
@@ -553,7 +653,11 @@ void CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    bReturn = true;
   }
+
+  return bReturn;
 }
 
 void CPVRChannel::UpdateEPGPointers(void)

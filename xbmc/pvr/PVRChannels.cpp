@@ -619,7 +619,7 @@ bool CPVRChannels::RemoveByUniqueID(long iUniqueID)
   return false;
 }
 
-bool CPVRChannels::Update(CPVRChannels *channels) //XXX
+bool CPVRChannels::Update(CPVRChannels *channels)
 {
   /* the database has already been opened */
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
