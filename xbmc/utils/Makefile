@@ -58,6 +58,8 @@ SRCS=AlarmClock.cpp \
      Atomics.cpp \
      LockFree.cpp \
      PVREpgs.cpp \
+     PVREpg.cpp \
+     PVREpgInfoTag.cpp \
      PVREpgSearchFilter.cpp \
      PVRTimers.cpp \
      PVRChannel.cpp \

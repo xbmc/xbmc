@@ -168,7 +168,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const CFileItem& item)
     return;
   }
 
-  const CPVRChannel *channel = CPVRChannels::GetByChannelIDFromAll(tag->ChannelID());
+  const CPVRChannel *channel = CPVRChannels::GetByChannelIDFromAll(tag->ChannelTag()->ChannelID());
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");

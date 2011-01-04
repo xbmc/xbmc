@@ -430,7 +430,7 @@ long CTVDatabase::AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool fi
                                  "firstAired, parentalRating, starRating, notify, seriesNum, "
                                  "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
                                  "VALUES (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
-                                 info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                                 info.ChannelTag()->ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
                                  info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                                  info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                                  info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
@@ -473,7 +473,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
 
     if (info.GetUniqueBroadcastID() > 0)
     {
-      CStdString SQL = FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
+      CStdString SQL = FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelTag()->ChannelID());
       m_pDS->query(SQL.c_str());
 
       if (m_pDS->num_rows() > 0)
@@ -485,7 +485,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
                         "strPlot='%s', GenreType=%i, GenreSubType=%i, firstAired='%s', parentalRating=%i, starRating=%i, "
                         "notify=%i, seriesNum='%s', episodeNum='%s', episodePart='%s', episodeName='%s', "
                         "idUniqueBroadcast=%i WHERE idDatabaseBroadcast=%i",
-                        info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                        info.ChannelTag()->ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
                         info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                         info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                         info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
@@ -506,7 +506,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
                         "firstAired, parentalRating, starRating, notify, seriesNum, "
                         "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
                         "values (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
-                        info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                        info.ChannelTag()->ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
                         info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                         info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                         info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
@@ -524,10 +524,10 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
           m_pDS2->add_insert_sql(SQL);
         }
 
-        if (GetEPGDataEnd(info.ChannelID()) > info.End())
+        if (GetEPGDataEnd(info.ChannelTag()->ChannelID()) > info.End())
         {
-          CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
-          EraseChannelEPGAfterTime(info.ChannelID(), info.End());
+          CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelTag()->ChannelName().c_str());
+          EraseChannelEPGAfterTime(info.ChannelTag()->ChannelID(), info.End());
         }
       }
     }
@@ -541,7 +541,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s on Channel %s) failed", __FUNCTION__, info.Title().c_str(), info.ChannelName().c_str());
+    CLog::Log(LOGERROR, "%s (%s on Channel %s) failed", __FUNCTION__, info.Title().c_str(), info.ChannelTag()->ChannelName().c_str());
   }
   return false;
 }

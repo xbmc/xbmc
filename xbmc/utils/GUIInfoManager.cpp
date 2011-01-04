@@ -4359,7 +4359,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasPVRChannelInfoTag())
         number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
       if (item->HasEPGInfoTag())
-        number.Format("%i", item->GetEPGInfoTag()->ChannelNumber());
+        number.Format("%i", item->GetEPGInfoTag()->ChannelTag()->ChannelNumber());
       if (item->HasPVRTimerInfoTag())
         number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
@@ -4370,7 +4370,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->ChannelName();
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->ChannelName();
+      return item->GetEPGInfoTag()->ChannelTag()->ChannelName();
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->ChannelName();
     if (item->HasPVRTimerInfoTag())
@@ -4541,7 +4541,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        return pItem->GetEPGInfoTag()->IsEncrypted();
+        return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
       }
     }
   }

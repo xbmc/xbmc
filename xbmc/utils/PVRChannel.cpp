@@ -20,6 +20,7 @@
  */
 
 #include "FileItem.h"
+#include "PVREpgInfoTag.h"
 #include "PVREpgs.h"
 #include "PVRChannel.h"
 #include "LocalizeStrings.h"

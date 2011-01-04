@@ -81,24 +81,24 @@ bool PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
   {
     if (m_iChannelNumber == -2)
     {
-      if (tag.IsRadio())
+      if (tag.ChannelTag()->IsRadio())
         return false;
     }
     else if (m_iChannelNumber == -3)
     {
-      if (!tag.IsRadio())
+      if (!tag.ChannelTag()->IsRadio())
         return false;
     }
-    else if (tag.ChannelNumber() != m_iChannelNumber)
+    else if (tag.ChannelTag()->ChannelNumber() != m_iChannelNumber)
       return false;
   }
-  if (m_bFTAOnly && tag.IsEncrypted())
+  if (m_bFTAOnly && tag.ChannelTag()->IsEncrypted())
   {
     return false;
   }
   if (m_iChannelGroup != -1)
   {
-    if (tag.GroupID() != m_iChannelGroup)
+    if (tag.ChannelTag()->GroupID() != m_iChannelGroup)
       return false;
   }
 

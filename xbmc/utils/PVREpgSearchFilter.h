@@ -22,10 +22,7 @@
  */
 
 #include "DateTime.h"
-#include "utils/Thread.h"
-#include "../addons/include/xbmc_pvr_types.h"
-
-class CPVREpgInfoTag;
+#include "utils/PVREpgInfoTag.h"
 
 /* Filter data to check with a EPGEntry */
 struct PVREpgSearchFilter

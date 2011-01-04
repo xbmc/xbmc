@@ -25,6 +25,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "utils/PVREpgs.h"
+#include "utils/PVREpgInfoTag.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRTimers.h"
 
@@ -64,7 +65,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_RECORD)
       {
-        if (m_progItem->GetEPGInfoTag()->ChannelNumber() > 0)
+        if (m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber() > 0)
         {
           if (m_progItem->GetEPGInfoTag()->Timer() == NULL)
           {
@@ -100,12 +101,12 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
         Close();
 
         CPVRChannels *channels;
-        if (!m_progItem->GetEPGInfoTag()->IsRadio())
+        if (!m_progItem->GetEPGInfoTag()->ChannelTag()->IsRadio())
           channels = &PVRChannelsTV;
         else
           channels = &PVRChannelsRadio;
 
-        if (!g_application.PlayFile(CFileItem(channels->at(m_progItem->GetEPGInfoTag()->ChannelNumber()-1))))
+        if (!g_application.PlayFile(CFileItem(channels->at(m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;

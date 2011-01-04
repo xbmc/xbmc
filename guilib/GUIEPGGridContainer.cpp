@@ -629,7 +629,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       for (int i = 0; i < items->Size(); ++i)
       {
         const CPVREpgInfoTag* tag = items->Get(i)->GetEPGInfoTag();
-        int ChannelNow = tag->ChannelNumber();
+        int ChannelNow = tag->ChannelTag()->ChannelNumber();
         if (ChannelNow != ChannelLast)
         {
           if (i > 0)
@@ -724,7 +724,7 @@ void CGUIEPGGridContainer::UpdateItems()
     CDateTime gridCursor = m_gridStart; //reset cursor for new channel
     unsigned long progIdx   = m_epgItemsPtr[row].start;
     unsigned long lastIdx   = m_epgItemsPtr[row].stop;
-    unsigned int channelnum = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelNumber();
+    unsigned int channelnum = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -733,7 +733,7 @@ void CGUIEPGGridContainer::UpdateItems()
       while (progIdx <= lastIdx)
       {
         CGUIListItemPtr item = m_programmeItems[progIdx];
-        if (((CFileItem *)item.get())->GetEPGInfoTag()->ChannelNumber() != channelnum)
+        if (((CFileItem *)item.get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber() != channelnum)
           break;
 
         const CPVREpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();

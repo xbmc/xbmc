@@ -42,6 +42,7 @@
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
 #include "utils/PVREpgs.h"
+#include "utils/PVREpgInfoTag.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
