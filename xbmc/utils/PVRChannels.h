@@ -66,6 +66,9 @@ private:
    */
   bool SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb = false);
 
+  /**
+   * Removes invalid channels from this container.
+   */
   void RemoveInvalidChannels(void);
 
 public:
@@ -78,11 +81,6 @@ public:
   int Load();
 
   /**
-   * Unloads all channels.
-   */
-  void Unload();
-
-  /**
    * Refresh the channel list from the clients.
    */
   bool Update();
@@ -93,21 +91,30 @@ public:
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
 
   /**
-   * Sorts the current channel list by client channel number
+   * Sorts the current channel list by client channel number.
    */
   void SortByClientChannelNumber(void);
 
   /**
-   * Sorts the current channel list by channel number
+   * Sorts the current channel list by channel number.
    */
   void SortByChannelNumber(void);
 
   /**
-   * Move a channel from position iOldIndex to iNewIndex
+   * Move a channel from position iOldIndex to iNewIndex.
    */
   void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
 
+  /**
+   * Removes invalid channels and updates the channel numbers.
+   */
   void ReNumberAndCheck(void);
+
+  /**
+   * Clear this channel list.
+   */
+  void Clear();
+
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
   int GetChannels(CFileItemList* results, int group_id = -1);
@@ -122,7 +129,6 @@ public:
   CStdString GetChannelIcon(unsigned int Number);
   void SetChannelIcon(unsigned int Number, CStdString Icon);
   void ResetChannelEPGLinks();
-  void Clear();
 
   static int GetNumChannelsFromAll();
   static void SearchMissingChannelIcons();
@@ -133,8 +139,5 @@ public:
   static bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 };
 
-extern CPVRChannels      PVRChannelsTV;
-extern CPVRChannels      PVRChannelsRadio;
-
-extern CPVRChannelGroups PVRChannelGroupsTV;
-extern CPVRChannelGroups PVRChannelGroupsRadio;
+extern CPVRChannels PVRChannelsTV;
+extern CPVRChannels PVRChannelsRadio;

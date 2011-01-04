@@ -498,8 +498,8 @@ void CPVRManager::Process()
   PVRTimers.Unload();
   PVRChannelGroupsTV.Unload();
   PVRChannelGroupsRadio.Unload();
-  PVRChannelsRadio.Unload();
-  PVRChannelsTV.Unload();
+  PVRChannelsRadio.Clear();
+  PVRChannelsTV.Clear();
 }
 
 

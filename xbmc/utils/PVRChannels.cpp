@@ -131,11 +131,6 @@ int CPVRChannels::Load(void)
   return iChannelCount;
 }
 
-void CPVRChannels::Unload()
-{
-  Clear();
-}
-
 bool CPVRChannels::RemoveByUniqueID(long iUniqueID)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -401,6 +396,11 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
   }
 }
 
+void CPVRChannels::Clear()
+{
+  clear();
+}
+
 ////////////////////////////////////////////////////////
 
 int CPVRChannels::GetChannels(CFileItemList* results, int group_id)
@@ -578,12 +578,6 @@ void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
     database->UpdateDBChannel(at(Number-1));
     database->Close();
   }
-}
-
-void CPVRChannels::Clear()
-{
-  /* Clear all current present Channels inside list */
-  clear();
 }
 
 int CPVRChannels::GetNumChannelsFromAll()

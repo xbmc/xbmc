@@ -841,12 +841,12 @@ void CGUIDialogPVRChannelManager::SaveList()
   database->Close();
   if (!m_bIsRadio)
   {
-    PVRChannelsTV.Unload();
+    PVRChannelsTV.Clear();
     PVRChannelsTV.Load();
   }
   else
   {
-    PVRChannelsRadio.Unload();
+    PVRChannelsRadio.Clear();
     PVRChannelsRadio.Load();
   }
   m_bContainsChanges = false;
