@@ -562,7 +562,7 @@ htsmsg_t* cHTSPDemux::ReadStream()
       cHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
       cHTSPSession::ParseChannelUpdate(msg, m_channels);
-    else if(strstr(method, "channelRemove"))
+    else if(strstr(method, "channelDelete"))
       cHTSPSession::ParseChannelRemove(msg, m_channels);
 
     uint32_t subs;

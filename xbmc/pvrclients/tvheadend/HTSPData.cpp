@@ -466,17 +466,19 @@ void cHTSPData::Action()
       cHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
       cHTSPSession::ParseChannelUpdate(msg, m_channels);
-    else if(strstr(method, "channelRemove"))
+    else if(strstr(method, "channelDelete"))
       cHTSPSession::ParseChannelRemove(msg, m_channels);
     else if(strstr(method, "tagAdd"))
       cHTSPSession::ParseTagUpdate(msg, m_tags);
     else if(strstr(method, "tagUpdate"))
       cHTSPSession::ParseTagUpdate(msg, m_tags);
-    else if(strstr(method, "tagRemove"))
+    else if(strstr(method, "tagDelete"))
       cHTSPSession::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Signal();
-    else if(strstr(method, "dvrEntryAdd") || strstr(method, "dvrEntryUpdate"))
+    else if(strstr(method, "dvrEntryAdd"))
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings);
+    else if(strstr(method, "dvrEntryUpdate"))
       cHTSPSession::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryDelete"))
       cHTSPSession::ParseDVREntryDelete(msg, m_recordings);
