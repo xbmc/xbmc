@@ -81,6 +81,10 @@ CPVRManager::CPVRManager()
  ********************************************************************/
 CPVRManager::~CPVRManager()
 {
+  /* First stop and remove any clients */
+  if (!m_clients.empty())
+    Stop();
+
   DeleteCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: destroyed");
 }
@@ -142,8 +146,15 @@ void CPVRManager::Start()
  ********************************************************************/
 void CPVRManager::Stop()
 {
-  CLog::Log(LOGNOTICE, "PVR: PVRManager stoping");
+  CLog::Log(LOGNOTICE, "PVR: PVRManager stopping");
   StopThread();
+
+  for (CLIENTMAPITR itr = m_clients.begin(); itr != m_clients.end(); itr++)
+  {
+    CLog::Log(LOGINFO, "PVR: sending destroy to addon:%s, GUID:%s", m_clients[(*itr).first]->Name().c_str(), m_clients[(*itr).first]->ID().c_str());
+
+    m_clients[(*itr).first]->Destroy();
+  }
 
   m_clients.clear();
   m_clientsProps.clear();
