@@ -231,7 +231,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
   InfoTag->Update(tag);
 
   /* update the cached first and last date in the table */
-  PVREpgs.UpdateFirstAndLastEPGDates(tag);
+//  XXX PVREpgs.UpdateFirstAndLastEPGDates(tag);
 
   m_bIsSorted = false;
 
@@ -391,7 +391,26 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, bool bStoreInDb /* = true */)
+bool CPVREpg::LoadFromDb()
+{
+  bool bReturn = false;
+
+  if (!m_Channel)
+      return bReturn;
+
+  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+
+  /* check if this channel is marked for grabbing */
+  if (!m_Channel->EPGEnabled())
+    return bReturn;
+
+  /* request the epg for this channel from the database */
+  bReturn = (database->GetEpgForChannel(this, NULL, NULL) > 0);
+
+  return bReturn;
+}
+
+bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
 {
   if (!m_Channel)
       return false;
@@ -405,10 +424,6 @@ bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, b
 
   /* mark the EPG as being updated */
   m_bUpdateRunning = true;
-
-  /* request the epg for this channel from the database */
-  if (bLoadFromDb)
-    bGrabSuccess = (database->GetEpgForChannel(this, start, end) > 0);
 
   bGrabSuccess = (m_Channel->EPGScraper() == "client") ?
       UpdateFromClient(start, end) || bGrabSuccess:

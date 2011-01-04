@@ -67,7 +67,7 @@ void CPVREpgs::Clear()
 void CPVREpgs::Start()
 {
   /* make sure the EPG is loaded before starting the thread */
-  UpdateEPG(true /* show progress */);
+  LoadFromDb(true /* show progress */);
   PVRTimers.Update();
   UpdateAllChannelEPGPointers();
 
@@ -200,6 +200,65 @@ bool CPVREpgs::RemoveAllEntries(bool bShowProgress /* = false */)
   return true;
 }
 
+bool CPVREpgs::LoadFromDb(bool bShowProgress /* = false */)
+{
+  if (m_bDatabaseLoaded)
+    return m_bDatabaseLoaded;
+
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+
+  /* show the progress bar */
+  CGUIDialogPVRUpdateProgressBar *scanner = NULL;
+  if (bShowProgress)
+  {
+    scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+    scanner->Show();
+    scanner->SetHeader(g_localizeStrings.Get(19004));
+  }
+
+  /* open the database */
+  database->Open();
+
+  /* load all EPG tables */
+  bool bLoaded = true;
+  for (unsigned int radio = 0; radio <= 1; radio++)
+  {
+    CPVRChannels *channels = radio ? &PVRChannelsRadio : &PVRChannelsTV;
+    for (unsigned int channelPtr = 0; channelPtr < channels->size() && !m_bStop; channelPtr++)
+    {
+      CPVRChannel *channel = channels->at(channelPtr);
+      CPVREpg *epg = channel->GetEPG();
+      if (!epg)
+      {
+        CLog::Log(LOGERROR, "%s - cannot get EPG table for channel '%s'",
+            __FUNCTION__, channel->ChannelName().c_str());
+        continue;
+      }
+
+      bLoaded = epg->LoadFromDb() && bLoaded;
+
+      if (bShowProgress)
+      {
+        /* update the progress bar */
+        scanner->SetProgress(channelPtr, channels->size());
+        scanner->SetTitle(epg->Channel()->ChannelName());
+        scanner->UpdateState();
+      }
+    }
+  }
+
+  /* open the database */
+  database->Close();
+
+  if (bShowProgress)
+    scanner->Close();
+
+  /* set this to true in any situation or it'll keep trying to load the channels */
+  m_bDatabaseLoaded = true;
+
+  return bLoaded;
+}
+
 bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
 {
   long iStartTime       = CTimeUtils::GetTimeMS();
@@ -207,6 +266,8 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   bool bUpdateSuccess   = true;
   bool bUpdate          = false;
+
+  CSingleLock lock(m_critSection);
 
   /* bail out if we're already updating */
   if (m_bInihibitUpdate)
@@ -220,6 +281,8 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   /* open the database */
   database->Open();
 
+  RemoveOldEntries();
+
   /* determine if we're going to do a full update */
   if (m_iUpdateTime > 0)
   {
@@ -227,14 +290,10 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
     time_t iCurrentTime;
     database->GetLastEpgScanTime().GetAsTime(iLastUpdateTime);
     CDateTime::GetCurrentDateTime().GetAsTime(iCurrentTime);
-    bUpdate = (iLastUpdateTime + m_iUpdateTime <= iCurrentTime) ||
-              (m_RadioLast <  iCurrentTime + m_iUpdateTime) ||
-              (m_TVLast <  iCurrentTime + m_iUpdateTime);
+    bUpdate = (iLastUpdateTime + m_iUpdateTime <= iCurrentTime);
   }
 
-  RemoveOldEntries();
-
-  if (!bUpdate && m_bDatabaseLoaded)
+  if (!bUpdate)
   {
     m_bInihibitUpdate = false;
     return true;
@@ -258,9 +317,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
   CDateTime::GetCurrentDateTime().GetAsTime(end);
   start -= m_iLingerTime;
-  end   += m_bDatabaseLoaded ? m_iDaysToDisplay : 60*60*3; // only get the first 3 hours when not updating in the background
-
-  CSingleLock lock(m_critSection);
+  end   += m_iDaysToDisplay;
 
   /* update all EPG tables */
   for (unsigned int radio = 0; radio <= 1; radio++)
@@ -271,10 +328,13 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
       CPVRChannel *channel = channels->at(channelPtr);
       CPVREpg *epg = channel->GetEPG();
       if (!epg)
+      {
+        CLog::Log(LOGERROR, "%s - cannot get EPG table for channel '%s'",
+            __FUNCTION__, channel->ChannelName().c_str());
         continue;
+      }
 
-      bUpdateSuccess = epg->Update(start, end, (!m_bIgnoreDbForClient && !m_bDatabaseLoaded), !m_bIgnoreDbForClient) || bUpdateSuccess;
-      epg->Sort();
+      bUpdateSuccess = epg->Update(start, end, !m_bIgnoreDbForClient) && bUpdateSuccess;
 
       if (bShowProgress)
       {
@@ -285,9 +345,6 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
       }
     }
   }
-
-  if (!m_bDatabaseLoaded)
-    m_bDatabaseLoaded = true;
 
   /* update the last scan time if the update was succesful and if we did a full update */
   if (bUpdateSuccess && bUpdate)
@@ -333,6 +390,9 @@ int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
 
 void CPVREpgs::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
 {
+  if (!tag.ChannelTag())
+    return;
+
   if (tag.ChannelTag()->IsRadio())
   {
     if (tag.Start() < m_RadioFirst)

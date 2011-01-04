@@ -101,6 +101,8 @@ public:
    */
   bool RemoveAllEntries(bool bShowProgress = false);
 
+  bool LoadFromDb(bool bShowProgress = false);
+
   /**
    * Loads and updates the EPG data
    */

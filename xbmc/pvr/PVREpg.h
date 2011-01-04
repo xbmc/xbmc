@@ -144,5 +144,7 @@ public:
   /**
    * Update the EPG from 'start' till 'end'
    */
-  bool Update(time_t start, time_t end, bool bLoadFromDb = false, bool bStoreInDb = true);
+  bool Update(time_t start, time_t end, bool bStoreInDb = true);
+
+  bool LoadFromDb();
 };
