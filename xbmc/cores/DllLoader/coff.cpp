@@ -322,7 +322,10 @@ int CoffLoader::LoadStringTable(FILE *fp)
       return 0;
     }
     if (!fread((void *)tmp, StringTableSize, sizeof(char), fp))
+    {
+      delete[] tmp;
       return 0;
+    }
   }
   SizeOfStringTable = StringTableSize;
   StringTable = tmp;

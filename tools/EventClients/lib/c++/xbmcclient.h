@@ -361,8 +361,7 @@ public:
   virtual ~CPacketHELO()
   {
     m_DeviceName.clear();
-    if (m_IconData)
-      free(m_IconData);
+    delete[] m_IconData;
   }
 };
 
@@ -450,8 +449,7 @@ public:
   {
     m_Title.clear();
     m_Message.clear();
-    if (m_IconData)
-      free(m_IconData);
+    delete[] m_IconData;
   }
 };
 

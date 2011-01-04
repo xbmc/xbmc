@@ -697,6 +697,42 @@ void CGUIDialogAddonSettings::CreateControls()
             ((CGUISpinControlEx *)pControl)->SetValue(i);
         }
       }
+      // Sample: <setting id="mysettingname" type="rangeofnum" label="30000" rangestart="0" rangeend="100" elements="11" valueformat="30001" default="0" />
+      // in strings.xml: <string id="30001">%2.0f mp</string>
+      // creates 11 piece, text formated number labels from 0 to 100
+      else if (strcmpi(type, "rangeofnum") == 0)
+      {
+        pControl = new CGUISpinControlEx(*pOriginalSpin);
+        if (!pControl)
+          return;
+        ((CGUISpinControlEx *)pControl)->SetText(label);
+        ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
+
+        double rangestart = 0;
+        if (setting->Attribute("rangestart"))
+          rangestart = atof(setting->Attribute("rangestart"));
+        double rangeend = 1;
+        if (setting->Attribute("rangeend"))
+          rangeend = atof(setting->Attribute("rangeend"));
+        int elements = 2;
+        if (setting->Attribute("elements"))
+          elements = atoi(setting->Attribute("elements"));
+        CStdString valueformat;
+        if (setting->Attribute("valueformat"))
+          valueformat = m_addon->GetString(atoi(setting->Attribute("valueformat")));
+        for (int i = 0; i < elements; i++)
+        {
+          CStdString valuestring;
+          if (elements < 2)
+            valuestring.Format(valueformat.c_str(), rangestart);
+          else
+            valuestring.Format(valueformat.c_str(), rangestart+(rangeend-rangestart)/(elements-1)*i);
+          ((CGUISpinControlEx *)pControl)->AddLabel(valuestring, i);
+        }
+        ((CGUISpinControlEx *)pControl)->SetValue(atoi(m_settings[id]));
+      }
+      // Sample: <setting id="mysettingname" type="slider" label="30000" range="5,5,60" option="int" default="5"/>
+      // to make ints from 5-60 with 5 steps
       else if (strcmpi(type, "slider") == 0)
       {
         pControl = new CGUISettingsSliderControl(*pOriginalSlider);
@@ -720,7 +756,17 @@ void CGUIDialogAddonSettings::CreateControls()
             fMax = (float)atof(range[1]);
         }
 
-        ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+        CStdString option = setting->Attribute("option");
+        int iType;
+
+        if (option.size() == 0 || option.CompareNoCase("float") == 0)
+          iType = SPIN_CONTROL_TYPE_FLOAT;
+        else if (option.CompareNoCase("int") == 0)
+          iType = SPIN_CONTROL_TYPE_INT;
+        else if (option.CompareNoCase("percent") == 0)
+          iType = 0;
+
+        ((CGUISettingsSliderControl *)pControl)->SetType(iType);
         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
         ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id]));
@@ -770,9 +816,9 @@ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &
   // fetch directory
   CFileItemList items;
   if (!mask.IsEmpty())
-    CDirectory::GetDirectory(fullPath, items, mask);
+    CDirectory::GetDirectory(fullPath, items, mask, false);
   else
-    CDirectory::GetDirectory(fullPath, items);
+    CDirectory::GetDirectory(fullPath, items, "", false);
 
   vector<CStdString> values;
   for (int i = 0; i < items.Size(); ++i)

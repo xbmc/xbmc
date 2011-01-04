@@ -329,7 +329,7 @@ bool CWinSystemX11::RefreshGlxContext()
     vMask.visualid = XVisualIDFromVisual(winAttr.visual);
     vInfo = XGetVisualInfo(m_dpy, VisualScreenMask | VisualIDMask, &vMask, &availableVisuals);
     if (!vInfo)
-      CLog::Log(LOGWARNING, "Failed to get VisualInfo of SDL visual 0x%x", (unsigned) vInfo->visualid);
+      CLog::Log(LOGWARNING, "Failed to get VisualInfo of SDL visual 0x%x", (unsigned) vMask.visualid);
     else if(!IsSuitableVisual(vInfo))
     {
       CLog::Log(LOGWARNING, "Visual 0x%x of the SDL window is not suitable, looking for another one...",

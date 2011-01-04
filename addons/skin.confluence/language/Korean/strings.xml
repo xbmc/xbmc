@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/07/2010-->
+<!--Date of translation: 12/28/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -42,7 +42,8 @@
   <string id="31059">현재 재생목록</string>
   <string id="31060">이 파일은 연결되었습니다, 재생하고 싶은 부분을 선택하세요.</string>
   <string id="31061">현재 선택됨</string>
-  <string id="31100"></string>
+  <string id="31100">
+  </string>
   <string id="31101">홈 화면 옵션</string>
   <string id="31102">배경</string>
   <string id="31103">사진 슬라이드쇼에 "일시중지됨" 보이기</string>
@@ -66,7 +67,6 @@
   <string id="31124">비디오 배경에 "지금 재생중" 보이기</string>
   <string id="31125">시각화 배경에 "지금 재생중" 보이기</string>
   <string id="31128">가사</string>
-  <string id="31131">수평 홈 메뉴 사용</string>
   <string id="31132">가사 추가기능</string>
   <string id="31133">자막 추가기능</string>
   <string id="31134">홈 페이지 비디오 하위메뉴</string>
@@ -83,7 +83,8 @@
   <string id="31300">현재 온도</string>
   <string id="31301">마지막 업데이트</string>
   <string id="31302">메뉴</string>
-  <string id="31303"></string>
+  <string id="31303">
+  </string>
   <string id="31304">사진</string>
   <string id="31305">디스크 미디어 감지되지 않음</string>
   <string id="31306">꺼내기</string>
@@ -96,7 +97,8 @@
   <string id="31313">자료수집기를 선택하세요</string>
   <string id="31314">컨텐츠 검색 옵션</string>
   <string id="31315">기본</string>
-  <string id="31316"></string>
+  <string id="31316">
+  </string>
   <string id="31317">팬아트 경로 설정</string>
   <string id="31318">작은 팬아트</string>
   <string id="31319">선택된 프로파일</string>

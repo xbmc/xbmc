@@ -64,6 +64,7 @@ public:
   int GetIntValue() const;
   void SetFloatValue(float fValue);
   float GetFloatValue() const;
+  void SetIntInterval(int iInterval);
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
   virtual CStdString GetDescription() const;
@@ -88,6 +89,7 @@ protected:
 
   int m_iValue;
   int m_iStart;
+  int m_iInterval;
   int m_iEnd;
 
   float m_fValue;

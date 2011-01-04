@@ -11,4 +11,16 @@
     <string id="30007">Maximális frissítési frekvencia</string>
     <string id="30008">Sztereó 3D engedélyezése</string>
     <string id="30009">Beállításkészlet-csomag</string>
+    <string id="30010">Saját-készlet mappa   </string>
+    <string id="30011">Keverési mód</string>
+
+    <string id="30020">WA51 beállításkészlet</string>
+    <string id="30021">Winamp beállításkészlet</string>
+    <string id="30022">Felhasználói készlet</string>
+
+    <!-- beállítási érték formátumok -->
+    <string id="30050">%2.0f mp</string>
+    <string id="30051">%2.0f %%</string>
+    <string id="30052">%2.0f fps</string>
+    
 </strings>

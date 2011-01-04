@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 11/29/2010-->
+<!--Date of translation: 12/20/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1302,7 +1302,6 @@
   <string id="15275">%name% 주간 트랙 차트</string>
   <string id="15276">%name% 의 이웃 Last.fm 라디오 듣기</string>
   <string id="15277">%name% 의 개인 Last.fm 라디오 듣기</string>
-  <string id="15278">%name% 의 선호 트랙 Last.fm 라디오 듣기</string>
   <string id="15279">Last.fm 에서 목록을 검색중...</string>
   <string id="15280">Last.fm 에서 목록을 검색할수 없음...</string>
   <string id="15281">찾을 관련 아티스트 이름을 입력</string>
@@ -1310,7 +1309,6 @@
   <string id="15283">%name% 의 최근 들은 트랙</string>
   <string id="15284">%name 의 추천 Last.fm 라디오 듣기</string>
   <string id="15285">%name% 의 인기 태그</string>
-  <string id="15286">%name 의 재생목록 Last.fm 라디오 듣기</string>
   <string id="15287">현재 트랙을 선호 트랙에 추가 하시겠습니까?</string>
   <string id="15288">현재 트랙을 제거 하시겠습니까?</string>
   <string id="15289">선호 트랙에 추가됨: '%s'.</string>

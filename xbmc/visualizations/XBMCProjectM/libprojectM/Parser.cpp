@@ -66,6 +66,92 @@ int Parser::last_token_size;
 
 std::string Parser::lastLinePrefix("");
 
+#define white_space(c) ((c) == ' ' || (c) == '\t')
+#define valid_digit(c) ((c) >= '0' && (c) <= '9')
+#define end_char(c) ((c) == '\0' || (c) == '\r')
+#define math_char(c) ((c) == '+' || (c) == '-'|| (c) == '.' || (c) == 'e'|| (c) == 'E' )
+
+double fastatof (const char *p, bool &b_validformat)
+{
+    //check if it is a valid float format (only basic checking with no sequence )
+    const char *p1=p;
+    while (!end_char(*p1) && ((math_char(*p1) || valid_digit(*p1))))
+      p1 += 1;
+    if (!end_char(*p1) || p1 == p)
+    {
+      b_validformat = false;
+      return 0;
+    }
+    b_validformat = true;
+
+    int frac;
+    double sign, value, scale;
+
+    // Skip leading white space, if any.
+    while (white_space(*p) ) {
+        p += 1;
+    }
+
+    // Get sign, if any.
+    sign = 1.0;
+    if (*p == '-') {
+        sign = -1.0;
+        p += 1;
+    } else if (*p == '+') {
+        p += 1;
+    }
+
+    // Get digits before decimal point or exponent, if any.
+    value = 0.0;
+    while (valid_digit(*p)) {
+        value = value * 10.0 + (*p - '0');
+        p += 1;
+    }
+
+    // Get digits after decimal point, if any.
+    if (*p == '.') {
+        double pow10 = 10.0;
+        p += 1;
+        while (valid_digit(*p)) {
+            value += (*p - '0') / pow10;
+            pow10 *= 10.0;
+            p += 1;
+        }
+    }
+
+    // Handle exponent, if any.
+    scale = 1.0;
+    if ((*p == 'e') || (*p == 'E')) {
+        unsigned int expon;
+        p += 1;
+
+        // Get sign of exponent, if any.
+        frac = 0;
+        if (*p == '-') {
+            frac = 1;
+            p += 1;
+        } else if (*p == '+') {
+            p += 1;
+        }
+
+        // Get digits of exponent, if any.
+        expon = 0;
+        while (valid_digit(*p)) {
+            expon = expon * 10 + (*p - '0');
+            p += 1;
+        }
+        if (expon > 308) expon = 308;
+
+        // Calculate scaling factor.
+        while (expon >= 50) { scale *= 1E50; expon -= 50; }
+        while (expon >=  8) { scale *= 1E8;  expon -=  8; }
+        while (expon >   0) { scale *= 10.0; expon -=  1; }
+    }
+
+    // Return signed and scaled floating point result.
+    return sign * (frac ? (value / scale) : (value * scale));
+}
+
 bool Parser::tokenWrapAroundEnabled(false);
 
 token_t Parser::parseToken(std::istream &  fs, char * string)
@@ -1277,28 +1363,17 @@ int Parser::parse_int(std::istream &  fs, int * int_ptr)
 /* Parses a floating point number */
 int Parser::string_to_float(char * string, float * float_ptr)
 {
-
-  char ** error_ptr;
+  bool conv_success;
 
   if (*string == 0)
     return PROJECTM_PARSE_ERROR;
 
-  error_ptr = (char**)wipemalloc(sizeof(char**));
+  (*float_ptr) = fastatof(string, conv_success);
 
-  (*float_ptr) = strtod(string, error_ptr);
-
-  /* These imply a succesful parse of the string */
-  if ((**error_ptr == '\0') || (**error_ptr == '\r'))
-  {
-    free(error_ptr);
-    error_ptr = NULL;
+  if (conv_success)
     return PROJECTM_SUCCESS;
-  }
-
-  (*float_ptr) = 0;
-  free(error_ptr);
-  error_ptr = NULL;
-  return PROJECTM_PARSE_ERROR;
+  else
+    return PROJECTM_PARSE_ERROR;
 }
 
 /* Parses a floating point number */
@@ -1306,11 +1381,9 @@ int Parser::parse_float(std::istream &  fs, float * float_ptr)
 {
 
   char string[MAX_TOKEN_SIZE];
-  char ** error_ptr;
+  bool conv_success;
   token_t token;
   int sign;
-
-  error_ptr =(char**) wipemalloc(sizeof(char**));
 
   token = parseToken(fs, string);
 
@@ -1329,29 +1402,14 @@ int Parser::parse_float(std::istream &  fs, float * float_ptr)
   }
 
   if (string[0] == 0)
-  {
-    free(error_ptr);
-    error_ptr = NULL;
     return PROJECTM_PARSE_ERROR;
-  }
 
-  (*float_ptr) = sign*strtod(string, error_ptr);
+  (*float_ptr) = sign*fastatof(string, conv_success);
 
-  /* No conversion was performed */
-  if ((**error_ptr == '\0') || (**error_ptr == '\r'))
-  {
-    free(error_ptr);
-    error_ptr = NULL;
+  if (conv_success)
     return PROJECTM_SUCCESS;
-  }
-
-  if (PARSE_DEBUG) printf("parse_float: float conversion failed for string \"%s\"\n", string);
-
-  (*float_ptr) = 0;
-  free(error_ptr);
-  error_ptr = NULL;
-  return PROJECTM_PARSE_ERROR;
-
+  else
+    return PROJECTM_PARSE_ERROR;
 }
 
 /* Parses a per frame equation. That is, interprets a stream of data as a per frame equation */

@@ -183,14 +183,11 @@ void CWiiRemote::SetJoystickMap(const char *JoyMap)
     free(m_JoyMap);
   if (JoyMap != NULL)
   {
-    m_JoyMap = new char[strlen(JoyMap) + 4];
+    m_JoyMap = (char*)malloc(strlen(JoyMap) + 5);
     sprintf(m_JoyMap, "JS0:%s", JoyMap);
   }
   else
-  {
-    m_JoyMap = new char[strlen("JS0:WiiRemote")];
-    strcpy(m_JoyMap, "JS0:WiiRemote");
-  }
+    m_JoyMap = strdup("JS0:WiiRemote");
 }
 
 void CWiiRemote::Initialize(CAddress Addr, int Socket)

@@ -118,8 +118,29 @@ class projectM
 public:
 	static const int FLAG_NONE = 0;
 	static const int FLAG_DISABLE_PLAYLIST_LOAD = 1 << 0;
+
+        struct Settings {
+          int meshX;
+          int meshY;
+          int fps;
+          int textureSize;
+          int windowWidth;
+          int windowHeight;
+          int windowLeft;
+          int windowBottom;
+          std::string presetURL;
+          std::string titleFontURL;
+          std::string menuFontURL;
+          int smoothPresetDuration;
+          int presetDuration;
+          float beatSensitivity;
+          bool aspectCorrection;
+          float easterEgg;
+          bool shuffleEnabled;
+          bool useFBO;
+        };
 	
-  DLLEXPORT projectM(std::string config_file, int flags = FLAG_NONE);
+  DLLEXPORT projectM(Settings config_pm, int flags = FLAG_NONE);
   
   //DLLEXPORT projectM(int gx, int gy, int fps, int texsize, int width, int height,std::string preset_url,std::string title_fonturl, std::string title_menuurl);
   
@@ -134,36 +155,11 @@ public:
   DLLEXPORT virtual ~projectM();
 
   
-  struct Settings {
-	int meshX;
-	int meshY;
-	int fps;
-	int textureSize;
-	int windowWidth;
-	int windowHeight;
-	int windowLeft;
-	int windowBottom;
-	std::string presetURL;
-	std::string titleFontURL;
-	std::string menuFontURL;		
-	int smoothPresetDuration;
-	int presetDuration;
-	float beatSensitivity;
-	bool aspectCorrection;
-	float easterEgg;
-	bool shuffleEnabled;
-        bool useFBO;
-  };
-
 
   DLLEXPORT const Settings & settings() const {
 		return _settings;
   }
 
-  /// Writes a settings configuration to the specified file
-  static bool writeConfig(const std::string & configFile, const Settings & settings);
-
-  
   /// Sets preset iterator position to the passed in index
   void selectPresetPosition(unsigned int index);
 
@@ -267,7 +263,7 @@ private:
   float fpsstart;
   
   void switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs & inputs, PresetOutputs & outputs);
-  void readConfig(const std::string & configFile);
+  void readConfig(const Settings configpm);
   void projectM_init(int gx, int gy, int fps, int texsize, int width, int height, int xpos, int ypos, bool useFBO);
   void projectM_reset();
 
