@@ -87,15 +87,12 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
-  time_t timer1 = StartTime();
-  time_t timer2 = timer.StartTime();
-  int iTimerDelta = timer1 - timer2;
+  int iTimerDelta = StartTime() - timer.StartTime();
 
   /* if the start times are equal, compare the priority of the timers */
-  if (iTimerDelta == 0)
-    iTimerDelta = timer.m_iPriority - m_iPriority;
-
-  return iTimerDelta;
+  return iTimerDelta == 0 ?
+    timer.m_iPriority - m_iPriority :
+    iTimerDelta;
 }
 
 time_t CPVRTimerInfoTag::StartTime(void) const
@@ -182,6 +179,8 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         g_localizeStrings.Get(19160),
         m_StopTime.GetAsLocalizedTime("", false));
   }
+
+  m_bValidSummary = true;
 }
 
 /**
