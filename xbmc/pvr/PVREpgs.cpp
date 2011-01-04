@@ -414,7 +414,9 @@ bool CPVREpgs::UpdateAllChannelEPGPointers()
 
   for (unsigned int epgPtr = 0; epgPtr < PVREpgs.size(); epgPtr++)
   {
-    ((CPVRChannel *)PVREpgs.at(epgPtr)->Channel())->UpdateEPGPointers();
+    CPVRChannel *channel = PVREpgs.at(epgPtr)->Channel();
+    if (channel)
+      channel->UpdateEPGPointers();
   }
   bReturn = true;
   LeaveCriticalSection(&m_critSection);

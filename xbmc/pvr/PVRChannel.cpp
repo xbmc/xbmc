@@ -672,7 +672,7 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
 
 void CPVRChannel::UpdateEPGPointers(void)
 {
-  if (m_bIsHidden || !m_bEPGEnabled)
+  if (m_bIsHidden || !m_bEPGEnabled || m_iChannelId == 0 || m_iChannelNumber == 0)
     return;
 
   CPVREpg *epg = GetEPG();
