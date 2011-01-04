@@ -52,6 +52,7 @@ config.log
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
+/build-aux/ltmain.sh
 /build-aux/missing
 /autotools
 /BUILD
@@ -173,6 +174,11 @@ config.log
 /lib/libass/libass/Makefile.in
 /lib/libass/libtool
 /lib/libass/ltmain.sh
+/lib/libass/m4/libtool.m4
+/lib/libass/m4/ltoptions.m4
+/lib/libass/m4/ltsugar.m4
+/lib/libass/m4/ltversion.m4
+/lib/libass/m4/lt~obsolete.m4
 /lib/libass/missing
 /lib/libass/shave/libtool.m4
 /lib/libass/shave/ltoptions.m4
@@ -250,6 +256,9 @@ config.log
 # /lib/pcre
 /lib/pcre/libpcre/Debug
 /lib/pcre/libpcre/Release
+
+# /libtool
+/libtool
 
 # /project
 /project/obj
@@ -441,6 +450,9 @@ config.log
 # /xbmc/linux/
 /xbmc/linux/Makefile
 
+# /xbmc/cdrip
+/xbmc/cdrip/Makefile
+
 # /xbmc/cores/AudioRenderers/
 /xbmc/cores/AudioRenderers/Makefile
 
@@ -537,6 +549,7 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/aclocal.m4
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/autom4te.cache/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h.in~
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/configure
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/Makefile.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/Makefile.in
@@ -762,6 +775,9 @@ config.log
 /xbmc/cores/paplayer/ADPCMCodec/adpcm.lib
 /xbmc/cores/paplayer/ADPCMCodec/Debug
 /xbmc/cores/paplayer/ADPCMCodec/Release
+
+# /xbmc/cores/paplayer/asap/
+/xbmc/cores/paplayer/asap/Makefile
 
 # /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/
 /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/Makefilee
@@ -1161,6 +1177,9 @@ config.log
 /xbmc/lib/libXDAAP/Makefile
 /xbmc/lib/libXDAAP/libXDAAP_win32/Debug
 /xbmc/lib/libXDAAP/libXDAAP_win32/Release
+
+# /xbmc/osx/
+/xbmc/osx/Makefile
 
 # /xbmc/pvrclients
 /xbmc/pvrclients/*/.dependencies
