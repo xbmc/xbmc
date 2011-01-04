@@ -788,6 +788,8 @@ void CGUIDialogPVRChannelManager::SaveList()
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
+  PVREpgs.InihibitUpdate(true);
+
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   pDlgProgress->SetHeading(190);
   pDlgProgress->SetLine(0, "");
@@ -797,54 +799,72 @@ void CGUIDialogPVRChannelManager::SaveList()
   pDlgProgress->Progress();
   pDlgProgress->SetPercentage(0);
 
-  int activeChannels = 0;
-  for (int i = 0; i < m_channelItems->Size(); i++)
+  int iActiveChannels = 0;
+  for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {
-    if (m_channelItems->Get(i)->GetPropertyBOOL("ActiveChannel"))
-      activeChannels++;
+    if (m_channelItems->Get(iListPtr)->GetPropertyBOOL("ActiveChannel"))
+      ++iActiveChannels;
   }
 
-  for (int i = 0; i < m_channelItems->Size(); i++)
+  int iNextHiddenChannelNumber = iActiveChannels + 1;
+  bool bHasChangedItems = false;
+
+  for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {
-    CFileItemPtr pItem = m_channelItems->Get(i);
-    CPVRChannel *tag = pItem->GetPVRChannelInfoTag();
-    if (!pItem->GetPropertyBOOL("ActiveChannel"))
-      tag->SetChannelNumber(1+activeChannels++);
+    bool bChanged = false;
+    CFileItemPtr pItem = m_channelItems->Get(iListPtr);
+    CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
+
+    if (!channel)
+    {
+      //TODO add new channel
+      continue;
+    }
+
+    /* get values from the form */
+    bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
+    bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
+    bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
+    int iChannelNumber        = atoi(pItem->GetProperty("Number")); // XXX can't we just do GetPropertyInt?
+    int iGroupId              = pItem->GetPropertyInt("GroupId");
+    int iEPGSource            = pItem->GetPropertyInt("EPGSource");
+    CStdString strChannelName = pItem->GetProperty("Name");
+    CStdString strIconPath    = pItem->GetProperty("Icon");
+    CStdString strStreamURL   = pItem->GetProperty("StreamURL");
+
+    /* set new values in the channel tag */
+    if (bHidden)
+      bChanged = channel->SetChannelNumber(iNextHiddenChannelNumber++) || bChanged;
     else
-      tag->SetChannelNumber(atoi(pItem->GetProperty("Number")));
-    tag->SetChannelName(pItem->GetProperty("Name"));
-    tag->SetHidden(!pItem->GetPropertyBOOL("ActiveChannel"));
-    tag->SetIconPath(pItem->GetProperty("Icon"));
-    tag->SetGroupID(pItem->GetPropertyInt("GroupId"));
+      bChanged = channel->SetChannelNumber(iChannelNumber) || bChanged;
+    bChanged = channel->SetChannelName(strChannelName) || bChanged;
+    bChanged = channel->SetHidden(bHidden) || bChanged;
+    bChanged = channel->SetIconPath(strIconPath) || bChanged;
+    bChanged = channel->SetGroupID(iGroupId) || bChanged;
+    if (bVirtual)
+      bChanged = channel->SetStreamURL(strStreamURL) || bChanged;
 
-    if (pItem->GetPropertyBOOL("Virtual"))
+    if (iEPGSource == 0)
+      bChanged = channel->SetEPGScraper("client") || bChanged;
+    // TODO add other scrapers
+    bChanged = channel->SetEPGEnabled(bEPGEnabled) || bChanged;
+
+    if (bChanged)
     {
-      tag->SetStreamURL(pItem->GetProperty("StreamURL"));
+      bHasChangedItems = true;
+      channel->Persist(true);
     }
 
-    CStdString prevEPGSource = tag->EPGScraper();
-    int epgSource = pItem->GetPropertyInt("EPGSource");
-    if (epgSource == 0)
-      tag->SetEPGScraper("client");
-
-    if ((tag->EPGEnabled() && !pItem->GetPropertyBOOL("UseEPG")) || prevEPGSource != tag->EPGScraper())
-    {
-      ((CPVREpg *)tag->GetEPG())->Clear();
-    }
-    tag->SetEPGEnabled(pItem->GetPropertyBOOL("UseEPG"));
-
-    tag->Persist(true);
     pItem->SetProperty("Changed", false);
-    pDlgProgress->SetPercentage(i * 100 / m_channelItems->Size());
+    pDlgProgress->SetPercentage(iListPtr * 100 / m_channelItems->Size());
   }
 
-  database->CommitInsertQueries();
+  if (bHasChangedItems)
+    database->CommitInsertQueries();
+
   database->Close();
 
-  if (!m_bIsRadio)
-    PVRChannelsTV.Load();
-  else
-    PVRChannelsRadio.Load();
+  PVREpgs.InihibitUpdate(false);
 
   m_bContainsChanges = false;
   pDlgProgress->Close();

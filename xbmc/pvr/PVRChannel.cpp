@@ -634,6 +634,10 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /*
     if (bSaveInDb)
       Persist();
 
+    /* clear the previous EPG entries if needed */
+    if (!m_bEPGEnabled && m_EPG)
+      m_EPG->Clear();
+
     bReturn = true;
   }
 
@@ -646,6 +650,8 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
 
   if (m_strEPGScraper != strScraper)
   {
+    bool bCleanEPG = !m_strEPGScraper.IsEmpty() || strScraper.IsEmpty();
+
     /* update the scraper name */
     m_strEPGScraper = CStdString(strScraper);
     SetChanged();
@@ -653,6 +659,10 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    /* clear the previous EPG entries if needed */
+    if (bCleanEPG && m_bEPGEnabled && m_EPG)
+      m_EPG->Clear();
 
     bReturn = true;
   }
