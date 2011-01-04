@@ -265,6 +265,8 @@ public:
   static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
+  bool        m_connected;
+
 private:
   SOCKET      m_fd;
   unsigned    m_seq;

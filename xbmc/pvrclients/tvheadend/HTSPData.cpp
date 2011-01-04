@@ -70,7 +70,7 @@ void cHTSPData::Close()
 
 bool cHTSPData::CheckConnection()
 {
-  return true;
+  return m_session.m_connected;
 }
 
 htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)
@@ -91,7 +91,10 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)
   }
 
   if(!message.event->Wait(2000))
+  {
     XBMC->Log(LOG_ERROR, "cHTSPData::ReadResult - Timeout waiting for response");
+    m_session.Close();
+  }
   m_Mutex.Lock();
 
   m =    message.msg;

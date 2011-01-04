@@ -46,6 +46,7 @@ cHTSPSession::cHTSPSession()
   , m_challenge_len(0)
   , m_protocol(0)
   , m_queue_size(1000)
+  , m_connected(false)
 {
 }
 
@@ -61,6 +62,9 @@ void cHTSPSession::Abort()
 
 void cHTSPSession::Close()
 {
+  if (!m_connected) return;
+  m_connected = false;
+
   if(m_fd != INVALID_SOCKET)
   {
     closesocket(m_fd);
@@ -132,6 +136,7 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   }
 
   htsmsg_destroy(m);
+  m_connected = true;
   return true;
 }
 
@@ -215,6 +220,7 @@ bool cHTSPSession::SendMessage(htsmsg_t* m)
   if(send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
+    Close();
     return false;
   }
   free(buf);
