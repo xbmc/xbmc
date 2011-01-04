@@ -88,6 +88,7 @@ bool CPVRDatabase::CreateTables()
           "EncryptionSystem    integer"
         ")\n"
     );
+    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on Channels(ChannelNumber, IsRadio)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelClientId on Channels(ClientId)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelNumber on Channels(ChannelNumber)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on Channels(IsRadio)\n");
@@ -194,6 +195,12 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
     CLog::Log(LOGERROR, "%s - Incompatible database version!", __FUNCTION__);
     return false;
   }
+
+  if (iVersion == 5)
+  {
+    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on Channels(ChannelNumber, IsRadio)\n");
+  }
+
   return true;
 }
 

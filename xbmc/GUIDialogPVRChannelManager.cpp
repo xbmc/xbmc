@@ -823,7 +823,7 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
     bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
     bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
     bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
-    int iChannelNumber        = atoi(pItem->GetProperty("Number")); // XXX can't we just do GetPropertyInt?
+    int iChannelNumber        = pItem->GetPropertyInt("Number");
     int iGroupId              = pItem->GetPropertyInt("GroupId");
     int iEPGSource            = pItem->GetPropertyInt("EPGSource");
     CStdString strChannelName = pItem->GetProperty("Name");
