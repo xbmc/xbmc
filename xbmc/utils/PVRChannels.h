@@ -33,12 +33,13 @@ class CPVREpg;
 class CPVRChannels : public std::vector<CPVRChannel>
 {
 private:
-  bool m_bRadio;
-  int m_iHiddenChannels;
+  bool m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
+  int  m_iHiddenChannels; /* the amount of hidden channels in this container */
 
 public:
-  CPVRChannels(void);
-  bool Load(bool radio);
+  CPVRChannels(bool bRadio);
+
+  bool Load();
   void Unload();
   bool Update();
   void ReNumberAndCheck(void);

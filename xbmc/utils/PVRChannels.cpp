@@ -35,18 +35,19 @@
 
 using namespace MUSIC_INFO;
 
-CPVRChannels PVRChannelsTV;
-CPVRChannels PVRChannelsRadio;
+CPVRChannels PVRChannelsTV(false);
+CPVRChannels PVRChannelsRadio(true);
 
-CPVRChannels::CPVRChannels(void)
+CPVRChannels::CPVRChannels(bool bRadio)
 {
-  m_bRadio = false;
+  m_bRadio          = bRadio;
   m_iHiddenChannels = 0;
 }
 
-bool CPVRChannels::Load(bool radio)
+////////////////////////////////////////////////////////
+
+bool CPVRChannels::Load()
 {
-  m_bRadio = radio;
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   CLIENTMAP   *clients  = g_PVRManager.Clients();
 
@@ -96,7 +97,7 @@ bool CPVRChannels::Update()
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   CLIENTMAP   *clients  = g_PVRManager.Clients();
-  CPVRChannels PVRChannels_tmp;
+  CPVRChannels PVRChannels_tmp(m_bRadio);
 
   database->Open();
 
@@ -360,7 +361,7 @@ int CPVRChannels::GetHiddenChannels(CFileItemList* results)
 
 void CPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
 {
-  CPVRChannels m_channels_temp;
+  CPVRChannels m_channels_temp(m_bRadio);
 
   if ((newindex == oldindex) || (newindex == 0))
     return;

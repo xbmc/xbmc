@@ -842,12 +842,12 @@ void CGUIDialogPVRChannelManager::SaveList()
   if (!m_bIsRadio)
   {
     PVRChannelsTV.Unload();
-    PVRChannelsTV.Load(false);
+    PVRChannelsTV.Load();
   }
   else
   {
     PVRChannelsRadio.Unload();
-    PVRChannelsRadio.Load(true);
+    PVRChannelsRadio.Load();
   }
   m_bContainsChanges = false;
   pDlgProgress->Close();
