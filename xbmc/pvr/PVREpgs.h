@@ -84,7 +84,7 @@ protected:
 
 public:
   CPVREpgs();
-  ~CPVREpgs();
+  virtual ~CPVREpgs();
 
   void Start();
   void Stop();

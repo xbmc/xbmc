@@ -49,7 +49,7 @@ private:
 
 public:
   CPVREpg(CPVRChannel *channel);
-  ~CPVREpg(void);
+  virtual ~CPVREpg(void);
 
   /**
    * Check if this EPG contains valid entries

@@ -52,6 +52,11 @@ CPVRChannels::CPVRChannels(bool bRadio)
   m_bIsSorted       = false;
 }
 
+CPVRChannels::~CPVRChannels(void)
+{
+  erase(begin(), end());
+}
+
 int CPVRChannels::Load(void)
 {
   /* make sure this container is empty before loading */
