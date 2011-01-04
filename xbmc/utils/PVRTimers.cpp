@@ -91,20 +91,6 @@ int CPVRTimers::GetTimers(CFileItemList* results)
   return size();
 }
 
-CPVRTimerInfoTag *CPVRTimers::GetTimer(CPVRTimerInfoTag *Timer)
-{
-  CSingleLock lock(m_critSection);
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (at(i).ChannelNumber() == Timer->Number() &&
-        ((at(i).Weekdays() && at(i).Weekdays() == Timer->Weekdays()) || (!at(i).Weekdays() && at(i).FirstDay() == Timer->FirstDay())) &&
-        at(i).Start() == Timer->Start() &&
-        at(i).Stop() == Timer->Stop())
-      return &at(i);
-  }
-  return NULL;
-}
-
 CPVRTimerInfoTag *CPVRTimers::GetMatch(CDateTime t)
 {
 

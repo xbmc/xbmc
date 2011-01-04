@@ -20,10 +20,6 @@
  *
  */
 
-/*
- * for DESCRIPTION see 'PVRTimers.cpp'
- */
-
 #include "DateTime.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
@@ -44,7 +40,6 @@ public:
   bool Update();
   int GetNumTimers();
   int GetTimers(CFileItemList* results);
-  CPVRTimerInfoTag *GetTimer(CPVRTimerInfoTag *Timer);
   CPVRTimerInfoTag *GetMatch(CDateTime t);
   CPVRTimerInfoTag *GetMatch(time_t t);
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
