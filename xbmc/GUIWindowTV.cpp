@@ -56,6 +56,7 @@
 #include "utils/PVREpgInfoTag.h"
 #include "utils/PVRChannelGroups.h"
 #include "utils/PVRChannelGroup.h"
+#include "utils/PVRTimerInfoTag.h"
 
 using namespace std;
 

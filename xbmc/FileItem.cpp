@@ -45,7 +45,7 @@
 #include "utils/PVREpgInfoTag.h"
 #include "utils/PVRChannel.h"
 #include "utils/PVRRecordings.h"
-#include "utils/PVRTimers.h"
+#include "utils/PVRTimerInfoTag.h"
 #include "utils/SingleLock.h"
 #include "utils/Observer.h"
 #include "MusicInfoTag.h"

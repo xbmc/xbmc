@@ -78,6 +78,7 @@
 #include "PVRChannel.h"
 #include "PVREpgInfoTag.h"
 #include "PVRChannelGroups.h"
+#include "PVRTimerInfoTag.h"
 
 #include "addons/AddonManager.h"
 

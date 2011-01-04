@@ -25,7 +25,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 
-#include "utils/PVRTimers.h"
+#include "utils/PVRTimerInfoTag.h"
 #include "utils/PVRChannel.h"
 #include "utils/PVRChannels.h"
 

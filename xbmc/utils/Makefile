@@ -61,6 +61,7 @@ SRCS=AlarmClock.cpp \
      PVREpg.cpp \
      PVREpgInfoTag.cpp \
      PVREpgSearchFilter.cpp \
+     PVRTimerInfoTag.cpp \
      PVRTimers.cpp \
      PVRChannel.cpp \
      PVRChannels.cpp \

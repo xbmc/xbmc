@@ -29,6 +29,7 @@
 
 #include "PVRManager.h"
 #include "utils/PVREpg.h"
+#include "utils/PVRTimerInfoTag.h"
 
 using namespace std;
 

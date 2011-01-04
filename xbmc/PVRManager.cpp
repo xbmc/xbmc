@@ -45,6 +45,7 @@
 #include "utils/PVRChannelGroups.h"
 #include "utils/PVRChannelGroup.h"
 #include "utils/PVREpgInfoTag.h"
+#include "utils/PVRTimerInfoTag.h"
 
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
 #define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list

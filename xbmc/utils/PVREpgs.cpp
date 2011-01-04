@@ -33,6 +33,7 @@
 #include "PVRManager.h"
 #include "PVREpgSearchFilter.h"
 #include "PVRChannel.h"
+#include "PVRTimerInfoTag.h"
 
 using namespace std;
 

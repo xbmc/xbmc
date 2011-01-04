@@ -26,7 +26,7 @@
 #include "MusicInfoTag.h"
 #include "utils/PVREpg.h"
 #include "utils/PVREpgInfoTag.h"
-#include "utils/PVRTimers.h"
+#include "utils/PVRTimerInfoTag.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"

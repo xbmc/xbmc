@@ -23,6 +23,7 @@
 
 #include "PVREpgInfoTag.h"
 #include "PVRTimers.h"
+#include "PVRTimerInfoTag.h"
 
 using namespace std;
 

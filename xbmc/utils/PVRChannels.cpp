@@ -35,7 +35,7 @@
 #include "PVRChannelGroup.h"
 #include "PVRChannels.h"
 #include "TVDatabase.h"
-#include "PVRTimers.h"
+#include "PVRTimerInfoTag.h"
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
 

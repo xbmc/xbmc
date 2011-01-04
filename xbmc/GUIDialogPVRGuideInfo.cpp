@@ -28,6 +28,7 @@
 #include "utils/PVRChannels.h"
 #include "utils/PVREpgInfoTag.h"
 #include "utils/PVRTimers.h"
+#include "utils/PVRTimerInfoTag.h"
 
 using namespace std;
 
