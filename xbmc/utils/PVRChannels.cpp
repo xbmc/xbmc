@@ -605,6 +605,32 @@ CPVRChannel *CPVRChannels::GetByUniqueIDFromAll(int iUniqueID)
   return NULL;
 }
 
+CPVRChannel *CPVRChannels::GetByPath(const CStdString &strPath)
+{
+  CPVRChannels *channels = NULL;
+  int iChannelNumber = -1;
+
+  /* get the filename from curl */
+  CURL url(strPath);
+  CStdString strFileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(strFileName);
+
+  if (strFileName.Left(16) == "channels/tv/all/")
+  {
+    strFileName.erase(0,16);
+    iChannelNumber = atoi(strFileName.c_str());
+    channels = &PVRChannelsTV;
+  }
+  else if (strFileName.Left(19) == "channels/radio/all/")
+  {
+    strFileName.erase(0,19);
+    iChannelNumber = atoi(strFileName.c_str());
+    channels = &PVRChannelsRadio;
+  }
+
+  return channels ? channels->GetByChannelNumber(iChannelNumber) : NULL;
+}
+
 ////////////////////////////////////////////////////////
 
 bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
@@ -767,36 +793,4 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
   }
 
   return false;
-}
-
-CPVRChannel *CPVRChannels::GetByPath(CStdString &path)
-{
-  CURL url(path);
-  CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
-
-  if (fileName.Left(16) == "channels/tv/all/")
-  {
-    fileName.erase(0,16);
-    int channelNr = atoi(fileName.c_str());
-
-    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-    {
-      if (PVRChannelsTV[i]->ChannelNumber() == channelNr)
-        return PVRChannelsTV[i];
-    }
-  }
-  else if (fileName.Left(19) == "channels/radio/all/")
-  {
-    fileName.erase(0,19);
-    int channelNr = atoi(fileName.c_str());
-
-    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-    {
-      if (PVRChannelsRadio[i]->ChannelNumber() == channelNr)
-        return PVRChannelsRadio[i];
-    }
-  }
-
-  return NULL;
 }

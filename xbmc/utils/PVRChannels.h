@@ -186,8 +186,16 @@ public:
    */
   static CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
 
+  /**
+   * Get a channel given it's path.
+   */
+  static CPVRChannel *GetByPath(const CStdString &strPath);
+
+  /**
+   * Try to find missing channel icons automatically
+   */
   static void SearchMissingChannelIcons();
-  static CPVRChannel *GetByPath(CStdString &path);
+
   static bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 };
 
