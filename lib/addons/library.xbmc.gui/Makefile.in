@@ -15,7 +15,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(LIB_SHARED) $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif
 
 CLEAN_FILES = \
