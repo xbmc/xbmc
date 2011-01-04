@@ -1102,6 +1102,7 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   int block   = (int)(point.x / m_blockSize);
 
   if (channel > m_channelsPerPage) channel = m_channelsPerPage - 1;
+  if (channel >= m_channels) channel = m_channels - 1;
   if (channel < 0) channel = 0;
   if (block > m_blocksPerPage) block = m_blocksPerPage - 1;
   if (block < 0) block = 0;
@@ -1217,9 +1218,9 @@ GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
 int CGUIEPGGridContainer::GetItemSize(GridItemsPtr *item)
 {
   if (!item)
-    return m_blockSize; /// stops it crashing
+    return (int) m_blockSize; /// stops it crashing
 
-  return (m_orientation == VERTICAL ? item->width : item->height) / m_blockSize;
+  return (int) ((m_orientation == VERTICAL ? item->width : item->height) / m_blockSize);
 }
 
 int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
@@ -1261,7 +1262,10 @@ GridItemsPtr *CGUIEPGGridContainer::GetPrevItem(const int &channel)
 
 GridItemsPtr *CGUIEPGGridContainer::GetItem(const int &channel)
 {
-  return &m_gridIndex[channel + m_channelOffset][m_blockCursor + m_blockOffset];
+  if ( (channel >= 0) && (channel < m_channels) )
+    return &m_gridIndex[channel + m_channelOffset][m_blockCursor + m_blockOffset];
+  else
+    return NULL;
 }
 
 void CGUIEPGGridContainer::SetFocus(bool bOnOff)
