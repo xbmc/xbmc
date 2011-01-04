@@ -132,7 +132,6 @@ public:
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool bRadio = false);
-  int GetEPGForChannel(CPVRChannel *channel, CFileItemList *results);
   int GetEPGNow(CFileItemList* results, bool bRadio = false);
   int GetEPGNext(CFileItemList* results, bool bRadio = false);
   CDateTime GetFirstEPGDate(bool bRadio = false);

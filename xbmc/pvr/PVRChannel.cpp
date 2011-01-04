@@ -590,6 +590,19 @@ CPVREpg *CPVRChannel::GetEPG(void)
   return m_EPG;
 }
 
+int CPVRChannel::GetEPG(CFileItemList *results)
+{
+  CPVREpg *epg = GetEPG();
+  if (!epg)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - cannot get EPG for channel '%s'",
+        __FUNCTION__, m_strChannelName.c_str());
+    return -1;
+  }
+
+  return epg->Get(results);
+}
+
 bool CPVRChannel::ClearEPG()
 {
   if (m_EPG != NULL)

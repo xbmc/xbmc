@@ -533,12 +533,6 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
   return results->Size();
 }
 
-int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
-{
-  CPVREpg *epg = channel->GetEPG();
-  return epg->Get(results);
-}
-
 int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 {
   CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;

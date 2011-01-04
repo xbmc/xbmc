@@ -296,6 +296,12 @@ public:
   CPVREpg *GetEPG();
 
   /**
+   * Get the EPG table for this channel.
+   * Will be created if it doesn't exist.
+   */
+  int GetEPG(CFileItemList *results);
+
+  /**
    * Clear the EPG for this channel.
    */
   bool ClearEPG();
