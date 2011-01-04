@@ -92,8 +92,6 @@ CPVRChannel::CPVRChannel()
 CPVRChannel::~CPVRChannel()
 {
   m_epgNow                  = NULL;
-//  if (m_Epg)
-//    delete m_Epg;
 };
 
 void CPVRChannel::UpdateEpgPointers(void)
@@ -131,6 +129,7 @@ CPVREpg *CPVRChannel::GetEpg(void)
 {
   if (m_Epg == NULL)
   {
+    /* will be cleaned up by CPVREpgs on exit */
     m_Epg = new CPVREpg(this);
     PVREpgs.push_back(m_Epg);
   }
