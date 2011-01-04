@@ -83,7 +83,7 @@ void CPVREpgInfoTag::SetGenre(int ID, int subID)
 {
   m_iGenreType    = ID;
   m_iGenreSubType = subID;
-  m_strGenre     = ConvertGenreIdToString(ID, subID);
+  m_strGenre      = ConvertGenreIdToString(ID, subID);
 }
 
 const CPVREpgInfoTag *CPVREpgInfoTag::GetNextEvent() const

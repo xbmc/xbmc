@@ -77,6 +77,7 @@ bool CPVREpg::DeleteInfoTag(CPVREpgInfoTag *tag)
     {
       delete entry;
       erase(begin()+i);
+      m_bIsSorted = false;
       return true;
     }
   }
