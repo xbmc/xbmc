@@ -833,11 +833,12 @@ void CGUIDialogPVRChannelManager::SaveList()
     }
     tag->SetEPGEnabled(pItem->GetPropertyBOOL("UseEPG"));
 
-    tag->Persist();
+    tag->Persist(true);
     pItem->SetProperty("Changed", false);
     pDlgProgress->SetPercentage(i * 100 / m_channelItems->Size());
   }
 
+  database->CommitInsertQueries();
   database->Close();
 
   if (!m_bIsRadio)
