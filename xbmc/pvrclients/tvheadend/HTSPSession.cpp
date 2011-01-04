@@ -88,12 +88,14 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   if(port == 0)
     port = 9982;
 
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::Connect - connecting to '%s', port '%d'\n", hostname.c_str(), port);
+
   m_fd = htsp_tcp_connect(hostname.c_str()
                         , port
                         , errbuf, errlen, 3000);
   if(m_fd == INVALID_SOCKET)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::Open - failed to connect to server (%s)\n", errbuf);
+    XBMC->Log(LOG_ERROR, "cHTSPSession::Connect - failed to connect to server (%s)\n", errbuf);
     return false;
   }
 
@@ -106,7 +108,7 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   // read welcome
   if((m = ReadResult(m)) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::Open - failed to read greeting from server");
+    XBMC->Log(LOG_ERROR, "cHTSPSession::Connect - failed to read greeting from server");
     return false;
   }
   method  = htsmsg_get_str(m, "method");
@@ -115,7 +117,7 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   version = htsmsg_get_str(m, "serverversion");
             htsmsg_get_bin(m, "challenge", &chall, &chall_len);
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::Open - connected to server: [%s], version: [%s], proto: %d"
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::Connect - connected to server: [%s], version: [%s], proto: %d"
                     , server ? server : "", version ? version : "", proto);
 
   m_server   = server;
