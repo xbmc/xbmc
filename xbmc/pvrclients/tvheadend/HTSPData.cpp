@@ -414,6 +414,10 @@ PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "addDvrEntry");
   htsmsg_add_u32(msg, "eventId", timerinfo.index);
+  htsmsg_add_str(msg, "title", timerinfo.title);
+  htsmsg_add_u32(msg, "starttime", timerinfo.starttime);
+  htsmsg_add_u32(msg, "endtime", timerinfo.endtime);
+
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get addDvrEntry", __FUNCTION__);
