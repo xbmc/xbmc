@@ -100,6 +100,11 @@ public:
   bool Update();
 
   /**
+   * Updates a channel in this container
+   */
+  bool Update(CPVRChannel *channel);
+
+  /**
    * Move a channel from position iOldIndex to iNewIndex.
    */
   void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);

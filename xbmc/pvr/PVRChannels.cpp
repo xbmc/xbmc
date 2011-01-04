@@ -93,6 +93,13 @@ bool CPVRChannels::Update()
   return bReturn;
 }
 
+bool CPVRChannels::Update(CPVRChannel *channel)
+{
+  // TODO notify observers
+  push_back(channel);
+  return true;
+}
+
 void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 {
   if (iNewIndex == iOldIndex || iNewIndex == 0)
