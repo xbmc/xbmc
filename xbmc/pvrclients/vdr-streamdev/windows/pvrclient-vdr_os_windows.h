@@ -57,13 +57,6 @@ typedef long off_t;
 # define S_ISLNK(x) 0
 #endif
 
-#ifndef S_ISREG
-#define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
-#endif
-
-#ifndef S_ISDIR
-#define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
-#endif
 
 /* Some tricks for MS Compilers */
 #define THREADLOCAL __declspec(thread)
@@ -200,7 +193,9 @@ typedef char * caddr_t;
 #define EINPROGRESS WSAEINPROGRESS
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #define EALREADY WSAEALREADY
+#ifndef ETIMEDOUT
 #define ETIMEDOUT WSAETIMEDOUT
+#endif
 #define ECONNABORTED WSAECONNABORTED
 #define ECONNREFUSED WSAECONNREFUSED
 #define ECONNRESET WSAECONNRESET

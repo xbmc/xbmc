@@ -279,7 +279,7 @@ bool cChannel::Parse(const char *s)
     apids[0] = 0;
     dpids[0] = 0;
 
-    ok = StringToParameters(parambuf) >= 0;
+    ok = StringToParameters(parambuf);
 
     char *p;
     if ((p = strchr(vpidbuf, '=')) != NULL)

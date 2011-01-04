@@ -674,7 +674,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "recordingdir")
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'recordingdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
-    g_bUseRecordingsDir = (const char*) settingValue;
+    g_szRecordingsDir = (const char*) settingValue;
   }
 
   return STATUS_OK;
