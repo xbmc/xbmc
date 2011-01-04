@@ -105,19 +105,19 @@ bool CTVDatabase::CreateTables()
 
 bool CTVDatabase::UpdateOldVersion(int iVersion)
 {
-  BeginTransaction();
-
-  try
-  {
-
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    RollbackTransaction();
-    return false;
-  }
-  CommitTransaction();
+//  BeginTransaction();
+//
+//  try
+//  {
+//
+//  }
+//  catch (...)
+//  {
+//    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+//    RollbackTransaction();
+//    return false;
+//  }
+//  CommitTransaction();
   return true;
 }
 
