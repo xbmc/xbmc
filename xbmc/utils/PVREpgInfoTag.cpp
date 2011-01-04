@@ -66,7 +66,7 @@ bool CPVREpgInfoTag::HasTimer(void) const
 {
   for (unsigned int i = 0; i < PVRTimers.size(); ++i)
   {
-    if (PVRTimers[i].Epg() == this)
+    if (PVRTimers[i].EpgInfoTag() == this)
       return true;
   }
   return false;

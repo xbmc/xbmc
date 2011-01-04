@@ -198,7 +198,7 @@ const CStdString CPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(305);
 }
 
-bool CPVRTimerInfoTag::Add() const
+bool CPVRTimerInfoTag::AddToClient() const
 {
   try
   {
@@ -221,7 +221,7 @@ bool CPVRTimerInfoTag::Add() const
   return false;
 }
 
-bool CPVRTimerInfoTag::Delete(bool force) const
+bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
 {
   try
   {
@@ -248,7 +248,7 @@ bool CPVRTimerInfoTag::Delete(bool force) const
   return false;
 }
 
-bool CPVRTimerInfoTag::Rename(CStdString &newname) const
+bool CPVRTimerInfoTag::RenameOnClient(CStdString &newname) const
 {
   try
   {
@@ -273,7 +273,7 @@ bool CPVRTimerInfoTag::Rename(CStdString &newname) const
   return false;
 }
 
-bool CPVRTimerInfoTag::Update() const
+bool CPVRTimerInfoTag::UpdateOnClient() const
 {
   try
   {
@@ -312,7 +312,7 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
   return;
 }
 
-void CPVRTimerInfoTag::SetEpg(const CPVREpgInfoTag *tag)
+void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
 {
   if (m_EpgInfo != tag)
   {

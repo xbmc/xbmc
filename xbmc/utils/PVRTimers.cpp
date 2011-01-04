@@ -150,7 +150,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;
   }
-  return tag->Add();
+  return tag->AddToClient();
 }
 
 bool CPVRTimers::DeleteTimer(const CFileItem &item, bool force)
@@ -163,7 +163,7 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool force)
   }
 
   const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  return tag->Delete(force);
+  return tag->DeleteFromClient(force);
 }
 
 bool CPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
@@ -176,7 +176,7 @@ bool CPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
   }
 
   CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  if (tag->Rename(newname))
+  if (tag->RenameOnClient(newname))
   {
     tag->SetTitle(newname);
     return true;
@@ -194,7 +194,7 @@ bool CPVRTimers::UpdateTimer(const CFileItem &item)
   }
 
   const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  return tag->Update();
+  return tag->UpdateOnClient();
 }
 
 bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)

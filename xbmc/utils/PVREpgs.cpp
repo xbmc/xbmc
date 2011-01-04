@@ -58,7 +58,7 @@ void CPVREpgs::Clear()
 {
   /* remove all pointers to epg tables on timers */
   for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
-    PVRTimers[iTimerPtr].SetEpg(NULL);
+    PVRTimers[iTimerPtr].SetEpgInfoTag(NULL);
 
   /* remove all EPG references */
   clear();
@@ -160,7 +160,7 @@ bool CPVREpgs::RemoveAllEntries(bool bShowProgress /* = false */)
   int iTimerSize = PVRTimers.size();
   for (int iTimerPtr = 0; iTimerPtr < iTimerSize; iTimerPtr++)
   {
-    PVRTimers[iTimerPtr].SetEpg(NULL);
+    PVRTimers[iTimerPtr].SetEpgInfoTag(NULL);
 
     if (bShowProgress)
       pDlgProgress->SetPercentage(iTimerPtr / iTimerSize * 10);

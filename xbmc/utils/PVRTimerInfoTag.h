@@ -163,16 +163,16 @@ public:
   static CPVRTimerInfoTag *InstantTimer();
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
 
-  const CPVREpgInfoTag *Epg() const { return m_EpgInfo;}
-  void SetEpg(const CPVREpgInfoTag *tag);
+  const CPVREpgInfoTag *EpgInfoTag() const { return m_EpgInfo;}
+  void SetEpgInfoTag(const CPVREpgInfoTag *tag);
 
   /* Channel related Info data */
   int ChannelNumber(void) const;
   CStdString ChannelName(void) const;
 
   /* Client control functions */
-  bool Add() const;
-  bool Delete(bool force = false) const;
-  bool Rename(CStdString &newname) const;
-  bool Update() const;
+  bool AddToClient() const;
+  bool DeleteFromClient(bool force = false) const;
+  bool RenameOnClient(CStdString &newname) const;
+  bool UpdateOnClient() const;
 };
