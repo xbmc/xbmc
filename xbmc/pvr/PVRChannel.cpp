@@ -42,7 +42,7 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
   if (this == &right) return true;
 
-  return (m_iDatabaseId             == right.m_iDatabaseId &&
+  return (m_iChannelId              == right.m_iChannelId &&
           m_iChannelNumber          == right.m_iChannelNumber &&
           m_iChannelGroupId         == right.m_iChannelGroupId &&
           m_bIsRadio                == right.m_bIsRadio &&
@@ -68,7 +68,7 @@ bool CPVRChannel::operator!=(const CPVRChannel &right) const
 
 CPVRChannel::CPVRChannel()
 {
-  m_iDatabaseId             = -1;
+  m_iChannelId              = -1;
   m_iChannelNumber          = -1;
   m_iChannelGroupId         = -1;
   m_bIsRadio                = false;
@@ -120,7 +120,7 @@ bool CPVRChannel::Persist(void)
   if (database)
   {
     database->Open();
-    database->UpdateDBChannel(*this);
+    database->UpdateChannel(*this);
     database->Close();
 
     return true;
@@ -129,12 +129,12 @@ bool CPVRChannel::Persist(void)
   return false;
 }
 
-void CPVRChannel::SetChannelID(long iDatabaseId, bool bSaveInDb /* = false */)
+void CPVRChannel::SetChannelID(long iChannelId, bool bSaveInDb /* = false */)
 {
-  if (m_iDatabaseId != iDatabaseId)
+  if (m_iChannelId != iChannelId)
   {
     /* update the id */
-    m_iDatabaseId = iDatabaseId;
+    m_iChannelId = iChannelId;
     SetChanged();
 
     /* persist the changes */

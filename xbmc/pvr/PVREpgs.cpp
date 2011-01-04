@@ -188,7 +188,7 @@ bool CPVREpgs::RemoveAllEntries(bool bShowProgress /* = false */)
   /* clear the database entries */
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
-  database->EraseEPG();
+  database->EraseEpg();
   database->Close();
 
   if (bShowProgress)
@@ -225,7 +225,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   {
     time_t iLastUpdateTime;
     time_t iCurrentTime;
-    database->GetLastEPGScanTime().GetAsTime(iLastUpdateTime);
+    database->GetLastEpgScanTime().GetAsTime(iLastUpdateTime);
     CDateTime::GetCurrentDateTime().GetAsTime(iCurrentTime);
     bUpdate = (iLastUpdateTime + m_iUpdateTime <= iCurrentTime) ||
               (m_RadioLast <  iCurrentTime + m_iUpdateTime) ||
@@ -258,7 +258,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
   CDateTime::GetCurrentDateTime().GetAsTime(end);
   start -= m_iLingerTime;
-  end   += m_bDatabaseLoaded ? m_iDaysToDisplay : 60*60*6; // only get the first 6 hours when not updating in the background
+  end   += m_bDatabaseLoaded ? m_iDaysToDisplay : 60*60*3; // only get the first 3 hours when not updating in the background
 
   CSingleLock lock(m_critSection);
 
@@ -266,7 +266,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   for (unsigned int radio = 0; radio <= 1; radio++)
   {
     CPVRChannels *channels = &PVRChannelsTV;
-    for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
+    for (unsigned int channelPtr = 0; channelPtr < channels->size() && !m_bStop; channelPtr++)
     {
       CPVRChannel *channel = channels->at(channelPtr);
       CPVREpg *epg = channel->GetEPG();
@@ -291,7 +291,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
 
   /* update the last scan time if the update was succesful and if we did a full update */
   if (bUpdateSuccess && bUpdate)
-    database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
+    database->UpdateLastEpgScanTime();
 
   database->Close();
 

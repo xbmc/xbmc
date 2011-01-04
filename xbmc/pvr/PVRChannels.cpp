@@ -125,8 +125,7 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 
     if (channel->ChannelNumber() != (int) ptr + 1)
     {
-      channel->SetChannelNumber(ptr + 1);
-      database->UpdateDBChannel(*channel);
+      channel->SetChannelNumber(ptr + 1, true);
     }
   }
 
@@ -192,10 +191,7 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
     --m_iHiddenChannels;
 
   /* update the database entry */
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
-  database->Open();
-  database->UpdateDBChannel(*channel);
-  database->Close();
+  channel->Persist();
 
   /* move the channel to the end of the list */
   MoveChannel(channel->ChannelNumber(), size());
@@ -302,16 +298,8 @@ CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
     CPVRChannel *channel = at(ptr);
-    if (channel->UniqueID() != 0)
-    {
-      if (channel->UniqueID() == iUniqueID)
-        return channel;
-    }
-    else
-    {
-      if (channel->ChannelID() == iUniqueID)
-        return channel;
-    }
+    if (channel->UniqueID() == iUniqueID)
+      return channel;
   }
   return NULL;
 }
@@ -545,12 +533,13 @@ int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = size();
 
-  database->GetDBChannelList(*this, m_bRadio);
+  if (database->GetChannels(*this, m_bRadio) > 0)
+  {
+    if (bCompress)
+      database->Compress(true);
 
-  if (bCompress)
-    database->Compress(true);
-
-  Update();
+    Update();
+  }
 
   database->Close();
 
@@ -581,7 +570,8 @@ int CPVRChannels::LoadFromClients(bool bAddToDb /* = true */)
   {
     /* add all channels to the database */
     for (unsigned int ptr = 0; ptr < size(); ptr++)
-      database->AddDBChannel(*at(ptr), false, (ptr==0), (ptr >= size() - 1));
+//      database->UpdateChannel(*at(ptr), false, (ptr==0), (ptr >= size() - 1));
+      database->UpdateChannel(*at(ptr));
 
     database->Close();
 
@@ -649,7 +639,7 @@ bool CPVRChannels::Update(CPVRChannels *channels)
       /* if it's present, update the current tag */
       if (channel->UpdateFromClient(*existingChannel))
       {
-        database->UpdateDBChannel(*channel);
+        channel->Persist();
         CLog::Log(LOGINFO,"%s - updated %s channel '%s'",
             __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
       }
@@ -662,7 +652,7 @@ bool CPVRChannels::Update(CPVRChannels *channels)
       /* channel is no longer present */
       CLog::Log(LOGINFO,"%s - removing %s channel '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
-      database->RemoveDBChannel(*channel);
+      database->RemoveChannel(*channel);
       erase(begin() + ptr);
       ptr--;
       iSize--;
@@ -673,8 +663,7 @@ bool CPVRChannels::Update(CPVRChannels *channels)
   for (unsigned int ptr = 0; ptr < channels->size(); ptr++)
   {
     CPVRChannel *channel = channels->at(ptr);
-
-    channel->SetChannelID(database->AddDBChannel(*channel));
+    channel->Persist();
     push_back(channel);
 
     CLog::Log(LOGINFO,"%s - added %s channel '%s'",

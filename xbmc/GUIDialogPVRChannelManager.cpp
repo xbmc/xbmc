@@ -469,7 +469,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
           {
             CTVDatabase *database = g_PVRManager.GetTVDatabase();
             database->Open();
-            database->RemoveDBChannel(*pItem->GetPVRChannelInfoTag());
+            database->RemoveChannel(*pItem->GetPVRChannelInfoTag());
             database->Close();
 
             m_channelItems->Remove(m_iSelected);
@@ -523,7 +523,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
                 CTVDatabase *database = g_PVRManager.GetTVDatabase();
                 database->Open();
-                newchannel.SetChannelID(database->AddDBChannel(newchannel));
+                database->UpdateChannel(newchannel);
                 database->Close();
                 CFileItemPtr channel(new CFileItem(newchannel));
 
@@ -833,7 +833,7 @@ void CGUIDialogPVRChannelManager::SaveList()
     }
     tag->SetEPGEnabled(pItem->GetPropertyBOOL("UseEPG"));
 
-    database->UpdateDBChannel(*tag);
+    tag->Persist();
     pItem->SetProperty("Changed", false);
     pDlgProgress->SetPercentage(i * 100 / m_channelItems->Size());
   }

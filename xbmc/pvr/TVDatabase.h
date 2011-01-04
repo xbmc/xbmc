@@ -35,69 +35,182 @@ public:
 
   virtual bool Open();
 
-  virtual int GetMinVersion() const { return 4; };
+  virtual int GetMinVersion() const { return 5; };
   const char *GetDefaultDBName() const { return "MyTV4.db"; };
 
-  bool EraseClients();
-  long AddClient(const CStdString &client, const CStdString &guid);
-  CDateTime GetLastEPGScanTime();
-  bool UpdateLastEPGScan(const CDateTime lastScan);
+  /********** Channel methods **********/
+
+  /**
+   * Remove all channels from the database
+   */
+  bool EraseChannels();
+
+  /**
+   * Remove all channels from a client from the database
+   */
+  bool EraseClientChannels(long iClientId);
+
+  /**
+   * Add or update a channel entry in the datbase
+   */
+  long UpdateChannel(const CPVRChannel &channel);
+
+  /**
+   * Remove a channel entry from the database
+   */
+  bool RemoveChannel(const CPVRChannel &channel);
+
+  /**
+   * Get the list of channels from the database
+   */
+  int GetChannels(CPVRChannels &results, bool bIsRadio);
+
+  /**
+   * The amount of channels
+   */
+  int GetChannelCount(bool bRadio, bool bHidden = false);
+
+  /**
+   * Get the Id of the channel that was played last
+   */
   int GetLastChannel();
+
+  /**
+   * Update the channel that was played last
+   */
   bool UpdateLastChannel(const CPVRChannel &info);
 
-  /* Database Epg handling */
-  bool EraseEPG();
-  bool EraseEPGForChannel(long channelID, CDateTime after = NULL);
-  bool EraseChannelEPGAfterTime(long channelID, CDateTime after);
-  bool EraseOldEPG();
-  long AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool RemoveEPGEntry(const CPVREpgInfoTag &info);
-  bool RemoveEPGEntries(unsigned int channelID, const CDateTime &start, const CDateTime &end);
-  bool GetEPGForChannel(CPVREpg *epg, const CDateTime &start, const CDateTime &end);
-  CDateTime GetEPGDataStart(int channelID);
-  CDateTime GetEPGDataEnd(int channelID);
+  /********** Channel settings methods **********/
 
-  /* Database Channel handling */
-  bool EraseChannels();
-  bool EraseClientChannels(long clientID);
-  long AddDBChannel(const CPVRChannel &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool RemoveDBChannel(const CPVRChannel &info);
-  long UpdateDBChannel(const CPVRChannel &info);
-  int  GetDBNumChannels(bool radio);
-  int  GetNumHiddenChannels();
-  bool HasChannel(const CPVRChannel &info);
-  bool GetDBChannelList(CPVRChannels &results, bool radio);
-
-  /* Database Channel Group handling */
-  bool EraseChannelGroups();
-  long AddChannelGroup(const CStdString &groupName, int sortOrder);
-  bool DeleteChannelGroup(unsigned int GroupId);
-  bool GetChannelGroupList(CPVRChannelGroups &results);
-  bool SetChannelGroupName(unsigned int GroupId, const CStdString &newname);
-  bool SetChannelGroupSortOrder(unsigned int GroupId, int sortOrder);
-
-  /* Database Radio Group handling */
-  bool EraseRadioChannelGroups();
-  long AddRadioChannelGroup(const CStdString &groupName, int sortOrder);
-  bool DeleteRadioChannelGroup(unsigned int GroupId);
-  bool GetRadioChannelGroupList(CPVRChannelGroups &results);
-  bool SetRadioChannelGroupName(unsigned int GroupId, const CStdString &newname);
-  bool SetRadioChannelGroupSortOrder(unsigned int GroupId, int sortOrder);
-
-  /* Database channel settings storage */
+  /**
+   * Remove all channel settings from the database
+   */
   bool EraseChannelSettings();
-  bool GetChannelSettings(unsigned int channelID, CVideoSettings &settings);
-  bool SetChannelSettings(unsigned int channelID, const CVideoSettings &settings);
+
+  /**
+   * Get channel settings from the database
+   */
+  bool GetChannelSettings(unsigned int iChannelId, CVideoSettings &settings);
+
+  /**
+   * Store channel settings in the database
+   */
+  bool SetChannelSettings(unsigned int iChannelId, const CVideoSettings &settings);
+
+  /********** Channel group methods **********/
+
+  /**
+   * Remove all channel groups from the database
+   */
+  bool EraseChannelGroups(bool bRadio = false);
+
+  /**
+   * Add a channel group to the database
+   */
+  long AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio = false);
+
+  /**
+   * Delete a channel group from the database
+   */
+  bool DeleteChannelGroup(int iGroupId, bool bRadio = false);
+
+  /**
+   * Get the channel groups
+   */
+  bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio = false);
+
+  /**
+   * Change the name of a channel group
+   */
+  bool SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio = false);
+
+  /**
+   * Change the sort order of a channel group
+   */
+  bool SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio = false);
 
 protected:
-  long GetClientId(const CStdString &guid);
-  long GetChannelGroupId(const CStdString &groupname);
-  long GetRadioChannelGroupId(const CStdString &groupname);
+  /**
+   * Get the Id of a channel group
+   */
+  long GetChannelGroupId(const CStdString &strGroupName, bool bRadio = false);
+
+  /********** Client methods **********/
+public:
+  /**
+   * Remove all client information from the database
+   */
+  bool EraseClients();
+
+  /**
+   * Add a client to the database
+   */
+  long AddClient(const CStdString &strClientName, const CStdString &strGuid);
+
+  /**
+   * Remove a client from the database
+   */
+  bool RemoveClient(const CStdString &strGuid);
+
+protected:
+  /**
+   * Get the database ID of a client
+   */
+  long GetClientId(const CStdString &strClientUid);
+
+  /********** EPG methods **********/
+public:
+  /**
+   * Remove all EPG information from the database
+   */
+  bool EraseEpg();
+
+  /**
+   * Erases all EPG entries for a channel.
+   */
+  bool EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start = NULL, const CDateTime &end = NULL);
+
+  /**
+   * Erases all EPG entries older than 1 day.
+   */
+  bool EraseOldEpgEntries();
+
+  /**
+   * Remove a single EPG entry.
+   */
+  bool RemoveEpgEntry(const CPVREpgInfoTag &tag);
+
+  /**
+   * Get all EPG entries for a channel.
+   */
+  int GetEpgForChannel(CPVREpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
+
+  /**
+   * Get the start time of the first entry for a channel.
+   */
+  CDateTime GetEpgDataStart(int iChannelId);
+
+  /**
+   * Get the end time of the last entry for a channel.
+   */
+  CDateTime GetEpgDataEnd(int iChannelId);
+
+  /**
+   * Get the last stored EPG scan time.
+   */
+  CDateTime GetLastEpgScanTime();
+
+  /**
+   * Update the last scan time.
+   */
+  bool UpdateLastEpgScanTime(void);
+
+  /**
+   * Persist an infotag
+   */
+  bool UpdateEpgEntry(const CPVREpgInfoTag &info, bool bSingleUpdate = true, bool bLastUpdate = false);
 
 private:
-  CStdString oneWriteSQLString;
-//  char *InsertSQLString(char *dest, const char *src);
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
   CDateTime lastScanTime;

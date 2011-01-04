@@ -212,18 +212,53 @@ const CPVREpgInfoTag *CPVREpg::InfoTagAround(CDateTime Time) const
   return NULL;
 }
 
+bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = false */)
+{
+  CPVREpgInfoTag *InfoTag = (CPVREpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
+  /* create a new tag if no tag with this ID exists */
+  if (!InfoTag)
+  {
+    InfoTag = new CPVREpgInfoTag(tag.UniqueBroadcastID());
+    if (!InfoTag)
+    {
+      CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
+      return false;
+    }
+    push_back(InfoTag);
+  }
+
+  InfoTag->m_Epg = this;
+  InfoTag->Update(tag);
+
+  /* update the cached first and last date in the table */
+  PVREpgs.UpdateFirstAndLastEPGDates(tag);
+
+  m_bIsSorted = false;
+
+  if (bUpdateDatabase)
+  {
+    bool retval;
+    CTVDatabase *database = g_PVRManager.GetTVDatabase();
+    database->Open();
+    retval = database->UpdateEpgEntry(tag);
+    database->Close();
+    return retval;
+  }
+
+  return true;
+}
+
 bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
     return false;
 
-  long uniqueBroadcastID      = data->uid;
-  CPVREpgInfoTag *InfoTag     = (CPVREpgInfoTag *) this->InfoTag(uniqueBroadcastID, data->starttime);
+  CPVREpgInfoTag *InfoTag = (CPVREpgInfoTag *) this->InfoTag(data->uid, data->starttime);
 
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
-    InfoTag = new CPVREpgInfoTag(uniqueBroadcastID);
+    InfoTag = new CPVREpgInfoTag(data->uid);
     if (!InfoTag)
     {
       CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
@@ -234,14 +269,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
 
   /* update the tag's values */
   InfoTag->m_Epg = this;
-  InfoTag->SetStart((time_t)data->starttime);
-  InfoTag->SetEnd((time_t)data->endtime);
-  InfoTag->SetTitle(data->title);
-  InfoTag->SetPlotOutline(data->subtitle);
-  InfoTag->SetPlot(data->description);
-  InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
-  InfoTag->SetParentalRating(data->parental_rating);
-  InfoTag->SetIcon(m_Channel->IconPath());
+  InfoTag->Update(data);
 
   /* update the cached first and last date in the table */
   PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
@@ -253,7 +281,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
     bool retval;
     CTVDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
-    retval = database->UpdateEPGEntry(*InfoTag);
+    retval = database->UpdateEpgEntry(*InfoTag);
     database->Close();
     return retval;
   }
@@ -261,47 +289,65 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   return true;
 }
 
-bool CPVREpg::RemoveOverlappingEvents(void)
+bool CPVREpg::FixOverlappingEvents(bool bStore /* = true */)
 {
-  /// This will check all programs in the list and
-  /// will remove any overlapping programs
-  /// An overlapping program is a tv program which overlaps with another tv program in time
-  /// for example.
-  ///   program A on MTV runs from 20.00-21.00 on 1 november 2004
-  ///   program B on MTV runs from 20.55-22.00 on 1 november 2004
-  ///   this case, program B will be removed
-
   CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   Sort();
 
-  CStdString previousName = "";
-  CDateTime previousStart;
-  CDateTime previousEnd(1980, 1, 1, 0, 0, 0);
+  CPVREpgInfoTag *previousTag = NULL;
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (previousEnd > at(ptr)->Start())
+    if (previousTag == NULL)
     {
-      /* remove this program */
-      CLog::Log(LOGNOTICE, "PVR: Removing Overlapped TV Event '%s' on channel '%s' at date '%s' to '%s'",
-          at(ptr)->Title().c_str(),
-          at(ptr)->ChannelTag()->ChannelName().c_str(),
-          at(ptr)->Start().GetAsLocalizedDateTime(false, false).c_str(),
-          at(ptr)->End().GetAsLocalizedDateTime(false, false).c_str());
-      CLog::Log(LOGNOTICE, "     Overlapps with '%s' at date '%s' to '%s'",
-          previousName.c_str(),
-          previousStart.GetAsLocalizedDateTime(false, false).c_str(),
-          previousEnd.GetAsLocalizedDateTime(false, false).c_str());
+      previousTag = at(ptr);
+      continue;
+    }
 
-      database->RemoveEPGEntry(*at(ptr));
-      DeleteInfoTag(at(ptr));
-    }
-    else
+    CPVREpgInfoTag *currentTag = at(ptr);
+
+    if (previousTag->End() > currentTag->End())
     {
-      previousName = at(ptr)->Title();
-      previousStart = at(ptr)->Start();
-      previousEnd = at(ptr)->End();
+      /* previous tag completely overlaps current tag; delete the current tag */
+      CLog::Log(LOGNOTICE, "%s - Removing EPG event '%s' on channel '%s' at '%s' to '%s': overlaps with '%s' at '%s' to '%s'",
+          __FUNCTION__, currentTag->Title().c_str(), currentTag->ChannelTag()->ChannelName().c_str(),
+          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->Title().c_str(),
+          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->End().GetAsLocalizedDateTime(false, false).c_str());
+
+      database->RemoveEpgEntry(*currentTag);
+      DeleteInfoTag(currentTag);
+      ptr--;
     }
+    else if (previousTag->End() > currentTag->Start())
+    {
+      /* previous tag ends after the current tag starts; mediate */
+      CDateTimeSpan diff = previousTag->End() - currentTag->Start();
+      int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
+      CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
+
+      CLog::Log(LOGNOTICE, "%s - Mediating start and end times of EPG events '%s' on channel '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
+          __FUNCTION__, currentTag->Title().c_str(), currentTag->ChannelTag()->ChannelName().c_str(),
+          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->Title().c_str(),
+          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          newTime.GetAsLocalizedDateTime(false, false).c_str());
+
+      previousTag->SetEnd(newTime);
+      currentTag->SetStart(newTime);
+
+      if (bStore)
+      {
+        database->UpdateEpgEntry(*previousTag, false, false);
+        database->UpdateEpgEntry(*currentTag, false, true);
+      }
+    }
+
+    previousTag = at(ptr);
   }
 
   return true;
@@ -362,7 +408,7 @@ bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, b
 
   /* request the epg for this channel from the database */
   if (bLoadFromDb)
-    bGrabSuccess = database->GetEPGForChannel(this, start, end);
+    bGrabSuccess = (database->GetEpgForChannel(this, start, end) > 0);
 
   bGrabSuccess = (m_Channel->EPGScraper() == "client") ?
       UpdateFromClient(start, end) || bGrabSuccess:
@@ -371,12 +417,12 @@ bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, b
   /* store the loaded EPG entries in the database */
   if (bGrabSuccess)
   {
-    RemoveOverlappingEvents();
+    FixOverlappingEvents(bStoreInDb);
 
     if (bStoreInDb)
     {
       for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-        database->UpdateEPGEntry(*at(iTagPtr), false, (iTagPtr==0), (iTagPtr == size()-1));
+        database->UpdateEpgEntry(*at(iTagPtr), false, (iTagPtr == size() - 1));
     }
   }
 

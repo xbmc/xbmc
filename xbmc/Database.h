@@ -49,6 +49,30 @@ public:
   static CStdString FormatSQL(CStdString strStmt, ...);
   CStdString PrepareSQL(CStdString strStmt, ...) const;
 
+  /**
+   * Get a single value from a table
+   */
+  CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+
+  /**
+   * Delete values from a table
+   */
+  bool DeleteValues(const CStdString &strTable, const CStdString &strWhereClause = CStdString());
+
+  /**
+   * Executes a query
+   */
+  bool ExecuteQuery(const CStdString &strQuery);
+  int ResultQuery(const CStdString &strQuery);
+
+  /**
+   * Open a new dataset
+   */
+  bool OpenDS();
+
+  bool QueueInsertQuery(const CStdString &strQuery);
+  bool CommitInsertQueries();
+
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
@@ -70,5 +94,6 @@ protected:
 private:
   bool UpdateVersionNumber();
 
+  bool m_bMultiWrite;
   int m_iRefCount;
 };

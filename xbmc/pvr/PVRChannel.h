@@ -35,7 +35,7 @@ class CPVRChannel : public Observable
 
 private:
   /********** XBMC related channel data **********/
-  long                           m_iDatabaseId;             /* the identifier given to this channel by the TV database */
+  long                           m_iChannelId;             /* the identifier given to this channel by the TV database */
   int                            m_iChannelNumber;          /* the channel number used by XBMC */
   int                            m_iChannelGroupId;         /* the identifier of the group where this channel belongs to */
   bool                           m_bIsRadio;                /* true if this channel is a radio channel, false if not */
@@ -84,7 +84,7 @@ public:
   /**
    * The identifier given to this channel by the TV database.
    */
-  long ChannelID(void) const { return m_iDatabaseId; }
+  long ChannelID(void) const { return m_iChannelId; }
 
   /**
    * Set the identifier for this channel.

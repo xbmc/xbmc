@@ -27,7 +27,7 @@
 
 using namespace std;
 
-CPVREpgInfoTag::CPVREpgInfoTag(long uniqueBroadcastID)
+CPVREpgInfoTag::CPVREpgInfoTag(int uniqueBroadcastID)
 {
   Reset();
   m_iUniqueBroadcastID = uniqueBroadcastID;
@@ -42,6 +42,7 @@ CPVREpgInfoTag::~CPVREpgInfoTag()
 
 void CPVREpgInfoTag::Reset()
 {
+  m_iBroadcastId        = -1;
   m_strTitle            = g_localizeStrings.Get(19055);
   m_strGenre            = "";
   m_strPlotOutline      = "";
@@ -206,4 +207,34 @@ CStdString CPVREpgInfoTag::ConvertGenreIdToString(int ID, int subID) const
       break;
   }
   return str;
+}
+
+void CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag)
+{
+  SetBroadcastId(tag.BroadcastId());
+  SetTitle(tag.Title());
+  SetPlotOutline(tag.PlotOutline());
+  SetPlot(tag.Plot());
+  SetStart(tag.Start());
+  SetEnd(tag.End());
+  SetGenre(tag.GenreType(), tag.GenreSubType());
+  SetFirstAired(tag.FirstAired());
+  SetParentalRating(tag.ParentalRating());
+  SetStarRating(tag.StarRating());
+  SetNotify(tag.Notify());
+  SetEpisodeNum(tag.EpisodeNum());
+  SetEpisodePart(tag.EpisodePart());
+  SetEpisodeName(tag.EpisodeName());
+}
+
+void CPVREpgInfoTag::Update(const PVR_PROGINFO *data)
+{
+  SetStart((time_t)data->starttime);
+  SetEnd((time_t)data->endtime);
+  SetTitle(data->title);
+  SetPlotOutline(data->subtitle);
+  SetPlot(data->description);
+  SetGenre(data->genre_type, data->genre_sub_type);
+  SetParentalRating(data->parental_rating);
+//  SetIcon(m_Channel->IconPath());
 }

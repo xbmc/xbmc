@@ -34,6 +34,7 @@ private:
   CPVREpg *                     m_Epg;     // The Schedule this event belongs to
   const CPVRTimerInfoTag *      m_Timer;
 
+  int                           m_iBroadcastId;
   CStdString                    m_strTitle;
   CStdString                    m_strPlotOutline;
   CStdString                    m_strPlot;
@@ -41,7 +42,7 @@ private:
   CDateTime                     m_startTime;
   CDateTime                     m_endTime;
   CDateTimeSpan                 m_duration;
-  CStdString                    m_strIconPath;
+  CStdString                    m_strIconPath; // XXX not persisted?
   CStdString                    m_strFileNameAndPath;
   int                           m_iGenreType;
   int                           m_iGenreSubType;
@@ -57,15 +58,18 @@ private:
 
   mutable const CPVREpgInfoTag *m_nextEvent;
   mutable const CPVREpgInfoTag *m_previousEvent;
-  long                          m_iUniqueBroadcastID; // event's unique identifier for this tag
+  int                           m_iUniqueBroadcastID; // event's unique identifier for this tag
 
 public:
-  CPVREpgInfoTag(long uniqueBroadcastID);
+  CPVREpgInfoTag(int uniqueBroadcastID);
   CPVREpgInfoTag() { Reset(); };
   ~CPVREpgInfoTag();
   void Reset();
 
-  long UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
+  int UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
+
+  int BroadcastId(void) const { return m_iBroadcastId; }
+  void SetBroadcastId(int iId) { m_iBroadcastId = iId; }
 
   CDateTime Start(void) const { return m_startTime; }
   void SetStart(CDateTime Start);
@@ -137,4 +141,7 @@ public:
 
   void SetNextEvent(const CPVREpgInfoTag *event) { m_nextEvent = event; }
   void SetPreviousEvent(const CPVREpgInfoTag *event) { m_previousEvent = event; }
+
+  void Update(const CPVREpgInfoTag &tag);
+  void Update(const PVR_PROGINFO *data);
 };

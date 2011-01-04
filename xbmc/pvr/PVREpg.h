@@ -128,12 +128,18 @@ public:
    * Update an entry in this EPG
    * If bUpdateDatabase is set to true, this event will be persisted in the database
    */
+  bool UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase = false);
+
+  /**
+   * Update an entry in this EPG
+   * If bUpdateDatabase is set to true, this event will be persisted in the database
+   */
   bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
   /**
-   * Remove overlapping events from the tables
+   * Fix overlapping events from the tables
    */
-  bool RemoveOverlappingEvents(void);
+  bool FixOverlappingEvents(bool bStore = true);
 
   /**
    * Update the EPG from 'start' till 'end'

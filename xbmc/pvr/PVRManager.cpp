@@ -957,13 +957,13 @@ void CPVRManager::ResetDatabase()
   pDlgProgress->SetPercentage(20);
 
   m_database.Open();
-  m_database.EraseEPG();
+  m_database.EraseEpg();
   pDlgProgress->SetPercentage(30);
 
-  m_database.EraseChannelGroups();
+  m_database.EraseChannelGroups(false);
   pDlgProgress->SetPercentage(50);
 
-  m_database.EraseRadioChannelGroups();
+  m_database.EraseChannelGroups(true);
   pDlgProgress->SetPercentage(60);
 
   m_database.EraseChannels();
