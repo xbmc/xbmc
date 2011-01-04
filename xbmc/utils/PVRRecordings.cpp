@@ -79,22 +79,7 @@ bool CPVRRecordingInfoTag::operator !=(const CPVRRecordingInfoTag& right) const
 {
 
   if (this == &right) return false;
-
-  if (m_clientIndex             != right.m_clientIndex) return true;
-  if (m_clientID                != right.m_clientID) return true;
-  if (m_strChannel              != right.m_strChannel) return true;
-  if (m_recordingTime           != right.m_recordingTime) return true;
-  if (m_duration                != right.m_duration) return true;
-  if (m_strPlotOutline          != right.m_strPlotOutline) return true;
-  if (m_strPlot                 != right.m_strPlot) return true;
-  if (m_strStreamURL            != right.m_strStreamURL) return true;
-  if (m_Priority                != right.m_Priority) return true;
-  if (m_Lifetime                != right.m_Lifetime) return true;
-  if (m_strTitle                != right.m_strTitle) return true;
-  if (m_strDirectory            != right.m_strDirectory) return true;
-  if (m_strFileNameAndPath      != right.m_strFileNameAndPath) return true;
-
-  return false;
+  return !(*this == right);
 }
 
 /**

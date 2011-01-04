@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -35,33 +35,118 @@ private:
 
 public:
   CPVRTimers(void);
-  bool Load() { return Update(); }
+
+  /**
+   * Load the timers from the clients.
+   * Returns the amount of timers that were added.
+   */
+  int Load();
+
+  /**
+   * Clear this timer list.
+   */
   void Unload();
-  bool Update();
-  int GetNumTimers();
+
+  /**
+   * Refresh the channel list from the clients.
+   * Returns the amount of timers that were added.
+   */
+  int Update();
+
+  /**
+   * Update a timer entry in this container.
+   */
+  bool Update(const CPVRTimerInfoTag &timer);
+
+  /********** getters **********/
+
+  /**
+   * Get all known timers.
+   */
   int GetTimers(CFileItemList* results);
+
+  /**
+   * The timer that will be active next.
+   * Returns null if there is none.
+   */
+  CPVRTimerInfoTag *GetNextActiveTimer(void);
+
+  /**
+   * The amount of timers in this container.
+   */
+  int GetNumTimers();
+
+  /**
+   * Get the directory for a path.
+   */
+  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+
+  /********** channel methods **********/
+
+  /**
+   * Check if there are any active timers on a channel.
+   */
+  bool ChannelHasTimers(const CPVRChannel &channel);
+
+  /**
+   * Delete all active timers on a channel.
+   */
+  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce = false);
+
+  /********** static methods **********/
+
+  /**
+   * Add a timer to the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool AddTimer(const CFileItem &item);
+
+  /**
+   * Add a timer to the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool AddTimer(const CPVRTimerInfoTag &item);
+
+  /**
+   * Delete a timer on the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool DeleteTimer(const CFileItem &item, bool bForce = false);
+
+  /**
+   * Delete a timer on the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool DeleteTimer(const CPVRTimerInfoTag &item, bool bForce = false);
+
+  /**
+   * Rename a timer on the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
+
+  /**
+   * Rename a timer on the client.
+   * True if it was sent correctly, false if not.
+   */
+  static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
+
+  /**
+   * Get updated timer information from the client.
+   * True if it was requested correctly, false if not.
+   */
+  static bool UpdateTimer(const CFileItem &item);
+
+  /**
+   * Get updated timer information from the client.
+   * True if it was requested correctly, false if not.
+   */
+  static bool UpdateTimer(const CPVRTimerInfoTag &item);
+
+  // TODO
   CPVRTimerInfoTag *GetMatch(CDateTime t);
   CPVRTimerInfoTag *GetMatch(time_t t);
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
-  CPVRTimerInfoTag *GetNextActiveTimer(void);
-  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  bool Update(const CPVRTimerInfoTag &timer);
-  void Clear();
-
-  static bool AddTimer(const CFileItem &item);
-  static bool AddTimer(const CPVRTimerInfoTag &item);
-
-  static bool DeleteTimer(const CFileItem &item, bool bForce = false);
-  static bool DeleteTimer(const CPVRTimerInfoTag &item, bool bForce = false);
-
-  static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
-  static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
-
-  static bool UpdateTimer(const CFileItem &item);
-  static bool UpdateTimer(const CPVRTimerInfoTag &item);
-
-  bool ChannelHasTimers(const CPVRChannel &channel);
-  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce = false);
 };
 
 extern CPVRTimers PVRTimers;

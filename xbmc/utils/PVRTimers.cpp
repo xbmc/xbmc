@@ -36,14 +36,22 @@ CPVRTimers::CPVRTimers(void)
 
 }
 
-void CPVRTimers::Unload()
+int CPVRTimers::Load()
 {
-  Clear();
+  Unload();
+  return Update();
 }
 
-bool CPVRTimers::Update()
+void CPVRTimers::Unload()
+{
+  clear();
+}
+
+int CPVRTimers::Update()
 {
   CSingleLock lock(m_critSection);
+
+  int iCurSize = size();
 
   /* clear channel timers */
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
@@ -60,7 +68,7 @@ bool CPVRTimers::Update()
   }
 
   /* clear timers */
-  Clear();
+  clear();
 
   /* get all timers from the clients */
   CLIENTMAP *clients = g_PVRManager.Clients();
@@ -104,20 +112,18 @@ bool CPVRTimers::Update()
       epgTag->SetTimer(timerTag);
   }
 
-  return true;
+  return size() - iCurSize;
 }
 
 bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
 {
+  // TODO currently just adds the timer to this container
   push_back(timer);
 
   return true;
 }
 
-int CPVRTimers::GetNumTimers()
-{
-  return size();
-}
+/********** getters **********/
 
 int CPVRTimers::GetTimers(CFileItemList* results)
 {
@@ -130,24 +136,6 @@ int CPVRTimers::GetTimers(CFileItemList* results)
   }
 
   return size();
-}
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(CDateTime t)
-{
-
-  return NULL;
-}
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(time_t t)
-{
-
-  return NULL;
-}
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(const CPVREpgInfoTag *Epg, int *Match)
-{
-
-  return NULL;
 }
 
 CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
@@ -163,6 +151,79 @@ CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
   }
   return t0;
 }
+
+int CPVRTimers::GetNumTimers()
+{
+  return size();
+}
+
+bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CStdString base(strPath);
+  CUtil::RemoveSlashAtEnd(base);
+
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName == "timers")
+  {
+    CFileItemPtr item;
+
+    Update();
+
+    item.reset(new CFileItem(base + "/add.timer", false));
+    item->SetLabel(g_localizeStrings.Get(19026));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    for (unsigned int i = 0; i < size(); ++i)
+    {
+      item.reset(new CFileItem(at(i)));
+      items.Add(item);
+    }
+
+    return true;
+  }
+  return false;
+}
+
+/********** channel methods **********/
+
+bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRTimerInfoTag timer = at(ptr);
+
+    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+      return true;
+  }
+
+  return false;
+}
+
+
+bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce /* = false */)
+{
+  bool bReturn = true;
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRTimerInfoTag timer = at(ptr);
+
+    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+    {
+      bReturn = timer.DeleteFromClient(bForce) && bReturn;
+      erase(begin() + ptr);
+      ptr--;
+    }
+  }
+
+  return bReturn;
+}
+
+/********** static methods **********/
 
 bool CPVRTimers::AddTimer(const CFileItem &item)
 {
@@ -260,71 +321,21 @@ bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTag &item)
   return item.UpdateOnClient();
 }
 
-bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
+CPVRTimerInfoTag *CPVRTimers::GetMatch(CDateTime t)
 {
-  CStdString base(strPath);
-  CUtil::RemoveSlashAtEnd(base);
-
-  CURL url(strPath);
-  CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
-
-  if (fileName == "timers")
-  {
-    CFileItemPtr item;
-
-    Update();
-
-    item.reset(new CFileItem(base + "/add.timer", false));
-    item->SetLabel(g_localizeStrings.Get(19026));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    for (unsigned int i = 0; i < size(); ++i)
-    {
-      item.reset(new CFileItem(at(i)));
-      items.Add(item);
-    }
-
-    return true;
-  }
-  return false;
+  // TODO
+  return NULL;
 }
 
-void CPVRTimers::Clear()
+CPVRTimerInfoTag *CPVRTimers::GetMatch(time_t t)
 {
-  clear();
+  // TODO
+  return NULL;
 }
 
-bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
+CPVRTimerInfoTag *CPVRTimers::GetMatch(const CPVREpgInfoTag *Epg, int *Match)
 {
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
-  {
-    CPVRTimerInfoTag timer = at(ptr);
-
-    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
-      return true;
-  }
-
-  return false;
+  // TODO
+  return NULL;
 }
 
-
-bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce /* = false */)
-{
-  bool bReturn = true;
-
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
-  {
-    CPVRTimerInfoTag timer = at(ptr);
-
-    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
-    {
-      bReturn = timer.DeleteFromClient(bForce) && bReturn;
-      erase(begin() + ptr);
-      ptr--;
-    }
-  }
-
-  return bReturn;
-}
