@@ -459,6 +459,15 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
   return true;
 }
 
+void CPVRChannels::SearchMissingChannelIcons()
+{
+  CLog::Log(LOGINFO,"PVR: Manual Channel Icon search started...");
+  PVRChannelsTV.SearchAndSetChannelIcons(true);
+  PVRChannelsRadio.SearchAndSetChannelIcons(true);
+  // TODO: Add Process dialog here
+  CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
+}
+
 CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -546,66 +555,57 @@ int CPVRChannels::GetHiddenChannels(CFileItemList* results)
   return GetChannels(results, -1, true);
 }
 
-////////////////////////////////////////////////////////
-
 int CPVRChannels::GetNumChannelsFromAll()
 {
-  return PVRChannelsTV.GetNumChannels()+PVRChannelsRadio.GetNumChannels();
+  return PVRChannelsTV.GetNumChannels() + PVRChannelsRadio.GetNumChannels();
 }
 
-void CPVRChannels::SearchMissingChannelIcons()
-{
-  CLog::Log(LOGINFO,"PVR: Manual Channel Icon search started...");
-  PVRChannelsTV.SearchAndSetChannelIcons(true);
-  PVRChannelsRadio.SearchAndSetChannelIcons(true);
-  /// TODO: Add Process dialog here
-  CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
-}
-
-CPVRChannel *CPVRChannels::GetByClientFromAll(int Number, int ClientID)
+CPVRChannel *CPVRChannels::GetByClientFromAll(int iClientChannelNumber, int iClientID)
 {
   CPVRChannel *channel;
 
-  channel = PVRChannelsTV.GetByClient(Number, ClientID);
+  channel = PVRChannelsTV.GetByClient(iClientChannelNumber, iClientID);
   if (channel != NULL)
     return channel;
 
-  channel = PVRChannelsRadio.GetByClient(Number, ClientID);
+  channel = PVRChannelsRadio.GetByClient(iClientChannelNumber, iClientID);
   if (channel != NULL)
     return channel;
 
   return NULL;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelIDFromAll(long ChannelID)
+CPVRChannel *CPVRChannels::GetByChannelIDFromAll(long iChannelID)
 {
   CPVRChannel *channel;
 
-  channel = PVRChannelsTV.GetByChannelID(ChannelID);
+  channel = PVRChannelsTV.GetByChannelID(iChannelID);
   if (channel != NULL)
     return channel;
 
-  channel = PVRChannelsRadio.GetByChannelID(ChannelID);
+  channel = PVRChannelsRadio.GetByChannelID(iChannelID);
   if (channel != NULL)
     return channel;
 
   return NULL;
 }
 
-CPVRChannel *CPVRChannels::GetByUniqueIDFromAll(long UniqueID)
+CPVRChannel *CPVRChannels::GetByUniqueIDFromAll(int iUniqueID)
 {
   CPVRChannel *channel;
 
-  channel = PVRChannelsTV.GetByUniqueID(UniqueID);
+  channel = PVRChannelsTV.GetByUniqueID(iUniqueID);
   if (channel != NULL)
     return channel;
 
-  channel = PVRChannelsRadio.GetByUniqueID(UniqueID);
+  channel = PVRChannelsRadio.GetByUniqueID(iUniqueID);
   if (channel != NULL)
     return channel;
 
   return NULL;
 }
+
+////////////////////////////////////////////////////////
 
 bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {

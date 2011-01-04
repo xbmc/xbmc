@@ -37,25 +37,25 @@ private:
   int  m_iHiddenChannels; /* the amount of hidden channels in this container */
 
   /**
-   * Loads the channels stored in the database.
+   * Load the channels stored in the database.
    * Returns the amount of channels that were added.
    */
   int LoadFromDb(bool bCompress = false);
 
   /**
-   * Loads the channels from the clients.
+   * Load the channels from the clients.
    * Returns the amount of channels that were added.
    */
   int LoadFromClients(void);
 
   /**
-   * Removes a channel.
+   * Remove a channel.
    * Returns true if the channel was found and removed, false otherwise
    */
   bool RemoveByUniqueID(long iUniqueID);
 
   /**
-   * Updates the current channel list with the given list.
+   * Update the current channel list with the given list.
    * Only the new channels will be present in the passed list after this call.
    * Return true if everything went well, false otherwise.
    */
@@ -67,7 +67,7 @@ private:
   bool SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb = false);
 
   /**
-   * Removes invalid channels from this container.
+   * Remove invalid channels from this container.
    */
   void RemoveInvalidChannels(void);
 
@@ -75,7 +75,7 @@ public:
   CPVRChannels(bool bRadio);
 
   /**
-   * Loads the channels from the database. If no channels are stored in the database, then the channels will be loaded from the clients.
+   * Load the channels from the database. If no channels are stored in the database, then the channels will be loaded from the clients.
    * Returns the amount of channels that were added.
    */
   int Load();
@@ -91,12 +91,12 @@ public:
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
 
   /**
-   * Sorts the current channel list by client channel number.
+   * Sort the current channel list by client channel number.
    */
   void SortByClientChannelNumber(void);
 
   /**
-   * Sorts the current channel list by channel number.
+   * Sort the current channel list by channel number.
    */
   void SortByChannelNumber(void);
 
@@ -106,7 +106,7 @@ public:
   void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
 
   /**
-   * Removes invalid channels and updates the channel numbers.
+   * Remove invalid channels and updates the channel numbers.
    */
   void ReNumberAndCheck(void);
 
@@ -116,56 +116,77 @@ public:
   void Clear();
 
   /**
-   * Hides a channel
+   * Show a hidden channel or hide a visible channel.
    */
   bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 
   /**
-   * Get a channel given it's unique ID
+   * Get a channel given it's unique ID.
    */
   CPVRChannel *GetByUniqueID(int iUniqueID);
 
   /**
-   * Get a channel given it's channel number
+   * Get a channel given it's channel number.
    */
   CPVRChannel *GetByChannelNumber(int iChannelNumber);
 
   /**
-   * Get a channel given the channel number on the client
+   * Get a channel given the channel number on the client.
    */
   CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID);
 
   /**
-   * Get a channel given it's channel ID
+   * Get a channel given it's channel ID.
    */
   CPVRChannel *GetByChannelID(long iChannelID);
 
   /**
-   * Get a channel given it's index in this container
+   * Get a channel given it's index in this container.
    */
   CPVRChannel *GetByIndex(unsigned int index);
 
   /**
-   * Get the list of channels in a group
-   * XXX move this to PVRChannelGroup
+   * Get the list of channels in a group.
+   * XXX move this to PVRChannelGroup.
    */
   int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false);
 
   /**
-   * Get the list of hidden channels
+   * Get the list of hidden channels.
    */
   int GetHiddenChannels(CFileItemList* results);
 
+  /**
+   * The amount of channels in this container.
+   */
   int GetNumChannels() const { return size(); }
+
+  /**
+   * The amount of channels in this container.
+   */
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
-  void ResetChannelEPGLinks();
-
+  /**
+   * The total amount of channels in all containers.
+   */
   static int GetNumChannelsFromAll();
+
+  /**
+   * Get a channel given it's channel ID from all containers.
+   */
+  static CPVRChannel *GetByClientFromAll(int iClientChannelNumber, int iClientID);
+
+  /**
+   * Get a channel given it's channel ID from all containers.
+   */
+  static CPVRChannel *GetByChannelIDFromAll(long iChannelID);
+
+  /**
+   * Get a channel given it's unique ID.
+   */
+  static CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
+
   static void SearchMissingChannelIcons();
-  static CPVRChannel *GetByClientFromAll(int Number, int ClientID);
-  static CPVRChannel *GetByChannelIDFromAll(long ChannelID);
-  static CPVRChannel *GetByUniqueIDFromAll(long UniqueID);
   static CPVRChannel *GetByPath(CStdString &path);
   static bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 };
