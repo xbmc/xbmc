@@ -102,12 +102,16 @@ public:
    */
   void SortByChannelNumber(void);
 
+  /**
+   * Move a channel from position iOldIndex to iNewIndex
+   */
+  void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
+
   void ReNumberAndCheck(void);
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
   int GetChannels(CFileItemList* results, int group_id = -1);
   int GetHiddenChannels(CFileItemList* results);
-  void MoveChannel(unsigned int oldindex, unsigned int newindex);
   void HideChannel(unsigned int number);
   CPVRChannel *GetByNumber(int Number);
   CPVRChannel *GetByClient(int Number, int ClientID);
