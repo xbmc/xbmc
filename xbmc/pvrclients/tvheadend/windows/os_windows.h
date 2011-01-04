@@ -27,7 +27,7 @@
 # define __USE_FILE_OFFSET64	1
 #endif
 
-typedef int ssize_t;
+//typedef int ssize_t;
 typedef int mode_t;
 typedef int bool_t;
 typedef __int8 int8_t;

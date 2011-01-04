@@ -24,7 +24,9 @@
 #ifdef _MSC_VER
 #include <winsock2.h>
 #define SHUT_RDWR SD_BOTH
+#ifndef ETIMEDOUT
 #define ETIMEDOUT WSAETIMEDOUT
+#endif
 #else
 #include <netinet/in.h>
 #include <netinet/tcp.h>

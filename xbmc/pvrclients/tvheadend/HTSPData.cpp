@@ -187,7 +187,7 @@ PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
     tag.stream_url    = "";
     tag.bouquet       = 0;
 
-    if(((bool)radio) == tag.radio)
+    if(radio && tag.radio)
     {
       PVR->TransferChannelEntry(handle, &tag);
     }
