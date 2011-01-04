@@ -270,8 +270,11 @@ void CPVRChannels::SortByClientChannelNumber(void)
 
 void CPVRChannels::SortByChannelNumber(void)
 {
-  sort(begin(), end(), sortByChannelNumber());
-  m_bIsSorted = true;
+  if (!m_bIsSorted)
+  {
+    sort(begin(), end(), sortByChannelNumber());
+    m_bIsSorted = true;
+  }
 }
 
 /********** getters **********/
