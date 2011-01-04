@@ -37,10 +37,10 @@ public:
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat format, const CStdString device);
 
-  virtual void         Stop          ();
-  virtual float        GetDelay      ();
-  virtual unsigned int AddPackets    (uint8_t *data, unsigned int frames);
-
+  virtual void         Stop            ();
+  virtual float        GetDelay        ();
+  virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
+  static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
   int m_fd;
   CStdString      m_device;

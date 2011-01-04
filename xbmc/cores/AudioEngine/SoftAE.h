@@ -88,6 +88,8 @@ public:
   unsigned int        GetSinkChCount   () {return m_format.m_channelCount ;}
   unsigned int        GetSinkFrameSize () {return m_format.m_frameSize    ;}
 
+  virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
@@ -156,6 +158,10 @@ private:
 
   /* the channel remapper and audioCallback */
   CAERemap        m_remap;
+  float          *m_remapped;
+  size_t          m_remappedSize;
+  uint8_t        *m_converted;
+  size_t          m_convertedSize;
   IAudioCallback *m_audioCallback;
 
   /* thread run stages */

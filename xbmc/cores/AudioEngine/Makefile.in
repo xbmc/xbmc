@@ -14,6 +14,7 @@ SRCS = \
 	SoftAE.cpp \
 	SoftAEStream.cpp \
 	SoftAESound.cpp \
+        AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
 	AEConvert.cpp \

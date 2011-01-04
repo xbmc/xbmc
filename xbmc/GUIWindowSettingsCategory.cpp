@@ -102,6 +102,7 @@
 #include "LangInfo.h"
 #include "StringUtils.h"
 #include "WindowingFactory.h"
+#include "SystemInfo.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
@@ -807,17 +808,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
     }
-    else if (strSetting.Equals("musicplayer.crossfade"))
+#ifdef _WIN32
+    else if (strSetting.Equals("audiooutput.channellayout"))
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
+      //Speaker setting is irrelevant when using shared audio mode.
+      if(g_sysinfo.IsVistaOrHigher())
+      {
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        pControl->SetEnabled(g_guiSettings.GetBool("audiooutput.useexclusivemode"));
+      }
     }
-    else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0 &&
-                                         g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
-    }
+#endif
 #ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverusername"))
     {
@@ -2846,8 +2847,8 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   int numberSinks = 0;
 
   int selectedValue = -1;
-  AudioSinkList sinkList;
-  CAudioRendererFactory::EnumerateAudioSinks(sinkList, Passthrough);
+  AEDeviceList sinkList;
+  AE.EnumerateOutputDevices(sinkList, false);
   if (sinkList.size()==0)
   {
     pControl->AddLabel("Error - no devices found", 0);

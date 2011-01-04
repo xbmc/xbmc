@@ -68,7 +68,7 @@ CAEPacketizerIEC958::CAEPacketizerIEC958() :
   m_nullPacket.m_preamble2    = IEC958_PREAMBLE2;
   m_nullPacket.m_type         = IEC958_TYPE_NULL;
   m_nullPacket.m_length       = 0;
-  bzero(m_nullPacket.m_data, sizeof(m_nullPacket.m_data));
+  memset(m_nullPacket.m_data, 0, sizeof(m_nullPacket.m_data));
   SwapPacket(m_nullPacket, false);
 }
 
@@ -231,7 +231,7 @@ void CAEPacketizerIEC958::PackAC3(uint8_t *data, unsigned int fsize)
   packet.m_type      = m_dataType;
   packet.m_length    = fsize;
   memcpy(packet.m_data, data, fsize);
-  bzero (packet.m_data + fsize, sizeof(packet.m_data) - fsize);
+  memset(packet.m_data + fsize, 0, sizeof(packet.m_data) - fsize);
 
   SwapPacket(packet, true);
   m_packetBuffer.push_back(packet);
@@ -246,7 +246,7 @@ void CAEPacketizerIEC958::PackDTS(uint8_t *data, unsigned int fsize)
   packet.m_type      = m_dataType;
   packet.m_length    = fsize;
   memcpy(packet.m_data, data, fsize);
-  bzero (packet.m_data + fsize, sizeof(packet.m_data) - fsize);
+  memset(packet.m_data + fsize, 0, sizeof(packet.m_data) - fsize);
 
   /* swap the data too if the stream is BE */
   SwapPacket(packet, !m_dataIsLE);

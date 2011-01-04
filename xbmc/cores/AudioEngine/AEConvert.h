@@ -43,6 +43,8 @@ private:
   static unsigned int Float_S8    (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S16LE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S16BE (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S24LE (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S24BE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S32LE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S32BE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_DOUBLE(float   *data, const unsigned int samples, uint8_t *dest);

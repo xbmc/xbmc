@@ -42,8 +42,7 @@
 #include "AESink.h"
 #include "Packetizers/AEPacketizerIEC958.h"
 
-#include "Sinks/AESinkALSA.h"
-#include "Sinks/AESinkOSS.h"
+#include "AESinkFactory.h"
 
 #ifdef __SSE__
 #include <xmmintrin.h>
@@ -67,6 +66,10 @@ CSoftAE::CSoftAE():
   m_passthrough     (false),
   m_buffer          (NULL ),
   m_vizBufferSamples(0    ),
+  m_remapped        (NULL ),
+  m_remappedSize    (0    ),
+  m_converted       (NULL ),
+  m_convertedSize   (0    ),
   m_audioCallback   (NULL )
 {
 }
@@ -84,49 +87,29 @@ CSoftAE::~CSoftAE()
   }
 }
 
-#define TRY_SINK(SINK) \
-{ \
-  tmpFormat = desiredFormat; \
-  tmpDevice = device; \
-  sink      = new CAESink ##SINK(); \
-  if (sink->Initialize(tmpFormat, tmpDevice)) \
-  { \
-    if (passthrough) \
-    { \
-      m_passthroughDevice = device; \
-      m_passthroughDriver = sink->GetName(); \
-    } \
-    else \
-    { \
-      m_device = device; \
-      m_driver = sink->GetName(); \
-    } \
-    desiredFormat = tmpFormat; \
-    device        = tmpDevice; \
-    return sink; \
-  } \
-  sink->Deinitialize(); \
-  delete sink; \
-}
-
 IAESink *CSoftAE::GetSink(AEAudioFormat &desiredFormat, bool passthrough)
 {
   CStdString device = passthrough ? m_passthroughDevice : m_device;
   CStdString driver = passthrough ? m_passthroughDriver : m_driver;
 
-  AEAudioFormat  tmpFormat;
-  CStdString     tmpDevice;
-  IAESink       *sink;
+  IAESink *sink = CAESinkFactory::Create(driver, device, desiredFormat);
 
-       if (driver == "ALSA") {TRY_SINK(ALSA);}
-  else if (driver == "OSS" ) {TRY_SINK(OSS );}
+  if(sink)
+  {
+    if(passthrough)
+    {
+      m_passthroughDevice = device;
+      m_passthroughDriver = sink->GetName();
+    }
+    else
+    {
+      m_device = device;
+      m_driver = sink->GetName();
+    }
+  }
 
-  if (driver != "ALSA") {TRY_SINK(ALSA);}
-  if (driver != "OSS" ) {TRY_SINK(OSS );}
-  return NULL;
+  return sink;
 }
-
-#undef TRY_SINK
 
 bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
 {
@@ -302,6 +285,9 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     list<CSoftAEStream*>::iterator itt;
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
+
+    /* we dont want to re-open the sink for this */
+    return;
   }
   else if (setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
   {
@@ -363,8 +349,21 @@ void CSoftAE::Deinitialize()
   _aligned_free(m_buffer);
   m_buffer = NULL;
 
+  _aligned_free(m_converted);
+  m_converted = NULL;
+  m_convertedSize = 0;
+
+  _aligned_free(m_remapped);
+  m_remapped = NULL;
+  m_remappedSize = 0;
+
   delete m_packetizer;
   m_packetizer = NULL;
+}
+
+void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
+{
+  CAESinkFactory::Enumerate(devices);
 }
 
 /* this is used when there is no sink to prevent us running too fast */
@@ -441,9 +440,9 @@ IAESound *CSoftAE::GetSound(CStdString file)
 void CSoftAE::PlaySound(IAESound *sound)
 {
    SoundState ss = {
-      owner      : sound,
-      samples    : sound->GetSamples(),
-      sampleCount: sound->GetSampleCount()
+      sound,
+      sound->GetSamples(),
+      sound->GetSampleCount()
    };
    CSingleLock lock(m_critSection);
    OpenSink();
@@ -700,6 +699,10 @@ void CSoftAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
   CSingleLock runLock(m_runLock);
+
+  uint8_t *out = NULL;
+  size_t   outSize = 0;
+
   m_running = true;
 
   CLog::Log(LOGINFO, "CSoftAE::Run - Thread Started");
@@ -716,8 +719,13 @@ void CSoftAE::Run()
 
     CSingleLock mixLock(m_critSection);
       size_t size = m_rawPassthrough ? m_format.m_frameSize : m_channelCount * sizeof(float);
-      DECLARE_ALIGNED(16, uint8_t, out[size]);
-      memset(out, 0, sizeof(out));
+      if(size > outSize)
+      {
+        _aligned_free(out);
+        out = (uint8_t *)_aligned_malloc(size, 16);
+        outSize = size;
+      }
+      memset(out, 0, size);
 
       bool restart = false;
       mixed = RunStreamStage(channelCount, out, restart);
@@ -737,6 +745,8 @@ void CSoftAE::Run()
       RunBufferStage(out);
     sinkLock.Leave();
   }
+
+  if(out) _aligned_free(out);
 }
 
 inline void CSoftAE::MixSounds(unsigned int samples)
@@ -814,15 +824,26 @@ inline void CSoftAE::RunOutputStage()
           floatBuffer[i] *= m_volume;
       #endif
   
-      float remapped[rSamples];
-      m_remap.Remap(floatBuffer, remapped, m_format.m_frames);
+      if(m_remappedSize < rSamples)
+      {
+        _aligned_free(m_remapped);
+        m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
+        m_remappedSize = rSamples;
+      }
+
+      m_remap.Remap(floatBuffer, m_remapped, m_format.m_frames);
   
       if (m_convertFn)
       {
-        DECLARE_ALIGNED(16, uint8_t, converted[m_format.m_frames * m_format.m_frameSize]);
-        m_convertFn(remapped, rSamples, converted);
+        if(m_convertedSize < m_format.m_frames * m_format.m_frameSize)
+        {
+          m_convertedSize = m_format.m_frames * m_format.m_frameSize;
+          _aligned_free(m_converted);
+          m_converted = (uint8_t *)_aligned_malloc(m_convertedSize, 16);
+        }
+        m_convertFn(m_remapped, rSamples, m_converted);
         if (m_sink)
-          wroteFrames = m_sink->AddPackets(converted, m_format.m_frames);
+          wroteFrames = m_sink->AddPackets(m_converted, m_format.m_frames);
         else
         {
           wroteFrames = m_format.m_frames;
@@ -832,7 +853,7 @@ inline void CSoftAE::RunOutputStage()
       else
       {
         if (m_sink)
-          wroteFrames = m_sink->AddPackets((uint8_t*)remapped, m_format.m_frames);
+          wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_format.m_frames);
         else
         {
           wroteFrames = m_format.m_frames;
