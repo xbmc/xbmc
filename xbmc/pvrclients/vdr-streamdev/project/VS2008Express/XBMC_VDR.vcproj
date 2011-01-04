@@ -52,6 +52,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -66,7 +67,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
-				OutputFile="../../../../../addons/de.tvdr.pvr/XBMC_VDR_win32.pvr"
+				OutputFile="../../../../../addons/pvr.vdr.streamdev/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
@@ -149,7 +150,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
-				OutputFile="../../../../../addons/de.tvdr.pvr/XBMC_VDR_win32.pvr"
+				OutputFile="../../../../../addons/pvr.vdr.streamdev/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
@@ -210,7 +211,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\addons\org.xbmc.addon.library\dlfcn-win32.cpp"
+				RelativePath="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp"
 				>
 			</File>
 			<File

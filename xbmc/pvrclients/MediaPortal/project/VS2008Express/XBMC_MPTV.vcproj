@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\\addons\libraries\addon\libXBMC_addon;..\..\..\..\..\\addons\libraries\addon\libXBMC_pvr;..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;."
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,7 +68,7 @@
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="../../../../../addons/pvr/MediaPortal/XBMC_MPTV_win32.pvr"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libc;libcmtd;msvcprtd"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/XBMC_MPTV.pdb"
 				SubSystem="2"
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\\addons\libraries\addon\libXBMC_addon;..\..\..\..\..\\addons\libraries\addon\libXBMC_pvr;..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;."
 				PreprocessorDefinitions="_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -151,7 +151,7 @@
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="../../../../../addons/pvr/MediaPortal/XBMC_MPTV_win32.pvr"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libc;libcmt;msvcprt"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)/XBMC_MPTV.pdb"
 				SubSystem="2"
@@ -202,6 +202,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\epg.cpp"
 				>
 			</File>
@@ -237,6 +241,10 @@
 			</File>
 			<File
 				RelativePath="..\..\client.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h"
 				>
 			</File>
 			<File

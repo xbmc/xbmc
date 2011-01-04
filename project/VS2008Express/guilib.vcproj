@@ -402,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUIEPGGridContainer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIFadeLabelControl.cpp"
 				>
 			</File>
@@ -809,6 +813,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIEditControl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIEPGGridContainer.h"
 				>
 			</File>
 			<File

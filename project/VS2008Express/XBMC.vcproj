@@ -465,6 +465,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\stdbool.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\strverscmp.cpp"
 				>
 			</File>
@@ -1063,6 +1067,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPacket.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp"
 						>
 					</File>
@@ -1172,6 +1188,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.h"
 						>
 					</File>
 					<File
@@ -2328,6 +2352,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowTV.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTV.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowVideoBase.cpp"
 					>
 				</File>
@@ -2585,6 +2617,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\OggTag.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\SamiTagConvertor.h"
 					>
 				</File>
 				<File
@@ -3181,6 +3221,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\TextureCache.cpp"
 					>
 				</File>
@@ -3346,6 +3394,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Song.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h"
 					>
 				</File>
 				<File
@@ -3561,6 +3617,94 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogSeekBar.cpp"
 					>
 				</File>
@@ -3682,6 +3826,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStatePrograms.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateTV.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateTV.h"
 					>
 				</File>
 				<File
@@ -4242,6 +4394,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.h"
 					>
 				</File>
 				<File
@@ -5357,6 +5525,38 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_GUI.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_GUI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_local.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_local.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\AddonManager.cpp"
 					>
 				</File>
@@ -5374,6 +5574,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\DllAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllPVRClient.h"
 					>
 				</File>
 				<File
@@ -5450,6 +5654,66 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\Visualisation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_dll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_types.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PVR"
+				>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PVRClient.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpgs.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpgs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.h"
 					>
 				</File>
 			</Filter>

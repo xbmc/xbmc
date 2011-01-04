@@ -40,13 +40,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\;..\..\libhts\win32\include;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers"
+				AdditionalIncludeDirectories="..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\..\..\cores\dvdplayer\Codecs\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc\lib;..\..\..\..\..\xbmc\lib\libhts\Win32\include"
 				PreprocessorDefinitions="_WIN32;WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WINSOCKAPI_;USE_DEMUX"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -61,6 +62,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
 				OutputFile="../../../../../addons/pvr.hts/XBMC_Tvheadend_win32.pvr"
+				IgnoreDefaultLibraryNames="libcmtd"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -113,12 +115,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\;..\..\libhts\win32\include;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers"
+				AdditionalIncludeDirectories="..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\..\..\cores\dvdplayer\Codecs\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc\lib;..\..\..\..\..\xbmc\lib\libhts\Win32\include"
 				PreprocessorDefinitions="_WIN32;WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WINSOCKAPI_;USE_DEMUX"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -133,6 +136,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
 				OutputFile="../../../../../addons/pvr.hts/XBMC_Tvheadend_win32.pvr"
+				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -178,7 +182,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\addons\org.xbmc.addon.library\dlfcn-win32.cpp"
+				RelativePath="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp"
 				>
 			</File>
 			<File
@@ -205,38 +209,6 @@
 				RelativePath="..\..\tools.cpp"
 				>
 			</File>
-			<Filter
-				Name="libhts"
-				>
-				<File
-					RelativePath="..\..\libhts\htsatomic.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsbuf.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsmsg.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsmsg_binary.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsstr.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\net_winsock.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\sha1.c"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -283,46 +255,6 @@
 				RelativePath="..\..\tools.h"
 				>
 			</File>
-			<Filter
-				Name="libhts"
-				>
-				<File
-					RelativePath="..\..\libhts\hts_strtab.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsatomic.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsbuf.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsmsg.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsmsg_binary.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsq.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\htsstr.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\net.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\libhts\sha1.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
