@@ -2605,15 +2605,6 @@
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
-<<<<<<< HEAD
-=======
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095">Disabled System Add-on</string>
-
->>>>>>> merge pvr-testing2 svn rev 32591 into trunk
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>
