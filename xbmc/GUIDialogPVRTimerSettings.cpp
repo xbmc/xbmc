@@ -232,13 +232,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = PVRChannelsTV.GetByNumber(tag->Number());
+      channeltag = PVRChannelsTV.GetByChannelNumber(tag->Number());
     }
     else
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, false);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = PVRChannelsRadio.GetByNumber(tag->Number());
+      channeltag = PVRChannelsRadio.GetByChannelNumber(tag->Number());
     }
 
     if (channeltag)
@@ -253,9 +253,9 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   {
     CPVRChannel* channeltag = NULL;
     if (!tag->IsRadio())
-      channeltag = PVRChannelsTV.GetByNumber(tag->Number());
+      channeltag = PVRChannelsTV.GetByChannelNumber(tag->Number());
     else
-      channeltag = PVRChannelsRadio.GetByNumber(tag->Number());
+      channeltag = PVRChannelsRadio.GetByChannelNumber(tag->Number());
 
     if (channeltag)
     {

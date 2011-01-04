@@ -120,17 +120,44 @@ public:
    */
   bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 
-  int GetNumChannels() const { return size(); }
-  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+  /**
+   * Get a channel given it's unique ID
+   */
+  CPVRChannel *GetByUniqueID(int iUniqueID);
 
-  int GetChannels(CFileItemList* results, int group_id = -1);
+  /**
+   * Get a channel given it's channel number
+   */
+  CPVRChannel *GetByChannelNumber(int iChannelNumber);
+
+  /**
+   * Get a channel given the channel number on the client
+   */
+  CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID);
+
+  /**
+   * Get a channel given it's channel ID
+   */
+  CPVRChannel *GetByChannelID(long iChannelID);
+
+  /**
+   * Get a channel given it's index in this container
+   */
+  CPVRChannel *GetByIndex(unsigned int index);
+
+  /**
+   * Get the list of channels in a group
+   * XXX move this to PVRChannelGroup
+   */
+  int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false);
+
+  /**
+   * Get the list of hidden channels
+   */
   int GetHiddenChannels(CFileItemList* results);
 
-  CPVRChannel *GetByNumber(int Number);
-  CPVRChannel *GetByClient(int Number, int ClientID);
-  CPVRChannel *GetByChannelID(long ChannelID);
-  CPVRChannel *GetByUniqueID(int UniqueID);
-  CPVRChannel *GetByIndex(unsigned int index);
+  int GetNumChannels() const { return size(); }
+  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
   CStdString GetNameForChannel(unsigned int Number);
 

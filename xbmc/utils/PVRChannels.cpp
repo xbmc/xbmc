@@ -459,79 +459,55 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
   return true;
 }
 
-CPVRChannel *CPVRChannels::GetByUniqueID(long UniqueID)
+CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
     CPVRChannel *channel = at(ptr);
     if (channel->UniqueID() != 0)
     {
-      if (channel->UniqueID() == UniqueID)
+      if (channel->UniqueID() == iUniqueID)
         return channel;
     }
     else
     {
-      if (channel->ChannelID() == UniqueID)
+      if (channel->ChannelID() == iUniqueID)
         return channel;
     }
   }
   return NULL;
 }
 
-////////////////////////////////////////////////////////
-
-int CPVRChannels::GetChannels(CFileItemList* results, int group_id)
+CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber)
 {
-  int cnt = 0;
-
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (at(i)->IsHidden())
-      continue;
-
-    if ((group_id != -1) && (at(i)->GroupID() != group_id))
-      continue;
-
-    CFileItemPtr channel(new CFileItem(*at(i)));
-
-    results->Add(channel);
-    cnt++;
-  }
-  return cnt;
-}
-
-int CPVRChannels::GetHiddenChannels(CFileItemList* results)
-{
-  int cnt = 0;
-
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (!at(i)->IsHidden())
-      continue;
-
-    CFileItemPtr channel(new CFileItem(*at(i)));
-    results->Add(channel);
-    cnt++;
-  }
-  return cnt;
-}
-
-CPVRChannel *CPVRChannels::GetByNumber(int Number)
-{
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    if (at(i)->ChannelNumber() == Number)
-      return at(i);
+    CPVRChannel *channel = at(ptr);
+    if (channel->ChannelNumber() == iChannelNumber)
+      return channel;
   }
   return NULL;
 }
 
-CPVRChannel *CPVRChannels::GetByClient(int Number, int ClientID)
+CPVRChannel *CPVRChannels::GetByClient(int iClientChannelNumber, int iClientID)
 {
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (at(i)->ClientChannelNumber() == Number && at(i)->ClientID() == ClientID)
-      return at(i);
+    CPVRChannel *channel = at(ptr);
+    if (channel->ClientChannelNumber() == iClientChannelNumber &&
+        channel->ClientID() == iClientID)
+      return channel;
+  }
+  return NULL;
+}
+
+CPVRChannel *CPVRChannels::GetByChannelID(long iChannelID)
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRChannel *channel = at(ptr);
+    if (channel->ChannelID() == iChannelID)
+      return channel;
   }
   return NULL;
 }
@@ -543,15 +519,34 @@ CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)
     NULL;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelID(long ChannelID)
+int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, bool bHidden /* = false */)
 {
-  for (unsigned int i = 0; i < size(); i++)
+  int iAmount = 0;
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    if (at(i)->ChannelID() == ChannelID)
-      return at(i);
+    CPVRChannel *channel = at(ptr);
+
+    if (channel->IsHidden() != bHidden)
+      continue;
+
+    if (iGroupID != -1 && channel->GroupID() != iGroupID)
+      continue;
+
+    CFileItemPtr channelFile(new CFileItem(*channel));
+
+    results->Add(channelFile);
+    iAmount++;
   }
-  return NULL;
+  return iAmount;
 }
+
+int CPVRChannels::GetHiddenChannels(CFileItemList* results)
+{
+  return GetChannels(results, -1, true);
+}
+
+////////////////////////////////////////////////////////
 
 CStdString CPVRChannels::GetNameForChannel(unsigned int Number)
 {
