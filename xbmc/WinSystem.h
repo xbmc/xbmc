@@ -78,6 +78,7 @@ public:
   // OS System screensaver
   virtual void EnableSystemScreenSaver(bool bEnable) {};
   virtual bool IsSystemScreenSaverEnabled() {return false;}
+  virtual void ResetOSScreensaver() {};
 
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }

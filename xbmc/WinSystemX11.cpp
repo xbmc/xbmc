@@ -385,7 +385,7 @@ void CWinSystemX11::ShowOSMouse(bool show)
   SDL_ShowCursor(show ? 1 : 0);
 }
 
-void CWinSystemX11::ResetX11Screensaver()
+void CWinSystemX11::ResetOSScreensaver()
 {
   if (m_bFullScreen)
   {

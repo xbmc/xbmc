@@ -4246,10 +4246,8 @@ bool CApplication::WakeUpScreenSaver()
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
-#if defined(_LINUX) && !defined(__APPLE__)
   if (!m_dpmsIsActive)
-    g_Windowing.ResetX11Screensaver();
-#endif
+    g_Windowing.ResetOSScreensaver();
 
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
