@@ -248,7 +248,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
   return false;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(CStdString &newname) const
+bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
 {
   try
   {

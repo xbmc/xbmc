@@ -173,6 +173,6 @@ public:
   /* Client control functions */
   bool AddToClient() const;
   bool DeleteFromClient(bool force = false) const;
-  bool RenameOnClient(CStdString &newname) const;
+  bool RenameOnClient(const CStdString &newname) const;
   bool UpdateOnClient() const;
 };

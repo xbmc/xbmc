@@ -133,15 +133,24 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
   }
 
   const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  if (!g_PVRManager.GetClientProps(tag->ClientID())->SupportTimers)
+  if (!tag)
+    return false;
+
+  return AddTimer(*tag);
+}
+
+bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
+{
+  if (!g_PVRManager.GetClientProps(item.ClientID())->SupportTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;
   }
-  return tag->AddToClient();
+
+  return item.AddToClient();
 }
 
-bool CPVRTimers::DeleteTimer(const CFileItem &item, bool force)
+bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
 {
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
@@ -151,10 +160,18 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool force)
   }
 
   const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  return tag->DeleteFromClient(force);
+  if (!tag)
+    return false;
+
+  return DeleteTimer(*tag, bForce);
 }
 
-bool CPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
+bool CPVRTimers::DeleteTimer(const CPVRTimerInfoTag &item, bool bForce /* = false */)
+{
+  return item.DeleteFromClient(bForce);
+}
+
+bool CPVRTimers::RenameTimer(CFileItem &item, const CStdString &strNewName)
 {
   /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
@@ -164,11 +181,20 @@ bool CPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
   }
 
   CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  if (tag->RenameOnClient(newname))
+  if (!tag)
+    return false;
+
+  return RenameTimer(*tag, strNewName);
+}
+
+bool CPVRTimers::RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName)
+{
+  if (item.RenameOnClient(strNewName))
   {
-    tag->SetTitle(newname);
+    item.SetTitle(strNewName);
     return true;
   }
+
   return false;
 }
 
@@ -182,7 +208,15 @@ bool CPVRTimers::UpdateTimer(const CFileItem &item)
   }
 
   const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
-  return tag->UpdateOnClient();
+  if (!tag)
+    return false;
+
+  return UpdateTimer(*tag);
+}
+
+bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTag &item)
+{
+  return item.UpdateOnClient();
 }
 
 bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)

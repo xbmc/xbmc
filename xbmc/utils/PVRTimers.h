@@ -45,12 +45,20 @@ public:
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
   CPVRTimerInfoTag *GetNextActiveTimer(void);
   bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  static bool AddTimer(const CFileItem &item);
-  static bool DeleteTimer(const CFileItem &item, bool force = false);
-  static bool RenameTimer(CFileItem &item, CStdString &newname);
-  static bool UpdateTimer(const CFileItem &item);
   bool Update(const CPVRTimerInfoTag &timer);
   void Clear();
+
+  static bool AddTimer(const CFileItem &item);
+  static bool AddTimer(const CPVRTimerInfoTag &item);
+
+  static bool DeleteTimer(const CFileItem &item, bool bForce = false);
+  static bool DeleteTimer(const CPVRTimerInfoTag &item, bool bForce = false);
+
+  static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
+  static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
+
+  static bool UpdateTimer(const CFileItem &item);
+  static bool UpdateTimer(const CPVRTimerInfoTag &item);
 };
 
 extern CPVRTimers PVRTimers;

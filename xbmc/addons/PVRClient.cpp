@@ -671,7 +671,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force)
   return ret;
 }
 
-PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timerinfo, CStdString &newname)
+PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timerinfo, const CStdString &newname)
 {
   CSingleLock lock(m_critSection);
 

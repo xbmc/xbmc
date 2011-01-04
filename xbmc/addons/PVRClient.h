@@ -87,7 +87,7 @@ public:
   PVR_ERROR GetAllTimers(CPVRTimers *results);
   PVR_ERROR AddTimer(const CPVRTimerInfoTag &timerinfo);
   PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force = false);
-  PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timerinfo, CStdString &newname);
+  PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timerinfo, const CStdString &newname);
   PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timerinfo);
 
   bool OpenLiveStream(const CPVRChannel &channelinfo);
