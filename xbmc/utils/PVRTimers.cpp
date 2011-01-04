@@ -94,7 +94,7 @@ bool CPVRTimers::Update()
       continue;
 
     /* try to get the EPG */
-    CPVREpg *epg = channel->GetEpg();
+    CPVREpg *epg = channel->GetEPG();
     if (!epg)
       continue;
 

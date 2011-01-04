@@ -118,6 +118,12 @@ void CPVREpg::Sort(void)
 
 void CPVREpg::Clear(void)
 {
+  if (m_Channel != NULL)
+  {
+    CLog::Log(LOGINFO, "%s - clearing the EPG for channel '%s'",
+        __FUNCTION__, m_Channel->ChannelName().c_str());
+  }
+
   clear();
 }
 
@@ -235,7 +241,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   InfoTag->SetPlot(data->description);
   InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
   InfoTag->SetParentalRating(data->parental_rating);
-  InfoTag->SetIcon(m_Channel->Icon());
+  InfoTag->SetIcon(m_Channel->IconPath());
 
   /* update the cached first and last date in the table */
   PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
@@ -323,7 +329,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
-  if (m_Channel->Grabber().IsEmpty()) /* no grabber defined */
+  if (m_Channel->EPGScraper().IsEmpty()) /* no grabber defined */
   {
     CLog::Log(LOGERROR, "%s - no EPG grabber defined for channel '%s'",
         __FUNCTION__, m_Channel->ChannelName().c_str());
@@ -331,7 +337,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   else
   {
     CLog::Log(LOGINFO, "%s - the database contains no EPG data for channel '%s', loading with scraper '%s'",
-        __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->Grabber().c_str());
+        __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->EPGScraper().c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
   }
@@ -348,7 +354,7 @@ bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, b
   CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   /* check if this channel is marked for grabbing */
-  if (!m_Channel->GrabEpg())
+  if (!m_Channel->EPGEnabled())
     return false;
 
   /* mark the EPG as being updated */
@@ -358,7 +364,7 @@ bool CPVREpg::Update(time_t start, time_t end, bool bLoadFromDb /* = false */, b
   if (bLoadFromDb)
     bGrabSuccess = database->GetEPGForChannel(this, start, end);
 
-  bGrabSuccess = (m_Channel->Grabber() == "client") ?
+  bGrabSuccess = (m_Channel->EPGScraper() == "client") ?
       UpdateFromClient(start, end) || bGrabSuccess:
       UpdateFromScraper(start, end) || bGrabSuccess;
 

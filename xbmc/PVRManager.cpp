@@ -1724,7 +1724,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   g_infoManager.SetCurrentItem(*m_currentPlayingChannel);
 
   CPVRChannel* channelTag = item.GetPVRChannelInfoTag();
-  const CPVREpgInfoTag* epgTagNow = channelTag->GetEpgNow();
+  const CPVREpgInfoTag* epgTagNow = channelTag->GetEPGNow();
 
   if (channelTag->IsRadio())
   {
@@ -1947,7 +1947,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
 int CPVRManager::GetTotalTime()
 {
   if (m_currentPlayingChannel)
-    return m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEpgNow()->GetDuration() * 1000;
+    return m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration() * 1000;
 
   return 0;
 }
@@ -1962,7 +1962,7 @@ int CPVRManager::GetStartTime()
    * check here if the end of the current running event is reached, if yes update the
    * playing file item with the newest EPG data of the now running event.
    */
-  const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEpgNow();
+  const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow();
   if (tag && (tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty()))
   {
     EnterCriticalSection(&m_critSection);

@@ -93,7 +93,7 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
   tag.SetUniqueID(channel->uid);
   tag.SetChannelName(channel->name);
   tag.SetClientChannelName(channel->callsign);
-  tag.SetIcon(channel->iconpath);
+  tag.SetIconPath(channel->iconpath);
   tag.SetEncryptionSystem(channel->encryption);
   tag.SetRadio(channel->radio);
   tag.SetHidden(channel->hide);

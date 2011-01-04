@@ -631,7 +631,7 @@ bool CTVDatabase::GetEPGForChannel(CPVREpg *epg, const CDateTime &start, const C
       broadcast.starttime = startTime_t;
       broadcast.endtime = endTime_t;
 
-      CPVREpg *epg = channel->GetEpg();
+      CPVREpg *epg = channel->GetEPG();
       if (!epg)
         continue;
 
@@ -779,7 +779,7 @@ long CTVDatabase::AddDBChannel(const CPVRChannel &info, bool oneWrite, bool firs
                                  "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s', '%s')\n",
                                  info.ClientID(), info.ChannelNumber(), info.ChannelName().c_str(), info.ClientChannelName().c_str(),
                                  info.ClientChannelNumber(), info.UniqueID(), info.m_strIconPath.c_str(), info.m_iChannelGroupId,
-                                 info.EncryptionSystem(), info.m_bIsRadio, info.m_bGrabEpg, info.m_strGrabber.c_str(),
+                                 info.EncryptionSystem(), info.m_bIsRadio, info.m_bEPGEnabled, info.m_strEPGScraper.c_str(),
                                  info.m_bIsHidden, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
 
       if (oneWrite)
@@ -856,7 +856,7 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
                       "hide=%i,grabEpg=%i,EpgGrabber='%s',Virtual=%i,strInputFormat='%s',strStreamURL='%s' where idChannel=%i",
                       info.ClientID(), info.ChannelNumber(), info.ChannelName().c_str(), info.ClientChannelName().c_str(),
                       info.ClientChannelNumber(), info.UniqueID(), info.m_strIconPath.c_str(), info.m_iChannelGroupId,
-                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bIsHidden, info.m_bGrabEpg, info.m_strGrabber.c_str(),
+                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bIsHidden, info.m_bEPGEnabled, info.m_strEPGScraper.c_str(),
                       info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str(), channelId);
 
       m_pDS->exec(SQL.c_str());
@@ -871,7 +871,7 @@ long CTVDatabase::UpdateDBChannel(const CPVRChannel &info)
                       "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s', '%s')\n",
                       info.ClientID(), info.ChannelNumber(), info.ChannelName().c_str(), info.ClientChannelName().c_str(),
                       info.ClientChannelNumber(), info.UniqueID(), info.m_strIconPath.c_str(), info.m_iChannelGroupId,
-                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bGrabEpg, info.m_strGrabber.c_str(),
+                      info.EncryptionSystem(), info.m_bIsRadio, info.m_bEPGEnabled, info.m_strEPGScraper.c_str(),
                       info.m_bIsHidden, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
 
       m_pDS->exec(SQL.c_str());
@@ -990,14 +990,11 @@ bool CTVDatabase::GetDBChannelList(CPVRChannels &results, bool radio)
       channel.m_iClientEncryptionSystem = m_pDS->fv("encryption").get_asInt();
       channel.m_bIsRadio                = m_pDS->fv("radio").get_asBool();
       channel.m_bIsHidden               = m_pDS->fv("hide").get_asBool();
-      channel.m_bGrabEpg                = m_pDS->fv("grabEpg").get_asBool();
-      channel.m_strGrabber              = m_pDS->fv("EpgGrabber").get_asString();
+      channel.m_bEPGEnabled             = m_pDS->fv("grabEpg").get_asBool();
+      channel.m_strEPGScraper           = m_pDS->fv("EpgGrabber").get_asString();
       channel.m_strInputFormat          = m_pDS->fv("strInputFormat").get_asString();
       channel.m_strStreamURL            = m_pDS->fv("strStreamURL").get_asString();
-      channel.m_iCountWatched           = m_pDS->fv("countWatched").get_asInt();
-      channel.m_iSecondsWatched         = m_pDS->fv("timeWatched").get_asInt();
       channel.m_bIsVirtual              = m_pDS->fv("Virtual").get_asBool();
-      channel.m_lastTimeWatched.SetFromDBDateTime(m_pDS->fv("lastTimeWatched").get_asString());
 
       results.push_back(channel);
       m_pDS->next();

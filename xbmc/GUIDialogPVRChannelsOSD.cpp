@@ -159,7 +159,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (pItem && pItem->IsPVRChannel())
   {
     /* Get the current running show on this channel from the EPG storage */
-    const CPVREpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEpgNow();
+    const CPVREpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
     if (!epgnow)
       return;
     CFileItem *itemNow  = new CFileItem(*epgnow);

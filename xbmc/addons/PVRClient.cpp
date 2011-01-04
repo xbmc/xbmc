@@ -895,7 +895,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHAN
   tag.number            = channelinfo.ClientChannelNumber();
   tag.name              = channelinfo.ChannelName().c_str();
   tag.callsign          = channelinfo.ClientChannelName().c_str();
-  tag.iconpath          = channelinfo.Icon().c_str();
+  tag.iconpath          = channelinfo.IconPath().c_str();
   tag.encryption        = channelinfo.EncryptionSystem();
   tag.radio             = channelinfo.IsRadio();
   tag.hide              = channelinfo.IsHidden();

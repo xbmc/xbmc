@@ -169,8 +169,8 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = channel.GetEpgNow()->Title();
-  SetThumbnailImage(channel.Icon());
+  m_strLabel2 = channel.GetEPGNow()->Title();
+  SetThumbnailImage(channel.IconPath());
 
   SetInvalid();
 }

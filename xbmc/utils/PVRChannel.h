@@ -34,169 +34,295 @@ class CPVRChannel : public Observable
   friend class CTVDatabase;
 
 private:
-  CPVREpg *                      m_Epg;
-  mutable const CPVREpgInfoTag * m_epgNow;
+  /********** XBMC related channel data **********/
+  long                           m_iDatabaseId;             /* the identifier given to this channel by the TV database */
+  int                            m_iChannelNumber;          /* the channel number used by XBMC */
+  int                            m_iChannelGroupId;         /* the identifier of the group where this channel belongs to */
+  bool                           m_bIsRadio;                /* true if this channel is a radio channel, false if not */
+  bool                           m_bIsHidden;               /* true if this channel is hidden, false if not */
+  bool                           m_bClientIsRecording;      /* true if a recording is currently running on this channel, false if not */
+  CStdString                     m_strIconPath;             /* the path to the icon for this channel */
+  CStdString                     m_strChannelName;          /* the name for this channel used by XBMC */
+  bool                           m_bIsVirtual;              /* true if this channel is marked as virtual, false if not */
 
-  /* XBMC related channel data */
-  long                           m_iDatabaseId;             /**< \brief Database number */
-  int                            m_iChannelNumber;          /**< \brief Channel number for channels on XBMC */
-  int                            m_iChannelGroupId;         /**< \brief Channel group identfier */
-  bool                           m_bIsRadio;                /**< \brief Radio channel */
-  bool                           m_bIsHidden;               /**< \brief Channel is hide inside filelists */
-  bool                           m_bClientIsRecording;      /**< \brief True if channel is currently recording */
-  bool                           m_bGrabEpg;                /**< \brief Load EPG if set to true */
-  CStdString                     m_strGrabber;              /**< \brief The EPG grabber name (client for backend reading) */
-  CStdString                     m_strIconPath;             /**< \brief Path to the logo image */
-  CStdString                     m_strChannelName;          /**< \brief Channel name */
-  int                            m_iCountWatched;           /**< \brief The count how much this channel was selected */
-  long                           m_iSecondsWatched;         /**< \brief How many seconds this channel was watched */
-  CDateTime                      m_lastTimeWatched;         /**< \brief The Date where this channel was selected last time */
-  bool                           m_bIsVirtual;              /**< \brief Is a user defined virtual channel if true */
+  /********** EPG related channel data **********/
+  CPVREpg *                      m_EPG;                     /* the EPG table for this channel */
+  mutable const CPVREpgInfoTag * m_EPGNow;                  /* the EPG tag that is active on this channel now */
+  bool                           m_bEPGEnabled;             /* don't use an EPG for this channel if set to false */
+  CStdString                     m_strEPGScraper;           /* the name of the scraper to be used for this channel */
 
-  /* Client related channel data */
-  int                            m_iUniqueId;               /**< \brief Unique Id for this channel */
-  int                            m_iClientId;               /**< \brief Id of client channel come from */
-  int                            m_iClientChannelNumber;    /**< \brief Channel number on client */
-  int                            m_iClientEncryptionSystem; /**< \brief Encryption System, 0 for FreeToAir, -1 unknown */
-  CStdString                     m_strClientChannelName;    /**< \brief Channel name on client */
-
-  CStdString                     m_strInputFormat;          /**< \brief The stream input type based upon ffmpeg/libavformat/allformats.c */
-  CStdString                     m_strStreamURL;            /**< \brief URL of the stream, if empty use Client to read stream */
-  CStdString                     m_strFileNameAndPath;      /**< \brief Filename for PVRManager to open and read stream */
-
-  void UpdateEpgPointers();
+  /********** Client related channel data **********/
+  int                            m_iUniqueId;               /* the unique identifier for this channel */
+  int                            m_iClientId;               /* the identifier of the client that serves this channel */
+  int                            m_iClientChannelNumber;    /* the channel number on the client */
+  CStdString                     m_strClientChannelName;    /* the name of this channel on the client */
+  CStdString                     m_strInputFormat;          /* the stream input type based on ffmpeg/libavformat/allformats.c */
+  CStdString                     m_strStreamURL;            /* URL of the stream. Use the client to read stream if this is empty */
+  CStdString                     m_strFileNameAndPath;      /* the filename to be used by PVRManager to open and read the stream */
+  int                            m_iClientEncryptionSystem; /* the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
 
 public:
   CPVRChannel();
-  virtual ~CPVRChannel();
-  void ResetChannelEPGLinks();
-       ///< Clear the EPG links
-  bool IsEmpty() const;
-       ///< True if no required data is present inside the tag.
-
-  CPVREpg *GetEpg();
 
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;
 
-  /* Channel information */
-  CStdString ChannelName(void) const { return m_strChannelName; }
-       ///< Return the currently by XBMC used name for this channel.
-  void SetChannelName(CStdString name);
-       ///< Set the name, XBMC uses for this channel.
+  /********** XBMC related channel methods **********/
 
-  int ChannelNumber(void) const { return m_iChannelNumber; }
-       ///< Return the currently by XBMC used channel number for this channel.
-  void SetChannelNumber(int Number);
-       ///< Change the XBMC number for this channel.
-
-  CStdString ClientChannelName(void) const { return m_strClientChannelName; }
-       ///< Return the name used by the client driver on the backend.
-  void SetClientChannelName(CStdString name);
-       ///< Set the name used by the client (is changed only in this tag,
-       ///< no client action to change name is performed ).
-
-  int ClientChannelNumber(void) const { return m_iClientChannelNumber; }
-       ///< Return the channel number used by the client driver.
-  void SetClientNumber(int Number);
-       ///< Change the client number for this channel (is changed only in this tag,
-       ///< no client action to change name is performed ).
-
-  long ClientID(void) const { return m_iClientId; }
-       ///< The client ID this channel belongs to.
-  void SetClientID(int ClientId);
-       ///< Set the client ID for this channel.
-
+  /**
+   * The identifier given to this channel by the TV database.
+   */
   long ChannelID(void) const { return m_iDatabaseId; }
-       ///< Return XBMC own channel ID for this channel which is used in the
-       ///< TV Database.
-  void SetChannelID(long ChannelID);
-       ///< Change the channel ID for this channel (no Action to the Database
-       ///< are taken)
 
-  int UniqueID(void) const { return m_iUniqueId; }
-       ///< A UniqueID for this channel provider to identify same channels on different clients.
-  void SetUniqueID(int id);
-       ///< Change the Unique ID for this channel.
+  /**
+   * Set the identifier for this channel.
+   * Nothing will be changed in the database.
+   */
+  void SetChannelID(long iDatabaseId);
 
+  /**
+   * The channel number used by XBMC.
+   */
+  int ChannelNumber(void) const { return m_iChannelNumber; }
+
+  /**
+   * Change the channel number used by XBMC.
+   * Nothing will be changed in the database.
+   */
+  void SetChannelNumber(int iChannelNumber);
+
+  /**
+   * The identifier of the group this channel belongs to.
+   * -1 for undefined.
+   */
   int GroupID(void) const { return m_iChannelGroupId; }
-       ///< The Group this channel belongs to, -1 for undefined.
-  void SetGroupID(int group);
-       ///< Set the group ID for this channel.
 
-  bool IsEncrypted(void) const { return m_iClientEncryptionSystem > 0; }
-       ///< Return true if this channel is encrypted. Does not inform if XBMC can play it,
-       ///< decryption is done by the client associated backend.
-  int EncryptionSystem(void) const { return m_iClientEncryptionSystem; }
-       ///< Return the encryption system ID for this channel, 0 for FTA. Is based
-       ///< upon: http://www.dvb.org/index.php?id=174.
+  /**
+   * Set the identifier of the group this channel belongs to.
+   * Nothing will be changed in the database.
+   */
+  void SetGroupID(int iChannelGroupId);
 
-  CStdString EncryptionName() const;
-       ///< Return a human understandable name for the used encryption system.
-  void SetEncryptionSystem(int system);
-       ///< Set the encryption ID for this channel.
-
+  /**
+   * True if this channel is a radio channel, false if not.
+   */
   bool IsRadio(void) const { return m_bIsRadio; }
-       ///< Return true if this is a Radio channel.
-  void SetRadio(bool radio);
-       ///< Set the radio flag.
 
-  bool IsRecording(void) const { return m_bClientIsRecording; }
-       ///< True if this channel is currently recording.
-  void SetRecording(bool rec);
-       ///< Set the recording state.
+  /**
+   * Set to true if this channel is a radio channel. Set to false if not.
+   * Nothing will be changed in the database.
+   */
+  void SetRadio(bool bIsRadio);
 
-  CStdString StreamURL(void) const { return m_strStreamURL; }
-       ///< The Stream URL to access this channel, it can be all types of protocol and types
-       ///< are supported by XBMC or in case the client read the stream leave it empty
-  void SetStreamURL(CStdString stream);
-       ///< Set the stream URL
-
-  CStdString Path(void) const { return m_strFileNameAndPath; }
-       ///< Return the path in the XBMC virtual Filesystem.
-  void SetPath(CStdString path);
-       ///< Set the path in XBMC Virtual Filesystem.
-
-  CStdString Icon(void) const { return m_strIconPath; }
-       ///< Return Path with Filename of the Icon for this channel.
-  void SetIcon(CStdString icon);
-       ///< Set the path and filename for this channel Icon
-
+  /**
+   * True if this channel is hidden. False if not.
+   */
   bool IsHidden(void) const { return m_bIsHidden; }
-       ///< If this channel is hidden from view it is true.
-  void SetHidden(bool hide);
-       ///< Mask this channel hidden.
 
-  bool GrabEpg() const { return m_bGrabEpg; }
-       ///< If false ignore EPG for this channel.
-  void SetGrabEpg(bool grabEpg);
-       ///< Change the EPG grabbing flag
+  /**
+   * Set to true to hide this channel. Set to false to unhide it.
+   * The EPG of hidden channels won't be updated.
+   * Nothing will be changed in the database.
+   */
+  void SetHidden(bool bIsHidden);
 
+  /**
+   * True if a recording is currently running on this channel. False if not.
+   */
+  bool IsRecording(void) const { return m_bClientIsRecording; }
+
+  /**
+   * Set to true if a recording is currently running on this channel. Set to false if not.
+   * Nothing will be changed in the database.
+   */
+  void SetRecording(bool bClientIsRecording);
+
+  /**
+   * The path to the icon for this channel.
+   */
+  CStdString IconPath(void) const { return m_strIconPath; }
+
+  /**
+   * Set the path to the icon for this channel.
+   * Nothing will be changed in the database.
+   */
+  void SetIconPath(CStdString strIconPath);
+
+  /**
+   * The name for this channel used by XBMC.
+   */
+  CStdString ChannelName(void) const { return m_strChannelName; }
+
+  /**
+   * Set the name for this channel used by XBMC.
+   */
+  void SetChannelName(CStdString strChannelName);
+
+  /**
+   * True if this channel is marked as virtual. False if not.
+   */
   bool IsVirtual() const { return m_bIsVirtual; }
-       ///< If true it is a virtual channel
-  void SetVirtual(bool virtualChannel);
-       ///< Change the virtual flag
 
-  CStdString Grabber(void) const { return m_strGrabber; }
-       ///< Get the EPG scraper name
-  void SetGrabber(CStdString Grabber);
-       ///< Set the EPG scraper name, use "client" for loading  the EPG from Backend
+  /**
+   * True if this channel is marked as virtual. False if not.
+   */
+  void SetVirtual(bool bIsVirtual);
 
-  /*! \brief Get the input format from the Backend
-   If it is empty ffmpeg scanning the stream to find the right input format.
-   See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
-   list of the input formats.
-   \return The name of the input format
+  /**
+   * True if this channel has no file or stream name
+   */
+  bool IsEmpty() const;
+
+  /********** Client related channel methods **********/
+
+  /**
+   * A unique identifier for this channel.
+   * It can be used to find the same channel on different providers
+   */
+  int UniqueID(void) const { return m_iUniqueId; }
+
+  /**
+   * Change the unique identifier for this channel.
+   */
+  void SetUniqueID(int iUniqueId);
+
+  /**
+   * The identifier of the client that serves this channel.
+   */
+  int ClientID(void) const { return m_iClientId; }
+
+  /**
+   * Set the identifier of the client that serves this channel.
+   */
+  void SetClientID(int iClientId);
+
+  /**
+   * The channel number on the client.
+   */
+  int ClientChannelNumber(void) const { return m_iClientChannelNumber; }
+
+  /**
+   * Set the channel number on the client.
+   * It will only be changed in this tag and won't change anything on the client.
+   */
+  void SetClientNumber(int iClientChannelNumber);
+
+  /**
+   * The name of this channel on the client.
+   */
+  CStdString ClientChannelName(void) const { return m_strClientChannelName; }
+  /**
+   * Set the name of this channel on the client.
+   * It will only be changed in this tag and won't change anything on the client.
+   */
+  void SetClientChannelName(CStdString strClientChannelName);
+
+  /**
+   * The stream input type
+   * If it is empty, ffmpeg will try to scan the stream to find the right input format.
+   * See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+   * list of the input formats.
    */
   CStdString InputFormat(void) const { return m_strInputFormat; }
 
-  /*! \brief Set the input format of the Backend this channel belongs to
-   \param format The name of the input format
+  /**
+   * Set the stream input type
    */
-  void SetInputFormat(CStdString format);
+  void SetInputFormat(CStdString strInputFormat);
 
-  const CPVREpgInfoTag* GetEpgNow() const;
-  const CPVREpgInfoTag* GetEpgNext() const;
+  /**
+   * The stream URL to access this channel.
+   * If this is empty, then the client should be used to read from the channel.
+   */
+  CStdString StreamURL(void) const { return m_strStreamURL; }
 
+  /**
+   * Set the stream URL to access this channel.
+   * If this is empty, then the client should be used to read from the channel.
+   */
+  void SetStreamURL(CStdString strStreamURL);
+
+  /**
+   * The path in the XBMC VFS to be used by PVRManager to open and read the stream.
+   */
+  CStdString Path(void) const { return m_strFileNameAndPath; }
+
+  /**
+   * Set the path in the XBMC VFS to be used by PVRManager to open and read the stream.
+   */
+  void SetPath(CStdString strFileNameAndPath);
+
+  /**
+   * Return true if this channel is encrypted. Does not inform whether XBMC can play the file.
+   * Decryption should be done by the client.
+   */
+  bool IsEncrypted(void) const { return m_iClientEncryptionSystem > 0; }
+
+  /**
+   * Return the encryption system ID for this channel. 0 for FTA. The values are documented
+   * on: http://www.dvb.org/index.php?id=174.
+   */
+  int EncryptionSystem(void) const { return m_iClientEncryptionSystem; }
+
+  /**
+   * Set the encryption ID (CAID) for this channel.
+   */
+  void SetEncryptionSystem(int iClientEncryptionSystem);
+
+  /**
+   * Return a friendly name for the used encryption system.
+   */
+  CStdString EncryptionName() const;
+
+  /********** EPG methods **********/
+
+  /**
+   * Get the EPG table for this channel.
+   * Will be created if it doesn't exist.
+   */
+  CPVREpg *GetEPG();
+
+  /**
+   * Clear the EPG for this channel.
+   */
   bool ClearEPG();
+
+  /**
+   * Get the EPG tag that is active on this channel now.
+   * Will return an empty tag if there is none.
+   */
+  const CPVREpgInfoTag* GetEPGNow() const;
+
+  /**
+   * Get the EPG tag that is active on this channel next
+   * Will return an empty tag if there is none.
+   */
+  const CPVREpgInfoTag* GetEPGNext() const;
+
+  /**
+   * Don't use an EPG for this channel if set to false
+   */
+  bool EPGEnabled() const { return m_bEPGEnabled; }
+
+  /**
+   * Set to true if an EPG should be used for this channel. Set to false otherwise.
+   */
+  void SetEPGEnabled(bool EPGEnabled = true);
+
+  /**
+   * Get the name of the scraper to be used for this channel
+   */
+  CStdString EPGScraper(void) const { return m_strEPGScraper; }
+
+  /**
+   * Set the name of the scraper to be used for this channel.
+   * Set to "client" to load the EPG from the backend
+   */
+  void SetEPGScraper(CStdString Grabber);
+
+private:
+  /**
+   * Updates the EPG "now" and "next" pointers
+   */
+  void UpdateEPGPointers();
 };

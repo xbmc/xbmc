@@ -318,7 +318,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         if (!pItem->GetProperty("Icon").IsEmpty())
         {
           CFileItemPtr current(new CFileItem("thumb://Current", false));
-          current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->Icon());
+          current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
           current->SetLabel(g_localizeStrings.Get(20016));
           items.Add(current);
         }
@@ -516,7 +516,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 CPVRChannel newchannel;
                 newchannel.SetChannelName(g_localizeStrings.Get(19204));
                 newchannel.SetRadio(m_bIsRadio);
-                newchannel.SetGrabEpg(false);
+                newchannel.SetEPGEnabled(false);
                 newchannel.SetVirtual(true);
                 newchannel.SetStreamURL(strURL);
                 newchannel.SetClientID(999);
@@ -531,7 +531,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 channel->SetProperty("Name", g_localizeStrings.Get(19204));
                 channel->SetProperty("UseEPG", false);
                 channel->SetProperty("GroupId", (int)newchannel.GroupID());
-                channel->SetProperty("Icon", newchannel.Icon());
+                channel->SetProperty("Icon", newchannel.IconPath());
                 channel->SetProperty("EPGSource", (int)0);
                 channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
 
@@ -675,9 +675,9 @@ void CGUIDialogPVRChannelManager::Update()
       CFileItemPtr channel(new CFileItem(PVRChannelsTV[i]));
       channel->SetProperty("ActiveChannel", (bool)!PVRChannelsTV[i].IsHidden());
       channel->SetProperty("Name", PVRChannelsTV[i].ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsTV[i].GrabEpg());
+      channel->SetProperty("UseEPG", PVRChannelsTV[i].EPGEnabled());
       channel->SetProperty("GroupId", (int)PVRChannelsTV[i].GroupID());
-      channel->SetProperty("Icon", PVRChannelsTV[i].Icon());
+      channel->SetProperty("Icon", PVRChannelsTV[i].IconPath());
       channel->SetProperty("EPGSource", (int)0);
       CStdString number; number.Format("%i", PVRChannelsTV[i].ChannelNumber());
       channel->SetProperty("Number", number);
@@ -724,9 +724,9 @@ void CGUIDialogPVRChannelManager::Update()
       CFileItemPtr channel(new CFileItem(PVRChannelsRadio[i]));
       channel->SetProperty("ActiveChannel", (bool)!PVRChannelsRadio[i].IsHidden());
       channel->SetProperty("Name", PVRChannelsRadio[i].ChannelName());
-      channel->SetProperty("UseEPG", PVRChannelsRadio[i].GrabEpg());
+      channel->SetProperty("UseEPG", PVRChannelsRadio[i].EPGEnabled());
       channel->SetProperty("GroupId", (int)PVRChannelsRadio[i].GroupID());
-      channel->SetProperty("Icon", PVRChannelsRadio[i].Icon());
+      channel->SetProperty("Icon", PVRChannelsRadio[i].IconPath());
       channel->SetProperty("EPGSource", (int)0);
       CStdString number; number.Format("%i", PVRChannelsRadio[i].ChannelNumber());
       channel->SetProperty("Number", number);
@@ -814,7 +814,7 @@ void CGUIDialogPVRChannelManager::SaveList()
       tag->SetChannelNumber(atoi(pItem->GetProperty("Number")));
     tag->SetChannelName(pItem->GetProperty("Name"));
     tag->SetHidden(!pItem->GetPropertyBOOL("ActiveChannel"));
-    tag->SetIcon(pItem->GetProperty("Icon"));
+    tag->SetIconPath(pItem->GetProperty("Icon"));
     tag->SetGroupID(pItem->GetPropertyInt("GroupId"));
 
     if (pItem->GetPropertyBOOL("Virtual"))
@@ -822,16 +822,16 @@ void CGUIDialogPVRChannelManager::SaveList()
       tag->SetStreamURL(pItem->GetProperty("StreamURL"));
     }
 
-    CStdString prevEPGSource = tag->Grabber();
+    CStdString prevEPGSource = tag->EPGScraper();
     int epgSource = pItem->GetPropertyInt("EPGSource");
     if (epgSource == 0)
-      tag->SetGrabber("client");
+      tag->SetEPGScraper("client");
 
-    if ((tag->GrabEpg() && !pItem->GetPropertyBOOL("UseEPG")) || prevEPGSource != tag->Grabber())
+    if ((tag->EPGEnabled() && !pItem->GetPropertyBOOL("UseEPG")) || prevEPGSource != tag->EPGScraper())
     {
-      ((CPVREpg *)tag->GetEpg())->Clear();
+      ((CPVREpg *)tag->GetEPG())->Clear();
     }
-    tag->SetGrabEpg(pItem->GetPropertyBOOL("UseEPG"));
+    tag->SetEPGEnabled(pItem->GetPropertyBOOL("UseEPG"));
 
     database->UpdateDBChannel(*tag);
     pItem->SetProperty("Changed", false);

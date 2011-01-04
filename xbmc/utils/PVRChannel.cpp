@@ -41,20 +41,22 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
   if (this == &right) return true;
 
   return (m_iDatabaseId             == right.m_iDatabaseId &&
-          m_iUniqueId               == right.m_iUniqueId &&
           m_iChannelNumber          == right.m_iChannelNumber &&
-          m_iClientChannelNumber    == right.m_iClientChannelNumber &&
-          m_strClientChannelName    == right.m_strClientChannelName &&
-          m_iClientId               == right.m_iClientId &&
           m_iChannelGroupId         == right.m_iChannelGroupId &&
-          m_strChannelName          == right.m_strChannelName &&
-          m_strIconPath             == right.m_strIconPath &&
           m_bIsRadio                == right.m_bIsRadio &&
           m_bIsHidden               == right.m_bIsHidden &&
           m_bClientIsRecording      == right.m_bClientIsRecording &&
-          m_iClientEncryptionSystem == right.m_iClientEncryptionSystem &&
+          m_strIconPath             == right.m_strIconPath &&
+          m_strChannelName          == right.m_strChannelName &&
+          m_bIsVirtual              == right.m_bIsVirtual &&
+
+          m_iUniqueId               == right.m_iUniqueId &&
+          m_iClientId               == right.m_iClientId &&
+          m_iClientChannelNumber    == right.m_iClientChannelNumber &&
+          m_strClientChannelName    == right.m_strClientChannelName &&
           m_strStreamURL            == right.m_strStreamURL &&
-          m_strFileNameAndPath      == right.m_strFileNameAndPath);
+          m_strFileNameAndPath      == right.m_strFileNameAndPath &&
+          m_iClientEncryptionSystem == right.m_iClientEncryptionSystem);
 }
 
 bool CPVRChannel::operator!=(const CPVRChannel &right) const
@@ -67,92 +69,82 @@ CPVRChannel::CPVRChannel()
   m_iDatabaseId             = -1;
   m_iChannelNumber          = -1;
   m_iChannelGroupId         = -1;
-  m_strChannelName          = "";
-  m_iClientEncryptionSystem = -1;
-  m_iUniqueId               = -1;
   m_bIsRadio                = false;
   m_bIsHidden               = false;
   m_bClientIsRecording      = false;
-  m_bGrabEpg                = true;
-  m_strGrabber              = "client";
+  m_strIconPath             = "";
+  m_strChannelName          = "";
   m_bIsVirtual              = false;
 
+  m_EPG                     = NULL;
+  m_EPGNow                  = NULL;
+  m_bEPGEnabled             = true;
+  m_strEPGScraper           = "client";
+
+  m_iUniqueId               = -1;
   m_iClientId               = -1;
   m_iClientChannelNumber    = -1;
   m_strClientChannelName    = "";
-
-  m_strIconPath             = "";
-  m_strFileNameAndPath      = "";
+  m_strInputFormat          = "";
   m_strStreamURL            = "";
-
-  m_Epg                     = NULL;
-  m_epgNow                  = NULL;
+  m_strFileNameAndPath      = "";
+  m_iClientEncryptionSystem = -1;
 }
 
-CPVRChannel::~CPVRChannel()
+/********** XBMC related channel methods **********/
+
+void CPVRChannel::SetChannelID(long iDatabaseId)
 {
-  m_epgNow                  = NULL;
-};
-
-void CPVRChannel::UpdateEpgPointers(void)
-{
-  if (m_bIsHidden || !m_bGrabEpg)
-    return;
-
-  CPVREpg *epg = GetEpg();
-
-  if (!epg)
-    return;
-
-  if (!epg->IsUpdateRunning() &&
-      (m_epgNow == NULL ||
-       m_epgNow->End() < CDateTime::GetCurrentDateTime()))
-  {
-    SetChanged();
-    m_epgNow  = epg->InfoTagNow();
-    if (m_epgNow)
-    {
-      CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",
-          __FUNCTION__, m_strChannelName.c_str(), m_epgNow->Title().c_str());
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s - no EPG now pointer for channel '%s'",
-          __FUNCTION__, m_strChannelName.c_str());
-    }
-  }
-
-  NotifyObservers("epg");
+  m_iDatabaseId = iDatabaseId;
+  SetChanged();
 }
 
-CPVREpg *CPVRChannel::GetEpg(void)
+void CPVRChannel::SetChannelNumber(int iChannelNumber)
 {
-  if (m_Epg == NULL)
-  {
-    /* will be cleaned up by CPVREpgs on exit */
-    m_Epg = new CPVREpg(this);
-    PVREpgs.push_back(m_Epg);
-  }
-
-  return m_Epg;
+  m_iChannelNumber = iChannelNumber;
+  SetChanged();
 }
 
-const CPVREpgInfoTag* CPVRChannel::GetEpgNow(void) const
+void CPVRChannel::SetGroupID(int iChannelGroupId)
 {
-  return m_epgNow == NULL ?
-      m_EmptyEpgInfoTag :
-      m_epgNow;
+  m_iChannelGroupId = iChannelGroupId;
+  SetChanged();
 }
 
-const CPVREpgInfoTag* CPVRChannel::GetEpgNext(void) const
+void CPVRChannel::SetRadio(bool bIsRadio)
 {
-  if (m_epgNow == NULL)
-    return m_EmptyEpgInfoTag;
+  m_bIsRadio = bIsRadio;
+  SetChanged();
+}
 
-  const CPVREpgInfoTag *nextTag = m_epgNow->GetNextEvent();
-  return m_epgNow == NULL ?
-      m_EmptyEpgInfoTag :
-      nextTag;
+void CPVRChannel::SetHidden(bool bIsHidden)
+{
+  m_bIsHidden = bIsHidden;
+  SetChanged();
+}
+
+void CPVRChannel::SetRecording(bool bClientIsRecording)
+{
+  m_bClientIsRecording = bClientIsRecording;
+  SetChanged();
+}
+
+void CPVRChannel::SetIconPath(CStdString strIconPath)
+{
+  m_strIconPath = strIconPath;
+  SetChanged();
+}
+
+void CPVRChannel::SetChannelName(CStdString strChannelName)
+{
+  m_strChannelName = strChannelName;
+  SetChanged();
+}
+
+void CPVRChannel::SetVirtual(bool bIsVirtual)
+{
+  m_bIsVirtual = bIsVirtual;
+  SetChanged();
 }
 
 bool CPVRChannel::IsEmpty() const
@@ -161,128 +153,54 @@ bool CPVRChannel::IsEmpty() const
           m_strStreamURL.IsEmpty());
 }
 
-void CPVRChannel::SetChannelName(CStdString name)
+/********** Client related channel methods **********/
+
+void CPVRChannel::SetUniqueID(int iUniqueId)
 {
-  m_strChannelName = name;
+  m_iUniqueId = iUniqueId;
   SetChanged();
 }
 
-void CPVRChannel::SetChannelNumber(int Number)
+void CPVRChannel::SetClientID(int iClientId)
 {
-  m_iChannelNumber = Number;
+  m_iClientId = iClientId;
   SetChanged();
 }
 
-void CPVRChannel::SetClientChannelName(CStdString name)
+void CPVRChannel::SetClientNumber(int iClientChannelNumber)
 {
-  m_strClientChannelName = name;
+  m_iClientChannelNumber = iClientChannelNumber;
   SetChanged();
 }
 
-void CPVRChannel::SetClientNumber(int Number)
+void CPVRChannel::SetClientChannelName(CStdString strClientChannelName)
 {
-  m_iClientChannelNumber = Number;
+  m_strClientChannelName = strClientChannelName;
   SetChanged();
 }
 
-void CPVRChannel::SetClientID(int ClientId)
+void CPVRChannel::SetInputFormat(CStdString strInputFormat)
 {
-  m_iClientId = ClientId;
+  m_strInputFormat = strInputFormat;
   SetChanged();
 }
 
-void CPVRChannel::SetChannelID(long ChannelID)
+void CPVRChannel::SetStreamURL(CStdString strStreamURL)
 {
-  m_iDatabaseId = ChannelID;
+  m_strStreamURL = strStreamURL;
   SetChanged();
 }
 
-void CPVRChannel::SetUniqueID(int id)
+void CPVRChannel::SetPath(CStdString strFileNameAndPath)
 {
-  m_iUniqueId = id;
+  m_strFileNameAndPath = strFileNameAndPath;
   SetChanged();
 }
 
-void CPVRChannel::SetGroupID(int group)
+void CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem)
 {
-  m_iChannelGroupId = group;
+  m_iClientEncryptionSystem = iClientEncryptionSystem;
   SetChanged();
-}
-
-void CPVRChannel::SetEncryptionSystem(int system)
-{
-  m_iClientEncryptionSystem = system;
-  SetChanged();
-}
-
-void CPVRChannel::SetRadio(bool radio)
-{
-  m_bIsRadio = radio;
-  SetChanged();
-}
-
-void CPVRChannel::SetRecording(bool rec)
-{
-  m_bClientIsRecording = rec;
-  SetChanged();
-}
-
-void CPVRChannel::SetStreamURL(CStdString stream)
-{
-  m_strStreamURL = stream;
-  SetChanged();
-}
-
-void CPVRChannel::SetPath(CStdString path)
-{
-  m_strFileNameAndPath = path;
-  SetChanged();
-}
-
-void CPVRChannel::SetIcon(CStdString icon)
-{
-  m_strIconPath = icon;
-  SetChanged();
-}
-
-void CPVRChannel::SetHidden(bool hide)
-{
-  m_bIsHidden = hide;
-  SetChanged();
-}
-
-void CPVRChannel::SetGrabEpg(bool grabEpg)
-{
-  m_bGrabEpg = grabEpg;
-  SetChanged();
-}
-
-void CPVRChannel::SetVirtual(bool virtualChannel)
-{
-  m_bIsVirtual = virtualChannel;
-  SetChanged();
-}
-
-void CPVRChannel::SetGrabber(CStdString Grabber)
-{
-  m_strGrabber = Grabber;
-  SetChanged();
-}
-
-void CPVRChannel::SetInputFormat(CStdString format)
-{
-  m_strInputFormat = format;
-  SetChanged();
-}
-
-bool CPVRChannel::ClearEPG()
-{
-  CLog::Log(LOGINFO, "%s - clearing the EPG for channel %s", __FUNCTION__, m_strChannelName.c_str());
-
-  GetEpg()->Clear();
-  m_epgNow = NULL;
-
-  return true;
 }
 
 CStdString CPVRChannel::EncryptionName() const
@@ -386,4 +304,88 @@ CStdString CPVRChannel::EncryptionName() const
     strName.Format("%s (%X)", g_localizeStrings.Get(19499).c_str(), m_iClientEncryptionSystem); /* Unknown */
 
   return strName;
+}
+
+/********** EPG methods **********/
+
+CPVREpg *CPVRChannel::GetEPG(void)
+{
+  if (m_EPG == NULL)
+  {
+    /* will be cleaned up by CPVREpgs on exit */
+    m_EPG = new CPVREpg(this);
+    PVREpgs.push_back(m_EPG);
+  }
+
+  return m_EPG;
+}
+
+bool CPVRChannel::ClearEPG()
+{
+  if (m_EPG != NULL)
+  {
+    GetEPG()->Clear();
+    m_EPGNow = NULL;
+  }
+
+  return true;
+}
+
+const CPVREpgInfoTag* CPVRChannel::GetEPGNow(void) const
+{
+  if (m_bIsHidden || !m_bEPGEnabled || m_EPGNow == NULL)
+    return m_EmptyEpgInfoTag;
+
+  return m_EPGNow;
+}
+
+const CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
+{
+  if (m_bIsHidden || !m_bEPGEnabled || m_EPGNow == NULL)
+    return m_EmptyEpgInfoTag;
+
+  const CPVREpgInfoTag *nextTag = m_EPGNow->GetNextEvent();
+  return nextTag == NULL ?
+      m_EmptyEpgInfoTag :
+      nextTag;
+}
+
+void CPVRChannel::SetEPGEnabled(bool EPGEnabled /* = true */)
+{
+  m_bEPGEnabled = EPGEnabled;
+  SetChanged();
+}
+
+void CPVRChannel::SetEPGScraper(CStdString Grabber)
+{
+  m_strEPGScraper = Grabber;
+  SetChanged();
+}
+
+void CPVRChannel::UpdateEPGPointers(void)
+{
+  if (m_bIsHidden || !m_bEPGEnabled)
+    return;
+
+  CPVREpg *epg = GetEPG();
+
+  if (!epg->IsUpdateRunning() &&
+      (m_EPGNow == NULL ||
+       m_EPGNow->End() <= CDateTime::GetCurrentDateTime()))
+  {
+    SetChanged();
+    m_EPGNow  = epg->InfoTagNow();
+    if (m_EPGNow)
+    {
+      CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",
+          __FUNCTION__, m_strChannelName.c_str(), m_EPGNow->Title().c_str());
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - no EPG now pointer for channel '%s'",
+          __FUNCTION__, m_strChannelName.c_str());
+    }
+  }
+
+  NotifyObservers("epg");
 }

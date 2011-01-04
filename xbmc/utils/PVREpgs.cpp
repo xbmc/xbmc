@@ -269,7 +269,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
     for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
     {
       CPVRChannel *channel = &channels->at(channelPtr);
-      CPVREpg *epg = channel->GetEpg();
+      CPVREpg *epg = channel->GetEPG();
       if (!epg)
         continue;
 
@@ -310,7 +310,7 @@ void CPVREpgs::UpdateAllChannelEPGPointers()
 {
   for (unsigned int epgPtr = 0; epgPtr < PVREpgs.size(); epgPtr++)
   {
-    ((CPVRChannel *)PVREpgs.at(epgPtr)->Channel())->UpdateEpgPointers();
+    ((CPVRChannel *)PVREpgs.at(epgPtr)->Channel())->UpdateEPGPointers();
   }
 }
 
@@ -370,7 +370,7 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
 
     for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
-      const CPVREpg *epg = channels->GetByIndex(iChannelPtr)->GetEpg();
+      const CPVREpg *epg = channels->GetByIndex(iChannelPtr)->GetEPG();
       if (!epg->HasValidEntries() || epg->IsUpdateRunning())
         continue;
 
@@ -464,7 +464,7 @@ int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
 {
   int iInitialSize   = results->Size();
 
-  CPVREpg *epg = channel->GetEpg();
+  CPVREpg *epg = channel->GetEPG();
   if (!epg->HasValidEntries() || epg->IsUpdateRunning())
   {
     CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG table",
@@ -490,7 +490,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
-    CPVREpg *epg = channel->GetEpg();
+    CPVREpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries() || epg->IsUpdateRunning())
       continue;
 
@@ -503,7 +503,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
     CFileItemPtr entry(new CFileItem(*epgNow));
     entry->SetLabel2(epgNow->Start().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
-    entry->SetThumbnailImage(channel->Icon());
+    entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);
   }
 
@@ -518,7 +518,7 @@ int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
-    CPVREpg *epg = channel->GetEpg();
+    CPVREpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries() || epg->IsUpdateRunning())
       continue;
 
@@ -531,7 +531,7 @@ int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
     CFileItemPtr entry(new CFileItem(*epgNext));
     entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
-    entry->SetThumbnailImage(channel->Icon());
+    entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);
   }
 

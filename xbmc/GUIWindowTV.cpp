@@ -987,10 +987,10 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CFileItemList items;
 
     // add the current thumb, if available
-    if (!pItem->GetPVRChannelInfoTag()->Icon().IsEmpty())
+    if (!pItem->GetPVRChannelInfoTag()->IconPath().IsEmpty())
     {
       CFileItemPtr current(new CFileItem("thumb://Current", false));
-      current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->Icon());
+      current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
       current->SetLabel(g_localizeStrings.Get(20016));
       items.Add(current);
     }
@@ -1378,7 +1378,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (pItem->IsPVRChannel())
     {
-      m_searchfilter.m_strSearchTerm = "\"" + pItem->GetPVRChannelInfoTag()->GetEpgNow()->Title() + "\"";
+      m_searchfilter.m_strSearchTerm = "\"" + pItem->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
     }
     else if (pItem->IsPVRRecording())
     {
@@ -1431,7 +1431,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
   }
   else if (item->IsPVRChannel())
   {
-    const CPVREpgInfoTag *epgnow = item->GetPVRChannelInfoTag()->GetEpgNow();
+    const CPVREpgInfoTag *epgnow = item->GetPVRChannelInfoTag()->GetEPGNow();
     if (!epgnow)
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
