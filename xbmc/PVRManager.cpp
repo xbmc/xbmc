@@ -422,14 +422,13 @@ void CPVRManager::Process()
   PVRRecordings.Load();
 
   /* Get Epg's from Backend */
-  PVREpgs.Load();
+  PVREpgs.Update();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
   int LastEPGCleanup       = Now;
   m_LastTVChannelCheck     = Now;
   m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
   m_LastRecordingsCheck    = Now;
-  m_LastEPGUpdate          = Now;
   m_LastTimersCheck        = Now;
   /* Check the last EPG scan date if XBMC is restarted to prevent a rescan if
      the time is not longer as one hour ago */
@@ -481,17 +480,10 @@ void CPVRManager::Process()
     }
 
     /* Check for new or updated EPG entries */
-    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
+    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgupdate")*60*60) // don't do this too often
     {
-      PVREpgs.Update(true);
-      m_LastEPGScan   = Now;
-      m_LastEPGUpdate = Now;  // Data is also updated during scan
-      LastEPGCleanup  = Now;
-    }
-    else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
-    {
-      PVREpgs.Update(false);
-      m_LastEPGUpdate = Now;
+      PVREpgs.Update();
+      m_LastEPGScan   = Now;  // Data is also updated during scan
       LastEPGCleanup  = Now;
     }
     else if (Now - LastEPGCleanup > EPGCLEANUPCHECKDELTA) // don't do this too often
@@ -1042,27 +1034,17 @@ void CPVRManager::ResetEPG()
 
   PVREpgs.InihibitUpdate(true);
 
-  if (m_currentPlayingRecording || m_currentPlayingChannel)
-  {
-    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
-    g_application.StopPlaying();
-  }
-  pDlgProgress->SetPercentage(10);
-
-  Stop();
-  pDlgProgress->SetPercentage(30);
-
-  m_database.Open();
+  PVREpgs.ClearAll();
   pDlgProgress->SetPercentage(50);
 
-  m_database.EraseEPG();
-  pDlgProgress->SetPercentage(70);
+  PVREpgs.InihibitUpdate(false);
 
-  m_database.Close();
-  CLog::Log(LOGNOTICE,"PVR: EPG reset finished, starting PVR Subsystem again");
-  Start();
+  PVREpgs.Update();
+
   pDlgProgress->SetPercentage(100);
   pDlgProgress->Close();
+
+  CLog::Log(LOGNOTICE,"PVR: EPG reset finished");
 }
 
 bool CPVRManager::IsPlayingTV()

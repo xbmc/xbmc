@@ -201,7 +201,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const CFileItem& item)
     marginstop  = 10;  /* Default stop 10 minutes later */
 
   /* Set timer based on EPG entry */
-  m_clientIndex   = tag->GetUniqueBroadcastID();
+  m_clientIndex   = tag->UniqueBroadcastID();
   m_Active        = true;
   m_strTitle      = tag->Title();
   m_channelNum    = channel->ChannelNumber();
@@ -487,7 +487,7 @@ void CPVRTimerInfoTag::SetEpg(const CPVREpgInfoTag *tag)
   }
 }
 
-unsigned int CPVRTimerInfoTag::ChannelNumber() const
+int CPVRTimerInfoTag::ChannelNumber() const
 {
   CPVRChannel *channeltag = CPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
   if (channeltag)

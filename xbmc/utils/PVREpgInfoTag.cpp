@@ -28,7 +28,7 @@ using namespace std;
 CPVREpgInfoTag::CPVREpgInfoTag(long uniqueBroadcastID)
 {
   Reset();
-  m_uniqueBroadcastID = uniqueBroadcastID;
+  m_iUniqueBroadcastID = uniqueBroadcastID;
 }
 
 void CPVREpgInfoTag::Reset()
@@ -38,15 +38,15 @@ void CPVREpgInfoTag::Reset()
   m_strGenre            = "";
   m_strPlotOutline      = "";
   m_strPlot             = "";
-  m_GenreType           = 0;
-  m_GenreSubType        = 0;
+  m_iGenreType           = 0;
+  m_iGenreSubType        = 0;
   m_strFileNameAndPath  = "";
-  m_IconPath            = "";
+  m_strIconPath            = "";
   m_isRecording         = false;
   m_Timer               = NULL;
   m_Epg                 = NULL;
-  m_parentalRating      = 0;
-  m_starRating          = 0;
+  m_iParentalRating      = 0;
+  m_iStarRating          = 0;
   m_notify              = false;
   m_seriesNum           = "";
   m_episodeNum          = "";
@@ -74,8 +74,8 @@ int CPVREpgInfoTag::GetDuration() const
 
 void CPVREpgInfoTag::SetGenre(int ID, int subID)
 {
-  m_GenreType    = ID;
-  m_GenreSubType = subID;
+  m_iGenreType    = ID;
+  m_iGenreSubType = subID;
   m_strGenre     = ConvertGenreIdToString(ID, subID);
 }
 

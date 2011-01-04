@@ -826,7 +826,6 @@ void CGUIDialogPVRChannelManager::SaveList()
 
     if ((tag->GrabEpg() && !pItem->GetPropertyBOOL("UseEPG")) || prevEPGSource != tag->Grabber())
     {
-      database->EraseChannelEPG(tag->ChannelID());
       PVREpgs.ClearChannel(tag->ChannelID());
     }
     tag->SetGrabEpg(pItem->GetPropertyBOOL("UseEPG"));

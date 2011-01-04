@@ -353,34 +353,18 @@ bool CTVDatabase::EraseEPG()
   }
 }
 
-bool CTVDatabase::EraseChannelEPG(long channelID)
+bool CTVDatabase::EraseEPGForChannel(long channelID, CDateTime after)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
+    CStdString strSQL;
 
-    CStdString strSQL=FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u'", channelID);
-
-    m_pDS->exec(strSQL.c_str());
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return false;
-  }
-}
-
-bool CTVDatabase::EraseChannelEPGAfterTime(long channelID, CDateTime after)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u' AND GuideData.EndTime > '%s'", channelID, after.GetAsDBDateTime().c_str());
+    if (after == NULL)
+      strSQL = FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u'", channelID);
+    else
+      strSQL = FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u' AND GuideData.EndTime > '%s'", channelID, after.GetAsDBDateTime().c_str());
 
     m_pDS->exec(strSQL.c_str());
 
@@ -423,7 +407,7 @@ long CTVDatabase::AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool fi
     if (!oneWrite && firstWrite)
       m_pDS->insert();
 
-    if (info.GetUniqueBroadcastID() > 0)
+    if (info.UniqueBroadcastID() > 0)
     {
       CStdString SQL = FormatSQL("INSERT INTO GuideData (idDatabaseBroadcast, idChannel, StartTime, "
                                  "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
@@ -434,7 +418,7 @@ long CTVDatabase::AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool fi
                                  info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                                  info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                                  info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                                 info.GetUniqueBroadcastID());
+                                 info.UniqueBroadcastID());
 
       if (oneWrite)
       {
@@ -471,9 +455,9 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
     if (!oneWrite && firstWrite)
       m_pDS2->insert();
 
-    if (info.GetUniqueBroadcastID() > 0)
+    if (info.UniqueBroadcastID() > 0)
     {
-      CStdString SQL = FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelTag()->ChannelID());
+      CStdString SQL = FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.UniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelTag()->ChannelID());
       m_pDS->query(SQL.c_str());
 
       if (m_pDS->num_rows() > 0)
@@ -489,7 +473,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
                         info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                         info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                         info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                        info.GetUniqueBroadcastID(), id);
+                        info.UniqueBroadcastID(), id);
 
         if (oneWrite)
           m_pDS->exec(SQL.c_str());
@@ -510,7 +494,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
                         info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                         info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                         info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                        info.GetUniqueBroadcastID());
+                        info.UniqueBroadcastID());
 
         if (oneWrite)
         {
@@ -527,7 +511,7 @@ bool CTVDatabase::UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite, bool
         if (GetEPGDataEnd(info.ChannelTag()->ChannelID()) > info.End())
         {
           CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelTag()->ChannelName().c_str());
-          EraseChannelEPGAfterTime(info.ChannelTag()->ChannelID(), info.End());
+          EraseEPGForChannel(info.ChannelTag()->ChannelID(), info.End());
         }
       }
     }
@@ -554,10 +538,10 @@ bool CTVDatabase::RemoveEPGEntry(const CPVREpgInfoTag &info)
     if (NULL == m_pDS.get()) return false;
 
 
-    if (info.GetUniqueBroadcastID() < 0)   // no match found, update required
+    if (info.UniqueBroadcastID() < 0)   // no match found, update required
       return false;
 
-    CStdString strSQL=FormatSQL("delete from GuideData WHERE GuideData.idUniqueBroadcast = '%u'", info.GetUniqueBroadcastID() );
+    CStdString strSQL=FormatSQL("delete from GuideData WHERE GuideData.idUniqueBroadcast = '%u'", info.UniqueBroadcastID() );
 
     m_pDS->exec(strSQL.c_str());
     return true;

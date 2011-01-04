@@ -39,12 +39,13 @@ private:
 
 public:
   CPVREpg(long ChannelID);
+  CPVREpg(const CPVRChannel &channel);
   long ChannelID(void) const { return m_channelID; }
   bool IsValid(void) const;
   const CPVRChannel *ChannelTag(void) const { return m_Channel; }
   CPVREpgInfoTag *AddInfoTag(CPVREpgInfoTag *Tag);
   void DelInfoTag(CPVREpgInfoTag *tag);
-  void Cleanup(CDateTime Time);
+  void Cleanup(const CDateTime Time);
   void Cleanup(void);
   void Sort(void);
   const std::vector<CPVREpgInfoTag*> *InfoTags(void) const { return &m_tags; }

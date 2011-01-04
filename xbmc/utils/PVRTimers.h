@@ -113,7 +113,7 @@ public:
   void SetEpg(const CPVREpgInfoTag *tag);
 
   /* Channel related Info data */
-  unsigned int ChannelNumber(void) const;
+  int ChannelNumber(void) const;
   CStdString ChannelName(void) const;
 
   /* Client control functions */

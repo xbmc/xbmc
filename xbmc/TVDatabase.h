@@ -47,7 +47,7 @@ public:
 
   /* Database Epg handling */
   bool EraseEPG();
-  bool EraseChannelEPG(long channelID);
+  bool EraseEPGForChannel(long channelID, CDateTime after = NULL);
   bool EraseChannelEPGAfterTime(long channelID, CDateTime after);
   bool EraseOldEPG();
   long AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);

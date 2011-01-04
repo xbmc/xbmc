@@ -28,6 +28,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
+#include "PVRManager.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -326,6 +327,23 @@ void CPVRChannel::AddLinkedChannel(long LinkedChannel)
 {
   m_linkedChannels.push_back(LinkedChannel);
   SetChanged();
+}
+
+bool CPVRChannel::ClearEPG(bool bClearDatabase)
+{
+  if (m_Epg == NULL)
+  {
+    CLog::Log(LOGDEBUG, "%s - no EPG to clear", __FUNCTION__);
+    return false;
+  }
+
+  CLog::Log(LOGINFO, "%s - clearing the EPG for channel %s", __FUNCTION__, m_strChannelName.c_str());
+
+  ((CPVREpg *) m_Epg)->Cleanup(-1);
+  m_epgNow = NULL;
+  m_epgNext = NULL;
+
+  return bClearDatabase ? PVREpgs.ClearChannel(m_iChannelNumber) : true;
 }
 
 CStdString CPVRChannel::EncryptionName() const

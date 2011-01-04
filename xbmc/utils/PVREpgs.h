@@ -29,6 +29,7 @@
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRChannel;
+class CTVDatabase;
 struct PVREpgSearchFilter;
 
 class CPVREpgs : public std::vector<CPVREpg*>
@@ -38,22 +39,51 @@ class CPVREpgs : public std::vector<CPVREpg*>
 private:
   CCriticalSection m_critSection;
   bool  m_bInihibitUpdate;
+  bool  m_bIgnoreDbForClient;
+  int   m_iLingerTime;
+  int   m_iDaysToDisplay;
+
+  bool GetEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t *start, time_t *end);
+  const CPVREpg *AddEPG(long iChannelID);
+  bool LoadSettings();
 
 public:
   CPVREpgs(void);
 
-  CPVREpg *AddEPG(long ChannelID);
-  const CPVREpg *GetEPG(long ChannelID) const;
-  const CPVREpg *GetEPG(const CPVRChannel *Channel, bool AddIfMissing = false) const;
-  void Add(CPVREpg *entry);
+  /**
+   * Get an EPG table for a channel
+   */
+  const CPVREpg *GetEPG(long iChannelID, bool bAddIfMissing = false);
 
-  void Cleanup(void);
+  /**
+   * Get an EPG table for a channel
+   */
+  const CPVREpg *GetEPG(CPVRChannel *Channel, bool AddIfMissing = false);
+
+  /**
+   * Removes old data
+   */
+  bool Cleanup(void);
+
+  /**
+   * Clears all entries
+   */
   bool ClearAll(void);
+
+  /**
+   * Clears all entries for a channel
+   */
   bool ClearChannel(long ChannelID);
-  void Load();
+
+  /**
+   * Loads and updates the EPG data
+   */
+  bool Update();
+
   void Unload();
-  void Update(bool Scan = false);
+
   void InihibitUpdate(bool yesNo) { m_bInihibitUpdate = yesNo; }
+
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool radio = false);
   int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
@@ -63,6 +93,9 @@ public:
   CDateTime GetLastEPGDate(bool radio = false);
   void SetVariableData(CFileItemList* results);
   void AssignChangedChannelTags(bool radio = false);
+  bool RemoveOverlappingEvents(CTVDatabase *database, CPVREpg *epg);
+  bool GrabEPGForChannel(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+  bool UpdateEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t *start, time_t *end);
 };
 
 extern CPVREpgs PVREpgs;

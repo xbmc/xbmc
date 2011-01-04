@@ -39,21 +39,21 @@ private:
   CDateTime     m_startTime;
   CDateTime     m_endTime;
   CDateTimeSpan m_duration;
-  CStdString    m_IconPath;
+  CStdString    m_strIconPath;
   CStdString    m_strFileNameAndPath;
-  int           m_GenreType;
-  int           m_GenreSubType;
-  bool          m_isRecording;
-  CDateTime     m_firstAired;
-  int           m_parentalRating;
-  int           m_starRating;
+  int           m_iGenreType;
+  int           m_iGenreSubType;
+  bool          m_isRecording; //XXX
+  CDateTime     m_strFirstAired;
+  int           m_iParentalRating;
+  int           m_iStarRating;
   bool          m_notify;
   CStdString    m_seriesNum;
   CStdString    m_episodeNum;
   CStdString    m_episodePart;
   CStdString    m_episodeName;
 
-  long          m_uniqueBroadcastID; // event's unique identifier for this tag
+  long          m_iUniqueBroadcastID; // event's unique identifier for this tag
 
 public:
   CPVREpgInfoTag(long uniqueBroadcastID);
@@ -61,53 +61,61 @@ public:
   virtual ~CPVREpgInfoTag() {};
   void Reset();
 
-  long GetUniqueBroadcastID(void) const { return m_uniqueBroadcastID; }
+  long UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
+
   CDateTime Start(void) const { return m_startTime; }
   void SetStart(CDateTime Start) { m_startTime = Start; }
+
   CDateTime End(void) const { return m_endTime; }
   void SetEnd(CDateTime Stop) { m_endTime = Stop; }
+
   int GetDuration() const;
+
   CStdString Title(void) const { return m_strTitle; }
   void SetTitle(CStdString name) { m_strTitle = name; }
+
   CStdString PlotOutline(void) const { return m_strPlotOutline; }
   void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
+
   CStdString Plot(void) const { return m_strPlot; }
   void SetPlot(CStdString Plot) { m_strPlot = Plot; }
-  int GenreType(void) const { return m_GenreType; }
-  int GenreSubType(void) const { return m_GenreSubType; }
+
+  int GenreType(void) const { return m_iGenreType; }
+  int GenreSubType(void) const { return m_iGenreSubType; }
   CStdString Genre(void) const { return m_strGenre; }
   void SetGenre(int ID, int subID);
-  CDateTime FirstAired(void) const { return m_firstAired; }
-  void SetFirstAired(CDateTime FirstAired) { m_firstAired = FirstAired; }
-  int ParentalRating(void) const { return m_parentalRating; }
-  void SetParentalRating(int ParentalRating) { m_parentalRating = ParentalRating; }
-  int StarRating(void) const { return m_starRating; }
-  void SetStarRating(int StarRating) { m_starRating = StarRating; }
+
+  CDateTime FirstAired(void) const { return m_strFirstAired; }
+  void SetFirstAired(CDateTime FirstAired) { m_strFirstAired = FirstAired; }
+
+  int ParentalRating(void) const { return m_iParentalRating; }
+  void SetParentalRating(int ParentalRating) { m_iParentalRating = ParentalRating; }
+
+  int StarRating(void) const { return m_iStarRating; }
+  void SetStarRating(int StarRating) { m_iStarRating = StarRating; }
+
   bool Notify(void) const { return m_notify; }
   void SetNotify(bool Notify) { m_notify = Notify; }
+
   CStdString SeriesNum(void) const { return m_seriesNum; }
   void SetSeriesNum(CStdString SeriesNum) { m_seriesNum = SeriesNum; }
+
   CStdString EpisodeNum(void) const { return m_episodeNum; }
   void SetEpisodeNum(CStdString EpisodeNum) { m_episodeNum = EpisodeNum; }
+
   CStdString EpisodePart(void) const { return m_episodePart; }
   void SetEpisodePart(CStdString EpisodePart) { m_episodePart = EpisodePart; }
+
   CStdString EpisodeName(void) const { return m_episodeName; }
   void SetEpisodeName(CStdString EpisodeName) { m_episodeName = EpisodeName; }
-  CStdString Icon(void) const { return m_IconPath; }
-  void SetIcon(CStdString icon) { m_IconPath = icon; }
+
+  CStdString Icon(void) const { return m_strIconPath; }
+  void SetIcon(CStdString icon) { m_strIconPath = icon; }
+
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString Path) { m_strFileNameAndPath = Path; }
-  bool HasTimer() const;
 
-  /* Channel related Data */
-//  long ChannelID(void) const { return m_Epg->ChannelTag()->ChannelID(); }
-//  int ChannelNumber(void) const { return m_Epg->ChannelTag()->ChannelNumber(); }
-//  CStdString ChannelName(void) const { return m_Epg->ChannelTag()->ChannelName(); }
-//  CStdString ChanneIcon(void) const { return m_Epg->ChannelTag()->Icon(); }
-//  long GroupID(void) const { return m_Epg->ChannelTag()->GroupID(); }
-//  bool IsEncrypted(void) const { return m_Epg->ChannelTag()->IsEncrypted(); }
-//  bool IsRadio(void) const { return m_Epg->ChannelTag()->IsRadio(); }
-//  bool ClientID(void) const { return m_Epg->ChannelTag()->ClientID(); }
+  bool HasTimer() const;
 
   /*! \brief Get the CPVRChannel class associated to this epg entry
    \return the pointer to the info tag

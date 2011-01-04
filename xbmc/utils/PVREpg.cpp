@@ -43,7 +43,15 @@ CPVREpg::CPVREpg(long ChannelID)
   m_channelID       = ChannelID;
   m_Channel         = CPVRChannels::GetByChannelIDFromAll(ChannelID);
   m_bUpdateRunning  = false;
-  m_bValid          = ChannelID == -1 ? false : true;
+  m_bValid          = ChannelID != -1;
+}
+
+CPVREpg::CPVREpg(const CPVRChannel &channel)
+{
+  m_channelID       = channel.ChannelID();
+  m_Channel         = &channel;
+  m_bUpdateRunning  = false;
+  m_bValid          = m_channelID != -1;
 }
 
 bool CPVREpg::IsValid(void) const
@@ -90,7 +98,7 @@ void CPVREpg::Cleanup(void)
   Cleanup(CDateTime::GetCurrentDateTime());
 }
 
-void CPVREpg::Cleanup(CDateTime Time)
+void CPVREpg::Cleanup(const CDateTime Time)
 {
   m_bUpdateRunning = true;
   for (unsigned int i = 0; i < m_tags.size(); i++)
@@ -153,7 +161,7 @@ const CPVREpgInfoTag *CPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) co
   {
     for (unsigned int i = 0; i < m_tags.size(); i++)
     {
-      if (m_tags[i]->GetUniqueBroadcastID() == uniqueID)
+      if (m_tags[i]->UniqueBroadcastID() == uniqueID)
         return m_tags[i];
     }
   }

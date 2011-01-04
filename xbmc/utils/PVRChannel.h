@@ -84,6 +84,8 @@ public:
   bool IsEmpty() const;
        ///< True if no required data is present inside the tag.
 
+  const CPVREpg *GetEpg() const { return m_Epg; }
+
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;
 
@@ -92,88 +94,107 @@ public:
        ///< Return the currently by XBMC used name for this channel.
   void SetChannelName(CStdString name);
        ///< Set the name, XBMC uses for this channel.
+
   int ChannelNumber(void) const { return m_iChannelNumber; }
        ///< Return the currently by XBMC used channel number for this channel.
   void SetChannelNumber(int Number);
        ///< Change the XBMC number for this channel.
+
   CStdString ClientChannelName(void) const { return m_strClientChannelName; }
        ///< Return the name used by the client driver on the backend.
   void SetClientChannelName(CStdString name);
        ///< Set the name used by the client (is changed only in this tag,
        ///< no client action to change name is performed ).
+
   int ClientChannelNumber(void) const { return m_iClientChannelNumber; }
        ///< Return the channel number used by the client driver.
   void SetClientNumber(int Number);
        ///< Change the client number for this channel (is changed only in this tag,
        ///< no client action to change name is performed ).
+
   long ClientID(void) const { return m_iClientId; }
        ///< The client ID this channel belongs to.
   void SetClientID(int ClientId);
        ///< Set the client ID for this channel.
+
   long ChannelID(void) const { return m_iDatabaseId; }
        ///< Return XBMC own channel ID for this channel which is used in the
        ///< TV Database.
   void SetChannelID(long ChannelID);
        ///< Change the channel ID for this channel (no Action to the Database
        ///< are taken)
+
   int UniqueID(void) const { return m_iUniqueId; }
        ///< A UniqueID for this channel provider to identify same channels on different clients.
   void SetUniqueID(int id);
        ///< Change the Unique ID for this channel.
+
   unsigned int GroupID(void) const { return m_iChannelGroupId; }
        ///< The Group this channel belongs to, -1 for undefined.
   void SetGroupID(unsigned int group);
        ///< Set the group ID for this channel.
+
   bool IsEncrypted(void) const { return m_iClientEncryptionSystem > 0; }
        ///< Return true if this channel is encrypted. Does not inform if XBMC can play it,
        ///< decryption is done by the client associated backend.
   int EncryptionSystem(void) const { return m_iClientEncryptionSystem; }
        ///< Return the encryption system ID for this channel, 0 for FTA. Is based
        ///< upon: http://www.dvb.org/index.php?id=174.
+
   CStdString EncryptionName() const;
        ///< Return a human understandable name for the used encryption system.
   void SetEncryptionSystem(int system);
        ///< Set the encryption ID for this channel.
+
   bool IsRadio(void) const { return m_bIsRadio; }
        ///< Return true if this is a Radio channel.
   void SetRadio(bool radio);
        ///< Set the radio flag.
+
   bool IsRecording(void) const { return m_bClientIsRecording; }
        ///< True if this channel is currently recording.
   void SetRecording(bool rec);
        ///< Set the recording state.
+
   CStdString StreamURL(void) const { return m_strStreamURL; }
        ///< The Stream URL to access this channel, it can be all types of protocol and types
        ///< are supported by XBMC or in case the client read the stream leave it empty
   void SetStreamURL(CStdString stream);
        ///< Set the stream URL
+
   CStdString Path(void) const { return m_strFileNameAndPath; }
        ///< Return the path in the XBMC virtual Filesystem.
   void SetPath(CStdString path);
        ///< Set the path in XBMC Virtual Filesystem.
+
   CStdString Icon(void) const { return m_strIconPath; }
        ///< Return Path with Filename of the Icon for this channel.
   void SetIcon(CStdString icon);
        ///< Set the path and filename for this channel Icon
+
   bool IsHidden(void) const { return m_bIsHidden; }
        ///< If this channel is hidden from view it is true.
   void SetHidden(bool hide);
        ///< Mask this channel hidden.
-  bool GrabEpg() { return m_bGrabEpg; }
+
+  bool GrabEpg() const { return m_bGrabEpg; }
        ///< If false ignore EPG for this channel.
   void SetGrabEpg(bool grabEpg);
        ///< Change the EPG grabbing flag
-  bool IsVirtual() { return m_bIsVirtual; }
+
+  bool IsVirtual() const { return m_bIsVirtual; }
        ///< If true it is a virtual channel
   void SetVirtual(bool virtualChannel);
        ///< Change the virtual flag
+
   CStdString Grabber(void) const { return m_strGrabber; }
        ///< Get the EPG scraper name
   void SetGrabber(CStdString Grabber);
        ///< Set the EPG scraper name, use "client" for loading  the EPG from Backend
-  bool IsPortalMaster() { return m_iPortalMasterChannel == 0; }
+
+  bool IsPortalMaster() const { return m_iPortalMasterChannel == 0; }
        ///< Return true if this is a Portal Master channel
-  bool IsPortalSlave() { return m_iPortalMasterChannel > 0; }
+  bool IsPortalSlave() const { return m_iPortalMasterChannel > 0; }
        ///< Return true if this is a Portal Slave channel
   void SetPortalChannel(long channelID);
        ///< Set the portal channel ID, use -1 for no portal channel, NULL if this is a
@@ -204,4 +225,6 @@ public:
   /*! \name Linked channel functions, used for portal mode */
   void ClearLinkedChannels();
   void AddLinkedChannel(long LinkedChannel);
+
+  bool ClearEPG(bool bClearDatabase = true);
 };
