@@ -49,6 +49,7 @@ CPVRChannels::CPVRChannels(bool bRadio)
 {
   m_bRadio          = bRadio;
   m_iHiddenChannels = 0;
+  m_bIsSorted       = false;
 }
 
 int CPVRChannels::Load(void)
@@ -97,6 +98,7 @@ bool CPVRChannels::Update(CPVRChannel *channel)
 {
   // TODO notify observers
   push_back(channel);
+  m_bIsSorted = false;
   return true;
 }
 
@@ -142,6 +144,8 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
     if (tag)
       timer.SetNumber(tag->ChannelNumber());
   }
+
+  m_bIsSorted = false;
 }
 
 bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
@@ -261,11 +265,13 @@ struct sortByChannelNumber
 void CPVRChannels::SortByClientChannelNumber(void)
 {
   sort(begin(), end(), sortByClientChannelNumber());
+  m_bIsSorted = false;
 }
 
 void CPVRChannels::SortByChannelNumber(void)
 {
   sort(begin(), end(), sortByChannelNumber());
+  m_bIsSorted = true;
 }
 
 /********** getters **********/
@@ -326,7 +332,7 @@ int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, b
 {
   int iAmount = 0;
 
-  SortByChannelNumber(); // XXX remember if we already got a sorted list
+  SortByChannelNumber();
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
@@ -682,6 +688,7 @@ bool CPVRChannels::Update(CPVRChannels *channels)
       m_iHiddenChannels++;
   }
 
+  m_bIsSorted = false;
   return true;
 }
 
@@ -758,4 +765,5 @@ void CPVRChannels::ReNumberAndCheck(void)
     else
       at(ptr)->SetChannelNumber(iChannelNumber++);
   }
+  m_bIsSorted = false;
 }

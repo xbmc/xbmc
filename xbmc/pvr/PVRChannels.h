@@ -33,6 +33,7 @@ class CPVRChannels : public std::vector<CPVRChannel *>
 private:
   bool m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
   int  m_iHiddenChannels; /* the amount of hidden channels in this container */
+  bool m_bIsSorted;       /* true if this container is sorted by channel number, false if not */
 
   /**
    * Load the channels stored in the database.
