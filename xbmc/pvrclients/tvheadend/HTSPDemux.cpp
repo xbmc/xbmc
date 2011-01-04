@@ -327,6 +327,29 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
+    else if(!strcmp(type, "EAC3"))
+    {
+      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
+      m_Streams.stream[m_Streams.nstreams].physid     = index;
+      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_EAC3;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      m_Streams.stream[m_Streams.nstreams].identifier = -1;
+      m_Streams.nstreams++;
+    }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
       m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
