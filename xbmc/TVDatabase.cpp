@@ -21,6 +21,7 @@
 
 #include "TVDatabase.h"
 #include "utils/GUIInfoManager.h"
+#include "AdvancedSettings.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -38,7 +39,7 @@ CTVDatabase::~CTVDatabase(void)
 
 bool CTVDatabase::Open()
 {
-  return CDatabase::Open();
+  return CDatabase::Open(g_advancedSettings.m_databaseTV);
 }
 
 bool CTVDatabase::CreateTables()
