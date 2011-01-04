@@ -31,16 +31,17 @@ class CPVREpg
   friend class CPVREpgs;
 
 private:
-  long m_channelID;
   const CPVRChannel *m_Channel;
   std::vector<CPVREpgInfoTag*> m_tags;
   bool m_bUpdateRunning;
   bool m_bValid;
+  bool m_bIsSorted;
 
 public:
   CPVREpg(long ChannelID);
   CPVREpg(const CPVRChannel &channel);
-  long ChannelID(void) const { return m_channelID; }
+  CPVREpg(const CPVRChannel *channel);
+  long ChannelID(void) const { return m_Channel->ChannelID(); }
   bool IsValid(void) const;
   const CPVRChannel *ChannelTag(void) const { return m_Channel; }
   CPVREpgInfoTag *AddInfoTag(CPVREpgInfoTag *Tag);
@@ -59,4 +60,9 @@ public:
 
   static bool Add(const PVR_PROGINFO *data, CPVREpg *Epg);
   static bool AddDB(const PVR_PROGINFO *data, CPVREpg *Epg);
+
+  /**
+   * Remove overlapping events from the tables
+   */
+  bool RemoveOverlappingEvents();
 };

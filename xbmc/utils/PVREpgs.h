@@ -38,22 +38,44 @@ class CPVREpgs : public std::vector<CPVREpg*>
 
 private:
   CCriticalSection m_critSection;
-  bool  m_bInihibitUpdate;
-  bool  m_bIgnoreDbForClient;
-  int   m_iLingerTime;
-  int   m_iDaysToDisplay;
+  bool  m_bInihibitUpdate;        /* prevent the EPG from being updated */
+  bool  m_bIgnoreDbForClient;     /* don't save the EPG data in the database */
+  int   m_iLingerTime;            /* hours to keep old EPG data */
+  int   m_iDaysToDisplay;         /* amount of EPG data to maintain */
 
+  /**
+   * Get the EPG for a channel
+   */
   bool GetEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t *start, time_t *end);
-  const CPVREpg *AddEPG(long iChannelID);
+
+  /**
+   * Create a new EPG table for a channel
+   */
+  const CPVREpg *CreateEPG(CPVRChannel *channel);
+
+  /**
+   * Load the EPG for a channel using the pvr client
+   */
+  bool GrabEPGForChannelFromClient(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+
+  /**
+   * Load the EPG for a channel using a scraper
+   */
+  bool GrabEPGForChannelFromScraper(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+
+  /**
+   * Load the EPG for a channel using the pvr client or scraper
+   */
+  bool GrabEPGForChannel(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+
+  /**
+   * Load the EPG settings
+   */
   bool LoadSettings();
 
 public:
-  CPVREpgs(void);
-
-  /**
-   * Get an EPG table for a channel
-   */
-  const CPVREpg *GetEPG(long iChannelID, bool bAddIfMissing = false);
+  CPVREpgs();
+  ~CPVREpgs();
 
   /**
    * Get an EPG table for a channel
@@ -61,28 +83,39 @@ public:
   const CPVREpg *GetEPG(CPVRChannel *Channel, bool AddIfMissing = false);
 
   /**
-   * Removes old data
+   * Remove old EPG entries
    */
-  bool Cleanup(void);
+  bool RemoveOldEntries();
 
   /**
-   * Clears all entries
+   * Clear all EPG entries
    */
-  bool ClearAll(void);
+  bool RemoveAllEntries(void);
 
   /**
-   * Clears all entries for a channel
+   * Clear all EPG entries for a channel
    */
-  bool ClearChannel(long ChannelID);
+  bool ClearEPGForChannel(CPVRChannel *channel);
 
   /**
    * Loads and updates the EPG data
    */
   bool Update();
 
+  /**
+   * Unloads all EPG data
+   */
   void Unload();
 
+  /**
+   * Prevent the EPG from being updated
+   */
   void InihibitUpdate(bool yesNo) { m_bInihibitUpdate = yesNo; }
+
+  /**
+   * Update the EPG data for a single channel
+   */
+  bool UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end);
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool radio = false);
@@ -93,9 +126,6 @@ public:
   CDateTime GetLastEPGDate(bool radio = false);
   void SetVariableData(CFileItemList* results);
   void AssignChangedChannelTags(bool radio = false);
-  bool RemoveOverlappingEvents(CTVDatabase *database, CPVREpg *epg);
-  bool GrabEPGForChannel(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
-  bool UpdateEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t *start, time_t *end);
 };
 
 extern CPVREpgs PVREpgs;

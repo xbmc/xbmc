@@ -38,20 +38,28 @@ struct sortEPGbyDate
   }
 };
 
-CPVREpg::CPVREpg(long ChannelID)
+CPVREpg::CPVREpg(long iChannelID)
 {
-  m_channelID       = ChannelID;
-  m_Channel         = CPVRChannels::GetByChannelIDFromAll(ChannelID);
+  m_Channel         = CPVRChannels::GetByChannelIDFromAll(iChannelID);
   m_bUpdateRunning  = false;
-  m_bValid          = ChannelID != -1;
+  m_bValid          = iChannelID != -1;
+  m_bIsSorted       = false;
 }
 
 CPVREpg::CPVREpg(const CPVRChannel &channel)
 {
-  m_channelID       = channel.ChannelID();
   m_Channel         = &channel;
   m_bUpdateRunning  = false;
-  m_bValid          = m_channelID != -1;
+  m_bValid          = m_Channel->ChannelID() != -1;
+  m_bIsSorted       = false;
+}
+
+CPVREpg::CPVREpg(const CPVRChannel *channel)
+{
+  m_Channel         = channel;
+  m_bUpdateRunning  = false;
+  m_bValid          = m_Channel->ChannelID() != -1;
+  m_bIsSorted       = false;
 }
 
 bool CPVREpg::IsValid(void) const
@@ -68,6 +76,7 @@ bool CPVREpg::IsValid(void) const
 CPVREpgInfoTag *CPVREpg::AddInfoTag(CPVREpgInfoTag *Tag)
 {
   m_tags.push_back(Tag);
+  m_bIsSorted = false;
   return Tag;
 }
 
@@ -82,6 +91,7 @@ void CPVREpg::DelInfoTag(CPVREpgInfoTag *tag)
       {
         delete entry;
         m_tags.erase(m_tags.begin()+i);
+        m_bIsSorted = false;
         return;
       }
     }
@@ -90,7 +100,10 @@ void CPVREpg::DelInfoTag(CPVREpgInfoTag *tag)
 
 void CPVREpg::Sort(void)
 {
+  if (m_bIsSorted) return;
+
   sort(m_tags.begin(), m_tags.end(), sortEPGbyDate());
+  m_bIsSorted = true;
 }
 
 void CPVREpg::Cleanup(void)
@@ -261,4 +274,49 @@ bool CPVREpg::AddDB(const PVR_PROGINFO *data, CPVREpg *Epg)
     return database->UpdateEPGEntry(InfoTag);
   }
   return false;
+}
+
+bool CPVREpg::RemoveOverlappingEvents()
+{
+  /// This will check all programs in the list and
+  /// will remove any overlapping programs
+  /// An overlapping program is a tv program which overlaps with another tv program in time
+  /// for example.
+  ///   program A on MTV runs from 20.00-21.00 on 1 november 2004
+  ///   program B on MTV runs from 20.55-22.00 on 1 november 2004
+  ///   this case, program B will be removed
+
+  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+
+  Sort();
+  CStdString previousName = "";
+  CDateTime previousStart;
+  CDateTime previousEnd(1980, 1, 1, 0, 0, 0);
+  for (unsigned int ptr = 0; ptr < InfoTags()->size(); ptr++)
+  {
+    if (previousEnd > InfoTags()->at(ptr)->Start())
+    {
+      //remove this program
+      CLog::Log(LOGNOTICE, "PVR: Removing Overlapped TV Event '%s' on channel '%s' at date '%s' to '%s'",
+          InfoTags()->at(ptr)->Title().c_str(),
+          InfoTags()->at(ptr)->ChannelTag()->ChannelName().c_str(),
+          InfoTags()->at(ptr)->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          InfoTags()->at(ptr)->End().GetAsLocalizedDateTime(false, false).c_str());
+      CLog::Log(LOGNOTICE, "     Overlapps with '%s' at date '%s' to '%s'",
+          previousName.c_str(),
+          previousStart.GetAsLocalizedDateTime(false, false).c_str(),
+          previousEnd.GetAsLocalizedDateTime(false, false).c_str());
+
+      database->RemoveEPGEntry(*InfoTags()->at(ptr));
+      DelInfoTag(InfoTags()->at(ptr));
+    }
+    else
+    {
+      previousName = InfoTags()->at(ptr)->Title();
+      previousStart = InfoTags()->at(ptr)->Start();
+      previousEnd = InfoTags()->at(ptr)->End();
+    }
+  }
+
+  return true;
 }

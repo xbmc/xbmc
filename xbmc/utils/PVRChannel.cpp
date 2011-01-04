@@ -122,7 +122,7 @@ void CPVRChannel::UpdateEpgPointers(void) const
 {
   if (m_Epg == NULL)
   {
-    m_Epg = PVREpgs.GetEPG(m_iDatabaseId);
+    m_Epg = PVREpgs.GetEPG((CPVRChannel *) this);
   }
 
   if (m_Epg == NULL)
@@ -343,7 +343,7 @@ bool CPVRChannel::ClearEPG(bool bClearDatabase)
   m_epgNow = NULL;
   m_epgNext = NULL;
 
-  return bClearDatabase ? PVREpgs.ClearChannel(m_iChannelNumber) : true;
+  return bClearDatabase ? PVREpgs.ClearEPGForChannel(this) : true;
 }
 
 CStdString CPVRChannel::EncryptionName() const

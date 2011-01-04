@@ -489,7 +489,7 @@ void CPVRManager::Process()
     else if (Now - LastEPGCleanup > EPGCLEANUPCHECKDELTA) // don't do this too often
     {
       /* Cleanup EPG Data */
-      PVREpgs.Cleanup();
+      PVREpgs.RemoveOldEntries();
       LastEPGCleanup = Now;
     }
 
@@ -1034,7 +1034,7 @@ void CPVRManager::ResetEPG()
 
   PVREpgs.InihibitUpdate(true);
 
-  PVREpgs.ClearAll();
+  PVREpgs.RemoveAllEntries();
   pDlgProgress->SetPercentage(50);
 
   PVREpgs.InihibitUpdate(false);

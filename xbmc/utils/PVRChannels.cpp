@@ -454,7 +454,7 @@ void CPVRChannels::HideChannel(unsigned int number)
   else
   {
     at(number-1).SetHidden(true);
-    PVREpgs.ClearChannel(at(number-1).ChannelID());
+    PVREpgs.ClearEPGForChannel(&at(number-1));
     database->Open();
     database->UpdateDBChannel(at(number-1));
     m_iHiddenChannels = database->GetNumHiddenChannels();
