@@ -349,6 +349,7 @@ private:
   void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of
                                                  playing channel from the TV Database */
   void ResetQualityData();                      /*! \brief Reset the Signal Quality data structure to initial values */
+  bool ContinueLastChannel();
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */

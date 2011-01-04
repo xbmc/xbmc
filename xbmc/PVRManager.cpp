@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -369,65 +369,64 @@ bool CPVRManager::RequestRemoval(AddonPtr addon)
 /** INTERNAL FUNCTIONS                                      **/
 /*************************************************************/
 
+bool CPVRManager::ContinueLastChannel()
+{
+  CLog::Log(LOGNOTICE,"PVR: Try to continue last channel");
+  m_bFirstStart = false;
+  bool bReturn = false;
+
+  m_database.Open();
+  int lastChannel = m_database.GetLastChannel();
+  m_database.Close();
+
+  if (lastChannel > 0)
+  {
+    CPVRChannel *tag = CPVRChannels::GetByChannelIDFromAll(lastChannel);
+    if (!tag)
+      return false;
+
+    CPVRChannels *channels = tag->IsRadio() ?
+        &PVRChannelsRadio : &PVRChannelsTV;
+
+    if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
+      g_settings.m_bStartVideoWindowed = true;
+
+    if (g_application.PlayFile(CFileItem(channels->at(tag->ChannelNumber()-1))))
+    {
+      CLog::Log(LOGNOTICE,"PVR: Continuing channel '%s'", tag->ChannelName().c_str());
+      bReturn = true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR,"PVR: Can't continue playback on channel '%s'", tag->ChannelName().c_str());
+    }
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE,"PVR: Can't find channel (ID=%i) to continue playback on at startup", lastChannel);
+  }
+
+  return bReturn;
+}
+
 /*************************************************************/
 /** PVRManager Update and control thread                    **/
 /*************************************************************/
 
 void CPVRManager::Process()
 {
-  /* Get TV Channels from Backends */
-  PVRChannelsTV.Load(false);
-
-  /* Get Radio Channels from Backends */
-  PVRChannelsRadio.Load(true);
-
-  /* Load the TV Channel group lists */
-  PVRChannelGroupsTV.Load(false);
-
-  /* Load the Radio Channel group lists */
-  PVRChannelGroupsRadio.Load(true);
+  PVRChannelsTV.Load(false);        /* Load the TV channels */
+  PVRChannelsRadio.Load(true);      /* Load the radio channels */
+  PVRChannelGroupsTV.Load(false);   /* Load the TV channel group lists */
+  PVRChannelGroupsRadio.Load(true); /* Load the radio Channel group lists */
 
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
-  {
-    CLog::Log(LOGNOTICE,"PVR: Try to continue last channel");
-    m_bFirstStart = false;
+    ContinueLastChannel();
 
-    m_database.Open();
-    int lastChannel = m_database.GetLastChannel();
-    if (lastChannel > 0)
-    {
-      CPVRChannel *tag = CPVRChannels::GetByChannelIDFromAll(lastChannel);
-      if (tag)
-      {
-        CPVRChannels *channels;
-        if (!tag->IsRadio())
-          channels = &PVRChannelsTV;
-        else
-          channels = &PVRChannelsRadio;
-
-        if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
-          g_settings.m_bStartVideoWindowed = true;
-
-        if (g_application.PlayFile(CFileItem(channels->at(tag->ChannelNumber()-1))))
-          CLog::Log(LOGNOTICE,"PVR: Continue playback of channel '%s'", tag->ChannelName().c_str());
-        else
-          CLog::Log(LOGERROR,"PVR: Channel '%s' can't continued", tag->ChannelName().c_str());
-      }
-      else
-        CLog::Log(LOGERROR,"PVR: Can't find channel (ID=%i) for continue on startup", lastChannel);
-    }
-    m_database.Close();
-  }
-
-  /* Get Timers from Backends */
-  PVRTimers.Load();
-
-  /* Get Recordings from Backend */
-  PVRRecordings.Load();
-
-  /* Get Epg's from Backend */
-  PVREpgs.Start();
+  PVRTimers.Load();     /* Get timers from the backends */
+  PVRRecordings.Load(); /* Get recordings from the backend */
+  PVREpgs.Start(); /* Start the EPG thread */
 
   int Now = CTimeUtils::GetTimeMS()/1000;
   m_LastTVChannelCheck     = Now;
@@ -435,6 +434,7 @@ void CPVRManager::Process()
   m_LastRecordingsCheck    = Now;
   m_LastTimersCheck        = Now;
 
+  /* main loop */
   while (!m_bStop)
   {
     Now = CTimeUtils::GetTimeMS()/1000;
@@ -491,25 +491,14 @@ void CPVRManager::Process()
   if (m_currentPlayingChannel || m_currentPlayingRecording)
     g_application.StopPlaying();
 
-  /* Stop the EPG thread */
-  PVREpgs.Stop();
+  PVREpgs.Stop(); /* Stop the EPG thread */
 
-  /* Remove recordings from Memory */
+  /* unload the rest */
   PVRRecordings.Unload();
-
-  /* Remove Timers from Memory */
   PVRTimers.Unload();
-
-  /* Remove TV Channel groups from Memory */
   PVRChannelGroupsTV.Unload();
-
-  /* Remove Radio Channel groups from Memory */
   PVRChannelGroupsRadio.Unload();
-
-  /* Remove Radio Channels from Memory */
   PVRChannelsRadio.Unload();
-
-  /* Remove TV Channels from Memory */
   PVRChannelsTV.Unload();
 }
 
