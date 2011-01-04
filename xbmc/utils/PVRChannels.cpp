@@ -469,7 +469,7 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &result
     else
     {
       int iGroupID = PVRChannelGroupsRadio.GetGroupId(fileName.substr(15));
-      PVRChannelsRadio.GetChannels(&results, iGroupID, true);
+      PVRChannelsRadio.GetChannels(&results, iGroupID, false);
     }
     return true;
   }
