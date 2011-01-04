@@ -53,9 +53,6 @@ private:
   CDateTime                      m_lastTimeWatched;         /**< \brief The Date where this channel was selected last time */
   bool                           m_bIsVirtual;              /**< \brief Is a user defined virtual channel if true */
 
-  long                           m_iPortalMasterChannel;    /**< \brief If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal */
-  std::vector<CPVRChannel *>     m_PortalChannels;          /**< \brief Stores the slave portal channels if this is a master */
-
   /* Client related channel data */
   int                            m_iUniqueId;               /**< \brief Unique Id for this channel */
   int                            m_iClientId;               /**< \brief Id of client channel come from */
@@ -66,8 +63,6 @@ private:
   CStdString                     m_strInputFormat;          /**< \brief The stream input type based upon ffmpeg/libavformat/allformats.c */
   CStdString                     m_strStreamURL;            /**< \brief URL of the stream, if empty use Client to read stream */
   CStdString                     m_strFileNameAndPath;      /**< \brief Filename for PVRManager to open and read stream */
-
-  std::vector<long>              m_linkedChannels;          /**< \brief Channels linked to this channel */
 
   void UpdateEpgPointers();
 
@@ -187,20 +182,6 @@ public:
   void SetGrabber(CStdString Grabber);
        ///< Set the EPG scraper name, use "client" for loading  the EPG from Backend
 
-  bool IsPortalMaster() const { return m_iPortalMasterChannel == 0; }
-       ///< Return true if this is a Portal Master channel
-  bool IsPortalSlave() const { return m_iPortalMasterChannel > 0; }
-       ///< Return true if this is a Portal Slave channel
-  void SetPortalChannel(long channelID);
-       ///< Set the portal channel ID, use -1 for no portal channel, NULL if this is a
-       ///< master channel or if it is a slave the master client ID
-  void ClearPortalChannels();
-       ///< Remove all Portal channels
-  void AddPortalChannel(CPVRChannel* channel);
-       ///< Add a channel ID to the Portal list
-  int GetPortalChannels(CFileItemList* results);
-       ///< Returns a File Item list with all portal channels
-
   /*! \brief Get the input format from the Backend
    If it is empty ffmpeg scanning the stream to find the right input format.
    See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
@@ -216,10 +197,6 @@ public:
 
   const CPVREpgInfoTag* GetEpgNow() const;
   const CPVREpgInfoTag* GetEpgNext() const;
-
-  /*! \name Linked channel functions, used for portal mode */
-  void ClearLinkedChannels();
-  void AddLinkedChannel(long LinkedChannel);
 
   bool ClearEPG();
 };

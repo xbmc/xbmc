@@ -250,6 +250,8 @@ bool CPVREpg::Add(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
     InfoTag->SetIcon(m_Channel->Icon());
     InfoTag->m_Epg = this;
 
+    PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
+
     m_bIsSorted = false;
 
     if (bUpdateDatabase)
@@ -324,7 +326,7 @@ bool CPVREpg::UpdateFromClient(time_t start, time_t end)
   }
   else
   {
-    CLog::Log(LOGINFO, "PVREpgs - %s - client '%s' on client '%li' does not support EPGs",
+    CLog::Log(LOGINFO, "%s - client '%s' on client '%li' does not support EPGs",
         __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
   }
 
@@ -337,12 +339,12 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel->Grabber().IsEmpty()) /* no grabber defined */
   {
-    CLog::Log(LOGERROR, "PVREpgs - %s - no EPG grabber defined for channel '%s'",
+    CLog::Log(LOGERROR, "%s - no EPG grabber defined for channel '%s'",
         __FUNCTION__, m_Channel->ChannelName().c_str());
   }
   else
   {
-    CLog::Log(LOGINFO, "PVREpgs - %s - the database contains no EPG data for channel '%s', loading with scraper '%s'",
+    CLog::Log(LOGINFO, "%s - the database contains no EPG data for channel '%s', loading with scraper '%s'",
         __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->Grabber().c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
@@ -366,4 +368,3 @@ bool CPVREpg::Update(time_t start, time_t end)
 
   return bGrabSuccess;
 }
-

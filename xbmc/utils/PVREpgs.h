@@ -28,6 +28,7 @@
 #include "utils/Thread.h"
 
 class CPVREpg;
+class CPVREpgInfoTag;
 class CPVRChannel;
 class CTVDatabase;
 class CFileItemList;
@@ -40,12 +41,16 @@ class CPVREpgs : public std::vector<CPVREpg*>,
 
 private:
   CCriticalSection m_critSection;
-  bool  m_bInihibitUpdate;        /* prevent the EPG from being updated */
-  bool  m_bIgnoreDbForClient;     /* don't save the EPG data in the database */
-  int   m_iLingerTime;            /* hours to keep old EPG data */
-  int   m_iDaysToDisplay;         /* amount of EPG data to maintain */
-  int   m_iUpdateTime;            /* update the full EPG after this period */
-  bool  m_bDatabaseLoaded;        /* true if we already loaded the EPG from the database */
+  bool             m_bInihibitUpdate;    /* prevent the EPG from being updated */
+  bool             m_bIgnoreDbForClient; /* don't save the EPG data in the database */
+  int              m_iLingerTime;        /* hours to keep old EPG data */
+  int              m_iDaysToDisplay;     /* amount of EPG data to maintain */
+  int              m_iUpdateTime;        /* update the full EPG after this period */
+  bool             m_bDatabaseLoaded;    /* true if we already loaded the EPG from the database */
+  CDateTime        m_RadioFirst;         /* the earliest EPG date in our radio channel tables */
+  CDateTime        m_RadioLast;          /* the latest EPG date in our radio channel tables */
+  CDateTime        m_TVFirst;            /* the earliest EPG date in our tv channel tables */
+  CDateTime        m_TVLast;             /* the latest EPG date in our tv channel tables */
 
   /**
    * Get the EPG for a channel
@@ -77,6 +82,8 @@ private:
    */
   bool RemoveOldEntries();
 
+  void UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag);
+
 protected:
   virtual void Process();
 
@@ -95,7 +102,7 @@ public:
   /**
    * Clear all EPG entries
    */
-  bool RemoveAllEntries(void);
+  bool RemoveAllEntries(bool bShowProgress = false);
 
   /**
    * Loads and updates the EPG data

@@ -69,12 +69,6 @@ public:
   bool HasChannel(const CPVRChannel &info);
   bool GetDBChannelList(CPVRChannels &results, bool radio);
 
-  /* Database Channel Portal Linkage */
-  bool EraseChannelLinkageMap();
-  long AddChannelLinkage(int PortalChannel, int LinkedChannel);
-  bool DeleteChannelLinkage(unsigned int channelId);
-  bool GetChannelLinkageMap(CPVRChannel &channel);
-
   /* Database Channel Group handling */
   bool EraseChannelGroups();
   long AddChannelGroup(const CStdString &groupName, int sortOrder);

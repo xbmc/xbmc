@@ -977,9 +977,6 @@ void CPVRManager::ResetDatabase()
   m_database.EraseEPG();
   pDlgProgress->SetPercentage(30);
 
-  m_database.EraseChannelLinkageMap();
-  pDlgProgress->SetPercentage(40);
-
   m_database.EraseChannelGroups();
   pDlgProgress->SetPercentage(50);
 
@@ -1007,7 +1004,7 @@ void CPVRManager::ResetEPG()
   CLog::Log(LOGNOTICE,"PVR: EPG is being erased");
 
   PVREpgs.InihibitUpdate(true);
-  PVREpgs.RemoveAllEntries();
+  PVREpgs.RemoveAllEntries(true);
   PVREpgs.InihibitUpdate(false);
   PVREpgs.UpdateEPG(true);
 
@@ -1983,7 +1980,7 @@ int CPVRManager::GetStartTime()
    * playing file item with the newest EPG data of the now running event.
    */
   const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEpgNow();
-  if (tag && tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty())
+  if (tag && (tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty()))
   {
     EnterCriticalSection(&m_critSection);
     UpdateItem(*m_currentPlayingChannel);

@@ -42,6 +42,10 @@ CPVREpgs::CPVREpgs()
 {
   m_bDatabaseLoaded = false;
   m_bInihibitUpdate = false;
+  m_RadioFirst      = CDateTime::GetCurrentDateTime();
+  m_RadioLast       = m_RadioLast;
+  m_TVFirst         = m_RadioLast;
+  m_TVLast          = m_RadioLast;
 }
 
 CPVREpgs::~CPVREpgs()
@@ -57,7 +61,7 @@ CPVREpgs::~CPVREpgs()
 void CPVREpgs::Start()
 {
   /* make sure the EPG is loaded before starting the thread */
-  UpdateEPG(true);
+  UpdateEPG(true /* show progress */);
   UpdateAllChannelEPGPointers();
 
   Create();
@@ -128,25 +132,32 @@ bool CPVREpgs::RemoveOldEntries()
   return true;
 }
 
-bool CPVREpgs::RemoveAllEntries()
+bool CPVREpgs::RemoveAllEntries(bool bShowProgress /* = false */)
 {
   CSingleLock lock(m_critSection);
   CLog::Log(LOGINFO, "PVREpgs - %s - removing all EPG entries",
       __FUNCTION__);
 
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->Progress();
+  CGUIDialogProgress* pDlgProgress = NULL;
+
+  if (bShowProgress)
+  {
+    pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    pDlgProgress->SetLine(0, "");
+    pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+    pDlgProgress->SetLine(2, "");
+    pDlgProgress->StartModal();
+    pDlgProgress->Progress();
+  }
 
   /* remove all the EPG pointers from timers */
   int iTimerSize = PVRTimers.size();
   for (int iTimerPtr = 0; iTimerPtr < iTimerSize; iTimerPtr++)
   {
     PVRTimers[iTimerPtr].SetEpg(NULL);
-    pDlgProgress->SetPercentage(iTimerPtr / iTimerSize * 10);
+
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(iTimerPtr / iTimerSize * 10);
   }
 
   /* remove all EPG entries */
@@ -154,7 +165,9 @@ bool CPVREpgs::RemoveAllEntries()
   for (int iEpgPtr = 0; iEpgPtr < iEpgSize; iEpgPtr++)
   {
     ((CPVRChannel *)at(iEpgPtr)->ChannelTag())->ClearEPG();
-    pDlgProgress->SetPercentage((iEpgPtr / iEpgSize * 90) + 10);
+
+    if (bShowProgress)
+      pDlgProgress->SetPercentage((iEpgPtr / iEpgSize * 90) + 10);
   }
 
   /* clear the database entries */
@@ -163,8 +176,11 @@ bool CPVREpgs::RemoveAllEntries()
   database->EraseEPG();
   database->Close();
 
-  pDlgProgress->SetPercentage(100);
-  pDlgProgress->Close();
+  if (bShowProgress)
+  {
+    pDlgProgress->SetPercentage(100);
+    pDlgProgress->Close();
+  }
 
   return true;
 }
@@ -183,6 +199,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   else
     m_bInihibitUpdate = true;
 
+  /* make sure we got the latest settings */
   LoadSettings();
 
   /* open the database */
@@ -210,7 +227,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
         __FUNCTION__, iChannelCount, bUpdate ? 1 : 0, m_iUpdateTime);
 
   /* show the progress bar */
-  CGUIDialogPVRUpdateProgressBar *scanner;
+  CGUIDialogPVRUpdateProgressBar *scanner = NULL;
   if (bShowProgress)
   {
     scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
@@ -335,46 +352,34 @@ int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
   return results->Size() - iInitialSize;
 }
 
-CDateTime CPVREpgs::GetFirstEPGDate(bool bRadio /* = false*/)
+void CPVREpgs::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
 {
-  CDateTime first        = CDateTime::GetCurrentDateTime();
-  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
-
-  /* check all channels */
-  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  if (tag.ChannelTag()->IsRadio())
   {
-    CPVREpg *epg = (CPVREpg *) channels->GetByIndex(iChannelPtr)->GetEpg();
-    if (!epg->IsValid() || epg->IsUpdateRunning())
-      continue;
+    if (tag.Start() < m_RadioFirst)
+      m_RadioFirst = tag.Start();
 
-    /* sort the epg and check if the first entry has an earlier start time */
-    epg->Sort();
-    if (epg->size() > 0 && epg->at(0)->Start() < first)
-      first = epg->at(0)->Start();
+    if (tag.End() > m_RadioLast)
+      m_RadioLast = tag.End();
   }
+  else
+  {
+    if (tag.Start() < m_TVFirst)
+      m_TVFirst = tag.Start();
 
-  return first;
+    if (tag.End() > m_TVLast)
+      m_TVLast = tag.End();
+  }
 }
 
-CDateTime CPVREpgs::GetLastEPGDate(bool bRadio /* = false*/)
+CDateTime CPVREpgs::GetFirstEPGDate(bool bRadio /* = false */)
 {
-  CDateTime last         = CDateTime::GetCurrentDateTime();
-  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
+  return bRadio ? m_RadioFirst : m_TVFirst;
+}
 
-  /* check all channels */
-  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
-  {
-    CPVREpg *epg = (CPVREpg *) channels->GetByIndex(iChannelPtr)->GetEpg();
-    if (!epg->IsValid() || epg->IsUpdateRunning())
-      continue;
-
-    /* sort the epg and check if the last entry has a later end time */
-    epg->Sort();
-    if (epg->size() > 0 && epg->at(epg->size() - 1)->End() > last)
-      last = epg->at(epg->size() - 1)->End();
-  }
-
-  return last;
+CDateTime CPVREpgs::GetLastEPGDate(bool bRadio /* = false */)
+{
+  return bRadio ? m_RadioLast : m_TVLast;
 }
 
 int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter)

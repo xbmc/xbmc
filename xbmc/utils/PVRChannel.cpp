@@ -90,7 +90,6 @@ CPVRChannel::CPVRChannel()
   m_bGrabEpg                = true;
   m_strGrabber              = "client";
   m_bIsVirtual              = false;
-  m_iPortalMasterChannel    = -1;
 
   m_iClientId               = -1;
   m_iClientChannelNumber    = -1;
@@ -140,10 +139,9 @@ void CPVRChannel::UpdateEpgPointers(void)
 
 const CPVREpgInfoTag* CPVRChannel::GetEpgNow(void) const
 {
-  if (m_epgNow == NULL)
-    return m_EmptyEpgInfoTag;
-
-  return m_epgNow;
+  return m_epgNow == NULL ?
+      m_EmptyEpgInfoTag :
+      m_epgNow;
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEpgNext(void) const
@@ -151,29 +149,16 @@ const CPVREpgInfoTag* CPVRChannel::GetEpgNext(void) const
   if (m_epgNow == NULL)
     return m_EmptyEpgInfoTag;
 
-  return m_epgNow->GetNextEvent();
+  const CPVREpgInfoTag *nextTag = m_epgNow->GetNextEvent();
+  return m_epgNow == NULL ?
+      m_EmptyEpgInfoTag :
+      nextTag;
 }
 
 bool CPVRChannel::IsEmpty() const
 {
   return (m_strFileNameAndPath.IsEmpty() ||
           m_strStreamURL.IsEmpty());
-}
-
-int CPVRChannel::GetPortalChannels(CFileItemList* results)
-{
-  if (m_iPortalMasterChannel != 0)
-    return -1;
-
-  for (unsigned int i = 0; i < m_PortalChannels.size(); i++)
-  {
-    CFileItemPtr channel(new CFileItem(*m_PortalChannels[i]));
-    CStdString path;
-    path.Format("pvr://channels/tv/portal-%04i/%i.pvr", ChannelID(),i+1);
-    channel->m_strPath = path;
-    results->Add(channel);
-  }
-  return results->Size();
 }
 
 void CPVRChannel::SetChannelName(CStdString name)
@@ -284,39 +269,9 @@ void CPVRChannel::SetGrabber(CStdString Grabber)
   SetChanged();
 }
 
-void CPVRChannel::SetPortalChannel(long channelID)
-{
-  m_iPortalMasterChannel = channelID;
-  SetChanged();
-}
-
-void CPVRChannel::ClearPortalChannels()
-{
-  m_PortalChannels.erase(m_PortalChannels.begin(), m_PortalChannels.end());
-  SetChanged();
-}
-
-void CPVRChannel::AddPortalChannel(CPVRChannel* channel)
-{
-  m_PortalChannels.push_back(channel);
-  SetChanged();
-}
-
 void CPVRChannel::SetInputFormat(CStdString format)
 {
   m_strInputFormat = format;
-  SetChanged();
-}
-
-void CPVRChannel::ClearLinkedChannels()
-{
-  m_linkedChannels.erase(m_linkedChannels.begin(), m_linkedChannels.end());
-  SetChanged();
-}
-
-void CPVRChannel::AddLinkedChannel(long LinkedChannel)
-{
-  m_linkedChannels.push_back(LinkedChannel);
   SetChanged();
 }
 
