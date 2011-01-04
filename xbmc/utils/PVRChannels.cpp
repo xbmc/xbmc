@@ -224,96 +224,69 @@ bool CPVRChannels::Update()
   return bReturn;
 }
 
-////////////////////////////////////////////////////////
-
-void CPVRChannels::SearchAndSetChannelIcons(bool writeDB)
+bool CPVRChannels::SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb /* = false */)
 {
+  if (CFile::Exists(strIconPath))
+  {
+    channel->SetIconPath(strIconPath);
+
+    if (bUpdateDb)
+    {
+      CTVDatabase *database = g_PVRManager.GetTVDatabase();
+      database->UpdateDBChannel(*channel);
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+void CPVRChannels::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
+{
+  if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
+    return;
+
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CStdString iconpath;
+    CPVRChannel channel = at(ptr);
 
-    /* If the Icon is already set continue with next channel */
-    if (at(i).IconPath() != "")
+    /* skip if an icon is already set */
+    if (channel.IconPath() != "")
       continue;
 
-    if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
-    {
-      /* Search icon by channel name */
-      iconpath = g_guiSettings.GetString("pvrmenu.iconpath") + at(i).ClientChannelName();
-      if (CFile::Exists(iconpath + ".tbn"))
-      {
-        at(i).SetIconPath(iconpath + ".tbn");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".jpg"))
-      {
-        at(i).SetIconPath(iconpath + ".jpg");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".png"))
-      {
-        at(i).SetIconPath(iconpath + ".png");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
+    CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
 
-      /* Search icon by channel name in lower case */
-      iconpath = g_guiSettings.GetString("pvrmenu.iconpath") + at(i).ClientChannelName().ToLower();
-      if (CFile::Exists(iconpath + ".tbn"))
-      {
-        at(i).SetIconPath(iconpath + ".tbn");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".jpg"))
-      {
-        at(i).SetIconPath(iconpath + ".jpg");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".png"))
-      {
-        at(i).SetIconPath(iconpath + ".png");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
+    CStdString strIconPath = strBasePath + channel.ClientChannelName();
+    CStdString strIconPathLower = strBasePath + channel.ClientChannelName().ToLower();
+    CStdString strIconPathUid;
+    strIconPathUid.Format("%s/%08d", strBasePath, channel.UniqueID());
 
-      /* Search Icon by Unique Id */
-      iconpath.Format("%s/%08d",g_guiSettings.GetString("pvrmenu.iconpath"), at(i).UniqueID());
-      if (CFile::Exists(iconpath + ".tbn"))
-      {
-        at(i).SetIconPath(iconpath + ".tbn");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".jpg"))
-      {
-        at(i).SetIconPath(iconpath + ".jpg");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-      else if (CFile::Exists(iconpath + ".png"))
-      {
-        at(i).SetIconPath(iconpath + ".png");
-        if (writeDB) database->UpdateDBChannel(at(i));
-        continue;
-      }
-    }
+    SetIconIfValid(&channel, strIconPath      + ".tbn", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPath      + ".jpg", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPath      + ".png", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPath      + ".tbn", bUpdateDb) ||
 
-    /* Start channel icon scraper here if nothing was found*/
-    /// TODO
+    SetIconIfValid(&channel, strIconPathLower + ".tbn", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathLower + ".jpg", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathLower + ".png", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathLower + ".tbn", bUpdateDb) ||
 
+    SetIconIfValid(&channel, strIconPathUid   + ".tbn", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathUid   + ".jpg", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathUid   + ".png", bUpdateDb) ||
+    SetIconIfValid(&channel, strIconPathUid   + ".tbn", bUpdateDb);
 
-    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%i' with extension 'tbn', 'jpg' or 'png'", at(i).ChannelName().c_str(), at(i).ClientChannelName().c_str(), at(i).UniqueID());
+    /* TODO: start channel icon scraper here if nothing was found */
   }
 
   database->Close();
 }
+
+////////////////////////////////////////////////////////
 
 void CPVRChannels::ReNumberAndCheck(void)
 {

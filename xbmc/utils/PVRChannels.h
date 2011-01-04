@@ -61,6 +61,11 @@ private:
    */
   bool Update(CPVRChannels *channels);
 
+  /**
+   * Update the icon path of a channel if the path is valid.
+   */
+  bool SetIconIfValid(CPVRChannel *channel, CStdString strIconPath, bool bUpdateDb = false);
+
 public:
   CPVRChannels(bool bRadio);
 
@@ -80,8 +85,12 @@ public:
    */
   bool Update();
 
+  /**
+   * Search missing channel icons for all known channels.
+   */
+  void SearchAndSetChannelIcons(bool bUpdateDb = false);
+
   void ReNumberAndCheck(void);
-  void SearchAndSetChannelIcons(bool writeDB = false);
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
   int GetChannels(CFileItemList* results, int group_id = -1);
