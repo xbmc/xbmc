@@ -82,23 +82,7 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 {
   if (this == &right) return false;
 
-  return (m_iClientIndex       != right.m_iClientIndex ||
-          m_bIsActive          != right.m_bIsActive ||
-          m_strSummary         != right.m_strSummary ||
-          m_iChannelNumber     != right.m_iChannelNumber ||
-          m_iClientNumber      != right.m_iClientNumber ||
-          m_bIsRadio           != right.m_bIsRadio ||
-          m_bIsRepeating       != right.m_bIsRepeating ||
-          m_StartTime          != right.m_StartTime ||
-          m_StopTime           != right.m_StopTime ||
-          m_FirstDay           != right.m_FirstDay ||
-          m_iWeekdays          != right.m_iWeekdays ||
-          m_bIsRecording       != right.m_bIsRecording ||
-          m_iPriority          != right.m_iPriority ||
-          m_iLifetime          != right.m_iLifetime ||
-          m_strFileNameAndPath != right.m_strFileNameAndPath ||
-          m_strTitle           != right.m_strTitle ||
-          m_iClientID          != right.m_iClientID);
+  return !(*this == right);
 }
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const

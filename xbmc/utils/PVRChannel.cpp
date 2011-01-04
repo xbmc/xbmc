@@ -59,21 +59,7 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
 
 bool CPVRChannel::operator!=(const CPVRChannel &right) const
 {
-  return (m_iDatabaseId             != right.m_iDatabaseId ||
-          m_iUniqueId               != right.m_iUniqueId ||
-          m_iChannelNumber          != right.m_iChannelNumber ||
-          m_iClientChannelNumber    != right.m_iClientChannelNumber ||
-          m_strClientChannelName    != right.m_strClientChannelName ||
-          m_iClientId               != right.m_iClientId ||
-          m_iChannelGroupId         != right.m_iChannelGroupId ||
-          m_strChannelName          != right.m_strChannelName ||
-          m_strIconPath             != right.m_strIconPath ||
-          m_bIsRadio                != right.m_bIsRadio ||
-          m_bIsHidden               != right.m_bIsHidden ||
-          m_bClientIsRecording      != right.m_bClientIsRecording ||
-          m_iClientEncryptionSystem != right.m_iClientEncryptionSystem ||
-          m_strStreamURL            != right.m_strStreamURL ||
-          m_strFileNameAndPath      != right.m_strFileNameAndPath);
+  return !(*this == right);
 }
 
 CPVRChannel::CPVRChannel()
