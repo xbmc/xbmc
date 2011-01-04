@@ -1225,9 +1225,9 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 
     if (bOnOff && tag->IsRecording() == false)
     {
-      CPVRTimerInfoTag newtimer(true);
-      newtimer.SetTitle(tag->ChannelName());
-      CFileItem *item = new CFileItem(newtimer);
+      CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
+      newtimer->SetTitle(tag->ChannelName());
+      CFileItem *item = new CFileItem(*newtimer);
 
       if (!CPVRTimers::AddTimer(*item))
       {

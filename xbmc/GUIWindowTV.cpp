@@ -301,8 +301,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             if (!pDialog->IsConfirmed())
               return true;
 
-            CPVRTimerInfoTag newtimer(*pItem.get());
-            CFileItem *item = new CFileItem(newtimer);
+            CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*pItem->GetEPGInfoTag());
+            CFileItem *item = new CFileItem(*newtimer);
 
             if (CPVRTimers::AddTimer(*item))
               PVREpgs.SetVariableData(m_vecItems);
@@ -491,8 +491,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
            open settings for selected timer entry */
         if (pItem->m_strPath == "pvr://timers/add.timer")
         {
-          CPVRTimerInfoTag newtimer(true);
-          CFileItem *item = new CFileItem(newtimer);
+          CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
+          CFileItem *item = new CFileItem(*newtimer);
 
           if (ShowTimerSettings(item))
           {
@@ -586,17 +586,20 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             if (!pDialog)
               return false;
 
+            CPVREpgInfoTag *epgTag = pItem->GetEPGInfoTag();
+
             pDialog->SetHeading(264);
             pDialog->SetLine(0, "");
-            pDialog->SetLine(1, pItem->GetEPGInfoTag()->Title());
+            pDialog->SetLine(1, epgTag->Title());
             pDialog->SetLine(2, "");
             pDialog->DoModal();
 
             if (!pDialog->IsConfirmed())
               return true;
 
-            CPVRTimerInfoTag newtimer(*pItem.get());
-            CFileItem *item = new CFileItem(newtimer);
+
+            CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+            CFileItem *item = new CFileItem(*newtimer);
 
             if (CPVRTimers::AddTimer(*item))
               PVREpgs.SetVariableData(m_vecItems);
@@ -1061,8 +1064,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
-      CPVRTimerInfoTag newtimer(true);
-      CFileItem *item = new CFileItem(newtimer);
+      CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
+      CFileItem *item = new CFileItem(*newtimer);
 
       if (ShowTimerSettings(item))
       {
@@ -1204,8 +1207,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
             if (pDialog->IsConfirmed())
             {
-              CPVRTimerInfoTag newtimer(*pItem.get());
-              CFileItem *item = new CFileItem(newtimer);
+              CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*pItem->GetEPGInfoTag());
+              CFileItem *item = new CFileItem(*newtimer);
 
               if (CPVRTimers::AddTimer(*item))
                 PVREpgs.SetVariableData(m_vecItems);

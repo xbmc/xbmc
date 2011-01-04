@@ -145,9 +145,9 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
     return;
   }
 
-  CPVRTimers *xbmcTimers      = (CPVRTimers*) handle->DATA_ADDRESS;
-  CPVRClient* client          = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timer->channelNum, client->GetClientID());
+  CPVRTimers *xbmcTimers = (CPVRTimers*) handle->DATA_ADDRESS;
+  CPVRClient* client     = (CPVRClient*) handle->CALLER_ADDRESS;
+  CPVRChannel *channel   = CPVRChannels::GetByClientFromAll(timer->channelNum, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -176,50 +176,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
   tag.SetPath(path);
 
-  CStdString summary;
-  if (!tag.IsRepeating())
-  {
-    summary.Format("%s %s %s %s %s", tag.Start().GetAsLocalizedDate()
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  else if (tag.FirstDay() != NULL)
-  {
-    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
-                   , g_localizeStrings.Get(19156)
-                   , tag.FirstDay().GetAsLocalizedDate(false)
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  else
-  {
-    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  tag.SetSummary(summary);
-
-  xbmcTimers->push_back(tag);
+  xbmcTimers->Update(tag);
   return;
 }
 

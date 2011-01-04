@@ -162,7 +162,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
     const CPVREpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEpgNow();
     if (!epgnow)
       return;
-    CFileItem *itemNow  = new CFileItem(epgnow);
+    CFileItem *itemNow  = new CFileItem(*epgnow);
 
     /* Load programme info dialog */
     CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);

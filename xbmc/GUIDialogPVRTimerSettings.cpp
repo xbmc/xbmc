@@ -58,9 +58,9 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
   m_settings.clear();
 
   // create our settings controls
-  AddBool(CONTROL_TMR_ACTIVE, 19074, &tag->m_Active);
+  AddBool(CONTROL_TMR_ACTIVE, 19074, &tag->m_bIsActive);
   AddButton(CONTROL_TMR_NAME, 19075, &tag->m_strTitle, true);
-  AddBool(CONTROL_TMR_RADIO, 19077, &tag->m_Radio);
+  AddBool(CONTROL_TMR_RADIO, 19077, &tag->m_bIsRadio);
 
   /// Channel names
   {
@@ -79,8 +79,8 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       channelstrings_tv.push_back(string);
     }
 
-    AddSpin(CONTROL_TMR_CHNAME_TV, 19078, &tag->m_channelNum, channelstrings_tv.size(), channelstrings_tv);
-    EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
+    AddSpin(CONTROL_TMR_CHNAME_TV, 19078, &tag->m_iChannelNumber, channelstrings_tv.size(), channelstrings_tv);
+    EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_bIsRadio);
 
     // For Radio
     CFileItemList channelslist_radio;
@@ -97,8 +97,8 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       channelstrings_radio.push_back(string);
     }
 
-    AddSpin(CONTROL_TMR_CHNAME_RADIO, 19078, &tag->m_channelNum, channelstrings_radio.size(), channelstrings_radio);
-    EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_Radio);
+    AddSpin(CONTROL_TMR_CHNAME_RADIO, 19078, &tag->m_iChannelNumber, channelstrings_radio.size(), channelstrings_radio);
+    EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_bIsRadio);
   }
 
   /// Day
@@ -137,29 +137,29 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
-    if (tag->m_Repeat)
+    if (tag->m_bIsRepeating)
     {
-      if (tag->m_Weekdays == 0x01)
+      if (tag->m_iWeekdays == 0x01)
         m_tmp_day = 0;
-      else if (tag->m_Weekdays == 0x02)
+      else if (tag->m_iWeekdays == 0x02)
         m_tmp_day = 1;
-      else if (tag->m_Weekdays == 0x04)
+      else if (tag->m_iWeekdays == 0x04)
         m_tmp_day = 2;
-      else if (tag->m_Weekdays == 0x08)
+      else if (tag->m_iWeekdays == 0x08)
         m_tmp_day = 3;
-      else if (tag->m_Weekdays == 0x10)
+      else if (tag->m_iWeekdays == 0x10)
         m_tmp_day = 4;
-      else if (tag->m_Weekdays == 0x20)
+      else if (tag->m_iWeekdays == 0x20)
         m_tmp_day = 5;
-      else if (tag->m_Weekdays == 0x40)
+      else if (tag->m_iWeekdays == 0x40)
         m_tmp_day = 6;
-      else if (tag->m_Weekdays == 0x1F)
+      else if (tag->m_iWeekdays == 0x1F)
         m_tmp_day = 7;
-      else if (tag->m_Weekdays == 0x3F)
+      else if (tag->m_iWeekdays == 0x3F)
         m_tmp_day = 8;
-      else if (tag->m_Weekdays == 0x7F)
+      else if (tag->m_iWeekdays == 0x7F)
         m_tmp_day = 9;
-      else if (tag->m_Weekdays == 0x60)
+      else if (tag->m_iWeekdays == 0x60)
         m_tmp_day = 10;
     }
 
@@ -168,8 +168,8 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
 
   AddButton(CONTROL_TMR_BEGIN, 19080, &timerStartTimeStr, true);
   AddButton(CONTROL_TMR_END, 19081, &timerEndTimeStr, true);
-  AddSpin(CONTROL_TMR_PRIORITY, 19082, &tag->m_Priority, 0, 99);
-  AddSpin(CONTROL_TMR_LIFETIME, 19083, &tag->m_Lifetime, 0, 365);
+  AddSpin(CONTROL_TMR_PRIORITY, 19082, &tag->m_iPriority, 0, 99);
+  AddSpin(CONTROL_TMR_LIFETIME, 19083, &tag->m_iLifetime, 0, 365);
 
   /// First day
   {
@@ -207,7 +207,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
 
     AddSpin(CONTROL_TMR_FIRST_DAY, 19084, &m_tmp_iFirstDay, daystrings.size(), daystrings);
 
-    if (tag->m_Repeat)
+    if (tag->m_bIsRepeating)
       EnableSettings(CONTROL_TMR_FIRST_DAY, true);
     else
       EnableSettings(CONTROL_TMR_FIRST_DAY, false);
@@ -288,38 +288,38 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
 
     EnableSettings(CONTROL_TMR_FIRST_DAY, false);
 
-    tag->m_Repeat = false;
-    tag->m_Weekdays = 0;
+    tag->m_bIsRepeating = false;
+    tag->m_iWeekdays = 0;
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day <= 10)
   {
     EnableSettings(CONTROL_TMR_FIRST_DAY, true);
-    tag->m_Repeat = true;
+    tag->m_bIsRepeating = true;
 
     if (m_tmp_day == 0)
-      tag->m_Weekdays = 0x01;
+      tag->m_iWeekdays = 0x01;
     else if (m_tmp_day == 1)
-      tag->m_Weekdays = 0x02;
+      tag->m_iWeekdays = 0x02;
     else if (m_tmp_day == 2)
-      tag->m_Weekdays = 0x04;
+      tag->m_iWeekdays = 0x04;
     else if (m_tmp_day == 3)
-      tag->m_Weekdays = 0x08;
+      tag->m_iWeekdays = 0x08;
     else if (m_tmp_day == 4)
-      tag->m_Weekdays = 0x10;
+      tag->m_iWeekdays = 0x10;
     else if (m_tmp_day == 5)
-      tag->m_Weekdays = 0x20;
+      tag->m_iWeekdays = 0x20;
     else if (m_tmp_day == 6)
-      tag->m_Weekdays = 0x40;
+      tag->m_iWeekdays = 0x40;
     else if (m_tmp_day == 7)
-      tag->m_Weekdays = 0x1F;
+      tag->m_iWeekdays = 0x1F;
     else if (m_tmp_day == 8)
-      tag->m_Weekdays = 0x3F;
+      tag->m_iWeekdays = 0x3F;
     else if (m_tmp_day == 9)
-      tag->m_Weekdays = 0x7F;
+      tag->m_iWeekdays = 0x7F;
     else if (m_tmp_day == 10)
-      tag->m_Weekdays = 0x60;
+      tag->m_iWeekdays = 0x60;
     else
-      tag->m_Weekdays = 0;
+      tag->m_iWeekdays = 0;
   }
   else if (setting.id == CONTROL_TMR_BEGIN)
   {

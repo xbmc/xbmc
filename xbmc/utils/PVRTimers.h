@@ -54,6 +54,7 @@ public:
   static bool DeleteTimer(const CFileItem &item, bool force = false);
   static bool RenameTimer(CFileItem &item, CStdString &newname);
   static bool UpdateTimer(const CFileItem &item);
+  bool Update(const CPVRTimerInfoTag &timer);
   void Clear();
 };
 

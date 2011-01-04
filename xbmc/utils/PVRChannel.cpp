@@ -117,6 +117,9 @@ void CPVRChannel::UpdateEpgPointers(void)
 
   CPVREpg *epg = GetEpg();
 
+  if (!epg)
+    return;
+
   if (!epg->IsUpdateRunning() &&
       (m_epgNow == NULL ||
        m_epgNow->End() < CDateTime::GetCurrentDateTime()))

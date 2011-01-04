@@ -66,6 +66,11 @@ bool CPVRTimers::Update()
   return true;
 }
 
+bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
+{
+  push_back(timer);
+}
+
 int CPVRTimers::GetNumTimers()
 {
   return size();
@@ -225,7 +230,5 @@ bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
 void CPVRTimers::Clear()
 {
-  /* Clear all current present Timers inside list */
-  erase(begin(), end());
-  return;
+  clear();
 }

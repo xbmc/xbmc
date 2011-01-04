@@ -83,8 +83,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 
               if (pDialog->IsConfirmed())
               {
-                CPVRTimerInfoTag newtimer(*m_progItem.get());
-                CFileItem *item = new CFileItem(newtimer);
+                CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*m_progItem->GetEPGInfoTag());
+                CFileItem *item = new CFileItem(*newtimer);
                 CPVRTimers::AddTimer(*item);
               }
             }
