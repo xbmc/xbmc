@@ -22,6 +22,7 @@
 
 #include "StdString.h"
 #include "utils/CriticalSection.h"
+#include "utils/SharedSection.h"
 #include "AESound.h"
 #include "AEWAVLoader.h"
 
@@ -42,7 +43,14 @@ public:
   virtual void         SetVolume     (float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   virtual float        GetVolume     ()             { return m_volume      ; }
   virtual unsigned int GetSampleCount();
-  virtual float*       GetSamples    ();
+
+  /* must be called before initialize to be sure we have exclusive access to our samples */
+  void Lock()   { m_sampleLock.EnterExclusive(); }
+  void UnLock() { m_sampleLock.LeaveExclusive(); }
+
+  /* ReleaseSamples must be called for each time GetSamples has been called */
+  virtual float* GetSamples    ();
+  void           ReleaseSamples();
 
   int          GetRefCount() { return m_refcount; }
   void         IncRefCount() { ++m_refcount; }
@@ -51,11 +59,13 @@ public:
   unsigned int GetTimeout() { return m_ts; }
 
 private:
+  CSharedSection   m_sampleLock;
   CCriticalSection m_critSection;
   CStdString       m_filename;
   CAEWAVLoader     m_wavLoader;
   int              m_refcount; /* used for GC */
   unsigned int     m_ts;       /* used for GC */
   float            m_volume;
+  int              m_inUse;
 };
 

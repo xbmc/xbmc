@@ -43,6 +43,7 @@ public:
   virtual void         Stop            ();
   virtual float        GetDelay        ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
+  virtual void         Drain           ();
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
   unsigned int GetChannelCount(const AEAudioFormat format);
@@ -54,7 +55,6 @@ private:
   enum AEChannel   *m_channelLayout;
   CStdString        m_device;
   snd_pcm_t        *m_pcm;
-  CCriticalSection  m_runLock;
   int               m_timeout;
 
   snd_pcm_format_t AEFormatToALSAFormat(const enum AEDataFormat format);

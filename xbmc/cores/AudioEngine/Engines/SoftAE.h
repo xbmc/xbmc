@@ -26,6 +26,7 @@
 #include "system.h"
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
+#include "utils/SharedSection.h"
 
 #include "ThreadedAE.h"
 #include "AEConvert.h"
@@ -71,7 +72,6 @@ public:
   virtual void FreeSound(IAESound *sound);
   virtual void PlaySound(IAESound *sound);
   virtual void StopSound(IAESound *sound);
-  virtual bool IsPlaying(IAESound *sound);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
@@ -120,9 +120,10 @@ private:
   /* internal vars */
   bool m_running, m_reOpened;
   CCriticalSection m_runningLock;     /* released when the thread exits */
-  CCriticalSection m_critSection;     /* generic lock */
-  CCriticalSection m_critSectionSink; /* sink & configuration lock */
-  CCriticalSection m_soundLock;       /* sound lock */
+  CSharedSection   m_sinkLock;        /* sink & configuration lock */
+  CCriticalSection m_streamLock;      /* m_streams lock */
+  CCriticalSection m_soundLock;       /* m_sounds lock */
+  CCriticalSection m_soundSampleLock; /* m_playing_sounds lock */
 
   /* the current configuration */
   float               m_volume;
@@ -140,7 +141,7 @@ private:
 
   /* currently playing sounds */
   typedef struct {
-    IAESound     *owner;
+    CSoftAESound *owner;
     float        *samples;
     unsigned int  sampleCount;
   } SoundState;

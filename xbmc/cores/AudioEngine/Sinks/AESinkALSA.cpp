@@ -364,14 +364,12 @@ void CAESinkALSA::Deinitialize()
 
 void CAESinkALSA::Stop()
 {
-  CSingleLock runLock(m_runLock);
   if (!m_pcm) return;
   snd_pcm_drop(m_pcm);
 }
 
 float CAESinkALSA::GetDelay()
 {
-  CSingleLock runLock(m_runLock);
   if (!m_pcm) return 0;
   snd_pcm_sframes_t frames = 0;
   snd_pcm_delay(m_pcm, &frames);
@@ -389,7 +387,6 @@ float CAESinkALSA::GetDelay()
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
 {
-  CSingleLock runLock(m_runLock);
   if (!m_pcm) return 0;
 
   if(snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
@@ -416,6 +413,15 @@ unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)
   }
 
   return ret;
+}
+
+void CAESinkALSA::Drain()
+{
+  if (!m_pcm) return;
+
+  snd_pcm_nonblock(m_pcm, 0);
+  snd_pcm_drain(m_pcm);
+  snd_pcm_nonblock(m_pcm, 1);
 }
 
 void CAESinkALSA::EnumerateDevices (AEDeviceList &devices, bool passthrough)

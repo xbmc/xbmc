@@ -55,7 +55,8 @@ typedef struct
 CSoftAESound::CSoftAESound(const CStdString &filename) :
   IAESound(filename),
   m_refcount    (1    ),
-  m_volume      (1.0f )
+  m_volume      (1.0f ),
+  m_inUse       (0    )
 {
   m_filename = filename;
 }
@@ -67,14 +68,12 @@ CSoftAESound::~CSoftAESound()
 
 void CSoftAESound::DeInitialize()
 {
-  CSingleLock lock(m_critSection);
   m_wavLoader.DeInitialize();
 }
 
 bool CSoftAESound::Initialize()
 {
   DeInitialize();
-  CSingleLock lock(m_critSection);
 
   if (!m_wavLoader.Initialize(m_filename, AE.GetSampleRate()))
     return false;
@@ -85,36 +84,49 @@ bool CSoftAESound::Initialize()
 
 unsigned int CSoftAESound::GetSampleCount()
 {
-  if (!m_wavLoader.IsValid())
-    return 0;
-  return m_wavLoader.GetSampleCount();
+  m_sampleLock.EnterShared();
+  int sampleCount = 0;
+  if (m_wavLoader.IsValid())
+    sampleCount = m_wavLoader.GetSampleCount();
+  m_sampleLock.LeaveShared();
+  return sampleCount;
 }
 
 float* CSoftAESound::GetSamples()
 {
+  m_sampleLock.EnterShared();
   if (!m_wavLoader.IsValid())
+  {
+    m_sampleLock.LeaveShared();
     return NULL;
+  }
+
+  ++m_inUse;
   return m_wavLoader.GetSamples();
+}
+
+void CSoftAESound::ReleaseSamples()
+{
+  --m_inUse;
+  m_sampleLock.LeaveShared();
 }
 
 bool CSoftAESound::IsPlaying()
 {
-  if (!m_wavLoader.IsValid())
-    return false;
-  return AE.IsPlaying(this);
+  m_sampleLock.EnterShared();
+  bool playing = m_inUse > 0;
+  m_sampleLock.LeaveShared();
+
+  return playing;
 }
 
 void CSoftAESound::Play()
 {
-  if (!m_wavLoader.IsValid())
-    return;
   AE.PlaySound(this);
 }
 
 void CSoftAESound::Stop()
 {
-  if (!m_wavLoader.IsValid())
-    return;
   AE.StopSound(this);
 }
 

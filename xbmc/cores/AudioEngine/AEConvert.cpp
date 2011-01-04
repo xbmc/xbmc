@@ -47,9 +47,14 @@ float *CAEConvert::m_LookupS16 = NULL;
 
 static inline int safeRound(double f)
 {
-  /* if the value is larger then we can handle, then clamp it */
+  /* if the value is invalid, or larger then we can handle, then clamp it */
+  if (isnan(f)    ) return 0;
   if (f >= INT_MAX) return INT_MAX;
   if (f <= INT_MIN) return INT_MIN;
+
+  /* if the value is out of the MathUtils::round_int range, then round it normally */
+  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
+    return round(f);
 
   return MathUtils::round_int(f);
 }
