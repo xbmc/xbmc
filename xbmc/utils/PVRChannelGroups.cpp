@@ -166,7 +166,7 @@ void CPVRChannelGroups::AddGroup(const CStdString &name)
   database->Close();
 }
 
-bool CPVRChannelGroups::RenameGroup(unsigned int GroupId, const CStdString &newname)
+bool CPVRChannelGroups::RenameGroup(int GroupId, const CStdString &newname)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
@@ -187,7 +187,7 @@ bool CPVRChannelGroups::RenameGroup(unsigned int GroupId, const CStdString &newn
   return true;
 }
 
-bool CPVRChannelGroups::DeleteGroup(unsigned int GroupId)
+bool CPVRChannelGroups::DeleteGroup(int GroupId)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
@@ -261,7 +261,7 @@ int CPVRChannelGroups::GetGroupId(CStdString GroupName)
   return -1;
 }
 
-bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, unsigned int GroupId)
+bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();

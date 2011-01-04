@@ -43,6 +43,7 @@
 #include "utils/PVRChannelGroups.h"
 #include "utils/PVRChannelGroup.h"
 #include "utils/PVRChannels.h"
+#include "utils/PVREpg.h"
 #include "PVRManager.h"
 #include "TVDatabase.h"
 
@@ -502,7 +503,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         pDlgSelect->DoModal();
 
         int selection = pDlgSelect->GetSelectedLabel();
-        if (selection >= 0 && selection <= clients.size())
+        if (selection >= 0 && selection <= (int) clients.size())
         {
           int clientID = clients[selection];
           if (clientID == 999)
@@ -513,7 +514,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
               if (!strURL.IsEmpty())
               {
                 CPVRChannel newchannel;
-                newchannel.Reset();
                 newchannel.SetChannelName(g_localizeStrings.Get(19204));
                 newchannel.SetRadio(m_bIsRadio);
                 newchannel.SetGrabEpg(false);
@@ -829,7 +829,7 @@ void CGUIDialogPVRChannelManager::SaveList()
 
     if ((tag->GrabEpg() && !pItem->GetPropertyBOOL("UseEPG")) || prevEPGSource != tag->Grabber())
     {
-      PVREpgs.ClearEPGForChannel(tag);
+      ((CPVREpg *)tag->GetEpg())->Clear();
     }
     tag->SetGrabEpg(pItem->GetPropertyBOOL("UseEPG"));
 

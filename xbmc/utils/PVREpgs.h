@@ -25,6 +25,7 @@
 #include "Thread.h"
 #include "CriticalSection.h"
 #include "../addons/include/xbmc_pvr_types.h"
+#include "utils/Thread.h"
 
 class CPVREpg;
 class CPVRChannel;
@@ -32,7 +33,8 @@ class CTVDatabase;
 class CFileItemList;
 struct PVREpgSearchFilter;
 
-class CPVREpgs : public std::vector<CPVREpg*>
+class CPVREpgs : public std::vector<CPVREpg*>,
+                 private CThread
 {
   friend class CPVREpg;
 
@@ -48,38 +50,42 @@ private:
   /**
    * Get the EPG for a channel
    */
-  bool GetEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t *start, time_t *end);
-
-  /**
-   * Create a new EPG table for a channel
-   */
-  const CPVREpg *CreateEPG(CPVRChannel *channel);
+  bool GetEPGForChannel(CTVDatabase *database, CPVRChannel *channel, time_t start, time_t end);
 
   /**
    * Load the EPG for a channel using the pvr client
    */
-  bool GrabEPGForChannelFromClient(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+  bool GrabEPGForChannelFromClient(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end);
 
   /**
    * Load the EPG for a channel using a scraper
    */
-  bool GrabEPGForChannelFromScraper(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+  bool GrabEPGForChannelFromScraper(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end);
 
   /**
    * Load the EPG for a channel using the pvr client or scraper
    */
-  bool GrabEPGForChannel(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end);
+  bool GrabEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end);
 
   /**
    * Load the EPG settings
    */
   bool LoadSettings();
 
-  const CPVREpg *GetValidEpgFromChannel(CPVRChannel *channel);
+  /**
+   * Remove old EPG entries
+   */
+  bool RemoveOldEntries();
+
+protected:
+  virtual void Process();
 
 public:
   CPVREpgs();
   ~CPVREpgs();
+
+  void Start();
+  void Stop();
 
   /**
    * Update the EPG pointers for all channels
@@ -87,34 +93,14 @@ public:
   void UpdateAllChannelEPGPointers();
 
   /**
-   * Get an EPG table for a channel
-   */
-  const CPVREpg *GetEPG(CPVRChannel *Channel, bool bAddIfMissing = false);
-
-  /**
-   * Remove old EPG entries
-   */
-  bool RemoveOldEntries();
-
-  /**
    * Clear all EPG entries
    */
   bool RemoveAllEntries(void);
 
   /**
-   * Clear all EPG entries for a channel
-   */
-  bool ClearEPGForChannel(CPVRChannel *channel);
-
-  /**
    * Loads and updates the EPG data
    */
-  bool Update();
-
-  /**
-   * Unloads all EPG data
-   */
-  void Unload();
+  bool UpdateEPG(bool bShowProgress = false);
 
   /**
    * Prevent the EPG from being updated
@@ -124,17 +110,16 @@ public:
   /**
    * Update the EPG data for a single channel
    */
-  bool UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end, bool bUpdate = false);
+  bool UpdateEPGForChannel(const CPVRChannel &channel, time_t start, time_t end, bool bUpdate = false);
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool bRadio = false);
-  int GetEPGForChannel(CPVRChannel *channel, CFileItemList *results);
+  int GetEPGForChannel(const CPVRChannel &channel, CFileItemList *results);
   int GetEPGNow(CFileItemList* results, bool bRadio = false);
   int GetEPGNext(CFileItemList* results, bool bRadio = false);
   CDateTime GetFirstEPGDate(bool bRadio = false);
   CDateTime GetLastEPGDate(bool bRadio = false);
   void SetVariableData(CFileItemList* results);
-  void AssignChangedChannelTags(bool bRadio = false);
 };
 
 extern CPVREpgs PVREpgs;

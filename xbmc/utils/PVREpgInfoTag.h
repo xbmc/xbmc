@@ -29,9 +29,10 @@ class CPVRTimerInfoTag;
 class CPVREpgInfoTag
 {
   friend class CPVREpg;
+
 private:
-  CPVREpg *m_Epg;     // The Schedule this event belongs to
-  const CPVRTimerInfoTag   *    m_Timer;
+  CPVREpg *                     m_Epg;     // The Schedule this event belongs to
+  const CPVRTimerInfoTag *      m_Timer;
 
   CStdString                    m_strTitle;
   CStdString                    m_strPlotOutline;
@@ -61,7 +62,7 @@ private:
 public:
   CPVREpgInfoTag(long uniqueBroadcastID);
   CPVREpgInfoTag() { Reset(); };
-  virtual ~CPVREpgInfoTag() {};
+  ~CPVREpgInfoTag();
   void Reset();
 
   long UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }

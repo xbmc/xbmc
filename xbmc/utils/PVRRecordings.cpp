@@ -471,7 +471,7 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
       dir = "";
     }
     CUtil::RemoveExtension(title);
-    unsigned int index = atoi(title.substr(title.size()-5).c_str());
+    int index = atoi(title.substr(title.size()-5).c_str());
     title.erase(title.size()-6);
 
     for (unsigned int i = 0; i < size(); ++i)

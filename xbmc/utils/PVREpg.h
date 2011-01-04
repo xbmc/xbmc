@@ -27,27 +27,29 @@
 class CPVREpgInfoTag;
 class CPVREpgs;
 
-class CPVREpg
+class CPVREpg : public std::vector<CPVREpgInfoTag*>
 {
   friend class CPVREpgs;
 
 private:
   const CPVRChannel *m_Channel;
-  std::vector<CPVREpgInfoTag*> m_tags;
   bool m_bUpdateRunning;
   bool m_bValid;
   bool m_bIsSorted;
 
+  bool UpdateFromScraper(time_t start, time_t end);
+  bool UpdateFromClient(time_t start, time_t end);
+
 public:
-  CPVREpg(const CPVRChannel *channel);
+  CPVREpg(const CPVRChannel &channel);
+  ~CPVREpg();
   bool IsValid(void) const;
   const CPVRChannel *ChannelTag(void) const { return m_Channel; }
-  bool AddInfoTag(CPVREpgInfoTag *Tag);
   void DelInfoTag(CPVREpgInfoTag *tag);
   void Cleanup(const CDateTime Time);
   void Cleanup(void);
+  void Clear();
   void Sort(void);
-  const std::vector<CPVREpgInfoTag*> *InfoTags(void) const { return &m_tags; }
   const CPVREpgInfoTag *GetInfoTagNow(void) const;
   const CPVREpgInfoTag *GetInfoTagNext(void) const;
   const CPVREpgInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
@@ -56,11 +58,12 @@ public:
   bool IsUpdateRunning() const { return m_bUpdateRunning; }
   void SetUpdate(bool OnOff) { m_bUpdateRunning = OnOff; }
 
-  static bool Add(const PVR_PROGINFO *data, CPVREpg *Epg);
-  static bool AddDB(const PVR_PROGINFO *data, CPVREpg *Epg);
+  bool Add(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
   /**
    * Remove overlapping events from the tables
    */
   bool RemoveOverlappingEvents();
+
+  bool Update(time_t start, time_t end);
 };

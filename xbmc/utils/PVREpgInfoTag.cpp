@@ -32,6 +32,13 @@ CPVREpgInfoTag::CPVREpgInfoTag(long uniqueBroadcastID)
   m_iUniqueBroadcastID = uniqueBroadcastID;
 }
 
+CPVREpgInfoTag::~CPVREpgInfoTag()
+{
+  m_Epg           = NULL;
+  m_nextEvent     = NULL;
+  m_previousEvent = NULL;
+}
+
 void CPVREpgInfoTag::Reset()
 {
   m_strTitle            = g_localizeStrings.Get(19055);

@@ -34,48 +34,46 @@ class CPVRChannel : public Observable
   friend class CTVDatabase;
 
 private:
-  mutable const CPVREpg *        m_Epg;
+  CPVREpg *                      m_Epg;
   mutable const CPVREpgInfoTag * m_epgNow;
 
   /* XBMC related channel data */
-  long                       m_iDatabaseId;             /**< \brief Database number */
-  int                        m_iChannelNumber;          /**< \brief Channel number for channels on XBMC */
-  unsigned int               m_iChannelGroupId;         /**< \brief Channel group identfier */
-  bool                       m_bIsRadio;                /**< \brief Radio channel */
-  bool                       m_bIsHidden;               /**< \brief Channel is hide inside filelists */
-  bool                       m_bClientIsRecording;      /**< \brief True if channel is currently recording */
-  bool                       m_bGrabEpg;                /**< \brief Load EPG if set to true */
-  CStdString                 m_strGrabber;              /**< \brief The EPG grabber name (client for backend reading) */
-  CStdString                 m_strIconPath;             /**< \brief Path to the logo image */
-  CStdString                 m_strChannelName;          /**< \brief Channel name */
-  int                        m_iCountWatched;           /**< \brief The count how much this channel was selected */
-  long                       m_iSecondsWatched;         /**< \brief How many seconds this channel was watched */
-  CDateTime                  m_lastTimeWatched;         /**< \brief The Date where this channel was selected last time */
-  bool                       m_bIsVirtual;              /**< \brief Is a user defined virtual channel if true */
+  long                           m_iDatabaseId;             /**< \brief Database number */
+  int                            m_iChannelNumber;          /**< \brief Channel number for channels on XBMC */
+  int                            m_iChannelGroupId;         /**< \brief Channel group identfier */
+  bool                           m_bIsRadio;                /**< \brief Radio channel */
+  bool                           m_bIsHidden;               /**< \brief Channel is hide inside filelists */
+  bool                           m_bClientIsRecording;      /**< \brief True if channel is currently recording */
+  bool                           m_bGrabEpg;                /**< \brief Load EPG if set to true */
+  CStdString                     m_strGrabber;              /**< \brief The EPG grabber name (client for backend reading) */
+  CStdString                     m_strIconPath;             /**< \brief Path to the logo image */
+  CStdString                     m_strChannelName;          /**< \brief Channel name */
+  int                            m_iCountWatched;           /**< \brief The count how much this channel was selected */
+  long                           m_iSecondsWatched;         /**< \brief How many seconds this channel was watched */
+  CDateTime                      m_lastTimeWatched;         /**< \brief The Date where this channel was selected last time */
+  bool                           m_bIsVirtual;              /**< \brief Is a user defined virtual channel if true */
 
-  long                       m_iPortalMasterChannel;    /**< \brief If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal */
-  std::vector<CPVRChannel *> m_PortalChannels;          /**< \brief Stores the slave portal channels if this is a master */
+  long                           m_iPortalMasterChannel;    /**< \brief If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal */
+  std::vector<CPVRChannel *>     m_PortalChannels;          /**< \brief Stores the slave portal channels if this is a master */
 
   /* Client related channel data */
-  int                        m_iUniqueId;               /**< \brief Unique Id for this channel */
-  int                        m_iClientId;               /**< \brief Id of client channel come from */
-  int                        m_iClientChannelNumber;    /**< \brief Channel number on client */
-  int                        m_iClientEncryptionSystem; /**< \brief Encryption System, 0 for FreeToAir, -1 unknown */
-  CStdString                 m_strClientChannelName;    /**< \brief Channel name on client */
+  int                            m_iUniqueId;               /**< \brief Unique Id for this channel */
+  int                            m_iClientId;               /**< \brief Id of client channel come from */
+  int                            m_iClientChannelNumber;    /**< \brief Channel number on client */
+  int                            m_iClientEncryptionSystem; /**< \brief Encryption System, 0 for FreeToAir, -1 unknown */
+  CStdString                     m_strClientChannelName;    /**< \brief Channel name on client */
 
-  CStdString                 m_strInputFormat;          /**< \brief The stream input type based upon ffmpeg/libavformat/allformats.c */
-  CStdString                 m_strStreamURL;            /**< \brief URL of the stream, if empty use Client to read stream */
-  CStdString                 m_strFileNameAndPath;      /**< \brief Filename for PVRManager to open and read stream */
+  CStdString                     m_strInputFormat;          /**< \brief The stream input type based upon ffmpeg/libavformat/allformats.c */
+  CStdString                     m_strStreamURL;            /**< \brief URL of the stream, if empty use Client to read stream */
+  CStdString                     m_strFileNameAndPath;      /**< \brief Filename for PVRManager to open and read stream */
 
-  std::vector<long>          m_linkedChannels;          /**< \brief Channels linked to this channel */
+  std::vector<long>              m_linkedChannels;          /**< \brief Channels linked to this channel */
 
   void UpdateEpgPointers();
 
 public:
-  CPVRChannel() { Reset(); };
-  ~CPVRChannel();
-  void Reset();
-       ///< Set the tag to it's initial values.
+  CPVRChannel();
+  virtual ~CPVRChannel();
   void ResetChannelEPGLinks();
        ///< Clear the EPG links
   bool IsEmpty() const;
@@ -126,9 +124,9 @@ public:
   void SetUniqueID(int id);
        ///< Change the Unique ID for this channel.
 
-  unsigned int GroupID(void) const { return m_iChannelGroupId; }
+  int GroupID(void) const { return m_iChannelGroupId; }
        ///< The Group this channel belongs to, -1 for undefined.
-  void SetGroupID(unsigned int group);
+  void SetGroupID(int group);
        ///< Set the group ID for this channel.
 
   bool IsEncrypted(void) const { return m_iClientEncryptionSystem > 0; }
@@ -223,5 +221,5 @@ public:
   void ClearLinkedChannels();
   void AddLinkedChannel(long LinkedChannel);
 
-  bool ClearEPG(bool bClearDatabase = true);
+  bool ClearEPG();
 };

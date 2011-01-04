@@ -23,34 +23,39 @@
 
 Observable::Observable()
 {
-  m_Observers.clear();
+  erase(begin(), end());
 }
 
 Observable::~Observable()
 {
-  m_Observers.clear();
+  erase(begin(), end());
 }
 
-void Observable::AddObserver(Observer& o)
+void Observable::AddObserver(Observer &o)
 {
-  m_Observers.insert(&o);
+  push_back(&o);
 }
 
-void Observable::RemoveObserver(Observer& o)
+void Observable::RemoveObserver(Observer &o)
 {
-  m_Observers.erase(&o);
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    if (at(ptr) == &o)
+    {
+      erase(begin() + ptr);
+      break;
+    }
+  }
 }
 
 void Observable::NotifyObservers(const CStdString& msg)
 {
   if (m_bObservableChanged)
   {
-    std::set<Observer*>::iterator itr;
-
-    m_bObservableChanged = false;
-
-    for(itr = m_Observers.begin(); itr != m_Observers.end(); itr++)
-      (*itr)->Notify(msg);
+    for(unsigned int ptr = 0; ptr < size(); ptr++)
+    {
+      at(ptr)->Notify(*this, msg);
+    }
   }
 }
 
@@ -58,4 +63,3 @@ void Observable::SetChanged(bool SetTo)
 {
   m_bObservableChanged = SetTo;
 }
-

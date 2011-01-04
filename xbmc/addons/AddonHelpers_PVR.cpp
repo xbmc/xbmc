@@ -67,10 +67,7 @@ void CAddonHelpers_PVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE han
   CPVRClient* client      = (CPVRClient*) handle->CALLER_ADDRESS;
   epgentry2->starttime   += client->GetTimeCorrection();
   epgentry2->endtime     += client->GetTimeCorrection();
-  if (handle->DATA_IDENTIFIER == 1)
-    CPVREpg::AddDB(epgentry2, xbmcEpg);
-  else
-    CPVREpg::Add(epgentry2, xbmcEpg);
+  xbmcEpg->Add(epgentry2, handle->DATA_IDENTIFIER == 1);
 
   return;
 }

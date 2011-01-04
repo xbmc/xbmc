@@ -76,11 +76,11 @@ bool CPVRChannel::operator!=(const CPVRChannel &right) const
           m_strFileNameAndPath      != right.m_strFileNameAndPath);
 }
 
-void CPVRChannel::Reset()
+CPVRChannel::CPVRChannel()
 {
   m_iDatabaseId             = -1;
   m_iChannelNumber          = -1;
-  m_iChannelGroupId         = 0;
+  m_iChannelGroupId         = -1;
   m_strChannelName          = "";
   m_iClientEncryptionSystem = -1;
   m_iUniqueId               = -1;
@@ -100,41 +100,39 @@ void CPVRChannel::Reset()
   m_strFileNameAndPath      = "";
   m_strStreamURL            = "";
 
-  m_Epg                     = NULL;
-
-  ResetChannelEPGLinks();
-  SetChanged();
+  m_Epg                     = new CPVREpg(*this);
+  m_epgNow                  = NULL;
+  PVREpgs.push_back(m_Epg);
 }
 
 CPVRChannel::~CPVRChannel()
 {
-  ResetChannelEPGLinks();
+  m_epgNow                  = NULL;
+  if (m_Epg)
+    delete m_Epg;
 };
-
-void CPVRChannel::ResetChannelEPGLinks()
-{
-  m_epgNow  = NULL;
-}
-
 
 void CPVRChannel::UpdateEpgPointers(void)
 {
-  if (m_Epg == NULL)
-  {
-    m_Epg = PVREpgs.GetEPG((CPVRChannel *) this);
-  }
+  if (m_bIsHidden || !m_bGrabEpg)
+    return;
 
-  if (m_Epg == NULL)
-  {
-    SetChanged(m_epgNow != NULL);
-    m_epgNow = NULL;
-  }
-  else if (!m_Epg->IsUpdateRunning() &&
+  if (!m_Epg->IsUpdateRunning() &&
       (m_epgNow == NULL ||
        m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
     SetChanged();
     m_epgNow  = m_Epg->GetInfoTagNow();
+    if (m_epgNow)
+    {
+      CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",
+          __FUNCTION__, m_strChannelName.c_str(), m_epgNow->Title().c_str());
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - no EPG now pointer for channel '%s'",
+          __FUNCTION__, m_strChannelName.c_str());
+    }
   }
 
   NotifyObservers("epg");
@@ -220,7 +218,7 @@ void CPVRChannel::SetUniqueID(int id)
   SetChanged();
 }
 
-void CPVRChannel::SetGroupID(unsigned int group)
+void CPVRChannel::SetGroupID(int group)
 {
   m_iChannelGroupId = group;
   SetChanged();
@@ -322,20 +320,14 @@ void CPVRChannel::AddLinkedChannel(long LinkedChannel)
   SetChanged();
 }
 
-bool CPVRChannel::ClearEPG(bool bClearDatabase)
+bool CPVRChannel::ClearEPG()
 {
-  if (m_Epg == NULL)
-  {
-    CLog::Log(LOGDEBUG, "%s - no EPG to clear", __FUNCTION__);
-    return false;
-  }
-
   CLog::Log(LOGINFO, "%s - clearing the EPG for channel %s", __FUNCTION__, m_strChannelName.c_str());
 
-  ((CPVREpg *) m_Epg)->Cleanup(-1);
+  m_Epg->Clear();
   m_epgNow = NULL;
 
-  return bClearDatabase ? PVREpgs.ClearEPGForChannel(this) : true;
+  return true;
 }
 
 CStdString CPVRChannel::EncryptionName() const

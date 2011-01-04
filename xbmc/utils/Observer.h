@@ -22,27 +22,27 @@
  */
 
 #include "guilib/StdString.h"
-#include <set>
+
+class Observable;
 
 class Observer
 {
 public:
-  virtual void Notify(const CStdString& msg) = 0;
+  virtual void Notify(const Observable &obs, const CStdString& msg) = 0;
 };
 
-class Observable
+class Observable : private std::vector<Observer *>
 {
 
 public:
   Observable();
   virtual ~Observable();
 
-  void AddObserver(Observer& o);
-  void RemoveObserver(Observer& o);
+  void AddObserver(Observer &o);
+  void RemoveObserver(Observer &o);
   void NotifyObservers(const CStdString& msg = CStdString());
   void SetChanged(bool bSetTo = true);
 
 private:
   bool  m_bObservableChanged;
-  std::set<Observer*> m_Observers;
 };

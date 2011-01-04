@@ -426,22 +426,13 @@ void CPVRManager::Process()
   PVRRecordings.Load();
 
   /* Get Epg's from Backend */
-  PVREpgs.Update();
+  PVREpgs.Start();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
-  int LastEPGCleanup       = Now;
   m_LastTVChannelCheck     = Now;
   m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
   m_LastRecordingsCheck    = Now;
   m_LastTimersCheck        = Now;
-  /* Check the last EPG scan date if XBMC is restarted to prevent a rescan if
-     the time is not longer as one hour ago */
-  m_database.Open();
-  if (m_database.GetLastEPGScanTime() < CDateTime::GetCurrentDateTime()-CDateTimeSpan(0,1,0,0))
-    m_LastEPGScan          = Now-(g_guiSettings.GetInt("pvrepg.epgscan")*60*60)+120;
-  else
-    m_LastEPGScan          = Now;
-  m_database.Close();
 
   while (!m_bStop)
   {
@@ -483,23 +474,6 @@ void CPVRManager::Process()
       m_LastTimersCheck = Now;
     }
 
-    /* Check for new or updated EPG entries */
-    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgupdate")*60*60) // don't do this too often
-    {
-      PVREpgs.Update();
-      m_LastEPGScan   = Now;  // Data is also updated during scan
-      LastEPGCleanup  = Now;
-    }
-    else if (Now - LastEPGCleanup > EPGCLEANUPCHECKDELTA) // don't do this too often
-    {
-      /* Cleanup EPG Data */
-      PVREpgs.RemoveOldEntries();
-      LastEPGCleanup = Now;
-    }
-
-    /* update the "now playing" pointers */
-    PVREpgs.UpdateAllChannelEPGPointers();
-
     EnterCriticalSection(&m_critSection);
 
     /* Get Signal information of the current playing channel */
@@ -516,8 +490,8 @@ void CPVRManager::Process()
   if (m_currentPlayingChannel || m_currentPlayingRecording)
     g_application.StopPlaying();
 
-  /* Remove Epg's from Memory */
-  PVREpgs.Unload();
+  /* Stop the EPG thread */
+  PVREpgs.Stop();
 
   /* Remove recordings from Memory */
   PVRRecordings.Unload();
@@ -1035,7 +1009,7 @@ void CPVRManager::ResetEPG()
   PVREpgs.InihibitUpdate(true);
   PVREpgs.RemoveAllEntries();
   PVREpgs.InihibitUpdate(false);
-  PVREpgs.Update();
+  PVREpgs.UpdateEPG(true);
 
   CLog::Log(LOGNOTICE,"PVR: EPG reset finished");
 }
@@ -1115,15 +1089,17 @@ CStdString CPVRManager::GetCurrentInputFormat()
   return "";
 }
 
-bool CPVRManager::GetCurrentChannel(CPVRChannel *channel)
+bool CPVRManager::GetCurrentChannel(const CPVRChannel *channel)
 {
   if (m_currentPlayingChannel)
   {
     channel = m_currentPlayingChannel->GetPVRChannelInfoTag();
+    CLog::Log(LOGDEBUG,"%s - current channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
     return true;
   }
   else
   {
+    CLog::Log(LOGDEBUG,"%s - no current channel set", __FUNCTION__);
     channel = NULL;
     return false;
   }
@@ -1493,6 +1469,8 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)
 
   EnterCriticalSection(&m_critSection);
 
+  CLog::Log(LOGDEBUG,"PVR: opening live stream on channel '%s'", tag->ChannelName().c_str());
+
   /* Check if a channel or recording is already opened and clear it if yes */
   if (m_currentPlayingChannel)
     delete m_currentPlayingChannel;
@@ -1798,7 +1776,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     else
       m_playingClientName = g_localizeStrings.Get(13205);
   }
-  if (CTimeUtils::GetTimeMS() - m_LastChannelChanged >= g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
+  if (CTimeUtils::GetTimeMS() - m_LastChannelChanged >= (unsigned int) g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
 
   return false;
@@ -2005,7 +1983,7 @@ int CPVRManager::GetStartTime()
    * playing file item with the newest EPG data of the now running event.
    */
   const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEpgNow();
-  if (tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty())
+  if (tag && tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty())
   {
     EnterCriticalSection(&m_critSection);
     UpdateItem(*m_currentPlayingChannel);

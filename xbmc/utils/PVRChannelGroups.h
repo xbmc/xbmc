@@ -45,9 +45,9 @@ public:
   int GetNextGroupID(int current_group_id);
 
   void AddGroup(const CStdString &name);
-  bool RenameGroup(unsigned int GroupId, const CStdString &newname);
-  bool DeleteGroup(unsigned int GroupId);
-  bool ChannelToGroup(const CPVRChannel &channel, unsigned int GroupId);
+  bool RenameGroup(int GroupId, const CStdString &newname);
+  bool DeleteGroup(int GroupId);
+  bool ChannelToGroup(const CPVRChannel &channel, int GroupId);
   CStdString GetGroupName(int GroupId);
   int GetGroupId(CStdString GroupName);
   void Clear();

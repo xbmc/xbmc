@@ -147,7 +147,7 @@ public:
    */
   bool GetCurrentChannel(int *number, bool *radio);
 
-  bool GetCurrentChannel(CPVRChannel *channel);
+  bool GetCurrentChannel(const CPVRChannel *channel);
 
    /*! \brief Returns if a minimum one client is active
    \return true if minimum one client is started

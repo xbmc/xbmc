@@ -53,7 +53,7 @@ public:
   CPVRChannel *GetByClient(int Number, int ClientID);
   CPVRChannel *GetByChannelID(long ChannelID);
   CPVRChannel *GetByUniqueID(long UniqueID);
-  CPVRChannel *GetByIndex(int index);
+  CPVRChannel *GetByIndex(unsigned int index);
   CStdString GetNameForChannel(unsigned int Number);
   CStdString GetChannelIcon(unsigned int Number);
   void SetChannelIcon(unsigned int Number, CStdString Icon);

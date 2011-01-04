@@ -47,6 +47,7 @@
 #include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
 #include "utils/SingleLock.h"
+#include "utils/Observer.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
 #include "Artist.h"
@@ -150,8 +151,7 @@ CFileItem::CFileItem(const CPVREpgInfoTag& programme)
   *GetEPGInfoTag() = programme;
   SetLabel(programme.Title());
   SetThumbnailImage(programme.Icon());
-  //FillInDefaultIcon();
-  //SetVideoThumb();
+  m_strLabel2 = programme.Plot();
   SetInvalid();
 }
 
@@ -171,8 +171,8 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   SetLabel(channel.ChannelName());
   m_strLabel2 = channel.GetEpgNow()->Title();
   SetThumbnailImage(channel.Icon());
-  //FillInDefaultIcon();
-  //SetVideoThumb();
+  ((CPVRChannel) channel).AddObserver(*this);
+
   SetInvalid();
 }
 
@@ -190,8 +190,7 @@ CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
   m_bIsFolder = false;
   *GetPVRRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
-  //FillInDefaultIcon();
-  //SetVideoThumb();
+  m_strLabel2 = record.Plot();
   SetInvalid();
 }
 
@@ -210,8 +209,6 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
   *GetPVRTimerInfoTag() = timer;
   SetLabel(timer.Title());
   m_strLabel2 = timer.Summary();
-  //FillInDefaultIcon();
-  //SetVideoThumb();
   SetInvalid();
 }
 
@@ -355,6 +352,9 @@ CFileItem::~CFileItem(void)
   delete m_pvrRecordingInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
+
+  if (IsPVRChannel() && m_pvrChannelInfoTag)
+    m_pvrChannelInfoTag->RemoveObserver(*this);
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -531,6 +531,21 @@ void CFileItem::Reset()
   m_extrainfo.Empty();
   m_specialSort = SORT_NORMALLY;
   SetInvalid();
+}
+
+void CFileItem::Notify(const Observable& obs, const CStdString& msg)
+{
+  if (m_pvrChannelInfoTag)
+  {
+    m_strLabel2 = m_pvrChannelInfoTag->GetEpgNow()->Title();
+  }
+
+  if (m_epgInfoTag)
+  {
+    SetLabel(m_epgInfoTag->Title());
+    SetThumbnailImage(m_epgInfoTag->Icon());
+    m_strLabel2 = m_epgInfoTag->Plot();
+  }
 }
 
 void CFileItem::Archive(CArchive& ar)

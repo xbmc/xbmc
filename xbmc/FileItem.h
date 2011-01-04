@@ -32,6 +32,7 @@
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
+#include "utils/Observer.h"
 #include "utils/CriticalSection.h"
 #include "VideoDatabase.h"
 
@@ -66,7 +67,7 @@ class CMediaSource;
   \sa CFileItemList
   */
 class CFileItem :
-  public CGUIListItem, public IArchivable, public ISerializable
+  public CGUIListItem, public IArchivable, public ISerializable, public Observer
 {
 public:
   CFileItem(void);
@@ -91,6 +92,7 @@ public:
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value);
+  virtual void Notify(const Observable& obs, const CStdString& msg);
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;

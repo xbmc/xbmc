@@ -282,7 +282,7 @@ void CPVRChannels::SearchAndSetChannelIcons(bool writeDB)
     /// TODO
 
 
-    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%08li' with extension 'tbn', 'jpg' or 'png'", at(i).ChannelName().c_str(), at(i).ClientChannelName().c_str(), at(i).UniqueID());
+    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%i' with extension 'tbn', 'jpg' or 'png'", at(i).ChannelName().c_str(), at(i).ClientChannelName().c_str(), at(i).UniqueID());
   }
 
   database->Close();
@@ -402,9 +402,6 @@ void CPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
   CLog::Log(LOGNOTICE, "PVR: TV Channel %d moved to %d", oldindex, newindex);
   database->Close();
 
-  /* Synchronize channel epg containers */
-  PVREpgs.AssignChangedChannelTags(m_bRadio);
-
   /* Synchronize channel numbers inside timers */
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
@@ -458,7 +455,7 @@ void CPVRChannels::HideChannel(unsigned int number)
   else
   {
     at(number-1).SetHidden(true);
-    PVREpgs.ClearEPGForChannel(&at(number-1));
+    ((CPVREpg *) at(number-1).GetEpg())->Clear();
     database->Open();
     database->UpdateDBChannel(at(number-1));
     m_iHiddenChannels = database->GetNumHiddenChannels();
@@ -487,7 +484,7 @@ CPVRChannel *CPVRChannels::GetByClient(int Number, int ClientID)
   return NULL;
 }
 
-CPVRChannel *CPVRChannels::GetByIndex(int iIndex)
+CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)
 {
   return iIndex < size() ?
     &at(iIndex) :
@@ -554,14 +551,6 @@ void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
     at(Number-1).SetIcon(Icon);
     database->UpdateDBChannel(at(Number-1));
     database->Close();
-  }
-}
-
-void CPVRChannels::ResetChannelEPGLinks()
-{
-  for (unsigned int i = 0; i < size(); i++)
-  {
-    at(i).ResetChannelEPGLinks();
   }
 }
 

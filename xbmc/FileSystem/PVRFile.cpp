@@ -29,8 +29,8 @@ using namespace std;
 
 CPVRFile::CPVRFile()
 {
-  m_isPlayRecording   = false;
-  m_playingItem = -1;
+  m_isPlayRecording = false;
+  m_playingItem     = -1;
 }
 
 CPVRFile::~CPVRFile()

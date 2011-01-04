@@ -722,10 +722,10 @@ void CGUIEPGGridContainer::UpdateItems()
 
   for (unsigned int row = 0; row < m_channelItems.size(); ++row)
   {
-    CDateTime gridCursor = m_gridStart; //reset cursor for new channel
-    unsigned long progIdx   = m_epgItemsPtr[row].start;
-    unsigned long lastIdx   = m_epgItemsPtr[row].stop;
-    unsigned int channelnum = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
+    CDateTime gridCursor  = m_gridStart; //reset cursor for new channel
+    unsigned long progIdx = m_epgItemsPtr[row].start;
+    unsigned long lastIdx = m_epgItemsPtr[row].stop;
+    int channelnum        = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
