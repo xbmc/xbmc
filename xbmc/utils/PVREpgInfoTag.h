@@ -22,38 +22,41 @@
  */
 
 #include "DateTime.h"
-#include "utils/PVREpg.h"
-#include "utils/PVRTimers.h"
+#include "PVREpg.h"
+
+class CPVRTimerInfoTag;
 
 class CPVREpgInfoTag
 {
   friend class CPVREpg;
 private:
   CPVREpg *m_Epg;     // The Schedule this event belongs to
-  const CPVRTimerInfoTag   *m_Timer;
+  const CPVRTimerInfoTag   *    m_Timer;
 
-  CStdString    m_strTitle;
-  CStdString    m_strPlotOutline;
-  CStdString    m_strPlot;
-  CStdString    m_strGenre;
-  CDateTime     m_startTime;
-  CDateTime     m_endTime;
-  CDateTimeSpan m_duration;
-  CStdString    m_strIconPath;
-  CStdString    m_strFileNameAndPath;
-  int           m_iGenreType;
-  int           m_iGenreSubType;
-  bool          m_isRecording; //XXX
-  CDateTime     m_strFirstAired;
-  int           m_iParentalRating;
-  int           m_iStarRating;
-  bool          m_notify;
-  CStdString    m_seriesNum;
-  CStdString    m_episodeNum;
-  CStdString    m_episodePart;
-  CStdString    m_episodeName;
+  CStdString                    m_strTitle;
+  CStdString                    m_strPlotOutline;
+  CStdString                    m_strPlot;
+  CStdString                    m_strGenre;
+  CDateTime                     m_startTime;
+  CDateTime                     m_endTime;
+  CDateTimeSpan                 m_duration;
+  CStdString                    m_strIconPath;
+  CStdString                    m_strFileNameAndPath;
+  int                           m_iGenreType;
+  int                           m_iGenreSubType;
+  bool                          m_isRecording; //XXX
+  CDateTime                     m_strFirstAired;
+  int                           m_iParentalRating;
+  int                           m_iStarRating;
+  bool                          m_notify;
+  CStdString                    m_seriesNum;
+  CStdString                    m_episodeNum;
+  CStdString                    m_episodePart;
+  CStdString                    m_episodeName;
 
-  long          m_iUniqueBroadcastID; // event's unique identifier for this tag
+  mutable const CPVREpgInfoTag *m_nextEvent;
+  mutable const CPVREpgInfoTag *m_previousEvent;
+  long                          m_iUniqueBroadcastID; // event's unique identifier for this tag
 
 public:
   CPVREpgInfoTag(long uniqueBroadcastID);
@@ -127,4 +130,10 @@ public:
   const CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 
   CStdString ConvertGenreIdToString(int ID, int subID) const;
+
+  const CPVREpgInfoTag *GetNextEvent() const;
+  const CPVREpgInfoTag *GetPreviousEvent() const;
+
+  void SetNextEvent(const CPVREpgInfoTag *event) { m_nextEvent = event; }
+  void SetPreviousEvent(const CPVREpgInfoTag *event) { m_previousEvent = event; }
 };

@@ -20,11 +20,7 @@
  */
 
 #include "FileItem.h"
-#include "PVREpgs.h"
-#include "PVRChannels.h"
 #include "GUISettings.h"
-#include "TVDatabase.h"
-#include "PVRManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -34,6 +30,11 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
+
+#include "PVRChannelGroups.h"
+#include "PVRChannelGroup.h"
+#include "TVDatabase.h"
+#include "PVRManager.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

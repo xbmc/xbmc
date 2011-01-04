@@ -21,10 +21,11 @@
  *
  */
 
-#include "utils/PVRChannel.h"
+#include "PVRChannel.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVREpgInfoTag;
+class CPVREpgs;
 
 class CPVREpg
 {
@@ -38,13 +39,10 @@ private:
   bool m_bIsSorted;
 
 public:
-  CPVREpg(long ChannelID);
-  CPVREpg(const CPVRChannel &channel);
   CPVREpg(const CPVRChannel *channel);
-  long ChannelID(void) const { return m_Channel->ChannelID(); }
   bool IsValid(void) const;
   const CPVRChannel *ChannelTag(void) const { return m_Channel; }
-  CPVREpgInfoTag *AddInfoTag(CPVREpgInfoTag *Tag);
+  bool AddInfoTag(CPVREpgInfoTag *Tag);
   void DelInfoTag(CPVREpgInfoTag *tag);
   void Cleanup(const CDateTime Time);
   void Cleanup(void);

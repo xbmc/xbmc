@@ -22,14 +22,14 @@
  */
 
 #include "DateTime.h"
-#include "utils/Thread.h"
-#include "utils/PVREpg.h"
-#include "utils/PVREpgInfoTag.h"
-#include "utils/PVRChannels.h"
+#include "Thread.h"
+#include "CriticalSection.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
+class CPVREpg;
 class CPVRChannel;
 class CTVDatabase;
+class CFileItemList;
 struct PVREpgSearchFilter;
 
 class CPVREpgs : public std::vector<CPVREpg*>
@@ -42,6 +42,7 @@ private:
   bool  m_bIgnoreDbForClient;     /* don't save the EPG data in the database */
   int   m_iLingerTime;            /* hours to keep old EPG data */
   int   m_iDaysToDisplay;         /* amount of EPG data to maintain */
+  int   m_iUpdateTime;            /* update the full EPG after this period */
 
   /**
    * Get the EPG for a channel
@@ -73,6 +74,8 @@ private:
    */
   bool LoadSettings();
 
+  const CPVREpg *GetValidEpgFromChannel(CPVRChannel *channel);
+
 public:
   CPVREpgs();
   ~CPVREpgs();
@@ -80,7 +83,7 @@ public:
   /**
    * Get an EPG table for a channel
    */
-  const CPVREpg *GetEPG(CPVRChannel *Channel, bool AddIfMissing = false);
+  const CPVREpg *GetEPG(CPVRChannel *Channel, bool bAddIfMissing = false);
 
   /**
    * Remove old EPG entries
@@ -110,22 +113,22 @@ public:
   /**
    * Prevent the EPG from being updated
    */
-  void InihibitUpdate(bool yesNo) { m_bInihibitUpdate = yesNo; }
+  void InihibitUpdate(bool bSetTo) { m_bInihibitUpdate = bSetTo; }
 
   /**
    * Update the EPG data for a single channel
    */
-  bool UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end);
+  bool UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end, bool bUpdate = false);
 
   int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
-  int GetEPGAll(CFileItemList* results, bool radio = false);
-  int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
-  int GetEPGNow(CFileItemList* results, bool radio = false);
-  int GetEPGNext(CFileItemList* results, bool radio = false);
-  CDateTime GetFirstEPGDate(bool radio = false);
-  CDateTime GetLastEPGDate(bool radio = false);
+  int GetEPGAll(CFileItemList* results, bool bRadio = false);
+  int GetEPGForChannel(CPVRChannel *channel, CFileItemList *results);
+  int GetEPGNow(CFileItemList* results, bool bRadio = false);
+  int GetEPGNext(CFileItemList* results, bool bRadio = false);
+  CDateTime GetFirstEPGDate(bool bRadio = false);
+  CDateTime GetLastEPGDate(bool bRadio = false);
   void SetVariableData(CFileItemList* results);
-  void AssignChangedChannelTags(bool radio = false);
+  void AssignChangedChannelTags(bool bRadio = false);
 };
 
 extern CPVREpgs PVREpgs;

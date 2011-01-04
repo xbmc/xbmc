@@ -23,11 +23,10 @@
 
 #include "DateTime.h"
 #include "FileItem.h"
-#include "utils/Observer.h"
+#include "Observer.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVREpg;
-class CPVRChannel;
 
 class CPVRChannel : public Observable
 {

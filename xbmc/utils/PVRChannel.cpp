@@ -20,15 +20,16 @@
  */
 
 #include "FileItem.h"
-#include "PVREpgInfoTag.h"
-#include "PVREpgs.h"
-#include "PVRChannel.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
-#include "PVRManager.h"
+
+#include "PVRChannel.h"
+#include "PVREpgs.h"
+#include "PVREpg.h"
+#include "PVREpgInfoTag.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

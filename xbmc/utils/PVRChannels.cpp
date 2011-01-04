@@ -20,11 +20,7 @@
  */
 
 #include "FileItem.h"
-#include "PVREpgs.h"
-#include "PVRChannels.h"
 #include "GUISettings.h"
-#include "TVDatabase.h"
-#include "PVRManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -34,6 +30,14 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
+
+#include "PVRChannelGroups.h"
+#include "PVRChannelGroup.h"
+#include "PVRChannels.h"
+#include "TVDatabase.h"
+#include "PVRTimers.h"
+#include "PVRManager.h"
+#include "PVREpgInfoTag.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -481,6 +485,13 @@ CPVRChannel *CPVRChannels::GetByClient(int Number, int ClientID)
       return &at(i);
   }
   return NULL;
+}
+
+CPVRChannel *CPVRChannels::GetByIndex(int iIndex)
+{
+  return iIndex < size() ?
+    &at(iIndex) :
+    NULL;
 }
 
 CPVRChannel *CPVRChannels::GetByChannelID(long ChannelID)

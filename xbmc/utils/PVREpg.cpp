@@ -19,13 +19,14 @@
  *
  */
 
-#include "PVREpg.h"
-#include "PVRChannels.h"
-#include "PVREpgInfoTag.h"
-#include "PVRManager.h"
 #include "GUISettings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+
+#include "PVREpg.h"
+#include "PVREpgInfoTag.h"
+#include "PVRChannels.h"
+#include "PVRManager.h"
 
 struct sortEPGbyDate
 {
@@ -37,22 +38,6 @@ struct sortEPGbyDate
     return strItem1->Start() < strItem2->Start();
   }
 };
-
-CPVREpg::CPVREpg(long iChannelID)
-{
-  m_Channel         = CPVRChannels::GetByChannelIDFromAll(iChannelID);
-  m_bUpdateRunning  = false;
-  m_bValid          = iChannelID != -1;
-  m_bIsSorted       = false;
-}
-
-CPVREpg::CPVREpg(const CPVRChannel &channel)
-{
-  m_Channel         = &channel;
-  m_bUpdateRunning  = false;
-  m_bValid          = m_Channel->ChannelID() != -1;
-  m_bIsSorted       = false;
-}
 
 CPVREpg::CPVREpg(const CPVRChannel *channel)
 {
@@ -73,11 +58,12 @@ bool CPVREpg::IsValid(void) const
   return true;
 }
 
-CPVREpgInfoTag *CPVREpg::AddInfoTag(CPVREpgInfoTag *Tag)
+bool CPVREpg::AddInfoTag(CPVREpgInfoTag *Tag)
 {
   m_tags.push_back(Tag);
   m_bIsSorted = false;
-  return Tag;
+
+  return true;
 }
 
 void CPVREpg::DelInfoTag(CPVREpgInfoTag *tag)
@@ -103,6 +89,30 @@ void CPVREpg::Sort(void)
   if (m_bIsSorted) return;
 
   sort(m_tags.begin(), m_tags.end(), sortEPGbyDate());
+
+  int iTagAmount = m_tags.size();
+
+  for (int ptr = 0; ptr < iTagAmount; ptr++)
+  {
+    CPVREpgInfoTag *tag = m_tags[ptr];
+
+    if (ptr == 0)
+    {
+      tag->SetPreviousEvent(NULL);
+    }
+
+    if (ptr > 0)
+    {
+      CPVREpgInfoTag *previousTag = m_tags[ptr-1];
+      previousTag->SetNextEvent(tag);
+      tag->SetPreviousEvent(previousTag);
+    }
+
+    if (ptr == iTagAmount)
+    {
+      tag->SetNextEvent(NULL);
+    }
+  }
   m_bIsSorted = true;
 }
 
@@ -144,28 +154,9 @@ const CPVREpgInfoTag *CPVREpg::GetInfoTagNow(void) const
 
 const CPVREpgInfoTag *CPVREpg::GetInfoTagNext(void) const
 {
-  CDateTime now = CDateTime::GetCurrentDateTime();
+  const CPVREpgInfoTag *nowTag = GetInfoTagNow();
 
-  if (m_tags.size() == 0)
-    return false;
-
-  for (unsigned int i = 0; i < m_tags.size(); i++)
-  {
-    if ((m_tags[i]->Start() <= now) && (m_tags[i]->End() > now))
-    {
-      CDateTime next = m_tags[i]->End();
-
-      for (unsigned int j = 0; j < m_tags.size(); j++)
-      {
-        if (m_tags[j]->Start() >= next)
-        {
-          return m_tags[j];
-        }
-      }
-    }
-  }
-
-  return NULL;
+  return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
 const CPVREpgInfoTag *CPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) const

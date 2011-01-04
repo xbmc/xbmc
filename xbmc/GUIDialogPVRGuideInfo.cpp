@@ -24,9 +24,9 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
-#include "utils/PVREpgs.h"
-#include "utils/PVREpgInfoTag.h"
+
 #include "utils/PVRChannels.h"
+#include "utils/PVREpgInfoTag.h"
 #include "utils/PVRTimers.h"
 
 using namespace std;

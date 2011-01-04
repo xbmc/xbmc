@@ -21,7 +21,9 @@
 
 #include "GUIDialogPVRRecordingInfo.h"
 #include "GUIWindowManager.h"
+
 #include "utils/PVRRecordings.h"
+#include "utils/PVRChannel.h"
 
 using namespace std;
 

@@ -19,10 +19,12 @@
  *
  */
 
-#include "PVREpgSearchFilter.h"
-#include "PVREpgs.h"
 #include "LocalizeStrings.h"
 #include "TextSearch.h"
+
+#include "PVREpgSearchFilter.h"
+#include "PVREpgs.h"
+#include "PVREpgInfoTag.h"
 
 using namespace std;
 

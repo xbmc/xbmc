@@ -26,12 +26,13 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "utils/Thread.h"
-#include "utils/PVRChannels.h"
-#include "utils/PVRRecordings.h"
-#include "utils/PVRTimers.h"
 
 #include <vector>
 #include <deque>
+
+class CPVRChannels;
+class CPVRRecordings;
+class CPVRTimers;
 
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
@@ -145,6 +146,8 @@ public:
    \return true if channel is playing
    */
   bool GetCurrentChannel(int *number, bool *radio);
+
+  bool GetCurrentChannel(CPVRChannel *channel);
 
    /*! \brief Returns if a minimum one client is active
    \return true if minimum one client is started

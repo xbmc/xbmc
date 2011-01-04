@@ -24,6 +24,10 @@
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 
+#include "utils/PVREpgInfoTag.h"
+#include "utils/PVRChannelGroups.h"
+#include "utils/PVRChannelGroup.h"
+
 using namespace std;
 
 using namespace dbiplus;
@@ -31,6 +35,7 @@ using namespace dbiplus;
 CTVDatabase::CTVDatabase(void)
 {
   oneWriteSQLString = "";
+  lastScanTime.SetValid(false);
 }
 
 CTVDatabase::~CTVDatabase(void)
@@ -118,6 +123,9 @@ bool CTVDatabase::UpdateOldVersion(int iVersion)
 
 CDateTime CTVDatabase::GetLastEPGScanTime()
 {
+  if (lastScanTime.IsValid())
+    return lastScanTime;
+
   try
   {
     if (NULL == m_pDB.get()) return -1;
@@ -131,13 +139,15 @@ CDateTime CTVDatabase::GetLastEPGScanTime()
     {
       CDateTime lastTime;
       lastTime.SetFromDBDateTime(m_pDS->fv("ScanTime").get_asString());
+      lastScanTime = lastTime;
       m_pDS->close();
+
       return lastTime;
     }
     else
     {
       m_pDS->close();
-      return NULL;
+      return -1;
     }
   }
   catch (...)
@@ -154,6 +164,9 @@ bool CTVDatabase::UpdateLastEPGScan(const CDateTime lastScan)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
+
+    CLog::Log(LOGDEBUG, "%s - updating last scan time to '%s'", __FUNCTION__, lastScan.GetAsDBDateTime().c_str());
+    lastScanTime = lastScan;
 
     CStdString SQL=FormatSQL("select * from LastEPGScan");
     m_pDS->query(SQL.c_str());

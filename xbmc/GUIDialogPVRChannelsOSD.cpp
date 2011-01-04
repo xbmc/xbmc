@@ -25,8 +25,10 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogPVRGuideInfo.h"
-#include "PVRManager.h"
 #include "ViewState.h"
+
+#include "PVRManager.h"
+#include "utils/PVREpg.h"
 
 using namespace std;
 

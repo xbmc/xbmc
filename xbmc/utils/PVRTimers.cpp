@@ -49,10 +49,7 @@
  */
 
 #include "FileItem.h"
-#include "PVRTimers.h"
-#include "PVREpgs.h"
 #include "GUISettings.h"
-#include "PVRManager.h"
 #include "Util.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
@@ -60,6 +57,11 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "URL.h"
+
+#include "PVRTimers.h"
+#include "PVRChannel.h"
+#include "PVRManager.h"
+#include "PVREpgInfoTag.h"
 
 /**
  * Create a blank unmodified timer tag

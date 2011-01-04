@@ -25,10 +25,9 @@
  */
 
 #include "VideoInfoTag.h"
-#include "PVREpgs.h"
-#include "settings/VideoSettings.h"
-#include "utils/Thread.h"
+#include "Thread.h"
 #include "DateTime.h"
+#include "settings/VideoSettings.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRRecordingInfoTag : public CVideoInfoTag

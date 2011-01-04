@@ -22,7 +22,8 @@
  */
 
 #include "DateTime.h"
-#include "utils/PVREpgInfoTag.h"
+
+class CPVREpgInfoTag;
 
 /* Filter data to check with a EPGEntry */
 struct PVREpgSearchFilter

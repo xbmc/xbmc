@@ -25,9 +25,9 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "PVRChannel.h"
-#include "PVRChannelGroups.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
+class CPVRChannelGroups;
 class CPVREpg;
 
 class CPVRChannels : public std::vector<CPVRChannel>
@@ -53,6 +53,7 @@ public:
   CPVRChannel *GetByClient(int Number, int ClientID);
   CPVRChannel *GetByChannelID(long ChannelID);
   CPVRChannel *GetByUniqueID(long UniqueID);
+  CPVRChannel *GetByIndex(int index);
   CStdString GetNameForChannel(unsigned int Number);
   CStdString GetChannelIcon(unsigned int Number);
   void SetChannelIcon(unsigned int Number, CStdString Icon);

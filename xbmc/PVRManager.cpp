@@ -25,7 +25,6 @@
 #include "GUIWindowTV.h"
 #include "GUIWindowManager.h"
 #include "utils/GUIInfoManager.h"
-#include "PVRManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -41,6 +40,11 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
+
+#include "PVRManager.h"
+#include "utils/PVRChannelGroups.h"
+#include "utils/PVRChannelGroup.h"
+#include "utils/PVREpgInfoTag.h"
 
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
 #define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
@@ -1120,6 +1124,20 @@ CStdString CPVRManager::GetCurrentInputFormat()
     return m_currentPlayingChannel->GetPVRChannelInfoTag()->InputFormat();
 
   return "";
+}
+
+bool CPVRManager::GetCurrentChannel(CPVRChannel *channel)
+{
+  if (m_currentPlayingChannel)
+  {
+    channel = m_currentPlayingChannel->GetPVRChannelInfoTag();
+    return true;
+  }
+  else
+  {
+    channel = NULL;
+    return false;
+  }
 }
 
 bool CPVRManager::GetCurrentChannel(int *number, bool *radio)

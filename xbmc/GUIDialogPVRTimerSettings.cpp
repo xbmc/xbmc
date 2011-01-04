@@ -24,8 +24,10 @@
 #include "GUIDialogNumeric.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
-#include "PVRManager.h"
+
 #include "utils/PVRTimers.h"
+#include "utils/PVRChannel.h"
+#include "utils/PVRChannels.h"
 
 using namespace std;
 

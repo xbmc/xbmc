@@ -26,8 +26,9 @@
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIWindowManager.h"
+
 #include "utils/PVREpgSearchFilter.h"
-#include "utils/PVREpgs.h"
+#include "utils/PVRChannelGroups.h"
 #include "utils/PVRChannels.h"
 
 using namespace std;

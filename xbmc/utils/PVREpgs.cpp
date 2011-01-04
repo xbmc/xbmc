@@ -19,15 +19,19 @@
  *
  */
 
-#include "PVREpgSearchFilter.h"
-#include "PVREpgs.h"
-#include "PVRManager.h"
 #include "GUISettings.h"
 #include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIWindowManager.h"
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "utils/SingleLock.h"
+#include "log.h"
+#include "TimeUtils.h"
+#include "SingleLock.h"
+
+#include "PVREpgs.h"
+#include "PVREpg.h"
+#include "PVREpgInfoTag.h"
+#include "PVRManager.h"
+#include "PVREpgSearchFilter.h"
+#include "PVRChannel.h"
 
 using namespace std;
 
@@ -48,12 +52,13 @@ const CPVREpg *CPVREpgs::CreateEPG(CPVRChannel *channel)
   push_back((CPVREpg *) epg);
   channel->m_Epg = epg;
 
-  return epg;
+  return channel->m_Epg;
 }
 
 bool CPVREpgs::LoadSettings()
 {
   m_bIgnoreDbForClient = g_guiSettings.GetBool("pvrepg.ignoredbforclient");
+  m_iUpdateTime        = g_guiSettings.GetInt ("pvrepg.epgupdate")*60;
   m_iLingerTime        = g_guiSettings.GetInt ("pvrmenu.lingertime")*60;
   m_iDaysToDisplay     = g_guiSettings.GetInt ("pvrmenu.daystodisplay")*24*60*60;
 
@@ -63,15 +68,15 @@ bool CPVREpgs::LoadSettings()
 bool CPVREpgs::RemoveOldEntries()
 {
   CSingleLock lock(m_critSection);
-  CLog::Log(LOGINFO, "%s - removing old EPG entries",
+  CLog::Log(LOGINFO, "PVREpgs - %s - removing old EPG entries",
       __FUNCTION__);
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   /* call Cleanup() on all known EPG tables */
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    at(ptr)->Cleanup(now);
+    at(iEpgPtr)->Cleanup(now);
   }
 
   return true;
@@ -80,17 +85,17 @@ bool CPVREpgs::RemoveOldEntries()
 bool CPVREpgs::RemoveAllEntries()
 {
   CSingleLock lock(m_critSection);
-  CLog::Log(LOGINFO, "%s - removing old EPG entries",
+  CLog::Log(LOGINFO, "PVREpgs - %s - removing all EPG entries",
       __FUNCTION__);
 
   /* remove all the EPG pointers from timers */
-  for (unsigned int ptr = 0; ptr < PVRTimers.size(); ++ptr)
-    PVRTimers[ptr].SetEpg(NULL);
+  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+    PVRTimers[iTimerPtr].SetEpg(NULL);
 
   /* remove all EPG entries */
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    CPVREpg *epg = at(ptr);
+    CPVREpg *epg = at(iEpgPtr);
 
     CPVRChannel *channel = (CPVRChannel *) epg->ChannelTag();
     if (channel)
@@ -108,20 +113,20 @@ bool CPVREpgs::RemoveAllEntries()
 
 bool CPVREpgs::ClearEPGForChannel(CPVRChannel *channel)
 {
-  CLog::Log(LOGINFO, "%s - clearing all EPG data for channel %s",
-      __FUNCTION__, channel->ChannelName().c_str());
-
   CSingleLock lock(m_critSection);
+  CLog::Log(LOGINFO, "PVREpgs - %s - clearing all EPG data for channel '%s'",
+      __FUNCTION__, channel->ChannelName().c_str());
 
   return channel->ClearEPG();
 }
 
 bool CPVREpgs::Update()
 {
-  long perfCnt          = CTimeUtils::GetTimeMS();
+  long iStartTime       = CTimeUtils::GetTimeMS();
   int iChannelCount     = PVRChannelsTV.size() + PVRChannelsRadio.size();
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
-  bool bAllNewChannels  = true;
+  bool bUpdateSuccess   = true;
+  bool bUpdate          = false;
 
   /* bail out if we're already updating */
   if (m_bInihibitUpdate)
@@ -129,12 +134,23 @@ bool CPVREpgs::Update()
   else
     m_bInihibitUpdate = true;
 
-  CLog::Log(LOGNOTICE, "%s - starting EPG update for %i channels",
-      __FUNCTION__, iChannelCount);
-
   LoadSettings();
 
-  /* remove old entries */
+  /* open the database */
+  database->Open();
+
+  if (m_iUpdateTime > 0)
+  {
+    time_t iLastUpdateTime;
+    time_t iCurrentTime;
+    database->GetLastEPGScanTime().GetAsTime(iLastUpdateTime);
+    CDateTime::GetCurrentDateTime().GetAsTime(iCurrentTime);
+    bUpdate = iLastUpdateTime + m_iUpdateTime <= iCurrentTime;
+  }
+
+  CLog::Log(LOGNOTICE, "PVREpgs - %s - starting EPG update for %i channels (full update = %d, update time = %d)",
+      __FUNCTION__, iChannelCount, bUpdate ? 1 : 0, m_iUpdateTime);
+
   RemoveOldEntries();
 
   /* show the progress bar */
@@ -150,17 +166,14 @@ bool CPVREpgs::Update()
   start -= m_iLingerTime;
   end   += m_iDaysToDisplay;
 
-  /* open the database */
-  database->Open();
-
   /* update all channels */
   for (unsigned int radio = 0; radio <= 1; radio++)
   {
     CPVRChannels *channels = (radio == 0) ? &PVRChannelsTV : &PVRChannelsRadio;
     for (unsigned int ptr = 0; ptr < channels->size(); ptr++)
     {
-      CPVRChannel *channel = &channels->at(ptr);
-      bAllNewChannels = UpdateEPGForChannel(channel, &start, &end) && bAllNewChannels;
+      CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(ptr);
+      bUpdateSuccess = UpdateEPGForChannel(channel, &start, &end, bUpdate) || bUpdateSuccess;
 
       /* update the progress bar */
       scanner->SetProgress(ptr, iChannelCount);
@@ -169,108 +182,106 @@ bool CPVREpgs::Update()
     }
   }
 
-  database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
+  if (bUpdateSuccess && bUpdate)
+    database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
 
   database->Close();
   scanner->Close();
   m_bInihibitUpdate = false;
 
-  CLog::Log(LOGINFO, "%s - finished updating the EPG after %li.%li seconds",
-      __FUNCTION__, (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
+  long lUpdateTime = CTimeUtils::GetTimeMS() - iStartTime;
+  CLog::Log(LOGINFO, "PVREpgs - %s - finished updating the EPG after %li.%li seconds",
+      __FUNCTION__, lUpdateTime / 1000, lUpdateTime % 1000);
 
-  return true;
+  return bUpdateSuccess;
 }
 
 void CPVREpgs::Unload()
 {
   CSingleLock lock(m_critSection);
-  CLog::Log(LOGINFO, "%s - unloading all EPG information",
+  CLog::Log(LOGINFO, "PVREpgs - %s - unloading all EPG information",
       __FUNCTION__);
 
   m_bInihibitUpdate = true;
 
-  for (unsigned int epgPtr = 0; epgPtr < size(); epgPtr++)
+  /* remove all epg tables */
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    CPVREpg *epg = at(epgPtr);
+    CPVREpg *epg = at(iEpgPtr);
     if (epg)
     {
-      for (unsigned int tagPtr = 0; tagPtr < epg->m_tags.size(); tagPtr++)
+      for (unsigned int iTagPtr = 0; iTagPtr < epg->m_tags.size(); iTagPtr++)
       {
-        delete epg->m_tags.at(tagPtr);
+        delete epg->m_tags.at(iTagPtr);
       }
       epg->m_tags.clear();
     }
     delete epg;
-    erase(begin()+epgPtr);
+    erase(begin() + iEpgPtr);
   }
 
-  for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
-    PVRTimers[ptr].SetEpg(NULL);
+  /* remove all pointers to epg tables on timers */
+  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+    PVRTimers[iTimerPtr].SetEpg(NULL);
 }
 
 bool CPVREpgs::GrabEPGForChannelFromClient(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end)
 {
-  bool bSaveInDatabase = false;
+  bool bGrabSuccess = false;
 
   if (g_PVRManager.GetClientProps(channel->ClientID())->SupportEPG &&
       g_PVRManager.Clients()->find(channel->ClientID())->second->ReadyToUse())
   {
-    bSaveInDatabase = g_PVRManager.Clients()->find(channel->ClientID())->second->GetEPGForChannel(*channel, epg, start, end) == PVR_ERROR_NO_ERROR;
-    if (epg->InfoTags()->size() == 0)
-    {
-      CLog::Log(LOGDEBUG, "%s - channel '%s' on client '%li' contains no EPG data",
-          __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-    }
+    bGrabSuccess = g_PVRManager.Clients()->find(channel->ClientID())->second->GetEPGForChannel(*channel, epg, start, end) == PVR_ERROR_NO_ERROR;
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - client '%s' on client '%li' does not support EPGs",
+    CLog::Log(LOGINFO, "PVREpgs - %s - client '%s' on client '%li' does not support EPGs",
         __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
   }
 
-  return bSaveInDatabase;
+  return bGrabSuccess;
 }
 
 bool CPVREpgs::GrabEPGForChannelFromScraper(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end)
 {
-  bool bSaveInDatabase = false;
+  bool bGrabSuccess = false;
 
   if (channel->Grabber().IsEmpty()) /* no grabber defined */
   {
-    CLog::Log(LOGERROR, "%s - no EPG grabber defined for channel '%s'",
+    CLog::Log(LOGERROR, "PVREpgs - %s - no EPG grabber defined for channel '%s'",
         __FUNCTION__, channel->ChannelName().c_str());
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - the database contains no EPG data for channel '%s', loading with scraper '%s'",
+    CLog::Log(LOGINFO, "PVREpgs - %s - the database contains no EPG data for channel '%s', loading with scraper '%s'",
         __FUNCTION__, channel->ChannelName().c_str(), channel->Grabber().c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
   }
 
-  return bSaveInDatabase;
+  return bGrabSuccess;
 }
 
 bool CPVREpgs::GrabEPGForChannel(CPVRChannel *channel, CPVREpg *epg, time_t start, time_t end)
 {
-  bool bSaveInDatabase = false;
+  bool bGrabSuccess = false;
 
   if (channel->Grabber() == "client")
   {
-    bSaveInDatabase = GrabEPGForChannelFromClient(channel, epg, start, end);
+      bGrabSuccess = GrabEPGForChannelFromClient(channel, epg, start, end);
   }
   else
   {
-    bSaveInDatabase = GrabEPGForChannelFromScraper(channel, epg, start, end);
+      bGrabSuccess = GrabEPGForChannelFromScraper(channel, epg, start, end);
   }
 
-  return bSaveInDatabase;
+  return bGrabSuccess;
 }
 
-bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end)
+bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *end, bool bUpdate /* = false */)
 {
-  bool bChannelExists = false;
-  bool bSaveInDatabase = true;
+  bool bGrabSuccess     = true;
   CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   CSingleLock lock(m_critSection);
@@ -280,7 +291,7 @@ bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *
     return false;
 
   /* get the EPG table for this channel or create it if it doesn't exist */
-  CPVREpg *epg = (CPVREpg *) CreateEPG(channel);
+  CPVREpg *epg = (CPVREpg *) GetEPG(channel, true);
   if (!epg)
     return false;
 
@@ -288,41 +299,29 @@ bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *
   epg->SetUpdate(true);
 
   /* request the epg for this channel from the database */
-  bChannelExists = database->GetEPGForChannel(*channel, epg, *start, *end);
-  if (!bChannelExists)
+  if (!m_bIgnoreDbForClient)
+    bGrabSuccess = database->GetEPGForChannel(*channel, epg, *start, *end);
+
+  /* grab from the client or scraper if we didn't get any result from the database or if an update is scheduled */
+  if (!bGrabSuccess || bUpdate)
+    bGrabSuccess = GrabEPGForChannel(channel, epg, *start, *end);
+
+  /* store the loaded EPG entries in the database */
+  if (bGrabSuccess)
   {
-    /* If "retval" is false the database contains no EPG for this channel. Load it from the client or from
-       scrapers for only one day to speed up load. The rest is done by the background update */
-    CDateTime::GetUTCDateTime().GetAsTime(*start); // NOTE: XBMC stores the EPG times as local time
-    CDateTime::GetUTCDateTime().GetAsTime(*end);
-    *start -= m_iLingerTime;
-    *end   += (m_bIgnoreDbForClient) ? m_iDaysToDisplay : 24*60*60;
+    epg->RemoveOverlappingEvents();
 
-    if (m_bIgnoreDbForClient)
+    if (!m_bIgnoreDbForClient)
     {
-      bSaveInDatabase = false;
+      for (unsigned int iTagPtr = 0; iTagPtr < epg->InfoTags()->size(); iTagPtr++)
+        database->UpdateEPGEntry(*epg->InfoTags()->at(iTagPtr), false, (iTagPtr==0), (iTagPtr == epg->InfoTags()->size()-1));
     }
-    else
-    {
-      bSaveInDatabase = GrabEPGForChannel(channel, epg, *start, *end);
-    }
-
-    /* store the loaded EPG entries in the database */
-    if (bSaveInDatabase)
-    {
-      for (unsigned int ptr = 0; ptr < epg->InfoTags()->size(); ptr++)
-        database->UpdateEPGEntry(*epg->InfoTags()->at(ptr), false, (ptr==0), (ptr >= epg->InfoTags()->size()-1));
-    }
-
-    channel->ResetChannelEPGLinks();
   }
-
-  epg->RemoveOverlappingEvents();
   epg->SetUpdate(false);
 
-  // TODO update channel EPG pointers
+  channel->ResetChannelEPGLinks();
 
-  return bChannelExists ? false : bSaveInDatabase;
+  return bGrabSuccess;
 }
 
 
@@ -334,22 +333,66 @@ const CPVREpg *CPVREpgs::GetEPG(CPVRChannel *channel, bool bAddIfMissing /* = fa
   return channel->m_Epg;
 }
 
-CDateTime CPVREpgs::GetFirstEPGDate(bool radio /* = false*/)
+const CPVREpg *CPVREpgs::GetValidEpgFromChannel(CPVRChannel *channel)
+{
+  /* don't include hidden channels or channels without an EPG */
+  if (channel->IsHidden() || !channel->GrabEpg())
+  {
+    CLog::Log(LOGDEBUG, "PVREpgs - %s - channel '%s' is not marked for grabbing or is hidden (hidden=%d, grab=%d)",
+        __FUNCTION__, channel->ChannelName().c_str(), channel->IsHidden() ? 1 : 0, channel->GrabEpg() ? 1 : 0);
+    return NULL;
+  }
+
+  const CPVREpg *epg = (CPVREpg *) channel->GetEpg();
+
+  /* don't include epg tables that are being updated at the moment or that aren't valid */
+  if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
+  {
+    CLog::Log(LOGDEBUG, "PVREpgs - %s - channel '%s' does not have a valid epg (updating=%d, valid=%d)",
+        __FUNCTION__, channel->ChannelName().c_str(), (epg && epg->IsUpdateRunning()) ? 1 : 0, (epg && epg->IsValid()) ? 1 : 0);
+    return NULL;
+  }
+
+  return epg;
+}
+
+int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
+{
+  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
+
+  int iInitialSize = results->Size();
+
+  /* include all channels */
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
+    CFileItemList *channelResults = new CFileItemList();
+
+    int iNewEntries = GetEPGForChannel(channel, channelResults);
+     for (int iTagPtr = 0; iTagPtr < iNewEntries; iTagPtr++)
+    {
+      results->Add(channelResults->Get(iTagPtr));
+    }
+
+    delete channelResults;
+  }
+
+  SetVariableData(results);
+
+  return results->Size() - iInitialSize;
+}
+
+CDateTime CPVREpgs::GetFirstEPGDate(bool bRadio /* = false*/)
 {
   CDateTime first        = CDateTime::GetCurrentDateTime();
-  CPVRChannels *channels = radio ? &PVRChannelsRadio : &PVRChannelsTV;
+  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
 
   /* check all channels */
-  for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    /* don't include hidden channels or channels without an EPG */
-    if (channels->at(channelPtr).IsHidden() || !channels->at(channelPtr).GrabEpg())
-      continue;
+    CPVREpg *epg = (CPVREpg *)GetValidEpgFromChannel(channels->GetByIndex(iChannelPtr));
 
-    CPVREpg *epg = (CPVREpg *) GetEPG(&channels->at(channelPtr), false);
-
-    /* don't include epg tables that are being updated at the moment or that aren't valid */
-    if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
+    if (!epg)
       continue;
 
     /* sort the epg and check if the first entry has an earlier start time */
@@ -362,22 +405,17 @@ CDateTime CPVREpgs::GetFirstEPGDate(bool radio /* = false*/)
   return first;
 }
 
-CDateTime CPVREpgs::GetLastEPGDate(bool radio /* = false*/)
+CDateTime CPVREpgs::GetLastEPGDate(bool bRadio /* = false*/)
 {
   CDateTime last         = CDateTime::GetCurrentDateTime();
-  CPVRChannels *channels = radio ? &PVRChannelsRadio : &PVRChannelsTV;
+  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
 
   /* check all channels */
-  for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    /* don't include hidden channels or channels without an EPG */
-    if (channels->at(channelPtr).IsHidden() || !channels->at(channelPtr).GrabEpg())
-      continue;
+    CPVREpg *epg = (CPVREpg *)GetValidEpgFromChannel(channels->GetByIndex(iChannelPtr));
 
-    CPVREpg *epg = (CPVREpg *) GetEPG(&channels->at(channelPtr), false);
-
-    /* don't include epg tables that are being updated at the moment or that aren't valid */
-    if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
+    if (!epg)
       continue;
 
     /* sort the epg and check if the last entry has a later end time */
@@ -390,64 +428,26 @@ CDateTime CPVREpgs::GetLastEPGDate(bool radio /* = false*/)
   return last;
 }
 
-int CPVREpgs::GetEPGAll(CFileItemList* results, bool radio /* = false */)
-{
-  CPVRChannels *channels = radio ? &PVRChannelsRadio : &PVRChannelsTV;
-
-  /* include all channels */
-  for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
-  {
-    /* don't include hidden channels or channels without an EPG */
-    if (channels->at(channelPtr).IsHidden() || !channels->at(channelPtr).GrabEpg())
-      continue;
-
-    CPVREpg *epg = (CPVREpg *) GetEPG(&channels->at(channelPtr), false);
-
-    /* don't include epg tables that are being updated at the moment or that aren't valid */
-    if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
-      continue;
-
-    /* add all infotags */
-    const vector<CPVREpgInfoTag*> *ch_epg = epg->InfoTags();
-    for (unsigned int tagPtr = 0; tagPtr < ch_epg->size(); tagPtr++)
-    {
-      CFileItemPtr channel(new CFileItem(*ch_epg->at(tagPtr)));
-      results->Add(channel);
-    }
-  }
-
-  SetVariableData(results);
-
-  return results->Size();
-}
-
 int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter)
 {
   /* include radio and tv channels */
   for (unsigned int radio = 0; radio <= 1; radio++)
   {
     CPVRChannels *channels = (radio == 0) ? &PVRChannelsTV : &PVRChannelsRadio;
-    for (unsigned int channelPtr = 0; channelPtr < channels->size(); channelPtr++)
+
+    for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
-      CPVRChannel *channel = &channels->at(channelPtr);
+      const CPVREpg *epg = GetValidEpgFromChannel(channels->GetByIndex(iChannelPtr));
 
-      /* don't include hidden channels or channels without an EPG */
-      if (channel->IsHidden() || !channel->GrabEpg())
-        continue;
-
-      const CPVREpg *epg = GetEPG(channel, false);
-
-      /* don't include epg tables that are being updated at the moment or that aren't valid */
-      if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
+      if (!epg)
         continue;
 
       const vector<CPVREpgInfoTag*> *ch_epg = epg->InfoTags();
-
-      for (unsigned int tagPtr = 0; tagPtr < ch_epg->size(); tagPtr++)
+      for (unsigned int iTagPtr = 0; iTagPtr < ch_epg->size(); iTagPtr++)
       {
-        if (filter.FilterEntry(*ch_epg->at(tagPtr)))
+        if (filter.FilterEntry(*ch_epg->at(iTagPtr)))
         {
-          CFileItemPtr channel(new CFileItem(*ch_epg->at(tagPtr)));
+          CFileItemPtr channel(new CFileItem(*ch_epg->at(iTagPtr)));
           results->Add(channel);
         }
       }
@@ -457,22 +457,21 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
   /* filter recordings */
   if (filter.m_bIgnorePresentRecordings && PVRRecordings.size() > 0)
   {
-    for (unsigned int recordingPtr = 0; recordingPtr < PVRRecordings.size(); recordingPtr++)
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < PVRRecordings.size(); iRecordingPtr++)
     {
-      for (int resultPtr = 0; resultPtr < results->Size(); resultPtr++)
+      for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
-        const CPVREpgInfoTag *epgentry = results->Get(resultPtr)->GetEPGInfoTag();
+        const CPVREpgInfoTag *epgentry  = results->Get(iResultPtr)->GetEPGInfoTag();
+        CPVRRecordingInfoTag *recording = &PVRRecordings[iRecordingPtr];
         if (epgentry)
         {
-          if (epgentry->Title() != PVRRecordings[recordingPtr].Title())
-            continue;
-          if (epgentry->PlotOutline() != PVRRecordings[recordingPtr].PlotOutline())
-            continue;
-          if (epgentry->Plot() != PVRRecordings[recordingPtr].Plot())
+          if (epgentry->Title()       != recording->Title() ||
+              epgentry->PlotOutline() != recording->PlotOutline() ||
+              epgentry->Plot()        != recording->Plot())
             continue;
 
-          results->Remove(resultPtr);
-          resultPtr--;
+          results->Remove(iResultPtr);
+          iResultPtr--;
         }
       }
     }
@@ -481,22 +480,21 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
   /* filter timers */
   if (filter.m_bIgnorePresentTimers && PVRTimers.size() > 0)
   {
-    for (unsigned int timerPtr = 0; timerPtr < PVRTimers.size(); timerPtr++)
+    for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
     {
-      for (int resultPtr = 0; resultPtr < results->Size(); resultPtr++)
+      for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
-        const CPVREpgInfoTag *epgentry = results->Get(resultPtr)->GetEPGInfoTag();
+        const CPVREpgInfoTag *epgentry = results->Get(iResultPtr)->GetEPGInfoTag();
+        CPVRTimerInfoTag *timer        = &PVRTimers[iTimerPtr];
         if (epgentry)
         {
-          if (epgentry->ChannelTag()->ChannelNumber() != PVRTimers[timerPtr].ChannelNumber())
-            continue;
-          if (epgentry->Start() < PVRTimers[timerPtr].Start())
-            continue;
-          if (epgentry->End() > PVRTimers[timerPtr].Stop())
+          if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||
+              epgentry->Start()                       <  timer->Start() ||
+              epgentry->End()                         >  timer->Stop())
             continue;
 
-          results->Remove(resultPtr);
-          resultPtr--;
+          results->Remove(iResultPtr);
+          iResultPtr--;
         }
       }
     }
@@ -505,29 +503,25 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
   {
-    unsigned int size = results->Size();
-    for (unsigned int resultPtr = 0; resultPtr < size; resultPtr++)
+    unsigned int iSize = results->Size();
+    for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
     {
-      const CPVREpgInfoTag *epgentry_1 = results->Get(resultPtr)->GetEPGInfoTag();
-      for (unsigned int tagPtr = 0; tagPtr < size; tagPtr++)
+      const CPVREpgInfoTag *epgentry_1 = results->Get(iResultPtr)->GetEPGInfoTag();
+      for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
       {
-        const CPVREpgInfoTag *epgentry_2 = results->Get(tagPtr)->GetEPGInfoTag();
-        if (resultPtr == tagPtr)
+        const CPVREpgInfoTag *epgentry_2 = results->Get(iTagPtr)->GetEPGInfoTag();
+        if (iResultPtr == iTagPtr)
           continue;
 
-        if (epgentry_1->Title() != epgentry_2->Title())
+        if (epgentry_1->Title()       != epgentry_2->Title() ||
+            epgentry_1->Plot()        != epgentry_2->Plot() ||
+            epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
           continue;
 
-        if (epgentry_1->Plot() != epgentry_2->Plot())
-          continue;
-
-        if (epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
-          continue;
-
-        results->Remove(tagPtr);
-        size = results->Size();
-        resultPtr--;
-        tagPtr--;
+        results->Remove(iTagPtr);
+        iSize = results->Size();
+        iResultPtr--;
+        iTagPtr--;
       }
     }
   }
@@ -537,87 +531,106 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
   return results->Size();
 }
 
+int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
+{
+  int iInitialSize   = results->Size();
+  const CPVREpg *epg = GetValidEpgFromChannel(channel);
+
+  if (!epg)
+  {
+    CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG table",
+        __FUNCTION__, channel->ChannelName().c_str());
+    return 0;
+  }
+
+  const vector<CPVREpgInfoTag*> *channelEpg = epg->InfoTags();
+  for (unsigned int iTagPtr = 0; iTagPtr < channelEpg->size(); iTagPtr++)
+  {
+    CFileItemPtr channelFile(new CFileItem(*channelEpg->at(iTagPtr)));
+    channelFile->SetLabel2(channelEpg->at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+    results->Add(channelFile);
+  }
+
+  SetVariableData(results);
+
+  return results->Size() - iInitialSize;
+}
+
+int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
+{
+  CPVRChannels *channels = !bRadio ? &PVRChannelsTV : &PVRChannelsRadio;
+  int iInitialSize       = results->Size();
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
+    CPVREpg *epg = (CPVREpg *)GetValidEpgFromChannel(channels->GetByIndex(iChannelPtr));
+
+    if (!epg)
+    {
+      CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG table",
+          __FUNCTION__, channel->ChannelName().c_str());
+      continue;
+    }
+
+    const CPVREpgInfoTag *epgNow = epg->GetInfoTagNow();
+    if (!epgNow)
+    {
+      CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG 'now' table",
+          __FUNCTION__, channel->ChannelName().c_str());
+      continue;
+    }
+
+    CFileItemPtr entry(new CFileItem(*epgNow));
+    entry->SetLabel2(epgNow->Start().GetAsLocalizedTime("", false));
+    entry->m_strPath = channel->ChannelName();
+    entry->SetThumbnailImage(channel->Icon());
+    results->Add(entry);
+  }
+  SetVariableData(results);
+
+  return results->Size() - iInitialSize;
+}
+
+int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
+{
+  CPVRChannels *channels = !bRadio ? &PVRChannelsTV : &PVRChannelsRadio;
+  int iInitialSize       = results->Size();
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
+    CPVREpg *epg = (CPVREpg *)GetValidEpgFromChannel(channels->GetByIndex(iChannelPtr));
+
+    if (!epg)
+    {
+      CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG table",
+          __FUNCTION__, channel->ChannelName().c_str());
+      continue;
+    }
+
+    const CPVREpgInfoTag *epgNext = epg->GetInfoTagNext();
+    if (!epgNext)
+    {
+      CLog::Log(LOGINFO, "PVREpgs - %s - channel '%s' does not have a valid EPG 'next' table",
+          __FUNCTION__, channel->ChannelName().c_str());
+      continue;
+    }
+
+    CFileItemPtr entry(new CFileItem(*epgNext));
+    entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));
+    entry->m_strPath = channel->ChannelName();
+    entry->SetThumbnailImage(channel->Icon());
+    results->Add(entry);
+  }
+  SetVariableData(results);
+
+  return results->Size() - iInitialSize;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-int CPVREpgs::GetEPGChannel(unsigned int number, CFileItemList* results, bool radio)
-{
-  CPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
-
-  if (!ch->at(number-1).m_bGrabEpg)
-    return 0;
-
-  const CPVREpg *Epg = GetEPG(&ch->at(number-1), true);
-  if (Epg && !Epg->IsUpdateRunning() && Epg->IsValid())
-  {
-    const vector<CPVREpgInfoTag*> *ch_epg = Epg->InfoTags();
-    for (unsigned int i = 0; i < ch_epg->size(); i++)
-    {
-      CFileItemPtr channel(new CFileItem(*ch_epg->at(i)));
-      channel->SetLabel2(ch_epg->at(i)->Start().GetAsLocalizedDateTime(false, false));
-      results->Add(channel);
-    }
-    SetVariableData(results);
-  }
-
-  return results->Size();
-}
-
-int CPVREpgs::GetEPGNow(CFileItemList* results, bool radio)
-{
-  CPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
-
-  for (unsigned int i = 0; i < ch->size(); i++)
-  {
-    if (ch->at(i).m_bIsHidden || !ch->at(i).m_bGrabEpg)
-      continue;
-
-    const CPVREpg *Epg = GetEPG(&ch->at(i), true);
-    if (!Epg || Epg->IsUpdateRunning() || !Epg->IsValid())
-      continue;
-
-    const CPVREpgInfoTag *epgnow = Epg->GetInfoTagNow();
-    if (!epgnow)
-      continue;
-
-    CFileItemPtr entry(new CFileItem(*epgnow));
-    entry->SetLabel2(epgnow->Start().GetAsLocalizedTime("", false));
-    entry->m_strPath = ch->at(i).ChannelName();
-    entry->SetThumbnailImage(ch->at(i).Icon());
-    results->Add(entry);
-  }
-  SetVariableData(results);
-
-  return results->Size();
-}
-
-int CPVREpgs::GetEPGNext(CFileItemList* results, bool radio)
-{
-  CPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
-
-  for (unsigned int i = 0; i < ch->size(); i++)
-  {
-    if (ch->at(i).m_bIsHidden || !ch->at(i).GrabEpg())
-      continue;
-
-    const CPVREpg *Epg = GetEPG(&ch->at(i), true);
-    if (!Epg || Epg->IsUpdateRunning() || !Epg->IsValid())
-      continue;
-
-    const CPVREpgInfoTag *epgnext = Epg->GetInfoTagNext();
-    if (!epgnext)
-      continue;
-
-    CFileItemPtr entry(new CFileItem(*epgnext));
-    entry->SetLabel2(epgnext->Start().GetAsLocalizedTime("", false));
-    entry->m_strPath = ch->at(i).ChannelName();
-    entry->SetThumbnailImage(ch->at(i).Icon());
-    results->Add(entry);
-  }
-  SetVariableData(results);
-
-  return results->Size();
-}
-
+// XXX shouldn't this be done elsewhere and not be updated on each query??
 void CPVREpgs::SetVariableData(CFileItemList* results)
 {
   /* Reload Timers */
@@ -656,14 +669,14 @@ void CPVREpgs::SetVariableData(CFileItemList* results)
   }
 }
 
-void CPVREpgs::AssignChangedChannelTags(bool radio/* = false*/)
+void CPVREpgs::AssignChangedChannelTags(bool bRadio /* = false*/)
 {
   CSingleLock lock(m_critSection);
 
-  CPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
+  CPVRChannels *ch = !bRadio ? &PVRChannelsTV : &PVRChannelsRadio;
   for (unsigned int i = 0; i < ch->size(); i++)
   {
     CPVREpg *Epg = (CPVREpg *) GetEPG(&ch->at(i), true);
-    Epg->m_Channel = CPVRChannels::GetByChannelIDFromAll(Epg->ChannelID());
+    Epg->m_Channel = CPVRChannels::GetByChannelIDFromAll(Epg->ChannelTag()->ChannelID());
   }
 }

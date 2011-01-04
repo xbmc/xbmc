@@ -24,7 +24,7 @@
 #include "StringUtils.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
-#include "utils/PVREpgs.h"
+#include "utils/PVREpg.h"
 #include "utils/PVREpgInfoTag.h"
 #include "utils/PVRTimers.h"
 #include "FileItem.h"

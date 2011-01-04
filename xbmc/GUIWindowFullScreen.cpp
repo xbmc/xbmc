@@ -41,7 +41,6 @@
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
-#include "PVRManager.h"
 #include "VideoReferenceClock.h"
 #include "AdvancedSettings.h"
 #include "CPUInfo.h"
@@ -52,6 +51,10 @@
 #include "utils/TimeUtils.h"
 #include "DateTime.h"
 #include "ButtonTranslator.h"
+
+#include "PVRManager.h"
+#include "utils/PVRChannelGroups.h"
+#include "utils/PVRChannelGroup.h"
 
 #include <stdio.h>
 

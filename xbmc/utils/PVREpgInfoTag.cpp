@@ -19,9 +19,10 @@
  *
  */
 
-#include "PVREpgInfoTag.h"
-#include "PVRChannels.h"
 #include "LocalizeStrings.h"
+
+#include "PVREpgInfoTag.h"
+#include "PVRTimers.h"
 
 using namespace std;
 
@@ -77,6 +78,20 @@ void CPVREpgInfoTag::SetGenre(int ID, int subID)
   m_iGenreType    = ID;
   m_iGenreSubType = subID;
   m_strGenre     = ConvertGenreIdToString(ID, subID);
+}
+
+const CPVREpgInfoTag *CPVREpgInfoTag::GetNextEvent() const
+{
+  m_Epg->Sort();
+
+  return m_nextEvent;
+}
+
+const CPVREpgInfoTag *CPVREpgInfoTag::GetPreviousEvent() const
+{
+  m_Epg->Sort();
+
+  return m_previousEvent;
 }
 
 CStdString CPVREpgInfoTag::ConvertGenreIdToString(int ID, int subID) const

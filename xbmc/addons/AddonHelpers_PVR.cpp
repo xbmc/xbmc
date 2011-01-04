@@ -21,12 +21,10 @@
 
 #include "Application.h"
 #include "AddonHelpers_PVR.h"
-#include "PVREpgs.h"
-#include "PVRChannels.h"
-#include "PVRTimers.h"
-#include "PVRRecordings.h"
-#include "PVRClient.h"
 #include "log.h"
+
+#include "PVREpg.h"
+#include "PVRClient.h"
 #include "PVRManager.h"
 
 namespace ADDON

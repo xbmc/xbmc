@@ -29,7 +29,6 @@
 #include "Util.h"
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
-#include "PVRManager.h"
 #include "PartyModeManager.h"
 #include "addons/Visualisation.h"
 #include "ButtonTranslator.h"
@@ -47,8 +46,6 @@
 #include "LastFmManager.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
-#include "PVREpgs.h"
-#include "PVRChannels.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
@@ -76,6 +73,11 @@
 #include "TimeUtils.h"
 #include "SingleLock.h"
 #include "log.h"
+
+#include "PVRManager.h"
+#include "PVRChannel.h"
+#include "PVREpgInfoTag.h"
+#include "PVRChannelGroups.h"
 
 #include "addons/AddonManager.h"
 

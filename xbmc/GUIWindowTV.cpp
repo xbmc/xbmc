@@ -54,6 +54,8 @@
 /* TV control */
 #include "PVRManager.h"
 #include "utils/PVREpgInfoTag.h"
+#include "utils/PVRChannelGroups.h"
+#include "utils/PVRChannelGroup.h"
 
 using namespace std;
 
@@ -1539,9 +1541,8 @@ void CGUIWindowTV::ShowSearchResults()
 
 void CGUIWindowTV::UpdateGuide()
 {
-  bool RadioPlaying;
-  int CurrentChannel;
-  g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  CPVRChannel CurrentChannel;
+  g_PVRManager.GetCurrentChannel(&CurrentChannel);
 
   m_vecItems->Clear();
 
@@ -1550,19 +1551,13 @@ void CGUIWindowTV::UpdateGuide()
     m_guideGrid = NULL;
     m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
 
-    CStdString strChannel;
-    if (!RadioPlaying)
-      strChannel = PVRChannelsTV.GetNameForChannel(CurrentChannel);
-    else
-      strChannel = PVRChannelsRadio.GetNameForChannel(CurrentChannel);
-
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029));
-    SET_CONTROL_LABEL(CONTROL_LABELGROUP, strChannel);
+    SET_CONTROL_LABEL(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
 
-    if (PVREpgs.GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGForChannel(&CurrentChannel, m_vecItems) == 0)
     {
       CFileItemPtr item;
-      item.reset(new CFileItem("pvr://guide/" + strChannel + "/empty.epg", false));
+      item.reset(new CFileItem("pvr://guide/" + CurrentChannel.ChannelName() + "/empty.epg", false));
       item->SetLabel(g_localizeStrings.Get(19028));
       item->SetLabelPreformated(true);
       m_vecItems->Add(item);
@@ -1578,7 +1573,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-    if (PVREpgs.GetEPGNow(m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGNow(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -1597,7 +1592,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-    if (PVREpgs.GetEPGNext(m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGNext(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -1612,7 +1607,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-    if (PVREpgs.GetEPGAll(m_vecItems, RadioPlaying) > 0)
+    if (PVREpgs.GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);

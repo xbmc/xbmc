@@ -26,11 +26,8 @@
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
 #include "Picture.h"
-#include "PVRManager.h"
 #include "Settings.h"
-#include "TVDatabase.h"
 #include "utils/log.h"
-#include "utils/PVRChannels.h"
 #include "GUISpinControlEx.h"
 #include "GUIEditControl.h"
 #include "GUIRadioButtonControl.h"
@@ -42,6 +39,12 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
+
+#include "utils/PVRChannelGroups.h"
+#include "utils/PVRChannelGroup.h"
+#include "utils/PVRChannels.h"
+#include "PVRManager.h"
+#include "TVDatabase.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
