@@ -34,6 +34,9 @@
 #include "PVRChannel.h"
 #include "PVRTimerInfoTag.h"
 
+#define NOWPLAYINGUPDATEINTERVAL 30  /* update "now playing" tags every 30 seconds */
+#define EPGCLEANUPINTERVAL       900 /* remove old entries from the EPG every 15 minutes */
+
 using namespace std;
 
 CPVREpgs PVREpgs;
@@ -51,6 +54,7 @@ CPVREpgs::~CPVREpgs()
 
 void CPVREpgs::Clear(bool bClearDb /* = false */)
 {
+  // XXX stop the timers from being updated while clearing tags
   /* remove all pointers to epg tables on timers */
   for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
     PVRTimers[iTimerPtr].SetEpgInfoTag(NULL);
@@ -91,7 +95,6 @@ void CPVREpgs::Start()
   /* make sure the EPG is loaded before starting the thread */
   CreateChannelEpgs();
   LoadFromDb(true /* show progress */);
-  PVRTimers.Update();
 
   Create();
   SetName("XBMC EPG thread");
@@ -148,7 +151,6 @@ void CPVREpgs::Process()
 {
   time_t iNow          = 0;
   m_iLastPointerUpdate = 0;
-  m_iLastTimerUpdate   = 0;
   m_iLastEpgCleanup    = 0;
   m_iLastEpgUpdate     = 0;
 
@@ -174,28 +176,14 @@ void CPVREpgs::Process()
     if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))
       UpdateEPG(!m_bDatabaseLoaded);
 
-    /* update the "now playing" pointers every 60 seconds */
-    if (!m_bStop && iNow > m_iLastPointerUpdate + 60)
+    if (!m_bStop && iNow > m_iLastPointerUpdate + NOWPLAYINGUPDATEINTERVAL)
       UpdateAllChannelEPGPointers();
 
-    /* update the timers every 60 seconds */
-    if (!m_bStop && iNow > m_iLastTimerUpdate + 60)
-      UpdateTimers();
-
-    /* remove old entries every 30 minutes */
-    if (!m_bStop && iNow > m_iLastEpgCleanup + 1800)
+    if (!m_bStop && iNow > m_iLastEpgCleanup + EPGCLEANUPINTERVAL)
       RemoveOldEntries();
 
     Sleep(1000);
   }
-}
-
-bool CPVREpgs::UpdateTimers(void)
-{
-  PVRTimers.Update();
-  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastTimerUpdate);
-
-  return true;
 }
 
 bool CPVREpgs::LoadSettings()

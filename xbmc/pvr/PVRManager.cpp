@@ -48,9 +48,8 @@
 #include "PVRTimerInfoTag.h"
 
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
-#define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
 #define RECORDINGCHECKDELTA   450 // seconds before checking for changes inside recordings list
-#define EPGCLEANUPCHECKDELTA  900 // seconds before checking for changes inside recordings list
+#define TIMERCHECKDELTA       60  // seconds before checking for changes inside timers list
 
 using namespace std;
 using namespace XFILE;

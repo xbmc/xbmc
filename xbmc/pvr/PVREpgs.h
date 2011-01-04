@@ -58,7 +58,6 @@ private:
   bool             m_bDatabaseLoaded;         /* true if we already loaded the EPG from the database */
   time_t           m_iLastEpgUpdate;          /* the time the EPG was updated */
   time_t           m_iLastEpgCleanup;         /* the time the EPG was cleaned up */
-  time_t           m_iLastTimerUpdate;        /* the time the timers were updated */
   time_t           m_iLastPointerUpdate;      /* the time the now playing pointers were updated */
 
   /**
@@ -100,11 +99,6 @@ private:
    * Loads and updates the EPG data
    */
   bool UpdateEPG(bool bShowProgress = false);
-
-  /**
-   * Update the timers
-   */
-  bool UpdateTimers(void);
 
   /**
    * Load all EPG entries from the database
