@@ -66,7 +66,7 @@ public:
 
   /*! \name GUIInfoManager functions
    */
-  void SyncInfo();
+  void UpdateRecordingsCache();
   const char* TranslateCharInfo(DWORD dwInfo);
   int TranslateIntInfo(DWORD dwInfo);
   bool TranslateBoolInfo(DWORD dwInfo);
@@ -366,12 +366,8 @@ private:
   DWORD               m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
   unsigned int        m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
 
-  CStdString          m_nextRecordingDateTime;
-  CStdString          m_nextRecordingChannel;
-  CStdString          m_nextRecordingTitle;
-  std::vector<CStdString> m_nowRecordingDateTime;
-  std::vector<CStdString> m_nowRecordingChannel;
-  std::vector<CStdString> m_nowRecordingTitle;
+  std::vector<CPVRTimerInfoTag *> m_NowRecording;
+  CPVRTimerInfoTag *  m_NextRecording;
   CStdString          m_backendName;
   CStdString          m_backendVersion;
   CStdString          m_backendHost;

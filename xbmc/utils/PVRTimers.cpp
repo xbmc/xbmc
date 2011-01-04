@@ -78,7 +78,7 @@ bool CPVRTimers::Update()
   }
 
   //XXX
-  g_PVRManager.SyncInfo();
+  g_PVRManager.UpdateRecordingsCache();
 
   /* set channel timers */
   for (unsigned int ptr = 0; ptr < size(); ptr++)

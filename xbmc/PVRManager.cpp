@@ -262,7 +262,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
       {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
         PVRTimers.Update();
-        SyncInfo();
+        UpdateRecordingsCache();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
         if (pTVWin)
@@ -273,7 +273,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_RECORDINGS_CHANGE:
       {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
-        SyncInfo();
+        UpdateRecordingsCache();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
         if (pTVWin)
@@ -284,7 +284,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_CHANNELS_CHANGE:
       {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld channel list changed", __FUNCTION__, clientID);
-        SyncInfo();
+        UpdateRecordingsCache();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
         if (pTVWin)
@@ -468,7 +468,7 @@ void CPVRManager::Process()
     {
       CLog::Log(LOGDEBUG,"PVR: Updating Timers list");
       PVRTimers.Update();
-      SyncInfo();
+      UpdateRecordingsCache();
       CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
       if (pTVWin)
         pTVWin->UpdateData(TV_WINDOW_TIMERS);
@@ -508,49 +508,36 @@ void CPVRManager::Process()
 /*************************************************************/
 
 /********************************************************************
- * CPVRManager SyncInfo
+ * CPVRManager UpdateRecordingsCache
  *
- * Synchronize InfoManager related stuff
+ * Updates the recordings and the "now" and "next" timers
  ********************************************************************/
-void CPVRManager::SyncInfo()
+void CPVRManager::UpdateRecordingsCache()
 {
   EnterCriticalSection(&m_critSection);
 
   PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
   PVRTimers.GetNumTimers()         > 0 ? m_hasTimers     = true : m_hasTimers = false;
   m_isRecording = false;
-  CPVRTimerInfoTag *nextTimer = NULL;
-
-  m_nowRecordingTitle.clear();
-  m_nowRecordingChannel.clear();
-  m_nowRecordingDateTime.clear();
-  m_nextRecordingTitle.clear();
-  m_nextRecordingChannel.clear();
-  m_nextRecordingDateTime.clear();
+  m_NowRecording.clear();
+  m_NextRecording = NULL;
 
   if (m_hasTimers)
   {
+    CDateTime now = CDateTime::GetCurrentDateTime();
     for (unsigned int i = 0; i < PVRTimers.size(); ++i)
     {
-      if (PVRTimers[i].Active() && (PVRTimers[i].Start() < CDateTime::GetCurrentDateTime() && PVRTimers[i].Stop() > CDateTime::GetCurrentDateTime()))
+      CPVRTimerInfoTag *timerTag = &PVRTimers[i];
+      if (timerTag->Active() && timerTag->Start() <= now && timerTag->Stop() > now)
       {
-        m_nowRecordingTitle.push_back(PVRTimers[i].Title());
-        m_nowRecordingChannel.push_back(PVRChannelsTV.GetNameForChannel(PVRTimers[i].ChannelNumber()));
-        m_nowRecordingDateTime.push_back(PVRTimers[i].Start().GetAsLocalizedDateTime(false, false));
+        m_NowRecording.push_back(timerTag);
         m_isRecording = true;
       }
-      else if (PVRTimers[i].Active())
+      else if (timerTag->Active())
       {
-        if (!nextTimer || nextTimer->Start() > PVRTimers[i].Start())
-          nextTimer = &PVRTimers[i];
+        if (!m_NextRecording || m_NextRecording->Start() > timerTag->Start())
+          m_NextRecording = timerTag;
       }
-    }
-
-    if (nextTimer)
-    {
-      m_nextRecordingTitle    = nextTimer->Title();
-      m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextTimer->Number());
-      m_nextRecordingDateTime = nextTimer->Start().GetAsLocalizedDateTime(false, false);
     }
   }
 
@@ -569,7 +556,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   {
     if (m_recordingToggleStart == 0)
     {
-      SyncInfo();
+      UpdateRecordingsCache();
       m_recordingToggleStart = CTimeUtils::GetTimeMS();
       m_recordingToggleCurrent = 0;
     }
@@ -577,11 +564,11 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
     {
       if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
       {
-        SyncInfo();
-        if (m_nowRecordingTitle.size() > 0)
+        UpdateRecordingsCache();
+        if (m_NowRecording.size() > 0)
         {
           m_recordingToggleCurrent++;
-          if (m_recordingToggleCurrent > m_nowRecordingTitle.size()-1)
+          if (m_recordingToggleCurrent > m_NowRecording.size()-1)
             m_recordingToggleCurrent = 0;
 
           m_recordingToggleStart = CTimeUtils::GetTimeMS();
@@ -589,28 +576,34 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
       }
     }
 
-    if (m_nowRecordingTitle.size() > 0)
-      return m_nowRecordingTitle[m_recordingToggleCurrent];
+    if (m_NowRecording.size() >= m_recordingToggleCurrent + 1)
+      return m_NowRecording[m_recordingToggleCurrent]->Title();
     else
       return "";
   }
   else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)
   {
-    if (m_nowRecordingChannel.size() > 0)
-      return m_nowRecordingChannel[m_recordingToggleCurrent];
+    if (m_NowRecording.size() > 0)
+    {
+      CPVRTimerInfoTag * timerTag = m_NowRecording[m_recordingToggleCurrent];
+      return timerTag ? timerTag->ChannelName() : "";
+    }
     else
       return "";
   }
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME)
   {
-    if (m_nowRecordingDateTime.size() > 0)
-      return m_nowRecordingDateTime[m_recordingToggleCurrent];
+    if (m_NowRecording.size() > 0)
+    {
+      CPVRTimerInfoTag *timerTag = m_NowRecording[m_recordingToggleCurrent];
+      return timerTag ? timerTag->Start().GetAsLocalizedDateTime(false, false) : "";
+    }
     else
       return "";
   }
-  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_nextRecordingTitle;
-  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_nextRecordingChannel;
-  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
+  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_NextRecording ? m_NextRecording->Title() : "";
+  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_NextRecording ? m_NextRecording->ChannelName() : "";
+  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_NextRecording ? m_NextRecording->Start().GetAsLocalizedDateTime(false, false) : "";
   else if (dwInfo == PVR_BACKEND_NAME)            return m_backendName;
   else if (dwInfo == PVR_BACKEND_VERSION)         return m_backendVersion;
   else if (dwInfo == PVR_BACKEND_HOST)            return m_backendHost;
