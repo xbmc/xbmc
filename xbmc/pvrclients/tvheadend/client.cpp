@@ -71,7 +71,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
+  XBMC->Log(LOG_DEBUG, "%s - Creating Tvheadend PVR-Client", __FUNCTION__);
 
   m_CurStatus    = STATUS_UNKNOWN;
   g_clientID     = pvrprops->clientID;
@@ -88,7 +88,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   else
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default", DEFAULT_HOST);
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'host' setting, falling back to '%s' as default", __FUNCTION__, DEFAULT_HOST);
     g_szHostname = DEFAULT_HOST;
   }
   buffer[0] = 0; /* Set the end of string */
@@ -98,7 +98,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   else
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'user' setting");
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'user' setting", __FUNCTION__);
     g_szUsername = "";
   }
   buffer[0] = 0; /* Set the end of string */
@@ -108,7 +108,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   else
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'pass' setting");
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'pass' setting", __FUNCTION__);
     g_szPassword = "";
   }
   free (buffer);
@@ -117,7 +117,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!XBMC->GetSetting("htsp_port", &g_iPortHTSP))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'htsp_port' setting, falling back to '%i' as default", DEFAULT_HTSP_PORT);
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'htsp_port' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_HTSP_PORT);
     g_iPortHTSP = DEFAULT_HTSP_PORT;
   }
 
@@ -125,7 +125,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'http_port' setting, falling back to '%i' as default", DEFAULT_HTTP_PORT);
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'http_port' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_HTTP_PORT);
     g_iPortHTTP = DEFAULT_HTTP_PORT;
   }
 
@@ -133,7 +133,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!XBMC->GetSetting("skip_I_frame", &g_bSkipIFrame))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'skip_I_frame' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'skip_I_frame' setting, falling back to 'true' as default", __FUNCTION__);
     g_bSkipIFrame = DEFAULT_SKIP_I_FRAME;
   }
 
@@ -141,7 +141,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!XBMC->GetSetting("epg_offset_correction", &g_iEpgOffsetCorrection))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'epg_offset_correction' setting, falling back to '%i' as default", DEFAULT_EPG_OFFSET_CORRECTION);
+    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'epg_offset_correction' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_EPG_OFFSET_CORRECTION);
     g_iEpgOffsetCorrection = DEFAULT_EPG_OFFSET_CORRECTION;
   }else
   {
@@ -191,7 +191,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'host' from %s to %s", __FUNCTION__, g_szHostname.c_str(), (const char*) settingValue);
     tmp_sHostname = g_szHostname;
     g_szHostname = (const char*) settingValue;
     if (tmp_sHostname != g_szHostname)
@@ -199,7 +199,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "user")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'user'");
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
     string tmp_sUsername = g_szUsername;
     g_szUsername = (const char*) settingValue;
     if (tmp_sUsername != g_szUsername)
@@ -207,7 +207,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "pass")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'pass'");
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
     string tmp_sPassword = g_szPassword;
     g_szPassword = (const char*) settingValue;
     if (tmp_sPassword != g_szPassword)
@@ -215,7 +215,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "htsp_port")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPortHTSP, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
     if (g_iPortHTSP != *(int*) settingValue)
     {
       g_iPortHTSP = *(int*) settingValue;
@@ -224,7 +224,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "http_port")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPortHTTP, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
     if (g_iPortHTTP != *(int*) settingValue)
     {
       g_iPortHTTP = *(int*) settingValue;
@@ -233,7 +233,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "skip_I_frame")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'skip_I_frame' from %u to %u", g_bSkipIFrame, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame' from %u to %u", __FUNCTION__, g_bSkipIFrame, *(bool*) settingValue);
     if (g_bSkipIFrame != *(bool*) settingValue)
     {
       g_bSkipIFrame = *(bool*) settingValue;
@@ -242,7 +242,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "epg_offset_correction")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'epg_offset_correction' from %d to %d", g_iEpgOffsetCorrection, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'epg_offset_correction' from %d to %d", __FUNCTION__, g_iEpgOffsetCorrection, *(int*) settingValue);
     if (g_iEpgOffsetCorrection != *(int*) settingValue - 12)
     {
       g_iEpgOffsetCorrection = *(int*) settingValue - 12;

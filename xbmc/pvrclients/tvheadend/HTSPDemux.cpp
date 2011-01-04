@@ -148,7 +148,7 @@ DemuxPacket* cHTSPDemux::Read()
 
       htsmsg_get_u32(msg, "frametype", &frametype);
       frametypechar[0] = static_cast<char>( frametype );
-      XBMC->Log(LOG_DEBUG, "cHTSPDemux::Read - Frame type %c", frametypechar[0]);
+      XBMC->Log(LOG_DEBUG, "%s - Frame type %c", __FUNCTION__, frametypechar[0]);
 
       // Not the best solution - need to find how to pause video player for longer time.
       // This way video player could get enough audio packets in buffer to play without audio discontinuity
@@ -159,7 +159,7 @@ DemuxPacket* cHTSPDemux::Read()
       if (g_bSkipIFrame && m_SkipIFrame == 0 && frametypechar[0]=='I')
       {
         m_SkipIFrame++;
-        XBMC->Log(LOG_DEBUG, "cHTSPDemux::Skipped first I-frame");
+        XBMC->Log(LOG_DEBUG, "%s - Skipped first I-frame", __FUNCTION__);
         htsmsg_destroy(msg);
         DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
         return pkt;
@@ -215,13 +215,13 @@ DemuxPacket* cHTSPDemux::Read()
 
 bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SetChannel - changing to channel %d", channelinfo.number);
+  XBMC->Log(LOG_DEBUG, "%s - changing to channel %d", __FUNCTION__, channelinfo.number);
 
   if (!m_session.SendUnsubscribe(m_subs))
-    XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to unsubscribe from previous channel");
+    XBMC->Log(LOG_ERROR, "%s - failed to unsubscribe from previous channel", __FUNCTION__);
 
   if (!m_session.SendSubscribe(m_subs+1, channelinfo.number))
-    XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to set channel");
+    XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
   else
   {
     m_channel           = channelinfo.number;
@@ -266,7 +266,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
   htsmsg_field_t *f;
   if((streams = htsmsg_get_list(m, "streams")) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPDemux::SubscriptionStart - malformed message");
+    XBMC->Log(LOG_ERROR, "%s - malformed message", __FUNCTION__);
     return;
   }
 
@@ -290,7 +290,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       continue;
 
     const char *language = htsmsg_get_str(sub, "language");
-    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - id: %d, type: %s, language: %s", index, type, language);
+    XBMC->Log(LOG_DEBUG, "%s - id: %d, type: %s, language: %s", __FUNCTION__, index, type, language);
 
     m_Streams.stream[m_Streams.nstreams].fpsscale         = 0;
     m_Streams.stream[m_Streams.nstreams].fpsrate          = 0;
@@ -469,27 +469,27 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 
     if (m_Streams.nstreams >= PVR_STREAM_MAX_STREAMS)
     {
-      XBMC->Log(LOG_ERROR, "cHTSPDemux::SubscriptionStart - max amount of streams reached");
+      XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
       break;
     }
   }
 
   if (cHTSPSession::ParseSourceInfo(m, m_SourceInfo))
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on adapter %s, mux %s, network %s, provider %s, service %s",
-        m_SourceInfo.si_adapter.c_str(), m_SourceInfo.si_mux.c_str(),
+    XBMC->Log(LOG_DEBUG, "%s - subscription started on adapter %s, mux %s, network %s, provider %s, service %s"
+        , __FUNCTION__, m_SourceInfo.si_adapter.c_str(), m_SourceInfo.si_mux.c_str(),
         m_SourceInfo.si_network.c_str(), m_SourceInfo.si_provider.c_str(),
         m_SourceInfo.si_service.c_str());
   }
   else
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - subscription started on an unknown device");
+    XBMC->Log(LOG_DEBUG, "%s - subscription started on an unknown device", __FUNCTION__);
   }
 }
 
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStop - subscription ended on adapter %s", m_SourceInfo.si_adapter.c_str());
+  XBMC->Log(LOG_DEBUG, "%s - subscription ended on adapter %s", __FUNCTION__, m_SourceInfo.si_adapter.c_str());
   m_Streams.nstreams = 0;
 
   /* reset the signal status */
@@ -517,7 +517,7 @@ void cHTSPDemux::SubscriptionStatus(htsmsg_t *m)
   {
     m_StatusCount++;
     m_Status = status;
-    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStatus - %s", status);
+    XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
     XBMC->QueueNotification(QUEUE_INFO, status);
   }
 }

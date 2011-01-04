@@ -44,7 +44,7 @@ bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString 
 
   if(m_session.GetProtocol() < 2)
   {
-    XBMC->Log(LOG_ERROR, "Incompatible protocol version %d", m_session.GetProtocol());
+    XBMC->Log(LOG_ERROR, "%s - Incompatible protocol version %d", __FUNCTION__, m_session.GetProtocol());
     return false;
   }
 
@@ -92,7 +92,7 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)
 
   if(!message.event->Wait(2000))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPData::ReadResult - Timeout waiting for response");
+    XBMC->Log(LOG_ERROR, "%s - Timeout waiting for response", __FUNCTION__);
     m_session.Close();
   }
   m_Mutex.Lock();
@@ -112,7 +112,7 @@ bool cHTSPData::GetDriveSpace(long long *total, long long *used)
   htsmsg_add_str(msg, "method", "getDiskSpace");
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::GetDriveSpace - failed to get getDiskSpace");
+    XBMC->Log(LOG_DEBUG, "%s - failed to get getDiskSpace", __FUNCTION__);
     return false;
   }
 
@@ -131,13 +131,13 @@ bool cHTSPData::GetDriveSpace(long long *total, long long *used)
 
 bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPData::GetTime()");
+  XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getSysTime");
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPData::GetTime - failed to get sysTime");
+    XBMC->Log(LOG_ERROR, "%s - failed to get sysTime", __FUNCTION__);
     return false;
   }
 
@@ -149,8 +149,8 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
   if (htsmsg_get_s32(msg, "timezone", &offset) != 0)
     return false;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPData::GetTime - tvheadend reported time=%u, timezone=%d, correction=%d",
-      secs, offset, g_iEpgOffsetCorrection * 60);
+  XBMC->Log(LOG_DEBUG, "%s - tvheadend reported time=%u, timezone=%d, correction=%d"
+      , __FUNCTION__, secs, offset, g_iEpgOffsetCorrection * 60);
 
   /* XBMC needs the timezone difference in seconds from GMT */
   offset = (offset - (g_iEpgOffsetCorrection * 60)) * 60;
@@ -325,21 +325,21 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
 
 PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording()");
+  XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
   htsmsg_add_u32(msg, "id", recinfo.index);
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to get deleteDvrEntry");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to parse param");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -386,21 +386,21 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
 
 PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording()");
+  XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
   htsmsg_add_u32(msg, "id", timerinfo.index);
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to get deleteDvrEntry");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to parse param");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -409,21 +409,21 @@ PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 
 PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer()");
+  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, timerinfo.index);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "addDvrEntry");
   htsmsg_add_u32(msg, "eventId", timerinfo.index);
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer - Failed to get addDvrEntry");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to get addDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::AddTimer - Failed to parse param");
+    XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -432,7 +432,7 @@ PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
 
 void cHTSPData::Action()
 {
-  XBMC->Log(LOG_DEBUG, "cHTSPData::Action() - Starting");
+  XBMC->Log(LOG_DEBUG, "%s - Starting", __FUNCTION__);
 
   htsmsg_t* msg;
 
@@ -481,13 +481,13 @@ void cHTSPData::Action()
     else if(strstr(method, "dvrEntryDelete"))
       cHTSPSession::ParseDVREntryDelete(msg, m_recordings);
     else
-      XBMC->Log(LOG_DEBUG, "Unmapped action recieved '%s'", method);
+      XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 
     htsmsg_destroy(msg);
   }
 
   m_started.Signal();
-  XBMC->Log(LOG_DEBUG, "cHTSPData::Action() - Exiting");
+  XBMC->Log(LOG_DEBUG, "%s - Exiting", __FUNCTION__);
 }
 
 SChannels cHTSPData::GetChannels()
@@ -521,7 +521,7 @@ SChannels cHTSPData::GetChannels(STag& tag)
     SChannels::iterator it2 = m_channels.find(*it);
     if(it2 == m_channels.end())
     {
-      XBMC->Log(LOG_ERROR, "cHTSPData::GetChannels - tag points to unknown channel %d", *it);
+      XBMC->Log(LOG_ERROR, "%s - tag points to unknown channel %d", __FUNCTION__, *it);
       continue;
     }
     channels[*it] = it2->second;
@@ -555,7 +555,7 @@ bool cHTSPData::GetEvent(SEvent& event, uint32_t id)
   htsmsg_add_u32(msg, "eventId", id);
   if((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPData::GetEvent - failed to get event %u", id);
+    XBMC->Log(LOG_DEBUG, "%s - failed to get event %u", __FUNCTION__, id);
     return false;
   }
   if(!cHTSPSession::ParseEvent(msg, id, event))

@@ -92,14 +92,14 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   if(port == 0)
     port = 9982;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::Connect - connecting to '%s', port '%d'\n", hostname.c_str(), port);
+  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'\n", __FUNCTION__, hostname.c_str(), port);
 
   m_fd = htsp_tcp_connect(hostname.c_str()
                         , port
                         , errbuf, errlen, 3000);
   if(m_fd == INVALID_SOCKET)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::Connect - failed to connect to server (%s)\n", errbuf);
+    XBMC->Log(LOG_ERROR, "%s - failed to connect to server (%s)\n", __FUNCTION__, errbuf);
     return false;
   }
 
@@ -112,7 +112,7 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   // read welcome
   if((m = ReadResult(m)) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::Connect - failed to read greeting from server");
+    XBMC->Log(LOG_ERROR, "%s - failed to read greeting from server", __FUNCTION__);
     return false;
   }
   method  = htsmsg_get_str(m, "method");
@@ -121,8 +121,8 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
   version = htsmsg_get_str(m, "serverversion");
             htsmsg_get_bin(m, "challenge", &chall, &chall_len);
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::Connect - connected to server: [%s], version: [%s], proto: %d"
-                    , server ? server : "", version ? version : "", proto);
+  XBMC->Log(LOG_DEBUG, "%s - connected to server: [%s], version: [%s], proto: %d"
+      , __FUNCTION__, server ? server : "", version ? version : "", proto);
 
   m_server   = server;
   m_version  = version;
@@ -184,7 +184,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
 
   if(x)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ReadMessage - Failed to read packet size (%d)\n", x);
+    XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)\n", __FUNCTION__, x);
     return NULL;
   }
 
@@ -197,7 +197,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   x = htsp_tcp_read(m_fd, buf, l);
   if(x)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ReadMessage - Failed to read packet (%d)\n", x);
+    XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)\n", __FUNCTION__, x);
     free(buf);
     return NULL;
   }
@@ -249,7 +249,7 @@ htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
     queue.push_back(m);
     if(queue.size() >= m_queue_size)
     {
-      XBMC->Log(LOG_ERROR, "CDVDInputStreamHTSP::ReadResult - maximum queue size (%u) reached", m_queue_size);
+      XBMC->Log(LOG_ERROR, "%s - maximum queue size (%u) reached", __FUNCTION__, m_queue_size);
       m_queue.swap(queue);
       return NULL;
     }
@@ -260,14 +260,14 @@ htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
   const char* error;
   if(m && (error = htsmsg_get_str(m, "error")))
   {
-    XBMC->Log(LOG_ERROR, "CDVDInputStreamHTSP::ReadResult - error (%s)", error);
+    XBMC->Log(LOG_ERROR, "%s - error (%s)", __FUNCTION__, error);
     htsmsg_destroy(m);
     return NULL;
   }
   uint32_t noaccess;
   if(m && !htsmsg_get_u32(m, "noaccess", &noaccess) && noaccess)
   {
-    XBMC->Log(LOG_ERROR, "CDVDInputStreamHTSP::ReadResult - access denied (%d)", noaccess);
+    XBMC->Log(LOG_ERROR, "%s - access denied (%d)", __FUNCTION__, noaccess);
     htsmsg_destroy(m);
     return NULL;
   }
@@ -279,7 +279,7 @@ bool cHTSPSession::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
 {
   if((m = ReadResult(m, sequence)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "CDVDInputStreamHTSP::ReadSuccess - failed to %s", action.c_str());
+    XBMC->Log(LOG_DEBUG, "%s - failed to %s", __FUNCTION__, action.c_str());
     return false;
   }
   htsmsg_destroy(m);
@@ -323,7 +323,7 @@ bool cHTSPSession::GetEvent(SEvent& event, uint32_t id)
   htsmsg_add_u32(msg, "eventId", id);
   if((msg = ReadResult(msg, true)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPSession::GetEvent - failed to get event %d", id);
+    XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
     return false;
   }
   return ParseEvent(msg, id, event);
@@ -337,7 +337,7 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
   || (title = htsmsg_get_str(msg, "title")) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseEvent - malformed event");
+    XBMC->Log(LOG_DEBUG, "%s - malformed event", __FUNCTION__);
     htsmsg_print(msg);
     htsmsg_destroy(msg);
     return false;
@@ -363,7 +363,8 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   else
     event.content = content;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseEvent - id:%u, chan_id:%u, title:'%s', genre_type:%u, genre_sub_type:%u, desc:'%s', start:%u, stop:%u, next:%u"
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, chan_id:%u, title:'%s', genre_type:%u, genre_sub_type:%u, desc:'%s', start:%u, stop:%u, next:%u"
+                    , __FUNCTION__
                     , event.id
                     , event.chan_id
                     , event.title.c_str()
@@ -383,7 +384,7 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   const char *name, *icon;
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseChannelUpdate - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
@@ -448,8 +449,8 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
     }
   }
   
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
-                    , id, name ? name : "(null)", icon ? icon : "(null)", event);
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s', event:%u"
+      , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)", event);
 }
 
 void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
@@ -457,11 +458,11 @@ void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
   uint32_t id;
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
-    XBMC->Log(LOG_ERROR, "CDVDInputStreamHTSP::ParseChannelRemove - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseChannelRemove - id:%u", id);
+  XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
 
   channels.erase(id);
 }
@@ -472,7 +473,7 @@ void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
   const char *name, *icon;
   if(htsmsg_get_u32(msg, "tagId", &id))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseTagUpdate - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
@@ -500,8 +501,8 @@ void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
     }
   }
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseTagUpdate - id:%u, name:'%s', icon:'%s'"
-                    , id, name ? name : "(null)", icon ? icon : "(null)");
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s'"
+      , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)");
 
 }
 
@@ -510,11 +511,11 @@ void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   uint32_t id;
   if(htsmsg_get_u32(msg, "tagId", &id))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseTagRemove - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseTagRemove - id:%u", id);
+  XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
 
   tags.erase(id);
 }
@@ -539,9 +540,9 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
   else
     quality.fe_status = "(unknown)";
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseSignalStatus - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
-                    , quality.fe_snr, quality.fe_signal, quality.fe_ber
-                    , quality.fe_unc, quality.fe_status.c_str());
+  XBMC->Log(LOG_DEBUG, "%s - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
+      , __FUNCTION__, quality.fe_snr, quality.fe_signal, quality.fe_ber
+      , quality.fe_unc, quality.fe_status.c_str());
 
   return true;
 }
@@ -551,7 +552,7 @@ bool cHTSPSession::ParseSourceInfo (htsmsg_t* msg, SSourceInfo &si)
   htsmsg_t       *sourceinfo;
   if((sourceinfo = htsmsg_get_map(msg, "sourceinfo")) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseSourceInfo - malformed message");
+    XBMC->Log(LOG_ERROR, "%s - malformed message", __FUNCTION__);
     return false;
   }
 
@@ -592,7 +593,7 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   || htsmsg_get_u32(msg, "Pdrops",  &queue.pdrops)
   || htsmsg_get_u32(msg, "Idrops",  &queue.idrops))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseQueueStatus - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return false;
   }
@@ -615,7 +616,7 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   || htsmsg_get_u32(msg, "stop",    &recording.stop)
   || (state = htsmsg_get_str(msg, "state")) == NULL)
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryUpdate - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
@@ -646,8 +647,9 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   else
     recording.error = str;
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryUpdate - id:%u, state:'%s', title:'%s', description: '%s'",
-      recording.id, state, recording.title.c_str(), recording.description.c_str());
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
+      , __FUNCTION__, recording.id, state, recording.title.c_str()
+      , recording.description.c_str());
 
   recordings[recording.id] = recording;
 }
@@ -658,12 +660,12 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
 
   if(htsmsg_get_u32(msg, "id", &id))
   {
-    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryDelete - malformed message received");
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
 
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryDelete - Recording %i was deleted", id);
+  XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
 
   recordings.erase(id);
 }
