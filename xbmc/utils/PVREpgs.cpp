@@ -68,7 +68,7 @@ void CPVREpgs::Start()
 {
   /* make sure the EPG is loaded before starting the thread */
   UpdateEPG(true /* show progress */);
-  UpdateTimers();
+  PVRTimers.Update();
   UpdateAllChannelEPGPointers();
 
   Create();
@@ -113,7 +113,7 @@ void CPVREpgs::Process()
     if (iNow > iLastTimerUpdate + 60)
     {
       iLastTimerUpdate = iNow;
-      UpdateTimers();
+      PVRTimers.Update();
     }
 
     Sleep(1000);
@@ -227,7 +227,9 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
     time_t iCurrentTime;
     database->GetLastEPGScanTime().GetAsTime(iLastUpdateTime);
     CDateTime::GetCurrentDateTime().GetAsTime(iCurrentTime);
-    bUpdate = iLastUpdateTime + m_iUpdateTime <= iCurrentTime;
+    bUpdate = (iLastUpdateTime + m_iUpdateTime <= iCurrentTime) ||
+              (m_RadioLast <  iCurrentTime + m_iUpdateTime) ||
+              (m_TVLast <  iCurrentTime + m_iUpdateTime);
   }
 
   RemoveOldEntries();
@@ -256,7 +258,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
   CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
   CDateTime::GetCurrentDateTime().GetAsTime(end);
   start -= m_iLingerTime;
-  end   += m_bDatabaseLoaded ? m_iDaysToDisplay : 60*60*12; // only get the first 12 hours when not updating in the background
+  end   += m_bDatabaseLoaded ? m_iDaysToDisplay : 60*60*6; // only get the first 6 hours when not updating in the background
 
   CSingleLock lock(m_critSection);
 
@@ -325,8 +327,6 @@ int CPVREpgs::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
     if (channel)
       GetEPGForChannel(channel, results);
   }
-
-//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -457,8 +457,6 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
     }
   }
 
-//  SetVariableData(results);
-
   return results->Size();
 }
 
@@ -480,8 +478,6 @@ int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
     channelFile->SetLabel2(epg->at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
     results->Add(channelFile);
   }
-
-//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -510,7 +506,6 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
     entry->SetThumbnailImage(channel->Icon());
     results->Add(entry);
   }
-//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
@@ -539,86 +534,6 @@ int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
     entry->SetThumbnailImage(channel->Icon());
     results->Add(entry);
   }
-//  SetVariableData(results);
 
   return results->Size() - iInitialSize;
 }
-
-void CPVREpgs::UpdateTimers()
-{
-  CSingleLock lock(m_critSection);
-
-  /* clear timers */
-  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
-  {
-    CPVREpgInfoTag *tag = (CPVREpgInfoTag *)PVRTimers[iTimerPtr].EpgInfoTag();
-    if (tag)
-      tag->SetTimer(NULL);
-  }
-
-  /* update timers */
-  PVRTimers.Update();
-
-  /* set timers */
-  for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
-  {
-    /* get the timer tag */
-    CPVRTimerInfoTag *timerTag = &PVRTimers.at(ptr);
-    if (!timerTag || !timerTag->Active())
-      continue;
-
-    /* try to get the channel */
-    CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
-    if (!channel)
-      continue;
-
-    /* try to get the EPG */
-    CPVREpg *epg = channel->GetEpg();
-    if (!epg)
-      continue;
-
-    /* try to set the timer on the epg tag that matches */
-    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) epg->InfoTagBetween(timerTag->Start(), timerTag->Stop());
-    if (epgTag)
-      epgTag->SetTimer(timerTag);
-  }
-}
-
-// XXX shouldn't this be done elsewhere and not be updated on each query??
-//void CPVREpgs::SetVariableData(CFileItemList* results)
-//{
-//  /* Reload Timers */
-//  PVRTimers.Update();
-//
-//  /* Clear first all Timers set inside the EPG tags */
-//  for (int j = 0; j < results->Size(); j++)
-//  {
-//    CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
-//    if (epg)
-//      epg->SetTimer(NULL);
-//  }
-//
-//  /* Now go with the timers thru the EPG and set the Timer Tag for every matching item */
-//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
-//  {
-//    for (int j = 0; j < results->Size(); j++)
-//    {
-//      CPVREpgInfoTag *epg = results->Get(j)->GetEPGInfoTag();
-//      if (epg)
-//      {
-//        if (!PVRTimers[i].Active())
-//          continue;
-//
-//        if (epg->ChannelTag()->ChannelNumber() != PVRTimers[i].ChannelNumber())
-//          continue;
-//
-//        CDateTime timeAround = CDateTime(time_t((PVRTimers[i].StopTime() - PVRTimers[i].StartTime())/2 + PVRTimers[i].StartTime()));
-//        if ((epg->Start() <= timeAround) && (epg->End() >= timeAround))
-//        {
-//          epg->SetTimer(&PVRTimers[i]);
-//          break;
-//        }
-//      }
-//    }
-//  }
-//}

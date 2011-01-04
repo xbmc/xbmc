@@ -45,10 +45,25 @@ bool CPVRTimers::Update()
 {
   CSingleLock lock(m_critSection);
 
-  CLIENTMAP *clients = g_PVRManager.Clients();
+  /* clear channel timers */
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+  {
+    CPVRTimerInfoTag *timerTag = &at(iTimerPtr);
+    if (!timerTag || !timerTag->Active())
+      continue;
 
+    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *)timerTag->EpgInfoTag();
+    if (!epgTag)
+      continue;
+
+    epgTag->SetTimer(NULL);
+  }
+
+  /* clear timers */
   Clear();
 
+  /* get all timers from the clients */
+  CLIENTMAP *clients = g_PVRManager.Clients();
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
@@ -62,7 +77,33 @@ bool CPVRTimers::Update()
     itr++;
   }
 
+  //XXX
   g_PVRManager.SyncInfo();
+
+  /* set channel timers */
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    /* get the timer tag */
+    CPVRTimerInfoTag *timerTag = &at(ptr);
+    if (!timerTag || !timerTag->Active())
+      continue;
+
+    /* try to get the channel */
+    CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
+    if (!channel)
+      continue;
+
+    /* try to get the EPG */
+    CPVREpg *epg = channel->GetEpg();
+    if (!epg)
+      continue;
+
+    /* try to set the timer on the epg tag that matches */
+    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) epg->InfoTagBetween(timerTag->Start(), timerTag->Stop());
+    if (epgTag)
+      epgTag->SetTimer(timerTag);
+  }
+
   return true;
 }
 
