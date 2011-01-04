@@ -69,7 +69,6 @@ void CPVREpgs::Start()
   /* make sure the EPG is loaded before starting the thread */
   LoadFromDb(true /* show progress */);
   PVRTimers.Update();
-  UpdateAllChannelEPGPointers();
 
   Create();
   SetName("XBMC EPG thread");
@@ -235,7 +234,10 @@ bool CPVREpgs::LoadFromDb(bool bShowProgress /* = false */)
         continue;
       }
 
-      bLoaded = epg->LoadFromDb() && bLoaded;
+      if (epg->LoadFromDb())
+        channel->UpdateEPGPointers();
+      else
+        bLoaded = false;
 
       if (bShowProgress)
       {
