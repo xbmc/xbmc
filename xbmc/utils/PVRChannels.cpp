@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,27 +19,20 @@
  *
  */
 
-#include "FileItem.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
-#include "LocalizeStrings.h"
-#include "utils/log.h"
-#include "Util.h"
-#include "URL.h"
-#include "FileSystem/File.h"
+#include "log.h"
 #include "MusicInfoTag.h"
 
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
 #include "PVRChannels.h"
 #include "TVDatabase.h"
-#include "PVRTimerInfoTag.h"
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
 
-using namespace XFILE;
 using namespace MUSIC_INFO;
 
 CPVRChannels PVRChannelsTV;
