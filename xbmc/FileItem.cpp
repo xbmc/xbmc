@@ -169,7 +169,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = channel.GetEpgNow()->Title(); // XXX replace by g_localizeStrings.Get(19055) ??
+  m_strLabel2 = channel.GetEpgNow()->Title();
   SetThumbnailImage(channel.Icon());
   //FillInDefaultIcon();
   //SetVideoThumb();

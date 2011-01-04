@@ -36,8 +36,6 @@ class CPVRChannel : public Observable
 private:
   mutable const CPVREpg *        m_Epg;
   mutable const CPVREpgInfoTag * m_epgNow;
-  mutable const CPVREpgInfoTag * m_epgNext;
-  mutable const CPVREpgInfoTag * m_epgEmpty; //XXX temporary until a proper update mechanism is implemented
 
   /* XBMC related channel data */
   long                       m_iDatabaseId;             /**< \brief Database number */
@@ -71,7 +69,7 @@ private:
 
   std::vector<long>          m_linkedChannels;          /**< \brief Channels linked to this channel */
 
-  void UpdateEpgPointers() const;
+  void UpdateEpgPointers();
 
 public:
   CPVRChannel() { Reset(); };

@@ -772,12 +772,14 @@ bool CPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
         CMusicInfoTag* musictag = channel->GetMusicInfoTag();
         if (musictag)
         {
-          musictag->SetURL(PVRChannelsRadio[i].Path());
-          musictag->SetTitle(PVRChannelsRadio[i].GetEpgNow()->Title());
-          musictag->SetArtist(PVRChannelsRadio[i].ChannelName());
-          musictag->SetAlbumArtist(PVRChannelsRadio[i].ChannelName());
-          musictag->SetGenre(PVRChannelsRadio[i].GetEpgNow()->Genre());
-          musictag->SetDuration(PVRChannelsRadio[i].GetEpgNow()->GetDuration());
+          const CPVRChannel *channel = &PVRChannelsRadio[i];
+          const CPVREpgInfoTag *epgNow = channel->GetEpgNow();
+          musictag->SetURL(channel->Path());
+          musictag->SetTitle(epgNow->Title());
+          musictag->SetArtist(channel->ChannelName());
+          musictag->SetAlbumArtist(channel->ChannelName());
+          musictag->SetGenre(epgNow->Genre());
+          musictag->SetDuration(epgNow->GetDuration());
           musictag->SetLoaded(true);
           musictag->SetComment("");
           musictag->SetLyrics("");

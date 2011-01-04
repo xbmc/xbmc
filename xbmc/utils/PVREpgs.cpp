@@ -21,6 +21,7 @@
 
 #include "GUISettings.h"
 #include "GUIDialogPVRUpdateProgressBar.h"
+#include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
 #include "log.h"
 #include "TimeUtils.h"
@@ -39,6 +40,8 @@ CPVREpgs PVREpgs;
 
 CPVREpgs::CPVREpgs()
 {
+  m_bDatabaseLoaded = false;
+  m_bInihibitUpdate = false;
 }
 
 CPVREpgs::~CPVREpgs()
@@ -88,18 +91,32 @@ bool CPVREpgs::RemoveAllEntries()
   CLog::Log(LOGINFO, "PVREpgs - %s - removing all EPG entries",
       __FUNCTION__);
 
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  pDlgProgress->SetLine(0, "");
+  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+  pDlgProgress->SetLine(2, "");
+  pDlgProgress->StartModal();
+  pDlgProgress->Progress();
+
   /* remove all the EPG pointers from timers */
-  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+  int iTimerSize = PVRTimers.size();
+  for (int iTimerPtr = 0; iTimerPtr < iTimerSize; iTimerPtr++)
+  {
     PVRTimers[iTimerPtr].SetEpg(NULL);
+    pDlgProgress->SetPercentage(iTimerPtr / iTimerSize * 10);
+  }
 
   /* remove all EPG entries */
-  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  int iEpgSize = size();
+  for (int iEpgPtr = 0; iEpgPtr < iEpgSize; iEpgPtr++)
   {
     CPVREpg *epg = at(iEpgPtr);
 
     CPVRChannel *channel = (CPVRChannel *) epg->ChannelTag();
     if (channel)
       channel->ClearEPG(false); /* clear the database entries afterwards */
+
+    pDlgProgress->SetPercentage((iEpgPtr / iEpgSize * 35) + 10);
   }
 
   /* clear the database entries */
@@ -107,6 +124,9 @@ bool CPVREpgs::RemoveAllEntries()
   database->Open();
   database->EraseEPG();
   database->Close();
+
+  pDlgProgress->SetPercentage(50);
+  pDlgProgress->Close();
 
   return true;
 }
@@ -139,6 +159,7 @@ bool CPVREpgs::Update()
   /* open the database */
   database->Open();
 
+  /* determine if we're going to do a full update */
   if (m_iUpdateTime > 0)
   {
     time_t iLastUpdateTime;
@@ -182,6 +203,9 @@ bool CPVREpgs::Update()
     }
   }
 
+  m_bDatabaseLoaded = true;
+
+  /* update the last scan time if the update was succesful and if we did a full update */
   if (bUpdateSuccess && bUpdate)
     database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
 
@@ -299,7 +323,7 @@ bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *
   epg->SetUpdate(true);
 
   /* request the epg for this channel from the database */
-  if (!m_bIgnoreDbForClient)
+  if (!m_bIgnoreDbForClient && !m_bDatabaseLoaded)
     bGrabSuccess = database->GetEPGForChannel(*channel, epg, *start, *end);
 
   /* grab from the client or scraper if we didn't get any result from the database or if an update is scheduled */
@@ -317,13 +341,35 @@ bool CPVREpgs::UpdateEPGForChannel(CPVRChannel *channel, time_t *start, time_t *
         database->UpdateEPGEntry(*epg->InfoTags()->at(iTagPtr), false, (iTagPtr==0), (iTagPtr == epg->InfoTags()->size()-1));
     }
   }
+
   epg->SetUpdate(false);
 
-  channel->ResetChannelEPGLinks();
+  channel->UpdateEpgPointers();
 
   return bGrabSuccess;
 }
 
+void CPVREpgs::UpdateAllChannelEPGPointers()
+{
+  /* include radio and tv channels */
+  for (unsigned int radio = 0; radio <= 1; radio++)
+  {
+    CPVRChannels *channels = (radio == 0) ? &PVRChannelsTV : &PVRChannelsRadio;
+
+    for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+    {
+      CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
+      if (channel->IsHidden() || !channel->GrabEpg())
+        continue;
+
+      const CPVREpg *epg = (CPVREpg *) channel->GetEpg();
+      if (!epg || epg->IsUpdateRunning() || !epg->IsValid())
+        continue;
+
+      channel->UpdateEpgPointers();
+    }
+  }
+}
 
 const CPVREpg *CPVREpgs::GetEPG(CPVRChannel *channel, bool bAddIfMissing /* = false */)
 {
@@ -558,7 +604,7 @@ int CPVREpgs::GetEPGForChannel(CPVRChannel *channel, CFileItemList *results)
 
 int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannels *channels = !bRadio ? &PVRChannelsTV : &PVRChannelsRadio;
+  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
@@ -594,7 +640,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannels *channels = !bRadio ? &PVRChannelsTV : &PVRChannelsRadio;
+  CPVRChannels *channels = bRadio ? &PVRChannelsRadio : &PVRChannelsTV;
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)

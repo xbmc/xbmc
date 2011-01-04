@@ -108,7 +108,7 @@ void CPVREpg::Sort(void)
       tag->SetPreviousEvent(previousTag);
     }
 
-    if (ptr == iTagAmount)
+    if (ptr == iTagAmount - 1)
     {
       tag->SetNextEvent(NULL);
     }

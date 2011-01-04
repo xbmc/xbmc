@@ -43,6 +43,7 @@ private:
   int   m_iLingerTime;            /* hours to keep old EPG data */
   int   m_iDaysToDisplay;         /* amount of EPG data to maintain */
   int   m_iUpdateTime;            /* update the full EPG after this period */
+  bool  m_bDatabaseLoaded;        /* true if we already loaded the EPG from the database */
 
   /**
    * Get the EPG for a channel
@@ -79,6 +80,11 @@ private:
 public:
   CPVREpgs();
   ~CPVREpgs();
+
+  /**
+   * Update the EPG pointers for all channels
+   */
+  void UpdateAllChannelEPGPointers();
 
   /**
    * Get an EPG table for a channel

@@ -497,6 +497,9 @@ void CPVRManager::Process()
       LastEPGCleanup = Now;
     }
 
+    /* update the "now playing" pointers */
+    PVREpgs.UpdateAllChannelEPGPointers();
+
     EnterCriticalSection(&m_critSection);
 
     /* Get Signal information of the current playing channel */
@@ -1029,24 +1032,10 @@ void CPVRManager::ResetEPG()
 {
   CLog::Log(LOGNOTICE,"PVR: EPG is being erased");
 
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->Progress();
-
   PVREpgs.InihibitUpdate(true);
-
   PVREpgs.RemoveAllEntries();
-  pDlgProgress->SetPercentage(50);
-
   PVREpgs.InihibitUpdate(false);
-
   PVREpgs.Update();
-
-  pDlgProgress->SetPercentage(100);
-  pDlgProgress->Close();
 
   CLog::Log(LOGNOTICE,"PVR: EPG reset finished");
 }

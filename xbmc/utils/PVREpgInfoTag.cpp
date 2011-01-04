@@ -34,20 +34,19 @@ CPVREpgInfoTag::CPVREpgInfoTag(long uniqueBroadcastID)
 
 void CPVREpgInfoTag::Reset()
 {
-//  m_strTitle            = g_localizeStrings.Get(19055);
-  m_strTitle            = "";
+  m_strTitle            = g_localizeStrings.Get(19055);
   m_strGenre            = "";
   m_strPlotOutline      = "";
   m_strPlot             = "";
-  m_iGenreType           = 0;
-  m_iGenreSubType        = 0;
+  m_iGenreType          = 0;
+  m_iGenreSubType       = 0;
   m_strFileNameAndPath  = "";
-  m_strIconPath            = "";
+  m_strIconPath         = "";
   m_isRecording         = false;
   m_Timer               = NULL;
   m_Epg                 = NULL;
-  m_iParentalRating      = 0;
-  m_iStarRating          = 0;
+  m_iParentalRating     = 0;
+  m_iStarRating         = 0;
   m_notify              = false;
   m_seriesNum           = "";
   m_episodeNum          = "";
@@ -70,7 +69,7 @@ int CPVREpgInfoTag::GetDuration() const
   time_t start, end;
   m_startTime.GetAsTime(start);
   m_endTime.GetAsTime(end);
-  return end - start;
+  return end - start > 0 ? end - start : 3600;
 }
 
 void CPVREpgInfoTag::SetGenre(int ID, int subID)

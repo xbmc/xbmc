@@ -101,9 +101,8 @@ void CPVRChannel::Reset()
   m_strStreamURL            = "";
 
   m_Epg                     = NULL;
-  m_epgEmpty                = m_EmptyEpgInfoTag;
 
-  UpdateEpgPointers();
+  ResetChannelEPGLinks();
   SetChanged();
 }
 
@@ -115,11 +114,10 @@ CPVRChannel::~CPVRChannel()
 void CPVRChannel::ResetChannelEPGLinks()
 {
   m_epgNow  = NULL;
-  m_epgNext = NULL;
 }
 
 
-void CPVRChannel::UpdateEpgPointers(void) const
+void CPVRChannel::UpdateEpgPointers(void)
 {
   if (m_Epg == NULL)
   {
@@ -128,40 +126,34 @@ void CPVRChannel::UpdateEpgPointers(void) const
 
   if (m_Epg == NULL)
   {
-//    SetChanged(m_epgNow != NULL);
+    SetChanged(m_epgNow != NULL);
     m_epgNow = NULL;
-    m_epgNext = NULL;
   }
   else if (!m_Epg->IsUpdateRunning() &&
       (m_epgNow == NULL ||
        m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
-//    SetChanged();
+    SetChanged();
     m_epgNow  = m_Epg->GetInfoTagNow();
-    m_epgNext = m_Epg->GetInfoTagNext();
   }
 
-//  NotifyObservers();
+  NotifyObservers("epg");
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEpgNow(void) const
 {
-  UpdateEpgPointers(); // XXX temporary
-
   if (m_epgNow == NULL)
-    return (*this).m_epgEmpty;
+    return m_EmptyEpgInfoTag;
 
-  return (*this).m_epgNow;
+  return m_epgNow;
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEpgNext(void) const
 {
-  UpdateEpgPointers(); // XXX temporary
+  if (m_epgNow == NULL)
+    return m_EmptyEpgInfoTag;
 
-  if (m_epgNext == NULL)
-    return (*this).m_epgEmpty;
-
-  return (*this).m_epgNext;
+  return m_epgNow->GetNextEvent();
 }
 
 bool CPVRChannel::IsEmpty() const
@@ -342,7 +334,6 @@ bool CPVRChannel::ClearEPG(bool bClearDatabase)
 
   ((CPVREpg *) m_Epg)->Cleanup(-1);
   m_epgNow = NULL;
-  m_epgNext = NULL;
 
   return bClearDatabase ? PVREpgs.ClearEPGForChannel(this) : true;
 }
