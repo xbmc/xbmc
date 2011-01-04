@@ -23,7 +23,7 @@
 #include "DVDInputStreamPVRManager.h"
 #include "FileSystem/PVRFile.h"
 #include "URL.h"
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 
 using namespace XFILE;
 

@@ -27,9 +27,9 @@
 #include "GUIDialogPVRGuideInfo.h"
 #include "ViewState.h"
 
-#include "PVRManager.h"
-#include "utils/PVREpg.h"
-#include "utils/PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
+#include "pvr/PVREpg.h"
+#include "pvr/PVRTimerInfoTag.h"
 
 using namespace std;
 

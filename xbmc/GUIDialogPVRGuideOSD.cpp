@@ -26,7 +26,7 @@
 #include "GUIWindowManager.h"
 #include "ViewState.h"
 
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 
 using namespace std;
 

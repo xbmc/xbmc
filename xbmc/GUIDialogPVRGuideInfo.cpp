@@ -25,10 +25,10 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 
-#include "utils/PVRChannels.h"
-#include "utils/PVREpgInfoTag.h"
-#include "utils/PVRTimers.h"
-#include "utils/PVRTimerInfoTag.h"
+#include "pvr/PVRChannels.h"
+#include "pvr/PVREpgInfoTag.h"
+#include "pvr/PVRTimers.h"
+#include "pvr/PVRTimerInfoTag.h"
 
 using namespace std;
 

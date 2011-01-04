@@ -63,7 +63,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/AnnouncementManager.h"
-#include "utils/PVRRecordings.h"
+#include "pvr/PVRRecordings.h"
 
 #include "addons/Skin.h"
 #include "MediaManager.h"

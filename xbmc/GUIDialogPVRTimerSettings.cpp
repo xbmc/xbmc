@@ -25,9 +25,9 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 
-#include "utils/PVRTimerInfoTag.h"
-#include "utils/PVRChannel.h"
-#include "utils/PVRChannels.h"
+#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/PVRChannel.h"
+#include "pvr/PVRChannels.h"
 
 using namespace std;
 

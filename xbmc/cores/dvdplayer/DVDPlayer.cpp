@@ -67,7 +67,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
 #include "MediaManager.h"
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 #include "FileSystem/PVRFile.h"
 #include "GUIDialogBusy.h"
 

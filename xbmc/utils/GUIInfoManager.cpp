@@ -74,11 +74,11 @@
 #include "SingleLock.h"
 #include "log.h"
 
-#include "PVRManager.h"
-#include "PVRChannel.h"
-#include "PVREpgInfoTag.h"
-#include "PVRChannelGroups.h"
-#include "PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
+#include "pvr/PVRChannel.h"
+#include "pvr/PVREpgInfoTag.h"
+#include "pvr/PVRChannelGroups.h"
+#include "pvr/PVRTimerInfoTag.h"
 
 #include "addons/AddonManager.h"
 

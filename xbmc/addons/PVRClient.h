@@ -23,11 +23,11 @@
 #include "Addon.h"
 #include "AddonDll.h"
 #include "DllPVRClient.h"
-#include "../utils/PVREpgs.h"
-#include "../utils/PVRChannels.h"
-#include "../utils/PVRTimers.h"
-#include "../utils/PVRTimerInfoTag.h"
-#include "../utils/PVRRecordings.h"
+#include "../pvr/PVREpgs.h"
+#include "../pvr/PVRChannels.h"
+#include "../pvr/PVRTimers.h"
+#include "../pvr/PVRTimerInfoTag.h"
+#include "../pvr/PVRRecordings.h"
 
 typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 

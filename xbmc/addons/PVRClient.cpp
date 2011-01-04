@@ -40,7 +40,7 @@
 #include "StringUtils.h"
 #include "FileItem.h"
 #include "PVRClient.h"
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "../utils/log.h"

@@ -22,8 +22,8 @@
  */
 
 #include "GUIMediaWindow.h"
-#include "utils/PVREpgSearchFilter.h"
-#include "utils/PVREpgs.h"
+#include "pvr/PVREpgSearchFilter.h"
+#include "pvr/PVREpgs.h"
 
 class CGUIEPGGridContainer;
 

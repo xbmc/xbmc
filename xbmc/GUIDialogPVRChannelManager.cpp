@@ -40,12 +40,12 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 
-#include "utils/PVRChannelGroups.h"
-#include "utils/PVRChannelGroup.h"
-#include "utils/PVRChannels.h"
-#include "utils/PVREpg.h"
-#include "PVRManager.h"
-#include "TVDatabase.h"
+#include "pvr/PVRChannelGroups.h"
+#include "pvr/PVRChannelGroup.h"
+#include "pvr/PVRChannels.h"
+#include "pvr/PVREpg.h"
+#include "pvr/PVRManager.h"
+#include "pvr/TVDatabase.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5

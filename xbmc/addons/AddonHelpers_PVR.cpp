@@ -23,9 +23,9 @@
 #include "AddonHelpers_PVR.h"
 #include "log.h"
 
-#include "PVREpg.h"
-#include "PVRClient.h"
-#include "PVRManager.h"
+#include "pvr/PVREpg.h"
+#include "pvr/PVRManager.h"
+#include "addons/PVRClient.h"
 
 namespace ADDON
 {

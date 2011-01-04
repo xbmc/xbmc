@@ -82,8 +82,8 @@
 #endif
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
-#include "utils/PVRChannels.h"
-#include "PVRManager.h"
+#include "pvr/PVRChannels.h"
+#include "pvr/PVRManager.h"
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"

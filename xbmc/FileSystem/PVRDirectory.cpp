@@ -23,12 +23,13 @@
 #include "FileItem.h"
 #include "Util.h"
 #include "URL.h"
-#include "PVRManager.h"
 #include "utils/log.h"
-#include "utils/PVRChannels.h"
-#include "utils/PVRRecordings.h"
-#include "utils/PVRTimers.h"
 #include "LocalizeStrings.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/PVRChannels.h"
+#include "pvr/PVRRecordings.h"
+#include "pvr/PVRTimers.h"
 
 using namespace std;
 using namespace XFILE;

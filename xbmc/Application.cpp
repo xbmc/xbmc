@@ -220,7 +220,7 @@
 #include "GUIDialogSlider.h"
 
 /* PVR related include Files */
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 #include "GUIWindowTV.h"
 #include "GUIDialogPVRChannelManager.h"
 #include "GUIDialogPVRChannelsOSD.h"

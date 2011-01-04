@@ -52,9 +52,9 @@
 #include "DateTime.h"
 #include "ButtonTranslator.h"
 
-#include "PVRManager.h"
-#include "utils/PVRChannelGroups.h"
-#include "utils/PVRChannelGroup.h"
+#include "pvr/PVRManager.h"
+#include "pvr/PVRChannelGroups.h"
+#include "pvr/PVRChannelGroup.h"
 
 #include <stdio.h>
 

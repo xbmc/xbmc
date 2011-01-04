@@ -52,11 +52,11 @@
 #include "GUIWindowTV.h"
 
 /* TV control */
-#include "PVRManager.h"
-#include "utils/PVREpgInfoTag.h"
-#include "utils/PVRChannelGroups.h"
-#include "utils/PVRChannelGroup.h"
-#include "utils/PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
+#include "pvr/PVREpgInfoTag.h"
+#include "pvr/PVRChannelGroups.h"
+#include "pvr/PVRChannelGroup.h"
+#include "pvr/PVRTimerInfoTag.h"
 
 using namespace std;
 

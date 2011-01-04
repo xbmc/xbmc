@@ -19,7 +19,7 @@
 <folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429." name="/" resourcePath="">
 <toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.181128994" name="MacOSX GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.macosx.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug.611397248" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<builder autoBuildTarget="all" buildPath="${workspace_loc:/XBMC/}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.macosx.exe.debug.2011146033" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="4" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.debug">
+<builder autoBuildTarget="all" buildPath="${workspace_loc:/XBMC/}" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="false" enabledIncrementalBuild="true" id="cdt.managedbuild.target.gnu.builder.macosx.exe.debug.2011146033" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="-4" stopOnErr="true" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.debug">
 <outputEntries>
 <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
 </outputEntries>

@@ -46,6 +46,7 @@ BIN_DIRS=	\
 	xbmc/lib/libsquish \
 	xbmc/visualizations \
 	xbmc/screensavers \
+	xbmc/pvr \
 	xbmc/pvrclients \
 	xbmc/utils \
 	xbmc/settings \
@@ -283,6 +284,8 @@ xbmc/settings/settings.a: force
 	$(MAKE) -C xbmc/settings
 xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
+xbmc/pvr/pvr.a: force
+	$(MAKE) -C xbmc/pvr
 xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
 xbmc/osx/osx.a: force
@@ -489,6 +492,7 @@ DYNOBJSXBMC= \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
+	xbmc/pvr/pvr.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
 	xbmc/cores/DllLoader/exports/exports.a
 

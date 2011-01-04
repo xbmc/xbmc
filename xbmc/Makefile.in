@@ -215,8 +215,6 @@ SRCS=Application.cpp \
      ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
-     PVRManager.cpp \
-     TVDatabase.cpp \
      GUIWindowTestPatternGL.cpp \
      RenderSystem.cpp \
      RenderSystemGL.cpp \

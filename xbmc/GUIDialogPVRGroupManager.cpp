@@ -28,8 +28,8 @@
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 
-#include "utils/PVRChannelGroups.h"
-#include "utils/PVRChannels.h"
+#include "pvr/PVRChannelGroups.h"
+#include "pvr/PVRChannels.h"
 
 using namespace std;
 

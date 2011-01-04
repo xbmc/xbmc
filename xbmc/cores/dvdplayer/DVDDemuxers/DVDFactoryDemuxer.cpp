@@ -32,7 +32,7 @@
 #include "DVDDemuxHTSP.h"
 #endif
 #include "DVDDemuxPVRClient.h"
-#include "PVRManager.h"
+#include "pvr/PVRManager.h"
 
 using namespace std;
 
