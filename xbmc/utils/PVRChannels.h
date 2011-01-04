@@ -159,11 +159,6 @@ public:
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
-  CStdString GetNameForChannel(unsigned int Number);
-
-  CStdString GetChannelIcon(unsigned int Number);
-  void SetChannelIcon(unsigned int Number, CStdString Icon);
-
   void ResetChannelEPGLinks();
 
   static int GetNumChannelsFromAll();

@@ -150,9 +150,8 @@ public:
 
   /**
    * Set the path to the icon for this channel.
-   * Nothing will be changed in the database.
    */
-  void SetIconPath(CStdString strIconPath);
+  void SetIconPath(CStdString strIconPath, bool bSaveInDb = false);
 
   /**
    * The name for this channel used by XBMC.

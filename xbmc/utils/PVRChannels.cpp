@@ -548,41 +548,6 @@ int CPVRChannels::GetHiddenChannels(CFileItemList* results)
 
 ////////////////////////////////////////////////////////
 
-CStdString CPVRChannels::GetNameForChannel(unsigned int Number)
-{
-  if ((Number <= size()+1) && (Number > 0))
-  {
-    if (at(Number-1)->ChannelName() != NULL)
-      return at(Number-1)->ChannelName();
-    else
-      return g_localizeStrings.Get(13205);
-  }
-  return "";
-}
-
-CStdString CPVRChannels::GetChannelIcon(unsigned int Number)
-{
-  if (Number > 0 && Number <= size()+1)
-    return "";
-
-  return at(Number-1)->IconPath();
-}
-
-void CPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
-{
-  if (Number > size()+1)
-    return;
-
-  if (at(Number-1)->IconPath() != Icon)
-  {
-    CTVDatabase *database = g_PVRManager.GetTVDatabase();
-    database->Open();
-    at(Number-1)->SetIconPath(Icon);
-    database->UpdateDBChannel(*at(Number-1));
-    database->Close();
-  }
-}
-
 int CPVRChannels::GetNumChannelsFromAll()
 {
   return PVRChannelsTV.GetNumChannels()+PVRChannelsRadio.GetNumChannels();

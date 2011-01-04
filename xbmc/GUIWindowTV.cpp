@@ -1029,12 +1029,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
     {
-      PVRChannelsTV.SetChannelIcon(pItem->GetPVRChannelInfoTag()->ChannelNumber(), strThumb);
+      pItem->GetPVRChannelInfoTag()->SetIconPath(strThumb, true);
       UpdateChannelsTV();
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
     {
-      PVRChannelsRadio.SetChannelIcon(pItem->GetPVRChannelInfoTag()->ChannelNumber(), strThumb);
+      pItem->GetPVRChannelInfoTag()->SetIconPath(strThumb, true);
       UpdateChannelsRadio();
     }
 

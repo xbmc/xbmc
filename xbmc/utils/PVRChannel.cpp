@@ -30,6 +30,8 @@
 #include "PVREpgs.h"
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
+#include "TVDatabase.h"
+#include "PVRManager.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -150,10 +152,21 @@ void CPVRChannel::SetRecording(bool bClientIsRecording)
   SetChanged();
 }
 
-void CPVRChannel::SetIconPath(CStdString strIconPath)
+void CPVRChannel::SetIconPath(CStdString strIconPath, bool bSaveInDb /* = false */)
 {
-  m_strIconPath = strIconPath;
-  SetChanged();
+  if (m_strIconPath != strIconPath)
+  {
+    m_strIconPath = strIconPath;
+    SetChanged();
+
+    if (bSaveInDb)
+    {
+      CTVDatabase *database = g_PVRManager.GetTVDatabase();
+      database->Open();
+      database->UpdateDBChannel(*this);
+      database->Close();
+    }
+  }
 }
 
 void CPVRChannel::SetChannelName(CStdString strChannelName)
