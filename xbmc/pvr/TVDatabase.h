@@ -54,9 +54,9 @@ public:
   bool EraseClientChannels(long iClientId);
 
   /**
-   * Add or update a channel entry in the datbase
+   * Add or update a channel entry in the database
    */
-  long UpdateChannel(const CPVRChannel &channel);
+  long UpdateChannel(const CPVRChannel &channel, bool bQueueWrite = false);
 
   /**
    * Remove a channel entry from the database

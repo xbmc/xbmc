@@ -79,7 +79,7 @@ public:
    * Persists the changes in the database.
    * Returns true if the changes were saved succesfully, false otherwise.
    */
-  bool Persist(void);
+  bool Persist(bool bQueueWrite = false);
 
   /**
    * The identifier given to this channel by the TV database.

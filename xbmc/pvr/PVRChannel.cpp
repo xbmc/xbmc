@@ -114,13 +114,13 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   return bChanged;
 }
 
-bool CPVRChannel::Persist(void)
+bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   if (database)
   {
     database->Open();
-    database->UpdateChannel(*this);
+    database->UpdateChannel(*this, bQueueWrite);
     database->Close();
 
     return true;

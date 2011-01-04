@@ -223,7 +223,7 @@ bool CTVDatabase::EraseClientChannels(long iClientId)
   return DeleteValues("Channels", strWhereClause);
 }
 
-long CTVDatabase::UpdateChannel(const CPVRChannel &channel)
+long CTVDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* = false */)
 {
   long iReturn = -1;
 
@@ -252,19 +252,25 @@ long CTVDatabase::UpdateChannel(const CPVRChannel &channel)
   else
   {
     /* update channel */
-    strQuery = FormatSQL("UPDATE Channels SET "
-        "UniqueId = %i, ChannelNumber = %i, GroupId = %i, IsRadio = %i, IsHidden = %i, "
-        "IconPath = '%s', ChannelName = '%s', IsVirtual = %i, EPGEnabled = %i, EPGScraper = '%s', ClientId = %i, "
-        "ClientChannelNumber = %i, InputFormat = '%s', StreamURL = '%s', EncryptionSystem = %i WHERE ChannelId = %i\n",
+    strQuery = FormatSQL("REPLACE INTO Channels ("
+        "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
+        "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
+        "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, ChannelId) "
+        "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID());
   }
 
-  if (ExecuteQuery(strQuery))
+  if (bQueueWrite)
+  {
+    QueueInsertQuery(strQuery);
+    iReturn = 0;
+  }
+  else if (ExecuteQuery(strQuery))
+  {
     iReturn = (channel.ChannelID() <= 0) ? (long) m_pDS->lastinsertid() : channel.ChannelID();
-  else
-    iReturn = -1;
+  }
 
   return iReturn;
 }
