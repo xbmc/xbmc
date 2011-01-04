@@ -780,7 +780,7 @@ void CGUIDialogPVRChannelManager::Clear()
   m_channelItems->Clear();
 }
 
-void CGUIDialogPVRChannelManager::SaveList()
+void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doesn't work
 {
   if (!m_bContainsChanges)
    return;
