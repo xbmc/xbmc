@@ -72,7 +72,7 @@ void CPVREpgs::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb)
   {
-    CTVDatabase *database = g_PVRManager.GetTVDatabase();
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
     database->EraseEpg();
     database->Close();
@@ -141,7 +141,7 @@ void CPVREpgs::Process()
   m_iLastEpgCleanup    = 0;
   m_iLastEpgUpdate     = 0;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database->Open())
   {
     CLog::Log(LOGERROR, "PVREpgs - %s - cannot open the database",
@@ -204,7 +204,7 @@ bool CPVREpgs::RemoveOldEntries()
   CLog::Log(LOGINFO, "PVREpgs - %s - removing old EPG entries",
       __FUNCTION__);
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   if (!database->Open())
@@ -248,7 +248,7 @@ bool CPVREpgs::LoadFromDb(bool bShowProgress /* = false */)
   if (m_bDatabaseLoaded)
     return m_bDatabaseLoaded;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
   /* show the progress bar */
   CGUIDialogPVRUpdateProgressBar *scanner = NULL;
@@ -304,7 +304,7 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
 {
   long iStartTime                         = CTimeUtils::GetTimeMS();
   int iEpgCount                           = size();
-  CTVDatabase *database                   = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database                   = g_PVRManager.GetTVDatabase();
   bool bUpdateSuccess                     = true;
   CGUIDialogPVRUpdateProgressBar *scanner = NULL;
 

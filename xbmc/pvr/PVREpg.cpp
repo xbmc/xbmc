@@ -232,7 +232,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
   if (bUpdateDatabase)
   {
     bool retval;
-    CTVDatabase *database = g_PVRManager.GetTVDatabase();
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
     retval = database->UpdateEpgEntry(*InfoTag);
     database->Close();
@@ -273,7 +273,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   if (bUpdateDatabase)
   {
     bool retval;
-    CTVDatabase *database = g_PVRManager.GetTVDatabase();
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
     retval = database->UpdateEpgEntry(*InfoTag);
     database->Close();
@@ -285,7 +285,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
 
 bool CPVREpg::FixOverlappingEvents(bool bStore /* = true */)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   Sort();
 
@@ -392,7 +392,7 @@ bool CPVREpg::LoadFromDb()
   if (!m_Channel)
       return bReturn;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   /* check if this channel is marked for grabbing */
   if (!m_Channel->EPGEnabled())
@@ -410,7 +410,7 @@ bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // 
       return false;
 
   bool bGrabSuccess     = true;
-  CTVDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase(); /* the database has already been opened */
 
   /* check if this channel is marked for grabbing */
   if (!m_Channel->EPGEnabled())

@@ -36,7 +36,7 @@
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
 #include "PVRChannels.h"
-#include "TVDatabase.h"
+#include "PVRDatabase.h"
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
 
@@ -84,7 +84,7 @@ void CPVRChannels::Unload()
 bool CPVRChannels::Update()
 {
   bool         bReturn  = false;
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
   if (database && database->Open())
   {
@@ -112,7 +112,7 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
   if (iNewIndex == iOldIndex || iNewIndex == 0)
     return;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   CPVRChannels tempChannels(m_bRadio);
@@ -213,7 +213,7 @@ void CPVRChannels::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     return;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -543,7 +543,7 @@ CPVRChannel *CPVRChannels::GetByUniqueIDFromAll(int iUniqueID)
 
 int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return -1;
 
@@ -564,7 +564,7 @@ int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannels::LoadFromClients(bool bAddToDb /* = true */)
 {
-  CTVDatabase *database = NULL;
+  CPVRDatabase *database = NULL;
   int iCurSize = size();
 
   if (bAddToDb)
@@ -636,7 +636,7 @@ bool CPVRChannels::RemoveByUniqueID(long iUniqueID)
 bool CPVRChannels::Update(CPVRChannels *channels)
 {
   /* the database has already been opened */
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
   int iSize = size();
   for (int ptr = 0; ptr < iSize; ptr++)

@@ -45,7 +45,7 @@
 #include "pvr/PVRChannels.h"
 #include "pvr/PVREpg.h"
 #include "pvr/PVRManager.h"
-#include "pvr/TVDatabase.h"
+#include "pvr/PVRDatabase.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -467,7 +467,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         {
           if (pItem->GetPropertyBOOL("Virtual"))
           {
-            CTVDatabase *database = g_PVRManager.GetTVDatabase();
+            CPVRDatabase *database = g_PVRManager.GetTVDatabase();
             database->Open();
             database->RemoveChannel(*pItem->GetPVRChannelInfoTag());
             database->Close();
@@ -521,7 +521,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 newchannel.SetStreamURL(strURL);
                 newchannel.SetClientID(999);
 
-                CTVDatabase *database = g_PVRManager.GetTVDatabase();
+                CPVRDatabase *database = g_PVRManager.GetTVDatabase();
                 database->Open();
                 database->UpdateChannel(newchannel);
                 database->Close();
@@ -785,7 +785,7 @@ void CGUIDialogPVRChannelManager::SaveList()
   if (!m_bContainsChanges)
    return;
 
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

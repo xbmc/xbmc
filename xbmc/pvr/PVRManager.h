@@ -21,7 +21,7 @@
  */
 
 #include "FileItem.h"
-#include "TVDatabase.h"
+#include "PVRDatabase.h"
 #include "addons/Addon.h"
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
@@ -56,7 +56,7 @@ public:
    */
   unsigned long GetFirstClientID();
   CLIENTMAP* Clients() { return &m_clients; }
-  CTVDatabase *GetTVDatabase() { return &m_database; }
+  CPVRDatabase *GetTVDatabase() { return &m_database; }
 
   /*! \name Addon related functions
    */
@@ -355,7 +355,7 @@ private:
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
   CLIENTPROPS         m_clientsProps;           /* store the properties of each client locally */
   STREAMPROPS         m_streamProps;
-  CTVDatabase         m_database;
+  CPVRDatabase         m_database;
   CRITICAL_SECTION    m_critSection;
   bool                m_bFirstStart;            /* Is set if this is first startup of PVRManager */
   bool                m_bChannelScanRunning;    /* Is set if a channel scan is running */

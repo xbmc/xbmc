@@ -30,7 +30,7 @@
 #include "PVREpgs.h"
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
-#include "TVDatabase.h"
+#include "PVRDatabase.h"
 #include "PVRManager.h"
 
 using namespace XFILE;
@@ -111,7 +111,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 
 bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (database)
   {
     database->Open();

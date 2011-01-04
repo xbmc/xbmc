@@ -33,7 +33,7 @@
 
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
-#include "TVDatabase.h"
+#include "PVRDatabase.h"
 #include "PVRManager.h"
 
 using namespace XFILE;
@@ -50,7 +50,7 @@ CPVRChannelGroups::CPVRChannelGroups(void)
 
 bool CPVRChannelGroups::Load(bool radio)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   m_bRadio = radio;
@@ -144,7 +144,7 @@ int CPVRChannelGroups::GetNextGroupID(int current_group_id)
 
 void CPVRChannelGroups::AddGroup(const CStdString &name)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   Clear();
@@ -156,7 +156,7 @@ void CPVRChannelGroups::AddGroup(const CStdString &name)
 
 bool CPVRChannelGroups::RenameGroup(int GroupId, const CStdString &newname)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   Clear();
@@ -167,7 +167,7 @@ bool CPVRChannelGroups::RenameGroup(int GroupId, const CStdString &newname)
 
 bool CPVRChannelGroups::DeleteGroup(int GroupId)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   Clear();

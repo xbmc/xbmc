@@ -12,7 +12,7 @@ SRCS=PVRChannel.cpp \
 	PVRRecordings.cpp \
 	PVRTimerInfoTag.cpp \
 	PVRTimers.cpp \
-	TVDatabase.cpp
+	PVRDatabase.cpp
 
 LIB=pvr.a
 

@@ -30,7 +30,7 @@
 class CPVREpg;
 class CPVREpgInfoTag;
 class CPVRChannel;
-class CTVDatabase;
+class CPVRDatabase;
 class CFileItemList;
 struct PVREpgSearchFilter;
 

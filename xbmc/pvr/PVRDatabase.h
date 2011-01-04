@@ -30,11 +30,11 @@ class CPVREpg;
 class CPVREpgInfoTag;
 class CVideoSettings;
 
-class CTVDatabase : public CDatabase
+class CPVRDatabase : public CDatabase
 {
 public:
-  CTVDatabase(void);
-  virtual ~CTVDatabase(void);
+  CPVRDatabase(void);
+  virtual ~CPVRDatabase(void);
 
   virtual bool Open();
 

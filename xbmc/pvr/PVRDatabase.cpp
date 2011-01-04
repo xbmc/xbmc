@@ -19,7 +19,7 @@
  *
  */
 
-#include "TVDatabase.h"
+#include "PVRDatabase.h"
 #include "AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
@@ -33,21 +33,21 @@
 using namespace std;
 using namespace dbiplus;
 
-CTVDatabase::CTVDatabase(void)
+CPVRDatabase::CPVRDatabase(void)
 {
   lastScanTime.SetValid(false);
 }
 
-CTVDatabase::~CTVDatabase(void)
+CPVRDatabase::~CPVRDatabase(void)
 {
 }
 
-bool CTVDatabase::Open()
+bool CPVRDatabase::Open()
 {
   return CDatabase::Open(g_advancedSettings.m_databaseTV);
 }
 
-bool CTVDatabase::CreateTables()
+bool CPVRDatabase::CreateTables()
 {
   bool bReturn = false;
 
@@ -186,7 +186,7 @@ bool CTVDatabase::CreateTables()
   return bReturn;
 }
 
-bool CTVDatabase::UpdateOldVersion(int iVersion)
+bool CPVRDatabase::UpdateOldVersion(int iVersion)
 {
   if (iVersion < 5)
   {
@@ -199,14 +199,14 @@ bool CTVDatabase::UpdateOldVersion(int iVersion)
 
 /********** Channel methods **********/
 
-bool CTVDatabase::EraseChannels()
+bool CPVRDatabase::EraseChannels()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from the database", __FUNCTION__);
 
   return DeleteValues("Channels");
 }
 
-bool CTVDatabase::EraseClientChannels(long iClientId)
+bool CPVRDatabase::EraseClientChannels(long iClientId)
 {
   /* invalid client Id */
   if (iClientId <= 0)
@@ -223,7 +223,7 @@ bool CTVDatabase::EraseClientChannels(long iClientId)
   return DeleteValues("Channels", strWhereClause);
 }
 
-long CTVDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* = false */)
+long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* = false */)
 {
   long iReturn = -1;
 
@@ -275,7 +275,7 @@ long CTVDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* 
   return iReturn;
 }
 
-bool CTVDatabase::RemoveChannel(const CPVRChannel &channel)
+bool CPVRDatabase::RemoveChannel(const CPVRChannel &channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -289,7 +289,7 @@ bool CTVDatabase::RemoveChannel(const CPVRChannel &channel)
   return DeleteValues("Channels", strWhereClause);
 }
 
-int CTVDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
+int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 {
   int iReturn = -1;
 
@@ -340,7 +340,7 @@ int CTVDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
   return iReturn;
 }
 
-int CTVDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
+int CPVRDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
 {
   int iReturn = -1;
   CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM Channels WHERE IsRadio = %u AND IsHidden = %u\n",
@@ -355,7 +355,7 @@ int CTVDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
   return iReturn;
 }
 
-int CTVDatabase::GetLastChannel()
+int CPVRDatabase::GetLastChannel()
 {
   CStdString strValue = GetSingleValue("LastChannel", "ChannelId");
 
@@ -365,7 +365,7 @@ int CTVDatabase::GetLastChannel()
   return atoi(strValue.c_str());
 }
 
-bool CTVDatabase::UpdateLastChannel(const CPVRChannel &channel)
+bool CPVRDatabase::UpdateLastChannel(const CPVRChannel &channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -382,13 +382,13 @@ bool CTVDatabase::UpdateLastChannel(const CPVRChannel &channel)
 }
 
 
-bool CTVDatabase::EraseChannelSettings()
+bool CPVRDatabase::EraseChannelSettings()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel settings from the database", __FUNCTION__);
   return DeleteValues("ChannelSettings");
 }
 
-bool CTVDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
+bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
 {
   bool bReturn = false;
 
@@ -434,7 +434,7 @@ bool CTVDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings 
   return bReturn;
 }
 
-bool CTVDatabase::SetChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings)
+bool CPVRDatabase::SetChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -461,7 +461,7 @@ bool CTVDatabase::SetChannelSettings(const CPVRChannel &channel, const CVideoSet
 
 /********** Channel group methods **********/
 
-bool CTVDatabase::EraseChannelGroups(bool bRadio /* = false */)
+bool CPVRDatabase::EraseChannelGroups(bool bRadio /* = false */)
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel groups from the database", __FUNCTION__);
 
@@ -469,7 +469,7 @@ bool CTVDatabase::EraseChannelGroups(bool bRadio /* = false */)
   return DeleteValues("ChannelGroup", strWhereClause);
 }
 
-long CTVDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
+long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
 {
   long iReturn = -1;
 
@@ -493,7 +493,7 @@ long CTVDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder
   return iReturn;
 }
 
-bool CTVDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
+bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
 {
   /* invalid group id */
   if (iGroupId <= 0)
@@ -508,7 +508,7 @@ bool CTVDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
 }
 
 
-bool CTVDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /* = false */)
+bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /* = false */)
 {
   bool bReturn = false;
   CStdString strQuery = FormatSQL("SELECT * from ChannelGroup WHERE IsRadio = %u ORDER BY sortOrder\n", bRadio);
@@ -541,7 +541,7 @@ bool CTVDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /*
   return bReturn;
 }
 
-bool CTVDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio /* = false */)
+bool CPVRDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio /* = false */)
 {
   bool bReturn = false;
 
@@ -567,7 +567,7 @@ bool CTVDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewName
 }
 
 
-bool CTVDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio /* = false */)
+bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio /* = false */)
 {
   bool bReturn = false;
 
@@ -593,7 +593,7 @@ bool CTVDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bR
 }
 
 
-long CTVDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
+long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
 {
   CStdString strWhereClause = FormatSQL("Name LIKE '%s' AND IsRadio = %u", strGroupName.c_str(), (bRadio ? 1 : 0));
   CStdString strReturn = GetSingleValue("ChannelGroup", "GroupId", strWhereClause);
@@ -605,7 +605,7 @@ long CTVDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio 
 
 /********** Client methods **********/
 
-bool CTVDatabase::EraseClients()
+bool CPVRDatabase::EraseClients()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all clients from the database", __FUNCTION__);
 
@@ -613,7 +613,7 @@ bool CTVDatabase::EraseClients()
       DeleteValues("LastChannel");
 }
 
-long CTVDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
+long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
 {
   long iReturn = -1;
 
@@ -640,7 +640,7 @@ long CTVDatabase::AddClient(const CStdString &strClientName, const CStdString &s
   return iReturn;
 }
 
-bool CTVDatabase::RemoveClient(const CStdString &strClientUid)
+bool CPVRDatabase::RemoveClient(const CStdString &strClientUid)
 {
   /* invalid client uid */
   if (strClientUid.IsEmpty())
@@ -653,7 +653,7 @@ bool CTVDatabase::RemoveClient(const CStdString &strClientUid)
   return DeleteValues("Clients", strWhereClause);
 }
 
-long CTVDatabase::GetClientId(const CStdString &strClientUid)
+long CPVRDatabase::GetClientId(const CStdString &strClientUid)
 {
   CStdString strWhereClause = FormatSQL("ClientId = '%s'", strClientUid.c_str());
   CStdString strValue = GetSingleValue("Clients", "ClientDbId", strWhereClause);
@@ -666,7 +666,7 @@ long CTVDatabase::GetClientId(const CStdString &strClientUid)
 
 /********** EPG methods **********/
 
-bool CTVDatabase::EraseEpg()
+bool CPVRDatabase::EraseEpg()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
@@ -679,7 +679,7 @@ bool CTVDatabase::EraseEpg()
   return false;
 }
 
-bool CTVDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+bool CPVRDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -704,7 +704,7 @@ bool CTVDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTime
   return DeleteValues("EpgData", strWhereClause);
 }
 
-bool CTVDatabase::EraseOldEpgEntries()
+bool CPVRDatabase::EraseOldEpgEntries()
 {
   CDateTime yesterday = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
   CStdString strWhereClause = FormatSQL("EndTime < '%s'", yesterday.GetAsDBDateTime().c_str());
@@ -712,7 +712,7 @@ bool CTVDatabase::EraseOldEpgEntries()
   return DeleteValues("EpgData", strWhereClause);
 }
 
-bool CTVDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
+bool CPVRDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
 {
   /* invalid tag */
   if (tag.BroadcastId() <= 0 && tag.UniqueBroadcastID() <= 0)
@@ -732,7 +732,7 @@ bool CTVDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
 }
 
 
-int CTVDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
 {
   int iReturn = -1;
   CPVRChannel *channel = epg->Channel();
@@ -800,7 +800,7 @@ int CTVDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NULL
   return iReturn;
 }
 
-CDateTime CTVDatabase::GetEpgDataStart(long iChannelId /* = -1 */)
+CDateTime CPVRDatabase::GetEpgDataStart(long iChannelId /* = -1 */)
 {
   CDateTime firstProgramme;
   CStdString strWhereClause;
@@ -818,7 +818,7 @@ CDateTime CTVDatabase::GetEpgDataStart(long iChannelId /* = -1 */)
     return firstProgramme;
 }
 
-CDateTime CTVDatabase::GetEpgDataEnd(long iChannelId /* = -1 */)
+CDateTime CPVRDatabase::GetEpgDataEnd(long iChannelId /* = -1 */)
 {
   CDateTime lastProgramme;
   CStdString strWhereClause;
@@ -836,7 +836,7 @@ CDateTime CTVDatabase::GetEpgDataEnd(long iChannelId /* = -1 */)
     return lastProgramme;
 }
 
-CDateTime CTVDatabase::GetLastEpgScanTime()
+CDateTime CPVRDatabase::GetLastEpgScanTime()
 {
   if (lastScanTime.IsValid())
     return lastScanTime;
@@ -853,7 +853,7 @@ CDateTime CTVDatabase::GetLastEpgScanTime()
   return lastTime;
 }
 
-bool CTVDatabase::UpdateLastEpgScanTime(void)
+bool CPVRDatabase::UpdateLastEpgScanTime(void)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
   CLog::Log(LOGDEBUG, "PVRDB - %s - updating last scan time to '%s'",
@@ -869,7 +869,7 @@ bool CTVDatabase::UpdateLastEpgScanTime(void)
   return bReturn;
 }
 
-bool CTVDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
   int bReturn = false;
 

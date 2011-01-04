@@ -31,7 +31,7 @@ class CPVREpg;
 class CPVRChannel : public Observable
 {
   friend class CPVREpgs;
-  friend class CTVDatabase;
+  friend class CPVRDatabase;
 
 private:
   /********** XBMC related channel data **********/
