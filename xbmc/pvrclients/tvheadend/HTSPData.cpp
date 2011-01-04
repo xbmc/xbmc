@@ -70,7 +70,7 @@ void cHTSPData::Close()
 
 bool cHTSPData::CheckConnection()
 {
-  return m_session.m_connected;
+  return m_session.IsConnected();
 }
 
 htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)

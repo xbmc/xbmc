@@ -45,8 +45,8 @@ cHTSPSession::cHTSPSession()
   , m_challenge(NULL)
   , m_challenge_len(0)
   , m_protocol(0)
-  , m_queue_size(1000)
   , m_connected(false)
+  , m_queue_size(1000)
 {
 }
 

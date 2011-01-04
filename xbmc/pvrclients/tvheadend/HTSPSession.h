@@ -241,6 +241,7 @@ public:
   ~cHTSPSession();
 
   bool      Connect(const std::string& hostname, int port);
+  bool      IsConnected() { return m_connected; }
   void      Close();
   void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
@@ -272,8 +273,6 @@ public:
   static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
-  bool        m_connected;
-
 private:
   SOCKET      m_fd;
   unsigned    m_seq;
@@ -282,6 +281,7 @@ private:
   int         m_protocol;
   CStdString  m_server;
   CStdString  m_version;
+  bool        m_connected;
 
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_queue_size;
