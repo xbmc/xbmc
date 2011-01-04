@@ -156,7 +156,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (pItem && pItem->IsPVRChannel())
   {
     /* Get the current running show on this channel from the EPG storage */
-    const cPVREPGInfoTag *epgnow = PVREpgs.GetEPG(pItem->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
+    const CPVREpgInfoTag *epgnow = PVREpgs.GetEPG(pItem->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
     CFileItem *itemNow  = new CFileItem(*epgnow);
 
     /* Load programme info dialog */

@@ -22,7 +22,8 @@
  */
 
 #include "GUIMediaWindow.h"
-#include "utils/PVREpg.h"
+#include "utils/PVREpgSearchFilter.h"
+#include "utils/PVREpgs.h"
 
 class CGUIEPGGridContainer;
 
@@ -61,7 +62,7 @@ private:
   bool m_bShowHiddenChannels;
   bool m_bSearchStarted;
   bool m_bSearchConfirmed;
-  EPGSearchFilter m_searchfilter;
+  PVREpgSearchFilter m_searchfilter;
 
   /* Selected item in associated list, required for subwindow change */
   int m_iSelected_GUIDE;

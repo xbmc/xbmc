@@ -22,7 +22,7 @@
 /*
  * DESCRIPTION:
  *
- * cPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
+ * CPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
  * stored on a other Backend like VDR or MythTV.
  *
  * The recording information tag holds data about name, length, recording time
@@ -49,12 +49,12 @@
 /**
  * Create a blank unmodified recording tag
  */
-cPVRRecordingInfoTag::cPVRRecordingInfoTag()
+CPVRRecordingInfoTag::CPVRRecordingInfoTag()
 {
   Reset();
 }
 
-bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
+bool CPVRRecordingInfoTag::operator ==(const CPVRRecordingInfoTag& right) const
 {
 
   if (this == &right) return true;
@@ -74,7 +74,7 @@ bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
           m_strTitle            == right.m_strTitle);
 }
 
-bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
+bool CPVRRecordingInfoTag::operator !=(const CPVRRecordingInfoTag& right) const
 {
 
   if (this == &right) return false;
@@ -97,9 +97,9 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
 }
 
 /**
- * Initialize blank cPVRRecordingInfoTag
+ * Initialize blank CPVRRecordingInfoTag
  */
-void cPVRRecordingInfoTag::Reset(void)
+void CPVRRecordingInfoTag::Reset(void)
 {
   m_clientIndex           = -1;
   m_clientID              = g_PVRManager.GetFirstClientID(); // Temporary until we support multiple backends
@@ -114,7 +114,7 @@ void cPVRRecordingInfoTag::Reset(void)
   CVideoInfoTag::Reset();
 }
 
-int cPVRRecordingInfoTag::GetDuration() const
+int CPVRRecordingInfoTag::GetDuration() const
 {
   int duration;
   duration =  m_duration.GetDays()*60*60*24;
@@ -125,7 +125,7 @@ int cPVRRecordingInfoTag::GetDuration() const
   return duration;
 }
 
-bool cPVRRecordingInfoTag::Delete(void) const
+bool CPVRRecordingInfoTag::Delete(void) const
 {
   try
   {
@@ -147,7 +147,7 @@ bool cPVRRecordingInfoTag::Delete(void) const
   return false;
 }
 
-bool cPVRRecordingInfoTag::Rename(CStdString &newName) const
+bool CPVRRecordingInfoTag::Rename(CStdString &newName) const
 {
   try
   {
@@ -169,7 +169,7 @@ bool cPVRRecordingInfoTag::Rename(CStdString &newName) const
   return false;
 }
 
-void cPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
+void CPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
@@ -184,16 +184,16 @@ void cPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
 }
 
 
-// --- cPVRRecordings ---------------------------------------------------------------
+// --- CPVRRecordings ---------------------------------------------------------------
 
-cPVRRecordings PVRRecordings;
+CPVRRecordings PVRRecordings;
 
-cPVRRecordings::cPVRRecordings(void)
+CPVRRecordings::CPVRRecordings(void)
 {
 
 }
 
-void cPVRRecordings::Process()
+void CPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
   CLIENTMAP *clients = g_PVRManager.Clients();
@@ -233,13 +233,13 @@ void cPVRRecordings::Process()
   return;
 }
 
-void cPVRRecordings::Unload()
+void CPVRRecordings::Unload()
 {
   CSingleLock lock(m_critSection);
   Clear();
 }
 
-bool cPVRRecordings::Update(bool Wait)
+bool CPVRRecordings::Update(bool Wait)
 {
   if (Wait)
   {
@@ -255,13 +255,13 @@ bool cPVRRecordings::Update(bool Wait)
   return false;
 }
 
-int cPVRRecordings::GetNumRecordings()
+int CPVRRecordings::GetNumRecordings()
 {
   CSingleLock lock(m_critSection);
   return size();
 }
 
-int cPVRRecordings::GetRecordings(CFileItemList* results)
+int CPVRRecordings::GetRecordings(CFileItemList* results)
 {
   CSingleLock lock(m_critSection);
   for (unsigned int i = 0; i < size(); ++i)
@@ -272,33 +272,33 @@ int cPVRRecordings::GetRecordings(CFileItemList* results)
   return size();
 }
 
-bool cPVRRecordings::DeleteRecording(const CFileItem &item)
+bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
-  /* Check if a cPVRRecordingInfoTag is inside file item */
+  /* Check if a CPVRRecordingInfoTag is inside file item */
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: DeleteRecording no RecordingInfoTag given!");
     return false;
   }
 
-  const cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
+  const CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
   return tag->Delete();
 }
 
-bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
+bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
 {
-  /* Check if a cPVRRecordingInfoTag is inside file item */
+  /* Check if a CPVRRecordingInfoTag is inside file item */
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: RenameRecording no RecordingInfoTag given!");
     return false;
   }
 
-  cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
+  CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
   return tag->Rename(newname);
 }
 
-bool cPVRRecordings::RemoveRecording(const CFileItem &item)
+bool CPVRRecordings::RemoveRecording(const CFileItem &item)
 {
   CSingleLock lock(m_critSection);
 
@@ -308,7 +308,7 @@ bool cPVRRecordings::RemoveRecording(const CFileItem &item)
     return false;
   }
 
-  const cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
+  const CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
 
   for (unsigned int i = 0; i < size(); ++i)
   {
@@ -321,7 +321,7 @@ bool cPVRRecordings::RemoveRecording(const CFileItem &item)
   return false;
 }
 
-bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CSingleLock lock(m_critSection);
 
@@ -439,7 +439,7 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
   return false;
 }
 
-cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
+CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
 {
   CSingleLock lock(m_critSection);
 
@@ -491,7 +491,7 @@ cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
   return NULL;
 }
 
-void cPVRRecordings::Clear()
+void CPVRRecordings::Clear()
 {
   /* Clear all current present Recordings inside list */
   erase(begin(), end());

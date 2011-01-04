@@ -24,7 +24,7 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "settings/VideoSettings.h"
-#include "utils/PVREpg.h"
+#include "utils/PVREpgs.h"
 #include "utils/PVRChannels.h"
 
 class CTVDatabase : public CDatabase
@@ -43,43 +43,43 @@ public:
   CDateTime GetLastEPGScanTime();
   bool UpdateLastEPGScan(const CDateTime lastScan);
   int GetLastChannel();
-  bool UpdateLastChannel(const cPVRChannelInfoTag &info);
+  bool UpdateLastChannel(const CPVRChannel &info);
 
   /* Database Epg handling */
   bool EraseEPG();
   bool EraseChannelEPG(long channelID);
   bool EraseChannelEPGAfterTime(long channelID, CDateTime after);
   bool EraseOldEPG();
-  long AddEPGEntry(const cPVREPGInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool UpdateEPGEntry(const cPVREPGInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool RemoveEPGEntry(const cPVREPGInfoTag &info);
+  long AddEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
+  bool UpdateEPGEntry(const CPVREpgInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
+  bool RemoveEPGEntry(const CPVREpgInfoTag &info);
   bool RemoveEPGEntries(unsigned int channelID, const CDateTime &start, const CDateTime &end);
-  bool GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, const CDateTime &start, const CDateTime &end);
+  bool GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg, const CDateTime &start, const CDateTime &end);
   CDateTime GetEPGDataStart(int channelID);
   CDateTime GetEPGDataEnd(int channelID);
 
   /* Database Channel handling */
   bool EraseChannels();
   bool EraseClientChannels(long clientID);
-  long AddDBChannel(const cPVRChannelInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
-  bool RemoveDBChannel(const cPVRChannelInfoTag &info);
-  long UpdateDBChannel(const cPVRChannelInfoTag &info);
+  long AddDBChannel(const CPVRChannel &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
+  bool RemoveDBChannel(const CPVRChannel &info);
+  long UpdateDBChannel(const CPVRChannel &info);
   int  GetDBNumChannels(bool radio);
   int  GetNumHiddenChannels();
-  bool HasChannel(const cPVRChannelInfoTag &info);
-  bool GetDBChannelList(cPVRChannels &results, bool radio);
+  bool HasChannel(const CPVRChannel &info);
+  bool GetDBChannelList(CPVRChannels &results, bool radio);
 
   /* Database Channel Portal Linkage */
   bool EraseChannelLinkageMap();
   long AddChannelLinkage(int PortalChannel, int LinkedChannel);
   bool DeleteChannelLinkage(unsigned int channelId);
-  bool GetChannelLinkageMap(cPVRChannelInfoTag &channel);
+  bool GetChannelLinkageMap(CPVRChannel &channel);
 
   /* Database Channel Group handling */
   bool EraseChannelGroups();
   long AddChannelGroup(const CStdString &groupName, int sortOrder);
   bool DeleteChannelGroup(unsigned int GroupId);
-  bool GetChannelGroupList(cPVRChannelGroups &results);
+  bool GetChannelGroupList(CPVRChannelGroups &results);
   bool SetChannelGroupName(unsigned int GroupId, const CStdString &newname);
   bool SetChannelGroupSortOrder(unsigned int GroupId, int sortOrder);
 
@@ -87,7 +87,7 @@ public:
   bool EraseRadioChannelGroups();
   long AddRadioChannelGroup(const CStdString &groupName, int sortOrder);
   bool DeleteRadioChannelGroup(unsigned int GroupId);
-  bool GetRadioChannelGroupList(cPVRChannelGroups &results);
+  bool GetRadioChannelGroupList(CPVRChannelGroups &results);
   bool SetRadioChannelGroupName(unsigned int GroupId, const CStdString &newname);
   bool SetRadioChannelGroupSortOrder(unsigned int GroupId, int sortOrder);
 

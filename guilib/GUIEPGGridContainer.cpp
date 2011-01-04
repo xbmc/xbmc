@@ -427,7 +427,7 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
       CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : NULL;
       if (fileItem)
       {
-        const cPVREPGInfoTag* tag = fileItem->GetEPGInfoTag();
+        const CPVREpgInfoTag* tag = fileItem->GetEPGInfoTag();
         if (m_orientation == VERTICAL)
           layout->SetWidth(width);
         else
@@ -465,7 +465,7 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
       CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : NULL;
       if (fileItem)
       {
-        const cPVREPGInfoTag* tag = fileItem->GetEPGInfoTag();
+        const CPVREpgInfoTag* tag = fileItem->GetEPGInfoTag();
         if (m_orientation == VERTICAL)
           layout->SetWidth(width);
         else
@@ -628,7 +628,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       itemsPointer.start = 0;
       for (int i = 0; i < items->Size(); ++i)
       {
-        const cPVREPGInfoTag* tag = items->Get(i)->GetEPGInfoTag();
+        const CPVREpgInfoTag* tag = items->Get(i)->GetEPGInfoTag();
         int ChannelNow = tag->ChannelNumber();
         if (ChannelNow != ChannelLast)
         {
@@ -736,7 +736,7 @@ void CGUIEPGGridContainer::UpdateItems()
         if (((CFileItem *)item.get())->GetEPGInfoTag()->ChannelNumber() != channelnum)
           break;
 
-        const cPVREPGInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
+        const CPVREpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
         if (tag == NULL)
           progIdx++;
 
@@ -772,7 +772,7 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         if (!m_gridIndex[row][block].item)
         {
-          cPVREPGInfoTag broadcast(NULL);
+          CPVREpgInfoTag broadcast(NULL);
           CFileItemPtr unknown(new CFileItem(broadcast));
           for (int i = block ; i > block - itemSize; i--)
           {

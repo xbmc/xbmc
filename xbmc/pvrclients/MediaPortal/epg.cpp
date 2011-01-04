@@ -29,7 +29,7 @@ using namespace std;
 #include "client.h"
 
 //Copied from PVREpg.h:
-//subtypes derived from English strings.xml and cPVREPGInfoTag::ConvertGenreIdToString
+//subtypes derived from English strings.xml and CPVREpgInfoTag::ConvertGenreIdToString
 //TODO: Finish me... This list is not yet complete
 #define EVCONTENTMASK_MOVIEDRAMA                     0x10
 //Subtypes MOVIE/DRAMA

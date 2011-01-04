@@ -22,7 +22,7 @@
 /*
  * DESCRIPTION:
  *
- * cPVRTimerInfoTag is part of the PVRManager to support sheduled recordings.
+ * CPVRTimerInfoTag is part of the PVRManager to support sheduled recordings.
  *
  * The timer information tag holds data about current programmed timers for
  * the PVRManager. It is possible to create timers directly based upon
@@ -50,7 +50,7 @@
 
 #include "FileItem.h"
 #include "PVRTimers.h"
-#include "PVREpg.h"
+#include "PVREpgs.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
 #include "Util.h"
@@ -64,14 +64,14 @@
 /**
  * Create a blank unmodified timer tag
  */
-cPVRTimerInfoTag::cPVRTimerInfoTag()
+CPVRTimerInfoTag::CPVRTimerInfoTag()
 {
   Reset();
 }
 
 /**
  * Creates a instant timer on current date and channel if "bool Init"
- * is set one hour later as now otherwise a blank cPVRTimerInfoTag is
+ * is set one hour later as now otherwise a blank CPVRTimerInfoTag is
  * given.
  * \param bool Init             = Initialize as instant timer if set
  *
@@ -80,7 +80,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag()
  * is false something goes wrong during initialization!
  * See Log for errors.
  */
-cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
+CPVRTimerInfoTag::CPVRTimerInfoTag(bool Init)
 {
   Reset();
 
@@ -105,7 +105,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   if (!deflifetime)
     deflifetime = 99;  /* Default 99 days */
 
-  const cPVRChannelInfoTag *channel = NULL;
+  const CPVRChannel *channel = NULL;
 
   CFileItem *curPlayingChannel = g_PVRManager.GetCurrentPlayingItem();
   if (curPlayingChannel)
@@ -123,8 +123,8 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   m_clientIndex   = -1;
   m_Active        = true;
   m_strTitle      = g_localizeStrings.Get(19056);
-  m_channelNum    = channel->Number();
-  m_clientNum     = channel->ClientNumber();
+  m_channelNum    = channel->ChannelNumber();
+  m_clientNum     = channel->ClientChannelNumber();
   m_clientID      = channel->ClientID();
   m_Radio         = channel->IsRadio();
 
@@ -150,25 +150,25 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
 /**
  * Create Timer based upon an TVEPGInfoTag
- * \param const CFileItem& item = reference to cPVREPGInfoTag class
+ * \param const CFileItem& item = reference to CPVREpgInfoTag class
  *
  * Note:
  * Check active flag "m_Active" is set, after creating the tag. If it
  * is false something goes wrong during initialization!
  * See Log for errors.
  */
-cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
+CPVRTimerInfoTag::CPVRTimerInfoTag(const CFileItem& item)
 {
   Reset();
 
-  const cPVREPGInfoTag* tag = item.GetEPGInfoTag();
+  const CPVREpgInfoTag* tag = item.GetEPGInfoTag();
   if (tag == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, no EPGInfoTag given!");
     return;
   }
 
-  const cPVRChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->ChannelID());
+  const CPVRChannel *channel = CPVRChannels::GetByChannelIDFromAll(tag->ChannelID());
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");
@@ -204,13 +204,13 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
   m_clientIndex   = tag->GetUniqueBroadcastID();
   m_Active        = true;
   m_strTitle      = tag->Title();
-  m_channelNum    = channel->Number();
-  m_clientNum     = channel->ClientNumber();
+  m_channelNum    = channel->ChannelNumber();
+  m_clientNum     = channel->ClientChannelNumber();
   m_clientID      = channel->ClientID();
   m_Radio         = channel->IsRadio();
 
   if (m_strTitle.IsEmpty())
-    m_strTitle  = channel->Name();
+    m_strTitle  = channel->ChannelName();
 
   /* Calculate start/stop times */
   m_StartTime     = tag->Start() - CDateTimeSpan(0, marginstart / 60, marginstart % 60, 0);
@@ -232,9 +232,9 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
 }
 
 /**
- * Compare equal for two cPVRTimerInfoTag
+ * Compare equal for two CPVRTimerInfoTag
  */
-bool cPVRTimerInfoTag::operator ==(const cPVRTimerInfoTag& right) const
+bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
 {
   if (this == &right) return true;
 
@@ -258,9 +258,9 @@ bool cPVRTimerInfoTag::operator ==(const cPVRTimerInfoTag& right) const
 }
 
 /**
- * Compare not equal for two cPVRTimerInfoTag
+ * Compare not equal for two CPVRTimerInfoTag
  */
-bool cPVRTimerInfoTag::operator !=(const cPVRTimerInfoTag& right) const
+bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 {
   if (this == &right) return false;
 
@@ -283,28 +283,28 @@ bool cPVRTimerInfoTag::operator !=(const cPVRTimerInfoTag& right) const
           m_clientID              != right.m_clientID);
 }
 
-time_t cPVRTimerInfoTag::StartTime(void) const
+time_t CPVRTimerInfoTag::StartTime(void) const
 {
   time_t start;
   m_StartTime.GetAsTime(start);
   return start;
 }
 
-time_t cPVRTimerInfoTag::StopTime(void) const
+time_t CPVRTimerInfoTag::StopTime(void) const
 {
   time_t stop;
   m_StopTime.GetAsTime(stop);
   return stop;
 }
 
-time_t cPVRTimerInfoTag::FirstDayTime(void) const
+time_t CPVRTimerInfoTag::FirstDayTime(void) const
 {
   time_t firstday;
   m_FirstDay.GetAsTime(firstday);
   return firstday;
 }
 
-int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
+int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
   time_t timer1 = StartTime();
   time_t timer2 = timer.StartTime();
@@ -315,9 +315,9 @@ int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
 }
 
 /**
- * Initialize blank cPVRTimerInfoTag
+ * Initialize blank CPVRTimerInfoTag
  */
-void cPVRTimerInfoTag::Reset()
+void CPVRTimerInfoTag::Reset()
 {
   m_strTitle      = "";
   m_strDir        = "/";
@@ -349,7 +349,7 @@ void cPVRTimerInfoTag::Reset()
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-const CStdString cPVRTimerInfoTag::GetStatus() const
+const CStdString CPVRTimerInfoTag::GetStatus() const
 {
   if (m_strFileNameAndPath == "pvr://timers/add.timer")
     return g_localizeStrings.Get(19026);
@@ -361,7 +361,7 @@ const CStdString cPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(305);
 }
 
-bool cPVRTimerInfoTag::Add() const
+bool CPVRTimerInfoTag::Add() const
 {
   try
   {
@@ -384,7 +384,7 @@ bool cPVRTimerInfoTag::Add() const
   return false;
 }
 
-bool cPVRTimerInfoTag::Delete(bool force) const
+bool CPVRTimerInfoTag::Delete(bool force) const
 {
   try
   {
@@ -411,7 +411,7 @@ bool cPVRTimerInfoTag::Delete(bool force) const
   return false;
 }
 
-bool cPVRTimerInfoTag::Rename(CStdString &newname) const
+bool CPVRTimerInfoTag::Rename(CStdString &newname) const
 {
   try
   {
@@ -436,7 +436,7 @@ bool cPVRTimerInfoTag::Rename(CStdString &newname) const
   return false;
 }
 
-bool cPVRTimerInfoTag::Update() const
+bool CPVRTimerInfoTag::Update() const
 {
   try
   {
@@ -459,7 +459,7 @@ bool cPVRTimerInfoTag::Update() const
   return false;
 }
 
-void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
+void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
     CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
@@ -475,7 +475,7 @@ void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
   return;
 }
 
-void cPVRTimerInfoTag::SetEpg(const cPVREPGInfoTag *tag)
+void CPVRTimerInfoTag::SetEpg(const CPVREpgInfoTag *tag)
 {
   if (m_EpgInfo != tag)
   {
@@ -487,39 +487,39 @@ void cPVRTimerInfoTag::SetEpg(const cPVREPGInfoTag *tag)
   }
 }
 
-unsigned int cPVRTimerInfoTag::ChannelNumber() const
+unsigned int CPVRTimerInfoTag::ChannelNumber() const
 {
-  cPVRChannelInfoTag *channeltag = cPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
+  CPVRChannel *channeltag = CPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
   if (channeltag)
-    return channeltag->Number();
+    return channeltag->ChannelNumber();
   else
     return 0;
 }
 
-CStdString cPVRTimerInfoTag::ChannelName() const
+CStdString CPVRTimerInfoTag::ChannelName() const
 {
-  cPVRChannelInfoTag *channeltag = cPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
+  CPVRChannel *channeltag = CPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
   if (channeltag)
-    return channeltag->Name();
+    return channeltag->ChannelName();
   else
     return "";
 }
 
-// --- cPVRTimers ---------------------------------------------------------------
+// --- CPVRTimers ---------------------------------------------------------------
 
-cPVRTimers PVRTimers;
+CPVRTimers PVRTimers;
 
-cPVRTimers::cPVRTimers(void)
+CPVRTimers::CPVRTimers(void)
 {
 
 }
 
-void cPVRTimers::Unload()
+void CPVRTimers::Unload()
 {
   Clear();
 }
 
-bool cPVRTimers::Update()
+bool CPVRTimers::Update()
 {
   CSingleLock lock(m_critSection);
 
@@ -544,12 +544,12 @@ bool cPVRTimers::Update()
   return true;
 }
 
-int cPVRTimers::GetNumTimers()
+int CPVRTimers::GetNumTimers()
 {
   return size();
 }
 
-int cPVRTimers::GetTimers(CFileItemList* results)
+int CPVRTimers::GetTimers(CFileItemList* results)
 {
   Update();
 
@@ -562,12 +562,12 @@ int cPVRTimers::GetTimers(CFileItemList* results)
   return size();
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
+CPVRTimerInfoTag *CPVRTimers::GetTimer(CPVRTimerInfoTag *Timer)
 {
   CSingleLock lock(m_critSection);
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).Number() == Timer->Number() &&
+    if (at(i).ChannelNumber() == Timer->Number() &&
         ((at(i).Weekdays() && at(i).Weekdays() == Timer->Weekdays()) || (!at(i).Weekdays() && at(i).FirstDay() == Timer->FirstDay())) &&
         at(i).Start() == Timer->Start() &&
         at(i).Stop() == Timer->Stop())
@@ -576,28 +576,28 @@ cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
   return NULL;
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetMatch(CDateTime t)
+CPVRTimerInfoTag *CPVRTimers::GetMatch(CDateTime t)
 {
 
   return NULL;
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetMatch(time_t t)
+CPVRTimerInfoTag *CPVRTimers::GetMatch(time_t t)
 {
 
   return NULL;
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetMatch(const cPVREPGInfoTag *Epg, int *Match)
+CPVRTimerInfoTag *CPVRTimers::GetMatch(const CPVREpgInfoTag *Epg, int *Match)
 {
 
   return NULL;
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
+CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
 {
   CSingleLock lock(m_critSection);
-  cPVRTimerInfoTag *t0 = NULL;
+  CPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {
     if ((at(i).Active()) && (!t0 || (at(i).Stop() > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0)))
@@ -608,16 +608,16 @@ cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
   return t0;
 }
 
-bool cPVRTimers::AddTimer(const CFileItem &item)
+bool CPVRTimers::AddTimer(const CFileItem &item)
 {
-  /* Check if a cPVRTimerInfoTag is inside file item */
+  /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "cPVRTimers: AddTimer no TimerInfoTag given!");
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   if (!g_PVRManager.GetClientProps(tag->ClientID())->SupportTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
@@ -626,29 +626,29 @@ bool cPVRTimers::AddTimer(const CFileItem &item)
   return tag->Add();
 }
 
-bool cPVRTimers::DeleteTimer(const CFileItem &item, bool force)
+bool CPVRTimers::DeleteTimer(const CFileItem &item, bool force)
 {
-  /* Check if a cPVRTimerInfoTag is inside file item */
+  /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "cPVRTimers: DeleteTimer no TimerInfoTag given!");
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Delete(force);
 }
 
-bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
+bool CPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
 {
-  /* Check if a cPVRTimerInfoTag is inside file item */
+  /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "cPVRTimers: RenameTimer no TimerInfoTag given!");
     return false;
   }
 
-  cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   if (tag->Rename(newname))
   {
     tag->SetTitle(newname);
@@ -657,20 +657,20 @@ bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
   return false;
 }
 
-bool cPVRTimers::UpdateTimer(const CFileItem &item)
+bool CPVRTimers::UpdateTimer(const CFileItem &item)
 {
-  /* Check if a cPVRTimerInfoTag is inside file item */
+  /* Check if a CPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "cPVRTimers: UpdateTimer no TimerInfoTag given!");
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Update();
 }
 
-bool cPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString base(strPath);
   CUtil::RemoveSlashAtEnd(base);
@@ -701,7 +701,7 @@ bool cPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
   return false;
 }
 
-void cPVRTimers::Clear()
+void CPVRTimers::Clear()
 {
   /* Clear all current present Timers inside list */
   erase(begin(), end());

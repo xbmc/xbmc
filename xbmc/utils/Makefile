@@ -57,10 +57,15 @@ SRCS=AlarmClock.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
-     PVREpg.cpp \
+     PVREpgs.cpp \
+     PVREpgSearchFilter.cpp \
      PVRTimers.cpp \
+     PVRChannel.cpp \
      PVRChannels.cpp \
+     PVRChannelGroup.cpp \
+     PVRChannelGroups.cpp \
      PVRRecordings.cpp \
+     Observer.cpp \
      StreamDetails.cpp \
      TimeUtils.cpp \
      JobManager.cpp \

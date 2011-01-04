@@ -24,7 +24,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
-#include "utils/PVREpg.h"
+#include "utils/PVREpgs.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRTimers.h"
 
@@ -81,9 +81,9 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 
               if (pDialog->IsConfirmed())
               {
-                cPVRTimerInfoTag newtimer(*m_progItem.get());
+                CPVRTimerInfoTag newtimer(*m_progItem.get());
                 CFileItem *item = new CFileItem(newtimer);
-                cPVRTimers::AddTimer(*item);
+                CPVRTimers::AddTimer(*item);
               }
             }
           }
@@ -99,7 +99,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       {
         Close();
 
-        cPVRChannels *channels;
+        CPVRChannels *channels;
         if (!m_progItem->GetEPGInfoTag()->IsRadio())
           channels = &PVRChannelsTV;
         else
@@ -131,7 +131,7 @@ CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 void CGUIDialogPVRGuideInfo::Update()
 {
   // set recording button label
-  cPVREPGInfoTag* tag = m_progItem->GetEPGInfoTag();
+  CPVREpgInfoTag* tag = m_progItem->GetEPGInfoTag();
   if (tag->End() > CDateTime::GetCurrentDateTime())
   {
     if (tag->Timer() == NULL)

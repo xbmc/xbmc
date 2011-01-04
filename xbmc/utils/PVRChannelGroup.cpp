@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,27 +19,10 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "PVRChannelGroup.h"
 
-struct PVREpgSearchFilter;
-
-class CGUIDialogPVRGuideSearch : public CGUIDialog
+CPVRChannelGroup::CPVRChannelGroup(void)
 {
-public:
-  CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
-
-  void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
-  bool IsConfirmed() const { return m_bConfirmed; }
-  bool IsCanceled() const { return m_bCanceled; }
-  void OnSearch();
-
-protected:
-  void Update();
-
-  bool m_bConfirmed;
-  bool m_bCanceled;
-  PVREpgSearchFilter *m_searchfilter;
-};
+  m_iGroupID = 0;
+  m_GroupName = "";
+}

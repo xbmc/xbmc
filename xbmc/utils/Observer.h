@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,27 +21,28 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "guilib/StdString.h"
+#include <set>
 
-struct PVREpgSearchFilter;
-
-class CGUIDialogPVRGuideSearch : public CGUIDialog
+class Observer
 {
 public:
-  CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
+  virtual void Notify(const CStdString& msg) = 0;
+};
 
-  void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
-  bool IsConfirmed() const { return m_bConfirmed; }
-  bool IsCanceled() const { return m_bCanceled; }
-  void OnSearch();
+class Observable
+{
 
-protected:
-  void Update();
+public:
+  Observable();
+  virtual ~Observable();
 
-  bool m_bConfirmed;
-  bool m_bCanceled;
-  PVREpgSearchFilter *m_searchfilter;
+  void AddObserver(Observer& o);
+  void RemoveObserver(Observer& o);
+  void NotifyObservers(const CStdString& msg = CStdString());
+  void SetChanged(bool bSetTo = true);
+
+private:
+  bool  m_bObservableChanged;
+  std::set<Observer*> m_Observers;
 };

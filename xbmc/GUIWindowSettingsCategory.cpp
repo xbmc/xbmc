@@ -1914,7 +1914,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    cPVRChannels::SearchMissingChannelIcons();
+    CPVRChannels::SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {

@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,27 +19,43 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "Observer.h"
 
-struct PVREpgSearchFilter;
-
-class CGUIDialogPVRGuideSearch : public CGUIDialog
+Observable::Observable()
 {
-public:
-  CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
+  m_Observers.clear();
+}
 
-  void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
-  bool IsConfirmed() const { return m_bConfirmed; }
-  bool IsCanceled() const { return m_bCanceled; }
-  void OnSearch();
+Observable::~Observable()
+{
+  m_Observers.clear();
+}
 
-protected:
-  void Update();
+void Observable::AddObserver(Observer& o)
+{
+  m_Observers.insert(&o);
+}
 
-  bool m_bConfirmed;
-  bool m_bCanceled;
-  PVREpgSearchFilter *m_searchfilter;
-};
+void Observable::RemoveObserver(Observer& o)
+{
+  m_Observers.erase(&o);
+}
+
+void Observable::NotifyObservers(const CStdString& msg)
+{
+  if (m_bObservableChanged)
+  {
+    std::set<Observer*>::iterator itr;
+
+    m_bObservableChanged = false;
+
+    for(itr = m_Observers.begin(); itr != m_Observers.end(); itr++)
+      (*itr)->Notify(msg);
+  }
+}
+
+void Observable::SetChanged(bool SetTo)
+{
+  m_bObservableChanged = SetTo;
+}
+

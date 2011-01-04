@@ -245,11 +245,11 @@ void cConnection::Action(void)
   StopChannelStreaming();
 }
 
-void cConnection::EnableNetLog(bool yesNo, const char* ClientName)
+void cConnection::EnableNetLog(bool yesNo, const char* ClientChannelName)
 {
   if (yesNo)
   {
-    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientName);
+    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientChannelName);
 
     m_NetLogFile = fopen(*Base, "a");
     if (m_NetLogFile)

@@ -23,7 +23,7 @@
 #include "Addon.h"
 #include "AddonDll.h"
 #include "DllPVRClient.h"
-#include "../utils/PVREpg.h"
+#include "../utils/PVREpgs.h"
 #include "../utils/PVRChannels.h"
 #include "../utils/PVRTimers.h"
 #include "../utils/PVRRecordings.h"
@@ -69,38 +69,38 @@ public:
   void CallMenuHook(const PVR_MENUHOOK &hook);
 
   /* TV Guide */
-  PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end, bool toDB = false);
+  PVR_ERROR GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *epg, time_t start, time_t end, bool toDB = false);
 
   /* Channels */
   int GetNumChannels();
-  PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio);
+  PVR_ERROR GetChannelList(CPVRChannels &channels, bool radio);
 
   /* Recordings */
   int GetNumRecordings(void);
-  PVR_ERROR GetAllRecordings(cPVRRecordings *results);
-  PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
-  PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
+  PVR_ERROR GetAllRecordings(CPVRRecordings *results);
+  PVR_ERROR DeleteRecording(const CPVRRecordingInfoTag &recinfo);
+  PVR_ERROR RenameRecording(const CPVRRecordingInfoTag &recinfo, CStdString &newname);
 
   /* Timers */
   int GetNumTimers(void);
-  PVR_ERROR GetAllTimers(cPVRTimers *results);
-  PVR_ERROR AddTimer(const cPVRTimerInfoTag &timerinfo);
-  PVR_ERROR DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force = false);
-  PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname);
-  PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo);
+  PVR_ERROR GetAllTimers(CPVRTimers *results);
+  PVR_ERROR AddTimer(const CPVRTimerInfoTag &timerinfo);
+  PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force = false);
+  PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timerinfo, CStdString &newname);
+  PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timerinfo);
 
-  bool OpenLiveStream(const cPVRChannelInfoTag &channelinfo);
+  bool OpenLiveStream(const CPVRChannel &channelinfo);
   void CloseLiveStream();
   int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
   int64_t SeekLiveStream(int64_t iFilePosition, int iWhence = SEEK_SET);
   int64_t PositionLiveStream(void);
   int64_t LengthLiveStream(void);
   int GetCurrentClientChannel();
-  bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
+  bool SwitchChannel(const CPVRChannel &channelinfo);
   bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
-  const std::string GetLiveStreamURL(const cPVRChannelInfoTag &channelinfo);
+  const std::string GetLiveStreamURL(const CPVRChannel &channelinfo);
 
-  bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
+  bool OpenRecordedStream(const CPVRRecordingInfoTag &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
   int64_t SeekRecordedStream(int64_t iFilePosition, int iWhence = SEEK_SET);
@@ -122,9 +122,9 @@ protected:
   PVR_MENUHOOKS         m_menuhooks;
 
 private:
-  void WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag);
-  void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
-  void WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
+  void WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHANNEL &tag);
+  void WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
+  void WriteClientRecordingInfo(const CPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

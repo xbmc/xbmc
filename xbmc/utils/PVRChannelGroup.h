@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,27 +21,26 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "VideoInfoTag.h"
+#include "DateTime.h"
+#include "FileItem.h"
+#include "PVRChannel.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
-struct PVREpgSearchFilter;
-
-class CGUIDialogPVRGuideSearch : public CGUIDialog
+class CPVRChannelGroup
 {
+private:
+  unsigned long m_iGroupID;
+  CStdString    m_GroupName;
+  int           m_iSortOrder;
+
 public:
-  CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
+  CPVRChannelGroup(void);
 
-  void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
-  bool IsConfirmed() const { return m_bConfirmed; }
-  bool IsCanceled() const { return m_bCanceled; }
-  void OnSearch();
-
-protected:
-  void Update();
-
-  bool m_bConfirmed;
-  bool m_bCanceled;
-  PVREpgSearchFilter *m_searchfilter;
+  long GroupID(void) const { return m_iGroupID; }
+  void SetGroupID(long group) { m_iGroupID = group; }
+  CStdString GroupName(void) const { return m_GroupName; }
+  void SetGroupName(CStdString name) { m_GroupName = name; }
+  long SortOrder(void) const { return m_iSortOrder; }
+  void SetSortOrder(long sortorder) { m_iSortOrder = sortorder; }
 };

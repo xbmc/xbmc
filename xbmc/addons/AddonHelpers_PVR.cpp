@@ -21,7 +21,7 @@
 
 #include "Application.h"
 #include "AddonHelpers_PVR.h"
-#include "PVREpg.h"
+#include "PVREpgs.h"
 #include "PVRChannels.h"
 #include "PVRTimers.h"
 #include "PVRRecordings.h"
@@ -64,15 +64,15 @@ void CAddonHelpers_PVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE han
     return;
   }
 
-  cPVREpg *xbmcEpg        = (cPVREpg*) handle->DATA_ADDRESS;
+  CPVREpg *xbmcEpg        = (CPVREpg*) handle->DATA_ADDRESS;
   PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
   CPVRClient* client      = (CPVRClient*) handle->CALLER_ADDRESS;
   epgentry2->starttime   += client->GetTimeCorrection();
   epgentry2->endtime     += client->GetTimeCorrection();
   if (handle->DATA_IDENTIFIER == 1)
-    cPVREpg::AddDB(epgentry2, xbmcEpg);
+    CPVREpg::AddDB(epgentry2, xbmcEpg);
   else
-    cPVREpg::Add(epgentry2, xbmcEpg);
+    CPVREpg::Add(epgentry2, xbmcEpg);
 
   return;
 }
@@ -87,17 +87,17 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
   }
 
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  cPVRChannels *xbmcChannels = (cPVRChannels*) handle->DATA_ADDRESS;
-  cPVRChannelInfoTag tag;
+  CPVRChannels *xbmcChannels = (CPVRChannels*) handle->DATA_ADDRESS;
+  CPVRChannel tag;
 
   tag.SetChannelID(-1);
-  tag.SetNumber(-1);
+  tag.SetChannelNumber(-1);
   tag.SetClientNumber(channel->number);
   tag.SetGroupID(0);
   tag.SetClientID(client->GetClientID());
   tag.SetUniqueID(channel->uid);
-  tag.SetName(channel->name);
-  tag.SetClientName(channel->callsign);
+  tag.SetChannelName(channel->name);
+  tag.SetClientChannelName(channel->callsign);
   tag.SetIcon(channel->iconpath);
   tag.SetEncryptionSystem(channel->encryption);
   tag.SetRadio(channel->radio);
@@ -120,9 +120,9 @@ void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHAND
   }
 
   CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
-  cPVRRecordings *xbmcRecordings = (cPVRRecordings*) handle->DATA_ADDRESS;
+  CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->DATA_ADDRESS;
 
-  cPVRRecordingInfoTag tag;
+  CPVRRecordingInfoTag tag;
 
   tag.SetClientIndex(recording->index);
   tag.SetClientID(client->GetClientID());
@@ -150,9 +150,9 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
     return;
   }
 
-  cPVRTimers *xbmcTimers      = (cPVRTimers*) handle->DATA_ADDRESS;
+  CPVRTimers *xbmcTimers      = (CPVRTimers*) handle->DATA_ADDRESS;
   CPVRClient* client          = (CPVRClient*) handle->CALLER_ADDRESS;
-  cPVRChannelInfoTag *channel = cPVRChannels::GetByClientFromAll(timer->channelNum, client->GetClientID());
+  CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timer->channelNum, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -160,7 +160,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
     return;
   }
 
-  cPVRTimerInfoTag tag;
+  CPVRTimerInfoTag tag;
   tag.SetClientID(client->GetClientID());
   tag.SetClientIndex(timer->index);
   tag.SetActive(timer->active);
@@ -175,7 +175,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.SetRecording(timer->recording);
   tag.SetRepeating(timer->repeat);
   tag.SetWeekdays(timer->repeatflags);
-  tag.SetNumber(channel->Number());
+  tag.SetNumber(channel->ChannelNumber());
   tag.SetRadio(channel->IsRadio());
   CStdString path;
   path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());

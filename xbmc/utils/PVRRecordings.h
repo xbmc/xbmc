@@ -25,13 +25,13 @@
  */
 
 #include "VideoInfoTag.h"
-#include "PVREpg.h"
+#include "PVREpgs.h"
 #include "settings/VideoSettings.h"
 #include "utils/Thread.h"
 #include "DateTime.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
-class cPVRRecordingInfoTag : public CVideoInfoTag
+class CPVRRecordingInfoTag : public CVideoInfoTag
 {
 private:
   int           m_clientID;           /// ID of the backend
@@ -48,9 +48,9 @@ private:
   void DisplayError(PVR_ERROR err) const;
 
 public:
-  cPVRRecordingInfoTag();
-  bool operator ==(const cPVRRecordingInfoTag& right) const;
-  bool operator !=(const cPVRRecordingInfoTag& right) const;
+  CPVRRecordingInfoTag();
+  bool operator ==(const CPVRRecordingInfoTag& right) const;
+  bool operator !=(const CPVRRecordingInfoTag& right) const;
   void Reset(void);
 
   CStdString Title(void) const { return m_strTitle; }
@@ -87,7 +87,7 @@ public:
 };
 
 
-class cPVRRecordings : public std::vector<cPVRRecordingInfoTag>
+class CPVRRecordings : public std::vector<CPVRRecordingInfoTag>
                      , private CThread
 {
 private:
@@ -95,7 +95,7 @@ private:
   virtual void Process();
 
 public:
-  cPVRRecordings(void);
+  CPVRRecordings(void);
   bool Load() { return Update(true); }
   void Unload();
   bool Update(bool Wait = false);
@@ -105,8 +105,8 @@ public:
   static bool RenameRecording(CFileItem &item, CStdString &newname);
   bool RemoveRecording(const CFileItem &item);
   bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  cPVRRecordingInfoTag *GetByPath(CStdString &path);
+  CPVRRecordingInfoTag *GetByPath(CStdString &path);
   void Clear();
 };
 
-extern cPVRRecordings PVRRecordings;
+extern CPVRRecordings PVRRecordings;

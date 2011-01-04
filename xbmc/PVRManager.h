@@ -221,12 +221,12 @@ public:
   /*! \brief Open the Channel stream on the given channel info tag
    \return true if opening was succesfull
    */
-  bool OpenLiveStream(const cPVRChannelInfoTag* tag);
+  bool OpenLiveStream(const CPVRChannel* tag);
 
   /*! \brief Open a recording by a index number passed to this function.
    \return true if opening was succesfull
    */
-  bool OpenRecordedStream(const cPVRRecordingInfoTag* tag);
+  bool OpenRecordedStream(const CPVRRecordingInfoTag* tag);
 
   /*! \brief Returns runtime generated stream URL
    Returns a during runtime generated stream URL from the PVR Client.
@@ -234,7 +234,7 @@ public:
    during opening.
    \return Stream URL
    */
-  CStdString GetLiveStreamURL(const cPVRChannelInfoTag* tag);
+  CStdString GetLiveStreamURL(const CPVRChannel* tag);
 
   /*! \brief Close the stream on the PVR Client.
    */
@@ -396,7 +396,7 @@ private:
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
   int                 m_LastChannel;
-  long                m_LastChannelChanged;
+  unsigned int        m_LastChannelChanged;
 
   /*--- Stream playback data ---*/
   CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */

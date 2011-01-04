@@ -298,7 +298,7 @@ PVR_ERROR cPVRClientMediaPortal::GetMPTVTime(time_t *localTime, int *gmtOffset)
 
   if(fields.size() == 3)
   {
-    //From cPVREpg::cPVREpg(): Expected PVREpg GMT offset is in seconds
+    //From CPVREpg::CPVREpg(): Expected PVREpg GMT offset is in seconds
     m_BackendUTCoffset = ((atoi(fields[1].c_str()) * 60) + atoi(fields[2].c_str())) * 60;
 
     count = sscanf(fields[0].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);

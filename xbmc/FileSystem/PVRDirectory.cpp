@@ -86,7 +86,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(8) == "channels")
   {
-    return cPVRChannels::GetDirectory(strPath, items) > 0;
+    return CPVRChannels::GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(6) == "timers")
   {

@@ -50,7 +50,7 @@ private:
   bool m_bMovingMode;
   bool m_bContainsChanges;
 
-  unsigned int m_iSelected;
+  int m_iSelected;
   CFileItemList* m_channelItems;
   CGUIViewControl m_viewControl;
 };

@@ -673,7 +673,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         int iNewGroup = -1; // All Channels
 
-        cPVRChannelGroups *groups;
+        CPVRChannelGroups *groups;
         if (!g_PVRManager.IsPlayingRadio())
           groups = &PVRChannelGroupsTV;
         else
@@ -1101,7 +1101,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  cPVRChannelGroups *groups;
+  CPVRChannelGroups *groups;
   if (!g_PVRManager.IsPlayingRadio())
     groups = &PVRChannelGroupsTV;
   else

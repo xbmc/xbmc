@@ -28,10 +28,10 @@
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
-class cPVREPGInfoTag;
+class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
 
-class cPVRTimerInfoTag
+class CPVRTimerInfoTag
 {
 private:
   friend class CGUIDialogPVRTimerSettings;
@@ -55,21 +55,21 @@ private:
   int             m_Weekdays;             /// Bit based store of weekdays to repeat
   CStdString      m_strFileNameAndPath;   /// Filename is only for reference
 
-  const cPVREPGInfoTag *m_EpgInfo;
+  const CPVREpgInfoTag *m_EpgInfo;
 
   void DisplayError(PVR_ERROR err) const;
 
 public:
-  cPVRTimerInfoTag();
-  cPVRTimerInfoTag(const CFileItem& item);
-  cPVRTimerInfoTag(bool Init);
+  CPVRTimerInfoTag();
+  CPVRTimerInfoTag(const CFileItem& item);
+  CPVRTimerInfoTag(bool Init);
 
-  bool operator ==(const cPVRTimerInfoTag& right) const;
-  bool operator !=(const cPVRTimerInfoTag& right) const;
+  bool operator ==(const CPVRTimerInfoTag& right) const;
+  bool operator !=(const CPVRTimerInfoTag& right) const;
 
   void Reset();
   const CStdString GetStatus() const;
-  int Compare(const cPVRTimerInfoTag &timer) const;
+  int Compare(const CPVRTimerInfoTag &timer) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
   time_t FirstDayTime(void) const;
@@ -109,8 +109,8 @@ public:
   void SetSummary(CStdString Summary) { m_Summary = Summary; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
-  const cPVREPGInfoTag *Epg() const { return m_EpgInfo;}
-  void SetEpg(const cPVREPGInfoTag *tag);
+  const CPVREpgInfoTag *Epg() const { return m_EpgInfo;}
+  void SetEpg(const CPVREpgInfoTag *tag);
 
   /* Channel related Info data */
   unsigned int ChannelNumber(void) const;
@@ -123,23 +123,23 @@ public:
   bool Update() const;
 };
 
-class cPVRTimers : public std::vector<cPVRTimerInfoTag>
+class CPVRTimers : public std::vector<CPVRTimerInfoTag>
 {
 private:
   CCriticalSection m_critSection;
 
 public:
-  cPVRTimers(void);
+  CPVRTimers(void);
   bool Load() { return Update(); }
   void Unload();
   bool Update();
   int GetNumTimers();
   int GetTimers(CFileItemList* results);
-  cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
-  cPVRTimerInfoTag *GetMatch(CDateTime t);
-  cPVRTimerInfoTag *GetMatch(time_t t);
-  cPVRTimerInfoTag *GetMatch(const cPVREPGInfoTag *Epg, int *Match = NULL);
-  cPVRTimerInfoTag *GetNextActiveTimer(void);
+  CPVRTimerInfoTag *GetTimer(CPVRTimerInfoTag *Timer);
+  CPVRTimerInfoTag *GetMatch(CDateTime t);
+  CPVRTimerInfoTag *GetMatch(time_t t);
+  CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
+  CPVRTimerInfoTag *GetNextActiveTimer(void);
   bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   static bool AddTimer(const CFileItem &item);
   static bool DeleteTimer(const CFileItem &item, bool force = false);
@@ -148,4 +148,4 @@ public:
   void Clear();
 };
 
-extern cPVRTimers PVRTimers;
+extern CPVRTimers PVRTimers;
