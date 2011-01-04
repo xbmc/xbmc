@@ -525,17 +525,15 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
   if(htsmsg_get_u32(msg, "feUNC", &quality.fe_unc))
     quality.fe_unc = -2;
 
-  const char* name;
-  if((name = htsmsg_get_str(msg, "feName")) == NULL)
-    quality.fe_name = "";
-  else
-    quality.fe_name = name;
-
   const char* status;
   if((status = htsmsg_get_str(msg, "feStatus")) == NULL)
     quality.fe_status = "";
   else
     quality.fe_status = status;
+
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseSignalStatus - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
+                    , quality.fe_snr, quality.fe_signal, quality.fe_ber
+                    , quality.fe_unc, quality.fe_status);
 
   return true;
 }

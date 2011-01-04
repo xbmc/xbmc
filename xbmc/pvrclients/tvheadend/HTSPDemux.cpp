@@ -270,6 +270,12 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
     return;
   }
 
+  const char* fe_name;
+  if((fe_name = htsmsg_get_str(m, "adapter")) == NULL)
+    m_Quality.fe_name = "";
+  else
+    m_Quality.fe_name = fe_name;
+
   m_Streams.nstreams = 0;
 
   HTSMSG_FOREACH(f, streams)
@@ -477,6 +483,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
+  m_Quality.fe_name = "";
   m_Streams.nstreams = 0;
 }
 
