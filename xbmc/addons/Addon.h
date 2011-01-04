@@ -144,6 +144,12 @@ public:
    */
   virtual CStdString GetSetting(const CStdString& key);
 
+  /*! \brief Load the default settings and override these with any previously configured user settings
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings();
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
@@ -178,12 +184,6 @@ protected:
   CAddon(const CAddon&, const AddonPtr&);
   const AddonPtr Parent() const { return m_parent; }
   virtual void BuildLibName(const cp_extension_t *ext = NULL);
-
-  /*! \brief Load the default settings and override these with any previously configured user settings
-   \return true if settings exist, false otherwise
-   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
-   */
-  virtual bool LoadSettings();
 
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise
