@@ -173,6 +173,7 @@ bool AC3Codec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels      = m_iOutputChannels;
   m_SampleRate    = m_iSourceSampleRate;
   m_BitsPerSample = 16;
+  m_DataFormat    = AE_FMT_S16NE;
   m_Bitrate       = m_iSourceBitrate;
   if (m_Channels == 0 || m_SampleRate == 0)
   {

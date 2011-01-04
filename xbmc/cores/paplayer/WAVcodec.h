@@ -36,10 +36,8 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-  virtual bool HasFloatData() const { return m_bHasFloat; }
 
 private:
-  bool m_bHasFloat;
   long m_iDataStart;
   long m_iDataLen;
   DWORD m_ChannelMask;

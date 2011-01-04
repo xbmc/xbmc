@@ -73,6 +73,7 @@ bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 1;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 4*60*1000; // fixme?
   m_iDataPos = 0;
 

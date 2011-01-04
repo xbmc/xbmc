@@ -90,9 +90,6 @@ public:
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // true if we can retrieve normalized float data immediately
-  virtual bool HasFloatData() const { return false; }
-
   __int64 m_TotalTime;  // time in ms
   int m_SampleRate;
   int m_BitsPerSample;

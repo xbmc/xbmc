@@ -32,6 +32,7 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_Bitrate = 0;
   m_CodecName = "OGG";
   m_TimeOffset = 0.0;
@@ -115,6 +116,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   if (item.IsInternetStream())
     m_TotalTime = -1;
   else

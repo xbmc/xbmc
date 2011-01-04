@@ -30,6 +30,7 @@ CDDACodec::CDDACodec()
   m_SampleRate = 44100;
   m_Channels = 2;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = "CDDA";

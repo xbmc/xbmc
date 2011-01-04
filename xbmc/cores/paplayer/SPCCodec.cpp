@@ -125,6 +125,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 32000;
   m_Channels = 2;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   CMusicInfoTagLoaderSPC tagLoader;
   CMusicInfoTag tag;
   tagLoader.Load(strFile,tag);
