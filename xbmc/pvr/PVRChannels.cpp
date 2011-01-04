@@ -326,6 +326,8 @@ int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, b
 {
   int iAmount = 0;
 
+  SortByChannelNumber(); // XXX remember if we already got a sorted list
+
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
     CPVRChannel *channel = at(ptr);
@@ -570,7 +572,6 @@ int CPVRChannels::LoadFromClients(bool bAddToDb /* = true */)
   {
     /* add all channels to the database */
     for (unsigned int ptr = 0; ptr < size(); ptr++)
-//      database->UpdateChannel(*at(ptr), false, (ptr==0), (ptr >= size() - 1));
       database->UpdateChannel(*at(ptr));
 
     database->Close();

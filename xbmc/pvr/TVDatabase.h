@@ -22,10 +22,13 @@
 
 #include "Database.h"
 #include "DateTime.h"
-#include "FileItem.h"
-#include "settings/VideoSettings.h"
-#include "PVREpgs.h"
-#include "PVRChannels.h"
+
+class CPVRChannels;
+class CPVRChannel;
+class CPVRChannelGroups;
+class CPVREpg;
+class CPVREpgInfoTag;
+class CVideoSettings;
 
 class CTVDatabase : public CDatabase
 {
@@ -78,7 +81,7 @@ public:
   /**
    * Update the channel that was played last
    */
-  bool UpdateLastChannel(const CPVRChannel &info);
+  bool UpdateLastChannel(const CPVRChannel &channel);
 
   /********** Channel settings methods **********/
 
@@ -90,12 +93,12 @@ public:
   /**
    * Get channel settings from the database
    */
-  bool GetChannelSettings(unsigned int iChannelId, CVideoSettings &settings);
+  bool GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings);
 
   /**
    * Store channel settings in the database
    */
-  bool SetChannelSettings(unsigned int iChannelId, const CVideoSettings &settings);
+  bool SetChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings);
 
   /********** Channel group methods **********/
 
@@ -187,13 +190,15 @@ public:
 
   /**
    * Get the start time of the first entry for a channel.
+   * If iChannelId is <= 0, then all entries will be searched.
    */
-  CDateTime GetEpgDataStart(int iChannelId);
+  CDateTime GetEpgDataStart(long iChannelId = -1);
 
   /**
    * Get the end time of the last entry for a channel.
+   * If iChannelId is <= 0, then all entries will be searched.
    */
-  CDateTime GetEpgDataEnd(int iChannelId);
+  CDateTime GetEpgDataEnd(long iChannelId = -1);
 
   /**
    * Get the last stored EPG scan time.
@@ -208,7 +213,7 @@ public:
   /**
    * Persist an infotag
    */
-  bool UpdateEpgEntry(const CPVREpgInfoTag &info, bool bSingleUpdate = true, bool bLastUpdate = false);
+  bool UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
 private:
   virtual bool CreateTables();

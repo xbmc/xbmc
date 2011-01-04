@@ -1251,7 +1251,7 @@ void CPVRManager::SaveCurrentChannelSettings()
     if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
     {
       m_database.Open();
-      m_database.SetChannelSettings(m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelID(), g_settings.m_currentVideoSettings);
+      m_database.SetChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
       m_database.Close();
     }
   }
@@ -1267,7 +1267,7 @@ void CPVRManager::LoadCurrentChannelSettings()
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
 
     m_database.Open();
-    if (m_database.GetChannelSettings(m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelID(), loadedChannelSettings))
+    if (m_database.GetChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), loadedChannelSettings))
     {
       if (loadedChannelSettings.m_AudioDelay != g_settings.m_currentVideoSettings.m_AudioDelay)
       {
