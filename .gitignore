@@ -48,7 +48,7 @@ config.log
 /Makefile
 /Makefile.include
 /aclocal.m4
-/autom4te.cache/
+autom4te.cache
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
