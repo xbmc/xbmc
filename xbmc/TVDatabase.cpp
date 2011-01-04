@@ -992,6 +992,7 @@ bool CTVDatabase::GetDBChannelList(CPVRChannels &results, bool radio)
       channel->m_strInputFormat          = m_pDS->fv("strInputFormat").get_asString();
       channel->m_strStreamURL            = m_pDS->fv("strStreamURL").get_asString();
       channel->m_bIsVirtual              = m_pDS->fv("Virtual").get_asBool();
+      channel->UpdatePath();
 
       results.push_back(channel);
       m_pDS->next();

@@ -149,13 +149,14 @@ void CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false
   {
     /* update the channel number */
     m_iChannelNumber = iChannelNumber;
-    UpdatePath();
     SetChanged();
 
     /* persist the changes */
     if (bSaveInDb)
       Persist();
   }
+
+  UpdatePath();
 }
 
 void CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
@@ -178,13 +179,14 @@ void CPVRChannel::SetRadio(bool bIsRadio, bool bSaveInDb /* = false */)
   {
     /* update the radio flag */
     m_bIsRadio = bIsRadio;
-    UpdatePath();
     SetChanged();
 
     /* persist the changes */
     if (bSaveInDb)
       Persist();
   }
+
+  UpdatePath();
 }
 
 void CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
@@ -356,8 +358,13 @@ void CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /*
 
 void CPVRChannel::UpdatePath(void)
 {
-  m_strFileNameAndPath.Format("pvr://channels/%s/all/%i.pvr", (m_bIsRadio ? "radio" : "tv"), m_iChannelNumber);
-  SetChanged();
+  CStdString strFileNameAndPath;
+  strFileNameAndPath.Format("pvr://channels/%s/all/%i.pvr", (m_bIsRadio ? "radio" : "tv"), m_iChannelNumber);
+  if (m_strFileNameAndPath != strFileNameAndPath)
+  {
+    m_strFileNameAndPath = strFileNameAndPath;
+    SetChanged();
+  }
 }
 
 void CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInDb /* = false */)
