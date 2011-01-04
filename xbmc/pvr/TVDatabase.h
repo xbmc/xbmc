@@ -146,7 +146,7 @@ public:
   bool EraseClients();
 
   /**
-   * Add a client to the database
+   * Add a client to the database if it's not already in there.
    */
   long AddClient(const CStdString &strClientName, const CStdString &strGuid);
 
@@ -156,6 +156,7 @@ public:
   bool RemoveClient(const CStdString &strGuid);
 
 protected:
+
   /**
    * Get the database ID of a client
    */

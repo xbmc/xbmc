@@ -624,12 +624,22 @@ long CTVDatabase::AddClient(const CStdString &strClientName, const CStdString &s
     return iReturn;
   }
 
-  CStdString strQuery = FormatSQL("INSERT INTO Clients (ClientDbId, Name, ClientId) VALUES (NULL, '%s', '%s')\n",
-      strClientName.c_str(), strClientUid.c_str());
+  CStdString strWhereClause = FormatSQL("ClientId = '%s'", strClientUid.c_str());
+  CStdString strResult = GetSingleValue("Clients", "ClientDbId", strWhereClause);
 
-  if (ExecuteQuery(strQuery))
+  if (strResult.IsEmpty())
   {
-    iReturn = (long) m_pDS->lastinsertid();
+    CStdString strQuery = FormatSQL("INSERT INTO Clients (ClientDbId, Name, ClientId) VALUES (NULL, '%s', '%s')\n",
+        strClientName.c_str(), strClientUid.c_str());
+
+    if (ExecuteQuery(strQuery))
+    {
+      iReturn = (long) m_pDS->lastinsertid();
+    }
+  }
+  else
+  {
+    iReturn = atol(strResult.c_str());
   }
 
   return iReturn;
