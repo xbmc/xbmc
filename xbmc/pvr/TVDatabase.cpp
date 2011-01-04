@@ -670,7 +670,13 @@ bool CTVDatabase::EraseEpg()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
-  return DeleteValues("EpgData");
+  if (DeleteValues("EpgData") && DeleteValues("LastEPGScan"))
+  {
+    lastScanTime.SetValid(false);
+    return true;
+  }
+
+  return false;
 }
 
 bool CTVDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)

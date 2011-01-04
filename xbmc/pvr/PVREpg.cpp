@@ -118,12 +118,6 @@ void CPVREpg::Sort(void)
 
 void CPVREpg::Clear(void)
 {
-  if (m_Channel != NULL)
-  {
-    CLog::Log(LOGINFO, "%s - clearing the EPG for channel '%s'",
-        __FUNCTION__, m_Channel->ChannelName().c_str());
-  }
-
   clear();
 }
 
@@ -444,4 +438,41 @@ bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // 
   m_bUpdateRunning = false;
 
   return bGrabSuccess;
+}
+
+int CPVREpg::Get(CFileItemList *results)
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || IsUpdateRunning())
+    return -1;
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    CFileItemPtr channel(new CFileItem(*at(iTagPtr)));
+    channel->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+    results->Add(channel);
+  }
+
+  return size() - iInitialSize;
+}
+
+int CPVREpg::Get(CFileItemList *results, const PVREpgSearchFilter &filter)
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || IsUpdateRunning())
+    return -1;
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    if (filter.FilterEntry(*at(iTagPtr)))
+    {
+      CFileItemPtr channel(new CFileItem(*at(iTagPtr)));
+      channel->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+      results->Add(channel);
+    }
+  }
+
+  return size() - iInitialSize;
 }

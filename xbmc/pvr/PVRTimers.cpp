@@ -51,6 +51,9 @@ int CPVRTimers::Update()
 {
   CSingleLock lock(m_critSection);
 
+  CLog::Log(LOGDEBUG, "PVRTimers - %s - updating timers",
+      __FUNCTION__);
+
   int iCurSize = size();
 
   /* clear channel timers */

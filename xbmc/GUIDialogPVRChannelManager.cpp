@@ -788,8 +788,6 @@ void CGUIDialogPVRChannelManager::SaveList()
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  PVREpgs.InihibitUpdate(true);
-
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   pDlgProgress->SetHeading(190);
   pDlgProgress->SetLine(0, "");
@@ -863,8 +861,6 @@ void CGUIDialogPVRChannelManager::SaveList()
     database->CommitInsertQueries();
 
   database->Close();
-
-  PVREpgs.InihibitUpdate(false);
 
   m_bContainsChanges = false;
   pDlgProgress->Close();

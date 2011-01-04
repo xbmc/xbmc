@@ -22,6 +22,7 @@
  */
 
 #include "PVRChannel.h"
+#include "PVREpgSearchFilter.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVREpgInfoTag;
@@ -147,4 +148,7 @@ public:
   bool Update(time_t start, time_t end, bool bStoreInDb = true);
 
   bool LoadFromDb();
+
+  int Get(CFileItemList *results);
+  int Get(CFileItemList *results, const PVREpgSearchFilter &filter);
 };
