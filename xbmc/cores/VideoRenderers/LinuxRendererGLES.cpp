@@ -868,10 +868,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
@@ -979,10 +975,6 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 
   YV12Image &im     = m_buffers[index].image;
   YUVPLANES &planes = m_buffers[index].fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
 
   if (m_reloadShaders)
   {
@@ -1168,10 +1160,6 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 void CLinuxRendererGLES::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
 
   glDisable(GL_DEPTH_TEST);
 
