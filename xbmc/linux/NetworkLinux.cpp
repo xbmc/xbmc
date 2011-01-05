@@ -309,15 +309,9 @@ void CNetworkLinux::queryInterfaceList()
       n = strcspn(p, ": \t");
       p[n] = 0;
 
-      // make sure the device has ethernet encapsulation
-      struct ifreq ifr;
-      strcpy(ifr.ifr_name, p);
-      if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0 && ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER)
-      {
-         // save the result
-         CStdString interfaceName = p;
-         m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
-      }
+      // save the result
+      CStdString interfaceName = p;
+      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
    }
    free(line);
    fclose(fp);
