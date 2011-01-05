@@ -61,9 +61,6 @@
     <Filter Include="cores\VideoRenderers\Shaders">
       <UniqueIdentifier>{041be182-9ec3-4c1b-abfc-d92f6802e7ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\AudioRenderers">
-      <UniqueIdentifier>{6ec3ce08-d27a-460f-abd8-3ccd43a05470}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\ExternalPlayer">
       <UniqueIdentifier>{f98cb00a-d64b-4af9-a386-78bb2be8213d}</UniqueIdentifier>
     </Filter>
@@ -180,6 +177,21 @@
     </Filter>
     <Filter Include="libraries\jsoncpp">
       <UniqueIdentifier>{b27f9ce9-0b2e-4456-9bce-8313af739c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioEngine">
+      <UniqueIdentifier>{6ec3ce08-d27a-460f-abd8-3ccd43a05470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioEngine\Sinks">
+      <UniqueIdentifier>{7740d6a0-8d46-47f6-89b5-af271482b54f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioEngine\PostProc">
+      <UniqueIdentifier>{8c81fb37-74f9-4cea-9df7-c4f9dbe4d217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioEngine\Packetizers">
+      <UniqueIdentifier>{c16c491a-7f8e-4b90-8007-1d28f7f6023f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioEngine\Encoders">
+      <UniqueIdentifier>{85926c0c-36b3-4e27-a873-caeaf29f895f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -312,14 +324,8 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
@@ -602,24 +608,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
       <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\PCMRemap.cpp">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.cpp">
-      <Filter>cores\AudioRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
       <Filter>cores\ExternalPlayer</Filter>
@@ -2115,6 +2103,60 @@
     <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEConvert.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEFactory.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AERemap.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEStreamInfo.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEUtil.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEPackIEC958.cpp">
+      <Filter>cores\AudioEngine\Packetizers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkALSA.cpp">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.cpp">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkOSS.cpp">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.cpp">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.cpp">
+      <Filter>cores\AudioEngine\PostProc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.cpp">
+      <Filter>cores\AudioEngine\Encoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEWAVLoader.cpp">
+      <Filter>cores\AudioEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2270,17 +2312,8 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\IDVDAudioEncoder.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
@@ -2549,9 +2582,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ModplugCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -2686,24 +2716,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
       <Filter>cores\VideoRenderers\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\PCMRemap.h">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
-      <Filter>cores\AudioRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.h">
-      <Filter>cores\AudioRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
       <Filter>cores\ExternalPlayer</Filter>
@@ -4444,6 +4456,85 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h">
       <Filter>Source Files\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AE.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEConvert.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEEncoder.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEPostProc.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AERemap.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESink.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESound.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEStream.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEStreamInfo.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEUtil.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\ThreadedAE.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.h">
+      <Filter>cores\AudioEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEPackIEC958.h">
+      <Filter>cores\AudioEngine\Packetizers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkALSA.h">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.h">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkOSS.h">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.h">
+      <Filter>cores\AudioEngine\Sinks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.h">
+      <Filter>cores\AudioEngine\PostProc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h">
+      <Filter>cores\AudioEngine\Encoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h" />
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEWAVLoader.h">
+      <Filter>cores\AudioEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
