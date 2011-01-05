@@ -1330,7 +1330,11 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    m_fbo.SetFiltering(GL_TEXTURE_2D, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    m_fbo.SetFiltering(GL_TEXTURE_2D, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1345,7 +1349,10 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     m_pVideoFilterShader->Enable();
   }
   else
-    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
+  {
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    m_fbo.SetFiltering(GL_TEXTURE_2D, filter);
+  }
 
   VerifyGLState();
 
@@ -1400,8 +1407,12 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1417,8 +1428,9 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   else
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
   }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1486,8 +1498,12 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1503,8 +1519,9 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
   }
   else
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
   }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
