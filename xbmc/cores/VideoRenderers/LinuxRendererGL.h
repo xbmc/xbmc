@@ -217,7 +217,6 @@ protected:
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
-  bool m_StrictBinding;
 
   // Raw data used by renderer
   int m_currentField;

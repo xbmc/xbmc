@@ -155,10 +155,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbBufferSize = 0;
   m_context = NULL;
 
-#ifdef HAVE_LIBVDPAU
-  m_StrictBinding = g_guiSettings.GetBool("videoplayer.strictbinding");
-#endif
-
   m_pboused = false;
 
   m_dllAvUtil = new DllAvUtil;
@@ -538,8 +534,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (!buf.fields[FIELD_FULL][0].id && !(m_renderMethod & RENDER_VDPAU))
-    return;
+  if (!buf.fields[FIELD_FULL][0].id) return ;
 
   if (buf.image.flags==0)
     return;
@@ -1387,22 +1382,17 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 void CLinuxRendererGL::RenderVDPAU(int index, int field)
 {
 #ifdef HAVE_LIBVDPAU
-  CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+  YUVPLANE &plane = m_buffers[index].fields[field][0];
+  CVDPAU   *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+
   if (!vdpau)
     return;
 
   glEnable(m_textureTarget);
-
-  if (!vdpau->m_glPixmapTexture)
-  {
-    glGenTextures (1, &(vdpau->m_glPixmapTexture));
-    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)vdpau->m_glPixmapTexture);
-  }
-
-  glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
-  vdpau->BindPixmap();
-
   glActiveTextureARB(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, plane.id);
+
+  vdpau->BindPixmap();
 
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -1451,14 +1441,11 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   glEnd();
   VerifyGLState();
-  if (m_StrictBinding)
-  {
-    glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
-    vdpau->ReleasePixmap();
-  }
 
   if (m_pVideoFilterShader)
     m_pVideoFilterShader->Disable();
+
+  vdpau->ReleasePixmap();
 
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
@@ -2108,7 +2095,13 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 void CLinuxRendererGL::DeleteVDPAUTexture(int index)
 {
 #ifdef HAVE_LIBVDPAU
+  YUVPLANE &plane = m_buffers[index].fields[0][0];
+
   SAFE_RELEASE(m_buffers[index].vdpau);
+
+  if(plane.id && glIsTexture(plane.id))
+    glDeleteTextures(1, &plane.id);
+  plane.id = 0;
 #endif
 }
 
@@ -2131,6 +2124,8 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
+
+  glGenTextures(1, &plane.id);
 
   SetEvent(m_eventTexturesDone[index]);
 #endif

@@ -88,7 +88,6 @@ public:
   PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
   GLXPixmap  m_glPixmap;
   Pixmap  m_Pixmap;
-  GLuint   m_glPixmapTexture;
   GLXContext m_glContext;
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);

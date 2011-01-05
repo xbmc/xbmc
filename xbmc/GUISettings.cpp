@@ -595,7 +595,6 @@ void CGUISettings::Initialize()
   stretch.insert(make_pair(631,VIEW_MODE_ZOOM));
   AddInt(vp, "videoplayer.stretch43", 173, VIEW_MODE_NORMAL, stretch, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
-  AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #if defined(HAS_GL) || HAS_GLES == 2  // May need changing for GLES
