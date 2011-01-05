@@ -35,7 +35,7 @@ public:
   CDVDDemuxVobsub();
   virtual ~CDVDDemuxVobsub();
 
-  virtual bool          Open(const std::string& filename);
+  virtual bool          Open(const std::string& filename, const std::string& subfilename = "");
   virtual void          Reset();
   virtual void          Abort() {};
   virtual void          Flush();

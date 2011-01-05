@@ -46,7 +46,7 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
   m_Streams.clear();
 }
 
-bool CDVDDemuxVobsub::Open(const string& filename)
+bool CDVDDemuxVobsub::Open(const string& filename, const string& subfilename)
 {
   m_Filename = filename;
 
@@ -54,9 +54,13 @@ bool CDVDDemuxVobsub::Open(const string& filename)
   if(!pStream->Open(filename))
     return false;
 
-  string vobsub = filename;
-  vobsub.erase(vobsub.rfind('.'), vobsub.size());
-  vobsub += ".sub";
+  string vobsub = subfilename;
+  if ( vobsub == "")
+  {
+    vobsub = filename;
+    vobsub.erase(vobsub.rfind('.'), vobsub.size());
+    vobsub += ".sub";
+  }
 
   m_Input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, vobsub, ""));
   if(!m_Input.get() || !m_Input->Open(vobsub.c_str(), "video/x-vobsub"))

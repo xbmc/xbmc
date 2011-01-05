@@ -461,8 +461,8 @@ retry:
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     // find any available external subtitles
-    std::vector<std::string> filenames;
-    CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+    std::vector<CStdString> filenames;
+    CUtil::ScanForExternalSubtitles( m_filename, filenames );
 
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
@@ -470,7 +470,23 @@ retry:
       filenames.push_back(m_item.GetProperty(key));
 
     for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i], i == 0 ? CDemuxStream::FLAG_DEFAULT : CDemuxStream::FLAG_NONE);
+    {
+      CLog::Log(LOGERROR, "test subs Amet [%s]", filenames[i].c_str());
+      // if vobsub subtitle:		
+      if ( CUtil::GetExtension(filenames[i]) == ".idx" ) 
+      {
+        CStdString strSubFile;
+        if ( CUtil::FindVobSubPair( filenames, filenames[i], strSubFile ) )
+          AddSubtitleFile(filenames[i], strSubFile);
+      }
+      else 
+      {
+        if ( !CUtil::IsVobSub(filenames, filenames[i] ) )
+        {
+          AddSubtitleFile(filenames[i]);
+        }
+      }   
+    } // end loop over all subtitle files    
 
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
@@ -3373,13 +3389,17 @@ int CDVDPlayer::GetSourceBitrate()
 }
 
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, CDemuxStream::EFlags flags)
 {
   std::string ext = CUtil::GetExtension(filename);
+  std::string vobsubfile = subfilename;
   if(ext == ".idx")
   {
+    if (vobsubfile.empty())
+      vobsubfile = CUtil::ReplaceExtension(filename, ".sub");
+   
     CDVDDemuxVobsub v;
-    if(!v.Open(filename))
+    if(!v.Open(filename, vobsubfile))
       return -1;
     m_SelectionStreams.Update(NULL, &v);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
