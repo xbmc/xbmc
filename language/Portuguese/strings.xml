@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 2010/11/16 -->
-<!-- Based on english strings version r35288 -->
+<!-- Date of translation: 2011/01/05 -->
+<!-- Based on english strings commit 1ee638d8b22a3a5440e57a9384590558925e12ef -->
 <!-- Portuguese strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 <strings>
   <string id="0">Programas</string>
@@ -140,11 +140,10 @@
   <string id="164">Sem disco</string>
   <string id="165">Disco Presente</string>
   <string id="166">Tema</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Resolução</string>
   <string id="170">Ajustar taxa de refrescamento para condizer com vídeo</string>
-  <string id="171"></string>
+
   <string id="172">Data de lançamento</string>
   <string id="173">Mostrar vídeo 4:3 como</string>
 
@@ -252,7 +251,7 @@
   <string id="282">Encontrados %i itens</string>
   <string id="283">Resultado da procura</string>
   <string id="284">Sem resultados</string>
-  <string id="286"></string>
+
   <string id="287">Legendas</string>
   <string id="288">Fonte</string>
   <string id="289">- Tamanho</string>
@@ -272,11 +271,7 @@
   <string id="304">Idioma</string>
   <string id="305">Activado</string>
   <string id="306">Não interlaçado</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=auto)</string>
   <string id="313">A limpar a base de dados</string>
   <string id="314">Preparando...</string>
@@ -369,8 +364,7 @@
   <string id="404">Vento</string>
   <string id="405">Condensação aos</string>
   <string id="406">Humidade</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Definições padrão</string>
   <string id="410">A aceder a www.weather.com</string>
   <string id="411">Obtendo a previsão do tempo para:</string>
@@ -473,7 +467,7 @@
   <string id="517">Álbuns reproduzidos recentemente</string>
   <string id="518">Executar</string>
   <string id="519">Executar em...</string>
-  <string id="520"></string>
+
   <string id="521">Compilação</string>
   <string id="522">Remover fonte</string>
   <string id="523">Trocar de média</string>
@@ -621,7 +615,7 @@
   <string id="715">- Atribuição</string>
   <string id="716">Automático (DHCP)</string>
   <string id="717">Manual (Estático)</string>
-  <string id="718"></string>
+
   <string id="719">Endereço IP</string>
   <string id="720">Máscara de Rede</string>
   <string id="721">Gateway padrão</string>
@@ -632,9 +626,9 @@
   <string id="726">Alterações não foram guardadas! Continuar sem guardar?</string>
   <string id="727">Servidor Web</string>
   <string id="728">Servidor FTP</string>
-  <string id="729"></string>
+
   <string id="730">- Porta</string>
-  <string id="731"></string>
+
   <string id="732">Salvar &amp; Aplicar</string>
   <string id="733">- Palavra-passe</string>
   <string id="734">Sem Pass</string>
@@ -673,7 +667,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Erro %i: Partilha indisponível</string>
-  <string id="771"></string>
+
   <string id="772">Saída de áudio</string>
   <string id="773">Procurando</string>
   <string id="774">Pasta de apresentações</string>
@@ -792,10 +786,6 @@
   <string id="1234">Programas, Imagens &amp; Música</string>
   <string id="1235">Programas, Imagens &amp; Vídeo</string>
 
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-
   <string id="1250">Detecção automática</string>
   <string id="1251">Detecção automática de sistema</string>
   <string id="1252">Alcunha</string>
@@ -848,8 +838,6 @@
 
   <string id="2100">Script falhou!: %s</string>
   <string id="2101">Versão nova necessária - Ver log</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
   <string id="4501">Ligar LCD/VFD</string>
 
@@ -920,18 +908,9 @@
   <string id="12009">Reconstruindo o índice ...</string>
   <string id="12010">Voltar à janela da música</string>
   <string id="12011">Voltar à janela de vídeos</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Começar do início</string>
   <string id="12022">Continuar da %s</string>
-  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -983,9 +962,7 @@
   <string id="12377">Isto apagará os valores previamente guardados</string>
   <string id="12378">Tempo para mostrar cada imagem</string>
   <string id="12379">Utilizar efeitos de deslocamento e ampliação</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">Relógio de 12 horas</string>
   <string id="12384">Relógio de 24 horas</string>
   <string id="12385">Dia/Mês</string>
@@ -1008,8 +985,7 @@
   <string id="13003">- Atraso</string>
   <string id="13004">- Duração mínima do ficheiro</string>
   <string id="13005">Desligar</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Modo de desligar</string>
   <string id="13009">Sair</string>
   <string id="13010">Hibernar</string>
@@ -1063,26 +1039,11 @@
   <string id="13146">para controlar o XBMC, mudar esta configuração pode impedir</string>
   <string id="13147">o seu uso daqui para a frente. Quer continuar?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
   <string id="13159">Máscara de subrede</string>
   <string id="13160">Gateway</string>
   <string id="13161">DNS primário</string>
   <string id="13162">Inicialização falhou</string>
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
+
   <string id="13170">Nunca</string>
   <string id="13171">Imediatamente</string>
   <string id="13172">Após %i segundos</string>
@@ -1124,19 +1085,17 @@
 
   <string id="13283">Sistema operativo:</string>
   <string id="13284">Velocidade do CPU:</string>
+
   <string id="13286">Codificador de vídeo:</string>
   <string id="13287">Resolução de ecrã:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">Cabo A/V:</string>
-  <string id="13293"></string>
+
   <string id="13294">Região DVD:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Ligado</string>
   <string id="13297">Desligado. Verifique a configuração de rede.</string>
-  <string id="13298"></string>
+
   <string id="13299">Temperatura definida:</string>
   <string id="13300">Velocidade da ventoinha:</string>
   <string id="13301">Controlo da temperatura auto</string>
@@ -1175,8 +1134,7 @@
   <string id="13334">Editar etiqueta</string>
   <string id="13335">Guardar como padrão</string>
   <string id="13336">Remover botão</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Deixar como está</string>
   <string id="13341">Verde</string>
   <string id="13342">Laranja</string>
@@ -1325,7 +1283,7 @@
   <string id="14038">Configuração de rede alterada</string>
   <string id="14039">XBMC necessita de reiniciar para alterar a sua</string>
   <string id="14040">configuração de rede. Deseja reiniciar agora?</string>
-  <string id="14041"></string>
+  <string id="14041">Limitação da largura de banda da Internet</string>
 
   <string id="14043">- Desligar durante os jogos</string>
   <string id="14044">%i min</string>
@@ -1451,7 +1409,7 @@
   <string id="15275">Gráfico semanal da faixa %name%</string>
   <string id="15276">Ouvir rádio do vizinho %name% na Last.fm</string>
   <string id="15277">Ouvir rádio pessoal de %name% na Last.fm</string>
-  <string id="15278">Ouvir faixas favoritas de %name% na rádio Last.fm</string>
+  <string id="15278">Ouvir mix de rádio %name% na Last.fm</string>
   <string id="15279">A obter lista a partir da Last.fm...</string>
   <string id="15280">Impossível obter lista a partir da Last.fm...</string>
   <string id="15281">Introduza um nome de artista para encontrar relacionados</string>
@@ -1459,7 +1417,7 @@
   <string id="15283">Faixas recentemente ouvidas por %name%</string>
   <string id="15284">Ouvir as recomendações de %name% na rádio do Last.fm</string>
   <string id="15285">As melhores etiquetas do utilizador %name%</string>
-  <string id="15286">A ouvir lista de reprodução de %name%'s na rádio Last.fm</string>
+
   <string id="15287">Deseja adicionar a faixa às favoritas?</string>
   <string id="15288">Deseja banir a faixa actual?</string>
   <string id="15289">Adicionado às faixas favoritas: '%s'.</string>
@@ -1522,11 +1480,6 @@
   <string id="16103">Marcar como visto</string>
   <string id="16104">Marcar como não visto</string>
   <string id="16105">Editar título</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
 
   <string id="16200">A operação foi abortada</string>
   <string id="16201">A copia falhou</string>
@@ -1558,9 +1511,6 @@
   <string id="16319">DXVA</string>
 
   <string id="16400">Pós-processamento</string>
-  <string id="16401"></string>
-  <string id="16402"></string>
-  <string id="16403"></string>
 
   <string id="17500">Temporizador do ecrã acabou</string>
 
@@ -1745,8 +1695,7 @@
   <string id="20184">Rodar utilizando informação EXIF </string>
   <string id="20185">Usar visualização de posters para séries de TV</string>
   <string id="20186">Aguarde por favor</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Ligar deslocamento automático para Sinópse % Crítica</string>
   <string id="20190">Personalizado</string>
   <string id="20191">Ligar o registo de depuração</string>
@@ -1777,24 +1726,17 @@
   <string id="20303">Deseja cancelar e continuar?</string>
   <string id="20304">Feed RSS</string>
 
-  <string id="20306"></string>
   <string id="20307">DNS secundário</string>
   <string id="20308">Servidor DHCP:</string>
   <string id="20309">Criar nova pasta</string>
   <string id="20310">Desvanecer LCD ao reproduzir</string>
   <string id="20311">Desconhecido ou onboard (protegido)</string>
   <string id="20312">Desvanecer LCD ao pausar</string>
-  <string id="20313"></string>
+
   <string id="20314">Vídeos - Biblioteca</string>
-  <string id="20315"></string>
+
   <string id="20316">Ordenar por: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Jogar parte ...</string>
   <string id="20325">Reiniciar calibração</string>
   <string id="20326">Isto vai repor os valores de calibração para %s</string>
@@ -2237,11 +2179,7 @@
   <string id="24080">Tentar ligar novamente?</string>
   <string id="24089">Reiniciar add-on</string>
   <string id="24090">Bloquear gestor de add-ons</string>
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
+
   <string id="24096">O Add-on foi marcado como danificado no repositório.</string>
   <string id="24097">Deseja desliga-lo no seu sistema?</string>
   <string id="24098">Danificado</string>
@@ -2252,8 +2190,6 @@
   <string id="29800">Modo de Biblioteca</string>
   <string id="29801">Teclado QWERTY</string>
   <string id="29802">Passagem de áudio em utilização</string>
-
-  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
