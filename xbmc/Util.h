@@ -137,9 +137,11 @@ public:
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
 
-  static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
-  static bool CacheRarSubtitles(const CStdString& strRarPath, const CStdString& strCompare);
   static void ClearSubtitles();
+  static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
+  static int ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles );
+  static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
+  static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );  
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)

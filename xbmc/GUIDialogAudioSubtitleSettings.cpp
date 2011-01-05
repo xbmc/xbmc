@@ -305,81 +305,19 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     }
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
     {
-      CStdString strExt;
-      CUtil::GetExtension(strPath,strExt);
-      if (strExt.CompareNoCase(".idx") == 0 || strExt.CompareNoCase(".sub") == 0)
+      if ( CUtil::GetExtension(strPath) == ".sub" )
+        if ( CFile::Exists(CUtil::ReplaceExtension(strPath, ".idx")) )
+          strPath = CUtil::ReplaceExtension(strPath, ".idx");
+      
+      int id = g_application.m_pPlayer->AddSubtitle(strPath);
+      if(id >= 0)
       {
-        // Playback could end and delete m_pPlayer while dialog is up so make sure it's valid
-       	if (g_application.m_pPlayer)
-        {
-          if (CFile::Cache(strPath,"special://temp/subtitle"+strExt))
-          {
-            CStdString strPath2;
-            CStdString strPath3;
-            if (strExt.CompareNoCase(".idx") == 0)
-            {
-              strPath2 = CUtil::ReplaceExtension(strPath,".sub");
-              strPath3 = "special://temp/subtitle.sub";
-            }
-            else
-            {
-              strPath2 = CUtil::ReplaceExtension(strPath,".idx");
-              if (!CFile::Exists(strPath2) && (CUtil::IsInRAR(strPath2) || CUtil::IsInZIP(strPath2)))
-              {
-                CStdString strFileName = CUtil::GetFileName(strPath);
-                CUtil::GetDirectory(strPath,strPath3);
-                CUtil::GetParentPath(strPath3,strPath2);
-                CUtil::AddFileToFolder(strPath2,strFileName,strPath2);
-                strPath2 = CUtil::ReplaceExtension(strPath2,".idx");
-              }
-              strPath3 = "special://temp/subtitle.idx";
-            }
-            if (CFile::Exists(strPath2))
-              CFile::Cache(strPath2,strPath3);
-            else
-            {
-              CFileItemList items;
-              CStdString strDir,strFileNameNoExtNoCase;
-              CUtil::Split(strPath,strDir,strPath3);
-              strFileNameNoExtNoCase = CUtil::ReplaceExtension(strPath3,".");
-              strFileNameNoExtNoCase.ToLower();
-              CUtil::GetDirectory(strPath,strDir);
-              CDirectory::GetDirectory(strDir,items,".rar|.zip",false,false,DIR_CACHE_ONCE,true,true);
-              for (int i=0;i<items.Size();++i)
-                CUtil::CacheRarSubtitles(items[i]->m_strPath,strFileNameNoExtNoCase);
-            }
-            g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-            int id = g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.idx");
-            if(id >= 0)
-            {
-              m_subtitleStream = id;
-              g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
-              g_application.m_pPlayer->SetSubtitleVisible(true);
-            }
-
-            Close();
-          }
-        }
-      }
-      else
-      {
-        m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount();
-        CStdString strExt;
-        CUtil::GetExtension(strPath,strExt);
-        if (CFile::Cache(strPath,"special://temp/subtitle.browsed"+strExt))
-        {
-          int id = g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
-          if(id >= 0)
-          {
-            m_subtitleStream = id;
-            g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
-            g_application.m_pPlayer->SetSubtitleVisible(true);
-          }
-        }
-
-        Close();
+        m_subtitleStream = id;
+        g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+        g_application.m_pPlayer->SetSubtitleVisible(true);
       }
       g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+      Close();
     }
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)

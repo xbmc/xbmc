@@ -95,6 +95,7 @@ typedef struct
 {
   StreamType   type;
   std::string  filename;
+  std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
   std::string  language;
   std::string  name;
   CDemuxStream::EFlags flags;
@@ -250,7 +251,8 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  int  AddSubtitleFile(const std::string& filename, CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+
   /**
    * one of the DVD_PLAYSPEED defines
    */

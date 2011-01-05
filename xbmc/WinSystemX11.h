@@ -43,7 +43,7 @@ public:
   virtual void UpdateResolutions();
   virtual int  GetNumScreens() { return 1; }
   virtual void ShowOSMouse(bool show);
-  virtual void ResetX11Screensaver();
+  virtual void ResetOSScreensaver();
 
   virtual void NotifyAppActiveChange(bool bActivated);
 
