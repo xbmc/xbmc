@@ -761,6 +761,7 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
       ++iActiveChannels;
   }
 
+  int iNextChannelNumber = 1;
   int iNextHiddenChannelNumber = iActiveChannels + 1;
   bool bHasChangedItems = false;
 
@@ -780,7 +781,6 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
     bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
     bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
     bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
-    int iChannelNumber        = pItem->GetPropertyInt("Number");
     int iGroupId              = pItem->GetPropertyInt("GroupId");
     int iEPGSource            = pItem->GetPropertyInt("EPGSource");
     CStdString strChannelName = pItem->GetProperty("Name");
@@ -791,7 +791,7 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
     if (bHidden)
       bChanged = channel->SetChannelNumber(iNextHiddenChannelNumber++) || bChanged;
     else
-      bChanged = channel->SetChannelNumber(iChannelNumber) || bChanged;
+      bChanged = channel->SetChannelNumber(iNextChannelNumber++) || bChanged;
     bChanged = channel->SetChannelName(strChannelName) || bChanged;
     bChanged = channel->SetHidden(bHidden) || bChanged;
     bChanged = channel->SetIconPath(strIconPath) || bChanged;

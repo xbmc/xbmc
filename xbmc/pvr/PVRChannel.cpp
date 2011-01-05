@@ -690,6 +690,12 @@ void CPVRChannel::UpdateEPGPointers(void)
 
   CPVREpg *epg = GetEPG();
 
+  if (epg == NULL)
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - could not get EPG reference", __FUNCTION__);
+    return;
+  }
+
   if (!epg->IsUpdateRunning() &&
       (m_EPGNow == NULL ||
        m_EPGNow->End() <= CDateTime::GetCurrentDateTime()))
