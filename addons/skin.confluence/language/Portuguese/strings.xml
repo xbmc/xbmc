@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- Date of translation: 2010/10/04 -->
-<!-- Based on english strings version r34139 -->
+<!-- Date of translation: 2011/01/05 -->
+<!-- Based on Confluence English strings commit a9839fa95cb9711efe465ca8e137c34247238485 -->
 <!-- Portuguese Confluence strings.xml by hudo (hudokkow[AT]gmail[DOT]com) -->
 
 <strings>
@@ -84,6 +84,12 @@
   <string id="31128">Letras</string>
   <string id="31129"></string>
   <string id="31130"></string>
+  <string id="31131"></string>
+  <string id="31132">Add-on de letras de música</string>
+  <string id="31133">Add-on de legendas</string>
+  <string id="31134">Submenu de Vídeos da Página Inicial</string>
+  <string id="31135">Submenu de Música da Página Inicial</string>
+  <string id="31136">Submenu de Fotos da Página Inicial</string> 
 
   <string id="31140">OSD de Música</string>
   <string id="31141">OSD de Vídeo</string>
