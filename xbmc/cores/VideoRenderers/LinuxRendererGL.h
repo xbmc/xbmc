@@ -178,6 +178,10 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
   
+  void UploadVDPAUTexture(int index);
+  void DeleteVDPAUTexture(int index);
+  bool CreateVDPAUTexture(int index);
+
   void UploadVAAPITexture(int index);
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);

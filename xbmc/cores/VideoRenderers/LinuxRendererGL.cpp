@@ -432,14 +432,6 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
-#ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU))
-  {
-    SetEvent(m_eventTexturesDone[source]);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    return;
-  }
-#endif
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -546,7 +538,8 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (!buf.fields[FIELD_FULL][0].id) return ;
+  if (!buf.fields[FIELD_FULL][0].id && !(m_renderMethod & RENDER_VDPAU))
+    return;
 
   if (buf.image.flags==0)
     return;
@@ -982,6 +975,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGL::UploadYUV422PackedTexture;
     m_textureCreate = &CLinuxRendererGL::CreateYUV422PackedTexture;
     m_textureDelete = &CLinuxRendererGL::DeleteYUV422PackedTexture;
+  }
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
+  {
+    m_textureUpload = &CLinuxRendererGL::UploadVDPAUTexture;
+    m_textureCreate = &CLinuxRendererGL::CreateVDPAUTexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteVDPAUTexture;
   }
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
   {
@@ -1626,10 +1625,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-#ifdef HAVE_LIBVDPAU
-  SAFE_RELEASE(m_buffers[index].vdpau);
-#endif
-
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
   /* finish up all textures, and delete them */
@@ -2109,6 +2104,47 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
     }
   }
 }
+
+void CLinuxRendererGL::DeleteVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  SAFE_RELEASE(m_buffers[index].vdpau);
+#endif
+}
+
+bool CLinuxRendererGL::CreateVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
+
+  DeleteVDPAUTexture(index);
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
+
+  plane.pixpertex_x = 1;
+  plane.pixpertex_y = 1;
+
+  SetEvent(m_eventTexturesDone[index]);
+#endif
+  return true;
+}
+
+void CLinuxRendererGL::UploadVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  SetEvent(m_eventTexturesDone[index]);
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
+#endif
+}
+
 
 void CLinuxRendererGL::DeleteVAAPITexture(int index)
 {
