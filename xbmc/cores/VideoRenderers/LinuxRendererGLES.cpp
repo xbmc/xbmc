@@ -1212,7 +1212,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const CRect rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
   CRect saveSize = m_destRect;
