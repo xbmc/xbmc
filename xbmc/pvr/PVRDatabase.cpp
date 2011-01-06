@@ -67,9 +67,9 @@ bool CPVRDatabase::CreateTables()
     );
     m_pDS->exec("CREATE INDEX idx_clients_sUid on clients(sUid);\n");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'Channels'", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channels'", __FUNCTION__);
     m_pDS->exec(
-        "CREATE TABLE Channels ("
+        "CREATE TABLE channels ("
           "ChannelId           integer primary key, "
           "UniqueId            integer, "
           "ChannelNumber       integer, "
@@ -88,11 +88,11 @@ bool CPVRDatabase::CreateTables()
           "EncryptionSystem    integer"
         ")\n"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on Channels(ChannelNumber, IsRadio)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelClientId on Channels(ClientId)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelNumber on Channels(ChannelNumber)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on Channels(IsRadio)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelIsHidden on Channels(IsHidden)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on channels(ChannelNumber, IsRadio)\n");
+    m_pDS->exec("CREATE INDEX ix_ChannelClientId on channels(ClientId)\n");
+    m_pDS->exec("CREATE INDEX ix_ChannelNumber on channels(ChannelNumber)\n");
+    m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on channels(IsRadio)\n");
+    m_pDS->exec("CREATE INDEX ix_ChannelIsHidden on channels(IsHidden)\n");
 
 //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
 //    m_pDS->exec(
@@ -215,7 +215,7 @@ bool CPVRDatabase::EraseChannels()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from the database", __FUNCTION__);
 
-  return DeleteValues("Channels");
+  return DeleteValues("channels");
 }
 
 bool CPVRDatabase::EraseClientChannels(long iClientId)
@@ -232,7 +232,7 @@ bool CPVRDatabase::EraseClientChannels(long iClientId)
       __FUNCTION__, iClientId);
 
   CStdString strWhereClause = FormatSQL("ClientID = %u", iClientId);
-  return DeleteValues("Channels", strWhereClause);
+  return DeleteValues("channels", strWhereClause);
 }
 
 long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* = false */)
@@ -252,7 +252,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   if (channel.ChannelID() <= 0)
   {
     /* new channel */
-    strQuery = FormatSQL("INSERT INTO Channels ("
+    strQuery = FormatSQL("INSERT INTO channels ("
         "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
@@ -264,7 +264,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   else
   {
     /* update channel */
-    strQuery = FormatSQL("REPLACE INTO Channels ("
+    strQuery = FormatSQL("REPLACE INTO channels ("
         "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, ChannelId) "
@@ -298,14 +298,14 @@ bool CPVRDatabase::RemoveChannel(const CPVRChannel &channel)
   }
 
   CStdString strWhereClause = FormatSQL("ChannelId = '%u'", channel.ChannelID());
-  return DeleteValues("Channels", strWhereClause);
+  return DeleteValues("channels", strWhereClause);
 }
 
 int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 {
   int iReturn = -1;
 
-  CStdString strQuery = FormatSQL("SELECT * FROM Channels WHERE IsRadio = %u ORDER BY ChannelNumber\n", bIsRadio);
+  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE IsRadio = %u ORDER BY ChannelNumber\n", bIsRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -355,7 +355,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 int CPVRDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
 {
   int iReturn = -1;
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM Channels WHERE IsRadio = %u AND IsHidden = %u\n",
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channels WHERE IsRadio = %u AND IsHidden = %u\n",
       (bRadio ? 1 : 0), (bHidden ? 1 : 0));
 
   if (ResultQuery(strQuery))
