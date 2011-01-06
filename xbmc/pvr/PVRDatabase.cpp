@@ -86,12 +86,13 @@ bool CPVRDatabase::CreateTables()
           "InputFormat         text, " // TODO use mapping table
           "StreamURL           text, " // TODO use mapping table
           "EncryptionSystem    integer," // TODO use mapping table
-          "iLastWatched        integer" // TODO update this value when the channel is opened
+          "iLastWatched        integer"
         ");\n"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_unique_iChannelNumber on channels(iChannelNumber, bIsRadio);\n");
     m_pDS->exec("CREATE INDEX idx_ChannelClientId on channels(ClientId);\n");
     m_pDS->exec("CREATE INDEX idx_iChannelNumber on channels(iChannelNumber);\n");
+    m_pDS->exec("CREATE INDEX idx_iLastWatched on channels(iLastWatched);\n");
     m_pDS->exec("CREATE INDEX idx_bIsRadio on channels(bIsRadio);\n");
     m_pDS->exec("CREATE INDEX idx_bIsHidden on channels(bIsHidden);\n");
 
@@ -396,9 +397,10 @@ bool CPVRDatabase::UpdateLastChannel(const CPVRChannel &channel)
     return false;
   }
 
-  //TODO update lastwatched value
-//  CStdString strQuery = FormatSQL("REPLACE INTO LastChannel (ChannelId, Number, Name) VALUES (%i, %i, '%s')\n",
-//      channel.ChannelID(), channel.ChannelNumber(), channel.ChannelName().c_str());
+  time_t tNow;
+  CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+  CStdString strQuery = FormatSQL("UPDATE channels SET iLastWatched = %u WHERE idChannel = %u",
+      tNow, channel.ChannelID());
 
   return ExecuteQuery(strQuery);
 }
