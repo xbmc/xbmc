@@ -73,7 +73,7 @@ bool CPVRDatabase::CreateTables()
           "idChannel           integer primary key, "
           "iUniqueId            integer, "
           "iChannelNumber       integer, "
-          "GroupId             integer, " // TODO use mapping table
+          "idGroup             integer, " // TODO use mapping table
           "bIsRadio             bool, "
           "bIsHidden            bool, "
           "sIconPath            text, "
@@ -126,6 +126,17 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio)\n");
     m_pDS->exec("CREATE INDEX idx_channelgroups_sName on channelgroups(sName)\n");
 
+    // TODO use a mapping table so multiple backends per channel can be implemented
+    // replaces idGroup in the channels table
+    //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
+    //    m_pDS->exec(
+    //        "CREATE TABLE map_channelgroups_channels ("
+    //          "idChannel integer, "
+    //          "idGroup   integer"
+    //        ");\n"
+    //    );
+    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);\n");
+
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'ChannelSettings'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE ChannelSettings ("
@@ -153,15 +164,6 @@ bool CPVRDatabase::CreateTables()
           "NoiseReduction      float"
         ")\n"
     );
-
-    //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
-    //    m_pDS->exec(
-    //        "CREATE TABLE map_channelgroups_channels ("
-    //          "idChannel integer, "
-    //          "idGroup   integer"
-    //        ");\n"
-    //    );
-    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'EpgData'", __FUNCTION__);
     m_pDS->exec(
@@ -263,7 +265,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
-        "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
+        "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
@@ -275,7 +277,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
-        "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
+        "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
@@ -329,7 +331,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
         channel->m_iChannelNumber          = m_pDS->fv("iChannelNumber").get_asInt();
-        channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
+        channel->m_iChannelGroupId         = m_pDS->fv("idGroup").get_asInt();
         channel->m_bIsRadio                = m_pDS->fv("bIsRadio").get_asBool();
         channel->m_bIsHidden               = m_pDS->fv("bIsHidden").get_asBool();
         channel->m_strIconPath             = m_pDS->fv("sIconPath").get_asString();
