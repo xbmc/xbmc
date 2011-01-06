@@ -162,6 +162,7 @@ typedef enum recording_state {
   ST_SCHEDULED,
   ST_RECORDING,
   ST_COMPLETED,
+  ST_ABORTED,
   ST_INVALID
 } ERecordingState;
 

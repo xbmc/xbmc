@@ -258,7 +258,7 @@ SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
   {
     SRecording recording = it->second;
 
-    if ((recorded && recording.state == ST_COMPLETED) ||
+    if ((recorded && (recording.state == ST_COMPLETED || recording.state == ST_ABORTED)) ||
         (scheduled && (recording.state == ST_SCHEDULED || recording.state == ST_RECORDING)))
       recordings[recording.id] = recording;
   }
