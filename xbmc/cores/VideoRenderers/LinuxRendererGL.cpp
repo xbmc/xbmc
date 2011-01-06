@@ -2893,6 +2893,15 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
              , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
   }
 
+  //after using the pbo to upload, allocate a new buffer so we don't have to wait
+  //for the upload to finish when mapping the buffer 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbBufferSize + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+  }
+
   if (imaging==2)
   {
     imaging--;
