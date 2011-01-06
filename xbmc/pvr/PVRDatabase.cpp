@@ -114,6 +114,18 @@ bool CPVRDatabase::CreateTables()
         "ORDER BY iLastWatched DESC;\n"
     );
 
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelgroups'", __FUNCTION__);
+    m_pDS->exec(
+        "CREATE TABLE channelgroups ("
+          "idGroup   integer primary key,"
+          "bIsRadio   bool, "
+          "sName      text,"
+          "iSortOrder integer"
+        ")\n"
+    );
+    m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio)\n");
+    m_pDS->exec("CREATE INDEX idx_channelgroups_sName on channelgroups(sName)\n");
+
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'ChannelSettings'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE ChannelSettings ("
@@ -141,18 +153,6 @@ bool CPVRDatabase::CreateTables()
           "NoiseReduction      float"
         ")\n"
     );
-
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'ChannelGroup'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE TABLE ChannelGroup ("
-          "GroupId   integer primary key,"
-          "IsRadio   bool, "
-          "Name      text,"
-          "SortOrder integer"
-        ")\n"
-    );
-    m_pDS->exec("CREATE INDEX ix_ChannelGroupIsRadio on ChannelGroup(IsRadio)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelGroupName on ChannelGroup(Name)\n");
 
     //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
     //    m_pDS->exec(
@@ -489,8 +489,8 @@ bool CPVRDatabase::EraseChannelGroups(bool bRadio /* = false */)
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel groups from the database", __FUNCTION__);
 
-  CStdString strWhereClause = FormatSQL("IsRadio = %u", (bRadio ? 1 : 0));
-  return DeleteValues("ChannelGroup", strWhereClause);
+  CStdString strWhereClause = FormatSQL("bIsRadio = %u", (bRadio ? 1 : 0));
+  return DeleteValues("channelgroups", strWhereClause);
 }
 
 long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
@@ -507,7 +507,7 @@ long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrde
   iReturn = GetChannelGroupId(strGroupName, bRadio);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO ChannelGroup (GroupId, Name, SortOrder, IsRadio) VALUES (NULL, '%s', %i, %i)\n",
+    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (idGroup, sName, iSortOrder, bIsRadio) VALUES (NULL, '%s', %i, %i)\n",
         strGroupName.c_str(), iSortOrder, (bRadio ? 1 : 0));
 
     if (ExecuteQuery(strQuery))
@@ -527,15 +527,15 @@ bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
     return false;
   }
 
-  CStdString strWhereClause = FormatSQL("GroupId = %u AND IsRadio = %u", iGroupId, bRadio);
-  return DeleteValues("ChannelGroup", strWhereClause);
+  CStdString strWhereClause = FormatSQL("idGroup = %u AND bIsRadio = %u", iGroupId, bRadio);
+  return DeleteValues("channelgroups", strWhereClause);
 }
 
 
 bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /* = false */)
 {
   bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from ChannelGroup WHERE IsRadio = %u ORDER BY sortOrder\n", bRadio);
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY iSortOrder\n", bRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -546,9 +546,9 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /
       {
         CPVRChannelGroup data;
 
-        data.SetGroupID(m_pDS->fv("GroupId").get_asInt());
-        data.SetGroupName(m_pDS->fv("Name").get_asString());
-        data.SetSortOrder(m_pDS->fv("SortOrder").get_asInt());
+        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+        data.SetGroupName(m_pDS->fv("sName").get_asString());
+        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
         results.push_back(data);
         m_pDS->next();
@@ -577,12 +577,12 @@ bool CPVRDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewNam
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM ChannelGroup WHERE GroupId = %u AND IsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
   if (ResultQuery(strQuery))
   {
     if (m_pDS->fv(0).get_asInt() > 0)
     {
-      strQuery = FormatSQL("UPDATE ChannelGroup SET Name = '%s' WHERE GroupId = %i AND IsRadio = %u\n", strNewName.c_str(), iGroupId, (bRadio ? 1 : 0));
+      strQuery = FormatSQL("UPDATE channelgroups SET Name = '%s' WHERE idGroup = %i AND bIsRadio = %u\n", strNewName.c_str(), iGroupId, (bRadio ? 1 : 0));
       bReturn = ExecuteQuery(strQuery);
     }
   }
@@ -603,12 +603,12 @@ bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool b
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM ChannelGroup WHERE GroupId = %u AND IsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
   if (ResultQuery(strQuery))
   {
     if (m_pDS->fv(0).get_asInt() > 0)
     {
-      strQuery = FormatSQL("UPDATE ChannelGroup SET SortOrder = %i WHERE GroupId = %i AND IsRadio = %u\n", iSortOrder, iGroupId, (bRadio ? 1 : 0));
+      strQuery = FormatSQL("UPDATE channelgroups SET iSortOrder = %i WHERE idGroup = %i AND bIsRadio = %u\n", iSortOrder, iGroupId, (bRadio ? 1 : 0));
       bReturn = ExecuteQuery(strQuery);
     }
   }
@@ -619,8 +619,8 @@ bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool b
 
 long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
 {
-  CStdString strWhereClause = FormatSQL("Name LIKE '%s' AND IsRadio = %u", strGroupName.c_str(), (bRadio ? 1 : 0));
-  CStdString strReturn = GetSingleValue("ChannelGroup", "GroupId", strWhereClause);
+  CStdString strWhereClause = FormatSQL("sName LIKE '%s' AND bIsRadio = %u", strGroupName.c_str(), (bRadio ? 1 : 0));
+  CStdString strReturn = GetSingleValue("channelgroups", "idGroup", strWhereClause);
 
   m_pDS->close();
 
