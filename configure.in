@@ -1097,7 +1097,6 @@ if test "$ARCH" != "x86_64-linux"; then
   fi
 fi
 
-AC_CHECK_PROG(HAVE_SVNVERSION,svnversion,"yes","no",)
 AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
 
 # Checks for header files.
@@ -1283,23 +1282,16 @@ else
   final_message="$final_message\n  Avahi:\tNo"
 fi
 
-if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
-  if test "$HAVE_SVNVERSION" = "yes" ; then
-    SVN_REV=$(svnversion -n -c 2>/dev/null | grep -iv ^exported | sed -e 's/.*\://')
-  fi
-  if test "$SVN_REV" = ""; then
-    if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(./gitrev.sh)
-    fi
-  fi
-  if test "$SVN_REV" = ""; then
-    SVN_REV="Unknown"
-  fi
+if test "$HAVE_GIT" = "yes"; then
+  GIT_REV=$(git rev-parse --short HEAD)
+fi
+if test "$GIT_REV" = ""; then
+  GIT_REV="Unknown"
 fi
 if test "$host_vendor" = "apple"; then
-  echo "#define SVN_REV \"$SVN_REV\"" > svn_revision.h
+  echo "#define GIT_REV \"$GIT_REV\"" > git_revision.h
 else
-  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+  SDL_DEFINES="$SDL_DEFINES -D'GIT_REV=\"$GIT_REV\"'"
 fi
 
 if test "$use_nonfree" = "yes"; then

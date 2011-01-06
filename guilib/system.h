@@ -148,15 +148,15 @@
 #endif
 
 /*****************
- * SVN revision
+ * Git revision
  *****************/
 
 #ifdef __APPLE__
-#include "../svn_revision.h"
+#include "../git_revision.h"
 #endif
 
-#ifndef SVN_REV
-#define SVN_REV "Unknown"
+#ifndef GIT_REV
+#define GIT_REV "Unknown"
 #endif
 
 /****************************************

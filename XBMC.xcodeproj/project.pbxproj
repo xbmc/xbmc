@@ -7141,7 +7141,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nSVN_REVISION=\"SVN-\"$(cat svn_revision.h | sed -n 's/\\(.*\\)\\\"\\(.*\\)\\\"\\(.*\\)/\\2/p')\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
+			shellScript = "# Update version in Info.plist with Git revision\nGIT_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nGIT_REVISION=\"Git-\"$(cat git_revision.h | sed -n 's/\\(.*\\)\\\"\\(.*\\)\\\"\\(.*\\)/\\2/p')\nperl -p -i -e \"s/r####/$GIT_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
 		F5A1CBDE0F6B0B4700A96ABD /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7184,7 +7184,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nSVN_REVISION=\"SVN-\"$(cat svn_revision.h | sed -n 's/\\(.*\\)\\\"\\(.*\\)\\\"\\(.*\\)/\\2/p')\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
+			shellScript = "# Update version in Info.plist with Git revision\nGIT_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nGIT_REVISION=\"Git-\"$(cat git_revision.h | sed -n 's/\\(.*\\)\\\"\\(.*\\)\\\"\\(.*\\)/\\2/p')\nperl -p -i -e \"s/r####/$GIT_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
