@@ -649,6 +649,11 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   else
     recording.error = str;
 
+  // if the user has aborted the recording then the recording.error will be set to 300 by tvheadend
+  // We will remove the error so that the user can play it allthough it via the recordings page
+  if (recording.error == "300")
+    recording.error = "";
+
   XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
       , __FUNCTION__, recording.id, state, recording.title.c_str()
       , recording.description.c_str());
