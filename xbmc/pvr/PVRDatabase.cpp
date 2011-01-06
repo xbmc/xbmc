@@ -72,7 +72,7 @@ bool CPVRDatabase::CreateTables()
         "CREATE TABLE channels ("
           "idChannel           integer primary key, "
           "iUniqueId            integer, "
-          "ChannelNumber       integer, "
+          "iChannelNumber       integer, "
           "GroupId             integer, "
           "IsRadio             bool, "
           "IsHidden            bool, "
@@ -88,9 +88,9 @@ bool CPVRDatabase::CreateTables()
           "EncryptionSystem    integer"
         ")\n"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on channels(ChannelNumber, IsRadio)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on channels(iChannelNumber, IsRadio)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelClientId on channels(ClientId)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelNumber on channels(ChannelNumber)\n");
+    m_pDS->exec("CREATE INDEX ix_ChannelNumber on channels(iChannelNumber)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on channels(IsRadio)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelIsHidden on channels(IsHidden)\n");
 
@@ -253,7 +253,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
-        "iUniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, iChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
@@ -265,7 +265,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
-        "iUniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, iChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
@@ -305,7 +305,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 {
   int iReturn = -1;
 
-  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE IsRadio = %u ORDER BY ChannelNumber\n", bIsRadio);
+  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE IsRadio = %u ORDER BY iChannelNumber\n", bIsRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -318,7 +318,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 
         channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
-        channel->m_iChannelNumber          = m_pDS->fv("ChannelNumber").get_asInt();
+        channel->m_iChannelNumber          = m_pDS->fv("iChannelNumber").get_asInt();
         channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
         channel->m_bIsRadio                = m_pDS->fv("IsRadio").get_asBool();
         channel->m_bIsHidden               = m_pDS->fv("IsHidden").get_asBool();
