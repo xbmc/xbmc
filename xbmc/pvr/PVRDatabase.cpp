@@ -79,7 +79,7 @@ bool CPVRDatabase::CreateTables()
           "sIconPath            text, "
           "sChannelName         text, "
           "bIsVirtual           bool, "
-          "EPGEnabled          bool, "
+          "bEPGEnabled          bool, "
           "EPGScraper          text, "
           "ClientId            integer, "
           "ClientChannelNumber integer, "
@@ -263,7 +263,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
         "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, EPGEnabled, EPGScraper, ClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -275,7 +275,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
         "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, EPGEnabled, EPGScraper, ClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -334,7 +334,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         channel->m_strIconPath             = m_pDS->fv("sIconPath").get_asString();
         channel->m_strChannelName          = m_pDS->fv("sChannelName").get_asString();
         channel->m_bIsVirtual              = m_pDS->fv("bIsVirtual").get_asBool();
-        channel->m_bEPGEnabled             = m_pDS->fv("EPGEnabled").get_asBool();
+        channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper           = m_pDS->fv("EPGScraper").get_asString();
         channel->m_iClientId               = m_pDS->fv("ClientId").get_asInt();
         channel->m_iClientChannelNumber    = m_pDS->fv("ClientChannelNumber").get_asInt();
