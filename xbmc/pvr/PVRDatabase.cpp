@@ -143,32 +143,32 @@ bool CPVRDatabase::CreateTables()
     //    );
     //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);\n");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'ChannelSettings'", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelsettings'", __FUNCTION__);
     m_pDS->exec(
-        "CREATE TABLE ChannelSettings ("
-          "ChannelId           integer primary key, "
-          "InterlaceMethod     integer, "
-          "ViewMode            integer, "
-          "CustomZoomAmount    float, "
-          "PixelRatio          float, "
-          "AudioStream         integer, "
-          "SubtitleStream      integer,"
-          "SubtitleDelay       float, "
-          "SubtitlesOn         bool, "
-          "Brightness          float, "
-          "Contrast            float, "
-          "Gamma               float,"
-          "VolumeAmplification float, "
-          "AudioDelay          float, "
-          "OutputToAllSpeakers bool, "
-          "Crop                bool, "
-          "CropLeft            integer, "
-          "CropRight           integer, "
-          "CropTop             integer, "
-          "CropBottom          integer, "
-          "Sharpness           float, "
-          "NoiseReduction      float"
-        ")\n"
+        "CREATE TABLE channelsettings ("
+          "idChannel            integer primary key, "
+          "iInterlaceMethod     integer, "
+          "iViewMode            integer, "
+          "fCustomZoomAmount    float, "
+          "fPixelRatio          float, "
+          "iAudioStream         integer, "
+          "iSubtitleStream      integer,"
+          "fSubtitleDelay       float, "
+          "bSubtitles           bool, "
+          "fBrightness          float, "
+          "fContrast            float, "
+          "fGamma               float,"
+          "fVolumeAmplification float, "
+          "fAudioDelay          float, "
+          "bOutputToAllSpeakers bool, "
+          "bCrop                bool, "
+          "iCropLeft            integer, "
+          "iCropRight           integer, "
+          "iCropTop             integer, "
+          "iCropBottom          integer, "
+          "fSharpness           float, "
+          "fNoiseReduction      float"
+        ");\n"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'EpgData'", __FUNCTION__);
@@ -417,7 +417,7 @@ bool CPVRDatabase::UpdateLastChannel(const CPVRChannel &channel)
 bool CPVRDatabase::EraseChannelSettings()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel settings from the database", __FUNCTION__);
-  return DeleteValues("ChannelSettings");
+  return DeleteValues("channelsettings");
 }
 
 bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
@@ -432,31 +432,31 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT * FROM ChannelSettings WHERE ChannelId = %u\n", channel.ChannelID());
+  CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u\n", channel.ChannelID());
 
   if (ResultQuery(strQuery))
   {
-    settings.m_AudioDelay           = m_pDS->fv("AudioDelay").get_asFloat();
-    settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInt();
-    settings.m_Brightness           = m_pDS->fv("Brightness").get_asFloat();
-    settings.m_Contrast             = m_pDS->fv("Contrast").get_asFloat();
-    settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
-    settings.m_NoiseReduction       = m_pDS->fv("NoiseReduction").get_asFloat();
-    settings.m_Sharpness            = m_pDS->fv("Sharpness").get_asFloat();
-    settings.m_CustomZoomAmount     = m_pDS->fv("CustomZoomAmount").get_asFloat();
-    settings.m_Gamma                = m_pDS->fv("Gamma").get_asFloat();
-    settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
-    settings.m_SubtitleOn           = m_pDS->fv("SubtitlesOn").get_asBool();
-    settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInt();
-    settings.m_ViewMode             = m_pDS->fv("ViewMode").get_asInt();
-    settings.m_Crop                 = m_pDS->fv("Crop").get_asBool();
-    settings.m_CropLeft             = m_pDS->fv("CropLeft").get_asInt();
-    settings.m_CropRight            = m_pDS->fv("CropRight").get_asInt();
-    settings.m_CropTop              = m_pDS->fv("CropTop").get_asInt();
-    settings.m_CropBottom           = m_pDS->fv("CropBottom").get_asInt();
-    settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("InterlaceMethod").get_asInt();
-    settings.m_VolumeAmplification  = m_pDS->fv("VolumeAmplification").get_asFloat();
-    settings.m_OutputToAllSpeakers  = m_pDS->fv("OutputToAllSpeakers").get_asBool();
+    settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
+    settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
+    settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
+    settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
+    settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
+    settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
+    settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
+    settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
+    settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
+    settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
+    settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
+    settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
+    settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
+    settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
+    settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
+    settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
+    settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
+    settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
+    settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
+    settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
+    settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
     settings.m_SubtitleCached       = false;
 
     bReturn = true;
@@ -477,10 +477,10 @@ bool CPVRDatabase::SetChannelSettings(const CPVRChannel &channel, const CVideoSe
   }
 
   CStdString strQuery = FormatSQL(
-      "REPLACE INTO ChannelSettings "
-        "(ChannelId, InterlaceMethod, ViewMode, CustomZoomAmount, PixelRatio, AudioStream, SubtitleStream, SubtitleDelay, "
-         "SubtitlesOn, Brightness, Contrast, Gamma, VolumeAmplification, AudioDelay, OutputToAllSpeakers, Crop, CropLeft, "
-         "CropRight, CropTop, CropBottom, Sharpness, NoiseReduction) VALUES "
+      "REPLACE INTO channelsettings "
+        "(idChannel, iInterlaceMethod, iViewMode, fCustomZoomAmount, fPixelRatio, iAudioStream, iSubtitleStream, fSubtitleDelay, "
+         "bSubtitles, fBrightness, fContrast, fGamma, fVolumeAmplification, fAudioDelay, bOutputToAllSpeakers, bCrop, iCropLeft, "
+         "iCropRight, iCropTop, iCropBottom, fSharpness, fNoiseReduction) VALUES "
          "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f)\n",
        channel.ChannelID(), settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
        settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn,
