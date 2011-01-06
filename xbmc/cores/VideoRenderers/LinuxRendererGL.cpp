@@ -154,8 +154,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
   m_context = NULL;
-
-  m_pboused = false;
+  m_rgbPbo = 0;
 
   m_dllAvUtil = new DllAvUtil;
   m_dllAvCodec = new DllAvCodec;
@@ -168,10 +167,18 @@ CLinuxRendererGL::~CLinuxRendererGL()
   for (int i = 0; i < NUM_BUFFERS; i++)
     CloseHandle(m_eventTexturesDone[i]);
 
-  if (m_rgbBuffer != NULL) {
+  if (m_rgbPbo)
+  {
+    glDeleteBuffersARB(1, &m_rgbPbo);
+    m_rgbPbo = 0;
+    m_rgbBuffer = NULL;
+  }
+  else
+  {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+
   if (m_context)
   {
     m_dllSwScale->sws_freeContext(m_context);
@@ -252,6 +259,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_nonLinStretch    = false;
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
+
+  m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo");
+
   return true;
 }
 
@@ -389,13 +399,20 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
-                                , int stride, void* data )
+                                , int stride, void* data, GLuint* pbo/*= NULL*/ )
 {
   if(plane.flipindex == flipindex)
     return;
 
-  if(plane.pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, plane.pbo);
+  //if no pbo given, use the plane pbo
+  GLuint currPbo;
+  if (pbo)
+    currPbo = *pbo;
+  else
+    currPbo = plane.pbo;
+
+  if(currPbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, currPbo);
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
@@ -416,7 +433,7 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
-  if(plane.pbo)
+  if(currPbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
   plane.flipindex = flipindex;
@@ -748,8 +765,6 @@ unsigned int CLinuxRendererGL::PreInit()
     m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
 
-  m_pboused = g_guiSettings.GetBool("videoplayer.usepbo");
-
   return true;
 }
 
@@ -993,14 +1008,14 @@ void CLinuxRendererGL::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
-  if (glewIsSupported("GL_ARB_pixel_buffer_object")
-  &&  g_guiSettings.GetBool("videoplayer.usepbo") && !(m_renderMethod & RENDER_SW))
+  
+  if (m_pboSupported && !(m_renderMethod & RENDER_SW))
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-    m_pboused = true;
+    m_pboUsed = true;
   }
   else
-    m_pboused = false;
+    m_pboUsed = false;
 
   // Now that we now the render method, setup texture function handlers
   if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
@@ -1046,12 +1061,19 @@ void CLinuxRendererGL::UnInit()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
-  if (m_rgbBuffer != NULL)
+  if (m_rgbPbo)
+  {
+    glDeleteBuffersARB(1, &m_rgbPbo);
+    m_rgbPbo = 0;
+    m_rgbBuffer = NULL;
+  }
+  else
   {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
+
   if (m_context)
   {
     m_dllSwScale->sws_freeContext(m_context);
@@ -1742,7 +1764,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(3, pbo);
@@ -1974,7 +1996,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(2, pbo);
@@ -2478,7 +2500,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(1, pbo);
@@ -2594,12 +2616,8 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 
 void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf)
 {
-  if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
-  {
-    delete [] m_rgbBuffer;
-    m_rgbBufferSize = m_sourceWidth * m_sourceHeight * 4;
-    m_rgbBuffer = new BYTE[m_rgbBufferSize];
-  }
+  if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
+    SetupRGBBuffer();
   else if(flipIndexPlane == flipIndexBuf)
     return; //conversion already done on the previous iteration
 
@@ -2643,6 +2661,12 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
     return;
   }
 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+  }
+
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
@@ -2650,16 +2674,19 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
+
+  if (m_rgbPbo)
+  {
+    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    m_rgbBuffer = (BYTE*)PBO_OFFSET;
+  }
 }
 
 void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf)
 {
-  if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
-  {
-    delete [] m_rgbBuffer;
-    m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-    m_rgbBuffer = new BYTE[m_rgbBufferSize];
-  }
+  if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
+    SetupRGBBuffer();
   else if(flipIndexPlaneTop == flipIndexBuf && flipIndexPlaneBot == flipIndexBuf)
     return; //conversion already done on the previous iteration
 
@@ -2713,6 +2740,12 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     return;
   }
 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+  }
+
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height >> 1, srcFormat,
                                                  im->width, im->height >> 1, PIX_FMT_BGRA,
@@ -2725,6 +2758,50 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   //the bottom field is placed at the bottom of the rgb buffer
   m_dllSwScale->sws_scale(m_context, srcTop, srcStrideTop, 0, im->height >> 1, dstTop, dstStride);
   m_dllSwScale->sws_scale(m_context, srcBot, srcStrideBot, 0, im->height >> 1, dstBot, dstStride);
+
+  if (m_rgbPbo)
+  {
+    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    m_rgbBuffer = (BYTE*)PBO_OFFSET;
+  }
+}
+
+void CLinuxRendererGL::SetupRGBBuffer()
+{
+  m_rgbBufferSize = m_sourceWidth * m_sourceHeight * 4;
+
+  if (!m_rgbPbo)
+    delete [] m_rgbBuffer;
+
+  if (m_pboSupported)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+
+    if (!m_rgbPbo)
+      glGenBuffersARB(1, &m_rgbPbo);
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbBufferSize + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+
+    if (!m_rgbBuffer)
+    {
+      CLog::Log(LOGWARNING,"GL: failed to set up pixel buffer object");
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glDeleteBuffersARB(1, &m_rgbPbo);
+      m_rgbPbo = 0;
+    }
+    else
+    {
+      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      m_rgbBuffer = (BYTE*)PBO_OFFSET;
+    }
+  }
+
+  if (!m_rgbPbo)
+    m_rgbBuffer = new BYTE[m_rgbBufferSize];
 }
 
 void CLinuxRendererGL::UploadRGBTexture(int source)
@@ -2803,17 +2880,17 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   {
     LoadPlane( fields[FIELD_TOP][0] , GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer );
+             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
 
     LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2);
+             , m_sourceWidth, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2, &m_rgbPbo );
   }
   else
   {
     LoadPlane( fields[FIELD_FULL][0], GL_BGRA, buf.flipindex
              , im->width, im->height
-             , m_sourceWidth, m_rgbBuffer );
+             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
   }
 
   if (imaging==2)
