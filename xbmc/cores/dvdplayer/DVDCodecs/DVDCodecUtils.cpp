@@ -267,7 +267,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
 
         struct SwsContext *ctx = dllSwScale.sws_getContext(pSrc->iWidth, pSrc->iHeight, PIX_FMT_YUV420P,
                                                            pPicture->iWidth, pPicture->iHeight, dstformat,
-                                                           SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                           SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
         dllSwScale.sws_scale(ctx, src, srcStride, 0, pSrc->iHeight, dst, dstStride);
         dllSwScale.sws_freeContext(ctx);
       }

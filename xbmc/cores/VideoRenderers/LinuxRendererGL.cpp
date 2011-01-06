@@ -2670,7 +2670,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
@@ -2749,7 +2749,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height >> 1, srcFormat,
                                                  im->width, im->height >> 1, PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   uint8_t *dstTop[]    = { m_rgbBuffer, 0, 0, 0 };
   uint8_t *dstBot[]    = { m_rgbBuffer + m_sourceWidth * m_sourceHeight * 2, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
