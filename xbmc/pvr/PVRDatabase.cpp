@@ -60,12 +60,12 @@ bool CPVRDatabase::CreateTables()
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'Clients'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE Clients ("
-          "ClientDbId integer primary key, "
-          "Name       text, "
-          "ClientId   text"
-        ")\n"
+          "idClient integer primary key, "
+          "sName    text, "
+          "sUid     text"
+        ");\n"
     );
-    m_pDS->exec("CREATE INDEX ix_ClientId on Clients(ClientId)\n");
+    m_pDS->exec("CREATE INDEX idx_Clients_sUid on Clients(sUid);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'Channels'", __FUNCTION__);
     m_pDS->exec(
@@ -635,7 +635,7 @@ long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &
   iReturn = GetClientId(strClientUid);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO Clients (Name, ClientId) VALUES ('%s', '%s')\n",
+    CStdString strQuery = FormatSQL("INSERT INTO Clients (sName, sUid) VALUES ('%s', '%s')\n",
         strClientName.c_str(), strClientUid.c_str());
 
     if (ExecuteQuery(strQuery))
@@ -656,14 +656,14 @@ bool CPVRDatabase::RemoveClient(const CStdString &strClientUid)
     return false;
   }
 
-  CStdString strWhereClause = FormatSQL("ClientId = '%s'", strClientUid.c_str());
+  CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
   return DeleteValues("Clients", strWhereClause);
 }
 
 long CPVRDatabase::GetClientId(const CStdString &strClientUid)
 {
-  CStdString strWhereClause = FormatSQL("ClientId = '%s'", strClientUid.c_str());
-  CStdString strValue = GetSingleValue("Clients", "ClientDbId", strWhereClause);
+  CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
+  CStdString strValue = GetSingleValue("Clients", "idClient", strWhereClause);
 
   if (strValue.IsEmpty())
     return -1;
