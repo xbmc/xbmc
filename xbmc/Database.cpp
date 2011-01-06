@@ -137,7 +137,8 @@ CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdStrin
   }
   catch(...)
   {
-
+    CLog::Log(LOGERROR, "%s - failed to get value '%s' from table '%s'",
+        __FUNCTION__, strColumn.c_str(), strTable.c_str());
   }
 
   return strReturn;
