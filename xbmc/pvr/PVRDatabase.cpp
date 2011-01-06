@@ -76,7 +76,7 @@ bool CPVRDatabase::CreateTables()
           "GroupId             integer, " // use mapping table
           "bIsRadio             bool, "
           "bIsHidden            bool, "
-          "IconPath            text, "
+          "sIconPath            text, "
           "ChannelName         text, "
           "IsVirtual           bool, "
           "EPGEnabled          bool, "
@@ -263,7 +263,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
         "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
-        "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
+        "sIconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -275,7 +275,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
         "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
-        "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
+        "sIconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -331,7 +331,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
         channel->m_bIsRadio                = m_pDS->fv("bIsRadio").get_asBool();
         channel->m_bIsHidden               = m_pDS->fv("bIsHidden").get_asBool();
-        channel->m_strIconPath             = m_pDS->fv("IconPath").get_asString();
+        channel->m_strIconPath             = m_pDS->fv("sIconPath").get_asString();
         channel->m_strChannelName          = m_pDS->fv("ChannelName").get_asString();
         channel->m_bIsVirtual              = m_pDS->fv("IsVirtual").get_asBool();
         channel->m_bEPGEnabled             = m_pDS->fv("EPGEnabled").get_asBool();
