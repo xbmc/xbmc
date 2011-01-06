@@ -166,6 +166,7 @@ IMAGES= \
 	HomeBladeSub_Part2.png \
 	HomeButtonsBack.png \
 	HomeHasSub.png \
+	HomeHasSub2.png \
 	HomeIcon-Focus.png \
 	HomeIcon.png \
 	HomeNowPlayingBack.png \

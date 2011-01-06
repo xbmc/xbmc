@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 25/11/2010-->
-<!--Based on English r35368-->
+<!--Date of translation: 05/01/2011-->
+<!--Based on English 1ee638d8b22a3a5440e5-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -145,11 +145,9 @@
   <string id="164">Nincs lemez</string>
   <string id="165">Lemezt találtam</string>
   <string id="166">Arculat</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Felbontás</string>
   <string id="170">Képfrissítésfrekvencia igazítása a film-képkockasebességhez</string>
-  <string id="171"></string>
 
   <string id="172">Megjelenés dátuma</string>
   <string id="173">4:3 képarányú videók megjelenítési módja</string>
@@ -259,7 +257,7 @@
   <string id="282">%i találat</string>
   <string id="283">Keresési eredmények</string>
   <string id="284">Nincs találat</string>
-  <string id="286"></string>
+
   <string id="287">Feliratok</string>
   <string id="288">Betűtípus</string>
   <string id="289">- Méret</string>
@@ -279,11 +277,7 @@
   <string id="304">Nyelv</string>
   <string id="305">Engedélyezve</string>
   <string id="306">Nem interleave típusú</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=auto)</string>
   <string id="313">Adatbázis tisztítása</string>
   <string id="314">Előkészítés...</string>
@@ -376,8 +370,7 @@
   <string id="404">Szél</string>
   <string id="405">Harmatpont</string>
   <string id="406">Páratartalom</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Alapértelmezett</string>
   <string id="410">Időjárás-szolgáltató keresése</string>
   <string id="411">Időjárás lekérdezése:</string>
@@ -480,7 +473,7 @@
   <string id="517">Mostanában játszott albumok</string>
   <string id="518">Indítás</string>
   <string id="519">Indítás a...</string>
-  <string id="520"></string>
+
   <string id="521">Összeállítások</string>
   <string id="522">Forrás eltávolítása</string>
   <string id="523">Médiaváltás</string>
@@ -631,7 +624,7 @@
   <string id="715">- Hozzárendelés</string>
   <string id="716">Automatikus (DHCP)</string>
   <string id="717">Kézi (Állandó)</string>
-  <string id="718"></string>
+
   <string id="719">- IP cím</string>
   <string id="720">- Hálózati maszk</string>
   <string id="721">- Alapértelmezett átjáró</string>
@@ -642,9 +635,9 @@
   <string id="726">A változtatások nincsenek elmentve. Folytatás?</string>
   <string id="727">Webkiszolgáló</string>
   <string id="728">FTP kiszolgáló</string>
-  <string id="729"></string>
+
   <string id="730">- Port</string>
-  <string id="731"></string>
+
   <string id="732">Mentés és érvényesítés</string>
   <string id="733">- Jelszó</string>
   <string id="734">Nincs jelszó</string>
@@ -683,7 +676,7 @@
   <!-- a 768 és 769 stringek mégtöbb feliratszínhez vannak lefoglalva -->
 
   <string id="770">Hiba %i: megosztás nem elérhető</string>
-  <string id="771"></string>
+
   <string id="772">Hangkimenet</string>
   <string id="773">POZÍCIÓKERESÉS</string>
   <string id="774">Diavetítő mappa</string>
@@ -802,10 +795,6 @@
   <string id="1234">Programok &amp; képek &amp; zene</string>
   <string id="1235">Programok &amp; képek &amp; videó</string>
 
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-
   <string id="1250">Automatikus felismerés</string>
   <string id="1251">Automatikus rendszerfelismerés</string>
   <string id="1252">Becenév</string>
@@ -858,8 +847,6 @@
 
   <string id="2100">Program hiba: %s</string>
   <string id="2101">Újabb verzió szükséges - Lásd: napló</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
   <string id="4501">LCD/VFD kijelző engedélyezése</string>
 
@@ -930,18 +917,9 @@
   <string id="12009">Index újraépítése...</string>
   <string id="12010">Vissza a Zenékhez</string>
   <string id="12011">Vissza a Videókhoz</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Lejátszás az elejéről</string>
   <string id="12022">Folytatás innen: %s</string>
-  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -992,9 +970,7 @@
   <string id="12377">Minden eddigi beállítás törlése?</string>
   <string id="12378">Képek megjelenítése:</string>
   <string id="12379">Pásztázás és nagyítás (pan&amp;zoom) effektek használata</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">12 órás számozás</string>
   <string id="12384">24 órás számozás</string>
   <string id="12385">Nap/Hónap</string>
@@ -1017,8 +993,7 @@
   <string id="13003">- Késleltetés</string>
   <string id="13004">- Minimum fájl hossz</string>
   <string id="13005">Leállítás</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Alapértelmezett leállítási mód</string>
   <string id="13009">Kilépés</string>
   <string id="13010">Hibernálás</string>
@@ -1074,28 +1049,10 @@
   <string id="13146">ennek a beállításnak a használata a távirányítás</string>
   <string id="13147">lehetőségének elvesztését jelentheti. Folytatod?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
   <string id="13159">Alhálózati maszk</string>
   <string id="13160">Átjáró</string>
   <string id="13161">Elsődleges DNS</string>
   <string id="13162">A beállítás meghiúsult</string>
-
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-
 
   <string id="13170">Soha</string>
   <string id="13171">Azonnal</string>
@@ -1136,20 +1093,17 @@
 
   <string id="13283">Operációs rendszer:</string>
   <string id="13284">CPU sebesség:</string>
-  <string id="13285"></string>
+
   <string id="13286">Videó bekódoló:</string>
   <string id="13287">Képernyő felbontása:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">Hang/Kép kábel:</string>
-  <string id="13293"></string>
+
   <string id="13294">DVD régió:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Csatlakoztatva</string>
   <string id="13297">Nincs csatlakozás. Hálózati beállítások ellenőrzése szükséges.</string>
-  <string id="13298"></string>
+
   <string id="13299">Célhőmérséklet</string>
   <string id="13300">Ventilátorsebesség</string>
   <string id="13301">Automata hőmérséklet-vezérlés</string>
@@ -1188,8 +1142,7 @@
   <string id="13334">Cím szerkesztése</string>
   <string id="13335">Alapértelmezetté tesz</string>
   <string id="13336">Gomb eltávolítása</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Maradjon az eredeti</string>
   <string id="13341">Zöld</string>
   <string id="13342">Narancs</string>
@@ -1464,7 +1417,7 @@
   <string id="15275">%name% heti zeneszám toplistája</string>
   <string id="15276">%name% zenei "szomszédai" Last.fm rádió hallgatása</string>
   <string id="15277">%name% saját Last.fm rádiójának hallgatása</string>
-  <string id="15278">%name% kedvenc számai Last.fm rádió hallgatása</string>
+  <string id="15278">%name% saját Last.fm mix radiójának hallgatása</string>
   <string id="15279">Lista lekérése a last.fm-ről...</string>
   <string id="15280">Lista nem lekérhető a last.fm-ről...</string>
   <string id="15281">Előadó magdása hasonlók kereséséhez</string>
@@ -1472,7 +1425,7 @@
   <string id="15283">%name% mostanában hallgatott zenéi</string>
   <string id="15284">%name% ajánlásai Last.fm rádió hallgatása</string>
   <string id="15285">%name% top címkéi</string>
-  <string id="15286">%name% lejátszáslistája Last.fm rádió hallgatása</string>
+
   <string id="15287">Jelenlegi szám hozzáadása a kedvencekhez?</string>
   <string id="15288">Jelenlegi szám letiltása?</string>
   <string id="15289">'%s' hozzáadva a kedvenc számokhoz.</string>
@@ -1535,11 +1488,6 @@
   <string id="16103">Megnézettként megjelöl</string>
   <string id="16104">Nem látottként megjelöl</string>
   <string id="16105">Cím szerkesztése</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
 
   <string id="16200">Művelet megszakadt</string>
   <string id="16201">Másolási hiba</string>
@@ -1571,9 +1519,6 @@
   <string id="16319">DXVA</string>
 
   <string id="16400">Videó minőségjavítás (post processing)</string>
-  <string id="16401">Tiltva</string>
-  <string id="16402">Csak kis felbontásnál</string>
-  <string id="16403">Engedélyezve mindig</string>
 
   <string id="17500">Alvó üzemmódig hátralévő idő kijelzése</string>
 
@@ -1758,8 +1703,7 @@
   <string id="20184">Forgatás EXIF információ alapján</string>
   <string id="20185">Poszter nézet használata TV műsoroknál</string>
   <string id="20186">Kérem várjon</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Automatikus sorgörgetés a filmtartalom megjelenítésekor</string>
   <string id="20190">Saját</string>
   <string id="20191">Naplózás engedélyezése</string>
@@ -1790,24 +1734,17 @@
   <string id="20303">Kihagyod és továbblépsz?</string>
   <string id="20304">RSS forrás</string>
 
-  <string id="20306"></string>
   <string id="20307">Másodlagos DNS</string>
   <string id="20308">DHCP kiszolgáló:</string>
   <string id="20309">Új mappa létrehozása</string>
   <string id="20310">LCD halványítás lejátszás közben</string>
   <string id="20311">Ismeretlen vagy alaplapi (védett)</string>
   <string id="20312">LCD halványítás szünet közben</string>
-  <string id="20313"></string>
+
   <string id="20314">Videók - Médiatár</string>
-  <string id="20315"></string>
+
   <string id="20316">ID szerint</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Rész lejátszása...</string>
   <string id="20325">Kalibráció visszaállítása</string>
   <string id="20326">Kalibrációs értékek törlése %s számára</string>
@@ -1938,6 +1875,8 @@
   <string id="20451">Országok</string>
   <string id="20452">epizód</string>
   <string id="20453">epizód</string>
+  <string id="20454">Hallgató</string>
+  <string id="20455">Hallgató</string>
   <!-- 21329-ig videó-adatbázisra fenntartva  !! !-->
 
   <string id="21330">Rejtett fájlok és mappák megjelenítése</string>
@@ -2255,12 +2194,6 @@
   <string id="24089">Kiegészítő újraindul</string>
   <string id="24090">Kiegészítő-kezelő zárolása</string>
 
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
-
   <string id="24096">A kiegészítőt működésképtelennek jelölték a tárhelyen.</string>
   <string id="24097">Akarod letiltani a számítógépeden?</string>
   <string id="24098">Működésképtelen</string>
@@ -2271,8 +2204,6 @@
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
   <string id="29802">Hangtovábbítás-módban tiltva</string>
-
-  <string id="29999"></string>
 
   <!-- 30000-től 30999-ig kiegészítők számára fenntartva -->
   <!-- 31000-tól 31999-ig a arculatok számára fenntartva -->

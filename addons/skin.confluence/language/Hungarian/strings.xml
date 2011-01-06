@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 25/11/2010-->
-<!--Based on English r35254-->
+<!--Date of translation: 05/01/2011-->
+<!--Based on English a9839fa95cb9711efe46 (04.01.2011)-->
 <!--$Revision$-->
 <strings>
   <!-- Vegyes feliratok -->
@@ -91,6 +91,9 @@
   <string id="31131"></string>
   <string id="31132">Dalszöveg kiegészítő</string>
   <string id="31133">Filmfelirat kiegészítő</string>
+  <string id="31134">Főképernyő Videó almenü</string>
+  <string id="31135">Főképernyő Zene almenü</string>
+  <string id="31136">Főképernyő Képek almenü</string>
 
   <string id="31140">Zene tálca</string>
   <string id="31141">Videó tálca</string>
