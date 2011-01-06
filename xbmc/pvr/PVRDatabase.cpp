@@ -73,7 +73,7 @@ bool CPVRDatabase::CreateTables()
           "idChannel           integer primary key, "
           "iUniqueId            integer, "
           "iChannelNumber       integer, "
-          "GroupId             integer, "
+          "GroupId             integer, " // use mapping table
           "IsRadio             bool, "
           "IsHidden            bool, "
           "IconPath            text, "
@@ -99,10 +99,10 @@ bool CPVRDatabase::CreateTables()
 //        "CREATE TABLE map_channels_clients ("
 //          "idChannel             integer primary key, "
 //          "idClient              integer, "
-//          "iClientChannelNumber  integer, "
+//          "iClientChannelNumber  integer"
 //        ");\n"
 //    );
-//    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient)\n");
+//    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'LastChannel'", __FUNCTION__);
     m_pDS->exec(
@@ -152,6 +152,15 @@ bool CPVRDatabase::CreateTables()
     );
     m_pDS->exec("CREATE INDEX ix_ChannelGroupIsRadio on ChannelGroup(IsRadio)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelGroupName on ChannelGroup(Name)\n");
+
+    //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
+    //    m_pDS->exec(
+    //        "CREATE TABLE map_channelgroups_channels ("
+    //          "idChannel integer, "
+    //          "idGroup   integer"
+    //        ");\n"
+    //    );
+    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'EpgData'", __FUNCTION__);
     m_pDS->exec(
