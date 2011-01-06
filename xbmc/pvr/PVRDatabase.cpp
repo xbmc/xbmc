@@ -73,7 +73,7 @@ bool CPVRDatabase::CreateTables()
           "idChannel           integer primary key, "
           "iUniqueId            integer, "
           "iChannelNumber       integer, "
-          "GroupId             integer, " // use mapping table
+          "GroupId             integer, " // TODO use mapping table
           "bIsRadio             bool, "
           "bIsHidden            bool, "
           "sIconPath            text, "
@@ -81,12 +81,12 @@ bool CPVRDatabase::CreateTables()
           "bIsVirtual           bool, "
           "bEPGEnabled          bool, "
           "sEPGScraper          text, "
-          "ClientId            integer, "
-          "ClientChannelNumber integer, "
-          "InputFormat         text, "
-          "StreamURL           text, "
-          "EncryptionSystem    integer"
-        ")\n"
+          "ClientId            integer, " // TODO use mapping table
+          "ClientChannelNumber integer, " // TODO use mapping table
+          "InputFormat         text, " // TODO use mapping table
+          "StreamURL           text, " // TODO use mapping table
+          "EncryptionSystem    integer" // TODO use mapping table
+        ");\n"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_unique_iChannelNumber on channels(iChannelNumber, bIsRadio);\n");
     m_pDS->exec("CREATE INDEX idx_ChannelClientId on channels(ClientId);\n");
