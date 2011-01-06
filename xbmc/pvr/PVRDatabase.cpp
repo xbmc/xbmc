@@ -74,8 +74,8 @@ bool CPVRDatabase::CreateTables()
           "iUniqueId            integer, "
           "iChannelNumber       integer, "
           "GroupId             integer, " // use mapping table
-          "IsRadio             bool, "
-          "IsHidden            bool, "
+          "bIsRadio             bool, "
+          "bIsHidden            bool, "
           "IconPath            text, "
           "ChannelName         text, "
           "IsVirtual           bool, "
@@ -88,11 +88,11 @@ bool CPVRDatabase::CreateTables()
           "EncryptionSystem    integer"
         ")\n"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX ix_UniqueChannelNumber on channels(iChannelNumber, IsRadio)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelClientId on channels(ClientId)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelNumber on channels(iChannelNumber)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on channels(IsRadio)\n");
-    m_pDS->exec("CREATE INDEX ix_ChannelIsHidden on channels(IsHidden)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_unique_iChannelNumber on channels(iChannelNumber, bIsRadio);\n");
+    m_pDS->exec("CREATE INDEX idx_ChannelClientId on channels(ClientId);\n");
+    m_pDS->exec("CREATE INDEX idx_iChannelNumber on channels(iChannelNumber);\n");
+    m_pDS->exec("CREATE INDEX idx_bIsRadio on channels(bIsRadio);\n");
+    m_pDS->exec("CREATE INDEX idx_bIsHidden on channels(bIsHidden);\n");
 
 //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
 //    m_pDS->exec(
@@ -262,7 +262,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
-        "iUniqueId, iChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
@@ -274,7 +274,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
-        "iUniqueId, iChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, iChannelNumber, GroupId, bIsRadio, bIsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
@@ -314,7 +314,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 {
   int iReturn = -1;
 
-  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE IsRadio = %u ORDER BY iChannelNumber\n", bIsRadio);
+  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE bIsRadio = %u ORDER BY iChannelNumber\n", bIsRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -329,8 +329,8 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
         channel->m_iChannelNumber          = m_pDS->fv("iChannelNumber").get_asInt();
         channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
-        channel->m_bIsRadio                = m_pDS->fv("IsRadio").get_asBool();
-        channel->m_bIsHidden               = m_pDS->fv("IsHidden").get_asBool();
+        channel->m_bIsRadio                = m_pDS->fv("bIsRadio").get_asBool();
+        channel->m_bIsHidden               = m_pDS->fv("bIsHidden").get_asBool();
         channel->m_strIconPath             = m_pDS->fv("IconPath").get_asString();
         channel->m_strChannelName          = m_pDS->fv("ChannelName").get_asString();
         channel->m_bIsVirtual              = m_pDS->fv("IsVirtual").get_asBool();
@@ -364,7 +364,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 int CPVRDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
 {
   int iReturn = -1;
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channels WHERE IsRadio = %u AND IsHidden = %u\n",
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channels WHERE bIsRadio = %u AND bIsHidden = %u\n",
       (bRadio ? 1 : 0), (bHidden ? 1 : 0));
 
   if (ResultQuery(strQuery))
