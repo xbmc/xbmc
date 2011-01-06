@@ -85,7 +85,8 @@ bool CPVRDatabase::CreateTables()
           "ClientChannelNumber integer, " // TODO use mapping table
           "InputFormat         text, " // TODO use mapping table
           "StreamURL           text, " // TODO use mapping table
-          "EncryptionSystem    integer" // TODO use mapping table
+          "EncryptionSystem    integer," // TODO use mapping table
+          "iLastWatched        integer" // TODO update this value when the channel is opened
         ");\n"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_unique_iChannelNumber on channels(iChannelNumber, bIsRadio);\n");
@@ -104,13 +105,12 @@ bool CPVRDatabase::CreateTables()
 //    );
 //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);\n");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'LastChannel'", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating view 'vw_last_watched'", __FUNCTION__);
     m_pDS->exec(
-        "CREATE TABLE LastChannel ("
-          "ChannelId integer primary key, "
-          "Number    integer, "
-          "Name      text"
-        ")\n"
+        "CREATE VIEW vw_last_watched "
+        "AS SELECT idChannel, iChannelNumber, sChannelName "
+        "FROM Channels "
+        "ORDER BY iLastWatched DESC;\n"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'ChannelSettings'", __FUNCTION__);
@@ -378,7 +378,7 @@ int CPVRDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
 
 int CPVRDatabase::GetLastChannel()
 {
-  CStdString strValue = GetSingleValue("LastChannel", "ChannelId");
+  CStdString strValue = GetSingleValue("vw_last_watched", "idChannel");
 
   if (strValue.IsEmpty())
     return -1;
@@ -396,8 +396,9 @@ bool CPVRDatabase::UpdateLastChannel(const CPVRChannel &channel)
     return false;
   }
 
-  CStdString strQuery = FormatSQL("REPLACE INTO LastChannel (ChannelId, Number, Name) VALUES (%i, %i, '%s')\n",
-      channel.ChannelID(), channel.ChannelNumber(), channel.ChannelName().c_str());
+  //TODO update lastwatched value
+//  CStdString strQuery = FormatSQL("REPLACE INTO LastChannel (ChannelId, Number, Name) VALUES (%i, %i, '%s')\n",
+//      channel.ChannelID(), channel.ChannelNumber(), channel.ChannelName().c_str());
 
   return ExecuteQuery(strQuery);
 }
@@ -631,8 +632,7 @@ bool CPVRDatabase::EraseClients()
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all clients from the database", __FUNCTION__);
 
   return DeleteValues("clients") &&
-      DeleteValues("map_channels_clients") &&
-      DeleteValues("LastChannel");
+      DeleteValues("map_channels_clients");
 }
 
 long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
