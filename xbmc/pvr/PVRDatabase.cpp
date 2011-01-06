@@ -57,15 +57,15 @@ bool CPVRDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "PVRDB - %s - creating tables", __FUNCTION__);
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'Clients'", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'clients'", __FUNCTION__);
     m_pDS->exec(
-        "CREATE TABLE Clients ("
+        "CREATE TABLE clients ("
           "idClient integer primary key, "
           "sName    text, "
           "sUid     text"
         ");\n"
     );
-    m_pDS->exec("CREATE INDEX idx_Clients_sUid on Clients(sUid);\n");
+    m_pDS->exec("CREATE INDEX idx_clients_sUid on clients(sUid);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'Channels'", __FUNCTION__);
     m_pDS->exec(
@@ -93,6 +93,16 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX ix_ChannelNumber on Channels(ChannelNumber)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelIsRadio on Channels(IsRadio)\n");
     m_pDS->exec("CREATE INDEX ix_ChannelIsHidden on Channels(IsHidden)\n");
+
+//    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
+//    m_pDS->exec(
+//        "CREATE TABLE map_channels_clients ("
+//          "idChannel             integer primary key, "
+//          "idClient              integer, "
+//          "iClientChannelNumber  integer, "
+//        ");\n"
+//    );
+//    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient)\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'LastChannel'", __FUNCTION__);
     m_pDS->exec(
@@ -611,7 +621,8 @@ bool CPVRDatabase::EraseClients()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all clients from the database", __FUNCTION__);
 
-  return DeleteValues("Clients") &&
+  return DeleteValues("clients") &&
+      DeleteValues("map_channels_clients") &&
       DeleteValues("LastChannel");
 }
 
@@ -630,7 +641,7 @@ long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &
   iReturn = GetClientId(strClientUid);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO Clients (sName, sUid) VALUES ('%s', '%s')\n",
+    CStdString strQuery = FormatSQL("INSERT INTO clients (sName, sUid) VALUES ('%s', '%s')\n",
         strClientName.c_str(), strClientUid.c_str());
 
     if (ExecuteQuery(strQuery))
@@ -652,13 +663,13 @@ bool CPVRDatabase::RemoveClient(const CStdString &strClientUid)
   }
 
   CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
-  return DeleteValues("Clients", strWhereClause);
+  return DeleteValues("clients", strWhereClause);
 }
 
 long CPVRDatabase::GetClientId(const CStdString &strClientUid)
 {
   CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
-  CStdString strValue = GetSingleValue("Clients", "idClient", strWhereClause);
+  CStdString strValue = GetSingleValue("clients", "idClient", strWhereClause);
 
   if (strValue.IsEmpty())
     return -1;
