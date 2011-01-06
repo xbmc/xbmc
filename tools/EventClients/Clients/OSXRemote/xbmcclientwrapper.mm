@@ -276,8 +276,8 @@ void XBMCClientWrapperImpl::populateEventMap(){
 	// only present on ATV <= 2.1 <--- check that; OSX seems to have the release parts
 	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H, new CPacketBUTTON(10, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));	
 	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H_RELEASE, new CPacketBUTTON(10, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
-	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,  new CPacketBUTTON(11, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE, new CPacketBUTTON(11, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,  new CPacketBUTTON(9, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE, new CPacketBUTTON(9, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
 
 	//new aluminium remote buttons
 	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY,  new CPacketBUTTON(12, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
