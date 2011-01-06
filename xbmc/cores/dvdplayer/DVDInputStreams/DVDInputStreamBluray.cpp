@@ -474,6 +474,8 @@ int CDVDInputStreamBluray::GetChapter()
 
 bool CDVDInputStreamBluray::SeekChapter(int ch)
 {
+  if(ch < 1)
+    ch = 1;
   if(m_title && m_dll->bd_seek_chapter(m_bd, ch-1) < 0)
     return false;
   else

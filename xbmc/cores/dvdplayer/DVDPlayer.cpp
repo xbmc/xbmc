@@ -3115,6 +3115,16 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
       switch (action.GetID())
       {
+      case ACTION_NEXT_ITEM:
+      case ACTION_PAGE_UP:
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1)); // needs the modified CDVDInputStreamNavigator::SeekChapter(int iChapter) method, assuming dvdnav_next_pg_search
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      case ACTION_PREV_ITEM:
+      case ACTION_PAGE_DOWN:
+        m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1)); // needs the modified CDVDInputStreamNavigator::SeekChapter(int iChapter) method, assuming dvdnav_prev_pg_search
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
       case ACTION_PREVIOUS_MENU:
         {
           THREAD_ACTION(action);

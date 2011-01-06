@@ -1194,9 +1194,6 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
 
 bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 {
-  if(chapter < 1)
-    chapter = 1;
-
   CDVDInputStream::IChapter* ich = dynamic_cast<CDVDInputStream::IChapter*>(m_pInput);
   if(ich)
   {
@@ -1210,6 +1207,9 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     Flush();
     return true;
   }
+
+  if(chapter < 1)
+    chapter = 1;
 
   if(m_pFormatContext == NULL)
     return false;
