@@ -70,7 +70,7 @@ bool CPVRDatabase::CreateTables()
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channels'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE channels ("
-          "ChannelId           integer primary key, "
+          "idChannel           integer primary key, "
           "UniqueId            integer, "
           "ChannelNumber       integer, "
           "GroupId             integer, "
@@ -267,7 +267,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     strQuery = FormatSQL("REPLACE INTO channels ("
         "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
-        "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, ChannelId) "
+        "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
@@ -297,7 +297,7 @@ bool CPVRDatabase::RemoveChannel(const CPVRChannel &channel)
     return false;
   }
 
-  CStdString strWhereClause = FormatSQL("ChannelId = '%u'", channel.ChannelID());
+  CStdString strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
   return DeleteValues("channels", strWhereClause);
 }
 
@@ -316,7 +316,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
       {
         CPVRChannel *channel = new CPVRChannel();
 
-        channel->m_iChannelId              = m_pDS->fv("ChannelId").get_asInt();
+        channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId               = m_pDS->fv("UniqueId").get_asInt();
         channel->m_iChannelNumber          = m_pDS->fv("ChannelNumber").get_asInt();
         channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
