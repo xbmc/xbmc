@@ -3224,7 +3224,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   // checking if any of the common subdirs exist ..
   CStdStringArray directories;
   int nTokens = StringUtils::SplitString( strPath, "/", directories );
-  if (nTokens == 0)
+  if (nTokens == 1)
     StringUtils::SplitString( strPath, "\\", directories );
   
   // if it's inside a cdX dir, add parent path
