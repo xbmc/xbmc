@@ -66,7 +66,7 @@ config.log
 /stamp-h1
 /xbmc.bin
 /xbmc-xrandr
-/svn_revision.h
+/git_revision.h
 
 # /addons/
 /addons/com.nullsoft.milkdrop.xbmc/*.vis
