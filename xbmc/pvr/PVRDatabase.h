@@ -39,7 +39,7 @@ public:
 
   virtual bool Open();
 
-  virtual int GetMinVersion() const { return 6; };
+  virtual int GetMinVersion() const { return 7; };
   const char *GetDefaultDBName() const { return "MyTV4.db"; };
 
   /********** Channel methods **********/
