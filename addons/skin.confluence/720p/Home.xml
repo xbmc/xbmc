@@ -362,8 +362,8 @@
 		</control>
 		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
 		<control type="group">
-			<animation effect="slide" end="-400,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-400,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-450,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-450,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="group">
 				<animation effect="slide" end="-228,0" time="300" tween="quadratic" easing="out">WindowClose</animation>
 				<control type="image">
@@ -372,7 +372,19 @@
 					<width>1</width>
 					<height>720</height>
 					<texture>HomeBladeSub_Part1.png</texture>
-					<animation effect="zoom" start="379,0,1,720" end="379,0,229,720" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus">Conditional</animation>
+					<animation effect="zoom" start="379,0,1,720" end="379,0,229,720" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">Conditional</animation>
+				</control>
+				<control type="button" id="9002">
+					<posx>380</posx>
+					<posy>296</posy>
+					<width>42</width>
+					<height>128</height>
+					<font>-</font>
+					<texturefocus>HomeHasSub2.png</texturefocus>
+					<texturenofocus>HomeHasSub2.png</texturenofocus>
+					<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(3) | Container(9000).HasFocus(5) | Container(9000).HasFocus(7) | Container(9000).HasFocus(9) | [Container(9000).HasFocus(4) + [!IsEmpty(Skin.String(HomePictureButton1)) | !IsEmpty(Skin.String(HomePictureButton2)) | !IsEmpty(Skin.String(HomePictureButton3)) | !IsEmpty(Skin.String(HomePictureButton4)) | !IsEmpty(Skin.String(HomePictureButton5)) | !IsEmpty(Skin.String(HomePictureButton6))]] | [Container(9000).HasFocus(1) + [!IsEmpty(Skin.String(HomeProgramButton1)) | !IsEmpty(Skin.String(HomeProgramButton2)) | !IsEmpty(Skin.String(HomeProgramButton3)) | !IsEmpty(Skin.String(HomeProgramButton4)) | !IsEmpty(Skin.String(HomeProgramButton5)) | !IsEmpty(Skin.String(HomeProgramButton6))]] | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
+					<animation effect="slide" end="228,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">Conditional</animation>
+					<include>VisibleFadeEffect</include>
 				</control>
 				<control type="image">
 					<posx>380</posx>
@@ -380,16 +392,16 @@
 					<width>12</width>
 					<height>720</height>
 					<texture>HomeBladeSub_Part2.png</texture>
-					<animation effect="slide" end="228,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus">Conditional</animation>
+					<animation effect="slide" end="228,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">Conditional</animation>
 				</control>
 			</control>
 			<control type="group" id="9001">
 				<posx>170</posx>
 				<posy>0</posy>
-				<animation effect="fade" start="100" end="0" time="0" condition="!ControlGroup(9001).HasFocus">conditional</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="200" condition="ControlGroup(9001).HasFocus">conditional</animation>
-				<animation effect="fade" start="100" end="0" time="0" condition="ControlGroup(9001).HasFocus">WindowClose</animation>
-				<animation effect="slide" end="210,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus">conditional</animation>
+				<animation effect="fade" start="100" end="0" time="0" condition="![ControlGroup(9001).HasFocus | Control.HasFocus(9002)]">conditional</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="200" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">conditional</animation>
+				<animation effect="fade" start="100" end="0" time="0" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">WindowClose</animation>
+				<animation effect="slide" end="210,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9001).HasFocus | Control.HasFocus(9002)">conditional</animation>
 				<control type="grouplist" id="9010">
 					<posx>10</posx>
 					<posy>0</posy>
@@ -512,7 +524,7 @@
 				<focusposition>3</focusposition>
 				<movement>2</movement>
 				<animation effect="fade" start="0" end="100" time="200">Visible</animation>
-				<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus | Control.HasFocus(8000) | Control.HasFocus(8001)">conditional</animation>
+				<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus | Control.HasFocus(8000) | Control.HasFocus(8001) | Control.HasFocus(9002)">conditional</animation>
 				<itemlayout height="102" width="380">
 					<control type="label">
 						<posx>380</posx>
@@ -525,7 +537,7 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 						<animation effect="zoom" start="65" end="65" center="380,51" time="0" condition="true">Conditional</animation>
-						<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus">conditional</animation>
+						<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus | Control.HasFocus(9002)">conditional</animation>
 					</control>
 				</itemlayout>
 				<focusedlayout height="102" width="380">
@@ -541,16 +553,6 @@
 						<animation effect="zoom" start="65" end="100" center="380,51" time="200">Focus</animation>
 						<animation effect="zoom" start="100" end="65" center="380,51" time="200">UnFocus</animation>
 						<label>$INFO[ListItem.Label]</label>
-					</control>
-					<control type="image">
-						<posx>370</posx>
-						<posy>63</posy>
-						<width>18</width>
-						<height>18</height>
-						<texture>HomeHasSub.png</texture>
-						<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(3) | Container(9000).HasFocus(5) | Container(9000).HasFocus(7) | Container(9000).HasFocus(9) | [Container(9000).HasFocus(4) + [!IsEmpty(Skin.String(HomePictureButton1)) | !IsEmpty(Skin.String(HomePictureButton2)) | !IsEmpty(Skin.String(HomePictureButton3)) | !IsEmpty(Skin.String(HomePictureButton4)) | !IsEmpty(Skin.String(HomePictureButton5)) | !IsEmpty(Skin.String(HomePictureButton6))]] | [Container(9000).HasFocus(1) + [!IsEmpty(Skin.String(HomeProgramButton1)) | !IsEmpty(Skin.String(HomeProgramButton2)) | !IsEmpty(Skin.String(HomeProgramButton3)) | !IsEmpty(Skin.String(HomeProgramButton4)) | !IsEmpty(Skin.String(HomeProgramButton5)) | !IsEmpty(Skin.String(HomeProgramButton6))]] | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
-						<animation effect="fade" start="0" end="100" time="200">Focus</animation>
-						<animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
 					</control>
 				</focusedlayout>
 				<content>
