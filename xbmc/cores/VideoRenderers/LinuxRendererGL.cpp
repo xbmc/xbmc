@@ -559,11 +559,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_iLastRenderBuffer = index;
 
   if (clear)
-  {
-    glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0,0,0,0);
-  }
+    DrawBlackBars();
 
   if (alpha<255)
   {
@@ -597,6 +593,55 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glFlush();
 
   g_graphicsContext.EndPaint();
+}
+
+//draw black bars around the video quad, this is more efficient than glClear()
+//since it only sets pixels to black that aren't going to be overwritten by the video
+void CLinuxRendererGL::DrawBlackBars()
+{
+  const CRect& view = g_graphicsContext.GetViewWindow();
+
+  glColor4f(m_clearColour, m_clearColour, m_clearColour, 1.0f);
+  glDisable(GL_BLEND);
+  glBegin(GL_QUADS);
+
+  //top quad
+  if (m_destRect.y1 > 0.0)
+  {
+    glVertex4f(0.0,          0.0,           0.0, 1.0);
+    glVertex4f(view.Width(), 0.0,           0.0, 1.0);
+    glVertex4f(view.Width(), m_destRect.y1, 0.0, 1.0);
+    glVertex4f(0.0,          m_destRect.y1, 0.0, 1.0);
+  }
+
+  //bottom quad
+  if (m_destRect.y2 < view.Height())
+  {
+    glVertex4f(0.0,          m_destRect.y2, 0.0, 1.0);
+    glVertex4f(view.Width(), m_destRect.y2, 0.0, 1.0);
+    glVertex4f(view.Width(), view.Height(), 0.0, 1.0);
+    glVertex4f(0.0,          view.Height(), 0.0, 1.0);
+  }
+
+  //left quad
+  if (m_destRect.x1 > 0.0)
+  {
+    glVertex4f(0.0,           m_destRect.y1, 0.0, 1.0);
+    glVertex4f(m_destRect.x1, m_destRect.y1, 0.0, 1.0);
+    glVertex4f(m_destRect.x1, m_destRect.y2, 0.0, 1.0);
+    glVertex4f(0.0,           m_destRect.y2, 0.0, 1.0);
+  }
+
+  //right quad
+  if (m_destRect.x2 < view.Width())
+  {
+    glVertex4f(m_destRect.x2, m_destRect.y1, 0.0, 1.0);
+    glVertex4f(view.Width(),  m_destRect.y1, 0.0, 1.0);
+    glVertex4f(view.Width(),  m_destRect.y2, 0.0, 1.0);
+    glVertex4f(m_destRect.x2, m_destRect.y2, 0.0, 1.0);
+  }
+
+  glEnd();
 }
 
 void CLinuxRendererGL::FlipPage(int source)

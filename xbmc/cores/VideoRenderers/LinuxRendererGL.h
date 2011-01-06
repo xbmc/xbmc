@@ -157,6 +157,7 @@ public:
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
+  void         DrawBlackBars();
 
   virtual void ManageTextures();
   int  NextYV12Texture();
