@@ -71,7 +71,7 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec(
         "CREATE TABLE channels ("
           "idChannel           integer primary key, "
-          "UniqueId            integer, "
+          "iUniqueId            integer, "
           "ChannelNumber       integer, "
           "GroupId             integer, "
           "IsRadio             bool, "
@@ -253,7 +253,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
-        "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
@@ -265,7 +265,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
   {
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
-        "UniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
+        "iUniqueId, ChannelNumber, GroupId, IsRadio, IsHidden, "
         "IconPath, ChannelName, IsVirtual, EPGEnabled, EPGScraper, ClientId, "
         "ClientChannelNumber, InputFormat, StreamURL, EncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
@@ -317,7 +317,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         CPVRChannel *channel = new CPVRChannel();
 
         channel->m_iChannelId              = m_pDS->fv("idChannel").get_asInt();
-        channel->m_iUniqueId               = m_pDS->fv("UniqueId").get_asInt();
+        channel->m_iUniqueId               = m_pDS->fv("iUniqueId").get_asInt();
         channel->m_iChannelNumber          = m_pDS->fv("ChannelNumber").get_asInt();
         channel->m_iChannelGroupId         = m_pDS->fv("GroupId").get_asInt();
         channel->m_bIsRadio                = m_pDS->fv("IsRadio").get_asBool();
