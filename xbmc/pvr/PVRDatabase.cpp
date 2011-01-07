@@ -515,7 +515,7 @@ long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrde
   iReturn = GetChannelGroupId(strGroupName, bRadio);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (idGroup, sName, iSortOrder, bIsRadio) VALUES (NULL, '%s', %i, %i)\n",
+    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (sName, iSortOrder, bIsRadio) VALUES ('%s', %i, %i)\n",
         strGroupName.c_str(), iSortOrder, (bRadio ? 1 : 0));
 
     if (ExecuteQuery(strQuery))
@@ -725,7 +725,7 @@ bool CPVRDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTim
       __FUNCTION__, channel.ChannelName().c_str());
 
   CStdString strWhereClause;
-  strWhereClause = FormatSQL("ChannelId = %u", channel.ChannelID());
+  strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
 
   if (start != NULL)
   {
@@ -813,34 +813,34 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
     {
       while (!m_pDS->eof())
       {
-        int iBroadcastUid =          m_pDS->fv("iBroadcastUid").get_asInt();
+        int iBroadcastUid = m_pDS->fv("iBroadcastUid").get_asInt();
 
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
         CDateTime startTime(iStartTime);
+        newTag.SetStart(startTime);
 
         iEndTime = (time_t) m_pDS->fv("iEndTime").get_asInt();
         CDateTime endTime(iEndTime);
+        newTag.SetEnd(endTime);
 
         iFirstAired = (time_t) m_pDS->fv("iFirstAired").get_asInt();
         CDateTime firstAired(iFirstAired);
+        newTag.SetFirstAired(firstAired);
 
         CPVREpgInfoTag newTag(iBroadcastUid);
-        newTag.SetBroadcastId       (m_pDS->fv("idBroadcast").get_asInt());
-        newTag.SetTitle             (m_pDS->fv("sTitle").get_asString().c_str());
-        newTag.SetPlotOutline       (m_pDS->fv("sPlotOutline").get_asString().c_str());
-        newTag.SetPlot              (m_pDS->fv("sPlot").get_asString().c_str());
-        newTag.SetStart             (startTime);
-        newTag.SetEnd               (endTime);
-        newTag.SetGenre             (m_pDS->fv("iGenreType").get_asInt(),
-                                     m_pDS->fv("iGenreSubType").get_asInt());
-        newTag.SetFirstAired        (firstAired);
-        newTag.SetParentalRating    (m_pDS->fv("iParentalRating").get_asInt());
-        newTag.SetStarRating        (m_pDS->fv("iStarRating").get_asInt());
-        newTag.SetNotify            (m_pDS->fv("bNotify").get_asBool());
-        newTag.SetEpisodeNum        (m_pDS->fv("sEpisodeId").get_asString().c_str());
-        newTag.SetEpisodePart       (m_pDS->fv("sEpisodePart").get_asString().c_str());
-        newTag.SetEpisodeName       (m_pDS->fv("sEpisodeName").get_asString().c_str());
+        newTag.SetBroadcastId    (m_pDS->fv("idBroadcast").get_asInt());
+        newTag.SetTitle          (m_pDS->fv("sTitle").get_asString().c_str());
+        newTag.SetPlotOutline    (m_pDS->fv("sPlotOutline").get_asString().c_str());
+        newTag.SetPlot           (m_pDS->fv("sPlot").get_asString().c_str());
+        newTag.SetGenre          (m_pDS->fv("iGenreType").get_asInt(),
+                                  m_pDS->fv("iGenreSubType").get_asInt());
+        newTag.SetParentalRating (m_pDS->fv("iParentalRating").get_asInt());
+        newTag.SetStarRating     (m_pDS->fv("iStarRating").get_asInt());
+        newTag.SetNotify         (m_pDS->fv("bNotify").get_asBool());
+        newTag.SetEpisodeNum     (m_pDS->fv("sEpisodeId").get_asString().c_str());
+        newTag.SetEpisodePart    (m_pDS->fv("sEpisodePart").get_asString().c_str());
+        newTag.SetEpisodeName    (m_pDS->fv("sEpisodeName").get_asString().c_str());
 
         // TODO add series
 
@@ -953,7 +953,7 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
   {
     CStdString strWhereClause = FormatSQL("(iBroadcastUid = '%u' OR iStartTime = %u) AND idChannel = '%u'",
         tag.UniqueBroadcastID(), iStartTime, tag.ChannelTag()->ChannelID());
-    CStdString strValue = GetSingleValue("epg", "BroadcastId", strWhereClause);
+    CStdString strValue = GetSingleValue("epg", "idBroadcast", strWhereClause);
 
     if (!strValue.IsEmpty())
       iBroadcastId = atoi(strValue);
