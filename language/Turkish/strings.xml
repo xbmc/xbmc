@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/11/2010-->
-<!--Based on English strings revision 35368-->
+<!--Date of translation: 01/01/2011-->
+<!--Based on English strings revision 35715-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -147,11 +147,9 @@
   <string id="164">Disk yok</string>
   <string id="165">Disk var</string>
   <string id="166">Dış Görünüm</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Çözünürlük</string>
   <string id="170">Görüntü yenileme hızını videoyla eşleşecek şekilde ayarla</string>
-  <string id="171"></string>
 
   <string id="172">Çıkış tarihi</string>
   <string id="173">4:3 videoları görüntüleme biçimi</string>
@@ -261,7 +259,7 @@
   <string id="282">%i öge bulundu</string>
   <string id="283">Arama sonuçları</string>
   <string id="284">Hiçbir sonuç bulunamadı</string>
-  <string id="286"></string>
+
   <string id="287">Altyazılar</string>
   <string id="288">Yazı tipi</string>
   <string id="289">- Boyut</string>
@@ -281,11 +279,7 @@
   <string id="304">Dil</string>
   <string id="305">Aktif</string>
   <string id="306">Non-interleaved</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=otomatik)</string>
   <string id="313">Veritabanı temizleniyor</string>
   <string id="314">Hazırlanıyor...</string>
@@ -378,8 +372,7 @@
   <string id="404">Rüzgar</string>
   <string id="405">Donma noktası</string>
   <string id="406">Nem oranı</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Varsayılanlar</string>
   <string id="410">Hava Durumu hizmetine erişiliyor</string>
   <string id="411">Hava Durumu bilgileri alınıyor:</string>
@@ -482,7 +475,7 @@
   <string id="517">Yeni çalınan albümler</string>
   <string id="518">Başlat</string>
   <string id="519">...Modunda Başlat</string>
-  <string id="520"></string>
+
   <string id="521">Derlemeler</string>
   <string id="522">Kaynağı kaldır</string>
   <string id="523">Ortamı değiştir</string>
@@ -633,7 +626,7 @@
   <string id="715">- Atama</string>
   <string id="716">Otomatik (DHCP)</string>
   <string id="717">Kişisel (Statik)</string>
-  <string id="718"></string>
+
   <string id="719">- IP adresi</string>
   <string id="720">- Ağ maskesi</string>
   <string id="721">- Varsayılan ağ geçidi</string>
@@ -644,9 +637,9 @@
   <string id="726">Değişiklikler kaydedilmedi. Kaydetmeden çıkmak istiyor musunuz?</string>
   <string id="727">Web sunucusu</string>
   <string id="728">FTP sunucusu</string>
-  <string id="729"></string>
+
   <string id="730">- Port</string>
-  <string id="731"></string>
+
   <string id="732">Kaydet ve uygula</string>
   <string id="733">- Parola</string>
   <string id="734">Parola yok</string>
@@ -804,10 +797,6 @@
   <string id="1234">Programlar &amp; resimler &amp; müzik</string>
   <string id="1235">Programlar &amp; resimler &amp; video</string>
 
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-
   <string id="1250">Otomatik algılama</string>
   <string id="1251">Otomatik sistem algılama</string>
   <string id="1252">Takma isim</string>
@@ -860,8 +849,6 @@
 
   <string id="2100">Betik başarısız! : %s</string>
   <string id="2101">Yeni bir sürümü gerekli - Günlüğe bakın</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
   <string id="4501">LCD/VFD'yi etkinleştir</string>
 
@@ -932,18 +919,9 @@
   <string id="12009">İçeriği yenile...</string>
   <string id="12010">Müzik penceresine dön</string>
   <string id="12011">Videolar penceresine dön</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Baştan başla</string>
   <string id="12022">%s pozisyonundan devam et</string>
-  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -994,9 +972,7 @@
   <string id="12377">Bu işlem önceki kayıtları silecek</string>
   <string id="12378">Her resim için görüntüleme zamanı miktarı</string>
   <string id="12379">Kaydırma ve yakınlaştırma efekti kullan</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">12'li saat sistemi</string>
   <string id="12384">24'lü saat sistemi</string>
   <string id="12385">Gün/Ay</string>
@@ -1019,8 +995,7 @@
   <string id="13003">- Gecikme</string>
   <string id="13004">- Minimum dosya süresi</string>
   <string id="13005">Kapat</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Kapatma fonksiyonu</string>
   <string id="13009">Çık</string>
   <string id="13010">Hazırda Beklet</string>
@@ -1076,28 +1051,10 @@
   <string id="13146">bu ayarı değiştirmek kontrol yeteneğini etkileyebilir.</string>
   <string id="13147">Devam etmek istiyor musunuz?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
   <string id="13159">Alt ağ maskesi</string>
   <string id="13160">Ağ geçidi</string>
   <string id="13161">Birincil DNS</string>
   <string id="13162">Bilgi mevcut değil</string>
-
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-
 
   <string id="13170">Hiçbir zaman</string>
   <string id="13171">Hemen</string>
@@ -1138,20 +1095,17 @@
 
   <string id="13283">İşletim sistemi:</string>
   <string id="13284">CPU hızı:</string>
-  <string id="13285"></string>
+
   <string id="13286">Video kodlayıcı:</string>
   <string id="13287">Ekran çözünülürlüğü:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">Görüntü/Ses kablosu:</string>
-  <string id="13293"></string>
+
   <string id="13294">DVD bölgesi:</string>
   <string id="13295">İnternet:</string>
   <string id="13296">Bağlı</string>
   <string id="13297">Bağlı değil. Ağ ayarlarınızı kontrol edin.</string>
-  <string id="13298"></string>
+
   <string id="13299">Hedef sıcaklık</string>
   <string id="13300">Fan hızı</string>
   <string id="13301">Otomatik ısı kontrolü</string>
@@ -1190,8 +1144,7 @@
   <string id="13334">Etiketi düzenle</string>
   <string id="13335">Varsayılan yap</string>
   <string id="13336">Tuşu kaldır</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Serbest bırak</string>
   <string id="13341">Yeşil</string>
   <string id="13342">Turuncu</string>
@@ -1466,7 +1419,7 @@
   <string id="15275">%name% için haftalık parça çizelgesi</string>
   <string id="15276">%name% adlı kullanıcının komşularını Last.fm radyosunda dinle</string>
   <string id="15277">%name% adlı kullanıcının kişisel Last.fm radyosunu dinle</string>
-  <string id="15278">%name% adlı kullanıcının sevdiği parçaları Last.fm radyosunda dinle</string>
+  <string id="15278">%name% adlı kullanıcının mix Last.fm radyosunu dinle</string>
   <string id="15279">Last.fm' den liste alınıyor...</string>
   <string id="15280">Last.fm' den alınamıyor...</string>
   <string id="15281">Çıkmış albümlerimi bulmak için bir sanatçı adı girin</string>
@@ -1474,7 +1427,7 @@
   <string id="15283">%name% tarafından dinlenen parçalar</string>
   <string id="15284">%name% adlı kullanıcının önerdiklerini Last.fm radyosunda dinle</string>
   <string id="15285">%name% için en iyi etiketler</string>
-  <string id="15286">%name% adlı kullanıcının çalma listesini dinle</string>
+
   <string id="15287">Geçerli parçayı sevilen parçalara eklemek ister misiniz?</string>
   <string id="15288">Geçerli parçayı engellemek ister misiniz?</string>
   <string id="15289">Sevilen parçalara eklendi: '%s'.</string>
@@ -1537,11 +1490,6 @@
   <string id="16103">Seyredilmiş olarak işaretle</string>
   <string id="16104">Seyredilmemiş olarak işaretle</string>
   <string id="16105">Başlığı düzenle</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
 
   <string id="16200">İşlem durduruldu</string>
   <string id="16201">Kopyalanamadı</string>
@@ -1573,9 +1521,6 @@
   <string id="16319">DXVA</string>
 
   <string id="16400">Post-processing</string>
-  <string id="16401"></string>
-  <string id="16402"></string>
-  <string id="16403"></string>
 
   <string id="17500">Görüntü uyku zaman aşımı</string>
 
@@ -1760,8 +1705,7 @@
   <string id="20184">EXIF bilgilerini kullanarak resmi çevir</string>
   <string id="20185">TV programları için poster görünümünü kullan</string>
   <string id="20186">Lütfen bekleyin</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">İçerik ve yorum için otomatik kaydırmayı etkinleştir</string>
   <string id="20190">Özel</string>
   <string id="20191">Hata ayıklama günlüğünü etkinleştir</string>
@@ -1799,24 +1743,18 @@
   <string id="20310">Oynatırken LCD'yi karart</string>
   <string id="20311">Yerleşik veya bilinmiyor (korumalı)</string>
   <string id="20312">Duraklatılınca LCD'yi karart</string>
-  <string id="20313"></string>
+
   <string id="20314">Videolar - Kitaplık</string>
-  <string id="20315"></string>
+
   <string id="20316">Sırala: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">...Bölümü oynat</string>
   <string id="20325">Ayarları sıfırla</string>
   <string id="20326">Bu %s için olan ayarlama değerlerini</string>
   <string id="20327">varsayılana sıfırlayacak.</string>
   <string id="20328">Hedefe gözat</string>
 
-  <string id="20330">Arama için dosya adlarını kullan</string>
+  <string id="20330">Arama için klasör adlarını kullan</string>
   <string id="20331">Dosya</string>
   <string id="20332">Aramalarda dosya veya klasör adları kullanılsın mı?</string>
   <string id="20333">İçeriği ayarla</string>
@@ -2258,12 +2196,6 @@
   <string id="24089">Eklenti yeniden başlatmaları</string>
   <string id="24090">Eklenti yöneticisini kilitle</string>
 
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
-
   <string id="24096">Depodaki eklenti bozuk olarak işaretlenmiş.</string>
   <string id="24097">Sisteminizde devre dışı bırakmak ister misiniz?</string>
   <string id="24098">Bozuk</string>
@@ -2274,8 +2206,6 @@
   <string id="29800">Kitaplık Modu</string>
   <string id="29801">QWERTY klavye</string>
   <string id="29802">Passthrough Ses kullanımda</string>
-
-  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
