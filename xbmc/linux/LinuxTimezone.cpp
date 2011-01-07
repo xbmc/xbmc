@@ -155,6 +155,21 @@ void CLinuxTimezone::SetTimezone(CStdString timezoneName)
 CStdString CLinuxTimezone::GetOSConfiguredTimezone()
 {
    char timezoneName[255];
+
+   // try Slackware approach first
+   ssize_t rlrc = readlink("/etc/localtime-copied-from"
+                           , timezoneName, sizeof(timezoneName));
+   if (rlrc != -1)
+   {
+     timezoneName[rlrc] = '\0';
+
+     const char* p = strrchr(timezoneName+rlrc,'/');
+     if (p)
+       p = strrchr(p-1,'/')+1; 
+     return p;
+   }
+
+   // now try Debian approach
    timezoneName[0] = 0;
    FILE* fp = fopen("/etc/timezone", "r");
    if (fp)
