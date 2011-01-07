@@ -234,6 +234,7 @@ bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
     m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
     m_onlyAnimateToHome = true;
   }
   else
