@@ -528,9 +528,9 @@
 				<itemlayout height="102" width="380">
 					<control type="label">
 						<posx>380</posx>
-						<posy>21</posy>
+						<posy>0</posy>
 						<width>380</width>
-						<height>40</height>
+						<height>102</height>
 						<font>font50caps_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
@@ -543,9 +543,9 @@
 				<focusedlayout height="102" width="380">
 					<control type="label">
 						<posx>380</posx>
-						<posy>21</posy>
+						<posy>0</posy>
 						<width>380</width>
-						<height>40</height>
+						<height>102</height>
 						<font>font50caps_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
