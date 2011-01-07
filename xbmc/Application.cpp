@@ -519,7 +519,7 @@ bool CApplication::Create()
 #elif defined(_LINUX)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Linux (%s, %s). Built on %s (Git:%s)", g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
 #elif defined(_WIN32)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s. Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s. Built on %s (Git:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, GIT_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
@@ -1881,7 +1881,8 @@ void CApplication::RenderScreenSaver()
     return;
 
   if (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.black")
+      m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
+      m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow")
     return; // nothing to do
 
   float amount = 1.0f;

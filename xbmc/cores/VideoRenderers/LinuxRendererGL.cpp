@@ -616,8 +616,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 //since it only sets pixels to black that aren't going to be overwritten by the video
 void CLinuxRendererGL::DrawBlackBars()
 {
-  const CRect& view = g_graphicsContext.GetViewWindow();
-
   glColor4f(m_clearColour, m_clearColour, m_clearColour, 1.0f);
   glDisable(GL_BLEND);
   glBegin(GL_QUADS);
@@ -625,19 +623,19 @@ void CLinuxRendererGL::DrawBlackBars()
   //top quad
   if (m_destRect.y1 > 0.0)
   {
-    glVertex4f(0.0,          0.0,           0.0, 1.0);
-    glVertex4f(view.Width(), 0.0,           0.0, 1.0);
-    glVertex4f(view.Width(), m_destRect.y1, 0.0, 1.0);
-    glVertex4f(0.0,          m_destRect.y1, 0.0, 1.0);
+    glVertex4f(0.0,                          0.0,           0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), 0.0,           0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_destRect.y1, 0.0, 1.0);
+    glVertex4f(0.0,                          m_destRect.y1, 0.0, 1.0);
   }
 
   //bottom quad
-  if (m_destRect.y2 < view.Height())
+  if (m_destRect.y2 < g_graphicsContext.GetHeight())
   {
-    glVertex4f(0.0,          m_destRect.y2, 0.0, 1.0);
-    glVertex4f(view.Width(), m_destRect.y2, 0.0, 1.0);
-    glVertex4f(view.Width(), view.Height(), 0.0, 1.0);
-    glVertex4f(0.0,          view.Height(), 0.0, 1.0);
+    glVertex4f(0.0,                          m_destRect.y2,                 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), m_destRect.y2,                 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0, 1.0);
+    glVertex4f(0.0,                          g_graphicsContext.GetHeight(), 0.0, 1.0);
   }
 
   //left quad
@@ -650,12 +648,12 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   //right quad
-  if (m_destRect.x2 < view.Width())
+  if (m_destRect.x2 < g_graphicsContext.GetWidth())
   {
-    glVertex4f(m_destRect.x2, m_destRect.y1, 0.0, 1.0);
-    glVertex4f(view.Width(),  m_destRect.y1, 0.0, 1.0);
-    glVertex4f(view.Width(),  m_destRect.y2, 0.0, 1.0);
-    glVertex4f(m_destRect.x2, m_destRect.y2, 0.0, 1.0);
+    glVertex4f(m_destRect.x2,                 m_destRect.y1, 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(),  m_destRect.y1, 0.0, 1.0);
+    glVertex4f(g_graphicsContext.GetWidth(),  m_destRect.y2, 0.0, 1.0);
+    glVertex4f(m_destRect.x2,                 m_destRect.y2, 0.0, 1.0);
   }
 
   glEnd();

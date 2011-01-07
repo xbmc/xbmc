@@ -767,7 +767,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<animation effect="zoom" start="65" end="65" center="380,51" time="0" condition="true">Conditional</animation>
+						<animation effect="zoom" start="75" end="75" center="380,51" time="0" condition="true">Conditional</animation>
 						<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus | Control.HasFocus(9002)">conditional</animation>
 					</control>
 				</itemlayout>
@@ -781,8 +781,8 @@
 						<textcolor>white</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
-						<animation effect="zoom" start="65" end="100" center="380,51" time="200">Focus</animation>
-						<animation effect="zoom" start="100" end="65" center="380,51" time="200">UnFocus</animation>
+						<animation effect="zoom" start="75" end="100" center="380,51" time="200">Focus</animation>
+						<animation effect="zoom" start="100" end="75" center="380,51" time="200">UnFocus</animation>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</focusedlayout>
@@ -803,19 +803,19 @@
 						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton)</visible>
 						<visible>Skin.HasSetting(ShowWeatherFanart) + !IsEmpty(Skin.String(WeatherFanartDir))</visible>
 					</item>
+					<item id="1">
+						<label>0</label>
+						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+						<icon>special://skin/backgrounds/programs.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+					</item>
 					<item id="4">
 						<label>1</label>
 						<onclick>ActivateWindow(Pictures)</onclick>
 						<icon>special://skin/backgrounds/pictures.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
-					</item>
-					<item id="3">
-						<label>2</label>
-						<onclick>ActivateWindow(Music)</onclick>
-						<icon>special://skin/backgrounds/music.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
 					<item id="2">
 						<label>3</label>
@@ -852,12 +852,12 @@
 						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
 						<visible>Skin.HasSetting(HomeMenuNoTVShowsButton) + Library.HasContent(TVShows)</visible>
 					</item>
-					<item id="1">
-						<label>0</label>
-						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
-						<icon>special://skin/backgrounds/programs.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+					<item id="3">
+						<label>2</label>
+						<onclick>ActivateWindow(Music)</onclick>
+						<icon>special://skin/backgrounds/music.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
 					<item id="5">
 						<label>13000</label>

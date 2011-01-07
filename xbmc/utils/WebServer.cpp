@@ -146,13 +146,53 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   }
 
 #ifdef HAS_WEB_INTERFACE
+  AddonPtr addon;
+  CStdString addonPath;
+  bool useDefaultWebInterface = true;
+  if (strURL.Left(8).Equals("/addons/") || (strURL == "/addons"))
+  {
+    CStdStringArray components;
+    CUtil::Tokenize(strURL,components,"/");
+    if (components.size() > 1)
+    {
+      CAddonMgr::Get().GetAddon(components.at(1),addon);
+      if (addon)
+      {
+        size_t pos;
+        pos = strURL.find('/', 8); // /addons/ = 8 characters +1 to start behind the last slash
+        if (pos != CStdString::npos)
+          strURL = strURL.substr(pos);
+        else // missing trailing slash
+          return CreateRedirect(connection, originalURL += "/");
+
+        useDefaultWebInterface = false;
+        addonPath = addon->Path();
+        if (addon->Type() != ADDON_WEB_INTERFACE) // No need to append /htdocs for web interfaces
+          addonPath = CUtil::AddFileToFolder(addonPath, "/htdocs/");
+      }
+    }
+    else
+    {
+      if (strURL.length() < 8) // missing trailing slash
+        return CreateRedirect(connection, originalURL += "/");
+      else
+        return CreateAddonsListResponse(connection);
+    }
+  }
+
   if (strURL.Equals("/"))
     strURL.Format("/%s", DEFAULT_PAGE);
 
-  AddonPtr addon;
-  CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE,addon);
+  if (useDefaultWebInterface)
+  {
+    CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE,addon);
+    if (addon)
+      addonPath = addon->Path();
+  }
+
   if (addon)
-    strURL = CUtil::AddFileToFolder(addon->Path(),strURL);
+    strURL = CUtil::AddFileToFolder(addonPath,strURL);
+
   if (CDirectory::Exists(strURL))
   {
     if (strURL.Right(1).Equals("/"))
@@ -327,6 +367,26 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
 int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size)
 {
   struct MHD_Response *response = MHD_create_response_from_data (size, data, MHD_NO, MHD_NO);
+  int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
+  MHD_destroy_response (response);
+  return ret;
+}
+
+int CWebServer::CreateAddonsListResponse(struct MHD_Connection *connection)
+{
+  CStdString responseData = "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n";
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
+  IVECADDONS addons_it;
+  for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
+    responseData += "<li><a href=/addons/"+ (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
+
+  responseData += "</ul>\n</body></html>";
+
+  struct MHD_Response *response = MHD_create_response_from_data (responseData.length(), (void *)responseData.c_str(), MHD_NO, MHD_YES);
+  if (!response)
+    return MHD_NO;
+
   int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
   MHD_destroy_response (response);
   return ret;

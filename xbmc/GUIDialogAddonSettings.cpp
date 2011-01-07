@@ -757,7 +757,7 @@ void CGUIDialogAddonSettings::CreateControls()
         }
 
         CStdString option = setting->Attribute("option");
-        int iType;
+        int iType=0;
 
         if (option.size() == 0 || option.CompareNoCase("float") == 0)
           iType = SPIN_CONTROL_TYPE_FLOAT;
