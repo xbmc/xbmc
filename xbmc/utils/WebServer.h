@@ -93,6 +93,7 @@ private:
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
+  static int CreateAddonsListResponse(struct MHD_Connection *connection);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static void StringToBase64(const char *input, CStdString &output);
