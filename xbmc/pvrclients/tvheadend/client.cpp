@@ -482,6 +482,31 @@ PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
   return HTSPData->AddTimer(timerinfo);
 }
 
+PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo) 
+{ 
+  if(!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->UpdateTimer(timerinfo);
+}
+
+PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname) 
+{ 
+  if(!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  // The new name is already in the timerinfo.title, so we don't need it
+  return HTSPData->UpdateTimer(timerinfo);
+}
+
+PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) 
+{ 
+  if(!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->RenameRecording(recinfo, newname);
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
@@ -492,14 +517,11 @@ PVR_ERROR RenameChannel(unsigned int number, const char *newname) { return PVR_E
 PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool HaveCutmarks() { return false; }
 PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR StartCut() { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool SwapLiveTVSecondaryStream() { return false; }
 bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo) { return false; }
 void CloseSecondaryStream() {}
