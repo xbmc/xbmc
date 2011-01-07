@@ -115,7 +115,7 @@ public:
   virtual bool CommitTransaction();
   void EmptyCache();
   void Clean();
-  int  Cleanup(CGUIDialogProgress *pDlgProgress);
+  int  Cleanup(CGUIDialogProgress *pDlgProgress=NULL);
   void DeleteAlbumInfo();
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
