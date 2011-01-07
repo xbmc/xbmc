@@ -536,7 +536,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
-						<animation effect="zoom" start="65" end="65" center="380,51" time="0" condition="true">Conditional</animation>
+						<animation effect="zoom" start="75" end="75" center="380,51" time="0" condition="true">Conditional</animation>
 						<animation effect="fade" start="100" end="30" time="200" condition="Window.IsVisible(1113) | ControlGroup(9001).HasFocus | ControlGroup(10).HasFocus | Control.HasFocus(9002)">conditional</animation>
 					</control>
 				</itemlayout>
@@ -550,8 +550,8 @@
 						<textcolor>white</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
-						<animation effect="zoom" start="65" end="100" center="380,51" time="200">Focus</animation>
-						<animation effect="zoom" start="100" end="65" center="380,51" time="200">UnFocus</animation>
+						<animation effect="zoom" start="75" end="100" center="380,51" time="200">Focus</animation>
+						<animation effect="zoom" start="100" end="75" center="380,51" time="200">UnFocus</animation>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</focusedlayout>
