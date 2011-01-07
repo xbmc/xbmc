@@ -92,7 +92,7 @@ bool CPVRDatabase::CreateTables()
         ");\n"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iChannelNumber_bIsRadio on channels(iChannelNumber, bIsRadio);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_idClient on channels(idClient);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_iClientId on channels(iClientId);\n");
     m_pDS->exec("CREATE INDEX idx_channels_iChannelNumber on channels(iChannelNumber);\n");
     m_pDS->exec("CREATE INDEX idx_channels_iLastWatched on channels(iLastWatched);\n");
     m_pDS->exec("CREATE INDEX idx_channels_bIsRadio on channels(bIsRadio);\n");
@@ -200,8 +200,13 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epg(iStartTime)\n");
     m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epg(iEndTime)\n");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'LastEPGScan'", __FUNCTION__);
-    m_pDS->exec("CREATE TABLE LastEPGScan (idScan integer primary key, ScanTime datetime)\n");
+    // TODO keep separate value per epg table collection
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'lastepgscan'", __FUNCTION__);
+    m_pDS->exec("CREATE TABLE lastepgscan ("
+          "idEpg integer primary key, "
+          "iLastScan integer"
+        ")\n"
+    );
 
     bReturn = true;
   }
@@ -249,7 +254,7 @@ bool CPVRDatabase::EraseClientChannels(long iClientId)
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from client '%li' from the database",
       __FUNCTION__, iClientId);
 
-  CStdString strWhereClause = FormatSQL("idClient = %u", iClientId);
+  CStdString strWhereClause = FormatSQL("iClientId = %u", iClientId);
   return DeleteValues("channels", strWhereClause);
 }
 
@@ -272,7 +277,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
         "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, idClient, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -284,7 +289,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
         "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, idClient, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel) "
         "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
@@ -345,7 +350,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
         channel->m_bIsVirtual              = m_pDS->fv("bIsVirtual").get_asBool();
         channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
-        channel->m_iClientId               = m_pDS->fv("idClient").get_asInt();
+        channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
         channel->m_iClientChannelNumber    = m_pDS->fv("iClientChannelNumber").get_asInt();
         channel->m_strInputFormat          = m_pDS->fv("sInputFormat").get_asString();
         channel->m_strStreamURL            = m_pDS->fv("sStreamURL").get_asString();
@@ -702,7 +707,7 @@ bool CPVRDatabase::EraseEpg()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
-  if (DeleteValues("epg") && DeleteValues("LastEPGScan"))
+  if (DeleteValues("epg") && DeleteValues("lastepgscan"))
   {
     lastScanTime.SetValid(false);
     return true;
@@ -814,6 +819,7 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
       while (!m_pDS->eof())
       {
         int iBroadcastUid = m_pDS->fv("iBroadcastUid").get_asInt();
+        CPVREpgInfoTag newTag(iBroadcastUid);
 
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
@@ -828,7 +834,6 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
         CDateTime firstAired(iFirstAired);
         newTag.SetFirstAired(firstAired);
 
-        CPVREpgInfoTag newTag(iBroadcastUid);
         newTag.SetBroadcastId    (m_pDS->fv("idBroadcast").get_asInt());
         newTag.SetTitle          (m_pDS->fv("sTitle").get_asString().c_str());
         newTag.SetPlotOutline    (m_pDS->fv("sPlotOutline").get_asString().c_str());
@@ -841,8 +846,7 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
         newTag.SetEpisodeNum     (m_pDS->fv("sEpisodeId").get_asString().c_str());
         newTag.SetEpisodePart    (m_pDS->fv("sEpisodePart").get_asString().c_str());
         newTag.SetEpisodeName    (m_pDS->fv("sEpisodeName").get_asString().c_str());
-
-        // TODO add series
+        newTag.SetSeriesNum      (m_pDS->fv("sSeriesId").get_asString().c_str());
 
         epg->UpdateEntry(newTag, false);
         m_pDS->next();
@@ -904,16 +908,16 @@ CDateTime CPVRDatabase::GetLastEpgScanTime()
   if (lastScanTime.IsValid())
     return lastScanTime;
 
-  CStdString strValue = GetSingleValue("LastEPGScan", "ScanTime");
+  CStdString strValue = GetSingleValue("lastepgscan", "iLastScan", "idEpg = 0");
 
   if (strValue.IsEmpty())
     return -1;
 
-  CDateTime lastTime;
-  lastTime.SetFromDBDateTime(strValue);
-  lastScanTime = lastTime;
+  time_t iLastScan = atoi(strValue.c_str());
+  CDateTime lastScan(iLastScan);
+  lastScanTime = lastScan;
 
-  return lastTime;
+  return lastScan;
 }
 
 bool CPVRDatabase::UpdateLastEpgScanTime(void)
@@ -924,8 +928,10 @@ bool CPVRDatabase::UpdateLastEpgScanTime(void)
   lastScanTime = now;
 
   bool bReturn = true;
-  CStdString strQuery = FormatSQL("REPLACE INTO LastEPGScan (ScanTime) VALUES ('%s')\n",
-      now.GetAsDBDateTime().c_str());
+  time_t iLastScan;
+  now.GetAsTime(iLastScan);
+  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (0, %u)\n",
+      iLastScan);
 
   bReturn = ExecuteQuery(strQuery);
 
