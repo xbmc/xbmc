@@ -5,7 +5,7 @@ w32api-3.15-1-mingw32-dev.tar.lzma				http://downloads.sourceforge.net/project/m
 gcc-core-4.5.0-1-mingw32-bin.tar.lzma			http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
 gcc-c++-4.5.0-1-mingw32-bin.tar.lzma			http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
 libstdc++-4.5.0-1-mingw32-dll-6.tar.lzma		http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
-binutils-2.20.51-1-mingw32-bin.tar.lzma			http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.20.51/
+binutils-2.21-2-mingw32-bin.tar.lzma			http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.21/
 yasm-1.1.0-win32.exe							http://www.tortall.net/projects/yasm/releases/
 dlfcn-win32-static-r19.tar.bz2					http://dlfcn-win32.googlecode.com/files/
 libexpat-2.0.1-1-mingw32-dev.tar.gz				http://downloads.sourceforge.net/project/mingw/MinGW/expat/expat-2.0.1-1/
