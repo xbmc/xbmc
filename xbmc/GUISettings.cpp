@@ -524,6 +524,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
   AddBool(vdl, "videolibrary.actorthumbs", 20402, true);
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddBool(NULL, "videolibrary.flattenmoviesets", 22002, false);
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(vdl, "videolibrary.sep3");
