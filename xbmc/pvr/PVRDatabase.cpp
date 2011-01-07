@@ -91,12 +91,12 @@ bool CPVRDatabase::CreateTables()
           "iEncryptionSystem    integer"
         ");\n"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_unique_iChannelNumber on channels(iChannelNumber, bIsRadio);\n");
-    m_pDS->exec("CREATE INDEX idx_idClient on channels(idClient);\n");
-    m_pDS->exec("CREATE INDEX idx_iChannelNumber on channels(iChannelNumber);\n");
-    m_pDS->exec("CREATE INDEX idx_iLastWatched on channels(iLastWatched);\n");
-    m_pDS->exec("CREATE INDEX idx_bIsRadio on channels(bIsRadio);\n");
-    m_pDS->exec("CREATE INDEX idx_bIsHidden on channels(bIsHidden);\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iChannelNumber_bIsRadio on channels(iChannelNumber, bIsRadio);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_idClient on channels(idClient);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_iChannelNumber on channels(iChannelNumber);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_iLastWatched on channels(iLastWatched);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_bIsRadio on channels(bIsRadio);\n");
+    m_pDS->exec("CREATE INDEX idx_channels_bIsHidden on channels(bIsHidden);\n");
 
     // TODO use a mapping table so multiple backends per channel can be implemented
     //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
@@ -123,7 +123,7 @@ bool CPVRDatabase::CreateTables()
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelgroups'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE channelgroups ("
-          "idGroup   integer primary key,"
+          "idGroup    integer primary key,"
           "bIsRadio   bool, "
           "sName      text,"
           "iSortOrder integer"
@@ -171,34 +171,34 @@ bool CPVRDatabase::CreateTables()
         ");\n"
     );
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'EpgData'", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'epg'", __FUNCTION__);
     m_pDS->exec(
-        "CREATE TABLE EpgData ("
-          "BroadcastId integer primary key, "
-          "BroadcastUid integer, "
-          "ChannelId integer, "
-          "Title text, "
-          "PlotOutline text, "
-          "Plot text, "
-          "StartTime datetime, "
-          "EndTime datetime, "
-          "GenreType integer, "
-          "GenreSubType integer, "
-          "FirstAired datetime, "
-          "ParentalRating integer, "
-          "StarRating integer, "
-          "Notify bool, "
-          "SeriesId text, "
-          "EpisodeId text, "
-          "EpisodePart text, "
-          "EpisodeName text"
+        "CREATE TABLE epg ("
+          "idBroadcast     integer primary key, "
+          "iBroadcastUid   integer, "
+          "idChannel       integer, "
+          "sTitle          text, "
+          "sPlotOutline    text, "
+          "sPlot           text, "
+          "iStartTime      integer, "
+          "iEndTime        integer, "
+          "iGenreType      integer, "
+          "iGenreSubType   integer, "
+          "iFirstAired     integer, "
+          "iParentalRating integer, "
+          "iStarRating     integer, "
+          "bNotify         bool, "
+          "sSeriesId       text, "
+          "sEpisodeId      text, "
+          "sEpisodePart    text, "
+          "sEpisodeName    text"
         ")\n"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX ix_EpgUniqueStartTime on EpgData(ChannelId, StartTime desc)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_EpgBroadcastUid on EpgData(BroadcastUid)\n");
-    m_pDS->exec("CREATE INDEX ix_EpgChannelId on EpgData(ChannelId)\n");
-    m_pDS->exec("CREATE INDEX ix_EpgStartTime on EpgData(StartTime)\n");
-    m_pDS->exec("CREATE INDEX ix_EpgEndTime on EpgData(EndTime)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idChannel_iStartTime on epg(idChannel, iStartTime desc)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid)\n");
+    m_pDS->exec("CREATE INDEX idx_epg_idChannel on epg(idChannel)\n");
+    m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epg(iStartTime)\n");
+    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epg(iEndTime)\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'LastEPGScan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE LastEPGScan (idScan integer primary key, ScanTime datetime)\n");
@@ -702,7 +702,7 @@ bool CPVRDatabase::EraseEpg()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
-  if (DeleteValues("EpgData") && DeleteValues("LastEPGScan"))
+  if (DeleteValues("epg") && DeleteValues("LastEPGScan"))
   {
     lastScanTime.SetValid(false);
     return true;
@@ -728,20 +728,30 @@ bool CPVRDatabase::EraseEpgForChannel(const CPVRChannel &channel, const CDateTim
   strWhereClause = FormatSQL("ChannelId = %u", channel.ChannelID());
 
   if (start != NULL)
-    strWhereClause.append(FormatSQL(" AND StartTime < %u", start.GetAsDBDateTime().c_str()).c_str());
+  {
+    time_t iStartTime;
+    start.GetAsTime(iStartTime);
+    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
+  }
 
   if (end != NULL)
-    strWhereClause.append(FormatSQL(" AND EndTime > %u", end.GetAsDBDateTime().c_str()).c_str());
+  {
+    time_t iEndTime;
+    end.GetAsTime(iEndTime);
+    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
+  }
 
-  return DeleteValues("EpgData", strWhereClause);
+  return DeleteValues("epg", strWhereClause);
 }
 
 bool CPVRDatabase::EraseOldEpgEntries()
 {
+  time_t iYesterday;
   CDateTime yesterday = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
-  CStdString strWhereClause = FormatSQL("EndTime < '%s'", yesterday.GetAsDBDateTime().c_str());
+  yesterday.GetAsTime(iYesterday);
+  CStdString strWhereClause = FormatSQL("iEndTime < %u", iYesterday);
 
-  return DeleteValues("EpgData", strWhereClause);
+  return DeleteValues("epg", strWhereClause);
 }
 
 bool CPVRDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
@@ -756,11 +766,11 @@ bool CPVRDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
   CStdString strWhereClause;
 
   if (tag.BroadcastId() > 0)
-    strWhereClause = FormatSQL("BroadcastId = %u", tag.BroadcastId());
+    strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
   else
-    strWhereClause = FormatSQL("BroadcastUid = %u", tag.UniqueBroadcastID());
+    strWhereClause = FormatSQL("iBroadcastUid = %u", tag.UniqueBroadcastID());
 
-  return DeleteValues("EpgData", strWhereClause);
+  return DeleteValues("epg", strWhereClause);
 }
 
 
@@ -776,16 +786,24 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
   }
 
   CStdString strWhereClause;
-  strWhereClause = FormatSQL("ChannelId = %u", channel->ChannelID());
+  strWhereClause = FormatSQL("idChannel = %u", channel->ChannelID());
 
   if (start != NULL)
-    strWhereClause.append(FormatSQL(" AND StartTime < %u", start.GetAsDBDateTime().c_str()).c_str());
+  {
+    time_t iStartTime;
+    start.GetAsTime(iStartTime);
+    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
+  }
 
   if (end != NULL)
-    strWhereClause.append(FormatSQL(" AND EndTime > %u", end.GetAsDBDateTime().c_str()).c_str());
+  {
+    time_t iEndTime;
+    end.GetAsTime(iEndTime);
+    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
+  }
 
   CStdString strQuery;
-  strQuery.Format("SELECT * FROM EpgData WHERE %s ORDER BY StartTime ASC\n", strWhereClause.c_str());
+  strQuery.Format("SELECT * FROM epg WHERE %s ORDER BY iStartTime ASC\n", strWhereClause.c_str());
 
   int iNumRows = ResultQuery(strQuery);
 
@@ -795,29 +813,36 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
     {
       while (!m_pDS->eof())
       {
-        int iBroadcastUid =          m_pDS->fv("BroadcastUid").get_asInt();
+        int iBroadcastUid =          m_pDS->fv("iBroadcastUid").get_asInt();
 
-        CDateTime startTime, endTime, firstAired;
-        startTime.SetFromDBDateTime (m_pDS->fv("StartTime").get_asString());
-        endTime.SetFromDBDateTime   (m_pDS->fv("EndTime").get_asString());
-        firstAired.SetFromDBDateTime(m_pDS->fv("FirstAired").get_asString());
+        time_t iStartTime, iEndTime, iFirstAired;
+        iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
+        CDateTime startTime(iStartTime);
+
+        iEndTime = (time_t) m_pDS->fv("iEndTime").get_asInt();
+        CDateTime endTime(iEndTime);
+
+        iFirstAired = (time_t) m_pDS->fv("iFirstAired").get_asInt();
+        CDateTime firstAired(iFirstAired);
 
         CPVREpgInfoTag newTag(iBroadcastUid);
-        newTag.SetBroadcastId       (m_pDS->fv("BroadcastId").get_asInt());
-        newTag.SetTitle             (m_pDS->fv("Title").get_asString().c_str());
-        newTag.SetPlotOutline       (m_pDS->fv("PlotOutline").get_asString().c_str());
-        newTag.SetPlot              (m_pDS->fv("Plot").get_asString().c_str());
+        newTag.SetBroadcastId       (m_pDS->fv("idBroadcast").get_asInt());
+        newTag.SetTitle             (m_pDS->fv("sTitle").get_asString().c_str());
+        newTag.SetPlotOutline       (m_pDS->fv("sPlotOutline").get_asString().c_str());
+        newTag.SetPlot              (m_pDS->fv("sPlot").get_asString().c_str());
         newTag.SetStart             (startTime);
         newTag.SetEnd               (endTime);
-        newTag.SetGenre             (m_pDS->fv("GenreType").get_asInt(),
-                                     m_pDS->fv("GenreSubType").get_asInt());
+        newTag.SetGenre             (m_pDS->fv("iGenreType").get_asInt(),
+                                     m_pDS->fv("iGenreSubType").get_asInt());
         newTag.SetFirstAired        (firstAired);
-        newTag.SetParentalRating    (m_pDS->fv("ParentalRating").get_asInt());
-        newTag.SetStarRating        (m_pDS->fv("StarRating").get_asInt());
-        newTag.SetNotify            (m_pDS->fv("Notify").get_asBool());
-        newTag.SetEpisodeNum        (m_pDS->fv("EpisodeId").get_asString().c_str());
-        newTag.SetEpisodePart       (m_pDS->fv("EpisodePart").get_asString().c_str());
-        newTag.SetEpisodeName       (m_pDS->fv("EpisodeName").get_asString().c_str());
+        newTag.SetParentalRating    (m_pDS->fv("iParentalRating").get_asInt());
+        newTag.SetStarRating        (m_pDS->fv("iStarRating").get_asInt());
+        newTag.SetNotify            (m_pDS->fv("bNotify").get_asBool());
+        newTag.SetEpisodeNum        (m_pDS->fv("sEpisodeId").get_asString().c_str());
+        newTag.SetEpisodePart       (m_pDS->fv("sEpisodePart").get_asString().c_str());
+        newTag.SetEpisodeName       (m_pDS->fv("sEpisodeName").get_asString().c_str());
+
+        // TODO add series
 
         epg->UpdateEntry(newTag, false);
         m_pDS->next();
@@ -834,38 +859,44 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
 
 CDateTime CPVRDatabase::GetEpgDataStart(long iChannelId /* = -1 */)
 {
-  CDateTime firstProgramme;
+  time_t iFirstProgramme;
   CStdString strWhereClause;
 
   if (iChannelId > 0)
-    strWhereClause = FormatSQL("ChannelId = '%u'", iChannelId);
+    strWhereClause = FormatSQL("idChannel = '%u'", iChannelId);
 
-  CStdString strReturn = GetSingleValue("EpgData", "StartTime", strWhereClause, "StartTime ASC");
+  CStdString strReturn = GetSingleValue("epg", "iStartTime", strWhereClause, "iStartTime ASC");
   if (!strReturn.IsEmpty())
-    firstProgramme.SetFromDBDateTime(strReturn);
+  {
+    iFirstProgramme = atoi(strReturn);
+    CDateTime firstProgramme(iFirstProgramme);
 
-  if (!firstProgramme.IsValid())
-    return CDateTime::GetCurrentDateTime();
-  else
-    return firstProgramme;
+    if (firstProgramme.IsValid())
+      return firstProgramme;
+  }
+
+  return CDateTime::GetCurrentDateTime();
 }
 
 CDateTime CPVRDatabase::GetEpgDataEnd(long iChannelId /* = -1 */)
 {
-  CDateTime lastProgramme;
+  time_t iLastProgramme;
   CStdString strWhereClause;
 
   if (iChannelId > 0)
-    strWhereClause = FormatSQL("ChannelId = '%u'", iChannelId);
+    strWhereClause = FormatSQL("idChannel = '%u'", iChannelId);
 
-  CStdString strReturn = GetSingleValue("EpgData", "EndTime", strWhereClause, "EndTime DESC");
+  CStdString strReturn = GetSingleValue("epg", "iEndTime", strWhereClause, "iEndTime DESC");
   if (!strReturn.IsEmpty())
-    lastProgramme.SetFromDBDateTime(strReturn);
+  {
+    iLastProgramme = atoi(strReturn);
+    CDateTime lastProgramme(iLastProgramme);
 
-  if (!lastProgramme.IsValid())
-    return CDateTime::GetCurrentDateTime();
-  else
-    return lastProgramme;
+    if (lastProgramme.IsValid())
+      return lastProgramme;
+  }
+
+  return CDateTime::GetCurrentDateTime();
 }
 
 CDateTime CPVRDatabase::GetLastEpgScanTime()
@@ -912,12 +943,17 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
     return bReturn;
   }
 
+  time_t iStartTime, iEndTime, iFirstAired;
+  tag.Start().GetAsTime(iStartTime);
+  tag.End().GetAsTime(iEndTime);
+  tag.FirstAired().GetAsTime(iFirstAired);
+
   int iBroadcastId = tag.BroadcastId();
   if (iBroadcastId)
   {
-    CStdString strWhereClause = FormatSQL("(BroadcastUid = '%u' OR StartTime = '%s') AND ChannelId = '%u'",
-        tag.UniqueBroadcastID(), tag.Start().GetAsDBDateTime().c_str(), tag.ChannelTag()->ChannelID());
-    CStdString strValue = GetSingleValue("EpgData", "BroadcastId", strWhereClause);
+    CStdString strWhereClause = FormatSQL("(iBroadcastUid = '%u' OR iStartTime = %u) AND idChannel = '%u'",
+        tag.UniqueBroadcastID(), iStartTime, tag.ChannelTag()->ChannelID());
+    CStdString strValue = GetSingleValue("epg", "BroadcastId", strWhereClause);
 
     if (!strValue.IsEmpty())
       iBroadcastId = atoi(strValue);
@@ -927,25 +963,25 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
 
   if (iBroadcastId < 0)
   {
-    strQuery = FormatSQL("INSERT INTO EpgData (ChannelId, StartTime, "
-        "EndTime, Title, PlotOutline, Plot, GenreType, GenreSubType, "
-        "FirstAired, ParentalRating, StarRating, Notify, SeriesId, "
-        "EpisodeId, EpisodePart, EpisodeName, BroadcastUid) "
-        "VALUES (%i, '%s', '%s', '%s', '%s', '%s', %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s', '%s', %i)\n",
-        tag.ChannelTag()->ChannelID(), tag.Start().GetAsDBDateTime().c_str(), tag.End().GetAsDBDateTime().c_str(),
+    strQuery = FormatSQL("INSERT INTO epg (idChannel, iStartTime, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
+        "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
+        "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i)\n",
+        tag.ChannelTag()->ChannelID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
-        tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID());
   }
   else
   {
-    strQuery = FormatSQL("REPLACE INTO EpgData (ChannelId, StartTime, "
-        "EndTime, Title, PlotOutline, Plot, GenreType, GenreSubType, "
-        "FirstAired, ParentalRating, StarRating, Notify, SeriesId, "
-        "EpisodeId, EpisodePart, EpisodeName, BroadcastUid, BroadcastId) "
-        "VALUES (%i, '%s', '%s', '%s', '%s', '%s', %i, %i, '%s', %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i)\n",
-        tag.ChannelTag()->ChannelID(), tag.Start().GetAsDBDateTime().c_str(), tag.End().GetAsDBDateTime().c_str(),
+    strQuery = FormatSQL("REPLACE INTO epg (idChannel, iStartTime, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
+        "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
+        "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i)\n",
+        tag.ChannelTag()->ChannelID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
