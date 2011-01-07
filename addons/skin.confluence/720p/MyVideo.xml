@@ -4,20 +4,9 @@
 	<views>50,51,550,560,500,501,508,505</views>
 	<controls>
 		<include>CommonVideoBackground</include>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(VideoFilesFanart) | Control.IsVisible(508)</visible>
-			<include>Window_OpenClose_Animation</include>		
-		</control>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -171,24 +160,6 @@
 						<textwidth>170</textwidth>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>346</label>
-					</control>
-					<control type="label" id="200">
-						<width>220</width>
-						<height>45</height>
-						<font>font12caps</font>
-						<label>14018</label>
-						<textcolor>dialogheader</textcolor>
-						<align>center</align>
-						<aligny>center</aligny>
-					</control>
-					<control type="radiobutton" id="201">
-						<description>Toggle Fanart</description>
-						<textwidth>170</textwidth>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>31307</label>
-						<onclick>Skin.ToggleSetting(VideoFilesFanart)</onclick>
-						<selected>Skin.HasSetting(VideoFilesFanart)</selected>
-						<visible>!Control.IsVisible(508)</visible>
 					</control>
 				</control>
 			</control>

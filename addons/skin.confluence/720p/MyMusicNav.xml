@@ -4,29 +4,6 @@
 	<views>50,500,550,509,506,511,512,513</views>
 	<controls>
 		<include>CommonMusicBackground</include>
-		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(MusicLibraryFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture background="true">$INFO[Fanart.Image]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(MusicLibraryFanart) + !IsEmpty(Fanart.Image)</visible>
-			</control>
-		</control>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>		
@@ -188,14 +165,7 @@
 						<textcolor>dialogheader</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-					</control>
-					<control type="radiobutton" id="201">
-						<description>Toggle Fanart</description>
-						<textwidth>170</textwidth>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>31307</label>
-						<onclick>Skin.ToggleSetting(MusicLibraryFanart)</onclick>
-						<selected>Skin.HasSetting(MusicLibraryFanart)</selected>
+						<visible>Control.IsVisible(512) + Container.Content(Artists)</visible>
 					</control>
 					<control type="radiobutton" id="202">
 						<description>Toggle Fanart</description>

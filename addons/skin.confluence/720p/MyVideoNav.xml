@@ -4,57 +4,9 @@
 	<views>50,500,550,560,501,508,504,503,505,511</views>
 	<controls>
 		<include>CommonVideoBackground</include>
-		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(VideoLibraryMovieFanart) | Control.IsVisible(508)</visible>
-				<visible>Container.Content(Movies)</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(VideoLibraryTVFanart)</visible>
-				<visible>Container.Content(TVShows) | [Container.Content(Episodes) + stringcompare(Container.FolderPath,videodb://5/)]</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<info>Fanart.Image</info>
-				<texture background="true">$INFO[Fanart.Image]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(VideoLibraryTVFanart)</visible>
-				<visible>Container.Content(Seasons) | [Container.Content(Episodes) + !stringcompare(Container.FolderPath,videodb://5/)]</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1280</width>
-				<height>720</height>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-				<include>backgroundfade</include>
-				<fadetime>FanartCrossfadeTime</fadetime>
-				<visible>!Skin.HasSetting(VideoLibraryMusicVideoFanart)</visible>
-				<visible>Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums)</visible>
-			</control>
-		</control>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -254,34 +206,7 @@
 						<textcolor>dialogheader</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<visible>Control.IsVisible(201) | Control.IsVisible(202) | Control.IsVisible(203) | Control.IsVisible(204) | Control.IsVisible(205)</visible>
-					</control>
-					<control type="radiobutton" id="201">
-						<description>Toggle MoviesFanart</description>
-						<textwidth>170</textwidth>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>31307</label>
-						<onclick>Skin.ToggleSetting(VideoLibraryMovieFanart)</onclick>
-						<selected>Skin.HasSetting(VideoLibraryMovieFanart)</selected>
-						<visible>Container.Content(Movies) + !Control.IsVisible(508)</visible>
-					</control>
-					<control type="radiobutton" id="202">
-						<description>Toggle TVShow Fanart</description>
-						<textwidth>170</textwidth>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>31307</label>
-						<onclick>Skin.ToggleSetting(VideoLibraryTVFanart)</onclick>
-						<selected>Skin.HasSetting(VideoLibraryTVFanart)</selected>
-						<visible>Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
-					</control>
-					<control type="radiobutton" id="203">
-						<description>Toggle MusicVideo Fanart</description>
-						<textwidth>170</textwidth>
-						<include>ButtonMediaSubCommonValues</include>
-						<label>31307</label>
-						<onclick>Skin.ToggleSetting(VideoLibraryMusicVideoFanart)</onclick>
-						<selected>Skin.HasSetting(VideoLibraryMusicVideoFanart)</selected>
-						<visible>Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums)</visible>
+						<visible>Control.IsVisible(204) | Control.IsVisible(205)</visible>
 					</control>
 					<control type="radiobutton" id="204">
 						<description>Toggle Fanart</description>
