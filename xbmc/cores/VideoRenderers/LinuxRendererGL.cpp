@@ -154,12 +154,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
   m_context = NULL;
-
-#ifdef HAVE_LIBVDPAU
-  m_StrictBinding = g_guiSettings.GetBool("videoplayer.strictbinding");
-#endif
-
-  m_pboused = false;
+  m_rgbPbo = 0;
 
   m_dllAvUtil = new DllAvUtil;
   m_dllAvCodec = new DllAvCodec;
@@ -172,10 +167,18 @@ CLinuxRendererGL::~CLinuxRendererGL()
   for (int i = 0; i < NUM_BUFFERS; i++)
     CloseHandle(m_eventTexturesDone[i]);
 
-  if (m_rgbBuffer != NULL) {
+  if (m_rgbPbo)
+  {
+    glDeleteBuffersARB(1, &m_rgbPbo);
+    m_rgbPbo = 0;
+    m_rgbBuffer = NULL;
+  }
+  else
+  {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+
   if (m_context)
   {
     m_dllSwScale->sws_freeContext(m_context);
@@ -256,6 +259,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_nonLinStretch    = false;
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
+
+  m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo");
+
   return true;
 }
 
@@ -393,13 +399,20 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
-                                , int stride, void* data )
+                                , int stride, void* data, GLuint* pbo/*= NULL*/ )
 {
   if(plane.flipindex == flipindex)
     return;
 
-  if(plane.pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, plane.pbo);
+  //if no pbo given, use the plane pbo
+  GLuint currPbo;
+  if (pbo)
+    currPbo = *pbo;
+  else
+    currPbo = plane.pbo;
+
+  if(currPbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, currPbo);
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
@@ -420,7 +433,7 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
-  if(plane.pbo)
+  if(currPbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
   plane.flipindex = flipindex;
@@ -432,14 +445,6 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
-#ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU))
-  {
-    SetEvent(m_eventTexturesDone[source]);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    return;
-  }
-#endif
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -571,11 +576,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_iLastRenderBuffer = index;
 
   if (clear)
-  {
-    glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0,0,0,0);
-  }
+    DrawBlackBars();
 
   if (alpha<255)
   {
@@ -609,6 +610,55 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glFlush();
 
   g_graphicsContext.EndPaint();
+}
+
+//draw black bars around the video quad, this is more efficient than glClear()
+//since it only sets pixels to black that aren't going to be overwritten by the video
+void CLinuxRendererGL::DrawBlackBars()
+{
+  const CRect& view = g_graphicsContext.GetViewWindow();
+
+  glColor4f(m_clearColour, m_clearColour, m_clearColour, 1.0f);
+  glDisable(GL_BLEND);
+  glBegin(GL_QUADS);
+
+  //top quad
+  if (m_destRect.y1 > 0.0)
+  {
+    glVertex4f(0.0,          0.0,           0.0, 1.0);
+    glVertex4f(view.Width(), 0.0,           0.0, 1.0);
+    glVertex4f(view.Width(), m_destRect.y1, 0.0, 1.0);
+    glVertex4f(0.0,          m_destRect.y1, 0.0, 1.0);
+  }
+
+  //bottom quad
+  if (m_destRect.y2 < view.Height())
+  {
+    glVertex4f(0.0,          m_destRect.y2, 0.0, 1.0);
+    glVertex4f(view.Width(), m_destRect.y2, 0.0, 1.0);
+    glVertex4f(view.Width(), view.Height(), 0.0, 1.0);
+    glVertex4f(0.0,          view.Height(), 0.0, 1.0);
+  }
+
+  //left quad
+  if (m_destRect.x1 > 0.0)
+  {
+    glVertex4f(0.0,           m_destRect.y1, 0.0, 1.0);
+    glVertex4f(m_destRect.x1, m_destRect.y1, 0.0, 1.0);
+    glVertex4f(m_destRect.x1, m_destRect.y2, 0.0, 1.0);
+    glVertex4f(0.0,           m_destRect.y2, 0.0, 1.0);
+  }
+
+  //right quad
+  if (m_destRect.x2 < view.Width())
+  {
+    glVertex4f(m_destRect.x2, m_destRect.y1, 0.0, 1.0);
+    glVertex4f(view.Width(),  m_destRect.y1, 0.0, 1.0);
+    glVertex4f(view.Width(),  m_destRect.y2, 0.0, 1.0);
+    glVertex4f(m_destRect.x2, m_destRect.y2, 0.0, 1.0);
+  }
+
+  glEnd();
 }
 
 void CLinuxRendererGL::FlipPage(int source)
@@ -714,8 +764,6 @@ unsigned int CLinuxRendererGL::PreInit()
   #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
     m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
-
-  m_pboused = g_guiSettings.GetBool("videoplayer.usepbo");
 
   return true;
 }
@@ -960,14 +1008,14 @@ void CLinuxRendererGL::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
-  if (glewIsSupported("GL_ARB_pixel_buffer_object")
-  &&  g_guiSettings.GetBool("videoplayer.usepbo") && !(m_renderMethod & RENDER_SW))
+  
+  if (m_pboSupported && !(m_renderMethod & RENDER_SW))
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-    m_pboused = true;
+    m_pboUsed = true;
   }
   else
-    m_pboused = false;
+    m_pboUsed = false;
 
   // Now that we now the render method, setup texture function handlers
   if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
@@ -982,6 +1030,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGL::UploadYUV422PackedTexture;
     m_textureCreate = &CLinuxRendererGL::CreateYUV422PackedTexture;
     m_textureDelete = &CLinuxRendererGL::DeleteYUV422PackedTexture;
+  }
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
+  {
+    m_textureUpload = &CLinuxRendererGL::UploadVDPAUTexture;
+    m_textureCreate = &CLinuxRendererGL::CreateVDPAUTexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteVDPAUTexture;
   }
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
   {
@@ -1007,12 +1061,19 @@ void CLinuxRendererGL::UnInit()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
-  if (m_rgbBuffer != NULL)
+  if (m_rgbPbo)
+  {
+    glDeleteBuffersARB(1, &m_rgbPbo);
+    m_rgbPbo = 0;
+    m_rgbBuffer = NULL;
+  }
+  else
   {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
+
   if (m_context)
   {
     m_dllSwScale->sws_freeContext(m_context);
@@ -1336,7 +1397,11 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    m_fbo.SetFiltering(GL_TEXTURE_2D, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    m_fbo.SetFiltering(GL_TEXTURE_2D, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1351,7 +1416,10 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     m_pVideoFilterShader->Enable();
   }
   else
-    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
+  {
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    m_fbo.SetFiltering(GL_TEXTURE_2D, filter);
+  }
 
   VerifyGLState();
 
@@ -1388,22 +1456,17 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 void CLinuxRendererGL::RenderVDPAU(int index, int field)
 {
 #ifdef HAVE_LIBVDPAU
-  CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+  YUVPLANE &plane = m_buffers[index].fields[field][0];
+  CVDPAU   *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+
   if (!vdpau)
     return;
 
   glEnable(m_textureTarget);
-
-  if (!vdpau->m_glPixmapTexture)
-  {
-    glGenTextures (1, &(vdpau->m_glPixmapTexture));
-    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)vdpau->m_glPixmapTexture);
-  }
-
-  glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
-  vdpau->BindPixmap();
-
   glActiveTextureARB(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, plane.id);
+
+  vdpau->BindPixmap();
 
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -1411,8 +1474,12 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1428,8 +1495,9 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   else
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
   }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1452,14 +1520,11 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   glEnd();
   VerifyGLState();
-  if (m_StrictBinding)
-  {
-    glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
-    vdpau->ReleasePixmap();
-  }
 
   if (m_pVideoFilterShader)
     m_pVideoFilterShader->Disable();
+
+  vdpau->ReleasePixmap();
 
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
@@ -1500,8 +1565,12 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    GLint filter;
+    if (!m_pVideoFilterShader->GetTextureFilter(filter))
+      filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
@@ -1517,8 +1586,9 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
   }
   else
   {
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    GLint filter = m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR;
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
   }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1626,10 +1696,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-#ifdef HAVE_LIBVDPAU
-  SAFE_RELEASE(m_buffers[index].vdpau);
-#endif
-
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
   /* finish up all textures, and delete them */
@@ -1698,7 +1764,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(3, pbo);
@@ -1930,7 +1996,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(2, pbo);
@@ -2109,6 +2175,55 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
     }
   }
 }
+
+void CLinuxRendererGL::DeleteVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  YUVPLANE &plane = m_buffers[index].fields[0][0];
+
+  SAFE_RELEASE(m_buffers[index].vdpau);
+
+  if(plane.id && glIsTexture(plane.id))
+    glDeleteTextures(1, &plane.id);
+  plane.id = 0;
+#endif
+}
+
+bool CLinuxRendererGL::CreateVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
+
+  DeleteVDPAUTexture(index);
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
+
+  plane.pixpertex_x = 1;
+  plane.pixpertex_y = 1;
+
+  glGenTextures(1, &plane.id);
+
+  SetEvent(m_eventTexturesDone[index]);
+#endif
+  return true;
+}
+
+void CLinuxRendererGL::UploadVDPAUTexture(int index)
+{
+#ifdef HAVE_LIBVDPAU
+  SetEvent(m_eventTexturesDone[index]);
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
+#endif
+}
+
 
 void CLinuxRendererGL::DeleteVAAPITexture(int index)
 {
@@ -2385,7 +2500,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   im.planesize[2] = 0;
 
   bool pboSetup = false;
-  if (m_pboused)
+  if (m_pboUsed)
   {
     pboSetup = true;
     glGenBuffersARB(1, pbo);
@@ -2501,12 +2616,8 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 
 void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf)
 {
-  if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
-  {
-    delete [] m_rgbBuffer;
-    m_rgbBufferSize = m_sourceWidth * m_sourceHeight * 4;
-    m_rgbBuffer = new BYTE[m_rgbBufferSize];
-  }
+  if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
+    SetupRGBBuffer();
   else if(flipIndexPlane == flipIndexBuf)
     return; //conversion already done on the previous iteration
 
@@ -2550,23 +2661,32 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
     return;
   }
 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+  }
+
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
+
+  if (m_rgbPbo)
+  {
+    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    m_rgbBuffer = (BYTE*)PBO_OFFSET;
+  }
 }
 
 void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf)
 {
-  if(m_rgbBufferSize < m_sourceWidth * m_sourceHeight * 4)
-  {
-    delete [] m_rgbBuffer;
-    m_rgbBufferSize = m_sourceWidth*m_sourceHeight*4;
-    m_rgbBuffer = new BYTE[m_rgbBufferSize];
-  }
+  if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
+    SetupRGBBuffer();
   else if(flipIndexPlaneTop == flipIndexBuf && flipIndexPlaneBot == flipIndexBuf)
     return; //conversion already done on the previous iteration
 
@@ -2620,10 +2740,16 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     return;
   }
 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+  }
+
   m_context = m_dllSwScale->sws_getCachedContext(m_context,
                                                  im->width, im->height >> 1, srcFormat,
                                                  im->width, im->height >> 1, PIX_FMT_BGRA,
-                                                 SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                 SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   uint8_t *dstTop[]    = { m_rgbBuffer, 0, 0, 0 };
   uint8_t *dstBot[]    = { m_rgbBuffer + m_sourceWidth * m_sourceHeight * 2, 0, 0, 0 };
   int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
@@ -2632,6 +2758,50 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   //the bottom field is placed at the bottom of the rgb buffer
   m_dllSwScale->sws_scale(m_context, srcTop, srcStrideTop, 0, im->height >> 1, dstTop, dstStride);
   m_dllSwScale->sws_scale(m_context, srcBot, srcStrideBot, 0, im->height >> 1, dstBot, dstStride);
+
+  if (m_rgbPbo)
+  {
+    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    m_rgbBuffer = (BYTE*)PBO_OFFSET;
+  }
+}
+
+void CLinuxRendererGL::SetupRGBBuffer()
+{
+  m_rgbBufferSize = m_sourceWidth * m_sourceHeight * 4;
+
+  if (!m_rgbPbo)
+    delete [] m_rgbBuffer;
+
+  if (m_pboSupported)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+
+    if (!m_rgbPbo)
+      glGenBuffersARB(1, &m_rgbPbo);
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbBufferSize + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+    m_rgbBuffer = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+
+    if (!m_rgbBuffer)
+    {
+      CLog::Log(LOGWARNING,"GL: failed to set up pixel buffer object");
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glDeleteBuffersARB(1, &m_rgbPbo);
+      m_rgbPbo = 0;
+    }
+    else
+    {
+      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      m_rgbBuffer = (BYTE*)PBO_OFFSET;
+    }
+  }
+
+  if (!m_rgbPbo)
+    m_rgbBuffer = new BYTE[m_rgbBufferSize];
 }
 
 void CLinuxRendererGL::UploadRGBTexture(int source)
@@ -2710,17 +2880,26 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   {
     LoadPlane( fields[FIELD_TOP][0] , GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer );
+             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
 
     LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2);
+             , m_sourceWidth, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2, &m_rgbPbo );
   }
   else
   {
     LoadPlane( fields[FIELD_FULL][0], GL_BGRA, buf.flipindex
              , im->width, im->height
-             , m_sourceWidth, m_rgbBuffer );
+             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
+  }
+
+  //after using the pbo to upload, allocate a new buffer so we don't have to wait
+  //for the upload to finish when mapping the buffer 
+  if (m_rgbPbo)
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbPbo);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_rgbBufferSize + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
   }
 
   if (imaging==2)

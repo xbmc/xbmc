@@ -210,7 +210,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
             BYTE *pOutBuf = new BYTE[nWidth * nHeight * 4];
             struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight,
-                  PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                  PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
             uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2], 0 };
             int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2], 0 };
             uint8_t *dst[] = { pOutBuf, 0, 0, 0 };

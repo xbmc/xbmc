@@ -157,6 +157,7 @@ public:
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
+  void         DrawBlackBars();
 
   virtual void ManageTextures();
   int  NextYV12Texture();
@@ -178,6 +179,10 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
   
+  void UploadVDPAUTexture(int index);
+  void DeleteVDPAUTexture(int index);
+  bool CreateVDPAUTexture(int index);
+
   void UploadVAAPITexture(int index);
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
@@ -189,6 +194,7 @@ protected:
   void UploadRGBTexture(int index);
   void ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf);
   void ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf);
+  void SetupRGBBuffer();
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -213,7 +219,6 @@ protected:
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
-  bool m_StrictBinding;
 
   // Raw data used by renderer
   int m_currentField;
@@ -268,7 +273,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , int stride, void* data );
+                , int stride, void* data, GLuint* pbo = NULL );
 
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
@@ -285,13 +290,15 @@ protected:
   DllSwScale        *m_dllSwScale;
   BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int       m_rgbBufferSize;
+  GLuint             m_rgbPbo;
   struct SwsContext *m_context;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
-  bool m_pboused;
+  bool m_pboSupported;
+  bool m_pboUsed;
 
   bool  m_nonLinStretch;
   bool  m_nonLinStretchGui;

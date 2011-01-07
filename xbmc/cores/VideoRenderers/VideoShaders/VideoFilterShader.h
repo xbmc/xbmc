@@ -40,7 +40,7 @@ namespace Shaders {
     virtual void  SetWidth(int w)     { m_width  = w; m_stepX = w>0?1.0f/w:0; }
     virtual void  SetHeight(int h)    { m_height = h; m_stepY = h>0?1.0f/h:0; }
     virtual void  SetNonLinStretch(float stretch) { m_stretch = stretch; }
-    virtual GLint GetTextureFilter()  { return GL_NEAREST; }
+    virtual bool  GetTextureFilter(GLint& filter) { return false; }
 
   protected:
     int   m_width;
@@ -64,6 +64,8 @@ namespace Shaders {
     bool OnEnabled();
     void Free();
 
+    virtual bool GetTextureFilter(GLint& filter) { filter = GL_NEAREST; return true; }
+
   protected:
     // kernel textures
     GLuint m_kernelTex1;
@@ -82,7 +84,6 @@ namespace Shaders {
       StretchFilterShader();
       void  OnCompiledAndLinked();
       bool  OnEnabled();
-      GLint GetTextureFilter() { return GL_LINEAR; }
   };
 
 } // end namespace

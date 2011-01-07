@@ -66,6 +66,17 @@ extern "C" {
 #endif
 }
 
+inline int SwScaleCPUFlags()
+{
+#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
+  return SWS_CPU_CAPS_MMX;
+#elif defined(__powerpc__) || defined(__ppc__)
+  return SWS_CPU_CAPS_ALTIVEC;
+#else
+  return 0;
+#endif
+}
+
 class DllSwScaleInterface
 {
 public:

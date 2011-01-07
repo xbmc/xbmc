@@ -3273,8 +3273,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     for (int i=0;i<iSize;++i)
     {
       CStdString strPath2 = CUtil::AddFileToFolder(strLookInPaths[i],cdDir);
-      if (!HasSlashAtEnd(strPath2))
-        strPath2 += "/"; //Should work for both remote and local files
+      CUtil::AddSlashAtEnd(strPath2);
       bool pathAlreadyAdded = false;
       for (unsigned int i=0; i<strLookInPaths.size(); i++)
       {
@@ -3292,8 +3291,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   if (g_settings.iAdditionalSubtitleDirectoryChecked == 1)
   {
     strPath = g_guiSettings.GetString("subtitles.custompath");
-    if (!HasSlashAtEnd(strPath))
-      strPath += "/"; //Should work for both remote and local files
+    CUtil::AddSlashAtEnd(strPath);
     strLookInPaths.push_back(strPath);
   }
   

@@ -97,7 +97,6 @@ CVDPAU::CVDPAU()
   m_mixerstep  = 0;
 
   m_glPixmap = 0;
-  m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
   if (!glXBindTexImageEXT)
@@ -380,7 +379,6 @@ void CVDPAU::BindPixmap()
       }
     }
     
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
   }
   else CLog::Log(LOGERROR,"(VDPAU) BindPixmap called without valid pixmap");

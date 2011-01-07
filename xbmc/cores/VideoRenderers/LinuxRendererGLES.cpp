@@ -73,10 +73,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
-  m_upscalingWidth = 0;
-  m_upscalingHeight = 0;
-  memset(&m_imScaled, 0, sizeof(m_imScaled));
-  m_isSoftwareUpscaling = false;
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
@@ -100,14 +96,6 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   if (m_rgbBuffer != NULL) {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
-  }
-  for (int i=0; i<3; i++)
-  {
-    if (m_imScaled.plane[i])
-    {
-      delete [] m_imScaled.plane[i];
-      m_imScaled.plane[i] = 0;
-    }
   }
 
   if (m_pYUVShader)
@@ -161,8 +149,6 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
 
-  ChooseUpscalingMethod();
-
   m_bConfigured = true;
   m_bImageReady = false;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
@@ -175,84 +161,6 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
     m_buffers[i].image.flags = 0;
 
   m_iLastRenderBuffer = -1;
-  return true;
-}
-
-void CLinuxRendererGLES::ChooseUpscalingMethod()
-{
-  m_upscalingWidth  = m_destRect.Width();
-  m_upscalingHeight = m_destRect.Height();
-
-  int upscale = g_advancedSettings.m_videoHighQualityScaling;
-  
-  // See if we're a candiate for upscaling.
-  bool candidateForUpscaling = false;
-  if (upscale != SOFTWARE_UPSCALING_DISABLED && (int)m_sourceWidth < m_upscalingWidth && (int)m_sourceHeight < m_upscalingHeight)
-  {
-    CLog::Log(LOGWARNING, "Upscale: possible given resolution increase.");
-    candidateForUpscaling = true;
-  }
-
-  // Turn if off if we're told to upscale HD content and we're not always on.
-  if (upscale == SOFTWARE_UPSCALING_SD_CONTENT && (m_sourceHeight >= 720 || m_sourceWidth >= 1280))
-  {
-    CLog::Log(LOGWARNING, "Upscale: Disabled due to HD source.");
-    candidateForUpscaling = false;
-  }
-
-  if (candidateForUpscaling)
-  {
-    ESCALINGMETHOD ret = (ESCALINGMETHOD)g_advancedSettings.m_videoHighQualityScalingMethod;
-
-    // Make sure to override the default setting for the video
-    g_settings.m_currentVideoSettings.m_ScalingMethod = ret;
-
-    // Initialize software upscaling.
-    if (g_advancedSettings.m_videoHighQualityScalingMethod < 10) //non-hardware
-    {
-      InitializeSoftwareUpscaling();
-      CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
-    }
-  }
-}
-
-void CLinuxRendererGLES::InitializeSoftwareUpscaling()
-{
-  // Allocate a new destination image.
-  m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
-
-  // Free the old planes if they exist.
-  for (int i=0; i<3; i++)
-  {
-    if (m_imScaled.plane[i])
-    {
-      delete [] m_imScaled.plane[i];
-      m_imScaled.plane[i] = 0;
-    }
-  }
-
-  m_imScaled.stride[0] = ALIGN((m_upscalingWidth)   , 16);
-  m_imScaled.stride[1] = ALIGN((m_upscalingWidth>>1), 16);
-  m_imScaled.stride[2] = ALIGN((m_upscalingWidth>>1), 16);
-  m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
-  m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
-  m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
-  m_imScaled.width = m_upscalingWidth;
-  m_imScaled.height = m_upscalingHeight;
-  m_imScaled.flags = 0;
-}
-
-bool CLinuxRendererGLES::IsSoftwareUpscaling()
-{
-  // See if we should be performing software upscaling on this frame.
-  if (m_scalingMethod < VS_SCALINGMETHOD_BICUBIC_SOFTWARE ||
-       (m_currentField != FIELD_FULL &&
-        g_settings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE &&
-        g_settings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE))
-  {
-    return false;
-  }
-
   return true;
 }
 
@@ -335,12 +243,7 @@ void CLinuxRendererGLES::CalculateTextureSourceRects(int source, int num_planes)
     {
       YUVPLANE& p = fields[field][plane];
 
-      /* software upscaling is precropped */
-      if(IsSoftwareUpscaling())
-        p.rect.SetRect(0, 0, im->width, im->height);
-      else
-        p.rect = m_sourceRect;
-
+      p.rect = m_sourceRect;
       p.width  = im->width;
       p.height = im->height;
 
@@ -442,15 +345,6 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     return;
   }
 
-  // See if we need to recreate textures.
-  if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
-  {
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      (this->*m_textureCreate)(i);
-
-    im->flags = IMAGE_FLAG_READY;
-  }
-
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
@@ -471,32 +365,6 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     m_dllSwScale->sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale->sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
-  }
-  else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
-  {
-    // Perform the scaling.
-    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2], 0 };
-    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
-    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2], 0 };
-    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2], 0 };
-    int      algorithm   = 0;
-
-    switch (m_scalingMethod)
-    {
-    case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
-    case VS_SCALINGMETHOD_LANCZOS_SOFTWARE: algorithm = SWS_LANCZOS; break;
-    case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
-    default: break;
-    }
-
-    struct SwsContext *ctx = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                         m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
-                                                         algorithm, NULL, NULL, NULL);
-    m_dllSwScale->sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale->sws_freeContext(ctx);
-
-    im = &m_imScaled;
-    im->flags = IMAGE_FLAG_READY;
   }
 
   bool deinterlacing;
@@ -824,13 +692,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     break;
 
-  case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
-  case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
-  case VS_SCALINGMETHOD_SINC_SOFTWARE:
-    InitializeSoftwareUpscaling();
-    m_renderQuality = RQ_SINGLEPASS;
-    return;
-
   default:
     break;
   }
@@ -1007,10 +868,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
@@ -1118,10 +975,6 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 
   YV12Image &im     = m_buffers[index].image;
   YUVPLANES &planes = m_buffers[index].fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
 
   if (m_reloadShaders)
   {
@@ -1308,10 +1161,6 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
 
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
   glDisable(GL_DEPTH_TEST);
 
   // Y
@@ -1363,7 +1212,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const CRect rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
   CRect saveSize = m_destRect;
@@ -1432,9 +1281,6 @@ void CLinuxRendererGLES::DeleteYV12Texture(int index)
 
 bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
-  // Remember if we're software upscaling.
-  m_isSoftwareUpscaling = IsSoftwareUpscaling();
-
   /* since we also want the field textures, pitch must be texture aligned */
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -1476,16 +1322,8 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
 
-    if(m_isSoftwareUpscaling)
-    {
-      planes[0].texwidth  = m_upscalingWidth;
-      planes[0].texheight = m_upscalingHeight >> fieldshift;
-    }
-    else
-    {
-      planes[0].texwidth  = im.width;
-      planes[0].texheight = im.height >> fieldshift;
-    }
+    planes[0].texwidth  = im.width;
+    planes[0].texheight = im.height >> fieldshift;
 
     if (m_renderMethod & RENDER_SW)
     {
@@ -1616,14 +1454,6 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
   if(method == VS_SCALINGMETHOD_NEAREST
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
-
-  if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
-  {
-    if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
-    || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
-    || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
-      return true;
-  }
 
   return false;
 }
