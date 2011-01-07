@@ -237,6 +237,7 @@
 		<eight>8</eight>
 		<nine>9</nine>
 		<zero>0</zero>
+		<subtitle>Language</subtitle>
 	</remote>
 	<remote device="Antec_Veris_RM200">
 		<stop>KEY_STOP</stop>
