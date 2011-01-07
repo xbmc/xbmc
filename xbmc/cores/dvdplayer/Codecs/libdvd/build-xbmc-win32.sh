@@ -5,6 +5,7 @@ cd libdvdcss
 echo "***** Cleaning libdvdcss *****"
 make distclean
 echo "***** Building libdvdcss *****"
+sh bootstrap
 ./configure \
       CFLAGS="-DNDEBUG" \
       --disable-doc \
