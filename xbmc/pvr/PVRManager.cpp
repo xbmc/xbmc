@@ -153,6 +153,7 @@ void CPVRManager::Start()
 void CPVRManager::Stop()
 {
   CLog::Log(LOGNOTICE, "PVR: PVRManager stopping");
+  PVREpgs.Stop();
   StopThread();
 
   for (CLIENTMAPITR itr = m_clients.begin(); itr != m_clients.end(); itr++)
@@ -965,7 +966,6 @@ void CPVRManager::ResetDatabase()
   }
   pDlgProgress->SetPercentage(10);
 
-  PVREpgs.Stop();
   Stop();
   pDlgProgress->SetPercentage(20);
 
