@@ -151,18 +151,6 @@
 			<include>Window_OpenClose_Animation</include>
 		</control>
 	</include>
-	<include name="CommonScriptBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/scripts.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-	</include>
 	<include name="CommonWeatherBackground">
 		<control type="multiimage">
 			<posx>0</posx>
