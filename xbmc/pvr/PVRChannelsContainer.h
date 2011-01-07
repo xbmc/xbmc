@@ -24,6 +24,10 @@
 
 class CPVRChannelsContainer : public std::vector<CPVRChannels *>
 {
+private:
+  CFileItem       *m_currentPlayingChannel; /* the channel that is currently playing */
+  CRITICAL_SECTION m_criticalSection;       /* critical section for channel switching */
+
 public:
   CPVRChannelsContainer(void);
   virtual ~CPVRChannelsContainer(void);

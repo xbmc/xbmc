@@ -24,6 +24,9 @@
 
 CPVRChannelsContainer::CPVRChannelsContainer()
 {
+  m_currentPlayingChannel = NULL;
+  InitializeCriticalSection(&m_criticalSection);
+
   CPVRChannels *channelsTV = new CPVRChannels(false);
   push_back(channelsTV);
 
@@ -34,6 +37,7 @@ CPVRChannelsContainer::CPVRChannelsContainer()
 CPVRChannelsContainer::~CPVRChannelsContainer()
 {
   erase(begin(), end());
+  DeleteCriticalSection(&m_criticalSection);
 }
 
 const CPVRChannels *CPVRChannelsContainer::Get(int iChannelsId)
