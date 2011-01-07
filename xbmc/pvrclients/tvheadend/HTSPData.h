@@ -48,6 +48,7 @@ public:
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
   PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
 
   int GetNumTimers();
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
