@@ -138,6 +138,7 @@
 					<description>View As button</description>
 					<posx>0</posx>
 					<posy>0</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 					<onleft>50</onleft>
@@ -170,6 +171,7 @@
 					<description>Slideshow</description>
 					<posx>0</posx>
 					<posy>80</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>108</label>
 					<onleft>50</onleft>
@@ -181,6 +183,7 @@
 					<description>Recersive Slideshow</description>
 					<posx>0</posx>
 					<posy>120</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>361</label>
 					<onleft>50</onleft>

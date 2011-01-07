@@ -115,6 +115,7 @@
 					<description>View As button</description>
 					<posx>0</posx>
 					<posy>0</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 					<onleft>50</onleft>

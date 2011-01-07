@@ -105,6 +105,7 @@
 					<description>View As button</description>
 					<posx>0</posx>
 					<posy>0</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 					<onleft>50</onleft>
@@ -127,6 +128,7 @@
 					<description>Repeat button</description>
 					<posx>0</posx>
 					<posy>80</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>-</label>
 					<onleft>50</onleft>
@@ -139,6 +141,7 @@
 					<posx>0</posx>
 					<posy>120</posy>
 					<label>190</label>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
@@ -151,6 +154,7 @@
 					<posy>160</posy>
 					<label>192</label>
 					<onclick>ReplaceWindow(video)</onclick>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>

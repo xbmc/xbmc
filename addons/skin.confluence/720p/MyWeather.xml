@@ -812,6 +812,7 @@
 					<description>Refresh button</description>
 					<posx>0</posx>
 					<posy>40</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>103</label>
 					<onleft>50</onleft>
@@ -827,6 +828,7 @@
 					<onclick>SetFocus(50)</onclick>
 					<onclick>XBMC.RunScript($INFO[Skin.String(WeatherScript_Path)])</onclick>
 					<onclick>SetFocus(50)</onclick>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<visible>Skin.HasSetting(WeatherScript_Enable) + !IsEmpty(Skin.String(WeatherScript_Label))</visible>
 					<onleft>50</onleft>
@@ -840,6 +842,7 @@
 					<posy>120</posy>
 					<label>5</label>
 					<onclick>ActivateWindow(MyWeatherSettings)</onclick>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>

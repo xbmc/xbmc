@@ -251,7 +251,7 @@
 		<height>40</height>
 		<width>250</width>
 		<textoffsetx>10</textoffsetx>
-		<textwidth>235</textwidth>
+		<textwidth>200</textwidth>
 		<aligny>center</aligny>
 		<font>font13caps</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
