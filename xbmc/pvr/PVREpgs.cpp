@@ -109,14 +109,6 @@ bool CPVREpgs::Stop()
 
   g_guiSettings.RemoveObserver(this);
 
-  if (!WaitForThreadExit(5000))
-  {
-    CLog::Log(LOGERROR, "PVREpgs - %s - EPG thread didn't exit after 5 seconds. Not clearing the EPG",
-        __FUNCTION__);
-
-    return false;
-  }
-
   return true;
 }
 
