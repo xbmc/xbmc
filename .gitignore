@@ -261,8 +261,10 @@ config.log
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
+/project/BuildDependencies/downloads2
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
+/project/BuildDependencies/msys
 /project/BuildDependencies/scripts/tmp
 
 # /project/VS2008Express
