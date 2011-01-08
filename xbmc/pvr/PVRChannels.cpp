@@ -283,47 +283,83 @@ void CPVRChannels::SortByChannelNumber(void)
 
 CPVRChannel *CPVRChannels::GetByClient(int iClientChannelNumber, int iClientID)
 {
+  CPVRChannel *channel;
+
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRChannel *channel = at(ptr);
-    if (channel->ClientChannelNumber() == iClientChannelNumber &&
-        channel->ClientID() == iClientID)
-      return channel;
+    CPVRChannel *checkChannel = at(ptr);
+    if (checkChannel->ClientChannelNumber() == iClientChannelNumber &&
+        checkChannel->ClientID() == iClientID)
+    {
+      channel = checkChannel;
+      break;
+    }
   }
-  return NULL;
+
+  return channel;
 }
 
 CPVRChannel *CPVRChannels::GetByChannelID(long iChannelID)
 {
+  CPVRChannel *channel;
+
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRChannel *channel = at(ptr);
-    if (channel->ChannelID() == iChannelID)
-      return channel;
+    if (at(ptr)->ChannelID() == iChannelID)
+    {
+      channel = at(ptr);
+      break;
+    }
   }
-  return NULL;
+
+  return channel;
 }
 
 CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
 {
+  CPVRChannel *channel = NULL;
+
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRChannel *channel = at(ptr);
-    if (channel->UniqueID() == iUniqueID)
-      return channel;
+    if (at(ptr)->UniqueID() == iUniqueID)
+    {
+      channel = at(ptr);
+      break;
+    }
   }
-  return NULL;
+
+  return channel;
 }
 
 CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber)
 {
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  CPVRChannel *channel = NULL;
+
+  if (iChannelNumber < size())
   {
-    CPVRChannel *channel = at(ptr);
-    if (channel->ChannelNumber() == iChannelNumber)
-      return channel;
+    SortByChannelNumber();
+    channel = at(iChannelNumber);
   }
-  return NULL;
+
+  return channel;
+}
+
+CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber)
+{
+  int iGetChannel = iChannelNumber + 1;
+  if (iGetChannel >= size())
+    iGetChannel = 0;
+
+  return GetByChannelNumber(iGetChannel);
+}
+
+CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber)
+{
+  int iGetChannel = iChannelNumber - 1;
+  if (iGetChannel < 0)
+    iGetChannel = size() - 1;
+
+  return GetByChannelNumber(iGetChannel);
 }
 
 CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)

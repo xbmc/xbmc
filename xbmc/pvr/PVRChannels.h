@@ -155,6 +155,8 @@ public:
    * Get a channel given it's channel number.
    */
   CPVRChannel *GetByChannelNumber(int iChannelNumber);
+  CPVRChannel *GetByChannelNumberUp(int iChannelNumber);
+  CPVRChannel *GetByChannelNumberDown(int iChannelNumber);
 
   /**
    * Get a channel given it's index in this container.
