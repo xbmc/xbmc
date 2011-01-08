@@ -219,18 +219,6 @@
 						<onclick>Skin.ToggleSetting(Show_SlideShow_Paused)</onclick>
 						<selected>!Skin.HasSetting(Show_SlideShow_Paused)</selected>
 					</control>
-					<control type="radiobutton" id="103">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31105</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
-						<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
-					</control>
 					<control type="radiobutton" id="112">
 						<width>750</width>
 						<height>40</height>

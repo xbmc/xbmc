@@ -449,6 +449,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
+    else if (strTest.Equals("system.profilecount")) ret = SYSTEM_PROFILECOUNT;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
     else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
@@ -1561,6 +1562,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case SYSTEM_PROFILENAME:
     strLabel = g_settings.GetCurrentProfile().getName();
+    break;
+  case SYSTEM_PROFILECOUNT:
+    strLabel.Format("%i", g_settings.GetNumProfiles());
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");

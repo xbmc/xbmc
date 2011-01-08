@@ -4,7 +4,10 @@ then
 rm -r .libs
 fi
 
+if [ -f config.mak ]
+then
 make distclean
+fi
 
 OPTIONS="
 --enable-shared \
