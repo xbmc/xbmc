@@ -122,7 +122,7 @@
 					<pulseonselect>no</pulseonselect>
 					<font>-</font>
 					<label>$LOCALIZE[20126] $INFO[system.profilename]</label>
-					<visible>System.HasLoginScreen</visible>
+					<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
 					<visible>System.Loggedon</visible>
 				</control>
 				<control type="button" id="11">
@@ -230,7 +230,7 @@
 				<visible>ControlGroup(13).HasFocus</visible>
 				<include>VisibleFadeEffect</include>
 				<animation effect="slide" start="0,0" end="55,0" time="0" condition="System.HasLocks">Conditional</animation>
-				<animation effect="slide" start="0,0" end="55,0" time="0" condition="System.HasLoginScreen + System.LoggedOn">Conditional</animation>
+				<animation effect="slide" start="0,0" end="55,0" time="0" condition="[System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)] + System.LoggedOn">Conditional</animation>
 				<control type="image">
 					<description>Shutdown Arrow Up image</description>
 					<posx>0</posx>
