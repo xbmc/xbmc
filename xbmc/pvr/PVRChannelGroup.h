@@ -41,6 +41,13 @@ public:
   bool AddToGroup(CPVRChannel *channel);
   bool IsGroupMember(const CPVRChannel *channel);
 
+  /**
+   * Get a channel given it's channel number.
+   */
+  CPVRChannel *GetByChannelNumber(int iChannelNumber); // TODO
+  CPVRChannel *GetByChannelNumberUp(int iChannelNumber); // TODO
+  CPVRChannel *GetByChannelNumberDown(int iChannelNumber); // TODO
+
   long GroupID(void) const { return m_iGroupID; }
   void SetGroupID(long group) { m_iGroupID = group; }
   CStdString GroupName(void) const { return m_GroupName; }

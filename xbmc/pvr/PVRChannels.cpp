@@ -335,7 +335,7 @@ CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
   return channel;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber)
+CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move to channelgroup
 {
   CPVRChannel *channel = NULL;
 
@@ -348,7 +348,7 @@ CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber)
   return channel;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber)
+CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber) // TODO: move to channelgroup
 {
   int iGetChannel = iChannelNumber + 1;
   if (iGetChannel >= size())
@@ -357,7 +357,7 @@ CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber)
   return GetByChannelNumber(iGetChannel);
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber)
+CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber) // TODO: move to channelgroup
 {
   int iGetChannel = iChannelNumber - 1;
   if (iGetChannel < 0)
