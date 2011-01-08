@@ -118,7 +118,11 @@ void CPVREpg::Sort(void)
 
 void CPVREpg::Clear(void)
 {
-  clear();
+  for (int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    delete at(iTagPtr);
+  }
+  erase(begin(), end());
 }
 
 void CPVREpg::Cleanup(void)
