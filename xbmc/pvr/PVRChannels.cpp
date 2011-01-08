@@ -287,7 +287,7 @@ void CPVRChannels::SortByChannelNumber(void)
 
 CPVRChannel *CPVRChannels::GetByClient(int iClientChannelNumber, int iClientID)
 {
-  CPVRChannel *channel;
+  CPVRChannel *channel = NULL;
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
@@ -305,7 +305,7 @@ CPVRChannel *CPVRChannels::GetByClient(int iClientChannelNumber, int iClientID)
 
 CPVRChannel *CPVRChannels::GetByChannelID(long iChannelID)
 {
-  CPVRChannel *channel;
+  CPVRChannel *channel = NULL;
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
