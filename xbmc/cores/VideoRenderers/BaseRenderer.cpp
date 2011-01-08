@@ -21,6 +21,7 @@
 
 #include "system.h"
 
+#include <algorithm>
 #include "BaseRenderer.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -250,7 +251,7 @@ void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
   dest = m_destRect;
 }
 
-void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
+void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift)
 {
   // if view window is empty, set empty destination
   if(screenHeight == 0 || screenWidth == 0)
@@ -291,6 +292,20 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   // Centre the movie
   float posY = (screenHeight - newHeight) / 2;
   float posX = (screenWidth - newWidth) / 2;
+
+  // vertical shift range -1 to 1 shifts within the top and bottom black bars
+  // if there are no top and bottom black bars, this range does nothing
+  float blackBarSize = std::max((screenHeight - newHeight) / 2.0f, 0.0f);
+  posY += blackBarSize * std::max(std::min(verticalShift, 1.0f), -1.0f);
+
+  // vertical shift ranges -2 to -1 and 1 to 2 will shift the image out of the screen
+  // if vertical shift is -2 it will be completely shifted out the top,
+  // if it's 2 it will be completely shifted out the bottom
+  float shiftRange = std::min(newHeight, newHeight - (newHeight - screenHeight) / 2.0f);
+  if (verticalShift > 1.0f)
+    posY += shiftRange * (verticalShift - 1.0f);
+  else if (verticalShift < -1.0f)
+    posY += shiftRange * (verticalShift + 1.0f);
 
   m_destRect.x1 = (float)MathUtils::round_int(posX + offsetX);
   m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
@@ -390,7 +405,7 @@ void CBaseRenderer::ManageDisplay()
   m_sourceRect.x2 = (float)m_sourceWidth - g_settings.m_currentVideoSettings.m_CropRight;
   m_sourceRect.y2 = (float)m_sourceHeight - g_settings.m_currentVideoSettings.m_CropBottom;
 
-  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount);
+  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount, g_settings.m_fVerticalShift);
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)
@@ -410,6 +425,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
               g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL);
 
+  g_settings.m_fVerticalShift = 0.0f;
   g_settings.m_bNonLinStretch = false;
 
   if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM ||
@@ -489,6 +505,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
     g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
     g_settings.m_bNonLinStretch = g_settings.m_currentVideoSettings.m_CustomNonLinStretch;
+    g_settings.m_fVerticalShift = g_settings.m_currentVideoSettings.m_CustomVerticalShift;
   }
   else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
   {
@@ -499,4 +516,5 @@ void CBaseRenderer::SetViewMode(int viewMode)
   g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
   g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
   g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
+  g_settings.m_currentVideoSettings.m_CustomVerticalShift = g_settings.m_fVerticalShift;
 }
