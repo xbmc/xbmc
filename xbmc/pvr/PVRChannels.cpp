@@ -51,6 +51,11 @@ CPVRChannels::CPVRChannels(bool bRadio)
 
 CPVRChannels::~CPVRChannels(void)
 {
+  for (int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    delete at(iChannelPtr);
+  }
+
   erase(begin(), end());
 }
 
