@@ -72,7 +72,11 @@ void CPVREpgs::Clear(bool bClearDb /* = false */)
   }
 
   /* remove all EPG tables */
-  clear();
+  for (int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    delete at(iEpgPtr);
+  }
+  erase(begin(), end());
 
   /* clear the database entries */
   if (bClearDb)
