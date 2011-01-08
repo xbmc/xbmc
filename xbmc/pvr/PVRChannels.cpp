@@ -55,7 +55,6 @@ CPVRChannels::~CPVRChannels(void)
   {
     delete at(iChannelPtr);
   }
-
   erase(begin(), end());
 }
 
