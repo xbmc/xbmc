@@ -764,7 +764,7 @@ void CDVDInputStreamNavigator::OnBack()
 // we don't allow skipping in menu's cause it will remove menu overlays
 void CDVDInputStreamNavigator::OnNext()
 {
-  if (m_dvdnav && !IsInMenu())
+  if (m_dvdnav && !(IsInMenu() && GetTotalButtons() > 0))
   {
     m_dll.dvdnav_next_pg_search(m_dvdnav);
   }
@@ -773,7 +773,7 @@ void CDVDInputStreamNavigator::OnNext()
 // we don't allow skipping in menu's cause it will remove menu overlays
 void CDVDInputStreamNavigator::OnPrevious()
 {
-  if (m_dvdnav && !IsInMenu())
+  if (m_dvdnav && !(IsInMenu() && GetTotalButtons() > 0))
   {
     m_dll.dvdnav_prev_pg_search(m_dvdnav);
   }
@@ -1054,6 +1054,17 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
 {
+  if (!m_dvdnav)
+    return false;
+
+  // cannot allow to return true in case of buttons (overlays) because otherwise back in DVDPlayer FlushBuffers will remove menu overlays
+  // therefore we just skip the request in case there are buttons and return false
+  if (IsInMenu() && GetTotalButtons() > 0)
+  {
+    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons");
+    return false;
+  }
+
   bool enabled = IsSubtitleStreamEnabled();
   int audio    = GetActiveAudioStream();
   int subtitle = GetActiveSubtitleStream();
