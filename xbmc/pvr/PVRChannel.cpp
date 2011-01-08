@@ -26,6 +26,8 @@
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
 
+#include "PVRChannelGroups.h"
+#include "PVRChannelGroup.h"
 #include "PVRChannel.h"
 #include "PVREpgs.h"
 #include "PVREpg.h"
@@ -168,10 +170,24 @@ bool CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false
 
 bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 {
+  bool bRemoveFromOldGroup = true; // TODO support multiple groups and make this a parameter
   bool bReturn = false;
 
   if (m_iChannelGroupId != iChannelGroupId)
   {
+    CPVRChannelGroups *groups = (IsRadio() ? &PVRChannelGroupsRadio : &PVRChannelGroupsTV);
+
+    if (bRemoveFromOldGroup)
+    {
+      CPVRChannelGroup *oldGroup = groups->GetGroupById(m_iChannelGroupId);
+      if (oldGroup)
+        oldGroup->RemoveFromGroup(this);
+    }
+
+    CPVRChannelGroup *newGroup = groups->GetGroupById(iChannelGroupId);
+    if (newGroup)
+      newGroup->AddToGroup(this);
+
     /* update the group id */
     m_iChannelGroupId = iChannelGroupId;
     SetChanged();

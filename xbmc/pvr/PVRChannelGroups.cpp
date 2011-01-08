@@ -78,6 +78,25 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results)
   return size();
 }
 
+CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId)
+{
+  CPVRChannelGroup *group = NULL;
+
+  if (iGroupId == -1)
+    return group;
+
+  for (int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  {
+    if (at(iGroupPtr).GroupID() == iGroupId)
+    {
+      group = &at(iGroupPtr);
+      break;
+    }
+  }
+
+  return group;
+}
+
 int CPVRChannelGroups::GetFirstChannelForGroupID(int GroupId)
 {
   if (GroupId == -1)

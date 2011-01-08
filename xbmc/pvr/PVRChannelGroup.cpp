@@ -20,9 +20,61 @@
  */
 
 #include "PVRChannelGroup.h"
+#include "PVRChannel.h"
 
 CPVRChannelGroup::CPVRChannelGroup(void)
 {
   m_iGroupID = 0;
   m_GroupName = "";
+}
+
+CPVRChannelGroup::~CPVRChannelGroup(void)
+{
+  erase(begin(), end());
+}
+
+bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannel *channel)
+{
+  bool bReturn = false;
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (*channel == *at(iChannelPtr))
+    {
+      erase(begin() + iChannelPtr);
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
+}
+
+bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel)
+{
+  bool bReturn = false;
+
+  if (!IsGroupMember(channel))
+  {
+    push_back(channel);
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CPVRChannelGroup::IsGroupMember(const CPVRChannel *channel)
+{
+  bool bReturn = false;
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (*channel == *at(iChannelPtr))
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
 }

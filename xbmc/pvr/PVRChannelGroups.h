@@ -40,6 +40,7 @@ public:
   void Unload();
 
   int GetGroupList(CFileItemList* results);
+  CPVRChannelGroup *GetGroupById(int iGroupId);
   int GetFirstChannelForGroupID(int GroupId);
   int GetPrevGroupID(int current_group_id);
   int GetNextGroupID(int current_group_id);

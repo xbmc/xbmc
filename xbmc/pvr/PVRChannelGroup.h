@@ -26,7 +26,7 @@
 #include "FileItem.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
-class CPVRChannelGroup
+class CPVRChannelGroup : public std::vector<CPVRChannel *>
 {
 private:
   unsigned long m_iGroupID;
@@ -35,6 +35,11 @@ private:
 
 public:
   CPVRChannelGroup(void);
+  virtual ~CPVRChannelGroup(void);
+
+  bool RemoveFromGroup(const CPVRChannel *channel);
+  bool AddToGroup(CPVRChannel *channel);
+  bool IsGroupMember(const CPVRChannel *channel);
 
   long GroupID(void) const { return m_iGroupID; }
   void SetGroupID(long group) { m_iGroupID = group; }
