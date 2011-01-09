@@ -172,9 +172,11 @@ typedef int gid_t;
 #include <stddef.h>
 #include <process.h>
 #if defined(_MSC_VER) /* Microsoft C Compiler ONLY */
-/* Hack to suppress compiler warnings on FD_SET() & FD_CLR() */
 #pragma warning (push)
+/* Hack to suppress compiler warnings on FD_SET() & FD_CLR() */
 #pragma warning (disable:4142)
+/* Suppress compiler warnings about double definition of _WINSOCKAPI_ */
+#pragma warning (disable:4005)
 #endif
 /* prevent inclusion of wingdi.h */
 #define NOGDI
@@ -194,6 +196,9 @@ typedef char * caddr_t;
 #undef FD_OPEN
 #undef FD_READ
 #undef FD_WRITE
+
+#if (_MSC_VER < 1600)
+// Not yet defined in errno.h under VS2008
 #define EISCONN WSAEISCONN
 #define EINPROGRESS WSAEINPROGRESS
 #define EWOULDBLOCK WSAEWOULDBLOCK
@@ -208,6 +213,7 @@ typedef char * caddr_t;
 #define ENOTCONN WSAENOTCONN
 #define ENOBUFS WSAENOBUFS
 #define EOVERFLOW 2006
+#endif
 
 #undef h_errno
 #define h_errno errno /* we'll set it ourselves */
