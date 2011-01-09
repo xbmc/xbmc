@@ -197,7 +197,7 @@ char* CAddonHelpers_Addon::UnknownToUTF8(const char *sourceDest)
   return buffer;
 }
 
-char* CAddonHelpers_Addon::GetLocalizedString(const void* addonData, long dwCode)
+const char* CAddonHelpers_Addon::GetLocalizedString(const void* addonData, long dwCode)
 {
   CAddonHelpers* helper = (CAddonHelpers*) addonData;
   if (!helper)
@@ -218,7 +218,7 @@ char* CAddonHelpers_Addon::GetLocalizedString(const void* addonData, long dwCode
   return buffer;
 }
 
-char* CAddonHelpers_Addon::GetDVDMenuLanguage(const void* addonData)
+const char* CAddonHelpers_Addon::GetDVDMenuLanguage(const void* addonData)
 {
   CAddonHelpers* helper = (CAddonHelpers*) addonData;
   if (!helper)

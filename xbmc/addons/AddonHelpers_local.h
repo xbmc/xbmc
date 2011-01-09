@@ -29,8 +29,8 @@ typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, co
 typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
-typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
-typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
+typedef const char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
+typedef const char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
 
 typedef struct CB_AddOn
 {

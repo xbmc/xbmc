@@ -39,8 +39,8 @@ public:
   static void QueueNotification(void *addonData, const queue_msg_t type, const char *msg);
   static bool GetAddonSetting(void *addonData, const char* settingName, void *settingValue);
   static char* UnknownToUTF8(const char *sourceDest);
-  static char* GetLocalizedString(const void* addonData, long dwCode);
-  static char* GetDVDMenuLanguage(const void* addonData);
+  static const char* GetLocalizedString(const void* addonData, long dwCode);
+  static const char* GetDVDMenuLanguage(const void* addonData);
 
 private:
   CB_AddOnLib  *m_callbacks;

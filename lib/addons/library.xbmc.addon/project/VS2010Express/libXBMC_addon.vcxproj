@@ -79,6 +79,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\libXBMC_addon.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\libXBMC_addon.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

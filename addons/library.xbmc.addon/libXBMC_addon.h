@@ -106,7 +106,7 @@ public:
       dlsym(m_libXBMC_addon, "XBMC_log");
     if (Log == NULL)                { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    GetSetting         = (bool (*)(std::string settingName, void *settingValue))
+    GetSetting         = (bool (*)(const char* settingName, void *settingValue))
       dlsym(m_libXBMC_addon, "XBMC_get_setting");
     if (GetSetting == NULL)         { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -118,11 +118,11 @@ public:
       dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
     if (UnknownToUTF8 == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    GetLocalizedString = (std::string (*)(int dwCode))
+    GetLocalizedString = (const char* (*)(int dwCode))
       dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
     if (GetLocalizedString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    GetDVDMenuLanguage = (std::string (*)())
+    GetDVDMenuLanguage = (const char* (*)())
       dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
     if (GetDVDMenuLanguage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -130,11 +130,11 @@ public:
   }
 
   void (*Log)(const addon_log_t loglevel, const char *format, ... );
-  bool (*GetSetting)(std::string settingName, void *settingValue);
+  bool (*GetSetting)(const char* settingName, void *settingValue);
   void (*QueueNotification)(const queue_msg_t type, const char *format, ... );
   void (*UnknownToUTF8)(std::string &str);
-  std::string (*GetLocalizedString)(int dwCode);
-  std::string (*GetDVDMenuLanguage)();
+  const char* (*GetLocalizedString)(int dwCode);
+  const char* (*GetDVDMenuLanguage)();
 
 protected:
   int (*XBMC_register_me)(void *HANDLE);
