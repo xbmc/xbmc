@@ -1203,4 +1203,4 @@ config.log
 /xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
-/xbmc/win32/svn_rev.h
+/xbmc/win32/git_rev.h
