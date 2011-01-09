@@ -12,6 +12,7 @@ typedef struct {
 	char *name;
 	int  cur_level;
 	int  (*selector)(int plevel, int slevel);
+	void (*msg_callback)(int level, char *msg);
 } mvp_debug_ctx_t;
 
 /**
@@ -21,7 +22,7 @@ typedef struct {
  * \param l initial debug level for the subsystem
  * \param s custom selector function pointer (NULL is okay)
  */
-#define MVP_DEBUG_CTX_INIT(n,l,s) { n, l, s }
+#define MVP_DEBUG_CTX_INIT(n,l,s) { n, l, s, NULL }
 
 /**
  * Set the debug level to be used for the subsystem
@@ -47,13 +48,20 @@ mvp_dbg_setlevel(mvp_debug_ctx_t *ctx, int level)
 static inline void
 mvp_dbg(mvp_debug_ctx_t *ctx, int level, char *fmt, va_list ap)
 {
+	char msg[4096];
+	int len;
 	if (!ctx) {
 		return;
 	}
 	if ((ctx->selector && ctx->selector(level, ctx->cur_level)) ||
 	    (!ctx->selector && (level < ctx->cur_level))) {
-		fprintf(stderr, "(%s)", ctx->name);
-		vfprintf(stderr, fmt, ap);
+		len = snprintf(msg, sizeof(msg), "(%s)", ctx->name);
+		vsnprintf(msg + len, sizeof(msg)-len, fmt, ap);
+		if (ctx->msg_callback) {
+			ctx->msg_callback(level, msg);
+		} else {
+			fwrite(msg, strlen(msg), 1, stdout);
+		}
 	}
 }
 

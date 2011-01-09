@@ -372,6 +372,7 @@ CMythSession::CMythSession(const CURL& url)
   m_dll->Load();
   if (m_dll->IsLoaded())
   {
+    m_dll->set_dbg_msgcallback(&CMythSession::LogCMyth);
     if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
       m_dll->dbg_level(CMYTH_DBG_ALL);
     else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
@@ -581,4 +582,20 @@ cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
     m_all_recorded = m_dll->proglist_get_all_recorded(control);
   }
   return m_all_recorded;
+}
+
+void CMythSession::LogCMyth(int level, char *msg)
+{
+  int xbmc_lvl = -1;
+  switch (level)
+  {
+    case CMYTH_DBG_NONE:  break;
+    case CMYTH_DBG_ERROR: xbmc_lvl = LOGERROR;   break;
+    case CMYTH_DBG_WARN:  xbmc_lvl = LOGWARNING; break;
+    case CMYTH_DBG_INFO:  xbmc_lvl = LOGINFO;    break;
+    default:              xbmc_lvl = LOGDEBUG;   break;
+  }
+  if (xbmc_lvl >= 0) {
+    CLog::Log(xbmc_lvl, "%s", msg);
+  }
 }
