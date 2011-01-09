@@ -34,6 +34,11 @@
     <ClInclude Include="..\..\windows\dirent.h" />
     <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\lib\libhts\Win32\libhts_2010.vcxproj">
+      <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}</ProjectGuid>
     <RootNamespace>XBMC_tvheadend</RootNamespace>
@@ -90,7 +95,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;$(SolutionDir)libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -109,7 +114,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;$(SolutionDir)libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
