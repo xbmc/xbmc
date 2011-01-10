@@ -95,6 +95,8 @@
   FUNCTION(Py_AddPendingCall)
   FUNCTION(PyList_GetItem)
   FUNCTION(PyList_Size)
+  FUNCTION(PyList_New)
+  FUNCTION(PyList_Append)
   FUNCTION(_PyObject_New)
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)

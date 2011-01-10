@@ -98,6 +98,8 @@ extern "C"
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
+  FUNCTION(PyList_New)
+  FUNCTION(PyList_Append)
 #if Py_UNICODE_SIZE == 2
   FUNCTION(PyUnicodeUCS2_AsUTF8String)
   FUNCTION(PyUnicodeUCS2_DecodeUTF8)
@@ -202,6 +204,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
       dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_Append)) &&         
 #ifdef _LINUX
       dll.ResolveExport(DLL_FUNCTION(Py_GetPath)) &&
 #endif

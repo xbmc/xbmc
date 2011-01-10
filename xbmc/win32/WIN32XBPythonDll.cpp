@@ -185,6 +185,8 @@ extern "C"
   FUNCTION8(Py_AddPendingCall)
   FUNCTION8(PyList_GetItem)
   FUNCTION4(PyList_Size)
+  FUNCTION4(PyList_New)
+  FUNCTION8(PyList_Append)
   FUNCTION4(_PyObject_New)
   FUNCTION4(PyLong_AsLong)
   FUNCTION4(PyLong_AsLongLong)
@@ -334,7 +336,9 @@ extern "C"
       dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallMethod)) &&
       dll.ResolveExport(DLL_FUNCTION(PyList_GetItem)) &&
       dll.ResolveExport(DLL_FUNCTION(PyList_Size)) &&
-      dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_Append)) &&
+      dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&               
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
