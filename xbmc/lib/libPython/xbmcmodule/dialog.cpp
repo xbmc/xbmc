@@ -181,8 +181,16 @@ namespace PYXBMC
     char *cDefault = NULL;
     PyObject *result;
 
-    for (int i = 0; i < 3; i++) unicodeLine[i] = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"iOO|Obbsb", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories, &cDefault, &enableMultiple))  return NULL;
+    for (int i = 0; i < 3; i++)
+      unicodeLine[i] = NULL;
+    if (!PyArg_ParseTuple(args, (char*)"iOO|Obbsb", 
+                          &browsetype , &unicodeLine[0],
+                          &unicodeLine[1], &unicodeLine[2],
+                          &useThumbs, &useFileDirectories,
+                          &cDefault, &enableMultiple))
+    {
+      return NULL;
+    }
     for (int i = 0; i < 3; i++)
     {
       if (unicodeLine[i] && !PyXBMCGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
