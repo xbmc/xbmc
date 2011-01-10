@@ -255,6 +255,8 @@ extern "C"
   FUNCTION4(PyDict_Size)
   FUNCTION4(PyType_Ready)
   FUNCTION12(PyType_GenericNew)
+  FUNCTION4(PyTuple_New)
+  FUNCTION12(PyTuple_SetItem)
   FUNCTION8(PySys_SetArgv)
   FUNCTION12(PyObject_RichCompare)
   FUNCTION12(PyErr_Fetch)
@@ -369,6 +371,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyDict_Size)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_SetItem)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&

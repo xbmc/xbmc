@@ -138,6 +138,8 @@
   FUNCTION(PyDict_GetItemString)
   FUNCTION(PyDict_Next)
   FUNCTION(PyDict_Size)
+  FUNCTION(PyTuple_New)
+  FUNCTION(PyTuple_SetItem)
   FUNCTION(PyType_Ready)
   FUNCTION(PyType_GenericNew)
   FUNCTION(PySys_SetArgv)
