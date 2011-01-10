@@ -75,28 +75,28 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     char *ptr = parse_extra;
     do // read line by line
     {
-        if (!strncmp(ptr, "size:", 5))
+      if (!strncmp(ptr, "size:", 5))
+      {
+        int width = 0, height = 0;
+        sscanf(ptr, "size: %dx%d", &width, &height);
+        if (width > 0 && height > 0)
         {
-            int width = 0, height = 0;
-            sscanf(ptr, "size: %dx%d", &width, &height);
-            if (width > 0 && height > 0)
-            {
-                m_pCodecContext->width = width;
-                m_pCodecContext->height = height;
-                CLog::Log(LOGDEBUG,"%s - parsed extradata: size: %d x %d", __FUNCTION__,  width, height);
-            }
+          m_pCodecContext->width = width;
+          m_pCodecContext->height = height;
+          CLog::Log(LOGDEBUG,"%s - parsed extradata: size: %d x %d", __FUNCTION__,  width, height);
         }
-/*        
-        // leaving commented code: these items don't work yet... but they may be meaningful
-        if (!strncmp(ptr, "palette:", 8))
-            if (sscanf(ptr, "palette: %x, %x, %x, %x, %x, %x, %x, %x,"
-                                        " %x, %x, %x, %x, %x, %x, %x, %x", ...        
-        if (!strncasecmp(ptr, "forced subs: on", 15))
-            forced_subs_only = 1;
-*/
-        // if tried all possibilities, then read newline char and move to next line
-        ptr = strchr(ptr, '\n');
-        if (ptr != NULL) ptr++;
+      }
+      /*        
+      // leaving commented code: these items don't work yet... but they may be meaningful
+      if (!strncmp(ptr, "palette:", 8))
+        if (sscanf(ptr, "palette: %x, %x, %x, %x, %x, %x, %x, %x,"
+                                " %x, %x, %x, %x, %x, %x, %x, %x", ...        
+      if (!strncasecmp(ptr, "forced subs: on", 15))
+        forced_subs_only = 1;
+      */
+      // if tried all possibilities, then read newline char and move to next line
+      ptr = strchr(ptr, '\n');
+      if (ptr != NULL) ptr++;
     } 
     while (ptr != NULL && ptr <= parse_extra + parse_extrasize);
 
