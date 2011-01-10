@@ -47,6 +47,7 @@ public:
   static CMythSession*  AquireSession(const CURL& url);
   static void           ReleaseSession(CMythSession*);
   static void           CheckIdle();
+  static void           LogCMyth(int level, char *msg);
 
   class IEventListener
   {

@@ -287,6 +287,8 @@
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
+#define ACTION_VSHIFT_UP              227 // shift up video image in DVDPlayer
+#define ACTION_VSHIFT_DOWN            228 // shift down video image in DVDPlayer
 
 #define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
 

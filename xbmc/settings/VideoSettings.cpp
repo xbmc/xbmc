@@ -37,6 +37,7 @@ CVideoSettings::CVideoSettings()
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
   m_CustomPixelRatio = 1.0f;
+  m_CustomVerticalShift = 0.0f;
   m_CustomNonLinStretch = false;
   m_AudioStream = -1;
   m_SubtitleStream = -1;
@@ -67,6 +68,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_ViewMode != right.m_ViewMode) return true;
   if (m_CustomZoomAmount != right.m_CustomZoomAmount) return true;
   if (m_CustomPixelRatio != right.m_CustomPixelRatio) return true;
+  if (m_CustomVerticalShift != right.m_CustomVerticalShift) return true;
   if (m_CustomNonLinStretch != right.m_CustomNonLinStretch) return true;
   if (m_AudioStream != right.m_AudioStream) return true;
   if (m_SubtitleStream != right.m_SubtitleStream) return true;

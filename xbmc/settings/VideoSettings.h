@@ -88,6 +88,7 @@ public:
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
+  float m_CustomVerticalShift; // custom setting vertical shift
   bool  m_CustomNonLinStretch;
   int m_AudioStream;
   float m_VolumeAmplification;

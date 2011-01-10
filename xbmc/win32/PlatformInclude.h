@@ -22,9 +22,9 @@
  *
  */
 
-//#if !defined(_DEBUG) && _MSC_VER >= 1500
-//#include "svn_rev.h" //generated file
-//#endif
+#if !defined(_DEBUG) && _MSC_VER >= 1500
+#include "git_rev.h" //generated file
+#endif
 #include <errno.h> // for ENOENT and EINVAL
 #include "PlatformDefs.h"
 

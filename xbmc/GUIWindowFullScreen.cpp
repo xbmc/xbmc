@@ -533,6 +533,28 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_VSHIFT_UP:
+    {
+      g_settings.m_currentVideoSettings.m_CustomVerticalShift -= 0.01f;
+      if (g_settings.m_currentVideoSettings.m_CustomVerticalShift < -2.0f)
+        g_settings.m_currentVideoSettings.m_CustomVerticalShift = -2.0f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+      ShowSlider(action.GetID(), 225, g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
+    }
+    return true;
+    break;
+  case ACTION_VSHIFT_DOWN:
+    {
+      g_settings.m_currentVideoSettings.m_CustomVerticalShift += 0.01f;
+      if (g_settings.m_currentVideoSettings.m_CustomVerticalShift > 2.0f)
+        g_settings.m_currentVideoSettings.m_CustomVerticalShift = 2.0f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+      ShowSlider(action.GetID(), 225, g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
+    }
+    return true;
+    break;
   default:
       break;
   }
@@ -849,7 +871,9 @@ void CGUIWindowFullScreen::FrameMove()
       CStdString strSizing;
       strSizing.Format(g_localizeStrings.Get(245),
                        (int)SrcRect.Width(), (int)SrcRect.Height(),
-                       (int)DestRect.Width(), (int)DestRect.Height(), g_settings.m_fZoomAmount, fAR*g_settings.m_fPixelRatio, g_settings.m_fPixelRatio);
+                       (int)DestRect.Width(), (int)DestRect.Height(),
+                       g_settings.m_fZoomAmount, fAR*g_settings.m_fPixelRatio, 
+                       g_settings.m_fPixelRatio, g_settings.m_fVerticalShift);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
@@ -1075,7 +1099,8 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
     return;
 
   if (m_sliderAction == ACTION_ZOOM_OUT || m_sliderAction == ACTION_ZOOM_IN ||
-      m_sliderAction == ACTION_INCREASE_PAR || m_sliderAction == ACTION_DECREASE_PAR)
+      m_sliderAction == ACTION_INCREASE_PAR || m_sliderAction == ACTION_DECREASE_PAR ||
+      m_sliderAction == ACTION_VSHIFT_UP || m_sliderAction == ACTION_VSHIFT_DOWN)
   {
     CStdString strValue;
     strValue.Format("%1.2f",slider->GetFloatValue());

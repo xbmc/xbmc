@@ -65,6 +65,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
 #define VIDEO_SETTINGS_POSTPROCESS        22
+#define VIDEO_SETTINGS_VERTICAL_SHIFT     23
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -136,6 +137,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &g_settings.m_currentVideoSettings.m_ViewMode, 7, entries);
   }
   AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
+  AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
   AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
 
@@ -172,9 +174,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
     UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);
+    UpdateSetting(VIDEO_SETTINGS_VERTICAL_SHIFT);
   }
   else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO
-        || setting.id == VIDEO_SETTINGS_NONLIN_STRETCH)
+        || setting.id == VIDEO_SETTINGS_NONLIN_STRETCH
+        || setting.id == VIDEO_SETTINGS_VERTICAL_SHIFT)
   {
     g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);

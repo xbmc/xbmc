@@ -193,7 +193,7 @@
   <string id="221">Network is not connected</string>
   <string id="222">Cancel</string>
   <string id="224">Speed</string>
-
+  <string id="225">Vertical Shift</string>
   <string id="226">Test patterns...</string>
   <string id="227">Lookup audio CD track names from freedb.org</string>
   <string id="228">Shuffle playlist on load</string>
@@ -213,7 +213,7 @@
   <string id="242">Windowed</string>
   <string id="243">Refresh Rate</string>
   <string id="244">Full screen</string>
-  <string id="245">Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)</string>
+  <string id="245">Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)</string>
 
   <string id="247">Scripts</string>
   <string id="248">Language</string>

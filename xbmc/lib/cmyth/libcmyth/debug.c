@@ -114,3 +114,9 @@ cmyth_dbg(int level, char *fmt, ...)
 	mvp_dbg(&cmyth_debug_ctx, level, fmt, ap);
 	va_end(ap);
 }
+
+void
+cmyth_set_dbg_msgcallback(void (*msgcb)(char *))
+{
+	cmyth_debug_ctx.msg_callback = msgcb;
+}

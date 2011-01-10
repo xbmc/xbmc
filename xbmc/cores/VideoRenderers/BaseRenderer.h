@@ -67,7 +67,7 @@ protected:
   void       FindResolutionFromFpsMatch(float fps, float& weight);
   RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
   float      RefreshWeight(float refresh, float fps);
-  void       CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
+  void       CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount, float verticalShift);
   void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void       ManageDisplay();
 

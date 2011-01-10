@@ -95,6 +95,8 @@ static const ActionMapping actions[] =
         {"audiodelay"        , ACTION_AUDIO_DELAY},
         {"audiodelayplus"    , ACTION_AUDIO_DELAY_PLUS},
         {"audionextlanguage" , ACTION_AUDIO_NEXT_LANGUAGE},
+        {"verticalshiftup"   , ACTION_VSHIFT_UP},
+        {"verticalshiftdown" , ACTION_VSHIFT_DOWN},
         {"nextresolution"    , ACTION_CHANGE_RESOLUTION},
         {"audiotoggledigital", ACTION_TOGGLE_DIGITAL_ANALOG},
         {"number0"           , REMOTE_0},

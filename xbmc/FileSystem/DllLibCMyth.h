@@ -125,6 +125,7 @@ public:
   virtual void             ref_release              (void* ptr)=0;
   virtual void*            ref_hold                 (void* ptr)=0;
   virtual void             dbg_level                (int l)=0;
+  virtual void             set_dbg_msgcallback      (void (*msgcb)(int l, char *m))=0;
 
   virtual time_t           timestamp_to_unixtime    (cmyth_timestamp_t ts)=0;
   virtual int              timestamp_compare        (cmyth_timestamp_t ts1, cmyth_timestamp_t ts2)=0;
@@ -231,6 +232,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(void,                ref_release,              (void* p1))
   DEFINE_METHOD1(void*,               ref_hold,                 (void* p1))
   DEFINE_METHOD1(void,                dbg_level,                (int p1))
+  DEFINE_METHOD1(void,                set_dbg_msgcallback,      (void (*p1)(int l, char *m)))
 
   DEFINE_METHOD1(time_t,              timestamp_to_unixtime,    (cmyth_timestamp_t p1))
   DEFINE_METHOD2(int,                 timestamp_compare,        (cmyth_timestamp_t p1, cmyth_timestamp_t p2))
@@ -330,6 +332,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD(ref_release)
     RESOLVE_METHOD(ref_hold)
     RESOLVE_METHOD_RENAME(cmyth_dbg_level, dbg_level)
+    RESOLVE_METHOD_RENAME(cmyth_set_dbg_msgcallback, set_dbg_msgcallback)
 
     RESOLVE_METHOD_RENAME(cmyth_timestamp_to_unixtime, timestamp_to_unixtime)
     RESOLVE_METHOD_RENAME(cmyth_timestamp_compare, timestamp_compare)
