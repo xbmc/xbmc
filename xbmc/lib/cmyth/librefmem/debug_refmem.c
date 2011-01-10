@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <refmem_local.h>
+#include <cmyth_local.h>
 
 #include "debug.h"
 
