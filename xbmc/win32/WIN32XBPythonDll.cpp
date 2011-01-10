@@ -185,6 +185,8 @@ extern "C"
   FUNCTION8(Py_AddPendingCall)
   FUNCTION8(PyList_GetItem)
   FUNCTION4(PyList_Size)
+  FUNCTION4(PyList_New)
+  FUNCTION8(PyList_Append)
   FUNCTION4(_PyObject_New)
   FUNCTION4(PyLong_AsLong)
   FUNCTION4(PyLong_AsLongLong)
@@ -255,6 +257,8 @@ extern "C"
   FUNCTION4(PyDict_Size)
   FUNCTION4(PyType_Ready)
   FUNCTION12(PyType_GenericNew)
+  FUNCTION4(PyTuple_New)
+  FUNCTION12(PyTuple_SetItem)
   FUNCTION8(PySys_SetArgv)
   FUNCTION12(PyObject_RichCompare)
   FUNCTION12(PyErr_Fetch)
@@ -332,7 +336,9 @@ extern "C"
       dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallMethod)) &&
       dll.ResolveExport(DLL_FUNCTION(PyList_GetItem)) &&
       dll.ResolveExport(DLL_FUNCTION(PyList_Size)) &&
-      dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_Append)) &&
+      dll.ResolveExport(DLL_FUNCTION(_PyObject_New)) &&               
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
@@ -369,6 +375,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyDict_Size)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_SetItem)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_Parse)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyArg_ParseTuple)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&

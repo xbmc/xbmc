@@ -607,4 +607,9 @@
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </MyTVSettings>
+  <FileBrowser>
+    <keyboard>
+      <space>Highlight</space>
+    </keyboard>
+  </FileBrowser>
 </keymap>

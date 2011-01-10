@@ -98,6 +98,8 @@ extern "C"
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
+  FUNCTION(PyList_New)
+  FUNCTION(PyList_Append)
 #if Py_UNICODE_SIZE == 2
   FUNCTION(PyUnicodeUCS2_AsUTF8String)
   FUNCTION(PyUnicodeUCS2_DecodeUTF8)
@@ -137,6 +139,8 @@ extern "C"
   FUNCTION(PyDict_GetItemString)
   FUNCTION(PyDict_Next)
   FUNCTION(PyDict_Size)
+  FUNCTION(PyTuple_New)
+  FUNCTION(PyTuple_SetItem)
   FUNCTION(PyType_Ready)
   FUNCTION(PyType_GenericNew)
   FUNCTION(PySys_SetArgv)
@@ -200,6 +204,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
       dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyList_Append)) &&         
 #ifdef _LINUX
       dll.ResolveExport(DLL_FUNCTION(Py_GetPath)) &&
 #endif
@@ -258,6 +264,8 @@ extern "C"
       //dll.ResolveExport(DLL_FUNCTION(PyDict_Keys)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_Next)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_Size)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_New)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyTuple_SetItem)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_Ready)) &&
       dll.ResolveExport(DLL_FUNCTION(PyType_GenericNew)) &&
       dll.ResolveExport(DLL_FUNCTION(PyArg_Parse)) &&

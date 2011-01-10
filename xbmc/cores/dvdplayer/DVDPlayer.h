@@ -184,6 +184,7 @@ public:
   virtual int GetAudioStream();
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
+  virtual void GetAudioStreamLanguage(int iStream, CStdString &strLanguage);
 
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer);

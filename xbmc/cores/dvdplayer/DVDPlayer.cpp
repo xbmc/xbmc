@@ -88,6 +88,14 @@ void CSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
+void CDVDPlayer::GetAudioStreamLanguage(int iStream, CStdString &strLanguage)
+{
+  strLanguage = "";
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
+  if(s.language.length() > 0)
+    strLanguage = s.language;
+}
+
 SelectionStream& CSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);

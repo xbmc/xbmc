@@ -30,6 +30,7 @@
 #include "listitem.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "LangCodeExpander.h"
 
 using namespace MUSIC_INFO;
 
@@ -539,6 +540,55 @@ namespace PYXBMC
     return NULL;
   }
 
+  // Player_getAvailableAudioStreams
+  PyDoc_STRVAR(getAvailableAudioStreams__doc__,
+               "getAvailableAudioStreams() -- get Audio stream names\n");
+  
+  PyObject* Player_getAvailableAudioStreams(PyObject *self)
+  {
+    if (g_application.m_pPlayer)
+    {
+      PyObject *list = PyList_New(0);
+      for (int iStream=0; iStream < g_application.m_pPlayer->GetAudioStreamCount(); iStream++)
+      {  
+        CStdString strName;
+        CStdString FullLang;
+        g_application.m_pPlayer->GetAudioStreamLanguage(iStream, strName);
+        g_LangCodeExpander.Lookup(FullLang, strName);
+        PyList_Append(list, Py_BuildValue("s", FullLang.c_str()));
+      }
+      return list;
+    }
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+  }  
+
+  // Player_setAudioStream
+  PyDoc_STRVAR(setAudioStream__doc__,
+               "setAudioStream(stream) -- set Audio Stream \n"
+               "\n"
+               "stream           : int\n"
+               "\n"
+               "example:\n"
+               "  - setAudioStream(1)\n");
+  
+  PyObject* Player_setAudioStream(PyObject *self, PyObject *args)
+  {
+    int iStream;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iStream)) return NULL;
+    
+    if (g_application.m_pPlayer)
+    {
+      int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
+      if(iStream <= streamCount)
+        g_application.m_pPlayer->SetAudioStream(iStream);
+    }
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+  }  
+  
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
@@ -563,6 +613,8 @@ namespace PYXBMC
     {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
     {(char*)"getSubtitles", (PyCFunction)Player_GetSubtitles, METH_NOARGS, getSubtitles__doc__},
     {(char*)"disableSubtitles", (PyCFunction)Player_DisableSubtitles, METH_NOARGS, DisableSubtitles__doc__},
+    {(char*)"getAvailableAudioStreams", (PyCFunction)Player_getAvailableAudioStreams, METH_NOARGS, getAvailableAudioStreams__doc__},
+    {(char*)"setAudioStream", (PyCFunction)Player_setAudioStream, METH_VARARGS, setAudioStream__doc__},
     {NULL, NULL, 0, NULL}
   };
 

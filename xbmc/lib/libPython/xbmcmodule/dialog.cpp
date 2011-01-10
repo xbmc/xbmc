@@ -139,7 +139,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(browse__doc__,
-    "browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.\n"
+    "browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default, enableMultiple]) -- Show a 'Browse' dialog.\n"
     "\n"
     "type           : integer - the type of browse dialog.\n"
     "heading        : string or unicode - dialog heading.\n"
@@ -149,31 +149,48 @@ namespace PYXBMC
     "treatAsFolder  : [opt] boolean - if True playlists and archives act as folders.\n"
     "default        : [opt] string - default path or file.\n"
     "\n"
+    "enableMultiple : [opt] boolean - if True multiple file selection is enabled.\n"
     "Types:\n"
     "  0 : ShowAndGetDirectory\n"
     "  1 : ShowAndGetFile\n"
     "  2 : ShowAndGetImage\n"
     "  3 : ShowAndGetWriteableDirectory\n"
     "\n"
-    "*Note, Returns filename and/or path as a string to the location of the highlighted item,\n"
-    "       if user pressed 'Ok' or a masked item was selected.\n"
-    "       Returns the default value if dialog was canceled.\n"
+    "*Note, If enableMultiple is False (default): returns filename and/or path as a string\n"
+    "       to the location of the highlighted item, if user pressed 'Ok' or a masked item\n"
+    "       was selected. Returns the default value if dialog was canceled.\n"
+    "       If enableMultiple is True: returns tuple of marked filenames as a string,"
+    "       if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n"
+    "\n"
+    "       If type is 0 or 3 the enableMultiple parameter is ignored."
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n");
+    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n");
 
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {
     int browsetype = 0;
     char useThumbs = false;
     char useFileDirectories = false;
+    char enableMultiple = false;
     CStdString value;
+    CStdStringArray valuelist;
     PyObject* unicodeLine[3];
     string utf8Line[3];
     char *cDefault = NULL;
-    for (int i = 0; i < 3; i++) unicodeLine[i] = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"iOO|Obbs", &browsetype , &unicodeLine[0], &unicodeLine[1], &unicodeLine[2], &useThumbs, &useFileDirectories, &cDefault))  return NULL;
+    PyObject *result;
+
+    for (int i = 0; i < 3; i++)
+      unicodeLine[i] = NULL;
+    if (!PyArg_ParseTuple(args, (char*)"iOO|Obbsb", 
+                          &browsetype , &unicodeLine[0],
+                          &unicodeLine[1], &unicodeLine[2],
+                          &useThumbs, &useFileDirectories,
+                          &cDefault, &enableMultiple))
+    {
+      return NULL;
+    }
     for (int i = 0; i < 3; i++)
     {
       if (unicodeLine[i] && !PyXBMCGetUnicodeString(utf8Line[i], unicodeLine[i], i+1))
@@ -188,13 +205,36 @@ namespace PYXBMC
     value = cDefault;
     Py_BEGIN_ALLOW_THREADS
     if (browsetype == 1)
-      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
+    {
+      if (enableMultiple)
+        CGUIDialogFileBrowser::ShowAndGetFileList(*shares, utf8Line[2], utf8Line[0], valuelist, 0 != useThumbs, 0 != useFileDirectories);
+      else
+        CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
+    }
     else if (browsetype == 2)
-      CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
+    {
+      if (enableMultiple)
+        CGUIDialogFileBrowser::ShowAndGetImageList(*shares, utf8Line[0], valuelist);
+      else
+        CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
+    }
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
     Py_END_ALLOW_THREADS
-    return Py_BuildValue((char*)"s", value.c_str());
+
+    if (enableMultiple && (browsetype == 1 || browsetype == 2))
+    {
+      result = PyTuple_New(valuelist.size());
+      if (!result)
+        return NULL;
+
+      for (int i = 0; i < valuelist.size(); i++)
+        PyTuple_SetItem(result, i, PyString_FromString(valuelist.at(i).c_str()));
+
+      return result;
+    }
+    else
+      return Py_BuildValue((char*)"s", value.c_str());
   }
 
   PyDoc_STRVAR(numeric__doc__,
