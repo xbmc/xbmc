@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../include
+INCLUDES=-I. -I../include -I../libcmyth
 
 SRCS=alloc.c debug_refmem.c
 
