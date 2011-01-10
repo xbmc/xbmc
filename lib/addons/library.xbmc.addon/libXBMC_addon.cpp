@@ -77,12 +77,12 @@ DLLEXPORT void XBMC_log(const addon_log_t loglevel, const char *format, ... )
   m_cb->Log(m_Handle->addonData, loglevel, buffer);
 }
 
-DLLEXPORT bool XBMC_get_setting(string settingName, void *settingValue)
+DLLEXPORT bool XBMC_get_setting(const char* settingName, void *settingValue)
 {
   if (m_cb == NULL)
     return false;
 
-  return m_cb->GetSetting(m_Handle->addonData, settingName.c_str(), settingValue);
+  return m_cb->GetSetting(m_Handle->addonData, settingName, settingValue);
 }
 
 DLLEXPORT void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
@@ -107,22 +107,22 @@ DLLEXPORT void XBMC_unknown_to_utf8(string &str)
   str = buffer;
 }
 
-DLLEXPORT string XBMC_get_localized_string(int dwCode)
+DLLEXPORT const char* XBMC_get_localized_string(int dwCode)
 {
   if (m_cb == NULL)
     return "";
 
   string buffer = m_cb->GetLocalizedString(m_Handle->addonData, dwCode);
-  return buffer;
+  return buffer.c_str();
 }
 
-DLLEXPORT string XBMC_get_dvd_menu_language()
+DLLEXPORT const char* XBMC_get_dvd_menu_language()
 {
   if (m_cb == NULL)
     return "";
 
   string buffer = m_cb->GetDVDMenuLanguage(m_Handle->addonData);
-  return buffer;
+  return buffer.c_str();
 }
 
 };

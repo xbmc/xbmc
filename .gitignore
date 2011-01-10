@@ -1244,3 +1244,21 @@ autom4te.cache
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 /xbmc/win32/git_rev.h
+
+/addons/library.xbmc.addon/libXBMC_addon.dll
+/addons/library.xbmc.addon/libXBMC_addon.lib
+/addons/library.xbmc.gui/libXBMC_gui.dll
+/addons/library.xbmc.gui/libXBMC_gui.lib
+/addons/library.xbmc.pvr/libXBMC_pvr.dll
+/addons/library.xbmc.pvr/libXBMC_pvr.lib
+
+/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.lib
+/addons/pvr.hts/XBMC_Tvheadend_win32.lib
+/addons/pvr.vdr.streamdev/XBMC_VDR_win32.lib
+
+/xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
+/xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
+/xbmc/pvrclients/tvheadend/project/VS2010Express/Debug
+/xbmc/pvrclients/tvheadend/project/VS2010Express/Release
+/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Debug
+/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Release
