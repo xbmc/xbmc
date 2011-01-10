@@ -113,10 +113,10 @@ void cVNSIChannelScan::StartScan()
       m_window->SetControlLabel(LABEL_TYPE, "DVB-S/S2");
       break;
     case PVRINPUT:
-      m_window->SetControlLabel(LABEL_TYPE, XBMC->GetLocalizedString(30032).c_str());
+      m_window->SetControlLabel(LABEL_TYPE, XBMC->GetLocalizedString(30032));
       break;
     case PVRINPUT_FM:
-      m_window->SetControlLabel(LABEL_TYPE, XBMC->GetLocalizedString(30033).c_str());
+      m_window->SetControlLabel(LABEL_TYPE, XBMC->GetLocalizedString(30033));
       break;
     case DVB_ATSC:
       m_window->SetControlLabel(LABEL_TYPE, "ATSC");
@@ -153,9 +153,9 @@ void cVNSIChannelScan::StartScan()
 
 SCANError:
   XBMC->Log(LOG_ERROR, "cVNSIChannelScan::StartScan() - Return error after start (%i)", retCode);
-  m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071).c_str());
-  m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024).c_str());
-  m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043).c_str());
+  m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071));
+  m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+  m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
   m_stopped = true;
 }
 
@@ -173,9 +173,9 @@ void cVNSIChannelScan::StopScan()
   if (retCode != VDR_RET_OK)
   {
     XBMC->Log(LOG_ERROR, "cVNSIChannelScan::StopScan() - Return error after stop (%i)", retCode);
-    m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071).c_str());
-    m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024).c_str());
-    m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043).c_str());
+    m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071));
+    m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+    m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
     m_stopped = true;
   }
   return;
@@ -187,8 +187,8 @@ void cVNSIChannelScan::ReturnFromProcessView()
   {
     m_running = false;
     m_window->ClearProperties();
-    m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30010).c_str());
-    m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30009).c_str());
+    m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30010));
+    m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30009));
 
     if (m_progressDone)
     {
@@ -272,7 +272,7 @@ bool cVNSIChannelScan::OnClick(int controlId)
       m_stopped = false;
       m_Canceled = false;
       m_window->SetProperty("Scanning", "running");
-      m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(222).c_str());
+      m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(222));
       StartScan();
     }
     else if (!m_stopped)
@@ -619,13 +619,13 @@ void cVNSIChannelScan::Action()
       {
         if (!m_Canceled)
         {
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30036).c_str());
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024).c_str());
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30041).c_str());
+          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30036));
+          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30041));
         }
         else
         {
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30042).c_str());
+          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30042));
         }
       }
       else if (requestID == VDR_SCANNER_STATUS)
@@ -634,26 +634,26 @@ void cVNSIChannelScan::Action()
         if (status == 0)
         {
           if (m_Canceled)
-            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(16200).c_str());
+            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(16200));
           else
-            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30040).c_str());
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024).c_str());
+            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30040));
+          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
           m_stopped = true;
         }
         else if (status == 1)
         {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30039).c_str());
+          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30039));
         }
         else if (status == 2)
         {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30037).c_str());
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024).c_str());
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043).c_str());
+          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30037));
+          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
           m_stopped = true;
         }
         else if (status == 3)
         {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30038).c_str());
+          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30038));
         }
       }
 
