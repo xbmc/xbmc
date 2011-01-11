@@ -25,6 +25,9 @@
 #include "utils/EndianSwap.h"
 
 #include <stdlib.h>
+#include <limits.h>
+#include <stdint.h>
+
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -34,6 +37,11 @@
 #ifdef __SSE__
 #include <xmmintrin.h>
 #include <emmintrin.h>
+#endif
+
+// Hack until gnif removes isnan calls
+#ifdef _WIN32
+#define isnan(a) _isnan(a)
 #endif
 
 #define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
@@ -54,7 +62,7 @@ static inline int safeRound(double f)
 
   /* if the value is out of the MathUtils::round_int range, then round it normally */
   if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
-    return round(f);
+    return floor(f+0.5);
 
   return MathUtils::round_int(f);
 }
