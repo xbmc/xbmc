@@ -2671,6 +2671,7 @@
 					<description>TV Channels</description>
 					<posx>0</posx>
 					<posy>0</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19023</label>
 					<onleft>11</onleft>
@@ -2682,6 +2683,7 @@
 					<description>Radio Channels</description>
 					<posx>0</posx>
 					<posy>40</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19024</label>
 					<onleft>12</onleft>
@@ -2693,6 +2695,7 @@
 					<description>TV Guide</description>
 					<posx>0</posx>
 					<posy>80</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19029</label>
 					<onleft>10</onleft>
@@ -2704,6 +2707,7 @@
 					<description>Recordings</description>
 					<posx>0</posx>
 					<posy>120</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19163</label>
 					<onleft>13</onleft>
@@ -2715,6 +2719,7 @@
 					<description>Timers</description>
 					<posx>0</posx>
 					<posy>160</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>19040</label>
 					<onleft>14</onleft>
@@ -2726,6 +2731,7 @@
 					<description>Search</description>
 					<posx>0</posx>
 					<posy>200</posy>
+					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>137</label>
 					<onleft>17</onleft>
