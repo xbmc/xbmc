@@ -583,7 +583,7 @@ namespace PYXBMC
     if (g_application.m_pPlayer)
     {
       int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
-      if(iStream <= streamCount)
+      if(iStream < streamCount)
         g_application.m_pPlayer->SetAudioStream(iStream);
     }
     
