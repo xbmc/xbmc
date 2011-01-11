@@ -61,7 +61,7 @@
 # include <string.h>
 #endif
 #if defined(_WIN32) // WIN32INCLUDES
-# include "win32/stdint.h"
+#include <stdint.h>
 #else
 # if defined(HAVE_INTTYPES_H)
 #  include <inttypes.h>

@@ -31,7 +31,6 @@ typedef __int64       off64_t;
 typedef __int64       fpos64_t;
 typedef __int64       __off64_t;
 typedef long          __off_t;
-typedef uint32_t      u_int32_t;
 typedef unsigned long ThreadIdentifier;
 
 #define ssize_t int
@@ -45,9 +44,6 @@ typedef unsigned long ThreadIdentifier;
 #ifndef strncasecmp
 #define strncasecmp strnicmp
 #endif
-
-#define INT16_MAX SHRT_MAX
-#define INT16_MIN SHRT_MIN
 
 #ifndef PRIdS
 #define PRIdS "Id"

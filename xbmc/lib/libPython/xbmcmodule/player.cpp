@@ -555,6 +555,8 @@ namespace PYXBMC
         CStdString FullLang;
         g_application.m_pPlayer->GetAudioStreamLanguage(iStream, strName);
         g_LangCodeExpander.Lookup(FullLang, strName);
+        if (FullLang.IsEmpty())
+          g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
         PyList_Append(list, Py_BuildValue("s", FullLang.c_str()));
       }
       return list;
@@ -581,7 +583,7 @@ namespace PYXBMC
     if (g_application.m_pPlayer)
     {
       int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
-      if(iStream <= streamCount)
+      if(iStream < streamCount)
         g_application.m_pPlayer->SetAudioStream(iStream);
     }
     

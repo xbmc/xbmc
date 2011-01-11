@@ -34,7 +34,7 @@
 
 #if defined(_WIN32) && !defined(__MINGW32__)
 #include <stdlib.h>
-#include "win32/stdint.h"
+#include <stdint.h>
 #else
 #include <inttypes.h>
 #endif
