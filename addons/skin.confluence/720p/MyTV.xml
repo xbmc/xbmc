@@ -985,13 +985,13 @@
 						<posy>0</posy>
 						<width>700</width>
 						<height>30</height>
-						<font>font13caps</font>
+						<font>font13</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<scroll>true</scroll>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[Container(11).ListItem.Title]</label>
+						<label>[B]$INFO[Container(11).ListItem.Title][/B]</label>
 					</control>
 					<control type="textbox">
 						<description>Plot Value for TVShow</description>
@@ -1211,13 +1211,13 @@
 						<posy>0</posy>
 						<width>700</width>
 						<height>30</height>
-						<font>font13caps</font>
+						<font>font13</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<scroll>true</scroll>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[Container(12).ListItem.Title]</label>
+						<label>[B]$INFO[Container(12).ListItem.Title][/B]</label>
 					</control>
 					<control type="textbox">
 						<description>Plot Value for TVShow</description>
