@@ -1034,7 +1034,7 @@
 							<posy>-4</posy>
 							<width>40</width>
 							<height>35</height>
-							<font>font10</font>
+							<font>font12</font>
 							<align>left</align>
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
@@ -1111,7 +1111,7 @@
 							<posy>-4</posy>
 							<width>40</width>
 							<height>35</height>
-							<font>font10</font>
+							<font>font12</font>
 							<align>left</align>
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
@@ -1260,7 +1260,7 @@
 							<posy>-4</posy>
 							<width>40</width>
 							<height>35</height>
-							<font>font10</font>
+							<font>font12</font>
 							<align>left</align>
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
@@ -1337,7 +1337,7 @@
 							<posy>-4</posy>
 							<width>40</width>
 							<height>35</height>
-							<font>font10</font>
+							<font>font12</font>
 							<align>left</align>
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
