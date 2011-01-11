@@ -196,9 +196,9 @@
 					</control>
 					<control type="list" id="15">
 						<posx>0</posx>
-						<posy>55</posy>
+						<posy>60</posy>
 						<width>1100</width>
-						<height>520</height>
+						<height>500</height>
 						<onup>15</onup>
 						<ondown>15</ondown>
 						<onleft>31</onleft>
@@ -296,12 +296,20 @@
 								<visible>ListItem.HasTimer</visible>
 							</control>
 						</itemlayout>
-						<focusedlayout height="40">
+						<focusedlayout height="100">
+							<control type="image">
+								<posx>0</posx>
+								<posy>1</posy>
+								<width>1100</width>
+								<height>98</height>
+								<colordiffuse>AAFFFFFF</colordiffuse>
+								<texture border="5">black-back2.png</texture>
+							</control>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>1100</width>
-								<height>41</height>
+								<height>101</height>
 								<texture border="5">MenuItemNF.png</texture>
 							</control>
 							<control type="image">
@@ -309,7 +317,7 @@
 								<posy>0</posy>
 								<width>300</width>
 								<height>40</height>
-								<colordiffuse>33FFFFFF</colordiffuse>
+								<colordiffuse>AAFFFFFF</colordiffuse>
 								<texture border="5">StackFO.png</texture>
 								<visible>!Control.HasFocus(15)</visible>
 							</control>
@@ -318,7 +326,7 @@
 								<posy>0</posy>
 								<width>140</width>
 								<height>40</height>
-								<colordiffuse>33FFFFFF</colordiffuse>
+								<colordiffuse>AAFFFFFF</colordiffuse>
 								<texture border="5">StackFO.png</texture>
 								<visible>!Control.HasFocus(15)</visible>
 							</control>
@@ -363,6 +371,19 @@
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
+							</control>
+							<control type="textbox">
+								<description>Plot Value for TVShow</description>
+								<posx>50</posx>
+								<posy>40</posy>
+								<width>1000</width>
+								<height>60</height>
+								<font>font12</font>
+								<align>justify</align>
+								<textcolor>grey2</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<pagecontrol>-</pagecontrol>
+								<label>$INFO[ListItem.Plot]</label>
 							</control>
 							<control type="image">
 								<posx>970</posx>
@@ -410,9 +431,9 @@
 					</control>
 					<control type="scrollbar" id="75">
 						<posx>1105</posx>
-						<posy>50</posy>
+						<posy>60</posy>
 						<width>25</width>
-						<height>520</height>
+						<height>500</height>
 						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -511,9 +532,9 @@
 					</control>
 					<control type="list" id="16">
 						<posx>0</posx>
-						<posy>55</posy>
+						<posy>60</posy>
 						<width>1100</width>
-						<height>520</height>
+						<height>500</height>
 						<onup>16</onup>
 						<ondown>16</ondown>
 						<onleft>31</onleft>
@@ -630,12 +651,20 @@
 								<visible>ListItem.HasTimer</visible>
 							</control>
 						</itemlayout>
-						<focusedlayout height="40">
+						<focusedlayout height="100">
+							<control type="image">
+								<posx>0</posx>
+								<posy>1</posy>
+								<width>1100</width>
+								<height>98</height>
+								<colordiffuse>AAFFFFFF</colordiffuse>
+								<texture border="5">black-back2.png</texture>
+							</control>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>1100</width>
-								<height>41</height>
+								<height>100</height>
 								<texture border="5">MenuItemNF.png</texture>
 							</control>
 							<control type="image">
@@ -643,7 +672,7 @@
 								<posy>0</posy>
 								<width>250</width>
 								<height>40</height>
-								<colordiffuse>33FFFFFF</colordiffuse>
+								<colordiffuse>AAFFFFFF</colordiffuse>
 								<texture border="5">StackFO.png</texture>
 								<visible>!Control.HasFocus(16)</visible>
 							</control>
@@ -652,7 +681,7 @@
 								<posy>0</posy>
 								<width>140</width>
 								<height>40</height>
-								<colordiffuse>33FFFFFF</colordiffuse>
+								<colordiffuse>AAFFFFFF</colordiffuse>
 								<texture border="5">StackFO.png</texture>
 								<visible>!Control.HasFocus(16)</visible>
 							</control>
@@ -682,7 +711,7 @@
 								<font>font12</font>
 								<align>center</align>
 								<aligny>center</aligny>
-								<textcolor>grey2</textcolor>
+								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.StartTime</info>
 							</control>
@@ -701,7 +730,7 @@
 								<font>font12</font>
 								<align>left</align>
 								<aligny>center</aligny>
-								<textcolor>grey2</textcolor>
+								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.ChannelName</info>
 							</control>
@@ -716,6 +745,19 @@
 								<textcolor>white</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
+							</control>
+							<control type="textbox">
+								<description>Plot Value for TVShow</description>
+								<posx>50</posx>
+								<posy>40</posy>
+								<width>1000</width>
+								<height>60</height>
+								<font>font12</font>
+								<align>justify</align>
+								<textcolor>grey2</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<pagecontrol>-</pagecontrol>
+								<label>$INFO[ListItem.Plot]</label>
 							</control>
 							<control type="image">
 								<posx>970</posx>
@@ -763,9 +805,9 @@
 					</control>
 					<control type="scrollbar" id="76">
 						<posx>1105</posx>
-						<posy>50</posy>
+						<posy>60</posy>
 						<width>25</width>
-						<height>520</height>
+						<height>500</height>
 						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
