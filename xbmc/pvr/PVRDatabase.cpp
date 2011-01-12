@@ -65,7 +65,6 @@ bool CPVRDatabase::CreateTables()
           "sUid     text"
         ");\n"
     );
-    m_pDS->exec("CREATE INDEX idx_clients_sUid on clients(sUid);\n");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channels'", __FUNCTION__);
     m_pDS->exec(
@@ -130,7 +129,6 @@ bool CPVRDatabase::CreateTables()
         ")\n"
     );
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio)\n");
-    m_pDS->exec("CREATE INDEX idx_channelgroups_sName on channelgroups(sName)\n");
 
     // TODO use a mapping table so multiple groups per channel can be implemented
     // replaces idGroup in the channels table
