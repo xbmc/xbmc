@@ -339,10 +339,10 @@ CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move 
 {
   CPVRChannel *channel = NULL;
 
-  if (iChannelNumber < size())
+  if (iChannelNumber <= size())
   {
     SortByChannelNumber();
-    channel = at(iChannelNumber);
+    channel = at(iChannelNumber - 1);
   }
 
   return channel;
@@ -351,19 +351,19 @@ CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move 
 CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber) // TODO: move to channelgroup
 {
   int iGetChannel = iChannelNumber + 1;
-  if (iGetChannel >= size())
-    iGetChannel = 0;
+  if (iGetChannel > size())
+    iGetChannel = 1;
 
-  return GetByChannelNumber(iGetChannel);
+  return GetByChannelNumber(iGetChannel - 1);
 }
 
 CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber) // TODO: move to channelgroup
 {
   int iGetChannel = iChannelNumber - 1;
-  if (iGetChannel < 0)
-    iGetChannel = size() - 1;
+  if (iGetChannel <= 0)
+    iGetChannel = size();
 
-  return GetByChannelNumber(iGetChannel);
+  return GetByChannelNumber(iGetChannel - 1);
 }
 
 CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)
