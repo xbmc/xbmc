@@ -24,9 +24,9 @@
 #include "VideoInfoTag.h"
 #include "DateTime.h"
 #include "FileItem.h"
-#include "../addons/include/xbmc_pvr_types.h"
 
-class CPVRChannelGroup;
+#include "PVRChannelGroup.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRChannelGroups : public std::vector<CPVRChannelGroup>
 {

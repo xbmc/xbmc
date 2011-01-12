@@ -51,7 +51,7 @@ CPVRChannels::CPVRChannels(bool bRadio)
 
 CPVRChannels::~CPVRChannels(void)
 {
-  for (int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     delete at(iChannelPtr);
   }
@@ -339,7 +339,7 @@ CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move 
 {
   CPVRChannel *channel = NULL;
 
-  if (iChannelNumber <= size())
+  if (iChannelNumber <= (int) size())
   {
     SortByChannelNumber();
     channel = at(iChannelNumber - 1);
@@ -351,7 +351,7 @@ CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move 
 CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber) // TODO: move to channelgroup
 {
   int iGetChannel = iChannelNumber + 1;
-  if (iGetChannel > size())
+  if (iGetChannel > (int) size())
     iGetChannel = 1;
 
   return GetByChannelNumber(iGetChannel - 1);
