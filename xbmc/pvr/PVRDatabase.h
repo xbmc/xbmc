@@ -121,7 +121,8 @@ public:
   /**
    * Get the channel groups
    */
-  bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio = false);
+  bool GetChannelGroupList(CPVRChannelGroups &results);
+  bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
 
   /**
    * Change the name of a channel group

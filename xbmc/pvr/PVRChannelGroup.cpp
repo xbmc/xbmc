@@ -22,10 +22,11 @@
 #include "PVRChannelGroup.h"
 #include "PVRChannel.h"
 
-CPVRChannelGroup::CPVRChannelGroup(void)
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
 {
-  m_iGroupID = 0;
+  m_iGroupID  = 0;
   m_GroupName = "";
+  m_bRadio    = false;
 }
 
 CPVRChannelGroup::~CPVRChannelGroup(void)

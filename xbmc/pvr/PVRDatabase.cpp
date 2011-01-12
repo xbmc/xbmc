@@ -542,34 +542,59 @@ bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
   return DeleteValues("channelgroups", strWhereClause);
 }
 
-
-bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /* = false */)
+bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results)
 {
   bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY iSortOrder;", bRadio);
-  int iNumRows = ResultQuery(strQuery);
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups ORDER BY idGroup;");
+  ResultQuery(strQuery);
 
-  if (iNumRows > 0)
+  try
   {
-    try
+    while (!m_pDS->eof())
     {
-      while (!m_pDS->eof())
-      {
-        CPVRChannelGroup data;
+      CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
 
-        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-        data.SetGroupName(m_pDS->fv("sName").get_asString());
-        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
+      data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+      data.SetGroupName(m_pDS->fv("sName").get_asString());
+      data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
-        results.push_back(data);
-        m_pDS->next();
-      }
-      bReturn = true;
+      results.push_back(data);
+      m_pDS->next();
     }
-    catch (...)
+    bReturn = true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+  }
+
+  return bReturn;
+}
+
+bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
+{
+  bool bReturn = false;
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY idGroup;", bRadio);
+  ResultQuery(strQuery);
+
+  try
+  {
+    while (!m_pDS->eof())
     {
-      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+      CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
+
+      data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+      data.SetGroupName(m_pDS->fv("sName").get_asString());
+      data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
+
+      results.push_back(data);
+      m_pDS->next();
     }
+    bReturn = true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
   }
 
   m_pDS->close();

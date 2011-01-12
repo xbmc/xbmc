@@ -32,9 +32,10 @@ private:
   unsigned long m_iGroupID;
   CStdString    m_GroupName;
   int           m_iSortOrder;
+  bool          m_bRadio;
 
 public:
-  CPVRChannelGroup(void);
+  CPVRChannelGroup(bool bRadio);
   virtual ~CPVRChannelGroup(void);
 
   bool RemoveFromGroup(const CPVRChannel *channel);
