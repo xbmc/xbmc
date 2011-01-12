@@ -3048,22 +3048,6 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    return false;
 }
 
-bool CApplication::ProcessKeyboard()
-{
-  MEASURE_FUNCTION;
-
-  // Get the keypress from the keyboard
-  const CKey key(g_Keyboard.GetKey());
-
-  // If we have a valid keypress pass it to OnKey
-  if (key.GetVKey() || key.GetUnicode())
-  {
-    g_Keyboard.Reset();
-    return OnKey(key);
-  }
-  return false;
-}
-
 bool CApplication::Cleanup()
 {
   try

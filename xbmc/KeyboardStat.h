@@ -49,34 +49,19 @@ public:
   ~CKeyboardStat();
 
   void Initialize();
-  void Reset();
-  void ResetState();
-  int  HandleEvent(XBMC_Event& newEvent);
-  void Update(XBMC_Event& event);
 
-  const CKey GetKey();
-
-  CStdString GetKeyName(int KeyID);
-
-// New key handling code added in preparation for the major overhaul
-// of the keyboard handling
   const CKey ProcessKeyDown(XBMC_keysym& keysym);
   void       ProcessKeyUp(void);
 
+  CStdString GetKeyName(int KeyID);
+
 private:
-  uint8_t  m_VKey;
-  wchar_t  m_wUnicode;
-  char     m_cAscii;
-  uint32_t m_Modifiers;
-
-  XBMCKey m_lastKey;
-  unsigned int m_lastKeyTime;
-  unsigned int m_keyHoldTime;
-  bool m_bEvdev;
-
-// New key handling code added in preparation for the major overhaul
-// of the keyboard handling
   XBMC_keysym m_lastKeysym;
+  unsigned int m_lastKeyTime;
+
+  // In Linux the codes (numbers) for multimedia keys differ depending on
+  // what driver is used and the evdev bool switches between the two.
+  bool m_bEvdev;
 };
 
 extern CKeyboardStat g_Keyboard;
