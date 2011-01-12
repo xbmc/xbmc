@@ -21,9 +21,9 @@
 #pragma once
 
 #include "Key.h"
-#include "DllVisualisation.h"
 #include "AddonDll.h"
 #include "cores/IAudioCallback.h"
+#include "include/xbmc_vis_types.h"
 
 #include <map>
 #include <list>
@@ -33,6 +33,8 @@
 #define MAX_AUDIO_BUFFERS 16
 
 class CCriticalSection;
+
+typedef DllAddon<Visualisation, VIS_PROPS> DllVisualisation;
 
 class CAudioBuffer
 {
