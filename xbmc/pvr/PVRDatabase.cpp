@@ -63,7 +63,7 @@ bool CPVRDatabase::CreateTables()
           "idClient integer primary key, "
           "sName    text, "
           "sUid     text"
-        ");\n"
+        ");"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channels'", __FUNCTION__);
@@ -88,14 +88,14 @@ bool CPVRDatabase::CreateTables()
           "sInputFormat         text, "
           "sStreamURL           text, "
           "iEncryptionSystem    integer"
-        ");\n"
+        ");"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iChannelNumber_bIsRadio on channels(iChannelNumber, bIsRadio);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_iClientId on channels(iClientId);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_iChannelNumber on channels(iChannelNumber);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_iLastWatched on channels(iLastWatched);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_bIsRadio on channels(bIsRadio);\n");
-    m_pDS->exec("CREATE INDEX idx_channels_bIsHidden on channels(bIsHidden);\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iChannelNumber_bIsRadio on channels(iChannelNumber, bIsRadio);");
+    m_pDS->exec("CREATE INDEX idx_channels_iClientId on channels(iClientId);");
+    m_pDS->exec("CREATE INDEX idx_channels_iChannelNumber on channels(iChannelNumber);");
+    m_pDS->exec("CREATE INDEX idx_channels_iLastWatched on channels(iLastWatched);");
+    m_pDS->exec("CREATE INDEX idx_channels_bIsRadio on channels(bIsRadio);");
+    m_pDS->exec("CREATE INDEX idx_channels_bIsHidden on channels(bIsHidden);");
 
     // TODO use a mapping table so multiple backends per channel can be implemented
     //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
@@ -107,16 +107,16 @@ bool CPVRDatabase::CreateTables()
     //          "sInputFormat          string,"
     //          "sStreamURL            string,"
     //          "iEncryptionSystem     integer"
-    //        ");\n"
+    //        ");"
     //    );
-    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);\n");
+    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating view 'vw_last_watched'", __FUNCTION__);
     m_pDS->exec(
         "CREATE VIEW vw_last_watched "
         "AS SELECT idChannel, iChannelNumber, sChannelName "
         "FROM Channels "
-        "ORDER BY iLastWatched DESC;\n"
+        "ORDER BY iLastWatched DESC;"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelgroups'", __FUNCTION__);
@@ -126,9 +126,9 @@ bool CPVRDatabase::CreateTables()
           "bIsRadio   bool, "
           "sName      text,"
           "iSortOrder integer"
-        ")\n"
+        ");"
     );
-    m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio)\n");
+    m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
 
     // TODO use a mapping table so multiple groups per channel can be implemented
     // replaces idGroup in the channels table
@@ -137,9 +137,9 @@ bool CPVRDatabase::CreateTables()
     //        "CREATE TABLE map_channelgroups_channels ("
     //          "idChannel integer, "
     //          "idGroup   integer"
-    //        ");\n"
+    //        ");"
     //    );
-    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);\n");
+    //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelsettings'", __FUNCTION__);
     m_pDS->exec(
@@ -166,7 +166,7 @@ bool CPVRDatabase::CreateTables()
           "iCropBottom          integer, "
           "fSharpness           float, "
           "fNoiseReduction      float"
-        ");\n"
+        ");"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'epg'", __FUNCTION__);
@@ -190,20 +190,20 @@ bool CPVRDatabase::CreateTables()
           "sEpisodeId      text, "
           "sEpisodePart    text, "
           "sEpisodeName    text"
-        ")\n"
+        ");"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idChannel_iStartTime on epg(idChannel, iStartTime desc)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid)\n");
-    m_pDS->exec("CREATE INDEX idx_epg_idChannel on epg(idChannel)\n");
-    m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epg(iStartTime)\n");
-    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epg(iEndTime)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idChannel_iStartTime on epg(idChannel, iStartTime desc);");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid);");
+    m_pDS->exec("CREATE INDEX idx_epg_idChannel on epg(idChannel);");
+    m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epg(iStartTime);");
+    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epg(iEndTime);");
 
     // TODO keep separate value per epg table collection
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
           "idEpg integer primary key, "
           "iLastScan integer"
-        ")\n"
+        ")"
     );
 
     bReturn = true;
@@ -277,7 +277,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
         "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem) "
-        "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i)\n",
+        "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i);",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem());
@@ -289,7 +289,7 @@ long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /*
         "iUniqueId, iChannelNumber, idGroup, bIsRadio, bIsHidden, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel) "
-        "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i)\n",
+        "VALUES (%i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i);",
         channel.UniqueID(), channel.ChannelNumber(), channel.GroupID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID());
@@ -326,7 +326,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 {
   int iReturn = -1;
 
-  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE bIsRadio = %u ORDER BY iChannelNumber\n", bIsRadio);
+  CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE bIsRadio = %u ORDER BY iChannelNumber;", bIsRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -376,7 +376,7 @@ int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
 int CPVRDatabase::GetChannelCount(bool bRadio, bool bHidden /* = false */)
 {
   int iReturn = -1;
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channels WHERE bIsRadio = %u AND bIsHidden = %u\n",
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channels WHERE bIsRadio = %u AND bIsHidden = %u;",
       (bRadio ? 1 : 0), (bHidden ? 1 : 0));
 
   if (ResultQuery(strQuery))
@@ -435,7 +435,7 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u\n", channel.ChannelID());
+  CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u;", channel.ChannelID());
 
   if (ResultQuery(strQuery))
   {
@@ -484,7 +484,7 @@ bool CPVRDatabase::SetChannelSettings(const CPVRChannel &channel, const CVideoSe
         "(idChannel, iInterlaceMethod, iViewMode, fCustomZoomAmount, fPixelRatio, iAudioStream, iSubtitleStream, fSubtitleDelay, "
          "bSubtitles, fBrightness, fContrast, fGamma, fVolumeAmplification, fAudioDelay, bOutputToAllSpeakers, bCrop, iCropLeft, "
          "iCropRight, iCropTop, iCropBottom, fSharpness, fNoiseReduction) VALUES "
-         "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f)\n",
+         "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f);",
        channel.ChannelID(), settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
        settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn,
        settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
@@ -518,7 +518,7 @@ long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrde
   iReturn = GetChannelGroupId(strGroupName, bRadio);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (sName, iSortOrder, bIsRadio) VALUES ('%s', %i, %i)\n",
+    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (sName, iSortOrder, bIsRadio) VALUES ('%s', %i, %i);",
         strGroupName.c_str(), iSortOrder, (bRadio ? 1 : 0));
 
     if (ExecuteQuery(strQuery))
@@ -546,7 +546,7 @@ bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
 bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio /* = false */)
 {
   bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY iSortOrder\n", bRadio);
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY iSortOrder;", bRadio);
   int iNumRows = ResultQuery(strQuery);
 
   if (iNumRows > 0)
@@ -588,12 +588,12 @@ bool CPVRDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewNam
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u;", iGroupId, (bRadio ? 1 : 0));
   if (ResultQuery(strQuery))
   {
     if (m_pDS->fv(0).get_asInt() > 0)
     {
-      strQuery = FormatSQL("UPDATE channelgroups SET Name = '%s' WHERE idGroup = %i AND bIsRadio = %u\n", strNewName.c_str(), iGroupId, (bRadio ? 1 : 0));
+      strQuery = FormatSQL("UPDATE channelgroups SET Name = '%s' WHERE idGroup = %i AND bIsRadio = %u;", strNewName.c_str(), iGroupId, (bRadio ? 1 : 0));
       bReturn = ExecuteQuery(strQuery);
     }
   }
@@ -614,12 +614,12 @@ bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool b
     return bReturn;
   }
 
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u\n", iGroupId, (bRadio ? 1 : 0));
+  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u;", iGroupId, (bRadio ? 1 : 0));
   if (ResultQuery(strQuery))
   {
     if (m_pDS->fv(0).get_asInt() > 0)
     {
-      strQuery = FormatSQL("UPDATE channelgroups SET iSortOrder = %i WHERE idGroup = %i AND bIsRadio = %u\n", iSortOrder, iGroupId, (bRadio ? 1 : 0));
+      strQuery = FormatSQL("UPDATE channelgroups SET iSortOrder = %i WHERE idGroup = %i AND bIsRadio = %u;", iSortOrder, iGroupId, (bRadio ? 1 : 0));
       bReturn = ExecuteQuery(strQuery);
     }
   }
@@ -663,7 +663,7 @@ long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &
   iReturn = GetClientId(strClientUid);
   if (iReturn <= 0)
   {
-    CStdString strQuery = FormatSQL("INSERT INTO clients (sName, sUid) VALUES ('%s', '%s')\n",
+    CStdString strQuery = FormatSQL("INSERT INTO clients (sName, sUid) VALUES ('%s', '%s');",
         strClientName.c_str(), strClientUid.c_str());
 
     if (ExecuteQuery(strQuery))
@@ -806,7 +806,7 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
   }
 
   CStdString strQuery;
-  strQuery.Format("SELECT * FROM epg WHERE %s ORDER BY iStartTime ASC\n", strWhereClause.c_str());
+  strQuery.Format("SELECT * FROM epg WHERE %s ORDER BY iStartTime ASC;", strWhereClause.c_str());
 
   int iNumRows = ResultQuery(strQuery);
 
@@ -928,7 +928,7 @@ bool CPVRDatabase::UpdateLastEpgScanTime(void)
   bool bReturn = true;
   time_t iLastScan;
   now.GetAsTime(iLastScan);
-  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (0, %u)\n",
+  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (0, %u);",
       iLastScan);
 
   bReturn = ExecuteQuery(strQuery);
@@ -971,7 +971,7 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
         "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i)\n",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i);",
         tag.ChannelTag()->ChannelID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
@@ -984,7 +984,7 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
         "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i)\n",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i);",
         tag.ChannelTag()->ChannelID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
