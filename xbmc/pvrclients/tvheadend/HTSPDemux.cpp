@@ -147,7 +147,7 @@ DemuxPacket* cHTSPDemux::Read()
 
       htsmsg_get_u32(msg, "frametype", &frametype);
       frametypechar[0] = static_cast<char>( frametype );
-      XBMC->Log(LOG_DEBUG, "%s - Frame type %c", __FUNCTION__, frametypechar[0]);
+//      XBMC->Log(LOG_DEBUG, "%s - Frame type %c", __FUNCTION__, frametypechar[0]);
 
       // Not the best solution - need to find how to pause video player for longer time.
       // This way video player could get enough audio packets in buffer to play without audio discontinuity
