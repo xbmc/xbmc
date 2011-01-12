@@ -4,6 +4,7 @@
 #include <Mmreg.h>
 #include <list>
 #include "SingleLock.h"
+#include "SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "CharsetConverter.h"
 
@@ -131,8 +132,10 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
-                  | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
-                  | DSBCAPS_LOCHARDWARE;         /** Needed for 5.1 on emu101k  */
+                  | DSBCAPS_GLOBALFOCUS;         /** Allows background playing */
+
+  if (!g_sysinfo.IsVistaOrHigher())
+    dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;     /** Needed for 5.1 on emu101k, fails by design on Vista */
 
   dsbdesc.dwBufferBytes = m_dwBufferLen;
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
@@ -141,7 +144,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   HRESULT res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
   if (res != DS_OK)
   {
-    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) // DSBCAPS_LOCHARDWARE Always fails on Vista, by design
+    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE)
     {
       SAFE_RELEASE(m_pBuffer);
       CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.", dserr2str(res));
