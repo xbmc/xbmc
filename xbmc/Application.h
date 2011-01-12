@@ -363,7 +363,6 @@ protected:
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
   bool ProcessMouse();
-  bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);

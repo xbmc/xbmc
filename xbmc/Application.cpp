@@ -379,13 +379,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       break;
-//    case XBMC_KEYDOWN:
-//    case XBMC_KEYUP:
-//      g_Keyboard.HandleEvent(newEvent);
-//      g_application.ProcessKeyboard();
-//      break;
-// New key handling code added in preparation for the major overhaul
-// of the keyboard handling
     case XBMC_KEYDOWN:
       g_application.OnKey(g_Keyboard.ProcessKeyDown(newEvent.key.keysym));
       break;
@@ -3102,22 +3095,6 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 #endif
 
    return false;
-}
-
-bool CApplication::ProcessKeyboard()
-{
-  MEASURE_FUNCTION;
-
-  // Get the keypress from the keyboard
-  const CKey key(g_Keyboard.GetKey());
-
-  // If we have a valid keypress pass it to OnKey
-  if (key.GetVKey() || key.GetUnicode())
-  {
-    g_Keyboard.Reset();
-    return OnKey(key);
-  }
-  return false;
 }
 
 bool CApplication::Cleanup()

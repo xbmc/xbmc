@@ -215,8 +215,6 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
-  g_Keyboard.ResetState();
-
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
 }
