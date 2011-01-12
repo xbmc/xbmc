@@ -33,7 +33,7 @@ CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 bool CDVDSubtitleTagSami::Init()
 {
   m_tags = new CRegExp(true);
-  if (!m_tags->RegComp("(<[^>]*>)"))
+  if (!m_tags->RegComp("(<[^>]*>|\\{[^\\}]*\\})"))
     return false;
 
   m_tagOptions = new CRegExp(true);
@@ -57,36 +57,52 @@ void CDVDSubtitleTagSami::ConvertLine(CDVDOverlayText* pOverlay, const char* lin
     CStdString fullTag = m_tags->GetMatch(0);
     fullTag.ToLower();
     strUTF8.erase(pos, fullTag.length());
-    if (fullTag == "<b>")
+    if (fullTag == "<b>" || fullTag == "{\\b1}")
     {
       m_flag[FLAG_BOLD] = true;
       strUTF8.insert(pos, "[B]");
       pos += 3;
     }
-    else if (fullTag == "</b>" && m_flag[FLAG_BOLD])
+    else if ((fullTag == "</b>" || fullTag == "{\\b0}") && m_flag[FLAG_BOLD])
     {
       m_flag[FLAG_BOLD] = false;
       strUTF8.insert(pos, "[/B]");
       pos += 4;
     }
-    else if (fullTag == "<i>")
+    else if (fullTag == "<i>" || fullTag == "{\\i1}")
     {
       m_flag[FLAG_ITALIC] = true;
       strUTF8.insert(pos, "[I]");
       pos += 3;
     }
-    else if (fullTag == "</i>" && m_flag[FLAG_ITALIC])
+    else if ((fullTag == "</i>" || fullTag == "{\\i0}") && m_flag[FLAG_ITALIC])
     {
       m_flag[FLAG_ITALIC] = false;
       strUTF8.insert(pos, "[/I]");
       pos += 4;
     }
-    else if (fullTag == "</font>" && m_flag[FLAG_COLOR])
+    else if ((fullTag == "</font>" || fullTag == "{\\c}") && m_flag[FLAG_COLOR])
     {
       m_flag[FLAG_COLOR] = false;
       strUTF8.insert(pos, "[/COLOR]");
       pos += 8;
     }
+    else if (fullTag.Left(5) == "{\\c&h" || fullTag.Left(6) == "{\\1c&h")
+    {
+      m_flag[FLAG_COLOR] = true;
+	  CStdString tempColorTag = "[COLOR FF";
+	  CStdString tagOptionValue;
+	  if (fullTag.Left(5) == "{\\c&h")
+	     tagOptionValue = fullTag.substr(5,6);
+	  else
+	     tagOptionValue = fullTag.substr(6,6);
+	  tempColorTag += tagOptionValue.substr(4,2);
+	  tempColorTag += tagOptionValue.substr(2,2);
+	  tempColorTag += tagOptionValue.substr(0,2);
+      tempColorTag += "]";
+      strUTF8.insert(pos, tempColorTag);
+      pos += tempColorTag.length();
+	}
     else if (fullTag.Left(5) == "<font")
     {
       int pos2 = 5;
