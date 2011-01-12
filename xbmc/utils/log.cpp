@@ -351,6 +351,25 @@ void LogGraphicsInfo()
   else
     CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = NULL");
 
+  //GL_NVX_gpu_memory_info extension
+#define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX          0x9047
+#define GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX    0x9048
+#define GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX  0x9049
+#define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
+#define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
+
+  if (glewGetExtension("GL_NVX_gpu_memory_info"))
+  {
+    GLint mem = 0;
+
+    glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &mem);
+    CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = %i", mem);
+
+    //this seems to be the amount of ram on the videocard
+    glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &mem);
+    CLog::Log(LOGNOTICE, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = %i", mem);
+  }
+
   s = glGetString(GL_EXTENSIONS);
   if (s)
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
