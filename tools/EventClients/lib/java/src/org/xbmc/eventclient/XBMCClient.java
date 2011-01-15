@@ -68,7 +68,7 @@ public class XBMCClient
 		hasIcon = true;
 		
 		// Call start-Method...
-		startClient(hostAddress, hostPort, deviceName, iconType, iconData);
+		setupClient(hostAddress, hostPort, deviceName, iconType, iconData);
 	}
 	
 
@@ -84,7 +84,7 @@ public class XBMCClient
 	public XBMCClient(InetAddress hostAddress, int hostPort, String deviceName, byte iconType, byte[] iconData) throws IOException
 	{
 		hasIcon = true;
-		startClient(hostAddress, hostPort, deviceName, iconType, iconData);
+		setupClient(hostAddress, hostPort, deviceName, iconType, iconData);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class XBMCClient
 		hasIcon = false;
 		byte iconType = Packet.ICON_NONE;
 		byte[] iconData = null;
-		startClient(hostAddress, hostPort, deviceName, iconType, iconData);
+		setupClient(hostAddress, hostPort, deviceName, iconType, iconData);
 	}
 
 
@@ -112,7 +112,7 @@ public class XBMCClient
 	 * @param iconData The icon itself as a Byte-Array 
 	 * @throws IOException
 	 */
-	private void startClient(InetAddress hostAddress, int hostPort, String deviceName, byte iconType, byte[] iconData) throws IOException
+	private void setupClient(InetAddress hostAddress, int hostPort, String deviceName, byte iconType, byte[] iconData) throws IOException
 	{
 		// Save host address and port
 		this.hostAddress = hostAddress;
@@ -121,7 +121,11 @@ public class XBMCClient
 		
 		this.iconType = iconType;
 		this.iconData = iconData;
+		startClient();
+	}
 
+	public void startClient() throws IOException
+	{
 		// Send Hello Packet...
 		PacketHELO p;
 		if(hasIcon)
