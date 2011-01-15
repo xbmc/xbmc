@@ -68,7 +68,7 @@ int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duratio
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
-  if(strncmp((const char*)data, "Dialogue:", 7) == 0)
+  if(strncmp((const char*)data, "Dialogue:", 9) == 0)
   {
     int    sh, sm, ss, sc, eh, em, es, ec;
     size_t pos;
