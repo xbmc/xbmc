@@ -704,6 +704,28 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
   return true;
 }
 
+bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon)
+{
+  // create a context for these addons
+  cp_status_t status;
+  cp_context_t *context = m_cpluff->create_context(&status);
+  if (!root || !context)
+    return false;
+
+  // dump the XML back to text
+  std::string xml;
+  xml << TiXmlDeclaration("1.0", "UTF-8", "");
+  xml << *root;
+  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
+  if (info)
+  {
+    addon = GetAddonFromDescriptor(info);
+    m_cpluff->release_info(context, info);
+  }
+  m_cpluff->destroy_context(context);
+  return addon != NULL;
+}
+  
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)
