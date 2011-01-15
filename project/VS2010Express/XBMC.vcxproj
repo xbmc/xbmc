@@ -300,6 +300,7 @@
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
     <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
     <ClCompile Include="..\..\xbmc\DateTime.cpp" />
@@ -1106,6 +1107,7 @@
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h" />
     <ClInclude Include="..\..\xbmc\CueDocument.h" />
     <ClInclude Include="..\..\xbmc\DateTime.h" />

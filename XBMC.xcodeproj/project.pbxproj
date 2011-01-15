@@ -1150,6 +1150,7 @@
 		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
 		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
 		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
+		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
@@ -3705,6 +3706,8 @@
 		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsstr.h; sourceTree = "<group>"; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_posix.c; sourceTree = "<group>"; };
+		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
+		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
@@ -5600,6 +5603,8 @@
 				F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */,
 				431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */,
 				431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */,
+				F56579AD13060D1E0085ED7F /* RenderCapture.cpp */,
+				F56579AE13060D1E0085ED7F /* RenderCapture.h */,
 				E38E16650D25F9FA00618676 /* RenderManager.cpp */,
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
 				E38E166B0D25F9FA00618676 /* VideoShaders */,
@@ -8171,6 +8176,7 @@
 				7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */,
+				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

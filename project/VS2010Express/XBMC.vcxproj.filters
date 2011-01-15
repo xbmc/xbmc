@@ -2465,6 +2465,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
+      <Filter>cores\VideoRenderers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4937,6 +4940,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
       <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h">
+      <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

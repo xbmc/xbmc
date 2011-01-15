@@ -42,6 +42,7 @@
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
+#include "RenderCapture.h"
 
 using namespace Shaders;
 
@@ -1325,6 +1326,46 @@ void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int wid
 
   // restore original video rect
   m_destRect = saveSize;
+}
+
+bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
+{
+  if (!m_bValidated)
+    return false;
+
+  // get our screen rect
+  const CRect rv = g_graphicsContext.GetViewWindow();
+
+  // save current video rect
+  CRect saveSize = m_destRect;
+
+  // new video rect is thumbnail size
+  m_destRect.SetRect(0, 0, (float)width, (float)height);
+
+  // clear framebuffer and invert Y axis to get non-inverted image
+  glDisable(GL_BLEND);
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  g_matrices.Translatef(0, height, 0);
+  g_matrices.Scalef(1.0, -1.0f, 1.0f);
+
+  capture->BeginRender();
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
+  // read pixels
+  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+               GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  capture->EndRender();
+
+  // revert model view matrix
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PopMatrix();
+
+  // restore original video rect
+  m_destRect = saveSize;
+
+  return true;
 }
 
 //********************************************************************************************************

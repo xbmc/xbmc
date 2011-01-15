@@ -993,6 +993,39 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
 }
 
 
+bool CWinRenderer::RenderCapture(CRenderCapture* capture)
+{
+  if (!m_bConfigured || m_NumYV12Buffers == 0)
+    return false;
+
+  bool succeeded = false;
+
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  CRect saveSize = m_destRect;
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+
+  LPDIRECT3DSURFACE9 oldSurface;
+  pD3DDevice->GetRenderTarget(0, &oldSurface);
+
+  capture->BeginRender();
+  if (capture->GetState() != CAPTURESTATE_FAILED)
+  {
+    pD3DDevice->BeginScene();
+    Render(0);
+    pD3DDevice->EndScene();
+    capture->EndRender();
+    succeeded = true;
+  }
+
+  pD3DDevice->SetRenderTarget(0, oldSurface);
+  oldSurface->Release();
+
+  m_destRect = saveSize;
+
+  return succeeded;
+}
+
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************

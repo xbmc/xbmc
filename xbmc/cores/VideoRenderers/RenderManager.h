@@ -21,6 +21,8 @@
  *
  */
 
+#include <list>
+
 #if defined (HAS_GL)
   #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
@@ -35,6 +37,8 @@
 #include "threads/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
+
+class CRenderCapture;
 
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
@@ -56,6 +60,11 @@ public:
   void SetupScreenshot();
 
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+
+  CRenderCapture* AllocRenderCapture();
+  void ReleaseRenderCapture(CRenderCapture* capture);
+  void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
+  void ManageCaptures();
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
@@ -243,6 +252,14 @@ protected:
 
 
   OVERLAY::CRenderer m_overlays;
+
+  void RenderCapture(CRenderCapture* capture);
+  void RemoveCapture(CRenderCapture* capture);
+  CCriticalSection           m_captCritSect;
+  std::list<CRenderCapture*> m_captures;
+  //set to true when adding something to m_captures, set to false when m_captures is made empty
+  //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
+  bool                       m_hasCaptures; 
 };
 
 extern CXBMCRenderManager g_renderManager;

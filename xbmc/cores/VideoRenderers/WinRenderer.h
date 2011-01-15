@@ -27,6 +27,7 @@
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
 #include "guilib/D3DResource.h"
+#include "RenderCapture.h"
 #include "settings/VideoSettings.h"
 //#define MP_DIRECTRENDERING
 
@@ -188,7 +189,10 @@ public:
 
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
+
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+
+  bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
   virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
