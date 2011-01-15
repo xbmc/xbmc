@@ -3335,9 +3335,10 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
           {
             strDest.Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name, i);
             if (CFile::Cache(vecSubtitles[i], strDest))
+            {
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", vecSubtitles[i].c_str(), strDest.c_str());
-            CStdString strTemp;
-            vecSubtitles.push_back(strDest);
+              vecSubtitles.push_back(strDest);
+            }
           }
         }
       }
