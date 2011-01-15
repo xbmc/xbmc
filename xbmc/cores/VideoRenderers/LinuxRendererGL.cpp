@@ -1681,6 +1681,47 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   m_destRect = saveSize;
 }
 
+bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
+{
+  if (!m_bValidated)
+    return false;
+
+  // get our screen rect
+  const CRect rv = g_graphicsContext.GetViewWindow();
+
+  // save current video rect
+  CRect saveSize = m_destRect;
+
+  // new video rect is capture size
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+
+  //invert Y axis to get non-inverted image
+  glDisable(GL_BLEND);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glTranslatef(0, capture->GetHeight(), 0);
+  glScalef(1.0, -1.0f, 1.0f);
+
+  capture->BeginRender();
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
+  // read pixels
+  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+               GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  capture->EndRender();
+
+  // revert model view matrix
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
+
+  // restore original video rect
+  m_destRect = saveSize;
+
+  return true;
+}
+
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************

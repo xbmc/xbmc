@@ -2048,6 +2048,7 @@ void CApplication::Render()
   g_graphicsContext.Flip();
 
   g_renderManager.UpdateResolution();
+  g_renderManager.ManageCaptures();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);

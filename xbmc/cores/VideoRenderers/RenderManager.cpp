@@ -348,6 +348,130 @@ void CXBMCRenderManager::CreateThumbnail(CBaseTexture *texture, unsigned int wid
     m_pRenderer->CreateThumbnail(texture, width, height);
 }
 
+CRenderCapture* CXBMCRenderManager::AllocRenderCapture()
+{
+  return new CRenderCapture;
+}
+
+void CXBMCRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
+{
+  CSingleLock lock(m_captCritSect);
+
+  RemoveCapture(capture);
+
+  //because a CRenderCapture might have some gl things allocated, it can only be deleted from app thread
+  if (g_application.IsCurrentThread())
+  {
+    delete capture;
+  }
+  else
+  {
+    capture->SetState(CAPTURESTATE_NEEDSDELETE);
+    m_captures.push_back(capture);
+  }
+}
+
+void CXBMCRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+{
+  CSingleLock lock(m_captCritSect);
+
+  RemoveCapture(capture);
+
+  capture->SetState(CAPTURESTATE_NEEDSRENDER);
+  capture->SetUserState(CAPTURESTATE_WORKING);
+  capture->SetWidth(width);
+  capture->SetHeight(height);
+  capture->SetFlags(flags);
+  capture->GetEvent().Reset();
+
+  if (g_application.IsCurrentThread())
+  {
+    if (flags & CAPTUREFLAG_IMMEDIATELY)
+    {
+      //render capture and read out immediately
+      RenderCapture(capture);
+      capture->SetUserState(capture->GetState());
+      capture->GetEvent().Set();
+    }
+
+    if ((flags & CAPTUREFLAG_CONTINUOUS) || !(flags & CAPTUREFLAG_IMMEDIATELY))
+    {
+      //schedule this capture for a render and readout
+      m_captures.push_back(capture);
+    }
+  }
+  else
+  {
+    //schedule this capture for a render and readout
+    m_captures.push_back(capture);
+  }
+}
+
+void CXBMCRenderManager::ManageCaptures()
+{
+  CSingleLock lock(m_captCritSect);
+
+  std::list<CRenderCapture*>::iterator it = m_captures.begin();
+  while (it != m_captures.end())
+  {
+    CRenderCapture* capture = *it;
+
+    if (capture->GetState() == CAPTURESTATE_NEEDSDELETE)
+    {
+      delete capture;
+      it = m_captures.erase(it);
+      continue;
+    }
+
+    if (capture->GetState() == CAPTURESTATE_NEEDSRENDER)
+      RenderCapture(capture);
+    else if (capture->GetState() == CAPTURESTATE_NEEDSREADOUT)
+      capture->ReadOut();
+
+    if (capture->GetState() == CAPTURESTATE_DONE || capture->GetState() == CAPTURESTATE_FAILED)
+    {
+      //tell the thread that the capture is done or has failed
+      capture->SetUserState(capture->GetState());
+      capture->GetEvent().Set();
+
+      if (capture->GetFlags() & CAPTUREFLAG_CONTINUOUS)
+      {
+        capture->SetState(CAPTURESTATE_NEEDSRENDER);
+
+        //if rendering this capture continuously, and readout is async, render a new capture immediately
+        if (capture->IsAsync() && !(capture->GetFlags() & CAPTUREFLAG_IMMEDIATELY))
+          RenderCapture(capture);
+
+        it++;
+      }
+      else
+      {
+        it = m_captures.erase(it);
+      }
+    }
+    else
+    {
+      it++;
+    }
+  }
+}
+
+void CXBMCRenderManager::RenderCapture(CRenderCapture* capture)
+{
+  CSingleLock gfxLock(g_graphicsContext);
+  CSharedLock sharedLock(m_sharedSection);
+  if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
+    capture->SetState(CAPTURESTATE_FAILED);
+}
+
+void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
+{
+  //remove this CRenderCapture from the list
+  std::list<CRenderCapture*>::iterator it;
+  while ((it = find(m_captures.begin(), m_captures.end(), capture)) != m_captures.end())
+    m_captures.erase(it);
+}
+
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)

@@ -38,6 +38,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -248,19 +249,24 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
   {
-    CSingleLock lock(g_graphicsContext);
-    // we're really just using the CTexture here as a pixel buffer
-    CTexture texture(width, height, XB_FMT_A8R8G8B8);
 #ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.CreateThumbnail(&texture, width, height);
+    CRenderCapture* thumbnail = g_renderManager.AllocRenderCapture();
+    g_renderManager.Capture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
+    if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
+    {
+      Crc32 crc;
+      crc.ComputeFromLowerCase(g_application.CurrentFile());
+      bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
+      bookmark.thumbNailImage = URIUtils::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+      if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
+                                          bookmark.thumbNailImage))
+        bookmark.thumbNailImage.Empty();
+    }
+    else
+      CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
+
+    g_renderManager.ReleaseRenderCapture(thumbnail);
 #endif
-    Crc32 crc;
-    crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
-    bookmark.thumbNailImage = URIUtils::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-    if (!CPicture::CreateThumbnailFromSurface(texture.GetPixels(), width, height, texture.GetPitch(),
-                                        bookmark.thumbNailImage))
-      bookmark.thumbNailImage.Empty();
   }
   videoDatabase.Open();
   if (tag)

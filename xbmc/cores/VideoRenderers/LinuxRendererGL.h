@@ -30,6 +30,7 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
+#include "RenderCapture.h"
 
 class CVDPAU;
 class CBaseTexture;
@@ -126,6 +127,8 @@ public:
   virtual void SetupScreenshot() {};
 
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+
+  bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
