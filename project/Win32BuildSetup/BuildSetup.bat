@@ -220,8 +220,9 @@ IF %comp%==vs2008 (
   ECHO Generating installer includes...
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
-  FOR /F "Tokens=2* Delims=]" %%R IN ('FIND /v /n "&_&_&_&" "..\..\.svn\entries" ^| FIND "[11]"') DO SET XBMC_REV=%%R
-  SET XBMC_SETUPFILE=XBMCSetup-Rev%XBMC_REV%-%target%.exe
+  CALL extract_git_rev.bat
+  SET GIT_REV=#%GIT_REV%
+  SET XBMC_SETUPFILE=XBMCSetup-Rev%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -260,7 +261,7 @@ IF %comp%==vs2008 (
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%XBMC_REV%" /Dxbmc_target="%target%" "XBMC for Windows.nsi"
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%GIT_REV%" /Dxbmc_target="%target%" "XBMC for Windows.nsi"
   IF NOT EXIST "%XBMC_SETUPFILE%" (
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%.
 	  goto DIE
