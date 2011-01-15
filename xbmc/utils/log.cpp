@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "Thread.h"
+#include "WindowingFactory.h"
 
 FILE*       CLog::m_file            = NULL;
 int         CLog::m_repeatCount     = 0;
@@ -358,7 +359,7 @@ void LogGraphicsInfo()
 #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 
-  if (glewGetExtension("GL_NVX_gpu_memory_info"))
+  if (g_Windowing.IsExtSupported("GL_NVX_gpu_memory_info"))
   {
     GLint mem = 0;
 

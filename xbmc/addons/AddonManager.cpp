@@ -35,11 +35,9 @@
 #include "log.h"
 
 #ifdef HAS_VISUALISATION
-#include "DllVisualisation.h"
 #include "Visualisation.h"
 #endif
 #ifdef HAS_SCREENSAVER
-#include "DllScreenSaver.h"
 #include "ScreenSaver.h"
 #endif
 #ifdef HAS_PVRCLIENTS
