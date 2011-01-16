@@ -397,13 +397,21 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (!item->IsDVD() && item->m_strPath != "add" &&
          (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-          if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
-            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;
         database.Open();
         ADDON::ScraperPtr info = database.GetScraperForPath(item->m_strPath);
+
+        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+        if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+        {
+          if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
+          {
+            if (info && info->Content() != CONTENT_NONE)
+              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+            else
+              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+          }
+        }
 
         if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
@@ -435,8 +443,15 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+            {
               if (!item->IsPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
-                buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              {
+                if (info && info->Content() != CONTENT_NONE)
+                  buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+                else
+                  buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+              }
+            }
             if (!info)
             { // scraper not set - allow movie information or set content
               CStdString strPath(item->m_strPath);

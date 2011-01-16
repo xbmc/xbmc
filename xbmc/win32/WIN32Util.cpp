@@ -70,67 +70,6 @@ CWIN32Util::~CWIN32Util(void)
 {
 }
 
-
-const CStdString CWIN32Util::GetNextFreeDriveLetter()
-{
-  for(int iDrive='a';iDrive<='z';iDrive++)
-  {
-    CStdString strDrive;
-    strDrive.Format("%c:",iDrive);
-    int iType = GetDriveType(strDrive);
-    if(iType == DRIVE_NO_ROOT_DIR && iDrive != 'a' && iDrive != 'b')
-      return strDrive;
-  }
-  return StringUtils::EmptyString;
-}
-
-CStdString CWIN32Util::MountShare(const CStdString &smbPath, const CStdString &strUser, const CStdString &strPass, DWORD *dwError)
-{
-  NETRESOURCE nr;
-  memset(&nr,0,sizeof(nr));
-  CStdString strRemote = smbPath;
-  CStdString strDrive = CWIN32Util::GetNextFreeDriveLetter();
-
-  if(strDrive == StringUtils::EmptyString)
-    return StringUtils::EmptyString;
-
-  strRemote.Replace('/', '\\');
-
-  nr.lpRemoteName = (LPTSTR)(LPCTSTR)strRemote.c_str();
-  nr.lpLocalName  = (LPTSTR)(LPCTSTR)strDrive.c_str();
-  nr.dwType       = RESOURCETYPE_DISK;
-
-  DWORD dwRes = WNetAddConnection2(&nr,(LPCTSTR)strPass.c_str(), (LPCTSTR)strUser.c_str(), NULL);
-
-  if(dwError != NULL)
-    *dwError = dwRes;
-
-  if(dwRes != NO_ERROR)
-  {
-    CLog::Log(LOGERROR, "Can't mount %s to %s. Error code %d",strRemote.c_str(), strDrive.c_str(),dwRes);
-    return StringUtils::EmptyString;
-  }
-
-  return strDrive;
-}
-
-DWORD CWIN32Util::UmountShare(const CStdString &strPath)
-{
-  return WNetCancelConnection2((LPCTSTR)strPath.c_str(),NULL,true);
-}
-
-CStdString CWIN32Util::MountShare(const CStdString &strPath, DWORD *dwError)
-{
-  CURL url(strPath);
-  CStdString strPassword = url.GetPassWord();
-  CStdString strUserName = url.GetUserName();
-  CStdString strPathToShare = "\\\\"+url.GetHostName() + "\\" + url.GetShareName();
-  if(!url.GetUserName().IsEmpty())
-    return CWIN32Util::MountShare(strPathToShare, strUserName, strPassword, dwError);
-  else
-    return CWIN32Util::MountShare(strPathToShare, "", "", dwError);
-}
-
 CStdString CWIN32Util::URLEncode(const CURL &url)
 {
   /* due to smb wanting encoded urls we have to build it manually */
