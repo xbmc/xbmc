@@ -394,6 +394,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["file"] = m_strFile;
   value["path"] = m_strPath;
   value["imdbnumber"] = m_strIMDBNumber;
+  value["mpaa"] = m_strMPAARating;
   value["filenameandpath"] = m_strFileNameAndPath;
   value["originaltitle"] = m_strOriginalTitle;
   value["episodeguide"] = m_strEpisodeGuide;
