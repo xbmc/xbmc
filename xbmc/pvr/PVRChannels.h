@@ -25,15 +25,21 @@
 #include "PVRChannel.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
+#define XBMC_INTERNAL_GROUPID 0
+
 class CPVRChannelGroups;
 class CPVREpg;
 
 class CPVRChannels : public std::vector<CPVRChannel *>
 {
 private:
-  bool m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
-  int  m_iHiddenChannels; /* the amount of hidden channels in this container */
-  bool m_bIsSorted;       /* true if this container is sorted by channel number, false if not */
+  bool          m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
+  int           m_iHiddenChannels; /* the amount of hidden channels in this container */
+  bool          m_bIsSorted;       /* true if this container is sorted by channel number, false if not */
+
+  unsigned long m_iGroupId;
+  CStdString    m_strGroupName;
+  int           m_iSortOrder;
 
   /**
    * Load the channels stored in the database.
@@ -82,6 +88,7 @@ private:
   void ReNumberAndCheck(void);
 
 public:
+  CPVRChannels(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder);
   CPVRChannels(bool bRadio);
   virtual ~CPVRChannels(void);
 

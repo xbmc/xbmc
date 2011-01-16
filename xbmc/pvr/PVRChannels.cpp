@@ -47,15 +47,24 @@ CPVRChannels::CPVRChannels(bool bRadio)
   m_bRadio          = bRadio;
   m_iHiddenChannels = 0;
   m_bIsSorted       = false;
+  m_iGroupId        = XBMC_INTERNAL_GROUPID;
+  m_strGroupName    = "";
+  m_iSortOrder      = 0;
+}
+
+CPVRChannels::CPVRChannels(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
+{
+  m_bRadio          = bRadio;
+  m_iHiddenChannels = 0;
+  m_bIsSorted       = false;
+  m_iGroupId        = iGroupId;
+  m_strGroupName    = strGroupName;
+  m_iSortOrder      = iSortOrder;
 }
 
 CPVRChannels::~CPVRChannels(void)
 {
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-  {
-    delete at(iChannelPtr);
-  }
-  erase(begin(), end());
+  Unload();
 }
 
 int CPVRChannels::Load(void)
@@ -63,15 +72,25 @@ int CPVRChannels::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  int iChannelCount = LoadFromDb();
+  int iChannelCount = 0;
 
-  /* try to get the channels from clients if there are none in the database */
-  if (iChannelCount <= 0)
+  if (m_iGroupId == XBMC_INTERNAL_GROUPID)
   {
-    CLog::Log(LOGNOTICE, "%s - No %s channels stored in the database. Reading channels from clients",
-        __FUNCTION__, m_bRadio ? "Radio" : "TV");
+    /* load all channels from the database */
+    iChannelCount = LoadFromDb();
 
-    iChannelCount = LoadFromClients();
+    /* try to get the channels from clients if there are none in the database */
+    if (iChannelCount <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - No %s channels stored in the database. Reading channels from clients",
+          __FUNCTION__, m_bRadio ? "Radio" : "TV");
+
+      iChannelCount = LoadFromClients();
+    }
+  }
+  else
+  {
+    // TODO load group members from the database
   }
 
   return iChannelCount;
@@ -79,27 +98,43 @@ int CPVRChannels::Load(void)
 
 void CPVRChannels::Unload()
 {
+  if (m_iGroupId == XBMC_INTERNAL_GROUPID)
+  {
+    for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    {
+      delete at(iChannelPtr);
+    }
+  }
+
   clear();
 }
 
 bool CPVRChannels::Update()
 {
   bool         bReturn  = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
-  if (database && database->Open())
+  if (m_iGroupId == XBMC_INTERNAL_GROUPID)
   {
-    CPVRChannels PVRChannels_tmp(m_bRadio);
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
-    PVRChannels_tmp.LoadFromClients(false);
-    bReturn = Update(&PVRChannels_tmp);
+    if (database && database->Open())
+    {
+      CPVRChannels PVRChannels_tmp(m_bRadio);
 
-    database->Close();
+      PVRChannels_tmp.LoadFromClients(false);
+      bReturn = Update(&PVRChannels_tmp);
+
+      database->Close();
+    }
+  }
+  {
+    // TODO update group members from the database
   }
 
   return bReturn;
 }
 
+// TODO rename to AddToGroup
 bool CPVRChannels::Update(CPVRChannel *channel)
 {
   // TODO notify observers
@@ -110,6 +145,9 @@ bool CPVRChannels::Update(CPVRChannel *channel)
 
 void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 {
+  if (m_iGroupId != XBMC_INTERNAL_GROUPID) // TODO non-system groups
+    return;
+
   if (iNewIndex == iOldIndex || iNewIndex == 0)
     return;
 
@@ -156,8 +194,13 @@ void CPVRChannels::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 
 bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
 {
+  bool bReturn = false;
+
   if (!channel)
-    return false;
+    return bReturn;
+
+  if (m_iGroupId != XBMC_INTERNAL_GROUPID)
+    return bReturn; // use RemoveFromGroup for non-system groups
 
   /* check if there are active timers on this channel if we are hiding it */
   if (!channel->IsHidden() && PVRTimers.ChannelHasTimers(*channel))
@@ -166,7 +209,7 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog)
-        return false;
+        return bReturn;
 
       pDialog->SetHeading(19098);
       pDialog->SetLine(0, 19099);
@@ -175,7 +218,7 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
       pDialog->DoModal();
 
       if (!pDialog->IsConfirmed())
-        return false;
+        return bReturn;
     }
 
     /* delete the timers */
@@ -188,7 +231,7 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
       (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag() == channel))
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
-    return false;
+    return bReturn;
   }
 
   /* switch the hidden flag */
@@ -206,7 +249,9 @@ bool CPVRChannels::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true 
   /* move the channel to the end of the list */
   MoveChannel(channel->ChannelNumber(), size());
 
-  return true;
+  bReturn = true;
+
+  return bReturn;
 }
 
 void CPVRChannels::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
@@ -335,20 +380,20 @@ CPVRChannel *CPVRChannels::GetByUniqueID(int iUniqueID)
   return channel;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber) // TODO: move to channelgroup
+CPVRChannel *CPVRChannels::GetByChannelNumber(int iChannelNumber)
 {
   CPVRChannel *channel = NULL;
 
   if (iChannelNumber <= (int) size())
   {
-    SortByChannelNumber();
+    SortByChannelNumber(); // TODO support group channel numbers
     channel = at(iChannelNumber - 1);
   }
 
   return channel;
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber) // TODO: move to channelgroup
+CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber)
 {
   int iGetChannel = iChannelNumber + 1;
   if (iGetChannel > (int) size())
@@ -357,7 +402,7 @@ CPVRChannel *CPVRChannels::GetByChannelNumberUp(int iChannelNumber) // TODO: mov
   return GetByChannelNumber(iGetChannel - 1);
 }
 
-CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber) // TODO: move to channelgroup
+CPVRChannel *CPVRChannels::GetByChannelNumberDown(int iChannelNumber)
 {
   int iGetChannel = iChannelNumber - 1;
   if (iGetChannel <= 0)
@@ -373,6 +418,7 @@ CPVRChannel *CPVRChannels::GetByIndex(unsigned int iIndex)
     NULL;
 }
 
+// TODO support groups
 int CPVRChannels::GetChannels(CFileItemList* results, int iGroupID /* = -1 */, bool bHidden /* = false */)
 {
   int iAmount = 0;
@@ -601,6 +647,9 @@ int CPVRChannels::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannels::LoadFromClients(bool bAddToDb /* = true */)
 {
+  if (m_iGroupId != XBMC_INTERNAL_GROUPID)
+    return -1;
+
   CPVRDatabase *database = NULL;
   int iCurSize = size();
 
@@ -637,6 +686,9 @@ int CPVRChannels::LoadFromClients(bool bAddToDb /* = true */)
 
 int CPVRChannels::GetFromClients(void)
 {
+  if (m_iGroupId != XBMC_INTERNAL_GROUPID)
+    return -1;
+
   CLIENTMAP *clients = g_PVRManager.Clients();
   if (!clients)
     return 0;
