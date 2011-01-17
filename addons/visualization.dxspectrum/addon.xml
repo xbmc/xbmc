@@ -9,6 +9,7 @@
     library_windx="Spectrum_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyzer</summary>
+    <summary lang="es">Visualización que muestra un analizador de espectro en 3D girando</summary>
     <summary lang="fi">Pyörivä 3D-spektrianalysaattori</summary>
     <summary lang="fr">Visualisation montrant un analyseur de spectre 3D en rotation</summary>
     <summary lang="hu">Vizualizáció 3D spektrum analizátorral</summary>
@@ -21,6 +22,8 @@
     <summary lang="zh">显示旋转三维频谱分析图像的可视化效果</summary>
     <description lang="en">DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
+   <description lang="es">DirectX Spectrum es una visualización que muestra un analizador de espectro en 3D girando renderizado con DirectX que se mueve al ritmo de la música creando un efecto de onda en la rejilla del espectro.
+Se puede ajustar la altura de las barras, su velocidad, y como son renderizadas (sólido, puntos, malla). Es una visualización que utiliza poca CPU y muy agradable.</description>
     <description lang="fi">Näyttää pyörivän 3D-spektrianalysaattorin, joka liikkuu musiikin tahdissa tuottaen aaltotehosteen spektrikuvaajaan.
 Spektripalkin korkeuden, nopeuden, ja piirtotavan (täytetyt, pisteet, ääriviivat) voi asettaa asetuksista. Spectrum on kevyt visualisointi joka näyttää hyvältä.</description>
     <description lang="fr">DirectX Spectrum est une visualisation montrant un analyseur de spectre 3D en rotation sous DirectX. Il réagit au tempo de la musique créant un effet d'onde sur la grille.

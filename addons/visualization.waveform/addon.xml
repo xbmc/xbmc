@@ -11,6 +11,7 @@
     library_osx="Waveform.vis"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Visualization showing 2 Waveform Graphs on the screen</summary>
+    <summary lang="es">Visualización mostrando 2 gráficos de ondas en la pantalla</summary>
     <summary lang="de">Eine Visualisierung, welche 2 wellenförmige Grafiken auf dem Bildschirm zeigt</summary>
     <summary lang="fi">Kaksi aaltomuotograafia</summary>
     <summary lang="fr">Visualisation montrant 2 graphiques de forme d'onde à l'écran</summary>
@@ -23,6 +24,7 @@
     <summary lang="se">Visualisering som visar 2 vågformsgrafer på skärmen</summary>
     <summary lang="zh">在屏幕上显示两个波形图的可视化效果</summary>
     <description lang="en">Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
+    <description lang="es">Waveform es un sencillo visualizador que muestra 2 gráficos de ondas en la pantalla, uno para cada canal, derecho e izquierdo, que se mueven al ritmo de la música.</description>
     <description lang="de">Waveform  ist eine einfache Visualisierung, welche 2 wellenförmige Grafiken zeigt. Je eine Grafik für den linken und rechten Kanal, welche sich im Takt der Musik bewegen</description>
     <description lang="fi">Waveform on kaksi aaltomuotograafia näyttävä yksinkertainen visualisointi. Toinen on vasemmalle ja toinen oikealle kanavalla ja ne liikkuvat musiikin tahdissa.</description>
     <description lang="fr">Waveform une simple visualisation montrant deux graphiques de forme d'onde à l'écran. Une pour chaque voie, gauche et droite, qui bouge en fonction du tempo</description>

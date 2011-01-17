@@ -7,6 +7,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="br">Condições meteorológicas atuais.</summary>
     <summary lang="en">Current weather conditions.</summary>
+    <summary lang="es">Condiciones meteorológicas actuales.</summary>
     <summary lang="de">Aktuelle Wetterbedingungen</summary>
     <summary lang="fr">Conditions météorologiques en cours.</summary>
     <summary lang="hu">A jelenlegi időjárás.</summary>
@@ -20,6 +21,7 @@
     <summary lang="zh">当前天气状况</summary>
     <description lang="br">Esta é a origem padrão de informação meteorológicas.[CR][CR]Ela provê as condições atuais e previsão para quatro dias.</description>
     <description lang="en">This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
+    <description lang="es">Fuente para las condiciones meteorológicas.[CR][CR]Proporciona las condiciones meteorológicas actuales y una previsión para 4 días.</description>
     <description lang="de">Standardquelle für Wetterinformationen[CR][CR]Das aktuelle Wetter sowie eine 4 tägige Vorausschau werden angezeigt</description>
     <description lang="fr">C'est la source météo par défaut.[CR][CR]Fournit les conditions climatiques en cours et les prévisions sur 4 jours.</description>
     <description lang="hu">Ez az alapértelmezett időjárás információforrás.[CR][CR]Tájékoztat a jelenlegi időjárásról, valamint négynapos előrejelzést ad.</description>

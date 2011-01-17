@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Modo</string>
+    <string id="30001">Sólido</string>
+    <string id="30002">Malla</string>
+    <string id="30003">Puntos</string>
+    <string id="30004">Altura de la barra</string>
+    <string id="30005">Pequeña</string>
+    <string id="30006">Por defecto</string>
+    <string id="30007">Grande</string>
+    <string id="30008">Muy grande</string>
+    <string id="30009">Velocidad</string>
+    <string id="30010">Muy despacio</string>
+    <string id="30011">Despacio</string>
+    <string id="30012">Por defecto</string>
+    <string id="30013">Rápido</string>
+    <string id="30014">Muy rápido</string>
+</strings>

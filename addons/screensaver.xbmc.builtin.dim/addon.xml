@@ -7,6 +7,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Screensaver that dims your screen</summary>
     <summary lang="de">Bildschirmschoner zum Abdunkeln des Bildschirmes</summary>
+    <summary lang="es">Un salvapantallas que oscurece tu pantalla</summary>
     <summary lang="fi">Ruudun himmennys</summary>
     <summary lang="fr">Un économiseur qui assombrit votre écran</summary>
     <summary lang="hu">Képernyővédő ami elhalványítja a képernyőt</summary>
@@ -20,6 +21,7 @@
     <summary lang="zh">淡出屏幕保护程序</summary>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="de">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
+    <description lang="es">Dim es un sencillo salvapantallas que oscurece tu pantalla. El valor es configurable entre el 20 y el 100%.</description>
     <description lang="fi">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="fr">L'économiseur Dim est un simple économiseur qui assombrira votre écran à un taux paramètrable compris entre 20 and 100%.</description>
     <description lang="hu">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
