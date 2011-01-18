@@ -36,7 +36,6 @@
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "GUIAudioManager.h"
-#include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/Network.h"
 #include "FileSystem/MultiPathDirectory.h"

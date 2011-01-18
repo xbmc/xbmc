@@ -42,7 +42,6 @@
 #include "PlayListPlayer.h"
 #include "addons/Skin.h"
 #include "GUIAudioManager.h"
-#include "AudioContext.h"
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"

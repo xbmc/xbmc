@@ -568,9 +568,6 @@ IAESound *CSoftAE::GetSound(CStdString file)
 
 void CSoftAE::PlaySound(IAESound *sound)
 {
-   /* make sure the sink is open */
-   //OpenSink();
-
    float *samples = ((CSoftAESound*)sound)->GetSamples();
    if (!samples)
      return;
@@ -587,6 +584,8 @@ void CSoftAE::PlaySound(IAESound *sound)
 
 void CSoftAE::FreeSound(IAESound *sound)
 {
+//  if (!sound) return;
+
   CSingleLock soundSampleLock(m_soundSampleLock);
 
   /* decrement the sound's ref count */

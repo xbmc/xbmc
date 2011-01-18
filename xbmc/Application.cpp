@@ -114,7 +114,6 @@
 #include "karaoke/GUIDialogKaraokeSongSelector.h"
 #include "karaoke/GUIWindowKaraokeLyrics.h"
 #endif
-#include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
 #include "utils/IoSupport.h"
@@ -1092,6 +1091,10 @@ bool CApplication::Initialize()
 
   /* window id's 3000 - 3100 are reserved for python */
 
+  /* start the audio engine */
+  CAEFactory::Start();
+  SetHardwareVolume(AE.GetVolume());
+
   // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
   {
@@ -1118,10 +1121,6 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
-
-  /* start the audio engine */
-  CAEFactory::Start();
-  SetHardwareVolume(AE.GetVolume());
 
   // if the user shutoff the xbox during music scan
   // restore the settings
@@ -2482,7 +2481,7 @@ bool CApplication::OnAction(const CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
+      g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2542,7 +2541,7 @@ bool CApplication::OnAction(const CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
+        g_audioManager.Enable(m_pPlayer->IsPaused());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -3645,12 +3644,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  // Workaround for bug/quirk in SDL_Mixer on OSX.
-  // TODO: Remove after GUI Sounds redux
-#if defined(__APPLE__)
-  g_audioManager.Enable(false);
-#endif
-
   bool bResult;
   if (m_pPlayer)
   {
@@ -4617,11 +4610,6 @@ void CApplication::Process()
   // process messages, even if a movie is playing
   m_applicationMessenger.ProcessMessages();
   if (g_application.m_bStop) return; //we're done, everything has been unloaded
-
-  // check if we can free unused memory
-#ifndef _LINUX
-  g_audioManager.FreeUnused();
-#endif
 
   // check how far we are through playing the current item
   // and do anything that needs doing (lastfm submission, playcount updates etc)

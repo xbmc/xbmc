@@ -38,6 +38,9 @@ CAERemap::~CAERemap()
 
 bool CAERemap::Initialize(const AEChLayout input, const AEChLayout output, bool finalStage, bool forceNormalize/* = false */)
 {
+  if (!input || !output)
+    return false;
+
   /* build the downmix matrix */
   memset(m_mixInfo, 0, sizeof(m_mixInfo));
   m_output = output;

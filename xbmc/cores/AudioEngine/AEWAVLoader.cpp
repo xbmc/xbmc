@@ -98,6 +98,11 @@ bool CAEWAVLoader::Initialize(const CStdString &filename, unsigned int resampleR
     if (!isRIFF && memcmp(chunk.chunk_id, "RIFF", 4) == 0)
     {
       isRIFF = true;
+
+      /* work around invalid chunksize, I have seen this in one file so far (shutter.wav) */
+      if (chunk.chunksize == st.st_size)
+        chunk.chunksize -= 8;
+
       /* sanity check on the chunksize */
       if (chunk.chunksize > st.st_size - 8)
       {
@@ -117,7 +122,7 @@ bool CAEWAVLoader::Initialize(const CStdString &filename, unsigned int resampleR
     else if (!isFMT && memcmp(chunk.chunk_id, "fmt ", 4) == 0)
     {
       isFMT = true;
-      if (chunk.chunksize != 16) break;
+      if (chunk.chunksize < 16) break;
       uint16_t format;
       if (file->Read(&format, sizeof(format)) != sizeof(format)) break;
       format = Endian_SwapLE16(format);
@@ -138,6 +143,9 @@ bool CAEWAVLoader::Initialize(const CStdString &filename, unsigned int resampleR
 
       if (m_channelCount > 2) break;
       isPCM = true;
+
+      if (chunk.chunksize > 16)
+        file->Seek(chunk.chunksize - 16, SEEK_CUR);
     }
     /* if we have the PCM info and its the DATA section */
     else if (isPCM && !isDATA && memcmp(chunk.chunk_id, "data", 4) == 0)

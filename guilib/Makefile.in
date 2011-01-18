@@ -4,7 +4,6 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 endif
 
 SRCS=AnimatedGif.cpp \
-     AudioContext.cpp \
      DirectXGraphics.cpp \
      DDSImage.cpp \
      GraphicContext.cpp \
@@ -68,7 +67,6 @@ SRCS=AnimatedGif.cpp \
      TextureManager.cpp \
      VisibleEffect.cpp \
      XMLUtils.cpp \
-     GUISound.cpp \
      GUIColorManager.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \

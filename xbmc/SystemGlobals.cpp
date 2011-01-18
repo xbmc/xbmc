@@ -26,7 +26,6 @@
 #include "Application.h"
 #include "GUILargeTextureManager.h"
 #include "TextureManager.h"
-#include "AudioContext.h"
 #include "GUISettings.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
@@ -68,7 +67,6 @@
 #endif
 
   CXBMCRenderManager g_renderManager;
-  CAudioContext      g_audioContext;
   CCharsetConverter  g_charsetConverter;
   CLangInfo          g_langInfo;
   CLangCodeExpander  g_LangCodeExpander;

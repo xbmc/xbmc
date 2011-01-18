@@ -78,8 +78,7 @@ bool CSoftAESound::Initialize()
   if (!m_wavLoader.Initialize(m_filename, AE.GetSampleRate()))
     return false;
 
-  m_wavLoader.Remap(AE.GetChannelLayout());
-  return true;
+  return m_wavLoader.Remap(AE.GetChannelLayout());
 }
 
 unsigned int CSoftAESound::GetSampleCount()
