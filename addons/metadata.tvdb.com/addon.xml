@@ -13,7 +13,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Fetch TV show metadata from TheTVDB.com</summary>
     <summary lang="de">Scraper für Fernsehserien von TheTVDB.com</summary>
-    <summary lang="es">Descarga información de Series de TV desde TVDB.com</summary>
+    <summary lang="es">Descarga información de Series de TV de TVDB.com</summary>
     <summary lang="fr">Scraper TheTVDB.com pour les séries TV</summary>
     <summary lang="hu">TV műsor információk a TheTVDB.com-ról</summary>
     <summary lang="nl">Seriemetadata ophalen van TheTVDB.com</summary>

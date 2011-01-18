@@ -17,6 +17,7 @@
     debugging="false"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
+    <summary lang="es">Confluence skin por Jezz_X. (skin por defecto)</summary>
     <summary lang="fr">Skin Confluence par Jezz_X. (skin par défaut)</summary>
     <summary lang="hu">Confluence arculat. Készítő: Jezz_X</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듬 (기본 스킨)</summary>
@@ -27,6 +28,7 @@
     <summary lang="se">Confluence-skalet av Jezz_X. (XBMC standardskal)s</summary>
     <summary lang="zh">Jezz_X开发的Confluence皮肤</summary>
     <description lang="en">Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
+    <description lang="es">Confluence es la skin por defecto de XBMC 9.11 y posteriores. Es una combinación de conceptos de muchas skins populares, e intenta abarcare e integrar lo mejor de ellas en una skin que sea sencilla de entender y utilizar para los nuevos usuarios de XBMC.</description>
     <description lang="fr">Confluence est le skin par défaut de XBMC 9.11 ou supérieur. C'est un condensé d'idées de plusieurs skins populaires. Il tente d'englober et intégrer toutes les bonnes idées que n'importe quel débutant sur XBMC pourrait utiliser avec facilité.</description>
     <description lang="hu">A Confluence az alapértelmezett arculat az XBMC-hez a 9.11-es verziótól kezdődően. Merít sok sok népszerű arculat elképzeléséből, megpróbálva vegyíteni a jó ötleteket úgy, hogy az könnyen kezelhető legyen az XBMC-vel először találkozóknak is.</description>
     <description lang="ko">Confluence 는 XBMC 9.11 이상의 기본 스킨입니다. 많은 인기 스킨의 컨셉과 좋은 아이디어를 모아서 하나의 스킨으로 만들었으며 초보자도 사용하기 쉽습니다.</description>

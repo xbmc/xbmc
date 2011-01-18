@@ -1,7 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Translator: poxitron-->
-<!--Email: poxitron1@gmail.com-->
-<!--Date of translation: 12/06/2010-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Cambiar tus</string>
@@ -63,7 +60,7 @@
   <string id="31107">Ocultar marcas de lectura de archivos de vídeo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ocultar botones de la pantalla principal</string>
   <string id="31109">Fondos de medio</string>
-  <string id="31110">Editar fondo para tipo de medio</string>
+  <string id="31110">Editar fondo para el tipo de medio</string>
   <string id="31111">Ocultar</string>
   <string id="31112">Opciones</string>
   <string id="31113">Una imagen</string>
@@ -72,7 +69,7 @@
   <string id="31116"></string>
   <string id="31117">Mostrar últimos vídeos añadidos</string>
   <string id="31118">Submenús de programas de la pantalla principal</string>
-  <string id="31119"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31119">Ocultar el Fanart del fondo</string>
   <string id="31120">ETIQUETA DEL BOTON</string>
   <string id="31121"></string>  <!-- blanked 2010-11-12 -->
   <string id="31122">El Tiempo</string>
@@ -147,8 +144,8 @@
   <string id="31357"></string>
 
   <!-- Skin Fontsets -->
-  <string id="31390">Skin Predeterminado</string>
-  <string id="31391">Skin Predeterminado sin Maysuculas</string>
+  <string id="31390">Por defecto</string>
+  <string id="31391">Por defecto sin Maysuculas</string>
   <string id="31392">Basada en Arial</string>
 
   <!-- Description Labels  -->

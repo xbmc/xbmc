@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tiempo de mezcla automático</string>
+    <string id="30001">Tiempo entre presets</string>
+    <string id="30002">Tiempo aleatorio adicional</string>
+    <string id="30003">Activar el filtro Anisotrópico</string>
+    <string id="30004">Habilitar cortes</string>
+    <string id="30005">Umbral de volumen para cortes</string>
+    <string id="30006">Tiempo médio entre cortes</string>
+    <string id="30007">Frecuencia de actualización máxima</string>
+    <string id="30008">Habilitar Stereo 3D</string>
+    <string id="30009">Conjunto de presets</string>
+    <string id="30010">Carpeta de presets del usuario</string>
+    <string id="30011">Modo aleatorio de presets</string>
+
+    <string id="30020">Presets WA51</string>
+    <string id="30021">Presets Winamp</string>
+    <string id="30022">Carpeta de presets definida por el usuario</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f seg</string>
+    <string id="30051">%2.0f %%</string>
+    <string id="30052">%2.0f fps</string>
+</strings>

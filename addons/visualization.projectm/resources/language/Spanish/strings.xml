@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Calidad del renderizado</string>
+    <string id="30001">Baja</string>
+    <string id="30002">Media</string>
+    <string id="30003">Alta</string>
+    <string id="30004">Máxima</string>
+    <string id="30005">Mode aleatorio</string>
+    <string id="30006">Suavizar la duración del ajuste preestablecido</string>
+    <string id="30007">Duración del ajuste preestablecido</string>
+    <string id="30008">Sensibillidad del ritmo</string>
+    <string id="30009">Paquete de ajustes preestablecidos</string>
+    <string id="30010">Paquete por defecto</string>
+    <string id="30011">Carpeta de ajustes preestablecidos definida por el usuario</string>
+    <string id="30012">Carpeta de ajustes preestablecidos del usuario</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f seg</string>
+    <string id="30051">%2.0f %%</string>
+</strings>

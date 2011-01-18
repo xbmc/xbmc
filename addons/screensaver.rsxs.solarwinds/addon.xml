@@ -13,6 +13,7 @@
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">A mesmerizing particle effects screensaver</summary>
+    <summary lang="es">Un salvapatallas con unos efectos de partículas fascinantes</summary>
     <summary lang="fi">Lumoava partikkelitehostenäytönsäästäjä</summary>
     <summary lang="fr">Un économiseur hypnotique à effets de particules</summary>
     <summary lang="hu">Egy igéző részecske-effektus képernyővédő</summary>
@@ -24,6 +25,7 @@
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
     <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
+    <description lang="es">Este es un salvapatallas con unos efectos de partículas fascinantes. Verá que puede obtener un número incríble de patrones diferentes.</description>
     <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>
     <description lang="fr">C'est un économiseur d'écran à effets de particules vraiment hypnotique. Vous verrez que vous pouvez obtenir un nombre incroyable de modèles et d'effets différents.</description>
     <description lang="hu">Ez egy lebilincselő hatású részecske-effektus képernyővédő. Hihetetlen mennyiségű különböző minta képes benne kialakulni.</description>
