@@ -27,7 +27,6 @@
 #include "PulseAESound.h"
 #include "utils/CriticalSection.h"
 #include <list>
-#include <map>
 
 struct pa_context;
 struct pa_threaded_mainloop;
@@ -63,7 +62,7 @@ public:
 private:
   CCriticalSection m_lock;
   std::list<CPulseAEStream*> m_streams;
-  std::map<const CStdString, CPulseAESound*> m_sounds;
+  std::list<CPulseAESound* > m_sounds;
 
   static void ContextStateCallback(pa_context *c, void *userdata);
 

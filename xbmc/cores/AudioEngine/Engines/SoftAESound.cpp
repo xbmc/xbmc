@@ -54,7 +54,6 @@ typedef struct
 
 CSoftAESound::CSoftAESound(const CStdString &filename) :
   IAESound(filename),
-  m_refcount    (1    ),
   m_volume      (1.0f ),
   m_inUse       (0    )
 {

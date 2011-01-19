@@ -40,7 +40,15 @@ class CGUIAudioManager
   class CWindowSounds
   {
   public:
-    IAESound *initSound, *deInitSound;
+    IAESound *initSound;
+    IAESound *deInitSound;
+  };
+
+  class CSoundInfo
+  {
+  public:
+    int usage;
+    IAESound *sound;      
   };
 
 public:
@@ -62,13 +70,12 @@ public:
   void SetVolume(float level);
   void Stop();
 private:
-  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier);
+  typedef std::map<CStdString, CSoundInfo> soundCache;
+  typedef std::map<int, IAESound*        > actionSoundMap;
+  typedef std::map<int, CWindowSounds    > windowSoundMap;
+  typedef std::map<CStdString, IAESound* > pythonSoundsMap;
 
-  typedef std::map<int, IAESound*       > actionSoundMap;
-  typedef std::map<int, CWindowSounds   > windowSoundMap;
-  typedef std::map<CStdString, IAESound*> pythonSoundsMap;
-  typedef std::map<int, IAESound*       > windowSoundsMap;
-
+  soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;
   pythonSoundsMap     m_pythonSounds;
@@ -78,6 +85,10 @@ private:
   bool                m_bEnabled;
 
   CCriticalSection    m_cs;
+
+  IAESound* LoadSound(const CStdString &filename);
+  void      FreeSound(IAESound *sound);
+  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier);
 };
 
 extern CGUIAudioManager g_audioManager;

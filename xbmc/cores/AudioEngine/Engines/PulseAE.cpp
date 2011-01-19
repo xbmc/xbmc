@@ -54,6 +54,7 @@ static const char *ContextStateToString(pa_context_state s)
   }
 }
 
+#if 0
 static const char *StreamStateToString(pa_stream_state s)
 {
   switch(s)
@@ -72,6 +73,7 @@ static const char *StreamStateToString(pa_stream_state s)
       return "none";
   }
 }
+#endif
 
 CPulseAE::CPulseAE()
 {
@@ -183,11 +185,6 @@ IAESound *CPulseAE::GetSound(CStdString file)
 {
   CSingleLock lock(m_lock);
 
-  /* see if we have a valid sound */
-  std::map<const CStdString, CPulseAESound*>::iterator itt = m_sounds.find(file);
-  if (itt != m_sounds.end())
-    return itt->second;
-
   CPulseAESound *sound = new CPulseAESound(file, m_Context, m_MainLoop);
   if (!sound->Initialize())
   {
@@ -195,13 +192,24 @@ IAESound *CPulseAE::GetSound(CStdString file)
     return NULL;
   }
 
-  m_sounds[file] = sound;
+  m_sounds.push_back(sound);
   return sound;
 }
 
 void CPulseAE::FreeSound(IAESound *sound)
 {
-  //delete (CPulseAESound*)sound;
+  if (!sound) return;
+
+  sound->Stop();
+  CSingleLock lock(m_lock);
+  for(std::list<CPulseAESound*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    if (*itt == sound)
+    {
+      m_sounds.erase(itt);
+      break;
+    }
+
+  delete (CPulseAESound*)sound;
 }
 
 void CPulseAE::GarbageCollect()

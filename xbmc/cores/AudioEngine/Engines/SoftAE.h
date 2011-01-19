@@ -151,7 +151,7 @@ private:
   bool                                      m_rawPassthrough;
   bool                                      m_passthrough;
   std::list<CSoftAEStream*>                 m_streams;
-  std::map<const CStdString, CSoftAESound*> m_sounds;
+  std::list<CSoftAESound*>                  m_sounds;
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
   void                                     *m_buffer;
   unsigned int                              m_bufferSamples;

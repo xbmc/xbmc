@@ -51,20 +51,11 @@ public:
   /* ReleaseSamples must be called for each time GetSamples has been called */
   virtual float* GetSamples    ();
   void           ReleaseSamples();
-
-  int          GetRefCount() { return m_refcount; }
-  void         IncRefCount() { ++m_refcount; }
-  void         DecRefCount() { --m_refcount; ASSERT(m_refcount >= 0); }
-  void         SetTimeout(unsigned int ts) { m_ts = ts; }
-  unsigned int GetTimeout() { return m_ts; }
-
 private:
   CSharedSection   m_sampleLock;
   CCriticalSection m_critSection;
   CStdString       m_filename;
   CAEWAVLoader     m_wavLoader;
-  int              m_refcount; /* used for GC */
-  unsigned int     m_ts;       /* used for GC */
   float            m_volume;
   int              m_inUse;
 };

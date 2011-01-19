@@ -88,6 +88,15 @@ CSoftAE::~CSoftAE()
     /* note: the stream will call RemoveStream via it's dtor */
     delete s;
   }
+
+  /* free the sounds */
+  CSingleLock soundLock(m_soundLock);
+  while(!m_sounds.empty())
+  {
+    CSoftAESound *s = m_sounds.front();
+    m_sounds.pop_front();
+    delete s;
+  }
 }
 
 IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString &device)
@@ -112,9 +121,9 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 {
   /* lock the sounds before we take the sink lock */
   CSingleLock soundLock(m_soundLock);
-  map<const CStdString, CSoftAESound*>::iterator sitt;
+  list<CSoftAESound*>::iterator sitt;
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-    sitt->second->Lock();
+    (*sitt)->Lock();
 
   /* lock the sink so the thread gets held up */
   m_sinkLock.EnterExclusive();
@@ -207,7 +216,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     {
       /* unlock the sounds */
       for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-        sitt->second->UnLock();
+        (*sitt)->UnLock();
 
       m_sinkLock.LeaveExclusive();
       return true;
@@ -304,7 +313,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   {
     /* unlock the sounds */
     for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-      sitt->second->UnLock();
+      (*sitt)->UnLock();
 
     m_sinkLock.LeaveExclusive();
     return true;
@@ -313,8 +322,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   /* re-init sounds and unlock */
   for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
   {
-    sitt->second->Initialize();
-    sitt->second->UnLock();
+    (*sitt)->Initialize();
+    (*sitt)->UnLock();
   }
   soundLock.Leave();
 
@@ -546,15 +555,6 @@ IAESound *CSoftAE::GetSound(CStdString file)
 {
   CSingleLock soundLock(m_soundLock);
 
-  /* see if we have a valid sound */
-  map<const CStdString, CSoftAESound*>::iterator itt = m_sounds.find(file);
-  if (itt != m_sounds.end())
-  {
-    /* increment the reference count */
-    itt->second->IncRefCount();
-    return itt->second;
-  }
-
   CSoftAESound *sound = new CSoftAESound(file);
   if (!sound->Initialize())
   {
@@ -562,7 +562,7 @@ IAESound *CSoftAE::GetSound(CStdString file)
     return NULL;
   }
 
-  m_sounds[file] = sound;
+  m_sounds.push_back(sound);
   return sound;
 }
 
@@ -584,59 +584,22 @@ void CSoftAE::PlaySound(IAESound *sound)
 
 void CSoftAE::FreeSound(IAESound *sound)
 {
-//  if (!sound) return;
+  if (!sound) return;
 
-  CSingleLock soundSampleLock(m_soundSampleLock);
-
-  /* decrement the sound's ref count */
-  ((CSoftAESound*)sound)->DecRefCount();
-
-  /* if other processes are using the sound, dont remove it */
-  if (((CSoftAESound*)sound)->GetRefCount() > 0)
-    return;
-
-  /* set the timeout to 30 seconds */
-  ((CSoftAESound*)sound)->SetTimeout(CTimeUtils::GetTimeMS() + 30000);
-
-  /* stop the sound playing */
-  list<SoundState>::iterator itt;
-  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
-  {
-    if ((*itt).owner == sound)
+  sound->Stop();
+  CSingleLock soundLock(m_soundLock);
+  for(list<CSoftAESound*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    if (*itt == sound)
     {
-      (*itt).owner->ReleaseSamples();
-      itt = m_playing_sounds.erase(itt);
+      m_sounds.erase(itt);
+      break;
     }
-    else ++itt;
-  }
+
+  delete (CSoftAESound*)sound;
 }
 
 void CSoftAE::GarbageCollect()
 {
-  CSingleLock soundLock(m_soundLock);
-
-  unsigned int ts = CTimeUtils::GetTimeMS();
-  map<const CStdString, CSoftAESound*>::iterator itt;
-  list<map<const CStdString, CSoftAESound*>::iterator> remove;
-
-  for(itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
-  {
-    CSoftAESound *sound = itt->second;
-    /* free any sounds that are no longer used and are > 30 seconds old */
-    if (sound->GetRefCount() == 0 && ts > sound->GetTimeout())
-    {
-      delete sound;
-      remove.push_back(itt);
-      continue;
-    }
-  }
-
-  /* erase the entries from the map */
-  while(!remove.empty())
-  {
-    m_sounds.erase(remove.front());
-    remove.pop_front();
-  }
 }
 
 unsigned int CSoftAE::GetSampleRate()

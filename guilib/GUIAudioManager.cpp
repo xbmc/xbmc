@@ -142,7 +142,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
     return;
   }
 
-  IAESound *sound = AE.GetSound(strFileName);
+  IAESound *sound = LoadSound(strFileName);
   if (!sound)
     return;
 
@@ -157,8 +157,8 @@ void CGUIAudioManager::UnLoad()
     windowSoundMap::iterator it = m_windowSoundMap.begin();
     while (it != m_windowSoundMap.end())
     {
-      if (it->second.initSound  ) AE.FreeSound(it->second.initSound  );
-      if (it->second.deInitSound) AE.FreeSound(it->second.deInitSound);
+      if (it->second.initSound  ) FreeSound(it->second.initSound  );
+      if (it->second.deInitSound) FreeSound(it->second.deInitSound);
       m_windowSoundMap.erase(it++);
     }
   }
@@ -169,7 +169,7 @@ void CGUIAudioManager::UnLoad()
     while (it != m_pythonSounds.end())
     {
       IAESound* sound = it->second;
-      AE.FreeSound(sound);
+      FreeSound(sound);
       m_pythonSounds.erase(it++);
     }
   }
@@ -180,7 +180,7 @@ void CGUIAudioManager::UnLoad()
     while (it != m_actionSoundMap.end())
     {
       IAESound* sound = it->second;
-      AE.FreeSound(sound);
+      FreeSound(sound);
       m_actionSoundMap.erase(it++);
     }
   }
@@ -253,7 +253,7 @@ bool CGUIAudioManager::Load()
       if (id > 0 && !strFile.IsEmpty())
       {
         CStdString filename = CUtil::AddFileToFolder(m_strMediaDir, strFile);
-        IAESound *sound = AE.GetSound(filename);
+        IAESound *sound = LoadSound(filename);
         if (sound)
           m_actionSoundMap.insert(pair<int, IAESound *>(id, sound));
       }
@@ -293,6 +293,42 @@ bool CGUIAudioManager::Load()
   return true;
 }
 
+IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
+{
+  CSingleLock lock(m_cs);
+  soundCache::iterator it = m_soundCache.find(filename);
+  if (it != m_soundCache.end())
+  {
+    ++it->second.usage;
+    return it->second.sound;
+  }
+
+  IAESound *sound = AE.GetSound(filename);
+  if (!sound)
+    return NULL;
+
+  CSoundInfo info;
+  info.usage = 1;
+  info.sound = sound;
+  m_soundCache[filename] = info;
+
+  return info.sound;
+}
+
+void CGUIAudioManager::FreeSound(IAESound *sound)
+{
+  CSingleLock lock(m_cs);
+  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
+    if (it->second.sound == sound) {
+      if (--it->second.usage == 0) {     
+        AE.FreeSound(sound);
+        m_soundCache.erase(it);
+      }
+      return;
+    }
+  }
+}
+
 // \brief Load a window node of the config file (sounds.xml)
 IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier)
 {
@@ -301,7 +337,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdSt
 
   TiXmlNode* pFileNode = pWindowNode->FirstChild(strIdentifier);
   if (pFileNode && pFileNode->FirstChild())
-    return AE.GetSound(CUtil::AddFileToFolder(m_strMediaDir, pFileNode->FirstChild()->Value()));
+    return LoadSound(CUtil::AddFileToFolder(m_strMediaDir, pFileNode->FirstChild()->Value()));
 
   return NULL;
 }
