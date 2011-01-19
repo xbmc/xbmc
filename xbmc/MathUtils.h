@@ -24,6 +24,11 @@
 #include <climits>
 #include <cmath>
 
+#ifdef __SSE__
+#include <xmmintrin.h>
+#include <emmintrin.h>
+#endif
+
 namespace MathUtils
 {
   // GCC does something stupid with optimization on release builds if we try
