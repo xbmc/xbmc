@@ -82,15 +82,6 @@ bool CPVRChannelGroup::Update()
   return (Load() > 0);
 }
 
-// TODO rename to AddToGroup
-bool CPVRChannelGroup::Update(CPVRChannel *channel)
-{
-  // TODO notify observers
-  push_back(channel);
-  m_bIsSorted = false;
-  return true;
-}
-
 void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 {
   // TODO non-system groups
@@ -593,6 +584,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannel *channel)
   {
     if (*channel == *at(iChannelPtr))
     {
+      // TODO notify observers
       erase(begin() + iChannelPtr);
       bReturn = true;
       break;
@@ -608,7 +600,9 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel)
 
   if (!IsGroupMember(channel))
   {
+    // TODO notify observers
     push_back(channel);
+    m_bIsSorted = false;
     bReturn = true;
   }
 

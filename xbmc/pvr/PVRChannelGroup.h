@@ -97,11 +97,6 @@ public:
   virtual bool Update();
 
   /**
-   * Updates a channel in this container
-   */
-  virtual bool Update(CPVRChannel *channel);
-
-  /**
    * Remove a channel.
    * Returns true if the channel was found and removed, false otherwise
    */
@@ -128,8 +123,19 @@ public:
    */
   virtual int LoadFromClients(bool bAddToDb = true);
 
+  /**
+   * Remove a channel from this container
+   */
   bool RemoveFromGroup(const CPVRChannel *channel);
+
+  /**
+   * Add a channel to this container
+   */
   bool AddToGroup(CPVRChannel *channel);
+
+  /**
+   * Check whether a channel is in this container
+   */
   bool IsGroupMember(const CPVRChannel *channel);
 
   bool IsRadio(void) const { return m_bRadio; }

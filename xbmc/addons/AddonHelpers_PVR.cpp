@@ -101,7 +101,7 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
   tag->SetInputFormat(channel->input_format);
   tag->SetStreamURL(channel->stream_url);
 
-  xbmcChannels->Update(tag);
+  xbmcChannels->AddToGroup(tag);
   return;
 }
 
