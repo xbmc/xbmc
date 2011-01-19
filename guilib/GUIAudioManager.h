@@ -70,10 +70,10 @@ public:
   void SetVolume(float level);
   void Stop();
 private:
-  typedef std::map<CStdString, CSoundInfo> soundCache;
-  typedef std::map<int, IAESound*        > actionSoundMap;
-  typedef std::map<int, CWindowSounds    > windowSoundMap;
-  typedef std::map<CStdString, IAESound* > pythonSoundsMap;
+  typedef std::map<const CStdString, CSoundInfo> soundCache;
+  typedef std::map<int, IAESound*              > actionSoundMap;
+  typedef std::map<int, CWindowSounds          > windowSoundMap;
+  typedef std::map<const CStdString, IAESound* > pythonSoundsMap;
 
   soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;

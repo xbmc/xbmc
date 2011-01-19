@@ -146,7 +146,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   if (!sound)
     return;
 
-  m_pythonSounds.insert(pair<CStdString, IAESound*>(strFileName, sound));
+  m_pythonSounds.insert(pair<const CStdString, IAESound*>(strFileName, sound));
   sound->Play();
 }
 
