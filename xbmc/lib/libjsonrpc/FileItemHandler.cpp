@@ -218,7 +218,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = SORT_METHOD_PLAYLIST_ORDER;
   else if (method.Equals("episode"))
     sortmethod = SORT_METHOD_EPISODE;
-  else if (method.Equals("title"))
+  else if (method.Equals("videotitle"))
     sortmethod = SORT_METHOD_VIDEO_TITLE;
   else if (method.Equals("sorttitle"))
     sortmethod = ignorethe ? SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE : SORT_METHOD_VIDEO_SORT_TITLE;

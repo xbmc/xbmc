@@ -8,7 +8,7 @@ wiimote: Clients/WiiRemote/WiiRemote
 
 Clients/WiiRemote/WiiRemote:
 	cd Clients/WiiRemote && \
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) CWIID_WiiRemote.cpp -lcwiid -DICON_PATH="\"$(datarootdir)/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) CWIID_WiiRemote.cpp -lcwiid -lbluetooth -DICON_PATH="\"$(datarootdir)/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
 j2me-remote:
 	cd Clients/J2ME\ Client
