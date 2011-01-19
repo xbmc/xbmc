@@ -79,9 +79,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  // TODO update group members from the database
-
-  return false;
+  return (Load() > 0);
 }
 
 // TODO rename to AddToGroup
