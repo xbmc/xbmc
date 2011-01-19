@@ -76,7 +76,7 @@ bool CPVRChannelGroupInternal::Update()
 
   if (database && database->Open())
   {
-    CPVRChannelGroup PVRChannels_tmp(m_bRadio);
+    CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
 
     PVRChannels_tmp.LoadFromClients(false);
     bReturn = Update(&PVRChannels_tmp);
@@ -237,13 +237,13 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
   {
     /* add all channels to the database */
     for (unsigned int ptr = 0; ptr < size(); ptr++)
-      database->UpdateChannel(*at(ptr));
+    {
+      long iChannelID = database->UpdateChannel(*at(ptr));
+      at(ptr)->SetChannelID(iChannelID);
+    }
 
+    database->Compress(true);
     database->Close();
-
-    clear();
-
-    return LoadFromDb(true);
   }
 
   return size() - iCurSize;
