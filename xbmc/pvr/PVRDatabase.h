@@ -126,6 +126,11 @@ public:
   bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
 
   /**
+   * Get the group members for a group
+   */
+  int GetChannelsInGroup(CPVRChannelGroup *group);
+
+  /**
    * Change the name of a channel group
    */
   bool SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio = false);

@@ -21,8 +21,6 @@
 
 /**
  * TODO:
- * - move some logic to channel groups. now the channel group is mostly used as a property of channel
- * - treat hidden channels as a channel group and remove the exceptions that we are making for them now
  * - use Observervable here, so we can use event driven operations later
  */
 
@@ -62,8 +60,16 @@ int CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  // TODO load group members from the database
-  return 0;
+  int iReturn = 0;
+
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  iReturn = database->GetChannelsInGroup(this);
+
+  database->Close();
+
+  return iReturn;
 }
 
 void CPVRChannelGroup::Unload()

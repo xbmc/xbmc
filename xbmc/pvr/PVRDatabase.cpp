@@ -29,6 +29,7 @@
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
 #include "PVRChannelGroupInternal.h"
+#include "PVRChannelsContainer.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -599,6 +600,35 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
 
   m_pDS->close();
   return bReturn;
+}
+
+int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
+{
+  int iReturn = -1;
+
+  /* invalid group id */
+  if (group->GroupID() < 0)
+  {
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid group id: %ld",
+        __FUNCTION__, group->GroupID());
+    return -1;
+  }
+
+  CStdString strQuery = FormatSQL("SELECT idChannel FROM channels WHERE idGroup = %u", group->GroupID());
+  if (ResultQuery(strQuery))
+  {
+    iReturn = 0;
+
+    while (!m_pDS->eof())
+    {
+      CPVRChannel *channel = g_PVRChannels.Get(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
+
+      if (channel && group->AddToGroup(channel))
+        ++iReturn;
+    }
+  }
+
+  return iReturn;
 }
 
 bool CPVRDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio /* = false */)

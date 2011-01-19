@@ -132,6 +132,7 @@ public:
   bool AddToGroup(CPVRChannel *channel);
   bool IsGroupMember(const CPVRChannel *channel);
 
+  bool IsRadio(void) const { return m_bRadio; }
   long GroupID(void) const { return m_iGroupId; }
   void SetGroupID(long iGroupId) { m_iGroupId = iGroupId; }
   CStdString GroupName(void) const { return m_strGroupName; }
