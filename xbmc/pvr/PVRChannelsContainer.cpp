@@ -20,17 +20,17 @@
  */
 
 #include "PVRChannelsContainer.h"
-#include "PVRChannels.h"
+#include "PVRChannelGroupInternal.h"
 
 CPVRChannelsContainer::CPVRChannelsContainer()
 {
   m_currentPlayingChannel = NULL;
   InitializeCriticalSection(&m_criticalSection);
 
-  CPVRChannels *channelsTV = new CPVRChannels(false);
+  CPVRChannelGroup *channelsTV = new CPVRChannelGroupInternal(false);
   push_back(channelsTV);
 
-  CPVRChannels *channelsRadio = new CPVRChannels(true);
+  CPVRChannelGroup *channelsRadio = new CPVRChannelGroupInternal(true);
   push_back(channelsRadio);
 }
 
@@ -40,7 +40,7 @@ CPVRChannelsContainer::~CPVRChannelsContainer()
   DeleteCriticalSection(&m_criticalSection);
 }
 
-const CPVRChannels *CPVRChannelsContainer::Get(int iChannelsId)
+const CPVRChannelGroup *CPVRChannelsContainer::Get(int iChannelsId)
 {
   if (iChannelsId < 0 || (unsigned int) iChannelsId > size() - 1)
     return NULL;
@@ -48,17 +48,17 @@ const CPVRChannels *CPVRChannelsContainer::Get(int iChannelsId)
   return at(iChannelsId);
 }
 
-const CPVRChannels *CPVRChannelsContainer::Get(bool bRadio)
+const CPVRChannelGroup *CPVRChannelsContainer::Get(bool bRadio)
 {
   return bRadio ? g_PVRChannels.Get(RADIO) : g_PVRChannels.Get(TV);
 }
 
-const CPVRChannels *CPVRChannelsContainer::GetTV()
+const CPVRChannelGroup *CPVRChannelsContainer::GetTV()
 {
   return g_PVRChannels.Get(TV);
 }
 
-const CPVRChannels *CPVRChannelsContainer::GetRadio()
+const CPVRChannelGroup *CPVRChannelsContainer::GetRadio()
 {
   return g_PVRChannels.Get(RADIO);
 }

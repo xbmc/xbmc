@@ -100,7 +100,7 @@ int CPVRTimers::Update()
       continue;
 
     /* try to get the channel */
-    CPVRChannel *channel = CPVRChannels::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
+    CPVRChannel *channel = CPVRChannelGroup::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
     if (!channel)
       continue;
 

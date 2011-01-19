@@ -33,7 +33,6 @@
 
 #include "PVRChannelsContainer.h"
 #include "PVRChannelGroups.h"
-#include "PVRChannelGroup.h"
 #include "PVRDatabase.h"
 #include "PVRManager.h"
 
@@ -102,7 +101,7 @@ int CPVRChannelGroups::GetFirstChannelForGroupID(int GroupId)
   if (GroupId == -1)
     return 1;
 
-  const CPVRChannels *channels = g_PVRChannels.Get(m_bRadio);
+  const CPVRChannelGroup *channels = g_PVRChannels.Get(m_bRadio);
 
   for (unsigned int i = 0; i < channels->size(); i++)
   {
@@ -188,7 +187,7 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
 
   Clear();
 
-  const CPVRChannels *channels = g_PVRChannels.Get(m_bRadio);
+  const CPVRChannelGroup *channels = g_PVRChannels.Get(m_bRadio);
 
   /* Delete the group inside Database */
   database->DeleteChannelGroup(GroupId, m_bRadio);
@@ -238,7 +237,7 @@ int CPVRChannelGroups::GetGroupId(CStdString GroupName)
 
 bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
 {
-  const CPVRChannels *channels = g_PVRChannels.Get(channel.IsRadio());
+  const CPVRChannelGroup *channels = g_PVRChannels.Get(channel.IsRadio());
   channels->at(channel.ChannelNumber()-1)->SetGroupID(GroupId);
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }

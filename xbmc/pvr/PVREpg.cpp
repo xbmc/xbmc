@@ -25,7 +25,7 @@
 
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
-#include "PVRChannels.h"
+#include "PVRChannelGroup.h"
 #include "PVRManager.h"
 
 struct sortEPGbyDate

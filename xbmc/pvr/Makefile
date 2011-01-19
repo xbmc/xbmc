@@ -2,8 +2,8 @@ INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../
 
 SRCS=PVRChannel.cpp \
 	PVRChannelGroup.cpp \
+	PVRChannelGroupInternal.cpp \
 	PVRChannelGroups.cpp \
-	PVRChannels.cpp \
 	PVRChannelsContainer.cpp \
 	PVREpg.cpp \
 	PVREpgInfoTag.cpp \

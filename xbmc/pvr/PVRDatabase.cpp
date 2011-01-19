@@ -25,10 +25,10 @@
 #include "utils/log.h"
 
 #include "PVREpgs.h"
-#include "PVRChannels.h"
 #include "PVREpgInfoTag.h"
 #include "PVRChannelGroups.h"
 #include "PVRChannelGroup.h"
+#include "PVRChannelGroupInternal.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -322,7 +322,7 @@ bool CPVRDatabase::RemoveChannel(const CPVRChannel &channel)
   return DeleteValues("channels", strWhereClause);
 }
 
-int CPVRDatabase::GetChannels(CPVRChannels &results, bool bIsRadio)
+int CPVRDatabase::GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio)
 {
   int iReturn = -1;
 

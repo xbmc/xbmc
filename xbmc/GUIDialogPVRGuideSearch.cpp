@@ -107,7 +107,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         if (pSpin)
         {
           CFileItemList channelslist_tv;
-          ((CPVRChannels *)g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
+          ((CPVRChannelGroup *)g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
 
           pSpin->Clear();
           pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
@@ -318,7 +318,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList channelslist_tv;
-    ((CPVRChannels *) g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
+    ((CPVRChannelGroup *) g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
 
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(19140), -1);

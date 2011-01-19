@@ -23,7 +23,8 @@
 #include "Database.h"
 #include "DateTime.h"
 
-class CPVRChannels;
+class CPVRChannelGroup;
+class CPVRChannelGroupInternal;
 class CPVRChannelsContainer;
 class CPVRChannel;
 class CPVRChannelGroups;
@@ -67,7 +68,7 @@ public:
   /**
    * Get the list of channels from the database
    */
-  int GetChannels(CPVRChannels &results, bool bIsRadio);
+  int GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio);
 
   /**
    * The amount of channels

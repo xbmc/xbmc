@@ -82,7 +82,7 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
   }
 
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannels *xbmcChannels = (CPVRChannels*) handle->DATA_ADDRESS;
+  CPVRChannelGroup *xbmcChannels = (CPVRChannelGroup*) handle->DATA_ADDRESS;
   CPVRChannel *tag           = new CPVRChannel();
 
   tag->SetChannelID(-1);
@@ -147,7 +147,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   CPVRTimers *xbmcTimers = (CPVRTimers*) handle->DATA_ADDRESS;
   CPVRClient* client     = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannel *channel   = CPVRChannels::GetByClientFromAll(timer->channelNum, client->GetClientID());
+  CPVRChannel *channel   = CPVRChannelGroup::GetByClientFromAll(timer->channelNum, client->GetClientID());
 
   if (channel == NULL)
   {

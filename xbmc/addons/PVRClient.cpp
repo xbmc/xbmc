@@ -383,7 +383,7 @@ int CPVRClient::GetNumChannels()
   return -1;
 }
 
-PVR_ERROR CPVRClient::GetChannelList(CPVRChannels &channels, bool radio)
+PVR_ERROR CPVRClient::GetChannelList(CPVRChannelGroup &channels, bool radio)
 {
   CSingleLock lock(m_critSection);
 
@@ -395,7 +395,7 @@ PVR_ERROR CPVRClient::GetChannelList(CPVRChannels &channels, bool radio)
     {
       PVRHANDLE_STRUCT handle;
       handle.CALLER_ADDRESS = this;
-      handle.DATA_ADDRESS = (CPVRChannels*) &channels;
+      handle.DATA_ADDRESS = (CPVRChannelGroup*) &channels;
       ret = m_pStruct->RequestChannelList(&handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;

@@ -82,7 +82,7 @@
 #endif
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
-#include "pvr/PVRChannels.h"
+#include "pvr/PVRChannelGroup.h"
 #include "pvr/PVRManager.h"
 
 #include "FileItem.h"
@@ -1914,7 +1914,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    CPVRChannels::SearchMissingChannelIcons();
+    CPVRChannelGroup::SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {

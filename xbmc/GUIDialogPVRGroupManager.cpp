@@ -258,7 +258,7 @@ void CGUIDialogPVRGroupManager::Update()
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
-  CPVRChannels *channels = (CPVRChannels *)g_PVRChannels.Get(m_bIsRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *)g_PVRChannels.Get(m_bIsRadio);
   channels->GetChannels(m_channelLeftItems, 0);
   m_viewControlLeft.SetItems(*m_channelLeftItems);
   m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);

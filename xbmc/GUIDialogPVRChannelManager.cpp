@@ -668,7 +668,7 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  const CPVRChannels *channels = g_PVRChannels.Get(m_bIsRadio);
+  const CPVRChannelGroup *channels = g_PVRChannels.Get(m_bIsRadio);
   for (unsigned int i = 0; i < channels->size(); i++)
   {
     CPVRChannel *channel = channels->at(i);

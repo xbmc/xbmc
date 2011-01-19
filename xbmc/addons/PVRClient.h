@@ -24,7 +24,7 @@
 #include "AddonDll.h"
 #include "DllPVRClient.h"
 #include "../pvr/PVREpgs.h"
-#include "../pvr/PVRChannels.h"
+#include "../pvr/PVRChannelGroup.h"
 #include "../pvr/PVRTimers.h"
 #include "../pvr/PVRTimerInfoTag.h"
 #include "../pvr/PVRRecordings.h"
@@ -74,7 +74,7 @@ public:
 
   /* Channels */
   int GetNumChannels();
-  PVR_ERROR GetChannelList(CPVRChannels &channels, bool radio);
+  PVR_ERROR GetChannelList(CPVRChannelGroup &channels, bool radio);
 
   /* Recordings */
   int GetNumRecordings(void);

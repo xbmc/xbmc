@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -22,24 +23,21 @@
 
 #include "PVRChannelGroup.h"
 
-class CPVRChannelsContainer : public std::vector<CPVRChannelGroup *>
+class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
-private:
-  CFileItem       *m_currentPlayingChannel; /* the channel that is currently playing */
-  CRITICAL_SECTION m_criticalSection;       /* critical section for channel switching */
-
+protected:
+  int LoadFromDb(bool bCompress = false);
+  int LoadFromClients(bool bAddToDb = true);
+  int GetFromClients(void);
+  bool Update(CPVRChannelGroup *channels);
+  bool Update();
 public:
-  CPVRChannelsContainer(void);
-  virtual ~CPVRChannelsContainer(void);
-
-  const CPVRChannelGroup *Get(int iChannelsId);
-  const CPVRChannelGroup *Get(bool bRadio);
-
-  static const int TV    = 0;
-  static const int RADIO = 1;
-
-  static const CPVRChannelGroup *GetTV();
-  static const CPVRChannelGroup *GetRadio();
+  CPVRChannelGroupInternal(bool bRadio);
+  int Load();
+  void Unload();
+  void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
+  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 };
 
-extern CPVRChannelsContainer g_PVRChannels;
+extern CPVRChannelGroupInternal PVRChannelsTV;
+extern CPVRChannelGroupInternal PVRChannelsRadio;

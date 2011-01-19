@@ -228,7 +228,7 @@ bool CPVREpgs::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
   {
-    const CPVRChannels *channels = g_PVRChannels.Get(radio);
+    const CPVRChannelGroup *channels = g_PVRChannels.Get(radio);
     for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
       channels->at(iChannelPtr)->GetEPG();
@@ -530,7 +530,7 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
 
 int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannels *channels = (CPVRChannels *) g_PVRChannels.Get(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannels.Get(bRadio);
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
@@ -558,7 +558,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannels *channels = (CPVRChannels *) g_PVRChannels.Get(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannels.Get(bRadio);
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)

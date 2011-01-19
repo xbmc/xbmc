@@ -316,7 +316,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_PLAY)
       {
-        const CPVRChannels *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
+        const CPVRChannelGroup *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
         if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -392,12 +392,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
             {
-              ((CPVRChannels *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannelGroup *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsTV();
             }
             else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
             {
-              ((CPVRChannels *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsRadio();
             }
           }
@@ -904,7 +904,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      const CPVRChannels *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
+      const CPVRChannelGroup *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
       if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
       {
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -924,12 +924,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        ((CPVRChannels *) g_PVRChannels.GetTV())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannelGroup *) g_PVRChannels.GetTV())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        ((CPVRChannels *) g_PVRChannels.GetRadio())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsRadio();
       }
     }
@@ -951,12 +951,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        ((CPVRChannels *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannelGroup *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        ((CPVRChannels *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsRadio();
       }
     }

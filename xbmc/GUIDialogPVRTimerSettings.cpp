@@ -67,7 +67,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    ((CPVRChannels *) g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, -1);
+    ((CPVRChannelGroup *) g_PVRChannels.GetTV())->GetChannels(&channelslist_tv, -1);
 
     channelstrings_tv.push_back("0 dummy");
 
@@ -85,7 +85,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    ((CPVRChannels *) g_PVRChannels.GetRadio())->GetChannels(&channelslist_radio, -1);
+    ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->GetChannels(&channelslist_radio, -1);
 
     channelstrings_radio.push_back("0 dummy");
 
@@ -232,13 +232,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = ((CPVRChannels *) g_PVRChannels.GetTV())->GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannelGroup *) g_PVRChannels.GetTV())->GetByChannelNumber(tag->Number());
     }
     else
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, false);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = ((CPVRChannels *) g_PVRChannels.GetRadio())->GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->GetByChannelNumber(tag->Number());
     }
 
     if (channeltag)
@@ -251,7 +251,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    CPVRChannel* channeltag = ((CPVRChannels *) g_PVRChannels.Get(tag->IsRadio()))->GetByChannelNumber(tag->Number());
+    CPVRChannel* channeltag = ((CPVRChannelGroup *) g_PVRChannels.Get(tag->IsRadio()))->GetByChannelNumber(tag->Number());
 
     if (channeltag)
     {
@@ -377,5 +377,5 @@ void CGUIDialogPVRTimerSettings::OnOkay()
   m_cancelled = false;
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag->Title() == g_localizeStrings.Get(19056))
-    tag->SetTitle(CPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->ChannelName());
+    tag->SetTitle(CPVRChannelGroup::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->ChannelName());
 }

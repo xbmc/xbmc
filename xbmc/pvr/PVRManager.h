@@ -30,7 +30,7 @@
 #include <vector>
 #include <deque>
 
-class CPVRChannels;
+class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
 
