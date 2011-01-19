@@ -24,7 +24,7 @@
 #include <climits>
 #include <cmath>
 
-#ifdef __SSE__
+#ifdef __SSE2__
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #endif
