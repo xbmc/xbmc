@@ -32,9 +32,14 @@ class CPVREpg;
 
 class CPVRChannelGroup : public std::vector<CPVRChannel *>
 {
+private:
+  /**
+   * Called by GetDirectory to get the directory for a group
+   */
+  static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
+
 protected:
   bool          m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
-  int           m_iHiddenChannels; /* the amount of hidden channels in this container */
   bool          m_bIsSorted;       /* true if this container is sorted by channel number, false if not */
 
   unsigned long m_iGroupId;
@@ -65,19 +70,9 @@ protected:
    */
   void RemoveInvalidChannels(void);
 
-  /**
-   * Called by GetDirectory to get the directory for a group
-   */
-  static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
-
-  /**
-   * Remove invalid channels and updates the channel numbers.
-   */
-  void ReNumberAndCheck(void);
-
 public:
-  CPVRChannelGroup(bool bRadio) { m_bRadio = bRadio; }
   CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder);
+  CPVRChannelGroup(bool bRadio) { m_bRadio = bRadio; }
   virtual ~CPVRChannelGroup(void);
 
   /**
@@ -205,7 +200,7 @@ public:
   /**
    * The amount of channels in this container.
    */
-  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+  virtual int GetNumHiddenChannels() const { return 0; }
 
   /********** operations on all channels **********/
 

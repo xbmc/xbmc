@@ -31,7 +31,6 @@
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) : CPVRChannelGroup(bRadio)
 {
-  m_bRadio          = bRadio;
   m_iHiddenChannels = 0;
   m_bIsSorted       = false;
   m_iGroupId        = XBMC_INTERNAL_GROUPID;
@@ -247,6 +246,22 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
   }
 
   return size() - iCurSize;
+}
+
+void CPVRChannelGroupInternal::ReNumberAndCheck(void)
+{
+  RemoveInvalidChannels();
+
+  int iChannelNumber = 1;
+  m_iHiddenChannels = 0;
+  for (unsigned int ptr = 0; ptr < size();  ptr++)
+  {
+    if (at(ptr)->IsHidden())
+      m_iHiddenChannels++;
+    else
+      at(ptr)->SetChannelNumber(iChannelNumber++);
+  }
+  m_bIsSorted = false;
 }
 
 int CPVRChannelGroupInternal::GetFromClients(void)

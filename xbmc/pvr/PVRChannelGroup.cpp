@@ -43,7 +43,6 @@ using namespace MUSIC_INFO;
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
   m_bRadio          = bRadio;
-  m_iHiddenChannels = 0;
   m_bIsSorted       = false;
   m_iGroupId        = iGroupId;
   m_strGroupName    = strGroupName;
@@ -558,21 +557,6 @@ bool CPVRChannelGroup::GetGroupsDirectory(const CStdString &strBase, CFileItemLi
   }
 
   return true;
-}
-
-void CPVRChannelGroup::ReNumberAndCheck(void)
-{
-  RemoveInvalidChannels();
-
-  int iChannelNumber = 1;
-  for (unsigned int ptr = 0; ptr < size();  ptr++)
-  {
-    if (at(ptr)->IsHidden())
-      m_iHiddenChannels++;
-    else
-      at(ptr)->SetChannelNumber(iChannelNumber++);
-  }
-  m_bIsSorted = false;
 }
 
 bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannel *channel)

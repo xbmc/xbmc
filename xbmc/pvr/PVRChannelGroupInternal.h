@@ -26,17 +26,29 @@
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
 protected:
+  int m_iHiddenChannels; /* the amount of hidden channels in this container */
+
   int LoadFromDb(bool bCompress = false);
   int LoadFromClients(bool bAddToDb = true);
   int GetFromClients(void);
   bool Update(CPVRChannelGroup *channels);
   bool Update();
+
+  /**
+   * Remove invalid channels and updates the channel numbers.
+   */
+  void ReNumberAndCheck(void);
 public:
   CPVRChannelGroupInternal(bool bRadio);
   int Load();
   void Unload();
   void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
   bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
+
+  /**
+   * The amount of channels in this container.
+   */
+  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 };
 
 extern CPVRChannelGroupInternal PVRChannelsTV;
