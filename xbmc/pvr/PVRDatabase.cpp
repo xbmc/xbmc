@@ -693,6 +693,42 @@ long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio
   return atoi(strReturn);
 }
 
+long CPVRDatabase::UpdateChannelGroup(const CPVRChannelGroup &group, bool bQueueWrite /* = false */)
+{
+  long iReturn = -1;
+
+  CStdString strQuery;
+
+  if (group.GroupID() < 0)
+  {
+    /* new group */
+    strQuery = FormatSQL("INSERT INTO channelgroups ("
+        "bIsRadio, sName, iSortOrder) "
+        "VALUES (%i, '%s', %i);",
+        (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
+  }
+  else
+  {
+    /* update group */
+    strQuery = FormatSQL("REPLACE INTO channelgroups ("
+        "idGroup, bIsRadio, sName, iSortOrder) "
+        "VALUES (%i, %i, '%s', %i);",
+        group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
+  }
+
+  if (bQueueWrite)
+  {
+    QueueInsertQuery(strQuery);
+    iReturn = 0;
+  }
+  else if (ExecuteQuery(strQuery))
+  {
+    iReturn = (group.GroupID() < 0) ? (long) m_pDS->lastinsertid() : group.GroupID();
+  }
+
+  return iReturn;
+}
+
 /********** Client methods **********/
 
 bool CPVRDatabase::EraseClients()

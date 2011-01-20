@@ -140,6 +140,11 @@ public:
    */
   bool SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio = false);
 
+  /**
+   * Add or update a channel group entry in the database
+   */
+  long UpdateChannelGroup(const CPVRChannelGroup &group, bool bQueueWrite = false);
+
 protected:
   /**
    * Get the Id of a channel group

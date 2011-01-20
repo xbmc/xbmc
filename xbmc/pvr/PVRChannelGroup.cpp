@@ -607,3 +607,38 @@ bool CPVRChannelGroup::IsGroupMember(const CPVRChannel *channel)
 
   return bReturn;
 }
+
+bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveInDb /* = false */)
+{
+  bool bReturn = false;
+
+  if (m_strGroupName != strGroupName)
+  {
+    /* update the name */
+    m_strGroupName = strGroupName;
+//    SetChanged();
+
+    /* persist the changes */
+    if (bSaveInDb)
+      Persist();
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CPVRChannelGroup::Persist(bool bQueueWrite /* = false */)
+{
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  if (database)
+  {
+    database->Open();
+    database->UpdateChannelGroup(*this, bQueueWrite);
+    database->Close();
+
+    return true;
+  }
+
+  return false;
+}

@@ -49,6 +49,8 @@ public:
    * The amount of channels in this container.
    */
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+
+  bool Persist(bool bQueueWrite = false) { return true; }
 };
 
 extern CPVRChannelGroupInternal PVRChannelsTV;

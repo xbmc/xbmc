@@ -129,6 +129,16 @@ public:
   bool AddToGroup(CPVRChannel *channel);
 
   /**
+   * Change the name of this group
+   */
+  virtual bool SetGroupName(const CStdString &strGroupName, bool bSaveInDb = false);
+
+  /**
+   * Persist changed or new data
+   */
+  virtual bool Persist(bool bQueueWrite = false);
+
+  /**
    * Check whether a channel is in this container
    */
   bool IsGroupMember(const CPVRChannel *channel);
@@ -137,7 +147,6 @@ public:
   long GroupID(void) const { return m_iGroupId; }
   void SetGroupID(long iGroupId) { m_iGroupId = iGroupId; }
   CStdString GroupName(void) const { return m_strGroupName; }
-  void SetGroupName(const CStdString &strGroupName) { m_strGroupName = strGroupName; }
   long SortOrder(void) const { return m_iSortOrder; }
   void SetSortOrder(long iSortOrder) { m_iSortOrder = iSortOrder; }
 
