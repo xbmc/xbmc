@@ -51,7 +51,6 @@ public:
   bool ChannelToGroup(const CPVRChannel &channel, int GroupId);
   CStdString GetGroupName(int GroupId);
   int GetGroupId(CStdString GroupName);
-  void Clear();
 };
 
 extern CPVRChannelGroups PVRChannelGroupsTV;

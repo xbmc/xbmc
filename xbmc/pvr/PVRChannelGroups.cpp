@@ -54,7 +54,7 @@ bool CPVRChannelGroups::Load(void)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Clear();
+  Unload();
   database->GetChannelGroupList(*this, m_bRadio);
   database->Close();
   return true;
@@ -62,7 +62,7 @@ bool CPVRChannelGroups::Load(void)
 
 void CPVRChannelGroups::Unload()
 {
-  Clear();
+  clear();
 }
 
 int CPVRChannelGroups::GetGroupList(CFileItemList* results)
@@ -162,7 +162,7 @@ void CPVRChannelGroups::AddGroup(const CStdString &name)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Clear();
+  Unload();
   database->AddChannelGroup(name, -1, m_bRadio);
   database->GetChannelGroupList(*this, m_bRadio);
 
@@ -174,7 +174,7 @@ bool CPVRChannelGroups::RenameGroup(int GroupId, const CStdString &newname)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Clear();
+  Unload();
   database->SetChannelGroupName(GroupId, newname, m_bRadio);
   database->GetChannelGroupList(*this, m_bRadio);  database->Close();
   return true;
@@ -185,7 +185,7 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Clear();
+  Unload();
 
   const CPVRChannelGroup *channels = g_PVRChannels.Get(m_bRadio);
 
@@ -242,9 +242,3 @@ bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }
 
-void CPVRChannelGroups::Clear()
-{
-  /* Clear all current present Channel groups inside list */
-  erase(begin(), end());
-  return;
-}
