@@ -167,6 +167,7 @@ bool CTCPServer::Initialize()
   Deinitialize();
 
   struct sockaddr_in myaddr;
+  memset(&myaddr, 0, sizeof(myaddr));
 
   myaddr.sin_family = AF_INET;
   myaddr.sin_port = htons(m_port);
