@@ -1911,7 +1911,6 @@
     <ClInclude Include="..\..\xbmc\XBApplicationEx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\xbmc\DllPaths_generated.h.in" />
     <None Include="..\..\xbmc\win32\XBMC.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -73,9 +73,6 @@
     <Filter Include="addons">
       <UniqueIdentifier>{0cf03ec7-412f-48ac-827d-358c57245edd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dbwrappers">
-      <UniqueIdentifier>{b613c254-c9f4-4e5a-bd09-0b07f28b8506}</UniqueIdentifier>
-    </Filter>
     <Filter Include="dialogs">
       <UniqueIdentifier>{69dd6304-c5d7-46f5-a804-516c9efb79ca}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,27 @@
     </Filter>
     <Filter Include="windows">
       <UniqueIdentifier>{910f98b6-acfa-4b29-a589-21fd2544d142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BackgroundLoaders">
+      <UniqueIdentifier>{b6238b6d-f2b3-4ffd-8c97-12dd28e038f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database">
+      <UniqueIdentifier>{b613c254-c9f4-4e5a-bd09-0b07f28b8506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\mysql">
+      <UniqueIdentifier>{2abbe66b-d85a-4f1e-a350-4de36284f545}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="guilib\Rendering">
+      <UniqueIdentifier>{75a93b39-d863-4919-bbd8-6c28c9b5c67c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="guilib\Rendering\Base">
+      <UniqueIdentifier>{3aceac76-8bef-4262-b821-f0987eccba47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="guilib\Rendering\DX">
+      <UniqueIdentifier>{9fe81a88-9346-477b-8ecc-f4eee05d7d13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="guilib\Rendering\GL">
+      <UniqueIdentifier>{9592a005-d33b-48d1-8462-d95c42c383c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1069,7 +1087,6 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
-    <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIDialog.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1110,19 +1127,13 @@
       <Filter>music\karaoke</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\Database.cpp">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\dataset.cpp">
-      <Filter>dbwrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\dbwrappers\mysqldataset.cpp">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dbwrappers\qry_dat.cpp">
-      <Filter>dbwrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\dbwrappers\sqlitedataset.cpp">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\Album.cpp">
       <Filter>music</Filter>
@@ -1134,9 +1145,6 @@
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\LastFmManager.cpp">
-      <Filter>music</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp">
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\MusicInfoLoader.cpp">
@@ -1248,36 +1256,8 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\Application.cpp" />
-    <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp" />
-    <ClCompile Include="..\..\xbmc\Autorun.cpp" />
-    <ClCompile Include="..\..\xbmc\AutoSwitch.cpp" />
-    <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
-    <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
-    <ClCompile Include="..\..\xbmc\DateTime.cpp" />
-    <ClCompile Include="..\..\xbmc\DynamicDll.cpp" />
-    <ClCompile Include="..\..\xbmc\Favourites.cpp" />
-    <ClCompile Include="..\..\xbmc\FileItem.cpp" />
-    <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewControl.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewState.cpp" />
-    <ClCompile Include="..\..\xbmc\LangInfo.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
-    <ClCompile Include="..\..\xbmc\NfoFile.cpp" />
-    <ClCompile Include="..\..\xbmc\PartyModeManager.cpp" />
-    <ClCompile Include="..\..\xbmc\PlayListPlayer.cpp" />
-    <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
-    <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
-    <ClCompile Include="..\..\xbmc\Temperature.cpp" />
-    <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
-    <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
-    <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
-    <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
-    <ClCompile Include="..\..\xbmc\URL.cpp" />
-    <ClCompile Include="..\..\xbmc\Util.cpp" />
-    <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
-    <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp">
       <Filter>guilib</Filter>
@@ -1295,9 +1275,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp">
@@ -1349,15 +1326,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTF.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFDX.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFGL.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIImage.cpp">
@@ -1456,18 +1424,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUITextLayout.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITexture.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureD3D.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGL.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUITextureGLES.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIToggleButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1501,9 +1457,6 @@
     <ClCompile Include="..\..\xbmc\guilib\Shader.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\Texture.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureBundle.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1511,15 +1464,6 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\TextureBundleXPR.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureDX.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureGL.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\TextureManager.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\VisibleEffect.cpp">
@@ -1807,9 +1751,6 @@
     <ClCompile Include="..\..\xbmc\pictures\PictureInfoTag.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pictures\PictureThumbLoader.cpp">
-      <Filter>pictures</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pictures\SlideShowPicture.cpp">
       <Filter>pictures</Filter>
     </ClCompile>
@@ -1850,9 +1791,6 @@
       <Filter>programs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\programs\GUIWindowPrograms.cpp">
-      <Filter>programs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp">
       <Filter>programs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\programs\Shortcut.cpp">
@@ -2107,9 +2045,6 @@
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp">
       <Filter>video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp">
-      <Filter>video</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\VideoInfoDownloader.cpp">
       <Filter>video</Filter>
     </ClCompile>
@@ -2196,9 +2131,6 @@
     </ClCompile>
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp">
       <Filter>libs\tinyxml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp">
-      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.cpp">
       <Filter>addons</Filter>
@@ -2329,11 +2261,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\PasswordManager.cpp" />
     <ClCompile Include="..\..\xbmc\powermanagement\DPMSSupport.cpp">
       <Filter>powermanagement</Filter>
     </ClCompile>
@@ -2367,14 +2297,164 @@
     <ClCompile Include="..\..\xbmc\utils\LangCodeExpander.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp">
-      <Filter>Source Files\Filesystem</Filter>
+      <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp">
-      <Filter>Source Files\Filesystem</Filter>
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\Autorun.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\AutoSwitch.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pictures\PictureThumbLoader.cpp">
+      <Filter>BackgroundLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp">
+      <Filter>BackgroundLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\ThumbLoader.cpp">
+      <Filter>BackgroundLoaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\CueDocument.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\DateTime.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\DynamicDll.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\Favourites.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileItem.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIPassword.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIViewControl.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIViewState.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\LangInfo.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\MediaSource.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\URL.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\Util.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\NfoFile.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\PartyModeManager.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\PasswordManager.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\PlayListPlayer.cpp">
+      <Filter>playlists</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\SectionLoader.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\SortFileItem.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\Temperature.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\TextureCache.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\TextureDatabase.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\dbwrappers\sqlitedataset.cpp">
+      <Filter>libs\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\dbwrappers\mysqldataset.cpp">
+      <Filter>libs\mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\MusicDatabase.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\ViewDatabase.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\VideoDatabase.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTF.cpp">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUITexture.cpp">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\Texture.cpp">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\TextureManager.cpp">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFDX.cpp">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUITextureD3D.cpp">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\TextureDX.cpp">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFGL.cpp">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUITextureGL.cpp">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUITextureGLES.cpp">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\TextureGL.cpp">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp">
+      <Filter>guilib\Rendering\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3411,19 +3491,13 @@
       <Filter>libs\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\Database.h">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\dataset.h">
-      <Filter>dbwrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\dbwrappers\mysqldataset.h">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\qry_dat.h">
-      <Filter>dbwrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\dbwrappers\sqlitedataset.h">
-      <Filter>dbwrappers</Filter>
+      <Filter>database</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\Album.h">
       <Filter>music</Filter>
@@ -3435,9 +3509,6 @@
       <Filter>music</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\LastFmManager.h">
-      <Filter>music</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\MusicDatabase.h">
       <Filter>music</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\MusicInfoLoader.h">
@@ -3570,39 +3641,7 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Application.h" />
-    <ClInclude Include="..\..\xbmc\ApplicationMessenger.h" />
-    <ClInclude Include="..\..\xbmc\Autorun.h" />
-    <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
-    <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
-    <ClInclude Include="..\..\xbmc\CueDocument.h" />
-    <ClInclude Include="..\..\xbmc\DateTime.h" />
-    <ClInclude Include="..\..\xbmc\DynamicDll.h" />
-    <ClInclude Include="..\..\xbmc\Favourites.h" />
-    <ClInclude Include="..\..\xbmc\FileItem.h" />
-    <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h" />
-    <ClInclude Include="..\..\xbmc\GUIPassword.h" />
-    <ClInclude Include="..\..\xbmc\GUIUserMessages.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewControl.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewState.h" />
-    <ClInclude Include="..\..\xbmc\IProgressCallback.h" />
-    <ClInclude Include="..\..\xbmc\LangInfo.h" />
-    <ClInclude Include="..\..\xbmc\MediaSource.h" />
-    <ClInclude Include="..\..\xbmc\NfoFile.h" />
-    <ClInclude Include="..\..\xbmc\PartyModeManager.h" />
-    <ClInclude Include="..\..\xbmc\PlayListPlayer.h" />
-    <ClInclude Include="..\..\xbmc\SectionLoader.h" />
-    <ClInclude Include="..\..\xbmc\SortFileItem.h" />
     <ClInclude Include="..\..\xbmc\system.h" />
-    <ClInclude Include="..\..\xbmc\Temperature.h" />
-    <ClInclude Include="..\..\xbmc\TextureCache.h" />
-    <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
-    <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
-    <ClInclude Include="..\..\xbmc\ThumbnailCache.h" />
-    <ClInclude Include="..\..\xbmc\URL.h" />
-    <ClInclude Include="..\..\xbmc\Util.h" />
-    <ClInclude Include="..\..\xbmc\ViewDatabase.h" />
-    <ClInclude Include="..\..\xbmc\ViewState.h" />
-    <ClInclude Include="..\..\xbmc\XBApplicationEx.h" />
     <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -3622,9 +3661,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\gui3d.h">
@@ -3685,15 +3721,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIFontManager.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTF.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFDX.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFGL.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIImage.h">
@@ -3792,18 +3819,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUITextLayout.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITexture.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureD3D.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGL.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUITextureGLES.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIToggleButtonControl.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -3846,9 +3861,6 @@
     <ClInclude Include="..\..\xbmc\guilib\Shader.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\Texture.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureBundle.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -3856,15 +3868,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TextureBundleXPR.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureDX.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureGL.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\TextureManager.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\TransformMatrix.h">
@@ -4242,9 +4245,6 @@
     <ClInclude Include="..\..\xbmc\pictures\PictureInfoTag.h">
       <Filter>pictures</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pictures\PictureThumbLoader.h">
-      <Filter>pictures</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\SlideShowPicture.h">
       <Filter>pictures</Filter>
     </ClInclude>
@@ -4288,9 +4288,6 @@
       <Filter>programs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\programs\GUIWindowPrograms.h">
-      <Filter>programs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h">
       <Filter>programs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\programs\Shortcut.h">
@@ -4569,9 +4566,6 @@
     <ClInclude Include="..\..\xbmc\video\TeletextDefines.h">
       <Filter>video</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\VideoDatabase.h">
-      <Filter>video</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\video\VideoInfoDownloader.h">
       <Filter>video</Filter>
     </ClInclude>
@@ -4662,9 +4656,6 @@
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h">
       <Filter>libs\tinyxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.h">
       <Filter>addons</Filter>
     </ClInclude>
@@ -4740,11 +4731,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h">
       <Filter>interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIInfoManager.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h">
       <Filter>interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\PasswordManager.h" />
     <ClInclude Include="..\..\xbmc\powermanagement\DPMSSupport.h">
       <Filter>powermanagement</Filter>
     </ClInclude>
@@ -4778,21 +4767,179 @@
     <ClInclude Include="..\..\xbmc\utils\LangCodeExpander.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\udf25.h">
-      <Filter>Source Files\Filesystem</Filter>
+      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h">
-      <Filter>Source Files\Filesystem</Filter>
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ApplicationMessenger.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\Autorun.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\AutoSwitch.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pictures\PictureThumbLoader.h">
+      <Filter>BackgroundLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h">
+      <Filter>BackgroundLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ThumbLoader.h">
+      <Filter>BackgroundLoaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\CueDocument.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\DateTime.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\DynamicDll.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\Favourites.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileItem.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIInfoManager.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIPassword.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIViewControl.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIViewState.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\LangInfo.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\MediaSource.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\Util.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\URL.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\NfoFile.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\PasswordManager.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\PartyModeManager.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\PlayListPlayer.h">
+      <Filter>playlists</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\SectionLoader.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\SortFileItem.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\TextureCache.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\Temperature.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\TextureDatabase.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ThumbnailCache.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dbwrappers\sqlitedataset.h">
+      <Filter>libs\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dbwrappers\mysqldataset.h">
+      <Filter>libs\mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\MusicDatabase.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ViewDatabase.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\VideoDatabase.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\IProgressCallback.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\ViewState.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\XBApplicationEx.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTF.h">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUITexture.h">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\Texture.h">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\TextureManager.h">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFDX.h">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUITextureD3D.h">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\TextureDX.h">
+      <Filter>guilib\Rendering\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIFontTTFGL.h">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUITextureGL.h">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUITextureGLES.h">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\TextureGL.h">
+      <Filter>guilib\Rendering\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h">
+      <Filter>guilib\Rendering\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIUserMessages.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">
       <Filter>win32</Filter>
     </None>
-    <None Include="..\..\xbmc\DllPaths_generated.h.in" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
