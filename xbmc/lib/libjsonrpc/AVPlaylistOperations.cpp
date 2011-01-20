@@ -113,10 +113,10 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
     return InvalidParams;
 
   const Value param = ForceObject(parameterObject);
-  
+
   if (param["index"].isInt())
           indexValue = param["index"].asInt();
-    
+
   g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, indexValue);
 
   NotifyAll();

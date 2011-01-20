@@ -42,7 +42,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
   Value serialization;
   data.toJsonValue(serialization);
-  
+
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CStdString field = fields[i].asString();
@@ -59,7 +59,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         continue;
       }
 
-      if (field == "fanart") 
+      if (field == "fanart")
       {
         CStdString cachedFanArt = item->GetCachedFanart();
         if (!cachedFanArt.IsEmpty())
@@ -95,8 +95,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
   int size  = items.Size();
-  int start = param.get("start", 0).asInt(); 
-  int end   = param.get("end", size).asInt(); 
+  int start = param.get("start", 0).asInt();
+  int end   = param.get("end", size).asInt();
   end = end < 0 ? 0 : end > size ? size : end;
   start = start < 0 ? 0 : start > end ? end : start;
 
@@ -105,7 +105,7 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
   result["start"] = start;
   result["end"]   = end;
   result["total"] = size;
- 
+
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
 
@@ -130,7 +130,7 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
     if (!object.isMember("file"))
       object["file"] = item->m_strPath.c_str();
   }
-    
+
   if (id)
   {
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
@@ -138,7 +138,7 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
     else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
       object[id] = item->GetVideoInfoTag()->m_iDbId;
   }
-    
+
   if (!item->GetThumbnailImage().IsEmpty())
     object["thumbnail"] = item->GetThumbnailImage().c_str();
 
