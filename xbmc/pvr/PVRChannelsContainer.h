@@ -35,6 +35,8 @@ public:
   const CPVRChannelGroup *Get(int iChannelsId);
   const CPVRChannelGroup *Get(bool bRadio);
 
+  int Load(void);
+
   static const int TV    = 0;
   static const int RADIO = 1;
 

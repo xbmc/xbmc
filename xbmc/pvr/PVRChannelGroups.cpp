@@ -41,19 +41,19 @@ using namespace MUSIC_INFO;
 
 // --- CPVRChannelGroups ----------------------------------------------------------
 
-CPVRChannelGroups PVRChannelGroupsTV;
-CPVRChannelGroups PVRChannelGroupsRadio;
+CPVRChannelGroups PVRChannelGroupsTV(false);
+CPVRChannelGroups PVRChannelGroupsRadio(true);
 
-CPVRChannelGroups::CPVRChannelGroups(void)
+CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
 {
+  m_bRadio = bRadio;
 }
 
-bool CPVRChannelGroups::Load(bool radio)
+bool CPVRChannelGroups::Load(void)
 {
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  m_bRadio = radio;
   Clear();
   database->GetChannelGroupList(*this, m_bRadio);
   database->Close();
@@ -84,7 +84,7 @@ CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId)
   if (iGroupId == -1)
     return group;
 
-  for (int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (at(iGroupPtr).GroupID() == iGroupId)
     {

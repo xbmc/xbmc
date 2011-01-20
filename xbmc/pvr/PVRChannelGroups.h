@@ -34,10 +34,10 @@ private:
   bool  m_bRadio;
 
 public:
-  CPVRChannelGroups(void);
+  CPVRChannelGroups(bool bRadio);
 
-  bool Load(bool radio = false);
-  void Unload();
+  bool Load(void);
+  void Unload(void);
 
   int GetGroupList(CFileItemList* results);
   CPVRChannelGroup *GetGroupById(int iGroupId);

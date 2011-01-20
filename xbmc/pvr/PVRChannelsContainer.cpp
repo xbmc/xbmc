@@ -53,6 +53,12 @@ const CPVRChannelGroup *CPVRChannelsContainer::Get(bool bRadio)
   return bRadio ? g_PVRChannels.Get(RADIO) : g_PVRChannels.Get(TV);
 }
 
+int CPVRChannelsContainer::Load(void)
+{
+  return ((CPVRChannelGroup *)GetTV())->Load() +
+      ((CPVRChannelGroup *)GetRadio())->Load();
+}
+
 const CPVRChannelGroup *CPVRChannelsContainer::GetTV()
 {
   return g_PVRChannels.Get(TV);

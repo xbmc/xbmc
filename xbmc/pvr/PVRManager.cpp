@@ -432,10 +432,9 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  ((CPVRChannelGroup *) g_PVRChannels.GetTV())->Load();    /* Load the TV channels */
-  ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->Load(); /* Load the radio channels */
-  PVRChannelGroupsTV.Load(false);                      /* Load the TV channel group lists */
-  PVRChannelGroupsRadio.Load(true);                    /* Load the radio Channel group lists */
+  g_PVRChannels.Load();          /* Load the TV channels */
+  PVRChannelGroupsTV.Load();     /* Load the TV channel group lists */
+  PVRChannelGroupsRadio.Load();  /* Load the radio Channel group lists */
 
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
