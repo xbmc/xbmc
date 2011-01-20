@@ -84,13 +84,12 @@ bool CPVRChannelGroup::Update()
 
 void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 {
-  // TODO non-system groups
+  // TODO non-system groups. need a mapping table first
 }
 
 bool CPVRChannelGroup::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
 {
-  // TODO use RemoveFromGroup for non-system groups
-  return false;
+  return RemoveFromGroup(channel);
 }
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
