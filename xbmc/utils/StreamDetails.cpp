@@ -106,12 +106,15 @@ void CStreamDetailAudio::Serialize(CVariant& value)
 
 int CStreamDetailAudio::GetCodecPriority() const
 {
-  // technically, truehd, dtsma, and flac are equivalently good (they're all lossless)
+  // technically, truehd, dtshd_ma, and flac are equivalently good (they're all lossless)
+  // however, ffmpeg can't decode dtshd_ma losslessy yet
   if (m_strCodec == "flac")
-    return 6;
-  if (m_strCodec == "dtsma")
-    return 5;
+    return 7;
   if (m_strCodec == "truehd")
+    return 6;
+  if (m_strCodec == "dtshd_ma")
+    return 5;
+  if (m_strCodec == "dtshd_hra")
     return 4;
   if (m_strCodec == "eac3")
     return 3;

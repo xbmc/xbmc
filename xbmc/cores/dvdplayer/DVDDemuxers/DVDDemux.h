@@ -79,6 +79,7 @@ public:
     iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
     codec_fourcc = 0;
+    profile = FF_PROFILE_UNKNOWN;
     type = STREAM_NONE;
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
@@ -106,6 +107,7 @@ public:
   int iPhysicalId; // id
   CodecID codec;
   unsigned int codec_fourcc; // if available
+  int profile;
   StreamType type;
   int source;
 
