@@ -1817,6 +1817,15 @@ static av_cold int dca_decode_end(AVCodecContext * avctx)
     return 0;
 }
 
+static const AVProfile profiles[] = {
+    { FF_PROFILE_DTS,        "DTS"        },
+    { FF_PROFILE_DTS_ES,     "DTS-ES"     },
+    { FF_PROFILE_DTS_96_24,  "DTS 96/24"  },
+    { FF_PROFILE_DTS_HD_HRA, "DTS-HD HRA" },
+    { FF_PROFILE_DTS_HD_MA,  "DTS-HD MA"  },
+    { FF_PROFILE_UNKNOWN },
+};
+
 AVCodec dca_decoder = {
     .name = "dca",
     .type = AVMEDIA_TYPE_AUDIO,
@@ -1826,4 +1835,5 @@ AVCodec dca_decoder = {
     .decode = dca_decode_frame,
     .close = dca_decode_end,
     .long_name = NULL_IF_CONFIG_SMALL("DCA (DTS Coherent Acoustics)"),
+    .profiles = profiles,
 };

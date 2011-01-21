@@ -1,0 +1,51 @@
+From 306bd2d20ada5782ea28037072e9d4f0cc9dae90 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Fri, 7 Jan 2011 18:59:17 +0200
+Subject: [PATCH 43/46] h264: add profile names for the existing defines
+
+Submitted upstream.
+
+---
+ libavcodec/h264.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/libavcodec/h264.c b/libavcodec/h264.c
+index 40dc276..04caa9f 100644
+--- a/libavcodec/h264.c
++++ b/libavcodec/h264.c
+@@ -3354,6 +3354,17 @@ av_cold int ff_h264_decode_end(AVCodecContext *avctx)
+     return 0;
+ }
+ 
++static const AVProfile profiles[] = {
++    { FF_PROFILE_H264_BASELINE,    "Baseline"      },
++    { FF_PROFILE_H264_MAIN,        "Main"          },
++    { FF_PROFILE_H264_EXTENDED,    "Extended"      },
++    { FF_PROFILE_H264_HIGH,        "High"          },
++    { FF_PROFILE_H264_HIGH_10,     "High 10"       },
++    { FF_PROFILE_H264_HIGH_422,    "High 4:2:2"    },
++    { FF_PROFILE_H264_HIGH_444,    "High 4:4:4"    },
++    { FF_PROFILE_H264_CAVLC_444,   "CAVLC 4:4:4"   },
++    { FF_PROFILE_UNKNOWN },
++};
+ 
+ AVCodec h264_decoder = {
+     "h264",
+@@ -3367,6 +3378,7 @@ AVCodec h264_decoder = {
+     /*CODEC_CAP_DRAW_HORIZ_BAND |*/ CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+     .flush= flush_dpb,
+     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
++    .profiles = profiles,
+ };
+ 
+ #if CONFIG_H264_VDPAU_DECODER
+@@ -3383,5 +3395,6 @@ AVCodec h264_vdpau_decoder = {
+     .flush= flush_dpb,
+     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (VDPAU acceleration)"),
+     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_H264, PIX_FMT_NONE},
++    .profiles = profiles,
+ };
+ #endif
+-- 
+1.7.3
+
