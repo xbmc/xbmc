@@ -4864,6 +4864,51 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
   return false;
 }
 
+bool CVideoDatabase::GetNextItemsByChannel(int channelID, bool isSkipShow, CFileItem* item, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+	
+	int currentEpisodeID;
+	if(item != NULL)
+		currentEpisodeID = item->GetVideoInfoTag()->m_iDbId;
+	else
+	{
+		isSkipShow = false;
+		currentEpisodeID = -1;
+	}
+
+	CStdString strSQL;
+	if(!isSkipShow)
+		strSQL = PrepareSQL("SELECT (SELECT idEpisode FROM episodeview where tvshow.c00 = episodeview.strTitle AND playCount IS NULL AND idEpisode<>%i ORDER BY cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) LIMIT 1) AS idEpisode FROM tvshow WHERE idEpisode IS NOT NULL ORDER BY RANDOM() LIMIT 1", currentEpisodeID);
+	else
+		strSQL = PrepareSQL("SELECT (SELECT idEpisode FROM episodeview where tvshow.c00 = episodeview.strTitle AND playCount IS NULL ORDER BY cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) LIMIT 1) AS idEpisode FROM tvshow WHERE c00<>%s AND idEpisode IS NOT NULL ORDER BY RANDOM() LIMIT 1", item->GetVideoInfoTag()->m_strTitle);
+
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+	int idEpisode = m_pDS->fv("idEpisode").get_asInt();
+	m_pDS->close();
+
+	GetEpisodesByWhere("videodb://",PrepareSQL("where idEpisode = %i",idEpisode), items);
+	items[0]->SetProperty("original_listitem_url", items[0]->m_strPath);
+	items[0]->m_strPath = items[0]->GetVideoInfoTag()->m_strFileNameAndPath;
+    
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 
 bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum)
 {

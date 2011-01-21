@@ -522,6 +522,8 @@ public:
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, bool checkLocks = true);
 
+  bool GetNextItemsByChannel(int channelID, bool isSkipShow, CFileItem* item, CFileItemList& items);
+
   // partymode
   int GetMusicVideoCount(const CStdString& strWhere);
   unsigned int GetMusicVideoIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);

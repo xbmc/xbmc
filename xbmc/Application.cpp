@@ -4094,6 +4094,7 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
+	m_channel =0;
     if (m_pPlayer)
       m_pPlayer->CloseFile();
 
@@ -5357,3 +5358,19 @@ CPerformanceStats &CApplication::GetPerformanceStats()
   return m_perfStats;
 }
 #endif
+
+void CApplication::PlayChannel(int channelID)
+{
+	m_channel = channelID;
+	
+	CFileItemList items;
+	CVideoDatabase videodatabase;
+	videodatabase.Open();
+	bool success = videodatabase.GetNextItemsByChannel(m_channel, false, NULL, items);
+	videodatabase.Close();
+	
+	if(success)
+		getApplicationMessenger().MediaPlay(items);
+	else
+		CGUIDialogOK::ShowAndGetInput("Nothing to play",-1,-1,-1);
+}

@@ -294,6 +294,11 @@
 		</control>
 	</include>
 	<include name="HomeSubMenuTVShows">
+		<control type="button" id="901001">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>CHANNEL 1</label>
+			<onclick>ActivateWindow(VideoLibrary,Randomizer,1,return)</onclick>
+		</control>
 		<control type="button" id="90171">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>369</label>

@@ -348,6 +348,14 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
 
 void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
 {
+	if(iWindowID == WINDOW_VIDEO_NAV)
+		if(params.size() ? params[0] == "Randomizer" : false)
+		{
+			int channelID = atoi(params[1].c_str());
+			g_application.PlayChannel(channelID);
+			return;
+		}
+
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)

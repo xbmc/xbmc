@@ -103,6 +103,8 @@ public:
   virtual bool Create();
   virtual bool Cleanup();
 
+  int m_channel;
+  void PlayChannel(int channelID);
   void StartServices();
   void StopServices();
   void StartWebServer();

@@ -159,6 +159,25 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   // stop playing
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
+	  if(g_application.m_channel > 0)
+	  {
+		  bool isSkipShow = g_application.GetPercentage() > 0;
+		  CFileItemList items;
+		  CVideoDatabase videodatabase;
+		  videodatabase.Open();
+		  CFileItem currentFile = *playlist[iSong-offset];
+		  bool success = videodatabase.GetNextItemsByChannel(g_application.m_channel, isSkipShow, &currentFile, items);
+		  videodatabase.Close();
+		  
+		  if(success)
+		  {
+			Add(m_iCurrentPlayList, items);
+			return Play(iSong, bAutoPlay);
+		  }
+		  else
+			CGUIDialogOK::ShowAndGetInput("Nothing to play",-1,-1,-1);
+	  }
+
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
     g_windowManager.SendThreadMessage(msg);
     Reset();
