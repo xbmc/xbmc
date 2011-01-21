@@ -209,7 +209,7 @@ bool CTCPServer::Initialize()
     close(m_ServerSocket);
     return false;
   }
-  
+
   if (listen(m_ServerSocket, 10) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");

@@ -85,7 +85,7 @@ JSON_STATUS CPicturePlayerOperations::Zoom(const CStdString &method, ITransportL
   int zoom = parameterObject.isInt() ? parameterObject.asInt() : 1;
   if (zoom > 10 || zoom <= 0)
     return InvalidParams;
- 
+
   return SendAction(ACTION_ZOOM_LEVEL_NORMAL + (zoom - 1));
 }
 
@@ -102,7 +102,7 @@ JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITranspor
           action.id = ACTION_ANALOG_MOVE;
           action.GetAmount()=(float) atof(paras[0]);
           action.GetAmount(1)=(float) atof(paras[1]);
-          pSlideShow->OnAction(action);    
+          pSlideShow->OnAction(action);
 }*/
 
 JSON_STATUS CPicturePlayerOperations::SendAction(int actionID)
@@ -112,14 +112,3 @@ JSON_STATUS CPicturePlayerOperations::SendAction(int actionID)
   return ACK;
 }
 
-
-
-
-
-
-
-
-
-
-
-   

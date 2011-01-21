@@ -250,7 +250,7 @@ JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transpo
 JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int flags = client->GetPermissionFlags();
-  
+
   for (int i = 1; i <= OPERATION_PERMISSION_ALL; i *= 2)
     result[PermissionToString((OperationPermission)i)] = (flags & i) > 0;
 
@@ -267,7 +267,7 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
 JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int flags = client->GetAnnouncementFlags();
-  
+
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
     result[AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 

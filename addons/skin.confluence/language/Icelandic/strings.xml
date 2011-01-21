@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2010-11-18-->
+<!--Date of translation: 2011-01-19-->
 <!--$Revision$-->
-<!--Based on english strings version 35254-->
+<!--Based on english strings version 35672-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Breyta -</string>
@@ -60,7 +60,7 @@
   <string id="31102">Bakgrunnur</string>
   <string id="31103">Sýna "Í bið" í myndasýningu</string>
   <string id="31104">Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">Sýna myndatitla í bakgrunnsleit</string>
   <string id="31106">Ýmsir valkostir</string>
   <string id="31107">Fela flagg lesið frá skráarnöfnum [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Fela hnapp í aðalvalmynd</string>
@@ -87,13 +87,16 @@
   <string id="31128">Lagatextar</string>
   <string id="31129"/>  <!-- blanked 2010-11-12 -->
   <string id="31130"/>  <!-- blanked 2010-11-12 -->
-
-  <string id="31131"></string>
+  
+  <string id="31131"/> <!-- blanked 2010-12-23 -->
   <string id="31132">Viðbót fyrir lagatexta</string>
   <string id="31133">Viðbót fyrir þýðingartexta</string>
+  <string id="31134">Undirvalmynd myndbandaheimasíðu</string>
+  <string id="31135">Undirvalmynd tónlistarheimasíðu</string>
+  <string id="31136">Undirvalmynd ljósmyndaheimasíðu</string>
 
-  <string id="31140">Tónlistarskjár</string>
-  <string id="31141">Myndbandaskjár</string>
+  <string id="31140">Tónlist</string>
+  <string id="31141">Myndefni</string>
 
   <!-- Script labels -->
   <string id="31200">Flýtileiðir</string>
