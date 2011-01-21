@@ -33,7 +33,17 @@ void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
   char sInfo[64];
 
   if (codec == CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
-  else if (codec == CODEC_ID_DTS) strcpy(sInfo, "DTS ");
+  else if (codec == CODEC_ID_DTS)
+  {
+#ifdef FF_PROFILE_DTS_HD_MA
+    if (profile == FF_PROFILE_DTS_HD_MA)
+      strcpy(sInfo, "DTS-HD MA ");
+    else if (profile == FF_PROFILE_DTS_HD_HRA)
+      strcpy(sInfo, "DTS-HD HRA ");
+    else
+#endif
+      strcpy(sInfo, "DTS ");
+  }
   else if (codec == CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
   else strcpy(sInfo, "");
 
