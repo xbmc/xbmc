@@ -23,35 +23,101 @@
 
 #include "PVRChannelGroup.h"
 
+/** XBMC's internal group, the group containing all channels */
+
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
 protected:
-  int m_iHiddenChannels; /* the amount of hidden channels in this container */
+  int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
+  /*!
+   * @brief Load all channels from the database.
+   * @param bCompress Compress the database after changing anything.
+   * @return The amount of channels that were loaded.
+   */
   int LoadFromDb(bool bCompress = false);
+
+  /*!
+   * @brief Load all channels from the clients.
+   * @param bAddToDb If true, add the channels to the database.
+   * @return The amount of channels that were loaded.
+   */
   int LoadFromClients(bool bAddToDb = true);
+
+  /*!
+   * @brief Add client channels to this container.
+   * @return The amount of channels that were added.
+   */
   int GetFromClients(void);
+
+  /*!
+   * @brief Update the current channel list with the given list.
+   *
+   * Update the current channel list with the given list.
+   * Only the new channels will be present in the passed list after this call.
+   *
+   * @param channels The channels to use to update this list.
+   * @return True if everything went well, false otherwise.
+   */
   bool Update(CPVRChannelGroup *channels);
+
+  /*!
+   * @brief Refresh the channel list from the clients.
+   */
   bool Update();
 
-  /**
-   * Remove invalid channels and updates the channel numbers.
+  /*!
+   * @brief Remove invalid channels and updates the channel numbers.
    */
   void ReNumberAndCheck(void);
+
 public:
+  /*!
+   * @brief Create a new internal channel group.
+   * @param bRadio True if this group holds radio channels.
+   */
   CPVRChannelGroupInternal(bool bRadio);
+
+  /*!
+   * @brief Load the channels from the database.
+   *
+   * Load the channels from the database.
+   * If no channels are stored in the database, then the channels will be loaded from the clients.
+   *
+   * @return The amount of channels that were added.
+   */
   int Load();
+
+  /*!
+   * @brief Clear this channel list and destroy all channel instances in it.
+   */
   void Unload();
+
+  /*!
+   * @brief Move a channel from position iOldIndex to iNewIndex.
+   * @param iOldIndex The old index.
+   * @param iNewIndex The new index.
+   */
   void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
+
+  /*!
+   * @brief Show a hidden channel or hide a visible channel.
+   * @param channel The channel to change.
+   * @param bShowDialog If true, show a confirmation dialog.
+   * @return True if the channel was changed, false otherwise.
+   */
   bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 
   /**
-   * The amount of channels in this container.
+   * @brief The amount of channels in this container.
+   * @return The amount of channels in this container.
    */
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
+  /*!
+   * @brief Persist changed or new data.
+   * @param bQueueWrite If true, don't execute the query directly.
+   * @return True if the channel was persisted, false otherwise.
+   */
   bool Persist(bool bQueueWrite = false) { return true; }
 };
-
-extern CPVRChannelGroupInternal PVRChannelsTV;
-extern CPVRChannelGroupInternal PVRChannelsRadio;

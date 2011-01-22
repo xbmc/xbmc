@@ -105,10 +105,6 @@ public:
 
   /*!
    * @brief Load the channels from the database.
-   *
-   * Load the channels from the database.
-   * If no channels are stored in the database, then the channels will be loaded from the clients.
-   *
    * @return The amount of channels that were added.
    */
   virtual int Load();
