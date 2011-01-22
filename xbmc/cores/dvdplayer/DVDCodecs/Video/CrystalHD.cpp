@@ -873,7 +873,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
-                    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
                   m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
                 }
               break;

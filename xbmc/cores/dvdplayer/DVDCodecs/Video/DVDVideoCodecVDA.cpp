@@ -748,7 +748,7 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
   struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   if (swcontext)
   {
     uint8_t  *src[] = { yuv422_ptr, 0, 0, 0 };
@@ -768,7 +768,7 @@ void CDVDVideoCodecVDA::BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDV
   struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_BGRA, 
     m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   if (swcontext)
   {
     uint8_t  *src[] = { bgra_ptr, 0, 0, 0 };

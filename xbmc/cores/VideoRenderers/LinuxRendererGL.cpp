@@ -557,7 +557,8 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
 
     struct SwsContext *context = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                              im->width, im->height, PIX_FMT_BGRA,
-                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                             SWS_FAST_BILINEAR | SwScaleCPUFlags(),
+                                                             NULL, NULL, NULL);
     uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
     int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
     uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
@@ -585,7 +586,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
 
     struct SwsContext *ctx = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                          m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
-                                                         algorithm, NULL, NULL, NULL);
+                                                         algorithm | SwScaleCPUFlags(), NULL, NULL, NULL);
     m_dllSwScale->sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale->sws_freeContext(ctx);
 
