@@ -25,28 +25,38 @@
 
 class CPVREpgInfoTag;
 
-/* Filter data to check with a EPGEntry */
+/** Filter to apply with on a CPVREpgInfoTag */
+
 struct PVREpgSearchFilter
 {
+  /*!
+   * @brief Clear this filter.
+   */
   void Reset();
+
+  /*!
+   * @brief Check if a tag will be filtered or not.
+   * @param tag The tag to check.
+   * @return True if this tag matches the filter, false if not.
+   */
   bool FilterEntry(const CPVREpgInfoTag &tag) const;
 
-  CStdString    m_strSearchTerm;
-  bool          m_bIsCaseSensitive;
-  bool          m_bSearchInDescription;
-  int           m_iGenreType;
-  int           m_iGenreSubType;
-  int           m_iMinimumDuration;
-  int           m_iMaximumDuration;
-  SYSTEMTIME    m_startTime;
-  SYSTEMTIME    m_endTime;
-  SYSTEMTIME    m_startDate;
-  SYSTEMTIME    m_endDate;
-  int           m_iChannelNumber;
-  bool          m_bFTAOnly;
-  bool          m_bIncludeUnknownGenres;
-  int           m_iChannelGroup;
-  bool          m_bIgnorePresentTimers;
-  bool          m_bIgnorePresentRecordings;
-  bool          m_bPreventRepeats;
+  CStdString    m_strSearchTerm;            /*!< The term to search for */
+  bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */
+  bool          m_bSearchInDescription;     /*!< Search for strSearchTerm in the description too */
+  int           m_iGenreType;               /*!< The genre type for an entry */
+  int           m_iGenreSubType;            /*!< The genre subtype for an entry */
+  int           m_iMinimumDuration;         /*!< The minimum duration for an entry */
+  int           m_iMaximumDuration;         /*!< The maximum duration for an entry */
+  SYSTEMTIME    m_startTime;                /*!< The minimum start time for an entry */
+  SYSTEMTIME    m_endTime;                  /*!< The maximum end time for an entry */
+  SYSTEMTIME    m_startDate;                /*!< The minimum start date for an entry */
+  SYSTEMTIME    m_endDate;                  /*!< The maximum end date for an entry */
+  int           m_iChannelNumber;           /*!< The channel number in XBMC */
+  bool          m_bFTAOnly;                 /*!< Free to air only or not */
+  bool          m_bIncludeUnknownGenres;    /*!< Include unknown genres or not */
+  int           m_iChannelGroup;            /*!< The group this channel belongs to */
+  bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
+  bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+  bool          m_bPreventRepeats;          /*!< True to remove repeating events, false if not */
 };
