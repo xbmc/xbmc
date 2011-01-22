@@ -32,173 +32,286 @@ class CPVREpg;
 class CPVREpgInfoTag;
 class CVideoSettings;
 
+/** The PVR database */
+
 class CPVRDatabase : public CDatabase
 {
+private:
+  CDateTime lastScanTime; /*!< the last time the EPG has been updated */
+
 public:
+  /*!
+   * @brief Create a new instance of the PVR database.
+   */
   CPVRDatabase(void);
   virtual ~CPVRDatabase(void);
 
+  /*!
+   * @brief Open the database.
+   * @return True if it was opened successfully, false otherwise.
+   */
   virtual bool Open();
 
+  /*!
+   * @brief Get the minimal database version that is required to operate correctly.
+   * @return The minimal database version.
+   */
   virtual int GetMinVersion() const { return 7; };
+
+  /*!
+   * @brief Get the default sqlite database filename.
+   * @return The default filename.
+   */
   const char *GetDefaultDBName() const { return "MyTV4.db"; };
 
-  /********** Channel methods **********/
+  /*! @name Channel methods */
+  //@{
 
-  /**
-   * Remove all channels from the database
+  /*!
+   * @brief Remove all channels from the database.
+   * @return True if all channels were removed, false otherwise.
    */
   bool EraseChannels();
 
-  /**
-   * Remove all channels from a client from the database
+  /*!
+   * @brief Remove all channels from a client from the database.
+   * @param iClientId The ID of the client to delete the channels for.
+   * @return True if the channels were deleted, false otherwise.
    */
   bool EraseClientChannels(long iClientId);
 
-  /**
-   * Add or update a channel entry in the database
+  /*!
+   * @brief Add or update a channel entry in the database
+   * @param channel The channel to persist.
+   * @param bQueueWrite If true, don't write immediately
+   * @return The database ID of the channel.
    */
   long UpdateChannel(const CPVRChannel &channel, bool bQueueWrite = false);
 
-  /**
-   * Remove a channel entry from the database
+  /*!
+   * @brief Remove a channel entry from the database
+   * @param channel The channel to remove.
+   * @return True if the channel was removed, false otherwise.
    */
   bool RemoveChannel(const CPVRChannel &channel);
 
-  /**
-   * Get the list of channels from the database
+  /*!
+   * @brief Get the list of channels from the database
+   * @param results The channel group to store the results in.
+   * @param bIsRadio Get the radio channels if true. Get the TV channels otherwise.
+   * @return The amount of channels that were added.
    */
   int GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio);
 
-  /**
-   * The amount of channels
+  /*!
+   * @brief The amount of channels in the database.
+   * @param bRadio Get the radio channels if true. Get the TV channels otherwise.
+   * @param bHidden Get the hidden channels if true. Get the visible channels otherwise.
+   * @return The amount of channels.
    */
   int GetChannelCount(bool bRadio, bool bHidden = false);
 
-  /**
-   * Get the Id of the channel that was played last
+  /*!
+   * @brief Get the ID of the channel that was played last
+   * @return The ID of the channel that was played last
    */
   int GetLastChannel();
 
-  /**
-   * Update the channel that was played last
+  /*!
+   * @brief Update the last playing channel.
+   * @param channel The channel to store.
+   * @return True if the value was stored, false otherwise.
    */
   bool UpdateLastChannel(const CPVRChannel &channel);
 
-  /********** Channel settings methods **********/
+  //@}
 
-  /**
-   * Remove all channel settings from the database
+  /*! @name Channel settings methods */
+  //@{
+
+  /*!
+   * @brief Remove all channel settings from the database.
+   * @return True if all channels were removed successfully, false if not.
    */
   bool EraseChannelSettings();
 
-  /**
-   * Get channel settings from the database
+  /*!
+   * @brief Get the channel settings from the database.
+   * @param channel The channel to get the settings for.
+   * @param settings Store the settings in here.
+   * @return True if the settings were fetched successfully, false if not.
    */
   bool GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings);
 
-  /**
-   * Store channel settings in the database
+  /*!
+   * @brief Store channel settings in the database.
+   * @param channel The channel to store the settings for.
+   * @param settings The settings to store.
+   * @return True if the settings were stored successfully, false if not.
    */
   bool SetChannelSettings(const CPVRChannel &channel, const CVideoSettings &settings);
 
-  /********** Channel group methods **********/
+  //@}
 
-  /**
-   * Remove all channel groups from the database
+  /*! @name Channel group methods */
+  //@{
+
+  /*!
+   * @brief Remove all channel groups from the database
+   * @param bRadio Remove all radio channel groups if true. Remove TV channel groups otherwise.
+   * @return True if all channel groups were removed.
    */
   bool EraseChannelGroups(bool bRadio = false);
 
-  /**
-   * Add a channel group to the database
+  /*!
+   * @brief Add a channel group to the database
+   * @param strGroupName The name of the group.
+   * @param iSortOrder The sort order of the group.
+   * @param bRadio True if it's a radio channel group, false if it's a TV channel group.
+   * @return True if the group was stored successfully, false otherwise.
    */
   long AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio = false);
 
-  /**
-   * Delete a channel group from the database
+  /*!
+   * @brief Delete a channel group from the database.
+   * @param iGroupId The id of the group to delete.
+   * @param bRadio True if it's a radio channel group, false otherwise.
+   * @return True if the group was deleted successfully, false otherwise.
    */
   bool DeleteChannelGroup(int iGroupId, bool bRadio = false);
 
-  /**
-   * Get the channel groups
+  /*!
+   * @brief Get the channel groups.
+   * @param results The container to store the results in.
+   * @return True if the list was fetched successfully, false otherwise.
    */
   bool GetChannelGroupList(CPVRChannelGroups &results);
+
+  /*!
+   * @brief Get the channel groups.
+   * @param results The container to store the results in.
+   * @param bRadio Get radio channel groups if true.
+   * @return True if the list was fetched successfully, false otherwise.
+   */
   bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
 
-  /**
-   * Get the group members for a group
+  /*!
+   * @brief Get the group members for a group.
+   * @param group The group to get the channels for.
+   * @return The amount of channels that were added.
    */
   int GetChannelsInGroup(CPVRChannelGroup *group);
 
-  /**
-   * Change the name of a channel group
+  /*!
+   * @brief Change the name of a channel group.
+   * @param iGroupId The ID of the group to change.
+   * @param strNewName The new name of the group.
+   * @param bRadio True if it's a radio channel group, false otherwise.
+   * @return True if the name was changed successfully, false otherwise.
    */
   bool SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio = false);
 
-  /**
-   * Change the sort order of a channel group
+  /*!
+   * @brief Change the sort order of a channel group.
+   * @param iGroupId The ID of the group to change.
+   * @param iSortOrder The new sort order.
+   * @param bRadio True if it's a radio channel group, false otherwise.
+   * @return True if the order was changed successfully, false otherwise.
    */
   bool SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio = false);
 
-  /**
-   * Add or update a channel group entry in the database
+  /*!
+   * @brief Add or update a channel group entry in the database.
+   * @param group The group to persist.
+   * @param bQueueWrite If true, don't write directly.
+   * @return The database ID of the group.
    */
   long UpdateChannelGroup(const CPVRChannelGroup &group, bool bQueueWrite = false);
 
 protected:
-  /**
-   * Get the Id of a channel group
+  /*!
+   * @brief Get the Id of a channel group
+   * @param strGroupName The name of the group.
+   * @param bRadio True if it's a radio channel group, false otherwise.
+   * @return
    */
   long GetChannelGroupId(const CStdString &strGroupName, bool bRadio = false);
+  //@}
 
-  /********** Client methods **********/
+  /*! @name Client methods */
+  //@{
 public:
-  /**
-   * Remove all client information from the database
+  /*!
+   * @brief Remove all client information from the database.
+   * @return True if all clients were removed successfully.
    */
   bool EraseClients();
 
-  /**
-   * Add a client to the database if it's not already in there.
+  /*!
+   * @brief Add a client to the database if it's not already in there.
+   * @param strClientName The name of the client.
+   * @param strGuid The unique ID of the client.
+   * @return The database ID of the client.
    */
   long AddClient(const CStdString &strClientName, const CStdString &strGuid);
 
-  /**
-   * Remove a client from the database
+  /*!
+   * @brief Remove a client from the database
+   * @param strGuid The unique ID of the client.
+   * @return True if the client was removed successfully, false otherwise.
    */
   bool RemoveClient(const CStdString &strGuid);
 
 protected:
-
-  /**
-   * Get the database ID of a client
+  /*!
+   * @brief Get the database ID of a client.
+   * @param strClientUid The unique ID of the client.
+   * @return The database ID of the client or -1 if it wasn't found.
    */
   long GetClientId(const CStdString &strClientUid);
 
-  /********** EPG methods **********/
+  //@}
+
+  /*! @name EPG methods */
+  //@{
 public:
-  /**
-   * Remove all EPG information from the database
+  /*!
+   * @brief Remove all EPG information from the database
+   * @return True if the EPG information was erased, false otherwise.
    */
   bool EraseEpg();
 
-  /**
-   * Erases all EPG entries for a channel.
+  /*!
+   * @brief Erase all EPG entries for a channel.
+   * @param channel The channel to remove the EPG entries for.
+   * @param start Remove entries after this time if set.
+   * @param end Remove entries before this time if set.
+   * @return True if the entries were removed successfully, false otherwise.
    */
   bool EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
-  /**
-   * Erases all EPG entries older than 1 day.
+  /*!
+   * @brief Erase all EPG entries older than 1 day.
+   * @return True if the entries were removed successfully, false otherwise.
    */
   bool EraseOldEpgEntries();
 
-  /**
-   * Remove a single EPG entry.
+  /*!
+   * @brief Remove a single EPG entry.
+   * @param tag The entry to remove.
+   * @return True if it was removed successfully, false otherwise.
    */
   bool RemoveEpgEntry(const CPVREpgInfoTag &tag);
 
   /**
    * Get all EPG entries for a channel.
+   */
+  /*!
+   * @brief Get all EPG entries for a channel.
+   * @param epg The EPG table to get the entries for.
+   * @param start Get entries after this time if set.
+   * @param end Get entries before this time if set.
+   * @return The amount of entries that was added.
    */
   int GetEpgForChannel(CPVREpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
@@ -206,31 +319,54 @@ public:
    * Get the start time of the first entry for a channel.
    * If iChannelId is <= 0, then all entries will be searched.
    */
+  /*!
+   * @brief Get the start time of the first entry for a channel.
+   * @param iChannelId The ID of the channel to get the entries for. If iChannelId is <= 0, then all entries will be searched.
+   * @return The start time.
+   */
   CDateTime GetEpgDataStart(long iChannelId = -1);
 
-  /**
-   * Get the end time of the last entry for a channel.
-   * If iChannelId is <= 0, then all entries will be searched.
+  /*!
+   * @brief Get the end time of the last entry for a channel.
+   * @param iChannelId The ID of the channel to get the entries for. If iChannelId is <= 0, then all entries will be searched.
+   * @return The end time.
    */
   CDateTime GetEpgDataEnd(long iChannelId = -1);
 
-  /**
-   * Get the last stored EPG scan time.
+  /*!
+   * @brief Get the last stored EPG scan time.
+   * @return The last scan time or -1 if it wasn't found.
    */
   CDateTime GetLastEpgScanTime();
 
-  /**
-   * Update the last scan time.
+  /*!
+   * @brief Update the last scan time.
+   * @return True if it was updated successfully, false otherwise.
    */
   bool UpdateLastEpgScanTime(void);
 
-  /**
-   * Persist an infotag
+  /*!
+   * @brief Persist an infotag.
+   * @param tag The tag to persist.
+   * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
+   * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
+   * @return True if the query or queries were executed successfully, false otherwise.
    */
   bool UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
+  //@}
+
 private:
+  /*!
+   * @brief Create the PVR database tables.
+   * @return True if the tables were created successfully, false otherwise.
+   */
   virtual bool CreateTables();
+
+  /*!
+   * @brief Update an old version of the database.
+   * @param version The version to update the database from.
+   * @return True if it was updated successfully, false otherwise.
+   */
   virtual bool UpdateOldVersion(int version);
-  CDateTime lastScanTime;
 };
