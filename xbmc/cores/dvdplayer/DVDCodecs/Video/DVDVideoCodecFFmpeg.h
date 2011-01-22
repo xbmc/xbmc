@@ -47,6 +47,10 @@ public:
     virtual CCriticalSection* Section() { return NULL; }
     virtual long              Release();
     virtual IHardwareDecoder* Acquire();
+    // signal to vdpau (mixer) whether we run normal speed or not
+    // so it can switch off deinterlacing
+    virtual void NormalSpeed(bool normal) {return;};
+    virtual bool AllowDecoderDrop() {return true;};
     protected:
     long m_references;
   };
@@ -62,6 +66,7 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount();
+  virtual void NormalSpeed(bool normal) { if (m_pHardware) m_pHardware->NormalSpeed(normal); };
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };

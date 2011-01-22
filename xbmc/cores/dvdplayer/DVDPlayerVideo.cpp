@@ -438,6 +438,14 @@ void CDVDPlayerVideo::Process()
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_iNrOfPicturesNotToSkip = 0;
+
+      if (m_pVideoCodec)
+      {
+        if (m_speed == DVD_PLAYSPEED_NORMAL)
+    	  m_pVideoCodec->NormalSpeed(true);
+        else
+    	  m_pVideoCodec->NormalSpeed(false);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
     {
@@ -509,10 +517,13 @@ void CDVDPlayerVideo::Process()
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
       // pictures when they come from demuxer
-      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER) && !(iDecoderState & VC_PICTURE))
+      // returning VC_BUFFER and no pic is no clear indicator for having dropped a pic
+      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_DROPPED) && !(iDecoderState & VC_PICTURE))
       {
         m_iDroppedFrames++;
         iDropped++;
+        // need to reset flag or next next frame will dropped as well
+        bRequestDrop = false;
       }
 
       // loop while no error
