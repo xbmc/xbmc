@@ -500,6 +500,7 @@ void CPVRManager::Process()
   }
 
   /* if a channel or recording is playing stop it first */
+  // this will result in seg fault because this is not the rendering thread
   if (m_currentPlayingChannel || m_currentPlayingRecording)
     g_application.StopPlaying();
 
