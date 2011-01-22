@@ -28,127 +28,185 @@
 class CPVREpgInfoTag;
 class CPVREpgs;
 
+/** PVR EPG class */
+
 class CPVREpg : public std::vector<CPVREpgInfoTag*>
 {
   friend class CPVREpgs;
 
 private:
-  CPVRChannel * m_Channel;        /* the channel this EPG belongs to */
-  bool          m_bUpdateRunning; /* true if EPG is currently being updated */
-  bool          m_bIsSorted;      /* remember if we're sorted or not */
+  CPVRChannel * m_Channel;        /*!< the channel this EPG belongs to */
+  bool          m_bUpdateRunning; /*!< true if EPG is currently being updated */
+  bool          m_bIsSorted;      /*!< remember if we're sorted or not */
 
-  /**
-   * Update the EPG from a scraper set in the channel tag
+  /*!
+   * @brief Update the EPG from a scraper set in the channel tag.
    * TODO: not implemented yet
+   * @param start Get entries with a start date after this time.
+   * @param end Get entries with an end date before this time.
+   * @return True if the update was successful, false otherwise.
    */
   bool UpdateFromScraper(time_t start, time_t end);
 
-  /**
-   * Update the EPG from a client
+  /*!
+   * @brief Update the EPG from a client.
+   * @param start Get entries with a start date after this time.
+   * @param end Get entries with an end date before this time.
+   * @return True if the update was successful, false otherwise.
    */
   bool UpdateFromClient(time_t start, time_t end);
 
 public:
+  /*!
+   * @brief Create a new EPG instance for a channel.
+   * @param channel The channel to create the EPG for.
+   */
   CPVREpg(CPVRChannel *channel);
   virtual ~CPVREpg(void);
 
-  /**
-   * Check if this EPG contains valid entries
+  /*!
+   * @brief Check whether this EPG contains valid entries.
+   * @return True if it has valid entries, false if not.
    */
   bool HasValidEntries(void) const;
 
-  /**
-   * The channel this EPG belongs to
+  /*!
+   * @brief The channel this EPG belongs to.
+   * @return The channel this EPG belongs to
    */
   CPVRChannel *Channel(void) const { return m_Channel; }
 
-  /**
-   * Delete an infotag from this EPG
+  /*!
+   * @brief Delete an infotag from this EPG.
+   * @param tag The tag to delete.
+   * @return True if it was deleted successfully, false if not.
    */
   bool DeleteInfoTag(CPVREpgInfoTag *tag);
 
-  /**
-   * Remove all entries from this EPG that finished before the given time
-   * and that have no timers set
+  /*!
+   * @brief Remove all entries from this EPG that finished before the given time
+   *        and that have no timers set.
+   * @param Time Delete entries with an end time before this time.
    */
   void Cleanup(const CDateTime Time);
 
-  /**
-   * Remove all entries from this EPG that finished before the current time
-   * and that have no timers set
+  /*!
+   * @brief Remove all entries from this EPG that finished before the given time
+   *        and that have no timers set.
    */
   void Cleanup(void);
 
-  /**
-   * Remove all entries from this EPG
+  /*!
+   * @brief Remove all entries from this EPG.
    */
   void Clear(void);
 
-  /**
-   * Sort all entries in this EPG by date
+  /*!
+   * @brief Sort all entries in this EPG by date.
    */
   void Sort(void);
 
-  /**
-   * Get the event that is occurring now
+  /*!
+   * @brief Get the event that is occurring now.
+   * @return The current event.
    */
   const CPVREpgInfoTag *InfoTagNow(void) const;
 
-  /**
-   * Get the event that will occur next
+  /*!
+   * @brief Get the event that will occur next.
+   * @return The next event.
    */
   const CPVREpgInfoTag *InfoTagNext(void) const;
 
-  /**
-   * Get the infotag with the given ID
+  /*!
+   * @brief Get the infotag with the given ID.
+   *
+   * Get the infotag with the given ID.
    * If it wasn't'found, try finding the event with the given start time
+   *
+   * @param uniqueID The unique ID of the event to find.
+   * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
+   * @return The found tag or NULL if it wasn't found.
    */
   const CPVREpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime) const;
 
-  /**
-   * Get the event that occurs at the given time
+  /*!
+   * @brief Get the event that occurs at the given time.
+   * @param Time The time to find the event for.
+   * @return The found tag or NULL if it wasn't found.
    */
   const CPVREpgInfoTag *InfoTagAround(CDateTime Time) const;
 
-  /**
-   * Get the event that occurs between the given begin and end time
+  /*!
+   * Get the event that occurs between the given begin and end time.
+   * @param BeginTime Minimum start time of the event.
+   * @param EndTime Maximum end time of the event.
+   * @return The found tag or NULL if it wasn't found.
    */
   const CPVREpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
 
-  /**
-   * True if this EPG is currently being updated, false otherwise
+  /*!
+   * @brief True if this EPG is currently being updated, false otherwise.
+   * @return True if this EPG is currently being updated, false otherwise.
    */
   bool IsUpdateRunning(void) const { return m_bUpdateRunning; }
 
-  /**
-   * Mark the EPG as being update or no longer being updated
+  /*!
+   * @brief Mark the EPG as being update or no longer being updated.
+   * @param bUpdateRunning The new value.
    */
-  void SetUpdateRunning(bool OnOff) { m_bUpdateRunning = OnOff; }
+  void SetUpdateRunning(bool bUpdateRunning) { m_bUpdateRunning = bUpdateRunning; }
 
-  /**
-   * Update an entry in this EPG
-   * If bUpdateDatabase is set to true, this event will be persisted in the database
+  /*!
+   * @brief Update an entry in this EPG.
+   * @param tag The tag to update.
+   * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+   * @return True if it was updated successfully, false otherwise.
    */
   bool UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase = false);
 
-  /**
-   * Update an entry in this EPG
-   * If bUpdateDatabase is set to true, this event will be persisted in the database
+  /*!
+   * @brief Update an entry in this EPG.
+   * @param data The tag to update.
+   * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+   * @return True if it was updated successfully, false otherwise.
    */
   bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
-  /**
-   * Fix overlapping events from the tables
+  /*!
+   * @brief Fix overlapping events from the tables.
+   * @param bStore Store in the database if true.
+   * @return True if the events were fixed successfully, false otherwise.
    */
   bool FixOverlappingEvents(bool bStore = true);
 
-  /**
-   * Update the EPG from 'start' till 'end'
+  /*!
+   * @brief Update the EPG from 'start' till 'end'.
+   * @param start The start time.
+   * @param end The end time.
+   * @param bStoreInDb Store in the database if true.
+   * @return True if the update was successful, false otherwise.
    */
   bool Update(time_t start, time_t end, bool bStoreInDb = true);
 
+  /*!
+   * @brief Load all entries from the database.
+   * @return True if the entries were loaded successfully, false otherwise.
+   */
   bool LoadFromDb();
 
+  /*!
+   * @brief Get all EPG entries.
+   * @param results The file list to store the results in.
+   * @return The amount of entries that were added.
+   */
   int Get(CFileItemList *results);
+
+  /*!
+   * @brief Get all EPG entries that and apply a filter.
+   * @param results The file list to store the results in.
+   * @param filter The filter to apply.
+   * @return The amount of entries that were added.
+   */
   int Get(CFileItemList *results, const PVREpgSearchFilter &filter);
 };
