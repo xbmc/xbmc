@@ -152,7 +152,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            g_PVRChannelGroups.Get(m_bIsRadio)->ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            g_PVRChannelGroups.Get(m_bIsRadio)->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
           return true;
@@ -168,7 +168,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            g_PVRChannelGroups.Get(m_bIsRadio)->ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
+            g_PVRChannelGroups.Get(m_bIsRadio)->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
             Update();
           }
           return true;

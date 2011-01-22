@@ -82,7 +82,7 @@ bool CPVRChannelGroups::Load(void)
   return true;
 }
 
-void CPVRChannelGroups::Unload()
+void CPVRChannelGroups::Unload(void)
 {
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     delete &at(iGroupPtr);
@@ -173,7 +173,7 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId)
   if (iCurrentGroupIndex != -1)
   {
     int iGroupIndex = iCurrentGroupIndex + 1;
-    if (iGroupIndex == size()) iGroupIndex = 0;
+    if (iGroupIndex == (int) size()) iGroupIndex = 0;
 
     iReturn = at(iGroupIndex).GroupID();
   }
@@ -181,30 +181,30 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId)
   return iReturn;
 }
 
-void CPVRChannelGroups::AddGroup(const CStdString &name)
+void CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   Unload();
-  database->AddChannelGroup(name, -1, m_bRadio);
+  database->AddChannelGroup(strName, -1, m_bRadio);
   database->GetChannelGroupList(*this, m_bRadio);
 
   database->Close();
 }
 
-bool CPVRChannelGroups::RenameGroup(int GroupId, const CStdString &newname)
+bool CPVRChannelGroups::RenameGroup(int iGroupId, const CStdString &strNewName)
 {
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   Unload();
-  database->SetChannelGroupName(GroupId, newname, m_bRadio);
+  database->SetChannelGroupName(iGroupId, strNewName, m_bRadio);
   database->GetChannelGroupList(*this, m_bRadio);  database->Close();
   return true;
 }
 
-bool CPVRChannelGroups::DeleteGroup(int GroupId)
+bool CPVRChannelGroups::DeleteGroup(int iGroupId)
 {
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
@@ -214,14 +214,14 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
   const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bRadio);
 
   /* Delete the group inside Database */
-  database->DeleteChannelGroup(GroupId, m_bRadio);
+  database->DeleteChannelGroup(iGroupId, m_bRadio);
 
   /* Set all channels with this group to undefined */
-  for (unsigned int i = 0; i < channels->size(); i++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    if (channels->at(i)->GroupID() == GroupId)
+    if (channels->at(iChannelPtr)->GroupID() == iGroupId)
     {
-      channels->at(i)->SetGroupID(0, true);
+      channels->at(iChannelPtr)->SetGroupID(0, true);
     }
   }
 
@@ -232,36 +232,36 @@ bool CPVRChannelGroups::DeleteGroup(int GroupId)
   return true;
 }
 
-CStdString CPVRChannelGroups::GetGroupName(int GroupId)
+CStdString CPVRChannelGroups::GetGroupName(int iGroupId)
 {
-  if (GroupId != XBMC_INTERNAL_GROUPID)
+  if (iGroupId != XBMC_INTERNAL_GROUPID)
   {
-    for (unsigned int i = 0; i < size(); i++)
+    for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     {
-      if (GroupId == at(i).GroupID())
-        return at(i).GroupName();
+      if (iGroupId == at(iGroupPtr).GroupID())
+        return at(iGroupPtr).GroupName();
     }
   }
 
   return g_localizeStrings.Get(593);
 }
 
-int CPVRChannelGroups::GetGroupId(CStdString GroupName)
+int CPVRChannelGroups::GetGroupId(CStdString strGroupName)
 {
-  if (GroupName.IsEmpty() || GroupName == g_localizeStrings.Get(593) || GroupName == "All")
+  if (strGroupName.IsEmpty() || strGroupName == g_localizeStrings.Get(593) || strGroupName == "All")
     return XBMC_INTERNAL_GROUPID;
 
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    if (GroupName == at(i).GroupName())
-      return at(i).GroupID();
+    if (strGroupName == at(iGroupPtr).GroupName())
+      return at(iGroupPtr).GroupID();
   }
   return -1;
 }
 
-bool CPVRChannelGroups::ChannelToGroup(const CPVRChannel &channel, int GroupId)
+bool CPVRChannelGroups::AddChannelToGroup(const CPVRChannel &channel, int iGroupId)
 {
   const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(channel.IsRadio());
-  channels->at(channel.ChannelNumber()-1)->SetGroupID(GroupId);
+  channels->at(channel.ChannelNumber()-1)->SetGroupID(iGroupId);
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }
