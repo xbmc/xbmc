@@ -31,6 +31,7 @@ class CDVDInputStream;
 #endif
 #ifndef _LINUX
 enum CodecID;
+#include <libavcodec/avcodec.h>
 #else
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
