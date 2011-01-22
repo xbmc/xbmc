@@ -138,7 +138,7 @@ void CPVREpg::Cleanup(const CDateTime Time)
     CPVREpgInfoTag *tag = at(i);
     if ( tag && /* valid tag */
         !tag->HasTimer() && /* no time set */
-        (tag->End() + CDateTimeSpan(0, PVREpgs.m_iLingerTime / 60 + 1, PVREpgs.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
+        (tag->End() + CDateTimeSpan(0, g_PVREpgs.m_iLingerTime / 60 + 1, g_PVREpgs.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
     {
       DeleteInfoTag(tag);
     }
@@ -229,7 +229,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
   InfoTag->Update(tag);
 
   /* update the cached first and last date in the table */
-  PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
+  g_PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
 
   m_bIsSorted = false;
 
@@ -270,7 +270,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   InfoTag->Update(data);
 
   /* update the cached first and last date in the table */
-  PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
+  g_PVREpgs.UpdateFirstAndLastEPGDates(*InfoTag);
 
   m_bIsSorted = false;
 

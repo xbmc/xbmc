@@ -39,7 +39,7 @@
 
 using namespace std;
 
-CPVREpgs PVREpgs;
+CPVREpgs g_PVREpgs;
 
 CPVREpgs::CPVREpgs()
 {
@@ -382,9 +382,9 @@ bool CPVREpgs::UpdateEPG(bool bShowProgress /* = false */)
 
 bool CPVREpgs::UpdateAllChannelEPGPointers()
 {
-  for (unsigned int epgPtr = 0; epgPtr < PVREpgs.size(); epgPtr++)
+  for (unsigned int epgPtr = 0; epgPtr < g_PVREpgs.size(); epgPtr++)
   {
-    CPVRChannel *channel = PVREpgs.at(epgPtr)->Channel();
+    CPVRChannel *channel = g_PVREpgs.at(epgPtr)->Channel();
     if (channel)
       channel->UpdateEPGPointers();
   }

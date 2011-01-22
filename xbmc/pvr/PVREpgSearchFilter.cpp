@@ -37,10 +37,10 @@ void PVREpgSearchFilter::Reset()
   m_iGenreSubType            = -1;
   m_iMinimumDuration         = -1;
   m_iMaximumDuration         = -1;
-  PVREpgs.GetFirstEPGDate().GetAsSystemTime(m_startDate);
+  g_PVREpgs.GetFirstEPGDate().GetAsSystemTime(m_startDate);
   m_startDate.wHour          = 0;
   m_startDate.wMinute        = 0;
-  PVREpgs.GetLastEPGDate().GetAsSystemTime(m_endDate);
+  g_PVREpgs.GetLastEPGDate().GetAsSystemTime(m_endDate);
   m_endDate.wHour            = 23;
   m_endDate.wMinute          = 59;
   m_startTime                = m_startDate;
