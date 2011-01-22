@@ -1462,6 +1462,7 @@ void CApplication::StartPVRManager()
 void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
+  StopPlaying();
   g_PVRManager.Stop();
 }
 
