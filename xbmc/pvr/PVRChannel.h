@@ -291,7 +291,7 @@ public:
    * @brief The name of this channel on the client.
    * @return The name of this channel on the client.
    */
-  CStdString ClientChannelName(void) const { return m_strClientChannelName; }\
+  CStdString ClientChannelName(void) const { return m_strClientChannelName; }
 
   /*!
    * @brief Set the name of this channel on the client.
