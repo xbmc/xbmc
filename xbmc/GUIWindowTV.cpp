@@ -54,10 +54,8 @@
 /* TV control */
 #include "pvr/PVRManager.h"
 #include "pvr/PVREpgInfoTag.h"
-#include "pvr/PVRChannelGroups.h"
-#include "pvr/PVRChannelGroup.h"
 #include "pvr/PVRTimerInfoTag.h"
-#include "pvr/PVRChannelsContainer.h"
+#include "pvr/PVRChannelGroupsContainer.h"
 
 using namespace std;
 
@@ -231,13 +229,13 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
     }
     else if (iControl == CONTROL_BTNCHANNELS_TV)
     {
-      m_iCurrentTVGroup = PVRChannelGroupsTV.GetNextGroupID(m_iCurrentTVGroup);
+      m_iCurrentTVGroup = g_PVRChannelGroups.GetTV()->GetNextGroupID(m_iCurrentTVGroup);
       UpdateChannelsTV();
       return true;
     }
     else if (iControl == CONTROL_BTNCHANNELS_RADIO)
     {
-      m_iCurrentRadioGroup = PVRChannelGroupsRadio.GetNextGroupID(m_iCurrentRadioGroup);
+      m_iCurrentRadioGroup = g_PVRChannelGroups.GetRadio()->GetNextGroupID(m_iCurrentRadioGroup);
       UpdateChannelsRadio();
       return true;
     }
@@ -316,7 +314,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_PLAY)
       {
-        const CPVRChannelGroup *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
+        const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
         if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -392,12 +390,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
             {
-              ((CPVRChannelGroup *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsTV();
             }
             else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
             {
-              ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag(), true);
+              ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->HideChannel(pItem->GetPVRChannelInfoTag(), true);
               UpdateChannelsRadio();
             }
           }
@@ -745,8 +743,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
         buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
 
-      if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && g_PVRChannels.GetTV()->GetNumHiddenChannels() > 0) ||
-          (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && g_PVRChannels.GetRadio()->GetNumHiddenChannels() > 0) ||
+      if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && g_PVRChannelGroups.GetGroupAll(false)->GetNumHiddenChannels() > 0) ||
+          (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && g_PVRChannelGroups.GetGroupAll(true)->GetNumHiddenChannels() > 0) ||
           m_bShowHiddenChannels)
         buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051);  /* SHOW HIDDEN CHANNELS */
 
@@ -904,7 +902,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      const CPVRChannelGroup *channels = g_PVRChannels.Get(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
+      const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
       if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
       {
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
@@ -924,12 +922,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        ((CPVRChannelGroup *) g_PVRChannels.GetTV())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
+        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsRadio();
       }
     }
@@ -951,12 +949,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        ((CPVRChannelGroup *) g_PVRChannels.GetTV())->HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        ((CPVRChannelGroup *) g_PVRChannels.GetRadio())->HideChannel(pItem->GetPVRChannelInfoTag());
+        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->HideChannel(pItem->GetPVRChannelInfoTag());
         UpdateChannelsRadio();
       }
     }
@@ -1629,7 +1627,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS_TV);
   if (!m_bShowHiddenChannels)
-    m_vecItems->m_strPath = "pvr://channels/tv/" + PVRChannelGroupsTV.GetGroupName(m_iCurrentTVGroup) + "/";
+    m_vecItems->m_strPath = "pvr://channels/tv/" + g_PVRChannelGroups.GetTV()->GetGroupName(m_iCurrentTVGroup) + "/";
   else
     m_vecItems->m_strPath = "pvr://channels/tv/.hidden/";
   Update(m_vecItems->m_strPath);
@@ -1644,7 +1642,7 @@ void CGUIWindowTV::UpdateChannelsTV()
     }
     else if (m_iCurrentTVGroup != -1)
     {
-      m_iCurrentTVGroup = PVRChannelGroupsTV.GetNextGroupID(m_iCurrentTVGroup);
+      m_iCurrentTVGroup = g_PVRChannelGroups.GetTV()->GetNextGroupID(m_iCurrentTVGroup);
       UpdateChannelsTV();
       return;
     }
@@ -1656,7 +1654,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   if (m_bShowHiddenChannels)
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
-    SET_CONTROL_LABEL(CONTROL_LABELGROUP, PVRChannelGroupsTV.GetGroupName(m_iCurrentTVGroup));
+    SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_PVRChannelGroups.GetTV()->GetGroupName(m_iCurrentTVGroup));
 }
 
 void CGUIWindowTV::UpdateChannelsRadio()
@@ -1664,7 +1662,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS_RADIO);
   if (!m_bShowHiddenChannels)
-    m_vecItems->m_strPath = "pvr://channels/radio/" + PVRChannelGroupsRadio.GetGroupName(m_iCurrentRadioGroup) + "/";
+    m_vecItems->m_strPath = "pvr://channels/radio/" + g_PVRChannelGroups.GetRadio()->GetGroupName(m_iCurrentRadioGroup) + "/";
   else
     m_vecItems->m_strPath = "pvr://channels/radio/.hidden/";
   Update(m_vecItems->m_strPath);
@@ -1679,7 +1677,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
     }
     else if (m_iCurrentRadioGroup != -1)
     {
-      m_iCurrentRadioGroup = PVRChannelGroupsRadio.GetNextGroupID(m_iCurrentRadioGroup);
+      m_iCurrentRadioGroup = g_PVRChannelGroups.GetRadio()->GetNextGroupID(m_iCurrentRadioGroup);
       UpdateChannelsRadio();
       return;
     }
@@ -1691,7 +1689,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   if (m_bShowHiddenChannels)
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
-    SET_CONTROL_LABEL(CONTROL_LABELGROUP, PVRChannelGroupsRadio.GetGroupName(m_iCurrentRadioGroup));
+    SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_PVRChannelGroups.GetRadio()->GetGroupName(m_iCurrentRadioGroup));
 }
 
 void CGUIWindowTV::UpdateRecordings()

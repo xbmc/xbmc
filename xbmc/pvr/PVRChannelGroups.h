@@ -33,16 +33,21 @@ class CPVRChannelGroups : public std::vector<CPVRChannelGroup>
 private:
   bool  m_bRadio;
 
+  int GetIndexForGroupID(int iGroupId);
+
 public:
   CPVRChannelGroups(bool bRadio);
+  virtual ~CPVRChannelGroups(void);
 
   bool Load(void);
   void Unload(void);
 
+  CPVRChannelGroup *GetGroupAll(void);
+
   int GetGroupList(CFileItemList* results);
   CPVRChannelGroup *GetGroupById(int iGroupId);
-  int GetFirstChannelForGroupID(int GroupId);
-  int GetPrevGroupID(int current_group_id);
+  int GetFirstChannelForGroupID(int iGroupId);
+  int GetPreviousGroupID(int iGroupId);
   int GetNextGroupID(int current_group_id);
 
   void AddGroup(const CStdString &name);
@@ -52,6 +57,3 @@ public:
   CStdString GetGroupName(int GroupId);
   int GetGroupId(CStdString GroupName);
 };
-
-extern CPVRChannelGroups PVRChannelGroupsTV;
-extern CPVRChannelGroups PVRChannelGroupsRadio;

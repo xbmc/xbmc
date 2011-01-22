@@ -53,8 +53,7 @@
 #include "ButtonTranslator.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroups.h"
-#include "pvr/PVRChannelGroup.h"
+#include "pvr/PVRChannelGroupsContainer.h"
 
 #include <stdio.h>
 
@@ -698,11 +697,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         int iNewGroup = -1; // All Channels
 
-        CPVRChannelGroups *groups;
-        if (!g_PVRManager.IsPlayingRadio())
-          groups = &PVRChannelGroupsTV;
-        else
-          groups = &PVRChannelGroupsRadio;
+        CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
 
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
@@ -1129,11 +1124,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  CPVRChannelGroups *groups;
-  if (!g_PVRManager.IsPlayingRadio())
-    groups = &PVRChannelGroupsTV;
-  else
-    groups = &PVRChannelGroupsRadio;
+  CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
 
   int iGroup        = 0;
   int iCurrentGroup = 0;

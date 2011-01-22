@@ -55,6 +55,9 @@ int CPVRChannelGroupInternal::Load()
     iChannelCount = LoadFromClients();
   }
 
+  CLog::Log(LOGNOTICE, "%s - %d channels loaded",
+      __FUNCTION__, iChannelCount);
+
   return iChannelCount;
 }
 

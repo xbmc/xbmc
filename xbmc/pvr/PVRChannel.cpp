@@ -26,9 +26,7 @@
 #include "FileSystem/File.h"
 #include "MusicInfoTag.h"
 
-#include "PVRChannelGroups.h"
-#include "PVRChannelGroup.h"
-#include "PVRChannel.h"
+#include "PVRChannelGroupsContainer.h"
 #include "PVREpgs.h"
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
@@ -175,7 +173,7 @@ bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 
   if (m_iChannelGroupId != iChannelGroupId)
   {
-    CPVRChannelGroups *groups = (IsRadio() ? &PVRChannelGroupsRadio : &PVRChannelGroupsTV);
+    CPVRChannelGroups *groups = g_PVRChannelGroups.Get(IsRadio());
 
     if (bRemoveFromOldGroup)
     {

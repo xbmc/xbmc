@@ -26,10 +26,8 @@
 
 #include "PVREpgs.h"
 #include "PVREpgInfoTag.h"
-#include "PVRChannelGroups.h"
-#include "PVRChannelGroup.h"
+#include "PVRChannelGroupsContainer.h"
 #include "PVRChannelGroupInternal.h"
-#include "PVRChannelsContainer.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -621,7 +619,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
 
     while (!m_pDS->eof())
     {
-      CPVRChannel *channel = g_PVRChannels.Get(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
+      CPVRChannel *channel = g_PVRChannelGroups.GetGroupAll(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
 
       if (channel && group->AddToGroup(channel))
         ++iReturn;

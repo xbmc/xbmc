@@ -75,9 +75,8 @@
 #include "log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannel.h"
+#include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/PVREpgInfoTag.h"
-#include "pvr/PVRChannelGroups.h"
 #include "pvr/PVRTimerInfoTag.h"
 
 #include "addons/AddonManager.h"
@@ -3237,7 +3236,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     {
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
       if (channeltag && channeltag->IsRadio())
-        return PVRChannelGroupsRadio.GetGroupName(g_PVRManager.GetPlayingGroup());
+        return g_PVRChannelGroups.GetRadio()->GetGroupName(g_PVRManager.GetPlayingGroup());
     }
     break;
   }
@@ -3335,7 +3334,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return PVRChannelGroupsTV.GetGroupName(g_PVRManager.GetPlayingGroup());
+          return g_PVRChannelGroups.GetTV()->GetGroupName(g_PVRManager.GetPlayingGroup());
       }
     }
   }

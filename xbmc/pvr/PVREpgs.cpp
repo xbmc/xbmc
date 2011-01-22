@@ -31,8 +31,7 @@
 #include "PVREpgInfoTag.h"
 #include "PVRManager.h"
 #include "PVREpgSearchFilter.h"
-#include "PVRChannel.h"
-#include "PVRChannelsContainer.h"
+#include "PVRChannelGroupsContainer.h"
 #include "PVRTimerInfoTag.h"
 
 #define NOWPLAYINGUPDATEINTERVAL 30  /* update "now playing" tags every 30 seconds */
@@ -72,7 +71,7 @@ void CPVREpgs::Clear(bool bClearDb /* = false */)
   }
 
   /* remove all EPG tables */
-  for (int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
     delete at(iEpgPtr);
   }
@@ -228,7 +227,7 @@ bool CPVREpgs::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
   {
-    const CPVRChannelGroup *channels = g_PVRChannels.Get(radio);
+    const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(radio == 1);
     for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
       channels->at(iChannelPtr)->GetEPG();
@@ -530,7 +529,7 @@ int CPVREpgs::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &fil
 
 int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannels.Get(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(bRadio);
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
@@ -558,7 +557,7 @@ int CPVREpgs::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgs::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannels.Get(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(bRadio);
   int iInitialSize       = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)

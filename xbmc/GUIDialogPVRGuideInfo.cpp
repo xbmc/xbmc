@@ -25,7 +25,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 
-#include "pvr/PVRChannelsContainer.h"
+#include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/PVREpgInfoTag.h"
 #include "pvr/PVRTimers.h"
 #include "pvr/PVRTimerInfoTag.h"
@@ -101,7 +101,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       {
         Close();
 
-        const CPVRChannelGroup *channels = g_PVRChannels.Get(m_progItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
+        CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_progItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
         if (!g_application.PlayFile(CFileItem(*channels->at(m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);

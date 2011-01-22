@@ -40,9 +40,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 
-#include "pvr/PVRChannelGroups.h"
-#include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRChannelsContainer.h"
+#include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/PVREpg.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
@@ -365,9 +363,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
         if (pSpin)
         {
-          if (!m_bIsRadio && PVRChannelGroupsTV.size() == 0)
-            return true;
-          else if (m_bIsRadio && PVRChannelGroupsRadio.size() == 0)
+          if (g_PVRChannelGroups.Get(m_bIsRadio)->size() == 0)
             return true;
 
           CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -419,16 +415,11 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         {
           pSpin->Clear();
           pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
-          if (!m_bIsRadio)
-          {
-            for (unsigned int i = 0; i < PVRChannelGroupsTV.size(); i++)
-              pSpin->AddLabel(PVRChannelGroupsTV[i].GroupName(), PVRChannelGroupsTV[i].GroupID());
-          }
-          else
-          {
-            for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
-              pSpin->AddLabel(PVRChannelGroupsRadio[i].GroupName(), PVRChannelGroupsTV[i].GroupID());
-          }
+
+          CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
+          for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
+            pSpin->AddLabel(groups->at(iGroupPtr).GroupName(), groups->at(iGroupPtr).GroupID());
+
           pSpin->SetValue(m_channelItems->Get(m_iSelected)->GetPropertyInt("GroupId"));
         }
 
@@ -668,7 +659,7 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  const CPVRChannelGroup *channels = g_PVRChannels.Get(m_bIsRadio);
+  const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bIsRadio);
   for (unsigned int i = 0; i < channels->size(); i++)
   {
     CPVRChannel *channel = channels->at(i);
@@ -704,16 +695,9 @@ void CGUIDialogPVRChannelManager::Update()
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
 
-    if (m_bIsRadio)
-    {
-      for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
-        pSpin->AddLabel(PVRChannelGroupsRadio[i].GroupName(), PVRChannelGroupsRadio[i].GroupID());
-    }
-    else
-    {
-      for (unsigned int i = 0; i < PVRChannelGroupsTV.size(); i++)
-        pSpin->AddLabel(PVRChannelGroupsTV[i].GroupName(), PVRChannelGroupsTV[i].GroupID());
-    }
+    CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
+    for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
+      pSpin->AddLabel(groups->at(iGroupPtr).GroupName(), groups->at(iGroupPtr).GroupID());
   }
 
   pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
