@@ -30,228 +30,369 @@
 class CPVRChannelGroups;
 class CPVREpg;
 
+/** A group of channels */
+
 class CPVRChannelGroup : public std::vector<CPVRChannel *>
 {
 private:
-  /**
-   * Called by GetDirectory to get the directory for a group
+  /*!
+   * @brief Get the groups list for a directory.
+   * @param strBase The directory path.
+   * @param results The file list to store the results in.
+   * @param bRadio Get radio channels or tv channels.
+   * @return True if the list was filled succesfully.
    */
   static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
 
 protected:
-  bool          m_bRadio;          /* true if this container holds radio channels, false if it holds TV channels */
-  bool          m_bIsSorted;       /* true if this container is sorted by channel number, false if not */
+  bool          m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
+  bool          m_bIsSorted;    /*!< true if this container is sorted by channel number, false if not */
 
-  unsigned long m_iGroupId;
-  CStdString    m_strGroupName;
-  int           m_iSortOrder;
+  unsigned long m_iGroupId;     /*!< The ID of this group in the database */
+  CStdString    m_strGroupName; /*!< The name of this group */
+  int           m_iSortOrder;   /*!< The sort order to use */
 
-  /**
-   * Load the channels stored in the database.
-   * Returns the amount of channels that were added.
+  /*!
+   * @brief Load the channels stored in the database.
+   * @param bCompress If true, compress the database after storing the channels.
+   * @return The amount of channels that were added.
    */
   virtual int LoadFromDb(bool bCompress = false);
 
-  /**
-   * Get the channels from the clients and add them to this container. Does not sort, renumber or add channels to the database.
-   * Returns the amount of channels that were added.
+  /*!
+   * @brief Get the channels from the clients and add them to this container.
+   *
+   * Get the channels from the clients and add them to this container.
+   * Does not sort, renumber or add channels to the database.
+   *
+   * @return The amount of channels that were added.
    */
   virtual int GetFromClients(void);
 
-  /**
+  /*!
+   * @brief Update the current channel list with the given list.
+   *
    * Update the current channel list with the given list.
    * Only the new channels will be present in the passed list after this call.
-   * Return true if everything went well, false otherwise.
+   *
+   * @param channels The channels to use to update this list.
+   * @return True if everything went well, false otherwise.
    */
   virtual bool Update(CPVRChannelGroup *channels);
 
-  /**
-   * Remove invalid channels from this container.
+  /*!
+   * @brief Remove invalid channels from this container.
    */
   void RemoveInvalidChannels(void);
 
 public:
+  /*!
+   * Create a new channel group instance.
+   * @param bRadio True if this group holds radio channels.
+   * @param iGroupId The database ID of this group.
+   * @param strGroupName The name of this group.
+   * @param iSortOrder The sort order to use.
+   */
   CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder);
+
+  /*!
+   * @brief Create a new channel group.
+   * @param bRadio True if this group holds radio channels.
+   */
   CPVRChannelGroup(bool bRadio) { m_bRadio = bRadio; }
+
   virtual ~CPVRChannelGroup(void);
 
-  /**
-   * Load the channels from the database. If no channels are stored in the database, then the channels will be loaded from the clients.
-   * Returns the amount of channels that were added.
+  /*!
+   * @brief Load the channels from the database.
+   *
+   * Load the channels from the database.
+   * If no channels are stored in the database, then the channels will be loaded from the clients.
+   *
+   * @return The amount of channels that were added.
    */
   virtual int Load();
 
-  /**
-   * Clear this channel list.
+  /*!
+   * @brief Clear this channel list.
    */
   virtual void Unload();
 
-  /**
-   * Refresh the channel list from the clients.
+  /*!
+   * @brief Refresh the channel list from the clients.
    */
   virtual bool Update();
 
-  /**
-   * Remove a channel.
-   * Returns true if the channel was found and removed, false otherwise
+  /*!
+   * @brief Remove a channel.
+   * @param iUniqueID The ID of the channel to delete.
+   * @return True if the channel was found and removed, false otherwise.
    */
   bool RemoveByUniqueID(long iUniqueID);
 
-  /**
-   * Move a channel from position iOldIndex to iNewIndex.
+  /*!
+   * @brief Move a channel from position iOldIndex to iNewIndex.
+   * @param iOldIndex The old index.
+   * @param iNewIndex The new index.
    */
   virtual void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
 
-  /**
-   * Show a hidden channel or hide a visible channel.
+  /*!
+   * @brief Show a hidden channel or hide a visible channel.
+   * @param channel The channel to change.
+   * @param bShowDialog If true, show a confirmation dialog.
+   * @return True if the channel was changed, false otherwise.
    */
   virtual bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 
-  /**
-   * Search missing channel icons for all known channels.
+  /*!
+   * @brief Search missing channel icons for all known channels.
+   * @param bUpdateDb If true, update the changed values in the database.
    */
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
 
-  /**
-   * Load the channels from the clients.
-   * Returns the amount of channels that were added.
+  /*!
+   * @brief Load the channels from the clients.
+   * @param bAddToDb If true, add the new channels to the database too.
+   * @return The amount of channels that were added.
    */
   virtual int LoadFromClients(bool bAddToDb = true);
 
-  /**
-   * Remove a channel from this container
+  /*!
+   * @brief Remove a channel from this container.
+   * @param channel The channel to remove.
+   * @return True if the channel was found and removed, false otherwise.
    */
   bool RemoveFromGroup(const CPVRChannel *channel);
 
-  /**
-   * Add a channel to this container
+  /*!
+   * @brief Add a channel to this container.
+   * @param channel The channel to add.
+   * @return True if the channel was added, false otherwise.
    */
   bool AddToGroup(CPVRChannel *channel);
 
-  /**
-   * Change the name of this group
+  /*!
+   * @brief Change the name of this group.
+   * @param strGroupName The new group name.
+   * @param bSaveInDb Save in the database or not.
+   * @return True if the something changed, false otherwise.
    */
   virtual bool SetGroupName(const CStdString &strGroupName, bool bSaveInDb = false);
 
-  /**
-   * Persist changed or new data
+  /*!
+   * @brief Persist changed or new data.
+   * @param bQueueWrite If true, don't execute the query directly.
+   * @return True if the channel was persisted, false otherwise.
    */
   virtual bool Persist(bool bQueueWrite = false);
 
-  /**
-   * Check whether a channel is in this container
+  /*!
+   * @brief Check whether a channel is in this container.
+   * @param channel The channel to find.
+   * @return True if the channel was found, false otherwise.
    */
   bool IsGroupMember(const CPVRChannel *channel);
 
-  /**
-   * Get the first channel in this group.
+  /*!
+   * @brief Get the first channel in this group.
+   * @return The first channel.
    */
   CPVRChannel *GetFirstChannel(void);
 
+  /*!
+   * @brief True if this group holds radio channels, false if it holds TV channels.
+   * @return True if this group holds radio channels, false if it holds TV channels.
+   */
   bool IsRadio(void) const { return m_bRadio; }
+
+  /*!
+   * @brief The database ID of this group.
+   * @return The database ID of this group.
+   */
   long GroupID(void) const { return m_iGroupId; }
+
+  /*!
+   * @brief Set the database ID of this group.
+   * @param iGroupId The new database ID.
+   */
   void SetGroupID(long iGroupId) { m_iGroupId = iGroupId; }
+
+  /*!
+   * @brief The name of this group.
+   * @return The name of this group.
+   */
   CStdString GroupName(void) const { return m_strGroupName; }
+
+  /*!
+   * @brief The sort order of this group.
+   * @return The sort order of this group.
+   */
   long SortOrder(void) const { return m_iSortOrder; }
+
+  /*!
+   * @brief Change the sort order of this group.
+   * @param iSortOrder The new sort order of this group.
+   */
   void SetSortOrder(long iSortOrder) { m_iSortOrder = iSortOrder; }
 
-  /********** sort methods **********/
+  /*! @name Sort methods
+   */
+  //@{
 
-  /**
-   * Sort the current channel list by client channel number.
+  /*!
+   * @brief Sort the current channel list by client channel number.
    */
   void SortByClientChannelNumber(void);
 
-  /**
-   * Sort the current channel list by channel number.
+  /*!
+   * @brief Sort the current channel list by channel number.
    */
   void SortByChannelNumber(void);
 
-  /********** getters **********/
+  //@}
 
-  /**
-   * Get a channel given the channel number on the client.
+  /*! @name getters
+   */
+  //@{
+
+  /*!
+   * @brief Get a channel given the channel number on the client.
+   * @param iClientChannelNumber The channel number on the client.
+   * @param iClientID The ID of the client.
+   * @return The channel or NULL if it wasn't found.
    */
   CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID);
 
-  /**
-   * Get a channel given it's channel ID.
+  /*!
+   * @brief Get a channel given it's channel ID.
+   * @param iChannelID The channel ID.
+   * @return The channel or NULL if it wasn't found.
    */
   CPVRChannel *GetByChannelID(long iChannelID);
 
-  /**
-   * Get a channel given it's unique ID.
+  /*!
+   * @brief Get a channel given it's unique ID.
+   * @param iUniqueID The unique ID.
+   * @return The channel or NULL if it wasn't found.
    */
   CPVRChannel *GetByUniqueID(int iUniqueID);
 
-  /**
-   * Get a channel given it's channel number.
+  /*!
+   * @brief Get a channel given it's channel number.
+   * @param iChannelNumber The channel number.
+   * @return The channel or NULL if it wasn't found.
    */
   CPVRChannel *GetByChannelNumber(int iChannelNumber);
+
+  /*!
+   * @brief Get the next channel given it's channel number.
+   * @param iChannelNumber The channel number.
+   * @return The channel or NULL if it wasn't found.
+   */
   CPVRChannel *GetByChannelNumberUp(int iChannelNumber);
+
+  /*!
+   * @brief Get the previous channel given it's channel number.
+   * @param iChannelNumber The channel number.
+   * @return The channel or NULL if it wasn't found.
+   */
   CPVRChannel *GetByChannelNumberDown(int iChannelNumber);
 
-  /**
-   * Get a channel given it's index in this container.
+  /*!
+   * @brief Get a channel given it's index in this container.
+   * @param index The index in this container.
+   * @return The channel or NULL if it wasn't found.
    */
   CPVRChannel *GetByIndex(unsigned int index);
 
-  /**
-   * Get the list of channels in a group.
+  /*!
+   * @brief Get the list of channels in a group.
+   * @param results The file list to store the results in.
+   * @param iGroupID The ID of the group.
+   * @param bHidden Get hidden channels or not.
+   * @return The amount of channels that were added to the list.
    */
   int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false);
 
-  /**
-   * The amount of channels in this container.
+  /*!
+   * @brief The amount of channels in this container.
+   * @return The amount of channels in this container.
    */
   int GetNumChannels() const { return size(); }
 
-  /**
-   * Get the list of hidden channels.
+  /*!
+   * @brief Get the list of hidden channels.
+   * @param results The file list to store the results in.
+   * @return The amount of channels that were added to the list.
    */
   int GetHiddenChannels(CFileItemList* results);
 
-  /**
-   * The amount of channels in this container.
+  /*!
+   * @brief The amount of hidden channels in this container.
+   * @return The amount of hidden channels in this container.
    */
   virtual int GetNumHiddenChannels() const { return 0; }
 
-  /********** operations on all channels **********/
+  //@}
 
-  /**
-   * Try to find missing channel icons automatically
+  /*! @name operations on all channels
+   */
+  //{
+
+  /*!
+   * @brief Try to find missing channel icons automatically
    */
   static void SearchMissingChannelIcons();
 
-  /********** static getters **********/
+  //@}
 
-  /**
-   * Get a channel given it's path.
+  /*! @name Static getters
+   */
+  //@{
+
+  /*!
+   * @brief Get a channel given it's path.
+   * @param strPath The path.
+   * @return The channel or NULL if it wasn't found.
    */
   static CPVRChannel *GetByPath(const CStdString &strPath);
 
-  /**
-   * Get the directory for a path
+  /*!
+   * @brief Get the directory for a path.
+   * @param strPath The path.
+   * @param results The file list to store the results in.
+   * @return True if the directory was found, false if not.
    */
   static bool GetDirectory(const CStdString& strPath, CFileItemList &results);
 
-  /**
-   * The total amount of channels in all containers.
+  /*!
+   * @brief The total amount of unique channels in all containers.
+   * @return The total amount of unique channels in all containers.
    */
   static int GetNumChannelsFromAll();
 
-  /**
-   * Get a channel given it's channel ID from all containers.
+  /*!
+   * @brief Get a channel given it's channel ID from all containers.
+   * @param iClientChannelNumber The channel number on the client.
+   * @param iClientID The ID of the client.
+   * @return The channel or NULL if it wasn't found.
    */
   static CPVRChannel *GetByClientFromAll(int iClientChannelNumber, int iClientID);
 
-  /**
-   * Get a channel given it's channel ID from all containers.
+  /*!
+   * @brief Get a channel given it's channel ID from all containers.
+   * @param iChannelID The channel ID.
+   * @return The channel or NULL if it wasn't found.
    */
   static CPVRChannel *GetByChannelIDFromAll(long iChannelID);
 
-  /**
-   * Get a channel given it's unique ID.
+  /*!
+   * @brief Get a channel given it's unique ID.
+   * @param iUniqueID The unique ID of the channel.
+   * @return The channel or NULL if it wasn't found.
    */
   static CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
+
+  //@}
 };
