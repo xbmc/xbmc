@@ -513,7 +513,17 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler)
   {
-    m_scalerShader = new CConvolutionShader();
+    switch(m_scalingMethod)
+    {
+    case VS_SCALINGMETHOD_CUBIC:
+    case VS_SCALINGMETHOD_LANCZOS2:
+      m_scalerShader = new CConvolutionShader1Pass();
+      break;
+    default:
+      m_scalerShader = new CConvolutionShaderSeparable();
+      break;
+    }
+
     if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_DELETE(m_scalerShader);

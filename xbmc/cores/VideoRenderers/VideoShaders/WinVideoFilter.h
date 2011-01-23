@@ -103,12 +103,56 @@ private:
 class CConvolutionShader : public CWinShader
 {
 public:
+  virtual bool Create(ESCALINGMETHOD method) = 0;
+  virtual void Render(CD3DTexture &sourceTexture,
+                               unsigned int sourceWidth, unsigned int sourceHeight,
+                               CRect sourceRect,
+                               CRect destRect) = 0;
+
+  struct CUSTOMVERTEX {
+      FLOAT x, y, z;
+      FLOAT rhw;
+      FLOAT tu, tv;
+  };
+};
+
+class CConvolutionShader1Pass : public CConvolutionShader
+{
+public:
   virtual bool Create(ESCALINGMETHOD method);
   virtual void Render(CD3DTexture &sourceTexture,
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
                                CRect destRect);
-  virtual ~CConvolutionShader();
+  virtual ~CConvolutionShader1Pass();
+
+protected:
+  virtual bool KernelTexFormat();
+  virtual bool CreateHQKernel(ESCALINGMETHOD method);
+  virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
+                               CRect sourceRect,
+                               CRect destRect);
+  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount);
+
+
+private:
+  CD3DTexture   m_HQKernelTexture;
+  D3DFORMAT     m_format;
+  bool          m_floattex;
+  bool          m_rgba;
+  unsigned int  m_sourceWidth, m_sourceHeight;
+  CRect         m_sourceRect, m_destRect;
+};
+
+class CConvolutionShaderSeparable : public CConvolutionShader
+{
+public:
+  virtual bool Create(ESCALINGMETHOD method);
+  virtual void Render(CD3DTexture &sourceTexture,
+                               unsigned int sourceWidth, unsigned int sourceHeight,
+                               CRect sourceRect,
+                               CRect destRect);
+  virtual ~CConvolutionShaderSeparable();
 
 protected:
   virtual bool KernelTexFormat();
@@ -125,12 +169,6 @@ private:
   bool          m_rgba;
   unsigned int  m_sourceWidth, m_sourceHeight;
   CRect         m_sourceRect, m_destRect;
-
-  struct CUSTOMVERTEX {
-      FLOAT x, y, z;
-      FLOAT rhw;
-      FLOAT tu, tv;
-  };
 };
 
 class CTestShader : public CWinShader
