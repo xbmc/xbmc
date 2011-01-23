@@ -38,7 +38,10 @@ public:
     ActionDeleteFolder,
   };
 
+  CFileOperationJob();
   CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile);
+
+  void SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile);
 
   virtual bool DoWork();
   const CStdString &GetAverageSpeed()     { return m_avgSpeed; }

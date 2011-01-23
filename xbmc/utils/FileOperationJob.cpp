@@ -37,11 +37,21 @@
 using namespace std;
 using namespace XFILE;
 
+CFileOperationJob::CFileOperationJob()
+{
+}
+
 CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile)
+{
+  SetFileOperation(action, items, strDestFile);
+}
+
+void CFileOperationJob::SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile)
 {
   m_action = action;
   m_strDestFile = strDestFile;
 
+  m_items.Clear();
   for (int i = 0; i < items.Size(); i++)
     m_items.Add(CFileItemPtr(new CFileItem(*items[i])));
 }
