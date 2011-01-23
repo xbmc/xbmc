@@ -172,7 +172,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
   return "";
 }
 
-const TYPE TranslateType(const CStdString &string)
+TYPE TranslateType(const CStdString &string)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
