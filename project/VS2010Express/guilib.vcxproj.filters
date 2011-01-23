@@ -39,9 +39,6 @@
     <ClCompile Include="..\..\guilib\AnimatedGif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\guilib\AudioContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\guilib\D3DResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -178,9 +175,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\guilib\GUISliderControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\GUISound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\guilib\GUISpinControl.cpp">
@@ -335,9 +329,6 @@
     <ClInclude Include="..\..\guilib\AnimatedGif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\guilib\AudioContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\guilib\DDSImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -477,9 +468,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\GUISliderControl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\GUISound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\GUISpinControl.h">

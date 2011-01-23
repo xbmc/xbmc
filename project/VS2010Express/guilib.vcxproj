@@ -199,7 +199,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\guilib\AnimatedGif.cpp" />
-    <ClCompile Include="..\..\guilib\AudioContext.cpp" />
     <ClCompile Include="..\..\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\guilib\DirectXGraphics.cpp" />
@@ -246,7 +245,6 @@
     <ClCompile Include="..\..\guilib\GUISelectButtonControl.cpp" />
     <ClCompile Include="..\..\guilib\GUISettingsSliderControl.cpp" />
     <ClCompile Include="..\..\guilib\GUISliderControl.cpp" />
-    <ClCompile Include="..\..\guilib\GUISound.cpp" />
     <ClCompile Include="..\..\guilib\GUISpinControl.cpp" />
     <ClCompile Include="..\..\guilib\GUISpinControlEx.cpp" />
     <ClCompile Include="..\..\guilib\GUIStandardWindow.cpp" />
@@ -341,7 +339,6 @@
     <ClInclude Include="..\..\guilib\XBTF.h" />
     <ClInclude Include="..\..\guilib\XBTFReader.h" />
     <ClInclude Include="..\..\guilib\AnimatedGif.h" />
-    <ClInclude Include="..\..\guilib\AudioContext.h" />
     <ClInclude Include="..\..\guilib\DDSImage.h" />
     <ClInclude Include="..\..\guilib\DirectXGraphics.h" />
     <ClInclude Include="..\..\guilib\FrameBufferObject.h" />
@@ -389,7 +386,6 @@
     <ClInclude Include="..\..\guilib\GUISelectButtonControl.h" />
     <ClInclude Include="..\..\guilib\GUISettingsSliderControl.h" />
     <ClInclude Include="..\..\guilib\GUISliderControl.h" />
-    <ClInclude Include="..\..\guilib\GUISound.h" />
     <ClInclude Include="..\..\guilib\GUISpinControl.h" />
     <ClInclude Include="..\..\guilib\GUISpinControlEx.h" />
     <ClInclude Include="..\..\guilib\GUIStandardWindow.h" />
