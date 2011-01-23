@@ -1312,7 +1312,7 @@ int64_t udf25::Seek(HANDLE hFile, int64_t lOffset, int whence)
     break;
   }
 
-  if (bdfile->seek_pos > bdfile->filesize || bdfile->seek_pos < 0)
+  if (bdfile->seek_pos > bdfile->filesize)
   {
     bdfile->seek_pos = seek_pos;
     return bdfile->seek_pos;

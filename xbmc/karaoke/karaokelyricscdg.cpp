@@ -388,8 +388,8 @@ void CKaraokeLyricsCDG::cmdScroll( const char * data, bool copy )
     unsigned char temp[CDG_FULL_HEIGHT][CDG_FULL_WIDTH];
     int vInc = vScrollPixels + CDG_FULL_HEIGHT;
     int hInc = hScrollPixels + CDG_FULL_WIDTH;
-    int ri; // row index
-    int ci; // column index
+    unsigned int ri; // row index
+    unsigned int ci; // column index
 
     for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) 
     {
@@ -408,7 +408,7 @@ void CKaraokeLyricsCDG::cmdScroll( const char * data, bool copy )
         {
             for (ci = 0; ci < CDG_FULL_WIDTH; ++ci) 
             {
-                for (ri = 0; ri < vScrollPixels; ++ri) {
+                for (ri = 0; ri < (unsigned int)vScrollPixels; ++ri) {
                     temp[ri][ci] = colour;
                 }
             }
@@ -425,7 +425,7 @@ void CKaraokeLyricsCDG::cmdScroll( const char * data, bool copy )
         
         if (hScrollPixels > 0) 
         {
-            for (ci = 0; ci < hScrollPixels; ++ci) 
+            for (ci = 0; ci < (unsigned int)hScrollPixels; ++ci) 
             {
                 for (ri = 0; ri < CDG_FULL_HEIGHT; ++ri) {
                     temp[ri][ci] = colour;
