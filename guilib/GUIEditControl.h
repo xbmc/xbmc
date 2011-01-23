@@ -44,7 +44,6 @@ public:
                     INPUT_TYPE_TEXT = 0,
                     INPUT_TYPE_NUMBER,
                     INPUT_TYPE_SECONDS,
-                    INPUT_TYPE_TIME,
                     INPUT_TYPE_DATE,
                     INPUT_TYPE_IPADDRESS,
                     INPUT_TYPE_PASSWORD,

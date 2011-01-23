@@ -1421,15 +1421,6 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/WaveForm/Makefile \
     xbmc/visualizations/iTunes/Makefile \
     xbmc/FileSystem/Makefile \
-    xbmc/pvrclients/Makefile.include \
-    xbmc/pvrclients/MediaPortal/Makefile \
-    xbmc/pvrclients/mythtv/Makefile \
-    xbmc/pvrclients/tvheadend/Makefile \
-    xbmc/pvrclients/vdr-streamdev/Makefile \
-    xbmc/pvrclients/vdr-vnsi/Makefile \
-    lib/addons/library.xbmc.addon/Makefile \
-    lib/addons/library.xbmc.gui/Makefile \
-    lib/addons/library.xbmc.pvr/Makefile \
     tools/Linux/xbmc.sh \
     tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \

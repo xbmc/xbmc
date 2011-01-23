@@ -156,7 +156,6 @@ void CURL::Parse(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
-  //TODO fix all Addon paths
   CStdString strProtocol2 = GetTranslatedProtocol();
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("addons"))
@@ -165,7 +164,6 @@ void CURL::Parse(const CStdString& strURL1)
   if(strProtocol2.Equals("http")
     || strProtocol2.Equals("https")
     || strProtocol2.Equals("plugin")
-    || m_strProtocol.Equals("addon")
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
     || strProtocol2.Equals("zip"))
@@ -289,7 +287,6 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("musicdb") == 0
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
-    || m_strProtocol.CompareNoCase("pvr") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")

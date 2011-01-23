@@ -66,8 +66,8 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(MyTV)</mytv>
-      <red>XBMC.ActivateWindow(MyTV)</red>
+      <mytv>XBMC.ActivateWindow(VideoLibrary,TvShows)</mytv>
+      <red>XBMC.ActivateWindow(Home)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
       <blue>XBMC.ActivateWindow(MyPictures)</blue>
@@ -90,11 +90,6 @@
       <hash>XBMC.ActivateWindow(Settings)</hash>
     </remote>
   </Home>
-  <MyTV>
-    <remote>
-      <clear>Delete</clear>
-    </remote>
-  </MyTV>
   <MyFiles>
     <remote>
       <clear>Delete</clear>
@@ -149,13 +144,10 @@
       <select>AspectRatio</select>
       <title>CodecInfo</title>
       <info>Info</info>
-      <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
       <star>ShowSubtitles</star>
       <language>AudioNextLanguage</language>
-      <playlist>Playlist</playlist>
-      <language>Language</language>
       <hash>AudioNextLanguage</hash>
     </remote>
   </FullscreenVideo>
@@ -189,8 +181,6 @@
       <menu>XBMC.ActivateWindow(MusicOSD)</menu>
       <start>XBMC.ActivateWindow(MusicOSD)</start>
       <info>Info</info>
-      <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
-      <playlist>XBMC.ActivateWindow(PVROSDChannels)</playlist>
     </remote>
   </Visualisation>
   <MusicOSD>
@@ -375,15 +365,6 @@
       <back>PreviousMenu</back>
     </remote>
   </Weather>
-  <TV>
-    <remote>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-      <back>PreviousMenu</back>
-    </remote>
-  </TV>
   <Settings>
     <remote>
       <back>PreviousMenu</back>
@@ -528,37 +509,4 @@
       <back>Close</back>
     </remote>
   </Favourites>
-  <PVROSDChannels>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <playlist>Close</playlist>
-    </remote>
-  </PVROSDChannels>
-  <PVROSDGuide>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <guide>Close</guide>
-    </remote>
-  </PVROSDGuide>
-  <PVROSDDirector>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-    </remote>
-  </PVROSDDirector>
-  <PVROSDCutter>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-    </remote>
-  </PVROSDCutter>
-  <MyTVSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyTVSettings>
 </keymap>

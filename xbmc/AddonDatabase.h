@@ -57,11 +57,9 @@ public:
    \sa SetRepoTimestamp */
   CDateTime GetRepoTimestamp(const CStdString& id);
 
-  bool GetSystemEnabled(const CStdString& id);
-  bool SetSystemEnabled(const CStdString& id, bool enabled);
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
-  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item);
+  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
@@ -82,25 +80,11 @@ public:
    \sa DisableAddon, IsAddonDisabled */
   bool HasDisabledAddons();
 
-  /*! \brief Enable an system PVR addon.
-   Sets a flag that this PVR addon has been enabled.  If disabled, it is usually still available on disk.
-   \param addonID id of the addon to enable
-   \param disable whether to enable or disable.  Defaults to false (disable)
-   \return true on success, false on failure
-   \sa IsSystemPVRAddonEnabled */
-  bool EnableSystemPVRAddon(const CStdString &addonID, bool enable = false);
-
-  /*! \brief Check whether an system PVR addon has been enabled via EnableSystemPVRAddon.
-   \param addonID id of the addon to check
-   \return true if the addon is disabled, false otherwise
-   \sa EnableSystemPVRAddon */
-  bool IsSystemPVRAddonEnabled(const CStdString &addonID);
-
   /*! \brief Mark an addon as broken
-   Sets a flag that this addon has been marked as broken in the repository.
+   Sets a flag that this addon has been marked as broken in the repository. 
    \param addonID id of the addon to mark as broken
    \param broken whether to mark or not.  Defaults to true
-   \param reason why it is broken.  Defaults to blank
+   \param reason why it is broken.  Defaults to blank 
    \return true on success, false on failure
    \sa IsAddonBroken */
   bool BreakAddon(const CStdString &addonID, bool broken = true, const CStdString& reason="");
@@ -114,7 +98,7 @@ public:
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 13; }
+  virtual int GetMinVersion() const { return 12; }
   const char *GetDefaultDBName() const { return "Addons"; }
 };
 

@@ -25,7 +25,6 @@
 #include <map>
 #include "Resolution.h"
 #include "addons/IAddon.h"
-#include "utils/Observer.h"
 
 class TiXmlNode;
 class TiXmlElement;
@@ -124,15 +123,6 @@ class TiXmlElement;
 #define APM_LOPOWER 1
 #define APM_HIPOWER_STANDBY 2
 #define APM_LOPOWER_STANDBY 3
-
-#define GUIDE_VIEW_CHANNEL          0
-#define GUIDE_VIEW_NOW              1
-#define GUIDE_VIEW_NEXT             2
-#define GUIDE_VIEW_TIMELINE         3
-
-#define START_LAST_CHANNEL_OFF      0
-#define START_LAST_CHANNEL_MIN      1
-#define START_LAST_CHANNEL_ON       2
 
 #define SETTINGS_TYPE_BOOL      1
 #define SETTINGS_TYPE_FLOAT     2
@@ -437,7 +427,7 @@ private:
 
 typedef std::vector<CSetting *> vecSettings;
 
-class CGUISettings : public Observable
+class CGUISettings
 {
 public:
   CGUISettings();
@@ -493,8 +483,6 @@ public:
   ReplayGainSettings m_replayGain;
 
   void Clear();
-
-  void SetChangedAndNotify(void);
 
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;

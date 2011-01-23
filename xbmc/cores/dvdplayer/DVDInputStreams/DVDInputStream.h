@@ -38,9 +38,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_RTMP   = 7,
   DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MMS    = 9,
-  DVDSTREAM_TYPE_PVRMANAGER = 10,
-  DVDSTREAM_TYPE_MPLS   = 11,
-  DVDSTREAM_TYPE_BLURAY = 12,
+  DVDSTREAM_TYPE_MPLS   = 10,
+  DVDSTREAM_TYPE_BLURAY = 11,
 };
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
@@ -53,16 +52,10 @@ public:
   {
     public:
     virtual ~IChannel() {};
-    virtual bool NextChannel(bool preview = false) = 0;
-    virtual bool PrevChannel(bool preview = false) = 0;
+    virtual bool NextChannel() = 0;
+    virtual bool PrevChannel() = 0;
     virtual bool SelectChannel(unsigned int channel) = 0;
-    virtual int GetSelectedChannel() = 0;
-    virtual int GetTotalTime() = 0;
-    virtual int GetStartTime() = 0;
     virtual bool UpdateItem(CFileItem& item) = 0;
-    virtual bool CanRecord() = 0;
-    virtual bool IsRecording() = 0;
-    virtual bool Record(bool bOnOff) = 0;
   };
 
   class IDisplayTime

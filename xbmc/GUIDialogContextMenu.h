@@ -99,25 +99,8 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SCRIPT_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM,
-                      CONTEXT_BUTTON_HIDE,
-                      CONTEXT_BUTTON_SHOW_HIDDEN,
-                      CONTEXT_BUTTON_ADD,
-                      CONTEXT_BUTTON_ACTIVATE,
-                      CONTEXT_BUTTON_START_RECORD,
-                      CONTEXT_BUTTON_STOP_RECORD,
-                      CONTEXT_BUTTON_GROUP_MANAGER,
-                      CONTEXT_BUTTON_CHANNEL_MANAGER,
                       CONTEXT_BUTTON_SET_MOVIESET_THUMB,
-                      CONTEXT_BUTTON_BEGIN,
-                      CONTEXT_BUTTON_END,
-                      CONTEXT_BUTTON_FIND,
                       CONTEXT_BUTTON_DELETE_PLUGIN,
-                      CONTEXT_BUTTON_SORTASC,
-                      CONTEXT_BUTTON_SORTBY,
-                      CONTEXT_BUTTON_SORTBY_CHANNEL,
-                      CONTEXT_BUTTON_SORTBY_NAME,
-                      CONTEXT_BUTTON_SORTBY_DATE,
-                      CONTEXT_BUTTON_MENU_HOOKS,
                       CONTEXT_BUTTON_USER1,
                       CONTEXT_BUTTON_USER2,
                       CONTEXT_BUTTON_USER3,
@@ -158,6 +141,7 @@ public:
    */
   static int ShowAndGetChoice(const CContextButtons &choices);
 
+protected:
   void SetupButtons();
 
   /*! \brief Position the context menu in the middle of the focused control.
@@ -167,7 +151,6 @@ public:
 
   float GetWidth();
   float GetHeight();
-protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();

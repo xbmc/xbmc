@@ -133,158 +133,6 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
-		<!-- LiveTV Info -->
-		<control type="group">
-			<posx>490r</posx>
-			<posy>40</posy>
-			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasTimer]</visible>
-			<animation type="Visible" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
-				<effect type="fade" start="0" end="100" time="300" />
-			</animation>
-			<animation type="Hidden" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
-				<effect type="fade" start="100" end="0" time="300" />
-			</animation>		    
-			<animation type="WindowOpen" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
-				<effect type="fade" start="0" end="100" time="300" />
-			</animation>
-			<animation type="WindowClose" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
-				<effect type="fade" start="100" end="0" time="300" />
-			</animation>		    
-			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(Favourites)">conditional</animation>
-			<control type="image">
-				<description>background</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>480</width>
-				<height>135</height>
-				<colordiffuse>DDFFFFFF</colordiffuse>
-				<texture border="20">OverlayDialogBackground.png</texture>
-			</control>
-			<control type="group">
-				<visible>!PVR.IsRecording + PVR.HasTimer</visible>
-				<control type="image">
-					<posx>435</posx>
-					<posy>15</posy>
-					<width>25</width>
-					<height>25</height>
-					<texture>PVR-HasTimer.png</texture>
-				</control>
-				<control type="label">
-					<description>Next Timer Header label</description>
-					<posx>420</posx>
-					<posy>15</posy>
-					<height>25</height>
-					<width>400</width>
-					<label>$LOCALIZE[19157]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingTitle</description>
-					<posx>460</posx>
-					<posy>40</posy>
-					<height>30</height>
-					<width>440</width>
-					<label>$INFO[PVR.NextRecordingTitle]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<shadowcolor>black</shadowcolor>
-					<scroll>true</scroll>
-				</control>
-				<control type="label">
-					<description>NextRecordingChannel</description>
-					<posx>460</posx>
-					<posy>70</posy>
-					<height>25</height>
-					<width>440</width>
-					<label>$INFO[PVR.NextRecordingChannel]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingDateTime</description>
-					<posx>460</posx>
-					<posy>95</posy>
-					<height>25</height>
-					<width>440</width>
-					<label>$INFO[PVR.NextRecordingDateTime,$LOCALIZE[19126] - ]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-			</control>
-			<control type="group">
-				<visible>PVR.IsRecording</visible>
-				<control type="image">
-					<posx>423</posx>
-					<posy>15</posy>
-					<width>37</width>
-					<height>25</height>
-					<texture>PVR-IsRecording.png</texture>
-				</control>
-				<control type="label">
-					<description>Is Recording Header label</description>
-					<posx>410</posx>
-					<posy>15</posy>
-					<height>25</height>
-					<width>390</width>
-					<label>$LOCALIZE[19158]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingTitle</description>
-					<posx>460</posx>
-					<posy>40</posy>
-					<height>30</height>
-					<width>440</width>
-					<label>$INFO[PVR.NowRecordingTitle]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<shadowcolor>black</shadowcolor>
-					<scroll>true</scroll>
-				</control>
-				<control type="label">
-					<description>NextRecordingChannel</description>
-					<posx>460</posx>
-					<posy>70</posy>
-					<height>25</height>
-					<width>440</width>
-					<label>$INFO[PVR.NowRecordingChannel]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingDateTime</description>
-					<posx>460</posx>
-					<posy>95</posy>
-					<height>25</height>
-					<width>440</width>
-					<label>$INFO[PVR.NowRecordingDateTime,$LOCALIZE[19126] - ]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-			</control>
-		</control>
 		<!-- Video Info -->
 		<control type="group">
 			<posx>0</posx>
@@ -301,7 +149,7 @@
 				<texture>HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="group">
-				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(LiveTV)</visible>
+				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
 				<control type="image">
 					<description>Cover image</description>
 					<posx>200r</posx>
@@ -337,85 +185,6 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Time Label</description>
-					<posx>210r</posx>
-					<posy>310</posy>
-					<height>30</height>
-					<width>325</width>
-					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-			</control>
-			<control type="group">
-				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<control type="image">
-					<description>Cover image</description>
-					<posx>200r</posx>
-					<posy>0</posy>
-					<width>180</width>
-					<height>340</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
-					<bordertexture border="8">ThumbBorder.png</bordertexture>
-					<bordersize>5</bordersize>
-				</control>
-				<control type="label">
-					<description>NowPlaying label</description>
-					<posx>210r</posx>
-					<posy>210</posy>
-					<height>30</height>
-					<width>660</width>
-					<label>$LOCALIZE[31040] ($LOCALIZE[31502])</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Channel label</description>
-					<posx>210r</posx>
-					<posy>235</posy>
-					<height>30</height>
-					<width>660</width>
-					<label>$INFO[VideoPlayer.ChannelName]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Title label</description>
-					<posx>210r</posx>
-					<posy>260</posy>
-					<height>30</height>
-					<width>660</width>
-					<label>$INFO[VideoPlayer.Title]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>Next Label</description>
-					<posx>210r</posx>
-					<posy>285</posy>
-					<height>30</height>
-					<width>660</width>
-					<label>$LOCALIZE[209] : $INFO[VideoPlayer.NextTitle]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
@@ -816,13 +585,6 @@
 						<icon>special://skin/backgrounds/pictures.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
-					</item>
-					<item id="12">
-						<label>31502</label>
-						<onclick>ActivateWindow(TV)</onclick>
-						<icon>special://skin/backgrounds/tv.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
-						<visible>System.GetBool(pvrmanager.enabled)</visible>
 					</item>
 					<item id="2">
 						<label>3</label>

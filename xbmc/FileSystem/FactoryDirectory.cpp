@@ -80,9 +80,6 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
-#ifdef HAS_PVRCLIENTS
-#include "PVRDirectory.h"
-#endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -189,9 +186,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
     if (strProtocol == "htsp") return new CHTSPDirectory();
-#endif
-#ifdef HAS_PVRCLIENTS
-    if (strProtocol == "pvr") return new CPVRDirectory();
 #endif
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();

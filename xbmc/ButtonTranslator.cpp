@@ -203,7 +203,6 @@ static const ActionMapping windows[] =
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
         {"videos"                   , WINDOW_VIDEOS}, // backward compat
-        {"tv"                       , WINDOW_TV},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -216,7 +215,6 @@ static const ActionMapping windows[] =
         {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
         {"networksettings"          , WINDOW_SETTINGS_NETWORK},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
-        {"tvsettings"               , WINDOW_SETTINGS_MYTV},
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
         {"videolibrary"             , WINDOW_VIDEO_NAV},
@@ -229,10 +227,6 @@ static const ActionMapping windows[] =
         {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
         {"volumebar"                , WINDOW_DIALOG_VOLUME_BAR},
         {"submenu"                  , WINDOW_DIALOG_SUB_MENU},
-        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
-        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
-        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
-        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
         {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
         {"infodialog"               , WINDOW_DIALOG_KAI_TOAST},
@@ -1007,15 +1001,13 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
   else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
   else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
   else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
   else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
   else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_ENTER;
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
-  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;

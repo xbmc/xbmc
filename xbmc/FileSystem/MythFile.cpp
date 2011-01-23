@@ -632,12 +632,12 @@ bool CMythFile::ChangeChannel(int direction, const CStdString &channel)
   return true;
 }
 
-bool CMythFile::NextChannel(bool preview)
+bool CMythFile::NextChannel()
 {
   return ChangeChannel(CHANNEL_DIRECTION_UP, "");
 }
 
-bool CMythFile::PrevChannel(bool preview)
+bool CMythFile::PrevChannel()
 {
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }

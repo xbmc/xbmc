@@ -255,20 +255,6 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_SECONDS:
       textChanged = CGUIDialogNumeric::ShowAndGetSeconds(utf8, g_localizeStrings.Get(21420));
       break;
-    case INPUT_TYPE_TIME:
-    {
-      CDateTime dateTime;
-      dateTime.SetFromDBTime(utf8);
-      SYSTEMTIME time;
-      dateTime.GetAsSystemTime(time);
-      if (CGUIDialogNumeric::ShowAndGetTime(time, heading > 0 ? heading : g_localizeStrings.Get(21420)))
-      {
-        dateTime = CDateTime(time);
-        utf8 = dateTime.GetAsLocalizedTime("", false);
-        textChanged = true;
-      }
-      break;
-    }
     case INPUT_TYPE_DATE:
     {
       CDateTime dateTime;
@@ -277,7 +263,7 @@ void CGUIEditControl::OnClick()
         dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
       SYSTEMTIME date;
       dateTime.GetAsSystemTime(date);
-      if (CGUIDialogNumeric::ShowAndGetDate(date, heading > 0 ? heading : g_localizeStrings.Get(21420)))
+      if (CGUIDialogNumeric::ShowAndGetDate(date, g_localizeStrings.Get(21420)))
       {
         dateTime = CDateTime(date);
         utf8 = dateTime.GetAsDBDate();

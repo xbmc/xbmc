@@ -646,12 +646,6 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  int iWindow = GetID();
-  if (iWindow == WINDOW_TV && (items.m_strPath == "pvr://recordings/" ||
-                               items.m_strPath.Left(15) == "pvr://channels/" ||
-                               items.m_strPath.Left(13) == "pvr://timers/"))
-    return true;
-
   if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.m_strPath.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
@@ -661,6 +655,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     items.AddFront(pItem, 0);
   }
 
+  int iWindow = GetID();
   CStdStringArray regexps;
 
   if (iWindow == WINDOW_VIDEO_FILES)
@@ -795,8 +790,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  if (iWindow != WINDOW_TV || (iWindow == WINDOW_TV && m_vecItems->m_strPath.Left(17) == "pvr://recordings/"))
-    m_history.AddPath(m_vecItems->m_strPath);
+  m_history.AddPath(m_vecItems->m_strPath);
 
   //m_history.DumpPathHistory();
 

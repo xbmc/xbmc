@@ -76,10 +76,6 @@ bool CAddonDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
 
-    CLog::Log(LOGINFO, "create pvrenabled table");
-    m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxPVREnabled ON pvrenabled(addonID)");
-
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
@@ -154,11 +150,6 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     if (version < 12)
     {
       m_pDS->exec("alter table addon add disclaimer text");
-    }
-    if (version < 13)
-    {
-      m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
-      m_pDS->exec("CREATE INDEX idxPVREnabled ON pvrenabled(addonID)");
     }
   }
   catch (...)
@@ -626,40 +617,6 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   return false;
 }
 
-bool CAddonDatabase::EnableSystemPVRAddon(const CStdString &addonID, bool enable)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    if (enable)
-    {
-      CStdString sql = PrepareSQL("select id from pvrenabled where addonID='%s'", addonID.c_str());
-      m_pDS->query(sql.c_str());
-      if (m_pDS->eof()) // not found
-      {
-        m_pDS->close();
-        sql = PrepareSQL("insert into pvrenabled(id, addonID) values(NULL, '%s')", addonID.c_str());
-        m_pDS->exec(sql);
-        return true;
-      }
-      return false; // already enabled or failed query
-    }
-    else
-    {
-      CStdString sql = PrepareSQL("delete from pvrenabled where addonID='%s'", addonID.c_str());
-      m_pDS->exec(sql);
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
-  }
-  return false;
-}
-
 bool CAddonDatabase::BreakAddon(const CStdString &addonID, bool broken /* = true */, const CStdString& reason)
 {
   try
@@ -704,26 +661,6 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
     CStdString sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
     m_pDS->query(sql.c_str());
     bool ret = !m_pDS->eof(); // in the disabled table -> disabled
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
-}
-
-bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString sql = PrepareSQL("select id from pvrenabled where addonID='%s'", addonID.c_str());
-    m_pDS->query(sql.c_str());
-    bool ret = !m_pDS->eof(); // in the pvrenabled table -> enabled
     m_pDS->close();
     return ret;
   }

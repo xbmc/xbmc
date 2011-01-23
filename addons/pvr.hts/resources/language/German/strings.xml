@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!-- settings labels -->
-    <string id="30000">Tvheadend Hostname oder IP</string>
-    <string id="30001">HTTP Port</string>
-    <string id="30002">HTSP Port</string>
-    <string id="30003">Benutzername</string>
-    <string id="30004">Passwort</string>
-</strings>

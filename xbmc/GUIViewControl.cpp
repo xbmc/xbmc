@@ -122,9 +122,8 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   // Update it with the contents
   UpdateContents(pNewView, item);
 
-  // Update our view control only if we are not in the TV Window
-  if (m_parentWindow != WINDOW_TV)
-    UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
+  // Update our view control
+  UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
 }
 
 void CGUIViewControl::SetItems(CFileItemList &items)

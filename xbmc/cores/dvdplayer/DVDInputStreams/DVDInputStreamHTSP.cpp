@@ -196,7 +196,7 @@ bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &
   return false;
 }
 
-bool CDVDInputStreamHTSP::NextChannel(bool preview/* = false*/)
+bool CDVDInputStreamHTSP::NextChannel()
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -210,7 +210,7 @@ bool CDVDInputStreamHTSP::NextChannel(bool preview/* = false*/)
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::PrevChannel(bool preview/* = false*/)
+bool CDVDInputStreamHTSP::PrevChannel()
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -257,33 +257,6 @@ int CDVDInputStreamHTSP::GetTotalTime()
 {
   if(m_event.id == 0)
     return 0;
-
-  long duration = (time_t)m_event.stop - (time_t)m_event.start;
-  CDateTimeSpan time = CDateTimeSpan(0, 0, duration / 60, duration % 60);
-
-  return time.GetDays()    * 1000 * 60 * 60 * 24
-       + time.GetHours()   * 1000 * 60 * 60
-       + time.GetMinutes() * 1000 * 60
-       + time.GetSeconds() * 1000;
-}
-
-int CDVDInputStreamHTSP::GetStartTime()
-{
-  if(m_event.id == 0)
-    return 0;
-
-  time_t time_c;
-
-  CDateTime::GetCurrentDateTime().GetAsTime(time_c);
-
-  return (m_event.start - time_c) * 1000;
-}
-
-/*
-int CDVDInputStreamHTSP::GetTotalTime()
-{
-  if(m_event.id == 0)
-    return 0;
   return (m_event.stop - m_event.start) * 1000;
 }
 
@@ -298,7 +271,6 @@ int CDVDInputStreamHTSP::GetTime()
        + time.GetMinutes() * 1000 * 60
        + time.GetSeconds() * 1000;
 }
-*/
 
 void CDVDInputStreamHTSP::Abort()
 {

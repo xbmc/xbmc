@@ -105,10 +105,8 @@ public:
   static bool IsMythTV(const CStdString& strFile);
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
-  static bool IsPVR(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
-  static bool IsTVRecording(const CStdString& strFile);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsLastFM(const CStdString& strFile);

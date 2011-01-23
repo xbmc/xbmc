@@ -74,11 +74,6 @@
 #include "SingleLock.h"
 #include "log.h"
 
-#include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroupsContainer.h"
-#include "pvr/PVREpgInfoTag.h"
-#include "pvr/PVRTimerInfoTag.h"
-
 #include "addons/AddonManager.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
@@ -245,54 +240,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
     else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
     else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
-  }
-  else if (strCategory.Equals("pvr"))
-  {
-    if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
-    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
-    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.backendname")) ret = PVR_BACKEND_NAME;
-    else if (strTest.Equals("pvr.backendversion")) ret = PVR_BACKEND_VERSION;
-    else if (strTest.Equals("pvr.backendhost")) ret = PVR_BACKEND_HOST;
-    else if (strTest.Equals("pvr.backenddiskspace")) ret = PVR_BACKEND_DISKSPACE;
-    else if (strTest.Equals("pvr.backendchannels")) ret = PVR_BACKEND_CHANNELS;
-    else if (strTest.Equals("pvr.backendtimers")) ret = PVR_BACKEND_TIMERS;
-    else if (strTest.Equals("pvr.backendrecordings")) ret = PVR_BACKEND_RECORDINGS;
-    else if (strTest.Equals("pvr.backendnumber")) ret = PVR_BACKEND_NUMBER;
-    else if (strTest.Equals("pvr.hasepg")) ret = PVR_HAS_EPG;
-    else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
-    else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
-    else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
-    else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
-    else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
-    else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
-    else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
-    else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
-    else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
-    else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
-    else if (strTest.Equals("pvr.actstreamclient")) ret = PVR_ACTUAL_STREAM_CLIENT;
-    else if (strTest.Equals("pvr.actstreamdevice")) ret = PVR_ACTUAL_STREAM_DEVICE;
-    else if (strTest.Equals("pvr.actstreamstatus")) ret = PVR_ACTUAL_STREAM_STATUS;
-    else if (strTest.Equals("pvr.actstreamsignal")) ret = PVR_ACTUAL_STREAM_SIG;
-    else if (strTest.Equals("pvr.actstreamsnr")) ret = PVR_ACTUAL_STREAM_SNR;
-    else if (strTest.Equals("pvr.actstreamber")) ret = PVR_ACTUAL_STREAM_BER;
-    else if (strTest.Equals("pvr.actstreamunc")) ret = PVR_ACTUAL_STREAM_UNC;
-    else if (strTest.Equals("pvr.actstreamvideobitrate")) ret = PVR_ACTUAL_STREAM_VIDEO_BR;
-    else if (strTest.Equals("pvr.actstreamaudiobitrate")) ret = PVR_ACTUAL_STREAM_AUDIO_BR;
-    else if (strTest.Equals("pvr.actstreamdolbybitrate")) ret = PVR_ACTUAL_STREAM_DOLBY_BR;
-    else if (strTest.Equals("pvr.actstreamprogrsignal")) ret = PVR_ACTUAL_STREAM_SIG_PROGR;
-    else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
-    else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
-    else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-  }
-  else if (strCategory.Equals("addon"))
-  {
-    if (strTest.Equals("addon.rating")) ret = ADDON_STAR_RATING;
   }
   else if (strCategory.Equals("bar"))
   {
@@ -636,19 +583,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
     else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
     else if (strTest.Equals("videoplayer.hasteletext")) return VIDEOPLAYER_HASTELETEXT;
-    else if (strTest.Equals("videoplayer.starttime")) return VIDEOPLAYER_STARTTIME;
-    else if (strTest.Equals("videoplayer.endtime")) return VIDEOPLAYER_ENDTIME;
-    else if (strTest.Equals("videoplayer.nexttitle")) return VIDEOPLAYER_NEXT_TITLE;
-    else if (strTest.Equals("videoplayer.nextgenre")) return VIDEOPLAYER_NEXT_GENRE;
-    else if (strTest.Equals("videoplayer.nextplot")) return VIDEOPLAYER_NEXT_PLOT;
-    else if (strTest.Equals("videoplayer.nextplotoutline")) return VIDEOPLAYER_NEXT_PLOT_OUTLINE;
-    else if (strTest.Equals("videoplayer.nextstarttime")) return VIDEOPLAYER_NEXT_STARTTIME;
-    else if (strTest.Equals("videoplayer.nextendtime")) return VIDEOPLAYER_NEXT_ENDTIME;
-    else if (strTest.Equals("videoplayer.nextduration")) return VIDEOPLAYER_NEXT_DURATION;
-    else if (strTest.Equals("videoplayer.channelname")) return VIDEOPLAYER_CHANNEL_NAME;
-    else if (strTest.Equals("videoplayer.channelnumber")) return VIDEOPLAYER_CHANNEL_NUMBER;
-    else if (strTest.Equals("videoplayer.channelgroup")) return VIDEOPLAYER_CHANNEL_GROUP;
-    else if (strTest.Equals("videoplayer.parentalrating")) return VIDEOPLAYER_PARENTAL_RATING;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1011,25 +945,6 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
-  else if (info.Equals("starttime")) return LISTITEM_STARTTIME;
-  else if (info.Equals("endtime")) return LISTITEM_ENDTIME;
-  else if (info.Equals("startdate")) return LISTITEM_STARTDATE;
-  else if (info.Equals("enddate")) return LISTITEM_ENDDATE;
-  else if (info.Equals("nexttitle")) return LISTITEM_NEXT_TITLE;
-  else if (info.Equals("nextgenre")) return LISTITEM_NEXT_GENRE;
-  else if (info.Equals("nextplot")) return LISTITEM_NEXT_PLOT;
-  else if (info.Equals("nextplotoutline")) return LISTITEM_NEXT_PLOT_OUTLINE;
-  else if (info.Equals("nextstarttime")) return LISTITEM_NEXT_STARTTIME;
-  else if (info.Equals("nextendtime")) return LISTITEM_NEXT_ENDTIME;
-  else if (info.Equals("nextstartdate")) return LISTITEM_NEXT_STARTDATE;
-  else if (info.Equals("nextenddate")) return LISTITEM_NEXT_ENDDATE;
-  else if (info.Equals("channelname")) return LISTITEM_CHANNEL_NAME;
-  else if (info.Equals("channelnumber")) return LISTITEM_CHANNEL_NUMBER;
-  else if (info.Equals("channelgroup")) return LISTITEM_CHANNEL_GROUP;
-  else if (info.Equals("hastimer")) return LISTITEM_HASTIMER;
-  else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
-  else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
-  else if (info.Equals("parentalrating")) return LISTITEM_PARENTALRATING;
   else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
@@ -1061,9 +976,6 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
-  else if (info.Equals("channelname")) return MUSICPLAYER_CHANNEL_NAME;
-  else if (info.Equals("channelnumber")) return MUSICPLAYER_CHANNEL_NUMBER;
-  else if (info.Equals("channelgroup")) return MUSICPLAYER_CHANNEL_GROUP;
   return 0;
 }
 
@@ -1112,37 +1024,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
   switch (info)
   {
-  case PVR_NOW_RECORDING_CHANNEL:
-  case PVR_NOW_RECORDING_DATETIME:
-  case PVR_NOW_RECORDING_TITLE:
-  case PVR_NEXT_RECORDING_CHANNEL:
-  case PVR_NEXT_RECORDING_DATETIME:
-  case PVR_NEXT_RECORDING_TITLE:
-  case PVR_BACKEND_NAME:
-  case PVR_BACKEND_VERSION:
-  case PVR_BACKEND_HOST:
-  case PVR_BACKEND_DISKSPACE:
-  case PVR_BACKEND_CHANNELS:
-  case PVR_BACKEND_TIMERS:
-  case PVR_BACKEND_RECORDINGS:
-  case PVR_BACKEND_NUMBER:
-  case PVR_TOTAL_DISKSPACE:
-  case PVR_NEXT_TIMER:
-  case PVR_PLAYING_TIME:
-  case PVR_PLAYING_DURATION:
-  case PVR_ACTUAL_STREAM_CLIENT:
-  case PVR_ACTUAL_STREAM_DEVICE:
-  case PVR_ACTUAL_STREAM_STATUS:
-  case PVR_ACTUAL_STREAM_BER:
-  case PVR_ACTUAL_STREAM_UNC:
-  case PVR_ACTUAL_STREAM_VIDEO_BR:
-  case PVR_ACTUAL_STREAM_AUDIO_BR:
-  case PVR_ACTUAL_STREAM_DOLBY_BR:
-  case PVR_ACTUAL_STREAM_CRYPTION:
-  case PVR_ACTUAL_STREAM_SIG:
-  case PVR_ACTUAL_STREAM_SNR:
-    strLabel = g_PVRManager.TranslateCharInfo(info);
-    break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
     strLabel = strLabel.Trim();
@@ -1243,9 +1124,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
-  case MUSICPLAYER_CHANNEL_NAME:
-  case MUSICPLAYER_CHANNEL_NUMBER:
-  case MUSICPLAYER_CHANNEL_GROUP:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1274,19 +1152,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VIDEOPLAYER_WRITER:
   case VIDEOPLAYER_TAGLINE:
   case VIDEOPLAYER_TRAILER:
-  case VIDEOPLAYER_STARTTIME:
-  case VIDEOPLAYER_ENDTIME:
-  case VIDEOPLAYER_NEXT_TITLE:
-  case VIDEOPLAYER_NEXT_GENRE:
-  case VIDEOPLAYER_NEXT_PLOT:
-  case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-  case VIDEOPLAYER_NEXT_STARTTIME:
-  case VIDEOPLAYER_NEXT_ENDTIME:
-  case VIDEOPLAYER_NEXT_DURATION:
-  case VIDEOPLAYER_CHANNEL_NAME:
-  case VIDEOPLAYER_CHANNEL_NUMBER:
-  case VIDEOPLAYER_CHANNEL_GROUP:
-  case VIDEOPLAYER_PARENTAL_RATING:
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
@@ -1824,10 +1689,6 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
       }
     case SYSTEM_CPU_USAGE:
       return g_cpuInfo.getUsedPercentage();
-    case PVR_PLAYING_PROGRESS:
-    case PVR_ACTUAL_STREAM_SIG_PROGR:
-    case PVR_ACTUAL_STREAM_SNR_PROGR:
-      return g_PVRManager.TranslateIntInfo(info);
   }
   return 0;
 }
@@ -1951,9 +1812,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
-  else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
-    bReturn = g_PVRManager.TranslateBoolInfo(condition);
-
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -2002,8 +1860,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
-    bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||
-               (m_currentFile->HasPVRChannelInfoTag()  && !m_currentFile->GetPVRChannelInfoTag()->IsEmpty()));
+    bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty());
   else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -2516,8 +2373,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
-            strContent = "livetv";
-          if (m_currentFile->HasPVRChannelInfoTag())
             strContent = "livetv";
           bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
         }
@@ -3214,31 +3069,6 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
-  case MUSICPLAYER_CHANNEL_NAME:
-    {
-      CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
-      if (channeltag)
-        return channeltag->ChannelName();
-    }
-    break;
-  case MUSICPLAYER_CHANNEL_NUMBER:
-    {
-      CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
-      if (channeltag)
-      {
-        CStdString strNumber;
-        strNumber.Format("%i", channeltag->ChannelNumber());
-        return strNumber;
-      }
-    }
-    break;
-  case MUSICPLAYER_CHANNEL_GROUP:
-    {
-      CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
-      if (channeltag && channeltag->IsRadio())
-        return g_PVRChannelGroups.GetRadio()->GetGroupName(g_PVRManager.GetPlayingGroup());
-    }
-    break;
   }
   return "";
 }
@@ -3250,8 +3080,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 
   if (item == VIDEOPLAYER_TITLE)
   {
-    if (m_currentFile->HasPVRChannelInfoTag())
-      return m_currentFile->GetPVRChannelInfoTag()->GetEPGNow()->Title();
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use dvdplayer, label, or drop down to title from path
@@ -3270,73 +3098,6 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   {
     if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
       return GetPlaylistLabel(PLAYLIST_POSITION);
-  }
-  else if (m_currentFile->HasPVRChannelInfoTag())
-  {
-    CPVRChannel* tag = m_currentFile->GetPVRChannelInfoTag();
-
-    switch (item)
-    {
-    /* Now playing infos */
-    case VIDEOPLAYER_ORIGINALTITLE:
-      return tag->GetEPGNow()->Title();
-    case VIDEOPLAYER_GENRE:
-      return tag->GetEPGNow()->Genre();
-    case VIDEOPLAYER_PLOT:
-      return tag->GetEPGNow()->Plot();
-    case VIDEOPLAYER_PLOT_OUTLINE:
-      return tag->GetEPGNow()->PlotOutline();
-    case VIDEOPLAYER_STARTTIME:
-      return tag->GetEPGNow()->Start().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_ENDTIME:
-      return tag->GetEPGNow()->End().GetAsLocalizedTime("", false);
-
-    /* Next playing infos */
-    case VIDEOPLAYER_NEXT_TITLE:
-      return tag->GetEPGNext()->Title();
-    case VIDEOPLAYER_NEXT_GENRE:
-      return tag->GetEPGNext()->Genre();
-    case VIDEOPLAYER_NEXT_PLOT:
-      return tag->GetEPGNext()->Plot();
-    case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      return tag->GetEPGNext()->PlotOutline();
-    case VIDEOPLAYER_NEXT_STARTTIME:
-      return tag->GetEPGNext()->Start().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_NEXT_ENDTIME:
-      return tag->GetEPGNext()->End().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_NEXT_DURATION:
-      {
-        CStdString duration;
-        if (tag->GetEPGNext()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(tag->GetEPGNext()->GetDuration());
-
-        return duration;
-      }
-
-    case VIDEOPLAYER_PARENTAL_RATING:
-      {
-        CStdString rating;
-        if (tag->GetEPGNow()->ParentalRating() > 0)
-          rating.Format("%i", tag->GetEPGNow()->ParentalRating());
-        return rating;
-      }
-      break;
-
-    /* General channel infos */
-    case VIDEOPLAYER_CHANNEL_NAME:
-      return tag->ChannelName();
-    case VIDEOPLAYER_CHANNEL_NUMBER:
-      {
-        CStdString strNumber;
-        strNumber.Format("%i", tag->ChannelNumber());
-        return strNumber;
-      }
-    case VIDEOPLAYER_CHANNEL_GROUP:
-      {
-        if (tag && !tag->IsRadio())
-          return g_PVRChannelGroups.GetTV()->GetGroupName(g_PVRManager.GetPlayingGroup());
-      }
-    }
   }
   else if (m_currentFile->HasVideoInfoTag())
   {
@@ -3556,7 +3317,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  if (!m_currentFile->HasPVRChannelInfoTag() && (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty()))
+  if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
   { // attempt to get some information
     CVideoDatabase dbs;
     dbs.Open();
@@ -3951,14 +3712,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_LABEL2:
     return item->GetLabel2();
   case LISTITEM_TITLE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Title();
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->m_strTitle;
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Title();
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Title();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
     if (item->HasMusicInfoTag())
@@ -4020,12 +3773,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetVideoInfoTag()->m_strGenre;
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetGenre();
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Genre();
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->m_strGenre;
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Genre();
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -4034,14 +3781,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CUtil::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Start().GetAsLocalizedDateTime(false, false);
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDateTime(false, false);
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
     break;
@@ -4082,30 +3821,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_DURATION:
     {
       CStdString duration;
-      if (item->HasPVRChannelInfoTag())
+      if (item->HasVideoInfoTag())
       {
-        if (item->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration());
-      }
-      else if (item->HasPVRRecordingInfoTag())
-      {
-        if (item->GetPVRRecordingInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetPVRRecordingInfoTag()->GetDuration());
-      }
-      else if (item->HasEPGInfoTag())
-      {
-        if (item->GetEPGInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetEPGInfoTag()->GetDuration());
-      }
-      else if (item->HasVideoInfoTag())
-      {
-        duration = item->GetVideoInfoTag()->m_strRuntime;
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
           duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
-      else if (item->HasMusicInfoTag())
+      if (item->HasMusicInfoTag())
       {
         if (item->GetMusicInfoTag()->GetDuration() > 0)
           duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
@@ -4113,12 +3836,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return duration;
     }
   case LISTITEM_PLOT:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Plot();
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Plot();
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->Plot();
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
@@ -4129,12 +3846,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
     break;
   case LISTITEM_PLOT_OUTLINE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->PlotOutline();
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->PlotOutline();
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->PlotOutline();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;
@@ -4165,8 +3876,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetVideoInfoTag()->m_strShowTitle;
     break;
   case LISTITEM_COMMENT:
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->GetStatus();
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
     break;
@@ -4319,116 +4028,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
-  case LISTITEM_STARTTIME:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedTime("", false);
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Start().GetAsLocalizedTime("", false);
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Start().GetAsLocalizedTime("", false);
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false);
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedTime("", false);
-    break;
-  case LISTITEM_ENDTIME:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedTime("", false);
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->End().GetAsLocalizedTime("", false);
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Stop().GetAsLocalizedTime("", false);
-    break;
-  case LISTITEM_STARTDATE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDate(true);
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Start().GetAsLocalizedDate(true);
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Start().GetAsLocalizedDate(true);
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDate(true);
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedDate(true);
-    break;
-  case LISTITEM_ENDDATE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedDate(true);
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->End().GetAsLocalizedDate(true);
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->Stop().GetAsLocalizedDate(true);
-    break;
-  case LISTITEM_CHANNEL_NUMBER:
-    {
-      CStdString number;
-      if (item->HasPVRChannelInfoTag())
-        number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
-      if (item->HasEPGInfoTag())
-        number.Format("%i", item->GetEPGInfoTag()->ChannelTag()->ChannelNumber());
-      if (item->HasPVRTimerInfoTag())
-        number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
-
-      return number;
-    }
-    break;
-  case LISTITEM_CHANNEL_NAME:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->ChannelName();
-    if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->ChannelTag()->ChannelName();
-    if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->ChannelName();
-    if (item->HasPVRTimerInfoTag())
-      return item->GetPVRTimerInfoTag()->ChannelName();
-    break;
-  case LISTITEM_NEXT_STARTTIME:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedTime("", false);
-    break;
-  case LISTITEM_NEXT_ENDTIME:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedTime("", false);
-    break;
-  case LISTITEM_NEXT_STARTDATE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedDate(true);
-    break;
-  case LISTITEM_NEXT_ENDDATE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedDate(true);
-    break;
-  case LISTITEM_NEXT_PLOT:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Plot();
-    break;
-  case LISTITEM_NEXT_PLOT_OUTLINE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->PlotOutline();
-    break;
-  case LISTITEM_NEXT_DURATION:
-    {
-      CStdString duration;
-      if (item->HasPVRChannelInfoTag())
-      {
-        if (item->GetPVRChannelInfoTag()->GetEPGNext()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->GetEPGNext()->GetDuration());
-      }
-      return duration;
-    }
-    break;
-  case LISTITEM_NEXT_GENRE:
-    if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Genre();
-    break;
-  case LISTITEM_PARENTALRATING:
-    {
-      CStdString rating;
-      if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ParentalRating() > 0)
-        rating.Format("%i", item->GetEPGInfoTag()->ParentalRating());
-      return rating;
-    }
-    break;
   }
   return "";
 }
@@ -4458,14 +4057,6 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
       { // song rating.
         rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
       }
-      return rating;
-    }
-    break;
-  case ADDON_STAR_RATING:
-    {
-      CStdString rating;
-      //TODO need to check item is an addon
-      rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
       return rating;
     }
     break;
@@ -4499,59 +4090,6 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
-
-  if (item->IsFileItem())
-  {
-    const CFileItem *pItem = (const CFileItem *)item;
-    if (condition == LISTITEM_ISRECORDING)
-    {
-      if (pItem->HasPVRChannelInfoTag())
-      {
-        return pItem->GetPVRChannelInfoTag()->IsRecording();
-      }
-      else if (pItem->HasEPGInfoTag())
-      {
-        const CPVRTimerInfoTag *timer = pItem->GetEPGInfoTag()->Timer();
-        if (timer)
-        {
-          CDateTime now = CDateTime::GetCurrentDateTime();
-          if ((timer->Start() <= now) && (timer->Stop() >= now) && timer->Active())
-            return true;
-        }
-      }
-      else if (pItem->HasPVRTimerInfoTag())
-      {
-        const CPVRTimerInfoTag *timer = pItem->GetPVRTimerInfoTag();
-        CDateTime now = CDateTime::GetCurrentDateTime();
-        if ((timer->Start() <= now) && (timer->Stop() >= now) && timer->Active())
-          return true;
-      }
-    }
-    else if (condition == LISTITEM_HASTIMER)
-    {
-      if (pItem->HasEPGInfoTag())
-      {
-        const CPVRTimerInfoTag *timer = pItem->GetEPGInfoTag()->Timer();
-        if (timer)
-        {
-          if (timer->Start() > CDateTime::GetCurrentDateTime() && timer->Active())
-            return true;
-        }
-      }
-    }
-    else if (condition == LISTITEM_ISENCRYPTED)
-    {
-      if (pItem->HasPVRChannelInfoTag())
-      {
-        return pItem->GetPVRChannelInfoTag()->IsEncrypted();
-      }
-      else if (pItem->HasEPGInfoTag())
-      {
-        return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
-      }
-    }
-  }
-
   return false;
 }
 

@@ -241,7 +241,6 @@ IMAGES= \
 	OSDRandomOnFO.png \
 	OSDRandomOnNF.png \
 	OSDRecord2.png \
-	OSDRecordNF2.png \
 	OSDRecordFO.png \
 	OSDRecordNF.png \
 	OSDRecordOff.png \

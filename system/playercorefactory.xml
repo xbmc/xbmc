@@ -33,8 +33,5 @@
 
     <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
     <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
-
-    <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
-    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer" />
   </rules>
 </playercorefactory>

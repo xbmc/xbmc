@@ -23,7 +23,6 @@
 #include "GUISpinControlEx.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISettingsSliderControl.h"
-#include "GUIEditControl.h"
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"
 #include "LocalizeStrings.h"
@@ -38,8 +37,6 @@
 #define CONTROL_DEFAULT_SPIN        9
 #define CONTROL_DEFAULT_SLIDER     10
 #define CONTROL_DEFAULT_SEPARATOR  11
-#define CONTROL_DEFAULT_EDIT       12
-#define CONTROL_DEFAULT_EDIT_NUM   13
 #define CONTROL_OKAY_BUTTON        28
 #define CONTROL_CANCEL_BUTTON      29
 #define CONTROL_START              30
@@ -50,8 +47,6 @@ using namespace std;
 CGUIDialogSettings::CGUIDialogSettings(int id, const char *xmlFile)
     : CGUIDialog(id, xmlFile)
 {
-  m_pOriginalEdit = NULL;
-  m_pOriginalEditNum = NULL;
   m_pOriginalSpin = NULL;
   m_pOriginalRadioButton = NULL;
   m_pOriginalSettingsButton = NULL;
@@ -92,15 +87,11 @@ void CGUIDialogSettings::SetupPage()
 {
   // cleanup first, if necessary
   FreeControls();
-  m_pOriginalEdit = (CGUIEditControl*)GetControl(CONTROL_DEFAULT_EDIT);
-  m_pOriginalEditNum = (CGUIEditControl*)GetControl(CONTROL_DEFAULT_EDIT_NUM);
   m_pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   m_pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   m_pOriginalSettingsButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   m_pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
   m_pOriginalSeparator = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
-  if (m_pOriginalEdit) m_pOriginalEdit->SetVisible(false);
-  if (m_pOriginalEditNum) m_pOriginalEditNum->SetVisible(false);
   if (m_pOriginalSpin) m_pOriginalSpin->SetVisible(false);
   if (m_pOriginalRadioButton) m_pOriginalRadioButton->SetVisible(false);
   if (m_pOriginalSettingsButton) m_pOriginalSettingsButton->SetVisible(false);
@@ -108,14 +99,7 @@ void CGUIDialogSettings::SetupPage()
   if (m_pOriginalSeparator) m_pOriginalSeparator->SetVisible(false);
 
   // update our settings label
-  if (GetID() == WINDOW_DIALOG_PVR_TIMER_SETTING)
-  {
-    SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(19057));
-  }
-  else
-  {
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(13395 + GetID() - WINDOW_DIALOG_VIDEO_OSD_SETTINGS));
-  }
 
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
   if (!group)
@@ -200,25 +184,11 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
       if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
     }
   }
-  else if (setting.type == SettingInfo::BUTTON_DIALOG)
+  else if (setting.type == SettingInfo::BUTTON)
   {
     SET_CONTROL_LABEL(controlID,setting.name);
-    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
-  }
-  else if (setting.type == SettingInfo::EDIT)
-  {
-    CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
-  }
-  else if (setting.type == SettingInfo::EDIT_NUM)
-  {
-    CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
-    if (pControl && setting.data) {
-      CStdString strIndex;
-      strIndex.Format("%i", *(int *)setting.data);
-      pControl->SetLabel2(strIndex);
-    }
+    if (m_usePopupSliders && setting.data && setting.formatFunction)
+      SET_CONTROL_LABEL2(controlID,setting.formatFunction(*(float *)setting.data, setting.interval));
   }
 
   if (setting.enabled)
@@ -264,24 +234,6 @@ void CGUIDialogSettings::OnClick(int iID)
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(iID);
     if (setting.data) *(int *)setting.data = pControl->GetValue();
   }
-  else if (setting.type == SettingInfo::BUTTON_DIALOG)
-  {
-    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(iID);
-    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
-  }
-  else if (setting.type == SettingInfo::EDIT)
-  {
-    CGUIEditControl *pControl = (CGUIEditControl *)GetControl(iID);
-    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
-  }
-  else if (setting.type == SettingInfo::EDIT_NUM)
-  {
-    CGUIEditControl *pControl = (CGUIEditControl *)GetControl(iID);
-    if (setting.data) {
-        CStdString strIndex = pControl->GetLabel2();
-        *(int *)setting.data = atol(strIndex.c_str());
-    }
-  }
   else if (setting.type == SettingInfo::CHECK)
   {
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
@@ -321,15 +273,7 @@ void CGUIDialogSettings::FreeControls()
 void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
-  if (setting.type == SettingInfo::BUTTON_DIALOG && m_pOriginalSettingsButton)
-  {
-    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
-    if (!pControl) return ;
-    ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    pControl->SetWidth(width);
-	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
-  }
-  else if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
+  if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
   {
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
@@ -337,27 +281,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     if (setting.formatFunction)
       ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval));
     pControl->SetWidth(width);
-  }
-  else if (setting.type == SettingInfo::EDIT && m_pOriginalEdit)
-  {
-    pControl = new CGUIEditControl(*m_pOriginalEdit);
-    if (!pControl) return ;
-    ((CGUIEditControl *)pControl)->SetLabel(setting.name);
-    pControl->SetWidth(width);
-    if (setting.data) ((CGUIEditControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
-  }
-  else if (setting.type == SettingInfo::EDIT_NUM && m_pOriginalEditNum)
-  {
-    pControl = new CGUIEditControl(*m_pOriginalEditNum);
-    if (!pControl) return ;
-    ((CGUIEditControl *)pControl)->SetLabel(setting.name);
-    pControl->SetWidth(width);
-    ((CGUIEditControl *)pControl)->SetInputType(CGUIEditControl::INPUT_TYPE_NUMBER, 0);
-    if (setting.data) {
-        CStdString strIndex;
-        strIndex.Format("%i", *(int *)setting.data);
-        ((CGUIEditControl *)pControl)->SetLabel2(strIndex);
-    }
   }
   else if (setting.type == SettingInfo::SEPARATOR && m_pOriginalSeparator)
   {
@@ -414,28 +337,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     delete pControl;
 }
 
-void CGUIDialogSettings::AddEdit(unsigned int id, int label, CStdString *str, bool enabled)
-{
-  SettingInfo setting;
-  setting.id = id;
-  setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::EDIT;
-  setting.enabled  = enabled;
-  setting.data = str;
-  m_settings.push_back(setting);
-}
-
-void CGUIDialogSettings::AddNumEdit(unsigned int id, int label, int *current, bool enabled)
-{
-  SettingInfo setting;
-  setting.id = id;
-  setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::EDIT_NUM;
-  setting.enabled  = enabled;
-  setting.data = current;
-  m_settings.push_back(setting);
-}
-
 void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION function)
 {
   SettingInfo setting;
@@ -450,17 +351,6 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, f
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddButton(unsigned int id, int label, CStdString *str, bool bOn)
-{
-  SettingInfo setting;
-  setting.id = id;
-  setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::BUTTON_DIALOG;
-  setting.enabled  = bOn;
-  setting.data = str;
-  m_settings.push_back(setting);
-}
-
 void CGUIDialogSettings::AddBool(unsigned int id, int label, bool *on, bool enabled)
 {
   SettingInfo setting;
@@ -469,18 +359,6 @@ void CGUIDialogSettings::AddBool(unsigned int id, int label, bool *on, bool enab
   setting.type = SettingInfo::CHECK;
   setting.data = on;
   setting.enabled = enabled;
-  m_settings.push_back(setting);
-}
-
-void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsigned int max, const SETTINGSTRINGS &entries)
-{
-  SettingInfo setting;
-  setting.id = id;
-  setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::SPIN;
-  setting.data = current;
-  for (unsigned int i = 0; i < max; i++)
-    setting.entry.push_back(make_pair(i, entries[i]));
   m_settings.push_back(setting);
 }
 

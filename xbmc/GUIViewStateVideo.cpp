@@ -23,7 +23,6 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
-#include "FileSystem/PVRDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
 #include "GUISettings.h"

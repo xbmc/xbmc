@@ -139,13 +139,6 @@ float CGUILabelControl::GetWidth() const
   return m_width;
 }
 
-void CGUILabelControl::SetWidth(float width)
-{
-  m_width = width;
-  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  CGUIControl::SetWidth(m_width);
-}
-
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
   if ( message.GetControlId() == GetID() )

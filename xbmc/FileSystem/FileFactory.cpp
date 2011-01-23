@@ -58,9 +58,6 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
-#ifdef HAS_PVRCLIENTS
-#include "PVRFile.h"
-#endif
 #include "FileZip.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
@@ -162,9 +159,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_VTP
     else if (strProtocol == "vtp") return new CVTPFile();
-#endif
-#ifdef HAS_PVRCLIENTS
-    else if (strProtocol == "pvr") return new CPVRFile();
 #endif
   }
 

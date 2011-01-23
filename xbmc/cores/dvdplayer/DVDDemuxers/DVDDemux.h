@@ -23,7 +23,6 @@
 
 #include "StdString.h"
 #include "system.h"
-#include "DVDDemuxPacket.h"
 
 class CDVDInputStream;
 
@@ -208,6 +207,19 @@ public:
   }
   virtual void GetStreamInfo(std::string& strInfo);
 };
+
+typedef struct DemuxPacket
+{
+  BYTE* pData;   // data
+  int iSize;     // data size
+  int iStreamId; // integer representing the stream index
+  int iGroupId;  // the group this data belongs to, used to group data from different streams together
+
+  double pts; // pts in DVD_TIME_BASE
+  double dts; // dts in DVD_TIME_BASE
+  double duration; // duration in DVD_TIME_BASE if available
+} DemuxPacket;
+
 
 class CDVDDemux
 {

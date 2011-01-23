@@ -48,11 +48,10 @@ config.log
 /Makefile
 /Makefile.include
 /aclocal.m4
-autom4te.cache
+/autom4te.cache/
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
-/build-aux/ltmain.sh
 /build-aux/missing
 /autotools
 /BUILD
@@ -87,7 +86,6 @@ autom4te.cache
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/script.module.pil/
 /addons/script.module.pysqlite/
-/addons/pvr.*/*.pvr
 
 # /guilib/
 /guilib/Makefile
@@ -107,11 +105,6 @@ autom4te.cache
 /guilib/common/Makefile
 
 # /guilib/tinyXML/
-
-# /lib/addons/
-/lib/addons/library.xbmc.addon/Makefile
-/lib/addons/library.xbmc.gui/Makefile
-/lib/addons/library.xbmc.pvr/Makefile
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -174,11 +167,6 @@ autom4te.cache
 /lib/libass/libass/Makefile.in
 /lib/libass/libtool
 /lib/libass/ltmain.sh
-/lib/libass/m4/libtool.m4
-/lib/libass/m4/ltoptions.m4
-/lib/libass/m4/ltsugar.m4
-/lib/libass/m4/ltversion.m4
-/lib/libass/m4/lt~obsolete.m4
 /lib/libass/missing
 /lib/libass/shave/libtool.m4
 /lib/libass/shave/ltoptions.m4
@@ -256,9 +244,6 @@ autom4te.cache
 # /lib/pcre
 /lib/pcre/libpcre/Debug
 /lib/pcre/libpcre/Release
-
-# /libtool
-/libtool
 
 # /project
 /project/obj
@@ -452,9 +437,6 @@ autom4te.cache
 # /xbmc/linux/
 /xbmc/linux/Makefile
 
-# /xbmc/cdrip
-/xbmc/cdrip/Makefile
-
 # /xbmc/cores/AudioRenderers/
 /xbmc/cores/AudioRenderers/Makefile
 
@@ -551,7 +533,6 @@ autom4te.cache
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/aclocal.m4
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/autom4te.cache/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h.in~
-/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/configure
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/Makefile.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/Makefile.in
@@ -777,9 +758,6 @@ autom4te.cache
 /xbmc/cores/paplayer/ADPCMCodec/adpcm.lib
 /xbmc/cores/paplayer/ADPCMCodec/Debug
 /xbmc/cores/paplayer/ADPCMCodec/Release
-
-# /xbmc/cores/paplayer/asap/
-/xbmc/cores/paplayer/asap/Makefile
 
 # /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/
 /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/Makefilee
@@ -1180,14 +1158,6 @@ autom4te.cache
 /xbmc/lib/libXDAAP/libXDAAP_win32/Debug
 /xbmc/lib/libXDAAP/libXDAAP_win32/Release
 
-# /xbmc/osx/
-/xbmc/osx/Makefile
-
-# /xbmc/pvrclients
-/xbmc/pvrclients/Makefile.include
-/xbmc/pvrclients/*/.dependencies
-/xbmc/pvrclients/*/Makefile
-
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
@@ -1244,21 +1214,3 @@ autom4te.cache
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 /xbmc/win32/git_rev.h
-
-/addons/library.xbmc.addon/libXBMC_addon.dll
-/addons/library.xbmc.addon/libXBMC_addon.lib
-/addons/library.xbmc.gui/libXBMC_gui.dll
-/addons/library.xbmc.gui/libXBMC_gui.lib
-/addons/library.xbmc.pvr/libXBMC_pvr.dll
-/addons/library.xbmc.pvr/libXBMC_pvr.lib
-
-/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.lib
-/addons/pvr.hts/XBMC_Tvheadend_win32.lib
-/addons/pvr.vdr.streamdev/XBMC_VDR_win32.lib
-
-/xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
-/xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
-/xbmc/pvrclients/tvheadend/project/VS2010Express/Debug
-/xbmc/pvrclients/tvheadend/project/VS2010Express/Release
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Debug
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Release

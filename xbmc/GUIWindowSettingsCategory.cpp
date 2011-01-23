@@ -56,7 +56,6 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogPVRChannelManager.h"
 #include "GUIWindowPrograms.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
@@ -82,8 +81,6 @@
 #endif
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
-#include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRManager.h"
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
@@ -137,7 +134,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_idRange = 9;
+  m_idRange = 8;
   m_iScreen = 0;
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
@@ -615,25 +612,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("pvrmenu.defaultguideview"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(19029), GUIDE_VIEW_CHANNEL);
-      pControl->AddLabel(g_localizeStrings.Get(19030), GUIDE_VIEW_NOW);
-      pControl->AddLabel(g_localizeStrings.Get(19031), GUIDE_VIEW_NEXT);
-      pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("pvrplayback.startlast"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(106), START_LAST_CHANNEL_OFF);
-      pControl->AddLabel(g_localizeStrings.Get(19190), START_LAST_CHANNEL_MIN);
-      pControl->AddLabel(g_localizeStrings.Get(107), START_LAST_CHANNEL_ON);
-      pControl->SetValue(pSettingInt->GetData());
-    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -791,11 +769,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
-    }
-    else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
     }
     else if (!strSetting.Equals("services.esenabled")
              && strSetting.Left(11).Equals("services.es"))
@@ -1046,13 +1019,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (pControl)
           pControl->SetEnabled(addon->HasSettings());
       }
-    }
-    else if (!strSetting.Equals("pvrmanager.enabled")
-             && !strSetting.Equals("pvrmanager.resetdb")
-             && strSetting.Left(3).Equals("pvr"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
     }
 #if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))
@@ -1624,7 +1590,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
-  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath"))
+  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -1636,11 +1602,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     UpdateSettings();
     bool bWriteOnly = true;
 
-    if (strSetting.Equals("pvrmenu.iconpath"))
-    {
-      bWriteOnly = false;
-    }
-    else if (strSetting.Equals("subtitles.custompath"))
+    if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
@@ -1778,13 +1740,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
-  else if (strSetting.Equals("pvrmanager.enabled"))
-  {
-    if (g_guiSettings.GetBool("pvrmanager.enabled"))
-      g_application.StartPVRManager();
-    else
-      g_application.StopPVRManager();
-  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
     // Now Prompt User to enter the old and then the new MasterCode!
@@ -1911,33 +1866,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
            strSetting.Equals("videolibrary.removeduplicates"))
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
-  }
-  else if (strSetting.Equals("pvrmenu.searchicons"))
-  {
-    CPVRChannelGroup::SearchMissingChannelIcons();
-  }
-  else if (strSetting.Equals("pvrmanager.resetdb"))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
-      g_PVRManager.ResetDatabase();
-  }
-  else if (strSetting.Equals("pvrepg.resetepg"))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
-      g_PVRManager.ResetEPG();
-  }
-  else if (strSetting.Equals("pvrmanager.channelscan"))
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      g_PVRManager.StartChannelScan();
-  }
-  else if (strSetting.Equals("pvrmanager.channelmanager"))
-  {
-    CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
-    if (dialog)
-    {
-       dialog->DoModal();
-    }
   }
 
   UpdateSettings();
