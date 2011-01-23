@@ -3124,6 +3124,89 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       // ensure these scrapers are installed
       CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(scrapers);
     }
+    if (version < 16)
+    {
+      // only if MySQL is used and default character set is not utf8
+      // string data needs to be converted to proper utf8
+      CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
+      if (!m_sqlite && !charset.empty() && charset != "utf8")
+      {
+        map<CStdString, CStdStringArray> tables;
+        map<CStdString, CStdStringArray>::iterator itt;
+        CStdStringArray::iterator itc;
+
+        //columns that need to be converted
+        CStdStringArray c1;
+        c1.push_back("strAlbum");
+        c1.push_back("strExtraArtists");
+        c1.push_back("strExtraGenres");
+        tables.insert(pair<CStdString, CStdStringArray> ("album", c1));
+
+        CStdStringArray c2;
+        c2.push_back("strExtraGenres");
+        c2.push_back("strMoods");
+        c2.push_back("strStyles");
+        c2.push_back("strThemes");
+        c2.push_back("strReview");
+        c2.push_back("strLabel");
+        tables.insert(pair<CStdString, CStdStringArray> ("albuminfo", c2));
+
+        CStdStringArray c3;
+        c3.push_back("strTitle");
+        tables.insert(pair<CStdString, CStdStringArray> ("albuminfosong", c3));
+
+        CStdStringArray c4;
+        c4.push_back("strArtist");
+        tables.insert(pair<CStdString, CStdStringArray> ("artist", c4));
+
+        CStdStringArray c5;
+        c5.push_back("strBorn");
+        c5.push_back("strFormed");
+        c5.push_back("strGenres");
+        c5.push_back("strMoods");
+        c5.push_back("strStyles");
+        c5.push_back("strInstruments");
+        c5.push_back("strBiography");
+        c5.push_back("strDied");
+        c5.push_back("strDisbanded");
+        c5.push_back("strYearsActive");
+        tables.insert(pair<CStdString, CStdStringArray> ("artistinfo", c5));
+
+        CStdStringArray c6;
+        c6.push_back("strAlbum");
+        tables.insert(pair<CStdString, CStdStringArray> ("discography", c6));
+
+        CStdStringArray c7;
+        c7.push_back("strGenre");
+        tables.insert(pair<CStdString, CStdStringArray> ("genre", c7));
+
+        CStdStringArray c8;
+        c8.push_back("strKaraLyrics");
+        tables.insert(pair<CStdString, CStdStringArray> ("karaokedata", c8));
+
+        CStdStringArray c9;
+        c9.push_back("strTitle");
+        c9.push_back("strFilename");
+        c9.push_back("comment");
+        tables.insert(pair<CStdString, CStdStringArray> ("song", c9));
+
+        for (itt = tables.begin(); itt != tables.end(); ++itt)
+        {
+          CStdString q;
+          q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
+          for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
+          {
+            q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
+                            itc->c_str(), itc->c_str(), charset.c_str());
+            if (*itc != itt->second.back())
+            {
+              q += ", ";
+            }
+          }
+          m_pDS->exec(q);
+        }
+      }
+    }
   }
   catch (...)
   {

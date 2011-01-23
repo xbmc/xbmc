@@ -52,6 +52,7 @@ MysqlDatabase::MysqlDatabase() {
   login = "root";
   passwd = "null";
   conn = NULL;
+  default_charset = "";
 }
 
 MysqlDatabase::~MysqlDatabase() {
@@ -121,6 +122,7 @@ int MysqlDatabase::connect() {
     // TODO block to avoid multiple connect on db
     if (mysql_real_connect(conn,host.c_str(),login.c_str(),passwd.c_str(),db.c_str(),atoi(port.c_str()),NULL,0) != NULL)
     {
+      default_charset = mysql_character_set_name(conn);
       if(mysql_set_character_set(conn, "utf8")) // returns 0 on success
       {
         CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
@@ -133,6 +135,7 @@ int MysqlDatabase::connect() {
     // Database doesn't exists
     if (mysql_errno(conn) == 1049)
     {
+      default_charset = mysql_character_set_name(conn);
       if (mysql_set_character_set(conn, "utf8")) // returns 0 on success
       {
         CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
