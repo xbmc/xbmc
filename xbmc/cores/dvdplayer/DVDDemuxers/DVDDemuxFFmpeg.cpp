@@ -1083,6 +1083,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
+    m_streams[iId]->profile = pStream->codec->profile;
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;
@@ -1256,6 +1257,20 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
         return;
       }
     }
+
+#ifdef FF_PROFILE_DTS_HD_MA
+    /* use profile to determine the DTS type */
+    if (stream->codec == CODEC_ID_DTS)
+    {
+      if (stream->profile == FF_PROFILE_DTS_HD_MA)
+        strName = "dtshd_ma";
+      else if (stream->profile == FF_PROFILE_DTS_HD_HRA)
+        strName = "dtshd_hra";
+      else
+        strName = "dca";
+      return;
+    }
+#endif
 
     AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
     if (codec)

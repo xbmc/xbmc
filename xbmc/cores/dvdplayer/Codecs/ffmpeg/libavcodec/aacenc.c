@@ -636,6 +636,11 @@ static av_cold int aac_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
+static const AVProfile profiles[] = {
+    { FF_PROFILE_AAC_LOW,  "Low"  },
+    { FF_PROFILE_UNKNOWN },
+};
+
 AVCodec aac_encoder = {
     "aac",
     AVMEDIA_TYPE_AUDIO,
@@ -647,4 +652,5 @@ AVCodec aac_encoder = {
     .capabilities = CODEC_CAP_SMALL_LAST_FRAME | CODEC_CAP_DELAY | CODEC_CAP_EXPERIMENTAL,
     .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Advanced Audio Coding"),
+    .profiles = profiles,
 };

@@ -145,6 +145,14 @@ static av_cold int Faac_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
+static const AVProfile profiles[] = {
+    { FF_PROFILE_AAC_MAIN, "Main" },
+    { FF_PROFILE_AAC_LOW,  "Low"  },
+    { FF_PROFILE_AAC_SSR,  "SSR"  },
+    { FF_PROFILE_AAC_LTP,  "LTP"  },
+    { FF_PROFILE_UNKNOWN },
+};
+
 AVCodec libfaac_encoder = {
     "libfaac",
     AVMEDIA_TYPE_AUDIO,
@@ -155,4 +163,5 @@ AVCodec libfaac_encoder = {
     Faac_encode_close,
     .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("libfaac AAC (Advanced Audio Codec)"),
+    .profiles = profiles,
 };

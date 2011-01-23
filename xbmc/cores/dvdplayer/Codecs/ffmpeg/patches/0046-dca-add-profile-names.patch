@@ -1,0 +1,40 @@
+From 6d7a0b722e98656cd769a972be6b61c03179d7d8 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Fri, 21 Jan 2011 20:49:10 +0200
+Subject: [PATCH 46/46] dca: add profile names
+
+Submitted and ok'd upstream.
+
+---
+ libavcodec/dca.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/libavcodec/dca.c b/libavcodec/dca.c
+index bc099e1..48b79e8 100644
+--- a/libavcodec/dca.c
++++ b/libavcodec/dca.c
+@@ -1869,6 +1869,15 @@ static av_cold int dca_decode_end(AVCodecContext * avctx)
+     return 0;
+ }
+ 
++static const AVProfile profiles[] = {
++    { FF_PROFILE_DTS,        "DTS"        },
++    { FF_PROFILE_DTS_ES,     "DTS-ES"     },
++    { FF_PROFILE_DTS_96_24,  "DTS 96/24"  },
++    { FF_PROFILE_DTS_HD_HRA, "DTS-HD HRA" },
++    { FF_PROFILE_DTS_HD_MA,  "DTS-HD MA"  },
++    { FF_PROFILE_UNKNOWN },
++};
++
+ AVCodec dca_decoder = {
+     .name = "dca",
+     .type = AVMEDIA_TYPE_AUDIO,
+@@ -1879,4 +1888,5 @@ AVCodec dca_decoder = {
+     .decode = dca_decode_frame,
+     .close = dca_decode_end,
+     .long_name = NULL_IF_CONFIG_SMALL("DCA (DTS Coherent Acoustics)"),
++    .profiles = profiles,
+ };
+-- 
+1.7.3
+
