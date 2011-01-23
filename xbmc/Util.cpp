@@ -2672,40 +2672,12 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
-  //CLog::Log(LOGDEBUG,"%s checking source filename:[%s]", __FUNCTION__, strFileName.c_str());
-  // substitutes paths to correct issues with remote playlists containing full paths
-  for (unsigned int i = 0; i < g_advancedSettings.m_pathSubstitutions.size(); i++)
+  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
+                                                  i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
-    vector<CStdString> vecSplit;
-    StringUtils::SplitString(g_advancedSettings.m_pathSubstitutions[i], " , ", vecSplit);
-
-    // something is wrong, go to next substitution
-    if (vecSplit.size() != 2)
-      continue;
-
-    CStdString strSearch = vecSplit[0];
-    CStdString strReplace = vecSplit[1];
-    strSearch.Replace(",,",",");
-    strReplace.Replace(",,",",");
-
-    CUtil::AddSlashAtEnd(strSearch);
-    CUtil::AddSlashAtEnd(strReplace);
-
-    // if left most characters match the search, replace them
-    //CLog::Log(LOGDEBUG,"%s testing for path:[%s]", __FUNCTION__, strSearch.c_str());
-    int iLen = strSearch.size();
-    if (strFileName.Left(iLen).Equals(strSearch))
-    {
-      // fix slashes
-      CStdString strTemp = strFileName.Mid(iLen);
-      strTemp.Replace("\\", strReplace.Right(1));
-      CStdString strFileNameNew = strReplace + strTemp;
-      //CLog::Log(LOGDEBUG,"%s new filename:[%s]", __FUNCTION__, strFileNameNew.c_str());
-      return strFileNameNew;
-    }
+    if (strncmp(strFileName.c_str(), i->first.c_str(), i->first.size()) == 0)
+      return CUtil::AddFileToFolder(i->second, strFileName.Mid(i->first.size()));
   }
-  // nothing matches, return original string
-  //CLog::Log(LOGDEBUG,"%s no matches", __FUNCTION__);
   return strFileName;
 }
 
