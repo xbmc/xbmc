@@ -493,7 +493,8 @@ bool CVDPAU::Supports(VdpVideoMixerFeature feature)
 bool CVDPAU::Supports(EINTERLACEMETHOD method)
 {
   if(method == VS_INTERLACEMETHOD_VDPAU_BOB
-  || method == VS_INTERLACEMETHOD_AUTO)
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_AUTO_ION)
     return true;
 
   for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
@@ -610,7 +611,17 @@ void CVDPAU::SetDeinterlacing()
     VdpBool enabled[]={1,1,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
-  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+  else if (method == VS_INTERLACEMETHOD_AUTO_ION)
+  {
+    if (vid_height <= 576){
+      VdpBool enabled[]={1,1,0};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+    else if (vid_height > 576){
+      VdpBool enabled[]={1,0,0};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+  }  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
        ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
   {
     VdpBool enabled[]={1,0,0};
@@ -1165,6 +1176,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
     if((method == VS_INTERLACEMETHOD_AUTO &&
                   m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
+    || (method == VS_INTERLACEMETHOD_AUTO_ION &&
+    		      m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
     ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
@@ -1174,6 +1187,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     {
       if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
       || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+      || (method == VS_INTERLACEMETHOD_AUTO_ION && vid_height > 576)
       || avctx->hurry_up)
         m_mixerstep = 0;
       else

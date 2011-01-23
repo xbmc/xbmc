@@ -82,6 +82,18 @@
 			<include>Window_OpenClose_Animation</include>
 		</control>
 	</include>
+	<include name="CommonTVBackground">
+		<control type="multiimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<imagepath fallback="special://skin/backgrounds/tv.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</imagepath>
+			<timeperimage>10000</timeperimage>
+			<randomize>true</randomize>
+			<fadetime>1000</fadetime>
+		</control>
+	</include>
 	<include name="CommonMusicBackground">
 		<control type="multiimage">
 			<posx>0</posx>
@@ -461,7 +473,7 @@
 			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(LiveTV)</visible>
 		</control>
 		<control type="label">
 			<description>TV Show Title label</description>
@@ -490,6 +502,22 @@
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(musicvideos)</visible>
+			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
+		</control>
+		<control type="fadelabel">
+			<description>Channel label</description>
+			<posx>160</posx>
+			<posy>20</posy>
+			<height>30</height>
+			<width>325</width>
+			<label>$INFO[VideoPlayer.ChannelName]</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>font12_title</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<visible>videoplayer.content(LiveTV)</visible>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
 		</control>
@@ -577,9 +605,74 @@
 			<aligny>center</aligny>
 			<label>31023</label>
 		</control>
+		<control type="group">
+			<posx>12</posx>
+			<posy>40</posy>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<control type="button" id="600">
+				<posx>20</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>606</onright>
+				<onup>610</onup>
+				<ondown>608</ondown>
+				<onclick>XBMC.PlayerControl(Previous)</onclick>
+			</control>
+			<control type="button" id="601">
+				<posx>60</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>600</onleft>
+				<onright>603</onright>
+				<onup>610</onup>
+				<ondown>608</ondown>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
+			</control>
+			<control type="button" id="603">
+				<posx>100</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onleft>601</onleft>
+				<onright>604</onright>
+				<onup>610</onup>
+				<ondown>608</ondown>
+				<onclick>down</onclick>
+				<onclick>XBMC.PlayerControl(Stop)</onclick>
+			</control>
+			<control type="button" id="604">
+				<posx>180</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDRecordFO.png</texturefocus>
+				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>608</ondown>
+				<onclick>XBMC.PlayerControl(record)</onclick>
+				<enable>Player.CanRecord</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+		</control>
 		<control type="group" id="9005">
 			<posx>12</posx>
 			<posy>40</posy>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>2</posy>

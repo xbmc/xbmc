@@ -217,8 +217,24 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
-#include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
+
+/* PVR related include Files */
+#include "pvr/PVRManager.h"
+#include "GUIWindowTV.h"
+#include "GUIDialogPVRChannelManager.h"
+#include "GUIDialogPVRChannelsOSD.h"
+#include "GUIDialogPVRCutterOSD.h"
+#include "GUIDialogPVRDirectorOSD.h"
+#include "GUIDialogPVRGroupManager.h"
+#include "GUIDialogPVRGuideInfo.h"
+#include "GUIDialogPVRGuideOSD.h"
+#include "GUIDialogPVRGuideSearch.h"
+#include "GUIDialogPVRRecordingInfo.h"
+#include "GUIDialogPVRTimerSettings.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
+#include "GUIDialogTeletext.h"
+
 #include "GUIControlFactory.h"
 #include "cores/dlgcache.h"
 
@@ -1020,7 +1036,6 @@ bool CApplication::Initialize()
 #ifdef HAS_DX
   g_windowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
 #endif
-  g_windowManager.Add(new CGUIDialogTeletext);               // window id =
   g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
@@ -1067,7 +1082,6 @@ bool CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
-
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
@@ -1076,6 +1090,21 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
   g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+
+  /* Load PVR related Windows and Dialogs */
+  g_windowManager.Add(new CGUIWindowTV);                       // window id = 600
+  g_windowManager.Add(new CGUIDialogPVRGuideInfo);             // window id = 601
+  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);         // window id = 602
+  g_windowManager.Add(new CGUIDialogPVRTimerSettings);         // window id = 603
+  g_windowManager.Add(new CGUIDialogPVRGroupManager);          // window id = 604
+  g_windowManager.Add(new CGUIDialogPVRChannelManager);        // window id = 605
+  g_windowManager.Add(new CGUIDialogPVRGuideSearch);           // window id = 606
+  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);     // window id = 608
+  g_windowManager.Add(new CGUIDialogPVRChannelsOSD);           // window id = 609
+  g_windowManager.Add(new CGUIDialogPVRGuideOSD);              // window id = 610
+  g_windowManager.Add(new CGUIDialogPVRDirectorOSD);           // window id = 611
+  g_windowManager.Add(new CGUIDialogPVRCutterOSD);             // window id = 612
+  g_windowManager.Add(new CGUIDialogTeletext);                 // window id = 613
 
   g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
   g_windowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -1105,6 +1134,8 @@ bool CApplication::Initialize()
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
       FatalErrorHandler(true, true, true);
   }
+
+  StartPVRManager();
 
   SAFE_DELETE(m_splash);
 
@@ -1417,6 +1448,22 @@ void CApplication::StopZeroconf()
     CZeroconf::GetInstance()->Stop();
   }
 #endif
+}
+
+void CApplication::StartPVRManager()
+{
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    CLog::Log(LOGINFO, "starting PVRManager");
+    g_PVRManager.Start();
+  }
+}
+
+void CApplication::StopPVRManager()
+{
+  CLog::Log(LOGINFO, "stopping PVRManager");
+  StopPlaying();
+  g_PVRManager.Stop();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -2478,81 +2525,84 @@ bool CApplication::OnAction(const CAction &action)
 
   if ( IsPlaying())
   {
-    // pause : pauses current audio song
-    if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
+    if (!CurrentFileItem().IsLiveTV())
     {
-      m_pPlayer->Pause();
-#ifdef HAS_KARAOKE
-      m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
-#endif
-      if (!m_pPlayer->IsPaused())
-      { // unpaused - set the playspeed back to normal
-        SetPlaySpeed(1);
-      }
-      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
-      return true;
-    }
-    if (!m_pPlayer->IsPaused())
-    {
-      // if we do a FF/RW in my music then map PLAY action togo back to normal speed
-      // if we are playing at normal speed, then allow play to pause
-      if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
+      // pause : pauses current audio song
+      if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
       {
-        if (m_iPlaySpeed != 1)
-        {
+        m_pPlayer->Pause();
+#ifdef HAS_KARAOKE
+        m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
+#endif
+        if (!m_pPlayer->IsPaused())
+        { // unpaused - set the playspeed back to normal
           SetPlaySpeed(1);
         }
-        else
-        {
-          m_pPlayer->Pause();
-        }
-        return true;
-      }
-      if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
-      {
-        int iPlaySpeed = m_iPlaySpeed;
-        if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
-          iPlaySpeed *= -2;
-        else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
-          iPlaySpeed /= 2;
-        else if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
-          iPlaySpeed /= 2;
-        else
-          iPlaySpeed *= 2;
-
-        if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-          iPlaySpeed = 1;
-        if (iPlaySpeed > 32 || iPlaySpeed < -32)
-          iPlaySpeed = 1;
-
-        SetPlaySpeed(iPlaySpeed);
-        return true;
-      }
-      else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
-      {
-        // calculate the speed based on the amount the button is held down
-        int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
-        // returns 0 -> MAX_FFWD_SPEED
-        int iSpeed = 1 << iPower;
-        if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
-          iSpeed = -iSpeed;
-        g_application.SetPlaySpeed(iSpeed);
-        if (iSpeed == 1)
-          CLog::Log(LOGDEBUG,"Resetting playspeed");
-        return true;
-      }
-    }
-    // allow play to unpause
-    else
-    {
-      if (action.GetID() == ACTION_PLAYER_PLAY)
-      {
-        // unpause, and set the playspeed back to normal
-        m_pPlayer->Pause();
         g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
-
-        g_application.SetPlaySpeed(1);
         return true;
+      }
+      if (!m_pPlayer->IsPaused())
+      {
+        // if we do a FF/RW in my music then map PLAY action togo back to normal speed
+        // if we are playing at normal speed, then allow play to pause
+        if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
+        {
+          if (m_iPlaySpeed != 1)
+          {
+            SetPlaySpeed(1);
+          }
+          else
+          {
+            m_pPlayer->Pause();
+          }
+          return true;
+        }
+        if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
+        {
+          int iPlaySpeed = m_iPlaySpeed;
+          if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
+            iPlaySpeed *= -2;
+          else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+            iPlaySpeed /= 2;
+          else if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+            iPlaySpeed /= 2;
+          else
+            iPlaySpeed *= 2;
+
+          if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+            iPlaySpeed = 1;
+          if (iPlaySpeed > 32 || iPlaySpeed < -32)
+            iPlaySpeed = 1;
+
+          SetPlaySpeed(iPlaySpeed);
+          return true;
+        }
+        else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+        {
+          // calculate the speed based on the amount the button is held down
+          int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
+          // returns 0 -> MAX_FFWD_SPEED
+          int iSpeed = 1 << iPower;
+          if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
+            iSpeed = -iSpeed;
+          g_application.SetPlaySpeed(iSpeed);
+          if (iSpeed == 1)
+            CLog::Log(LOGDEBUG,"Resetting playspeed");
+          return true;
+        }
+      }
+      // allow play to unpause
+      else
+      {
+        if (action.GetID() == ACTION_PLAYER_PLAY)
+        {
+          // unpause, and set the playspeed back to normal
+          m_pPlayer->Pause();
+          g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
+
+          g_application.SetPlaySpeed(1);
+          return true;
+        }
       }
     }
   }
@@ -3102,6 +3152,20 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
+    /* Delete PVR related windows and dialogs */
+    g_windowManager.Delete(WINDOW_TV);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_SCAN);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
     g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
@@ -3120,6 +3184,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_MUSIC_OVERLAY);
     g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
+    g_windowManager.Delete(WINDOW_ADDON_BROWSER);
 
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);
@@ -3134,6 +3199,7 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     g_windowManager.Remove(WINDOW_SETTINGS_NETWORK);
     g_windowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
+    g_windowManager.Remove(WINDOW_SETTINGS_MYTV);
     g_windowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
@@ -3249,6 +3315,7 @@ void CApplication::Stop()
 
     m_applicationMessenger.Cleanup();
 
+    StopPVRManager();
     StopServices();
     //Sleep(5000);
 
@@ -4289,7 +4356,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
+    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || g_PVRManager.ChannelScanRunning())
     {
       if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
         m_screenSaver.reset(new CScreenSaver(""));

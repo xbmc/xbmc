@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tvheadend server naam of IP</string>
+    <string id="30001">HTTP Poort</string>
+    <string id="30002">HTSP Poort</string>
+    <string id="30003">Gebruikersnaam</string>
+    <string id="30004">Wachtwoord</string>
+    <string id="30005">Sla eerste I-frame over</string>
+    <string id="30006">Gids tijdscorrectie</string>
+</strings>

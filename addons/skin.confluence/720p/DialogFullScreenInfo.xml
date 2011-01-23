@@ -33,7 +33,7 @@
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
-				<visible>!VideoPlayer.Content(Movies)</visible>
+				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image">
 				<description>Movie cover image</description>
@@ -47,6 +47,17 @@
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
 				<visible>VideoPlayer.Content(Movies)</visible>
+			</control>
+			<control type="image">
+				<description>Live TV Channel Logo image</description>
+				<posx>30</posx>
+				<posy>290r</posy>
+				<width>280</width>
+				<height>260</height>
+				<fadetime>200</fadetime>
+				<texture background="true">$INFO[VideoPlayer.Cover]</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="progress">
 				<description>Progressbar</description>
@@ -163,6 +174,19 @@
 					<posy>35</posy>
 					<width>880</width>
 					<height>30</height>
+					<label>$INFO[VideoPlayer.ChannelNumber,[COLOR=blue]([/COLOR],[COLOR=blue])[/COLOR]] $INFO[VideoPlayer.ChannelName]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>35</posy>
+					<width>880</width>
+					<height>30</height>
 					<label>$INFO[VideoPlayer.Artist]$INFO[VideoPlayer.Album, - ]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -198,6 +222,7 @@
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>Player.ChapterCount</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="label">
 					<description>Chapter Name</description>
@@ -211,6 +236,21 @@
 					<font>font12_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="label">
+					<description>Live TV Channel Group</description>
+					<posx>0</posx>
+					<posy>110</posy>
+					<width>300</width>
+					<height>20</height>
+					<label>$INFO[VideoPlayer.ChannelGroup,[COLOR=blue]$LOCALIZE[31509]:[/COLOR] ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="label">
 					<description>Player Times</description>
@@ -237,6 +277,21 @@
 					<font>font12_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="label">
+					<description>Next Live TV Name</description>
+					<posx>890</posx>
+					<posy>150</posy>
+					<width>890</width>
+					<height>20</height>
+					<label>[COLOR=blue]$LOCALIZE[19113] :[/COLOR] $INFO[VideoPlayer.NextTitle]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
 				</control>
 			</control>
 		</control>

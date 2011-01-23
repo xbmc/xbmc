@@ -1,0 +1,28 @@
+#
+# Makefile for the XBMC Video Disk Recorder PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
+
+LIBS   =-ldl
+LIBDIR = ../../../addons/pvr.vdr.vnsi
+LIB    = ../../../addons/pvr.vdr.vnsi/XBMC_VDR_vnsi.pvr
+
+SRCS   = client.cpp \
+	VNSIChannelScan.cpp \
+	VNSIData.cpp \
+	VNSIDemux.cpp \
+	VNSIRecording.cpp \
+	VNSISession.cpp \
+	recordings.cpp \
+	requestpacket.cpp \
+	responsepacket.cpp \
+	thread.cpp \
+	tools.cpp
+
+include ../Makefile.include
+
+ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
+DEFINES += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
+endif

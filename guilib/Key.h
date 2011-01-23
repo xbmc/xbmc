@@ -259,6 +259,8 @@
 #define ACTION_AUDIO_DELAY            161
 #define ACTION_SUBTITLE_DELAY         162
 
+#define ACTION_RECORD                 170
+
 #define ACTION_PASTE                  180
 #define ACTION_NEXT_CONTROL           181
 #define ACTION_PREV_CONTROL           182
@@ -311,14 +313,14 @@
 #define WINDOW_SETTINGS_MYVIDEOS          10017
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
-
-#define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility
+#define WINDOW_SETTINGS_MYTV              10020
 
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
 #define WINDOW_VIDEO_PLAYLIST             10028
 
 #define WINDOW_LOGIN_SCREEN               10029
+#define WINDOW_SCRIPTS                    10030
 #define WINDOW_SETTINGS_PROFILES          10034
 
 #define WINDOW_ADDON_BROWSER              10040
@@ -370,7 +372,22 @@
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
-#define WINDOW_DIALOG_OSD_TELETEXT        10600
+// PVR related Window and Dialog ID's
+#define WINDOW_TV                         10600
+#define WINDOW_DIALOG_PVR_GUIDE_INFO      10601
+#define WINDOW_DIALOG_PVR_RECORDING_INFO  10602
+#define WINDOW_DIALOG_PVR_TIMER_SETTING   10603
+#define WINDOW_DIALOG_PVR_GROUP_MANAGER   10604
+#define WINDOW_DIALOG_PVR_CHANNEL_MANAGER 10605
+#define WINDOW_DIALOG_PVR_GUIDE_SEARCH    10606
+#define WINDOW_DIALOG_PVR_CHANNEL_SCAN    10607
+#define WINDOW_DIALOG_PVR_UPDATE_PROGRESS 10608
+#define WINDOW_DIALOG_PVR_OSD_CHANNELS    10609
+#define WINDOW_DIALOG_PVR_OSD_GUIDE       10610
+#define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10611
+#define WINDOW_DIALOG_PVR_OSD_CUTTER      10612
+#define WINDOW_DIALOG_OSD_TELETEXT        10613
+#define WINDOW_DIALOG_EPG_SCAN            10614
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
@@ -398,6 +415,11 @@
 
 #define WINDOW_PYTHON_START               13000
 #define WINDOW_PYTHON_END                 13099
+
+// WINDOW_ID's from 14000 to 14099 reserved for Addons
+
+#define WINDOW_ADDON_START                14000
+#define WINDOW_ADDON_END                  14099
 
 #define ICON_TYPE_NONE          101
 #define ICON_TYPE_PROGRAMS      102

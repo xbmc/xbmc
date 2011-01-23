@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR Hostname</string>
+    <string id="30001">Streamdev Port</string>
+    <string id="30002">Free-to-air only</string>
+    <string id="30003">Include Radio</string>
+    <string id="30004">Character Set Conversion</string>
+    <string id="30005">Connect timeout (s)</string>
+    <string id="30006">Ignore Channels without VPID and APID</string>
+    <string id="30007">Allow VDR Messages</string>
+    <string id="30008">Priority</string>
+    <string id="30009">Read recordings from directory</string>
+    <string id="30010">VDR recordings directory</string>
+</strings>

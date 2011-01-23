@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mediaportal Hostname</string>
+    <string id="30001">Mediaportal XBMC plugin Port</string>
+    <string id="30002">Free-to-air only</string>
+    <string id="30003">Include Radio</string>
+    <string id="30004">Character Set Conversion</string>
+    <string id="30005">Connect timeout (s)</string>
+    <string id="30006">Import only TV Channels from group</string>
+    <string id="30007">Import only Radio Channels from group</string>
+    <string id="30008">Convert hostname to IP-adress</string>
+    <string id="30009">EPG: Read genre strings (slow)</string>
+</strings>

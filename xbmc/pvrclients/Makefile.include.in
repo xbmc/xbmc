@@ -1,0 +1,30 @@
+#
+# Makefile include for PVR AddOns
+#
+
+## INCLUDES
+INCLUDES  = -I. -I../.. -I../../cores/dvdplayer/DVDDemuxers -I../../addons/include
+INCLUDES += -I../../lib -I../../../guilib -I ../../../addons/library.xbmc.pvr -I../../../addons/library.xbmc.addon
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+	INCLUDES += -I../../cores/dvdplayer/Codecs/ffmpeg
+endif
+ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
+	INCLUDES += -I/opt/local/include
+endif
+
+## DEFINES
+DEFINES += -D_LINUX -fPIC -DUSE_DEMUX
+
+## CXXFLAGS
+ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
+	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
+	DEFINES += -D__APPLE__ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
+else
+	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+endif
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
+$(LIB): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

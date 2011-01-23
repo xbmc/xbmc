@@ -69,6 +69,8 @@ SRCS=AddonsDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
      PluginDirectory.cpp \
+     PVRFile.cpp \
+     PVRDirectory.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
      SAPDirectory.cpp \

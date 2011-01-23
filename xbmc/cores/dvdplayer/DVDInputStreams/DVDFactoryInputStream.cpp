@@ -26,6 +26,7 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
+#include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
 #ifdef HAVE_LIBBLURAY
@@ -55,6 +56,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
+  else if(file.substr(0, 6) == "pvr://")
+    return new CDVDInputStreamPVRManager(pPlayer);
 #ifdef HAVE_LIBBLURAY
   else if (item.IsType(".bdmv") || item.IsType(".mpls") || content == "bluray/iso")
     return new CDVDInputStreamBluray();

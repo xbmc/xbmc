@@ -142,6 +142,17 @@ SRCS=Application.cpp \
      GUIDialogSelect.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
+     GUIDialogPVRChannelManager.cpp \
+     GUIDialogPVRChannelsOSD.cpp \
+     GUIDialogPVRCutterOSD.cpp \
+     GUIDialogPVRDirectorOSD.cpp \
+     GUIDialogPVRGroupManager.cpp \
+     GUIDialogPVRGuideInfo.cpp \
+     GUIDialogPVRGuideOSD.cpp \
+     GUIDialogPVRGuideSearch.cpp \
+     GUIDialogPVRRecordingInfo.cpp \
+     GUIDialogPVRTimerSettings.cpp \
+     GUIDialogPVRUpdateProgressBar.cpp \
      GUIDialogTeletext.cpp \
      GUIDialogTextViewer.cpp \
      GUIDialogVideoBookmarks.cpp \
@@ -161,6 +172,8 @@ SRCS=Application.cpp \
      GUIWindowPrograms.cpp \
      GUIWindowScreensaver.cpp \
      GUIWindowSystemInfo.cpp \
+     GUIViewStateTV.cpp \
+     GUIWindowTV.cpp \
      GUIWindowVisualisation.cpp \
      GUIWindowWeather.cpp \
      BackgroundInfoLoader.cpp \

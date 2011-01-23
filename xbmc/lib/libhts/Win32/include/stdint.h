@@ -210,7 +210,7 @@ typedef uint64_t  uintmax_t;
 #define UINT8_C(val)  val##ui8
 #define UINT16_C(val) val##ui16
 #define UINT32_C(val) val##ui32
-//#define UINT64_C(val) val##ui64
+#define UINT64_C(val) val##ui64
 
 // 7.18.4.2 Macros for greatest-width integer constants
 #define INTMAX_C   INT64_C

@@ -48,9 +48,10 @@ public:
   virtual int     GetBlockSize();
 
 
-  bool            NextChannel();
-  bool            PrevChannel();
+  bool            NextChannel(bool preview = false);
+  bool            PrevChannel(bool preview = false);
   bool            SelectChannel(unsigned int channel);
+  int             GetSelectedChannel() {return -1; }
 
   int             GetTotalTime();
   int             GetStartTime();

@@ -269,6 +269,9 @@ void CAdvancedSettings::Initialize()
 
   m_bgInfoLoaderMaxThreads = 5;
 
+  m_bDisableEPGTimeCorrection = false;
+  m_iUserDefinedEPGTimeCorrection = 0;
+
   m_measureRefreshrate = false;
 
   m_cacheMemBufferSize = (1048576 * 5);
@@ -831,6 +834,9 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
+  XMLUtils::GetBoolean(pRootElement, "noepgtimecorrection", m_bDisableEPGTimeCorrection);
+  XMLUtils::GetInt(pRootElement, "userepgtimecorrection", m_iUserDefinedEPGTimeCorrection, 0, 1440);
+
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
@@ -854,6 +860,17 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("tvdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseTV.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseTV.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseTV.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseTV.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseTV.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseTV.name);
   }
 
   // load in the GUISettings overrides:

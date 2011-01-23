@@ -106,7 +106,10 @@ void CDVDInputStreamMMS::Close()
 {
   CDVDInputStream::Close();
   if (m_mms)
+  {
     mmsx_close(m_mms);
+    m_mms = NULL;
+  }
 }
 
 int CDVDInputStreamMMS::Read(BYTE* buf, int buf_size)

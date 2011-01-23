@@ -28,6 +28,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/Directory.h"
+#include "AddonHelpers_local.h"
 #include "log.h"
 
 using namespace XFILE;
@@ -59,12 +60,12 @@ namespace ADDON
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
+    CAddonHelpers* m_pHelpers;
 
   private:
     TheDll* m_pDll;
     bool m_initialized;
     bool LoadDll();
-    bool m_needsavedsettings;
 
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
@@ -100,7 +101,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
-  m_needsavedsettings = false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -111,7 +111,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
-  m_needsavedsettings = false;
+  m_pHelpers    = NULL;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -188,14 +188,19 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   if (!LoadDll())
     return false;
 
+  /* Allocate the helper function class to allow crosstalk over
+     helper libraries */
+  m_pHelpers = new CAddonHelpers(this);
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
+    ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == STATUS_OK)
       m_initialized = true;
-    else if ((status == STATUS_NEED_SETTINGS) || (status == STATUS_NEED_SAVEDSETTINGS))
+    else if (status == STATUS_NEED_SETTINGS)
     {
-      m_needsavedsettings = (status == STATUS_NEED_SAVEDSETTINGS);
       if (TransferSettings() == STATUS_OK)
         m_initialized = true;
       else
@@ -221,20 +226,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
   /* Inform dll to stop all activities */
   try
   {
-    if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
-    {
-      char   str_id[64];
-      char   str_value[1024];
-      CAddon::LoadUserSettings();
-      for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
-      {
-        strcpy(str_id, "###GetSavedSettings");
-        sprintf (str_value, "%i", i);
-        m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
-        if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
-      }
-      CAddon::SaveSettings();
-    }
     if (m_pDll) m_pDll->Stop();
   }
   catch (std::exception &e)
@@ -260,6 +251,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
+  delete m_pHelpers;
+  m_pHelpers = NULL;
   delete m_pStruct;
   m_pStruct = NULL;
   delete m_pDll;
@@ -412,7 +405,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
         else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-          strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
+          strcmpi(type, "labelenum") == 0)
         {
           int tmp = atoi(GetSetting(id));
           status = m_pDll->SetSetting(id, (int*) &tmp);

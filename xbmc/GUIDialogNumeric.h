@@ -48,7 +48,7 @@ public:
   static bool ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);
   static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading);
-  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading);
+  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int autoCloseTime = 0);
   static bool ShowAndGetSeconds(CStdString& timeString, const CStdString &heading);
 
 protected:
@@ -69,5 +69,7 @@ protected:
   unsigned int m_block;             // for time, date, and IP methods.
   unsigned int m_lastblock;
   bool m_dirty;                     // true if the current block has been changed.
+  int m_autoCloseTime;
+  CStdString m_password;            // for password input
   CStdString m_number;              ///< for number or password input
 };

@@ -218,6 +218,7 @@
     <ClCompile Include="..\..\guilib\GUIControlProfiler.cpp" />
     <ClCompile Include="..\..\guilib\GUIDialog.cpp" />
     <ClCompile Include="..\..\guilib\GUIEditControl.cpp" />
+    <ClCompile Include="..\..\guilib\GUIEPGGridContainer.cpp" />
     <ClCompile Include="..\..\guilib\GUIFadeLabelControl.cpp" />
     <ClCompile Include="..\..\guilib\GUIFixedListContainer.cpp" />
     <ClCompile Include="..\..\guilib\GUIFont.cpp" />
@@ -334,6 +335,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\guilib\D3DResource.h" />
+    <ClInclude Include="..\..\guilib\GUIEPGGridContainer.h" />
     <ClInclude Include="..\..\guilib\GUIRenderingControl.h" />
     <ClInclude Include="..\..\guilib\GUITextureGLES.h" />
     <ClInclude Include="..\..\guilib\TextureBundleXBT.h" />

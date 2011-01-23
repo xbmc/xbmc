@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mediaportal Hostname oder IP</string>
+    <string id="30001">Mediaportal Port</string>
+    <string id="30002">Nur frei empfangbare Kanäle</string>
+    <string id="30003">Zeige Radiokanäle</string>
+    <string id="30004">Textkonvertierung (UTF-8)</string>
+    <string id="30005">Verbindungszeitüberlauf (s)</string>
+    <string id="30006">Importiere nur TV Kanäle aus Gruppe</string>
+    <string id="30007">Importiere nur Radiokanäle aus Gruppe</string>
+    <string id="30008">Konvertiere Hostname nach IP-Adresse</string>
+    <string id="30009">EPG: Genre Texte hochladen (langsam)</string>
+</strings>

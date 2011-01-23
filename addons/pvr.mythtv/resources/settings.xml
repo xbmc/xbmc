@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="host" type="text" label="30000" option="urlencoded" default="127.0.0.1" />
+    <setting id="mythXMLPort" type="integer" label="30001" default="6544" />
+</settings>
+

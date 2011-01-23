@@ -41,6 +41,7 @@ public:
   virtual void Render();
   virtual void OnWindowLoaded();
   void ChangetheTimeCode(int remote);
+  void ChangetheTVGroup(bool next);
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
@@ -49,7 +50,9 @@ protected:
 
 private:
   void RenderTTFSubtitles();
+  void SeekTV(bool bPlus, bool bLargeStep);
   void SeekChapter(int iChapter);
+  void FillInTVGroups();
   void ToggleOSD();
 
   enum SEEK_TYPE { SEEK_ABSOLUTE, SEEK_RELATIVE };
@@ -81,6 +84,7 @@ private:
 
   bool m_bShowCurrentTime;
 
+  bool m_bGroupSelectShow;
   bool m_timeCodeShow;
   unsigned int m_timeCodeTimeout;
   int m_timeCodeStamp[6];

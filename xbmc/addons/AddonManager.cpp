@@ -40,6 +40,10 @@
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "DllPVRClient.h"
+#include "PVRClient.h"
+#endif
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
@@ -99,6 +103,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
+    case ADDON_PVRDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -127,6 +132,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
 #if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props));
+#endif
+        }
+        else if (type == ADDON_PVRDLL)
+        {
+#ifdef HAS_PVRCLIENTS
+          return AddonPtr(new CPVRClient(props));
 #endif
         }
         else
@@ -322,6 +333,7 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
+  CStdString xbmcPath = _P("special://xbmc/addons");
   CSingleLock lock(m_critSection);
   addons.clear();
   cp_status_t status;
@@ -331,6 +343,11 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
+    if (addon && addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+    {
+      if (m_database.IsSystemPVRAddonEnabled(addon->ID()) != enabled)
+        addon->Disable();
+    }
     if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
       addons.push_back(addon);
   }
@@ -342,14 +359,24 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 {
   CSingleLock lock(m_critSection);
 
+  CStdString xbmcPath = _P("special://xbmc/addons");
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
-      return false;
+
+    if (addon && addon.get() && enabledOnly)
+    {
+      if (addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+      {
+        if (!m_database.IsSystemPVRAddonEnabled(addon->ID()))
+          return false;
+      }
+      else if (m_database.IsAddonDisabled(addon->ID()))
+        return false;
+    }
     return NULL != addon.get();
   }
   if (cpaddon)
@@ -502,6 +529,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
+    case ADDON_PVRDLL:
+      return AddonPtr(new CPVRClient(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:
