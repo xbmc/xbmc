@@ -773,7 +773,7 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         if (!m_gridIndex[row][block].item)
         {
-          CPVREpgInfoTag broadcast(NULL);
+          CPVREpgInfoTag broadcast;
           CFileItemPtr unknown(new CFileItem(broadcast));
           for (int i = block ; i > block - itemSize; i--)
           {

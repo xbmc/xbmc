@@ -171,18 +171,18 @@ const CPVREpgInfoTag *CPVREpg::InfoTag(long uniqueID, CDateTime StartTime) const
   /* try to find the tag by UID */
   if (uniqueID > 0)
   {
-    for (unsigned int i = 0; i < size(); i++)
+    for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
     {
-      if (at(i)->UniqueBroadcastID() == uniqueID)
-        return at(i);
+      if (at(iEpgPtr)->UniqueBroadcastID() > 0 && at(iEpgPtr)->UniqueBroadcastID() == uniqueID)
+        return at(iEpgPtr);
     }
   }
 
   /* if we haven't found it, search by start time */
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    if (at(i)->Start() == StartTime)
-      return at(i);
+    if (at(iEpgPtr)->Start() == StartTime)
+      return at(iEpgPtr);
   }
 
   return NULL;
@@ -216,7 +216,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTag &tag, bool bUpdateDatabase /* = f
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
-    InfoTag = new CPVREpgInfoTag(tag.UniqueBroadcastID());
+    InfoTag = new CPVREpgInfoTag();
     if (!InfoTag)
     {
       CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);

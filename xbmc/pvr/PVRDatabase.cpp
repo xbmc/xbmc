@@ -192,7 +192,7 @@ bool CPVRDatabase::CreateTables()
         ");"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idChannel_iStartTime on epg(idChannel, iStartTime desc);");
-    m_pDS->exec("CREATE UNIQUE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid);");
+    m_pDS->exec("CREATE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid);");
     m_pDS->exec("CREATE INDEX idx_epg_idChannel on epg(idChannel);");
     m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epg(iStartTime);");
     m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epg(iEndTime);");
@@ -224,6 +224,12 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
     /* TODO since sqlite doesn't support all ALTER TABLE statements, we have to rename things by code. not supported at the moment */
     CLog::Log(LOGERROR, "%s - Incompatible database version!", __FUNCTION__);
     return false;
+  }
+
+  if (iVersion == 7)
+  {
+    m_pDS->exec("DROP INDEX idx_epg_iBroadcastUid;");
+    m_pDS->exec("CREATE INDEX idx_epg_iBroadcastUid on epg(iBroadcastUid);");
   }
 
   return true;
@@ -849,19 +855,13 @@ bool CPVRDatabase::EraseOldEpgEntries()
 bool CPVRDatabase::RemoveEpgEntry(const CPVREpgInfoTag &tag)
 {
   /* invalid tag */
-  if (tag.BroadcastId() <= 0 && tag.UniqueBroadcastID() <= 0)
+  if (tag.BroadcastId() <= 0)
   {
     CLog::Log(LOGERROR, "PVRDB - %s - invalid EPG tag", __FUNCTION__);
     return false;
   }
 
-  CStdString strWhereClause;
-
-  if (tag.BroadcastId() > 0)
-    strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
-  else
-    strWhereClause = FormatSQL("iBroadcastUid = %u", tag.UniqueBroadcastID());
-
+  CStdString strWhereClause = FormatSQL("idBroadcast = %u", tag.BroadcastId());
   return DeleteValues("epg", strWhereClause);
 }
 
@@ -905,8 +905,7 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
     {
       while (!m_pDS->eof())
       {
-        int iBroadcastUid = m_pDS->fv("iBroadcastUid").get_asInt();
-        CPVREpgInfoTag newTag(iBroadcastUid);
+        CPVREpgInfoTag newTag;
 
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
@@ -921,19 +920,20 @@ int CPVRDatabase::GetEpgForChannel(CPVREpg *epg, const CDateTime &start /* = NUL
         CDateTime firstAired(iFirstAired);
         newTag.SetFirstAired(firstAired);
 
-        newTag.SetBroadcastId    (m_pDS->fv("idBroadcast").get_asInt());
-        newTag.SetTitle          (m_pDS->fv("sTitle").get_asString().c_str());
-        newTag.SetPlotOutline    (m_pDS->fv("sPlotOutline").get_asString().c_str());
-        newTag.SetPlot           (m_pDS->fv("sPlot").get_asString().c_str());
-        newTag.SetGenre          (m_pDS->fv("iGenreType").get_asInt(),
-                                  m_pDS->fv("iGenreSubType").get_asInt());
-        newTag.SetParentalRating (m_pDS->fv("iParentalRating").get_asInt());
-        newTag.SetStarRating     (m_pDS->fv("iStarRating").get_asInt());
-        newTag.SetNotify         (m_pDS->fv("bNotify").get_asBool());
-        newTag.SetEpisodeNum     (m_pDS->fv("sEpisodeId").get_asString().c_str());
-        newTag.SetEpisodePart    (m_pDS->fv("sEpisodePart").get_asString().c_str());
-        newTag.SetEpisodeName    (m_pDS->fv("sEpisodeName").get_asString().c_str());
-        newTag.SetSeriesNum      (m_pDS->fv("sSeriesId").get_asString().c_str());
+        newTag.SetUniqueBroadcastID(m_pDS->fv("iBroadcastUid").get_asInt());
+        newTag.SetBroadcastId      (m_pDS->fv("idBroadcast").get_asInt());
+        newTag.SetTitle            (m_pDS->fv("sTitle").get_asString().c_str());
+        newTag.SetPlotOutline      (m_pDS->fv("sPlotOutline").get_asString().c_str());
+        newTag.SetPlot             (m_pDS->fv("sPlot").get_asString().c_str());
+        newTag.SetGenre            (m_pDS->fv("iGenreType").get_asInt(),
+                                    m_pDS->fv("iGenreSubType").get_asInt());
+        newTag.SetParentalRating   (m_pDS->fv("iParentalRating").get_asInt());
+        newTag.SetStarRating       (m_pDS->fv("iStarRating").get_asInt());
+        newTag.SetNotify           (m_pDS->fv("bNotify").get_asBool());
+        newTag.SetEpisodeNum       (m_pDS->fv("sEpisodeId").get_asString().c_str());
+        newTag.SetEpisodePart      (m_pDS->fv("sEpisodePart").get_asString().c_str());
+        newTag.SetEpisodeName      (m_pDS->fv("sEpisodeName").get_asString().c_str());
+        newTag.SetSeriesNum        (m_pDS->fv("sSeriesId").get_asString().c_str());
 
         epg->UpdateEntry(newTag, false);
         m_pDS->next();
@@ -1029,23 +1029,25 @@ bool CPVRDatabase::UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate 
 {
   int bReturn = false;
 
-  /* invalid tag */
-  if (tag.UniqueBroadcastID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid EPG tag", __FUNCTION__);
-    return bReturn;
-  }
-
   time_t iStartTime, iEndTime, iFirstAired;
   tag.Start().GetAsTime(iStartTime);
   tag.End().GetAsTime(iEndTime);
   tag.FirstAired().GetAsTime(iFirstAired);
 
   int iBroadcastId = tag.BroadcastId();
-  if (iBroadcastId)
+  if (iBroadcastId <= 0)
   {
-    CStdString strWhereClause = FormatSQL("(iBroadcastUid = '%u' OR iStartTime = %u) AND idChannel = '%u'",
-        tag.UniqueBroadcastID(), iStartTime, tag.ChannelTag()->ChannelID());
+    CStdString strWhereClause;
+    if (tag.UniqueBroadcastID() > 0)
+    {
+      strWhereClause = FormatSQL("(iBroadcastUid = '%u' OR iStartTime = %u) AND idChannel = '%u'",
+          tag.UniqueBroadcastID(), iStartTime, tag.ChannelTag()->ChannelID());
+    }
+    else
+    {
+      strWhereClause = FormatSQL("iStartTime = %u AND idChannel = '%u'",
+          iStartTime, tag.ChannelTag()->ChannelID());
+    }
     CStdString strValue = GetSingleValue("epg", "idBroadcast", strWhereClause);
 
     if (!strValue.IsEmpty())

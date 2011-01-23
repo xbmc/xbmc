@@ -61,11 +61,12 @@ private:
   int                           m_iUniqueBroadcastID; // event's unique identifier for this tag
 
 public:
-  CPVREpgInfoTag(int uniqueBroadcastID);
+  CPVREpgInfoTag(int iUniqueBroadcastId);
   CPVREpgInfoTag() { Reset(); };
   ~CPVREpgInfoTag();
   void Reset();
 
+  void SetUniqueBroadcastID(int iUniqueBroadcastID) { m_iUniqueBroadcastID = iUniqueBroadcastID; }
   int UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
 
   int BroadcastId(void) const { return m_iBroadcastId; }

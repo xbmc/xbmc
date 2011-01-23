@@ -458,7 +458,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
     iMarginStop    = 10; /* default to 10 minutes */
 
   /* set the timer data */
-  newTag->m_iClientIndex   = tag.UniqueBroadcastID();
+  newTag->m_iClientIndex   = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
   newTag->m_bIsActive      = true;
   newTag->m_strTitle       = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
   newTag->m_iChannelNumber = channel->ChannelNumber();

@@ -27,10 +27,10 @@
 
 using namespace std;
 
-CPVREpgInfoTag::CPVREpgInfoTag(int uniqueBroadcastID)
+CPVREpgInfoTag::CPVREpgInfoTag(int iUniqueBroadcastId)
 {
   Reset();
-  m_iUniqueBroadcastID = uniqueBroadcastID;
+  m_iUniqueBroadcastID = iUniqueBroadcastId;
 }
 
 CPVREpgInfoTag::~CPVREpgInfoTag()
