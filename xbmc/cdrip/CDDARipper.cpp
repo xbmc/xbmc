@@ -266,7 +266,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   if (!CreateAlbumDir(*pItem->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
-  CStdString strFile = CUtil::MakeLegalPath(CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem)), legalType);
+  CStdString strFile = CUtil::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(pItem), legalType));
 
   return Rip(pItem->m_strPath, strFile.c_str(), *pItem->GetMusicInfoTag());
 }
@@ -310,10 +310,9 @@ bool CCDDARipper::RipCD()
   for (int i = 0; i < vecItems.Size(); i++)
   {
     CFileItemPtr item = vecItems[i];
-    CStdString track(GetTrackName(item.get()));
 
     // construct filename
-    CStdString strFile = CUtil::MakeLegalPath(CUtil::AddFileToFolder(strDirectory, track), legalType);
+    CStdString strFile = CUtil::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
     unsigned int tick = CTimeUtils::GetTimeMS();
 
