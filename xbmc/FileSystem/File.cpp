@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "DirectoryCache.h"
+#include "Directory.h"
 #include "FileCache.h"
 #include "utils/log.h"
 
@@ -220,7 +221,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
         return false;
     }
 
-    CURL url(strFileName);
+    CURL url(CDirectory::Translate(strFileName));
     if ( (flags & READ_NO_CACHE) == 0 && CUtil::IsInternetStream(url) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
@@ -300,7 +301,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try
   {
-    CURL url(strFileName);
+    CURL url(CDirectory::Translate(strFileName));
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
@@ -341,7 +342,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
         return false;
     }
 
-    CURL url(strFileName);
+    CURL url(CDirectory::Translate(strFileName));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -372,7 +373,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
   try
   {
-    CURL url(strFileName);
+    CURL url(CDirectory::Translate(strFileName));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -683,7 +684,7 @@ bool CFile::Delete(const CStdString& strFileName)
 {
   try
   {
-    CURL url(strFileName);
+    CURL url(CDirectory::Translate(strFileName));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -718,8 +719,8 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
 {
   try
   {
-    CURL url(strFileName);
-    CURL urlnew(strNewFileName);
+    CURL url(CDirectory::Translate(strFileName));
+    CURL urlnew(CDirectory::Translate(strNewFileName));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -750,7 +751,7 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
 {
   try
   {
-    CURL url(fileName);
+    CURL url(CDirectory::Translate(fileName));
 
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
@@ -927,6 +928,9 @@ bool CFileStream::Open(const CURL& filename)
 {
   Close();
 
+  // NOTE: This is currently not translated - reason is that all entry points into CFileStream::Open currently
+  //       go from the CStdString version below.  We may have to change this in future, but I prefer not decoding
+  //       the URL and re-encoding, or applying the translation twice.
   m_file = CFileFactory::CreateLoader(filename);
   if(m_file && m_file->Open(filename))
   {
@@ -954,7 +958,7 @@ void CFileStream::Close()
 
 bool CFileStream::Open(const CStdString& filename)
 {
-  return Open(CURL(filename));
+  return Open(CURL(CDirectory::Translate(filename)));
 }
 
 #ifdef _ARMEL
