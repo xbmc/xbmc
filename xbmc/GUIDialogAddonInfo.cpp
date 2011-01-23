@@ -164,11 +164,10 @@ void CGUIDialogAddonInfo::OnUninstall()
   database.Open();
   database.DisableAddon(m_localAddon->ID(), false);
 
-  CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
   list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
   list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),NULL);
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
   Close();
 }
