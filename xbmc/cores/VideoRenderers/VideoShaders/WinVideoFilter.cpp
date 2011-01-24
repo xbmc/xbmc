@@ -148,9 +148,14 @@ bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute()
+bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int vertexIndexStep)
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  LPDIRECT3DSURFACE9 oldRT = 0;
+  // The render target will be overriden: save the caller's original RT
+  if (vecRT != NULL && vecRT->size() > 0)
+    pD3DDevice->GetRenderTarget(0, &oldRT);
 
   pD3DDevice->SetFVF(m_FVF);
   pD3DDevice->SetStreamSource(0, m_vb.Get(), 0, m_vertsize);
@@ -169,7 +174,11 @@ bool CWinShader::Execute()
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
-    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, m_primitivesCount);
+
+    if (vecRT != NULL && vecRT->size() > iPass)
+      pD3DDevice->SetRenderTarget(0, (*vecRT)[iPass]);
+
+    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, iPass * vertexIndexStep, m_primitivesCount);
     if (FAILED(hr))
       CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitive %08X", hr);
 
@@ -178,6 +187,12 @@ bool CWinShader::Execute()
   }
   if (!m_effect.End())
     CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
+
+  if (oldRT != 0)
+  {
+    pD3DDevice->SetRenderTarget(0, oldRT);
+    oldRT->Release();
+  }
 
   return true;
 }
@@ -269,7 +284,7 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
                     contrast, brightness, flags);
   UploadToGPU(YUVbuf);
   SetShaderParameters(YUVbuf);
-  Execute();
+  Execute(NULL,4);
 }
 
 CYUV2RGBShader::~CYUV2RGBShader()
@@ -429,13 +444,14 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
 
 void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
+                                unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
                                 CRect destRect)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
-  Execute();
+  Execute(NULL, 4);
 }
 
 CConvolutionShader1Pass::~CConvolutionShader1Pass()
@@ -571,6 +587,14 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
 
 //==================================================================================
 
+CConvolutionShaderSeparable::CConvolutionShaderSeparable()
+{
+  m_sourceWidth = -1;
+  m_sourceHeight = -1;
+  m_destWidth = -1;
+  m_destHeight = -1;
+}
+
 bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
 {
   CStdString effectString;
@@ -589,13 +613,19 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
       return false;
   }
 
-  if (!KernelTexFormat())
+  if (!ChooseIntermediateD3DFormat())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the intermediate render target.");
+    return false;
+  }
+
+  if (!ChooseKernelD3DFormat())
   {
     CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the kernel.");
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 8, sizeof(CUSTOMVERTEX), 2);
 
   DefinesMap defines;
   if (m_floattex)
@@ -617,38 +647,89 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
 
 void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                 unsigned int sourceWidth, unsigned int sourceHeight,
+                                unsigned int destWidth, unsigned int destHeight,
                                 CRect sourceRect,
                                 CRect destRect)
 {
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  if(m_destWidth != destWidth || m_destHeight != destHeight)
+    CreateIntermediateRenderTarget(destWidth, destHeight);
+
+  PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
-  Execute();
+
+  // This part should be cleaned up, but how?
+  std::vector<LPDIRECT3DSURFACE9> rts;
+  LPDIRECT3DSURFACE9 intRT, currentRT;
+  m_IntermediateTarget.GetSurfaceLevel(0, &intRT);
+  pD3DDevice->GetRenderTarget(0, &currentRT);
+  rts.push_back(intRT);
+  rts.push_back(currentRT);
+  Execute(&rts, 4);
+  intRT->Release();
+  currentRT->Release();
 }
 
 CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
 {
   if(m_HQKernelTexture.Get())
     m_HQKernelTexture.Release();
+
+  if (m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
 }
 
-bool CConvolutionShaderSeparable::KernelTexFormat()
+bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
+{
+  DWORD usage = D3DUSAGE_RENDERTARGET;
+
+  // Try for higher precision than the output of the scaler to preserve quality
+  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) m_IntermediateFormat = D3DFMT_A2R10G10B10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) m_IntermediateFormat = D3DFMT_A2B10G10R10;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    m_IntermediateFormat = D3DFMT_A8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    m_IntermediateFormat = D3DFMT_A8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8R8G8B8, usage))    m_IntermediateFormat = D3DFMT_X8R8G8B8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    m_IntermediateFormat = D3DFMT_X8B8G8R8;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      m_IntermediateFormat = D3DFMT_R8G8B8;
+  else return false;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": format %i", m_IntermediateFormat);
+
+  return true;
+}
+
+bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
+{
+  if (m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+
+  if(!m_IntermediateTarget.Create(width, height, 1, D3DUSAGE_RENDERTARGET, m_IntermediateFormat, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": render target creation failed.");
+    return false;
+  }
+  return true;
+}
+
+bool CConvolutionShaderSeparable::ChooseKernelD3DFormat()
 {
   if (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, 0))
   {
-    m_format = D3DFMT_A16B16G16R16F;
+    m_KernelFormat = D3DFMT_A16B16G16R16F;
     m_floattex = true;
     m_rgba = true;
   }
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, 0))
   {
-    m_format = D3DFMT_A8B8G8R8;
+    m_KernelFormat = D3DFMT_A8B8G8R8;
     m_floattex = false;
     m_rgba = true;
   }
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, 0))
   {
-    m_format = D3DFMT_A8R8G8B8;
+    m_KernelFormat = D3DFMT_A8R8G8B8;
     m_floattex = false;
     m_rgba = false;
   }
@@ -662,7 +743,7 @@ bool CConvolutionShaderSeparable::CreateHQKernel(ESCALINGMETHOD method)
 {
   CConvolutionKernel kern(method, 256);
 
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_format, g_Windowing.DefaultD3DPool()))
+  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_KernelFormat, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
     return false;
@@ -701,14 +782,18 @@ bool CConvolutionShaderSeparable::CreateHQKernel(ESCALINGMETHOD method)
 }
 
 void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
+                                           unsigned int destWidth, unsigned int destHeight,
                                            CRect sourceRect,
                                            CRect destRect)
 {
   if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
+  || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
     m_sourceWidth = sourceWidth;
     m_sourceHeight = sourceHeight;
+    m_destWidth = destWidth;
+    m_destHeight = destHeight;
     m_sourceRect = sourceRect;
     m_destRect = destRect;
 
@@ -735,9 +820,29 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
+    v[4].x = 0;
+    v[4].y = 0;
+    v[4].tu = 0;
+    v[4].tv = 0;
+
+    v[5].x = m_destWidth;
+    v[5].y = 0;
+    v[5].tu = 1;
+    v[5].tv = 0;
+
+    v[6].x = m_destWidth;
+    v[6].y = m_destHeight;
+    v[6].tu = 1;
+    v[6].tv = 1;
+
+    v[7].x = 0;
+    v[7].y = m_destHeight;
+    v[7].tu = 0;
+    v[7].tv = 1;
+
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
       v[i].x -= 0.5;
       v[i].y -= 0.5;
@@ -754,6 +859,7 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
   m_effect.SetTechnique( "SCALER_T" );
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
+  m_effect.SetTexture( "g_IntermediateTexture",  m_IntermediateTarget ) ;
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
 }
 
