@@ -800,45 +800,47 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
-    v[0].x = destRect.x1;
-    v[0].y = destRect.y1;
+    // Manipulate the coordinates to work only on the active parts of the textures,
+    // and therefore avoid the need to clear surfaces/render targets
+    v[0].x = 0;
+    v[0].y = 0;
     v[0].tu = sourceRect.x1 / sourceWidth;
     v[0].tv = sourceRect.y1 / sourceHeight;
 
-    v[1].x = destRect.x2;
-    v[1].y = destRect.y1;
+    v[1].x = destRect.x2 - destRect.x1;
+    v[1].y = 0;
     v[1].tu = sourceRect.x2 / sourceWidth;
     v[1].tv = sourceRect.y1 / sourceHeight;
 
-    v[2].x = destRect.x2;
-    v[2].y = destRect.y2;
+    v[2].x = destRect.x2 - destRect.x1;
+    v[2].y = destRect.y2 - destRect.y1;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
 
-    v[3].x = destRect.x1;
-    v[3].y = destRect.y2;
+    v[3].x = 0;
+    v[3].y = destRect.y2 - destRect.y1;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
-    v[4].x = 0;
-    v[4].y = 0;
+    v[4].x = destRect.x1;
+    v[4].y = destRect.y1;
     v[4].tu = 0;
     v[4].tv = 0;
 
-    v[5].x = m_destWidth;
-    v[5].y = 0;
-    v[5].tu = 1;
+    v[5].x = destRect.x2;
+    v[5].y = destRect.y1;
+    v[5].tu = (destRect.x2 - destRect.x1) / m_destWidth;
     v[5].tv = 0;
 
-    v[6].x = m_destWidth;
-    v[6].y = m_destHeight;
-    v[6].tu = 1;
-    v[6].tv = 1;
+    v[6].x = destRect.x2;
+    v[6].y = destRect.y2;
+    v[6].tu = (destRect.x2 - destRect.x1) / m_destWidth;
+    v[6].tv = (destRect.y2 - destRect.y1) / m_destHeight;
 
-    v[7].x = 0;
-    v[7].y = m_destHeight;
+    v[7].x = destRect.x1;
+    v[7].y = destRect.y2;
     v[7].tu = 0;
-    v[7].tv = 1;
+    v[7].tv = (destRect.y2 - destRect.y1) / m_destHeight;
 
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
