@@ -243,23 +243,22 @@ CStdString AddonVersion::Print() const
       y.Empty(); \
   }
 
-AddonProps::AddonProps(cp_plugin_info_t *props)
-  : id(props->identifier)
-  , version(props->version)
-  , name(props->name)
-  , path(props->plugin_path)
-  , author(props->provider_name)
+AddonProps::AddonProps(const cp_extension_t *ext)
+  : id(ext->plugin->identifier)
+  , version(ext->plugin->version)
+  , name(ext->plugin->name)
+  , path(ext->plugin->plugin_path)
+  , author(ext->plugin->provider_name)
   , stars(0)
 {
-  //FIXME only considers the first registered extension for each addon
-  if (props->extensions->ext_point_id)
-    type = TranslateType(props->extensions->ext_point_id);
+  if (ext->ext_point_id)
+    type = TranslateType(ext->ext_point_id);
 
   icon = "icon.png";
   fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
   changelog = CUtil::AddFileToFolder(path, "changelog.txt");
   // Grab more detail from the props...
-  const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
+  const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(ext->plugin, "xbmc.addon.metadata");
   if (metadata)
   {
     summary = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "summary");
@@ -279,7 +278,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
  */
 
 CAddon::CAddon(const cp_extension_t *ext)
-  : m_props(ext ? ext->plugin : NULL)
+  : m_props(ext)
   , m_parent(AddonPtr())
 {
   BuildLibName(ext);
