@@ -45,15 +45,13 @@ void CGUITextureGLES::Begin(color_t color)
   glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
 
-  if (m_diffuse.size())
+  // Setup Colors
+  for (int i = 0; i < 4; i++)
   {
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
-  }
-  else
-  {
-    g_Windowing.EnableGUIShader(SM_TEXTURE);
+    m_col[i][0] = (GLubyte)GET_R(color);
+    m_col[i][1] = (GLubyte)GET_G(color);
+    m_col[i][2] = (GLubyte)GET_B(color);
+    m_col[i][3] = (GLubyte)GET_A(color);
   }
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
@@ -68,37 +66,52 @@ void CGUITextureGLES::Begin(color_t color)
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  // Setup Colors
-  for (int i = 0; i < 4; i++)
-  {
-    m_col[i][0] = (GLubyte)GET_R(color);
-    m_col[i][1] = (GLubyte)GET_G(color);
-    m_col[i][2] = (GLubyte)GET_B(color);
-    m_col[i][3] = (GLubyte)GET_A(color);
-  }
+  bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[0][3] < 255;
 
   if (m_diffuse.size())
   {
+    if (m_col[0][0] == 255 && m_col[0][1] == 255 && m_col[0][2] == 255 && m_col[0][3] == 255 )
+    {
+      g_Windowing.EnableGUIShader(SM_MULTI);
+    }
+    else
+    {
+      g_Windowing.EnableGUIShader(SM_MULTI_BLENDCOLOR);
+    }
+
+    hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
+    glEnable(GL_TEXTURE_2D);
+
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
-    glEnable( GL_BLEND );
-    g_Windowing.EnableGUIShader(SM_MULTI);
+
+    hasAlpha = true;
   }
   else
   {
-    CBaseTexture* textureObject = m_texture.m_textures[m_currentFrame];
-    if (textureObject->HasAlpha() || m_col[0][3] < 255 )
+    if ( hasAlpha )
     {
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      glEnable(GL_BLEND);          // Turn Blending On
       g_Windowing.EnableGUIShader(SM_TEXTURE);
     }
     else
     {
-      glDisable(GL_BLEND);
       g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
+  }
+
+
+  if ( hasAlpha )
+  {
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
+  }
+  else
+  {
+    glDisable(GL_BLEND);
   }
 
 }
