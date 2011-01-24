@@ -318,66 +318,74 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
 {
   Value inputroot, outputroot, result;
 
-  JSON_STATUS errorCode = OK;
   Reader reader;
-  bool isAnnouncement = false;
+  bool hasResponse = false;
 
-  if (reader.parse(inputString, inputroot) && IsProperJSONRPC(inputroot))
+  if (reader.parse(inputString, inputroot))
   {
-    isAnnouncement = !inputroot.isMember("id");
-
-    CStdString method = inputroot.get("method", "").asString();
-    method = method.ToLower();
-    errorCode = InternalMethodCall(method, inputroot, result, transport, client);
+    if (inputroot.isArray())
+    {
+      if (inputroot.size() <= 0)
+      {
+        CLog::Log(LOGERROR, "JSONRPC: Empty batch call\n");
+        BuildResponse(inputroot, InvalidRequest, Value(), outputroot);
+        hasResponse = true;
+      }
+      else
+      {
+        for (unsigned int i = 0; i < inputroot.size(); i++)
+        {
+          Value request = inputroot.get(i, Value());
+          Value response;
+          if (HandleMethodCall(request, response, transport, client))
+          {
+            outputroot.append(response);
+            hasResponse = true;
+          }
+        }
+      }
+    }
+    else
+      hasResponse = HandleMethodCall(inputroot, outputroot, transport, client);
   }
   else
   {
     CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", inputString.c_str());
-    errorCode = ParseError;
-  }
-
-  outputroot["jsonrpc"] = "2.0";
-  outputroot["id"] = inputroot.isObject() && inputroot.isMember("id") ? inputroot["id"] : Value();
-
-  switch (errorCode)
-  {
-    case OK:
-      outputroot["result"] = result;
-      break;
-    case ACK:
-      outputroot["result"] = "OK";
-      break;
-    case InvalidParams:
-      outputroot["error"]["code"] = InvalidParams;
-      outputroot["error"]["message"] = "Invalid params.";
-      break;
-    case MethodNotFound:
-      outputroot["error"]["code"] = MethodNotFound;
-      outputroot["error"]["message"] = "Method not found.";
-      break;
-    case ParseError:
-      outputroot["error"]["code"] = ParseError;
-      outputroot["error"]["message"] = "Parse error.";
-      break;
-    case BadPermission:
-      outputroot["error"]["code"] = BadPermission;
-      outputroot["error"]["message"] = "Bad client permission.";
-      break;
-    case FailedToExecute:
-      outputroot["error"]["code"] = FailedToExecute;
-      outputroot["error"]["message"] = "Failed to execute method.";
-      break;
-    default:
-      outputroot["error"]["code"] = InternalError;
-      outputroot["error"]["message"] = "Internal error.";
-      break;
+    BuildResponse(inputroot, ParseError, Value(), outputroot);
+    hasResponse = true;
   }
 
   StyledWriter writer;
   CStdString str;
-  if (!isAnnouncement)
+  if (hasResponse)
     str = writer.write(outputroot);
   return str;
+}
+
+bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer *transport, IClient *client)
+{
+  JSON_STATUS errorCode = OK;
+  Value result;
+  bool isAnnouncement = false;
+
+  if (IsProperJSONRPC(request))
+  {
+    isAnnouncement = !request.isMember("id");
+
+    CStdString method = request.get("method", "").asString();
+    method = method.ToLower();
+    errorCode = InternalMethodCall(method, request, result, transport, client);
+  }
+  else
+  {
+    StyledWriter writer;
+    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", writer.write(request).c_str());
+    errorCode = InvalidRequest;
+  }
+
+  BuildResponse(request, errorCode, result, response);
+
+  return !isAnnouncement;
 }
 
 JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result, ITransportLayer *transport, IClient *client)
@@ -397,6 +405,50 @@ JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Val
 inline bool CJSONRPC::IsProperJSONRPC(const Json::Value& inputroot)
 {
   return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString();
+}
+
+inline void CJSONRPC::BuildResponse(const Value& request, JSON_STATUS code, const Value& result, Value& response)
+{
+  response["jsonrpc"] = "2.0";
+  response["id"] = request.isObject() && request.isMember("id") ? request["id"] : Value();
+
+  switch (code)
+  {
+    case OK:
+      response["result"] = result;
+      break;
+    case ACK:
+      response["result"] = "OK";
+      break;
+    case InvalidRequest:
+      response["error"]["code"] = InvalidRequest;
+      response["error"]["message"] = "Invalid request.";
+      break;
+    case InvalidParams:
+      response["error"]["code"] = InvalidParams;
+      response["error"]["message"] = "Invalid params.";
+      break;
+    case MethodNotFound:
+      response["error"]["code"] = MethodNotFound;
+      response["error"]["message"] = "Method not found.";
+      break;
+    case ParseError:
+      response["error"]["code"] = ParseError;
+      response["error"]["message"] = "Parse error.";
+      break;
+    case BadPermission:
+      response["error"]["code"] = BadPermission;
+      response["error"]["message"] = "Bad client permission.";
+      break;
+    case FailedToExecute:
+      response["error"]["code"] = FailedToExecute;
+      response["error"]["message"] = "Failed to execute method.";
+      break;
+    default:
+      response["error"]["code"] = InternalError;
+      response["error"]["message"] = "Internal error.";
+      break;
+  }
 }
 
 inline const char *CJSONRPC::PermissionToString(const OperationPermission &permission)
