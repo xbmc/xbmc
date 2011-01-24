@@ -653,12 +653,13 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if(m_destWidth != destWidth || m_destHeight != destHeight)
-    CreateIntermediateRenderTarget(destWidth, destHeight);
+  if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
+    CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
-  float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
+  float texSteps1[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
+  float texSteps2[] = { 1.0f/(float)destWidth, 1.0f/(float)(sourceHeight)};
+  SetShaderParameters(sourceTexture, &texSteps1[0], sizeof(texSteps1)/sizeof(texSteps1[0]), &texSteps2[0], sizeof(texSteps2)/sizeof(texSteps2[0]));
 
   // This part should be cleaned up, but how?
   std::vector<LPDIRECT3DSURFACE9> rts;
@@ -813,12 +814,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[1].tv = sourceRect.y1 / sourceHeight;
 
     v[2].x = destRect.x2 - destRect.x1;
-    v[2].y = destRect.y2 - destRect.y1;
+    v[2].y = sourceRect.y2 - sourceRect.y1;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
 
     v[3].x = 0;
-    v[3].y = destRect.y2 - destRect.y1;
+    v[3].y = sourceRect.y2 - sourceRect.y1;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
@@ -835,12 +836,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[6].x = destRect.x2;
     v[6].y = destRect.y2;
     v[6].tu = (destRect.x2 - destRect.x1) / m_destWidth;
-    v[6].tv = (destRect.y2 - destRect.y1) / m_destHeight;
+    v[6].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
 
     v[7].x = destRect.x1;
     v[7].y = destRect.y2;
     v[7].tu = 0;
-    v[7].tv = (destRect.y2 - destRect.y1) / m_destHeight;
+    v[7].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
 
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
@@ -856,13 +857,14 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   }
 }
 
-void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
+void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps1, int texStepsCount1, float* texSteps2, int texStepsCount2)
 {
   m_effect.SetTechnique( "SCALER_T" );
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetTexture( "g_IntermediateTexture",  m_IntermediateTarget ) ;
-  m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
+  m_effect.SetFloatArray("g_StepXY_P0", texSteps1, texStepsCount1);
+  m_effect.SetFloatArray("g_StepXY_P1", texSteps2, texStepsCount2);
 }
 
 
