@@ -46,7 +46,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
 
 using namespace std;
@@ -3317,7 +3317,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       }
       m_pDS->close();
       // ensure these scrapers are installed
-      CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(scrapers);
+      CAddonInstaller::InstallFromXBMCRepo(scrapers);
     }
     if (iVersion < 40)
     {

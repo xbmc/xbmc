@@ -486,6 +486,8 @@
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
+		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
+		7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
@@ -2388,6 +2390,8 @@
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVDirectory.cpp; sourceTree = "<group>"; };
 		7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVDirectory.h; sourceTree = "<group>"; };
+		7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonInstaller.cpp; sourceTree = "<group>"; };
+		7C4705AD12EF584C00369E51 /* AddonInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonInstaller.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F24010505BC7002AD2C1 /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bookmark.cpp; sourceTree = "<group>"; };
@@ -4054,6 +4058,8 @@
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
 				18B49FF21152BFA5001AF8A6 /* Addon.h */,
 				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
+				7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */,
+				7C4705AD12EF584C00369E51 /* AddonInstaller.h */,
 				18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */,
 				18B49FF51152BFA5001AF8A6 /* AddonManager.h */,
 				F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */,
@@ -7187,7 +7193,6 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMC" */;
 			compatibilityVersion = "Xcode 2.4";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -8173,6 +8178,7 @@
 				433219D712E4C6A500CD7486 /* FileUDF.cpp in Sources */,
 				433219D812E4C6A500CD7486 /* udf25.cpp in Sources */,
 				433219D912E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
+				7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9049,6 +9055,7 @@
 				433219DA12E4C6A500CD7486 /* FileUDF.cpp in Sources */,
 				433219DB12E4C6A500CD7486 /* udf25.cpp in Sources */,
 				433219DC12E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
+				7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -27,11 +27,9 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
-#include "utils/FileOperationJob.h"
+#include "addons/AddonInstaller.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "guilib/GUIWindowManager.h"
-#include "GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
 
 using namespace XFILE;
@@ -198,7 +196,7 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(addons[i]->Path()))
           referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
 
-        CGUIWindowAddonBrowser::InstallAddon(addon->ID(), true, referer);
+        CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)
       {

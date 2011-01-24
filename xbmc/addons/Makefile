@@ -1,5 +1,6 @@
 SRCS=Addon.cpp \
      AddonDatabase.cpp \
+     AddonInstaller.cpp \
      AddonManager.cpp \
      AddonStatusHandler.cpp \
      GUIDialogAddonInfo.cpp \

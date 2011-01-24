@@ -2456,6 +2456,9 @@
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp">
       <Filter>guilib\Rendering\Base</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4934,6 +4937,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIUserMessages.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -57,7 +57,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "TextureCache.h"
-#include "addons/GUIWindowAddonBrowser.h"
+#include "addons/AddonInstaller.h"
 #include "utils/AutoPtrHandle.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -3121,7 +3121,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       }
       m_pDS->close();
       // ensure these scrapers are installed
-      CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(scrapers);
+      CAddonInstaller::InstallFromXBMCRepo(scrapers);
     }
   }
   catch (...)
