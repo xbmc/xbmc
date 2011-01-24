@@ -27,7 +27,7 @@
 #include "MusicInfoTag.h"
 
 #include "PVRChannelGroupsContainer.h"
-#include "PVREpgs.h"
+#include "PVREpgContainer.h"
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
 #include "PVRDatabase.h"
@@ -596,9 +596,9 @@ CPVREpg *CPVRChannel::GetEPG(void)
 {
   if (m_EPG == NULL)
   {
-    /* will be cleaned up by CPVREpgs on exit */
+    /* will be cleaned up by CPVREpgContainer on exit */
     m_EPG = new CPVREpg(this);
-    g_PVREpgs.push_back(m_EPG);
+    g_PVREpgContainer.push_back(m_EPG);
   }
 
   return m_EPG;
@@ -641,7 +641,7 @@ const CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
   if (m_bIsHidden || !m_bEPGEnabled || m_EPGNow == NULL)
     return m_EmptyEpgInfoTag;
 
-  const CPVREpgInfoTag *nextTag = m_EPGNow->GetNextEvent();
+  const CPVREpgInfoTag *nextTag = (CPVREpgInfoTag*) m_EPGNow->GetNextEvent();
   return nextTag == NULL ?
       m_EmptyEpgInfoTag :
       nextTag;
@@ -715,7 +715,7 @@ void CPVRChannel::UpdateEPGPointers(void)
        m_EPGNow->End() <= CDateTime::GetCurrentDateTime()))
   {
     SetChanged();
-    m_EPGNow  = epg->InfoTagNow();
+    m_EPGNow  = (CPVREpgInfoTag*) epg->InfoTagNow();
     if (m_EPGNow)
     {
       CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",

@@ -24,6 +24,7 @@ BIN_DIRS=	\
 	xbmc/cores/VideoRenderers/VideoShaders \
 	xbmc/cores/ExternalPlayer \
 	xbmc/cores/playercorefactory \
+	xbmc/epg \
 	xbmc/FileSystem \
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
@@ -284,6 +285,8 @@ xbmc/settings/settings.a: force
 	$(MAKE) -C xbmc/settings
 xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
+xbmc/epg/epg.a: force
+	$(MAKE) -C xbmc/epg
 xbmc/pvr/pvr.a: force
 	$(MAKE) -C xbmc/pvr
 xbmc/pvrclients/pvrclient.a: force
@@ -493,6 +496,7 @@ DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
 	xbmc/pvr/pvr.a \
+	xbmc/epg/epg.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
 	xbmc/cores/DllLoader/exports/exports.a
 

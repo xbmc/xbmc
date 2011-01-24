@@ -1,0 +1,418 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#include "GUISettings.h"
+#include "log.h"
+#include "TimeUtils.h"
+
+#include "EpgDatabase.h"
+#include "EpgContainer.h"
+
+struct sortEPGbyDate
+{
+  bool operator()(CEpgInfoTag* strItem1, CEpgInfoTag* strItem2)
+  {
+    if (!strItem1 || !strItem2)
+      return false;
+
+    return strItem1->Start() < strItem2->Start();
+  }
+};
+
+CEpg::CEpg(int iEpgID, const CStdString &strScraperName)
+{
+  m_bUpdateRunning = false;
+  m_bIsSorted      = false;
+  m_iEpgID         = iEpgID;
+  m_strScraperName = strScraperName;
+}
+
+CEpg::~CEpg(void)
+{
+  Clear();
+}
+
+bool CEpg::HasValidEntries(void) const
+{
+  ((CEpg *) this)->Sort();
+
+  return (m_iEpgID > 0 && /* valid EPG ID */
+          size() > 0 && /* contains at least 1 tag */
+          at(size()-1)->m_endTime >= CDateTime::GetCurrentDateTime()); /* the last end time hasn't passed yet */
+}
+
+bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
+{
+  /* check if we're the "owner" of this tag */
+  if (tag->m_Epg != this)
+    return false;
+
+  /* remove the tag */
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    CEpgInfoTag *entry = at(i);
+    if (entry == tag)
+    {
+      erase(begin()+i);
+      m_bIsSorted = false;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void CEpg::Sort(void)
+{
+  /* no need to sort twice */
+  if (m_bIsSorted) return;
+
+  /* sort the EPG */
+  sort(begin(), end(), sortEPGbyDate());
+
+  /* reset the previous and next pointers on each tag */
+  int iTagAmount = size();
+  for (int ptr = 0; ptr < iTagAmount; ptr++)
+  {
+    CEpgInfoTag *tag = at(ptr);
+
+    if (ptr == 0)
+    {
+      tag->SetPreviousEvent(NULL);
+    }
+
+    if (ptr > 0)
+    {
+      CEpgInfoTag *previousTag = at(ptr-1);
+      previousTag->SetNextEvent(tag);
+      tag->SetPreviousEvent(previousTag);
+    }
+
+    if (ptr == iTagAmount - 1)
+    {
+      tag->SetNextEvent(NULL);
+    }
+  }
+  m_bIsSorted = true;
+}
+
+void CEpg::Clear(void)
+{
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    delete at(iTagPtr);
+  }
+  erase(begin(), end());
+}
+
+void CEpg::Cleanup(void)
+{
+  Cleanup(CDateTime::GetCurrentDateTime());
+}
+
+void CEpg::Cleanup(const CDateTime Time)
+{
+  m_bUpdateRunning = true;
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    CEpgInfoTag *tag = at(i);
+    if ( tag && /* valid tag */
+        (tag->End() + CDateTimeSpan(0, g_EpgContainer.m_iLingerTime / 60 + 1, g_EpgContainer.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
+    {
+      DeleteInfoTag(tag);
+    }
+  }
+  m_bUpdateRunning = false;
+}
+
+const CEpgInfoTag *CEpg::InfoTagNow(void) const
+{
+  CDateTime now = CDateTime::GetCurrentDateTime();
+
+  /* one of the first items will always match */
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if ((at(i)->Start() <= now) && (at(i)->End() > now))
+      return at(i);
+  }
+  return NULL;
+}
+
+const CEpgInfoTag *CEpg::InfoTagNext(void) const
+{
+  const CEpgInfoTag *nowTag = InfoTagNow();
+
+  return nowTag ? nowTag->GetNextEvent() : NULL;
+}
+
+const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime) const
+{
+  /* try to find the tag by UID */
+  if (uniqueID > 0)
+  {
+    for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+    {
+      if (at(iEpgPtr)->UniqueBroadcastID() > 0 && at(iEpgPtr)->UniqueBroadcastID() == uniqueID)
+        return at(iEpgPtr);
+    }
+  }
+
+  /* if we haven't found it, search by start time */
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    if (at(iEpgPtr)->Start() == StartTime)
+      return at(iEpgPtr);
+  }
+
+  return NULL;
+}
+
+const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CEpgInfoTag *tag = at(ptr);
+    if (tag->Start() >= BeginTime && tag->End() <= EndTime)
+      return tag;
+  }
+  return NULL;
+}
+
+const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
+{
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CEpgInfoTag *tag = at(ptr);
+    if ((tag->Start() <= Time) && (tag->End() >= Time))
+      return tag;
+  }
+  return NULL;
+}
+
+bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
+{
+  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
+  /* create a new tag if no tag with this ID exists */
+  if (!InfoTag)
+  {
+    InfoTag = new CEpgInfoTag();
+    if (!InfoTag)
+    {
+      CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
+      return false;
+    }
+    push_back(InfoTag);
+  }
+
+  InfoTag->m_Epg = this;
+  InfoTag->Update(tag);
+
+  /* update the cached first and last date in the table */
+  g_EpgContainer.UpdateFirstAndLastEPGDates(*InfoTag);
+
+  m_bIsSorted = false;
+
+  if (bUpdateDatabase)
+  {
+    bool retval;
+    CEpgDatabase *database = g_EpgContainer.GetDatabase();
+    database->Open();
+    retval = database->UpdateEpgEntry(*InfoTag);
+    database->Close();
+    return retval;
+  }
+
+  return true;
+}
+
+bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
+{
+  CEpgDatabase *database = NULL;
+
+  if (bStore)
+  {
+    database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
+
+    if (database == NULL)
+    {
+      CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+      return false;
+    }
+  }
+
+  Sort();
+
+  CEpgInfoTag *previousTag = NULL;
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    if (previousTag == NULL)
+    {
+      previousTag = at(ptr);
+      continue;
+    }
+
+    CEpgInfoTag *currentTag = at(ptr);
+
+    if (previousTag->End() > currentTag->End())
+    {
+      /* previous tag completely overlaps current tag; delete the current tag */
+      CLog::Log(LOGNOTICE, "%s - Removing EPG event '%s' at '%s' to '%s': overlaps with '%s' at '%s' to '%s'",
+          __FUNCTION__, currentTag->Title().c_str(),
+          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->Title().c_str(),
+          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->End().GetAsLocalizedDateTime(false, false).c_str());
+
+      if (bStore)
+        database->RemoveEpgEntry(*currentTag);
+
+      DeleteInfoTag(currentTag);
+      ptr--;
+    }
+    else if (previousTag->End() > currentTag->Start())
+    {
+      /* previous tag ends after the current tag starts; mediate */
+      CDateTimeSpan diff = previousTag->End() - currentTag->Start();
+      int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
+      CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
+
+      CLog::Log(LOGNOTICE, "%s - Mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
+          __FUNCTION__, currentTag->Title().c_str(),
+          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->Title().c_str(),
+          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
+          previousTag->End().GetAsLocalizedDateTime(false, false).c_str(),
+          newTime.GetAsLocalizedDateTime(false, false).c_str());
+
+      previousTag->SetEnd(newTime);
+      currentTag->SetStart(newTime);
+
+      if (bStore)
+      {
+        // XXX SEGFAULT
+        database->UpdateEpgEntry(*previousTag, false, false);
+        database->UpdateEpgEntry(*currentTag, false, true);
+      }
+    }
+
+    previousTag = at(ptr);
+  }
+
+  return true;
+}
+
+bool CEpg::UpdateFromScraper(time_t start, time_t end)
+{
+  bool bGrabSuccess = false;
+
+  if (m_strScraperName.IsEmpty()) /* no grabber defined */
+  {
+    CLog::Log(LOGERROR, "%s - no EPG grabber defined for table '%d'",
+        __FUNCTION__, m_iEpgID);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "%s - the database contains no EPG data for table '%d', loading with scraper '%s'",
+        __FUNCTION__, m_iEpgID, m_strScraperName.c_str());
+    CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
+    // TODO: Add Support for Web EPG Scrapers here
+  }
+
+  return bGrabSuccess;
+}
+
+bool CEpg::LoadFromDb()
+{
+  bool bReturn = false;
+
+  CEpgDatabase *database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
+
+  /* request the entries for this table from the database */
+  bReturn = (database->GetEpg(this, NULL, NULL) > 0);
+
+  return bReturn;
+}
+
+bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
+{
+  bool bGrabSuccess = true;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
+
+  /* mark the EPG as being updated */
+  m_bUpdateRunning = true;
+
+  bGrabSuccess = UpdateFromScraper(start, end) || bGrabSuccess; // XXX
+
+  /* store the loaded EPG entries in the database */
+  if (bGrabSuccess)
+  {
+    FixOverlappingEvents(bStoreInDb);
+
+    if (bStoreInDb)
+    {
+      for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+        database->UpdateEpgEntry(*at(iTagPtr), false, (iTagPtr == size() - 1));
+    }
+  }
+
+  m_bUpdateRunning = false;
+
+  return bGrabSuccess;
+}
+
+int CEpg::Get(CFileItemList *results)
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || IsUpdateRunning())
+    return -1;
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
+    entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+    results->Add(entry);
+  }
+
+  return size() - iInitialSize;
+}
+
+int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter)
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || IsUpdateRunning())
+    return -1;
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    if (filter.FilterEntry(*at(iTagPtr)))
+    {
+      CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
+      entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+      results->Add(entry);
+    }
+  }
+
+  return size() - iInitialSize;
+}

@@ -28,17 +28,12 @@ class CPVRChannelGroupInternal;
 class CPVRChannelsContainer;
 class CPVRChannel;
 class CPVRChannelGroups;
-class CPVREpg;
-class CPVREpgInfoTag;
 class CVideoSettings;
 
 /** The PVR database */
 
 class CPVRDatabase : public CDatabase
 {
-private:
-  CDateTime lastScanTime; /*!< the last time the EPG has been updated */
-
 public:
   /*!
    * @brief Create a new instance of the PVR database.
@@ -269,90 +264,6 @@ protected:
    * @return The database ID of the client or -1 if it wasn't found.
    */
   long GetClientId(const CStdString &strClientUid);
-
-  //@}
-
-  /*! @name EPG methods */
-  //@{
-public:
-  /*!
-   * @brief Remove all EPG information from the database
-   * @return True if the EPG information was erased, false otherwise.
-   */
-  bool EraseEpg();
-
-  /*!
-   * @brief Erase all EPG entries for a channel.
-   * @param channel The channel to remove the EPG entries for.
-   * @param start Remove entries after this time if set.
-   * @param end Remove entries before this time if set.
-   * @return True if the entries were removed successfully, false otherwise.
-   */
-  bool EraseEpgForChannel(const CPVRChannel &channel, const CDateTime &start = NULL, const CDateTime &end = NULL);
-
-  /*!
-   * @brief Erase all EPG entries older than 1 day.
-   * @return True if the entries were removed successfully, false otherwise.
-   */
-  bool EraseOldEpgEntries();
-
-  /*!
-   * @brief Remove a single EPG entry.
-   * @param tag The entry to remove.
-   * @return True if it was removed successfully, false otherwise.
-   */
-  bool RemoveEpgEntry(const CPVREpgInfoTag &tag);
-
-  /**
-   * Get all EPG entries for a channel.
-   */
-  /*!
-   * @brief Get all EPG entries for a channel.
-   * @param epg The EPG table to get the entries for.
-   * @param start Get entries after this time if set.
-   * @param end Get entries before this time if set.
-   * @return The amount of entries that was added.
-   */
-  int GetEpgForChannel(CPVREpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
-
-  /**
-   * Get the start time of the first entry for a channel.
-   * If iChannelId is <= 0, then all entries will be searched.
-   */
-  /*!
-   * @brief Get the start time of the first entry for a channel.
-   * @param iChannelId The ID of the channel to get the entries for. If iChannelId is <= 0, then all entries will be searched.
-   * @return The start time.
-   */
-  CDateTime GetEpgDataStart(long iChannelId = -1);
-
-  /*!
-   * @brief Get the end time of the last entry for a channel.
-   * @param iChannelId The ID of the channel to get the entries for. If iChannelId is <= 0, then all entries will be searched.
-   * @return The end time.
-   */
-  CDateTime GetEpgDataEnd(long iChannelId = -1);
-
-  /*!
-   * @brief Get the last stored EPG scan time.
-   * @return The last scan time or -1 if it wasn't found.
-   */
-  CDateTime GetLastEpgScanTime();
-
-  /*!
-   * @brief Update the last scan time.
-   * @return True if it was updated successfully, false otherwise.
-   */
-  bool UpdateLastEpgScanTime(void);
-
-  /*!
-   * @brief Persist an infotag.
-   * @param tag The tag to persist.
-   * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
-   * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
-   * @return True if the query or queries were executed successfully, false otherwise.
-   */
-  bool UpdateEpgEntry(const CPVREpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
   //@}
 

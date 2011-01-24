@@ -66,9 +66,9 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_RECORD)
       {
-        if (m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber() > 0)
+        if (((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber() > 0)
         {
-          if (m_progItem->GetEPGInfoTag()->Timer() == NULL)
+          if (((CPVREpgInfoTag *) m_progItem->GetEPGInfoTag())->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -83,7 +83,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 
               if (pDialog->IsConfirmed())
               {
-                CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*m_progItem->GetEPGInfoTag());
+                CPVREpgInfoTag *tag = (CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
+                CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
                 CFileItem *item = new CFileItem(*newtimer);
                 CPVRTimers::AddTimer(*item);
               }
@@ -101,8 +102,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       {
         Close();
 
-        CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_progItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
-        if (!g_application.PlayFile(CFileItem(*channels->at(m_progItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
+        CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->IsRadio());
+        if (!g_application.PlayFile(CFileItem(*channels->at(((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;
@@ -128,7 +129,7 @@ CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 void CGUIDialogPVRGuideInfo::Update()
 {
   // set recording button label
-  CPVREpgInfoTag* tag = m_progItem->GetEPGInfoTag();
+  CPVREpgInfoTag* tag = (CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
   if (tag->End() > CDateTime::GetCurrentDateTime())
   {
     if (tag->Timer() == NULL)

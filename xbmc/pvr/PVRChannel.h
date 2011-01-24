@@ -26,13 +26,14 @@
 #include "Observer.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
+class CPVREpgInfoTag;
 class CPVREpg;
 
 /** PVR Channel class */
 
 class CPVRChannel : public Observable
 {
-  friend class CPVREpgs;
+  friend class CPVREpgContainer;
   friend class CPVRDatabase;
 
 private:

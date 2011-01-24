@@ -23,7 +23,7 @@
 #include "Addon.h"
 #include "AddonDll.h"
 #include "DllPVRClient.h"
-#include "../pvr/PVREpgs.h"
+#include "../pvr/PVREpgContainer.h"
 #include "../pvr/PVRChannelGroup.h"
 #include "../pvr/PVRTimers.h"
 #include "../pvr/PVRTimerInfoTag.h"

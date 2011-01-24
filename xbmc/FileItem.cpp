@@ -136,7 +136,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetCachedVideoThumb();
 }
 
-CFileItem::CFileItem(const CPVREpgInfoTag& programme)
+CFileItem::CFileItem(const CPVREpgInfoTag& tag)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -146,12 +146,32 @@ CFileItem::CFileItem(const CPVREpgInfoTag& programme)
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = programme.Path();
+  m_strPath = tag.Path();
   m_bIsFolder = false;
-  *GetEPGInfoTag() = programme;
-  SetLabel(programme.Title());
-  SetThumbnailImage(programme.Icon());
-  m_strLabel2 = programme.Plot();
+  *GetEPGInfoTag() = tag;
+  *GetPVRChannelInfoTag() = *tag.ChannelTag();
+  SetLabel(tag.Title());
+  SetThumbnailImage(tag.Icon());
+  m_strLabel2 = tag.Plot();
+  SetInvalid();
+}
+
+CFileItem::CFileItem(const CEpgInfoTag& tag)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag = NULL;
+  m_pvrChannelInfoTag = NULL;
+  m_pvrRecordingInfoTag = NULL;
+  m_pvrTimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_strPath = tag.Path();
+  m_bIsFolder = false;
+  *GetEPGInfoTag() = tag;
+  SetLabel(tag.Title());
+  SetThumbnailImage(tag.Icon());
+  m_strLabel2 = tag.Plot();
   SetInvalid();
 }
 
@@ -3174,7 +3194,7 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   return m_videoInfoTag;
 }
 
-CPVREpgInfoTag* CFileItem::GetEPGInfoTag()
+CEpgInfoTag* CFileItem::GetEPGInfoTag()
 {
   if (!m_epgInfoTag)
     m_epgInfoTag = new CPVREpgInfoTag;

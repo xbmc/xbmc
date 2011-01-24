@@ -21,220 +21,82 @@
 
 #include "LocalizeStrings.h"
 
+#include "PVREpg.h"
 #include "PVREpgInfoTag.h"
 #include "PVRTimers.h"
 #include "PVRTimerInfoTag.h"
+#include "PVRChannel.h"
 
 using namespace std;
 
-CPVREpgInfoTag::CPVREpgInfoTag(int iUniqueBroadcastId)
+CPVREpgInfoTag::CPVREpgInfoTag(const PVR_PROGINFO &data)
 {
   Reset();
-  m_iUniqueBroadcastID = iUniqueBroadcastId;
-}
-
-CPVREpgInfoTag::~CPVREpgInfoTag()
-{
-  m_Epg           = NULL;
-  m_nextEvent     = NULL;
-  m_previousEvent = NULL;
+  Update(data);
 }
 
 void CPVREpgInfoTag::Reset()
 {
-  m_iBroadcastId        = -1;
-  m_strTitle            = g_localizeStrings.Get(19055);
-  m_strGenre            = "";
-  m_strPlotOutline      = "";
-  m_strPlot             = "";
-  m_iGenreType          = 0;
-  m_iGenreSubType       = 0;
-  m_strFileNameAndPath  = "";
-  m_strIconPath         = "";
-  m_isRecording         = false;
-  m_Timer               = NULL;
-  m_Epg                 = NULL;
-  m_iParentalRating     = 0;
-  m_iStarRating         = 0;
-  m_notify              = false;
-  m_seriesNum           = "";
-  m_episodeNum          = "";
-  m_episodePart         = "";
-  m_episodeName         = "";
+  CEpgInfoTag::Reset();
+
+  m_isRecording = false;
+  m_Timer       = NULL;
 }
 
-void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *Timer)
+const CPVRChannel *CPVREpgInfoTag::ChannelTag(void) const
 {
-  if (!Timer)
+  return ((CPVREpg *) GetTable())->Channel();
+}
+
+void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *newTimer)
+{
+  if (!newTimer)
     m_Timer = NULL;
 
-  m_Timer = Timer;
+  m_Timer = newTimer;
 }
 
 bool CPVREpgInfoTag::HasTimer(void) const
 {
-  for (unsigned int i = 0; i < PVRTimers.size(); ++i)
+  bool bReturn = false;
+
+  if (m_Timer == NULL)
   {
-    if (PVRTimers[i].EpgInfoTag() == this)
-      return true;
+    for (unsigned int i = 0; i < PVRTimers.size(); ++i)
+    {
+      if (PVRTimers[i].EpgInfoTag() == this)
+      {
+        bReturn = true;
+        break;
+      }
+    }
   }
-  return false;
+  else
+  {
+    bReturn = true;
+  }
+
+  return bReturn;
 }
 
-int CPVREpgInfoTag::GetDuration() const
-{
-  time_t start, end;
-  m_startTime.GetAsTime(start);
-  m_endTime.GetAsTime(end);
-  return end - start > 0 ? end - start : 3600;
-}
-
-void CPVREpgInfoTag::SetGenre(int ID, int subID)
-{
-  m_iGenreType    = ID;
-  m_iGenreSubType = subID;
-  m_strGenre      = ConvertGenreIdToString(ID, subID);
-}
-
-const CPVREpgInfoTag *CPVREpgInfoTag::GetNextEvent() const
-{
-  m_Epg->Sort();
-
-  return m_nextEvent;
-}
-
-const CPVREpgInfoTag *CPVREpgInfoTag::GetPreviousEvent() const
-{
-  m_Epg->Sort();
-
-  return m_previousEvent;
-}
-
-void CPVREpgInfoTag::SetStart(CDateTime Start)
-{
-  m_startTime = Start;
-  UpdatePath();
-}
-
-void CPVREpgInfoTag::UpdatePath()
+void CPVREpgInfoTag::UpdatePath(void)
 {
   if (!m_Epg)
     return;
 
   CStdString path;
-  path.Format("pvr://guide/channel-%04i/%s.epg", m_Epg->Channel()->ChannelNumber(), m_startTime.GetAsDBDateTime().c_str());
+  path.Format("pvr://guide/channel-%04i/%s.epg", ((CPVREpg *)m_Epg)->Channel()->ChannelNumber(), m_startTime.GetAsDBDateTime().c_str());
   SetPath(path);
 }
 
-CStdString CPVREpgInfoTag::ConvertGenreIdToString(int ID, int subID) const
+void CPVREpgInfoTag::Update(const PVR_PROGINFO &tag)
 {
-  CStdString str = g_localizeStrings.Get(19499);
-  switch (ID)
-  {
-    case EVCONTENTMASK_MOVIEDRAMA:
-      if (subID <= 8)
-        str = g_localizeStrings.Get(19500 + subID);
-      else
-        str = g_localizeStrings.Get(19500) + " (undefined)";
-      break;
-    case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
-      if (subID <= 4)
-        str = g_localizeStrings.Get(19516 + subID);
-      else
-        str = g_localizeStrings.Get(19516) + " (undefined)";
-      break;
-    case EVCONTENTMASK_SHOW:
-      if (subID <= 3)
-        str = g_localizeStrings.Get(19532 + subID);
-      else
-        str = g_localizeStrings.Get(19532) + " (undefined)";
-      break;
-    case EVCONTENTMASK_SPORTS:
-      if (subID <= 0x0B)
-        str = g_localizeStrings.Get(19548 + subID);
-      else
-        str = g_localizeStrings.Get(19548) + " (undefined)";
-      break;
-    case EVCONTENTMASK_CHILDRENYOUTH:
-      if (subID <= 5)
-        str = g_localizeStrings.Get(19564 + subID);
-      else
-        str = g_localizeStrings.Get(19564) + " (undefined)";
-      break;
-    case EVCONTENTMASK_MUSICBALLETDANCE:
-      if (subID <= 6)
-        str = g_localizeStrings.Get(19580 + subID);
-      else
-        str = g_localizeStrings.Get(19580) + " (undefined)";
-      break;
-    case EVCONTENTMASK_ARTSCULTURE:
-      if (subID <= 0x0B)
-        str = g_localizeStrings.Get(19596 + subID);
-      else
-        str = g_localizeStrings.Get(19596) + " (undefined)";
-      break;
-    case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
-      if (subID <= 0x03)
-        str = g_localizeStrings.Get(19612 + subID);
-      else
-        str = g_localizeStrings.Get(19612) + " (undefined)";
-      break;
-    case EVCONTENTMASK_EDUCATIONALSCIENCE:
-      if (subID <= 0x07)
-        str = g_localizeStrings.Get(19628 + subID);
-      else
-        str = g_localizeStrings.Get(19628) + " (undefined)";
-      break;
-    case EVCONTENTMASK_LEISUREHOBBIES:
-      if (subID <= 0x07)
-        str = g_localizeStrings.Get(19644 + subID);
-      else
-        str = g_localizeStrings.Get(19644) + " (undefined)";
-      break;
-    case EVCONTENTMASK_SPECIAL:
-      if (subID <= 0x03)
-        str = g_localizeStrings.Get(19660 + subID);
-      else
-        str = g_localizeStrings.Get(19660) + " (undefined)";
-      break;
-    case EVCONTENTMASK_USERDEFINED:
-      if (subID <= 0x03)
-        str = g_localizeStrings.Get(19676 + subID);
-      else
-        str = g_localizeStrings.Get(19676) + " (undefined)";
-      break;
-    default:
-      break;
-  }
-  return str;
-}
-
-void CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag)
-{
-  SetBroadcastId(tag.BroadcastId());
-  SetTitle(tag.Title());
-  SetPlotOutline(tag.PlotOutline());
-  SetPlot(tag.Plot());
-  SetStart(tag.Start());
-  SetEnd(tag.End());
-  SetGenre(tag.GenreType(), tag.GenreSubType());
-  SetFirstAired(tag.FirstAired());
-  SetParentalRating(tag.ParentalRating());
-  SetStarRating(tag.StarRating());
-  SetNotify(tag.Notify());
-  SetEpisodeNum(tag.EpisodeNum());
-  SetEpisodePart(tag.EpisodePart());
-  SetEpisodeName(tag.EpisodeName());
-}
-
-void CPVREpgInfoTag::Update(const PVR_PROGINFO *data)
-{
-  SetStart((time_t)data->starttime);
-  SetEnd((time_t)data->endtime);
-  SetTitle(data->title);
-  SetPlotOutline(data->subtitle);
-  SetPlot(data->description);
-  SetGenre(data->genre_type, data->genre_sub_type);
-  SetParentalRating(data->parental_rating);
-//  SetIcon(m_Channel->IconPath());
+  SetStart((time_t)tag.starttime);
+  SetEnd((time_t)tag.endtime);
+  SetTitle(tag.title);
+  SetPlotOutline(tag.subtitle);
+  SetPlot(tag.description);
+  SetGenre(tag.genre_type, tag.genre_sub_type);
+  SetParentalRating(tag.parental_rating);
+//  SetIcon(((CPVREpg *) m_Epg)->Channel()->IconPath());
 }

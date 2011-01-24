@@ -764,8 +764,6 @@ void CGUISettings::Initialize()
   AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* pvrm = AddCategory(8, "pvrmenu", 19181);
-  AddInt(pvrm, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(pvrm, "pvrmenu.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(pvrm, "pvrmenu.infoswitch", 19178, true);
   AddBool(pvrm, "pvrmenu.infotimeout", 19179, true);
   AddInt(pvrm, "pvrmenu.infotime", 19184, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -776,11 +774,13 @@ void CGUISettings::Initialize()
   AddSeparator(pvrm, "pvrmenu.sep2");
   AddInt(pvrm, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* pvre = AddCategory(8, "pvrepg", 19069);
-  AddInt(pvre, "pvrepg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
-  AddInt(pvre, "pvrepg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(pvre, "pvrepg.ignoredbforclient", 19072, false);
-  AddString(pvre, "pvrepg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
+  CSettingsCategory* pvre = AddCategory(8, "epg", 19069);
+  AddInt(pvre, "epg.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(pvre, "epg.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvre, "epg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(pvre, "epg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(pvre, "epg.ignoredbforclient", 19072, false);
+  AddString(pvre, "epg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* pvrp = AddCategory(8, "pvrplayback", 19177);
   AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);

@@ -285,6 +285,7 @@ class CAdvancedSettings
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup
+    DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
     unsigned int m_cacheMemBufferSize;
 };

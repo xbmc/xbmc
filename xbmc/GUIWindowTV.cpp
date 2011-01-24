@@ -282,9 +282,9 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_RECORD)
       {
-        if (pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber() != -1)
+        if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber() != -1)
         {
-          if (pItem->GetEPGInfoTag()->Timer() == NULL)
+          if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -300,7 +300,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             if (!pDialog->IsConfirmed())
               return true;
 
-            CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*pItem->GetEPGInfoTag());
+            CPVREpgInfoTag *tag = (CPVREpgInfoTag *) pItem->GetEPGInfoTag();
+            CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
             CFileItem *item = new CFileItem(*newtimer);
 
             if (CPVRTimers::AddTimer(*item))
@@ -314,8 +315,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_PLAY)
       {
-        const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
-        if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
+        const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->IsRadio());
+        if (!g_application.PlayFile(CFileItem(*channels->at(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;
@@ -577,16 +578,16 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_RECORD)
       {
-        if (pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber() != -1)
+        if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber() != -1)
         {
-          if (pItem->GetEPGInfoTag()->Timer() == NULL)
+          if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
             if (!pDialog)
               return false;
 
-            CPVREpgInfoTag *epgTag = pItem->GetEPGInfoTag();
+            CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) pItem->GetEPGInfoTag();
 
             pDialog->SetHeading(264);
             pDialog->SetLine(0, "");
@@ -808,7 +809,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
   {
     if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
     {
-      if (pItem->GetEPGInfoTag()->Timer() == NULL)
+      if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
       {
         if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
         {
@@ -840,7 +841,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);          /* Go to begin */
       buttons.Add(CONTEXT_BUTTON_END, 19064);            /* Go to end */
     }
-    if (g_PVRManager.HaveMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID()))
+    if (g_PVRManager.HaveMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
@@ -849,7 +850,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     {
       if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
       {
-        if (pItem->GetEPGInfoTag()->Timer() == NULL)
+        if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
         {
           if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
             buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
@@ -870,7 +871,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
       buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
       buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
-      if (g_PVRManager.HaveMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID()))
+      if (g_PVRManager.HaveMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
     }
   }
@@ -902,8 +903,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(pItem->GetEPGInfoTag()->ChannelTag()->IsRadio());
-      if (!g_application.PlayFile(CFileItem(*channels->at(pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()-1))))
+      const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->IsRadio());
+      if (!g_application.PlayFile(CFileItem(*channels->at(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber()-1))))
       {
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
         return false;
@@ -1183,11 +1184,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-      int iChannel = pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
+      int iChannel = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber();
 
       if (iChannel != -1)
       {
-        if (pItem->GetEPGInfoTag()->Timer() == NULL)
+        if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
         {
           // prompt user for confirmation of channel record
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -1195,14 +1196,15 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           if (pDialog)
           {
             pDialog->SetHeading(264);
-            pDialog->SetLine(0, pItem->GetEPGInfoTag()->ChannelTag()->ChannelName());
+            pDialog->SetLine(0, ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelName());
             pDialog->SetLine(1, "");
             pDialog->SetLine(2, pItem->GetEPGInfoTag()->Title());
             pDialog->DoModal();
 
             if (pDialog->IsConfirmed())
             {
-              CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*pItem->GetEPGInfoTag());
+              CPVREpgInfoTag *tag = (CPVREpgInfoTag *) pItem->GetEPGInfoTag();
+              CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
               CFileItem *item = new CFileItem(*newtimer);
 
               if (CPVRTimers::AddTimer(*item))
@@ -1221,11 +1223,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-      int iChannel = pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
+      int iChannel = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber();
 
       if (iChannel != -1)
       {
-        if (pItem->GetEPGInfoTag()->Timer() != NULL)
+        if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() != NULL)
         {
           CFileItemList timerlist;
 
@@ -1233,7 +1235,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           {
             for (int i = 0; i < timerlist.Size(); ++i)
             {
-              if ((timerlist[i]->GetPVRTimerInfoTag()->Number() == pItem->GetEPGInfoTag()->ChannelTag()->ChannelNumber()) &&
+              if ((timerlist[i]->GetPVRTimerInfoTag()->Number() == ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber()) &&
                   (timerlist[i]->GetPVRTimerInfoTag()->Start() <= pItem->GetEPGInfoTag()->Start()) &&
                   (timerlist[i]->GetPVRTimerInfoTag()->Stop() >= pItem->GetEPGInfoTag()->End()) &&
                   (timerlist[i]->GetPVRTimerInfoTag()->IsRepeating() != true))
@@ -1388,7 +1390,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (pItem->IsEPG())
     {
-      g_PVRManager.ProcessMenuHooks(pItem->GetEPGInfoTag()->ChannelTag()->ClientID());
+      g_PVRManager.ProcessMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID());
     }
     else if (pItem->IsPVRChannel())
     {
@@ -1572,7 +1574,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-    if (g_PVREpgs.GetEPGNow(m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (g_PVREpgContainer.GetEPGNow(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -1591,7 +1593,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-    if (g_PVREpgs.GetEPGNext(m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (g_PVREpgContainer.GetEPGNext(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -1606,7 +1608,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-    if (g_PVREpgs.GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
+    if (g_PVREpgContainer.GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
@@ -1736,7 +1738,7 @@ void CGUIWindowTV::UpdateSearch()
       dlgProgress->Progress();
     }
 
-    g_PVREpgs.GetEPGSearch(m_vecItems, m_searchfilter);
+    g_PVREpgContainer.GetEPGSearch(m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 

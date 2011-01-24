@@ -4365,7 +4365,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasPVRChannelInfoTag())
         number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
       if (item->HasEPGInfoTag())
-        number.Format("%i", item->GetEPGInfoTag()->ChannelTag()->ChannelNumber());
+        number.Format("%i", ((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ChannelNumber());
       if (item->HasPVRTimerInfoTag())
         number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
@@ -4376,7 +4376,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->ChannelName();
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->ChannelTag()->ChannelName();
+      return ((CPVREpgInfoTag *)item->GetEPGInfoTag())->ChannelTag()->ChannelName();
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->ChannelName();
     if (item->HasPVRTimerInfoTag())
@@ -4511,7 +4511,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        const CPVRTimerInfoTag *timer = pItem->GetEPGInfoTag()->Timer();
+        const CPVRTimerInfoTag *timer = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer();
         if (timer)
         {
           CDateTime now = CDateTime::GetCurrentDateTime();
@@ -4531,7 +4531,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        const CPVRTimerInfoTag *timer = pItem->GetEPGInfoTag()->Timer();
+        const CPVRTimerInfoTag *timer = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer();
         if (timer)
         {
           if (timer->Start() > CDateTime::GetCurrentDateTime() && timer->Active())
@@ -4547,7 +4547,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
+        return ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->IsEncrypted();
       }
     }
   }

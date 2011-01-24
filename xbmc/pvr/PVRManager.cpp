@@ -151,7 +151,7 @@ void CPVRManager::Start()
 void CPVRManager::Stop()
 {
   CLog::Log(LOGNOTICE, "PVR: PVRManager stopping");
-  g_PVREpgs.Stop();
+  g_PVREpgContainer.Stop();
   StopThread();
 
   for (CLIENTMAPITR itr = m_clients.begin(); itr != m_clients.end(); itr++)
@@ -436,9 +436,9 @@ void CPVRManager::Process()
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
-  PVRTimers.Load();     /* Get timers from the backends */
-  PVRRecordings.Load(); /* Get recordings from the backend */
-  g_PVREpgs.Start(); /* Start the EPG thread */
+  PVRTimers.Load();          /* Get timers from the backends */
+  PVRRecordings.Load();      /* Get recordings from the backend */
+  g_PVREpgContainer.Start(); /* Start the EPG thread */
 
   int Now = CTimeUtils::GetTimeMS()/1000;
   m_LastTVChannelCheck     = Now;
@@ -504,7 +504,7 @@ void CPVRManager::Process()
   if (m_currentPlayingChannel || m_currentPlayingRecording)
     g_application.StopPlaying();
 
-  g_PVREpgs.Stop(); /* Stop the EPG thread */
+  g_PVREpgContainer.Stop(); /* Stop the EPG thread */
 
   /* unload the rest */
   PVRRecordings.Unload();
@@ -963,7 +963,7 @@ void CPVRManager::ResetDatabase()
   pDlgProgress->SetPercentage(20);
 
   m_database.Open();
-  m_database.EraseEpg();
+  g_PVREpgContainer.Erase();
   pDlgProgress->SetPercentage(30);
 
   m_database.EraseChannelGroups(false);
@@ -984,14 +984,14 @@ void CPVRManager::ResetDatabase()
   m_database.Close();
   CLog::Log(LOGNOTICE,"PVR: TV Database reset finished, starting PVR Subsystem again");
   Start();
-  g_PVREpgs.Start();
+  g_PVREpgContainer.Start();
   pDlgProgress->SetPercentage(100);
   pDlgProgress->Close();
 }
 
 void CPVRManager::ResetEPG()
 {
-  g_PVREpgs.Reset(true);
+  g_PVREpgContainer.Reset(true);
 }
 
 bool CPVRManager::IsPlayingTV()

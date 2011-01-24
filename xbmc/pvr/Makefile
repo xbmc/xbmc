@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils -I../epg
 
 SRCS=PVRChannel.cpp \
 	PVRChannelGroup.cpp \
@@ -7,7 +7,7 @@ SRCS=PVRChannel.cpp \
 	PVRChannelGroupsContainer.cpp \
 	PVREpg.cpp \
 	PVREpgInfoTag.cpp \
-	PVREpgs.cpp \
+	PVREpgContainer.cpp \
 	PVREpgSearchFilter.cpp \
 	PVRManager.cpp \
 	PVRRecordings.cpp \
