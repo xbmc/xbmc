@@ -29,11 +29,10 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
-#include "GUIWindowAddonBrowser.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
 #include "utils/JobManager.h"
-#include "utils/FileOperationJob.h"
+#include "addons/AddonInstaller.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -144,13 +143,13 @@ void CGUIDialogAddonInfo::OnUpdate()
 {
   CStdString referer;
   referer.Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().str.c_str());
-  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID(), true, referer); // force install
+  CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
   Close();
 }
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID());
+  CAddonInstaller::Get().Install(m_addon->ID());
   Close();
 }
 

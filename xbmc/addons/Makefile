@@ -10,6 +10,7 @@ SRCS=Addon.cpp \
 		 Visualisation.cpp \
 		 fft.cpp \
 		 Repository.cpp \
+		 AddonInstaller.cpp \
 
 LIB=addons.a
 

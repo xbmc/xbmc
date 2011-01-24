@@ -184,6 +184,8 @@
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DD681102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */; };
 		7C45DD691102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */; };
+		7C47057E12EC223300369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C47057C12EC223300369E51 /* AddonInstaller.cpp */; };
+		7C47057F12EC223300369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C47057C12EC223300369E51 /* AddonInstaller.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
 		7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
@@ -2044,6 +2046,8 @@
 		7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVDirectory.h; sourceTree = "<group>"; };
 		7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStaticItem.cpp; sourceTree = "<group>"; };
 		7C45DD671102AB5100D4BBF3 /* GUIStaticItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStaticItem.h; sourceTree = "<group>"; };
+		7C47057C12EC223300369E51 /* AddonInstaller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInstaller.cpp; path = addons/AddonInstaller.cpp; sourceTree = "<group>"; };
+		7C47057D12EC223300369E51 /* AddonInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInstaller.h; path = addons/AddonInstaller.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
@@ -4009,6 +4013,8 @@
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
 				18B49FF21152BFA5001AF8A6 /* Addon.h */,
 				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
+				7C47057C12EC223300369E51 /* AddonInstaller.cpp */,
+				7C47057D12EC223300369E51 /* AddonInstaller.h */,
 				18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */,
 				18B49FF51152BFA5001AF8A6 /* AddonManager.h */,
 				F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */,
@@ -8062,6 +8068,7 @@
 				7CDFC2AE12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */,
 				F5E728D01227527D00B152C1 /* DVDInputStreamBluray.cpp in Sources */,
 				7CF1FD6A123E049300B2CBCB /* Variant.cpp in Sources */,
+				7C47057E12EC223300369E51 /* AddonInstaller.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8926,6 +8933,7 @@
 				7CD9742911BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */,
 				7CDFC2AD12021E9E00E182BC /* AutoPtrHandle.cpp in Sources */,
 				7CF1FD69123E049300B2CBCB /* Variant.cpp in Sources */,
+				7C47057F12EC223300369E51 /* AddonInstaller.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
