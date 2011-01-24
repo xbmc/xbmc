@@ -234,6 +234,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
+  m_destWidth = g_settings.m_ResInfo[m_resolution].iWidth;
+  m_destHeight = g_settings.m_ResInfo[m_resolution].iHeight;
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
 
@@ -909,7 +911,7 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_destRect);
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)

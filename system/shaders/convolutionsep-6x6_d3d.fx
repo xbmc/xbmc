@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 
 texture g_Texture;
 texture g_KernelTexture;
+texture g_IntermediateTexture;
 float2  g_StepXY;
 
 sampler RGBSampler =
@@ -42,6 +43,16 @@ sampler KernelSampler =
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+  };
+
+sampler IntermediateSampler =
+  sampler_state {
+    Texture = <g_IntermediateTexture>;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MipFilter = LINEAR;
+    MinFilter = POINT;
+    MagFilter = POINT;
   };
 
 struct VS_OUTPUT
@@ -157,6 +168,15 @@ PS_OUTPUT CONVOLUTION6x6Vert(VS_OUTPUT In)
   return OUT;
 }
 
+PS_OUTPUT Nothing(VS_OUTPUT In)
+{
+  PS_OUTPUT OUT;
+
+  OUT.RGBColor.rgb = tex2D(IntermediateSampler, In.TextureUV).rgb;
+  OUT.RGBColor.a = 1.0;
+  return OUT;
+}
+
 technique SCALER_T
 {
   pass P0
@@ -168,7 +188,7 @@ technique SCALER_T
   }
   pass P1
   {
-    PixelShader  = compile ps_3_0 CONVOLUTION6x6Vert();
+    PixelShader  = compile ps_3_0 Nothing();
     ZEnable = False;
     FillMode = Solid;
     FogEnable = False;
