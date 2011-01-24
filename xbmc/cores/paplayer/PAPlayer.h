@@ -22,9 +22,9 @@
  */
 
 #include "cores/IPlayer.h"
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 #include "AudioDecoder.h"
-#include "cores/ssrc.h"
+#include "utils/ssrc.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
 
 class CFileItem;

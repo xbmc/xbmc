@@ -23,7 +23,7 @@
 #include "system.h"
 #include "FileItem.h"
 #include "Job.h"
-#include "../FileSystem/File.h"
+#include "filesystem/File.h"
 
 class CFileOperationJob : public CJob
 {

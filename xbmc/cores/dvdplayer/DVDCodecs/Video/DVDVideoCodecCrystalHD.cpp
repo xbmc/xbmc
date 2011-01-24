@@ -23,11 +23,11 @@
   #include "config.h"
 #elif defined(_WIN32)
 #include "system.h"
-#include "Codecs/DllAvCodec.h"
+#include "DllAvCodec.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecCrystalHD.h"

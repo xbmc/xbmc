@@ -21,8 +21,8 @@
  *
  */
 
-#include "IPlayer.h"
-#include "utils/Thread.h"
+#include "cores/IPlayer.h"
+#include "threads/Thread.h"
 
 class CGUIDialogOK;
 

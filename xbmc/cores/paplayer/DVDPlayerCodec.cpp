@@ -22,11 +22,11 @@
 #include "DVDPlayerCodec.h"
 #include "Util.h"
 
-#include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDDemuxers/DVDFactoryDemuxer.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDStreamInfo.h"
-#include "DVDCodecs/DVDFactoryCodec.h"
+#include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "cores/dvdplayer/DVDStreamInfo.h"
+#include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 
 #include "AudioDecoder.h"

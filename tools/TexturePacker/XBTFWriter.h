@@ -25,7 +25,8 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include "XBTF.h"
+
+class CXBTF;
 
 class CXBTFWriter
 {

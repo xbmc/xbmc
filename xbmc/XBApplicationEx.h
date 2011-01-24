@@ -21,7 +21,7 @@
 #ifndef XBAPPLICATIONEX_H
 #define XBAPPLICATIONEX_H
 
-#include "IWindowManagerCallback.h"
+#include "guilib/IWindowManagerCallback.h"
 
 class CXBApplicationEx : public IWindowManagerCallback
 {

@@ -21,7 +21,6 @@
  *
  */
 #include <stdio.h>
-#include "StdString.h"
 
 #define FLAG_BOLD   0
 #define FLAG_ITALIC 1

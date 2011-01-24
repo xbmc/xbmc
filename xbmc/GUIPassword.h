@@ -21,7 +21,7 @@
  *
  */
 
-#include "StdString.h"
+#include "utils/StdString.h"
 
 class CFileItem;
 class CMediaSource;

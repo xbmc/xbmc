@@ -22,7 +22,7 @@
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
 #include "utils/log.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 
 CDVDPlayerResampler::CDVDPlayerResampler()
 {

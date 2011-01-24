@@ -20,7 +20,7 @@
  */
 
 #include "RingBuffer.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 
 #include <cstring>
 #include <cstdlib>

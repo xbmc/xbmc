@@ -21,7 +21,6 @@
 
 #include "DVDInputStreamHTSP.h"
 #include "URL.h"
-#include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include <limits.h>

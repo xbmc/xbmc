@@ -24,7 +24,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "guilib/StdString.h"
+#include "StdString.h"
 
 #define PCM_MAX_CH 18
 enum PCMChannels

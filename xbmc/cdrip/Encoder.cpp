@@ -20,7 +20,7 @@
  */
 
 #include "Encoder.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 #include "utils/log.h"
 
 CEncoder::CEncoder()

@@ -23,7 +23,7 @@
 
 #include "utils/LabelFormatter.h"
 #include "SortFileItem.h"
-#include "GUIBaseContainer.h"
+#include "guilib/GUIBaseContainer.h"
 #include "MediaSource.h"
 
 class CViewState; // forward

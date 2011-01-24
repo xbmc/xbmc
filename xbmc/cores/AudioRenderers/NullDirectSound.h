@@ -27,7 +27,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
-#include "IAudioCallback.h"
+#include "cores/IAudioCallback.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();

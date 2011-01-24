@@ -25,15 +25,15 @@
  *
  */
 
-#include "GUIListItem.h"
+#include "guilib/GUIListItem.h"
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
 #include "DateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
-#include "utils/CriticalSection.h"
-#include "VideoDatabase.h"
+#include "threads/CriticalSection.h"
+#include "video/VideoDatabase.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"

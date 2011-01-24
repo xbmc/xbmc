@@ -49,7 +49,6 @@
 #define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU.dll"
 #define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream.dll"
 #define DLL_PATH_WAVPACK_CODEC "special://xbmcbin/system/players/paplayer/wavpack.dll"
-#define DLL_PATH_WMA_CODEC     "special://xbmcbin/system/players/paplayer/wma.dll"
 #define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary.dll"
 #define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay.dll"
 #define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug.dll"

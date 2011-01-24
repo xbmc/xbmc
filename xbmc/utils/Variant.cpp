@@ -21,7 +21,7 @@
 #include "Variant.h"
 #include "PlatformDefs.h"
 #include <string.h>
-#include "json/value.h"
+#include "jsoncpp/include/json/value.h"
 
 using namespace std;
 

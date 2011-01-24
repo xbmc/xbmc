@@ -23,12 +23,12 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
-#include "GUIDialogSettings.h"
-#include "Util.h"
-#include "FileSystem/File.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "FileSystem/Directory.h"
-#include "log.h"
+#include "settings/GUIDialogSettings.h"
+#include "utils/URIUtils.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/Directory.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -137,9 +137,9 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   }
   else
   { //FIXME hack to load same Dll twice
-    CStdString extension = CUtil::GetExtension(m_strLibName);
+    CStdString extension = URIUtils::GetExtension(m_strLibName);
     strFileName = "special://temp/" + m_strLibName;
-    CUtil::RemoveExtension(strFileName);
+    URIUtils::RemoveExtension(strFileName);
     strFileName += "-" + ID() + extension;
 
     if (!CFile::Exists(strFileName))

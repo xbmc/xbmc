@@ -20,6 +20,7 @@
  */
 
 #include "PCMAmplifier.h"
+#include "settings/Settings.h"
 
 #include <math.h>
 

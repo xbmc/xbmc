@@ -21,6 +21,7 @@
 
 #include "DVDInputStreamHttp.h"
 #include "URL.h"
+#include "filesystem/FileCurl.h"
 
 using namespace XFILE;
 

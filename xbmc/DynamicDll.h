@@ -22,7 +22,7 @@
  */
 
 #include "cores/DllLoader/LibraryLoader.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "DllPaths.h"
 
 ///////////////////////////////////////////////////////////

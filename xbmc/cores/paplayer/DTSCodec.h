@@ -21,7 +21,6 @@
  *
  */
 
-#include "FileSystem/File.h"
 #include "ICodec.h"
 #include "CachingCodec.h"
 #include "DllDCACodec.h"

@@ -20,8 +20,8 @@
  */
 #include "system.h"
 #ifdef HAVE_LIBVA
-#include "WindowingFactory.h"
-#include "Settings.h"
+#include "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
 #include "VAAPI.h"
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>

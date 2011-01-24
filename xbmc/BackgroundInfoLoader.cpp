@@ -21,8 +21,8 @@
 
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
-#include "AdvancedSettings.h"
-#include "utils/SingleLock.h"
+#include "settings/AdvancedSettings.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 using namespace std;

@@ -19,12 +19,10 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#elif defined(_WIN32)
-  #include "system.h"
-  #include "WIN32Util.h"
-  #include "util.h"
+#include "system.h"
+#if defined(_WIN32)
+#include "WIN32Util.h"
+#include "util.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -33,11 +31,11 @@
 #include "DVDClock.h"
 #include "DynamicDll.h"
 #include "utils/SystemInfo.h"
-#include "utils/Atomics.h"
-#include "utils/Thread.h"
+#include "threads/Atomics.h"
+#include "threads/Thread.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
-#include "Codecs/DllSwScale.h"
+#include "DllSwScale.h"
 #include "utils/TimeUtils.h"
 
 namespace BCM

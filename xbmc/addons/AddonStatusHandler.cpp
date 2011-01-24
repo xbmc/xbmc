@@ -20,14 +20,13 @@
  */
 #include "AddonStatusHandler.h"
 #include "AddonManager.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "Application.h"
-#include "GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "GUIDialogAddonSettings.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
-#include "log.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
+#include "utils/log.h"
 
 namespace ADDON
 {

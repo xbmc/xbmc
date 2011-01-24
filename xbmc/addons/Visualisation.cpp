@@ -20,17 +20,16 @@
  */
 #include "system.h"
 #include "Visualisation.h"
-#include "fft.h"
-#include "utils/GUIInfoManager.h"
+#include "utils/fft.h"
+#include "GUIInfoManager.h"
 #include "Application.h"
-#include "MusicInfoTag.h"
-#include "Settings.h"
-#include "WindowingFactory.h"
-#include "Util.h"
+#include "music/tags/MusicInfoTag.h"
+#include "settings/Settings.h"
+#include "windowing/WindowingFactory.h"
+#include "utils/URIUtils.h"
 #ifdef _LINUX
 #include <dlfcn.h>
-#include "FileSystem/SpecialProtocol.h"
-#include "FileSystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #endif
 
 using namespace std;
@@ -107,7 +106,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
     // Start the visualisation
-    CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
+    CStdString strFile = URIUtils::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
     try
     {

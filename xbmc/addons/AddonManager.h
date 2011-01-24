@@ -22,8 +22,8 @@
 #include "Addon.h"
 #include "include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
-#include "utils/CriticalSection.h"
-#include "StdString.h"
+#include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 #include "utils/Job.h"
 #include "utils/Stopwatch.h"
 #include <vector>

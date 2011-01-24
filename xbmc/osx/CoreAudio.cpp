@@ -22,7 +22,7 @@
 
 #include "CoreAudio.h"
 #include <PlatformDefs.h>
-#include <Log.h>
+#include <utils/log.h>
 #include <math.h>
 
 char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TERMINATED! Modifies input value.

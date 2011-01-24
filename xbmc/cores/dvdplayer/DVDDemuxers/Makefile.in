@@ -1,18 +1,15 @@
-INCLUDES=-I../../../.. -I. -I.. -I../.. -I../../../ -I../../../utils -I../../../linux -I../../../../guilib
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../Codecs/ffmpeg
-endif
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS=	DVDDemux.cpp \
 	DVDDemuxFFmpeg.cpp \
+	DVDDemuxHTSP.cpp \
 	DVDDemuxShoutcast.cpp \
 	DVDDemuxUtils.cpp \
-	DVDFactoryDemuxer.cpp \
 	DVDDemuxVobsub.cpp \
-	DVDDemuxHTSP.cpp \
+	DVDFactoryDemuxer.cpp \
 
 LIB=	DVDDemuxers.a
 
-include ../../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

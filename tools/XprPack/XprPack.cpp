@@ -25,7 +25,7 @@
 #include "stdafx.h"
 #include "../../xbmc/lib/liblzo/lzo1x.h"
 
-#pragma comment(lib, "../../xbmc/lib/liblzo/lzo.lib")
+#pragma comment(lib, "../../lib/win32/liblzo/lzo.lib")
 
 int main(int argc, char* argv[])
 {

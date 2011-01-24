@@ -21,12 +21,11 @@
  */
 
 #include "tinyXML/tinyxml.h"
-#include "XMLUtils.h"
-#include "IPlayer.h"
+#include "cores/IPlayer.h"
 #include "PlayerCoreFactory.h"
-#include "dvdplayer/DVDPlayer.h"
-#include "paplayer/PAPlayer.h"
-#include "ExternalPlayer/ExternalPlayer.h"
+#include "cores/dvdplayer/DVDPlayer.h"
+#include "cores/paplayer/PAPlayer.h"
+#include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "utils/log.h"
 
 class CPlayerCoreConfig

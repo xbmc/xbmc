@@ -23,8 +23,8 @@
 #include "XLCDproc.h"
 #include "../utils/log.h"
 #include "../utils/TimeUtils.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 
 #define SCROLL_SPEED_IN_MSEC 250
 

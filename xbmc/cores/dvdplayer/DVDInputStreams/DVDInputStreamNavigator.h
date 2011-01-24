@@ -22,8 +22,8 @@
  */
 
 #include "DVDInputStream.h"
-#include "IDVDPlayer.h"
-#include "DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "../IDVDPlayer.h"
+#include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include <string>
 
 #include "DllDvdNav.h"

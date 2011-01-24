@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -Igoom2k4-0/src
+INCLUDES=-I. -I.. -I../../linux -I../../ -Igoom2k4-0/src
 OBJS=Main.o
 SLIB=visualization.goom/Goom.vis
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL

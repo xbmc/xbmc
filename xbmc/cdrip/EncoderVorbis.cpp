@@ -20,7 +20,7 @@
  */
 
 #include "EncoderVorbis.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 CEncoderVorbis::CEncoderVorbis()

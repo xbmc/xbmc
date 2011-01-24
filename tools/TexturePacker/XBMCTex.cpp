@@ -23,7 +23,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <map>
-#include <squish.h>
+#include <libsquish/squish.h>
 #include <string>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -31,7 +31,7 @@
 #include <SDL/SDL_image.h>
 #include <cerrno>
 #include <cstring>
-#include "XBTF.h"
+#include "guilib/XBTF.h"
 #include "XBTFWriter.h"
 #include "SDL_anigif.h"
 #include "cmdlineargs.h"
@@ -42,7 +42,7 @@
 #ifdef _LINUX
 #include <lzo/lzo1x.h>
 #else
-#include "../../xbmc/lib/liblzo/LZO1X.H"
+#include "../../lib/win32/liblzo/LZO1X.H"
 #endif
 
 #define DIR_SEPARATOR "/"

@@ -30,7 +30,7 @@
 #include <sched.h>
 
 #ifdef __APPLE__
-#include "utils/Atomics.h"
+#include "threads/Atomics.h"
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #endif

@@ -32,10 +32,10 @@
 #endif
 
 #include "EncoderFFmpeg.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 #include "utils/log.h"
-#include "GUISettings.h"
-#include "Util.h"
+#include "settings/GUISettings.h"
+#include "utils/URIUtils.h"
 
 /* AV_PKT_FLAG_KEY was named PKT_FLAG_KEY in older versions of libavcodec */
 #ifndef AV_PKT_FLAG_KEY
@@ -57,7 +57,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_dllAvFormat.av_register_all();
   m_dllAvCodec.avcodec_register_all();
 
-  CStdString filename = CUtil::GetFileName(strFile);
+  CStdString filename = URIUtils::GetFileName(strFile);
   AVOutputFormat *fmt = NULL;
 #if LIBAVFORMAT_VERSION_MAJOR < 52
   fmt = m_dllAvFormat.guess_format(NULL, filename.c_str(), NULL);

@@ -1,0 +1,59 @@
+
+ARCH=@ARCH@
+SO=ImageLib-$(ARCH).so
+ARCHIVE=$(SO:.so=.a)
+SYSDIR=../../system
+SLIB=$(SYSDIR)/$(SO)
+DIRS=CxImage raw jbig
+SLIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+	export MACOSX_DEPLOYMENT_TARGET=10.4
+	export ARCH
+	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	DIRS+=jasper jpeg tiff
+	SLIBS+=jasper/jasper.a jpeg/jpeg.a tiff/tiff.a
+endif
+
+.PHONY: compile
+
+$(SLIB): $(SLIBS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC -lpng -L/opt/local/lib \
+		-mmacosx-version-min=10.4 -o $@ \
+		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o
+	../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -o $(SLIB) -Wl,--whole-archive $(SLIBS) \
+		-Wl,--no-whole-archive -lpng -ljasper -ljpeg -ltiff -lz \
+		`cat ../../xbmc/cores/DllLoader/exports/wrapper.def` \
+		../../xbmc/cores/DllLoader/exports/wrapper.o
+endif
+
+$(SLIBS): compile 
+
+CxImage/cximage.a:
+	$(MAKE) -C CxImage ARCH=$(ARCH)
+
+jbig/jbig.a:
+	$(MAKE) -C jbig
+
+raw/raw.a:
+	$(MAKE) -C raw
+
+zlib/libz.a:
+	$(MAKE) -C zlib
+
+jasper/jasper.a:
+	$(MAKE) -C jasper
+
+jpeg/jpeg.a:
+	$(MAKE) -C jpeg
+
+tiff/tiff.a:
+	$(MAKE) -C tiff
+
+-include ../../Makefile.include
+

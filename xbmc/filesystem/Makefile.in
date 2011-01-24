@@ -1,0 +1,110 @@
+ARCH=@ARCH@
+
+CXXFLAGS+=-D__STDC_FORMAT_MACROS \
+
+SRCS=AddonsDirectory.cpp \
+     ASAPFileDirectory.cpp \
+     CacheMemBuffer.cpp \
+     CacheStrategy.cpp \
+     CDDADirectory.cpp \
+     DAAPDirectory.cpp \
+     DAVDirectory.cpp \
+     DirectoryCache.cpp \
+     Directory.cpp \
+     DirectoryHistory.cpp \
+     DirectoryTuxBox.cpp \
+     DllLibCurl.cpp \
+     FactoryDirectory.cpp \
+     FactoryFileDirectory.cpp \
+     FileCache.cpp \
+     FileCDDA.cpp \
+     File.cpp \
+     FileCurl.cpp \
+     FileDAAP.cpp \
+     FileFactory.cpp \
+     FileFileReader.cpp \
+     FileHD.cpp \
+     FileISO.cpp \
+     FileLastFM.cpp \
+     FileMusicDatabase.cpp \
+     FileRTV.cpp \
+     FileShoutcast.cpp \
+     FileSFTP.cpp \
+     FileSmb.cpp \
+     FileSpecialProtocol.cpp \
+     FileTuxBox.cpp \
+     FileUDF.cpp \
+     FileZip.cpp \
+     FTPDirectory.cpp \
+     FTPParse.cpp \
+     HDDirectory.cpp \
+     HDHomeRun.cpp \
+     HTSPDirectory.cpp \
+     HTSPSession.cpp \
+     HTTPDirectory.cpp \
+     IDirectory.cpp \
+     IFile.cpp \
+     iso9660.cpp \
+     ISO9660Directory.cpp \
+     LastFMDirectory.cpp \
+     MultiPathDirectory.cpp \
+     MultiPathFile.cpp \
+     MusicDatabaseDirectory.cpp \
+     MusicFileDirectory.cpp \
+     MusicSearchDirectory.cpp \
+     MythDirectory.cpp \
+     MythFile.cpp \
+     MythSession.cpp \
+     NptXbmcFile.cpp \
+     NSFFileDirectory.cpp \
+     OGGFileDirectory.cpp \
+     PlaylistDirectory.cpp \
+     PlaylistFileDirectory.cpp \
+     PluginDirectory.cpp \
+     RSSDirectory.cpp \
+     RTVDirectory.cpp \
+     SAPDirectory.cpp \
+     SAPFile.cpp \
+     SFTPDirectory.cpp \
+     SIDFileDirectory.cpp \
+     SmartPlaylistDirectory.cpp \
+     SMBDirectory.cpp \
+     SpecialProtocol.cpp \
+     SpecialProtocolDirectory.cpp \
+     StackDirectory.cpp \
+     udf25.cpp \
+     UDFDirectory.cpp \
+     UPnPDirectory.cpp \
+     VideoDatabaseDirectory.cpp \
+     VirtualDirectory.cpp \
+     VirtualPathDirectory.cpp \
+     VTPDirectory.cpp \
+     VTPFile.cpp \
+     VTPSession.cpp \
+     ZeroconfDirectory.cpp \
+     ZipDirectory.cpp \
+     ZipManager.cpp \
+
+ifeq (@HAVE_XBMC_NONFREE@,1)
+SRCS+=FileRar.cpp \
+      FileXBMSP.cpp \
+      RarDirectory.cpp \
+      RarManager.cpp \
+      XBMSDirectory.cpp \
+
+endif
+
+INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+INCLUDES+=-I@abs_top_srcdir@/lib/darwin/libcurl-OSX/include
+endif
+
+LIB=filesystem.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -20,18 +20,18 @@
  */
 
 #include "FileOperationJob.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/ZipManager.h"
-#include "FileSystem/FactoryFileDirectory.h"
-#include "FileSystem/MultiPathDirectory.h"
-#include "FileSystem/SpecialProtocol.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "filesystem/ZipManager.h"
+#include "filesystem/FactoryFileDirectory.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "log.h"
 #include "Util.h"
-#include "AdvancedSettings.h"
-#include "LocalizeStrings.h"
+#include "URIUtils.h"
+#include "guilib/LocalizeStrings.h"
 #ifdef HAS_FILESYSTEM_RAR
-#include "FileSystem/RarManager.h"
+#include "filesystem/RarManager.h"
 #endif
 
 using namespace std;
@@ -121,20 +121,20 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
     if (pItem->IsSelected())
     {
       CStdString strNoSlash = pItem->m_strPath;
-      CUtil::RemoveSlashAtEnd(strNoSlash);
-      CStdString strFileName = CUtil::GetFileName(strNoSlash);
+      URIUtils::RemoveSlashAtEnd(strNoSlash);
+      CStdString strFileName = URIUtils::GetFileName(strNoSlash);
 
       // special case for upnp
-      if (CUtil::IsUPnP(items.m_strPath) || CUtil::IsUPnP(pItem->m_strPath))
+      if (URIUtils::IsUPnP(items.m_strPath) || URIUtils::IsUPnP(pItem->m_strPath))
       {
         // get filename from label instead of path
         strFileName = pItem->GetLabel();
 
-        if(!pItem->m_bIsFolder && CUtil::GetExtension(strFileName).length() == 0)
+        if(!pItem->m_bIsFolder && URIUtils::GetExtension(strFileName).length() == 0)
         {
           // FIXME: for now we only work well if the url has the extension
           // we should map the content type to the extension otherwise
-          strFileName += CUtil::GetExtension(pItem->m_strPath);
+          strFileName += URIUtils::GetExtension(pItem->m_strPath);
         }
 
         strFileName = CUtil::MakeLegalFileName(strFileName);
@@ -142,7 +142,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
-        CUtil::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
+        URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
 
       if (pItem->m_bIsFolder)
       {
@@ -266,7 +266,7 @@ inline bool CFileOperationJob::CanBeRenamed(const CStdString &strFileA, const CS
   if (strFileA[1] == ':' && strFileA[0] == strFileB[0])
     return true;
 #else
-  if (CUtil::IsHD(strFileA) && CUtil::IsHD(strFileB))
+  if (URIUtils::IsHD(strFileA) && URIUtils::IsHD(strFileB))
     return true;
 #endif
   return false;

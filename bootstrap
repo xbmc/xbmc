@@ -7,10 +7,10 @@ autoreconf -vif lib/cpluff
 # we must autoreconf libass as we don't know till later if it's used.
 [ -d lib/libass ] && autoreconf -vif lib/libass
 # order matters with libbdnav and friends
-[ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
-  autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
-autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
-autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+[ -d lib/libdvd/libdvdcss ] && \
+  autoreconf -vif lib/libdvd/libdvdcss
+autoreconf -vif lib/libdvd/libdvdread
+autoreconf -vif lib/libdvd/libdvdnav
 
 # Clean the generated files
 find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;

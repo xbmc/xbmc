@@ -1,16 +1,13 @@
-INCLUDES=-I../../../../.. -I. -I../../ -I../../../../ -I../../../../linux -I../../../../../guilib
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../../Codecs/ffmpeg
-endif
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer \
 
 SRCS=	DVDOverlayCodecCC.cpp \
 	DVDOverlayCodecFFmpeg.cpp \
-	DVDOverlayCodecText.cpp \
 	DVDOverlayCodecSSA.cpp \
+	DVDOverlayCodecText.cpp \
 	libspucc/cc_decoder.c \
 
 LIB=	Overlay.a
 
-include ../../../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

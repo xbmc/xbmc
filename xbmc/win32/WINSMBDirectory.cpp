@@ -21,15 +21,15 @@
 
 
 #include "WINSMBDirectory.h"
-#include "Util.h"
 #include "URL.h"
-#include "GUISettings.h"
+#include "utils/URIUtils.h"
+#include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "WIN32Util.h"
 #include "AutoPtrHandle.h"
 #include "log.h"
 #include "CharsetConverter.h"
-#include "utils/PasswordManager.h"
+#include "PasswordManager.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
@@ -103,7 +103,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   //rebuild the URL
   CStdString strUNCShare = "\\\\" + url.GetHostName() + "\\" + url.GetFileName();
   strUNCShare.Replace("/", "\\");
-  if(!CUtil::HasSlashAtEnd(strUNCShare))
+  if(!URIUtils::HasSlashAtEnd(strUNCShare))
     strUNCShare.append("\\");
 
   CStdStringW strSearchMask;
@@ -141,10 +141,10 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
           {
             CFileItemPtr pItem(new CFileItem(strLabel));
             pItem->m_strPath = strPath;
-            CUtil::AddSlashAtEnd(pItem->m_strPath);
+            URIUtils::AddSlashAtEnd(pItem->m_strPath);
             pItem->m_strPath += strLabel;
             pItem->m_bIsFolder = true;
-            CUtil::AddSlashAtEnd(pItem->m_strPath);
+            URIUtils::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
@@ -158,7 +158,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
         {
           CFileItemPtr pItem(new CFileItem(strLabel));
           pItem->m_strPath = strPath;
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
+          URIUtils::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_strPath += strLabel;
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
@@ -304,7 +304,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
+          URIUtils::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
           items.Add(pItem);
         }

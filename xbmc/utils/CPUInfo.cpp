@@ -32,7 +32,7 @@
 #endif
 
 #include "log.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 

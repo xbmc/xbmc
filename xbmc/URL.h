@@ -20,7 +20,7 @@
  *
  */
 
-#include "StdString.h"
+#include "utils/StdString.h"
 
 #ifdef _WIN32
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
@@ -68,6 +68,8 @@ public:
   bool IsLocal() const;
   static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
+  static void Decode(CStdString& strURLData);
+  static void Encode(CStdString& strURLData);
 protected:
   int m_iPort;
   CStdString m_strHostName;
