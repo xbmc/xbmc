@@ -247,6 +247,8 @@ CTCPServer::CTCPClient::CTCPClient()
   m_socket = -1;
   m_beginBrackets = 0;
   m_endBrackets = 0;
+  m_beginChar = 0;
+  m_endChar = 0;
 
   m_addrlen = sizeof(struct sockaddr);
 }
@@ -283,18 +285,33 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
   for (int i = 0; i < length; i++)
   {
     char c = buffer[i];
-    m_buffer.push_back(c);
-    if (c == '{')
-      m_beginBrackets++;
-    else if (c == '}')
-      m_endBrackets++;
-    if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
+
+    if (m_beginChar == 0 && c == '{')
     {
-      std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
-      CSingleLock lock (m_critSection);
-      send(m_socket, line.c_str(), line.size(), 0);
-      m_beginBrackets = m_endBrackets = 0;
-      m_buffer.clear();
+      m_beginChar = '{';
+      m_endChar = '}';
+    }
+    else if (m_beginChar == 0 && c == '[')
+    {
+      m_beginChar = '[';
+      m_endChar = ']';
+    }
+
+    if (m_beginChar != 0)
+    {
+      m_buffer.push_back(c);
+      if (c == m_beginChar)
+        m_beginBrackets++;
+      else if (c == m_endChar)
+        m_endBrackets++;
+      if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
+      {
+        std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
+        CSingleLock lock (m_critSection);
+        send(m_socket, line.c_str(), line.size(), 0);
+        m_beginChar = m_beginBrackets = m_endBrackets = 0;
+        m_buffer.clear();
+      }
     }
   }
 }
@@ -318,6 +335,8 @@ void CTCPServer::CTCPClient::Copy(const CTCPClient& client)
   m_announcementflags = client.m_announcementflags;
   m_beginBrackets     = client.m_beginBrackets;
   m_endBrackets       = client.m_endBrackets;
+  m_beginChar         = client.m_beginChar;
+  m_endChar           = client.m_endChar;
   m_buffer            = client.m_buffer;
 }
 

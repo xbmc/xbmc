@@ -57,6 +57,7 @@ namespace JSONRPC
       void Copy(const CTCPClient& client);
       int m_announcementflags;
       int m_beginBrackets, m_endBrackets;
+      char m_beginChar, m_endChar;
       std::string m_buffer;
     };
 
