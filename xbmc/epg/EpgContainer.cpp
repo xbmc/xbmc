@@ -320,6 +320,11 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     m_database.UpdateLastEpgScanTime();
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   }
+
+  /* only try to load the database once */
+  if (!m_bDatabaseLoaded)
+    m_bDatabaseLoaded = true;
+
   m_database.Close();
 
   if (bShowProgress)
