@@ -159,7 +159,7 @@ bool CEpgDatabase::EraseEpgForTable(const CEpg &table, const CDateTime &start /*
     strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
   }
 
-  return DeleteValues("epg", strWhereClause);
+  return DeleteValues("epgtags", strWhereClause);
 }
 
 bool CEpgDatabase::EraseOldEpgEntries()
