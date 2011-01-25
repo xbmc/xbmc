@@ -68,7 +68,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   if (bClearDb)
   {
     m_database.Open();
-    m_database.EraseEpg();
+    m_database.DeleteEpg();
     m_database.Close();
   }
 
@@ -119,7 +119,7 @@ bool CEpgContainer::Reset(bool bClearDb /* = false */)
 
 bool CEpgContainer::Erase(void)
 {
-  return m_database.EraseEpg();
+  return m_database.DeleteEpg();
 }
 
 void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
@@ -199,7 +199,7 @@ bool CEpgContainer::RemoveOldEntries()
   }
 
   /* remove the old entries from the database */
-  bReturn = m_database.EraseOldEpgEntries();
+  bReturn = m_database.DeleteOldEpgEntries();
 
   if (bReturn)
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -315,7 +315,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* update the last scan time if the update was successful and if we did a full update */
   if (bUpdateSuccess && m_bDatabaseLoaded)
   {
-    m_database.UpdateLastEpgScanTime();
+    m_database.PersistLastEpgScanTime();
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   }
 

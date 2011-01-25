@@ -69,7 +69,7 @@ public:
    * @brief Remove all EPG information from the database
    * @return True if the EPG information was erased, false otherwise.
    */
-  bool EraseEpg();
+  bool DeleteEpg();
 
   /*!
    * @brief Erase all EPG entries for a table.
@@ -78,20 +78,20 @@ public:
    * @param end Remove entries before this time if set.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  bool EraseEpgForTable(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  bool Delete(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
   /*!
    * @brief Erase all EPG entries older than 1 day.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  bool EraseOldEpgEntries();
+  bool DeleteOldEpgEntries();
 
   /*!
    * @brief Remove a single EPG entry.
    * @param tag The entry to remove.
    * @return True if it was removed successfully, false otherwise.
    */
-  bool RemoveEpgEntry(const CEpgInfoTag &tag);
+  bool Delete(const CEpgInfoTag &tag);
 
   /*!
    * @brief Get all EPG entries for a table.
@@ -100,7 +100,7 @@ public:
    * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  int GetEpg(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
   /**
    * Get the start time of the first entry for a channel.
@@ -130,7 +130,7 @@ public:
    * @brief Update the last scan time.
    * @return True if it was updated successfully, false otherwise.
    */
-  bool UpdateLastEpgScanTime(void);
+  bool PersistLastEpgScanTime(void);
 
   /*!
    * @brief Persist an EPG table. It's entries are not persisted.
@@ -148,7 +148,7 @@ public:
    * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
    * @return True if the query or queries were executed successfully, false otherwise.
    */
-  bool UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
+  bool Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
   //@}
 

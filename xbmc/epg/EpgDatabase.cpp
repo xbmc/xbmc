@@ -116,7 +116,7 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
-bool CEpgDatabase::EraseEpg()
+bool CEpgDatabase::DeleteEpg()
 {
   bool bReturn = false;
   CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
@@ -129,7 +129,7 @@ bool CEpgDatabase::EraseEpg()
   return bReturn;
 }
 
-bool CEpgDatabase::EraseEpgForTable(const CEpg &table, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+bool CEpgDatabase::Delete(const CEpg &table, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
@@ -162,7 +162,7 @@ bool CEpgDatabase::EraseEpgForTable(const CEpg &table, const CDateTime &start /*
   return DeleteValues("epgtags", strWhereClause);
 }
 
-bool CEpgDatabase::EraseOldEpgEntries()
+bool CEpgDatabase::DeleteOldEpgEntries()
 {
   time_t iYesterday;
   CDateTime yesterday = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
@@ -172,7 +172,7 @@ bool CEpgDatabase::EraseOldEpgEntries()
   return DeleteValues("epgtags", strWhereClause);
 }
 
-bool CEpgDatabase::RemoveEpgEntry(const CEpgInfoTag &tag)
+bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
 {
   /* tag without a database ID was not peristed */
   if (tag.BroadcastId() <= 0)
@@ -205,7 +205,7 @@ CDateTime CEpgDatabase::GetEpgDataStart(long iEpgId /* = -1 */)
   return CDateTime::GetCurrentDateTime();
 }
 
-int CEpgDatabase::GetEpg(CEpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
 {
   int iReturn = -1;
 
@@ -317,7 +317,7 @@ CDateTime CEpgDatabase::GetLastEpgScanTime()
   return lastScan;
 }
 
-bool CEpgDatabase::UpdateLastEpgScanTime(void)
+bool CEpgDatabase::PersistLastEpgScanTime(void)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
   CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time to '%s'",
@@ -368,7 +368,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
   return iReturn;
 }
 
-bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+bool CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
   int bReturn = false;
 
@@ -447,7 +447,7 @@ bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* 
   }
 
   if ((bSingleUpdate || bLastUpdate) && GetEpgDataEnd(iEpgId) > tag.End())
-    EraseEpgForTable(*epg, NULL, tag.End());
+    Delete(*epg, NULL, tag.End());
 
   return bReturn;
 }

@@ -236,7 +236,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     bool retval;
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
     database->Open();
-    retval = database->UpdateEpgEntry(*InfoTag);
+    retval = database->Persist(*InfoTag);
     database->Close();
     return retval;
   }
@@ -286,7 +286,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
           previousTag->End().GetAsLocalizedDateTime(false, false).c_str());
 
       if (bStore)
-        database->RemoveEpgEntry(*currentTag);
+        database->Delete(*currentTag);
 
       if (DeleteInfoTag(currentTag))
         ptr--;
@@ -312,8 +312,8 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
       if (bStore)
       {
-        bReturn = database->UpdateEpgEntry(*previousTag, false, false) && bReturn;
-        bReturn = database->UpdateEpgEntry(*currentTag, false, true) && bReturn;
+        bReturn = database->Persist(*previousTag, false, false) && bReturn;
+        bReturn = database->Persist(*currentTag, false, true) && bReturn;
       }
     }
 
@@ -350,7 +350,7 @@ bool CEpg::LoadFromDb()
   CEpgDatabase *database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
 
   /* request the entries for this table from the database */
-  bReturn = (database->GetEpg(this, NULL, NULL) > 0);
+  bReturn = (database->Get(this, NULL, NULL) > 0);
 
   return bReturn;
 }
@@ -373,7 +373,7 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX
     if (bStoreInDb)
     {
       for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-        database->UpdateEpgEntry(*at(iTagPtr), false, (iTagPtr == size() - 1));
+        database->Persist(*at(iTagPtr), false, (iTagPtr == size() - 1));
     }
   }
 

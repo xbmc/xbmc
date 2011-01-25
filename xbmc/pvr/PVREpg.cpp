@@ -131,7 +131,7 @@ bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // 
     if (bStoreInDb)
     {
       for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-        database->UpdateEpgEntry(*at(iTagPtr), false, (iTagPtr == size() - 1));
+        database->Persist(*at(iTagPtr), false, (iTagPtr == size() - 1));
     }
   }
 
