@@ -236,10 +236,8 @@ bool CEpgContainer::LoadFromDb(bool bShowProgress /* = false */)
     if (bShowProgress)
     {
       /* update the progress bar */
-//      if (channel)
-//        scanner->SetTitle(channel->ChannelName());
-
       scanner->SetProgress(iEpgPtr, iSize);
+      scanner->SetTitle(epg->Name());
       scanner->UpdateState();
     }
   }
