@@ -4946,4 +4946,9 @@
       <Filter>win32</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\xbmc\win32\PlatformInclude.h">
+      <Filter>win32</Filter>
+    </CustomBuild>
+  </ItemGroup>
 </Project>
