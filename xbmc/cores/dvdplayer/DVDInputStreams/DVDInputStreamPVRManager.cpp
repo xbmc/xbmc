@@ -21,7 +21,7 @@
 
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStreamPVRManager.h"
-#include "FileSystem/PVRFile.h"
+#include "filesystem/PVRFile.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
 

@@ -24,8 +24,8 @@
  * for DESCRIPTION see 'TVRecordInfoTag.cpp'
  */
 
-#include "VideoInfoTag.h"
-#include "Thread.h"
+#include "video/VideoInfoTag.h"
+#include "threads/Thread.h"
 #include "DateTime.h"
 #include "settings/VideoSettings.h"
 #include "../addons/include/xbmc_pvr_types.h"

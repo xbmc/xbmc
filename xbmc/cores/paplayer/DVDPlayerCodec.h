@@ -23,11 +23,10 @@
  */
 
 #include "ICodec.h"
-#include "FileSystem/File.h"
 
-#include "DVDDemuxers/DVDDemux.h"
-#include "DVDCodecs/Audio/DVDAudioCodec.h"
-#include "DVDInputStreams/DVDInputStream.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#include "cores/dvdplayer/DVDCodecs/Audio/DVDAudioCodec.h"
+#include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
 
 class DVDPlayerCodec : public ICodec
 {

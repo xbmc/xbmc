@@ -22,18 +22,19 @@
 #include "Application.h"
 #include "Addon.h"
 #include "AddonHelpers_GUI.h"
-#include "log.h"
+#include "utils/log.h"
 #include "Skin.h"
 #include "FileItem.h"
-#include "FileSystem/File.h"
-#include "GUIWindowManager.h"
-#include "TextureManager.h"
-#include "GUISettings.h"
-#include "GUISpinControlEx.h"
-#include "GUIRadioButtonControl.h"
-#include "GUISettingsSliderControl.h"
-#include "GUIEditControl.h"
-#include "GUIProgressControl.h"
+#include "filesystem/File.h"
+#include "utils/URIUtils.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/TextureManager.h"
+#include "settings/GUISettings.h"
+#include "guilib/GUISpinControlEx.h"
+#include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUISettingsSliderControl.h"
+#include "guilib/GUIEditControl.h"
+#include "guilib/GUIProgressControl.h"
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -180,9 +181,9 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
     {
       /* Check for the matching folder for the skin in the fallback skins folder */
       CStdString basePath;
-      CUtil::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
-      CUtil::AddFileToFolder(basePath, "skins", basePath);
-      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo->Path()), basePath);
+      URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
+      URIUtils::AddFileToFolder(basePath, "skins", basePath);
+      URIUtils::AddFileToFolder(basePath, URIUtils::GetFileName(g_SkinInfo->Path()), basePath);
       strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
@@ -200,9 +201,9 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
     AddonProps props(str, ADDON_SKIN, str);
     CSkinInfo skinInfo(props);
     CStdString basePath;
-    CUtil::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
-    CUtil::AddFileToFolder(basePath, "skins", basePath);
-    CUtil::AddFileToFolder(basePath, defaultSkin, basePath);
+    URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
+    URIUtils::AddFileToFolder(basePath, "skins", basePath);
+    URIUtils::AddFileToFolder(basePath, defaultSkin, basePath);
 
     skinInfo.Start(basePath);
     strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, basePath);
@@ -1349,10 +1350,10 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  CUtil::GetDirectory(GetProperty("xmlfile"), tmpDir);
+  URIUtils::GetDirectory(GetProperty("xmlfile"), tmpDir);
   CStdString fallbackMediaPath;
-  CUtil::GetParentPath(tmpDir, fallbackMediaPath);
-  CUtil::RemoveSlashAtEnd(fallbackMediaPath);
+  URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
+  URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
   m_mediaDir = fallbackMediaPath;
 
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());

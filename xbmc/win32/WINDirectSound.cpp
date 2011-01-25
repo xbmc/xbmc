@@ -21,7 +21,7 @@
 
 #include "system.h"
 #include "WINDirectSound.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "log.h"
 #include "CharsetConverter.h"
 

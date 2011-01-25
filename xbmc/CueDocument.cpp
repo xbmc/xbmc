@@ -54,8 +54,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "CueDocument.h"
-#include "Util.h"
-#include "StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 
 #include <set>
@@ -357,12 +357,12 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 {
   CStdString strDirectory;
-  CUtil::GetDirectory(strBase, strDirectory);
+  URIUtils::GetDirectory(strBase, strDirectory);
 
   CStdString strFilename = strPath;
-  CUtil::GetFileName(strFilename);
+  URIUtils::GetFileName(strFilename);
 
-  CUtil::AddFileToFolder(strDirectory, strFilename, strPath);
+  URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
 
   return true;
 }

@@ -25,7 +25,7 @@
 #include "addons/Addon.h"
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 
 #include <vector>
 #include <deque>

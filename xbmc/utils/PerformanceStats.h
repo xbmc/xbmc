@@ -25,7 +25,7 @@
 #include <map>
 #include <string>
 #include "PlatformDefs.h"
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class PerformanceCounter
 {

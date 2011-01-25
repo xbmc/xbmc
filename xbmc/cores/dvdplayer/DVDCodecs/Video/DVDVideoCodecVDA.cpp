@@ -25,13 +25,13 @@
 
 #if defined(HAVE_LIBVDADECODER)
 #include "DynamicDll.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecUtils.h"
+#include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
 #include "DVDVideoCodecVDA.h"
-#include "Codecs/DllAvFormat.h"
-#include "Codecs/DllSwScale.h"
+#include "DllAvFormat.h"
+#include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "osx/CocoaInterface.h"

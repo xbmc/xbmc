@@ -20,8 +20,8 @@
  */
 
 #include "EncoderLame.h"
-#include "Id3Tag.h"
-#include "GUISettings.h"
+#include "music/tags/Id3Tag.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 #ifdef _WIN32

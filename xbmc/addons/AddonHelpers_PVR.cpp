@@ -21,7 +21,7 @@
 
 #include "Application.h"
 #include "AddonHelpers_PVR.h"
-#include "log.h"
+#include "utils/log.h"
 
 #include "pvr/PVREpg.h"
 #include "pvr/PVRManager.h"

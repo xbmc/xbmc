@@ -26,7 +26,7 @@
  */
 
 #ifndef _LINUX
-#include "lib/fribidi/fribidi.h"
+#include "lib/win32/fribidi/fribidi.h"
 #else
 #include <fribidi/fribidi.h>
 #endif

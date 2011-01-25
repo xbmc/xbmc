@@ -28,7 +28,7 @@ extern "C" {
 #if (defined USE_EXTERNAL_LIBASS)
   #include <ass/ass.h>
 #else
-  #include "../../../lib/libass/libass/ass.h"
+  #include "lib/libass/libass/ass.h"
 #endif
 }
 #include "DynamicDll.h"

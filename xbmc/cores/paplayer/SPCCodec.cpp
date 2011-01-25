@@ -21,15 +21,15 @@
 
 #include "SPCCodec.h"
 #include "cores/DllLoader/DllLoader.h"
-#include "../DllLoader/SoLoader.h"
-#include "MusicInfoTagLoaderSPC.h"
-#include "MusicInfoTag.h"
-#include "FileSystem/File.h"
+#include "cores/DllLoader/SoLoader.h"
+#include "music/tags/MusicInfoTagLoaderSPC.h"
+#include "music/tags/MusicInfoTag.h"
+#include "filesystem/File.h"
 #include "DynamicDll.h"
 #include "Util.h"
 #include "utils/log.h"
 #ifdef _WIN32
-#include "../DllLoader/Win32DllLoader.h"
+#include "cores/DllLoader/Win32DllLoader.h"
 #endif
 
 using namespace MUSIC_INFO;

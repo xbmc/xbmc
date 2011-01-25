@@ -20,8 +20,8 @@
  */
 
 #include "FileItem.h"
-#include "GUIDialogOK.h"
-#include "utils/SingleLock.h"
+#include "dialogs/GUIDialogOK.h"
+#include "threads/SingleLock.h"
 
 #include "PVRTimers.h"
 #include "PVRTimerInfoTag.h"
@@ -163,11 +163,11 @@ int CPVRTimers::GetNumTimers()
 bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString base(strPath);
-  CUtil::RemoveSlashAtEnd(base);
+  URIUtils::RemoveSlashAtEnd(base);
 
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
+  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "timers")
   {

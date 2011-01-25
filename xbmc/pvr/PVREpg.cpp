@@ -19,7 +19,7 @@
  *
  */
 
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "log.h"
 #include "TimeUtils.h"
 

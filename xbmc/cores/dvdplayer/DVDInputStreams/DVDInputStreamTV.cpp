@@ -20,8 +20,8 @@
  */
 
 #include "DVDInputStreamTV.h"
-#include "FileSystem/MythFile.h"
-#include "FileSystem/VTPFile.h"
+#include "filesystem/MythFile.h"
+#include "filesystem/VTPFile.h"
 #include "URL.h"
 
 using namespace XFILE;

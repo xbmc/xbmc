@@ -23,16 +23,15 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "NfoFile.h"
-#include "utils/IMDB.h"
+#include "video/VideoInfoDownloader.h"
 #include "addons/AddonManager.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
-#include "GUISettings.h"
+#include "filesystem/File.h"
+#include "settings/GUISettings.h"
 #include "Util.h"
 #include "FileItem.h"
-#include "Album.h"
-#include "Artist.h"
-#include "GUISettings.h"
+#include "music/Album.h"
+#include "music/Artist.h"
+#include "settings/GUISettings.h"
 #include "LangInfo.h"
 #include "utils/log.h"
 
@@ -160,7 +159,7 @@ bool CNfoFile::DoScrape(ScraperPtr& scraper)
     {
       if (stricmp(doc.RootElement()->Value(),"error")==0)
       {
-        CIMDB::ShowErrorDialog(doc.RootElement());
+        CVideoInfoDownloader::ShowErrorDialog(doc.RootElement());
         return false;
       }
 

@@ -19,7 +19,7 @@
  *
  */
 
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"

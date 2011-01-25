@@ -19,20 +19,26 @@
 <folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429." name="/" resourcePath="">
 <toolChain id="cdt.managedbuild.toolchain.gnu.base.798770989" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base">
 <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.1377493120" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-<builder buildPath="${workspace_loc:/XBMC/}" enableCleanBuild="false" id="cdt.managedbuild.target.gnu.builder.base.1787235883" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelizationNumber="-4" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+<builder buildPath="${workspace_loc:/XBMC/}" enableCleanBuild="false" id="cdt.managedbuild.target.gnu.builder.base.1787235883" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelizationNumber="-4" superClass="cdt.managedbuild.target.gnu.builder.base">
+<outputEntries>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
+<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
+</outputEntries>
+</builder>
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1706699922" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.484453871" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.327544390" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
@@ -59,6 +65,20 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.49035421" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.449580157" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.2096181436" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.346562754" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.2040475298" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
@@ -69,6 +89,20 @@
 </inputType>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.897930671" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.649511960" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1826462810" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -79,17 +113,17 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.167112328" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1197569293" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.1036229007" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
@@ -116,11 +150,41 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.2046609258" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.178216084" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.1875365901" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1514405016" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.463298152" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.21601709" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.1556264217" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1351729322" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1072849127" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -131,28 +195,33 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1228268589" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.374014682" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.1230729792" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.522982551" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="SILENT"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.151449740" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.1422712476" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -160,6 +229,13 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1165013087" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.2020172840" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="SILENT"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -169,11 +245,39 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.103425853" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.2048021837" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.1545991519" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1944389917" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.370331516" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1216886150" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.268583148" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1909429401" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1699404329" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -184,18 +288,18 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.188402672" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.191974697" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.659607289" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
@@ -222,11 +326,43 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.343524256" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.728596493" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.616815751" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1359480394" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.924121140" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.2063845968" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.248755404" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1458247860" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.823301344" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -237,17 +373,17 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1594241674" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.2025900500" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.1091781882" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/FileSystem}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/FileSystem"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
@@ -274,11 +410,41 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1676939242" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.1928315656" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.776699791" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/FileSystem"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.971616393" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.856132794" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1960399217" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.363097395" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1337070062" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/FileSystem"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.160248874" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -289,28 +455,33 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1739736895" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1505389768" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.139434707" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.1738212029" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="HAS_VIDEO_PLAYBACK"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.1580391428" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.1236173964" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -318,6 +489,13 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1345329066" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.1034040491" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="HAS_VIDEO_PLAYBACK"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -327,11 +505,39 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1261626921" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.76786284" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.372412366" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1507407754" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1586158550" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1066828252" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.675285711" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.232019471" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1475210092" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -342,28 +548,33 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1791349579" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1599410545" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.2012810921" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.940852704" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-<listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="HAVE_MMX"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.1588935448" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.1264437226" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -371,6 +582,13 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1692246486" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.1773548329" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="HAVE_MMX"/>
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -380,11 +598,39 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1008321712" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.779627393" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.875361151" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1431067034" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.2033781226" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1892659383" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.80389312" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1033438842" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1488191050" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -395,28 +641,33 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.1024383416" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.182258226" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.132876577" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.228310129" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-<listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="__STDC_CONSTANT_MACROS"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.2136396561" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.1371984390" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -424,6 +675,13 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.44190978" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.1985859964" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="__STDC_CONSTANT_MACROS"/>
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -433,11 +691,39 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1958276110" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.1599487124" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.798145639" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1776815622" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1777213953" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1345403259" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.1965539906" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1763259266" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1690659915" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -448,28 +734,33 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.702484928" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.911148935" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.988080366" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.2025604952" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
 <listOptionValue builtIn="false" value="API_DEBUG"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.48594810" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.1203498119" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -477,6 +768,13 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.2040585315" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.1440628075" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="API_DEBUG"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -486,11 +784,39 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.301030189" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.1668717213" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.1426503532" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.349166876" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.78862308" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.875416806" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.2036690541" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.1621671344" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.819153395" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
@@ -501,27 +827,32 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.261360724" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.2004909348" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.2012590014" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
 <option id="gnu.cpp.compiler.option.preprocessor.def.664123081" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
 <listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
+<listOptionValue builtIn="false" value="HAS_SDL"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
+<listOptionValue builtIn="false" value="HAS_GL"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="HAS_SDL_WIN_EVENTS"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.654756652" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.818006257" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -529,6 +860,12 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1706352072" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.1074107564" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL"/>
 <listOptionValue builtIn="false" value="HAS_SDL"/>
 <listOptionValue builtIn="false" value="HAS_GLX"/>
@@ -538,18 +875,45 @@
 </option>
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.445032142" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.debugging.level.581498250" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.868335247" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.400901831" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.base.1972680811" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1609140330" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base"/>
 <tool id="cdt.managedbuild.tool.gnu.assembler.base.1392793696" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base">
+<option id="gnu.both.asm.option.include.paths.205192787" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libportaudio"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/xbmc/ffmpeg"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="../XBMC/guilib"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1413550433" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="common/DirectInput.cpp|common/DirectInput.h|common/DirectInputKeyboard.cpp|common/DirectInputKeyboard.h|common/XBoxKeyboard.cpp|common/XBoxKeyboard.h|common/XBoxMouse.cpp|common/XBoxMouse.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="guilib"/>
-<entry excluding="osd/|xbox/|Cdg.cpp|Cdg.h|CdgParser.cpp|CdgParser.h|CdgVoiceManager.cpp|CdgVoiceManager.h|GUIWindowBuddies.cpp|GUIWindowBuddies.h|GUIWindowMusicTop100.cpp|GUIWindowMusicTop100.h|GUIWindowSettingsUICalibration.cpp|GUIWindowSettingsUICalibration.h|MusicInfoTagLoaderSPC.cpp|MusicInfoTagLoaderSPC.h|PlaylistDirectory.cpp|PlaylistDirectory.h|XBInputEx.cpp|XBInputEx.h|XBTimeZone.cpp|XBTimeZone.h|XMP4File.cpp|XMP4File.h|lib/libFileZilla/|lib/libXenium/|lib/mikxbox/|lib/smartXX/|lib/x3lcd/|utils/FanController.cpp|utils/FanController.h|utils/FilterFlickerPatch.cpp|utils/FilterFlickerPatch.h|utils/LED.cpp|utils/LED.h|utils/MediaMonitor.cpp|utils/MediaMonitor.h|utils/MemoryUnitManager.cpp|utils/MemoryUnitManager.h|utils/Sntp.cpp|utils/Sntp.h|utils/WindowsShortcut.cpp|utils/WindowsShortcut.h|Credits.cpp|Credits.h|cores/DllLoader/dll_tracker_socket.cpp|cores/DllLoader/dll_tracker_socket.h|cores/DllLoader/DllLoader-linux.cpp|cores/DllLoader/exports/emu_socket/|cores/DllLoader/exports/emu_misc.cpp|cores/DllLoader/exports/emu_misc.h|cores/DllLoader/exports/emu_ole32.cpp|cores/DllLoader/exports/emu_ole32.h|cores/DllLoader/exports/emu_registry.cpp|cores/DllLoader/exports/emu_registry.h|cores/DllLoader/exports/emu_socket.cpp|cores/DllLoader/exports/emu_socket.h|cores/DllLoader/exports/exports_misc.cpp|cores/DllLoader/exports/exports_ole32.cpp|cores/DllLoader/exports/exports_python.cpp|cores/DllLoader/exports/exports_reg.cpp|cores/DllLoader/exports/exports_socket.cpp|cores/DllLoader/exports/exports_xbox_dx8.cpp|lib/libUPnP/Platinum/Source/Apps/|lib/libUPnP/Platinum/Source/Tests/|lib/libUPnP/Platinum/Source/Tools/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Apps/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Tests/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Null/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PS3/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PSP/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/StdC/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/WinCE/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Xbox/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Console.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Directory.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Queue.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32System.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.h|lib/UnrarXLib/arccmt.cpp|lib/UnrarXLib/coder.cpp|lib/UnrarXLib/coder.hpp|lib/UnrarXLib/dll.cpp|lib/UnrarXLib/dll.hpp|lib/UnrarXLib/model.cpp|lib/UnrarXLib/model.hpp|lib/UnrarXLib/rarvmtbl.cpp|lib/UnrarXLib/smallfn.cpp|lib/UnrarXLib/smallfn.hpp|lib/UnrarXLib/stdafx.cpp|lib/UnrarXLib/stdafx.h|lib/UnrarXLib/suballoc.cpp|lib/UnrarXLib/suballoc.hpp|lib/UnrarXLib/unpack15.cpp|lib/UnrarXLib/unpack20.cpp|lib/UnrarXLib/win32acl.cpp|lib/UnrarXLib/win32stm.cpp|cores/mplayer/|cores/paplayer/paplayer_linux.cpp|cores/paplayer/paplayer_win32.cpp|cores/paplayer/paplayer.cpp" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="xbmc"/>
+<entry excluding="PlaylistDirectory.cpp|cores/DllLoader/exports/emu_socket/|lib/UnrarXLib/model.cpp|cores/DllLoader/exports/emu_registry.cpp|CdgParser.cpp|cores/DllLoader/exports/emu_misc.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Xbox/|xbox/|XBTimeZone.cpp|lib/UnrarXLib/model.hpp|cores/DllLoader/exports/exports_reg.cpp|lib/UnrarXLib/win32stm.cpp|lib/libUPnP/Platinum/Source/Tools/|utils/FilterFlickerPatch.h|MusicInfoTagLoaderSPC.cpp|lib/UnrarXLib/coder.cpp|lib/UnrarXLib/smallfn.hpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PSP/|CdgVoiceManager.h|lib/libUPnP/Platinum/Source/Apps/|CdgVoiceManager.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PS3/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Queue.cpp|utils/FanController.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Null/|lib/UnrarXLib/dll.cpp|cores/DllLoader/exports/exports_xbox_dx8.cpp|cores/DllLoader/dll_tracker_socket.cpp|lib/UnrarXLib/unpack20.cpp|cores/DllLoader/exports/emu_socket.h|lib/libUPnP/Platinum/Source/Tests/|Cdg.cpp|utils/MediaMonitor.h|utils/WindowsShortcut.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Console.cpp|MusicInfoTagLoaderSPC.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.cpp|lib/UnrarXLib/dll.hpp|utils/LED.h|cores/DllLoader/exports/emu_ole32.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.h|utils/MediaMonitor.cpp|lib/UnrarXLib/smallfn.cpp|lib/libXenium/|utils/MemoryUnitManager.h|cores/DllLoader/exports/exports_ole32.cpp|cores/paplayer/paplayer_win32.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp|GUIWindowMusicTop100.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Directory.cpp|PlaylistDirectory.h|cores/DllLoader/exports/emu_registry.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Apps/|XBInputEx.cpp|GUIWindowSettingsUICalibration.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.cpp|GUIWindowSettingsUICalibration.cpp|cores/DllLoader/exports/emu_socket.cpp|cores/mplayer/|lib/UnrarXLib/win32acl.cpp|XMP4File.h|utils/FanController.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/StdC/|cores/DllLoader/exports/exports_misc.cpp|cores/DllLoader/exports/emu_ole32.cpp|GUIWindowBuddies.cpp|utils/FilterFlickerPatch.cpp|lib/smartXX/|lib/UnrarXLib/arccmt.cpp|lib/x3lcd/|cores/DllLoader/exports/emu_misc.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32System.cpp|cores/paplayer/paplayer_linux.cpp|cores/DllLoader/DllLoader-linux.cpp|Credits.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.h|lib/mikxbox/|lib/UnrarXLib/stdafx.cpp|utils/MemoryUnitManager.cpp|cores/DllLoader/exports/exports_python.cpp|osd/|lib/UnrarXLib/suballoc.cpp|utils/LED.cpp|Credits.cpp|GUIWindowBuddies.h|GUIWindowMusicTop100.h|cores/DllLoader/exports/exports_socket.cpp|lib/UnrarXLib/coder.hpp|utils/Sntp.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.h|XBInputEx.h|lib/UnrarXLib/rarvmtbl.cpp|XBTimeZone.h|utils/Sntp.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/WinCE/|lib/UnrarXLib/unpack15.cpp|lib/UnrarXLib/stdafx.h|cores/paplayer/paplayer.cpp|Cdg.h|CdgParser.h|lib/libFileZilla/|lib/UnrarXLib/suballoc.hpp|XMP4File.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Tests/|utils/WindowsShortcut.cpp|cores/DllLoader/dll_tracker_socket.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="xbmc"/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -11539,7 +11903,6 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="common/DirectInput.cpp|common/DirectInput.h|common/DirectInputKeyboard.cpp|common/DirectInputKeyboard.h|common/XBoxKeyboard.cpp|common/XBoxKeyboard.h|common/XBoxMouse.cpp|common/XBoxMouse.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="guilib"/>
 <entry excluding="osd/|xbox/|Cdg.cpp|Cdg.h|CdgParser.cpp|CdgParser.h|CdgVoiceManager.cpp|CdgVoiceManager.h|GUIWindowBuddies.cpp|GUIWindowBuddies.h|GUIWindowMusicTop100.cpp|GUIWindowMusicTop100.h|GUIWindowSettingsUICalibration.cpp|GUIWindowSettingsUICalibration.h|MusicInfoTagLoaderSPC.cpp|MusicInfoTagLoaderSPC.h|PlaylistDirectory.cpp|PlaylistDirectory.h|XBInputEx.cpp|XBInputEx.h|XBTimeZone.cpp|XBTimeZone.h|XMP4File.cpp|XMP4File.h|lib/libFileZilla/|lib/libXenium/|lib/mikxbox/|lib/smartXX/|lib/x3lcd/|utils/FanController.cpp|utils/FanController.h|utils/FilterFlickerPatch.cpp|utils/FilterFlickerPatch.h|utils/LED.cpp|utils/LED.h|utils/MediaMonitor.cpp|utils/MediaMonitor.h|utils/MemoryUnitManager.cpp|utils/MemoryUnitManager.h|utils/Sntp.cpp|utils/Sntp.h|utils/WindowsShortcut.cpp|utils/WindowsShortcut.h|Credits.cpp|Credits.h|cores/DllLoader/dll_tracker_socket.cpp|cores/DllLoader/dll_tracker_socket.h|cores/DllLoader/DllLoader-linux.cpp|cores/DllLoader/exports/emu_socket/|cores/DllLoader/exports/emu_misc.cpp|cores/DllLoader/exports/emu_misc.h|cores/DllLoader/exports/emu_ole32.cpp|cores/DllLoader/exports/emu_ole32.h|cores/DllLoader/exports/emu_registry.cpp|cores/DllLoader/exports/emu_registry.h|cores/DllLoader/exports/emu_socket.cpp|cores/DllLoader/exports/emu_socket.h|cores/DllLoader/exports/exports_misc.cpp|cores/DllLoader/exports/exports_ole32.cpp|cores/DllLoader/exports/exports_python.cpp|cores/DllLoader/exports/exports_reg.cpp|cores/DllLoader/exports/exports_socket.cpp|cores/DllLoader/exports/exports_xbox_dx8.cpp|lib/libUPnP/Platinum/Source/Apps/|lib/libUPnP/Platinum/Source/Tests/|lib/libUPnP/Platinum/Source/Tools/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Apps/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Tests/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Null/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PS3/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/PSP/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/StdC/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/WinCE/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Xbox/|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Console.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Directory.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32MessageQueue.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Network.h|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Queue.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32System.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.cpp|lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Win32/NptWin32Threads.h|lib/UnrarXLib/arccmt.cpp|lib/UnrarXLib/coder.cpp|lib/UnrarXLib/coder.hpp|lib/UnrarXLib/dll.cpp|lib/UnrarXLib/dll.hpp|lib/UnrarXLib/model.cpp|lib/UnrarXLib/model.hpp|lib/UnrarXLib/rarvmtbl.cpp|lib/UnrarXLib/smallfn.cpp|lib/UnrarXLib/smallfn.hpp|lib/UnrarXLib/stdafx.cpp|lib/UnrarXLib/stdafx.h|lib/UnrarXLib/suballoc.cpp|lib/UnrarXLib/suballoc.hpp|lib/UnrarXLib/unpack15.cpp|lib/UnrarXLib/unpack20.cpp|lib/UnrarXLib/win32acl.cpp|lib/UnrarXLib/win32stm.cpp|cores/mplayer/|cores/paplayer/paplayer_linux.cpp|cores/paplayer/paplayer_win32.cpp|cores/paplayer/paplayer.cpp" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="xbmc"/>
 </sourceEntries>
 </configuration>

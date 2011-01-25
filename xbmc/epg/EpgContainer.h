@@ -22,9 +22,9 @@
  */
 
 #include "DateTime.h"
-#include "CriticalSection.h"
-#include "Observer.h"
-#include "Thread.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "utils/Observer.h"
 
 #include "Epg.h"
 #include "EpgDatabase.h"

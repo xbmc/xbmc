@@ -23,19 +23,18 @@
 #ifdef HAS_HAL
 #include "HALManager.h"
 #include "Application.h"
-#include "utils/Builtins.h"
+#include "interfaces/Builtins.h"
 #include <libhal-storage.h>
-#include "SingleLock.h"
-#include "Util.h"
-#include "LocalizeStrings.h"
-#include "GUISettings.h"
-#include "PowerManager.h"
-#include "AdvancedSettings.h"
+#include "threads/SingleLock.h"
+#include "utils/URIUtils.h"
+#include "guilib/LocalizeStrings.h"
+#include "powermanagement/PowerManager.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>
 #include <SDL/SDL_version.h>
-#include "../../guilib/common/SDLJoystick.h"
+#include "input/SDLJoystick.h"
 #endif
 
 bool CHALManager::NewMessage;
@@ -291,7 +290,7 @@ bool CHALManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
       device->MountPoint  = libhal_volume_get_mount_point(tempVolume);
       if (device->Mounted)
-        CUtil::AddSlashAtEnd(device->MountPoint);
+        URIUtils::AddSlashAtEnd(device->MountPoint);
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);

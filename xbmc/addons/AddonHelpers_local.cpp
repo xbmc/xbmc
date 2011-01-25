@@ -24,8 +24,8 @@
 #include "AddonHelpers_Addon.h"
 #include "AddonHelpers_GUI.h"
 #include "AddonHelpers_PVR.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "log.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 namespace ADDON
 {

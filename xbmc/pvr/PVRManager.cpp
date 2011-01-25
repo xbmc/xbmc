@@ -20,26 +20,26 @@
  */
 
 #include "Application.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "Util.h"
-#include "GUIWindowTV.h"
-#include "GUIWindowManager.h"
-#include "utils/GUIInfoManager.h"
+#include "guilib/GUIWindowTV.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIInfoManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/log.h"
-#include "LocalizeStrings.h"
-#include "FileSystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "filesystem/File.h"
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "MusicInfoTag.h"
-#include "Settings.h"
+#include "music/tags/MusicInfoTag.h"
+#include "settings/Settings.h"
 
 /* GUI Messages includes */
-#include "GUIDialogOK.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogSelect.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
 
 #include "PVRManager.h"
 #include "PVRChannelGroupsContainer.h"

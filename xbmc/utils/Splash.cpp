@@ -21,10 +21,10 @@
 
 #include "system.h"
 #include "Splash.h"
-#include "GUIImage.h"
-#include "FileSystem/File.h"
-#include "WindowingFactory.h"
-#include "RenderSystem.h"
+#include "guilib/GUIImage.h"
+#include "filesystem/File.h"
+#include "windowing/WindowingFactory.h"
+#include "rendering/RenderSystem.h"
 #include "log.h"
 
 using namespace XFILE;

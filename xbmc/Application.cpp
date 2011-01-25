@@ -19,224 +19,221 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "system.h"
 #include "Application.h"
-#include "utils/Builtins.h"
+#include "interfaces/Builtins.h"
 #include "utils/Variant.h"
-#include "Splash.h"
-#include "KeyboardLayoutConfiguration.h"
+#include "utils/Splash.h"
+#include "input/KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
 #include "Util.h"
-#include "Picture.h"
-#include "TextureManager.h"
+#include "pictures/Picture.h"
+#include "guilib/TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
-#include "GUIControlProfiler.h"
-#include "LangCodeExpander.h"
-#include "utils/GUIInfoManager.h"
-#include "PlayListFactory.h"
-#include "GUIFontManager.h"
-#include "GUIColorManager.h"
-#include "GUITextLayout.h"
+#include "guilib/GUIControlProfiler.h"
+#include "utils/LangCodeExpander.h"
+#include "GUIInfoManager.h"
+#include "playlists/PlayListFactory.h"
+#include "guilib/GUIFontManager.h"
+#include "guilib/GUIColorManager.h"
+#include "guilib/GUITextLayout.h"
 #include "addons/Skin.h"
 #ifdef HAS_PYTHON
-#include "lib/libPython/XBPython.h"
+#include "interfaces/python/XBPython.h"
 #endif
-#include "ButtonTranslator.h"
-#include "GUIAudioManager.h"
-#include "lib/libscrobbler/lastfmscrobbler.h"
-#include "lib/libscrobbler/librefmscrobbler.h"
+#include "input/ButtonTranslator.h"
+#include "guilib/GUIAudioManager.h"
+#include "network/libscrobbler/lastfmscrobbler.h"
+#include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
-#include "FileSystem/DirectoryCache.h"
-#include "FileSystem/StackDirectory.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "FileSystem/DllLibCurl.h"
-#include "FileSystem/MythSession.h"
-#include "FileSystem/PluginDirectory.h"
+#include "filesystem/DirectoryCache.h"
+#include "filesystem/StackDirectory.h"
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/DllLibCurl.h"
+#include "filesystem/MythSession.h"
+#include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
-#include "FileSystem/SAPDirectory.h"
+#include "filesystem/SAPDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
-#include "FileSystem/HTSPDirectory.h"
+#include "filesystem/HTSPDirectory.h"
 #endif
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "GUILargeTextureManager.h"
 #include "TextureCache.h"
-#include "LastFmManager.h"
-#include "SmartPlaylist.h"
+#include "music/LastFmManager.h"
+#include "playlists/SmartPlayList.h"
 #ifdef HAS_FILESYSTEM_RAR
-#include "FileSystem/RarManager.h"
+#include "filesystem/RarManager.h"
 #endif
-#include "PlayList.h"
-#include "WindowingFactory.h"
-#include "PowerManager.h"
-#include "DPMSSupport.h"
-#include "Settings.h"
-#include "AdvancedSettings.h"
-#include "LocalizeStrings.h"
-#include "CPUInfo.h"
+#include "playlists/PlayList.h"
+#include "windowing/WindowingFactory.h"
+#include "powermanagement/PowerManager.h"
+#include "powermanagement/DPMSSupport.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/CPUInfo.h"
 
-#include "KeyboardStat.h"
-#include "MouseStat.h"
+#include "input/KeyboardStat.h"
+#include "input/MouseStat.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
-#include "FileSystem/FileDAAP.h"
+#include "filesystem/FileDAAP.h"
 #endif
 #ifdef HAS_UPNP
-#include "UPnP.h"
-#include "FileSystem/UPnPDirectory.h"
+#include "network/UPnP.h"
+#include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
-#include "FileSystem/SMBDirectory.h"
+#include "filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
-#include "FileSystem/FileSFTP.h"
+#include "filesystem/FileSFTP.h"
 #endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
-#include "karaoke/karaokelyricsmanager.h"
-#include "karaoke/GUIDialogKaraokeSongSelector.h"
-#include "karaoke/GUIWindowKaraokeLyrics.h"
+#include "music/karaoke/karaokelyricsmanager.h"
+#include "music/karaoke/GUIDialogKaraokeSongSelector.h"
+#include "music/karaoke/GUIWindowKaraokeLyrics.h"
 #endif
-#include "AudioContext.h"
-#include "GUIFontTTF.h"
-#include "utils/Network.h"
-#include "utils/IoSupport.h"
-#include "Zeroconf.h"
-#include "ZeroconfBrowser.h"
+#include "guilib/AudioContext.h"
+#include "guilib/GUIFontTTF.h"
+#include "network/Network.h"
+#include "storage/IoSupport.h"
+#include "network/Zeroconf.h"
+#include "network/ZeroconfBrowser.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
 #ifdef HAS_EVENT_SERVER
-#include "utils/EventServer.h"
+#include "network/EventServer.h"
 #endif
 #ifdef HAS_DBUS_SERVER
-#include "utils/DbusServer.h"
+#include "interfaces/DbusServer.h"
 #endif
 #ifdef HAS_HTTPAPI
-#include "lib/libhttpapi/XBMChttp.h"
+#include "interfaces/http-api/XBMChttp.h"
 #endif
 #ifdef HAS_JSONRPC
-#include "lib/libjsonrpc/JSONRPC.h"
-#include "lib/libjsonrpc/TCPServer.h"
+#include "interfaces/json-rpc/JSONRPC.h"
+#include "network/TCPServer.h"
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
-#include "utils/AnnouncementManager.h"
+#include "interfaces/AnnouncementManager.h"
 
 // Windows includes
-#include "GUIWindowManager.h"
-#include "GUIWindowHome.h"
-#include "GUIStandardWindow.h"
-#include "GUIWindowSettings.h"
-#include "GUIWindowFileManager.h"
-#include "GUIWindowSettingsCategory.h"
-#include "GUIWindowMusicPlaylist.h"
-#include "GUIWindowMusicSongs.h"
-#include "GUIWindowMusicNav.h"
-#include "GUIWindowMusicPlaylistEditor.h"
-#include "GUIWindowVideoPlaylist.h"
-#include "GUIWindowMusicInfo.h"
-#include "GUIWindowVideoInfo.h"
-#include "GUIWindowVideoFiles.h"
-#include "GUIWindowVideoNav.h"
-#include "GUIWindowSettingsProfile.h"
+#include "guilib/GUIWindowManager.h"
+#include "windows/GUIWindowHome.h"
+#include "guilib/GUIStandardWindow.h"
+#include "settings/GUIWindowSettings.h"
+#include "windows/GUIWindowFileManager.h"
+#include "settings/GUIWindowSettingsCategory.h"
+#include "music/windows/GUIWindowMusicPlaylist.h"
+#include "music/windows/GUIWindowMusicSongs.h"
+#include "music/windows/GUIWindowMusicNav.h"
+#include "music/windows/GUIWindowMusicPlaylistEditor.h"
+#include "video/windows/GUIWindowVideoPlaylist.h"
+#include "music/dialogs/GUIDialogMusicInfo.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/windows/GUIWindowVideoFiles.h"
+#include "video/windows/GUIWindowVideoNav.h"
+#include "settings/GUIWindowSettingsProfile.h"
 #ifdef HAS_GL
-#include "GUIWindowTestPatternGL.h"
+#include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
 #ifdef HAS_DX
-#include "GUIWindowTestPatternDX.h"
+#include "rendering/dx/GUIWindowTestPatternDX.h"
 #endif
-#include "GUIWindowSettingsScreenCalibration.h"
-#include "GUIWindowPrograms.h"
-#include "GUIWindowPictures.h"
-#include "GUIWindowWeather.h"
-#include "GUIWindowLoginScreen.h"
-#include "GUIWindowAddonBrowser.h"
-#include "GUIWindowVisualisation.h"
-#include "GUIWindowSystemInfo.h"
-#include "GUIWindowScreensaver.h"
-#include "GUIWindowSlideShow.h"
-#include "GUIWindowStartup.h"
-#include "GUIWindowFullScreen.h"
-#include "GUIWindowOSD.h"
-#include "GUIWindowMusicOverlay.h"
-#include "GUIWindowVideoOverlay.h"
+#include "settings/GUIWindowSettingsScreenCalibration.h"
+#include "programs/GUIWindowPrograms.h"
+#include "pictures/GUIWindowPictures.h"
+#include "windows/GUIWindowWeather.h"
+#include "windows/GUIWindowLoginScreen.h"
+#include "addons/GUIWindowAddonBrowser.h"
+#include "music/windows/GUIWindowVisualisation.h"
+#include "windows/GUIWindowSystemInfo.h"
+#include "windows/GUIWindowScreensaver.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "windows/GUIWindowStartup.h"
+#include "video/windows/GUIWindowFullScreen.h"
+#include "video/dialogs/GUIDialogVideoOSD.h"
+#include "music/dialogs/GUIDialogMusicOverlay.h"
+#include "video/dialogs/GUIDialogVideoOverlay.h"
 
 // Dialog includes
-#include "GUIDialogMusicOSD.h"
-#include "GUIDialogVisualisationPresetList.h"
-#include "GUIDialogTextViewer.h"
-#include "GUIDialogNetworkSetup.h"
-#include "GUIDialogMediaSource.h"
-#include "GUIDialogVideoSettings.h"
-#include "GUIDialogAudioSubtitleSettings.h"
-#include "GUIDialogVideoBookmarks.h"
-#include "GUIDialogProfileSettings.h"
-#include "GUIDialogLockSettings.h"
-#include "GUIDialogContentSettings.h"
-#include "GUIDialogVideoScan.h"
-#include "GUIDialogBusy.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogSelect.h"
-#include "GUIDialogFileStacking.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogGamepad.h"
-#include "GUIDialogSubMenu.h"
-#include "GUIDialogFavourites.h"
-#include "GUIDialogButtonMenu.h"
-#include "GUIDialogContextMenu.h"
-#include "GUIDialogMusicScan.h"
-#include "GUIDialogPlayerControls.h"
-#include "GUIDialogSongInfo.h"
-#include "GUIDialogSmartPlaylistEditor.h"
-#include "GUIDialogSmartPlaylistRule.h"
-#include "GUIDialogPictureInfo.h"
-#include "GUIDialogAddonSettings.h"
-#include "GUIDialogAddonInfo.h"
+#include "music/dialogs/GUIDialogMusicOSD.h"
+#include "music/dialogs/GUIDialogVisualisationPresetList.h"
+#include "dialogs/GUIDialogTextViewer.h"
+#include "network/GUIDialogNetworkSetup.h"
+#include "dialogs/GUIDialogMediaSource.h"
+#include "video/dialogs/GUIDialogVideoSettings.h"
+#include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#include "video/dialogs/GUIDialogVideoBookmarks.h"
+#include "settings/GUIDialogProfileSettings.h"
+#include "settings/GUIDialogLockSettings.h"
+#include "settings/GUIDialogContentSettings.h"
+#include "video/dialogs/GUIDialogVideoScan.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKeyboard.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "video/dialogs/GUIDialogFileStacking.h"
+#include "dialogs/GUIDialogNumeric.h"
+#include "dialogs/GUIDialogGamepad.h"
+#include "dialogs/GUIDialogSubMenu.h"
+#include "dialogs/GUIDialogFavourites.h"
+#include "dialogs/GUIDialogButtonMenu.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "music/dialogs/GUIDialogMusicScan.h"
+#include "dialogs/GUIDialogPlayerControls.h"
+#include "music/dialogs/GUIDialogSongInfo.h"
+#include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#include "dialogs/GUIDialogSmartPlaylistRule.h"
+#include "pictures/GUIDialogPictureInfo.h"
+#include "addons/GUIDialogAddonSettings.h"
+#include "addons/GUIDialogAddonInfo.h"
 #ifdef HAS_LINUX_NETWORK
-#include "GUIDialogAccessPoints.h"
+#include "network/GUIDialogAccessPoints.h"
 #endif
-#include "GUIDialogFullScreenInfo.h"
-#include "GUIDialogSlider.h"
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
-#include "GUIWindowTV.h"
-#include "GUIDialogPVRChannelManager.h"
-#include "GUIDialogPVRChannelsOSD.h"
-#include "GUIDialogPVRCutterOSD.h"
-#include "GUIDialogPVRDirectorOSD.h"
-#include "GUIDialogPVRGroupManager.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "GUIDialogPVRGuideOSD.h"
-#include "GUIDialogPVRGuideSearch.h"
-#include "GUIDialogPVRRecordingInfo.h"
-#include "GUIDialogPVRTimerSettings.h"
-#include "GUIDialogPVRUpdateProgressBar.h"
-#include "GUIDialogTeletext.h"
-
-#include "GUIControlFactory.h"
-#include "cores/dlgcache.h"
+#include "guilib/GUIWindowTV.h"
+#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
+#include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
+#include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
+#include "pvr/dialogs/GUIDialogPVRDirectorOSD.h"
+#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
+#include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
+#include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
+#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/dialogs/GUIDialogPVRUpdateProgressBar.h"
+#include "video/dialogs/GUIDialogFullScreenInfo.h"
+#include "video/dialogs/GUIDialogTeletext.h"
+#include "dialogs/GUIDialogSlider.h"
+#include "guilib/GUIControlFactory.h"
+#include "dialogs/GUIDialogCache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -252,7 +249,7 @@
 #include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
-#include "XRandR.h"
+#include "windowing/X11/XRandR.h"
 #endif
 #ifdef __APPLE__
 #include "CocoaInterface.h"
@@ -267,7 +264,7 @@
 #include "linux/HALManager.h"
 #endif
 
-#include "MediaManager.h"
+#include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
@@ -277,10 +274,10 @@
 #endif
 
 #ifdef HAS_LIRC
-#include "common/LIRC.h"
+#include "input/linux/LIRC.h"
 #endif
 #ifdef HAS_IRSERVERSUITE
-  #include "common/IRServerSuite/IRServerSuite.h"
+  #include "input/windows/IRServerSuite.h"
 #endif
 
 using namespace std;
@@ -433,11 +430,11 @@ extern "C" void __stdcall update_emu_environ();
 //
 static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
 {
-  CStdString destPath = CUtil::AddFileToFolder(strPath, file);
+  CStdString destPath = URIUtils::AddFileToFolder(strPath, file);
   if (!CFile::Exists(destPath))
   {
     // need to copy it across
-    CStdString srcPath = CUtil::AddFileToFolder("special://xbmc/userdata/", file);
+    CStdString srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
     CFile::Cache(srcPath, destPath);
   }
 }
@@ -529,7 +526,7 @@ bool CApplication::Create()
   CUtil::GetHomePath(strExecutablePath);
 
   // if we are running from DVD our UserData location will be TDATA
-  if (CUtil::IsDVD(strExecutablePath))
+  if (URIUtils::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
     if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
@@ -537,7 +534,7 @@ bool CApplication::Create()
       CFileItemList items;
       CUtil::GetRecursiveListing("special://xbmc/userdata",items,"");
       for (int i=0;i<items.Size();++i)
-          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
+          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+URIUtils::GetFileName(items[i]->m_strPath));
     }
     g_settings.m_logFolder = "special://masterprofile/";
   }
@@ -790,11 +787,11 @@ bool CApplication::InitDirectoriesLinux()
     xbmcPath = INSTALL_PATH;
     /* Check if xbmc binaries and arch independent data files are being kept in
      * separate locations. */
-    if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+    if (!CFile::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
     {
       /* Attempt to locate arch independent data files. */
       CUtil::GetHomePath(xbmcPath);
-      if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+      if (!CFile::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
       {
         fprintf(stderr, "Unable to find path to XBMC data files!\n");
         exit(1);
@@ -814,10 +811,10 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
-    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
-    CUtil::AddSlashAtEnd(strTempPath);
+    URIUtils::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
@@ -825,19 +822,19 @@ bool CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CUtil::AddSlashAtEnd(xbmcPath);
+    URIUtils::AddSlashAtEnd(xbmcPath);
     g_settings.m_logFolder = xbmcPath;
 
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CreateUserDirs();
 
-    CUtil::AddSlashAtEnd(strTempPath);
+    URIUtils::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
   }
 
@@ -876,35 +873,35 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
 #ifdef __APPLE__
-    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/");
+    CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
     CDirectory::Create(strTempPath);
 #endif
 
-    strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
+    strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
 #ifdef __APPLE__
     strTempPath = userHome + "/Library/Logs";
 #endif
-    CUtil::AddSlashAtEnd(strTempPath);
+    URIUtils::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
   }
   else
   {
-    CUtil::AddSlashAtEnd(xbmcPath);
+    URIUtils::AddSlashAtEnd(xbmcPath);
     g_settings.m_logFolder = xbmcPath;
 
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
-    CUtil::AddSlashAtEnd(strTempPath);
+    URIUtils::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
   }
 
@@ -930,33 +927,33 @@ bool CApplication::InitDirectoriesWin32()
     CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
 
     // create user/app data/XBMC
-    CStdString homePath = CUtil::AddFileToFolder(strWin32UserFolder, "XBMC");
+    CStdString homePath = URIUtils::AddFileToFolder(strWin32UserFolder, "XBMC");
 
     // move log to platform dirs
     g_settings.m_logFolder = homePath;
-    CUtil::AddSlashAtEnd(g_settings.m_logFolder);
+    URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
 
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(homePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
+    CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(homePath,"cache"));
 
     CreateUserDirs();
 
   }
   else
   {
-    CUtil::AddSlashAtEnd(xbmcPath);
+    URIUtils::AddSlashAtEnd(xbmcPath);
     g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     CreateUserDirs();
@@ -1107,9 +1104,9 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogTeletext);                 // window id = 613
 
   g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
-  g_windowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
+  g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
   g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
-  g_windowManager.Add(new CGUIWindowVideoInfo);                // window id = 2003
+  g_windowManager.Add(new CGUIDialogVideoInfo);          // window id = 2003
   g_windowManager.Add(new CGUIDialogTextViewer);
   g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
   g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
@@ -1119,9 +1116,9 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
 #endif
 
-  g_windowManager.Add(new CGUIWindowOSD);                // window id = 2901
-  g_windowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
-  g_windowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
+  g_windowManager.Add(new CGUIDialogVideoOSD);           // window id = 2901
+  g_windowManager.Add(new CGUIDialogMusicOverlay);       // window id = 2903
+  g_windowManager.Add(new CGUIDialogVideoOverlay);       // window id = 2904
   g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
   g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
@@ -1607,13 +1604,13 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   // load in the skin strings
   CStdString langPath, skinEnglishPath;
-  CUtil::AddFileToFolder(skin->Path(), "language", langPath);
-  CUtil::AddFileToFolder(langPath, g_guiSettings.GetString("locale.language"), langPath);
-  CUtil::AddFileToFolder(langPath, "strings.xml", langPath);
+  URIUtils::AddFileToFolder(skin->Path(), "language", langPath);
+  URIUtils::AddFileToFolder(langPath, g_guiSettings.GetString("locale.language"), langPath);
+  URIUtils::AddFileToFolder(langPath, "strings.xml", langPath);
 
-  CUtil::AddFileToFolder(skin->Path(), "language", skinEnglishPath);
-  CUtil::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
-  CUtil::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
+  URIUtils::AddFileToFolder(skin->Path(), "language", skinEnglishPath);
+  URIUtils::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
+  URIUtils::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
 
@@ -1736,7 +1733,7 @@ bool CApplication::LoadUserWindows()
       {
         if (items[i]->m_bIsFolder)
           continue;
-        CStdString skinFile = CUtil::GetFileName(items[i]->m_strPath);
+        CStdString skinFile = URIUtils::GetFileName(items[i]->m_strPath);
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
           TiXmlDocument xmlDoc;
@@ -1827,9 +1824,9 @@ void CApplication::RenderNoPresent()
       g_renderManager.RenderUpdate(true);
 
     // close window overlays
-    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
     if (overlay) overlay->Close(true);
-    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OVERLAY);
     if (overlay) overlay->Close(true);
 
   }
@@ -3106,14 +3103,12 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     g_windowManager.Delete(WINDOW_MUSIC_FILES);
     g_windowManager.Delete(WINDOW_MUSIC_NAV);
-    g_windowManager.Delete(WINDOW_MUSIC_INFO);
-    g_windowManager.Delete(WINDOW_VIDEO_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_INFO);
     g_windowManager.Delete(WINDOW_VIDEO_FILES);
     g_windowManager.Delete(WINDOW_VIDEO_PLAYLIST);
     g_windowManager.Delete(WINDOW_VIDEO_NAV);
     g_windowManager.Delete(WINDOW_FILES);
-    g_windowManager.Delete(WINDOW_MUSIC_INFO);
-    g_windowManager.Delete(WINDOW_VIDEO_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_YES_NO);
     g_windowManager.Delete(WINDOW_DIALOG_PROGRESS);
     g_windowManager.Delete(WINDOW_DIALOG_NUMERIC);
@@ -3180,9 +3175,9 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_SCREEN_CALIBRATION);
     g_windowManager.Delete(WINDOW_SYSTEM_INFORMATION);
     g_windowManager.Delete(WINDOW_SCREENSAVER);
-    g_windowManager.Delete(WINDOW_OSD);
-    g_windowManager.Delete(WINDOW_MUSIC_OVERLAY);
-    g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
+    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD);
+    g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OVERLAY);
+    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OVERLAY);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
     g_windowManager.Delete(WINDOW_ADDON_BROWSER);
 
@@ -3426,7 +3421,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
-    CDlgCache* dlgCache = new CDlgCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
+    CGUIDialogCache* dlgCache = new CGUIDialogCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
@@ -3584,7 +3579,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
-  if (CUtil::IsUPnP(item.m_strPath))
+  if (URIUtils::IsUPnP(item.m_strPath))
   {
     CFileItem item_new(item);
     if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
@@ -5200,9 +5195,9 @@ void CApplication::SeekPercentage(float percent)
 bool CApplication::SwitchToFullScreen()
 {
   // if playing from the video info window, close it first!
-  if (g_windowManager.HasModalDialog() && g_windowManager.GetTopMostModalDialogID() == WINDOW_VIDEO_INFO)
+  if (g_windowManager.HasModalDialog() && g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_VIDEO_INFO)
   {
-    CGUIWindowVideoInfo* pDialog = (CGUIWindowVideoInfo*)g_windowManager.GetWindow(WINDOW_VIDEO_INFO);
+    CGUIDialogVideoInfo* pDialog = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
     if (pDialog) pDialog->Close(true);
   }
 

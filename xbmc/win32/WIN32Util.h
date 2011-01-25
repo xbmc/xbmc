@@ -22,7 +22,7 @@
  */
 
 #include "URL.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #if _MSC_VER > 1400
 #include "Cfgmgr32.h"
 #endif

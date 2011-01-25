@@ -1,10 +1,9 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
 CXXFLAGS=-fPIC
 
 .PHONY: compile
 
-OUTDIR=../../../../addons
+OUTDIR=@abs_top_srcdir@/addons
 RSXS=..
 
 DIRS=$(RSXS)
@@ -58,5 +57,5 @@ $(EUPHORIA-DEP)   : $(RSXS)
 $(RSXS): compile
 	$(MAKE) -C $(RSXS)
 
-include ../../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 

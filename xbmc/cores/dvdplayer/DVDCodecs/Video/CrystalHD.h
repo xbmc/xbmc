@@ -25,7 +25,7 @@
 #include <deque>
 
 #include "DVDVideoCodec.h"
-#include "DVDStreamInfo.h"
+#include "cores/dvdplayer/DVDStreamInfo.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>

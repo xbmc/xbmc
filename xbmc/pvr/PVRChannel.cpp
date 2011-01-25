@@ -20,11 +20,11 @@
  */
 
 #include "FileItem.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "FileSystem/File.h"
-#include "MusicInfoTag.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include "PVRChannelGroupsContainer.h"
 #include "PVREpgContainer.h"

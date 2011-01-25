@@ -19,10 +19,10 @@
  *
  */
 
-#include "GUISettings.h"
-#include "GUIDialogPVRUpdateProgressBar.h"
-#include "GUIDialogProgress.h"
-#include "GUIWindowManager.h"
+#include "settings/GUISettings.h"
+#include "pvr/dialogs/GUIDialogPVRUpdateProgressBar.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "guilib/GUIWindowManager.h"
 #include "log.h"
 #include "TimeUtils.h"
 

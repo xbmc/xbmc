@@ -20,17 +20,17 @@
  */
 
 #include "PlayListPlayer.h"
-#include "PlayListFactory.h"
+#include "playlists/PlayListFactory.h"
 #include "Application.h"
 #include "PartyModeManager.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogOK.h"
-#include "PlayList.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogOK.h"
+#include "playlists/PlayList.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "MusicInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
 
 using namespace PLAYLIST;
 

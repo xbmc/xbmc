@@ -21,7 +21,7 @@
 
 #pragma once
 #include "DVDInputStream.h"
-#include "FileSystem/HTSPSession.h"
+#include "filesystem/HTSPSession.h"
 
 class CDVDInputStreamHTSP
   : public CDVDInputStream

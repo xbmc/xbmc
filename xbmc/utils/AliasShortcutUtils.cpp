@@ -21,6 +21,7 @@
 
 #if defined(__APPLE__)
 #include <CoreServices/CoreServices.h>
+#include "utils/URIUtils.h"
 #elif defined(_LINUX)
 #else
 #endif
@@ -35,7 +36,7 @@ bool IsAliasShortcut(CStdString &path)
 #if defined(__APPLE__)
   // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
-  if (CUtil::GetExtension(path) != ".alias")
+  if (URIUtils::GetExtension(path) != ".alias")
   {
     FSRef fileRef;
     Boolean targetIsFolder, wasAliased;

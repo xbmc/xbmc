@@ -23,7 +23,7 @@
  *
  */
 
-#include "GUIMessage.h"
+#include "guilib/GUIMessage.h"
 
 //  Source related messages
 #define GUI_MSG_REMOVED_MEDIA           GUI_MSG_USER + 1

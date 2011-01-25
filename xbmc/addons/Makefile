@@ -1,22 +1,24 @@
-INCLUDES+=-I. -I../ -I../../guilib -I../utils -I../linux
-
 SRCS=Addon.cpp \
-		 AddonManager.cpp \
-		 AddonStatusHandler.cpp \
-		 PluginSource.cpp \
-		 ScreenSaver.cpp \
-		 Scraper.cpp \
-		 Service.cpp \
-		 Skin.cpp \
-		 Visualisation.cpp \
-		 PVRClient.cpp \
-		 fft.cpp \
-		 Skin.cpp \
-		 AddonHelpers_Addon.cpp \
-		 AddonHelpers_GUI.cpp \
-		 AddonHelpers_PVR.cpp \
-		 AddonHelpers_local.cpp \
-		 Repository.cpp \
+     AddonHelpers_Addon.cpp \
+     AddonHelpers_GUI.cpp \
+     AddonHelpers_PVR.cpp \
+     AddonHelpers_local.cpp \
+     AddonDatabase.cpp \
+     AddonInstaller.cpp \
+     AddonManager.cpp \
+     AddonStatusHandler.cpp \
+     GUIDialogAddonInfo.cpp \
+     GUIDialogAddonSettings.cpp \
+     GUIViewStateAddonBrowser.cpp \
+     GUIWindowAddonBrowser.cpp \
+     PVRClient.cpp \
+     PluginSource.cpp \
+     Repository.cpp \
+     Scraper.cpp \
+     ScreenSaver.cpp \
+     Service.cpp \
+     Skin.cpp \
+     Visualisation.cpp \
 
 LIB=addons.a
 

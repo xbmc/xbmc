@@ -19,7 +19,7 @@
  *
  */
 
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "TextSearch.h"
 #include "../addons/include/xbmc_pvr_types.h"
 

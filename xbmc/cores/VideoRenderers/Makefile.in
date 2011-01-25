@@ -1,18 +1,21 @@
-INCLUDES=-I../../.. -I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../dvdplayer/Codecs/ffmpeg
+SRCS=BaseRenderer.cpp \
+     LinuxRenderer.cpp \
+     OverlayRenderer.cpp \
+     OverlayRendererUtil.cpp \
+     RenderManager.cpp \
+
+ifeq (@USE_OPENGL@,1)
+SRCS+= LinuxRendererGL.cpp \
+       OverlayRendererGL.cpp \
+
 endif
 
-SRCS=LinuxRenderer.cpp \
-     RenderManager.cpp \
-     LinuxRendererGL.cpp \
-     LinuxRendererGLES.cpp \
-     OverlayRenderer.cpp \
-     OverlayRendererGL.cpp \
-     OverlayRendererUtil.cpp \
-     BaseRenderer.cpp
+ifeq (@USE_OPENGLES@,1)
+SRCS+= LinuxRendererGLES.cpp \
+
+endif
 
 LIB=VideoRenderer.a
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

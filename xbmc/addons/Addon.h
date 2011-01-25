@@ -24,7 +24,7 @@
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "URL.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include <ostream>
 
 class CURL;

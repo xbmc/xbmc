@@ -24,11 +24,11 @@
  * - use Observervable here, so we can use event driven operations later
  */
 
-#include "GUISettings.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "MusicInfoTag.h"
+#include "settings/GUISettings.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
+#include "music/tags/MusicInfoTag.h"
 #include "log.h"
 
 #include "PVRChannelGroupsContainer.h"
@@ -322,7 +322,7 @@ CPVRChannel *CPVRChannelGroup::GetByPath(const CStdString &strPath)
   /* get the filename from curl */
   CURL url(strPath);
   CStdString strFileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(strFileName);
+  URIUtils::RemoveSlashAtEnd(strFileName);
 
   if (strFileName.Left(16) == "channels/tv/all/")
   {
@@ -343,12 +343,12 @@ CPVRChannel *CPVRChannelGroup::GetByPath(const CStdString &strPath)
 bool CPVRChannelGroup::GetDirectory(const CStdString& strPath, CFileItemList &results)
 {
   CStdString strBase(strPath);
-  CUtil::RemoveSlashAtEnd(strBase);
+  URIUtils::RemoveSlashAtEnd(strBase);
 
   /* get the filename from curl */
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
+  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "channels")
   {

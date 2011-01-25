@@ -7,7 +7,7 @@
 
 #include "MythXml.h"
 
-#include "FileSystem/FileCurl.h"
+#include "filesystem/FileCurl.h"
 #include "utils/log.h"
 
 #include "libmythxml/GetNumChannelsParameters.h"

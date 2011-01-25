@@ -20,9 +20,9 @@
  */
 #include "Service.h"
 #include "AddonManager.h"
-#include "log.h"
+#include "utils/log.h"
 #ifdef HAS_PYTHON
-#include "lib/libPython/XBPython.h"
+#include "interfaces/python/XBPython.h"
 #endif
 
 using namespace std;

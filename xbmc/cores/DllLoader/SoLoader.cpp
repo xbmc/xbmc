@@ -21,8 +21,8 @@
 
 #include <dlfcn.h>
 #include "SoLoader.h"
-#include "StdString.h"
-#include "FileSystem/SpecialProtocol.h"
+#include "utils/StdString.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 
 SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)

@@ -20,12 +20,12 @@
  */
 
 #include "AutoSwitch.h"
-#include "GUIBaseContainer.h" // for VIEW_TYPE_*
-#include "Settings.h"
-#include "GUISettings.h"
-#include "GUIWindowManager.h"
+#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
+#include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
-#include "Key.h"
+#include "guilib/Key.h"
 
 #define METHOD_BYFOLDERS  0
 #define METHOD_BYFILES   1

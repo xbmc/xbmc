@@ -31,7 +31,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <queue>
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "settings/VideoSettings.h"
 namespace Surface { class CSurface; }
 

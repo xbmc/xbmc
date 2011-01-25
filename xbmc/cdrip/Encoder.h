@@ -22,7 +22,7 @@
  *
  */
 
-#include "StdString.h"
+#include "utils/StdString.h"
 
 #define ENC_ARTIST  11
 #define ENC_TITLE   12

@@ -20,7 +20,7 @@
  *
  */
 
-#include "Database.h"
+#include "dbwrappers/Database.h"
 #include "DateTime.h"
 
 class CPVRChannelGroup;

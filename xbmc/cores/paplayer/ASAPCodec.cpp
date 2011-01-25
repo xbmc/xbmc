@@ -20,7 +20,7 @@
  */
 
 #include "ASAPCodec.h"
-#include "Util.h"
+#include "utils/URIUtils.h"
 #include "FileSystem/File.h"
 
 ASAPCodec::ASAPCodec()
@@ -40,16 +40,16 @@ bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
   CStdString strFileToLoad = strFile;
   int song = -1;
   CStdString strExtension;
-  CUtil::GetExtension(strFile, strExtension);
+  URIUtils::GetExtension(strFile, strExtension);
   strExtension.MakeLower();
   if (strExtension == ".asapstream")
   {
-    CStdString strFileName = CUtil::GetFileName(strFile);
+    CStdString strFileName = URIUtils::GetFileName(strFile);
     int iStart = strFileName.ReverseFind('-') + 1;
     song = atoi(strFileName.substr(iStart, strFileName.size() - iStart - 11).c_str()) - 1;
     CStdString strPath = strFile;
-    CUtil::GetDirectory(strPath, strFileToLoad);
-    CUtil::RemoveSlashAtEnd(strFileToLoad);
+    URIUtils::GetDirectory(strPath, strFileToLoad);
+    URIUtils::RemoveSlashAtEnd(strFileToLoad);
   }
 
   int duration;

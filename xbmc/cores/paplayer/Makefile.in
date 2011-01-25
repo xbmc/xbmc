@@ -2,14 +2,32 @@ ARCH=@ARCH@
 
 .PHONY: compile
 
-INCLUDES=-I../../.. -I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../dvdplayer/Codecs/ffmpeg
-endif
-
 CFLAGS+=-DHAS_ALSA
 
-SRCS=AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AIFFcodec.cpp AudioDecoder.cpp CDDAcodec.cpp CodecFactory.cpp VGMCodec.cpp FLACcodec.cpp MP3codec.cpp NSFCodec.cpp OGGcodec.cpp ReplayGain.cpp SIDCodec.cpp TimidityCodec.cpp WAVcodec.cpp WAVPackcodec.cpp YMCodec.cpp DVDPlayerCodec.cpp DTSCodec.cpp DTSCDDACodec.cpp PAPlayer.cpp OggCallback.cpp ModplugCodec.cpp
+SRCS=AC3CDDACodec.cpp \
+     AC3Codec.cpp \
+     ADPCMCodec.cpp \
+     AIFFcodec.cpp \
+     AudioDecoder.cpp \
+     CDDAcodec.cpp \
+     CodecFactory.cpp \
+     DTSCDDACodec.cpp \
+     DTSCodec.cpp \
+     DVDPlayerCodec.cpp \
+     FLACcodec.cpp \
+     ModplugCodec.cpp \
+     MP3codec.cpp \
+     NSFCodec.cpp \
+     OggCallback.cpp \
+     OGGcodec.cpp \
+     PAPlayer.cpp \
+     ReplayGain.cpp \
+     SIDCodec.cpp \
+     TimidityCodec.cpp \
+     VGMCodec.cpp \
+     WAVcodec.cpp \
+     WAVPackcodec.cpp \
+     YMCodec.cpp \
 
 ifeq (@USE_ASAP_CODEC@,1)
   SRCS+=ASAPCodec.cpp
@@ -26,5 +44,5 @@ endif
 
 LIB=paplayer.a
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

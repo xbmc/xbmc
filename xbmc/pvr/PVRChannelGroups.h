@@ -21,7 +21,7 @@
  *
  */
 
-#include "VideoInfoTag.h"
+#include "video/VideoInfoTag.h"
 #include "DateTime.h"
 #include "FileItem.h"
 

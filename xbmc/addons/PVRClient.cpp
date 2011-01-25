@@ -36,15 +36,15 @@
 
 #include <vector>
 #include "Application.h"
-#include "LocalizeStrings.h"
-#include "StringUtils.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
 #include "URL.h"
-#include "AdvancedSettings.h"
-#include "../utils/log.h"
-#include "../utils/SingleLock.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 using namespace ADDON;

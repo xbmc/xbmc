@@ -24,11 +24,11 @@
 
 #ifdef HAS_GL
 
-#include "../../../guilib/FrameBufferObject.h"
-#include "../../../guilib/Shader.h"
-#include "../../settings/VideoSettings.h"
+#include "guilib/FrameBufferObject.h"
+#include "guilib/Shader.h"
+#include "settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include "GraphicContext.h"
+#include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 
 class CVDPAU;

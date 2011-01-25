@@ -42,7 +42,7 @@
 #include "DVDInputStreamMMS.h"
 #endif
 #include "FileItem.h"
-#include "MediaManager.h"
+#include "storage/MediaManager.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {

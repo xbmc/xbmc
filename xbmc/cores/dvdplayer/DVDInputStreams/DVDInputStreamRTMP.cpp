@@ -27,10 +27,10 @@
 #endif
 
 #ifdef HAS_LIBRTMP
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "DVDInputStreamRTMP.h"
-#include "FileSystem/IFile.h"
-#include "utils/SingleLock.h"
+#include "filesystem/IFile.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <string>

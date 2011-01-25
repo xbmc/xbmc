@@ -20,29 +20,29 @@
  */
 
 #include "GUIViewState.h"
-#include "GUIViewStateAddonBrowser.h"
-#include "GUIViewStateMusic.h"
-#include "GUIViewStateVideo.h"
-#include "GUIViewStatePictures.h"
-#include "GUIViewStatePrograms.h"
-#include "GUIViewStateTV.h"
+#include "pvr/GUIViewStateTV.h"
+#include "addons/GUIViewStateAddonBrowser.h"
+#include "music/GUIViewStateMusic.h"
+#include "video/GUIViewStateVideo.h"
+#include "pictures/GUIViewStatePictures.h"
+#include "programs/GUIViewStatePrograms.h"
 #include "PlayListPlayer.h"
-#include "Util.h"
+#include "utils/URIUtils.h"
 #include "URL.h"
 #include "GUIPassword.h"
-#include "GUIBaseContainer.h" // for VIEW_TYPE_*
+#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
-#include "GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "addons/AddonManager.h"
 #include "ViewState.h"
-#include "GUISettings.h"
-#include "AdvancedSettings.h"
-#include "Settings.h"
+#include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
-#include "Key.h"
-#include "FileSystem/AddonsDirectory.h"
-#include "TextureManager.h"
+#include "guilib/Key.h"
+#include "filesystem/AddonsDirectory.h"
+#include "guilib/TextureManager.h"
 
 using namespace std;
 
@@ -313,7 +313,7 @@ const CStdString& CGUIViewState::GetPlaylistDirectory()
 void CGUIViewState::SetPlaylistDirectory(const CStdString& strDirectory)
 {
   m_strPlaylistDirectory=strDirectory;
-  CUtil::RemoveSlashAtEnd(m_strPlaylistDirectory);
+  URIUtils::RemoveSlashAtEnd(m_strPlaylistDirectory);
 }
 
 bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
@@ -322,7 +322,7 @@ bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
     return false;
 
   CStdString strDir=strDirectory;
-  CUtil::RemoveSlashAtEnd(strDir);
+  URIUtils::RemoveSlashAtEnd(strDir);
 
   return (m_strPlaylistDirectory==strDir);
 }
@@ -372,7 +372,7 @@ void CGUIViewState::AddLiveTVSources()
   VECSOURCES *sources = g_settings.GetSourcesFromType("video");
   for (IVECSOURCES it = sources->begin(); it != sources->end(); it++)
   {
-    if (CUtil::IsLiveTV((*it).strPath))
+    if (URIUtils::IsLiveTV((*it).strPath))
     {
       CMediaSource source;
       source.strPath = (*it).strPath;

@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 

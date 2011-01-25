@@ -7,7 +7,7 @@
 
 #include "MythXmlCommand.h"
 
-#include "FileSystem/FileCurl.h"
+#include "filesystem/FileCurl.h"
 
 #include "utils/log.h"
 

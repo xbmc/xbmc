@@ -23,10 +23,10 @@
 
 #if !defined(_LINUX) && !defined(HAS_GL)
 
-#include "GraphicContext.h"
+#include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
-#include "D3DResource.h"
+#include "guilib/D3DResource.h"
 #include "settings/VideoSettings.h"
 //#define MP_DIRECTRENDERING
 

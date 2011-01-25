@@ -21,15 +21,13 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
-#include "GUIWindowManager.h"
-#include "FileSystem/File.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "Key.h"
-#include "Util.h"
-#include "Settings.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "guilib/Key.h"
+#include "utils/URIUtils.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
-#include "XMLUtils.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -71,8 +69,8 @@ CSkinInfo::~CSkinInfo()
 
 void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
 {
-  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
-  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
+  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
+  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
   LoadIncludes();
 }
 
@@ -109,16 +107,16 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
       *res = RES_PAL_4x3;
     }
   }
-  CStdString strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-  strPath = CUtil::AddFileToFolder(strPath, strFile);
+  CStdString strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+  strPath = URIUtils::AddFileToFolder(strPath, strFile);
   if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
   if (*res == RES_HDTV_1080i)
   {
     *res = RES_HDTV_720p;
-    strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-    strPath = CUtil::AddFileToFolder(strPath, strFile);
+    strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+    strPath = URIUtils::AddFileToFolder(strPath, strFile);
     if (CFile::Exists(strPath))
       return strPath;
   }
@@ -126,15 +124,15 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   if (*res == RES_PAL_16x9 || *res == RES_NTSC_16x9 || *res == RES_HDTV_480p_16x9 || *res == RES_HDTV_720p)
   {
     *res = m_DefaultResolutionWide;
-    strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-    strPath = CUtil::AddFileToFolder(strPath, strFile);
+    strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+    strPath = URIUtils::AddFileToFolder(strPath, strFile);
     if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default resolution
   *res = m_DefaultResolution;
-  strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-  strPath = CUtil::AddFileToFolder(strPath, strFile);
+  strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+  strPath = URIUtils::AddFileToFolder(strPath, strFile);
   // check if we don't have any subdirectories
   if (*res == RES_INVALID) *res = RES_PAL_4x3;
   return strPath;
@@ -252,12 +250,12 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 {
   RESOLUTION resToUse = RES_INVALID;
   GetSkinPath("Home.xml", &resToUse);
-  paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(resToUse)));
+  paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(resToUse)));
   // see if we need to add other paths
   if (resToUse != m_DefaultResolutionWide && IsWide(resToUse))
-    paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)));
+    paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)));
   if (resToUse != m_DefaultResolution && (!IsWide(resToUse) || m_DefaultResolutionWide != m_DefaultResolution))
-    paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
+    paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
 }
 
 RESOLUTION CSkinInfo::TranslateResolution(const CStdString &res, RESOLUTION def)

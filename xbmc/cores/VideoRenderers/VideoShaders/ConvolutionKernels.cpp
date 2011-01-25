@@ -23,7 +23,7 @@
 #endif
 
 #include "ConvolutionKernels.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 
 #ifndef M_PI
   #define M_PI       3.14159265358979323846

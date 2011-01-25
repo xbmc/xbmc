@@ -33,7 +33,12 @@
 
 #ifdef HAS_DVD_DRIVE
 
-#include "FileSystem/FactoryDirectory.h"
+#include "utils/StdString.h"
+
+namespace XFILE
+{
+  class IDirectory;
+}
 
 namespace MEDIA_DETECT
 {

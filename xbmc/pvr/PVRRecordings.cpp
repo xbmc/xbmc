@@ -36,13 +36,13 @@
  */
 
 #include "FileItem.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
-#include "LocalizeStrings.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "Util.h"
 #include "URL.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 
 #include "PVRRecordings.h"
 #include "PVRManager.h"
@@ -212,7 +212,7 @@ void CPVRRecordings::Process()
     if (at(i).Directory() != "")
       Path += at(i).Directory();
 
-    CUtil::AddSlashAtEnd(Path);
+    URIUtils::AddSlashAtEnd(Path);
     Path += strTitle + ".pvr";
     at(i).SetPath(Path);
   }
@@ -312,11 +312,11 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
   CSingleLock lock(m_critSection);
 
   CStdString base(strPath);
-  CUtil::RemoveSlashAtEnd(base);
+  URIUtils::RemoveSlashAtEnd(base);
 
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
+  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "recordings")
   {
@@ -347,7 +347,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     fileName.erase(0,18);
     int clientID = atoi(fileName.c_str());
     CStdString curDir = url.GetFileName();
-    CUtil::AddSlashAtEnd(curDir);
+    URIUtils::AddSlashAtEnd(curDir);
 
     CStdString strBuffer;
     CStdString strSkip;
@@ -363,7 +363,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
       CStdString strEntryName;
       CStdString strTitle = at(i).Title();
       strEntryName.Format("recordings/client_%04i/%s", clientID, at(i).Directory());
-      CUtil::AddSlashAtEnd(strEntryName);
+      URIUtils::AddSlashAtEnd(strEntryName);
 
       strTitle.Replace('/','-');
       strEntryName += strTitle;
@@ -431,7 +431,7 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
 
   CURL url(path);
   CStdString fileName = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(fileName);
+  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName.Left(18) == "recordings/client_")
   {
@@ -455,7 +455,7 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
       title = fileName;
       dir = "";
     }
-    CUtil::RemoveExtension(title);
+    URIUtils::RemoveExtension(title);
     int index = atoi(title.substr(title.size()-5).c_str());
     title.erase(title.size()-6);
 

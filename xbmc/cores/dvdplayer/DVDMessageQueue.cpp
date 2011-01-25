@@ -22,9 +22,9 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "DVDClock.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 
 using namespace std;
 

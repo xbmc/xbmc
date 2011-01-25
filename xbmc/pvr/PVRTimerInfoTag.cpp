@@ -19,9 +19,9 @@
  *
  */
 
-#include "GUISettings.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogYesNo.h"
+#include "settings/GUISettings.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 
 #include "PVRTimerInfoTag.h"
 #include "PVRChannelGroupsContainer.h"

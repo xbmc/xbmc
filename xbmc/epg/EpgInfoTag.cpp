@@ -19,7 +19,7 @@
  *
  */
 
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "../addons/include/xbmc_pvr_types.h"
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"

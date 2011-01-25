@@ -22,7 +22,6 @@
  */
 
 #include "CachingCodec.h"
-#include "FileSystem/File.h"
 
 class AIFFCodec : public CachingCodec
 {

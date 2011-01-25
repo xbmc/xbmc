@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "Database.h"
+#include "dbwrappers/Database.h"
 
 class CTextureDatabase : public CDatabase
 {

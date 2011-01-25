@@ -20,7 +20,7 @@
  */
 
 #include "LangInfo.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "Temperature.h"
 
 

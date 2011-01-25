@@ -22,8 +22,8 @@
 #include "Addon.h"
 #include "include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
-#include "utils/CriticalSection.h"
-#include "StdString.h"
+#include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 #include "utils/Job.h"
 #include "utils/Stopwatch.h"
 #include <vector>
@@ -138,6 +138,14 @@ namespace ADDON
      \return true if addon is set, false otherwise.
      */
     bool LoadAddonDescription(const CStdString &path, AddonPtr &addon);
+
+    /*! \brief Load the addon in the given in-memory xml
+     This loads the addon using c-pluff which parses the addon descriptor file.
+     \param root Root element of an XML document.
+     \param addon [out] returned addon.
+     \return true if addon is set, false otherwise.
+     */
+    bool LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon);
 
     /*! \brief Parse a repository XML file for addons and load their descriptors
      A repository XML is essentially a concatenated list of addon descriptors.

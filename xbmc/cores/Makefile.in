@@ -1,13 +1,6 @@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -Idvdplayer
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-Iffmpeg
-endif
-
 SRCS=DummyVideoPlayer.cpp \
-     ssrc.cpp \
-     dlgcache.cpp
 
 LIB=cores.a
 
-include ../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

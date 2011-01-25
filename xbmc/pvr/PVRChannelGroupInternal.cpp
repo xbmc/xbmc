@@ -19,10 +19,10 @@
  *
  */
 
-#include "GUISettings.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
+#include "settings/GUISettings.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
 #include "log.h"
 
 #include "PVRChannelGroupInternal.h"

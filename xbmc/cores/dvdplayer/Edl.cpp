@@ -20,11 +20,11 @@
  */
 
 #include "Edl.h"
-#include "StringUtils.h"
-#include "Util.h"
-#include "FileSystem/File.h"
-#include "FileSystem/MythFile.h"
-#include "AdvancedSettings.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "filesystem/File.h"
+#include "filesystem/MythFile.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "PlatformDefs.h"
@@ -112,8 +112,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
-  if (CUtil::IsHD(strMovie)
-  ||  CUtil::IsSmb(strMovie))
+  if (URIUtils::IsHD(strMovie)
+  ||  URIUtils::IsSmb(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
               __FUNCTION__, strMovie.c_str());
@@ -136,8 +136,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
   /*
    * Or if the movie points to MythTV and isn't live TV.
    */
-  else if (CUtil::IsMythTV(strMovie)
-  &&      !CUtil::IsLiveTV(strMovie))
+  else if (URIUtils::IsMythTV(strMovie)
+  &&      !URIUtils::IsLiveTV(strMovie))
   {
     Clear(); // Don't clear in either ReadMyth* method as they are intended to be used together.
     CLog::Log(LOGDEBUG, "%s - Checking for commercial breaks within MythTV for: %s", __FUNCTION__,
@@ -160,7 +160,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString edlFilename(CUtil::ReplaceExtension(strMovie, ".edl"));
+  CStdString edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -329,7 +329,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString comskipFilename(CUtil::ReplaceExtension(strMovie, ".txt"));
+  CStdString comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -414,7 +414,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
    */
 
   Clear();
-  CStdString videoReDoFilename(CUtil::ReplaceExtension(strMovie, ".Vprj"));
+  CStdString videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -500,7 +500,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename(CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml"));
+  CStdString beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 

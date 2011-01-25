@@ -227,7 +227,7 @@
 				RelativePath=".\Bundler.cpp">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\lib\liblzo\lzo.lib">
+				RelativePath="..\..\lib\win32\liblzo\lzo.lib">
 			</File>
 			<File
 				RelativePath=".\sha.c">

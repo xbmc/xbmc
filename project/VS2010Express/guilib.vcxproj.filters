@@ -255,27 +255,6 @@
     <ClCompile Include="..\..\guilib\XBTFReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\guilib\XMLUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\tinyXML\tinyxml.cpp">
-      <Filter>tinyxml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\tinyXML\tinyxmlerror.cpp">
-      <Filter>tinyxml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\tinyXML\tinyxmlparser.cpp">
-      <Filter>tinyxml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\common\SDLJoystick.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\common\IRServerSuite\IRServerSuite.cpp">
-      <Filter>common\IRServerSuite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\guilib\common\IRServerSuite\IrssMessage.cpp">
-      <Filter>common\IRServerSuite</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\guilib\GraphicContext.cpp">
       <Filter>Rendering\Base</Filter>
     </ClCompile>
@@ -312,8 +291,31 @@
     <ClCompile Include="..\..\guilib\GUITextureGLES.cpp">
       <Filter>Rendering\GL</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\..\guilib\GUIEPGGridContainer.cpp">
       <Filter>Source Files</Filter>
+=======
+    <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp">
+      <Filter>common\IRServerSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp">
+      <Filter>common\IRServerSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyXML\tinystr.cpp">
+      <Filter>tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyXML\tinyxml.cpp">
+      <Filter>tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyXML\tinyxmlerror.cpp">
+      <Filter>tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp">
+      <Filter>tinyxml</Filter>
+>>>>>>> upstream/master
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -542,12 +544,6 @@
     <ClInclude Include="..\..\guilib\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\guilib\StdString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\system.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\guilib\TextureBundle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -559,24 +555,6 @@
     </ClInclude>
     <ClInclude Include="..\..\guilib\VisibleEffect.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\XMLUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\tinyXML\tinystr.h">
-      <Filter>tinyxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\tinyXML\tinyxml.h">
-      <Filter>tinyxml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\common\SDLJoystick.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\common\IRServerSuite\IRServerSuite.h">
-      <Filter>common\IRServerSuite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\common\IRServerSuite\IrssMessage.h">
-      <Filter>common\IRServerSuite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\GraphicContext.h">
       <Filter>Rendering\Base</Filter>
@@ -614,8 +592,25 @@
     <ClInclude Include="..\..\guilib\GUITextureGLES.h">
       <Filter>Rendering\GL</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\..\guilib\GUIEPGGridContainer.h">
       <Filter>Header Files</Filter>
+=======
+    <ClInclude Include="..\..\xbmc\input\SDLJoystick.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\windows\IRServerSuite.h">
+      <Filter>common\IRServerSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\windows\IrssMessage.h">
+      <Filter>common\IRServerSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tinyXML\tinystr.h">
+      <Filter>tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tinyXML\tinyxml.h">
+      <Filter>tinyxml</Filter>
+>>>>>>> upstream/master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

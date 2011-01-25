@@ -23,7 +23,7 @@
 #include "DllPaths_win32.h"
 #include "SpecialProtocol.h"
 #include "Application.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 
 FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
 {

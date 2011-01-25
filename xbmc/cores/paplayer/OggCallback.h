@@ -22,7 +22,7 @@
  */
 
 #include "DllVorbisfile.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 
 class COggCallback
 {

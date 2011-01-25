@@ -23,7 +23,7 @@
 
 #include "DVDOverlay.h"
 #ifdef _LINUX
-#include "../../utils/CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #endif
 
 class CDVDOverlayText : public CDVDOverlay

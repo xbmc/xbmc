@@ -22,7 +22,7 @@
 #include "Application.h"
 #include "Addon.h"
 #include "AddonHelpers_Addon.h"
-#include "log.h"
+#include "utils/log.h"
 #include "LangInfo.h"
 
 namespace ADDON

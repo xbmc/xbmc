@@ -28,7 +28,7 @@
  */
 
 
-#include "../../addons/include/xbmc_vis_dll.h"
+#include "addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
 #include <GL/glew.h>

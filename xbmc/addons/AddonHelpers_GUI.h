@@ -21,7 +21,7 @@
  */
 
 #include "AddonHelpers_local.h"
-#include "GUIMediaWindow.h"
+#include "windows/GUIMediaWindow.h"
 
 class CGUISpinControlEx;
 class CGUIButtonControl;
