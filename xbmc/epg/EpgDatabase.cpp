@@ -174,10 +174,9 @@ bool CEpgDatabase::EraseOldEpgEntries()
 
 bool CEpgDatabase::RemoveEpgEntry(const CEpgInfoTag &tag)
 {
-  /* invalid tag */
+  /* tag without a database ID was not peristed */
   if (tag.BroadcastId() <= 0)
   {
-    CLog::Log(LOGERROR, "EpgDB - %s - invalid EPG tag", __FUNCTION__);
     return false;
   }
 
