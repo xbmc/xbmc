@@ -32,9 +32,6 @@ class CPVREpgContainer;
 class CPVREpg : public CEpg
 {
 private:
-  CPVRChannel * m_Channel;  /*!< the channel this EPG belongs to */
-  bool          m_bIsRadio; /*!< true if this is a table for radio channels, false otherwise */
-
   /*!
    * @brief Update the EPG from a client.
    * @param start Get entries with a start date after this time.
@@ -42,6 +39,15 @@ private:
    * @return True if the update was successful, false otherwise.
    */
   bool UpdateFromClient(time_t start, time_t end);
+
+protected:
+  /*!
+   * @brief Update this table's info with the given info. Doesn't change the EpgID.
+   * @param epg The new info.
+   * @param bUpdateDb If true, persist the changes.
+   * @return True if the update was successful, false otherwise.
+   */
+  bool Update(const CEpg &epg, bool bUpdateDb = false);
 
 public:
   /*!
@@ -96,5 +102,5 @@ public:
    * @brief True if this is a table for a radio channel, false if it's for TV.
    * @return True if this is a table for a radio channel, false if it's for TV.
    */
-  virtual bool IsRadio(void) const { return m_bIsRadio; }
+  bool IsRadio(void) const;
 };

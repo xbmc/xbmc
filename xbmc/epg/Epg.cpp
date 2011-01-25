@@ -37,7 +37,7 @@ struct sortEPGbyDate
   }
 };
 
-CEpg::CEpg(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
+CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CStdString &strScraperName /* = CStdString() */)
 {
   m_bUpdateRunning = false;
   m_bIsSorted      = false;
@@ -210,6 +210,8 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 
 bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
 {
+  bool bReturn = false;
+
   CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
@@ -218,7 +220,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     if (!InfoTag)
     {
       CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
-      return false;
+      return bReturn;
     }
     push_back(InfoTag);
   }
@@ -232,16 +234,11 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   m_bIsSorted = false;
 
   if (bUpdateDatabase)
-  {
-    bool retval;
-    CEpgDatabase *database = g_EpgContainer.GetDatabase();
-    database->Open();
-    retval = database->Persist(*InfoTag);
-    database->Close();
-    return retval;
-  }
+    bReturn = InfoTag->Persist();
+  else
+    bReturn = true;
 
-  return true;
+  return bReturn;
 }
 
 bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
@@ -312,8 +309,8 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
       if (bStore)
       {
-        bReturn = database->Persist(*previousTag, false, false) && bReturn;
-        bReturn = database->Persist(*currentTag, false, true) && bReturn;
+        bReturn = previousTag->Persist(false, false) && bReturn;
+        bReturn = currentTag->Persist(false, true) && bReturn;
       }
     }
 
@@ -343,14 +340,27 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CEpg::LoadFromDb()
+bool CEpg::Load()
 {
   bool bReturn = false;
 
   CEpgDatabase *database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
 
   /* request the entries for this table from the database */
-  bReturn = (database->Get(this, NULL, NULL) > 0);
+  bReturn = (database->Get(this) > 0);
+
+  return bReturn;
+}
+
+bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
+{
+  bool bReturn = true;
+
+  m_strName = epg.m_strName;
+  m_strScraperName = epg.m_strScraperName;
+
+  if (bUpdateDb)
+    bReturn = Persist(false);
 
   return bReturn;
 }
@@ -358,7 +368,6 @@ bool CEpg::LoadFromDb()
 bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
 {
   bool bGrabSuccess = true;
-  CEpgDatabase *database = g_EpgContainer.GetDatabase(); /* the database has already been opened */
 
   /* mark the EPG as being updated */
   m_bUpdateRunning = true;
@@ -371,10 +380,7 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX
     FixOverlappingEvents(bStoreInDb);
 
     if (bStoreInDb)
-    {
-      for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-        database->Persist(*at(iTagPtr), false, (iTagPtr == size() - 1));
-    }
+      Persist(true);
   }
 
   m_bUpdateRunning = false;
@@ -419,7 +425,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter)
   return size() - iInitialSize;
 }
 
-bool CEpg::Persist(void)
+bool CEpg::Persist(bool bPersistTags /* = false */)
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
@@ -434,10 +440,34 @@ bool CEpg::Persist(void)
   if (iId > 0)
   {
     m_iEpgID = iId;
-    bReturn = true;
+
+    if (bPersistTags)
+      bReturn = PersistTags();
+    else
+      bReturn = true;
   }
 
   database->Close();
+
+  return bReturn;
+}
+
+bool CEpg::PersistTags(void)
+{
+  bool bReturn = false;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    at(iTagPtr)->Persist(false);
+  }
+  bReturn = database->CommitInsertQueries();
 
   return bReturn;
 }

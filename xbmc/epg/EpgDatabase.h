@@ -25,6 +25,7 @@
 
 class CEpg;
 class CEpgInfoTag;
+class CEpgContainer;
 
 /** The EPG database */
 
@@ -94,6 +95,15 @@ public:
   bool Delete(const CEpgInfoTag &tag);
 
   /*!
+   * @brief Get all EPG tables from the database.
+   * @param container The container to fill.
+   * @param start Get entries after this time if set.
+   * @param end Get entries before this time if set.
+   * @return The amount of entries that was added.
+   */
+  int Get(CEpgContainer *container, const CDateTime &start = NULL, const CDateTime &end = NULL);
+
+  /*!
    * @brief Get all EPG entries for a table.
    * @param epg The EPG table to get the entries for.
    * @param start Get entries after this time if set.
@@ -101,24 +111,6 @@ public:
    * @return The amount of entries that was added.
    */
   int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
-
-  /**
-   * Get the start time of the first entry for a channel.
-   * If iChannelId is <= 0, then all entries will be searched.
-   */
-  /*!
-   * @brief Get the start time of the first entry for a channel.
-   * @param iEpgId The ID of the EPG table to get the entries for. If iEpgId is <= 0, then all entries will be searched.
-   * @return The start time.
-   */
-  CDateTime GetEpgDataStart(long iEpgId = -1);
-
-  /*!
-   * @brief Get the end time of the last entry for a channel.
-   * @param iEpgId The ID of the EPG table to get the entries for. If iEpgId is <= 0, then all entries will be searched.
-   * @return The end time.
-   */
-  CDateTime GetEpgDataEnd(long iEpgId = -1);
 
   /*!
    * @brief Get the last stored EPG scan time.

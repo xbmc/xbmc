@@ -34,7 +34,6 @@ CPVREpg::CPVREpg(CPVRChannel *channel) :
   CEpg(channel->ChannelID(), channel->ChannelName(), channel->EPGScraper())
 {
   m_Channel  = channel;
-  m_bIsRadio = channel->IsRadio();
 }
 
 bool CPVREpg::HasValidEntries(void) const
@@ -104,7 +103,12 @@ bool CPVREpg::LoadFromDb()
   if (!m_Channel || !m_Channel->EPGEnabled())
     return false;
 
-  return CEpg::LoadFromDb();
+  return CEpg::Load();
+}
+
+bool CPVREpg::IsRadio(void) const
+{
+  return m_Channel->IsRadio();
 }
 
 bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
@@ -114,7 +118,6 @@ bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // 
     return false;
 
   bool bGrabSuccess = true;
-  CEpgDatabase *database = g_PVREpgContainer.GetDatabase();
 
   /* mark the EPG as being updated */
   SetUpdateRunning(true);
@@ -129,13 +132,22 @@ bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // 
     FixOverlappingEvents(bStoreInDb);
 
     if (bStoreInDb)
-    {
-      for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-        database->Persist(*at(iTagPtr), false, (iTagPtr == size() - 1));
-    }
+      Persist(true);
   }
 
   SetUpdateRunning(false);
 
   return bGrabSuccess;
+}
+
+bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
+{
+  bool bReturn = CEpg::Update(epg, false);
+
+  m_Channel = epg.m_Channel;
+
+  if (bUpdateDb)
+    bReturn = Persist(false);
+
+  return bReturn;
 }

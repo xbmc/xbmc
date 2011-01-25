@@ -33,11 +33,13 @@ class CFileItemList;
 class CPVREpg;
 class CPVREpgContainer;
 
-class CEpgContainer : public std::vector<CEpg*>,
+class CEpgContainer : public std::vector<CEpg *>,
                  public Observer,
                  private CThread
 {
   friend class CEpg;
+  friend class CEpgDatabase;
+
   friend class CPVREpg;
   friend class CPVREpgContainer;
 
@@ -69,13 +71,13 @@ protected:
    * @brief Load the EPG settings.
    * @return True if the settings were loaded successfully, false otherwise.
    */
-  virtual bool LoadSettings();
+  virtual bool LoadSettings(void);
 
   /*!
    * @brief Remove old EPG entries.
    * @return True if the old entries were removed successfully, false otherwise.
    */
-  virtual bool RemoveOldEntries();
+  virtual bool RemoveOldEntries(void);
 
   /*!
    * @brief Update the last and first EPG date cache after changing or inserting a tag.
@@ -95,7 +97,7 @@ protected:
    * @param bShowProgress Show a progress bar if true.
    * @return True if the update was successful, false otherwise.
    */
-  virtual bool LoadFromDb(bool bShowProgress = false);
+  virtual bool Load(bool bShowProgress = false);
 
   /*!
    * @brief Clear all EPG entries.
@@ -107,7 +109,22 @@ protected:
   /*!
    * @brief EPG update thread
    */
-  virtual void Process();
+  virtual void Process(void);
+
+  /*!
+   * @brief Get an EPG table given it's ID.
+   * @param iEpgId The database ID of the table.
+   * @return The table or NULL if it wasn't found.
+   */
+  CEpg *GetById(int iEpgId);
+
+  /*!
+   * @brief Update an entry in this container.
+   * @param tag The table to update.
+   * @param bUpdateDatabase If set to true, this table will be persisted in the database.
+   * @return True if it was updated successfully, false otherwise.
+   */
+  virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
 public:
   /*!
@@ -124,23 +141,23 @@ public:
   /*!
    * @brief Create a new EPG table container.
    */
-  CEpgContainer();
+  CEpgContainer(void);
 
   /*!
    * @brief Destroy this instance.
    */
-  virtual ~CEpgContainer();
+  virtual ~CEpgContainer(void);
 
   /*!
    * @brief Start the EPG update thread.
    */
-  virtual void Start();
+  virtual void Start(void);
 
   /*!
    * @brief Stop the EPG update thread.
    * @return
    */
-  virtual bool Stop();
+  virtual bool Stop(void);
 
   /*!
    * @brief Reset all EPG tables.
@@ -149,6 +166,10 @@ public:
    */
   virtual bool Reset(bool bClearDb = false);
 
+  /*!
+   * @brief Erase this EPG table.
+   * @return True if it was erased, false otherwise.
+   */
   virtual bool Erase(void);
 
   /*!

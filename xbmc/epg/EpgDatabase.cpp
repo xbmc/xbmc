@@ -184,25 +184,60 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   return DeleteValues("epgtags", strWhereClause);
 }
 
-CDateTime CEpgDatabase::GetEpgDataStart(long iEpgId /* = -1 */)
+int CEpgDatabase::Get(CEpgContainer *container, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
 {
-  time_t iFirstProgramme;
+  int iReturn = -1;
+
   CStdString strWhereClause;
 
-  if (iEpgId > 0)
-    strWhereClause = FormatSQL("idEpg = '%u'", iEpgId);
-
-  CStdString strReturn = GetSingleValue("epg", "iStartTime", strWhereClause, "iStartTime ASC");
-  if (!strReturn.IsEmpty())
+  if (start != NULL)
   {
-    iFirstProgramme = atoi(strReturn);
-    CDateTime firstProgramme(iFirstProgramme);
-
-    if (firstProgramme.IsValid())
-      return firstProgramme;
+    time_t iStartTime;
+    start.GetAsTime(iStartTime);
+    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
   }
 
-  return CDateTime::GetCurrentDateTime();
+  if (end != NULL)
+  {
+    time_t iEndTime;
+    end.GetAsTime(iEndTime);
+    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
+  }
+
+  CStdString strQuery;
+  if (!strWhereClause.IsEmpty())
+    strQuery.Format("SELECT * FROM epg WHERE %s ORDER BY idEpg ASC;", strWhereClause.c_str());
+  else
+    strQuery.Format("SELECT * FROM epg ORDER BY idEpg ASC;");
+
+  int iNumRows = ResultQuery(strQuery);
+
+  if (iNumRows > 0)
+  {
+    iReturn = 0;
+
+    try
+    {
+      while (!m_pDS->eof())
+      {
+        int iEpgID                = m_pDS->fv("idEpg").get_asInt();
+        CStdString strName        = m_pDS->fv("sName").get_asString().c_str();
+        CStdString strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
+
+        CEpg newEpg(iEpgID, strName, strScraperName);
+        if (container->UpdateEntry(newEpg))
+          ++iReturn;
+
+        m_pDS->next();
+      }
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s - couldn't load EPG data from the database", __FUNCTION__);
+    }
+  }
+
+  return iReturn;
 }
 
 int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
@@ -233,6 +268,7 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
 
   if (iNumRows > 0)
   {
+    iReturn = 0;
     try
     {
       while (!m_pDS->eof())
@@ -242,33 +278,35 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
         CDateTime startTime(iStartTime);
-        newTag.SetStart(startTime);
+        newTag.m_startTime = startTime;
 
         iEndTime = (time_t) m_pDS->fv("iEndTime").get_asInt();
         CDateTime endTime(iEndTime);
-        newTag.SetEnd(endTime);
+        newTag.m_endTime = endTime;
 
         iFirstAired = (time_t) m_pDS->fv("iFirstAired").get_asInt();
         CDateTime firstAired(iFirstAired);
-        newTag.SetFirstAired(firstAired);
-        newTag.SetUniqueBroadcastID(m_pDS->fv("iBroadcastUid").get_asInt());
-        newTag.SetBroadcastId      (m_pDS->fv("idBroadcast").get_asInt());
-        newTag.SetTitle            (m_pDS->fv("sTitle").get_asString().c_str());
-        newTag.SetPlotOutline      (m_pDS->fv("sPlotOutline").get_asString().c_str());
-        newTag.SetPlot             (m_pDS->fv("sPlot").get_asString().c_str());
-        newTag.SetGenre            (m_pDS->fv("iGenreType").get_asInt(),
-                                    m_pDS->fv("iGenreSubType").get_asInt());
-        newTag.SetParentalRating   (m_pDS->fv("iParentalRating").get_asInt());
-        newTag.SetStarRating       (m_pDS->fv("iStarRating").get_asInt());
-        newTag.SetNotify           (m_pDS->fv("bNotify").get_asBool());
-        newTag.SetEpisodeNum       (m_pDS->fv("sEpisodeId").get_asString().c_str());
-        newTag.SetEpisodePart      (m_pDS->fv("sEpisodePart").get_asString().c_str());
-        newTag.SetEpisodeName      (m_pDS->fv("sEpisodeName").get_asString().c_str());
-        newTag.SetSeriesNum        (m_pDS->fv("sSeriesId").get_asString().c_str());
+        newTag.m_firstAired = firstAired;
 
-        epg->UpdateEntry(newTag, false);
+        newTag.m_iUniqueBroadcastID = m_pDS->fv("iBroadcastUid").get_asInt();
+        newTag.m_iBroadcastId       = m_pDS->fv("idBroadcast").get_asInt();
+        newTag.m_strTitle           = m_pDS->fv("sTitle").get_asString().c_str();
+        newTag.m_strPlotOutline     = m_pDS->fv("sPlotOutline").get_asString().c_str();
+        newTag.m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
+        newTag.m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
+        newTag.m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
+        newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
+        newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
+        newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
+        newTag.m_strEpisodeNum      = m_pDS->fv("sEpisodeId").get_asString().c_str();
+        newTag.m_strEpisodePart     = m_pDS->fv("sEpisodePart").get_asString().c_str();
+        newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
+        newTag.m_strSeriesNum       = m_pDS->fv("sSeriesId").get_asString().c_str();
+
+        if (epg->UpdateEntry(newTag, false))
+          ++iReturn;
+
         m_pDS->next();
-        ++iReturn;
       }
     }
     catch (...)
@@ -277,27 +315,6 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
     }
   }
   return iReturn;
-}
-
-CDateTime CEpgDatabase::GetEpgDataEnd(long iEpgId /* = -1 */)
-{
-  time_t iLastProgramme;
-  CStdString strWhereClause;
-
-  if (iEpgId > 0)
-    strWhereClause = FormatSQL("idEpg = '%u'", iEpgId);
-
-  CStdString strReturn = GetSingleValue("epgtags", "iEndTime", strWhereClause, "iEndTime DESC");
-  if (!strReturn.IsEmpty())
-  {
-    iLastProgramme = atoi(strReturn);
-    CDateTime lastProgramme(iLastProgramme);
-
-    if (lastProgramme.IsValid())
-      return lastProgramme;
-  }
-
-  return CDateTime::GetCurrentDateTime();
 }
 
 CDateTime CEpgDatabase::GetLastEpgScanTime()
@@ -440,14 +457,13 @@ bool CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true 
   }
   else
   {
-    bReturn = QueueInsertQuery(strQuery);
+    QueueInsertQuery(strQuery);
 
     if (bLastUpdate)
-      CommitInsertQueries();
+      bReturn = CommitInsertQueries();
+    else
+      bReturn = true;
   }
-
-  if ((bSingleUpdate || bLastUpdate) && GetEpgDataEnd(iEpgId) > tag.End())
-    Delete(*epg, NULL, tag.End());
 
   return bReturn;
 }

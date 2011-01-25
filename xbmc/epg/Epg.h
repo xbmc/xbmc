@@ -26,12 +26,15 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+class CEpgContainer;
+
 class CPVREpg;
 
 /** EPG container for CEpgInfoTag instances */
 
 class CEpg : public std::vector<CEpgInfoTag*>
 {
+  friend class CEpgContainer;
   friend class CPVREpg;
 
 private:
@@ -40,6 +43,8 @@ private:
   CStdString    m_strName;        /*!< the name of this table */
   CStdString    m_strScraperName; /*!< the name of the scraper to use */
   int           m_iEpgID;         /*!< the database ID of this table */
+
+  CPVRChannel * m_Channel;  /*!< the channel this EPG belongs to */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -50,6 +55,21 @@ private:
    */
   bool UpdateFromScraper(time_t start, time_t end);
 
+  /*!
+   * @brief Persist all tags in this container.
+   * @return True if all tags were persisted, false otherwise.
+   */
+  bool PersistTags(void);
+
+protected:
+  /*!
+   * @brief Update this table's info with the given info. Doesn't change the EpgID.
+   * @param epg The new info.
+   * @param bUpdateDb If true, persist the changes.
+   * @return True if the update was successful, false otherwise.
+   */
+  virtual bool Update(const CEpg &epg, bool bUpdateDb = false);
+
 public:
   /*!
    * @brief Create a new EPG instance.
@@ -57,7 +77,7 @@ public:
    * @param strName The name of this table.
    * @param strScraperName The name of the scraper to use.
    */
-  CEpg(int iEpgID, const CStdString &strName, const CStdString &strScraperName);
+  CEpg(int iEpgID, const CStdString &strName = CStdString(), const CStdString &strScraperName = CStdString());
 
   /*!
    * @brief Destroy this EPG instance.
@@ -197,7 +217,7 @@ public:
    * @brief Load all entries from the database.
    * @return True if the entries were loaded successfully, false otherwise.
    */
-  virtual bool LoadFromDb();
+  virtual bool Load();
 
   /*!
    * @brief Get all EPG entries.
@@ -216,7 +236,8 @@ public:
 
   /*!
    * @brief Persist this table in the database.
+   * @param bPersistTags Set to true to persist all changed tags in this container.
    * @return True if the table was persisted, false otherwise.
    */
-  bool Persist(void);
+  bool Persist(bool bPersistTags = false);
 };

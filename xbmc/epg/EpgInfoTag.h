@@ -33,6 +33,8 @@ class CPVREpgInfoTag;
 class CEpgInfoTag
 {
   friend class CEpg;
+  friend class CEpgDatabase;
+
   friend class CPVREpg;
   friend class CPVREpgInfoTag;
 
@@ -62,6 +64,8 @@ private:
   mutable const CEpgInfoTag *m_nextEvent;          /*!< the event that will occur after this one */
   mutable const CEpgInfoTag *m_previousEvent;      /*!< the event that occurred before this one */
   int                        m_iUniqueBroadcastID; /*!< unique broadcast ID */
+
+  bool                       m_bChanged;           /*!< keep track of changes to this entry */
 
   /*!
    * @brief Convert a genre id and subid to a human readable name.
@@ -102,6 +106,12 @@ public:
   virtual ~CEpgInfoTag();
 
   /*!
+   * @brief Check whether this tag has changed and unsaved values.
+   * @return True if it has unsaved values, false otherwise.
+   */
+  bool Changed(void) { return m_bChanged; }
+
+  /*!
    * @brief Clear this event.
    */
   virtual void Reset();
@@ -116,7 +126,7 @@ public:
    * @brief Change the unique broadcast ID of this event.
    * @param iUniqueBroadcastID The new unique broadcast ID.
    */
-  void SetUniqueBroadcastID(int iUniqueBroadcastID) { m_iUniqueBroadcastID = iUniqueBroadcastID; }
+  void SetUniqueBroadcastID(int iUniqueBroadcastID);
 
   /*!
    * @brief Get the unique broadcast ID.
@@ -134,7 +144,7 @@ public:
    * @brief Change the event's database ID.
    * @param iId The new database ID.
    */
-  void SetBroadcastId(int iId) { m_iBroadcastId = iId; }
+  void SetBroadcastId(int iId);
 
   /*!
    * @brief Get the event's start time.
@@ -158,7 +168,7 @@ public:
    * @brief Change the event's end time.
    * @param end The new end time.
    */
-  void SetEnd(const CDateTime &end) { m_endTime = end; }
+  void SetEnd(const CDateTime &end);
 
   /*!
    * @brief Get the duration of this event in seconds.
@@ -176,7 +186,7 @@ public:
    * @brief Change the title of this event.
    * @param strTitle The new title.
    */
-  void SetTitle(const CStdString &strTitle) { m_strTitle = strTitle; }
+  void SetTitle(const CStdString &strTitle);
 
   /*!
    * @brief Get the plot outline of this event.
@@ -188,7 +198,7 @@ public:
    * @brief Change the plot outline of this event.
    * @param strPlotOutline The new plot outline.
    */
-  void SetPlotOutline(const CStdString &strPlotOutline) { m_strPlotOutline = strPlotOutline; }
+  void SetPlotOutline(const CStdString &strPlotOutline);
 
   /*!
    * @brief Get the plot of this event.
@@ -200,7 +210,7 @@ public:
    * @brief Change the plot of this event.
    * @param strPlot The new plot.
    */
-  void SetPlot(const CStdString &strPlot) { m_strPlot = strPlot; }
+  void SetPlot(const CStdString &strPlot);
 
   /*!
    * @brief Get the genre type ID of this event.
@@ -238,7 +248,7 @@ public:
    * @brief Change the first air date of this event.
    * @param firstAired The new first air date.
    */
-  void SetFirstAired(const CDateTime &firstAired) { m_firstAired = firstAired; }
+  void SetFirstAired(const CDateTime &firstAired);
 
   /*!
    * @brief Get the parental rating of this event.
@@ -250,7 +260,7 @@ public:
    * @brief Change the parental rating of this event.
    * @param iParentalRating The new parental rating.
    */
-  void SetParentalRating(int iParentalRating) { m_iParentalRating = iParentalRating; }
+  void SetParentalRating(int iParentalRating);
 
   /*!
    * @brief Get the star rating of this event.
@@ -262,7 +272,7 @@ public:
    * @brief Change the star rating of this event.
    * @param iStarRating The new star rating.
    */
-  void SetStarRating(int iStarRating) { m_iStarRating = iStarRating; }
+  void SetStarRating(int iStarRating);
 
   /*!
    * @brief Notify on start if true.
@@ -274,7 +284,7 @@ public:
    * @brief Change the value of notify on start.
    * @param bNotify The new value.
    */
-  void SetNotify(bool bNotify) { m_bNotify = bNotify; }
+  void SetNotify(bool bNotify);
 
   /*!
    * @brief The series number of this event.
@@ -286,7 +296,7 @@ public:
    * @brief Change the series number of this event.
    * @param strSeriesNum The new series number.
    */
-  void SetSeriesNum(const CStdString &strSeriesNum) { m_strSeriesNum = strSeriesNum; }
+  void SetSeriesNum(const CStdString &strSeriesNum);
 
   /*!
    * @brief The episode number of this event.
@@ -298,7 +308,7 @@ public:
    * @brief Change the episode number of this event.
    * @param strEpisodeNum The new episode number.
    */
-  void SetEpisodeNum(const CStdString &strEpisodeNum) { m_strEpisodeNum = strEpisodeNum; }
+  void SetEpisodeNum(const CStdString &strEpisodeNum);
 
   /*!
    * @brief The episode part number of this event.
@@ -310,7 +320,7 @@ public:
    * @brief Change the episode part number of this event.
    * @param strEpisodePart The new episode part number.
    */
-  void SetEpisodePart(const CStdString &strEpisodePart) { m_strEpisodePart = strEpisodePart; }
+  void SetEpisodePart(const CStdString &strEpisodePart);
 
   /*!
    * @brief The episode name of this event.
@@ -322,7 +332,7 @@ public:
    * @brief Change the episode name of this event.
    * @param strEpisodeName The new episode name.
    */
-  void SetEpisodeName(const CStdString &strEpisodeName) { m_strEpisodeName = strEpisodeName; }
+  void SetEpisodeName(const CStdString &strEpisodeName);
 
   /*!
    * @brief Get the path to the icon for this event.
@@ -334,7 +344,7 @@ public:
    * @brief Change the path to the icon for this event.
    * @param strIconPath The new path.
    */
-  void SetIcon(const CStdString &strIconPath) { m_strIconPath = strIconPath; }
+  void SetIcon(const CStdString &strIconPath);
 
   /*!
    * @brief The path to this event.
@@ -346,7 +356,7 @@ public:
    * @brief Change the path to this event.
    * @param strFileNameAndPath The new path.
    */
-  void SetPath(const CStdString &strFileNameAndPath) { m_strFileNameAndPath = strFileNameAndPath; }
+  void SetPath(const CStdString &strFileNameAndPath);
 
   /*!
    * @brief Hook that is called when the start date changed.
@@ -371,4 +381,12 @@ public:
    * @param tag The new info.
    */
   virtual void Update(const CEpgInfoTag &tag);
+
+  /*!
+   * @brief Persist this tag in the database.
+   * @param bSingleUpdate True if this is a single update, false if more updates will follow.
+   * @param bLastUpdate True to commit a batch of changes, false otherwise.
+   * @return True if the tag was persisted correctly, false otherwise.
+   */
+  bool Persist(bool bSingleUpdate = true, bool bLastUpdate = false);
 };
