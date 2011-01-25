@@ -25,6 +25,7 @@
 #include "Epg.h"
 
 class CEpg;
+class CPVREpg;
 class CPVREpgInfoTag;
 
 /** an EPG info tag */
@@ -32,6 +33,7 @@ class CPVREpgInfoTag;
 class CEpgInfoTag
 {
   friend class CEpg;
+  friend class CPVREpg;
   friend class CPVREpgInfoTag;
 
 private:

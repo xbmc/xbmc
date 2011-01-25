@@ -133,6 +133,15 @@ public:
   bool UpdateLastEpgScanTime(void);
 
   /*!
+   * @brief Persist an EPG table. It's entries are not persisted.
+   * @param epg The table to persist.
+   * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
+   * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
+   * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
+   */
+  int Persist(const CEpg &epg, bool bSingleUpdate = true, bool bLastUpdate = false);
+
+  /*!
    * @brief Persist an infotag.
    * @param tag The tag to persist.
    * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.

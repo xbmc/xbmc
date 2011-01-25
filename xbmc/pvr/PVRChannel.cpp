@@ -598,6 +598,7 @@ CPVREpg *CPVRChannel::GetEPG(void)
   {
     /* will be cleaned up by CPVREpgContainer on exit */
     m_EPG = new CPVREpg(this);
+    m_EPG->Persist();
     g_PVREpgContainer.push_back(m_EPG);
   }
 

@@ -37,11 +37,12 @@ struct sortEPGbyDate
   }
 };
 
-CEpg::CEpg(int iEpgID, const CStdString &strScraperName)
+CEpg::CEpg(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
 {
   m_bUpdateRunning = false;
   m_bIsSorted      = false;
   m_iEpgID         = iEpgID;
+  m_strName        = strName;
   m_strScraperName = strScraperName;
 }
 
@@ -285,8 +286,8 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       if (bStore)
         database->RemoveEpgEntry(*currentTag);
 
-      DeleteInfoTag(currentTag);
-      ptr--;
+      if (DeleteInfoTag(currentTag))
+        ptr--;
     }
     else if (previousTag->End() > currentTag->Start())
     {
@@ -415,4 +416,27 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter)
   }
 
   return size() - iInitialSize;
+}
+
+bool CEpg::Persist(void)
+{
+  bool bReturn = false;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  int iId = database->Persist(*this);
+  if (iId > 0)
+  {
+    m_iEpgID = iId;
+    bReturn = true;
+  }
+
+  database->Close();
+
+  return bReturn;
 }

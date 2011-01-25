@@ -336,14 +336,55 @@ bool CEpgDatabase::UpdateLastEpgScanTime(void)
   return bReturn;
 }
 
+int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+{
+  bool iReturn = -1;
+
+  CStdString strQuery;
+  if (epg.EpgID() > 0)
+  {
+    strQuery = FormatSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
+        "VALUES (%u, '%s', '%s');", epg.EpgID(), epg.Name().c_str(), epg.ScraperName().c_str());
+  }
+  else
+  {
+    strQuery = FormatSQL("REPLACE INTO epg (sName, sScraperName) "
+        "VALUES ('%s', '%s');"), epg.Name().c_str(), epg.ScraperName().c_str();
+  }
+
+  if (bSingleUpdate)
+  {
+    if (ExecuteQuery(strQuery))
+      iReturn = m_pDS->lastinsertid();
+  }
+  else
+  {
+    if (QueueInsertQuery(strQuery))
+      iReturn = 0;
+
+    if (bLastUpdate)
+      CommitInsertQueries();
+  }
+
+  return iReturn;
+}
+
 bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
   int bReturn = false;
+
+  CEpg *epg = tag.GetTable();
+  if (!epg || epg->EpgID() <= 0)
+  {
+    CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title().c_str());
+    return bReturn;
+  }
 
   time_t iStartTime, iEndTime, iFirstAired;
   tag.Start().GetAsTime(iStartTime);
   tag.End().GetAsTime(iEndTime);
   tag.FirstAired().GetAsTime(iFirstAired);
+  int iEpgId = epg->EpgID();
 
   int iBroadcastId = tag.BroadcastId();
   if (iBroadcastId <= 0)
@@ -352,12 +393,12 @@ bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* 
     if (tag.UniqueBroadcastID() > 0)
     {
       strWhereClause = FormatSQL("(iBroadcastUid = '%u' OR iStartTime = %u) AND idEpg = %u",
-          tag.UniqueBroadcastID(), iStartTime, tag.GetTable()->EpgID());
+          tag.UniqueBroadcastID(), iStartTime, iEpgId);
     }
     else
     {
       strWhereClause = FormatSQL("iStartTime = %u AND idEpg = '%u'",
-          iStartTime, tag.GetTable()->EpgID());
+          iStartTime, iEpgId);
     }
     CStdString strValue = GetSingleValue("epgtags", "idBroadcast", strWhereClause);
 
@@ -374,7 +415,7 @@ bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* 
         "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
         "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i);",
-        tag.GetTable()->EpgID(), iStartTime, iEndTime,
+        iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
@@ -387,7 +428,7 @@ bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* 
         "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
         "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i);",
-        tag.GetTable()->EpgID(), iStartTime, iEndTime,
+        iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
@@ -406,8 +447,8 @@ bool CEpgDatabase::UpdateEpgEntry(const CEpgInfoTag &tag, bool bSingleUpdate /* 
       CommitInsertQueries();
   }
 
-  if ((bSingleUpdate || bLastUpdate) && GetEpgDataEnd(tag.GetTable()->EpgID()) > tag.End())
-    EraseEpgForTable(*tag.GetTable(), NULL, tag.End());
+  if ((bSingleUpdate || bLastUpdate) && GetEpgDataEnd(iEpgId) > tag.End())
+    EraseEpgForTable(*epg, NULL, tag.End());
 
   return bReturn;
 }

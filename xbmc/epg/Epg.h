@@ -37,6 +37,7 @@ class CEpg : public std::vector<CEpgInfoTag*>
 private:
   bool          m_bUpdateRunning; /*!< true if EPG is currently being updated */
   bool          m_bIsSorted;      /*!< remember if we're sorted or not */
+  CStdString    m_strName;        /*!< the name of this table */
   CStdString    m_strScraperName; /*!< the name of the scraper to use */
   int           m_iEpgID;         /*!< the database ID of this table */
 
@@ -52,8 +53,11 @@ private:
 public:
   /*!
    * @brief Create a new EPG instance.
+   * @param iEpgID The ID of this table or <= 0 to create a new ID.
+   * @param strName The name of this table.
+   * @param strScraperName The name of the scraper to use.
    */
-  CEpg(int iEpgID, const CStdString &strScraperName);
+  CEpg(int iEpgID, const CStdString &strName, const CStdString &strScraperName);
 
   /*!
    * @brief Destroy this EPG instance.
@@ -65,6 +69,12 @@ public:
    * @return The name of the scraper to use for this table.
    */
   CStdString ScraperName(void) const { return m_strScraperName; }
+
+  /*!
+   * @brief Get the name of this table.
+   * @return The name of this table.
+   */
+  CStdString Name(void) const { return m_strName; }
 
   /*!
    * @brief Get the database ID of this table.
@@ -203,4 +213,10 @@ public:
    * @return The amount of entries that were added.
    */
   virtual int Get(CFileItemList *results, const EpgSearchFilter &filter);
+
+  /*!
+   * @brief Persist this table in the database.
+   * @return True if the table was persisted, false otherwise.
+   */
+  bool Persist(void);
 };

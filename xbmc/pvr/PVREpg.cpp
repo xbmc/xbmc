@@ -31,7 +31,7 @@
 #include "epg/EpgDatabase.h"
 
 CPVREpg::CPVREpg(CPVRChannel *channel) :
-  CEpg(channel->ChannelID(), channel->EPGScraper())
+  CEpg(channel->ChannelID(), channel->ChannelName(), channel->EPGScraper())
 {
   m_Channel  = channel;
   m_bIsRadio = channel->IsRadio();
@@ -73,6 +73,7 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   if (InfoTag == NULL)
   {
     InfoTag = new CPVREpgInfoTag(*data);
+    InfoTag->m_Epg = this;
     push_back(InfoTag);
   }
 
