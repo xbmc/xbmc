@@ -246,6 +246,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 
 bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 {
+  bool bReturn = false;
   CEpgDatabase *database = NULL;
 
   if (bStore)
@@ -255,11 +256,12 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
     if (database == NULL)
     {
       CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-      return false;
+      return bReturn;
     }
   }
 
   Sort();
+  bReturn = true;
 
   CEpgInfoTag *previousTag = NULL;
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -310,16 +312,15 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
       if (bStore)
       {
-        // XXX SEGFAULT
-        database->UpdateEpgEntry(*previousTag, false, false);
-        database->UpdateEpgEntry(*currentTag, false, true);
+        bReturn = database->UpdateEpgEntry(*previousTag, false, false) && bReturn;
+        bReturn = database->UpdateEpgEntry(*currentTag, false, true) && bReturn;
       }
     }
 
     previousTag = at(ptr);
   }
 
-  return true;
+  return bReturn;
 }
 
 bool CEpg::UpdateFromScraper(time_t start, time_t end)
