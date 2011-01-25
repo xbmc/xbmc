@@ -156,12 +156,12 @@ void CEpgContainer::Process()
     if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))
       UpdateEPG(!m_bDatabaseLoaded);
 
-    /* call the update hook */
-    ProcessHook(iNow);
-
     /* clean up old entries */
     if (!m_bStop && iNow > m_iLastEpgCleanup + EPGCLEANUPINTERVAL)
       RemoveOldEntries();
+
+    /* call the update hook */
+    ProcessHook(iNow);
 
     Sleep(1000);
   }
@@ -309,7 +309,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     {
       /* update the progress bar */
       scanner->SetProgress(iEpgPtr, iEpgCount);
-//      scanner->SetTitle(epg->Channel()->ChannelName());
+      scanner->SetTitle(at(iEpgPtr)->Name());
       scanner->UpdateState();
     }
   }
