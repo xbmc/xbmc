@@ -63,12 +63,6 @@ public:
   bool HasValidEntries(void) const;
 
   /*!
-   * @brief The channel this EPG belongs to.
-   * @return The channel this EPG belongs to
-   */
-  CPVRChannel *Channel(void) const { return m_Channel; }
-
-  /*!
    * @brief Remove all entries from this EPG that finished before the given time
    *        and that have no timers set.
    * @param Time Delete entries with an end time before this time.

@@ -85,6 +85,12 @@ public:
   virtual ~CEpg(void);
 
   /*!
+   * @brief The channel this EPG belongs to.
+   * @return The channel this EPG belongs to
+   */
+  CPVRChannel *Channel(void) const { return m_Channel; }
+
+  /*!
    * @brief Get the name of the scraper to use for this table.
    * @return The name of the scraper to use for this table.
    */

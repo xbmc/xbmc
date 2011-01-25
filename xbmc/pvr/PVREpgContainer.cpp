@@ -54,7 +54,7 @@ bool CPVREpgContainer::UpdateAllChannelEPGPointers()
 {
   for (unsigned int epgPtr = 0; epgPtr < g_PVREpgContainer.size(); epgPtr++)
   {
-    CPVRChannel *channel = ((CPVREpg *) g_PVREpgContainer.at(epgPtr))->Channel();
+    CPVRChannel *channel = g_PVREpgContainer.at(epgPtr)->Channel();
     if (channel)
       channel->UpdateEPGPointers();
   }

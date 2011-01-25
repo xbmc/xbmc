@@ -44,6 +44,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
   m_iEpgID         = iEpgID;
   m_strName        = strName;
   m_strScraperName = strScraperName;
+  m_Channel        = NULL;
 }
 
 CEpg::~CEpg(void)
