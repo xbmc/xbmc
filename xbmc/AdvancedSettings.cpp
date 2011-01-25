@@ -753,10 +753,7 @@ bool CAdvancedSettings::Load()
         CLog::Log(LOGDEBUG,"  Registering substition pair:");
         CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
         CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
-        // keep literal commas since we use comma as a seperator
-        strFrom.Replace(",",",,");
-        strTo.Replace(",",",,");
-        m_pathSubstitutions.push_back(strFrom + " , " + strTo);
+        m_pathSubstitutions.push_back(make_pair(strFrom,strTo));
       }
       else
       {

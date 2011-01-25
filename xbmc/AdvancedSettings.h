@@ -168,7 +168,8 @@ class CAdvancedSettings
     CStdStringArray m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
-    CStdStringArray m_pathSubstitutions;
+    typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
+    StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 

@@ -78,7 +78,7 @@ namespace ADDON
   public:
     virtual ~IAddon() {};
     virtual AddonPtr Clone(const AddonPtr& self) const =0;
-    virtual const TYPE Type() const =0;
+    virtual TYPE Type() const =0;
     virtual bool IsType(TYPE type) const =0;
     virtual AddonProps Props() const =0;
     virtual AddonProps& Props() =0;
@@ -96,7 +96,7 @@ namespace ADDON
     virtual const CStdString FanArt() const =0;
     virtual const CStdString Author() const =0;
     virtual const CStdString Icon() const =0;
-    virtual const int  Stars() const =0;
+    virtual int  Stars() const =0;
     virtual const CStdString Disclaimer() const =0;
     virtual const InfoMap &ExtraInfo() const =0;
     virtual bool HasSettings() =0;

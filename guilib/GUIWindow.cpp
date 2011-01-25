@@ -77,7 +77,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   CPerformanceSample aSample("WindowLoad-" + strFileName, true);
 #endif
 
-  if (m_windowLoaded)
+  if (m_windowLoaded || g_SkinInfo == NULL)
     return true;      // no point loading if it's already there
 
 #ifdef _DEBUG

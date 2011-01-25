@@ -164,10 +164,10 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
 CPCMRemap::CPCMRemap() :
   m_inSet       (false),
   m_outSet      (false),
-  m_ignoreLayout(false),
   m_inChannels  (0),
   m_outChannels (0),
-  m_inSampleSize(0)
+  m_inSampleSize(0),
+  m_ignoreLayout(false)
 {
   Dispose();
 }

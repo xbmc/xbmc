@@ -52,5 +52,11 @@ public:
    \param items The item list to filter
    \param mask  The mask to apply when filtering files */
   static void FilterFileDirectories(CFileItemList &items, const CStdString &mask);
+
+  /*! \brief Apply users path translation to a path, returning the translated path
+   \param path the path to fetch
+   \return translated path based on user path<->path translation table.
+   */
+  static CStdString Translate(const CStdString &path);
 };
 }

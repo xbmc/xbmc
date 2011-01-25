@@ -42,7 +42,7 @@ namespace ADDON
 // utils
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const CStdString    GetIcon(const TYPE &type);
-const TYPE          TranslateType(const CStdString &string);
+      TYPE          TranslateType(const CStdString &string);
 const CStdString    UpdateVideoScraper(const CStdString &scraper);
 const CStdString    UpdateMusicScraper(const CStdString &scraper);
 
@@ -71,7 +71,7 @@ public:
   {
   }
 
-  AddonProps(cp_plugin_info_t *props);
+  AddonProps(const cp_extension_t *ext);
 
   bool operator==(const AddonProps &rhs)
   { 
@@ -154,7 +154,7 @@ public:
   virtual CStdString GetString(uint32_t id);
 
   // properties
-  const TYPE Type() const { return m_props.type; }
+  TYPE Type() const { return m_props.type; }
   bool IsType(TYPE type) const { return type == m_props.type; }
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
@@ -172,7 +172,7 @@ public:
   const CStdString ChangeLog() const { return m_props.changelog; }
   const CStdString FanArt() const { return m_props.fanart; }
   const CStdString Icon() const;
-  const int Stars() const { return m_props.stars; }
+  int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   ADDONDEPS GetDeps();

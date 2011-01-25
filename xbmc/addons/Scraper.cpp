@@ -72,7 +72,7 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
   return "";
 }
 
-const CONTENT_TYPE TranslateContent(const CStdString &string)
+CONTENT_TYPE TranslateContent(const CStdString &string)
 {
   for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
   {
@@ -83,7 +83,7 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   return CONTENT_NONE;
 }
 
-const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
 {
   switch (content)
   {
