@@ -363,7 +363,13 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       }
 
       if (bExecute)
-        ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+      {
+        if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
+          ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+        else
+          CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
+                             "out of bounds, skipping expression");
+      }
 
       pReg = pReg->NextSiblingElement("RegExp");
   }
