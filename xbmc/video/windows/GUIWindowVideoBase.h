@@ -99,6 +99,7 @@ protected:
   bool OnResumeItem(int iItem);
   void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
+  virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);

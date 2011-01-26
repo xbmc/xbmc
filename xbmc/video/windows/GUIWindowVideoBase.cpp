@@ -1096,6 +1096,10 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
+      if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1)
+      {
+        buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
+      }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
     }
@@ -1270,6 +1274,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems->m_strPath);
     return true;
+  case CONTEXT_BUTTON_PLAY_AND_QUEUE:
+    return OnPlayAndQueueMedia(item);
   default:
     break;
   }
@@ -1326,6 +1332,18 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   PlayMovie(&item);
 
   return true;
+}
+
+bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
+{
+  // Get the current playlist and make sure it is not shuffled
+  int iPlaylist = m_guiState->GetPlaylist();
+  if (iPlaylist != PLAYLIST_NONE && g_playlistPlayer.IsShuffled(iPlaylist))
+     g_playlistPlayer.SetShuffle(iPlaylist, false);
+
+  // Call the base method to actually queue the items
+  // and start playing the given item
+  return CGUIMediaWindow::OnPlayAndQueueMedia(item);
 }
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
