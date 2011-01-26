@@ -583,6 +583,8 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
 
       if (channel && group->AddToGroup(channel))
         ++iReturn;
+
+      m_pDS->next();
     }
   }
 
