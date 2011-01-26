@@ -365,7 +365,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
   else
   {
     strQuery = FormatSQL("REPLACE INTO epg (sName, sScraperName) "
-        "VALUES ('%s', '%s');"), epg.Name().c_str(), epg.ScraperName().c_str();
+        "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
   }
 
   if (bSingleUpdate)
