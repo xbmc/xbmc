@@ -26,7 +26,6 @@
 #include <vdr/thread.h>
 
 #include "config.h"
-//#include "cmdcontrol.h"
 
 class cConnection;
 
@@ -43,14 +42,12 @@ protected:
   int           m_ServerFD;
   cString       m_AllowedHostsFile;
   Connections   m_Connections;
-  //cCmdControl   m_CmdControl;
+
   static unsigned int m_IdCnt;
 
 public:
   cServer(int listenPort);
   virtual ~cServer();
-
-  //cCmdControl *GetCmdControl() { return &m_CmdControl; }
 };
 
 #endif /* SERVER_H */

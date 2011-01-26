@@ -34,37 +34,20 @@
 #endif
 
 #define ALLOWED_HOSTS_FILE  "allowed_hosts.conf"
-#define NO_SIGNAL_FILE      "noSignal.mpg"
 #define FRONTEND_DEVICE     "/dev/dvb/adapter%d/frontend%d"
 
 #define LISTEN_PORT       34890
 #define LISTEN_PORT_S    "34890"
 #define DISCOVERY_PORT    34890
 
-enum eSuspendMode
-{
-  smOffer,
-  smAlways,
-  smNever,
-  sm_Count
-};
-
-
 class cVNSIServerConfig
 {
 public:
   cVNSIServerConfig();
 
-  void readNoSignalStream();
-
   // Remote server settings
   int  listen_port;         // Port of remote server
-  int  SuspendMode;
-
   cString ConfigDirectory;
-
-  uint8_t m_noSignalStreamData[ 6 + 0xffff ];
-  long    m_noSignalStreamSize;
 };
 
 // Global instance

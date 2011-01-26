@@ -46,8 +46,8 @@ private:
   sStreamPacket  *m_StreamPacket;
   int             m_vbvDelay;       /* -1 if CBR */
   int             m_vbvSize;        /* Video buffer size (in bytes) */
-  int             m_Height;
   int             m_Width;
+  int             m_Height;
 
   bool Parse_MPEG2Video(size_t len, uint32_t next_startcode, int sc_offset);
   bool Parse_MPEG2Video_SeqStart(cBitstream *bs);

@@ -1347,7 +1347,6 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
     return true;
   }
 
-  const char* empty = "";
   bool atLeastOneEvent = false;
 
   uint32_t thisEventID;
@@ -1387,9 +1386,9 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
     //duration filter
     if (duration != 0 && thisEventTime >= (startTime + duration)) continue;
 
-    if (!thisEventTitle)        thisEventTitle        = empty;
-    if (!thisEventSubTitle)     thisEventSubTitle     = empty;
-    if (!thisEventDescription)  thisEventDescription  = empty;
+    if (!thisEventTitle)        thisEventTitle        = "";
+    if (!thisEventSubTitle)     thisEventSubTitle     = "";
+    if (!thisEventDescription)  thisEventDescription  = "";
 
     m_resp->add_U32(thisEventID);
     m_resp->add_U32(thisEventTime);

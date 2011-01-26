@@ -60,17 +60,12 @@ cParserMPEG2Video::cParserMPEG2Video(cTSDemuxer *demuxer, cLiveStreamer *streame
   m_StartCode         = 0;
   m_StartCodeOffset   = 0;
   m_FrameDuration     = 0;
-  m_startDTS          = DVD_NOPTS_VALUE;
   m_vbvDelay          = -1;
   m_vbvSize           = 0;
   m_Height            = 0;
   m_Width             = 0;
   m_StreamPacket      = NULL;
   m_demuxer           = demuxer;
-
-  /* Set the streamer ready here to increase switch times, but if XBMC use also
-     VDPAU for SD content it must be changed */
-  streamer->SetReady();
 }
 
 cParserMPEG2Video::~cParserMPEG2Video()
@@ -196,6 +191,7 @@ bool cParserMPEG2Video::Parse_MPEG2Video(size_t len, uint32_t next_startcode, in
       m_StreamPacket->dts       = m_curDTS;
       m_StreamPacket->frametype = frametype;
       m_StreamPacket->duration  = 0;
+      m_FoundFrame = true;
       break;
 
     case 0x000001b3:
@@ -269,6 +265,9 @@ bool cParserMPEG2Video::Parse_MPEG2Video_SeqStart(cBitstream *bs)
   bs->skipBits(18);
   bs->skipBits(1);
 
+  if (m_Width > 0)
+    m_Streamer->SetReady();
+
   m_vbvSize = bs->readBits(10) * 16 * 1024 / 8;
   m_demuxer->SetVideoInformation(0,0, m_Height, m_Width, 0);
 
@@ -287,10 +286,6 @@ bool cParserMPEG2Video::Parse_MPEG2Video_PicStart(int *frametype, cBitstream *bs
     return true; /* Illegal picture_coding_type */
 
   *frametype = pct;
-
-  /* If this is the first I-frame seen, set dts_start as a reference offset */
-  if (pct == PKT_I_FRAME && m_startDTS == DVD_NOPTS_VALUE)
-    m_startDTS = m_curDTS;
 
   int vbvDelay = bs->readBits(16); /* vbv_delay */
   if (vbvDelay  == 0xffff)

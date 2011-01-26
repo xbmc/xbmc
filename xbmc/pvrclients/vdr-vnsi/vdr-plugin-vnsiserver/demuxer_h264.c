@@ -56,13 +56,11 @@ cParserH264::cParserH264(cTSDemuxer *demuxer, cLiveStreamer *streamer, int strea
   m_StartCond         = 0;
   m_StartCode         = 0;
   m_StartCodeOffset   = 0;
-  m_startDTS          = DVD_NOPTS_VALUE;
   m_PrevDTS           = DVD_NOPTS_VALUE;
   m_Height            = 0;
   m_Width             = 0;
   m_FrameDuration     = 0;
   m_demuxer           = demuxer;
-  m_FoundFrame        = false;
   m_vbvDelay          = -1;
   m_vbvSize           = 0;
   m_firstPUSIseen     = false;
@@ -181,9 +179,6 @@ bool cParserH264::Parse_H264(size_t len, uint32_t next_startcode, int sc_offset)
     if (m_FoundFrame || m_FrameDuration == 0 || m_curDTS == DVD_NOPTS_VALUE)
       break;
 
-    if (m_startDTS == DVD_NOPTS_VALUE)
-      m_startDTS = m_curDTS;
-
     int nal_len = nalUnescape(nal_data, buf + 4, len - 4 > 64 ? 64 : len - 3);
     if (!Parse_SLH(nal_data, nal_len, &pkttype))
       return true;
@@ -283,10 +278,6 @@ bool cParserH264::Parse_SLH(uint8_t *buf, int len, int *pkttype)
   default:
     return false;
   }
-
-//  /* If this is the first I-frame seen, set dts_start as a reference offset */
-//  if (*pkttype == PKT_I_FRAME && m_startDTS == DVD_NOPTS_VALUE)
-//    m_startDTS = m_curDTS;
 
   int pps_id = bs.readGolombUE();
   int sps_id = m_streamData.pps[pps_id].sps;

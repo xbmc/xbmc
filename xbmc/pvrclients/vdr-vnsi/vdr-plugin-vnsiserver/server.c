@@ -173,15 +173,15 @@ void cServer::Action(void)
 {
   fd_set fds;
   struct timeval tv;
-
+    
   while (Running())
   {
     FD_ZERO(&fds);
     FD_SET(m_ServerFD, &fds);
-
+    
     tv.tv_sec = 5;
     tv.tv_usec = 0;
-
+    
     int r = select(m_ServerFD + 1, &fds, NULL, NULL, &tv);
     if (r == -1)
     {
@@ -198,10 +198,9 @@ void cServer::Action(void)
           delete (*i);
           i = m_Connections.erase(i);
         }
-        else
-        {
-          i++;
-        }
+	else {
+	  i++;
+	}
       }
       continue;
     }

@@ -46,11 +46,11 @@ private:
   friend class cParser;
   friend class cLivePatFilter;
 
-  cDevice *GetDevice(const cChannel *Channel, int Priority);
   void Detach(void);
   void Attach(void);
   cTSDemuxer *FindStreamDemuxer(int Pid);
 
+  void sendEmptyPacket();
   void sendStreamPacket(sStreamPacket *pkt);
   void sendStreamChange();
   void sendSignalInfo();
@@ -69,7 +69,6 @@ private:
   dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device (DVB only) */
   v4l2_capability   m_vcap;                         /*!> PVR Information about the receiving device (pvrinput only) */
   cString           m_DeviceString;                 /*!> The name of the receiving device */
-  time_t            m_lastInfoSendet;               /*!> Last queue status report sent */
   bool              m_streamChangeSendet;           /*!> Is false until the stream change message is sendet (no packets are sendet until this is set) */
   bool              m_streamReady;                  /*!> Set by the video demuxer after we got video information */
   bool              m_IsAudioOnly;                  /*!> Set to true if streams contains only audio */

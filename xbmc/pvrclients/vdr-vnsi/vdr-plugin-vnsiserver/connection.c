@@ -45,7 +45,6 @@
 #include "connection.h"
 #include "receiver.h"
 #include "server.h"
-#include "tools.h"
 #include "vdrcommand.h"
 #include "recplayer.h"
 #include "responsepacket.h"
@@ -245,11 +244,11 @@ void cConnection::Action(void)
   StopChannelStreaming();
 }
 
-void cConnection::EnableNetLog(bool yesNo, const char* ClientChannelName)
+void cConnection::EnableNetLog(bool yesNo, const char* ClientName)
 {
   if (yesNo)
   {
-    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientChannelName);
+    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientName);
 
     m_NetLogFile = fopen(*Base, "a");
     if (m_NetLogFile)

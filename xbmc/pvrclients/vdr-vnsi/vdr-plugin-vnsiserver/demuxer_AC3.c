@@ -283,7 +283,7 @@ int cParserAC3::FindHeaders(uint8_t **poutbuf, int *poutbuf_size,
         if (frametype == EAC3_FRAME_TYPE_RESERVED)
           return -1;
 
-        int substreamid = bs.readBits(3);
+        /*int substreamid =*/ bs.readBits(3);
 
         int framesize = (bs.readBits(11) + 1) << 1;
         if (framesize < AC3_HEADER_SIZE)

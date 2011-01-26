@@ -23,14 +23,15 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <asm/byteorder.h>
+
 #include "config.h"
 #include "requestpacket.h"
 #include "server.h"
 #include "vdrcommand.h"
-#include "tools.h"
 
 cRequestPacket::cRequestPacket(uint32_t requestID, uint32_t opcode, uint8_t* data, uint32_t dataLength, cConnection *cli)
- : requestID(requestID), opCode(opcode), userData(data), userDataLength(dataLength), client(cli)
+ : userData(data), userDataLength(dataLength), opCode(opcode), requestID(requestID), client(cli)
 {
   packetPos       = 0;
   ownBlock        = true;
@@ -88,7 +89,7 @@ uint32_t cRequestPacket::extract_U32()
 uint64_t cRequestPacket::extract_U64()
 {
   if ((packetPos + sizeof(uint64_t)) > userDataLength) return 0;
-  uint64_t ull = ntohll(*(uint64_t*)&userData[packetPos]);
+  uint64_t ull = __be64_to_cpu(*(uint64_t*)&userData[packetPos]);
   packetPos += sizeof(uint64_t);
   return ull;
 }
@@ -96,7 +97,7 @@ uint64_t cRequestPacket::extract_U64()
 double cRequestPacket::extract_Double()
 {
   if ((packetPos + sizeof(uint64_t)) > userDataLength) return 0;
-  uint64_t ull = ntohll(*(uint64_t*)&userData[packetPos]);
+  uint64_t ull = __be64_to_cpu(*(uint64_t*)&userData[packetPos]);
   double d;
   memcpy(&d,&ull,sizeof(double));
   packetPos += sizeof(uint64_t);

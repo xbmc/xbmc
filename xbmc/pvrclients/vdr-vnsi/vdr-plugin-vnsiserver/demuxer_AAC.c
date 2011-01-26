@@ -130,7 +130,7 @@ void cParserAAC::ParseLATMAudioMuxElement(uint8_t *data, int len)
     return;
 
   int tmp;
-  int slotLen = 0;
+  unsigned int slotLen = 0;
   do
   {
     tmp = bs.readBits(8);
@@ -174,7 +174,7 @@ void cParserAAC::ParseLATMAudioMuxElement(uint8_t *data, int len)
 
   /* AAC RDB */
   uint8_t *buf = pkt.data + 7;
-  for (int i = 0; i < slotLen; i++)
+  for (unsigned int i = 0; i < slotLen; i++)
     *buf++ = bs.readBits(8);
 
   m_curDTS += m_FrameDuration;

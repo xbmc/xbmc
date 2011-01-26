@@ -68,13 +68,12 @@ private:
   uint32_t        m_StartCond;
   uint32_t        m_StartCode;
   int             m_StartCodeOffset;
-  int             m_Height;
   int             m_Width;
+  int             m_Height;
   mpeg_rational_t m_PixelAspect;
   int64_t         m_PrevDTS;
   int             m_FrameDuration;
   sStreamPacket   m_StreamPacket;
-  bool            m_FoundFrame;
   h264_private    m_streamData;
   int             m_vbvDelay;       /* -1 if CBR */
   int             m_vbvSize;        /* Video buffer size (in bytes) */

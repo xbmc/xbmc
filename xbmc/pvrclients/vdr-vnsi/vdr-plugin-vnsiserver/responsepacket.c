@@ -28,10 +28,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <asm/byteorder.h>
+
 #include "responsepacket.h"
 #include "vdrcommand.h"
 #include "config.h"
-#include "tools.h"
 
 /* Packet format for an RR channel response:
 
@@ -186,7 +187,7 @@ bool cResponsePacket::add_S32(int32_t l)
 bool cResponsePacket::add_U64(uint64_t ull)
 {
   if (!checkExtend(sizeof(uint64_t))) return false;
-  *(uint64_t*)&buffer[bufUsed] = htonll(ull);
+  *(uint64_t*)&buffer[bufUsed] = __cpu_to_be64(ull);
   bufUsed += sizeof(uint64_t);
   return true;
 }
@@ -196,7 +197,7 @@ bool cResponsePacket::add_double(double d)
   if (!checkExtend(sizeof(double))) return false;
   uint64_t ull;
   memcpy(&ull,&d,sizeof(double));
-  *(uint64_t*)&buffer[bufUsed] = htonll(ull);
+  *(uint64_t*)&buffer[bufUsed] = __cpu_to_be64(ull);
   bufUsed += sizeof(uint64_t);
   return true;
 }

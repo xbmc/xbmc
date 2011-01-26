@@ -23,6 +23,7 @@
 #define CONNECTION_H
 
 #include <vdr/thread.h>
+#include <vdr/tools.h>
 #include <vdr/receiver.h>
 #include <vdr/status.h>
 

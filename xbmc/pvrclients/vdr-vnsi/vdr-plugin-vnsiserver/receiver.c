@@ -21,19 +21,19 @@
 
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <time.h>
 
 #include <libsi/section.h>
 #include <libsi/descriptor.h>
 
 #include <vdr/remux.h>
 #include <vdr/channels.h>
+#include <asm/byteorder.h>
 
 #include "config.h"
 #include "receiver.h"
 #include "cxsocket.h"
 #include "vdrcommand.h"
-#include "suspend.h"
-#include "tools.h"
 #include "responsepacket.h"
 
 #if VDRVERSNUM < 10713
@@ -41,6 +41,14 @@
 #error "You must apply the pluginparam patch for VDR!"
 #endif
 #endif
+
+static uint64_t get_ticks() {
+  uint64_t ticks;
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  ticks = now.tv_sec * 1000 + now.tv_nsec / 1000000;
+  return ticks;
+}
 
 // --- cLiveReceiver -------------------------------------------------
 
@@ -489,6 +497,8 @@ void cLivePatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Le
             m_Streamer->m_NumStreams++;
             break;
           }
+	  default:
+	    break;
         }
       }
 
@@ -517,7 +527,7 @@ cLiveStreamer::cLiveStreamer()
   m_IsAudioOnly     = false;
   m_IsMPEGPS        = false;
   m_streamChangeSendet = false;
-  m_lastInfoSendet  = time(NULL);
+
   memset(&m_FrontendInfo, 0, sizeof(m_FrontendInfo));
   for (int idx = 0; idx < MAXRECEIVEPIDS; ++idx)
   {
@@ -525,7 +535,7 @@ cLiveStreamer::cLiveStreamer()
     m_Pids[idx]    = 0;
   }
   
-  SetTimeouts(0, 500);
+  SetTimeouts(0, 100);
 }
 
 cLiveStreamer::~cLiveStreamer()
@@ -589,11 +599,13 @@ cLiveStreamer::~cLiveStreamer()
 
 void cLiveStreamer::Action(void)
 {
-  int signalInfoCnt     = 90;
-  time_t last_data      = time(NULL);
+  uint64_t last_data    = get_ticks();
+  uint64_t last_tick    = last_data;
   int size              = 0;
   int used              = 0;
   unsigned char *buf    = NULL;
+  bool startup          = true;
+  uint64_t last_info    = last_data;
 
   while (Running())
   {
@@ -608,16 +620,19 @@ void cLiveStreamer::Action(void)
     }
 
     // no data
-    if (buf == NULL)
+    if (buf == NULL || size <= TS_SIZE)
     {
-      if(time(NULL) - last_data > 10*1000) {
+      uint64_t tick = get_ticks();
+      // timeout
+      if(tick - last_data >= 10*1000) {
         isyslog("VNSI: returning from streamer thread, timout on reading data");
         break;
       }
-      continue;
-    }
-
-    if(size <= TS_SIZE) {
+      // keep client going
+      else if(tick - last_tick >= 500 && !IsReady()) {
+        sendEmptyPacket();
+        last_tick = tick;
+      }
       continue;
     }
 
@@ -629,6 +644,15 @@ void cLiveStreamer::Action(void)
       used++;
       buf++;
       size--;
+    }
+
+    // Send stream information as the first packet on startup
+    if (startup && m_NumStreams > 0 && IsReady())
+    {
+      last_info = get_ticks();
+      sendStreamInfo();
+      sendSignalInfo();
+      startup = false;
     }
 
     while (size >= TS_SIZE)
@@ -643,7 +667,8 @@ void cLiveStreamer::Action(void)
       if (demuxer)
       {
         demuxer->ProcessTSPacket(buf);
-	last_data = time(NULL);
+        last_data = get_ticks();
+        last_tick = last_data;
       }
 
       buf += TS_SIZE;
@@ -652,20 +677,11 @@ void cLiveStreamer::Action(void)
     }
     Del(used);
 
-    /* Additional Information and NO_SIGNAL timers */
-    signalInfoCnt++;
-
-    if (time(NULL) - m_lastInfoSendet > 10)
+    if(get_ticks() - last_info >= 2*1000)
     {
-      m_lastInfoSendet = time(NULL);
+      last_info = get_ticks();
       sendSignalInfo();
-    }
-    else if (signalInfoCnt >= 100)
-    {
-      /* Send stream information every 100 packets expect the first one is sendet
-         after 10 packets */
       sendStreamInfo();
-      signalInfoCnt = 0;
     }
   }
 }
@@ -681,7 +697,8 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
   m_Channel   = channel;
   m_Priority  = priority;
   m_Socket    = Socket;
-  m_Device    = GetDevice(channel, m_Priority);
+  m_Device    = cDevice::GetDevice(channel, m_Priority, true);
+
   if (m_Device != NULL)
   {
     dsyslog("VNSI: Successfully found following device: %p (%d) for receiving", m_Device, m_Device ? m_Device->CardIndex() + 1 : 0);
@@ -862,92 +879,18 @@ void cLiveStreamer::Detach(void)
   }
 }
 
-cDevice *cLiveStreamer::GetDevice(const cChannel *Channel, int Priority)
+void cLiveStreamer::sendEmptyPacket()
 {
-  cDevice *device = NULL;
-
-  LOGCONSOLE("+ Statistics:");
-  LOGCONSOLE("+ Current Channel: %d", cDevice::CurrentChannel());
-  LOGCONSOLE("+ Current Device: %d", cDevice::ActualDevice()->CardIndex());
-  LOGCONSOLE("+ Transfer Mode: %s", cDevice::ActualDevice() == cDevice::PrimaryDevice() ? "false" : "true");
-  LOGCONSOLE("+ Replaying: %s", cDevice::PrimaryDevice()->Replaying() ? "true" : "false");
-  LOGCONSOLE(" * GetDevice(const cChannel*, int)");
-  LOGCONSOLE(" * -------------------------------");
-
-  device = cDevice::GetDevice(Channel, Priority, false);
-
-  LOGCONSOLE(" * Found following device: %p (%d)", device, device ? device->CardIndex() + 1 : 0);
-
-  return device;
- /*
-#if CONSOLEDEBUG
-  if (device == cDevice::ActualDevice())
-  {
-    LOGCONSOLE(" * is actual device");
-  }
-  if (!cSuspendCtl::IsActive() && VNSIServerConfig.SuspendMode != smAlways)
-  {
-    LOGCONSOLE(" * NOT suspended");
-  }
-#endif
-
-  if (!device || (device == cDevice::ActualDevice()
-                  && !cSuspendCtl::IsActive()
-                  && VNSIServerConfig.SuspendMode != smAlways))
-  {
-    // mustn't switch actual device
-    // maybe a device would be free if THIS connection did turn off its streams?
-    LOGCONSOLE(" * trying again...");
-    const cChannel *current = Channels.GetByNumber(cDevice::CurrentChannel());
-    isyslog("VNSI: Detaching current receiver");
-    Detach();
-    device = cDevice::GetDevice(Channel, Priority, false);
-    Attach();
-    LOGCONSOLE(" * Found following device: %p (%d)", device, device ? device->CardIndex() + 1 : 0);
-
-#if CONSOLEDEBUG
-    if (device == cDevice::ActualDevice())
-    {
-      LOGCONSOLE(" * is actual device");
-    }
-    if (!cSuspendCtl::IsActive() && VNSIServerConfig.SuspendMode != smAlways)
-    {
-      LOGCONSOLE(" * NOT suspended");
-    }
-    if (current && !TRANSPONDER(Channel, current))
-    {
-      LOGCONSOLE(" * NOT same transponder");
-    }
-#endif
-
-    if (device && (device == cDevice::ActualDevice()
-                    && !cSuspendCtl::IsActive()
-                    && VNSIServerConfig.SuspendMode != smAlways
-                    && current != NULL
-                    && !TRANSPONDER(Channel, current)))
-    {
-      // now we would have to switch away live tv...let's see if live tv
-      // can be handled by another device
-      cDevice *newdev = NULL;
-      for (int i = 0; i < cDevice::NumDevices(); ++i)
-      {
-        cDevice *dev = cDevice::GetDevice(i);
-        if (dev->ProvidesChannel(current, 0) && dev != device)
-        {
-          newdev = dev;
-          break;
-        }
-      }
-      LOGCONSOLE(" * Found device for live tv: %p (%d)", newdev, newdev ? newdev->CardIndex() + 1 : 0);
-      if (newdev == NULL || newdev == device)
-        // no suitable device to continue live TV, giving up...
-        device = NULL;
-      else
-        newdev->SwitchChannel(current, true);
-    }
-  }
-
-  return device;*/
+  uint32_t bufferLength = sizeof(uint32_t) * 5 + sizeof(int64_t) * 2;
+  uint8_t buffer[bufferLength];
+  *(uint32_t*)&buffer[0]  = htonl(CHANNEL_STREAM);        // stream channel
+  *(uint32_t*)&buffer[4]  = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
+  *(uint32_t*)&buffer[8]  = htonl(0);               // Stream ID
+  *(uint32_t*)&buffer[12] = htonl(0);         // Duration
+  *(int64_t*) &buffer[16] = __cpu_to_be64(0);      // DTS
+  *(int64_t*) &buffer[24] = __cpu_to_be64(0);      // PTS
+  *(uint32_t*)&buffer[32] = htonl(0);             // Data length
+  m_Socket->write(&buffer, bufferLength);
 }
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
@@ -969,8 +912,8 @@ void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
     *(uint32_t*)&buffer[4]  = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
     *(uint32_t*)&buffer[8]  = htonl(pkt->id);               // Stream ID
     *(uint32_t*)&buffer[12] = htonl(pkt->duration);         // Duration
-    *(int64_t*) &buffer[16] = htonll(pkt->pts);             // DTS
-    *(int64_t*) &buffer[24] = htonll(pkt->dts);             // PTS
+    *(int64_t*) &buffer[16] = __cpu_to_be64(pkt->pts);      // DTS
+    *(int64_t*) &buffer[24] = __cpu_to_be64(pkt->dts);      // PTS
     *(uint32_t*)&buffer[32] = htonl(pkt->size);             // Data length
     m_Socket->write(&buffer, bufferLength);
     m_Socket->write(pkt->data, pkt->size);
@@ -1087,7 +1030,6 @@ void cLiveStreamer::sendSignalInfo()
   if (m_Channel && ((m_Channel->Source() >> 24) == 'V'))
 #endif
   {
-    struct v4l2_tuner tuner;
     if (m_Frontend < 0)
     {
       for (int i = 0; i < 8; i++)
@@ -1228,6 +1170,11 @@ void cLiveStreamer::sendSignalInfo()
 
 void cLiveStreamer::sendStreamInfo()
 {
+  if(m_NumStreams == 0)
+  {
+    return;
+  }
+
   cResponsePacket *resp = new cResponsePacket();
   if (!resp->initStream(VDR_STREAM_CONTENTINFO, 0, 0, 0, 0))
   {

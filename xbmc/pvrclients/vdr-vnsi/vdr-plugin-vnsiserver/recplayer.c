@@ -25,8 +25,6 @@
  */
 
 #include "recplayer.h"
-
-#define _XOPEN_SOURCE 600
 #include <fcntl.h>
 
 cRecPlayer::cRecPlayer(cRecording* rec)
@@ -38,13 +36,13 @@ cRecPlayer::cRecPlayer(cRecording* rec)
 
   // FIXME find out max file path / name lengths
 #if VDRVERSNUM < 10703
-  m_pesrecording = false;
+  m_pesrecording = true;
   m_indexFile = new cIndexFile(m_recordingFilename, false);
 #else
   m_pesrecording = rec->IsPesRecording();
+  if(m_pesrecording) esyslog("recording '%s' is a PES recording", m_recordingFilename);
   m_indexFile = new cIndexFile(m_recordingFilename, false, m_pesrecording);
 #endif
-  esyslog("VNSI-Error: Failed to create indexfile!");
 
   scan();
 }
@@ -68,7 +66,7 @@ void cRecPlayer::scan()
   for(int i = 0; i < 65535; i++) // i think we only need one possible loop
   {
     fileNameFromIndex(i);
-    LOGCONSOLE("FILENAME: %s", m_fileName);
+    isyslog("FILENAME: %s", m_fileName);
     m_file = fopen(m_fileName, "r");
     if (!m_file) break;
 
@@ -79,7 +77,7 @@ void cRecPlayer::scan()
     m_totalFrames = m_indexFile->Last();
     s->end = m_totalLength;
     m_segments.Append(s);
-    LOGCONSOLE("File %i found, totalLength now %llu, numFrames = %lu", i, m_totalLength, m_totalFrames);
+    isyslog("File %i found, totalLength now %llu, numFrames = %u", i, m_totalLength, m_totalFrames);
     fclose(m_file);
   }
 
@@ -88,7 +86,6 @@ void cRecPlayer::scan()
 
 cRecPlayer::~cRecPlayer()
 {
-  LOGCONSOLE("destructor");
   cleanup();
   if (m_file) fclose(m_file);
   free(m_recordingFilename);
@@ -107,12 +104,12 @@ bool cRecPlayer::openFile(int index)
   if (m_file) fclose(m_file);
 
   fileNameFromIndex(index);
-  LOGCONSOLE("openFile called for index %i string:%s", index, m_fileName);
+  isyslog("openFile called for index %i string:%s", index, m_fileName);
 
   m_file = fopen(m_fileName, "r");
   if (!m_file)
   {
-    LOGCONSOLE("file failed to open");
+    isyslog("file failed to open");
     m_fileOpen = -1;
     return false;
   }

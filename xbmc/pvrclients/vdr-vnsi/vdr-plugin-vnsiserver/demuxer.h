@@ -208,12 +208,11 @@ public:
   virtual void Parse(unsigned char *data, int size, bool pusi) = 0;
 
   int ParsePESHeader(uint8_t *buf, size_t len);
-  void SendPacket(sStreamPacket *pkt, bool checkTimestamp = true);
+  void SendPacket(sStreamPacket *pkt);
   int64_t Rescale(int64_t a);
 
   cLiveStreamer *m_Streamer;
 
-  static int64_t m_startDTS;
   int64_t     m_LastDTS;
   int64_t     m_curPTS;
   int64_t     m_curDTS;
@@ -221,6 +220,9 @@ public:
 
   int         m_badDTS;
   int         m_streamID;
+
+protected:
+  bool        m_FoundFrame;
 };
 
 

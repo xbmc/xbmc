@@ -87,30 +87,25 @@ int64_t PesGetDTS(const uint8_t *buf, int len)
   return DVD_NOPTS_VALUE;
 }
 
-int64_t cParser::m_startDTS;
-
 // --- cParser -------------------------------------------------
 
 cParser::cParser(cLiveStreamer *streamer, int streamID)
  : m_Streamer(streamer)
  , m_streamID(streamID)
+ , m_FoundFrame(false)
 {
   m_curPTS    = DVD_NOPTS_VALUE;
   m_curDTS    = DVD_NOPTS_VALUE;
   m_LastDTS   = DVD_NOPTS_VALUE;
-  if (streamer->IsAudioOnly())
-    m_startDTS  = 0;
-  else
-    m_startDTS  = DVD_NOPTS_VALUE;
   m_epochDTS  = 0;
   m_badDTS    = 0;
 }
 
 int64_t cParser::Rescale(int64_t a)
 {
-  int64_t b = DVD_TIME_BASE;
-  int64_t c = 90000;
-  int64_t r = c/2;
+  uint64_t b = DVD_TIME_BASE;
+  uint64_t c = 90000;
+  uint64_t r = c/2;
 
   if (b<=INT_MAX && c<=INT_MAX){
     if (a<=INT_MAX)
@@ -153,8 +148,6 @@ int cParser::ParsePESHeader(uint8_t *buf, size_t len)
 {
   /* parse PES header */
   unsigned int hdr_len = PesHeaderLength(buf);
-  unsigned int pes_pid = buf[3];
-  unsigned int pes_len = (buf[4] << 8) | buf[5];
 
   /* parse PTS */
   int64_t pts = PesGetPTS(buf, len);
@@ -167,7 +160,7 @@ int cParser::ParsePESHeader(uint8_t *buf, size_t len)
   return hdr_len;
 }
 
-void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
+void cParser::SendPacket(sStreamPacket *pkt)
 {
   if (!m_Streamer->IsReady())
     return;
@@ -175,61 +168,10 @@ void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
   assert(pkt->dts != DVD_NOPTS_VALUE);
   assert(pkt->pts != DVD_NOPTS_VALUE);
 
-  if (m_startDTS == DVD_NOPTS_VALUE)
-    return;
-
   int64_t dts = pkt->dts;
   int64_t pts = pkt->pts;
 
-  /* Compute delta between PTS and DTS (and watch out for 33 bit wrap) */
-  int64_t ptsoff = (pts - dts) & PTS_MASK;
-
-  /* Subtract the transport wide start offset */
-  dts -= m_startDTS;
-
-  if (m_LastDTS == DVD_NOPTS_VALUE)
-  {
-    if (dts < 0)
-    {
-      /* Early packet with negative time stamp, drop those */
-      return;
-    }
-  }
-  else if(checkTimestamp)
-  {
-    int d = dts + m_epochDTS - m_LastDTS;
-
-    if (d < 0 || d > 90000) {
-
-      if (d < -PTS_MASK || d > -PTS_MASK + 180000)
-      {
-        m_badDTS++;
-
-        if (m_badDTS < 5)
-        {
-          dsyslog("VNSI-Error: DTS discontinuity. DTS = %llu, last = %llu", dts, m_LastDTS);
-        }
-      }
-      else
-      {
-        /* DTS wrapped, increase upper bits */
-        m_epochDTS += PTS_MASK + 1;
-        m_badDTS = 0;
-      }
-    }
-    else
-    {
-      m_badDTS = 0;
-    }
-  }
-  m_badDTS++;
-
-  dts += m_epochDTS;
-  m_LastDTS = dts;
-
-  pts = dts + ptsoff;
-
-  /* Rescale to tvheadned internal 1MHz clock */
+  /* Rescale for XBMC */
   pkt->dts      = Rescale(dts);
   pkt->pts      = Rescale(pts);
   pkt->duration = Rescale(pkt->duration);
@@ -243,8 +185,8 @@ void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
 cTSDemuxer::cTSDemuxer(cLiveStreamer *streamer, int id, eStreamType type, int pid)
   : m_Streamer(streamer)
   , m_streamID(id)
-  , m_streamType(type)
   , m_pID(pid)
+  , m_streamType(type)
 {
   m_pesError        = false;
   m_pesParser       = NULL;
@@ -320,7 +262,6 @@ bool cTSDemuxer::ProcessTSPacket(unsigned char *data)
   /* drop broken PES packets */
   if (m_pesError && !pusi)
   {
-    dsyslog("VNSI-Error: dropping broken PES packet");
     return false;
   }
 
@@ -332,7 +273,6 @@ bool cTSDemuxer::ProcessTSPacket(unsigned char *data)
   {
     if (!PesIsHeader(data))
     {
-      esyslog("VNSI-Error: payload not PES ?");
       m_pesError = true;
       return false;
     }
