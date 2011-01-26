@@ -108,6 +108,15 @@ public:
   }
 #endif
 
+#ifdef HAVE_LIBOPENMAX
+  void AddProcessor(COpenMax *openmax, DVDVideoPicture *picture)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(openmax, picture);
+  }
+#endif
+
 #ifdef HAVE_LIBVA
   void AddProcessor(VAAPI::CHolder& holder)
   {

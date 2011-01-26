@@ -76,6 +76,7 @@ static int contextAttributes[] =
 CWinSystemEGL g_Windowing;
 
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
+, m_eglOMXContext(0)
 {
   m_eWindowSystem = WINDOW_SYSTEM_EGL;
 
@@ -390,6 +391,12 @@ bool CWinSystemEGL::RefreshEGLContext()
     return false;
   }
 
+  if ((m_eglContext = eglCreateContext(m_eglDisplay, eglConfig, m_eglContext, contextAttributes)) == EGL_NO_CONTEXT)
+  {
+    CLog::Log(LOGERROR, "EGL Error: Could not create OMX context");
+    return false;
+  }
+
   if (m_eglSurface)
     eglDestroySurface(m_eglDisplay, m_eglSurface);
 
@@ -466,5 +473,21 @@ bool CWinSystemEGL::Show(bool raise)
   XSync(m_dpy, False);
   return true;
 }
+
+EGLContext CWinSystemEGL::GetEGLContext() const
+{
+  return m_eglContext;
+}
+
+EGLDisplay CWinSystemEGL::GetEGLDisplay() const
+{
+  return m_eglDisplay;
+}
+
+bool CWinSystemEGL::makeOMXCurrent()
+{
+  return true;
+}
+
 
 #endif

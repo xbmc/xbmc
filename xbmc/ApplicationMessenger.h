@@ -88,6 +88,8 @@ class CGUIDialog;
 #define TMSG_OPTICAL_MOUNT        700
 #define TMSG_OPTICAL_UNMOUNT      701
 
+#define TMSG_CALLBACK             800
+
 typedef struct
 {
   DWORD dwMessage;
@@ -109,6 +111,12 @@ class CDelayedMessage : public CThread
   private:
     unsigned int   m_delay;
     ThreadMessage  m_msg;
+};
+
+struct ThreadMessageCallback
+{
+  void (*callback)(void *userptr);
+  void *userptr;
 };
 
 class CApplicationMessenger

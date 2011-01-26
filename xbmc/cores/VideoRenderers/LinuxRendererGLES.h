@@ -30,10 +30,12 @@
 #include "RenderFlags.h"
 #include "GraphicContext.h"
 #include "BaseRenderer.h"
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
+class COpenMaxVideo;
 
 #define NUM_BUFFERS 3
 
@@ -84,7 +86,8 @@ enum RenderMethod
 {
   RENDER_GLSL=0x01,
   RENDER_SW=0x04,
-  RENDER_POT=0x10
+  RENDER_POT=0x10,
+  RENDER_OMXEGL=0x40
 };
 
 enum RenderQuality
@@ -144,6 +147,9 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
+#ifdef HAVE_LIBOPENMAX
+  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
+#endif
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
 
@@ -169,6 +175,7 @@ protected:
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
+  void RenderOpenMax(int renderBuffer, int field);  // OpenMAX rgb texture
 
   CFrameBufferObject m_fbo;
 
@@ -215,6 +222,10 @@ protected:
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
+
+#ifdef HAVE_LIBOPENMAX
+    OpenMaxVideoBuffer *openMaxBuffer;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

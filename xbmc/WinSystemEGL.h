@@ -53,12 +53,17 @@ public:
 
   virtual bool IsExtSupported(const char* extension);
 
+  virtual bool makeOMXCurrent();
+
+  EGLContext GetEGLContext() const;
+  EGLDisplay GetEGLDisplay() const;
 protected:
   bool RefreshEGLContext();
 
   SDL_Surface* m_SDLSurface;
   EGLDisplay   m_eglDisplay;
   EGLContext   m_eglContext;
+  EGLContext   m_eglOMXContext;
   EGLSurface   m_eglSurface;
   Window       m_eglWindow;
   Window       m_wmWindow;

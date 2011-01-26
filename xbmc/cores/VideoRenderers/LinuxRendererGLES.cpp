@@ -41,6 +41,7 @@
 #include "Texture.h"
 #include "../dvdplayer/Codecs/DllSwScale.h"
 #include "../dvdplayer/Codecs/DllAvCodec.h"
+#include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 
 using namespace Shaders;
 
@@ -59,7 +60,10 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
+  {
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_buffers[i].openMaxBuffer = 0;
+  }
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
@@ -176,7 +180,12 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
 
   /* take next available buffer */
   if( source == AUTOSOURCE )
-    source = NextYV12Texture();
+   source = NextYV12Texture();
+
+  if ( m_renderMethod == RENDER_OMXEGL )
+  {
+    return source;
+  }
 
   YV12Image &im = m_buffers[source].image;
 
@@ -190,6 +199,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
     im.flags |= IMAGE_FLAG_READING;
   else
   {
+    printf("Wait for Texture 1\n");
     if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
       CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
@@ -339,7 +349,8 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
-  if (!(im->flags&IMAGE_FLAG_READY))
+
+  if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBuffer)
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
@@ -716,12 +727,17 @@ void CLinuxRendererGLES::LoadShaders(int field)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
+  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_OMXEGL)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using OMXEGL render method");
+    m_renderMethod = RENDER_OMXEGL;
+  }
+
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
    */
-  if (glCreateProgram // TODO: proper check
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+  if ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
   {
     if (m_pYUVShader)
     {
@@ -736,7 +752,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
-      m_renderMethod = RENDER_GLSL;
+      //m_renderMethod = RENDER_GLSL;
       UpdateVideoFilter();
     }
     else
@@ -830,11 +846,12 @@ void CLinuxRendererGLES::Render(DWORD flags, int renderBuffer)
   else
     m_currentField = FIELD_FULL;
 
-  // call texture load function
   (this->*m_textureUpload)(renderBuffer);
 
   if (m_renderMethod & RENDER_GLSL)
   {
+    //(this->*m_textureUpload)(renderBuffer);
+    // call texture load function
     UpdateVideoFilter();
     switch(m_renderQuality)
     {
@@ -855,8 +872,14 @@ void CLinuxRendererGLES::Render(DWORD flags, int renderBuffer)
       break;
     }
   }
+  else if ( m_renderMethod & RENDER_OMXEGL)
+  {
+    RenderOpenMax(renderBuffer, m_currentField);
+  }
   else
   {
+    //(this->*m_textureUpload)(renderBuffer);
+    // call texture load function
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
@@ -864,6 +887,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int renderBuffer)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
+  return;
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
@@ -1209,6 +1233,75 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
+void CLinuxRendererGLES::RenderOpenMax(int renderBuffer, int field)
+{
+#if 1
+  //printf("Texture: %d\n", m_buffers[renderBuffer].openMaxBuffer->texture_id);
+
+  GLuint textureId = m_buffers[renderBuffer].openMaxBuffer->texture_id;
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, textureId);
+
+  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
+
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat ver[4][4];
+  GLfloat tex[4][2];
+  float col[4][3];
+
+  for (int index = 0;index < 4;++index)
+  {
+    col[index][0] = col[index][1] = col[index][2] = 1.0;
+  }
+
+  GLint   posLoc = g_Windowing.GUIShaderGetPos();
+  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
+  GLint   colLoc = g_Windowing.GUIShaderGetCol();
+
+  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
+  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(texLoc);
+  glEnableVertexAttribArray(colLoc);
+
+  // Set vertex coordinates
+  ver[0][0] = ver[3][0] = m_destRect.x1;
+  ver[0][1] = ver[1][1] = m_destRect.y2;
+  ver[1][0] = ver[2][0] = m_destRect.x2;
+  ver[2][1] = ver[3][1] = m_destRect.y1;
+  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
+  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+
+  // Set texture coordinates
+  tex[0][0] = tex[3][0] = 0;
+  tex[0][1] = tex[1][1] = 0;
+  tex[1][0] = tex[2][0] = 1;
+  tex[2][1] = tex[3][1] = 1;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(texLoc);
+
+  g_Windowing.DisableGUIShader();
+
+  VerifyGLState();
+
+  glDisable(m_textureTarget);
+  VerifyGLState();
+
+  // ensure that image had been rendered
+  //glFinish();
+#endif
+}
+
 void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
@@ -1457,5 +1550,14 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 
   return false;
 }
+
+#ifdef HAVE_LIBOPENMAX
+void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *picture)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  buf.openMaxBuffer = picture->openMaxBuffer;
+}
+#endif
+
 
 #endif

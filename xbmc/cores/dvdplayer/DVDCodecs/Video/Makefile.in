@@ -19,6 +19,7 @@ SRCS=	DVDVideoCodecFFmpeg.cpp \
 	VAAPI.cpp \
 	DVDVideoCodecVDA.cpp \
 	OpenMax.cpp \
+	OpenMaxVideo.cpp \
 	DVDVideoCodecOpenMax.cpp \
 	CrystalHD.cpp \
 	DVDVideoCodecCrystalHD.cpp \
