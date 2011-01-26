@@ -513,8 +513,8 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
   {
     strOutput.Insert(i2,token);
     i2 += strlen(token);
-    strOutput.Insert(i2+2,token);
-    i2 += 2;
+    strOutput.Insert(i2+strlen(temp),token);
+    i2 += strlen(temp);
   }
 }
 
