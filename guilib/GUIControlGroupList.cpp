@@ -433,12 +433,12 @@ EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMous
       CGUIControl *control = *it;
       if (!control->IsVisible()) continue;
       float nextOffset = offset + Size(control) + m_itemGap;
-      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_offset) // past our current offset
+      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_offset && m_offset < m_totalSize - Size()) // past our current offset
       {
         ScrollTo(nextOffset);
         return EVENT_RESULT_HANDLED;
       }
-      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_offset) // at least at our current offset
+      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_offset && m_offset > 0) // at least at our current offset
       {
         ScrollTo(offset);
         return EVENT_RESULT_HANDLED;
