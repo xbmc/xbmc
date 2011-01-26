@@ -44,7 +44,7 @@ CEpgInfoTag::~CEpgInfoTag()
 void CEpgInfoTag::Reset()
 {
   m_iBroadcastId        = -1;
-  m_strTitle            = g_localizeStrings.Get(19055);
+  m_strTitle            = "";
   m_strGenre            = "";
   m_strPlotOutline      = "";
   m_strPlot             = "";
@@ -203,6 +203,14 @@ void CEpgInfoTag::SetEnd(const CDateTime &end)
     m_endTime = end;
     m_bChanged = true;
   }
+}
+
+CStdString CEpgInfoTag::Title(void) const
+{
+  if (m_strTitle.IsEmpty())
+    return g_localizeStrings.Get(19055);
+  else
+    return m_strTitle;
 }
 
 void CEpgInfoTag::SetTitle(const CStdString &strTitle)

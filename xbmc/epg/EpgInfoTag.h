@@ -180,7 +180,7 @@ public:
    * @brief Get the title of this event.
    * @return The title.
    */
-  CStdString Title(void) const { return m_strTitle; }
+  CStdString Title(void) const;
 
   /*!
    * @brief Change the title of this event.
