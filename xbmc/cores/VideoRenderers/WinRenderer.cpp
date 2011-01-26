@@ -695,7 +695,7 @@ void CWinRenderer::RenderSW(DWORD flags)
   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_YUV420P,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
-                                                      SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                      SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   YUVBuffer* buf = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
