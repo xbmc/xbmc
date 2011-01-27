@@ -527,16 +527,32 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
 bool CPVRChannelGroup::PersistChannels(void)
 {
   bool bReturn = false;
+  bool bRefreshChannelList = false;
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
   if (!database->Open())
-    bReturn;
+    return bReturn;
 
   bReturn = true;
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    bReturn = at(iChannelPtr)->Persist(true) && bReturn;
+  {
+    /* if this channel has an invalid ID, reload the list afterwards */
+    bRefreshChannelList = at(iChannelPtr)->ChannelID() < 0;
 
+    /* queue a persist query if needed */
+    bReturn = at(iChannelPtr)->Persist(true) && bReturn;
+  }
+
+  /* commit all queries */
   database->CommitInsertQueries();
+
+  /* refresh the channel list if needed */
+  if (bRefreshChannelList)
+  {
+    Unload();
+    bReturn = LoadFromDb(true) > 0;
+  }
+
   database->Close();
 
   return bReturn;

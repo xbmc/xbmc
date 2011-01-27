@@ -95,6 +95,8 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
     if (tag)
       timer.SetNumber(tag->ChannelNumber());
   }
+
+  return true;
 }
 
 bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex, bool bSaveInDb /* = true */)
@@ -132,10 +134,14 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int 
   UpdateTimers();
 
   if (bSaveInDb)
-    PersistChannels();
+    bReturn = PersistChannels();
+  else
+    bReturn = true;
 
   CLog::Log(LOGNOTICE, "%s - %s channel '%d' moved to position '%d'",
       __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
+
+  return bReturn;
 }
 
 bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
@@ -220,40 +226,18 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
 {
-  CPVRDatabase *database = NULL;
+  int iReturn = -1;
   int iCurSize = size();
 
-  if (bAddToDb)
-  {
-    database = g_PVRManager.GetTVDatabase();
-
-    if (!database || !database->Open())
-      return -1;
-  }
-
   if (GetFromClients() == -1)
-    return -1;
+    return iReturn;
 
   SortByClientChannelNumber();
   ReNumberAndCheck();
   SearchAndSetChannelIcons();
 
   if (bAddToDb)
-  {
-    /* add all channels to the database */
-    for (unsigned int ptr = 0; ptr < size(); ptr++)
-    {
-      database->Persist(*at(ptr), true);
-    }
-
-    database->CommitInsertQueries();
-    database->Compress(true);
-
-    Unload();
-    database->GetChannels(*this, m_bRadio);
-
-    database->Close();
-  }
+    PersistChannels();
 
   return size() - iCurSize;
 }
