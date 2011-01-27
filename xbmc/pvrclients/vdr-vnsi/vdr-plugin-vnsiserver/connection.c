@@ -56,7 +56,6 @@ cConnection::cConnection(cServer *server, int fd, unsigned int id, const char *C
   m_Streamer                = NULL;
   m_isStreaming             = false;
   m_Channel                 = NULL;
-  m_NetLogFile              = NULL;
   m_ClientAddress           = ClientAdr;
   m_StatusInterfaceEnabled  = false;
   m_OSDInterfaceEnabled     = false;
@@ -74,18 +73,11 @@ cConnection::~cConnection()
   isyslog("VNSI: stopping cConnection thread ...");
   Cancel(10);
   isyslog("VNSI: done");
-
-  if (m_NetLogFile)
-  {
-    fclose(m_NetLogFile);
-    m_NetLogFile = NULL;
-  }
 }
 
 void cConnection::Action(void)
 {
   uint32_t kaTimeStamp;
-  uint32_t logStringLen;
   uint32_t channelID;
   uint32_t requestID;
   uint32_t opcode;
@@ -191,15 +183,13 @@ void cConnection::Action(void)
       else
       {
         cRequestPacket* req = new cRequestPacket(requestID, opcode, data, dataLength, this);
-	m_cmdcontrol.recvRequest(req);
+        m_cmdcontrol.recvRequest(req);
       }
     }
     else if (channelID == 3)
     {
       if (!m_socket.read((uint8_t*)&kaTimeStamp, sizeof(uint32_t), 1000)) break;
       kaTimeStamp = ntohl(kaTimeStamp);
-
-      //LOGCONSOLE("Received chan=%lu kats=%lu", channelID, kaTimeStamp);
 
       uint8_t buffer[8];
       *(uint32_t*)&buffer[0] = htonl(3); // KA CHANNEL
@@ -208,28 +198,6 @@ void cConnection::Action(void)
       {
         esyslog("VNSI-Error: Could not send back KA reply");
         break;
-      }
-    }
-    else if (channelID == 4)
-    {
-      if (!m_socket.read((uint8_t*)&logStringLen, sizeof(uint32_t), 1000)) break;
-      logStringLen = ntohl(logStringLen);
-
-      LOGCONSOLE("Received chan=%lu loglen=%lu", channelID, logStringLen);
-
-      uint8_t buffer[logStringLen + 1];
-      if (!m_socket.read((uint8_t*)&buffer, logStringLen, 1000)) break;
-      buffer[logStringLen] = '\0';
-
-      LOGCONSOLE("Client said: '%s'", buffer);
-      if (m_NetLogFile)
-      {
-        if (fputs((const char*)buffer, m_NetLogFile) == EOF)
-        {
-          fclose(m_NetLogFile);
-          m_NetLogFile = NULL;
-        }
-        fflush(NULL);
       }
     }
     else
@@ -242,27 +210,6 @@ void cConnection::Action(void)
   /* If thread is ended due to closed connection delete a
      possible running stream here */
   StopChannelStreaming();
-}
-
-void cConnection::EnableNetLog(bool yesNo, const char* ClientName)
-{
-  if (yesNo)
-  {
-    cString Base = cString::sprintf("%s/vnsi-server/%s-%s.log", *VNSIServerConfig.ConfigDirectory, *m_ClientAddress, ClientName);
-
-    m_NetLogFile = fopen(*Base, "a");
-    if (m_NetLogFile)
-      isyslog("VNSI: Client network logging started");
-  }
-  else
-  {
-    if (m_NetLogFile)
-    {
-      fclose(m_NetLogFile);
-      m_NetLogFile = NULL;
-      isyslog("VNSI: Client network logging stopped");
-    }
-  }
 }
 
 bool cConnection::StartChannelStreaming(const cChannel *channel, cResponsePacket *resp)
@@ -406,11 +353,6 @@ void cConnection::OsdStatusMessage(const char *Message)
       return;
     }
 
-//    else if (type == mtWarning)
-//      resp->add_U32(1);
-//    else if (type == mtError)
-//      resp->add_U32(2);
-//    else
     resp->add_U32(0);
     resp->add_String(Message);
     resp->finalise();

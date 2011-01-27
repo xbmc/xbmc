@@ -54,7 +54,6 @@ private:
   cLiveStreamer  *m_Streamer;
   const cChannel *m_Channel;
   bool            m_isStreaming;
-  FILE           *m_NetLogFile;
   cString         m_ClientAddress;
   cRecPlayer     *m_RecPlayer;
   cCmdControl     m_cmdcontrol;
@@ -88,7 +87,6 @@ public:
   void SetLoggedIn(bool yesNo) { m_loggedIn = yesNo; }
   void SetStatusInterface(bool yesNo) { m_StatusInterfaceEnabled = yesNo; }
   void SetOSDInterface(bool yesNo) { m_OSDInterfaceEnabled = yesNo; }
-  void EnableNetLog(bool yesNo, const char* ClientName = "");
   cxSocket *GetSocket() { return &m_socket; }
   bool StartChannelStreaming(const cChannel *channel, cResponsePacket *resp);
   void StopChannelStreaming();
