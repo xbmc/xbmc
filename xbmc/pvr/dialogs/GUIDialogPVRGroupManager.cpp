@@ -132,7 +132,10 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_CurrentGroupName != "")
           {
-            g_PVRChannelGroups.Get(m_bIsRadio)->RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
+            CPVRChannelGroup *group = g_PVRChannelGroups.Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
+            if (group)
+              group->SetGroupName(m_CurrentGroupName, true);
+
             Update();
           }
         }

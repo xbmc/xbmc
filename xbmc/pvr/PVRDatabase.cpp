@@ -357,7 +357,7 @@ int CPVRDatabase::GetLastChannel()
   return atoi(strValue.c_str());
 }
 
-bool CPVRDatabase::UpdateLastChannel(const CPVRChannel &channel)
+bool CPVRDatabase::PersistLastChannel(const CPVRChannel &channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -590,32 +590,6 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
 
   return iReturn;
 }
-
-bool CPVRDatabase::SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio /* = false */)
-{
-  bool bReturn = false;
-
-  /* invalid group id */
-  if (iGroupId <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid group id: %d",
-        __FUNCTION__, iGroupId);
-    return bReturn;
-  }
-
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u;", iGroupId, (bRadio ? 1 : 0));
-  if (ResultQuery(strQuery))
-  {
-    if (m_pDS->fv(0).get_asInt() > 0)
-    {
-      strQuery = FormatSQL("UPDATE channelgroups SET Name = '%s' WHERE idGroup = %i AND bIsRadio = %u;", strNewName.c_str(), iGroupId, (bRadio ? 1 : 0));
-      bReturn = ExecuteQuery(strQuery);
-    }
-  }
-
-  return bReturn;
-}
-
 
 bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio /* = false */)
 {

@@ -117,7 +117,7 @@ public:
    * @param channel The channel to store.
    * @return True if the value was stored, false otherwise.
    */
-  bool UpdateLastChannel(const CPVRChannel &channel);
+  bool PersistLastChannel(const CPVRChannel &channel);
 
   //@}
 
@@ -196,15 +196,6 @@ public:
    * @return The amount of channels that were added.
    */
   int GetChannelsInGroup(CPVRChannelGroup *group);
-
-  /*!
-   * @brief Change the name of a channel group.
-   * @param iGroupId The ID of the group to change.
-   * @param strNewName The new name of the group.
-   * @param bRadio True if it's a radio channel group, false otherwise.
-   * @return True if the name was changed successfully, false otherwise.
-   */
-  bool SetChannelGroupName(int iGroupId, const CStdString &strNewName, bool bRadio = false);
 
   /*!
    * @brief Change the sort order of a channel group.

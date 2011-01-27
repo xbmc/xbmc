@@ -1548,7 +1548,7 @@ void CPVRManager::CloseStream()
 
     /* Save channel number in database */
     m_database.Open();
-    m_database.UpdateLastChannel(*m_currentPlayingChannel->GetPVRChannelInfoTag());
+    m_database.PersistLastChannel(*m_currentPlayingChannel->GetPVRChannelInfoTag());
     m_database.Close();
 
     /* Store current settings inside Database */

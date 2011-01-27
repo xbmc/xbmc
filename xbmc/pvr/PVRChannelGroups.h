@@ -69,6 +69,13 @@ public:
   bool Update(const CPVRChannelGroup &group);
 
   /*!
+   * @brief Get a pointer to a channel group given it's ID.
+   * @param iGroupId The ID of the group.
+   * @return The group or NULL if it wasn't found.
+   */
+  CPVRChannelGroup *GetById(int iGroupId);
+
+  /*!
    * @brief Get the group that contains all channels.
    * @return The group that contains all channels.
    */
@@ -114,14 +121,6 @@ public:
    * @param strName The name of the group.
    */
   void AddGroup(const CStdString &strName);
-
-  /*!
-   * @brief Rename a group in this container.
-   * @param iGroupId The ID of the group.
-   * @param strNewName The new name.
-   * @return True if the group was renamed successfully, false if not.
-   */
-  bool RenameGroup(int iGroupId, const CStdString &strNewName);
 
   /*!
    * @brief Delete a group in this container.
