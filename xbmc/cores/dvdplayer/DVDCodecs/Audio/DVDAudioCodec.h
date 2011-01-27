@@ -22,13 +22,13 @@
  */
 
 #include "system.h"
-#include "AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #include <vector>
-#include "Codecs/DllAvCodec.h"
+#include "DllAvCodec.h"
 
 struct AVStream;
 

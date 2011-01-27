@@ -22,8 +22,8 @@
  */
 
 #include "Addon.h"
-#include "GraphicContext.h" // needed for the RESOLUTION members
-#include "GUIIncludes.h"    // needed for the GUIInclude member
+#include "guilib/GraphicContext.h" // needed for the RESOLUTION members
+#include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
 #define CREDIT_LINE_LENGTH 50
 
 class TiXmlNode;

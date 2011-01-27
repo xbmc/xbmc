@@ -20,7 +20,7 @@
  */
 #pragma once
 
-#include "Codecs/DllAvCodec.h"
+#include "DllAvCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
 #include <va/va.h>

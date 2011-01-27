@@ -22,7 +22,7 @@
  */
 
 #include "CachingCodec.h"
-#include "MusicInfoTagLoaderMP3.h"
+#include "music/tags/MusicInfoTagLoaderMP3.h"
 #include "../dvdplayer/DVDCodecs/Audio/DllLibMad.h"
 
 enum madx_sig {

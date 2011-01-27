@@ -20,9 +20,9 @@
  *
  */
 
-#include "AudioEngine/AEStream.h"
-#include "AudioEngine/AEPostProc.h"
-#include "IAudioCallback.h"
+#include "cores/AudioEngine/AEStream.h"
+#include "cores/AudioEngine/AEPostProc.h"
+#include "cores/IAudioCallback.h"
 
 class CAEPPAnimationFade : public IAEPostProc
 {

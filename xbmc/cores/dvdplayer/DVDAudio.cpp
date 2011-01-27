@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "DVDAudio.h"
 #include "Util.h"

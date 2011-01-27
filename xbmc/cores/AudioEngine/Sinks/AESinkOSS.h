@@ -23,7 +23,7 @@
 #include "AESink.h"
 #include <stdint.h>
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class CAESinkOSS : public IAESink
 {

@@ -20,7 +20,7 @@
  */
 
 #include "InfoLoader.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "JobManager.h"
 #include "TimeUtils.h"
 

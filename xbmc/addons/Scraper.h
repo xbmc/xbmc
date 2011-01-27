@@ -40,8 +40,8 @@ namespace ADDON
   typedef boost::shared_ptr<CScraper> ScraperPtr;
 
   const CStdString   TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-  const CONTENT_TYPE TranslateContent(const CStdString &string);
-  const TYPE         ScraperTypeFromContent(const CONTENT_TYPE &content);
+        CONTENT_TYPE TranslateContent(const CStdString &string);
+        TYPE         ScraperTypeFromContent(const CONTENT_TYPE &content);
 
   class CScraper : public CAddon
   {

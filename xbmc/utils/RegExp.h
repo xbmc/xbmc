@@ -29,7 +29,7 @@
 namespace PCRE {
 #ifdef _WIN32
 #define PCRE_STATIC
-#include "lib/pcre/pcre.h"
+#include "lib/win32/pcre/pcre.h"
 #else
 #include <pcre.h>
 #endif

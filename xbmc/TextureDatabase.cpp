@@ -21,7 +21,7 @@
 
 #include "TextureDatabase.h"
 #include "utils/log.h"
-#include "Crc32.h"
+#include "utils/Crc32.h"
 #include "DateTime.h"
 
 CTextureDatabase::CTextureDatabase()

@@ -26,7 +26,7 @@
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class CAESinkALSA : public IAESink
 {

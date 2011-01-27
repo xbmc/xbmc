@@ -22,7 +22,7 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "DVDSubtitleTagSami.h"
 
 using namespace std;

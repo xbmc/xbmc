@@ -19,19 +19,20 @@
 *
 */
 #include "Scraper.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/FileCurl.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "filesystem/FileCurl.h"
 #include "AddonManager.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "XMLUtils.h"
-#include "MusicDatabase.h"
-#include "VideoDatabase.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
+#include "music/MusicDatabase.h"
+#include "video/VideoDatabase.h"
 #include <sstream>
 
 using namespace std;
@@ -72,7 +73,7 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
   return "";
 }
 
-const CONTENT_TYPE TranslateContent(const CStdString &string)
+CONTENT_TYPE TranslateContent(const CStdString &string)
 {
   for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
   {
@@ -83,7 +84,7 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   return CONTENT_NONE;
 }
 
-const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
 {
   switch (content)
   {
@@ -189,14 +190,14 @@ CStdString CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
-  CStdString strCachePath = CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+  CStdString strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
   if (!CDirectory::Exists(strCachePath))
     CDirectory::Create(strCachePath);
 
-  strCachePath = CUtil::AddFileToFolder(strCachePath, ID());
-  CUtil::AddSlashAtEnd(strCachePath);
+  strCachePath = URIUtils::AddFileToFolder(strCachePath, ID());
+  URIUtils::AddSlashAtEnd(strCachePath);
 
   if (CDirectory::Exists(strCachePath))
   {

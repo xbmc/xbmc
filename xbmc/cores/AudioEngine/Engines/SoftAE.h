@@ -24,9 +24,9 @@
 #include <map>
 
 #include "system.h"
-#include "utils/Thread.h"
-#include "utils/CriticalSection.h"
-#include "utils/SharedSection.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 #include "ThreadedAE.h"
 #include "AEConvert.h"

@@ -21,20 +21,19 @@
 
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"
-#include "../utils/Network.h"
 #include "Application.h"
 #include "CharsetConverter.h"
 #include "URL.h"
-#include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
+#include "filesystem/File.h"
+#include "filesystem/FileCurl.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif
-#include "Settings.h"
-#include "LocalizeStrings.h"
-#include "GUIRSSControl.h"
+#include "settings/Settings.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/GUIRSSControl.h"
 #include "utils/TimeUtils.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "log.h"
 
 using namespace std;

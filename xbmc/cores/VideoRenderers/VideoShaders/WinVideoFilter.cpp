@@ -22,7 +22,7 @@
 #ifdef HAS_DX
 
 #include "WinVideoFilter.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "../../../utils/log.h"
 #include "../../../FileSystem/File.h"
 #include <map>

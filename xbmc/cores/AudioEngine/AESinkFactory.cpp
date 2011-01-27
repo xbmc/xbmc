@@ -22,7 +22,7 @@
 #include "AESinkFactory.h"
 #include "SystemInfo.h"
 #include "utils/log.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef _WIN32
   #include "Sinks/AESinkWASAPI.h"

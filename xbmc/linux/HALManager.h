@@ -23,7 +23,7 @@
  *
  */
 
-#include "../../guilib/system.h"
+#include "system.h"
 #include <string.h>
 #include <stdio.h>
 #include <dbus/dbus.h>
@@ -31,11 +31,11 @@
 #include <vector>
 
 #define BYTE char
-#include "../utils/log.h"
-#include "../utils/CriticalSection.h"
-#include "../Util.h"
-#include "../MediaSource.h"
-#include "GUISettings.h"
+#include "utils/log.h"
+#include "threads/CriticalSection.h"
+#include "utils/URIUtils.h"
+#include "MediaSource.h"
+#include "settings/GUISettings.h"
 
 class CHALDevice
 {
@@ -90,8 +90,8 @@ public:
     else
     {
       share->strName = MountPoint;
-      CUtil::RemoveSlashAtEnd(share->strName);
-      share->strName = CUtil::GetFileName(share->strName);
+      URIUtils::RemoveSlashAtEnd(share->strName);
+      share->strName = URIUtils::GetFileName(share->strName);
     }
 
     share->m_ignore = true;

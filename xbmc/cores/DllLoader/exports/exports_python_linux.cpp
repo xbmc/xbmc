@@ -27,10 +27,10 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#include "../../../FileSystem/SpecialProtocol.h"
-#include "../../../utils/log.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/log.h"
 #ifdef HAS_PYTHON
-#include "../../../lib/libPython/XBPython.h"
+#include "interfaces/python/XBPython.h"
 #endif
 #include "../DllLoaderContainer.h"
 

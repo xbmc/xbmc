@@ -22,7 +22,7 @@
  */
 
 #include <queue>
-#include "Thread.h"
+#include "threads/Thread.h"
 #include "StdString.h"
 
 struct TICKET

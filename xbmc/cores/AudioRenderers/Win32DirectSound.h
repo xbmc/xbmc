@@ -30,7 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();

@@ -25,8 +25,8 @@
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
-#include "Codecs/DllAvCodec.h"
-#include "Codecs/DllAvFormat.h"
+#include "lib/DllAvCodec.h"
+#include "lib/DllAvFormat.h"
 
 class CAEEncoderFFmpeg: public IAEEncoder
 {

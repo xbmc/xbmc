@@ -24,7 +24,7 @@
 #include <map>
 
 #include "system.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 #include "AEAudioFormat.h"
 #include "AEStream.h"

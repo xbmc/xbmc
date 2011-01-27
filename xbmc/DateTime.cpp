@@ -21,7 +21,7 @@
 
 #include "DateTime.h"
 #include "LangInfo.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL

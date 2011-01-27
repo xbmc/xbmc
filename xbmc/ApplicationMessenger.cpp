@@ -23,26 +23,27 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
-#include "TextureManager.h"
+#include "guilib/TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "SectionLoader.h"
 #ifdef HAS_PYTHON
-#include "lib/libPython/XBPython.h"
+#include "interfaces/python/XBPython.h"
 #endif
-#include "GUIWindowSlideShow.h"
-#include "utils/Builtins.h"
-#include "utils/Network.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "interfaces/Builtins.h"
+#include "network/Network.h"
 #include "utils/log.h"
-#include "GUIWindowManager.h"
-#include "Settings.h"
-#include "GUISettings.h"
+#include "utils/URIUtils.h"
+#include "guilib/GUIWindowManager.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "GUIDialog.h"
-#include "WindowingFactory.h"
+#include "guilib/GUIDialog.h"
+#include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
 
-#include "PowerManager.h"
+#include "powermanagement/PowerManager.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -50,17 +51,19 @@
 #elif defined __APPLE__
 #include "CocoaInterface.h"
 #endif
-#include "MediaManager.h"
-#include "LocalizeStrings.h"
-#include "SingleLock.h"
-#include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
-#include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
-
-#ifdef HAS_HTTPAPI
-#include "lib/libhttpapi/XBMChttp.h"
+#include "storage/MediaManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "threads/SingleLock.h"
+#ifdef HAS_PYTHON
+#include "interfaces/python/xbmcmodule/GUIPythonWindowDialog.h"
+#include "interfaces/python/xbmcmodule/GUIPythonWindowXMLDialog.h"
 #endif
 
-#include "PlayList.h"
+#ifdef HAS_HTTPAPI
+#include "interfaces/http-api/XBMChttp.h"
+#endif
+
+#include "playlists/PlayList.h"
 #include "FileItem.h"
 
 using namespace std;
@@ -347,14 +350,14 @@ case TMSG_POWERDOWN:
         pSlideShow->Reset();
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-        if (CUtil::IsZIP(pMsg->strParam) || CUtil::IsRAR(pMsg->strParam)) // actually a cbz/cbr
+        if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
           CStdString strPath;
-          if (CUtil::IsZIP(pMsg->strParam))
-            CUtil::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
+          if (URIUtils::IsZIP(pMsg->strParam))
+            URIUtils::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
           else
-            CUtil::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
+            URIUtils::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
           CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)

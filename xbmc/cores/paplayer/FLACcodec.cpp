@@ -20,7 +20,7 @@
  */
 
 #include "FLACcodec.h"
-#include "FlacTag.h"
+#include "music/tags/FlacTag.h"
 #include "utils/log.h"
 
 using namespace MUSIC_INFO;

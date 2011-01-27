@@ -32,8 +32,8 @@
 #if defined(_LINUX) || defined(_WIN32)
 #include "utils/CPUInfo.h"
 #endif
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "boost/shared_ptr.hpp"
 

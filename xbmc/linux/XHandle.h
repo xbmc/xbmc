@@ -24,13 +24,13 @@
 
 #ifndef _WIN32
 
-#include "../../guilib/StdString.h"
+#include "utils/StdString.h"
 #include <SDL/SDL_mutex.h>
 #include <pthread.h>
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
-#include "Semaphore.hpp"
+#include "threads/Semaphore.hpp"
 #include <list>
 
 struct CXHandle {

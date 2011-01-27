@@ -23,7 +23,7 @@
 
 #include "GUIViewState.h"
 
-#include "GUIBaseContainer.h"
+#include "guilib/GUIBaseContainer.h"
 
 class CGUIViewControl
 {

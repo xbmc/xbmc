@@ -24,14 +24,14 @@
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
 #else
-  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+  #include "lib/ffmpeg/libavutil/avutil.h"
 #endif
 
 #include "system.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "FileSystem/FileFactory.h"
-#include "FileSystem/IFile.h"
+#include "filesystem/FileFactory.h"
+#include "filesystem/IFile.h"
 #include <samplerate.h>
 
 #include "AEConvert.h"

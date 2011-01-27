@@ -20,7 +20,7 @@
  */
 
 #include "NullDirectSound.h"
-#include "AudioContext.h"
+#include "guilib/AudioContext.h"
 #include "Application.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

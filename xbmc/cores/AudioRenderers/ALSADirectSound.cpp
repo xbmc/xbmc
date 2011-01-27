@@ -20,12 +20,13 @@
 */
 
 #include "ALSADirectSound.h"
-#include "AudioContext.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "GUISettings.h"
+#include "guilib/AudioContext.h"
+#include "filesystem/SpecialProtocol.h"
+#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "limits.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %d - %s",__FUNCTION__,s,e,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;

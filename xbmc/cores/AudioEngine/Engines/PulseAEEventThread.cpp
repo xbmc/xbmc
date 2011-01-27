@@ -24,8 +24,8 @@
 
 #include "PulseAEEventThread.h"
 #include "AEUtil.h"
-#include "log.h"
-#include "utils/SingleLock.h"
+#include "utils/log.h"
+#include "threads/SingleLock.h"
 
 CPulseAEEventThread::CPulseAEEventThread(CPulseAEStream *stream) :
   m_run   (true  ),

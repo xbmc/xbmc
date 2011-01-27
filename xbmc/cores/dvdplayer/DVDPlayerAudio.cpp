@@ -19,18 +19,18 @@
  *
  */
 
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDPlayer.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
-#include "GUISettings.h"
-#include "VideoReferenceClock.h"
+#include "settings/GUISettings.h"
+#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 
 #include <sstream>
 #include <iomanip>

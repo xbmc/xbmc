@@ -46,12 +46,12 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
-#include "FileSystem/SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "URL.h"
-#include "FileSystem/File.h"
-#include "GUISettings.h"
+#include "filesystem/File.h"
+#include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "FileSystem/Directory.h"
+#include "filesystem/Directory.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
@@ -60,6 +60,7 @@
 #include "utils/log.h"
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
+#include "utils/URIUtils.h"
 #endif
 
 using namespace std;
@@ -489,7 +490,6 @@ extern "C"
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
       if (object == NULL)
       {
-        VERIFY(0);
         pFile->Close();
         delete pFile;
         return -1;
@@ -792,7 +792,7 @@ extern "C"
     }
     else if (url.GetFileName().Find("*.") != string::npos)
     {
-      CUtil::GetExtension(url.GetFileName(),strMask);
+      URIUtils::GetExtension(url.GetFileName(),strMask);
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
     int iDirSlot=0; // locate next free directory

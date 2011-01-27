@@ -20,14 +20,14 @@
  */
 
 #include "GUILargeTextureManager.h"
-#include "Picture.h"
-#include "GUISettings.h"
+#include "pictures/Picture.h"
+#include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "Texture.h"
-#include "utils/SingleLock.h"
+#include "guilib/Texture.h"
+#include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/JobManager.h"
-#include "GraphicContext.h"
+#include "guilib/GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
 

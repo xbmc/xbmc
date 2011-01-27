@@ -24,10 +24,10 @@
 #include <limits.h>
 
 #include "AEUtil.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
-#include "GUISettings.h"
+#include "threads/SingleLock.h"
+#include "settings/GUISettings.h"
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 32

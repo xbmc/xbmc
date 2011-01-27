@@ -53,7 +53,7 @@
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "utils/SystemInfo.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )

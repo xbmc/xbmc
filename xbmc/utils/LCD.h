@@ -21,9 +21,9 @@
  *
  */
 
-#include "Thread.h"
-#include "../../guilib/tinyXML/tinyxml.h"
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "threads/Thread.h"
+#include "tinyXML/tinyxml.h"
+#include "guilib/GUILabelControl.h"  // for CInfoPortion
 
 class TiXmlNode;
 

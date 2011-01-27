@@ -26,14 +26,13 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "utils/GUIInfoManager.h"
-#include "FileSystem/FileCurl.h"
-#include "Network.h"
+#include "GUIInfoManager.h"
+#include "filesystem/FileCurl.h"
+#include "network/Network.h"
 #include "Application.h"
-#include "GraphicContext.h"
-#include "WindowingFactory.h"
-#include "Settings.h"
-#include "LocalizeStrings.h"
+#include "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
+#include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "log.h"

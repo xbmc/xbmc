@@ -21,18 +21,15 @@
 #include "AddonManager.h"
 #include "Addon.h"
 #include "DllLibCPluff.h"
-#include "StringUtils.h"
-#include "RegExp.h"
-#include "XMLUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/JobManager.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 #include "FileItem.h"
 #include "LangInfo.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "DownloadQueueManager.h"
-#include "AdvancedSettings.h"
-#include "log.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
@@ -541,7 +538,7 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
   if (!metadata)
     return false;
-  
+
   vector<CStdString> platforms;
   if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
   {
@@ -706,6 +703,28 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
   }
   m_cpluff->destroy_context(context);
   return true;
+}
+
+bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPtr &addon)
+{
+  // create a context for these addons
+  cp_status_t status;
+  cp_context_t *context = m_cpluff->create_context(&status);
+  if (!root || !context)
+    return false;
+
+  // dump the XML back to text
+  std::string xml;
+  xml << TiXmlDeclaration("1.0", "UTF-8", "");
+  xml << *root;
+  cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
+  if (info)
+  {
+    addon = GetAddonFromDescriptor(info);
+    m_cpluff->release_info(context, info);
+  }
+  m_cpluff->destroy_context(context);
+  return addon != NULL;
 }
 
 bool CAddonMgr::StartServices()

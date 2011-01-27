@@ -21,9 +21,9 @@
  *
  */
 
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 #include "ICodec.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
 
 class CFileItem;

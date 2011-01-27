@@ -21,15 +21,15 @@
 
 #include "Addon.h"
 #include "AddonManager.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "StringUtils.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/File.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #ifdef __APPLE__
 #include "../osx/OSXGNUReplacements.h"
 #endif
-#include "log.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 #include <vector>
 #include <string.h>
 
@@ -172,7 +172,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
   return "";
 }
 
-const TYPE TranslateType(const CStdString &string)
+TYPE TranslateType(const CStdString &string)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
@@ -243,23 +243,22 @@ CStdString AddonVersion::Print() const
       y.Empty(); \
   }
 
-AddonProps::AddonProps(cp_plugin_info_t *props)
-  : id(props->identifier)
-  , version(props->version)
-  , name(props->name)
-  , path(props->plugin_path)
-  , author(props->provider_name)
+AddonProps::AddonProps(const cp_extension_t *ext)
+  : id(ext->plugin->identifier)
+  , version(ext->plugin->version)
+  , name(ext->plugin->name)
+  , path(ext->plugin->plugin_path)
+  , author(ext->plugin->provider_name)
   , stars(0)
 {
-  //FIXME only considers the first registered extension for each addon
-  if (props->extensions->ext_point_id)
-    type = TranslateType(props->extensions->ext_point_id);
+  if (ext->ext_point_id)
+    type = TranslateType(ext->ext_point_id);
 
   icon = "icon.png";
-  fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
-  changelog = CUtil::AddFileToFolder(path, "changelog.txt");
+  fanart = URIUtils::AddFileToFolder(path, "fanart.jpg");
+  changelog = URIUtils::AddFileToFolder(path, "changelog.txt");
   // Grab more detail from the props...
-  const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
+  const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(ext->plugin, "xbmc.addon.metadata");
   if (metadata)
   {
     summary = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "summary");
@@ -279,12 +278,12 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
  */
 
 CAddon::CAddon(const cp_extension_t *ext)
-  : m_props(ext ? ext->plugin : NULL)
+  : m_props(ext)
   , m_parent(AddonPtr())
 {
   BuildLibName(ext);
   BuildProfilePath();
-  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
   m_hasStrings = false;
   m_checkedStrings = false;
@@ -299,7 +298,7 @@ CAddon::CAddon(const AddonProps &props)
   if (props.libname.IsEmpty()) BuildLibName();
   else m_strLibName = props.libname;
   BuildProfilePath();
-  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
   m_hasStrings = false;
   m_checkedStrings = false;
@@ -316,7 +315,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_settingsLoaded = rhs.m_settingsLoaded;
   m_userSettingsLoaded = rhs.m_userSettingsLoaded;
   BuildProfilePath();
-  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.m_strLibName;
   m_enabled = rhs.Enabled();
   m_hasStrings  = false;
@@ -417,8 +416,8 @@ bool CAddon::LoadStrings()
   // Path where the language strings reside
   CStdString chosenPath;
   chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
-  CStdString chosen = CUtil::AddFileToFolder(m_props.path, chosenPath);
-  CStdString fallback = CUtil::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
+  CStdString chosen = URIUtils::AddFileToFolder(m_props.path, chosenPath);
+  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;
@@ -452,7 +451,7 @@ bool CAddon::LoadSettings()
   if (m_settingsLoaded)
     return true;
 
-  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
+  CStdString addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -498,10 +497,10 @@ void CAddon::SaveSettings(void)
 
   // break down the path into directories
   CStdString strRoot, strAddon;
-  CUtil::GetDirectory(m_userSettingsPath, strAddon);
-  CUtil::RemoveSlashAtEnd(strAddon);
-  CUtil::GetDirectory(strAddon, strRoot);
-  CUtil::RemoveSlashAtEnd(strRoot);
+  URIUtils::GetDirectory(m_userSettingsPath, strAddon);
+  URIUtils::RemoveSlashAtEnd(strAddon);
+  URIUtils::GetDirectory(strAddon, strRoot);
+  URIUtils::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders
   if (!CDirectory::Exists(strRoot))
@@ -593,12 +592,12 @@ const CStdString CAddon::Icon() const
 {
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
-  return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+  return URIUtils::AddFileToFolder(m_props.path, m_props.icon);
 }
 
 const CStdString CAddon::LibPath() const
 {
-  return CUtil::AddFileToFolder(m_props.path, m_strLibName);
+  return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
 }
 
 ADDONDEPS CAddon::GetDeps()

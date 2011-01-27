@@ -1,18 +1,17 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../addons/include
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=Main.o
 
-SLIB=../../../addons/visualization.waveform/Waveform.vis
+SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
 	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS)
-	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
 endif
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include

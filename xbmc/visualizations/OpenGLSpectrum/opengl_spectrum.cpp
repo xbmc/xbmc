@@ -27,10 +27,9 @@
  *  Also added 'hSpeed' to animate transition between bar heights
  */
 
-
 #define __STDC_LIMIT_MACROS
 
-#include "../../addons/include/xbmc_vis_dll.h"
+#include "addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
 #include <stdint.h>

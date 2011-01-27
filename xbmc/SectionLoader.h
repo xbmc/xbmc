@@ -20,8 +20,8 @@
  *
  */
 
-#include "StdString.h"
-#include "utils/CriticalSection.h"
+#include "utils/StdString.h"
+#include "threads/CriticalSection.h"
 
 //  forward
 class LibraryLoader;

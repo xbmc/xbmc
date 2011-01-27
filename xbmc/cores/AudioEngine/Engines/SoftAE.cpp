@@ -22,18 +22,18 @@
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
 #else
-  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+  #include "lib/ffmpeg/libavutil/avutil.h"
 #endif
 #include <string.h>
 
 #include "system.h"
-#include "utils/TimeUtils.h"
-#include "utils/SingleLock.h"
 #include "utils/log.h"
-#include "MathUtils.h"
-#include "GUISettings.h"
-#include "Settings.h"
-#include "AdvancedSettings.h"
+#include "utils/TimeUtils.h"
+#include "utils/MathUtils.h"
+#include "threads/SingleLock.h"
+#include "settings/GUISettings.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"

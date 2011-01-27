@@ -22,8 +22,8 @@
  */
 
 #include "ICodec.h"
-#include "../../FileSystem/File.h"
-#include "../../FileSystem/CacheStrategy.h"
+#include "filesystem/File.h"
+#include "filesystem/CacheStrategy.h"
 
 class CachingCodec : public ICodec
 {

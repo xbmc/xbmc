@@ -1,75 +1,53 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../../lib/jsoncpp/jsoncpp/include
-
 SRCS=AlarmClock.cpp \
+     AliasShortcutUtils.cpp \
+     ArabicShaping.cpp \
      Archive.cpp \
+     AsyncFileCopy.cpp \
      AutoPtrHandle.cpp \
-     Builtins.cpp \
+     BitstreamStats.cpp \
      CharsetConverter.cpp \
-     CriticalSection.cpp \
+     CPUInfo.cpp \
+     Crc32.cpp \
      DownloadQueue.cpp \
      DownloadQueueManager.cpp \
-     Event.cpp \
+     Fanart.cpp \
+     fastmemcpy.c \
+     FileOperationJob.cpp \
+     FileUtils.cpp \
      fstrcmp.c \
-     GUIInfoManager.cpp \
+     fft.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
-     IMDB.cpp \
      InfoLoader.cpp \
-     IoSupport.cpp \
+     JobManager.cpp \
+     LabelFormatter.cpp \
+     LangCodeExpander.cpp \
+     LCD.cpp \
+     LCDFactory.cpp \
      log.cpp \
-     MusicAlbumInfo.cpp \
-     MusicInfoScraper.cpp \
+     md5.cpp \
+     PCMAmplifier.cpp \
+     PerformanceSample.cpp \
+     PerformanceStats.cpp \
      RegExp.cpp \
+     RingBuffer.cpp \
      RssReader.cpp \
      ScraperParser.cpp \
-     SingleLock.cpp \
-     Splash.cpp \
-     Stopwatch.cpp \
-     SystemInfo.cpp \
-     TuxBoxUtil.cpp \
-     UdpClient.cpp \
-     Weather.cpp \
-     Thread.cpp \
-     SharedSection.cpp \
-     Win32Exception.cpp \
-     CPUInfo.cpp \
-     PCMAmplifier.cpp \
-     LabelFormatter.cpp \
-     Network.cpp \
-     BitstreamStats.cpp \
-     PerformanceStats.cpp \
-     PerformanceSample.cpp \
-     LCDFactory.cpp \
-     LCD.cpp \
-     EventServer.cpp \
-     EventPacket.cpp \
-     EventClient.cpp \
-     Socket.cpp \
-     Fanart.cpp \
      ScraperUrl.cpp \
-     MusicArtistInfo.cpp \
-     Mutex.cpp \
-     md5.cpp \
-     ArabicShaping.cpp \
-     AsyncFileCopy.cpp \
-     DbusServer.cpp \
-     Atomics.cpp \
-     LockFree.cpp \
+     Splash.cpp \
+     ssrc.cpp \
+     Stopwatch.cpp \
      StreamDetails.cpp \
+     StringUtils.cpp \
+     SystemInfo.cpp \
      TimeUtils.cpp \
-     JobManager.cpp \
-     Teletext.cpp \
-     fastmemcpy.c \
-     PasswordManager.cpp \
-     AliasShortcutUtils.cpp \
-     WebServer.cpp \
-     AnnouncementManager.cpp \
-     Semaphore.cpp \
-     RingBuffer.cpp \
-     FileOperationJob.cpp \
-     FileUtils.cpp \
-     Variant.cpp
+     TuxBoxUtil.cpp \
+     URIUtils.cpp \
+     Variant.cpp \
+     Weather.cpp \
+     Win32Exception.cpp \
+     XMLUtils.cpp \
 
 LIB=utils.a
 

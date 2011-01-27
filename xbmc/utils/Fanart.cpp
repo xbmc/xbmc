@@ -21,11 +21,11 @@
 
 #include "Fanart.h"
 #include "tinyXML/tinyxml.h"
-#include "Util.h"
-#include "Picture.h"
-#include "FileSystem/FileCurl.h"
+#include "URIUtils.h"
+#include "pictures/Picture.h"
+#include "filesystem/FileCurl.h"
 #include "StringUtils.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 
 const unsigned int CFanart::max_fanart_colors=3;
 
@@ -96,7 +96,7 @@ CStdString CFanart::GetImageURL(unsigned int index) const
   
   if (m_url.IsEmpty())
     return m_fanart[index].strImage;
-  return CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
+  return URIUtils::AddFileToFolder(m_url, m_fanart[index].strImage);
 }
 
 CStdString CFanart::GetPreviewURL(unsigned int index) const
@@ -107,7 +107,7 @@ CStdString CFanart::GetPreviewURL(unsigned int index) const
   CStdString thumb = !m_fanart[index].strPreview.IsEmpty() ? m_fanart[index].strPreview : m_fanart[index].strImage;
   if (m_url.IsEmpty())
     return thumb;
-  return CUtil::AddFileToFolder(m_url, thumb);
+  return URIUtils::AddFileToFolder(m_url, thumb);
 }
 
 const CStdString CFanart::GetColor(unsigned int index) const
@@ -143,7 +143,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
     if (m_url.IsEmpty())
       thumbURL = m_fanart[index].strPreview;
     else
-      thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
+      thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
     XFILE::CFileCurl http;
     if (http.Download(thumbURL, strDestination))
@@ -154,7 +154,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   if (m_url.IsEmpty())
     thumbURL = m_fanart[index].strImage;
   else
-    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
+    thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strImage);
   return DownloadImage(thumbURL, strDestination);
 }
 

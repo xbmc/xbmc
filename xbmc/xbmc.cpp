@@ -28,7 +28,7 @@
 //
 
 #include "system.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
@@ -41,7 +41,7 @@
 #include "Util.h"
 #endif
 #ifdef HAS_LIRC
-#include "common/LIRC.h"
+#include "input/linux/LIRC.h"
 #endif
 
 int main(int argc, char* argv[])

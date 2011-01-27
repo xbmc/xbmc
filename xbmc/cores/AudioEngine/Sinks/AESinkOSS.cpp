@@ -24,9 +24,9 @@
 #include <limits.h>
 
 #include "AEUtil.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 
 #include <sys/ioctl.h>
 

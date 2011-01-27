@@ -28,7 +28,7 @@
 
 
 #include "IAudioRenderer.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "utils/PCMAmplifier.h"
 #include <mmdeviceapi.h>
 #include <Audioclient.h>

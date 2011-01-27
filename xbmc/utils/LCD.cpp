@@ -20,9 +20,8 @@
  */
 
 #include "LCD.h"
-#include "GUISettings.h"
-#include "AdvancedSettings.h"
-#include "Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "CharsetConverter.h"
 #include "log.h"
 #include "XMLUtils.h"

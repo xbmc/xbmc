@@ -24,14 +24,14 @@
 #include <list>
 
 #include "cores/IPlayer.h"
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 #include "AudioDecoder.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 #include "cores/IAudioCallback.h"
-#include "AudioEngine/AEFactory.h"
-#include "AudioEngine/AEStream.h"
-#include "AudioEngine/PostProc/AEPPAnimationFade.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/AEStream.h"
+#include "cores/AudioEngine/PostProc/AEPPAnimationFade.h"
 
 class CFileItem;
 #ifndef _LINUX

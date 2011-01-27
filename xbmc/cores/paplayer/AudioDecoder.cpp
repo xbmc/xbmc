@@ -21,10 +21,10 @@
 
 #include "AudioDecoder.h"
 #include "CodecFactory.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "MusicInfoTag.h"
-#include "utils/SingleLock.h"
+#include "music/tags/MusicInfoTag.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include <math.h>
 

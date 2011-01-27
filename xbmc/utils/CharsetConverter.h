@@ -22,7 +22,7 @@
  *
  */
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "StdString.h"
 
 #include <vector>

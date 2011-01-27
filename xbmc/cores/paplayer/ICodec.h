@@ -22,9 +22,9 @@
  */
 
 #include "ReplayGain.h"
-#include "StdString.h"
-#include "FileSystem/File.h"
-#include "AudioEngine/AEAudioFormat.h"
+#include "utils/StdString.h"
+#include "filesystem/File.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0

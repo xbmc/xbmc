@@ -1,0 +1,28 @@
+INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
+
+SRCS=cddb.cpp \
+     DNSNameCache.cpp \
+     EventClient.cpp \
+     EventPacket.cpp \
+     EventServer.cpp \
+     GUIDialogAccessPoints.cpp \
+     GUIDialogNetworkSetup.cpp \
+     Network.cpp \
+     Socket.cpp \
+     TCPServer.cpp \
+     UdpClient.cpp \
+     UPnP.cpp \
+     WebServer.cpp \
+     ZeroconfBrowser.cpp \
+     Zeroconf.cpp \
+
+LIB=network.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

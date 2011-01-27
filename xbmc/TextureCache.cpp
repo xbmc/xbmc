@@ -20,19 +20,18 @@
  */
 
 #include "TextureCache.h"
-#include "FileSystem/File.h"
-#include "utils/SingleLock.h"
-#include "Crc32.h"
-#include "Util.h"
-#include "Settings.h"
-#include "AdvancedSettings.h"
+#include "filesystem/File.h"
+#include "threads/SingleLock.h"
+#include "utils/Crc32.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
-#include "Texture.h"
-#include "DDSImage.h"
-#include "Picture.h"
-#include "TextureManager.h"
-#include "URIUtils.h"
+#include "guilib/Texture.h"
+#include "guilib/DDSImage.h"
+#include "pictures/Picture.h"
+#include "guilib/TextureManager.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 
@@ -69,7 +68,7 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
   {
     fullSize = false;
     image = CURL(url).GetHostName();
-    CUtil::URLDecode(image);
+    CURL::Decode(image);
   }
 
   // generate the hash
@@ -109,13 +108,13 @@ bool CTextureCache::CDDSJob::operator==(const CJob* job) const
 bool CTextureCache::CDDSJob::DoWork()
 {
   CTexture texture;
-  if (CUtil::GetExtension(m_original).Equals(".dds"))
+  if (URIUtils::GetExtension(m_original).Equals(".dds"))
     return false;
   if (texture.LoadFromFile(m_original))
   { // convert to DDS
     CDDSImage dds;
     CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
-    return dds.Create(CUtil::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
+    return dds.Create(URIUtils::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
   }
   return false;
 }
@@ -152,8 +151,8 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 {
   if (url != "-" && !CURL::IsFullPath(url))
     return true;
-  if (CURIUtils::IsInPath(url, "special://skin/") ||
-      CURIUtils::IsInPath(url, g_settings.GetThumbnailsFolder()))
+  if (URIUtils::IsInPath(url, "special://skin/") ||
+      URIUtils::IsInPath(url, g_settings.GetThumbnailsFolder()))
     return true;
   return false;
 }
@@ -173,8 +172,8 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url)
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
 {
   CStdString url(image);
-  CUtil::URLEncode(url);
-  return CUtil::AddFileToFolder("thumb://" + url, CUtil::GetFileName(image));
+  CURL::Encode(url);
+  return URIUtils::AddFileToFolder("thumb://" + url, URIUtils::GetFileName(image));
 }
 
 CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
@@ -182,9 +181,9 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
   CStdString path(GetCachedImage(url));
   if (!path.IsEmpty())
   {
-    if (returnDDS && !CURIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
+    if (returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
-      CStdString ddsPath = CUtil::ReplaceExtension(path, ".dds");
+      CStdString ddsPath = URIUtils::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
         return ddsPath;
       if (g_advancedSettings.m_useDDSFanart)
@@ -257,7 +256,7 @@ void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*
     path = GetCachedPath(cachedFile);
   if (CFile::Exists(path))
     CFile::Delete(path);
-  path = CUtil::ReplaceExtension(path, ".dds");
+  path = URIUtils::ReplaceExtension(path, ".dds");
   if (CFile::Exists(path))
     CFile::Delete(path);
 }
@@ -313,13 +312,13 @@ CStdString CTextureCache::GetCacheFile(const CStdString &url)
   CStdString hex;
   hex.Format("%08x", (unsigned int)crc);
   CStdString hash;
-  hash.Format("%c/%s%s", hex[0], hex.c_str(), CUtil::GetExtension(url).c_str());
+  hash.Format("%c/%s%s", hex[0], hex.c_str(), URIUtils::GetExtension(url).c_str());
   return hash;
 }
 
 CStdString CTextureCache::GetCachedPath(const CStdString &file)
 {
-  return CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), file);
+  return URIUtils::AddFileToFolder(g_settings.GetThumbnailsFolder(), file);
 }
 
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)

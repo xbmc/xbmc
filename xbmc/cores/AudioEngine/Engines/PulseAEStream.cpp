@@ -25,9 +25,9 @@
 #include "PulseAEStream.h"
 #include "AEFactory.h"
 #include "AEUtil.h"
-#include "log.h"
-#include "utils/SingleLock.h"
-#include "MathUtils.h"
+#include "utils/log.h"
+#include "utils/MathUtils.h"
+#include "threads/SingleLock.h"
 
 static const char *StreamStateToString(pa_stream_state s)
 {

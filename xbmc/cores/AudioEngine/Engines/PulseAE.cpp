@@ -25,9 +25,9 @@
 #include "PulseAE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
-#include "utils/SingleLock.h"
-#include "log.h"
-#include "Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "settings/Settings.h"
 #include <pulse/pulseaudio.h>
 
 /* Static helpers */

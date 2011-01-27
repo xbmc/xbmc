@@ -36,12 +36,12 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
 #include "utils/log.h"
-#include "Thread.h"
+#include "threads/Thread.h"
 #include "utils/TimeUtils.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
@@ -1082,6 +1082,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     m_streams[iId]->codec = pStream->codec->codec_id;
     m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
+    m_streams[iId]->profile = pStream->codec->profile;
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;
@@ -1255,6 +1256,20 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
         return;
       }
     }
+
+#ifdef FF_PROFILE_DTS_HD_MA
+    /* use profile to determine the DTS type */
+    if (stream->codec == CODEC_ID_DTS)
+    {
+      if (stream->profile == FF_PROFILE_DTS_HD_MA)
+        strName = "dtshd_ma";
+      else if (stream->profile == FF_PROFILE_DTS_HD_HRA)
+        strName = "dtshd_hra";
+      else
+        strName = "dca";
+      return;
+    }
+#endif
 
     AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
     if (codec)

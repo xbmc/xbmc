@@ -25,7 +25,7 @@
 #include "AE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include <list>
 
 struct pa_context;

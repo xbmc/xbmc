@@ -23,7 +23,7 @@
 #include <samplerate.h>
 #include <list>
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 #include "AEStream.h"
 #include "AEAudioFormat.h"

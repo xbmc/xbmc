@@ -20,7 +20,7 @@
  *
  */
 
-#include "IMsgTargetCallback.h"
+#include "guilib/IMsgTargetCallback.h"
 #include <boost/shared_ptr.hpp>
 
 #define PLAYLIST_NONE    -1

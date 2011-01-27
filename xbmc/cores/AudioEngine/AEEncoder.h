@@ -23,7 +23,7 @@
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavcodec/avcodec.h>
 #else
-  #include "cores/dvdplayer/Codecs/ffmpeg/libavcodec/avcodec.h"
+  #include "lib/ffmpeg/libavcodec/avcodec.h"
 #endif
 
 #include "AEAudioFormat.h"

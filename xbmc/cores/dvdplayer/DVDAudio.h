@@ -26,9 +26,9 @@
 #endif
 #include "cores/AudioRenderers/IAudioRenderer.h"
 #include "cores/IAudioCallback.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
-#include "AudioEngine/AEStream.h"
+#include "cores/AudioEngine/AEStream.h"
 
 #ifndef _LINUX
 enum CodecID;

@@ -20,11 +20,11 @@
  */
 
 #include "DownloadQueue.h"
-#include "Util.h"
+#include "URIUtils.h"
 #include "log.h"
 
-#include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
+#include "filesystem/File.h"
+#include "filesystem/FileCurl.h"
 
 using namespace std;
 using namespace XFILE;
@@ -104,7 +104,7 @@ TICKET CDownloadQueue::RequestFile(const CStdString& aUrl, IDownloadQueueObserve
   CLog::Log(LOGDEBUG, "RequestFile from observer at %p", aObserver);
   // create a temporary destination
   CStdString strExtension;
-  CUtil::GetExtension(aUrl, strExtension);
+  URIUtils::GetExtension(aUrl, strExtension);
 
   TICKET ticket(m_wQueueId, m_dwNextItemId++);
 

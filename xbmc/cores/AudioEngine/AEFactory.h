@@ -21,7 +21,7 @@
  */
 
 #include "AE.h"
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 
 class IAE;
 class CAEFactory

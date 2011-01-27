@@ -24,7 +24,7 @@
 #include "AEFactory.h"
 #include "AEUtil.h"
 #include "utils/log.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 

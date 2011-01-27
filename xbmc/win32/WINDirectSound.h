@@ -21,7 +21,7 @@
  *
  */
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "StdString.h"
 
 struct DSDeviceInfo

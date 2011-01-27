@@ -18,8 +18,8 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../utils/CriticalSection.h"
-#include "Thread.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
 //////////////////////////////////////////////////////////////////////
 XCriticalSection::XCriticalSection()

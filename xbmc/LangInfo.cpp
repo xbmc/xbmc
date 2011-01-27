@@ -20,12 +20,14 @@
  */
 
 #include "LangInfo.h"
-#include "LangCodeExpander.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
-#include "LocalizeStrings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
+#ifdef _WIN32
+#include "utils/LangCodeExpander.h"
+#endif
 
 using namespace std;
 

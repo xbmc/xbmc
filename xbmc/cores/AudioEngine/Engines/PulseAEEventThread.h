@@ -23,9 +23,9 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAEStream.h"
-#include "utils/Event.h"
-#include "utils/Thread.h"
-#include "utils/CriticalSection.h"
+#include "threads/Event.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 
 class CPulseAEStream;
 class CPulseAEEventThread : public IRunnable
@@ -37,7 +37,7 @@ private:
   friend class CPulseAEStream;
 
   bool                 m_run;
-  CPulseAEStream        *m_stream;
+  CPulseAEStream      *m_stream;
   CEvent               m_event;
   CThread              m_thread;
   IAEStream::AECBFunc *m_cbFunc;

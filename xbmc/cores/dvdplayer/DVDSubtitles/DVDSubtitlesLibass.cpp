@@ -21,10 +21,10 @@
 
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "GUISettings.h"
+#include "filesystem/SpecialProtocol.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 

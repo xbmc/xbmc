@@ -22,17 +22,15 @@
 #if (defined USE_EXTERNAL_FFMPEG)
   #include <libavutil/avutil.h>
 #else
-  #include "cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+  #include "lib/ffmpeg/libavutil/avutil.h"
 #endif
 
 #include "AESound.h"
 
 #include <samplerate.h>
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "FileSystem/FileFactory.h"
-#include "FileSystem/IFile.h"
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"

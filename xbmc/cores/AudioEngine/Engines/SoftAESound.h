@@ -20,9 +20,9 @@
  *
  */
 
-#include "StdString.h"
-#include "utils/CriticalSection.h"
-#include "utils/SharedSection.h"
+#include "utils/StdString.h"
+#include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 #include "AESound.h"
 #include "AEWAVLoader.h"
 

@@ -22,7 +22,7 @@
  *
  */
 
-#include "TransformMatrix.h"
+#include "guilib/TransformMatrix.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
@@ -36,7 +36,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
 #pragma warning( disable : 4250 )
 #endif
 
-#include "../../../../guilib/Shader.h"
+#include "guilib/Shader.h"
 
 namespace Shaders {
 

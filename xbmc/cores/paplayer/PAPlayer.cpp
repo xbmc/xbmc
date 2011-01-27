@@ -21,21 +21,20 @@
 
 #include "PAPlayer.h"
 #include "CodecFactory.h"
-#include "../../utils/GUIInfoManager.h"
-#include "../../FileSystem/FileShoutcast.h"
-#include "../../Application.h"
+#include "GUIInfoManager.h"
+#include "Application.h"
 #include "FileItem.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
-#include "Settings.h"
-#include "MusicInfoTag.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
+#include "settings/Settings.h"
+#include "music/tags/MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
-#include "../../utils/TimeUtils.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
 
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 
-#include "AudioEngine/AEUtil.h"
+#include "cores/AudioEngine/AEUtil.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds */
 #define FAST_XFADE_TIME         2000 /* 2 seconds */

@@ -1,0 +1,20 @@
+ARCH=@ARCH@
+
+OBJS +=libexif.o ExifParse.o IptcParse.o JpegParse.o
+CFLAGS +=-D_LINUX -D_DLL -fPIC -O2
+CXXFLAGS +=-D_LINUX -D_DLL -fPIC -O2
+
+SYSDIR=@abs_top_srcdir@/system
+SO=libexif-$(ARCH).so
+SLIB=@abs_top_srcdir@/system/$(SO)
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
+	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) \
+		`cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
+endif
+
+include @abs_top_srcdir@/Makefile.include

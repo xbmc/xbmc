@@ -21,8 +21,8 @@
  */
 
 #include "AEAudioFormat.h"
-#include "StdString.h"
-#include "math.h"
+#include "utils/StdString.h"
+#include <math.h>
 
 class CAEUtil
 {

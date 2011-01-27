@@ -21,19 +21,16 @@
 
 #include "Repository.h"
 #include "tinyXML/tinyxml.h"
-#include "FileSystem/File.h"
-#include "XMLUtils.h"
+#include "filesystem/File.h"
 #include "AddonDatabase.h"
 #include "Application.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
-#include "utils/FileOperationJob.h"
+#include "addons/AddonInstaller.h"
 #include "utils/log.h"
-#include "GUIWindowManager.h"
-#include "GUIWindowAddonBrowser.h"
-#include "GUIDialogYesNo.h"
-#include "StringUtils.h"
+#include "utils/URIUtils.h"
+#include "dialogs/GUIDialogYesNo.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -155,17 +152,17 @@ VECADDONS CRepository::Parse()
       AddonPtr addon = *i;
       if (m_zipped)
       {
-        addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
-        SET_IF_NOT_EMPTY(addon->Props().icon,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().changelog,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt"))
-        SET_IF_NOT_EMPTY(addon->Props().fanart,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
+        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+        SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
+        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt"))
+        SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
       else
       {
-        addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
-        SET_IF_NOT_EMPTY(addon->Props().icon,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().changelog,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog.txt"))
-        SET_IF_NOT_EMPTY(addon->Props().fanart,CUtil::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
+        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/");
+        SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
+        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/changelog.txt"))
+        SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
     }
   }
@@ -195,20 +192,11 @@ bool CRepositoryUpdateJob::DoWork()
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
-        CStdString path(addons[i]->Path());
-        if (CUtil::IsInternetStream(addons[i]->Path()))
-        {
-          CURL url(path);
-          CStdString referer;
+        CStdString referer;
+        if (URIUtils::IsInternetStream(addons[i]->Path()))
           referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
-          url.SetProtocolOptions(referer);
-          path = url.Get();
-        }
 
-        CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
-        if (!window)
-          return false;
-        window->AddJob(path);
+        CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)
       {

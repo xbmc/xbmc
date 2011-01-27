@@ -21,7 +21,7 @@
 
 #pragma once
 #include "DVDDemux.h"
-#include "FileSystem/HTSPSession.h"
+#include "filesystem/HTSPSession.h"
 
 class CDVDInputStreamHTSP;
 typedef struct htsmsg htsmsg_t;
