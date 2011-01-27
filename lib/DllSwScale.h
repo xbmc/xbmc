@@ -66,15 +66,23 @@ extern "C" {
 #endif
 }
 
+#include "../xbmc/utils/CPUInfo.h"
+
 inline int SwScaleCPUFlags()
 {
-#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
-  return SWS_CPU_CAPS_MMX;
-#elif defined(__powerpc__) || defined(__ppc__)
-  return SWS_CPU_CAPS_ALTIVEC;
-#else
-  return 0;
-#endif
+  unsigned int cpuFeatures = g_cpuInfo.GetCPUFeatures();
+  int flags = 0;
+
+  if (cpuFeatures & CPU_FEATURE_MMX)
+    flags |= SWS_CPU_CAPS_MMX;
+  if (cpuFeatures & CPU_FEATURE_MMX2)
+    flags |= SWS_CPU_CAPS_MMX2;
+  if (cpuFeatures & CPU_FEATURE_3DNOW)
+    flags |= SWS_CPU_CAPS_3DNOW;
+  if (cpuFeatures & CPU_FEATURE_ALTIVEC)
+    flags |= SWS_CPU_CAPS_ALTIVEC;
+
+  return flags;
 }
 
 class DllSwScaleInterface
