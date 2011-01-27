@@ -341,7 +341,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     return READ_ERROR;
 
   int move;
-  if (m_eof && !m_Decoding)
+  if (m_eof && !m_Decoding || m_OutputBufferPos < OUTPUTFRAMESIZE)
     move = m_OutputBufferPos;
   else
     move = m_OutputBufferPos - OUTPUTFRAMESIZE;
@@ -516,20 +516,16 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
   float *data_f = (float *)mxhouse->output_ptr;
   for( int i=0; i < mxhouse->synth.pcm.length; i++ )
   {
-    float s;
-
     // Left channel
     *data_f++ = mad_f_todouble(mxhouse->synth.pcm.samples[0][i]);
-    mxhouse->output_ptr += sizeof(float);
     // Right channel
-    if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
-    {
+    if(MAD_NCHANNELS(&mxhouse->frame.header) == 2)
       *data_f++ = mad_f_todouble(mxhouse->synth.pcm.samples[1][i]);
-      mxhouse->output_ptr += sizeof(float);
-    }
   }
+
   // Tell calling code buffer size
-  mxstat->write_size = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
+  mxhouse->output_ptr = (unsigned char*)data_f;
+  mxstat->write_size  = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
 
   return(FLUSH_BUFFER);
 }
