@@ -79,19 +79,26 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   return CEpg::UpdateEntry(*InfoTag, bUpdateDatabase);
 }
 
-bool CPVREpg::UpdateFromClient(time_t start, time_t end)
+bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
-  if (g_PVRManager.GetClientProps(m_Channel->ClientID())->SupportEPG &&
-      g_PVRManager.Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
+  if (ScraperName() == "client")
   {
-    bGrabSuccess = g_PVRManager.Clients()->find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;
+    if (g_PVRManager.GetClientProps(m_Channel->ClientID())->SupportEPG &&
+        g_PVRManager.Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
+    {
+      bGrabSuccess = g_PVRManager.Clients()->find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "%s - client '%s' on client '%i' does not support EPGs",
+          __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
+    }
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - client '%s' on client '%i' does not support EPGs",
-        __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
+    bGrabSuccess = CEpg::UpdateFromScraper(start, end);
   }
 
   return bGrabSuccess;
@@ -109,35 +116,6 @@ bool CPVREpg::LoadFromDb()
 bool CPVREpg::IsRadio(void) const
 {
   return m_Channel->IsRadio();
-}
-
-bool CPVREpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
-{
-  /* check if this channel is marked for grabbing */
-  if (!m_Channel || !m_Channel->EPGEnabled())
-    return false;
-
-  bool bGrabSuccess = true;
-
-  /* mark the EPG as being updated */
-  SetUpdateRunning(true);
-
-  bGrabSuccess = (ScraperName() == "client") ?
-      UpdateFromClient(start, end) || bGrabSuccess:
-      UpdateFromScraper(start, end) || bGrabSuccess;
-
-  /* store the loaded EPG entries in the database */
-  if (bGrabSuccess)
-  {
-    FixOverlappingEvents(bStoreInDb);
-
-    if (bStoreInDb)
-      Persist(true);
-  }
-
-  SetUpdateRunning(false);
-
-  return bGrabSuccess;
 }
 
 bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)

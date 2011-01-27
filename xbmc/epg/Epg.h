@@ -53,7 +53,7 @@ private:
    * @param end Get entries with an end date before this time.
    * @return True if the update was successful, false otherwise.
    */
-  bool UpdateFromScraper(time_t start, time_t end);
+  virtual bool UpdateFromScraper(time_t start, time_t end);
 
   /*!
    * @brief Persist all tags in this container.

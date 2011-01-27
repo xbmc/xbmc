@@ -373,7 +373,7 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX
   /* mark the EPG as being updated */
   m_bUpdateRunning = true;
 
-  bGrabSuccess = UpdateFromScraper(start, end) || bGrabSuccess; // XXX
+  bGrabSuccess = UpdateFromScraper(start, end) || bGrabSuccess;
 
   /* store the loaded EPG entries in the database */
   if (bGrabSuccess)
