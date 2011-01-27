@@ -512,15 +512,6 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
       ptr--;
       continue;
     }
-
-    if (at(ptr)->UniqueID() <= 0)
-    {
-      CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid unique ID",
-          __FUNCTION__, at(ptr)->ChannelName().c_str(), at(ptr)->ClientID());
-      erase(begin() + ptr);
-      ptr--;
-      continue;
-    }
   }
 }
 
