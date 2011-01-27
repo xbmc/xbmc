@@ -591,32 +591,6 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
   return iReturn;
 }
 
-bool CPVRDatabase::SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio /* = false */)
-{
-  bool bReturn = false;
-
-  /* invalid group id */
-  if (iGroupId <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid group id: %d",
-        __FUNCTION__, iGroupId);
-    return bReturn;
-  }
-
-  CStdString strQuery = FormatSQL("SELECT COUNT(1) FROM channelgroups WHERE idGroup = %u AND bIsRadio = %u;", iGroupId, (bRadio ? 1 : 0));
-  if (ResultQuery(strQuery))
-  {
-    if (m_pDS->fv(0).get_asInt() > 0)
-    {
-      strQuery = FormatSQL("UPDATE channelgroups SET iSortOrder = %i WHERE idGroup = %i AND bIsRadio = %u;", iSortOrder, iGroupId, (bRadio ? 1 : 0));
-      bReturn = ExecuteQuery(strQuery);
-    }
-  }
-
-  return bReturn;
-}
-
-
 long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
 {
   CStdString strWhereClause = FormatSQL("sName LIKE '%s' AND bIsRadio = %u", strGroupName.c_str(), (bRadio ? 1 : 0));

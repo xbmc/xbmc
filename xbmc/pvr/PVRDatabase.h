@@ -198,15 +198,6 @@ public:
   int GetChannelsInGroup(CPVRChannelGroup *group);
 
   /*!
-   * @brief Change the sort order of a channel group.
-   * @param iGroupId The ID of the group to change.
-   * @param iSortOrder The new sort order.
-   * @param bRadio True if it's a radio channel group, false otherwise.
-   * @return True if the order was changed successfully, false otherwise.
-   */
-  bool SetChannelGroupSortOrder(int iGroupId, int iSortOrder, bool bRadio = false);
-
-  /*!
    * @brief Add or update a channel group entry in the database.
    * @param group The group to persist.
    * @param bQueueWrite If true, don't write directly.
