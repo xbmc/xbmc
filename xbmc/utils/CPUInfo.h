@@ -29,6 +29,18 @@
 #include <string>
 #include <map>
 
+#define CPU_FEATURE_MMX      1 << 0
+#define CPU_FEATURE_MMX2     1 << 1
+#define CPU_FEATURE_SSE      1 << 2
+#define CPU_FEATURE_SSE2     1 << 3
+#define CPU_FEATURE_SSE3     1 << 4
+#define CPU_FEATURE_SSSE3    1 << 5
+#define CPU_FEATURE_SSE4     1 << 6
+#define CPU_FEATURE_SSE42    1 << 7
+#define CPU_FEATURE_3DNOW    1 << 8
+#define CPU_FEATURE_3DNOWEXT 1 << 9
+#define CPU_FEATURE_ALTIVEC  1 << 10
+
 struct CoreInfo
 {
   int    m_id;
@@ -61,9 +73,12 @@ public:
 
   CStdString GetCoresUsageString() const;
 
+  unsigned int GetCPUFeatures() { return m_cpuFeatures; }
+
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
     unsigned long long& idle, unsigned long long& io);
+  void ReadCPUFeatures();
 
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
@@ -79,8 +94,10 @@ private:
   time_t m_lastReadTime;
   std::string m_cpuModel;
   int m_cpuCount;
+  unsigned int m_cpuFeatures;
 
   std::map<int, CoreInfo> m_cores;
+
 };
 
 extern CCPUInfo g_cpuInfo;
