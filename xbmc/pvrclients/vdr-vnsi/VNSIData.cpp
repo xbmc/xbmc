@@ -276,7 +276,7 @@ bool cVNSIData::GetGroupsList(PVRHANDLE handle, bool radio)
     const char *name  = vresp->extract_String();
 
 //    LOGDBG("Have added a group to list. %lu %lu %s", index, count, name);
-    delete name;
+    delete[] name;
   }
 
   delete vresp;
@@ -321,7 +321,7 @@ bool cVNSIData::GetChannelsList(PVRHANDLE handle, bool radio)
     tag.stream_url    = "";
 
     PVR->TransferChannelEntry(handle, &tag);
-    delete tag.name;
+    delete[] tag.name;
   }
 
   delete vresp;
@@ -367,9 +367,9 @@ bool cVNSIData::GetEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, t
     tag.description     = vresp->extract_String();
 
     PVR->TransferEpgEntry(handle, &tag);
-    delete tag.title;
-    delete tag.subtitle;
-    delete tag.description;
+    delete[] tag.title;
+    delete[] tag.subtitle;
+    delete[] tag.description;
   }
 
   delete vresp;
@@ -439,7 +439,7 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
   tag.title       = vresp->extract_String();
   tag.directory   = "";
 
-  delete tag.title;
+  delete[] tag.title;
   delete vresp;
   return PVR_ERROR_NO_ERROR;
 }
@@ -483,7 +483,7 @@ bool cVNSIData::GetTimersList(PVRHANDLE handle)
       tag.directory   = "";
 
       PVR->TransferTimerEntry(handle, &tag);
-      delete tag.title;
+      delete[] tag.title;
     }
   }
   delete vresp;
