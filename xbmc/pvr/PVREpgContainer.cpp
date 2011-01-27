@@ -40,6 +40,9 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 
 void CPVREpgContainer::Start()
 {
+  /* make sure the EPG is loaded before starting the thread */
+  Load(true /* show progress */);
+
   CreateChannelEpgs();
   CEpgContainer::Start();
 }
