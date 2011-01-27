@@ -318,7 +318,7 @@ bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
       /* channel is no longer present */
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - removing %s channel '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
-      database->RemoveChannel(*channel);
+      database->DeleteChannel(*channel);
       erase(begin() + ptr);
       ptr--;
       iSize--;

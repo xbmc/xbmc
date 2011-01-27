@@ -963,19 +963,19 @@ void CPVRManager::ResetDatabase()
   g_PVREpgContainer.Erase();
   pDlgProgress->SetPercentage(30);
 
-  m_database.EraseChannelGroups(false);
+  m_database.DeleteChannelGroups(false);
   pDlgProgress->SetPercentage(50);
 
-  m_database.EraseChannelGroups(true);
+  m_database.DeleteChannelGroups(true);
   pDlgProgress->SetPercentage(60);
 
-  m_database.EraseChannels();
+  m_database.DeleteChannels();
   pDlgProgress->SetPercentage(70);
 
-  m_database.EraseChannelSettings();
+  m_database.DeleteChannelSettings();
   pDlgProgress->SetPercentage(80);
 
-  m_database.EraseClients();
+  m_database.DeleteClients();
   pDlgProgress->SetPercentage(90);
 
   m_database.Close();
@@ -1244,7 +1244,7 @@ void CPVRManager::SaveCurrentChannelSettings()
     if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
     {
       m_database.Open();
-      m_database.SetChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
+      m_database.PersistChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
       m_database.Close();
     }
   }

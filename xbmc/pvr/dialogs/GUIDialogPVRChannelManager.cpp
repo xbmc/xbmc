@@ -460,7 +460,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
           {
             CPVRDatabase *database = g_PVRManager.GetTVDatabase();
             database->Open();
-            database->RemoveChannel(*pItem->GetPVRChannelInfoTag());
+            database->DeleteChannel(*pItem->GetPVRChannelInfoTag());
             database->Close();
 
             m_channelItems->Remove(m_iSelected);
