@@ -185,6 +185,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
     m_defines += "#define XBMC_YUY2\n";
   else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY)
     m_defines += "#define XBMC_UYVY\n";
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_VDPAU_420)
+    m_defines += "#define XBMC_VDPAU_NV12\n";
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 #elif HAS_GLES == 2

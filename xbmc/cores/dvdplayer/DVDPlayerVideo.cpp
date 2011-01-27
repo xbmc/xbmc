@@ -923,7 +923,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
 #endif
 #ifdef HAVE_LIBVDPAU
-  else if(pSource->format == DVDVideoPicture::FMT_VDPAU)
+  else if(pSource->format == DVDVideoPicture::FMT_VDPAU || pSource->format == DVDVideoPicture::FMT_VDPAU_420)
     g_renderManager.AddProcessor(pSource->vdpau);
 #endif
 #ifdef HAVE_LIBOPENMAX
@@ -1007,6 +1007,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       case DVDVideoPicture::FMT_VDPAU:
         flags |= CONF_FLAGS_FORMAT_VDPAU;
         formatstr = "VDPAU";
+        break;
+      case DVDVideoPicture::FMT_VDPAU_420:
+        flags |= CONF_FLAGS_FORMAT_VDPAU_420;
+        formatstr = "VDPAU_420";
         break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;
@@ -1241,7 +1245,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
      (pPicture->format == DVDVideoPicture::FMT_NV12) ||
      (pPicture->format == DVDVideoPicture::FMT_YUY2) ||
-     (pPicture->format == DVDVideoPicture::FMT_UYVY))
+     (pPicture->format == DVDVideoPicture::FMT_UYVY) ||
+     (pPicture->format == DVDVideoPicture::FMT_VDPAU_420))
   {
     RECT crop;
 

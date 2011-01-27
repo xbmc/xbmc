@@ -185,6 +185,10 @@ protected:
   void DeleteVDPAUTexture(int index);
   bool CreateVDPAUTexture(int index);
 
+  void UploadVDPAUTexture420(int index);
+  void DeleteVDPAUTexture420(int index);
+  bool CreateVDPAUTexture420(int index);
+
   void UploadVAAPITexture(int index);
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
@@ -205,6 +209,7 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderVDPAUYV12(int renderBuffer, int field);      // render using vdpau hardware
   void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
