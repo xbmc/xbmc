@@ -1715,72 +1715,48 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (pItem->IsParentFolder() || pItem->m_bIsFolder)
     return;
 
-  bool bGotXml = false;
   CVideoInfoTag movie;
   movie.Reset();
 
-  // look for matching xml file first
-  CStdString strXml = pItem->m_strPath + ".xml";
-  if (pItem->IsStack())
-  {
-    // for a stack, use the first file in the stack
-    CStackDirectory stack;
-    strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
-  }
-  if (CFile::Exists(strXml))
-  {
-    bGotXml = true;
-    CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
-    TiXmlDocument doc;
-    if (!doc.LoadFile(strXml) || !movie.Load(doc.RootElement()))
-    {
-      CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
-      bGotXml = false;
-    }
-  }
-
   // prompt for data
-  if (!bGotXml)
+  // enter a new title
+  CStdString strTitle = pItem->GetLabel();
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
+    return;
+
+  // pick genre
+  CGUIDialogSelect* pSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!pSelect)
+    return;
+
+  pSelect->SetHeading(530); // Select Genre
+  pSelect->Reset();
+  CFileItemList items;
+  if (!CDirectory::GetDirectory("videodb://1/1/", items))
+    return;
+  pSelect->SetItems(&items);
+  pSelect->EnableButton(true, 531); // New Genre
+  pSelect->DoModal();
+  CStdString strGenre;
+  int iSelected = pSelect->GetSelectedLabel();
+  if (iSelected >= 0)
+    strGenre = items[iSelected]->GetLabel();
+  else if (!pSelect->IsButtonPressed())
+    return;
+
+  // enter new genre string
+  if (strGenre.IsEmpty())
   {
-    // enter a new title
-    CStdString strTitle = pItem->GetLabel();
-    if (!CGUIDialogKeyboard::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
-      return;
-
-    // pick genre
-    CGUIDialogSelect* pSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-    if (!pSelect)
-      return;
-
-    pSelect->SetHeading(530); // Select Genre
-    pSelect->Reset();
-    CFileItemList items;
-    if (!CDirectory::GetDirectory("videodb://1/1/", items))
-      return;
-    pSelect->SetItems(&items);
-    pSelect->EnableButton(true, 531); // New Genre
-    pSelect->DoModal();
-    CStdString strGenre;
-    int iSelected = pSelect->GetSelectedLabel();
-    if (iSelected >= 0)
-      strGenre = items[iSelected]->GetLabel();
-    else if (!pSelect->IsButtonPressed())
-      return;
-
-    // enter new genre string
+    strGenre = g_localizeStrings.Get(532); // Manual Addition
+    if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
+      return; // user backed out
     if (strGenre.IsEmpty())
-    {
-      strGenre = g_localizeStrings.Get(532); // Manual Addition
-      if (!CGUIDialogKeyboard::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
-        return; // user backed out
-      if (strGenre.IsEmpty())
-        return; // no genre string
-    }
-
-    // set movie info
-    movie.m_strTitle = strTitle;
-    movie.m_strGenre = strGenre;
+      return; // no genre string
   }
+
+  // set movie info
+  movie.m_strTitle = strTitle;
+  movie.m_strGenre = strGenre;
 
   // everything is ok, so add to database
   m_database.Open();
