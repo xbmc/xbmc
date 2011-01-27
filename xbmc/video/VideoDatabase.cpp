@@ -3361,6 +3361,81 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       m_pDS->exec("ALTER table settings add VerticalShift float");
     }
+    if (iVersion < 44)
+    {
+      // only if MySQL is used and default character set is not utf8
+      // string data needs to be converted to proper utf8
+      CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
+      if (!m_sqlite && !charset.empty() && charset != "utf8")
+      {
+        map<CStdString, CStdStringArray> tables;
+        map<CStdString, CStdStringArray>::iterator itt;
+        CStdStringArray::iterator itc;
+
+        // columns that need to be converted
+        // content columns
+        CStdStringArray c_columns;
+        for (int i = 0; i < 22; i++)
+        {
+          CStdString c;
+          c.Format("c%02d", i);
+          c_columns.push_back(c);
+        }
+
+        tables.insert(pair<CStdString, CStdStringArray> ("episode", c_columns));
+        tables.insert(pair<CStdString, CStdStringArray> ("movie", c_columns));
+        tables.insert(pair<CStdString, CStdStringArray> ("musicvideo", c_columns));
+        tables.insert(pair<CStdString, CStdStringArray> ("tvshow", c_columns));
+
+        //common columns
+        CStdStringArray c1;
+        c1.push_back("strRole");
+        tables.insert(pair<CStdString, CStdStringArray> ("actorlinkepisode", c1));
+        tables.insert(pair<CStdString, CStdStringArray> ("actorlinkmovie", c1));
+        tables.insert(pair<CStdString, CStdStringArray> ("actorlinktvshow", c1));
+
+        //remaining columns
+        CStdStringArray c2;
+        c2.push_back("strActor");
+        tables.insert(pair<CStdString, CStdStringArray> ("actors", c2));
+
+        CStdStringArray c3;
+        c3.push_back("strCountry");
+        tables.insert(pair<CStdString, CStdStringArray> ("country", c3));
+
+        CStdStringArray c4;
+        c4.push_back("strFilename");
+        tables.insert(pair<CStdString, CStdStringArray> ("files", c4));
+
+        CStdStringArray c5;
+        c5.push_back("strGenre");
+        tables.insert(pair<CStdString, CStdStringArray> ("genre", c5));
+
+        CStdStringArray c6;
+        c6.push_back("strSet");
+        tables.insert(pair<CStdString, CStdStringArray> ("sets", c6));
+
+        CStdStringArray c7;
+        c7.push_back("strStudio");
+        tables.insert(pair<CStdString, CStdStringArray> ("studio", c7));
+
+        for (itt = tables.begin(); itt != tables.end(); ++itt)
+        {
+          CStdString q;
+          q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
+          for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
+          {
+            q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
+                            itc->c_str(), itc->c_str(), charset.c_str());
+            if (*itc != itt->second.back())
+            {
+              q += ",";
+            }
+          }
+          m_pDS->exec(q);
+        }
+      }
+    }
   }
   catch (...)
   {
