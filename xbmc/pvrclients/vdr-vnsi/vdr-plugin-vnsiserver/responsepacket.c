@@ -54,12 +54,17 @@ cResponsePacket::~cResponsePacket()
   if (buffer) free(buffer);
 }
 
-bool cResponsePacket::init(uint32_t requestID)
+void cResponsePacket::initBuffers()
 {
   if (buffer == NULL) {
     bufSize = 512;
     buffer = (uint8_t*)malloc(bufSize);
   }
+}
+
+bool cResponsePacket::init(uint32_t requestID)
+{
+  initBuffers();
 
   *(uint32_t*)&buffer[0] = htonl(CHANNEL_REQUEST_RESPONSE); // RR channel
   *(uint32_t*)&buffer[4] = htonl(requestID);
@@ -71,10 +76,7 @@ bool cResponsePacket::init(uint32_t requestID)
 
 bool cResponsePacket::initScan(uint32_t opCode)
 {
-  if(buffer == NULL) {
-    bufSize = 512;
-    buffer = (uint8_t*)malloc(bufSize);
-  }
+  initBuffers();
 
   *(uint32_t*)&buffer[0] = htonl(CHANNEL_SCAN); // RR channel
   *(uint32_t*)&buffer[4] = htonl(opCode);
@@ -86,10 +88,7 @@ bool cResponsePacket::initScan(uint32_t opCode)
 
 bool cResponsePacket::initStatus(uint32_t opCode)
 {
-  if(buffer == NULL) {
-    bufSize = 512;
-    buffer = (uint8_t*)malloc(bufSize);
-  }
+  initBuffers();
 
   *(uint32_t*)&buffer[0] = htonl(CHANNEL_STATUS); // RR channel
   *(uint32_t*)&buffer[4] = htonl(opCode);
@@ -101,10 +100,7 @@ bool cResponsePacket::initStatus(uint32_t opCode)
 
 bool cResponsePacket::initStream(uint32_t opCode, uint32_t streamID, uint32_t duration, int64_t dts, int64_t pts)
 {
-  if(buffer == NULL) {
-    bufSize = 512;
-    buffer = (uint8_t*)malloc(bufSize);
-  }
+  initBuffers();
 
   *(uint32_t*)&buffer[0]  = htonl(CHANNEL_STREAM); // stream channel
   *(uint32_t*)&buffer[4]  = htonl(opCode);        // Stream packet operation code
@@ -121,7 +117,6 @@ bool cResponsePacket::initStream(uint32_t opCode, uint32_t streamID, uint32_t du
 void cResponsePacket::finalise()
 {
   *(uint32_t*)&buffer[userDataLenPos] = htonl(bufUsed - headerLength);
-  //Log::getInstance()->log("Client", Log::DEBUG, "RP finalise %lu", bufUsed - headerLength);
 }
 
 void cResponsePacket::finaliseStream()

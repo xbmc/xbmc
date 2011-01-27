@@ -58,6 +58,7 @@ private:
   uint32_t bufSize;
   uint32_t bufUsed;
 
+  void initBuffers();
   bool checkExtend(uint32_t by);
 
   const static uint32_t headerLength          = 12;
