@@ -22,7 +22,7 @@ AC_DEFUN([XB_FIND_SONAME],
     $1_SONAME=$( $CC -print-file-name=lib$2.so | \
       while read output; do objdump -p $output | \
         grep "SONAME" | \
-        sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+        sed -e 's/  *SONAME  *//'; done 2> /dev/null )
   else
     AC_MSG_CHECKING([for lib$2 dylib])
     gcc_lib_path=[`$CC -print-search-dirs 2>/dev/null | fgrep libraries: | sed 's/[^=]*=\(.*\)/\1/' | sed 's/:/ /g'`]
