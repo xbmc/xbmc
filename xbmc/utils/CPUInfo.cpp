@@ -120,6 +120,9 @@ CCPUInfo::CCPUInfo(void)
     core.m_id = i;
     m_cores[core.m_id] = core;
   }
+
+  ReadCPUFeatures();
+
 #elif defined(_WIN32)
   char rgValue [128];
   HKEY hKey;
@@ -140,6 +143,9 @@ CCPUInfo::CCPUInfo(void)
 
   CoreInfo core;
   m_cores[0] = core;
+
+  ReadCPUFeatures();
+
 #else
   m_fProcStat = fopen("/proc/stat", "r");
   m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
@@ -192,6 +198,39 @@ CCPUInfo::CCPUInfo(void)
           m_cores[nCurrId].m_strModel.Trim();
         }
       }
+      else if (strncmp(buffer, "flags", 5) == 0)
+      {
+        char* needle = strchr(buffer, ':');
+        if (needle)
+        {
+          char* tok = NULL,
+              * save;
+          needle++;
+          tok = strtok_r(needle, " ", &save);
+          while (tok)
+          {
+            if (0 == strcmp(tok, "mmx"))
+              m_cpuFeatures |= CPU_FEATURE_MMX;
+            else if (0 == strcmp(tok, "mmxext"))
+              m_cpuFeatures |= CPU_FEATURE_MMX2;
+            else if (0 == strcmp(tok, "sse"))
+              m_cpuFeatures |= CPU_FEATURE_SSE;
+            else if (0 == strcmp(tok, "sse2"))
+              m_cpuFeatures |= CPU_FEATURE_SSE2;
+            else if (0 == strcmp(tok, "ssse3"))
+              m_cpuFeatures |= CPU_FEATURE_SSE3;
+            else if (0 == strcmp(tok, "sse4_1"))
+              m_cpuFeatures |= CPU_FEATURE_SSE4;
+            else if (0 == strcmp(tok, "sse4_2"))
+              m_cpuFeatures |= CPU_FEATURE_SSE42;
+            else if (0 == strcmp(tok, "3dnow"))
+              m_cpuFeatures |= CPU_FEATURE_3DNOW;
+            else if (0 == strcmp(tok, "3dnowext"))
+              m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+            tok = strtok_r(NULL, " ", &save);
+          }
+        }
+      }
     }
   }
   else
@@ -202,7 +241,6 @@ CCPUInfo::CCPUInfo(void)
 
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
-  ReadCPUFeatures();
 }
 
 CCPUInfo::~CCPUInfo()
