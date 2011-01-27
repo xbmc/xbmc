@@ -296,8 +296,28 @@
 	<include name="HomeSubMenuTVShows">
 		<control type="button" id="901001">
 			<include>ButtonHomeSubCommonValues</include>
-			<label>CHANNEL 1</label>
+			<label>PRESET 1</label>
 			<onclick>ActivateWindow(VideoLibrary,Randomizer,1,return)</onclick>
+		</control>
+		<control type="button" id="901002">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>PRESET 2</label>
+			<onclick>ActivateWindow(VideoLibrary,Randomizer,2,return)</onclick>
+		</control>
+		<control type="button" id="901003">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>PRESET 3</label>
+			<onclick>ActivateWindow(VideoLibrary,Randomizer,3,return)</onclick>
+		</control>
+		<control type="button" id="901004">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>PRESET 4</label>
+			<onclick>ActivateWindow(VideoLibrary,Randomizer,4,return)</onclick>
+		</control>
+		<control type="button" id="901005">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>PRESET 5</label>
+			<onclick>ActivateWindow(VideoLibrary,Randomizer,5,return)</onclick>
 		</control>
 		<control type="button" id="90171">
 			<include>ButtonHomeSubCommonValues</include>

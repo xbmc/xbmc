@@ -523,6 +523,7 @@ public:
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, bool checkLocks = true);
 
   bool GetNextItemsByChannel(int channelID, bool isSkipShow, CFileItem* item, CFileItemList& items);
+  void GetEpisodeItem(int idEpisode, CFileItemList& items);
 
   // partymode
   int GetMusicVideoCount(const CStdString& strWhere);
@@ -624,7 +625,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 43; };
+  virtual int GetMinVersion() const { return 44; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

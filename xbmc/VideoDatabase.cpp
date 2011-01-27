@@ -180,7 +180,7 @@ bool CVideoDatabase::CreateTables()
       column.Format(",c%02d text", i);
       columns += column;
     }
-    columns += ")";
+    columns += ",c99 integer)"; //c99 for channels
     m_pDS->exec(columns.c_str());
 
     CLog::Log(LOGINFO, "create directorlinktvshow table");
@@ -327,6 +327,15 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE setlinkmovie ( idSet integer, idMovie integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_1 ON setlinkmovie ( idSet, idMovie)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_2 ON setlinkmovie ( idMovie, idSet)\n");
+
+	CLog::Log(LOGINFO, "create channel and related tables");
+	m_pDS->exec("CREATE TABLE channel (idChannel integer primary key, strName text, playAll bool, byGenre bool, byOrder bool, episodeStatus integer);");
+	m_pDS->exec("CREATE TABLE channellinkgenre (idChannel integer, idGenre integer)");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_channellinkgenre_1 ON channellinkgenre ( idChannel, idGenre )");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_channellinkgenre_2 ON channellinkgenre ( idGenre, idChannel )");
+	m_pDS->exec("CREATE TABLE channellinktvshow (idChannel integer, strShow text)");
+	m_pDS->exec("CREATE UNIQUE INDEX ix_channellinktvshow_1 ON channellinktvshow ( idChannel, strShow )");
+	m_pDS->exec("CREATE UNIQUE INDEX ix_channellinktvshow_2 ON channellinktvshow ( strShow, idChannel )");
   }
   catch (...)
   {
@@ -3336,6 +3345,17 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       m_pDS->exec("ALTER table settings add VerticalShift float");
     }
+	if (iVersion < 44)
+	{
+	  m_pDS->exec("CREATE TABLE channel (idChannel integer primary key, strName text, playAll bool, byGenre bool, byOrder bool, episodeStatus integer);");
+	  m_pDS->exec("CREATE TABLE channellinkgenre (idChannel integer, idGenre integer)");
+	  m_pDS->exec("CREATE UNIQUE INDEX ix_channellinkgenre_1 ON channellinkgenre ( idChannel, idGenre )");
+	  m_pDS->exec("CREATE UNIQUE INDEX ix_channellinkgenre_2 ON channellinkgenre ( idGenre, idChannel )");
+	  m_pDS->exec("CREATE TABLE channellinktvshow (idChannel integer, strShow text)");
+	  m_pDS->exec("CREATE UNIQUE INDEX ix_channellinktvshow_1 ON channellinktvshow ( idChannel, strShow )");
+	  m_pDS->exec("CREATE UNIQUE INDEX ix_channellinktvshow_2 ON channellinktvshow ( strShow, idChannel )");
+	  m_pDS->exec("ALTER TABLE tvshow ADD c99 integer");
+	}
   }
   catch (...)
   {
@@ -4870,36 +4890,145 @@ bool CVideoDatabase::GetNextItemsByChannel(int channelID, bool isSkipShow, CFile
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-	
-	int currentEpisodeID;
+
+	int currentEpisodeID=0;
+	CStdString strCurrentShow = "";
 	if(item != NULL)
-		currentEpisodeID = item->GetVideoInfoTag()->m_iDbId;
-	else
 	{
+		 currentEpisodeID = item->GetVideoInfoTag()->m_iDbId;
+		 strCurrentShow = item->GetVideoInfoTag()->m_strShowTitle;
+	}
+	else
 		isSkipShow = false;
-		currentEpisodeID = -1;
+
+	//get channel params
+	CStdString strSQL = PrepareSQL("select * from channel where idChannel=%i", channelID);
+	m_pDS->query( strSQL.c_str() );
+	bool playAll = m_pDS->fv("playAll").get_asBool();
+	bool byGenre = m_pDS->fv("byGenre").get_asBool();
+	bool byOrder = m_pDS->fv("byOrder").get_asBool();
+	int episodeStatus = m_pDS->fv("episodeStatus").get_asInt();
+
+	if(currentEpisodeID > 0 && byOrder && !isSkipShow)
+	{
+		//set last watched episode.
+		strSQL = PrepareSQL("update tvshow set c99=%i where c00='%s'", currentEpisodeID, strCurrentShow.c_str());
+		m_pDS->exec(strSQL);
 	}
 
-	CStdString strSQL;
-	if(!isSkipShow)
-		strSQL = PrepareSQL("SELECT (SELECT idEpisode FROM episodeview where tvshow.c00 = episodeview.strTitle AND playCount IS NULL AND idEpisode<>%i ORDER BY cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) LIMIT 1) AS idEpisode FROM tvshow WHERE idEpisode IS NOT NULL ORDER BY RANDOM() LIMIT 1", currentEpisodeID);
+	
+	strSQL = "select tvshow.c00,tvshow.c99 from tvshow ";
+	
+	if(!playAll)
+		strSQL+= PrepareSQL(" join channellinktvshow on tvshow.c00 = channellinktvshow.strShow and channellinktvshow.idChannel=%i ", channelID);
+
+	if(byGenre)
+		strSQL+= PrepareSQL(" join genrelinktvshow on tvshow.idShow = genrelinktvshow.idShow join channellinkgenre on genrelinktvshow.idGenre = channellinkgenre.idGenre and channellinkgenre.idChannel=%i", channelID);
+		
+	strSQL+= " where tvshow.c00 in (select strTitle from episodeview where ";
+	if(episodeStatus == 1)
+		strSQL+= " playCount is null and ";
+	else if (episodeStatus == 2)
+		strSQL+= " playCount is not null and ";
+	strSQL += " idEpisode<>ifnull(tvshow.c99,-1)) ";
+	
+	if(isSkipShow)
+		strSQL+= PrepareSQL(" and tvshow.c00<>'%s' ", strCurrentShow.c_str());
+
+	strSQL += " group by tvshow.c00 order by random() limit 1";
+
+	m_pDS->query(strSQL);
+	CStdString strShow;
+	int previousEpisodeID = 0;
+	if (m_pDS->num_rows() > 0)
+	{
+		 strShow = m_pDS->fv("c00").get_asString();
+		 previousEpisodeID = m_pDS->fv("c99").get_asInt();
+	}
 	else
-		strSQL = PrepareSQL("SELECT (SELECT idEpisode FROM episodeview where tvshow.c00 = episodeview.strTitle AND playCount IS NULL ORDER BY cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) LIMIT 1) AS idEpisode FROM tvshow WHERE c00<>'%s' AND idEpisode IS NOT NULL ORDER BY RANDOM() LIMIT 1", item->GetVideoInfoTag()->m_strTitle);
+	{
+		//nothing to watch!
+		m_pDS->close();
+		return false;
+		
+		/*if(!isSkipShow)
+		{
+			//nothing to watch!
+			m_pDS->close();
+			return false;
+		}
+		else
+		{
+			//only one show on the channel
+			strShow = strCurrentShow;
+			previousEpisodeID = currentEpisodeID; 
+		}*/
+	}
 
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    if (m_pDS->num_rows() == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
 
-	int idEpisode = m_pDS->fv("idEpisode").get_asInt();
+	strSQL = PrepareSQL("select idEpisode from episodeview where strTitle='%s' ", strShow.c_str());
+
+	if(episodeStatus == 1)
+		strSQL += " and playCount is null ";
+	else if (episodeStatus == 2)
+		strSQL += " and playCount is not null ";
+
+	CStdString strFirstTry, strSecondTry;
+
+	if(byOrder)
+	{
+		if(previousEpisodeID > 0)
+		{
+			CFileItemList previousItems;
+			GetEpisodesByWhere("videodb://",PrepareSQL("where idEpisode = %i",previousEpisodeID), previousItems);
+			int numSeason = previousItems[0]->GetVideoInfoTag()->m_iSeason;
+			int numEpisode = previousItems[0]->GetVideoInfoTag()->m_iEpisode;
+
+			// try next episode for current season 
+			strFirstTry = strSQL + PrepareSQL(" and episodeview.c12=%i and episodeview.c13>%i ", numSeason, numEpisode)
+				        + " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+
+			m_pDS->query(strFirstTry);
+			if (m_pDS->num_rows() == 0)
+			{
+				// try next season or later
+				strSecondTry = strSQL + PrepareSQL(" and episodeview.c12>%i ", numSeason)
+							 + " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+
+				m_pDS->query(strSecondTry);
+				if (m_pDS->num_rows() == 0)
+				{
+					strSQL += " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+					m_pDS->query(strSQL);
+				}
+			}
+		}
+		else
+		{
+			strSQL += " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+			m_pDS->query(strSQL);
+		}
+	}
+	else
+	{
+		strFirstTry = strSQL + PrepareSQL(" and idEpisode<>%i order by random() limit 1", previousEpisodeID);
+		m_pDS->query(strFirstTry);
+		if (m_pDS->num_rows() == 0)
+		{
+			m_pDS->query(strSQL + "order by random() limit 1");
+		}		
+	}
+
+	if (m_pDS->num_rows() == 0)
+	{
+		m_pDS->close();
+		return false;
+	}
+
+	int nextEpisodeID = m_pDS->fv("idEpisode").get_asInt();
 	m_pDS->close();
 
-	GetEpisodesByWhere("videodb://",PrepareSQL("where idEpisode = %i",idEpisode), items);
-	items[0]->SetProperty("original_listitem_url", items[0]->m_strPath);
-	items[0]->m_strPath = items[0]->GetVideoInfoTag()->m_strFileNameAndPath;
-    
+	GetEpisodeItem(nextEpisodeID, items);
     return true;
   }
   catch (...)
@@ -4909,6 +5038,12 @@ bool CVideoDatabase::GetNextItemsByChannel(int channelID, bool isSkipShow, CFile
   return false;
 }
 
+void CVideoDatabase::GetEpisodeItem(int idEpisode, CFileItemList& items)
+{
+	GetEpisodesByWhere("videodb://",PrepareSQL("where idEpisode = %i",idEpisode), items);
+	items[0]->SetProperty("original_listitem_url", items[0]->m_strPath);
+	items[0]->m_strPath = items[0]->GetVideoInfoTag()->m_strFileNameAndPath;
+}
 
 bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idArtist, int idDirector, int idStudio, int idAlbum)
 {
