@@ -27,7 +27,7 @@
 
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
-protected:
+private:
   int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
   /*!
@@ -97,8 +97,10 @@ public:
    * @brief Move a channel from position iOldIndex to iNewIndex.
    * @param iOldIndex The old index.
    * @param iNewIndex The new index.
+   * @param bSaveInDb If true, save this change in the database.
+   * @return True if the channel was moved successfully, false otherwise.
    */
-  void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
+  bool MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex, bool bSaveInDb = true);
 
   /*!
    * @brief Show a hidden channel or hide a visible channel.
@@ -120,4 +122,10 @@ public:
    * @return True if the channel was persisted, false otherwise.
    */
   bool Persist(bool bQueueWrite = false) { return true; }
+
+  /*!
+   * @brief Update all channel numbers on timers.
+   * @return True if the channel number were updated, false otherwise.
+   */
+  bool UpdateTimers(void);
 };

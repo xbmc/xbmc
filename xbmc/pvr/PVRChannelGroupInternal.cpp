@@ -85,40 +85,8 @@ bool CPVRChannelGroupInternal::Update()
   return bReturn;
 }
 
-void CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
+bool CPVRChannelGroupInternal::UpdateTimers(void)
 {
-  if (iNewIndex == iOldIndex || iNewIndex == 0)
-    return;
-
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  database->Open();
-
-  CPVRChannelGroup tempChannels(m_bRadio);
-
-  /* move the channel */
-  tempChannels.push_back(at(iOldIndex - 1));
-  erase(begin() + iOldIndex - 1);
-  if (iNewIndex < size())
-    insert(begin() + iNewIndex - 1, tempChannels[0]);
-  else
-    push_back(tempChannels[0]);
-
-  /* update the channel numbers */
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
-  {
-    CPVRChannel *channel = at(ptr);
-
-    if (channel->ChannelNumber() != (int) ptr + 1)
-    {
-      channel->SetChannelNumber(ptr + 1, true);
-    }
-  }
-
-  CLog::Log(LOGNOTICE, "%s - %s channel '%d' moved to '%d'",
-      __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
-
-  database->Close();
-
   /* update the timers with the new channel numbers */
   for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
   {
@@ -127,8 +95,47 @@ void CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int 
     if (tag)
       timer.SetNumber(tag->ChannelNumber());
   }
+}
 
-  m_bIsSorted = false;
+bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex, bool bSaveInDb /* = true */)
+{
+  bool bReturn = false;
+
+  if (iNewIndex == iOldIndex || iNewIndex == 0)
+    return bReturn;
+
+  /* make sure the list is sorted by channel number */
+  SortByChannelNumber();
+
+  /* get the channel at the old position */
+  CPVRChannel *channel = at(iOldIndex - 1);
+
+  /* remove channel at the old position */
+  erase(begin() + iOldIndex - 1);
+
+  if (iNewIndex < size())
+  {
+    /* insert somewhere in the vector */
+    insert(begin() + iNewIndex - 1, channel);
+    m_bIsSorted = false;
+  }
+  else
+  {
+    /* append */
+    push_back(channel);
+  }
+
+  /* update channel numbers */
+  ReNumberAndCheck();
+
+  /* update timer channel numbers */
+  UpdateTimers();
+
+  if (bSaveInDb)
+    PersistChannels();
+
+  CLog::Log(LOGNOTICE, "%s - %s channel '%d' moved to position '%d'",
+      __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
 }
 
 bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)

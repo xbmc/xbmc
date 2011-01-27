@@ -524,6 +524,24 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
   }
 }
 
+bool CPVRChannelGroup::PersistChannels(void)
+{
+  bool bReturn = false;
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+
+  if (!database->Open())
+    bReturn;
+
+  bReturn = true;
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    bReturn = at(iChannelPtr)->Persist(true) && bReturn;
+
+  database->CommitInsertQueries();
+  database->Close();
+
+  return bReturn;
+}
+
 bool CPVRChannelGroup::GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio)
 {
   const CPVRChannelGroup * channels = g_PVRChannelGroups.GetGroupAll(bRadio);

@@ -27,16 +27,22 @@
 
 #define XBMC_INTERNAL_GROUPID 0
 
-class CPVRChannelGroups;
-class CPVREpg;
+class CPVRChannelGroupInternal;
 
 /** A group of channels */
 
 class CPVRChannelGroup : public std::vector<CPVRChannel *>
 {
-  friend class CPVRChannelGroups;
+  friend class CPVRChannelGroupInternal;
 
 private:
+  bool          m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
+  bool          m_bIsSorted;    /*!< true if this container is sorted by channel number, false if not */
+
+  unsigned long m_iGroupId;     /*!< The ID of this group in the database */
+  CStdString    m_strGroupName; /*!< The name of this group */
+  int           m_iSortOrder;   /*!< The sort order to use */
+
   /*!
    * @brief Get the groups list for a directory.
    * @param strBase The directory path.
@@ -45,14 +51,6 @@ private:
    * @return True if the list was filled succesfully.
    */
   static bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
-
-protected:
-  bool          m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
-  bool          m_bIsSorted;    /*!< true if this container is sorted by channel number, false if not */
-
-  unsigned long m_iGroupId;     /*!< The ID of this group in the database */
-  CStdString    m_strGroupName; /*!< The name of this group */
-  int           m_iSortOrder;   /*!< The sort order to use */
 
   /*!
    * @brief Load the channels stored in the database.
@@ -86,6 +84,12 @@ protected:
    * @brief Remove invalid channels from this container.
    */
   void RemoveInvalidChannels(void);
+
+  /*!
+   * @brief Persist all channels in this group
+   * @return True if all channels were persisted, false otherwise.
+   */
+  bool PersistChannels(void);
 
 public:
   /*!
