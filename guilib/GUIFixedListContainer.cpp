@@ -128,17 +128,23 @@ bool CGUIFixedListContainer::MoveDown(bool wrapAround)
   return true;
 }
 
-// scrolls the said amount
 void CGUIFixedListContainer::Scroll(int amount)
 {
-  // increase or decrease the offset
-  int item = m_offset + m_cursor + amount;
-  // check for our end points
-  if (item >= (int)m_items.size() - 1)
-    item = (int)m_items.size() - 1;
-  if (item < 0)
-    item = 0;
-  SelectItem(item);
+  // increase or decrease the offset within [-minCursor, m_items.size() - maxCursor]
+  int minCursor, maxCursor;
+  GetCursorRange(minCursor, maxCursor);
+  int offset = m_offset + amount;
+  if (offset < -minCursor)
+  {
+    offset = -minCursor;
+    m_cursor = minCursor;
+  }
+  if (offset > (int)m_items.size() - maxCursor)
+  {
+    offset = m_items.size() - maxCursor;
+    m_cursor = maxCursor;
+  }
+  ScrollToOffset(offset);
 }
 
 void CGUIFixedListContainer::ValidateOffset()
