@@ -81,7 +81,7 @@ public:
    * @param bQueueWrite If true, don't write immediately
    * @return The database ID of the channel.
    */
-  long UpdateChannel(const CPVRChannel &channel, bool bQueueWrite = false);
+  long Persist(const CPVRChannel &channel, bool bQueueWrite = false);
 
   /*!
    * @brief Remove a channel entry from the database

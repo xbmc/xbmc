@@ -93,13 +93,6 @@ protected:
   virtual bool UpdateEPG(bool bShowProgress = false);
 
   /*!
-   * @brief Load all EPG entries from the database.
-   * @param bShowProgress Show a progress bar if true.
-   * @return True if the update was successful, false otherwise.
-   */
-  virtual bool Load(bool bShowProgress = false);
-
-  /*!
    * @brief Clear all EPG entries.
    * @param bClearDb Clear the database too if true.
    */
@@ -127,6 +120,13 @@ protected:
   virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
 public:
+  /*!
+   * @brief Load all EPG entries from the database.
+   * @param bShowProgress Show a progress bar if true.
+   * @return True if the update was successful, false otherwise.
+   */
+  virtual bool Load(bool bShowProgress = false);
+
   /*!
    * @brief A hook that will be called on every update thread iteration.
    */

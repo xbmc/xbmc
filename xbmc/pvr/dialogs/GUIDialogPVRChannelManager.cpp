@@ -514,7 +514,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
                 CPVRDatabase *database = g_PVRManager.GetTVDatabase();
                 database->Open();
-                database->UpdateChannel(newchannel);
+                database->Persist(newchannel);
                 database->Close();
                 CFileItemPtr channel(new CFileItem(newchannel));
 

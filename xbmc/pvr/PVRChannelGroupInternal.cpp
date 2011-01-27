@@ -236,11 +236,15 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
     /* add all channels to the database */
     for (unsigned int ptr = 0; ptr < size(); ptr++)
     {
-      long iChannelID = database->UpdateChannel(*at(ptr));
-      at(ptr)->SetChannelID(iChannelID);
+      database->Persist(*at(ptr), true);
     }
 
+    database->CommitInsertQueries();
     database->Compress(true);
+
+    Unload();
+    database->GetChannels(*this, m_bRadio);
+
     database->Close();
   }
 

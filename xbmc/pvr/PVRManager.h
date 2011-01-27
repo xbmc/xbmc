@@ -351,6 +351,7 @@ private:
                                                  playing channel from the TV Database */
   void ResetQualityData();                      /*! \brief Reset the Signal Quality data structure to initial values */
   bool ContinueLastChannel();
+  void Reset(void);
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */

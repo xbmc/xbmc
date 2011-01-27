@@ -115,7 +115,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   if (database)
   {
     database->Open();
-    database->UpdateChannel(*this, bQueueWrite);
+    database->Persist(*this, bQueueWrite);
     database->Close();
 
     return true;

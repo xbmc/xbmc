@@ -110,22 +110,7 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-  /* Reset Member variables and System Info swap counters */
-  m_hasRecordings           = false;
-  m_isRecording             = false;
-  m_hasTimers               = false;
-  m_CurrentGroupID          = -1;
-  m_currentPlayingChannel   = NULL;
-  m_currentPlayingRecording = NULL;
-  m_PreviousChannel[0]      = -1;
-  m_PreviousChannel[1]      = -1;
-  m_PreviousChannelIndex    = 0;
-  m_infoToggleStart         = NULL;
-  m_infoToggleCurrent       = 0;
-  m_recordingToggleStart    = NULL;
-  m_recordingToggleCurrent  = 0;
-  m_LastChannel             = 0;
-  m_bChannelScanRunning     = false;
+  Reset();
 
   /* Discover, load and create chosen Client add-on's. */
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
@@ -385,6 +370,26 @@ bool CPVRManager::RequestRemoval(AddonPtr addon)
 /** INTERNAL FUNCTIONS                                      **/
 /*************************************************************/
 
+void CPVRManager::Reset(void)
+{
+  /* Reset Member variables and System Info swap counters */
+  m_hasRecordings           = false;
+  m_isRecording             = false;
+  m_hasTimers               = false;
+  m_CurrentGroupID          = -1;
+  m_currentPlayingChannel   = NULL;
+  m_currentPlayingRecording = NULL;
+  m_PreviousChannel[0]      = -1;
+  m_PreviousChannel[1]      = -1;
+  m_PreviousChannelIndex    = 0;
+  m_infoToggleStart         = NULL;
+  m_infoToggleCurrent       = 0;
+  m_recordingToggleStart    = NULL;
+  m_recordingToggleCurrent  = 0;
+  m_LastChannel             = 0;
+  m_bChannelScanRunning     = false;
+}
+
 bool CPVRManager::ContinueLastChannel()
 {
   CLog::Log(LOGNOTICE,"PVR: Try to continue last channel");
@@ -430,15 +435,16 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  g_PVRChannelGroups.Load(); /* Load all channels and groups */
+  g_PVRChannelGroups.Load();    /* Load all channels and groups */
+  g_PVREpgContainer.Load(true); /* Load all EPG tables */
+  PVRTimers.Load();             /* Get timers from the backends */
+  PVRRecordings.Load();         /* Get recordings from the backend */
+
+  g_PVREpgContainer.Start();    /* Start the EPG thread */
 
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
-
-  PVRTimers.Load();          /* Get timers from the backends */
-  PVRRecordings.Load();      /* Get recordings from the backend */
-  g_PVREpgContainer.Start(); /* Start the EPG thread */
 
   int Now = CTimeUtils::GetTimeMS()/1000;
   m_LastTVChannelCheck     = Now;

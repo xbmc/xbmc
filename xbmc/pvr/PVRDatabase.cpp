@@ -215,7 +215,7 @@ bool CPVRDatabase::EraseClientChannels(long iClientId)
   return DeleteValues("channels", strWhereClause);
 }
 
-long CPVRDatabase::UpdateChannel(const CPVRChannel &channel, bool bQueueWrite /* = false */)
+long CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = false */)
 {
   long iReturn = -1;
 
