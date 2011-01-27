@@ -64,7 +64,7 @@ void CPVRChannelGroupInternal::Unload()
     delete at(iChannelPtr);
   }
 
-  clear();
+  CPVRChannelGroup::Unload();
 }
 
 bool CPVRChannelGroupInternal::Update()

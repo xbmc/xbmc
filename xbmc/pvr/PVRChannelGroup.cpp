@@ -76,7 +76,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  return (Load() > 0);
+  return (Load() >= 0);
 }
 
 void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)

@@ -921,16 +921,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     if (newIndex != pItem->GetPVRChannelInfoTag()->ChannelNumber())
     {
+      g_PVRChannelGroups.GetGroupAll(m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
-      {
-        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsTV();
-      }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
-      {
-        ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->MoveChannel(pItem->GetPVRChannelInfoTag()->ChannelNumber(), newIndex);
         UpdateChannelsRadio();
-      }
     }
   }
   else if (button == CONTEXT_BUTTON_HIDE)
